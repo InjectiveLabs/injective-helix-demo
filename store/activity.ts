@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
+import { ActivityFetchOptionsWithPagination } from '@/types'
 
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
@@ -39,7 +39,7 @@ export const useActivityStore = defineStore('activity', {
     },
 
     async fetchSubaccountFundingPayments(
-      activityFetchOptions: ActivityFetchOptions | undefined
+      activityFetchOptions?: ActivityFetchOptionsWithPagination
     ) {
       const activityStore = useActivityStore()
       const { subaccount } = useAccountStore()
@@ -49,8 +49,8 @@ export const useActivityStore = defineStore('activity', {
         return
       }
 
-      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
+      const paginationOptions = activityFetchOptions?.pagination
       const endTime = paginationOptions?.endTime || 0
 
       const { fundingPayments: subaccountFundingPayments, pagination } =

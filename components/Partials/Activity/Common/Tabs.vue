@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Status } from '@injectivelabs/utils'
-import { ActivityView } from '@/types'
+import { ActivityTab, ActivityView } from '@/types'
+
+const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
+const spotStore = useSpotStore()
 
 const props = defineProps({
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status()
+  tab: {
+    type: String as PropType<ActivityTab>,
+    required: true
   },
 
   view: {
@@ -19,251 +22,145 @@ const emit = defineEmits<{
   (e: 'update:view', state: string): void
 }>()
 
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
-const spotStore = useSpotStore()
-
 const view = computed({
   get(): string {
     return props.view
   },
+
   set(value: string) {
     emit('update:view', value)
   }
 })
 
-const isPositions = computed(() => {
-  return (
-    view.value === ActivityView.Positions ||
-    view.value === ActivityView.FundingPayments
-  )
-})
+const tabViewList = computed(() => {
+  if (props.tab === ActivityTab.Positions) {
+    return [ActivityView.Positions, ActivityView.FundingPayments]
+  }
 
-const isSpot = computed(() => {
-  return (
-    view.value === ActivityView.SpotOrders ||
-    view.value === ActivityView.SpotTriggers ||
-    view.value === ActivityView.SpotOrderHistory ||
-    view.value === ActivityView.SpotTradeHistory
-  )
-})
+  if (props.tab === ActivityTab.Derivatives) {
+    return [
+      ActivityView.DerivativeOrders,
+      ActivityView.DerivativeTriggers,
+      ActivityView.DerivativeOrderHistory,
+      ActivityView.DerivativeTradeHistory
+    ]
+  }
 
-const isDerivative = computed(() => {
-  return (
-    view.value === ActivityView.DerivativeOrders ||
-    view.value === ActivityView.DerivativeTriggers ||
-    view.value === ActivityView.DerivativeOrderHistory ||
-    view.value === ActivityView.DerivativeTradeHistory
-  )
-})
+  if (props.tab === ActivityTab.Spot) {
+    return [
+      ActivityView.SpotOrders,
+      ActivityView.SpotOrderHistory,
+      ActivityView.SpotTradeHistory
+    ]
+  }
 
-const isWalletHistory = computed(() => {
-  return (
-    view.value === ActivityView.WalletTransfers ||
-    view.value === ActivityView.WalletDeposits ||
-    view.value === ActivityView.WalletWithdrawals
-  )
+  return [
+    ActivityView.WalletTransfers,
+    ActivityView.WalletDeposits,
+    ActivityView.WalletWithdrawals
+  ]
 })
-
-function handleViewChange(value: string) {
-  view.value = value
-}
 </script>
 
 <template>
   <div class="h-full flex items-center gap-4 overflow-x-auto hide-scrollbar">
-    <template v-if="isPositions">
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-open-positions-link"
-        :option="ActivityView.Positions"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.openPositions') }}
-          </span>
+    <template
+      v-for="(viewOption, index) in Object.values(tabViewList)"
+      :key="`activity-tab-${viewOption}`"
+    >
+      <AppSelectButton v-model="view" :value="viewOption">
+        <template #default="{ active }">
+          <div
+            class="text-xs xs:text-sm leading-5 tracking-wide cursor-pointer uppercase"
+            :class="[
+              active
+                ? 'text-blue-500 hover:text-blue-600 font-bold'
+                : 'text-gray-500 hover:text-blue-500'
+            ]"
+          >
+            <div class="flex items-center gap-1">
+              <span class="whitespace-nowrap">
+                <span v-if="viewOption === ActivityView.Positions">
+                  {{ $t('activity.openPositions') }}
+                </span>
 
-          <span data-cy="activity-open-positions-link-count">
-            ({{ positionStore.subaccountTotalPositionsCount }})
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+                <span v-else-if="viewOption === ActivityView.FundingPayments">
+                  {{ $t('activity.fundingPayments') }}
+                </span>
 
-      <div class="w-px h-4 bg-gray-500" />
+                <span
+                  v-else-if="
+                    [
+                      ActivityView.DerivativeOrders,
+                      ActivityView.SpotOrders
+                    ].includes(viewOption)
+                  "
+                >
+                  {{ $t('activity.openOrders') }}
+                </span>
 
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-funding-payments-link"
-        :option="ActivityView.FundingPayments"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.fundingPayments') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-    </template>
+                <span
+                  v-else-if="
+                    [
+                      ActivityView.DerivativeOrderHistory,
+                      ActivityView.SpotOrderHistory
+                    ].includes(viewOption)
+                  "
+                >
+                  {{ $t('activity.orderHistory') }}
+                </span>
 
-    <template v-if="isSpot">
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-spot-orders-link"
-        :option="ActivityView.SpotOrders"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.openOrders') }}
-          </span>
+                <span
+                  v-else-if="
+                    [
+                      ActivityView.DerivativeTradeHistory,
+                      ActivityView.SpotTradeHistory
+                    ].includes(viewOption)
+                  "
+                >
+                  {{ $t('activity.tradeHistory') }}
+                </span>
 
-          <span data-cy="activity-spot-orders-link-count">
-            ({{ spotStore.subaccountTotalOrdersCount }})
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+                <span
+                  v-else-if="viewOption === ActivityView.DerivativeTriggers"
+                >
+                  {{ $t('activity.triggers') }}
+                </span>
 
-      <div class="w-px h-4 bg-gray-500" />
+                <span v-if="viewOption === ActivityView.WalletTransfers">
+                  {{ $t('walletHistory.transfers.transfers') }}
+                </span>
 
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-spot-order-history-link"
-        :option="ActivityView.SpotOrderHistory"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.orderHistory') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+                <span v-if="viewOption === ActivityView.WalletDeposits">
+                  {{ $t('walletHistory.deposits') }}
+                </span>
 
-      <div class="w-px h-4 bg-gray-500" />
+                <span v-if="viewOption === ActivityView.WalletWithdrawals">
+                  {{ $t('walletHistory.withdrawals') }}
+                </span>
+              </span>
 
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-spot-trades-link"
-        :option="ActivityView.SpotTradeHistory"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.tradeHistory') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-    </template>
+              <span v-if="viewOption === ActivityView.Positions">
+                ({{ positionStore.subaccountTotalPositionsCount }})
+              </span>
 
-    <template v-if="isDerivative">
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-derivative-orders-link"
-        :option="ActivityView.DerivativeOrders"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.openOrders') }}
-          </span>
-          <span data-cy="activity-derivative-orders-link-count">
-            ({{ derivativeStore.subaccountTotalOrdersCount }})
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+              <span v-if="viewOption === ActivityView.SpotOrders">
+                ({{ spotStore.subaccountTotalOrdersCount }})
+              </span>
 
-      <div class="w-px h-4 bg-gray-500" />
+              <span v-if="viewOption === ActivityView.DerivativeOrders">
+                ({{ derivativeStore.subaccountTotalOrdersCount }})
+              </span>
 
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-derivative-triggers-link"
-        :option="ActivityView.DerivativeTriggers"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.triggers') }}
-          </span>
-          <span data-cy="activity-derivative-orders-link-count">
-            ({{ derivativeStore.subaccountConditionalOrdersCount }})
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+              <span v-if="viewOption === ActivityView.DerivativeTriggers">
+                ({{ derivativeStore.subaccountConditionalOrdersCount }})
+              </span>
+            </div>
+          </div>
+        </template>
+      </AppSelectButton>
 
-      <div class="w-px h-4 bg-gray-500" />
-
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-derivative-order-history-link"
-        :option="ActivityView.DerivativeOrderHistory"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.orderHistory') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-
-      <div class="w-px h-4 bg-gray-500" />
-
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="activity-derivative-trade-history-link"
-        :option="ActivityView.DerivativeTradeHistory"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.tradeHistory') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-    </template>
-
-    <template v-if="isWalletHistory">
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="wallet-history-transfers-link"
-        :option="ActivityView.WalletTransfers"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('walletHistory.transfers.transfers') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-
-      <div class="w-px h-4 bg-gray-500" />
-
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="wallet-history-deposits-link"
-        :option="ActivityView.WalletDeposits"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('walletHistory.deposits') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
-
-      <div class="w-px h-4 bg-gray-500" />
-
-      <PartialsActivityCommonTab
-        v-model="view"
-        data-cy="wallet-history-withdrawals-link"
-        :option="ActivityView.WalletWithdrawals"
-        @selected="handleViewChange"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('walletHistory.withdrawals') }}
-          </span>
-        </div>
-      </PartialsActivityCommonTab>
+      <CommonSeparator v-if="index !== Object.values(tabViewList).length - 1" />
     </template>
   </div>
 </template>

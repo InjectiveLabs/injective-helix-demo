@@ -225,6 +225,14 @@ export enum BridgeBusEvents {
   Withdraw = 'withdraw'
 }
 
+export enum ActivityField {
+  Denom = 'Denom',
+  Limit = 'Limit',
+  Page = 'Page',
+  Side = 'Side',
+  Type = 'Type'
+}
+
 export enum BridgeField {
   BridgingNetwork = 'Bridging Network',
   TransferDirection = 'Transfer Direction',
@@ -279,7 +287,6 @@ export enum ActivityView {
   Positions = 'Positions/Index',
   FundingPayments = 'Positions/FundingPayments',
   SpotOrders = 'Spot/Index',
-  SpotTriggers = 'Spot/Triggers',
   SpotOrderHistory = 'Spot/OrderHistory',
   SpotTradeHistory = 'Spot/TradeHistory',
   DerivativeOrders = 'Derivatives/Index',
@@ -289,4 +296,11 @@ export enum ActivityView {
   WalletTransfers = 'WalletHistory/Transfers',
   WalletDeposits = 'WalletHistory/Deposits',
   WalletWithdrawals = 'WalletHistory/Withdrawals'
+}
+
+export enum ActivityTab {
+  Positions = 'positions',
+  Derivatives = 'derivatives',
+  Spot = 'spot',
+  WalletHistory = 'walletHistory'
 }

@@ -101,11 +101,14 @@ export interface FilterOptions {
 }
 
 export interface ActivityFetchOptions {
-  pagination?: PaginationOption
   filters?: FilterOptions
   options?: {
     updateTotalCounts?: boolean
   }
+}
+
+export type ActivityFetchOptionsWithPagination = ActivityFetchOptions & {
+  pagination?: PaginationOption
 }
 
 export interface OrderTypeFilter {
@@ -139,6 +142,7 @@ export interface DropdownOptionWithToken extends BaseDropdownOption {
   token?: Token
 }
 
+export * from './activity'
 export * from './balance'
 export * from './bridge'
 export * from './enums'

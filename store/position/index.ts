@@ -51,21 +51,14 @@ export const usePositionStore = defineStore('position', {
         return
       }
 
-      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime = paginationOptions?.endTime || 0
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
           marketId: filters?.marketId,
           marketIds: filters?.marketIds,
           subaccountId: subaccount.subaccountId,
-          direction: filters?.direction,
-          pagination: {
-            skip: paginationOptions ? paginationOptions.skip : 0,
-            limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime
-          }
+          direction: filters?.direction
         })
 
       positionStore.$patch({

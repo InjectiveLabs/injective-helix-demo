@@ -1,123 +1,97 @@
 <script lang="ts" setup>
-import { ActivityView } from '@/types'
+import { PropType } from 'vue'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
+import {
+  ActivityField,
+  ActivityTab,
+  ActivityView,
+  ConditionalOrderType
+} from '@/types'
+import {
+  orderTypeToOrderTypes,
+  tradeTypesToTradeExecutionTypes
+} from '@/app/client/utils/activity'
+
+const { t } = useLang()
 
 const props = defineProps({
-  denom: {
-    type: String,
-    default: ''
-  },
-
-  side: {
-    type: String,
-    default: ''
-  },
-
-  type: {
-    type: String,
-    default: ''
+  tab: {
+    type: String as PropType<ActivityTab>,
+    required: true
   },
 
   view: {
-    type: String,
+    type: String as PropType<ActivityView>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:side', state: string): void
-  (e: 'update:type', state: string): void
-  (e: 'update:denom', state: string): void
-  (e: 'update:view', state: string): void
+  (e: 'reset:filters'): void
 }>()
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
-const { t } = useLang()
+const { value: denom } = useStringField({ name: ActivityField.Denom, rule: '' })
+const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
+const { value: type } = useStringField({ name: ActivityField.Type, rule: '' })
 
-const isSpot = computed(() => {
-  return (
-    props.view === ActivityView.SpotOrders ||
-    props.view === ActivityView.SpotTriggers ||
-    props.view === ActivityView.SpotOrderHistory ||
-    props.view === ActivityView.SpotTradeHistory
-  )
-})
-
-const side = computed({
-  get(): string {
-    return props.side
-  },
-  set(value: string) {
-    emit('update:side', value)
-  }
-})
-
-const type = computed({
-  get(): string {
-    return props.type
-  },
-  set(value: string) {
-    emit('update:type', value)
-  }
-})
-
-const denom = computed({
-  get(): string {
-    return props.denom
-  },
-
-  set(value: string) {
-    emit('update:denom', value)
-  }
-})
-
-const view = computed({
-  get(): string {
-    return props.view
-  },
-  set(value: string) {
-    emit('update:view', value)
-  }
-})
-
-const markets = computed(() =>
-  isSpot.value ? spotStore.markets : derivativeStore.markets
+const showClearFiltersButton = computed(
+  () => !!denom.value || !!side.value || !!type.value
 )
 
-const showClearFiltersButton = computed(() => {
-  return !!denom.value || !!side.value || !!type.value
-})
+// const filterParams = computed(() => {
+//   const defaultFilterParams = {
+//     marketIds: marketIds.value
+//   }
 
-const showSideFilter = computed(() => {
-  return (
-    view.value !== ActivityView.FundingPayments &&
-    view.value !== ActivityView.WalletTransfers &&
-    view.value !== ActivityView.WalletDeposits &&
-    view.value !== ActivityView.WalletWithdrawals
-  )
-})
-
-const showTypeFilter = computed(() => {
-  return (
-    view.value === ActivityView.SpotTriggers ||
-    view.value === ActivityView.SpotOrderHistory ||
-    view.value === ActivityView.SpotTradeHistory ||
-    view.value === ActivityView.DerivativeTriggers ||
-    view.value === ActivityView.DerivativeOrderHistory ||
-    view.value === ActivityView.DerivativeTradeHistory
-  )
-})
+//   switch (props.view) {
+//     case ActivityView.FundingPayments:
+//       return defaultFilterParams
+//     case ActivityView.Positions:
+//       return {
+//         ...defaultFilterParams,
+//         direction: side.value
+//       }
+//     case ActivityView.DerivativeOrders:
+//     case ActivityView.SpotOrders:
+//       return {
+//         ...defaultFilterParams,
+//         orderSide: side.value
+//       }
+//     case ActivityView.SpotOrderHistory:
+//     case ActivityView.DerivativeOrderHistory:
+//     case ActivityView.DerivativeTriggers:
+//       return {
+//         marketIds: marketIds.value,
+//         orderTypes: orderTypes.value,
+//         executionTypes: executionTypes.value,
+//         direction: side.value
+//       }
+//     case ActivityView.DerivativeTradeHistory:
+//     case ActivityView.SpotTradeHistory:
+//       return {
+//         ...defaultFilterParams,
+//         types: tradeTypesToTradeExecutionTypes(type.value),
+//         direction: side.value
+//       }
+//     case ActivityView.WalletTransfers:
+//       return {
+//         denom: denom.value
+//       }
+//     default:
+//       return {}
+//   }
+// })
 
 const sideOptions = computed(() => {
-  if (view.value === ActivityView.Positions) {
+  if (props.view === ActivityView.Positions) {
     return [
       {
         display: t('trade.long'),
-        value: 'long'
+        value: TradeDirection.Long
       },
       {
         display: t('trade.short'),
-        value: 'short'
+        value: TradeDirection.Short
       }
     ]
   }
@@ -125,11 +99,11 @@ const sideOptions = computed(() => {
   return [
     {
       display: t('trade.buy'),
-      value: 'buy'
+      value: TradeDirection.Buy
     },
     {
       display: t('trade.sell'),
-      value: 'sell'
+      value: TradeDirection.Sell
     }
   ]
 })
@@ -138,36 +112,36 @@ const typeOptions = computed(() => {
   let result = [
     {
       display: t('trade.limit'),
-      value: `limit`
+      value: `${TradeExecutionType.LimitFill}`
     },
     {
       display: t('trade.market'),
-      value: `market`
+      value: `${TradeExecutionType.Market}`
     }
   ]
 
-  if (
-    view.value !== ActivityView.SpotOrderHistory &&
-    view.value !== ActivityView.SpotTradeHistory &&
-    view.value !== ActivityView.DerivativeTradeHistory
-  ) {
+  if (props.tab === ActivityTab.Spot) {
+    return result
+  }
+
+  if (props.tab === ActivityTab.Derivatives) {
     result = [
       ...result,
       {
         display: `${t('trade.stopLoss')} ${t('trade.limit')}`,
-        value: `limit-stop_loss`
+        value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.StopLoss}`
       },
       {
         display: `${t('trade.stopLoss')} ${t('trade.market')}`,
-        value: `market-stop_loss`
+        value: `${TradeExecutionType.Market}-${ConditionalOrderType.StopLoss}`
       },
       {
         display: `${t('trade.takeProfit')} ${t('trade.limit')}`,
-        value: `limit-take_profit`
+        value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.TakeProfit}`
       },
       {
         display: `${t('trade.takeProfit')} ${t('trade.market')}`,
-        value: `market-take_profit`
+        value: `${TradeExecutionType.Market}-${ConditionalOrderType.TakeProfit}`
       }
     ]
   }
@@ -175,10 +149,30 @@ const typeOptions = computed(() => {
   return result
 })
 
+// const orderType = computed(() => {
+//   const [executionType, orderType] = type.value.split('-')
+
+//   return { executionType, orderType }
+// })
+
+// const executionTypes = computed(() => {
+//   if (!orderType.value || !orderType.value.executionType) {
+//     return undefined
+//   }
+
+//   return [orderType.value.executionType] as TradeExecutionType[]
+// })
+
+// const orderTypes = computed(() => {
+//   if (!orderType.value || !orderType.value.executionType) {
+//     return []
+//   }
+
+//   return orderTypeToOrderTypes(orderType.value.orderType)
+// })
+
 function handleClearFilters() {
-  denom.value = ''
-  side.value = ''
-  type.value = ''
+  emit('reset:filters')
 }
 </script>
 
@@ -188,12 +182,16 @@ function handleClearFilters() {
       <PartialsActivityCommonSearch
         v-model="denom"
         class="col-span-2 sm:col-span-1"
-        :markets="markets"
-        :view="view"
+        :tab="tab"
       />
 
       <AppSelectField
-        v-if="showTypeFilter"
+        v-if="
+          [ActivityTab.Spot, ActivityTab.Derivatives].includes(tab) &&
+          ![ActivityView.SpotOrders, ActivityView.DerivativeOrders].includes(
+            view
+          )
+        "
         v-model="type"
         :options="typeOptions"
         :placeholder="'Type'"
@@ -203,7 +201,10 @@ function handleClearFilters() {
       />
 
       <AppSelectField
-        v-if="showSideFilter"
+        v-if="
+          tab !== ActivityTab.WalletHistory &&
+          view !== ActivityView.FundingPayments
+        "
         v-model="side"
         :options="sideOptions"
         :placeholder="$t('trade.side')"
@@ -222,10 +223,12 @@ function handleClearFilters() {
       v-if="view === ActivityView.Positions"
       v-bind="{ view, denom, side }"
     />
+
     <PartialsActivityViewsSpotActions
       v-if="view === ActivityView.SpotOrders"
       v-bind="{ view, denom, side }"
     />
+
     <PartialsActivityViewsDerivativesActions
       v-if="
         view === ActivityView.DerivativeOrders ||
