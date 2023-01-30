@@ -42,7 +42,6 @@ const { worstPrice, worstPriceWithSlippage } = useSpotPrice({
 
 onMounted(() => {
   Promise.all([
-    accountStore.refreshSubaccountBalances(),
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
     spotStore.init(),

@@ -91,7 +91,7 @@ const balances = computed(() => {
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
     const subaccountBalance = accountStore.subaccount?.balances.find(
-      (subaccountBalance) => subaccountBalance.denom === denom
+      (subaccountBalance) => subaccountBalance.denom.toLowerCase() === denom
     )
 
     const inOrderBalance = subaccountBalance
