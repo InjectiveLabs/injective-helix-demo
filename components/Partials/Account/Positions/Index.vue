@@ -18,36 +18,29 @@ const marketDenom = ref('')
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
 
-const marketId = computed(() => {
+const marketIds = computed(() => {
   if (!marketDenom.value) {
-    return undefined
+    return []
   }
 
-  return derivativeStore.markets.find((m) => {
-    return (
-      m.baseToken.denom === marketDenom.value ||
-      m.quoteToken.denom === marketDenom.value
-    )
-  })?.marketId
+  return derivativeStore.markets
+    .filter((m) => {
+      return (
+        m.baseToken.denom === marketDenom.value ||
+        m.quoteToken.denom === marketDenom.value
+      )
+    })
+    .map(({ marketId }) => marketId)
 })
 
 const filteredPositions = computed(() => {
   return positionStore.subaccountPositions.filter((position) => {
-    if (!side.value && !marketId.value) {
-      return true
-    }
+    const positionMatchedSide = !side.value || position.direction === side.value
+    const positionMatchedMarket =
+      marketIds.value.length === 0 ||
+      marketIds.value.includes(position.marketId)
 
-    if (!side.value && marketId.value) {
-      return position.marketId === marketId.value
-    }
-
-    if (side.value && !marketId.value) {
-      return position.direction === side.value
-    }
-
-    return (
-      position.marketId === marketId.value && position.direction === side.value
-    )
+    return positionMatchedMarket && positionMatchedSide
   })
 })
 

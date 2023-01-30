@@ -1,8 +1,11 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   const appStore = useAppStore()
 
-  // don't cancel stream for route query change
-  if (to.name !== from.name) {
+  const isSameRouteDifferentQuery =
+    to.name === from.name &&
+    JSON.stringify(to.query) !== JSON.stringify(from.query)
+
+  if (!isSameRouteDifferentQuery) {
     appStore.cancelAllStreams()
   }
 })
