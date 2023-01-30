@@ -13,7 +13,11 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  Promise.all([accountStore.init(), spotStore.init(), derivativeStore.init()])
+  Promise.all([
+    accountStore.fetchSubaccounts(),
+    spotStore.init(),
+    derivativeStore.init()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()

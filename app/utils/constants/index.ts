@@ -60,3 +60,5 @@ export const TRADE_FORM_QUANTITY_ROUNDING_MODE = BigNumber.ROUND_DOWN
 export const BINANCE_DEPOSIT_ADDRESSES = [
   'inj1u2rajhqtptzvu23leheta9yg99k3hazf4waf43'
 ]
+
+export const TRADE_MAX_SUBACCOUNT_ARRAY_SIZE = 100

@@ -94,7 +94,7 @@ function handleClickOnMarket() {
       </span>
       <span
         v-if="isReduceOnly"
-        class="ml-0.5 text-xs text-gray-500"
+        class="ml-1 text-xs text-gray-500"
         data-cy="derivative-order-reduce-only-table-data"
       >
         {{ $t('trade.reduce_only') }}

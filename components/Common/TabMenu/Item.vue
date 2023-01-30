@@ -1,27 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps({
-  active: Boolean,
-
-  value: {
-    type: String,
-    required: true
-  }
+defineProps({
+  active: Boolean
 })
-
-const emit = defineEmits<{
-  (e: 'click', state: string): void
-}>()
-
-function handleClick() {
-  emit('click', props.value)
-}
 </script>
 
 <template>
   <div
     class="group px-4 h-[40px] cursor-pointer relative flex items-center justify-center"
     :class="{ 'text-gray-300': !active, 'text-blue-500': active }"
-    @click="handleClick"
   >
     <p class="text-sm capitalize select-none whitespace-nowrap">
       <slot />

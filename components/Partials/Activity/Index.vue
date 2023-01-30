@@ -3,6 +3,10 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
+import {
   orderTypeToOrderTypes,
   tradeTypesToTradeExecutionTypes
 } from '@/app/client/utils/activity'
@@ -14,7 +18,7 @@ const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
+const { $onError, $onRejected } = useNuxtApp()
 const { resetForm } = useForm()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -25,6 +29,17 @@ const { value: type } = useStringField({ name: 'type', rule: '' })
 const limit = ref(UI_DEFAULT_PAGINATION_LIMIT_COUNT)
 const page = ref(1)
 const view = ref(ActivityView.Positions)
+const endTime = ref(undefined as number | undefined)
+
+const isStreamingView = computed(() => {
+  return (
+    view.value === ActivityView.Positions ||
+    view.value === ActivityView.SpotOrders ||
+    view.value === ActivityView.SpotTriggers ||
+    view.value === ActivityView.DerivativeOrders ||
+    view.value === ActivityView.DerivativeTriggers
+  )
+})
 
 const isSpot = computed(() => {
   return (
@@ -43,27 +58,46 @@ const derivativeMarkets = computed(() => {
   return derivativeStore.markets
 })
 
-const activeMarket = computed(() => {
+const markets = computed(() => {
   if (!denom.value || denom.value === '') {
-    return undefined
+    return isSpot.value ? spotMarkets.value : derivativeMarkets.value
   }
 
-  return [...spotMarkets.value, ...derivativeMarkets.value].find(
-    (m) =>
+  if (isSpot.value) {
+    return spotMarkets.value.filter(
+      (m: UiSpotMarketWithToken) =>
+        m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
+    )
+  }
+
+  return derivativeMarkets.value.filter(
+    (m: UiDerivativeMarketWithToken) =>
       m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
   )
 })
 
-const marketIds = computed(() =>
-  isSpot.value ? spotStore.activeMarketIds : derivativeStore.activeMarketIds
-)
-
 const marketId = computed(() => {
-  if (!activeMarket.value) {
+  if (markets.value.length === 0) {
     return undefined
   }
 
-  return activeMarket.value.marketId
+  return markets.value[0].marketId
+})
+
+const marketIds = computed(() => {
+  return markets.value.map((m) => m.marketId)
+})
+
+const activeMarket = computed(() => {
+  if (isSpot.value) {
+    return spotMarkets.value.find(
+      (m: UiSpotMarketWithToken) => m.marketId === marketId.value
+    )
+  }
+
+  return derivativeMarkets.value.find(
+    (m: UiDerivativeMarketWithToken) => m.marketId === marketId.value
+  )
 })
 
 const orderType = computed(() => {
@@ -128,7 +162,6 @@ const action = computed(() => {
 
 const filterParams = computed(() => {
   const defaultFilterParams = {
-    marketId: marketId.value,
     marketIds: marketIds.value
   }
 
@@ -147,7 +180,7 @@ const filterParams = computed(() => {
       }
     case ActivityView.SpotOrderHistory:
       return {
-        marketId: marketId.value,
+        marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
         direction: side.value as TradeDirection
@@ -165,7 +198,6 @@ const filterParams = computed(() => {
       }
     case ActivityView.DerivativeTriggers:
       return {
-        marketId: marketId.value,
         marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
@@ -173,7 +205,7 @@ const filterParams = computed(() => {
       }
     case ActivityView.DerivativeOrderHistory:
       return {
-        marketId: marketId.value,
+        marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
         direction: side.value as TradeDirection
@@ -193,6 +225,25 @@ const filterParams = computed(() => {
   }
 })
 
+const shouldUpdateTotalCounts = computed(() => {
+  if (
+    ![
+      ActivityView.Positions,
+      ActivityView.SpotOrders,
+      ActivityView.DerivativeOrders
+    ].includes(view.value)
+  ) {
+    return false
+  }
+
+  const hasNoSide = side.value === ''
+  const hasNoMarketFilter = isSpot.value
+    ? spotStore.markets.every((m) => marketIds.value.includes(m.marketId))
+    : derivativeStore.markets.every((m) => marketIds.value.includes(m.marketId))
+
+  return hasNoSide && hasNoMarketFilter
+})
+
 const skip = computed(() => (page.value - 1) * limit.value)
 
 const symbol = computed(() => {
@@ -208,9 +259,13 @@ const symbol = computed(() => {
 })
 
 onMounted(() => {
+  const fetchOptions = {
+    options: { updateTotalCounts: true }
+  }
+
   const promises = [
-    derivativeStore.fetchSubaccountOrders(),
-    spotStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountOrders(fetchOptions),
+    spotStore.fetchSubaccountOrders(fetchOptions),
     positionStore.streamSubaccountPositions(),
     spotStore.streamSubaccountOrders(),
     spotStore.streamSubaccountOrderHistory(),
@@ -233,35 +288,78 @@ onMounted(() => {
     .catch($onError)
 })
 
-watch([view, side, type, denom, page, limit], fetchData)
+watch([page, limit, denom, side, type], () => fetchData())
+watch([view], () => fetchDataAndUpdateEndTime())
 
 function fetchData() {
-  if (!action.value) {
-    return
-  }
-
   status.setLoading()
 
-  if (Array.isArray(action.value)) {
-    return Promise.all(action.value)
-      .catch($onError)
-      .then(() => {
-        status.setIdle()
-      })
-  }
-
-  action
-    .value({
-      filters: filterParams.value as FilterOptions,
-      pagination: {
-        skip: skip.value,
-        limit: limit.value
-      }
-    })
-    .catch($onError)
-    .then(() => {
+  _fetchData()
+    .catch($onRejected)
+    .finally(() => {
       status.setIdle()
     })
+}
+
+function fetchDataAndUpdateEndTime() {
+  _fetchData()
+    .catch($onRejected)
+    .then(() => {
+      updateEndTime()
+    })
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function _fetchData() {
+  return new Promise((resolve, reject) => {
+    if (!action.value) {
+      return reject(new Error('Invalid action. Could not fetch results.'))
+    }
+
+    if (Array.isArray(action.value)) {
+      return Promise.all(action.value).catch(reject).then(resolve)
+    }
+
+    action
+      .value({
+        filters: filterParams.value as FilterOptions,
+        pagination: {
+          skip: skip.value,
+          limit: limit.value,
+          endTime: !isStreamingView.value ? endTime.value : undefined
+        },
+        options: {
+          updateTotalCounts: shouldUpdateTotalCounts.value
+        }
+      })
+      .catch(reject)
+      .then(resolve)
+  })
+}
+
+function updateEndTime() {
+  switch (view.value) {
+    case ActivityView.FundingPayments:
+      endTime.value = activityStore.subaccountFundingPayments[0]?.timestamp || 0
+      break
+    case ActivityView.SpotOrderHistory:
+      endTime.value = spotStore.subaccountOrderHistory[0]?.updatedAt || 0
+      break
+    case ActivityView.SpotTradeHistory:
+      endTime.value = spotStore.subaccountTrades[0]?.timestamp || 0
+      break
+    case ActivityView.DerivativeOrderHistory:
+      endTime.value = derivativeStore.subaccountOrderHistory[0]?.updatedAt || 0
+      break
+    case ActivityView.DerivativeTradeHistory:
+      endTime.value = derivativeStore.subaccountTrades[0]?.executedAt || 0
+      break
+    default:
+      endTime.value = undefined
+      break
+  }
 }
 
 function onViewChange() {

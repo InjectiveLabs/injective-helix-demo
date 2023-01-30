@@ -70,6 +70,7 @@ type DerivativeStoreState = {
   subaccountTradesCount: number
   subaccountOrders: UiDerivativeLimitOrder[]
   subaccountOrdersCount: number
+  subaccountTotalOrdersCount: number
   subaccountOrderHistory: UiDerivativeOrderHistory[]
   subaccountOrderHistoryCount: number
   subaccountConditionalOrders: UiDerivativeOrderHistory[]
@@ -90,6 +91,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   subaccountTradesCount: 0,
   subaccountOrders: [] as UiDerivativeLimitOrder[],
   subaccountOrdersCount: 0,
+  subaccountTotalOrdersCount: 0,
   subaccountOrderHistory: [] as UiDerivativeOrderHistory[],
   subaccountOrderHistoryCount: 0,
   subaccountConditionalOrders: [] as UiDerivativeOrderHistory[],
@@ -238,21 +240,6 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async initMarketStreams(market: UiDerivativeMarketWithToken) {
-      const accountStore = useAccountStore()
-      const positionStore = usePositionStore()
-      const derivativeStore = useDerivativeStore()
-
-      await derivativeStore.streamOrderbook(market.marketId)
-      await derivativeStore.streamTrades(market.marketId)
-      await derivativeStore.streamMarketMarkPrices(market)
-      await derivativeStore.streamSubaccountOrders(market.marketId)
-      await derivativeStore.streamSubaccountOrderHistory()
-      await derivativeStore.streamSubaccountTrades(market.marketId)
-      await positionStore.streamSubaccountPositions()
-      await accountStore.streamSubaccountBalances()
-    },
-
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {
       const derivativeStore = useDerivativeStore()
 
@@ -317,10 +304,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountOrders[0]?.updatedAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
@@ -339,6 +323,12 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrders: orders,
         subaccountOrdersCount: pagination.total
       })
+
+      if (activityFetchOptions?.options?.updateTotalCounts) {
+        derivativeStore.$patch({
+          subaccountTotalOrdersCount: pagination.total
+        })
+      }
     },
 
     async fetchSubaccountOrderHistory(
@@ -355,10 +345,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountOrderHistory[0]?.createdAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
@@ -395,10 +382,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountConditionalOrders[0]?.createdAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
@@ -496,10 +480,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountTrades[0]?.executedAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
         marketId: filters?.marketId,
@@ -520,14 +501,29 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
+    cancelSubaccountStream() {
+      const positionStore = usePositionStore()
+
+      positionStore.cancelSubaccountPositionsStream()
+      cancelSubaccountOrderHistoryStream()
+      cancelSubaccountOrdersStream()
+      cancelSubaccountTradesStream()
+    },
+
     resetSubaccount() {
       const derivativeStore = useDerivativeStore()
-
       const initialState = initialStateFactory()
 
+      derivativeStore.cancelSubaccountStream()
+
       derivativeStore.$patch({
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountTotalOrdersCount: initialState.subaccountTotalOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        subaccountTradesCount: initialState.subaccountOrdersCount
       })
     }
   }

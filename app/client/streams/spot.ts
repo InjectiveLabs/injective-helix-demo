@@ -20,6 +20,18 @@ export const cancelTradesStream = () => {
   streamProvider.cancel(StreamType.SpotTrades)
 }
 
+export const cancelSubaccountOrdersStream = () => {
+  streamProvider.cancel(StreamType.SpotSubaccountOrders)
+}
+
+export const cancelSubaccountOrdersHistoryStream = () => {
+  streamProvider.cancel(StreamType.SpotSubaccountOrderHistory)
+}
+
+export const cancelSubaccountTradesStream = () => {
+  streamProvider.cancel(StreamType.SpotSubaccountTrades)
+}
+
 export const streamOrderbook = ({
   marketId,
   callback

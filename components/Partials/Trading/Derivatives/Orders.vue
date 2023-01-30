@@ -22,14 +22,23 @@ const { t } = useLang()
 const { success } = useNotifications()
 
 const props = defineProps({
+  filterByCurrentMarket: Boolean,
+
   market: {
     type: Object as PropType<UiDerivativeMarketWithToken>,
+    required: true
+  },
+
+  status: {
+    type: Object as PropType<Status>,
     required: true
   }
 })
 
-const currentMarketOnly = ref(false)
-const status = reactive(new Status(StatusType.Loading))
+const emit = defineEmits<{
+  (e: 'update:filterByCurrentMarket', state: boolean): void
+}>()
+
 const actionStatus = reactive(new Status(StatusType.Idle))
 const activeType = ref(FilterList.OpenOrders)
 
@@ -73,56 +82,22 @@ const orders = computed(() => {
   return derivativeStore.subaccountConditionalOrders
 })
 
+const checked = computed({
+  get: (): boolean => {
+    return props.filterByCurrentMarket
+  },
+  set: (value: boolean) => {
+    emit('update:filterByCurrentMarket', value)
+  }
+})
+
 onMounted(() => {
   if (positionStore.subaccountPositions.length > 0) {
     activeType.value = FilterList.OpenPositions
   } else if (derivativeStore.subaccountOrders.length > 0) {
     activeType.value = FilterList.OpenOrders
   }
-
-  init()
 })
-
-function reset() {
-  Promise.all([
-    positionStore.cancelSubaccountPositionsStream(),
-    derivativeStore.cancelSubaccountOrdersStream(),
-    derivativeStore.cancelSubaccountOrderHistoryStream(),
-    derivativeStore.cancelSubaccountTradesStream()
-  ])
-}
-
-function init() {
-  status.setLoading()
-
-  const fetchOptions = {
-    filters: {
-      marketId:
-        currentMarketOnly.value && props.market
-          ? props.market.marketId
-          : undefined
-    },
-    pagination: {
-      endTime: 0
-    }
-  }
-
-  Promise.all([
-    derivativeStore.fetchSubaccountOrders(fetchOptions),
-    derivativeStore.fetchSubaccountOrderHistory(fetchOptions),
-    derivativeStore.fetchSubaccountConditionalOrders(fetchOptions),
-    derivativeStore.fetchSubaccountTrades(fetchOptions),
-    positionStore.fetchSubaccountPositions(fetchOptions),
-    positionStore.streamSubaccountPositions(fetchOptions.filters.marketId),
-    derivativeStore.streamSubaccountOrders(fetchOptions.filters.marketId),
-    derivativeStore.streamSubaccountOrderHistory(fetchOptions.filters.marketId),
-    derivativeStore.streamSubaccountTrades(fetchOptions.filters.marketId)
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 
 function handleCancelAllClick() {
   actionStatus.setLoading()
@@ -185,15 +160,6 @@ function handleCloseAllPositionsClick() {
       actionStatus.setIdle()
     })
 }
-
-watch(
-  currentMarketOnly,
-  () => {
-    reset()
-    init()
-  },
-  { immediate: true }
-)
 </script>
 
 <template>
@@ -201,7 +167,7 @@ watch(
     <template #actions>
       <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
         <div
-          class="flex items-center justify-between lg:justify-start gap-2 ml-2"
+          class="flex items-center justify-between lg:justify-start gap-2 ml-2 flex-wrap"
         >
           <template
             v-for="(filterType, index) in Object.values(FilterList)"
@@ -253,7 +219,7 @@ watch(
       >
         <AppCheckbox
           v-if="market"
-          v-model="currentMarketOnly"
+          v-model="checked"
           data-cy="trade-page-filter-by-ticker-checkbox"
           class="lg:mr-4"
         >
@@ -261,7 +227,7 @@ watch(
         </AppCheckbox>
 
         <AppButton
-          v-if="orders.length > 0"
+          v-if="activeType === FilterList.OpenOrders && orders.length > 0"
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           xs
           :status="actionStatus"

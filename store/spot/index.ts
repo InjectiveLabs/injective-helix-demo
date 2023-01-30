@@ -20,6 +20,9 @@ import { spot as allowedSpotMarkets } from '@/nuxt-config/hooks/route'
 import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
+  cancelSubaccountOrdersHistoryStream,
+  cancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream,
   cancelTradesStream,
   streamOrderbook,
   streamTrades,
@@ -45,6 +48,7 @@ type SpotStoreState = {
   subaccountTradesCount: number
   subaccountOrders: UiSpotLimitOrder[]
   subaccountOrdersCount: number
+  subaccountTotalOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
   subaccountConditionalOrders: UiSpotOrderHistory[]
@@ -60,6 +64,7 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountTradesCount: 0,
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
+  subaccountTotalOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
   subaccountOrderHistoryCount: 0,
   subaccountConditionalOrders: [] as UiSpotOrderHistory[],
@@ -144,30 +149,6 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
-    async initMarketStreams(marketId: string) {
-      const accountStore = useAccountStore()
-      const spotStore = useSpotStore()
-
-      await spotStore.streamOrderbook(marketId)
-      await spotStore.streamTrades(marketId)
-      await spotStore.streamSubaccountTrades(marketId)
-      await spotStore.streamSubaccountOrders()
-      await spotStore.streamSubaccountOrderHistory()
-      await accountStore.streamSubaccountBalances()
-    },
-
-    async pollMarkerOrderbook(marketId?: string) {
-      const spotStore = useSpotStore()
-
-      if (!marketId) {
-        return
-      }
-
-      spotStore.$patch({
-        orderbook: await indexerSpotApi.fetchOrderbook(marketId)
-      })
-    },
-
     async fetchSubaccountOrders(activityFetchOptions?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
@@ -180,10 +161,7 @@ export const useSpotStore = defineStore('spot', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountOrders[0]?.updatedAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketId: filters?.marketId,
@@ -202,6 +180,12 @@ export const useSpotStore = defineStore('spot', {
         subaccountOrders: orders,
         subaccountOrdersCount: pagination.total
       })
+
+      if (activityFetchOptions?.options?.updateTotalCounts) {
+        spotStore.$patch({
+          subaccountTotalOrdersCount: pagination.total
+        })
+      }
     },
 
     async fetchSubaccountOrderHistory(
@@ -218,10 +202,7 @@ export const useSpotStore = defineStore('spot', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountOrderHistory[0]?.createdAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
@@ -323,10 +304,7 @@ export const useSpotStore = defineStore('spot', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountTrades[0]?.timestamp ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
         marketId: filters?.marketId,
@@ -380,14 +358,30 @@ export const useSpotStore = defineStore('spot', {
       }
     },
 
+    cancelSubaccountStream() {
+      cancelSubaccountOrdersStream()
+      cancelSubaccountOrdersHistoryStream()
+      cancelSubaccountTradesStream()
+    },
+
     resetSubaccount() {
       const spotStore = useSpotStore()
 
       const initialState = initialStateFactory()
 
+      spotStore.cancelSubaccountStream()
+
       spotStore.$patch({
+        subaccountConditionalOrders: initialState.subaccountConditionalOrders,
+        subaccountConditionalOrdersCount:
+          initialState.subaccountConditionalOrdersCount,
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountTotalOrdersCount: initialState.subaccountTotalOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        subaccountTradesCount: initialState.subaccountOrdersCount
       })
     }
   }

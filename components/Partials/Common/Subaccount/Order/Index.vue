@@ -15,17 +15,21 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 const store = computed(() => (isSpot ? spotStore : derivativeStore))
+
+const sortedOrders = computed(() =>
+  store.value.subaccountOrders.sort((o1, o2) => o2.updatedAt - o1.updatedAt)
+)
 </script>
 
 <template>
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="store.subaccountOrders.length === 0"
+      :show-empty="sortedOrders.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <PartialsCommonSubaccountOrderMobile
-        v-for="(order, index) in store.subaccountOrders"
+        v-for="(order, index) in sortedOrders"
         :key="`mobile-order-${index}-${order.orderHash}`"
         class="col-span-1"
         :order="order"
@@ -41,11 +45,11 @@ const store = computed(() => (isSpot ? spotStore : derivativeStore))
     </CommonTableBody>
 
     <CommonTableWrapper class="hidden sm:block">
-      <table v-if="store.subaccountOrders.length > 0" class="table">
+      <table v-if="sortedOrders.length > 0" class="table">
         <PartialsCommonSubaccountOrderHeader />
         <tbody>
           <PartialsCommonSubaccountOrderRow
-            v-for="(order, index) in store.subaccountOrders"
+            v-for="(order, index) in sortedOrders"
             :key="`orders-${index}-${order.orderHash}`"
             v-bind="{ isSpot, order }"
             :order="order"

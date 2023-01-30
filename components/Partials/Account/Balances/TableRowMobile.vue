@@ -1,54 +1,33 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BusEvents, Modal } from '@/types'
 
+const modalStore = useModalStore()
+
 const props = defineProps({
+  hideBalances: Boolean,
+
   balance: {
     type: Object as PropType<AccountBalance>,
-    required: true
-  },
-
-  hideBalances: {
-    type: Boolean,
     required: true
   }
 })
 
-const modalStore = useModalStore()
-
 const isOpen = ref(false)
 
-const tokenLogo = computed(() => {
-  return getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
-})
-
-const combinedBalance = computed(() => {
-  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountTotalBalance || 0
-  )
-})
-
-const totalBalance = computed(() => {
-  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountAvailableBalance || 0
-  )
-})
-
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => totalBalance.value.times(props.balance.token.usdPrice || 0)),
+  computed(() => props.balance.totalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: combinedBalanceToString } = useBigNumberFormatter(
-  combinedBalance,
+const { valueToString: totalBalanceInString } = useBigNumberFormatter(
+  computed(() => props.balance.totalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -79,9 +58,7 @@ function handleOpenAssetDetailsModal() {
     <td class="no-padding">
       <div class="flex flex-col py-4 pl-4">
         <div class="flex justify-start items-center gap-2">
-          <div class="w-6 h-6 rounded-full self-start">
-            <img :src="tokenLogo" :alt="balance.token.name" />
-          </div>
+          <CommonTokenIcon :token="balance.token" />
 
           <div class="flex flex-col gap-1">
             <span
@@ -107,7 +84,7 @@ function handleOpenAssetDetailsModal() {
             </span>
 
             <span v-else class="font-mono text-sm text-right">
-              {{ combinedBalanceToString }}
+              {{ totalBalanceInString }}
             </span>
           </div>
 

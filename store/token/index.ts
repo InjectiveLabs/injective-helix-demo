@@ -1,24 +1,15 @@
 import { defineStore } from 'pinia'
 import {
-  TokenWithBalance,
+  BankBalanceWithToken,
   TokenWithBalanceAndPrice,
-  UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  BankBalanceWithToken
+  UiBankTransformer
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
-import {
-  msgBroadcastClient,
-  tokenPrice,
-  tokenService,
-  web3Broadcaster,
-  web3Client,
-  web3Composer
-} from '@/app/Services'
+import { bankApi, tokenPrice, tokenService, web3Client } from '@/app/Services'
 import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
-import { backupPromiseCall } from '@/app/utils/async'
+import { setTokenAllowance, transfer, withdraw } from '@/store/token/message'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
@@ -27,18 +18,24 @@ type TokenStoreState = {
   tokenUsdPriceMap: TokenUsdPriceMap
   btcUsdPrice: number
   injUsdPrice: number
+  tokens: Token[]
 }
 const initialStateFactory = (): TokenStoreState => ({
-  erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
-  ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
-  tokenUsdPriceMap: {} as TokenUsdPriceMap,
-  btcUsdPrice: 0 as number,
-  injUsdPrice: 0 as number
+  erc20TokensWithBalanceAndPriceFromBank: [],
+  ibcTokensWithBalanceAndPriceFromBank: [],
+  tokenUsdPriceMap: {},
+  btcUsdPrice: 0,
+  injUsdPrice: 0,
+  tokens: []
 })
 
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   actions: {
+    setTokenAllowance,
+    transfer,
+    withdraw,
+
     async getErc20TokensWithBalanceAndPriceFromBankAndMarkets() {
       const tokenStore = useTokenStore()
 
@@ -203,157 +200,22 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
-    async setTokenAllowance(tokenWithBalance: TokenWithBalance) {
+    async fetchSupplyTokenMeta() {
       const tokenStore = useTokenStore()
 
-      const { address, validate } = useWalletStore()
-      const { gasPrice, fetchGasPrice, queue } = useAppStore()
+      const { supply } = await bankApi.fetchTotalSupply()
 
-      const tokenAddress = tokenWithBalance.address as keyof Erc20Token
+      const { bankSupply, ibcBankSupply } =
+        UiBankTransformer.supplyToUiSupply(supply)
 
-      await queue()
-      await fetchGasPrice()
-      await validate()
-
-      const tx = await web3Composer.getSetTokenAllowanceTx({
-        address,
-        gasPrice,
-        tokenAddress,
-        amount: UNLIMITED_ALLOWANCE.toFixed()
-      })
-
-      await web3Broadcaster.sendTransaction({
-        tx,
-        address
-      })
-
-      const token = tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
-        (token) => {
-          const erc20Token = token as Erc20Token
-
-          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
-        }
-      )
-      const index = tokenStore.erc20TokensWithBalanceAndPriceFromBank.findIndex(
-        (token) => {
-          const erc20Token = token as Erc20Token
-
-          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
-        }
-      )
-
-      if (!token || index < 0) {
-        return
-      }
-
-      const erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance = [
-        ...tokenStore.erc20TokensWithBalanceAndPriceFromBank
-      ]
-      erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance[index] = {
-        ...token,
-        allowance: UNLIMITED_ALLOWANCE.toString()
-      }
+      const tokens = await tokenService.getCoinsToken([
+        ...bankSupply,
+        ...ibcBankSupply
+      ])
 
       tokenStore.$patch({
-        erc20TokensWithBalanceAndPriceFromBank:
-          erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance
+        tokens
       })
-    },
-
-    async transfer({
-      amount,
-      token
-    }: {
-      amount: BigNumberInBase
-      token: Token
-    }) {
-      const bankStore = useBankStore()
-
-      const { address, injectiveAddress, isUserWalletConnected, validate } =
-        useWalletStore()
-      const { gasPrice, fetchGasPrice, queue } = useAppStore()
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      await fetchGasPrice()
-      await validate()
-      await queue()
-
-      const ethDestinationAddress = getEthereumAddress(injectiveAddress)
-      const actualAmount = new BigNumberInBase(
-        amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
-      )
-        .toWei(token.decimals)
-        .toFixed()
-
-      const tx = await web3Composer.getPeggyTransferTx({
-        address,
-        gasPrice,
-        denom: token.denom,
-        amount: actualAmount,
-        destinationAddress: ethDestinationAddress
-      })
-
-      await web3Broadcaster.sendTransaction({
-        tx,
-        address
-      })
-
-      await backupPromiseCall(() => bankStore.fetchBalances())
-    },
-
-    async withdraw({
-      amount,
-      bridgeFee,
-      token
-    }: {
-      amount: BigNumberInBase
-      bridgeFee: BigNumberInBase
-      token: Token
-    }) {
-      const appStore = useAppStore()
-      const bankStore = useBankStore()
-
-      const { address, injectiveAddress, isUserWalletConnected, validate } =
-        useWalletStore()
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      await validate()
-      await appStore.queue()
-
-      const amountToFixed = amount.toWei(token.decimals).toFixed(0)
-      const actualBridgeFee = new BigNumberInWei(
-        bridgeFee.toWei(token.decimals).toFixed(0)
-      ).toFixed()
-
-      const actualAmount = new BigNumberInBase(amountToFixed)
-        .minus(actualBridgeFee)
-        .toFixed(0)
-
-      const message = MsgSendToEth.fromJSON({
-        address,
-        injectiveAddress,
-        amount: {
-          denom: token.denom,
-          amount: actualAmount
-        },
-        bridgeFee: {
-          denom: token.denom,
-          amount: actualBridgeFee
-        }
-      })
-
-      await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
-
-      await backupPromiseCall(() => bankStore.fetchBalances())
     }
   }
 })

@@ -1,5 +1,8 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to, from) => {
   const appStore = useAppStore()
 
-  appStore.cancelAllStreams()
+  // don't cancel stream for route query change
+  if (to.name !== from.name) {
+    appStore.cancelAllStreams()
+  }
 })

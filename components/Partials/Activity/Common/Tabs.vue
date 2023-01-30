@@ -85,7 +85,7 @@ function handleViewChange(value: string) {
           </span>
 
           <span data-cy="activity-open-positions-link-count">
-            ({{ positionStore.subaccountPositionsCount }})
+            ({{ positionStore.subaccountTotalPositionsCount }})
           </span>
         </div>
       </PartialsActivityCommonTab>
@@ -119,7 +119,7 @@ function handleViewChange(value: string) {
           </span>
 
           <span data-cy="activity-spot-orders-link-count">
-            ({{ spotStore.subaccountOrdersCount }})
+            ({{ spotStore.subaccountTotalOrdersCount }})
           </span>
         </div>
       </PartialsActivityCommonTab>
@@ -167,7 +167,7 @@ function handleViewChange(value: string) {
             {{ $t('activity.openOrders') }}
           </span>
           <span data-cy="activity-derivative-orders-link-count">
-            ({{ derivativeStore.subaccountOrdersCount }})
+            ({{ derivativeStore.subaccountTotalOrdersCount }})
           </span>
         </div>
       </PartialsActivityCommonTab>
