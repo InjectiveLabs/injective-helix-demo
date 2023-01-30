@@ -3,7 +3,8 @@ import {
   ChainCosmosErrorCode,
   ErrorType,
   isThrownException,
-  ThrownException
+  ThrownException,
+  UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
@@ -12,12 +13,19 @@ import { Modal } from '@/types/enums'
 
 const reportToUser = (error: ThrownException) => {
   const { error: errorToast } = useNotifications()
+  const shouldIgnoreToast =
+    ['referrals'].includes(error.contextModule as string) &&
+    error.code === UnspecifiedErrorCode
 
   // Timedout requests happening in the background should not be reported to the user
   if (
     error.type === ErrorType.HttpRequest &&
     error.code === StatusCodes.REQUEST_TOO_LONG
   ) {
+    return
+  }
+
+  if (shouldIgnoreToast) {
     return
   }
 
@@ -76,6 +84,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {
     const error = event.reason
 
+    console.log('wtf?!')
+
     if (!IS_PRODUCTION) {
       return
     }
@@ -88,6 +98,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const errorHandler = (error: ThrownException) => {
+    console.log({ error })
+
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }
