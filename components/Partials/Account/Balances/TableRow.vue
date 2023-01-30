@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  getTokenLogoWithVendorPathPrefix,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
+
+const router = useRouter()
+const spotStore = useSpotStore()
 
 const props = defineProps({
   balance: {
@@ -24,62 +23,42 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
-const spotStore = useSpotStore()
-
 const isOpen = ref(false)
 
-const markets = computed(() => {
-  return spotStore.markets
-})
-
 const filteredMarkets = computed(() => {
-  return markets.value.filter(
+  return spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||
       m.quoteDenom === props.balance.token.denom
   )
 })
 
-const tokenLogo = computed(() => {
-  return getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
-})
-
-const combinedBalance = computed(() => {
-  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountTotalBalance || 0
-  )
-})
-
-const totalBalance = computed(() => {
-  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountAvailableBalance || 0
-  )
-})
-
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => totalBalance.value.times(props.balance.token.usdPrice || 0)),
+  computed(() => props.balance.totalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountAvailableBalance),
+  computed(() => props.balance.balanceInToken),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: combinedBalanceToString } = useBigNumberFormatter(
-  combinedBalance,
+const {
+  valueToBigNumber: totalBalanceInBigNumber,
+  valueToString: totalBalanceInString
+} = useBigNumberFormatter(
+  computed(() => props.balance.totalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: inOrderBalanceToString } = useBigNumberFormatter(
-  computed(() => props.balance.inOrderBalance),
+const { valueToString: reservedBalanceToString } = useBigNumberFormatter(
+  computed(() => props.balance.reservedBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -115,9 +94,7 @@ function handleWithdrawClick() {
   >
     <td class="pl-4">
       <div class="flex justify-start items-center gap-2">
-        <div class="w-6 h-6 rounded-full self-center">
-          <img :src="tokenLogo" :alt="balance.token.name" />
-        </div>
+        <CommonTokenIcon :token="balance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
@@ -140,10 +117,10 @@ function handleWithdrawClick() {
         </span>
 
         <span
-          v-else-if="combinedBalance.gt(0)"
+          v-else-if="totalBalanceInBigNumber.gt(0)"
           class="font-mono text-sm text-right"
         >
-          {{ combinedBalanceToString }}
+          {{ totalBalanceInString }}
         </span>
 
         <span v-else> &mdash; </span>
@@ -169,7 +146,7 @@ function handleWithdrawClick() {
         </span>
 
         <span v-else class="font-mono text-sm text-right">
-          {{ inOrderBalanceToString }}
+          {{ reservedBalanceToString }}
         </span>
       </div>
     </td>

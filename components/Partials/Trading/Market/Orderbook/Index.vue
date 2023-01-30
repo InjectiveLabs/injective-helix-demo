@@ -483,6 +483,7 @@ onMounted(() => {
 
 // Make sure to reset the refs before each update.
 onBeforeUpdate(() => {
+  buyRecordListRef.value = []
   sellRecordListRef.value = []
 })
 

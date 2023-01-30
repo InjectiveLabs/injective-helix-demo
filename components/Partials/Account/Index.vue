@@ -1,14 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { AccountBalance, BusEvents, Modal, TabOption } from '@/types'
-
-defineProps({
-  balances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
-})
+import { AccountBalance, BusEvents, Modal } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -19,26 +12,20 @@ const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 
-const components = {
-  Balances: 'Balances',
-  Positions: 'Positions'
+defineProps({
+  balances: {
+    type: Array as PropType<AccountBalance[]>,
+    required: true
+  }
+})
+
+const FilterList = {
+  Balances: 'balances',
+  Positions: 'positions'
 }
 
-const tabs = [
-  {
-    value: components.Balances,
-    label: 'account.tabs.balances',
-    url: 'balances'
-  },
-  {
-    value: components.Positions,
-    label: 'account.tabs.positions',
-    url: 'positions'
-  }
-] as TabOption[]
-
 const status = reactive(new Status(StatusType.Loading))
-const activeView = ref(tabs[0])
+const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
 
 onMounted(() => {
@@ -57,43 +44,37 @@ function initBalances() {
 
   Promise.all([
     tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
-    accountStore.fetchSubaccountsBalancesWithPrices(),
-    positionStore.fetchSubaccountPositions()
+    positionStore.fetchSubaccountPositions(),
+    accountStore.streamSubaccountBalances(),
+    positionStore.streamSubaccountPositions()
   ])
-    .then(() => {
-      positionStore.streamSubaccountPositions()
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 }
 
-function handleHideBalances(value: boolean) {
-  hideBalances.value = value
-}
-
-function handleTab(tab: TabOption) {
-  activeView.value = tab
-}
-
 function handleViewFromRoute() {
-  const tab = tabs.find((tab) => tab.url === route.query.view)
+  const filterListValues = Object.values(FilterList)
+  const tab = filterListValues.find((tab) => tab === route.query.view)
 
   if (tab) {
-    activeView.value = tab
+    activeType.value = tab
   }
 }
 
 function refreshBalances() {
   Promise.all([
-    accountStore.fetchSubaccountsBalancesWithPrices(),
     bankStore.fetchBankBalancesWithToken(),
     derivativeStore.fetchSubaccountOrders(),
     positionStore.fetchSubaccountPositions() // refresh mark price
   ]).catch(() => {
     // silently fail
   })
+}
+
+function handleHideBalances(value: boolean) {
+  hideBalances.value = value
 }
 </script>
 
@@ -116,14 +97,36 @@ function refreshBalances() {
             @update:hide-balances="handleHideBalances"
           />
 
-          <PartialsAccountTabs
-            :tabs="tabs"
-            :value="activeView"
-            @update:tab="handleTab"
-          />
+          <CommonTabMenu>
+            <AppSelectButton
+              v-for="filterType in Object.values(FilterList)"
+              :key="`account-tabs-${filterType}`"
+              v-model="activeType"
+              :value="filterType"
+            >
+              <template #default="{ active }">
+                <NuxtLink
+                  :to="{
+                    name: 'account',
+                    query: { view: filterType }
+                  }"
+                >
+                  <CommonTabMenuItem :active="active">
+                    <p v-if="filterType === FilterList.Balances">
+                      {{ $t('account.tabs.balances') }}
+                    </p>
+
+                    <p v-if="filterType === FilterList.Positions">
+                      {{ $t('account.tabs.positions') }}
+                    </p>
+                  </CommonTabMenuItem>
+                </NuxtLink>
+              </template>
+            </AppSelectButton>
+          </CommonTabMenu>
 
           <PartialsAccountBalances
-            v-if="activeView.value === components.Balances"
+            v-if="activeType === FilterList.Balances"
             v-bind="{
               hideBalances,
               balances
@@ -131,7 +134,7 @@ function refreshBalances() {
           />
 
           <PartialsAccountPositions
-            v-if="activeView.value === components.Positions"
+            v-if="activeType === FilterList.Positions"
             v-bind="{ hideBalances, balances }"
           />
         </div>

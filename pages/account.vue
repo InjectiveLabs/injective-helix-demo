@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import {
-  ZERO_TO_STRING,
-  getTokenLogoWithVendorPathPrefix,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumberInBase,
@@ -12,7 +8,6 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
-import { AccountBalance } from '@/types'
 
 definePageMeta({
   middleware: ['connected']
@@ -26,28 +21,9 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
+const { balancesWithToken, fetchTokensUsdPrice } = useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
-
-const bankBalancesWithUsdBalanceAndUsdPrice = computed(() => {
-  return [
-    ...tokenStore.erc20TokensWithBalanceAndPriceFromBank,
-    ...tokenStore.ibcTokensWithBalanceAndPriceFromBank
-  ].map((tokenWithBalance) => {
-    const balance =
-      bankStore.bankBalancesWithToken.find(
-        ({ denom }) => denom === tokenWithBalance.denom
-      )?.balance || ZERO_TO_STRING
-
-    return {
-      balance,
-      denom: tokenWithBalance.denom,
-      token: {
-        ...tokenWithBalance
-      }
-    }
-  })
-})
 
 const totalPositionsPnlByQuoteDenom = computed(() => {
   return positionStore.subaccountPositions.reduce((list, p) => {
@@ -106,102 +82,38 @@ const totalPositionsMarginByQuoteDenom = computed(() => {
   }, {} as Record<string, BigNumberInBase>)
 })
 
-const subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd = computed(() => {
-  return accountStore.subaccountBalancesWithTokenAndPrice.map((balance) => {
-    const denom = balance.token.denom.toLowerCase()
-    const usdPrice = balance.token.usdPrice
+const balances = computed(() => {
+  return balancesWithToken.value.map((balance) => {
+    const denom = balance.denom.toLowerCase()
+    const usdPrice = balance.usdPrice
 
     const margin = totalPositionsMarginByQuoteDenom.value[denom] || ZERO_IN_BASE
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
-    const balanceInBigNumber = new BigNumberInWei(balance.totalBalance).toBase(
+    const subaccountBalance = accountStore.subaccount?.balances.find(
+      (subaccountBalance) => subaccountBalance.denom === denom
+    )
+
+    const inOrderBalance = subaccountBalance
+      ? new BigNumberInBase(subaccountBalance.totalBalance).minus(
+          subaccountBalance.availableBalance
+        )
+      : ZERO_IN_BASE
+    const inOrderBalanceInToken = new BigNumberInWei(inOrderBalance).toBase(
       balance.token.decimals
     )
 
-    const availableBalanceInBigNumber = new BigNumberInWei(
-      balance.availableBalance
-    ).toBase(balance.token.decimals)
-
-    const pnlInAssetCount = pnl.dividedBy(usdPrice)
-    const totalBalance = balanceInBigNumber.plus(margin).plus(pnlInAssetCount)
+    const reservedBalance = inOrderBalanceInToken.plus(margin).plus(pnl)
+    const totalBalance = reservedBalance.plus(balance.balanceInToken)
+    const totalBalanceInUsd = totalBalance.times(usdPrice)
 
     return {
       ...balance,
-      margin,
-      totalBalance,
-      inOrderBalance: balanceInBigNumber.minus(availableBalanceInBigNumber),
-      pnlInUsd: pnl,
-      totalBalanceInUsd: balanceInBigNumber
-        .plus(margin)
-        .times(usdPrice)
-        .plus(pnl),
-      token: {
-        ...balance.token,
-        logo: getTokenLogoWithVendorPathPrefix(balance.token.logo)
-      }
+      totalBalance: totalBalance.toFixed(),
+      totalBalanceInUsd: totalBalanceInUsd.toFixed(),
+      reservedBalance: reservedBalance.toFixed()
     }
   })
-})
-
-const balances = computed(() => {
-  const balances = bankBalancesWithUsdBalanceAndUsdPrice.value.reduce(
-    (result, balance) => {
-      result.push({
-        bankBalance: new BigNumberInWei(balance.balance || 0).toBase(
-          balance.token.decimals
-        ),
-        subaccountAvailableBalance: ZERO_IN_BASE,
-        subaccountTotalBalance: ZERO_IN_BASE,
-        inOrderBalance: ZERO_IN_BASE,
-        margin: ZERO_IN_BASE,
-        pnl: ZERO_IN_BASE,
-        token: balance.token
-      } as AccountBalance)
-
-      return result
-    },
-    [] as AccountBalance[]
-  )
-
-  subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.value.reduce(
-    (result, balance) => {
-      const index = result.findIndex(
-        (b) => b.token.denom === balance.token.denom
-      )
-
-      const subaccountAvailableBalance = new BigNumberInWei(
-        balance.availableBalance
-      ).toBase(balance.token.decimals)
-
-      if (index === -1) {
-        result.push({
-          bankBalance: ZERO_IN_BASE,
-          subaccountAvailableBalance,
-          subaccountTotalBalance: balance.totalBalance,
-          inOrderBalance: balance.inOrderBalance,
-          margin: balance.margin,
-          pnl: balance.pnlInUsd,
-          token: { ...balance.token, usdPrice: 0 }
-        })
-      } else {
-        const existingBalance = result[index]
-
-        result[index] = {
-          ...existingBalance,
-          subaccountAvailableBalance,
-          subaccountTotalBalance: balance.totalBalance,
-          inOrderBalance: balance.inOrderBalance,
-          margin: balance.margin,
-          pnl: balance.pnlInUsd
-        }
-      }
-
-      return result
-    },
-    balances
-  )
-
-  return balances
 })
 
 onWalletConnected(() => {
@@ -212,7 +124,8 @@ onWalletConnected(() => {
       Promise.all([
         tokenStore.getBitcoinUsdPrice(),
         bankStore.fetchBankBalancesWithToken(),
-        accountStore.fetchSubaccounts()
+        accountStore.fetchSubaccounts(),
+        fetchTokensUsdPrice()
       ])
         .catch($onError)
         .finally(() => {
@@ -223,6 +136,7 @@ onWalletConnected(() => {
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)
+useIntervalFn(fetchTokensUsdPrice, 1000 * 30)
 </script>
 
 <template>

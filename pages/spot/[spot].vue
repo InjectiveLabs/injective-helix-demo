@@ -1,16 +1,83 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { UiMarketWithToken } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 
 const spotStore = useSpotStore()
+const walletStore = useWalletStore()
+const { $onError } = useNuxtApp()
 
+const filterByCurrentMarket = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>(undefined)
+const fetchStatus = reactive(new Status(StatusType.Loading))
+
+onWalletConnected(() => {
+  filterByCurrentMarket.value = false
+  refreshSubaccountDetails()
+})
 
 function onLoad(pageMarket: UiMarketWithToken) {
-  spotStore.initMarketStreams(pageMarket.marketId)
+  filterByCurrentMarket.value = false
+
+  Promise.all([
+    spotStore.streamOrderbook(pageMarket.marketId),
+    spotStore.streamTrades(pageMarket.marketId)
+  ]).catch($onError)
 
   market.value = pageMarket as UiSpotMarketWithToken
+  refreshSubaccountDetails()
 }
+
+function refreshSubaccountDetails() {
+  if (!market.value) {
+    return
+  }
+
+  spotStore.cancelSubaccountStream()
+
+  const fetchOptions = filterByCurrentMarket.value
+    ? {
+        filters: {
+          marketId: market.value.marketId
+        }
+      }
+    : undefined
+  const marketId = filterByCurrentMarket.value
+    ? market.value.marketId
+    : undefined
+
+  fetchSubaccountOrderDetails(fetchOptions)
+  streamSubaccountOrderDetails(marketId)
+}
+
+function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
+  fetchStatus.setLoading()
+
+  Promise.all([
+    spotStore.fetchSubaccountOrders(fetchOptions),
+    spotStore.fetchSubaccountOrderHistory(fetchOptions),
+    spotStore.fetchSubaccountTrades(fetchOptions)
+  ])
+    .catch($onError)
+    .finally(() => fetchStatus.setIdle())
+}
+
+function streamSubaccountOrderDetails(marketId?: string) {
+  Promise.all([
+    spotStore.streamSubaccountTrades(marketId),
+    spotStore.streamSubaccountOrders(marketId),
+    spotStore.streamSubaccountOrderHistory(marketId)
+  ])
+}
+
+watch(
+  () => walletStore.isUserWalletConnected,
+  (isConnected: Boolean) => {
+    if (isConnected) {
+      fetchStatus.setLoading()
+    }
+  }
+)
 </script>
 
 <template>
@@ -20,7 +87,13 @@ function onLoad(pageMarket: UiMarketWithToken) {
     </template>
 
     <template #orders>
-      <PartialsTradingSpotOrders v-if="market" :market="market" />
+      <PartialsTradingSpotOrders
+        v-if="market"
+        v-model:filterByCurrentMarket="filterByCurrentMarket"
+        :market="market"
+        :status="fetchStatus"
+        @update:filter-by-current-market="refreshSubaccountDetails"
+      />
     </template>
   </PartialsTradingLayout>
 </template>

@@ -1,8 +1,7 @@
 import { Token } from '@injectivelabs/token-metadata'
 import {
   SubaccountBalanceWithToken,
-  TokenWithBalanceAndPrice,
-  TokenWithUsdPrice
+  TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -46,16 +45,6 @@ export interface BankBalanceWithTokenWithBalanceAndPrice {
   balance: string
   denom: string
   token: TokenWithBalanceAndPrice
-}
-
-export interface AccountBalance {
-  bankBalance: BigNumberInBase
-  subaccountAvailableBalance: BigNumberInBase
-  subaccountTotalBalance: BigNumberInBase
-  inOrderBalance: BigNumberInBase
-  margin: BigNumberInBase
-  pnl: BigNumberInBase
-  token: TokenWithUsdPrice
 }
 
 export interface MarketRoute {
@@ -114,6 +103,9 @@ export interface FilterOptions {
 export interface ActivityFetchOptions {
   pagination?: PaginationOption
   filters?: FilterOptions
+  options?: {
+    updateTotalCounts?: boolean
+  }
 }
 
 export interface OrderTypeFilter {

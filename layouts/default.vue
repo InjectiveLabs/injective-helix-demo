@@ -7,15 +7,16 @@ import {
 import { BusEvents } from '@/types'
 
 const route = useRoute()
+const accountStore = useAccountStore()
 const appStore = useAppStore()
-const spotStore = useSpotStore()
+const bankStore = useBankStore()
 const derivativeStore = useDerivativeStore()
+const exchangeStore = useExchangeStore()
 const ninjaPassStore = useNinjaPassStore()
 const referralStore = useReferralStore()
+const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
-const bankStore = useBankStore()
-const exchangeStore = useExchangeStore()
-const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -42,11 +43,7 @@ onMounted(() => {
     })
 
   // Actions that should't block the app from loading
-  Promise.all([
-    appStore.init(),
-    referralStore.init(),
-    exchangeStore.initFeeDiscounts()
-  ])
+  Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
 
   onLoadMarketsInit()
 
@@ -54,7 +51,12 @@ onMounted(() => {
 })
 
 onWalletConnected(() => {
-  Promise.all([bankStore.init(), accountStore.init()]).catch($onError)
+  Promise.all([
+    accountStore.fetchSubaccounts(),
+    bankStore.init(),
+    referralStore.init(),
+    tokenStore.fetchSupplyTokenMeta()
+  ]).catch($onError)
 })
 
 function handleCosmoverseGiveawayCampaignTrack() {

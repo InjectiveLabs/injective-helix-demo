@@ -44,15 +44,18 @@ const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
 
-const { valueToBigNumber, valueToFixed: maxBalanceToFixed } =
-  useBigNumberFormatter(
-    computed(() =>
-      selectedToken.value ? selectedToken.value.balanceInToken : '0'
-    ),
-    {
-      decimalPlaces: props.maxDecimals
-    }
-  )
+const {
+  valueToBigNumber,
+  valueToFixed: maxBalanceToFixed,
+  valueToString: maxBalanceToString
+} = useBigNumberFormatter(
+  computed(() =>
+    selectedToken.value ? selectedToken.value.balanceInToken : '0'
+  ),
+  {
+    decimalPlaces: props.maxDecimals
+  }
+)
 
 const {
   value: amount,
@@ -118,7 +121,7 @@ export default {
         >
           {{ $t('trade.max') }}:
         </span>
-        <p>{{ maxBalanceToFixed }} {{ selectedToken.token.symbol }}</p>
+        <p>{{ maxBalanceToString }} {{ selectedToken.token.symbol }}</p>
       </div>
     </div>
 
@@ -126,6 +129,7 @@ export default {
       class="w-full"
       :disabled="disabled"
       :distance="amountErrors.length > 0 ? 44 : 24"
+      :flip="false"
       auto-size="true"
       auto-boundary-max-size
       popper-class="dropdown"

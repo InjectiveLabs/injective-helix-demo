@@ -87,7 +87,7 @@ export function useOrderHistory(
   })
 
   const margin = computed(() => {
-    if (!market.value || !isSpot.value) {
+    if (!market.value || isSpot.value) {
       return ZERO_IN_BASE
     }
 
@@ -163,7 +163,7 @@ export function useOrderHistory(
   })
 
   const timestamp = computed(() =>
-    format(order.value.createdAt, 'dd MMM HH:mm:ss')
+    format(order.value.updatedAt, 'dd MMM HH:mm:ss')
   )
 
   const type = computed(() => {
@@ -195,6 +195,8 @@ export function useOrderHistory(
     switch (order.value.state) {
       case orderState.Booked:
         return t('trade.open')
+      case orderState.PartialFilled:
+        return t('trade.partialFilled')
       case orderState.PartiallyFilled:
         return t('trade.partiallyFilled')
       case orderState.Filled:

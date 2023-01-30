@@ -69,7 +69,7 @@ function handleClickOnMarket() {
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="trigger.orderHash"
   >
-    <td class="h-12 text-left cursor-pointer pl-3" @click="handleClickOnMarket">
+    <td class="text-left cursor-pointer pl-3" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken" class="w-4 h-4">
           <CommonTokenIcon :token="market.baseToken" sm />
@@ -86,13 +86,13 @@ function handleClickOnMarket() {
       </div>
     </td>
 
-    <td class="h-12 text-left">
+    <td class="text-left">
       <span class="text-white text-xs">
         {{ type }}
       </span>
     </td>
 
-    <td class="h-12 text-left">
+    <td class="text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
         class="text-xs"
@@ -112,7 +112,7 @@ function handleClickOnMarket() {
       </span>
     </td>
 
-    <td class="h-12 font-mono text-right">
+    <td class="font-mono text-right">
       <span v-if="isMarketOrder" class="text-white text-xs">
         {{ $t('trade.market') }}
       </span>
@@ -126,7 +126,7 @@ function handleClickOnMarket() {
       />
     </td>
 
-    <td class="h-12 text-right font-mono">
+    <td class="text-right font-mono">
       <AppNumber
         xs
         data-cy="derivative-order-quantity-table-data"
@@ -135,7 +135,7 @@ function handleClickOnMarket() {
       />
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="h-12 text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
       <span
         v-if="leverage.gte(0)"
         class="flex items-center justify-end text-xs"
@@ -153,7 +153,7 @@ function handleClickOnMarket() {
       </span>
     </td>
 
-    <td class="h-12 text-right font-mono">
+    <td class="text-right font-mono">
       <AppNumber
         xs
         data-cy="derivative-order-filled-quantity-table-data"
@@ -168,28 +168,30 @@ function handleClickOnMarket() {
       </AppNumber>
     </td>
 
-    <td class="h-12 flex items-center justify-end gap-1">
-      <span class="text-gray-500 text-xs font-semibold">
-        {{ $t('trade.mark_price') }}
-      </span>
+    <td>
+      <div class="flex items-center justify-end gap-1">
+        <span class="text-gray-500 text-xs font-semibold">
+          {{ $t('trade.mark_price') }}
+        </span>
 
-      <span
-        v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
-        class="text-white text-xs font-semibold"
-      >
-        &le;
-      </span>
-      <span v-else class="text-white text-xs font-semibold"> &ge; </span>
+        <span
+          v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
+          class="text-white text-xs font-semibold"
+        >
+          &le;
+        </span>
+        <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
-      <AppNumber
-        xs
-        data-cy="derivative-order-total-table-data"
-        :decimals="priceDecimals"
-        :number="triggerPrice"
-      />
+        <AppNumber
+          xs
+          data-cy="derivative-order-total-table-data"
+          :decimals="priceDecimals"
+          :number="triggerPrice"
+        />
+      </div>
     </td>
 
-    <td class="h-12 relative text-right pr-3">
+    <td class="relative text-right pr-3">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

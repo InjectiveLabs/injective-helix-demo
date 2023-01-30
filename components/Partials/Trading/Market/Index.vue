@@ -158,11 +158,11 @@ function onInit() {
             'orderbook-h-inner': activeType === FilterList.Orderbook
           }"
         >
-          <!-- <PartialsTradingMarketStatsChart
+          <PartialsTradingMarketChart
             v-show="activeType === FilterList.Charts"
             :market="market"
             class="lg:hidden"
-          /> -->
+          />
           <div v-if="activeType === FilterList.Orderbook">
             <PartialsTradingMarketOrderbookHeader :market="market" />
             <PartialsTradingMarketOrderbook

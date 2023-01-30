@@ -35,7 +35,11 @@ function handleSelect(option: BaseDropdownOption) {
 </script>
 
 <template>
-  <BaseDropdown popper-class="selector min-w-40" placement="bottom-end">
+  <BaseDropdown
+    popper-class="selector min-w-40"
+    placement="bottom-end"
+    :flip="false"
+  >
     <template #default="{ shown }">
       <div class="flex items-center gap-2" :class="wrapperClass">
         <slot name="prefix" />

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   ETH_COIN_GECKO_ID,
   USDT_COIN_GECKO_ID,
@@ -19,11 +20,7 @@ const props = defineProps({
   }
 })
 
-const { value: searchQuery } = useField<string>(
-  'searchQuery',
-  {},
-  { initialValue: '' }
-)
+const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.None)
@@ -35,12 +32,9 @@ const filteredBalances = computed(() => {
       return false
     }
 
-    const combinedBalance = balance.bankBalance.plus(
-      balance.subaccountAvailableBalance
-    )
-
     const isNotSmallBalance =
-      !hideSmallBalances.value || combinedBalance.gte('10')
+      !hideSmallBalances.value ||
+      new BigNumberInBase(balance.totalBalance).gte('10')
 
     const isMarginCurrency =
       !showMarginCurrencyOnly.value ||
@@ -64,107 +58,68 @@ const filteredBalances = computed(() => {
 })
 
 const sortedBalances = computed(() => {
-  const multiplier = ascending.value ? 1 : -1
+  const result = [...filteredBalances.value].sort(
+    (a: AccountBalance, b: AccountBalance) => {
+      switch (sortBy.value) {
+        case BalanceHeaderType.Total: {
+          const totalA = new BigNumberInBase(a.totalBalance)
+          const totalB = new BigNumberInBase(b.totalBalance)
 
-  const result = [...filteredBalances.value]
+          if (totalA.eq(totalB)) {
+            return 0
+          }
 
-  result.sort((a: AccountBalance, b: AccountBalance) => {
-    switch (sortBy.value) {
-      case BalanceHeaderType.Total: {
-        const totalA = a.bankBalance.plus(a.subaccountTotalBalance).toNumber()
-        const totalB = b.bankBalance.plus(b.subaccountTotalBalance).toNumber()
-
-        if (totalA === totalB) {
-          return 0
+          return totalB.minus(totalA).toNumber()
         }
 
-        return totalA > totalB ? multiplier : multiplier * -1
-      }
+        case BalanceHeaderType.Value: {
+          const totalInUsdA = new BigNumberInBase(a.totalBalanceInUsd)
+          const totalInUsdB = new BigNumberInBase(b.totalBalanceInUsd)
 
-      case BalanceHeaderType.Value: {
-        const totalInUsdA = a.bankBalance
-          .plus(a.subaccountTotalBalance)
-          .times(a.token.usdPrice)
-          .toNumber()
-        const totalInUsdB = b.bankBalance
-          .plus(b.subaccountTotalBalance)
-          .times(b.token.usdPrice)
-          .toNumber()
+          if (totalInUsdA.eq(totalInUsdB)) {
+            return 0
+          }
 
-        if (totalInUsdA === totalInUsdB) {
-          return 0
+          return totalInUsdB.minus(totalInUsdA).toNumber()
         }
 
-        return totalInUsdA > totalInUsdB ? multiplier : multiplier * -1
-      }
+        case BalanceHeaderType.Available: {
+          const availableA = new BigNumberInBase(a.balanceInToken)
+          const availableB = new BigNumberInBase(a.balanceInToken)
 
-      case BalanceHeaderType.Available: {
-        const availableA = a.subaccountAvailableBalance.toNumber()
-        const availableB = b.subaccountAvailableBalance.toNumber()
+          if (availableA.eq(availableB)) {
+            return 0
+          }
 
-        if (availableA === availableB) {
-          return 0
+          return availableB.minus(availableA).toNumber()
         }
 
-        return availableA > availableB ? multiplier : multiplier * -1
-      }
+        default: {
+          const nameA = a.token.name
+          const nameB = b.token.name
 
-      default: {
-        const nameA = a.token.name
-        const nameB = b.token.name
-
-        if (nameA === nameB) {
-          return 0
+          return nameB.localeCompare(nameA)
         }
-
-        return nameA > nameB ? multiplier : multiplier * -1
       }
     }
-  })
+  )
 
-  return result
+  return ascending.value ? result.reverse() : result
 })
-
-function handleSearch(val: string) {
-  searchQuery.value = val
-}
-
-function toggleShowMarginCurrencyOnly() {
-  showMarginCurrencyOnly.value = !showMarginCurrencyOnly.value
-}
-
-function toggleHideSmallBalances() {
-  hideSmallBalances.value = !hideSmallBalances.value
-}
-
-function handleSort(type: string) {
-  if (type !== sortBy.value) {
-    sortBy.value = type as BalanceHeaderType
-  }
-}
-
-function handleAscending(value: boolean) {
-  ascending.value = value
-}
 </script>
 
 <template>
   <div>
     <PartialsAccountBalancesActions
-      :search-query="searchQuery"
-      :show-margin-currency-only="showMarginCurrencyOnly"
-      :hide-small-balances="hideSmallBalances"
-      @update:search="handleSearch"
-      @update:show-margin-currency-only="toggleShowMarginCurrencyOnly"
-      @update:hide-small-balances="toggleHideSmallBalances"
+      v-model:search="searchQuery"
+      v-model:show-margin-currency-only="showMarginCurrencyOnly"
+      v-model:hide-small-balances="hideSmallBalances"
     />
 
     <table class="w-full border-collapse hidden lg:table">
       <PartialsAccountBalancesTableHeader
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @update:sort-by="handleSort"
-        @update:ascending="handleAscending"
+        v-model:sort-by="sortBy"
+        v-model:ascending="ascending"
       />
 
       <PartialsAccountBalancesTableRow
@@ -177,10 +132,8 @@ function handleAscending(value: boolean) {
 
     <table class="w-full border-collapse sm:table lg:hidden">
       <PartialsAccountBalancesTableHeaderMobile
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @update:sort-by="handleSort"
-        @update:ascending="handleAscending"
+        v-model:sort-by="sortBy"
+        v-model:ascending="ascending"
       />
 
       <PartialsAccountBalancesTableRowMobile
