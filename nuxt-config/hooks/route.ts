@@ -64,6 +64,7 @@ if (IS_DEVNET) {
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
+  spot.push('sol-usdc', 'usdc-usdcet', 'usdcso-usdcet')
   // perpetuals.push('bonk-usdt-perp')
 }
 
