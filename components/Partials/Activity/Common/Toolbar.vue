@@ -5,13 +5,17 @@ import {
   ActivityField,
   ActivityTab,
   ActivityView,
-  ConditionalOrderType
+  ConditionalOrderType,
+  UiMarketWithToken
 } from '@/types'
 import {
-  orderTypeToOrderTypes,
-  tradeTypesToTradeExecutionTypes
+  executionOrderTypeToOrderTypes,
+  executionOrderTypeToOrderExecutionTypes,
+  executionOrderTypeToTradeExecutionTypes
 } from '@/app/client/utils/activity'
 
+const derivativeStore = useDerivativeStore()
+const spotStore = useSpotStore()
 const { t } = useLang()
 
 const props = defineProps({
@@ -27,60 +31,69 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'reset:filters'): void
+  (e: 'update:filter'): void
+  (e: 'reset:filter'): void
 }>()
 
 const { value: denom } = useStringField({ name: ActivityField.Denom, rule: '' })
 const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
 const { value: type } = useStringField({ name: ActivityField.Type, rule: '' })
 
-const showClearFiltersButton = computed(
+const hasActiveFilters = computed(
   () => !!denom.value || !!side.value || !!type.value
 )
 
-// const filterParams = computed(() => {
-//   const defaultFilterParams = {
-//     marketIds: marketIds.value
-//   }
+const marketIds = computed(() => {
+  const markets: UiMarketWithToken[] =
+    props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
 
-//   switch (props.view) {
-//     case ActivityView.FundingPayments:
-//       return defaultFilterParams
-//     case ActivityView.Positions:
-//       return {
-//         ...defaultFilterParams,
-//         direction: side.value
-//       }
-//     case ActivityView.DerivativeOrders:
-//     case ActivityView.SpotOrders:
-//       return {
-//         ...defaultFilterParams,
-//         orderSide: side.value
-//       }
-//     case ActivityView.SpotOrderHistory:
-//     case ActivityView.DerivativeOrderHistory:
-//     case ActivityView.DerivativeTriggers:
-//       return {
-//         marketIds: marketIds.value,
-//         orderTypes: orderTypes.value,
-//         executionTypes: executionTypes.value,
-//         direction: side.value
-//       }
-//     case ActivityView.DerivativeTradeHistory:
-//     case ActivityView.SpotTradeHistory:
-//       return {
-//         ...defaultFilterParams,
-//         types: tradeTypesToTradeExecutionTypes(type.value),
-//         direction: side.value
-//       }
-//     case ActivityView.WalletTransfers:
-//       return {
-//         denom: denom.value
-//       }
-//     default:
-//       return {}
-//   }
-// })
+  if (!denom.value) {
+    return undefined
+  }
+
+  return markets
+    .filter(({ baseToken, quoteToken }) =>
+      [baseToken.denom, quoteToken.denom].includes(denom.value)
+    )
+    .map(({ marketId }) => marketId)
+})
+
+const filterParams = computed(() => {
+  const defaultFilterParams = {
+    marketIds: marketIds.value
+  }
+
+  if (!hasActiveFilters.value) {
+    return undefined
+  }
+
+  switch (props.view) {
+    case ActivityView.FundingPayments:
+      return defaultFilterParams
+    case ActivityView.DerivativeOrderHistory:
+    case ActivityView.SpotOrderHistory:
+      return {
+        ...defaultFilterParams,
+        orderTypes: executionOrderTypeToOrderTypes(type.value),
+        executionTypes: executionOrderTypeToOrderExecutionTypes(type.value),
+        direction: side.value
+      }
+    case ActivityView.DerivativeTradeHistory:
+    case ActivityView.SpotTradeHistory:
+      return {
+        ...defaultFilterParams,
+        orderTypes: executionOrderTypeToOrderTypes(type.value),
+        executionTypes: executionOrderTypeToTradeExecutionTypes(type.value),
+        direction: side.value
+      }
+    case ActivityView.WalletTransfers:
+      return {
+        denom: denom.value
+      }
+    default:
+      return {}
+  }
+})
 
 const sideOptions = computed(() => {
   if (props.view === ActivityView.Positions) {
@@ -149,31 +162,17 @@ const typeOptions = computed(() => {
   return result
 })
 
-// const orderType = computed(() => {
-//   const [executionType, orderType] = type.value.split('-')
-
-//   return { executionType, orderType }
-// })
-
-// const executionTypes = computed(() => {
-//   if (!orderType.value || !orderType.value.executionType) {
-//     return undefined
-//   }
-
-//   return [orderType.value.executionType] as TradeExecutionType[]
-// })
-
-// const orderTypes = computed(() => {
-//   if (!orderType.value || !orderType.value.executionType) {
-//     return []
-//   }
-
-//   return orderTypeToOrderTypes(orderType.value.orderType)
-// })
-
 function handleClearFilters() {
-  emit('reset:filters')
+  emit('reset:filter')
 }
+
+function handleUpdate() {
+  emit('update:filter')
+}
+
+defineExpose({
+  filterParams
+})
 </script>
 
 <template>
@@ -183,6 +182,7 @@ function handleClearFilters() {
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tab="tab"
+        @update:model-value="handleUpdate"
       />
 
       <AppSelectField
@@ -198,6 +198,7 @@ function handleClearFilters() {
         class="col-span-2 sm:col-span-1"
         clearable
         data-cy="universal-table-filter-by-type-drop-down"
+        @update:model-value="handleUpdate"
       />
 
       <AppSelectField
@@ -211,30 +212,18 @@ function handleClearFilters() {
         class="col-span-2 sm:col-span-1"
         clearable
         data-cy="universal-table-filter-by-asset-input"
+        @update:model-value="handleUpdate"
       />
 
-      <PartialsActivityCommonClearFiltersButton
-        v-if="showClearFiltersButton"
-        @clear="handleClearFilters"
-      />
+      <div
+        v-if="hasActiveFilters"
+        class="flex items-center text-sm cursor-pointer text-blue-500 hover:text-blue-600 whitespace-nowrap col-span-4 justify-center sm:col-span-1 sm:justify-start sm:h-10"
+        @click="handleClearFilters"
+      >
+        {{ $t('filters.clearAll') }}
+      </div>
     </div>
 
-    <PartialsActivityViewsPositionsActions
-      v-if="view === ActivityView.Positions"
-      v-bind="{ view, denom, side }"
-    />
-
-    <PartialsActivityViewsSpotActions
-      v-if="view === ActivityView.SpotOrders"
-      v-bind="{ view, denom, side }"
-    />
-
-    <PartialsActivityViewsDerivativesActions
-      v-if="
-        view === ActivityView.DerivativeOrders ||
-        view === ActivityView.DerivativeTriggers
-      "
-      v-bind="{ view, denom, side }"
-    />
+    <div id="activity-toolbar-action" />
   </div>
 </template>

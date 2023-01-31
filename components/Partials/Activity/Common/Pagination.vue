@@ -21,6 +21,10 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (e: 'update:filter'): void
+}>()
+
 const { value: page, setValue: setPageValue } = useNumberField({
   name: ActivityField.Page,
   initialValue: 1,
@@ -71,10 +75,12 @@ const endTime = computed(() => {
 
 function handlePageChange(page: string) {
   setPageValue(Number(page))
+  emit('update:filter')
 }
 
 function handleLimitChange(limit: string) {
   setLimitValue(Number(limit))
+  emit('update:filter')
 }
 
 const paginationOptions = computed(() => {
@@ -84,7 +90,7 @@ const paginationOptions = computed(() => {
   return {
     skip,
     limit: limit.value,
-    endTime: !isPageOne ? endTime.value : undefined
+    endTime: !isPageOne ? endTime.value : 0
   }
 })
 

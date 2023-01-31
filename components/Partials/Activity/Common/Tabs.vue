@@ -141,15 +141,15 @@ const tabViewList = computed(() => {
               </span>
 
               <span v-if="viewOption === ActivityView.Positions">
-                ({{ positionStore.subaccountTotalPositionsCount }})
+                ({{ positionStore.subaccountPositionsCount }})
               </span>
 
               <span v-if="viewOption === ActivityView.SpotOrders">
-                ({{ spotStore.subaccountTotalOrdersCount }})
+                ({{ spotStore.subaccountOrdersCount }})
               </span>
 
               <span v-if="viewOption === ActivityView.DerivativeOrders">
-                ({{ derivativeStore.subaccountTotalOrdersCount }})
+                ({{ derivativeStore.subaccountOrdersCount }})
               </span>
 
               <span v-if="viewOption === ActivityView.DerivativeTriggers">

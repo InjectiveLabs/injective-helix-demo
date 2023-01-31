@@ -58,10 +58,11 @@ function initBalances() {
   handleViewFromRoute()
 
   Promise.all([
-    tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
-    positionStore.fetchSubaccountPositions(),
     accountStore.streamSubaccountBalances(),
-    positionStore.streamSubaccountPositions()
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
   ])
     .catch($onError)
     .finally(() => {

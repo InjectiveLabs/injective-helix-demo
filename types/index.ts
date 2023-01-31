@@ -3,16 +3,14 @@ import {
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  PaginationOption,
   SpotOrderSide,
   DerivativeOrderSide,
   PointsMultiplier
 } from '@injectivelabs/sdk-ts'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { ConditionalOrderSide, TradeExecutionType } from '@/types'
+import { TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -59,20 +57,6 @@ export interface MarketRoute {
   }
 }
 
-export interface DefaultMarketRoute {
-  to: {
-    name: string
-    params?: {
-      market?: string
-      derivative?: string
-      futures?: string
-      perpetual?: string
-      binaryOption?: string
-      spot?: string
-    }
-  }
-}
-
 export interface TradeConfirmationModalData {
   amount: BigNumberInBase
   amountSymbol: string
@@ -86,35 +70,6 @@ export interface TradeConfirmationModalData {
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>
-
-export interface FilterOptions {
-  marketId?: string
-  marketIds?: string[]
-  direction?: TradeDirection
-  orderSide?: SpotOrderSide | DerivativeOrderSide
-  orderType?: SpotOrderSide | DerivativeOrderSide
-  orderTypes?: ConditionalOrderSide[]
-  executionTypes?: TradeExecutionType[]
-  types?: TradeExecutionType[]
-  denom?: string
-  isConditional?: boolean
-}
-
-export interface ActivityFetchOptions {
-  filters?: FilterOptions
-  options?: {
-    updateTotalCounts?: boolean
-  }
-}
-
-export type ActivityFetchOptionsWithPagination = ActivityFetchOptions & {
-  pagination?: PaginationOption
-}
-
-export interface OrderTypeFilter {
-  executionType?: string
-  orderType?: string
-}
 
 export interface TabOption {
   value: string

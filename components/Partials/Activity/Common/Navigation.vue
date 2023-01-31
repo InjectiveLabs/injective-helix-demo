@@ -52,13 +52,13 @@ const activeTab = computed({
             <template #icon>
               <span class="font-semibold text-sm md:text-lg">
                 <span v-if="tabOption === ActivityTab.Positions">
-                  {{ positionStore.subaccountTotalPositionsCount }}
+                  {{ positionStore.subaccountPositionsCount }}
                 </span>
                 <span v-else-if="tabOption === ActivityTab.Derivatives">
-                  {{ derivativeStore.subaccountTotalOrdersCount }}
+                  {{ derivativeStore.subaccountOrdersCount }}
                 </span>
                 <span v-else-if="tabOption === ActivityTab.Spot">
-                  {{ spotStore.subaccountTotalOrdersCount }}
+                  {{ spotStore.subaccountOrdersCount }}
                 </span>
                 <span v-else-if="tabOption === ActivityTab.WalletHistory">
                   <BaseIcon name="wallet" class="w-3 md:w-3.5 h-auto" />
