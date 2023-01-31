@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { UiTrade } from '@/types'
 
@@ -41,18 +40,6 @@ const marketRoute = computed(() => {
   return marketRoute || { name: 'markets' }
 })
 
-const baseTokenLogo = computed(() => {
-  if (!market.value) {
-    return ''
-  }
-
-  if (!market.value.baseToken) {
-    return ''
-  }
-
-  return getTokenLogoWithVendorPathPrefix(market.value.baseToken.logo)
-})
-
 function handleShowTradeDetails() {
   emit('showTradeDetails', props.trade)
 }
@@ -78,12 +65,8 @@ function handleShowTradeDetails() {
             )
           }}
         </span>
-        <div v-if="baseTokenLogo" class="w-4 h-4">
-          <img
-            :src="baseTokenLogo"
-            :alt="market.baseToken.name"
-            class="min-w-full h-auto rounded-full"
-          />
+        <div v-if="market.baseToken">
+          <CommonTokenIcon :token="market.baseToken" sm />
         </div>
         <span class="text-gray-200 font-semibold">
           {{ market.ticker }}

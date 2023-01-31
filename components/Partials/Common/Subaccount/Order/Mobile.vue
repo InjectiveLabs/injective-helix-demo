@@ -85,8 +85,8 @@ function handleClickOnMarket() {
                 : $t('trade.sell')
             }}
           </span>
-          <div v-if="market.baseToken" class="w-4 h-4">
-            <CommonTokenIcon :token="market.baseToken" sm />
+          <div v-if="market.baseToken">
+            <CommonTokenIcon :token="market.baseToken" md />
           </div>
           <span class="text-gray-200 font-semibold">
             {{ market.ticker }}

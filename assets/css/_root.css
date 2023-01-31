@@ -48,6 +48,10 @@ body .vue-grid-item {
   touch-action: none;
 }
 
+.max-h-screen-excluding-header {
+  max-height: calc(100vh - var(--header-height));
+}
+
 .min-h-screen-excluding-header {
   min-height: calc(100vh - var(--header-height));
 }

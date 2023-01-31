@@ -49,8 +49,14 @@ const action = computed(() => {
   }
 })
 
+const isPageOne = computed(() => formValues[ActivityField.Page] === 1)
+
 onMounted(() => {
   const promises = [
+    activityStore.streamDerivativeSubaccountOrderHistory,
+    activityStore.streamDerivativeSubaccountTrades,
+    activityStore.streamSpotSubaccountOrderHistory,
+    activityStore.streamSpotSubaccountTrades,
     derivativeStore.fetchSubaccountOrders(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
@@ -126,7 +132,9 @@ function onViewChange() {
 </script>
 
 <template>
-  <div class="h-full min-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col">
+  <div
+    class="h-full min-h-screen-excluding-header max-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col"
+  >
     <PartialsActivityCommonNavigation
       v-model:tab="tab"
       :status="status"
@@ -141,12 +149,16 @@ function onViewChange() {
       @update:view="onViewChange"
     />
 
-    <CommonCard md class="h-full mt-4 xs:mt-6 flex flex-col grow">
+    <CommonCard
+      md
+      class="h-full mt-4 xs:mt-6 flex flex-col grow overflow-y-hidden"
+    >
       <PartialsActivityCommonToolbar
         ref="filterRef"
         :view="view"
         :tab="tab"
         :status="status"
+        :is-page-one="isPageOne"
         @update:filter="fetchData"
         @reset:filter="handleFilterChange"
       />

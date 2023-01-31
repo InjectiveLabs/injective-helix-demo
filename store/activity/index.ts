@@ -9,6 +9,12 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
 import { ActivityFetchOptions } from '@/types'
+import {
+  streamDerivativeSubaccountOrderHistory,
+  streamDerivativeSubaccountTrades,
+  streamSpotSubaccountOrderHistory,
+  streamSpotSubaccountTrades
+} from '@/store/activity/stream'
 
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
@@ -35,6 +41,11 @@ const initialStateFactory = (): ActivityStoreState => ({
 export const useActivityStore = defineStore('activity', {
   state: (): ActivityStoreState => initialStateFactory(),
   actions: {
+    streamDerivativeSubaccountOrderHistory,
+    streamDerivativeSubaccountTrades,
+    streamSpotSubaccountOrderHistory,
+    streamSpotSubaccountTrades,
+
     async fetchTradingRewardsHistory() {
       const activityStore = useActivityStore()
       const { subaccount } = useAccountStore()

@@ -35,7 +35,7 @@ const activeTab = computed({
 </script>
 
 <template>
-  <div class="overflow-x-auto hide-scrollbar min-h-[48px]">
+  <div class="overflow-x-auto hide-scrollbar flex-none">
     <div class="flex lg:grid grid-cols-4 gap-4">
       <AppSelectButton
         v-for="tabOption in Object.values(ActivityTab)"

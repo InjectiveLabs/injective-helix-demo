@@ -4,8 +4,7 @@ import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import {
   UiBridgeTransactionWithToken,
-  ZERO_IN_BASE,
-  getTokenLogoWithVendorPathPrefix
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BIG_NUMBER_ROUND_HALF_UP_MODE,
@@ -85,10 +84,6 @@ const time = computed(() => {
 
   return format(props.transaction.timestamp, 'dd MMM HH:mm:ss')
 })
-
-const tokenLogo = computed(() => {
-  return getTokenLogoWithVendorPathPrefix(props.transaction.token.logo)
-})
 </script>
 
 <template>
@@ -113,12 +108,8 @@ const tokenLogo = computed(() => {
 
     <td class="h-12 text-left cursor-pointer">
       <div class="flex items-center justify-start">
-        <div v-if="transaction.token" class="w-6 h-6">
-          <img
-            :src="tokenLogo"
-            :alt="transaction.token.name"
-            class="min-w-full h-auto rounded-full"
-          />
+        <div v-if="transaction.token">
+          <CommonTokenIcon :token="transaction.token" md />
         </div>
         <div class="ml-3">
           <span
