@@ -134,8 +134,8 @@ onWalletConnected(() => {
               v-else
               v-bind="{
                 baseTradingBalance,
-                quoteTradingBalance,
-                market
+                market,
+                quoteTradingBalance
               }"
               data-cy="trading-page-account-balances-component"
             />

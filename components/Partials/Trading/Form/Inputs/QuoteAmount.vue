@@ -92,7 +92,7 @@ function onQuoteAmountBlur(quoteAmount = '') {
 <template>
   <AppNumericInput
     v-model="quoteAmount"
-    :max-decimals="market ? market.priceDecimals : 6"
+    :max-decimals="market.priceDecimals"
     :placeholder="amountStep"
     :step="amountStep"
     min="0"
@@ -104,7 +104,7 @@ function onQuoteAmountBlur(quoteAmount = '') {
     </template>
 
     <template #addon>
-      <span>{{ market.quoteToken.symbol.toUpperCase() }}</span>
+      <span>{{ market.quoteToken.symbol }}</span>
     </template>
   </AppNumericInput>
 </template>

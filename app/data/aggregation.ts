@@ -190,7 +190,7 @@ export const customAggregations = {
   },
 
   'ATOM/USDT': {
-    minTick: getDecimalPlaceFromValue('0.01'),
+    minTick: getDecimalPlaceFromValue('0.001'),
     default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('10')
   },
@@ -286,7 +286,7 @@ export const customAggregations = {
   },
 
   'ATOM/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.01'),
+    minTick: getDecimalPlaceFromValue('0.001'),
     default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('10')
   },

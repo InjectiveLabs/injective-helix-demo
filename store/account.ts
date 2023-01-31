@@ -146,7 +146,17 @@ export const useAccountStore = defineStore('account', {
             }
 
             if (currentBalanceIndex !== -1) {
-              balances[currentBalanceIndex] = updatedBalance
+              const balanceToBeUpdated = balances[currentBalanceIndex]
+
+              balances[currentBalanceIndex] = {
+                totalBalance:
+                  updatedBalance.totalBalance ||
+                  balanceToBeUpdated.totalBalance,
+                availableBalance:
+                  updatedBalance.availableBalance ||
+                  balanceToBeUpdated.availableBalance,
+                denom: updatedBalance.denom
+              }
             } else {
               balances.push(updatedBalance)
             }

@@ -201,7 +201,7 @@ function onPriceBlur(price = '') {
       v-model="price"
       :placeholder="priceStep"
       :step="priceStep"
-      :max-decimals="market ? market.priceDecimals : 6"
+      :max-decimals="market.priceDecimals"
       min="0"
       @update:modelValue="recalculateBaseQuoteAmountValue"
       @input="recalculateBaseQuoteAmountValue"
@@ -219,7 +219,7 @@ function onPriceBlur(price = '') {
       </template>
 
       <template #addon>
-        <span>{{ market ? market.quoteToken.symbol.toUpperCase() : '' }}</span>
+        <span>{{ market.quoteToken.symbol }}</span>
       </template>
     </AppNumericInput>
   </div>
