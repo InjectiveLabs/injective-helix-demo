@@ -276,7 +276,7 @@ export const updateOrderbookRecord = (
 
       return {
         ...record,
-        quantity: record.quantity
+        quantity: updatedRecord.quantity
       }
     })
     .filter((record) => new BigNumber(record.quantity).gt(0))
