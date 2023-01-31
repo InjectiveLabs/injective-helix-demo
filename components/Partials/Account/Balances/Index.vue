@@ -21,10 +21,7 @@ const props = defineProps({
   }
 })
 
-const { value: searchQuery } = useStringField({
-  name: 'searchQuery'
-})
-
+const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.None)
@@ -55,19 +52,23 @@ const transformedBalance = computed(() => {
   const aggregatedUsdcBalances = usdcBalances.reduce(
     (aggregatedUsdc, balance) => {
       return {
-        bankBalance: aggregatedUsdc.bankBalance.plus(balance.bankBalance),
-        inOrderBalance: aggregatedUsdc.inOrderBalance.plus(
-          balance.inOrderBalance
-        ),
-        margin: aggregatedUsdc.margin.plus(balance.margin),
-        pnl: aggregatedUsdc.pnl.plus(balance.pnl),
-        subaccountAvailableBalance:
-          aggregatedUsdc.subaccountAvailableBalance.plus(
-            balance.subaccountAvailableBalance
-          ),
-        subaccountTotalBalance: aggregatedUsdc.subaccountTotalBalance.plus(
-          balance.subaccountTotalBalance
-        ),
+        ...balance,
+        denom: '',
+        balanceInToken: new BigNumberInBase(aggregatedUsdc.balanceInToken)
+          .plus(balance.balanceInToken)
+          .toFixed(),
+        totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
+          .plus(balance.totalBalanceInUsd)
+          .toFixed(),
+        totalBalance: new BigNumberInBase(aggregatedUsdc.totalBalance)
+          .plus(balance.totalBalance)
+          .toFixed(),
+        reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
+          .plus(balance.reservedBalance)
+          .toFixed(),
+        balance: new BigNumberInBase(aggregatedUsdc.balance)
+          .plus(balance.balance)
+          .toFixed(),
         token: {
           ...([usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
             ? balance.token

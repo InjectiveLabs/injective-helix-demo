@@ -13,9 +13,6 @@ const router = useRouter()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 
-const router = useRouter()
-const spotStore = useSpotStore()
-
 const props = defineProps({
   expand: Boolean,
 
@@ -51,22 +48,6 @@ const filteredMarkets = computed(() => {
       m.quoteDenom === props.balance.token.denom
   )
 })
-
-const tokenLogo = computed(() =>
-  getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
-)
-
-const combinedBalance = computed(() =>
-  new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountTotalBalance || 0
-  )
-)
-
-const totalBalance = computed(() =>
-  new BigNumberInBase(props.balance.bankBalance || 0).plus(
-    props.balance.subaccountAvailableBalance || 0
-  )
-)
 
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
   computed(() => props.balance.totalBalanceInUsd),
@@ -136,14 +117,11 @@ function handleConvert() {
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
-      <div class="flex justify-start items-center gap-2">
-        <<<<<<< HEAD
-        <CommonTokenIcon :token="balance.token" />
-        =======
-        <div class="w-6 h-6 rounded-full self-center">
-          <img v-if="!isUSDCDenom" :src="tokenLogo" :alt="balance.token.name" />
-        </div>
-        >>>>>>> e650234e (feat: usdc grouping on account page)
+      <div
+        class="flex justify-start items-center gap-2"
+        :class="{ 'ml-8': isUSDCDenom }"
+      >
+        <CommonTokenIcon v-if="!isUSDCDenom" :token="balance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
@@ -290,7 +268,7 @@ function handleConvert() {
         </BaseDropdown>
 
         <div
-          v-if="filteredMarkets.length === 1"
+          v-if="filteredMarkets.length === 1 && !isUSDCDenom"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           @click="handleNavigateToMarket(filteredMarkets[0])"
         >

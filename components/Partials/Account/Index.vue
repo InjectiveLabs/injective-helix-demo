@@ -3,13 +3,6 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
-defineProps({
-  balances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
-})
-
 const route = useRoute()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
