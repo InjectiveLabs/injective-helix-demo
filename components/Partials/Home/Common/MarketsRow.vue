@@ -272,6 +272,7 @@ function handleTradeClickedTrack() {
         >
           <BaseLineGraph
             v-if="chartData.length > 1"
+            style="transform: scale(-1, 1)"
             :data="chartData"
             :color="chartLineColor"
             :bg-type="'transparent'"
