@@ -7,6 +7,7 @@ import {
   UST_COIN_GECKO_ID
 } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: {
@@ -26,8 +27,63 @@ const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.None)
 const ascending = ref(false)
 
+const transformedBalance = computed(() => {
+  const nonUsdcBalances = props.balances.filter(
+    (balance) =>
+      ![
+        usdcTokenDenom.USDC,
+        usdcTokenDenom.USDCet,
+        usdcTokenDenom.USDCso
+      ].includes(balance.token.denom.toLowerCase())
+  )
+
+  const usdcBalances = props.balances.filter((balance) =>
+    [
+      usdcTokenDenom.USDC,
+      usdcTokenDenom.USDCet,
+      usdcTokenDenom.USDCso
+    ].includes(balance.token.denom.toLowerCase())
+  )
+
+  if (!usdcBalances.length) {
+    return nonUsdcBalances
+  }
+
+  const aggregatedUsdcBalances = usdcBalances.reduce(
+    (aggregatedUsdc, balance) => {
+      return {
+        ...balance,
+        denom: '',
+        balanceInToken: new BigNumberInBase(aggregatedUsdc.balanceInToken)
+          .plus(balance.balanceInToken)
+          .toFixed(),
+        totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
+          .plus(balance.totalBalanceInUsd)
+          .toFixed(),
+        totalBalance: new BigNumberInBase(aggregatedUsdc.totalBalance)
+          .plus(balance.totalBalance)
+          .toFixed(),
+        reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
+          .plus(balance.reservedBalance)
+          .toFixed(),
+        balance: new BigNumberInBase(aggregatedUsdc.balance)
+          .plus(balance.balance)
+          .toFixed(),
+        token: {
+          ...([usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
+            ? balance.token
+            : aggregatedUsdc.token),
+          denom: ''
+        }
+      }
+    }
+  )
+
+  return [...nonUsdcBalances, aggregatedUsdcBalances]
+})
+
 const filteredBalances = computed(() => {
-  return props.balances.filter((balance) => {
+  return transformedBalance.value.filter((balance) => {
     if (!balance) {
       return false
     }
@@ -121,13 +177,19 @@ const sortedBalances = computed(() => {
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"
       />
-
-      <PartialsAccountBalancesTableRow
-        v-for="balance in sortedBalances"
-        :key="balance.token.denom"
-        :balance="balance"
-        :hide-balances="hideBalances"
-      />
+      <template v-for="balance in sortedBalances" :key="balance.token.denom">
+        <PartialsAccountBalancesTableRow
+          v-if="balance.token.denom"
+          :balance="balance"
+          :hide-balances="hideBalances"
+        />
+        <PartialsAccountBalancesUSDCBalances
+          v-else
+          :balances="balances"
+          :balance="balance"
+          :hide-balances="hideBalances"
+        />
+      </template>
     </table>
 
     <table class="w-full border-collapse sm:table lg:hidden">

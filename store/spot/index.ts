@@ -16,7 +16,10 @@ import {
   indexerSpotApi,
   tokenService
 } from '@/app/Services'
-import { spot as allowedSpotMarkets } from '@/nuxt-config/hooks/route'
+import {
+  spot as spotRoutes,
+  hiddenSpotMarkets
+} from '@/nuxt-config/hooks/route'
 import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
@@ -126,7 +129,9 @@ export const useSpotStore = defineStore('spot', {
       const uiMarkets =
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
-      // Only include markets that we pre-defined to generate static routes for
+      // Only include markets that we pre-defined to generate static routes or are used for converting tokens only
+      const allowedSpotMarkets = [...spotRoutes, ...hiddenSpotMarkets]
+
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
           return allowedSpotMarkets.includes(market.slug)

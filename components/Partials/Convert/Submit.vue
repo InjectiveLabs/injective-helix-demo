@@ -6,6 +6,7 @@ import { Modal, TradeForm, TradeField } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 const modalStore = useModalStore()
+const router = useRouter()
 const walletStore = useWalletStore()
 
 const props = defineProps({
@@ -86,6 +87,14 @@ function handleClickOnConnect() {
 function submit() {
   emit('form:submit')
 }
+
+function handleNavigation() {
+  if (modalStore.modals[Modal.ConvertUSDC]) {
+    modalStore.closeModal(Modal.ConvertUSDC)
+  }
+
+  router.push({ name: 'account' })
+}
 </script>
 
 <template>
@@ -130,9 +139,9 @@ function submit() {
           })
         }}
       </span>
-      <NuxtLink :to="{ name: 'account' }" class="text-blue-600">
+      <span class="text-blue-600" @click="handleNavigation">
         {{ $t('trade.convert.goToAccount') }}
-      </NuxtLink>
+      </span>
     </p>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { AccountBalance, BusEvents, Modal } from '@/types'
+import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -10,6 +10,7 @@ const accountStore = useAccountStore()
 const bankStore = useBankStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
+const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 
 defineProps({
@@ -28,6 +29,14 @@ const status = reactive(new Status(StatusType.Loading))
 const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
 
+const usdcConvertMarket = computed(() => {
+  return spotStore.markets.find(
+    (market) =>
+      market.baseToken.symbol === USDCSymbol.PeggyEthereum &&
+      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
+  )
+})
+
 onMounted(() => {
   handleViewFromRoute()
   initBalances()
@@ -37,6 +46,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
+  spotStore.reset()
 })
 
 function initBalances() {
@@ -146,5 +156,10 @@ function handleHideBalances(value: boolean) {
     />
     <PartialsAccountBridge />
     <ModalsAddMargin />
+    <ModalsConvertUSDCWrapper
+      v-if="usdcConvertMarket"
+      :balances="balances"
+      :market="usdcConvertMarket"
+    />
   </div>
 </template>

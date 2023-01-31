@@ -6,12 +6,16 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeBusEvents, Modal } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
+const modalStore = useModalStore()
 
 const props = defineProps({
+  expand: Boolean,
+
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
@@ -22,6 +26,18 @@ const props = defineProps({
     required: true
   }
 })
+
+const isAggregateRow = !props.balance.token.denom
+
+const isUSDCDenom =
+  !isAggregateRow &&
+  [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+    props.balance.token.denom.toLowerCase()
+  )
+
+const convertUSDC = [usdcTokenDenom.USDC].includes(
+  props.balance.token.denom.toLowerCase()
+)
 
 const isOpen = ref(false)
 
@@ -84,28 +100,69 @@ function handleWithdrawClick() {
     props.balance.token
   )
 }
+
+function handleConvert() {
+  modalStore.openModal({ type: Modal.ConvertUSDC })
+}
 </script>
 
 <template>
   <tr
-    class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
-    :class="{ 'max-h-20': !isOpen, 'max-h-screen': isOpen }"
+    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
+    :class="{
+      'last-of-type:border-b-transparent': !isUSDCDenom,
+      'max-h-20': !isOpen,
+      'max-h-screen': isOpen
+    }"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
-      <div class="flex justify-start items-center gap-2">
-        <CommonTokenIcon :token="balance.token" />
+      <div
+        class="flex justify-start items-center gap-2"
+        :class="{ 'ml-8': isUSDCDenom }"
+      >
+        <CommonTokenIcon v-if="!isUSDCDenom" :token="balance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
-            class="text-white font-bold tracking-wide text-sm uppercase h-auto flex items-center"
+            class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
             data-cy="wallet-balance-token-symbol-table-data"
           >
             {{ balance.token.symbol }}
           </span>
           <span class="text-gray-500 text-xs">
-            {{ balance.token.name }}
+            <span v-if="!isUSDCDenom">
+              {{ balance.token.name }}
+            </span>
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDC
+              "
+            >
+              {{ $t('account.usdcPeggyToken') }}
+            </span>
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCet
+              "
+            >
+              {{ $t('account.usdcWHEthereumToken') }}
+            </span>
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCso
+              "
+            >
+              {{ $t('account.usdcWHSolanaToken') }}
+            </span>
           </span>
+
+          <BaseIcon
+            v-if="isAggregateRow"
+            name="caret-down"
+            class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
+            :class="{ 'rotate-0': !expand }"
+          />
         </div>
       </div>
     </td>
@@ -163,8 +220,25 @@ function handleWithdrawClick() {
       </div>
     </td>
 
-    <td class="pr-4">
+    <td v-if="convertUSDC" class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
+        <div
+          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+          data-cy="wallet-balance-convert"
+          @click="handleConvert"
+        >
+          <span class="text-blue-500 text-sm font-medium">
+            {{ $t('account.convertUSDC') }}
+          </span>
+        </div>
+      </div>
+    </td>
+
+    <td v-else class="pr-4">
+      <div
+        v-show="!isAggregateRow"
+        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
+      >
         <BaseDropdown
           v-if="filteredMarkets.length > 1"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
@@ -194,7 +268,7 @@ function handleWithdrawClick() {
         </BaseDropdown>
 
         <div
-          v-if="filteredMarkets.length === 1"
+          v-if="filteredMarkets.length === 1 && !isUSDCDenom"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           @click="handleNavigateToMarket(filteredMarkets[0])"
         >

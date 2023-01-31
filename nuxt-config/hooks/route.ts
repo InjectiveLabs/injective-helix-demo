@@ -52,6 +52,8 @@ export const perpetuals = [
   'atom-usdt-perp'
 ]
 
+export const hiddenSpotMarkets = ['usdc-usdcet']
+
 export const walletConnectedRequiredRouteNames = ['activity', 'account']
 
 export const binaryOptions: string[] = []
