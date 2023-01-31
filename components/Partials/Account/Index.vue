@@ -29,7 +29,7 @@ const status = reactive(new Status(StatusType.Loading))
 const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
 
-const market = computed(() => {
+const usdcConvertMarket = computed(() => {
   return spotStore.markets.find(
     (market) =>
       market.baseToken.symbol === USDCSymbol.PeggyEthereum &&
@@ -157,9 +157,9 @@ function handleHideBalances(value: boolean) {
     <PartialsAccountBridge />
     <ModalsAddMargin />
     <ModalsConvertUSDCWrapper
-      v-if="market"
+      v-if="usdcConvertMarket"
       :balances="balances"
-      :market="market"
+      :market="usdcConvertMarket"
     />
   </div>
 </template>
