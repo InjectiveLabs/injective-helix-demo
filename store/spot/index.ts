@@ -19,10 +19,12 @@ import {
 import {
   streamTrades,
   streamOrderbook,
+  streamOrderbookV2,
   cancelTradesStream,
   cancelOrderbookStream,
   streamSubaccountTrades,
   streamSubaccountOrders,
+  cancelOrderbookV2Stream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
   streamSubaccountOrderHistory,
@@ -41,12 +43,13 @@ import {
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
-import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
+import { ActivityFetchOptions, UiSpotOrderbookWithSequence, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
   orderbook?: UiSpotOrderbook
+  orderbookV2?: UiSpotOrderbookWithSequence
   trades: UiSpotTrade[]
   subaccountTrades: UiSpotTrade[]
   subaccountTradesCount: number
@@ -62,6 +65,7 @@ const initialStateFactory = (): SpotStoreState => ({
   markets: [],
   marketsSummary: [],
   orderbook: undefined,
+  orderbookV2: undefined,
   trades: [],
   subaccountTrades: [],
   subaccountTradesCount: 0,
@@ -76,8 +80,8 @@ const initialStateFactory = (): SpotStoreState => ({
 export const useSpotStore = defineStore('spot', {
   state: (): SpotStoreState => initialStateFactory(),
   getters: {
-    buys: (state) => state.orderbook?.buys || [],
-    sells: (state) => state.orderbook?.sells || [],
+    buys: (state) => state.orderbookV2?.buys || [],
+    sells: (state) => state.orderbookV2?.sells || [],
 
     activeMarketIds: (state) =>
       state.markets
@@ -113,10 +117,12 @@ export const useSpotStore = defineStore('spot', {
   actions: {
     streamTrades,
     streamOrderbook,
+    streamOrderbookV2,
     cancelTradesStream,
     cancelOrderbookStream,
     streamSubaccountOrders,
     streamSubaccountTrades,
+    cancelOrderbookV2Stream,
     streamSubaccountOrderHistory,
 
     cancelOrder,
@@ -132,8 +138,9 @@ export const useSpotStore = defineStore('spot', {
       const initialState = initialStateFactory()
 
       spotStore.$patch({
-        trades: initialState.trades,
         orderbook: initialState.orderbook,
+        orderbookV2: initialState.orderbookV2,
+        trades: initialState.trades,
         subaccountTrades: initialState.subaccountTrades,
         subaccountOrders: initialState.subaccountOrders
       })
@@ -264,6 +271,14 @@ export const useSpotStore = defineStore('spot', {
 
       spotStore.$patch({
         orderbook: await indexerSpotApi.fetchOrderbook(marketId)
+      })
+    },
+
+    async fetchOrderbookV2(marketId: string) {
+      const spotStore = useSpotStore()
+
+      spotStore.$patch({
+        orderbookV2: await indexerSpotApi.fetchOrderbookV2(marketId)
       })
     },
 

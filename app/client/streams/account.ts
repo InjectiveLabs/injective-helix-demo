@@ -2,8 +2,8 @@ import {
   BalanceStreamCallback,
   IndexerGrpcAccountStream
 } from '@injectivelabs/sdk-ts'
-import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '@/app/utils/constants'
+import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types/enums'
 
 export const subaccountStream = new IndexerGrpcAccountStream(ENDPOINTS.indexer)

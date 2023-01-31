@@ -8,8 +8,8 @@ const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const { t } = useLang()
-const { success } = useNotifications()
 const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 
 const { resetForm, values: formValues } = useForm<TradeForm>()
 

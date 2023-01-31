@@ -29,10 +29,11 @@ function onLoad(pageMarket: UiMarketWithToken) {
   const derivativeMarket = pageMarket as UiDerivativeMarketWithToken
 
   Promise.all([
+    derivativeStore.streamMarketsMarkPrices(),
+    derivativeStore.getMarketMarkPrice(derivativeMarket),
     derivativeStore.streamTrades(derivativeMarket.marketId),
     derivativeStore.streamOrderbook(derivativeMarket.marketId),
-    derivativeStore.streamMarketsMarkPrices(),
-    derivativeStore.getMarketMarkPrice(derivativeMarket)
+    derivativeStore.streamOrderbookV2(derivativeMarket.marketId)
   ]).catch($onError)
 
   market.value = derivativeMarket

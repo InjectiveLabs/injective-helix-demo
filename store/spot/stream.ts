@@ -1,21 +1,26 @@
 import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
+import { BigNumber } from '@injectivelabs/utils'
 import {
   streamTrades as grpcStreamTrades,
   streamOrderbook as grpcStreamOrderbook,
+  streamOrderbookV2 as grpcStreamOrderbookV2,
   cancelTradesStream as grpcCancelTradesStream,
   cancelOrderbookStream as grpcCancelOrderbookStream,
   streamSubaccountTrades as grpcStreamSubaccountTrade,
   streamSubaccountOrders as grpcStreamSubaccountOrders,
+  cancelOrderbookV2Stream as grpcCancelOrderbookV2Stream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { updateOrderbookRecord } from '@/app/utils/market'
 
 export const cancelTradesStream = grpcCancelTradesStream
 export const cancelOrderbookStream = grpcCancelOrderbookStream
+export const cancelOrderbookV2Stream = grpcCancelOrderbookV2Stream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrdersHistoryStream =
@@ -34,6 +39,54 @@ export const streamOrderbook = (marketId: string) => {
       spotStore.$patch({
         orderbook
       })
+    }
+  })
+}
+
+export const streamOrderbookV2 = (marketId: string) => {
+  const spotStore = useSpotStore()
+
+  grpcStreamOrderbookV2({
+    marketId,
+    callback: ({ orderbook }) => {
+      if (!orderbook) {
+        return
+      }
+
+      /**
+       * The current orderbook doesn't exist
+       **/
+      if (!spotStore.orderbookV2) {
+        spotStore.$patch({
+          orderbookV2: orderbook
+        })
+      }
+
+      const sequence = spotStore.orderbookV2?.sequence || 0
+
+      /**
+       * 1. if new exists in current, update quantity in current,
+       * 2. if new exists in current and quantity is 0, delete from current
+       * 3. If new doesn't exist in current, add to current
+       **/
+      if (sequence < orderbook.sequence) {
+        const newBuys = updateOrderbookRecord(
+          spotStore.buys,
+          orderbook.buys
+        ).sort((a, b) => new BigNumber(b.price).minus(a.price).toNumber())
+        const newSells = updateOrderbookRecord(
+          spotStore.sells,
+          orderbook.sells
+        ).sort((a, b) => new BigNumber(a.price).minus(b.price).toNumber())
+
+        spotStore.$patch({
+          orderbookV2: {
+            sequence: orderbook.sequence,
+            buys: newBuys,
+            sells: newSells
+          }
+        })
+      }
     }
   })
 }

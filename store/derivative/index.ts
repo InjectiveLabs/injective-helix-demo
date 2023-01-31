@@ -45,6 +45,7 @@ import {
 import {
   streamTrades,
   streamOrderbook,
+  streamOrderbookV2,
   streamSubaccountTrades,
   streamSubaccountOrders,
   streamMarketsMarkPrices,
@@ -55,9 +56,10 @@ import {
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
 import {
-  ActivityFetchOptions,
+  UiMarketAndSummary,
   MarketMarkPriceMap,
-  UiMarketAndSummary
+  ActivityFetchOptions,
+  UiDerivativeOrderbookWithSequence,
 } from '@/types'
 
 type DerivativeStoreState = {
@@ -68,6 +70,7 @@ type DerivativeStoreState = {
   markets: UiDerivativeMarketWithToken[]
   marketsSummary: UiDerivativeMarketSummary[]
   marketMarkPriceMap: MarketMarkPriceMap
+  orderbookV2?: UiDerivativeOrderbookWithSequence
   trades: UiDerivativeTrade[]
   orderbook?: UiDerivativeOrderbook
   subaccountTrades: UiDerivativeTrade[]
@@ -89,6 +92,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   marketsSummary: [],
   marketMarkPriceMap: {},
   orderbook: undefined,
+  orderbookV2: undefined,
   trades: [],
   subaccountTrades: [],
   subaccountTradesCount: 0,
@@ -103,8 +107,8 @@ const initialStateFactory = (): DerivativeStoreState => ({
 export const useDerivativeStore = defineStore('derivative', {
   state: (): DerivativeStoreState => initialStateFactory(),
   getters: {
-    buys: (state) => state.orderbook?.buys || [],
-    sells: (state) => state.orderbook?.sells || [],
+    buys: (state) => state.orderbookV2?.buys || [],
+    sells: (state) => state.orderbookV2?.sells || [],
 
     activeMarketIds: (state) =>
       state.markets
@@ -140,6 +144,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
     streamTrades,
     streamOrderbook,
+    streamOrderbookV2,
     streamSubaccountTrades,
     streamSubaccountOrders,
     streamMarketsMarkPrices,
@@ -157,6 +162,7 @@ export const useDerivativeStore = defineStore('derivative', {
       derivativeStore.$patch({
         trades: initialState.trades,
         orderbook: initialState.orderbook,
+        orderbookV2: initialState.orderbookV2,
         subaccountTrades: initialState.subaccountTrades,
         subaccountOrders: initialState.subaccountOrders
       })
@@ -294,6 +300,14 @@ export const useDerivativeStore = defineStore('derivative', {
 
       derivativeStore.$patch({
         orderbook: await indexerDerivativesApi.fetchOrderbook(marketId)
+      })
+    },
+
+    async fetchOrderbookV2(marketId: string) {
+      const derivativeStore = useDerivativeStore()
+
+      derivativeStore.$patch({
+        orderbookV2: await indexerDerivativesApi.fetchOrderbookV2(marketId)
       })
     },
 

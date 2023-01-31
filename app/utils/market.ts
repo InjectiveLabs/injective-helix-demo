@@ -4,8 +4,12 @@ import {
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
-import { ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
+import {
+  BigNumber,
+  BigNumberInBase,
+  SECONDS_IN_A_DAY
+} from '@injectivelabs/utils'
+import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
 import {
   DefaultMarket,
   MarketCategoryType,
@@ -245,4 +249,37 @@ export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   return (
     market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
   )
+}
+
+/**
+ * 1. if new exists in current, update quantity in current,
+ * 2. if new exists in current and quantity is 0, delete from current
+ * 3. If new doesn't exist in current, add to current
+ **/
+export const updateOrderbookRecord = (
+  currentRecords: PriceLevel[] = [],
+  updatedRecords: PriceLevel[] = []
+) => {
+  const newRecords = [...updatedRecords].reduce((records, record) => {
+    const existingRecord = currentRecords.find((r) => r.price === record.price)
+
+    return existingRecord ? records : [...records, record]
+  }, [] as PriceLevel[])
+
+  const affectedRecords = [...currentRecords]
+    .map((record) => {
+      const updatedRecord = updatedRecords.find((r) => r.price === record.price)
+
+      if (!updatedRecord) {
+        return record
+      }
+
+      return {
+        ...record,
+        quantity: record.quantity
+      }
+    })
+    .filter((record) => new BigNumber(record.quantity).gt(0))
+
+  return [...newRecords, ...affectedRecords]
 }

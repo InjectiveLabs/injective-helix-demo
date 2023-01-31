@@ -24,7 +24,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
 
   Promise.all([
-    spotStore.streamOrderbook(pageMarket.marketId),
+    spotStore.streamOrderbookV2(pageMarket.marketId),
     spotStore.streamTrades(pageMarket.marketId)
   ]).catch($onError)
 

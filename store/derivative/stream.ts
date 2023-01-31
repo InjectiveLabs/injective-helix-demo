@@ -1,21 +1,30 @@
-import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
+import { BigNumber } from '@injectivelabs/utils'
+import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  streamOrderbook as grpcStreamsOrderbook,
   streamTrades as grpcStreamsTrades,
+  streamOrderbook as grpcStreamsOrderbook,
+  streamOrderbookV2 as grpcStreamsOrderbookV2,
   streamSubaccountOrders as grpcStreamsSubaccountOrders,
-  streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
   streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
-  cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream,
+  cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
-  cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices
+  streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
+  cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream
 } from '@/app/client/streams/derivatives'
+import { updateOrderbookRecord } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+
+export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
+export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
+export const cancelSubaccountOrderHistoryStream =
+  grpcCancelSubaccountOrderHistoryStream
 
 export const streamOrderbook = (marketId: string) => {
   const derivativeStore = useDerivativeStore()
@@ -30,6 +39,52 @@ export const streamOrderbook = (marketId: string) => {
       derivativeStore.$patch({
         orderbook
       })
+    }
+  })
+}
+
+export const streamOrderbookV2 = (marketId: string) => {
+  const derivativeStore = useDerivativeStore()
+
+  grpcStreamsOrderbookV2({
+    marketId,
+    callback: ({ orderbook }) => {
+      if (!orderbook) {
+        return
+      }
+
+      /**
+       * The current orderbook doesn't exist
+       **/
+      if (!derivativeStore.orderbookV2) {
+        derivativeStore.$patch({
+          orderbookV2: orderbook
+        })
+      }
+
+      const sequence = derivativeStore.orderbookV2?.sequence || 0
+
+      /**
+       * The current exists and we need to update it
+       **/
+      if (sequence < orderbook.sequence) {
+        const newBuys = updateOrderbookRecord(
+          derivativeStore.buys,
+          orderbook.buys
+        ).sort((a, b) => new BigNumber(a.price).minus(b.price).toNumber())
+        const newSells = updateOrderbookRecord(
+          derivativeStore.sells,
+          orderbook.sells
+        ).sort((a, b) => new BigNumber(b.price).minus(a.price).toNumber())
+
+        derivativeStore.$patch({
+          orderbookV2: {
+            sequence: orderbook.sequence,
+            buys: newBuys,
+            sells: newSells
+          }
+        })
+      }
     }
   })
 }
@@ -61,13 +116,6 @@ export const streamTrades = (marketId: string) => {
     }
   })
 }
-
-export const cancelSubaccountOrdersStream = () => {
-  grpcCancelSubaccountOrdersStream()
-}
-
-export const cancelSubaccountOrderHistoryStream = () =>
-  grpcCancelSubaccountOrderHistoryStream()
 
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
@@ -320,8 +368,3 @@ export const streamMarketsMarkPrices = () => {
     }
   })
 }
-
-export const cancelSubaccountTradesStream = () =>
-  grpcCancelSubaccountTradesStream()
-
-export const cancelMarketsMarkPrices = () => grpcCancelMarketsMarkPrices()
