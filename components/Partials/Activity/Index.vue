@@ -49,14 +49,12 @@ const action = computed(() => {
   }
 })
 
-const isPageOne = computed(() => formValues[ActivityField.Page] === 1)
-
 onMounted(() => {
   const promises = [
-    activityStore.streamDerivativeSubaccountOrderHistory,
-    activityStore.streamDerivativeSubaccountTrades,
-    activityStore.streamSpotSubaccountOrderHistory,
-    activityStore.streamSpotSubaccountTrades,
+    activityStore.streamDerivativeSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountTrades(),
+    activityStore.streamSpotSubaccountOrderHistory(),
+    activityStore.streamSpotSubaccountTrades(),
     derivativeStore.fetchSubaccountOrders(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
@@ -70,6 +68,12 @@ onMounted(() => {
       fetchData()
     })
     .catch($onError)
+})
+
+onUnmounted(() => {
+  activityStore.$reset()
+  derivativeStore.resetSubaccount()
+  spotStore.resetSubaccount()
 })
 
 function fetchData() {
@@ -158,7 +162,6 @@ function onViewChange() {
         :view="view"
         :tab="tab"
         :status="status"
-        :is-page-one="isPageOne"
         @update:filter="fetchData"
         @reset:filter="handleFilterChange"
       />
