@@ -277,7 +277,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
 
       const { trades } = await indexerDerivativesApi.fetchTrades({
-        marketId,
+        marketIds: [marketId],
         executionSide
       })
 
@@ -297,7 +297,7 @@ export const useDerivativeStore = defineStore('derivative', {
       }
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
-        marketIds,
+        marketIds: marketIds || derivativeStore.activeMarketIds,
         subaccountId: subaccount.subaccountId,
         isConditional: false
       })
@@ -309,7 +309,7 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountOrderHistory(
-      activityFetchOptions: ActivityFetchOptions | undefined
+      options: ActivityFetchOptions | undefined
     ) {
       const derivativeStore = useDerivativeStore()
 
@@ -320,17 +320,17 @@ export const useDerivativeStore = defineStore('derivative', {
         return
       }
 
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
-          marketIds: filters?.marketIds,
+          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
           orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: filters?.isConditional,
-          pagination: activityFetchOptions?.pagination
+          pagination: options?.pagination
         })
 
       derivativeStore.$patch({
@@ -351,7 +351,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
-          marketIds,
+          marketIds: marketIds || derivativeStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
           isConditional: true,
           state: DerivativeOrderState.Booked
@@ -423,9 +423,7 @@ export const useDerivativeStore = defineStore('derivative', {
       }
     },
 
-    async fetchSubaccountTrades(
-      activityFetchOptions?: ActivityFetchOptions | undefined
-    ) {
+    async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
       const derivativeStore = useDerivativeStore()
 
       const { subaccount } = useAccountStore()
@@ -435,14 +433,14 @@ export const useDerivativeStore = defineStore('derivative', {
         return
       }
 
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
-        marketIds: filters?.marketIds,
+        marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
         subaccountId: subaccount.subaccountId,
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
-        pagination: activityFetchOptions?.pagination
+        pagination: options?.pagination
       })
 
       derivativeStore.$patch({

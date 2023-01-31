@@ -1,21 +1,35 @@
 import { defineStore } from 'pinia'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
-import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
+import {
+  BankBalanceWithTokenAndBalance,
+  UiDerivativeOrderHistory,
+  UiDerivativeTrade,
+  UiSpotOrderHistory,
+  UiSpotTrade
+} from '@injectivelabs/sdk-ui-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
 import { ActivityFetchOptions } from '@/types'
 
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
-  subaccountFundingPaymentsCount: number
   supportedTokens: BankBalanceWithTokenAndBalance[]
+  subaccountFundingPaymentsCount: number
+  latestDerivativeOrderHistory?: UiDerivativeOrderHistory
+  latestDerivativeTrade?: UiDerivativeTrade
+  latestSpotOrderHistory?: UiSpotOrderHistory
+  latestSpotTrade?: UiSpotTrade
 }
 
 const initialStateFactory = (): ActivityStoreState => ({
   subaccountFundingPayments: [],
   tradingRewardsHistory: [],
+  supportedTokens: [],
   subaccountFundingPaymentsCount: 0,
-  supportedTokens: []
+  latestDerivativeOrderHistory: undefined,
+  latestDerivativeTrade: undefined,
+  latestSpotOrderHistory: undefined,
+  latestSpotTrade: undefined
 })
 
 export const useActivityStore = defineStore('activity', {
@@ -38,10 +52,10 @@ export const useActivityStore = defineStore('activity', {
       })
     },
 
-    async fetchSubaccountFundingPayments(
-      activityFetchOptions?: ActivityFetchOptions
-    ) {
+    async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
       const activityStore = useActivityStore()
+      const derivativeStore = useDerivativeStore()
+
       const { subaccount } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
@@ -49,13 +63,13 @@ export const useActivityStore = defineStore('activity', {
         return
       }
 
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { fundingPayments: subaccountFundingPayments, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
-          marketIds: filters?.marketIds,
+          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
-          pagination: activityFetchOptions?.pagination
+          pagination: options?.pagination
         })
 
       activityStore.$patch({

@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  executionOrderTypeToOrderTypes,
+  executionOrderTypeToExecutionTypes
+} from '@/app/client/utils/activity'
+import { ConditionalOrderSide } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -40,17 +46,29 @@ const markets = computed(() => {
     .map(({ marketId }) => marketId)
 })
 
-const filteredTriggers = computed(() =>
-  derivativeStore.subaccountConditionalOrders.filter((order) => {
+const filteredTriggers = computed(() => {
+  const orderTypes = executionOrderTypeToOrderTypes(props.type)
+  const executionTypes = executionOrderTypeToExecutionTypes(props.type)
+
+  return derivativeStore.subaccountConditionalOrders.filter((order) => {
     const orderMatchesDenom =
       markets.value.length === 0 || markets.value.includes(order.marketId)
     const orderMatchesSide = !props.side || props.side === order.direction
+    const orderMatchesOrderTypes =
+      !orderTypes ||
+      orderTypes.includes(order.orderType as ConditionalOrderSide)
+    const orderMatchesExecutionTypes =
+      !executionTypes ||
+      executionTypes.includes(order.executionType as TradeExecutionType)
 
-    // todo: handle type filtering!
-
-    return orderMatchesDenom && orderMatchesSide
+    return (
+      orderMatchesDenom &&
+      orderMatchesSide &&
+      orderMatchesOrderTypes &&
+      orderMatchesExecutionTypes
+    )
   })
-)
+})
 
 function handleCancelOrders() {
   actionStatus.setLoading()

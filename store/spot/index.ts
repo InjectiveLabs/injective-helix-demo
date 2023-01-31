@@ -156,7 +156,7 @@ export const useSpotStore = defineStore('spot', {
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
-        marketIds,
+        marketIds: marketIds || spotStore.activeMarketIds,
         subaccountId: subaccount.subaccountId
       })
 
@@ -166,9 +166,7 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
-    async fetchSubaccountOrderHistory(
-      activityFetchOptions?: ActivityFetchOptions
-    ) {
+    async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
       const { subaccount } = useAccountStore()
@@ -178,22 +176,25 @@ export const useSpotStore = defineStore('spot', {
         return
       }
 
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
+          marketIds: filters?.marketIds || spotStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
           orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: filters?.isConditional,
-          pagination: activityFetchOptions?.pagination
+          pagination: options?.pagination
         })
 
-      spotStore.$patch({
-        subaccountOrderHistory: orderHistory,
-        subaccountOrderHistoryCount: pagination.total
-      })
+      if (!options?.updateTotalCount) {
+        spotStore.$patch({
+          subaccountOrderHistory: orderHistory,
+          subaccountOrderHistoryCount: pagination.total
+        })
+      }
     },
 
     async fetchOrderbook(marketId: string) {
@@ -214,7 +215,7 @@ export const useSpotStore = defineStore('spot', {
       const spotStore = useSpotStore()
 
       const { trades } = await indexerSpotApi.fetchTrades({
-        marketId,
+        marketIds: [marketId],
         executionSide
       })
 
@@ -223,7 +224,7 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
-    async fetchSubaccountTrades(activityFetchOptions?: ActivityFetchOptions) {
+    async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
       const { subaccount } = useAccountStore()
@@ -233,14 +234,14 @@ export const useSpotStore = defineStore('spot', {
         return
       }
 
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        marketIds: filters?.marketIds,
+        marketIds: filters?.marketIds || spotStore.activeMarketIds,
         subaccountId: subaccount.subaccountId,
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
-        pagination: activityFetchOptions?.pagination
+        pagination: options?.pagination
       })
 
       spotStore.$patch({

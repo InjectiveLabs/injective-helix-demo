@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   ActivityField,
   ActivityTab,
@@ -27,6 +28,11 @@ const props = defineProps({
   view: {
     type: String as PropType<ActivityView>,
     required: true
+  },
+
+  status: {
+    type: Object as PropType<Status>,
+    default: () => new Status(StatusType.Idle)
   }
 })
 
@@ -213,6 +219,12 @@ defineExpose({
         clearable
         data-cy="universal-table-filter-by-asset-input"
         @update:model-value="handleUpdate"
+      />
+
+      <PartialsAccountRefreshButton
+        :status="status"
+        :view="view"
+        @click="handleClearFilters"
       />
 
       <div

@@ -17,7 +17,7 @@ const props = defineProps({
 
   status: {
     type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Loading)
+    default: () => new Status(StatusType.Idle)
   }
 })
 
@@ -63,7 +63,7 @@ const endTime = computed(() => {
     case ActivityView.SpotOrderHistory:
       return spotStore.subaccountOrderHistory[0]?.updatedAt || 0
     case ActivityView.SpotTradeHistory:
-      return spotStore.subaccountTrades[0]?.timestamp || 0
+      return spotStore.subaccountTrades[0]?.executedAt || 0
     case ActivityView.DerivativeOrderHistory:
       return derivativeStore.subaccountOrderHistory[0]?.updatedAt || 0
     case ActivityView.DerivativeTradeHistory:

@@ -82,9 +82,6 @@ function fetchData() {
           action.value({
             filters: filterRef.value?.filterParams,
             pagination: paginationRef.value?.paginationOptions
-            // options: {
-            //   updateTotalCounts: shouldUpdateTotalCounts.value
-            // }
           })
         ]
   )
@@ -149,6 +146,7 @@ function onViewChange() {
         ref="filterRef"
         :view="view"
         :tab="tab"
+        :status="status"
         @update:filter="fetchData"
         @reset:filter="handleFilterChange"
       />
@@ -162,6 +160,7 @@ function onViewChange() {
           type: formValues[ActivityField.Type]
         }"
         :key="view"
+        class="h-full-flex"
       />
 
       <PartialsActivityCommonPagination
