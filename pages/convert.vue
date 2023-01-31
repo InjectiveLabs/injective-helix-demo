@@ -34,11 +34,12 @@ const amount = computed(() => {
     : formValues[TradeField.BaseAmount]
 })
 
-const { worstPrice, worstPriceWithSlippage } = useSpotPrice({
-  formValues: computed(() => formValues),
-  market,
-  isBase
-})
+const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
+  useSpotPrice({
+    formValues: computed(() => formValues),
+    market,
+    isBase
+  })
 
 onMounted(() => {
   Promise.all([
@@ -53,6 +54,25 @@ onMounted(() => {
 
 function updateFormValue({ field, value }: TradeFormValue) {
   setFieldValue(field, value)
+}
+
+function updateAmount({
+  amount,
+  isBase: isBaseUpdate
+}: {
+  amount: string
+  isBase: boolean
+}) {
+  isBase.value = isBaseUpdate
+
+  const updatedAmount = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+
+  if (updatedAmount) {
+    updateFormValue({
+      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      value: updatedAmount
+    })
+  }
 }
 
 function resetFormValues() {
@@ -163,6 +183,7 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
         :form-values="formValues"
+        @update:amount="updateAmount"
         @update:isBuy="updateUrlQuery"
         @update:market="handleMarketUpdate"
         @update:formValue="updateFormValue"

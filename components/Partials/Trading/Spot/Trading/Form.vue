@@ -16,8 +16,7 @@ import {
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
   DEBUG_CALCULATION,
-  TRADE_FORM_PRICE_ROUNDING_MODE,
-  TRADE_FORM_QUANTITY_ROUNDING_MODE
+  TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
 const accountStore = useAccountStore()
@@ -159,13 +158,16 @@ const { lastTradedPrice } = useSpotLastPriceFormatter(
   computed(() => spotStore.trades || [])
 )
 
-const { maxAmountOnOrderbook, slippage, worstPriceWithSlippage } = useSpotPrice(
-  {
-    formValues,
-    isBase,
-    market: computed(() => props.market)
-  }
-)
+const {
+  maxAmountOnOrderbook,
+  slippage,
+  updateAmountFromBase,
+  worstPriceWithSlippage
+} = useSpotPrice({
+  formValues,
+  isBase,
+  market: computed(() => props.market)
+})
 
 const executionPrice = computed(() => {
   return tradingTypeMarket.value
@@ -252,52 +254,12 @@ function updateAmount({
 }) {
   isBase.value = isBaseUpdate
 
-  if (isBaseUpdate) {
-    const updatedQuoteAmount = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.BaseAmount]
-    ).times(executionPrice.value)
+  const amountToUpdate = updateAmountFromBase({ amount, isBase: isBaseUpdate })
 
-    if (updatedQuoteAmount.isNaN()) {
-      return
-    }
-
-    const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedQuoteAmountToString) {
-      return
-    }
-
+  if (amountToUpdate) {
     updateFormValue({
-      field: TradeField.QuoteAmount,
-      value: updatedQuoteAmountToString
-    })
-  } else {
-    const baseAmountFromAveragePrice = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.QuoteAmount]
-    ).dividedBy(executionPrice.value)
-
-    if (
-      baseAmountFromAveragePrice.isNaN() ||
-      baseAmountFromAveragePrice.lte(0)
-    ) {
-      return
-    }
-
-    const updatedBaseAmountToString = baseAmountFromAveragePrice.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedBaseAmountToString) {
-      return
-    }
-
-    updateFormValue({
-      field: TradeField.BaseAmount,
-      value: updatedBaseAmountToString
+      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      value: amountToUpdate
     })
   }
 }
