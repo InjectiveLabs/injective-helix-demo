@@ -25,6 +25,8 @@ const emit = defineEmits<{
   (e: 'update:filter'): void
 }>()
 
+const cachedEndTime = ref<number | undefined>(undefined)
+
 const { value: page, setValue: setPageValue } = useNumberField({
   name: ActivityField.Page,
   initialValue: 1,
@@ -74,25 +76,36 @@ const endTime = computed(() => {
 })
 
 function handlePageChange(page: string) {
+  if (Number(page) === 1) {
+    cachedEndTime.value = undefined
+  } else if (!cachedEndTime.value) {
+    cachedEndTime.value = endTime.value
+  }
+
   setPageValue(Number(page))
   emit('update:filter')
 }
 
 function handleLimitChange(limit: string) {
   setLimitValue(Number(limit))
+  setPageValue(1)
   emit('update:filter')
 }
 
 const paginationOptions = computed(() => {
   const skip = (page.value - 1) * limit.value
-  const isPageOne = skip === 0
 
   return {
     skip,
     limit: limit.value,
-    endTime: !isPageOne ? endTime.value : 0
+    endTime: cachedEndTime.value || endTime.value
   }
 })
+
+watch(
+  () => props.view,
+  () => (cachedEndTime.value = undefined)
+)
 
 defineExpose({
   paginationOptions

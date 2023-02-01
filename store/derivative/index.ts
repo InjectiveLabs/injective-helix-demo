@@ -96,7 +96,7 @@ export const useDerivativeStore = defineStore('derivative', {
   getters: {
     activeMarketIds: (state) =>
       state.markets
-        .filter(({ slug }) => allowedPerpetualMarkets.includes(slug))
+        .filter(({ slug }) => MARKETS_SLUGS.futures.includes(slug))
         .map((m) => m.marketId),
 
     buys: (state) => state.orderbook?.buys || [],
