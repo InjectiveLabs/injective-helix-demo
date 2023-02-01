@@ -221,18 +221,28 @@ defineExpose({
         @update:model-value="handleUpdate"
       />
 
-      <PartialsAccountRefreshButton
-        :status="status"
-        :view="view"
-        @click="handleClearFilters"
-      />
-
       <div
-        v-if="hasActiveFilters"
-        class="flex items-center text-sm cursor-pointer text-blue-500 hover:text-blue-600 whitespace-nowrap col-span-4 justify-center sm:col-span-1 sm:justify-start sm:h-10"
-        @click="handleClearFilters"
+        v-if="!status.isLoading()"
+        class="flex items-center justify-between gap-1 text-sm col-span-4 sm:col-span-1"
+        :class="{ 'justify-self-end': !hasActiveFilters }"
       >
-        {{ $t('filters.clearAll') }}
+        <AppButton
+          v-if="hasActiveFilters"
+          class="border-gray-500 text-gray-500 px-3"
+          sm
+          @click="handleClearFilters"
+        >
+          <div class="items-center flex gap-1">
+            <BaseIcon name="close" md />
+            <span>{{ $t('filters.clearAll') }}</span>
+          </div>
+        </AppButton>
+
+        <PartialsAccountRefreshButton
+          :status="status"
+          :view="view"
+          @click="handleClearFilters"
+        />
       </div>
     </div>
 

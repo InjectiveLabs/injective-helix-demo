@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { ActivityView } from '@/types'
 
 const activityStore = useActivityStore()
@@ -11,11 +11,6 @@ const props = defineProps({
   view: {
     type: String as PropType<ActivityView>,
     required: true
-  },
-
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
   }
 })
 
@@ -79,10 +74,20 @@ function handleClick() {
 </script>
 
 <template>
-  <BaseIcon
-    v-if="showRefreshBtn && !status.isLoading()"
+  <AppButton
+    v-if="showRefreshBtn"
     name="exchange"
-    class="text-gray-500 h-6 w-6 min-w-6 hover:text-blue-500"
+    class="border-blue-500 text-blue-500 px-3"
+    sm
     @click="handleClick"
-  />
+  >
+    {{
+      [
+        ActivityView.DerivativeTradeHistory,
+        ActivityView.SpotTradeHistory
+      ].includes(view)
+        ? $t('activity.fetchTrades')
+        : $t('activity.fetchOrders')
+    }}
+  </AppButton>
 </template>
