@@ -29,7 +29,6 @@ export default <Config>{
     path.join(__dirname, './layouts/**/*.vue'),
     path.join(__dirname, './pages/**/*.vue'),
     path.join(__dirname, './plugins/**/*.{js,ts}'),
-    path.join(__dirname, './nuxt.config.{js,ts}'),
     path.join(__dirname, './app.vue')
   ],
   safelist: ['border-4', 'border-t-blue-200', 'border-r-blue-200'],
