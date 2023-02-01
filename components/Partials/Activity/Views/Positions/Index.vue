@@ -91,6 +91,10 @@ function handleClosePositions() {
 
 <template>
   <div>
+    <Teleport to="#activity-tab-count">
+      <span>({{ filteredPositions.length }})</span>
+    </Teleport>
+
     <Teleport to="#activity-toolbar-action">
       <AppButton
         v-if="filteredPositions.length > 0"

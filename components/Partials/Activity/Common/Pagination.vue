@@ -98,7 +98,7 @@ const paginationOptions = computed(() => {
   return {
     skip,
     limit: limit.value,
-    endTime: cachedEndTime.value || endTime.value
+    endTime: cachedEndTime.value
   }
 })
 

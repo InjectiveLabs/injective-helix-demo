@@ -65,6 +65,10 @@ function handleCancelOrders() {
 
 <template>
   <div>
+    <Teleport to="#activity-tab-count">
+      <span>({{ filteredOrders.length }})</span>
+    </Teleport>
+
     <Teleport to="#activity-toolbar-action">
       <AppButton
         v-if="filteredOrders.length > 0"
