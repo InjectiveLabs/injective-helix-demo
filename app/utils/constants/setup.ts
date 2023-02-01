@@ -1,6 +1,7 @@
 import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { getRoutes } from './routes'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
@@ -75,7 +76,13 @@ export const IS_TESTNET: Boolean = [
 ].includes(NETWORK)
 export const IS_STAGING = env.VITE_ENV === 'staging'
 export const IS_MAINNET =
-  NETWORK === Network.Mainnet || env.VITE_ENV === 'mainnet'
+  [
+    Network.Public,
+    Network.Staging,
+    Network.Mainnet,
+    Network.MainnetK8s,
+    Network.MainnetLB
+  ].includes(NETWORK) || env.VITE_ENV === 'mainnet'
 
 export const CHAIN_ID: ChainId = (
   env.VITE_CHAIN_ID
@@ -121,6 +128,8 @@ export const ENDPOINTS = {
   explorer: (env.VITE_CHRONOS_API_ENDPOINT as string) || endpoints.explorer
 }
 
+const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
+
 export const BASE_URL = isWebpack
   ? process.env.VITE_BASE_URL
   : import.meta.env.VITE_BASE_URL
@@ -163,3 +172,5 @@ export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
 
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
+
+export { ROUTES, MARKETS_SLUGS }

@@ -22,18 +22,13 @@ import {
   ExpiryFuturesMarket,
   PerpetualMarket
 } from '@injectivelabs/sdk-ts'
-import { IS_DEVNET } from '@/app/utils/constants'
+import { IS_DEVNET, MARKETS_SLUGS } from '@/app/utils/constants'
 import {
   indexerDerivativesApi,
   indexerOracleApi,
   indexerRestDerivativesChronosApi,
   tokenService
 } from '@/app/Services'
-import {
-  perpetuals as allowedPerpetualMarkets,
-  binaryOptions as allowedBinaryOptionsMarkets,
-  expiryFutures as allowedExpiryFutures
-} from '@/nuxt-config/hooks/route'
 import { ActivityFetchOptions } from '@/types'
 import { marketHasRecentlyExpired } from '@/app/utils/market'
 import {
@@ -192,32 +187,32 @@ export const useDerivativeStore = defineStore('derivative', {
       // Only include markets that we pre-defined to generate static routes for
       const uiPerpetualMarketsWithToken = uiPerpetualMarkets
         .filter((market) => {
-          return allowedPerpetualMarkets.includes(market.slug)
+          return MARKETS_SLUGS.futures.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            allowedPerpetualMarkets.indexOf(a.slug) -
-            allowedPerpetualMarkets.indexOf(b.slug)
+            MARKETS_SLUGS.futures.indexOf(a.slug) -
+            MARKETS_SLUGS.futures.indexOf(b.slug)
           )
         })
       const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
         .filter((market) => {
-          return allowedExpiryFutures.includes(market.slug)
+          return MARKETS_SLUGS.expiryFutures.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            allowedExpiryFutures.indexOf(a.slug) -
-            allowedExpiryFutures.indexOf(b.slug)
+            MARKETS_SLUGS.expiryFutures.indexOf(a.slug) -
+            MARKETS_SLUGS.expiryFutures.indexOf(b.slug)
           )
         })
       const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
         .filter((market) => {
-          return allowedBinaryOptionsMarkets.includes(market.slug)
+          return MARKETS_SLUGS.binaryOptions.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            allowedBinaryOptionsMarkets.indexOf(a.slug) -
-            allowedBinaryOptionsMarkets.indexOf(b.slug)
+            MARKETS_SLUGS.binaryOptions.indexOf(a.slug) -
+            MARKETS_SLUGS.binaryOptions.indexOf(b.slug)
           )
         })
 

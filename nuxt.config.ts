@@ -14,8 +14,6 @@ export default defineNuxtConfig({
     '@injectivelabs/ui-notifications',
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
-    // '@nuxtjs/google-gtag',
-    // '@nuxtjs/sitemap',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     ...(process.env.VITE_BUGSNAG_KEY ? ['nuxt-bugsnag'] : [])

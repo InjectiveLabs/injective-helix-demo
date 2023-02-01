@@ -16,10 +16,6 @@ import {
   indexerSpotApi,
   tokenService
 } from '@/app/Services'
-import {
-  spot as spotRoutes,
-  hiddenSpotMarkets
-} from '@/nuxt-config/hooks/route'
 import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
@@ -41,6 +37,7 @@ import {
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
+import { MARKETS_SLUGS } from '@/app/utils/constants'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -129,17 +126,14 @@ export const useSpotStore = defineStore('spot', {
       const uiMarkets =
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
-      // Only include markets that we pre-defined to generate static routes or are used for converting tokens only
-      const allowedSpotMarkets = [...spotRoutes, ...hiddenSpotMarkets]
-
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
-          return allowedSpotMarkets.includes(market.slug)
+          return MARKETS_SLUGS.spot.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            allowedSpotMarkets.indexOf(a.slug) -
-            allowedSpotMarkets.indexOf(b.slug)
+            MARKETS_SLUGS.spot.indexOf(a.slug) -
+            MARKETS_SLUGS.spot.indexOf(b.slug)
           )
         })
 
