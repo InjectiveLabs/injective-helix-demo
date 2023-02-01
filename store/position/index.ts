@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { UiDerivativeOrderbook, UiPosition } from '@injectivelabs/sdk-ui-ts'
+import { useDerivativeStore } from '../derivative'
 import { indexerDerivativesApi } from '@/app/Services'
 import { ActivityFetchOptions } from '@/types'
 import {
@@ -41,6 +42,7 @@ export const usePositionStore = defineStore('position', {
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
+      const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
       const { subaccount } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
@@ -53,7 +55,7 @@ export const usePositionStore = defineStore('position', {
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
-          marketIds: filters?.marketIds,
+          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
           direction: filters?.direction
         })
