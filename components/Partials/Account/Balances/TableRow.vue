@@ -6,7 +6,7 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents, Modal } from '@/types'
+import { AccountBalance, BridgeBusEvents, BusEvents, Modal } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const router = useRouter()
@@ -35,7 +35,7 @@ const isUSDCDenom =
     props.balance.token.denom.toLowerCase()
   )
 
-const convertUSDC = [usdcTokenDenom.USDC].includes(
+const convertUSDC = [usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
   props.balance.token.denom.toLowerCase()
 )
 
@@ -102,6 +102,7 @@ function handleWithdrawClick() {
 }
 
 function handleConvert() {
+  useEventBus<Token>(BusEvents.ConvertUSDC).emit(props.balance.token as Token)
   modalStore.openModal({ type: Modal.ConvertUSDC })
 }
 </script>

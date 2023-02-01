@@ -9,6 +9,7 @@ import {
   TradeForm,
   TradeFormValue
 } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const accountStore = useAccountStore()
 const modalStore = useModalStore()
@@ -137,7 +138,12 @@ function closeModal() {
     </template>
     <AppHocLoading :status="status" class="justify-center">
       <div class="mx-auto bg-gray-850 rounded-lg justify-center">
-        <div class="mb-2">{{ $t('account.whyConvert') }}</div>
+        <div
+          v-if="market.baseToken.denom.toLowerCase() === usdcTokenDenom.USDC"
+          class="mb-2"
+        >
+          {{ $t('account.whyConvert') }}
+        </div>
 
         <ModalsConvertUSDCTokenForm
           v-model:isBase="isBase"

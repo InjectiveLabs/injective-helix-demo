@@ -7,13 +7,13 @@ import {
   Modal,
   TradeField,
   TradeForm,
-  TradeFormValue,
-  USDCSymbol
+  TradeFormValue
 } from '@/types'
 import {
   TRADE_FORM_PRICE_ROUNDING_MODE,
   TRADE_FORM_QUANTITY_ROUNDING_MODE
 } from '@/app/utils/constants'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -52,52 +52,50 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-/* TODO: resurrect for USDCSo implementation */
-const { value: orderType } = useStringField({
+const baseBalance = computed(() =>
+  props.balances.find(
+    (balance) => balance.token.denom === props.market.baseToken.denom
+  )
+)
+
+const quoteBalance = computed(() =>
+  props.balances.find(
+    (balance) => balance.token.denom === props.market.quoteToken.denom
+  )
+)
+
+const isWHSolUSDTBaseDenom = computed(
+  () => props.market.baseToken.denom === usdcTokenDenom.USDCso
+)
+
+const { value: orderType, setValue: setOrderType } = useStringField({
   name: TradeField.OrderType,
   initialValue: SpotOrderSide.Sell
 })
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-const baseBalance = computed(() =>
-  props.balances.find(
-    (balance) => balance.token.symbol === USDCSymbol.PeggyEthereum
-  )
-)
+function toggleOrderType() {
+  setOrderType(isBuy.value ? SpotOrderSide.Sell : SpotOrderSide.Buy)
+}
 
-const quoteBalance = computed(() =>
-  props.balances.find(
-    (balance) => balance.token.symbol === USDCSymbol.WormholeEthereum
-  )
-)
+function handleSwap() {
+  animationCount.value = animationCount.value + 1
 
-/* TODO: ressurect for USDCso implementation */
+  emit('update:isBase', !props.isBase)
 
-// const { value: orderType, setValue: setOrderType } = useStringField({
-//   name: TradeField.OrderType,
-//   initialValue: SpotOrderSide.Buy
-// })
+  emit('update:formValue', {
+    field: TradeField.BaseAmount,
+    value: ''
+  })
 
-// function toggleOrderType() {
-//   setOrderType(isBuy.value ? SpotOrderSide.Sell : SpotOrderSide.Buy)
-// }
+  emit('update:formValue', {
+    field: TradeField.QuoteAmount,
+    value: ''
+  })
 
-// TODO: ressurct for USDCso implementation
-// function handleSwap() {
-//   animationCount.value = animationCount.value + 1
-
-//   emit('update:isBase', !props.isBase)
-
-//   emit('update:formValue', {
-//     field: TradeField.BaseAmount,
-//     value: ''
-//   })
-
-//   emit('update:formValue', {
-//     field: TradeField.QuoteAmount,
-//     value: ''
-//   })
+  toggleOrderType()
+}
 
 function handleUpdateBaseAmount(amount: string) {
   emit('update:isBase', true)
@@ -167,8 +165,15 @@ watch(
   () => props.worstPriceWithSlippage,
   () => {
     if (props.isBase) {
+      if (!props.formValues[TradeField.BaseAmount]) {
+        return
+      }
+
       updateQuoteAmount(props.formValues[TradeField.BaseAmount])
     } else {
+      if (!props.formValues[TradeField.QuoteAmount]) {
+        return
+      }
       updateBaseAmount(props.formValues[TradeField.QuoteAmount])
     }
   }
@@ -188,11 +193,10 @@ onMounted(() => {
       :class="!isBuy ? 'order-first' : 'order-last'"
     >
       <span class="font-semibold">{{ $t('account.from') }}</span>
-      <span
-        class="flex items-center justify-center rounded p-1 text-xs font-bold tracking-tight bg-gray-500 text-white"
-      >
-        {{ $t('account.injectiveBridge') }}
-      </span>
+      <ModalsConvertUSDCTokenFormPill
+        v-if="baseBalance"
+        :balance="baseBalance"
+      />
     </div>
     <transition :name="!isBuy ? 'fade-up' : 'fade-down'" mode="out-in">
       <div
@@ -214,11 +218,14 @@ onMounted(() => {
     <div
       class="flex items-center justify-center my-4 mx-auto bg-blue-500 h-8 w-8 rounded-full"
     >
-      <!-- resurrect for USDCso implementation -->
-      <!-- <BaseIcon name="arrow-up-down" class="mx-auto" @click="handleSwap" /> -->
       <BaseIcon
-        name="arrow"
-        class="h-5 w-5 rounded-full bg-blue-500 -rotate-90"
+        :name="isWHSolUSDTBaseDenom ? 'arrow-up-down' : 'arrow'"
+        class="mx-auto h-5 w-5"
+        :class="{
+          '-rotate-90': !isWHSolUSDTBaseDenom,
+          'ml-2': isWHSolUSDTBaseDenom
+        }"
+        @click="handleSwap"
       />
     </div>
 
@@ -227,11 +234,10 @@ onMounted(() => {
       :class="!isBuy ? 'order-last' : 'order-first'"
     >
       <span class="font-semibold">{{ $t('account.to') }}</span>
-      <span
-        class="flex justify-center align-center rounded p-1 text-xs font-bold tracking-tight bg-blue-550 text-white"
-      >
-        {{ $t('account.wormhole') }}
-      </span>
+      <ModalsConvertUSDCTokenFormPill
+        v-if="quoteBalance"
+        :balance="quoteBalance"
+      />
     </div>
     <transition :name="!isBuy ? 'fade-down' : 'fade-up'" mode="out-in">
       <div

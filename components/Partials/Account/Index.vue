@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { Token } from '@injectivelabs/token-metadata'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
@@ -29,25 +31,28 @@ const status = reactive(new Status(StatusType.Loading))
 const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
 
-const usdcConvertMarket = computed(() => {
-  return spotStore.markets.find(
-    (market) =>
-      market.baseToken.symbol === USDCSymbol.PeggyEthereum &&
-      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
-  )
-})
+const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
 onMounted(() => {
   handleViewFromRoute()
   initBalances()
 
-  useEventBus(BusEvents.FundingRefresh).on(() => refreshBalances())
+  useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
+  useEventBus<Token>(BusEvents.ConvertUSDC).on(setMarketFromToken)
 })
 
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
   spotStore.reset()
 })
+
+function setMarketFromToken(token: Token) {
+  usdcConvertMarket.value = spotStore.markets.find(
+    (market) =>
+      market.baseToken.symbol === token.symbol &&
+      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
+  )
+}
 
 function initBalances() {
   handleViewFromRoute()
@@ -155,7 +160,9 @@ function handleHideBalances(value: boolean) {
       v-if="modalStore.modals[Modal.AssetDetails]"
     />
     <PartialsAccountBridge />
+
     <ModalsAddMargin />
+
     <ModalsConvertUSDCWrapper
       v-if="usdcConvertMarket"
       :balances="balances"
