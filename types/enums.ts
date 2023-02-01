@@ -202,15 +202,16 @@ export enum BalanceHeaderType {
 
 export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
+  AssetDetailsModalPayload = 'asset-details-modal-payload',
+  ConvertUSDC = 'convert-usdc',
+  FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
+  OrderbookNotionalClick = 'orderbook-notional-click',
   OrderbookPriceClick = 'orderbook-price-click',
   OrderbookSizeClick = 'orderbook-size-click',
-  OrderbookNotionalClick = 'orderbook-notional-click',
-  ShowLedgerConnect = 'show-ledger-connect',
-  AssetDetailsModalPayload = 'asset-details-modal-payload',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   PostOnlyToggled = 'post-only-toggled',
-  FundingRefresh = 'funding-refresh',
+  ShowLedgerConnect = 'show-ledger-connect',
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected'
 }
 
