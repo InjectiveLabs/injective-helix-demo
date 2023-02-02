@@ -64,7 +64,10 @@ onMounted(() => {
   ) {
     setAmountValue(maxBalanceToFixed.value)
 
-    emit('update:modelValue', maxBalanceToFixed.value)
+    emit('update:amount', {
+      isBase: props.amountFieldName === TradeField.BaseAmount,
+      amount: maxBalanceToFixed.value
+    })
   }
 })
 
