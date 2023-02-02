@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import {
-  perpetuals as sortPerpetualMarkets,
-  spot as sortSpotMarkets
-} from '@/nuxt-config/hooks/route'
+import { MARKETS_SLUGS } from '@/app/utils/constants'
 import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
@@ -32,7 +29,7 @@ const derivativeBoostedMarkets = computed(() => {
       derivativeMarketIds.includes(derivativeMarket.marketId)
     )
     .filter((derivativeMarket) =>
-      sortPerpetualMarkets.includes(derivativeMarket.slug)
+      MARKETS_SLUGS.futures.includes(derivativeMarket.slug)
     )
     .sort(
       (a, b) =>
@@ -83,8 +80,8 @@ const derivativeBoostedMarkets = computed(() => {
 
   return [...derivatives, ...nonBoostedDerivatives].sort((a, b) => {
     return (
-      sortPerpetualMarkets.indexOf(a.slug) -
-      sortPerpetualMarkets.indexOf(b.slug)
+      MARKETS_SLUGS.futures.indexOf(a.slug) -
+      MARKETS_SLUGS.futures.indexOf(b.slug)
     )
   })
 })
@@ -100,7 +97,7 @@ const spotBoostedMarkets = computed(() => {
 
   const spotMarketsTickerBasedOnIds = spotStore.markets
     .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
-    .filter((spot) => sortSpotMarkets.includes(spot.slug))
+    .filter((spot) => MARKETS_SLUGS.spot.includes(spot.slug))
     .sort(
       (a, b) =>
         spotMarketIds.indexOf(a.marketId) - spotMarketIds.indexOf(b.marketId)
@@ -145,7 +142,9 @@ const spotBoostedMarkets = computed(() => {
     }, [] as PointsMultiplierWithMarketTicker[])
 
   return [...spot, ...nonBoostedSpot].sort((a, b) => {
-    return sortSpotMarkets.indexOf(a.slug) - sortSpotMarkets.indexOf(b.slug)
+    return (
+      MARKETS_SLUGS.spot.indexOf(a.slug) - MARKETS_SLUGS.spot.indexOf(b.slug)
+    )
   })
 })
 </script>

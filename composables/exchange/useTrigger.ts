@@ -140,8 +140,6 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
         : t('trade.limit')
 
     switch (trigger.value.orderType) {
-      case DerivativeOrderSide.Buy:
-      case DerivativeOrderSide.Sell:
       case DerivativeOrderSide.BuyPO:
       case DerivativeOrderSide.SellPO:
         return executionType

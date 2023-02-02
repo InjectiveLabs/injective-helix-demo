@@ -84,8 +84,8 @@ function handleClickOnMarket() {
   <tr v-if="market" :data-cy="'order-table-row-' + market.ticker">
     <td class="h-12 text-left cursor-pointer pl-3" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="market && !!market.baseToken.logo" class="w-4 h-4">
-          <CommonTokenIcon :token="market.baseToken" sm />
+        <div v-if="market && market.baseToken">
+          <CommonTokenIcon :token="market.baseToken" md />
         </div>
         <div class="ml-3">
           <span

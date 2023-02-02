@@ -15,6 +15,7 @@ const props = defineProps({
   }
 })
 
+const router = useRouter()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const modalStore = useModalStore()
@@ -91,6 +92,19 @@ function handleAddMargin() {
   modalStore.openModal({ type: Modal.AddMarginToPosition })
 }
 
+function handleClick() {
+  if (!market.value) {
+    return
+  }
+
+  router.push({
+    name: 'futures-futures',
+    params: {
+      futures: market.value.slug
+    }
+  })
+}
+
 function handleClosePosition() {
   if (!market.value) {
     return
@@ -158,7 +172,7 @@ function closePositionAndReduceOnlyOrders() {
 </script>
 
 <template>
-  <div v-if="market" class="border-t border-gray-600 py-4">
+  <div v-if="market" class="border-t border-gray-600 py-4" @click="handleClick">
     <div class="flex justify-between items-center gap-2">
       <div class="col-span-1 flex justify-start items-center gap-2">
         <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
@@ -181,7 +195,7 @@ function closePositionAndReduceOnlyOrders() {
 
       <button
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex items-center justify-center"
-        @click="handleClosePosition"
+        @click.stop="handleClosePosition"
       >
         <span class="text-xs text-red-500">
           {{ $t('account.positions.closePosition') }}

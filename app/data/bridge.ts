@@ -80,6 +80,12 @@ export const networksMeta = [
     value: BridgingNetwork.Crescent,
     icon: '/bridgingNetworks/crescent.jpeg',
     symbol: 'crescent.jpeg'
+  },
+  {
+    text: 'Solana',
+    value: BridgingNetwork.Solana,
+    icon: '/bridgingNetworks/solana.svg',
+    symbol: 'solana.svg'
   }
 ] as NetworkMeta[]
 
@@ -124,6 +130,14 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
     return BridgingNetwork.Evmos
   }
 
+  if (['XPRT'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Persistence
+  }
+
+  if (['STRD'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Stride
+  }
+
   if (['XRPT'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Persistence
   }
@@ -138,6 +152,10 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
 
   if (['CRE'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Crescent
+  }
+
+  if (['SOL', 'USDCSO'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Solana
   }
 
   return BridgingNetwork.Ethereum

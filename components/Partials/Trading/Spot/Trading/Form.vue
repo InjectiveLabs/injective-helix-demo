@@ -8,6 +8,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  Modal,
   OrderAttemptStatus,
   TradeField,
   TradeForm,
@@ -16,11 +17,11 @@ import {
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
   DEBUG_CALCULATION,
-  TRADE_FORM_PRICE_ROUNDING_MODE,
-  TRADE_FORM_QUANTITY_ROUNDING_MODE
+  TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
 const accountStore = useAccountStore()
+const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -159,13 +160,16 @@ const { lastTradedPrice } = useSpotLastPriceFormatter(
   computed(() => spotStore.trades || [])
 )
 
-const { maxAmountOnOrderbook, slippage, worstPriceWithSlippage } = useSpotPrice(
-  {
-    formValues,
-    isBase,
-    market: computed(() => props.market)
-  }
-)
+const {
+  maxAmountOnOrderbook,
+  slippage,
+  updateAmountFromBase,
+  worstPriceWithSlippage
+} = useSpotPrice({
+  formValues,
+  isBase,
+  market: computed(() => props.market)
+})
 
 const executionPrice = computed(() => {
   return tradingTypeMarket.value
@@ -252,52 +256,12 @@ function updateAmount({
 }) {
   isBase.value = isBaseUpdate
 
-  if (isBaseUpdate) {
-    const updatedQuoteAmount = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.BaseAmount]
-    ).times(executionPrice.value)
+  const amountToUpdate = updateAmountFromBase({ amount, isBase: isBaseUpdate })
 
-    if (updatedQuoteAmount.isNaN()) {
-      return
-    }
-
-    const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedQuoteAmountToString) {
-      return
-    }
-
+  if (amountToUpdate) {
     updateFormValue({
-      field: TradeField.QuoteAmount,
-      value: updatedQuoteAmountToString
-    })
-  } else {
-    const baseAmountFromAveragePrice = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.QuoteAmount]
-    ).dividedBy(executionPrice.value)
-
-    if (
-      baseAmountFromAveragePrice.isNaN() ||
-      baseAmountFromAveragePrice.lte(0)
-    ) {
-      return
-    }
-
-    const updatedBaseAmountToString = baseAmountFromAveragePrice.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedBaseAmountToString) {
-      return
-    }
-
-    updateFormValue({
-      field: TradeField.BaseAmount,
-      value: updatedBaseAmountToString
+      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      value: amountToUpdate
     })
   }
 }
@@ -364,6 +328,16 @@ function submitMarketOrder() {
     .finally(() => {
       status.value.setIdle()
     })
+}
+
+function handleRequestSubmit() {
+  if (highDeviation.value) {
+    return modalStore.openModal({
+      type: Modal.PriceDeviation
+    })
+  }
+
+  return handleSubmit()
 }
 
 function handleSubmit() {
@@ -478,7 +452,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         maxOrdersError,
         status
       }"
-      @submit:request="handleSubmit"
+      @submit:request="handleRequestSubmit"
     />
+
+    <ModalsPriceDeviation @confirmed="handleSubmit" />
   </div>
 </template>

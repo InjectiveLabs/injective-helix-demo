@@ -1,3 +1,4 @@
+import path from 'path'
 import { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { colors } from './nuxt-config/tailwind'
@@ -24,12 +25,11 @@ const extraSizings = {
 export default <Config>{
   presets: [require('@injectivelabs/ui-shared/lib/tailwind-preset.cjs')],
   content: [
-    './components/**/*.{js,vue,ts}',
-    './layouts/**/*.vue',
-    './pages/**/*.vue',
-    './plugins/**/*.{js,ts}',
-    './nuxt.config.{js,ts}',
-    './app.vue'
+    path.join(__dirname, './components/**/*.{js,vue,ts}'),
+    path.join(__dirname, './layouts/**/*.vue'),
+    path.join(__dirname, './pages/**/*.vue'),
+    path.join(__dirname, './plugins/**/*.{js,ts}'),
+    path.join(__dirname, './app.vue')
   ],
   safelist: ['border-4', 'border-t-blue-200', 'border-r-blue-200'],
   mode: 'jit',

@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
-import { UiMarketWithToken } from '@/types'
+import { ActivityTab, UiMarketWithToken } from '@/types'
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
-  markets: {
-    type: Array as PropType<UiMarketWithToken[]>,
-    default: undefined
-  },
-
   modelValue: {
     type: String,
     default: ''
+  },
+
+  tab: {
+    type: String as PropType<ActivityTab>,
+    required: true
   }
 })
 
@@ -19,13 +22,19 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const supportedTokens = computed(() => {
-  if (!props.markets) {
+const markets = computed<UiMarketWithToken[]>(() => {
+  const isSpot = props.tab === ActivityTab.Spot
+
+  return isSpot ? spotStore.markets : derivativeStore.markets
+})
+
+const tokens = computed(() => {
+  if (!markets.value) {
     return []
   }
 
   // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
-  const tokens = props.markets.reduce((list, market) => {
+  const tokens = markets.value.reduce((tokens, market) => {
     const baseToken = {
       balance: '',
       denom: market.baseToken.denom,
@@ -38,7 +47,7 @@ const supportedTokens = computed(() => {
       token: market.quoteToken
     } as BankBalanceWithToken
 
-    return [...list, baseToken, quoteToken]
+    return [...tokens, baseToken, quoteToken]
   }, [] as BankBalanceWithToken[])
 
   const uniqueTokens = [
@@ -49,7 +58,7 @@ const supportedTokens = computed(() => {
 })
 
 const options = computed(() =>
-  supportedTokens.value.map(({ token }) => ({
+  tokens.value.map(({ token }) => ({
     token,
     display: token.symbol,
     value: token.denom
@@ -60,6 +69,7 @@ const value = computed({
   get(): string {
     return props.modelValue
   },
+
   set(val: string) {
     emit('update:modelValue', val)
   }
@@ -70,13 +80,17 @@ const value = computed({
   <AppSelectField
     v-model="value"
     :options="options"
-    :placeholder="$t('account.positions.market.label')"
+    :placeholder="
+      tab === ActivityTab.WalletHistory
+        ? $t('walletHistory.transfers.asset')
+        : $t('account.positions.market.label')
+    "
     searchable
     clearable
     data-cy="universal-table-filter-by-asset-input"
   >
     <template #selected-option="{ option }">
-      <PartialsAccountPositionsFilterOption :option="option" />
+      <PartialsAccountPositionsFilterOption v-if="option" :option="option" />
     </template>
 
     <template #option="{ option, active }">

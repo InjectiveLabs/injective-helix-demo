@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  BankBalances,
   SubaccountBalanceWithToken,
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   UiAccountTransformer,
@@ -14,33 +15,27 @@ import {
   SubaccountBalance
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  indexerAccountApi,
-  msgBroadcastClient,
-  tokenPrice,
-  tokenService
-} from '@/app/Services'
+import { indexerAccountApi, msgBroadcastClient } from '@/app/Services'
 import {
   streamSubaccountBalances,
   cancelSubaccountStreams
 } from '@/app/client/streams/account'
-import { derivativeMarketRouteNames } from '@/app/data/market'
 import { backupPromiseCall } from '@/app/utils/async'
 
 type AccountStoreState = {
   subaccountIds: string[]
   subaccount?: UiSubaccount
+  accountPortfolio?: AccountPortfolio
   subaccountBalancesWithToken: SubaccountBalanceWithToken[]
   subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
-  accountPortfolio?: AccountPortfolio
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   subaccountIds: [],
   subaccount: undefined,
+  accountPortfolio: undefined,
   subaccountBalancesWithToken: [],
-  subaccountBalancesWithTokenAndPrice: [],
-  accountPortfolio: undefined
+  subaccountBalancesWithTokenAndPrice: []
 })
 
 export const useAccountStore = defineStore('account', {
@@ -52,21 +47,33 @@ export const useAccountStore = defineStore('account', {
       }
 
       return state.subaccount.balances.length > 0
+    },
+
+    subaccountBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return []
+      }
+
+      return state.subaccount.balances
+    },
+
+    subaccountBalancesAsBankBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return {}
+      }
+
+      return state.subaccount.balances.reduce(
+        (balances, { availableBalance, denom }) => ({
+          ...balances,
+          [denom]: availableBalance
+        }),
+        {} as BankBalances
+      )
     }
   },
   actions: {
-    async init() {
-      const accountStore = useAccountStore()
-
-      await accountStore.fetchSubaccounts()
-    },
-
     async fetchSubaccounts() {
       const accountStore = useAccountStore()
-      const derivativeStore = useDerivativeStore()
-      const route = useRoute()
-      const positionStore = usePositionStore()
-      const spotStore = useSpotStore()
 
       const { injectiveAddress } = useWalletStore()
 
@@ -96,77 +103,6 @@ export const useAccountStore = defineStore('account', {
       accountStore.$patch({
         subaccount,
         subaccountIds
-      })
-
-      if (route.name === 'spot-spot') {
-        await spotStore.fetchSubaccountOrders()
-        await spotStore.fetchSubaccountTrades()
-        await spotStore.streamSubaccountOrders()
-        await spotStore.streamSubaccountOrderHistory()
-      }
-
-      if (derivativeMarketRouteNames.includes(route.name as string)) {
-        await derivativeStore.fetchSubaccountOrders()
-        await derivativeStore.fetchSubaccountTrades()
-        await derivativeStore.streamSubaccountOrders()
-        await derivativeStore.streamSubaccountOrderHistory()
-        await derivativeStore.streamSubaccountTrades()
-        await positionStore.fetchSubaccountPositions()
-        await positionStore.streamSubaccountPositions()
-      }
-    },
-
-    async fetchSubaccountsBalances() {
-      const accountStore = useAccountStore()
-
-      if (!accountStore.subaccount) {
-        await accountStore.refreshSubaccountBalances()
-      }
-
-      if (accountStore.subaccount && !accountStore.subaccount.balances) {
-        await accountStore.refreshSubaccountBalances()
-      }
-    },
-
-    async refreshSubaccountBalances() {
-      const accountStore = useAccountStore()
-
-      await accountStore.fetchSubaccounts()
-
-      if (!accountStore.subaccount) {
-        return
-      }
-
-      const subaccountBalances = accountStore.subaccount.balances
-      const subaccountBalancesWithToken =
-        await tokenService.getSubaccountBalancesWithToken(subaccountBalances)
-
-      accountStore.$patch({
-        subaccountBalancesWithToken
-      })
-    },
-
-    async fetchSubaccountsBalancesWithPrices() {
-      const accountStore = useAccountStore()
-
-      await accountStore.refreshSubaccountBalances()
-
-      const subaccountBalancesWithTokenAndPrice = await Promise.all(
-        accountStore.subaccountBalancesWithToken.map(async (balance) => {
-          return {
-            ...balance,
-            token: {
-              ...balance.token,
-              usdPrice: await tokenPrice.fetchUsdTokenPrice(
-                balance.token.coinGeckoId
-              )
-            }
-          } as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
-        })
-      )
-
-      accountStore.$patch({
-        subaccountBalancesWithTokenAndPrice
       })
     },
 
@@ -202,7 +138,7 @@ export const useAccountStore = defineStore('account', {
       }
 
       if (!accountStore.subaccount) {
-        await accountStore.init()
+        await accountStore.fetchSubaccounts()
       }
 
       const accountPortfolio = await indexerAccountApi.fetchPortfolio(
@@ -242,7 +178,17 @@ export const useAccountStore = defineStore('account', {
             }
 
             if (currentBalanceIndex !== -1) {
-              balances[currentBalanceIndex] = updatedBalance
+              const balanceToBeUpdated = balances[currentBalanceIndex]
+
+              balances[currentBalanceIndex] = {
+                totalBalance:
+                  updatedBalance.totalBalance ||
+                  balanceToBeUpdated.totalBalance,
+                availableBalance:
+                  updatedBalance.availableBalance ||
+                  balanceToBeUpdated.availableBalance,
+                denom: updatedBalance.denom
+              }
             } else {
               balances.push(updatedBalance)
             }

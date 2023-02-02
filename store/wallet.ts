@@ -93,8 +93,6 @@ export const useWalletStore = defineStore('wallet', {
 
       await bankStore.fetchBankBalancesWithToken()
       await accountStore.fetchSubaccounts()
-      await accountStore.fetchSubaccountsBalances()
-      await accountStore.fetchSubaccountsBalancesWithPrices()
       await onBoardStore.init()
       await tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
     },
@@ -361,7 +359,7 @@ export const useWalletStore = defineStore('wallet', {
     async validate() {
       const { wallet, injectiveAddress, address } = useWalletStore()
       const { ethereumChainId, chainId } = useAppStore()
-      const { hasEnoughInjForGas } = useBankStore()
+      const { hasEnoughInjForGas } = useWalletStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)

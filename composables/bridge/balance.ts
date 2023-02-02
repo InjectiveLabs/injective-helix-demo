@@ -21,7 +21,7 @@ const appendCachedTokens = (
 ) => {
   const cachedTokensWithBalance = cachedTokens.map((token) => ({
     balance: '0',
-    balanceInToken: '0',
+    balanceToBase: '0',
     denom: token.denom,
     token
   }))
@@ -50,7 +50,7 @@ export function useBridgeBalance({
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
-  const erc2Balances = computed(() => {
+  const erc20Balances = computed(() => {
     const balances = tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(
       (b) => {
         const balance = new BigNumberInWei(b.balance)
@@ -61,7 +61,7 @@ export function useBridgeBalance({
           token: { ...b } as Token,
           denom: b.denom,
           balance,
-          balanceInToken: balance
+          balanceToBase: balance
         } as BalanceWithToken
       }
     )
@@ -70,7 +70,7 @@ export function useBridgeBalance({
   })
 
   const bankBalances = computed(() => {
-    const balances = [...bankStore.bankErc20BalancesWithToken].map((b) => {
+    const balances = bankStore.bankBalancesWithToken.map((b) => {
       const balance = new BigNumberInWei(b.balance || 0)
         .toBase(b.token.decimals)
         .toString()
@@ -78,7 +78,7 @@ export function useBridgeBalance({
       return {
         ...b,
         balance,
-        balanceInToken: balance
+        balanceToBase: balance
       } as BalanceWithToken
     })
 
@@ -86,17 +86,30 @@ export function useBridgeBalance({
   })
 
   const accountBalances = computed(() => {
-    const balances = accountStore.subaccountBalancesWithToken.map((b) => {
-      const balance = new BigNumberInWei(b.availableBalance || 0)
-        .toBase(b.token.decimals)
-        .toString()
+    if (!accountStore.subaccount) {
+      return []
+    }
 
-      return {
-        ...b,
-        balance,
-        balanceInToken: balance
-      } as BalanceWithToken
-    })
+    const balances = accountStore.subaccount.balances
+      .map((subaccountBalance) => {
+        const token = tokenStore.tokens.find(
+          (token) => token.denom === subaccountBalance.denom
+        )
+
+        if (!token) {
+          return undefined
+        }
+
+        return {
+          denom: subaccountBalance.denom,
+          balance: subaccountBalance.availableBalance,
+          balanceToBase: new BigNumberInWei(subaccountBalance.availableBalance)
+            .toBase(token.decimals)
+            .toFixed(),
+          token
+        }
+      })
+      .filter((balance) => balance) as BalanceWithToken[]
 
     return appendCachedTokens(balances, cachedTokens.value)
   })
@@ -104,7 +117,7 @@ export function useBridgeBalance({
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
     switch (bridgeType.value) {
       case BridgeType.Deposit:
-        return erc2Balances.value
+        return erc20Balances.value
       case BridgeType.Withdraw:
         return bankBalances.value
       default: {
@@ -121,7 +134,7 @@ export function useBridgeBalance({
       .map((balanceWithToken) => {
         // fee delegation don't work on devnet
         const isWalletExemptFromGasFee =
-          walletStore.isCosmosWallet || !IS_DEVNET
+          !walletStore.isCosmosWallet && !IS_DEVNET
 
         if (
           isWalletExemptFromGasFee ||
@@ -137,13 +150,13 @@ export function useBridgeBalance({
         ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
 
         if (transferableBalance.lte(ZERO_IN_BASE)) {
-          return { ...balanceWithToken, balance: '0', balanceInToken: '0' }
+          return { ...balanceWithToken, balance: '0', balanceToBase: '0' }
         }
 
         return {
           ...balanceWithToken,
           balance: transferableBalance.toString(),
-          balanceInToken: transferableBalance.toString()
+          balanceToBase: transferableBalance.toString()
         }
       })
       .filter(({ denom }) => denom && !denom.startsWith('share'))

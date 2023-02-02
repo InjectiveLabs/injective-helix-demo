@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { NETWORK } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
-import { Modal, BridgeForm, BridgeType } from '@/types'
+import { Modal, BridgeField, BridgeForm, BridgeType } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -120,7 +120,14 @@ function close() {
           </div>
         </div>
 
-        <ModalsBridgeNotSupportedBridgeTypeNote v-else />
+        <ModalsBridgeNotSupportedBridgeTypeNote
+          v-else
+          v-bind="{
+            formValues,
+            selectedNetwork: formValues[BridgeField.BridgingNetwork],
+            bridgeType
+          }"
+        />
       </div>
       <CommonUserNotConnectedNote v-else />
     </div>

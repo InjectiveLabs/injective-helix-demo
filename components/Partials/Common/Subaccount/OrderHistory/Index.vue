@@ -20,16 +20,20 @@ const orderHistories = computed(() =>
     ? spotStore.subaccountOrderHistory
     : derivativeStore.subaccountOrderHistory
 )
+
+const sortedOrderHistories = computed(() =>
+  orderHistories.value.sort((o1, o2) => o2.updatedAt - o1.updatedAt)
+)
 </script>
 
 <template>
   <div class="h-full">
     <CommonTableWrapper class="hidden sm:block">
-      <table v-if="orderHistories.length > 0" class="table">
+      <table v-if="sortedOrderHistories.length > 0" class="table">
         <PartialsCommonSubaccountOrderHistoryHeader />
         <tbody>
           <PartialsCommonSubaccountOrderHistoryRow
-            v-for="(order, index) in orderHistories"
+            v-for="(order, index) in sortedOrderHistories"
             :key="`order-history-${index}`"
             :is-spot="isSpot"
             :order="order"

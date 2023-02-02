@@ -5,7 +5,6 @@ definePageMeta({
   middleware: ['connected']
 })
 
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -13,7 +12,7 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  Promise.all([accountStore.init(), spotStore.init(), derivativeStore.init()])
+  Promise.all([spotStore.init(), derivativeStore.init()])
     .catch($onError)
     .finally(() => {
       status.setIdle()

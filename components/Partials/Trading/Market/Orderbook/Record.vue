@@ -18,6 +18,7 @@ import {
   OrderBookNotionalAndType,
   UiMarketWithToken
 } from '@/types'
+import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
   aggregation: {
@@ -175,7 +176,7 @@ defineExpose({
 <template>
   <li
     ref="element"
-    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden z-[8]"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -186,7 +187,7 @@ defineExpose({
       :class="recordTypeBuy ? 'buys-green-bg' : 'sells-red-bg'"
     ></span>
     <span
-      class="w-1/3 text-xs px-2 flex items-center justify-end"
+      class="w-1/3 text-xs px-2 flex items-center justify-end z-[8]"
       @click.stop="onPriceClick"
     >
       <BaseIcon
@@ -220,7 +221,7 @@ defineExpose({
         />
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2" @click.stop="onSizeClick">
+    <span class="w-1/3 text-xs px-2 z-[8]" @click.stop="onSizeClick">
       <span
         class="block text-right font-mono"
         :class="{
@@ -232,14 +233,14 @@ defineExpose({
           xs
           :decimals="market.quantityDecimals"
           :number="quantity"
-          :abbreviation-floor="1_000_000"
+          :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
           dont-group-values
           data-cy="orderbook-record-quantity-text-content"
         />
       </span>
     </span>
     <span
-      class="w-1/3 text-xs px-2 font-mono text-right"
+      class="w-1/3 text-xs px-2 font-mono text-right z-[8]"
       @click.stop="onNotionalClick"
     >
       <AppNumber

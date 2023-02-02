@@ -36,7 +36,10 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:denom', state: string): void
-  (e: 'update:modelValue', state: string): void
+  (
+    e: 'update:amount',
+    { amount, isBase }: { amount: string; isBase: boolean }
+  ): void
   (e: 'update:max', state: string): void
 }>()
 
@@ -44,15 +47,18 @@ const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
 
-const { valueToBigNumber, valueToFixed: maxBalanceToFixed } =
-  useBigNumberFormatter(
-    computed(() =>
-      selectedToken.value ? selectedToken.value.balanceInToken : '0'
-    ),
-    {
-      decimalPlaces: props.maxDecimals
-    }
-  )
+const {
+  valueToBigNumber,
+  valueToFixed: maxBalanceToFixed,
+  valueToString: maxBalanceToString
+} = useBigNumberFormatter(
+  computed(() =>
+    selectedToken.value ? selectedToken.value.balanceToBase : '0'
+  ),
+  {
+    decimalPlaces: props.maxDecimals
+  }
+)
 
 const {
   value: amount,
@@ -83,8 +89,12 @@ const inputPlaceholder = computed(() =>
 )
 
 function handleAmountUpdate(amount: string) {
-  emit('update:modelValue', amount)
   setAmountValue(amount)
+
+  emit('update:amount', {
+    amount,
+    isBase: props.amountFieldName === TradeField.BaseAmount
+  })
 }
 
 function handleMax() {
@@ -118,7 +128,7 @@ export default {
         >
           {{ $t('trade.max') }}:
         </span>
-        <p>{{ maxBalanceToFixed }} {{ selectedToken.token.symbol }}</p>
+        <p>{{ maxBalanceToString }} {{ selectedToken.token.symbol }}</p>
       </div>
     </div>
 
@@ -126,6 +136,7 @@ export default {
       class="w-full"
       :disabled="disabled"
       :distance="amountErrors.length > 0 ? 44 : 24"
+      :flip="false"
       auto-size="true"
       auto-boundary-max-size
       popper-class="dropdown"
@@ -176,6 +187,6 @@ export default {
 
 <style>
 .dropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-800 border-blue-300 pb-4 shadow-sm;
+  @apply bg-gray-800 border-blue-300 shadow-sm;
 }
 </style>

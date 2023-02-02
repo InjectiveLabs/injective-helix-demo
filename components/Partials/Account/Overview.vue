@@ -4,12 +4,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
-  UI_MINIMAL_AMOUNT,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  HIDDEN_BALANCE_DISPLAY
+  HIDDEN_BALANCE_DISPLAY,
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { getAbbreviatedVolume } from '@/app/utils/market'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const props = defineProps({
@@ -31,45 +29,31 @@ const btcUsdPrice = computed(() => {
   return tokenStore.btcUsdPrice
 })
 
-const totalBalance = computed(() => {
-  return props.balances
-    .filter((balance) => !balance.subaccountTotalBalance.isNaN())
-    .reduce((total, balance) => {
-      const combinedBalance = balance.bankBalance.plus(
-        balance.subaccountTotalBalance
-      )
+const totalBalance = computed(() =>
+  props.balances.reduce(
+    (total, balance) => total.plus(balance.totalBalance),
+    ZERO_IN_BASE
+  )
+)
 
-      return total.plus(combinedBalance)
-    }, ZERO_IN_BASE)
-})
+const totalBalanceInUsd = computed(() =>
+  props.balances.reduce(
+    (total, balance) => total.plus(balance.totalBalanceInUsd),
+    ZERO_IN_BASE
+  )
+)
 
-const totalBalanceInUsd = computed(() => {
-  const result = props.balances
-    .filter((balance) => !balance.subaccountTotalBalance.isNaN())
-    .reduce((total, balance) => {
-      const combinedBalance = balance.bankBalance.plus(
-        balance.subaccountTotalBalance
-      )
+const shouldAbbreviateTotalBalance = computed(() =>
+  totalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
+)
 
-      const combinedBalanceInUsd = combinedBalance.times(balance.token.usdPrice)
-
-      return total.plus(combinedBalanceInUsd)
-    }, ZERO_IN_BASE)
-
-  return result
-})
-
-const abbreviatedTotalBalanceToString = computed(() => {
-  if (totalBalanceInUsd.value.eq(0)) {
-    return '0.00'
-  }
-
-  if (totalBalanceInUsd.value.lte(UI_MINIMAL_AMOUNT)) {
-    return `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
-  }
-
-  return getAbbreviatedVolume(totalBalanceInUsd.value)
-})
+const { valueToString: abbreviatedTotalBalanceToString } =
+  useBigNumberFormatter(totalBalanceInUsd, {
+    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
+    abbreviationFloor: shouldAbbreviateTotalBalance.value
+      ? UI_MINIMAL_ABBREVIATION_FLOOR
+      : undefined
+  })
 
 const totalBalanceInBtc = computed(() => {
   if (!btcUsdPrice.value) {
@@ -145,7 +129,7 @@ function handleTransferClick() {
       </div>
     </div>
 
-    <div class="flex items-center justify-between md:justify-end gap-4">
+    <div class="flex items-center justify-between md:justify-end sm:gap-4">
       <AppButton class="bg-blue-500" @click="handleDepositClick">
         <span class="text-blue-900 font-semibold">
           {{ $t('account.deposit') }}

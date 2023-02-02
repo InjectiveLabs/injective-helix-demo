@@ -10,7 +10,8 @@ import { format } from 'date-fns'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
+  USDT_DECIMALS
 } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
@@ -141,7 +142,7 @@ const pendingTradeRewardPoints = computed(() => {
 
 const pendingTradeRewardPointsFactored = computed(() => {
   return new BigNumberInWei(pendingTradeRewardPoints.value).toBase(
-    6 /* Default factor for points, USDT decimals */
+    USDT_DECIMALS
   )
 })
 
@@ -171,7 +172,7 @@ const totalPendingTradeRewardPoints = computed(() => {
 
 const totalPendingTradeRewardPointsFactored = computed(() => {
   return new BigNumberInWei(totalPendingTradeRewardPoints.value).toBase(
-    6 /* Default factor for points, USDT decimals */
+    USDT_DECIMALS
   )
 })
 

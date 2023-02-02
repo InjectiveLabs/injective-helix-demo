@@ -39,25 +39,27 @@ export enum Icon {
 
 export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
+  AssetDetails = 'asset-details',
+  Bridge = 'bridge',
+  BridgeCompleted = 'bridge-completed',
+  BridgeConfirm = 'bridge-confirm',
   Connect = 'connect',
+  ConvertUSDC = 'convert-usdc',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
-  MarketRewardFactors = 'market-reward-factors',
-  OrderConfirm = 'order-confirm',
-  Terms = 'terms',
-  MarketBeta = 'market-beta',
-  MarketNew = 'market-new',
-  MarketExpired = 'market-expired',
-  MarketDeprecated = 'market-deprecated',
-  Bridge = 'bridge',
-  BridgeConfirm = 'bridge-confirm',
-  BridgeCompleted = 'bridge-completed',
-  RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
+  MarketBeta = 'market-beta',
+  MarketDeprecated = 'market-deprecated',
+  MarketExpired = 'market-expired',
+  MarketNew = 'market-new',
+  MarketRewardFactors = 'market-reward-factors',
   MobileTradeDetails = 'mobile-trade-details',
   NinjaPassWinner = 'ninja-pass-winner',
-  AssetDetails = 'asset-details',
-  PriceDeviation = 'price-deviation'
+  OrderConfirm = 'order-confirm',
+  PriceDeviation = 'price-deviation',
+  RefereeOnboarding = 'referee-onboarding',
+  Terms = 'terms',
+  USDCDetected = 'usdc-detected'
 }
 
 export enum Breakpoint {
@@ -122,7 +124,8 @@ export enum MarketCategoryType {
 
 export enum MarketQuoteType {
   All = 'all',
-  USDT = 'usdt'
+  USDT = 'usdt',
+  USDC = 'usdc'
   // UST = 'ust'
 }
 
@@ -194,21 +197,24 @@ export enum BalanceHeaderType {
   None = 'none',
   Asset = 'asset',
   Total = 'total',
+  Wallet = 'wallet',
+  TradingAccount = 'trading-account',
   Available = 'available',
   Value = 'value'
 }
 
 export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
+  AssetDetailsModalPayload = 'asset-details-modal-payload',
+  ConvertUSDC = 'convert-usdc',
+  FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
+  OrderbookNotionalClick = 'orderbook-notional-click',
   OrderbookPriceClick = 'orderbook-price-click',
   OrderbookSizeClick = 'orderbook-size-click',
-  OrderbookNotionalClick = 'orderbook-notional-click',
-  ShowLedgerConnect = 'show-ledger-connect',
-  AssetDetailsModalPayload = 'asset-details-modal-payload',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   PostOnlyToggled = 'post-only-toggled',
-  FundingRefresh = 'funding-refresh',
+  ShowLedgerConnect = 'show-ledger-connect',
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected'
 }
 
@@ -217,6 +223,14 @@ export enum BridgeBusEvents {
   TransferToBank = 'transfer-to-bank',
   Deposit = 'deposit',
   Withdraw = 'withdraw'
+}
+
+export enum ActivityField {
+  Denom = 'Denom',
+  Limit = 'Limit',
+  Page = 'Page',
+  Side = 'Side',
+  Type = 'Type'
 }
 
 export enum BridgeField {
@@ -273,7 +287,6 @@ export enum ActivityView {
   Positions = 'Positions/Index',
   FundingPayments = 'Positions/FundingPayments',
   SpotOrders = 'Spot/Index',
-  SpotTriggers = 'Spot/Triggers',
   SpotOrderHistory = 'Spot/OrderHistory',
   SpotTradeHistory = 'Spot/TradeHistory',
   DerivativeOrders = 'Derivatives/Index',
@@ -283,4 +296,11 @@ export enum ActivityView {
   WalletTransfers = 'WalletHistory/Transfers',
   WalletDeposits = 'WalletHistory/Deposits',
   WalletWithdrawals = 'WalletHistory/Withdrawals'
+}
+
+export enum ActivityTab {
+  Positions = 'positions',
+  Derivatives = 'derivatives',
+  Spot = 'spot',
+  WalletHistory = 'walletHistory'
 }

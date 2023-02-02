@@ -27,6 +27,17 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
   const poolCampaignScheduleList = computed(() => {
     if (
       !rewardsCampaign.value ||
+      !rewardsCampaign.value.tradingRewardPoolCampaignScheduleList
+    ) {
+      return undefined
+    }
+
+    return rewardsCampaign.value.tradingRewardPoolCampaignScheduleList
+  })
+
+  const pendingPoolCampaignScheduleList = computed(() => {
+    if (
+      !rewardsCampaign.value ||
       !rewardsCampaign.value.pendingTradingRewardPoolCampaignScheduleList
     ) {
       return undefined
@@ -146,15 +157,16 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
   return {
     boostInfo,
     campaignInfo,
-    derivativeBoostedMarketIdList,
-    derivativeBoostedMultiplierList,
-    disqualifiedMarketIdsList,
-    isMarketDisqualified,
-    marketTakerMakerExpectedPts,
-    marketIncludedInTradingReward,
-    poolCampaignScheduleList,
     rewardsCampaign,
+    isMarketDisqualified,
     spotBoostedMarketIdList,
-    spotBoostedMultiplierList
+    poolCampaignScheduleList,
+    spotBoostedMultiplierList,
+    disqualifiedMarketIdsList,
+    marketTakerMakerExpectedPts,
+    derivativeBoostedMarketIdList,
+    pendingPoolCampaignScheduleList,
+    derivativeBoostedMultiplierList,
+    marketIncludedInTradingReward
   }
 }

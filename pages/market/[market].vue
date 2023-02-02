@@ -44,7 +44,7 @@ onLoad()
     </template>
 
     <template #orders>
-      <PartialsTradingSpotOrders v-if="market" :market="market" />
+      <PartialsTradingDerivativeOrders v-if="market" :market="market" />
     </template>
 
     <template #modals>

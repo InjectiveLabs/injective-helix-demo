@@ -1,6 +1,8 @@
 import {
+  UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiDerivativeOrderHistory,
   UiDerivativeTrade,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
@@ -24,6 +26,10 @@ export type CurrentMarket = UiMarketWithToken | undefined
 
 export type UiMarketSummary = UiDerivativeMarketSummary | UiSpotMarketSummary
 export type UiTrade = UiDerivativeTrade | UiSpotTrade
+
+export type UIDerivativeOrder =
+  | UiDerivativeOrderHistory
+  | UiDerivativeLimitOrder
 
 export interface UiMarketAndSummary {
   market: UiMarketWithToken
@@ -68,4 +74,10 @@ export type OrderBookNotionalAndType = {
 export type MaxAmountOnOrderbook = {
   totalNotional: BigNumberInBase
   totalQuantity: BigNumberInBase
+}
+
+export enum USDCSymbol {
+  PeggyEthereum = 'USDC',
+  WormholeEthereum = 'USDCet',
+  WormholeSolana = 'USDCso'
 }

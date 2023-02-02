@@ -3,6 +3,9 @@ import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { MarketCategoryType, MarketQuoteType } from '@/types'
 
+const route = useRoute()
+const router = useRouter()
+
 const props = defineProps({
   activeCategory: {
     type: String as PropType<MarketCategoryType>,
@@ -32,42 +35,53 @@ const emit = defineEmits<{
   (e: 'update:activeType', state: string): void
 }>()
 
-const route = useRoute()
-const router = useRouter()
-
-const marketCategoryTypes = ref(getMarketCategoryTypes())
-const quoteOptions = ref(
-  Object.entries(MarketQuoteType)
-    .map(([key, value]) => {
-      return {
-        label: key,
-        value
-      }
-    })
-    .map((quoteOption) => ({
-      display: quoteOption.label,
-      value: quoteOption.value
-    }))
+const FilterList = {
+  [MarketType.Favorite]: MarketType.Favorite,
+  All: '',
+  [MarketType.Spot]: MarketType.Spot,
+  [MarketType.Derivative]: MarketType.Derivative
+}
+const marketCategoryTypes = Object.entries(MarketCategoryType).map(
+  ([key, value]) => ({
+    key: `market-category-type-${value}`,
+    label: key,
+    type: MarketCategoryType[key as keyof typeof MarketCategoryType]
+  })
 )
+const quoteOptions = Object.entries(MarketQuoteType).map(([key, value]) => ({
+  display: value,
+  value: key
+}))
 
 const activeQuoteValue = computed({
   get(): MarketQuoteType {
     return props.activeQuote
   },
+
   set(value: MarketQuoteType) {
     emit('update:activeQuote', value)
   }
 })
 
-function getMarketCategoryTypes() {
-  return Object.entries(MarketCategoryType).map(([key, value]) => {
-    return {
-      key: `market-category-type-${value}`,
-      label: key,
-      type: MarketCategoryType[key as keyof typeof MarketCategoryType]
+const activeFilterType = computed({
+  get() {
+    return props.activeType
+  },
+
+  set(type: string) {
+    emit('update:activeType', type)
+
+    if (type === props.activeType) {
+      return
     }
-  })
-}
+
+    if (!type || type === '') {
+      clearRouteQueryParam('type')
+    } else {
+      fillRouteQueryParams({ type: type.toLowerCase() })
+    }
+  }
+})
 
 function handleCategoryChange(category: string) {
   emit('update:activeCategory', category as MarketCategoryType)
@@ -99,20 +113,6 @@ function handleQuoteChange(quote: string) {
   }
 }
 
-function handleTypeClick(type: string) {
-  emit('update:activeType', type)
-
-  if (type === props.activeType) {
-    return
-  }
-
-  if (!type || type === '') {
-    clearRouteQueryParam('type')
-  } else {
-    fillRouteQueryParams({ type: type.toLowerCase() })
-  }
-}
-
 function clearRouteQueryParam(key: string) {
   const { query } = route
   const queryClone = { ...query }
@@ -135,47 +135,37 @@ function fillRouteQueryParams(params: Record<string, string>) {
 
 <template>
   <div>
-    <AppTabMenu>
-      <template #items>
-        <AppTabMenuItem
-          :value="MarketType.Favorite"
-          :active="activeType === MarketType.Favorite"
-          data-cy="markets-favorites-selector"
-          @click="handleTypeClick"
-        >
-          <span class="flex items-center">
-            <BaseIcon name="star-border" class="mr-1" />
-            <span>{{ $t('trade.favorites') }}</span>
-          </span>
-        </AppTabMenuItem>
+    <CommonTabMenu>
+      <AppSelectButton
+        v-for="filterType in Object.values(FilterList)"
+        :key="`market-tabs-${filterType}`"
+        v-model="activeFilterType"
+        :value="filterType"
+      >
+        <template #default="{ active }">
+          <CommonTabMenuItem :active="active">
+            <span
+              v-if="filterType === FilterList[MarketType.Favorite]"
+              class="flex items-center"
+            >
+              <BaseIcon name="star-border" class="mr-1" />
+              <span>{{ $t('trade.favorites') }}</span>
+            </span>
 
-        <AppTabMenuItem
-          :value="''"
-          :active="activeType === ''"
-          data-cy="markets-all-markets-selector"
-          @click="handleTypeClick"
-        >
-          {{ $t('trade.allMarkets') }}
-        </AppTabMenuItem>
+            <span v-else-if="filterType === FilterList.All">
+              {{ $t('trade.allMarkets') }}
+            </span>
 
-        <AppTabMenuItem
-          :value="MarketType.Spot"
-          :active="activeType === MarketType.Spot"
-          data-cy="markets-spot-selector"
-          @click="handleTypeClick"
-        >
-          {{ $t('trade.spots') }}
-        </AppTabMenuItem>
+            <span v-else-if="filterType === FilterList[MarketType.Spot]">
+              {{ $t('trade.spots') }}
+            </span>
 
-        <AppTabMenuItem
-          :value="MarketType.Derivative"
-          :active="activeType === MarketType.Derivative"
-          data-cy="markets-perpetual-selector"
-          @click="handleTypeClick"
-        >
-          {{ $t('trade.futures') }}
-        </AppTabMenuItem>
-      </template>
+            <span v-else-if="filterType === FilterList[MarketType.Derivative]">
+              {{ $t('trade.futures') }}
+            </span>
+          </CommonTabMenuItem>
+        </template>
+      </AppSelectButton>
 
       <template #actions>
         <AppSearch
@@ -191,9 +181,11 @@ function fillRouteQueryParams(params: Record<string, string>) {
           @update:modelValue="handleSearchedEvent"
         />
       </template>
-    </AppTabMenu>
+    </CommonTabMenu>
 
-    <div class="flex items-center justify-between mt-6 mb-2">
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-0 justify-between mt-6 mb-2 px-3 sm:px-0"
+    >
       <div class="flex items-center gap-2">
         <PartialsMarketsFiltersCategorySelector
           v-for="marketCategoryType in marketCategoryTypes"
@@ -210,6 +202,7 @@ function fillRouteQueryParams(params: Record<string, string>) {
       <AppSelect
         v-model="activeQuoteValue"
         :options="quoteOptions"
+        class="self-end"
         @update:modelValue="handleQuoteChange"
       >
         <template #prefix>

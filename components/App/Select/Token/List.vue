@@ -47,7 +47,7 @@ const sortedBalances = computed(() => {
 
   return filteredOptions.value.sort(
     (b1: BalanceWithToken, b2: BalanceWithToken) =>
-      new BigNumberInBase(b2.balanceInToken).minus(b1.balanceInToken).toNumber()
+      new BigNumberInBase(b2.balanceToBase).minus(b1.balanceToBase).toNumber()
   )
 })
 
@@ -58,7 +58,7 @@ function handleClick(denom: string) {
 </script>
 
 <template>
-  <div class="max-h-xs px-4 pt-4">
+  <div class="max-h-xs px-4 pt-4 pb-4">
     <div class="mb-2 text-white">
       <AppInput v-model="search" sm :placeholder="$t('common.search')" />
     </div>
@@ -66,11 +66,11 @@ function handleClick(denom: string) {
     <AppSelectTokenItem
       v-for="balance in sortedBalances"
       :key="balance.denom"
-      class="px-2 py-3 hover:bg-blue-300 cursor-pointer rounded text-white hover:text-black"
+      class="px-2 py-3 hover:bg-blue-500 cursor-pointer rounded text-white hover:text-black"
       sm
       show-balance
       :token="balance.token"
-      :balance="balance.balanceInToken"
+      :balance="balance.balanceToBase"
       @click="handleClick"
     />
   </div>

@@ -19,7 +19,7 @@ import {
   upcomingMarkets,
   deprecatedMarkets
 } from '@/app/data/market'
-import { USDT_COIN_GECKO_ID } from '@/app/utils/constants'
+import { USDT_COIN_GECKO_ID, USDC_COIN_GECKO_ID } from '@/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -127,32 +127,6 @@ export const getDefaultSpotMarketRouteParams = () => {
   }
 }
 
-export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
-  const thousand = 1000
-  const million = 1000000
-  const billion = 1000000000
-
-  if (value.gt(billion)) {
-    return `${value
-      .dividedBy(billion)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}B`
-  }
-
-  if (value.gt(million)) {
-    return `${value
-      .dividedBy(million)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}M`
-  }
-
-  if (value.gt(thousand)) {
-    return `${value
-      .dividedBy(thousand)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
-  }
-
-  return value.toFormat(2, BigNumberInBase.ROUND_DOWN)
-}
-
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -197,6 +171,13 @@ export const marketIsQuotePair = (
       market.quoteToken.coinGeckoId,
       market.baseToken.coinGeckoId
     ].includes(USDT_COIN_GECKO_ID)
+  }
+
+  if (activeQuote === MarketQuoteType.USDC) {
+    return [
+      market.quoteToken.coinGeckoId,
+      market.baseToken.coinGeckoId
+    ].includes(USDC_COIN_GECKO_ID)
   }
 
   return true

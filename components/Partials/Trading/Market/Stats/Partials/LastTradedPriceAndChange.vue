@@ -17,6 +17,7 @@ const { t } = useLang()
 const props = defineProps({
   lg: Boolean,
   isStatsBar: Boolean,
+  showInitialSpinner: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -108,6 +109,7 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
     <div
       v-if="
         status.isLoading() &&
+        showInitialSpinner &&
         (lastTradedPrice.isNaN() || lastTradedPrice.lte(0))
       "
     >

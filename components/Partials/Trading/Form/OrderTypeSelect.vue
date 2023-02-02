@@ -5,7 +5,12 @@ import {
   MarketType,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { FormValue, TradeField, TradeForm, UiMarketWithToken } from '@/types'
+import {
+  TradeField,
+  TradeForm,
+  TradeFormValue,
+  UiMarketWithToken
+} from '@/types'
 
 const props = defineProps({
   formValues: {
@@ -20,7 +25,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:formValue', { field, value }: FormValue): void
+  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
 const isSpot = props.market.type === MarketType.Spot

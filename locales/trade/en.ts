@@ -81,7 +81,7 @@ export default {
     futures: 'Futures',
     trading: 'Trading',
     high_execution_price_deviation_warning_note:
-      'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
+      'The execution price for your order deviates at least {percentage}% from the last traded price. Click confirm if you still want to execute it.',
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
     max_leverage_warn: 'Please decrease leverage',
@@ -276,6 +276,7 @@ export default {
     reduceOnlyTooltipConditional:
       'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
     open: 'Open',
+    partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
     cancelled: 'Cancelled',
     spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency',
@@ -283,6 +284,10 @@ export default {
     tradingLayoutOptions: {
       left: 'Left',
       right: 'Right'
-    }
+    },
+    usdcLegacyBalanceDetected: 'Different version of USDC detected',
+    haveLegacyUSDC:
+      'You have USD Coin (Injective bridge) in your balance. This market only supports the USD Coin (Wormhole from Ethereum). Please go to the Accounts page to convert your USDC.',
+    viewUSDC: 'View USDC on Accounts '
   }
 }

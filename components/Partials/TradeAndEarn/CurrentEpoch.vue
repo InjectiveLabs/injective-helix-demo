@@ -10,7 +10,8 @@ import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
+  USDT_DECIMALS
 } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
@@ -54,15 +55,11 @@ const stakedAmount = computed(() => {
 })
 
 const tradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(tradeRewardPoints.value).toBase(
-    6 /* Default factor for points, USDT decimals */
-  )
+  return new BigNumberInWei(tradeRewardPoints.value).toBase(USDT_DECIMALS)
 })
 
 const totalTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(totalTradeRewardPoints.value).toBase(
-    6 /* Default factor for points, USDT decimals */
-  )
+  return new BigNumberInWei(totalTradeRewardPoints.value).toBase(USDT_DECIMALS)
 })
 
 const campaignDurationInSeconds = computed(() => {

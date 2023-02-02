@@ -1,19 +1,25 @@
 <script lang="ts" setup>
 const derivativeStore = useDerivativeStore()
+
+const sortedTriggers = computed(() =>
+  derivativeStore.subaccountConditionalOrders.sort(
+    (t1, t2) => t2.updatedAt - t1.updatedAt
+  )
+)
 </script>
 
 <template>
   <div class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="derivativeStore.subaccountConditionalOrders.length === 0"
+      :show-empty="sortedTriggers.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <PartialsCommonSubaccountTriggerMobile
-        v-for="(trigger, index) in derivativeStore.subaccountConditionalOrders"
+        v-for="(trigger, index) in sortedTriggers"
         :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
         class="col-span-1"
-        :order="trigger"
+        :trigger="trigger"
       />
 
       <template #empty>
@@ -25,17 +31,12 @@ const derivativeStore = useDerivativeStore()
     </CommonTableBody>
 
     <CommonTableWrapper class="hidden sm:block">
-      <table
-        v-if="derivativeStore.subaccountConditionalOrders.length > 0"
-        class="table"
-      >
+      <table v-if="sortedTriggers.length > 0" class="table">
         <PartialsCommonSubaccountTriggerHeader />
         <tbody>
           <PartialsCommonSubaccountTriggerRow
-            v-for="(
-              trigger, index
-            ) in derivativeStore.subaccountConditionalOrders"
-            :key="`triggers-${index}`"
+            v-for="(trigger, index) in sortedTriggers"
+            :key="`triggers-${index}-${trigger.orderHash}`"
             :trigger="trigger"
           />
         </tbody>

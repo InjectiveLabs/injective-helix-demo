@@ -1,14 +1,8 @@
 <script lang="ts" setup>
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
@@ -60,72 +54,33 @@ const filteredMarketsWithSummary = computed(() => {
   })
 })
 
-const availableBalance = computed(() => {
-  if (!balance.value) {
-    return ZERO_IN_BASE
-  }
-
-  if (!balance.value.subaccountAvailableBalance) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(balance.value.subaccountAvailableBalance).toBase(
-    balance.value.token.decimals
-  )
-})
-
-const inOrderBalance = computed(() => {
-  if (!balance.value) {
-    return ZERO_IN_BASE
-  }
-
-  if (!balance.value.inOrderBalance) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(balance.value.inOrderBalance)
-})
-
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  availableBalance,
+  computed(() => balance.value?.balanceToBase || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: inOrderBalanceToString } = useBigNumberFormatter(
-  inOrderBalance,
+  computed(() => balance.value?.reservedBalance || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const combinedBalance = computed(() => {
-  if (!balance.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(
-    balance.value.bankBalance.plus(balance.value.subaccountAvailableBalance)
-  )
-})
-
-const { valueToString: combinedBalanceToString } = useBigNumberFormatter(
-  combinedBalance,
+const { valueToString: totalBalanceToString } = useBigNumberFormatter(
+  computed(() => balance.value?.totalBalance || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const combinedBalanceInUsdToString = computed(() => {
-  if (!balance.value) {
-    return ZERO_IN_BASE
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => balance.value?.totalBalanceInUsd || '0'),
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
-
-  return combinedBalance.value
-    .times(balance.value.token.usdPrice)
-    .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
-})
+)
 
 onMounted(() => {
   useEventBus<AccountBalance>(BusEvents.AssetDetailsModalPayload).on(
@@ -247,7 +202,7 @@ function handleWithdrawClick() {
                 </span>
 
                 <span class="font-mono text-sm tracking-wide">
-                  {{ combinedBalanceToString }}
+                  {{ totalBalanceToString }}
                 </span>
               </div>
 
@@ -256,7 +211,7 @@ function handleWithdrawClick() {
                   {{ $t('account.balances.cols.value', { symbol: 'USD' }) }}
                 </span>
                 <span class="font-mono text-sm tracking-wide">
-                  {{ combinedBalanceInUsdToString }} USD
+                  {{ totalBalanceInUsdToString }} USD
                 </span>
               </div>
             </div>

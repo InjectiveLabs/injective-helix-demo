@@ -1,6 +1,7 @@
 import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { getRoutes } from './routes'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
@@ -10,6 +11,9 @@ export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 
 const env = {
   VITE_ENV: isWebpack ? process.env.VITE_ENV : import.meta.env.VITE_ENV,
+  VITE_BASE_URL: isWebpack
+    ? process.env.VITE_BASE_URL
+    : import.meta.env.VITE_BASE_URL,
   VITE_NETWORK: isWebpack
     ? process.env.VITE_NETWORK
     : import.meta.env.VITE_NETWORK,
@@ -60,7 +64,42 @@ const env = {
     : (import.meta.env.VITE_COINGECKO_KEY as string),
   VITE_AMPLITUDE_KEY: isWebpack
     ? process.env.VITE_AMPLITUDE_KEY
-    : (import.meta.env.VITE_AMPLITUDE_KEY as string)
+    : (import.meta.env.VITE_AMPLITUDE_KEY as string),
+
+  VITE_NEWSLETTER_API: isWebpack
+    ? process.env.VITE_NEWSLETTER_API
+    : import.meta.env.VITE_NEWSLETTER_API,
+  VITE_ALCHEMY_GOERLI_KEY: isWebpack
+    ? process.env.VITE_ALCHEMY_GOERLI_KEY
+    : import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
+  VITE_ALCHEMY_KEY: isWebpack
+    ? process.env.VITE_ALCHEMY_KEY
+    : import.meta.env.VITE_ALCHEMY_KEY,
+  VITE_FEE_RECIPIENT: isWebpack
+    ? (process.env.VITE_FEE_RECIPIENT as string)
+    : (import.meta.env.VITE_FEE_RECIPIENT as string)
+} as {
+  VITE_ENV: string
+  VITE_BASE_URL: string
+  VITE_NETWORK: Network
+  VITE_CHAIN_ID: ChainId
+  VITE_FEE_PAYER_PUB_KEY: string
+  VITE_DEBUG_CALCULATION: string
+  VITE_GEO_IP_RESTRICTIONS_ENABLED: string
+  VITE_REFERRALS_ENABLED: string
+  VITE_ETHEREUM_CHAIN_ID: string
+  VITE_INDEXER_API_ENDPOINT: string
+  VITE_CHRONOS_API_ENDPOINT: string
+  VITE_EXPLORER_API_ENDPOINT: string
+  VITE_SENTRY_GRPC_ENDPOINT: string
+  VITE_SENTRY_HTTP_ENDPOINT: string
+  VITE_NINJA_PASS_ENDPOINT: string
+  VITE_COINGECKO_KEY: string
+  VITE_AMPLITUDE_KEY: string
+  VITE_NEWSLETTER_API: string
+  VITE_ALCHEMY_GOERLI_KEY: string
+  VITE_ALCHEMY_KEY: string
+  VITE_FEE_RECIPIENT: string
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
@@ -75,7 +114,13 @@ export const IS_TESTNET: Boolean = [
 ].includes(NETWORK)
 export const IS_STAGING = env.VITE_ENV === 'staging'
 export const IS_MAINNET =
-  NETWORK === Network.Mainnet || env.VITE_ENV === 'mainnet'
+  [
+    Network.Public,
+    Network.Staging,
+    Network.Mainnet,
+    Network.MainnetK8s,
+    Network.MainnetLB
+  ].includes(NETWORK) || env.VITE_ENV === 'mainnet'
 
 export const CHAIN_ID: ChainId = (
   env.VITE_CHAIN_ID
@@ -114,41 +159,27 @@ if (endpointsNotProvided) {
 
 export const ENDPOINTS = {
   ...endpoints,
-  grpc: (env.VITE_SENTRY_GRPC_ENDPOINT as string) || endpoints.grpc,
-  http: (env.VITE_SENTRY_HTTP_ENDPOINT as string) || endpoints.rest,
-  indexer: (env.VITE_INDEXER_API_ENDPOINT as string) || endpoints.indexer,
-  chronos: (env.VITE_CHRONOS_API_ENDPOINT as string) || endpoints.chronos,
-  explorer: (env.VITE_CHRONOS_API_ENDPOINT as string) || endpoints.explorer
+  grpc: env.VITE_SENTRY_GRPC_ENDPOINT || endpoints.grpc,
+  http: env.VITE_SENTRY_HTTP_ENDPOINT || endpoints.rest,
+  indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
+  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
+  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer
 }
 
-export const BASE_URL = isWebpack
-  ? process.env.VITE_BASE_URL
-  : import.meta.env.VITE_BASE_URL
+const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
+
+export const BASE_URL = env.VITE_BASE_URL || ''
 
 // override env with values
 export const VITE_NINJA_PASS_ENDPOINT: string =
   env.VITE_NINJA_PASS_ENDPOINT || 'https://api.ninjapass.injective.dev'
 export const FEE_PAYER_PUB_KEY = (env.VITE_FEE_PAYER_PUB_KEY || '') as string
 
-export const VITE_NEWSLETTER_API: string = isWebpack
-  ? (process.env.VITE_NEWSLETTER_API as string)
-  : (import.meta.env.VITE_NEWSLETTER_API as string)
-
-export const ALCHEMY_GOERLI_KEY = isWebpack
-  ? process.env.VITE_ALCHEMY_GOERLI_KEY
-  : import.meta.env.VITE_ALCHEMY_GOERLI_KEY
-
-export const ALCHEMY_KEY = isWebpack
-  ? process.env.VITE_ALCHEMY_KEY
-  : import.meta.env.VITE_ALCHEMY_KEY
-
-export const AMPLITUDE_KEY = isWebpack
-  ? process.env.VITE_AMPLITUDE_KEY
-  : import.meta.env.VITE_AMPLITUDE_KEY
-
-export const FEE_RECIPIENT: string = isWebpack
-  ? (process.env.VITE_FEE_RECIPIENT as string)
-  : (import.meta.env.VITE_FEE_RECIPIENT as string)
+export const VITE_NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
+export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
+export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
+export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
+export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,
@@ -157,9 +188,9 @@ export const COIN_GECKO_OPTIONS = {
     : 'https://api.coingecko.com/api/v3'
 }
 
-export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
-
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
-
+export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
+
+export { ROUTES, MARKETS_SLUGS }

@@ -7,6 +7,7 @@ on:
 
 jobs:
   testnet:
+    if: true
     name: 'Deploy to testnet'
     runs-on: ubuntu-latest
     env:
@@ -19,7 +20,7 @@ jobs:
       ## Public
       VITE_NAME: 'TESTNET - Helix | The Premier Decentralized Spot and Derivatives Exchange'
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnetK8s
+      VITE_NETWORK: testnet
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
 
@@ -67,10 +68,10 @@ jobs:
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
 
       - name: Remove prev build
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && yarn clean-up'
+        run: ssh testnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
 
       - name: Proper permissions for dist folder
-        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/dist'
+        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/.output/public/'

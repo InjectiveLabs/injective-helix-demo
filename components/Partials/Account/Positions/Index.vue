@@ -3,10 +3,7 @@ import { BankBalanceWithTokenAndBalanceInBase } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 
 defineProps({
-  hideBalances: {
-    type: Boolean,
-    required: true
-  }
+  hideBalances: Boolean
 })
 
 const positionStore = usePositionStore()
@@ -15,52 +12,40 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
-const { value: side } = useField<string>('side', {})
-const { value: marketDenom } = useField<string>('marketDenom', {})
+const side = ref('')
+const marketDenom = ref('')
 
-const positions = computed(() => {
-  return positionStore.subaccountPositions
-})
+const markets = computed(() => derivativeStore.markets)
+const positions = computed(() => positionStore.subaccountPositions)
 
-const markets = computed(() => {
-  return derivativeStore.markets
-})
-
-const marketId = computed(() => {
+const marketIds = computed(() => {
   if (!marketDenom.value) {
-    return undefined
+    return []
   }
 
-  return markets.value.find((m) => {
-    return (
-      m.baseToken.denom === marketDenom.value ||
-      m.quoteToken.denom === marketDenom.value
-    )
-  })?.marketId
+  return derivativeStore.markets
+    .filter((m) => {
+      return (
+        m.baseToken.denom === marketDenom.value ||
+        m.quoteToken.denom === marketDenom.value
+      )
+    })
+    .map(({ marketId }) => marketId)
 })
 
 const filteredPositions = computed(() => {
-  return positions.value.filter((position) => {
-    if (!side.value && !marketId.value) {
-      return true
-    }
+  return positionStore.subaccountPositions.filter((position) => {
+    const positionMatchedSide = !side.value || position.direction === side.value
+    const positionMatchedMarket =
+      marketIds.value.length === 0 ||
+      marketIds.value.includes(position.marketId)
 
-    if (!side.value && marketId.value) {
-      return position.marketId === marketId.value
-    }
-
-    if (side.value && !marketId.value) {
-      return position.direction === side.value
-    }
-
-    return (
-      position.marketId === marketId.value && position.direction === side.value
-    )
+    return positionMatchedMarket && positionMatchedSide
   })
 })
 
 const supportedTokens = computed(() => {
-  const tokens = markets.value.reduce((list, market) => {
+  const tokens = markets.value.reduce((tokens, market) => {
     const baseToken = {
       balance: '',
       denom: market.baseToken.denom,
@@ -73,7 +58,7 @@ const supportedTokens = computed(() => {
       token: market.quoteToken
     } as BankBalanceWithTokenAndBalanceInBase
 
-    return [...list, baseToken, quoteToken]
+    return [...tokens, baseToken, quoteToken]
   }, [] as BankBalanceWithTokenAndBalanceInBase[])
 
   const uniqueTokens = [
@@ -117,14 +102,6 @@ const showEmpty = computed(() => {
 
   return hasUnavailableMarkets
 })
-
-function handleMarketDenomChange(value: string) {
-  marketDenom.value = value
-}
-
-function handleSideChange(value: string) {
-  side.value = value
-}
 
 function handleCloseAllPositions() {
   return positions.value.length === 1 ? closePosition() : closeAllPositions()
@@ -177,8 +154,6 @@ function closePosition() {
       v-model:side="side"
       :market-options="marketOptions"
       :side-options="sideOptions"
-      @update:market-denom="handleMarketDenomChange"
-      @update:side="handleSideChange"
       @close-all-positions="handleCloseAllPositions"
     />
 

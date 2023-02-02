@@ -15,6 +15,7 @@ import {
   Modal,
   TransferDirection
 } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   hasFormErrors: Boolean,
@@ -58,6 +59,12 @@ const { destinationIsInjective, isWithdraw, networkIsNotSupported } =
   })
 
 const memoRequired = ref(false)
+
+const filteredBalances = computed(() =>
+  transferableBalancesWithToken.value.filter(
+    (balance) => ![usdcTokenDenom.USDCso].includes(balance.denom.toLowerCase())
+  )
+)
 
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
@@ -294,14 +301,21 @@ watch(destination, (value: string) => {
         </div>
       </div>
 
-      <div v-if="!networkIsNotSupported">
+      <div
+        v-if="
+          !networkIsNotSupported &&
+          ![usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+            formValues[BridgeField.Token].denom.toLowerCase()
+          )
+        "
+      >
         <div v-if="hasAllowance">
           <AppSelectToken
             v-model:denom="denom"
             required
             :amount-field-name="BridgeField.Amount"
             :max-decimals="maxDecimals"
-            :options="transferableBalancesWithToken"
+            :options="filteredBalances"
             @update:denom="handleTokenChange"
             @update:max="handleMaxAmountChange"
           >
@@ -348,7 +362,14 @@ watch(destination, (value: string) => {
         </div>
       </div>
 
-      <ModalsBridgeNotSupportedBridgeTypeNote v-else />
+      <ModalsBridgeNotSupportedBridgeTypeNote
+        v-else
+        v-bind="{
+          formValues,
+          selectedNetwork: formValues[BridgeField.BridgingNetwork],
+          bridgeType
+        }"
+      />
     </div>
     <CommonUserNotConnectedNote v-else />
   </AppModalWrapper>

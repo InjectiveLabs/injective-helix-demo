@@ -61,8 +61,8 @@ function handleClickOnMarket() {
 
     <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="market.baseToken" class="w-4 h-4">
-          <CommonTokenIcon :token="market.baseToken" sm />
+        <div v-if="market.baseToken">
+          <CommonTokenIcon :token="market.baseToken" md />
         </div>
         <div class="ml-3">
           <span
@@ -94,7 +94,7 @@ function handleClickOnMarket() {
       </span>
       <span
         v-if="isReduceOnly"
-        class="ml-0.5 text-xs text-gray-500"
+        class="ml-1 text-xs text-gray-500"
         data-cy="derivative-order-reduce-only-table-data"
       >
         {{ $t('trade.reduce_only') }}
