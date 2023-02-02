@@ -47,7 +47,10 @@ onBeforeUnmount(() => {
 })
 
 function setMarketFromToken(token: Token) {
-  usdcConvertMarket.value = spotStore.markets.find(
+  usdcConvertMarket.value = [
+    ...spotStore.markets,
+    ...spotStore.hiddenMarkets
+  ].find(
     (market) =>
       market.baseToken.symbol === token.symbol &&
       market.quoteToken.symbol === USDCSymbol.WormholeEthereum

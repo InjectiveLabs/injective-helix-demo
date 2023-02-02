@@ -40,6 +40,7 @@ import {
 import { MARKETS_SLUGS } from '@/app/utils/constants'
 
 type SpotStoreState = {
+  hiddenMarkets: UiSpotMarketWithToken[]
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
   orderbook?: UiSpotOrderbook
@@ -56,6 +57,7 @@ type SpotStoreState = {
 }
 
 const initialStateFactory = (): SpotStoreState => ({
+  hiddenMarkets: [],
   markets: [],
   marketsSummary: [],
   orderbook: undefined,
@@ -137,12 +139,24 @@ export const useSpotStore = defineStore('spot', {
           )
         })
 
+      const hiddenMarketsWithToken = uiMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.hiddenMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.hiddenMarkets.indexOf(a.slug) -
+            MARKETS_SLUGS.hiddenMarkets.indexOf(b.slug)
+          )
+        })
+
       const actualMarketsSummary =
         marketsSummary && marketsSummary.length > 0
           ? marketsSummary
           : [zeroSpotMarketSummary('')]
 
       spotStore.$patch({
+        hiddenMarkets: hiddenMarketsWithToken,
         markets: uiMarketsWithToken,
         marketsSummary: actualMarketsSummary
       })

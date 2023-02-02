@@ -140,7 +140,7 @@ function closeModal() {
       <div class="mx-auto bg-gray-850 rounded-lg justify-center">
         <div
           v-if="market.baseToken.denom.toLowerCase() === usdcTokenDenom.USDC"
-          class="mb-2"
+          class="mb-6"
         >
           {{ $t('account.whyConvert') }}
         </div>

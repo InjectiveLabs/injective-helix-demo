@@ -6,7 +6,10 @@ export function useMarketTradeableDenoms() {
     const tradeableDerivativeDenoms = derivativeStore.markets.map((market) => {
       return market.quoteDenom
     })
-    const tradeableSpotDenoms = spotStore.markets.reduce((denoms, market) => {
+    const tradeableSpotDenoms = [
+      ...spotStore.markets,
+      ...spotStore.hiddenMarkets
+    ].reduce((denoms, market) => {
       return [...denoms, market.baseDenom, market.quoteDenom]
     }, [] as string[])
 

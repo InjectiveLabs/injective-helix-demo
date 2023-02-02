@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { networksMeta } from '~/app/data/bridge'
+import { networksMeta } from '@/app/data/bridge'
 import { BridgeType } from '@/types'
 
 const props = defineProps({

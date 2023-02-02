@@ -199,7 +199,7 @@ const sortedBalances = computed(() => {
           :balance="balance"
           :hide-balances="hideBalances"
         />
-        <PartialsAccountBalancesUsdcBalances
+        <PartialsAccountBalancesUsdcBalance
           v-else
           :balances="balances"
           :balance="balance"

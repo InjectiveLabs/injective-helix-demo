@@ -550,7 +550,14 @@ function handleTransferTradingAccountTrack() {
             </AppButton>
           </div>
         </div>
-        <ModalsBridgeNotSupportedBridgeTypeNote v-else />
+        <ModalsBridgeNotSupportedBridgeTypeNote
+          v-else
+          v-bind="{
+            formValues,
+            selectedNetwork: formValues[BridgeField.BridgingNetwork],
+            bridgeType
+          }"
+        />
       </div>
       <CommonUserNotConnectedNote v-else />
     </div>

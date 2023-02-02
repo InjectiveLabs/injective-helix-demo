@@ -48,6 +48,8 @@ export const getRoutes = (network: Network, env: string) => {
     'atom-usdt-perp'
   ]
 
+  const hiddenMarkets = ['usdc-usdcet', 'usdcso-usdcet']
+
   const walletConnectedRequiredRouteNames = ['activity', 'account']
 
   const binaryOptions: string[] = []
@@ -58,13 +60,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push(
-      'cre-usdt',
-      'sol-usdc',
-      'usdc-usdcet',
-      'usdcso-usdcet',
-      'usdt-usdc'
-    )
+    spot.push('cre-usdt', 'sol-usdc', 'usdt-usdc', ...hiddenMarkets)
   }
 
   const futures = [...perpetuals, ...expiryFutures]
@@ -79,6 +75,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   return {
     MARKETS_SLUGS: {
+      hiddenMarkets,
       spot,
       futures,
       binaryOptions,

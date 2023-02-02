@@ -1,5 +1,29 @@
 <script lang="ts" setup>
+import { PropType } from 'vue'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getHubUrl } from '@/app/utils/helpers'
+import { BridgeField, BridgeForm } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
+
+const props = defineProps({
+  formValues: {
+    required: true,
+    type: Object as PropType<BridgeForm>
+  },
+
+  selectedNetwork: {
+    type: Object as PropType<BridgingNetwork>,
+    required: true
+  }
+})
+
+const isWormholeTransfer = computed(
+  () =>
+    [BridgingNetwork.Solana].includes(props.selectedNetwork) ||
+    [usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+      props.formValues[BridgeField.Denom].toLowerCase()
+    )
+)
 
 const bridgeUrl = `${getHubUrl()}/bridge`
 </script>
@@ -9,7 +33,13 @@ const bridgeUrl = `${getHubUrl()}/bridge`
     <div class="flex justify-start items-center">
       <p class="text-xs text-orange-500 ml-2 flex items-center gap-2">
         <BaseIcon name="circle-info" md />
-        <span>{{ $t('bridge.ibcTransfersNote') }}</span>
+        <span>{{
+          $t('bridge.transfersNote', {
+            network: isWormholeTransfer
+              ? $t('bridge.wormhole')
+              : $t('bridge.ibc')
+          })
+        }}</span>
       </p>
     </div>
     <div class="text-center mt-6">

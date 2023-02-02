@@ -44,8 +44,11 @@ const isOpen = ref(false)
 const filteredMarkets = computed(() => {
   return spotStore.markets.filter(
     (m) =>
-      m.baseDenom === props.balance.token.denom ||
-      m.quoteDenom === props.balance.token.denom
+      (m.baseDenom === props.balance.token.denom ||
+        m.quoteDenom === props.balance.token.denom) &&
+      ![usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
+        m.baseDenom.toLowerCase()
+      )
   )
 })
 
@@ -63,7 +66,7 @@ const { valueToString: availableBalanceToString } = useBigNumberFormatter(
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
-) 
+)
 
 const {
   valueToBigNumber: totalBalanceInBigNumber,
@@ -265,9 +268,13 @@ function handleConvert() {
       </div>
     </td>
 
-    <td v-if="convertUsdc" class="pr-4">
-      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
+    <td class="pr-4">
+      <div
+        v-show="!isAggregateRow"
+        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
+      >
         <div
+          v-if="convertUsdc"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-convert"
           @click="handleConvert"
@@ -276,16 +283,8 @@ function handleConvert() {
             {{ $t('account.convertUsdc') }}
           </span>
         </div>
-      </div>
-    </td>
-
-    <td v-else class="pr-4">
-      <div
-        v-show="!isAggregateRow"
-        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
-      >
         <BaseDropdown
-          v-if="filteredMarkets.length > 1"
+          v-if="filteredMarkets.length > 1 && !convertUsdc"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
         >
           <template #default>
@@ -311,9 +310,8 @@ function handleConvert() {
             </div>
           </template>
         </BaseDropdown>
-
         <div
-          v-if="filteredMarkets.length === 1 && !isUsdcDenom"
+          v-if="filteredMarkets.length === 1 && !convertUsdc"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           @click="handleNavigateToMarket(filteredMarkets[0])"
         >
@@ -323,6 +321,9 @@ function handleConvert() {
         </div>
 
         <div
+          v-if="
+            ![usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
+          "
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-deposit-link"
           @click="handleDepositClick"
@@ -333,6 +334,9 @@ function handleConvert() {
         </div>
 
         <div
+          v-if="
+            ![usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
+          "
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-withdraw-link"
           @click="handleWithdrawClick"

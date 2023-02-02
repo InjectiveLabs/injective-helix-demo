@@ -2,13 +2,14 @@
 import { PropType } from 'vue'
 import { AccountBalance, BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
+import { usdcTokenDenom } from '~~/app/data/token'
 
 const props = defineProps({
   disabled: Boolean,
   required: Boolean,
 
   balance: {
-    type: Object as PropType<AccountBalance | undefined>,
+    type: Object as PropType<AccountBalance>,
     required: true
   },
 
@@ -28,16 +29,16 @@ const emit = defineEmits<{
 }>()
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => (props.balance ? props.balance.balanceToBase : '0')),
+  computed(() => props.balance.balanceToBase),
   {
     decimalPlaces: props.maxDecimals
   }
 )
 
 const {
-  value: amount,
   errors: amountErrors,
-  setValue: setAmountValue
+  setValue: setAmountValue,
+  value: amount
 } = useStringField({
   name: props.amountFieldName,
   rule: '',
@@ -52,6 +53,17 @@ const {
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
 )
+
+onMounted(() => {
+  if (
+    props.amountFieldName === TradeField.BaseAmount &&
+    [usdcTokenDenom.USDC].includes(props.balance.denom.toLowerCase())
+  ) {
+    setAmountValue(maxBalanceToFixed.value)
+
+    emit('update:modelValue', maxBalanceToFixed.value)
+  }
+})
 
 function handleAmountUpdate(amount: string) {
   emit('update:modelValue', amount)
@@ -103,7 +115,7 @@ export default {
               </span>
               <p>
                 {{ maxBalanceToFixed }}
-                {{ props.balance ? props.balance.token.symbol : '' }}
+                {{ props.balance.token.symbol }}
               </p>
             </div>
           </div>

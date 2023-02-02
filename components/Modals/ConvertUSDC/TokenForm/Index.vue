@@ -80,6 +80,10 @@ function toggleOrderType() {
 }
 
 function handleSwap() {
+  if (!isWHSolUSDTBaseDenom.value) {
+    return
+  }
+
   animationCount.value = animationCount.value + 1
 
   emit('update:isBase', !props.isBase)
@@ -188,22 +192,27 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col">
-    <div
-      class="flex justify-between mb-2"
-      :class="!isBuy ? 'order-first' : 'order-last'"
-    >
-      <span class="font-semibold">{{ $t('account.from') }}</span>
-      <ModalsConvertUSDCTokenFormPill
-        v-if="baseBalance"
-        :balance="baseBalance"
-      />
-    </div>
     <transition :name="!isBuy ? 'fade-up' : 'fade-down'" mode="out-in">
       <div
         :key="animationCount"
         :class="[!isBuy ? 'order-first' : 'order-last']"
       >
+        <div
+          class="flex justify-between mb-2"
+          :class="!isBuy ? 'order-first' : 'order-last'"
+        >
+          <span class="font-semibold">{{
+            !isBuy ? $t('account.from') : $t('account.to')
+          }}</span>
+
+          <ModalsConvertUSDCTokenFormPill
+            v-if="baseBalance"
+            :balance="baseBalance"
+          />
+        </div>
+
         <ModalsConvertUSDCTokenFormInput
+          v-if="baseBalance"
           :amount-field-name="TradeField.BaseAmount"
           :balance="baseBalance"
           :required="!isBuy"
@@ -229,22 +238,26 @@ onMounted(() => {
       />
     </div>
 
-    <div
-      class="flex justify-between mb-2"
-      :class="!isBuy ? 'order-last' : 'order-first'"
-    >
-      <span class="font-semibold">{{ $t('account.to') }}</span>
-      <ModalsConvertUSDCTokenFormPill
-        v-if="quoteBalance"
-        :balance="quoteBalance"
-      />
-    </div>
     <transition :name="!isBuy ? 'fade-down' : 'fade-up'" mode="out-in">
       <div
         :key="animationCount"
         :class="[!isBuy ? 'order-last' : 'order-first']"
       >
+        <div
+          class="flex justify-between mb-2"
+          :class="!isBuy ? 'order-last' : 'order-first'"
+        >
+          <span class="font-semibold">{{
+            isBuy ? $t('account.from') : $t('account.to')
+          }}</span>
+          <ModalsConvertUSDCTokenFormPill
+            v-if="quoteBalance"
+            :balance="quoteBalance"
+          />
+        </div>
+
         <ModalsConvertUSDCTokenFormInput
+          v-if="quoteBalance"
           :amount-field-name="TradeField.QuoteAmount"
           :balance="quoteBalance"
           :required="isBuy"

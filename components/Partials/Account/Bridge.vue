@@ -10,7 +10,7 @@ import {
   BridgeBusEvents,
   TransferDirection
 } from '@/types'
-import { injToken } from '@/app/data/token'
+import { injToken, usdcTokenDenom } from '@/app/data/token'
 import { denomClient } from '@/app/Services'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
@@ -144,13 +144,19 @@ function handleTransferToBank(token: Token = injToken) {
 function handleDeposit(token: Token = injToken) {
   const formToken = token || injToken
 
-  const bridgingNetworkValue = walletStore.isCosmosWallet
-    ? BridgingNetwork.CosmosHub
-    : getBridgingNetworkBySymbol(formToken.symbol)
-
   handleResetForm(formToken)
 
   bridgeType.value = BridgeType.Deposit
+
+  const bridgingNetworkBySymbol = getBridgingNetworkBySymbol(formToken.symbol)
+
+  const bridgingNetworkValue =
+    walletStore.isCosmosWallet &&
+    bridgingNetworkBySymbol !== BridgingNetwork.Solana &&
+    ![usdcTokenDenom.USDCso].includes(formToken.denom.toLowerCase())
+      ? BridgingNetwork.CosmosHub
+      : bridgingNetworkBySymbol
+
   formValues[BridgeField.BridgingNetwork] = bridgingNetworkValue
   formValues[BridgeField.TransferDirection] =
     TransferDirection.tradingAccountToBank
