@@ -15,6 +15,7 @@ const modalStore = useModalStore()
 
 const props = defineProps({
   expand: Boolean,
+  hasOneUsdcBalance: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -145,9 +146,12 @@ function handleConvert() {
     <td class="pl-4">
       <div
         class="flex justify-start items-center gap-2"
-        :class="{ 'ml-8': isUsdcDenom }"
+        :class="{ 'ml-8': isUsdcDenom && !hasOneUsdcBalance }"
       >
-        <CommonTokenIcon v-if="!isUsdcDenom" :token="balance.token" />
+        <CommonTokenIcon
+          v-if="!isUsdcDenom || hasOneUsdcBalance"
+          :token="balance.token"
+        />
 
         <div class="flex justify-start gap-2 items-center">
           <span
