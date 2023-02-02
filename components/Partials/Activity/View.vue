@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div class="mt-4 bg-gray-900 grow h-full-flex">
+  <div class="mt-4 bg-gray-900 grow h-full-flex overflow-y-scroll">
     <Suspense>
       <component v-bind="$attrs" :is="activityComponent" />
 

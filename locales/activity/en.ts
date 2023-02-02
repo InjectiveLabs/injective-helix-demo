@@ -14,7 +14,9 @@ export default {
     openPositions: 'Open positions',
     cancelOrders: 'Cancel Orders',
     funds: 'Funds',
-    triggers: 'Triggers'
+    triggers: 'Triggers',
+    fetchOrders: 'Fetch Orders',
+    fetchTrades: 'Fetch Trades'
   },
 
   fundingPayments: {

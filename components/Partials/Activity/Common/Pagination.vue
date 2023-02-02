@@ -1,95 +1,120 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Status } from '@injectivelabs/utils'
-import { ActivityView } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
+import { ActivityView, ActivityField } from '@/types'
+
+const activityStore = useActivityStore()
+const bridgeStore = useBridgeStore()
+const derivativeStore = useDerivativeStore()
+const spotStore = useSpotStore()
 
 const props = defineProps({
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  page: {
-    type: Number,
+  view: {
+    type: String,
     required: true
   },
 
   status: {
     type: Object as PropType<Status>,
-    default: () => new Status()
-  },
-
-  view: {
-    type: String,
-    required: true
+    default: () => new Status(StatusType.Idle)
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:page', state: number): void
-  (e: 'update:limit', state: number): void
+  (e: 'update:filter'): void
 }>()
 
-const activityStore = useActivityStore()
-const bridgeStore = useBridgeStore()
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
-const spotStore = useSpotStore()
+const cachedEndTime = ref<number | undefined>(undefined)
+
+const { value: page, setValue: setPageValue } = useNumberField({
+  name: ActivityField.Page,
+  initialValue: 1,
+  rule: ''
+})
+
+const { value: limit, setValue: setLimitValue } = useNumberField({
+  name: ActivityField.Limit,
+  initialValue: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+  rule: ''
+})
 
 const totalCount = computed(() => {
   switch (props.view) {
-    case ActivityView.Positions:
-      return positionStore.subaccountPositionsCount
     case ActivityView.FundingPayments:
       return activityStore.subaccountFundingPaymentsCount
-    case ActivityView.SpotOrders:
-      return spotStore.subaccountOrdersCount
     case ActivityView.SpotOrderHistory:
       return spotStore.subaccountOrderHistoryCount
     case ActivityView.SpotTradeHistory:
       return spotStore.subaccountTradesCount
-    case ActivityView.DerivativeOrders:
-      return derivativeStore.subaccountOrdersCount
-    case ActivityView.DerivativeTriggers:
-      return derivativeStore.subaccountConditionalOrdersCount
     case ActivityView.DerivativeOrderHistory:
       return derivativeStore.subaccountOrderHistoryCount
     case ActivityView.DerivativeTradeHistory:
       return derivativeStore.subaccountTradesCount
     case ActivityView.WalletTransfers:
       return bridgeStore.subaccountTransferBridgeTransactionsCount
-    case ActivityView.WalletDeposits:
-    case ActivityView.WalletWithdrawals:
     default:
       return 0
   }
 })
 
-const page = computed({
-  get(): number {
-    return props.page
-  },
-  set(value: number) {
-    emit('update:page', value)
+const endTime = computed(() => {
+  switch (props.view) {
+    case ActivityView.FundingPayments:
+      return activityStore.subaccountFundingPayments[0]?.timestamp || 0
+    case ActivityView.SpotOrderHistory:
+      return spotStore.subaccountOrderHistory[0]?.updatedAt || 0
+    case ActivityView.SpotTradeHistory:
+      return spotStore.subaccountTrades[0]?.executedAt || 0
+    case ActivityView.DerivativeOrderHistory:
+      return derivativeStore.subaccountOrderHistory[0]?.updatedAt || 0
+    case ActivityView.DerivativeTradeHistory:
+      return derivativeStore.subaccountTrades[0]?.executedAt || 0
+    default:
+      return undefined
   }
 })
 
-const limit = computed({
-  get(): number {
-    return props.limit
-  },
-  set(value: number) {
-    emit('update:limit', value)
+function handlePageChange(page: string) {
+  if (Number(page) === 1) {
+    cachedEndTime.value = undefined
+  } else if (!cachedEndTime.value) {
+    cachedEndTime.value = endTime.value
+  }
+
+  setPageValue(Number(page))
+  emit('update:filter')
+}
+
+function handleLimitChange(limit: string) {
+  setLimitValue(Number(limit))
+  setPageValue(1)
+  emit('update:filter')
+}
+
+const paginationOptions = computed(() => {
+  const skip = (page.value - 1) * limit.value
+  const isPageOne = skip === 0
+
+  if (isPageOne) {
+    return undefined
+  }
+
+  return {
+    skip,
+    limit: limit.value,
+    endTime: cachedEndTime.value
   }
 })
 
-function handlePageChange(value: number) {
-  page.value = value
-}
+watch(
+  () => props.view,
+  () => (cachedEndTime.value = undefined)
+)
 
-function handleLimitChange(value: string) {
-  limit.value = Number(value)
-}
+defineExpose({
+  paginationOptions
+})
 </script>
 
 <template>
@@ -105,7 +130,7 @@ function handleLimitChange(value: string) {
     @update:limit="handleLimitChange"
   >
     <template #rows-prefix>
-      <span>Show rows:</span>
+      <span>{{ $t('pagination.showRows') }}:</span>
     </template>
   </AppPagination>
 </template>

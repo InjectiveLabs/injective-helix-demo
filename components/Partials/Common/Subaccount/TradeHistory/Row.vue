@@ -48,8 +48,8 @@ const marketRoute = computed(() => {
     </td>
     <td class="h-12 text-left cursor-pointer">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
-        <div v-if="market.baseToken" class="w-4 h-4">
-          <CommonTokenIcon :token="market.baseToken" />
+        <div v-if="market.baseToken">
+          <CommonTokenIcon :token="market.baseToken" md />
         </div>
         <div class="ml-3">
           <span

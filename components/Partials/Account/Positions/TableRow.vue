@@ -43,10 +43,6 @@ const {
 
 const status = reactive(new Status(StatusType.Idle))
 
-const currentOrders = computed(() => {
-  return derivativeStore.subaccountOrders
-})
-
 const positionCloseError = computed(() => {
   if (!market.value) {
     return
@@ -72,7 +68,7 @@ const notEnoughLiquidityError = computed(() => {
 })
 
 const reduceOnlyCurrentOrders = computed(() => {
-  return currentOrders.value.filter(
+  return derivativeStore.subaccountOrders.filter(
     (order) => order.isReduceOnly && order.marketId === props.position.marketId
   )
 })

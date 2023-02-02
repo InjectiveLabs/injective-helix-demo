@@ -80,7 +80,7 @@ watchDebounced(
           v-if="showLoading"
           class="grow flex items-center justify-center -mt-6"
         >
-          <AppSpinner lg blue />
+          <AppSpinner lg />
         </div>
         <div v-else>
           <div :class="{ 'px-6': !noPadding }">

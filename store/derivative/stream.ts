@@ -47,6 +47,14 @@ export const streamTrades = (marketId: string) => {
         return
       }
 
+      // filter out non-tradable markets
+      if (
+        !marketId &&
+        !derivativeStore.activeMarketIds.includes(trade.marketId)
+      ) {
+        return
+      }
+
       switch (operation) {
         case StreamOperation.Insert:
           derivativeStore.$patch({
@@ -78,6 +86,14 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
     subaccountId: subaccount.subaccountId,
     callback: ({ order }) => {
       if (!order) {
+        return
+      }
+
+      // filter out non-tradable markets
+      if (
+        !marketId &&
+        !derivativeStore.activeMarketIds.includes(order.marketId)
+      ) {
         return
       }
 
@@ -134,6 +150,14 @@ export const streamSubaccountTrades = (marketId?: string) => {
     subaccountId: subaccount.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
+        return
+      }
+
+      // filter out non-tradable markets
+      if (
+        !marketId &&
+        !derivativeStore.activeMarketIds.includes(trade.marketId)
+      ) {
         return
       }
 
@@ -201,6 +225,14 @@ export const streamSubaccountOrders = (marketId?: string) => {
         return
       }
 
+      // filter out non-tradable markets
+      if (
+        !marketId &&
+        !derivativeStore.activeMarketIds.includes(order.marketId)
+      ) {
+        return
+      }
+
       const isConditional = [
         DerivativeOrderSide.TakeBuy,
         DerivativeOrderSide.TakeSell,
@@ -223,9 +255,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
             derivativeStore.$patch({
               subaccountConditionalOrders,
               subaccountConditionalOrdersCount:
-                subaccountConditionalOrders.length,
-              subaccountTotalOrdersCount:
-                derivativeStore.subaccountTotalOrdersCount + 1
+                subaccountConditionalOrders.length
             })
           } else {
             const subaccountOrders = [
@@ -237,9 +267,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
             derivativeStore.$patch({
               subaccountOrders,
-              subaccountOrdersCount: subaccountOrders.length,
-              subaccountTotalOrdersCount:
-                derivativeStore.subaccountTotalOrdersCount + 1
+              subaccountOrdersCount: subaccountOrders.length
             })
           }
 
@@ -257,9 +285,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
             derivativeStore.$patch({
               subaccountConditionalOrders,
               subaccountConditionalOrdersCount:
-                subaccountConditionalOrders.length,
-              subaccountTotalOrdersCount:
-                derivativeStore.subaccountTotalOrdersCount - 1
+                subaccountConditionalOrders.length
             })
           } else {
             const subaccountOrders = [...derivativeStore.subaccountOrders]
@@ -268,9 +294,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
             derivativeStore.$patch({
               subaccountOrders,
-              subaccountOrdersCount: subaccountOrders.length,
-              subaccountTotalOrdersCount:
-                derivativeStore.subaccountTotalOrdersCount - 1
+              subaccountOrdersCount: subaccountOrders.length
             })
           }
 

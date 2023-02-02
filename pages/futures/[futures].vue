@@ -70,7 +70,7 @@ function refreshSubaccountDetails() {
   const fetchOptions = filterByCurrentMarket.value
     ? {
         filters: {
-          marketId: market.value.marketId
+          marketIds: [market.value.marketId]
         }
       }
     : undefined
@@ -85,10 +85,12 @@ function refreshSubaccountDetails() {
 function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
   fetchStatus.setLoading()
 
+  const marketIds = fetchOptions?.filters?.marketIds
+
   Promise.all([
-    derivativeStore.fetchSubaccountOrders(fetchOptions),
+    derivativeStore.fetchSubaccountOrders(marketIds),
     derivativeStore.fetchSubaccountOrderHistory(fetchOptions),
-    derivativeStore.fetchSubaccountConditionalOrders(fetchOptions),
+    derivativeStore.fetchSubaccountConditionalOrders(marketIds),
     derivativeStore.fetchSubaccountTrades(fetchOptions),
     positionStore.fetchSubaccountPositions(fetchOptions)
   ])
