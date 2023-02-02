@@ -1,10 +1,19 @@
-import { DOMEvent } from '~/types'
+import { formatNumberToAllowableTensMultiplier } from '@injectivelabs/sdk-ts'
+import { DOMEvent } from '@/types'
 
 export const isNumericKeycode = (keyCode?: number) =>
   keyCode &&
   ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105))
 
-export const convertToNumericValue = (value: string, maxDecimals: number) => {
+export const convertToNumericValue = ({
+  value,
+  maxDecimals,
+  tensMultiplier
+}: {
+  value: string
+  maxDecimals: number
+  tensMultiplier?: number
+}) => {
   if (value === '') {
     return value
   }
@@ -12,12 +21,24 @@ export const convertToNumericValue = (value: string, maxDecimals: number) => {
   if (value.includes('.')) {
     const [wholeValue, decimalValue] = value.split('.')
 
+    if (maxDecimals <= 0 && tensMultiplier) {
+      return `${Number(
+        formatNumberToAllowableTensMultiplier(value, tensMultiplier || 0)
+      )}`
+    }
+
     const formattedDecimalValue =
       decimalValue.length > maxDecimals
         ? decimalValue.substring(0, maxDecimals)
         : decimalValue
 
     return `${Number(wholeValue)}.${formattedDecimalValue}`
+  }
+
+  if (tensMultiplier) {
+    return `${Number(
+      formatNumberToAllowableTensMultiplier(value, tensMultiplier || 0)
+    )}`
   }
 
   return Number(value)

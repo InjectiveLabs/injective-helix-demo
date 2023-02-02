@@ -1,6 +1,7 @@
 export default {
   connect: {
     wallet: 'Wallet',
+    walletAddress: 'Wallet Address',
     address: 'Address',
     close: 'Close',
     connect: 'Connect',
@@ -49,10 +50,6 @@ export default {
     connectUsingTrezor: 'Connect using Trezor',
     connectUsingTrezorNote:
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
-
-    keplrWarning: 'Warning: Ensure you use Injective v1.1 on Keplr!',
-    keplrWarningTooltip:
-      "When connecting using Keplr, always ensure that you have the Injective v1.1 version in the Keplr's chain list. If you don't, remove the existing Injective version, disconnect from the Hub and reconnect again. This will ensure you have the latest Injective version added on Keplr.",
 
     leap: 'Leap',
     cosmostation: 'Cosmostation'

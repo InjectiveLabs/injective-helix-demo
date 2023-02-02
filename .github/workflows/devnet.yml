@@ -1,4 +1,4 @@
-name: Helix Devnet CD
+name: Helix Devnet Deployments
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   devnet:
-    if: false
+    if: true
     name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:
@@ -17,28 +17,29 @@ jobs:
       SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}
       GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
 
-      ## Flags
-      MAINTENANCE_ENABLED: false
-      GAS_FREE_DEPOSIT_REBATE_ENABLED: false
-      META_TAGS_ENABLED: true
+      ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: false
-      GEO_IP_RESTRICTIONS_ENABLED: false
-      SHOW_AUCTION_COUNTDOWN: false
-      REFERRALS_ENABLED: false
+
+      ## Flags
+      VITE_MAINTENANCE_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
+      VITE_REFERRALS_ENABLED: false
 
       ## Endpoints
-      APP_EXCHANGE_API_ENDPOINT: ''
-      APP_SENTRY_GRPC_ENDPOINT: ''
-      APP_SENTRY_HTTP_ENDPOINT: ''
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
+      VITE_SENTRY_GRPC_ENDPOINT: ''
+      VITE_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
-      APP_NEWSLETTER_API: ${{ secrets.APP_NEWSLETTER_API }}
-      APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
-      APP_ALCHEMY_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
-      APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_DEVNET_GOOGLE_ANALYTICS_KEY }}
-      APP_AMPLITUDE_KEY: ${{secrets.APP_DEVNET_AMPLITUDE_KEY}}
-      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
+      VITE_ALCHEMY_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
+      VITE_AMPLITUDE_KEY: ${{secrets.VITE_DEVNET_AMPLITUDE_KEY}}
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
+      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_DEVNET_GOOGLE_ANALYTICS_KEY }}
+      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+      VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
 
     steps:
       - name: Configure SSH
@@ -62,13 +63,7 @@ jobs:
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
 
       - name: Remove prev build
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
-
-      - name: Remove prev build process
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
-
-      - name: Building the project
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
 
       - name: Generating the static pages
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'

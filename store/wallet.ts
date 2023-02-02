@@ -1,385 +1,365 @@
-import { actionTree, getterTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
-import {
-  getAddressFromInjectiveAddress,
-  getInjectiveAddress
-} from '@injectivelabs/sdk-ts'
+import { getEthereumAddress, getInjectiveAddress } from '@injectivelabs/sdk-ts'
 import {
   ChainCosmosErrorCode,
   CosmosWalletException,
   ErrorType,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { CosmosChainId } from '@injectivelabs/ts-types'
-import { confirm, connect, getAddresses } from '~/app/services/wallet'
-import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
-import { WalletConnectStatus } from '~/types'
-import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
-import { walletStrategy } from '~/app/wallet-strategy'
-import {
-  derivativeMarketRouteNames,
-  spotMarketRouteNames
-} from '~/app/data/market'
-import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
+import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
+import { confirm, connect, getAddresses } from '@/app/services/wallet'
+import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
+import { BusEvents, WalletConnectStatus } from '@/types'
+import { walletStrategy } from '@/app/wallet-strategy'
+import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
   confirmCorrectKeplrAddress,
   validateCosmosWallet
-} from '~/app/services/cosmos'
+} from '@/app/services/cosmos'
+import { INJ_GAS_BUFFER, IS_DEVNET } from '@/app/utils/constants'
 
-const initialStateFactory = () => ({
-  walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
-  address: '' as string,
-  injectiveAddress: '' as string,
-  addressConfirmation: '' as string,
-  addresses: [] as string[],
-  metamaskInstalled: false as boolean,
+type WalletStoreState = {
+  walletConnectStatus: WalletConnectStatus
+  address: string
+  injectiveAddress: string
+  addressConfirmation: string
+  addresses: string[]
+  metamaskInstalled: boolean
+  wallet: Wallet
+}
+
+const initialStateFactory = (): WalletStoreState => ({
+  walletConnectStatus: WalletConnectStatus.idle,
+  address: '',
+  injectiveAddress: '',
+  addressConfirmation: '',
+  addresses: [],
+  metamaskInstalled: false,
   wallet: Wallet.Metamask
 })
 
-const initialState = initialStateFactory()
+export const useWalletStore = defineStore('wallet', {
+  state: (): WalletStoreState => initialStateFactory(),
+  getters: {
+    isUserWalletConnected: (state) => {
+      const addressConnectedAndConfirmed =
+        !!state.address && !!state.addressConfirmation
+      const hasAddresses = state.addresses.length > 0
 
-export const state = () => ({
-  walletConnectStatus: initialState.walletConnectStatus as WalletConnectStatus,
-  addresses: initialState.addresses as string[],
-  address: initialState.address as string,
-  injectiveAddress: initialState.injectiveAddress as string,
-  addressConfirmation: initialState.addressConfirmation as string,
-  metamaskInstalled: initialState.metamaskInstalled as boolean,
-  wallet: initialState.wallet as Wallet
-})
+      return (
+        hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
+      )
+    },
 
-export type WalletStoreState = ReturnType<typeof state>
+    isCosmosWallet: (state) => {
+      return isCosmosWallet(state.wallet)
+    },
 
-export const getters = getterTree(state, {
-  isUserWalletConnected: (state) => {
-    const addressConnectedAndConfirmed =
-      !!state.address && !!state.addressConfirmation
-    const hasAddresses = state.addresses.length > 0
+    hasEnoughInjForGas: (state) => {
+      const bankStore = useBankStore()
 
-    return (
-      hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
-    )
-  }
-})
+      // fee delegation don't work on devnet
+      const isWalletExemptFromGasFee =
+        !isCosmosWallet(state.wallet) && !IS_DEVNET
 
-export const mutations = {
-  setWallet(state: WalletStoreState, wallet: Wallet) {
-    state.wallet = wallet
+      const hasEnoughInjForGas = new BigNumberInWei(
+        bankStore.balances[INJ_DENOM] || 0
+      )
+        .toBase()
+        .gte(INJ_GAS_BUFFER)
+
+      return isWalletExemptFromGasFee || hasEnoughInjForGas
+    }
   },
+  actions: {
+    async init() {
+      const walletStore = useWalletStore()
 
-  setAddress(state: WalletStoreState, address: string) {
-    state.address = address
-  },
-
-  setAddressConfirmation(state: WalletStoreState, addressConfirmation: string) {
-    state.addressConfirmation = addressConfirmation
-  },
-
-  setInjectiveAddress(state: WalletStoreState, injectiveAddress: string) {
-    state.injectiveAddress = injectiveAddress
-  },
-
-  setMetamaskInstalled(state: WalletStoreState, metamaskInstalled: boolean) {
-    state.metamaskInstalled = metamaskInstalled
-  },
-
-  setAddresses(state: WalletStoreState, addresses: string[]) {
-    state.addresses = addresses
-  },
-
-  setWalletConnectStatus(
-    state: WalletStoreState,
-    walletConnectStatus: WalletConnectStatus
-  ) {
-    state.walletConnectStatus = walletConnectStatus
-  },
-
-  reset(state: WalletStoreState) {
-    const initialState = initialStateFactory()
-
-    state.address = initialState.address
-    state.addresses = initialState.addresses
-    state.injectiveAddress = initialState.injectiveAddress
-    state.addressConfirmation = initialState.addressConfirmation
-  },
-
-  resetPage(_state: WalletStoreState) {
-    //
-  }
-}
-
-export const actions = actionTree(
-  {
-    state,
-    mutations
-  },
-  {
-    async init({ state }) {
-      const { wallet } = state
-
-      if (!wallet) {
+      if (!walletStore.wallet) {
         return
       }
+
+      await connect({ wallet: walletStore.wallet })
+    },
+
+    async initPage() {
+      const accountStore = useAccountStore()
+      const bankStore = useBankStore()
+      const onBoardStore = useOnboardStore()
+      const tokenStore = useTokenStore()
+
+      await bankStore.fetchBankBalancesWithToken()
+      await accountStore.fetchSubaccounts()
+      await onBoardStore.init()
+      await tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
+    },
+
+    async connectWallet(wallet: Wallet) {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        wallet,
+        walletConnectStatus: WalletConnectStatus.connecting
+      })
 
       await connect({ wallet })
     },
 
-    async initPage(_) {
-      await this.app.$accessor.bank.fetchBankBalancesWithToken()
-      await this.app.$accessor.account.fetchSubaccounts()
-      await this.app.$accessor.account.fetchSubaccountsBalances()
-      await this.app.$accessor.account.fetchSubaccountsBalancesWithPrices()
-      await this.app.$accessor.onboard.init()
-      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
+    async onConnect() {
+      const accountStore = useAccountStore()
+      const bankStore = useBankStore()
+      const exchangeStore = useExchangeStore()
+      const referralStore = useReferralStore()
+      const walletStore = useWalletStore()
 
-      if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
-        await this.app.$accessor.gasRebate.init()
-      }
+      await accountStore.fetchSubaccounts()
+      await bankStore.fetchBalances()
+      await exchangeStore.initFeeDiscounts()
+
+      amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
+      amplitudeTracker.setUser({
+        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0,
+        address: walletStore.injectiveAddress,
+        wallet: walletStore.wallet
+      })
+      amplitudeTracker.submitWalletConnectedTrackEvent()
+
+      walletStore.$patch({
+        walletConnectStatus: WalletConnectStatus.connected
+      })
+
+      useEventBus(BusEvents.WalletConnected).emit()
+
+      await referralStore.init()
     },
 
-    async onConnect({ state }) {
-      const { wallet } = state
+    async isMetamaskInstalled() {
+      const walletStore = useWalletStore()
 
-      await this.app.$accessor.account.fetchSubaccounts()
-      await this.app.$accessor.bank.fetchBalances()
-      await this.app.$accessor.exchange.initFeeDiscounts()
-
-      if (this.app.context.route.name === 'funding') {
-        await this.app.$accessor.wallet.initPage()
-      }
-
-      if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initTradeAndEarn()
-      }
-
-      if (
-        [...derivativeMarketRouteNames, ...spotMarketRouteNames].includes(
-          this.app.context.route.name
-        )
-      ) {
-        await this.app.$accessor.account.streamSubaccountBalances()
-      }
-
-      amplitudeTracker.submitWalletSelectedTrackEvent(wallet)
+      walletStore.$patch({
+        metamaskInstalled: await isMetamaskInstalled()
+      })
     },
 
-    async isMetamaskInstalled({ commit }) {
-      commit('setMetamaskInstalled', await isMetamaskInstalled())
-    },
+    async getHWAddresses(wallet: Wallet) {
+      const walletStore = useWalletStore()
 
-    async getHWAddresses({ state, commit }, wallet: Wallet) {
-      if (state.addresses.length === 0 || state.wallet !== wallet) {
+      if (walletStore.addresses.length === 0 || walletStore.wallet !== wallet) {
         await connect({ wallet })
 
-        commit('setWallet', wallet)
-        commit('setAddresses', await getAddresses())
+        walletStore.$patch({
+          wallet,
+          addresses: await getAddresses()
+        })
       } else {
-        const newAddresses = await getAddresses()
+        const addresses = await getAddresses()
 
-        commit('setAddresses', [...state.addresses, ...newAddresses])
+        walletStore.$patch({
+          wallet,
+          addresses: [...walletStore.addresses, ...addresses]
+        })
       }
     },
 
-    async connectLedger({ state, commit }, addresses: string[]) {
-      await this.app.$accessor.app.validate()
+    async connectLedger(address: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', state.wallet)
+      await appStore.validate()
+      await walletStore.connectWallet(walletStore.wallet)
 
-      await connect({ wallet: state.wallet })
-
-      const [address] = addresses
+      const addresses = [address]
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddressConfirmation', addressConfirmation)
-      commit('setAddresses', addresses)
-      commit('setAddress', address)
-
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
-    },
-
-    async connectTrezor({ state, commit }, addresses: string[]) {
-      await this.app.$accessor.app.validate()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', state.wallet)
-
-      await connect({ wallet: state.wallet })
-
-      const [address] = addresses
-      const addressConfirmation = await confirm(address)
-      const injectiveAddress = getInjectiveAddress(address)
-
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddressConfirmation', addressConfirmation)
-      commit('setAddresses', addresses)
-      commit('setAddress', address)
-
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
-    },
-
-    async connectMetamask({ commit }) {
-      await this.app.$accessor.app.validate()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.Metamask)
-
-      await connect({
-        wallet: Wallet.Metamask
+      walletStore.$patch({
+        address,
+        addressConfirmation,
+        addresses,
+        injectiveAddress
       })
+
+      await walletStore.onConnect()
+    },
+
+    async connectTrezor(address: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.validate()
+      await walletStore.connectWallet(walletStore.wallet)
+
+      const addresses = [address]
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addressConfirmation,
+        addresses,
+        injectiveAddress
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectMetamask() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Metamask)
 
       const addresses = await getAddresses()
       const [address] = addresses
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', address)
-      commit('setAddresses', addresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        address,
+        addressConfirmation,
+        addresses,
+        injectiveAddress
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async connectWalletConnect({ commit }) {
-      await this.app.$accessor.app.validate()
+    async connectWalletConnect() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.WalletConnect)
-
-      await connect({
-        wallet: Wallet.WalletConnect
-      })
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.WalletConnect)
 
       const addresses = await getAddresses()
       const [address] = addresses
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', address)
-      commit('setAddresses', addresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        address,
+        addressConfirmation,
+        addresses,
+        injectiveAddress
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async connectKeplr({ commit }) {
-      await this.app.$accessor.app.validate()
+    async connectKeplr() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.Keplr)
-
-      await connect({
-        wallet: Wallet.Keplr
-      })
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Keplr)
 
       const injectiveAddresses = await getAddresses()
       const [injectiveAddress] = injectiveAddresses
       const addressConfirmation = await confirm(injectiveAddress)
-      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+      const ethereumAddress = getEthereumAddress(injectiveAddress)
 
       await confirmCorrectKeplrAddress(injectiveAddress)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', ethereumAddress)
-      commit('setAddresses', injectiveAddresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        injectiveAddress,
+        addressConfirmation,
+        address: ethereumAddress,
+        addresses: injectiveAddresses
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async connectLeap({ commit }) {
-      await this.app.$accessor.app.validate()
+    async connectLeap() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.Leap)
-
-      await connect({
-        wallet: Wallet.Leap
-      })
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Leap)
 
       const injectiveAddresses = await getAddresses()
       const [injectiveAddress] = injectiveAddresses
       const addressConfirmation = await confirm(injectiveAddress)
-      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+      const ethereumAddress = getEthereumAddress(injectiveAddress)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', ethereumAddress)
-      commit('setAddresses', injectiveAddresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        injectiveAddress,
+        addressConfirmation,
+        address: ethereumAddress,
+        addresses: injectiveAddresses
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async connectCosmostation({ commit }) {
-      await this.app.$accessor.app.validate()
+    async connectCosmostation() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.Cosmostation)
-
-      await connect({
-        wallet: Wallet.Cosmostation
-      })
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Cosmostation)
 
       const injectiveAddresses = await getAddresses()
       const [injectiveAddress] = injectiveAddresses
       const addressConfirmation = await confirm(injectiveAddress)
-      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+      const ethereumAddress = getEthereumAddress(injectiveAddress)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', ethereumAddress)
-      commit('setAddresses', injectiveAddresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        addressConfirmation,
+        injectiveAddress,
+        address: ethereumAddress,
+        addresses: injectiveAddresses
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async connectTorus({ commit }) {
-      await this.app.$accessor.app.validate()
+    async connectTorus() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-      commit('setWallet', Wallet.Torus)
-
-      await connect({
-        wallet: Wallet.Torus
-      })
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Torus)
 
       const addresses = await getAddresses()
       const [address] = addresses
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      commit('setInjectiveAddress', injectiveAddress)
-      commit('setAddress', address)
-      commit('setAddresses', addresses)
-      commit('setAddressConfirmation', addressConfirmation)
+      walletStore.$patch({
+        address,
+        addresses,
+        addressConfirmation,
+        injectiveAddress
+      })
 
-      await this.app.$accessor.wallet.onConnect()
-
-      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+      await walletStore.onConnect()
     },
 
-    async validate({ state }) {
-      const { wallet, injectiveAddress, address } = state
-      const { ethereumChainId, chainId } = this.app.$accessor.app
-      const { hasEnoughInjForGas } = this.app.$accessor.bank
+    setWalletConnectStatus(walletConnectStatus: WalletConnectStatus) {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        walletConnectStatus
+      })
+    },
+
+    setAddresses(addresses: string[]) {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        addresses
+      })
+    },
+
+    async validate() {
+      const { wallet, injectiveAddress, address } = useWalletStore()
+      const { ethereumChainId, chainId } = useAppStore()
+      const { hasEnoughInjForGas } = useWalletStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)
@@ -405,28 +385,42 @@ export const actions = actionTree(
       }
     },
 
-    async logout({ commit }) {
-      await walletStrategy.disconnectWallet()
-      await this.app.$accessor.account.reset()
-      await this.app.$accessor.token.reset()
-      await this.app.$accessor.spot.resetSubaccount()
-      await this.app.$accessor.derivatives.resetSubaccount()
-      await this.app.$accessor.bank.reset()
-      await this.app.$accessor.referral.reset()
-      await this.app.$accessor.positions.reset()
-      await this.app.$accessor.activity.reset()
+    async logout() {
+      const accountStore = useAccountStore()
+      const activityStore = useActivityStore()
+      const bankStore = useBankStore()
+      const derivativeStore = useDerivativeStore()
+      const positionStore = usePositionStore()
+      const referralStore = useReferralStore()
+      const spotStore = useSpotStore()
+      const tokenStore = useTokenStore()
+      const walletStore = useWalletStore()
 
-      commit('reset')
-      commit('resetPage')
-      commit('setWalletConnectStatus', WalletConnectStatus.disconnected)
+      await walletStrategy.disconnectWallet()
+
+      accountStore.reset()
+      walletStore.reset()
+      derivativeStore.resetSubaccount()
+      spotStore.resetSubaccount()
+
+      activityStore.$reset()
+      bankStore.$reset()
+      positionStore.$reset()
+      referralStore.$reset()
+      tokenStore.$reset()
     },
 
-    async resetPage({ commit }) {
-      await this.app.$accessor.token.reset()
-      await this.app.$accessor.onboard.reset()
-      await this.app.$accessor.gasRebate.reset()
+    reset() {
+      const walletStore = useWalletStore()
 
-      commit('resetPage')
+      const initialState = initialStateFactory()
+
+      walletStore.$patch({
+        address: initialState.address,
+        addresses: initialState.addresses,
+        injectiveAddress: initialState.injectiveAddress,
+        addressConfirmation: initialState.addressConfirmation
+      })
     }
   }
-)
+})

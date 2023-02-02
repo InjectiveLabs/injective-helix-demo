@@ -68,6 +68,8 @@ export default {
     sell_asset: 'Sell {asset}',
     not_enough_fillable_orders:
       'There are not enough orders to fill this amount',
+    balance_higher_than_orderbook_liquidity:
+      'Balance is higher than orderbook liquidity',
     order_placed: 'Your order has been placed',
     error_in_form: 'There are errors in your form',
     volume_asset: '24h Volume ({asset})',
@@ -79,7 +81,7 @@ export default {
     futures: 'Futures',
     trading: 'Trading',
     high_execution_price_deviation_warning_note:
-      'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
+      'The execution price for your order deviates at least {percentage}% from the last traded price. Click confirm if you still want to execute it.',
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
     max_leverage_warn: 'Please decrease leverage',
@@ -92,7 +94,8 @@ export default {
     add_margin_to_position_title: 'Add Margin',
     order_insufficient_margin:
       'Please modify price, amount, or leverage to meet margin requirement',
-    mark_price_invalid: 'The mark price is not valid',
+    mark_price_invalid:
+      'Please modify price, amount, or leverage to meet mark price requirement',
     success_added_margin: 'You have successfully added margin to your position',
     add_margin: 'Add Margin',
     fee_order_details_note_negative_margin:
@@ -119,7 +122,7 @@ export default {
     derivatives: 'Derivatives',
     not_available_n_a: 'N/A',
     position_closed: 'Position Closed',
-    not_enough_balance: 'Not enough balance',
+    insufficient_balance: 'Insufficient balance',
     next_funding: 'Next Funding',
     next_funding_tooltip:
       'The time remaining for the end of the funding interval.',
@@ -140,7 +143,6 @@ export default {
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
     search_market: 'Search Market',
     search_markets: 'Search Markets',
-    filter_markets: 'Filter Markets',
     favorites: 'Favorites',
     spot: 'Spot',
     asset: 'Asset',
@@ -167,6 +169,8 @@ export default {
       'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
     fees_tooltip_discount:
       'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
+    taker_fees_tooltip_discount:
+      'Based on your tier, you are eligible for {taker}% taker discount.',
     quote_denoms: 'Quote Denoms',
     quote_denoms_tooltip:
       'Markets involving these assets are qualified for Trade & Earn unless explicitly disqualified otherwise (check disqualified markets). Whether that be a derivatives market using these assets as margin, or a spot market using these assets as either base or quote currency.',
@@ -182,8 +186,6 @@ export default {
     expected_points: 'Expected Points',
     expected_points_note:
       'The expected points you will earn for the Injective Astro incentive program based on the execution type of your order (maker or taker).',
-    your_order_has_high_price_deviation:
-      'The execution price for this trade is far away from the current orderbook mid price.',
     execution_price_far_away_from_last_traded_price:
       'Please note that the execution price for this trade deviates a lot from the last traded price.',
     trigger_price_zero: 'The trigger price must be higher than 0.',
@@ -222,34 +224,33 @@ export default {
       rate: 'Rate',
       fee: 'Fee',
       current_rate: 'Current',
-      advanced_settings: 'Advanced Settings',
-      slippage_tolerance: 'Slippage Tolerance',
-      slippage_tolerance_tooltip:
+      advancedSettings: 'Advanced Settings',
+      tolerance: 'Slippage Tolerance',
+      tooltip:
         'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
-      slippage_too_high: 'Slippage % can not be higher than 50%.',
-      high_slippage_warning:
-        'Your transaction might be executed at a less desirable price if slippage % is set too high.',
-      low_slippage_warning:
-        'Your transaction might not be executed if slippage % is set too low.',
+      slippage_tolerance: 'Slippage Tolerance',
       slippage_auto: 'Auto',
-      go_to_portfolio: 'Go to Portfolio',
+      goToAccount: 'Go to Account',
       go_to_hub: 'Injective Hub',
       estimated_slippage: 'Estimated Slippage',
       minimum_received: 'Minimum Received',
       fetching_price: 'Fetching price',
       reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',
       invalid_token_symbol_warning:
-        'Invalid token {symbol}, defaulting to {defaultSymbol}.'
+        'Invalid token {symbol}, defaulting to {defaultSymbol}.',
+      youPay: 'You pay',
+      youReceive: 'You receive'
+    },
+    slippageWarnings: {
+      exceed: 'Slippage can not be higher than 50%.',
+      tooLow:
+        'Your transaction might not be executed if slippage % is set too low.',
+      tooHigh:
+        'Your transaction might be executed at a less desirable price if slippage % is set too high.'
     },
     advanced_settings: 'Advanced Settings',
     slippage_tolerance: 'Slippage Tolerance',
-    high_slippage_warning:
-      'Your transaction might get executed at a less desirable price if slippage % is set too high',
     invalid_slippage: 'Please enter a valid slippage percentage',
-    low_slippage_tolerance_warning:
-      'Your transaction might not be executed if slippage % is set too low',
-    limited_orderbook_liquidity:
-      'Percentage amounts are limited by the liquidity available on the orderbook',
     details: 'Details',
     binaryOptions: {
       settlement: 'Settlement',
@@ -261,15 +262,21 @@ export default {
     stopLoss: 'Stop-Loss',
     confirmOrderModal: {
       descriptionLimit:
-        'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a{reduceOnly}limit order to {orderType} <b>{amount} {amountSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
+        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol}, a {reduceOnly} limit order to {orderType} {amount} {amountSymbol} at a price of {price} {priceSymbol} will be placed.',
       descriptionMarket:
-        'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
+        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol}, a {tradingType} order to {orderType} {amount} {amountSymbol} will be placed.',
+      doNotShowThisConfirmationAgain: 'Do not show this confirmation again',
+      rises: 'rises',
+      drops: 'drops',
+      above: 'above',
+      below: 'below'
     },
     reduceOnlyTooltip:
       'To place a reduce-only order, you will need an open position in the opposite side.',
     reduceOnlyTooltipConditional:
       'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
     open: 'Open',
+    partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
     cancelled: 'Cancelled',
     spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency',
@@ -277,6 +284,10 @@ export default {
     tradingLayoutOptions: {
       left: 'Left',
       right: 'Right'
-    }
+    },
+    usdcLegacyBalanceDetected: 'Different version of USDC detected',
+    haveLegacyUSDC:
+      'You have USD Coin (Injective bridge) in your balance. This market only supports the USD Coin (Wormhole from Ethereum). Please go to the Accounts page to convert your USDC.',
+    viewUSDC: 'View USDC on Accounts '
   }
 }

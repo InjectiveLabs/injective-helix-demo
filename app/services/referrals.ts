@@ -4,7 +4,7 @@ import {
   ReferralInfo,
   ReferralTransformer
 } from '@injectivelabs/referral-consumer'
-import { IS_DEVNET } from '../utils/constants'
+import { IS_DEVNET } from '@/app/utils/constants'
 
 export const referralConsumer = new ReferralConsumer(
   IS_DEVNET

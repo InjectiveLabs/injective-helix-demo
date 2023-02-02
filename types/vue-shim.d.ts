@@ -1,9 +1,9 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
-import VueRouter from 'vue-router'
-import { Toasted } from 'vue-toasted'
+// import VueRouter from 'vue-router'
 import { ConfettiPlugin } from '~/plugins/confetti'
-import { accessorType } from '~/store'
+import { WindowPlugin } from '@/plugins/window'
+import { accessorType } from '@/store'
 
 /**
  * Overloads VueI18n interface to avoid needing to cast return value to string.
@@ -18,14 +18,13 @@ declare module 'vue-i18n/types' {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $toast: Toasted
     $t: typeof VueI18n.prototype.t
     $onError: (e: ThrownException) => void
-    $onRejected: (e: ThrownException) => void
     $onConfirm: (e: string, cb: Function) => void
-    $router: VueRouter
+    // $router: VueRouter
     $accessor: typeof accessorType
     $confetti: ConfettiPlugin
+    $window: WindowPlugin
     // $attrs: Record<string, string>
   }
 
@@ -38,7 +37,8 @@ declare module 'vue/types/vue' {
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
     $accessor: typeof accessorType
-    $toast: Toasted
     $attrs: Record<string, any>
   }
 }
+
+declare module '@skjnldsv/vue-plyr'

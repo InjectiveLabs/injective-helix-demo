@@ -74,7 +74,7 @@ export default {
     change24h: 'Change (24H)'
   },
 
-  newsLetter: {
+  newsletter: {
     title: 'Subscribe to Helix newsletter',
     emailAddress: 'Email address',
     subscribe: 'Subscribe',

@@ -1,0 +1,31 @@
+.tabs {
+  @apply overflow-hidden;
+}
+
+.tabs .tab-contents {
+  @apply overflow-y-auto;
+}
+
+.tabs.tabs-expand .tablist .tab {
+  @apply flex-1;
+}
+
+.tabs .tablist {
+  @apply flex overflow-x-auto;
+}
+
+.tabs .tablist .tab {
+  @apply h-12 m-0 cursor-pointer;
+}
+
+.tabs .tablist .tab span {
+  @apply flex items-center font-semibold uppercase text-xs opacity-75 justify-center h-12 px-4 py-2 border-b border-transparent whitespace-nowrap;
+}
+
+.tabs .tablist .tab[aria-selected='true'] span {
+  @apply border-blue-600 opacity-100;
+}
+
+.tabs .tablist .tab[aria-selected='true'] span.light  {
+  @apply border-gray-200;
+}

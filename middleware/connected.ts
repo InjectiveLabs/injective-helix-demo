@@ -1,14 +1,7 @@
-import { Middleware, Context } from '@nuxt/types'
+export default defineNuxtRouteMiddleware(() => {
+  const walletStore = useWalletStore()
 
-const walletConnectedRequiredRouteNames = ['portfolio', 'activity']
-
-const walletConnected: Middleware = ({ redirect, route, app }: Context) => {
-  if (
-    walletConnectedRequiredRouteNames.includes(route.name as string) &&
-    !app.$accessor.wallet.isUserWalletConnected
-  ) {
-    return redirect('/')
+  if (!walletStore.isUserWalletConnected) {
+    return navigateTo('/')
   }
-}
-
-export default walletConnected
+})

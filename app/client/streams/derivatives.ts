@@ -16,8 +16,8 @@ import {
   UiPerpetualMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { streamProvider } from '../../providers/StreamProvider'
-import { ENDPOINTS } from '~/app/utils/constants'
-import { StreamType } from '~/types'
+import { ENDPOINTS } from '@/app/utils/constants'
+import { StreamType } from '@/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.indexer

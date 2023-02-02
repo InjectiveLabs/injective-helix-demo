@@ -1,0 +1,22 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import '@skjnldsv/vue-plyr/dist/vue-plyr.css';
+
+/* @import './mixins'; */
+@import './_root.css';
+@import './_charts.css';
+@import './_fonts.css';
+
+@import './_inputs.css';
+@import './_table.css';
+@import './_tabs.css';
+@import './_slider.css';
+@import './_scrollbar.css';
+@import './_dropdown.css';
+
+@import './_lists.css';
+@import './_transitions.css';
+@import './_custom.css';
+@import './_animate.css';

@@ -1,148 +1,81 @@
+import { defineStore } from 'pinia'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  BigNumberInBase,
-  denomAmountToChainDenomAmountToFixed
-} from '@injectivelabs/utils'
-import { actionTree, getterTree } from 'typed-vuex'
-import {
+  BankBalances,
   SubaccountBalanceWithToken,
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   UiAccountTransformer,
-  UiSubaccount,
-  UiSubaccountBalance,
-  ZERO_TO_STRING
+  UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
 import {
   AccountPortfolio,
+  denomAmountToChainDenomAmountToFixed,
   MsgDeposit,
-  MsgWithdraw
+  MsgWithdraw,
+  SubaccountBalance
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  indexerAccountApi,
-  msgBroadcastClient,
-  tokenPrice,
-  tokenService
-} from '~/app/Services'
+import { indexerAccountApi, msgBroadcastClient } from '@/app/Services'
 import {
   streamSubaccountBalances,
   cancelSubaccountStreams
-} from '~/app/client/streams/account'
-import { backupPromiseCall } from '~/app/utils/async'
-import { derivativeMarketRouteNames } from '~/app/data/market'
+} from '@/app/client/streams/account'
+import { backupPromiseCall } from '@/app/utils/async'
 
-const initialStateFactory = () => ({
-  subaccountIds: [] as string[],
-  subaccount: undefined as UiSubaccount | undefined,
-  subaccountBalancesWithToken: [] as SubaccountBalanceWithToken[],
-  subaccountBalancesWithTokenAndPrice:
-    [] as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[],
-  accountPortfolio: undefined as AccountPortfolio | undefined
-})
-
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  subaccountIds: initialState.subaccountIds as string[],
-  subaccount: initialState.subaccount as UiSubaccount | undefined,
-  subaccountBalancesWithToken:
-    initialState.subaccountBalancesWithToken as SubaccountBalanceWithToken[],
-  subaccountBalancesWithTokenAndPrice:
-    initialState.subaccountBalancesWithTokenAndPrice as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[],
-  accountPortfolio: initialState.accountPortfolio as
-    | AccountPortfolio
-    | undefined
-})
-
-export type AccountStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  hasAnyTradingAccountBalances: (state: AccountStoreState) => {
-    if (!state.subaccount) {
-      return false
-    }
-
-    return state.subaccount.balances.length > 0
-  }
-})
-
-export const mutations = {
-  setSubacccountIds(state: AccountStoreState, subaccountIds: string[]) {
-    state.subaccountIds = subaccountIds
-  },
-
-  setSubaccount(state: AccountStoreState, subaccount: UiSubaccount) {
-    state.subaccount = subaccount
-  },
-
-  setPortfolioValue(
-    state: AccountStoreState,
-    accountPortfolio: AccountPortfolio
-  ) {
-    state.accountPortfolio = accountPortfolio
-  },
-
-  setSubaccountBalance(state: AccountStoreState, balance: UiSubaccountBalance) {
-    if (!state.subaccount) {
-      return
-    }
-
-    const currentBalance = [...state.subaccount.balances].find(
-      (b) => b.denom === balance.denom
-    )
-    const balances = [...state.subaccount.balances].filter(
-      (b) => b.denom !== balance.denom
-    )
-    const updatedBalance = {
-      ...balance,
-      totalBalance:
-        balance.totalBalance ||
-        (currentBalance ? currentBalance.totalBalance : ZERO_TO_STRING),
-      availableBalance:
-        balance.availableBalance ||
-        (currentBalance ? currentBalance.availableBalance : ZERO_TO_STRING)
-    }
-
-    state.subaccount = {
-      ...state.subaccount,
-      balances: [...balances, updatedBalance]
-    }
-  },
-
-  setSubaccountBalancesWithToken(
-    state: AccountStoreState,
-    subaccountBalancesWithToken: SubaccountBalanceWithToken[]
-  ) {
-    state.subaccountBalancesWithToken = subaccountBalancesWithToken
-  },
-
-  setSubaccountBalancesWithTokenAndPrice(
-    state: AccountStoreState,
-    subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
-  ) {
-    state.subaccountBalancesWithTokenAndPrice =
-      subaccountBalancesWithTokenAndPrice
-  },
-
-  reset(state: AccountStoreState) {
-    const initialState = initialStateFactory()
-
-    state.subaccount = initialState.subaccount
-    state.subaccountIds = initialState.subaccountIds
-    state.subaccountBalancesWithToken = initialState.subaccountBalancesWithToken
-    state.subaccountBalancesWithTokenAndPrice =
-      initialState.subaccountBalancesWithTokenAndPrice
-  }
+type AccountStoreState = {
+  subaccountIds: string[]
+  subaccount?: UiSubaccount
+  accountPortfolio?: AccountPortfolio
+  subaccountBalancesWithToken: SubaccountBalanceWithToken[]
+  subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
 }
 
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async init(_) {
-      await this.app.$accessor.account.fetchSubaccounts()
+const initialStateFactory = (): AccountStoreState => ({
+  subaccountIds: [],
+  subaccount: undefined,
+  accountPortfolio: undefined,
+  subaccountBalancesWithToken: [],
+  subaccountBalancesWithTokenAndPrice: []
+})
+
+export const useAccountStore = defineStore('account', {
+  state: (): AccountStoreState => initialStateFactory(),
+  getters: {
+    hasAnyTradingAccountBalances(state) {
+      if (!state.subaccount) {
+        return false
+      }
+
+      return state.subaccount.balances.length > 0
     },
 
-    async fetchSubaccounts({ commit }) {
-      const { injectiveAddress } = this.app.$accessor.wallet
+    subaccountBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return []
+      }
+
+      return state.subaccount.balances
+    },
+
+    subaccountBalancesAsBankBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return {}
+      }
+
+      return state.subaccount.balances.reduce(
+        (balances, { availableBalance, denom }) => ({
+          ...balances,
+          [denom]: availableBalance
+        }),
+        {} as BankBalances
+      )
+    }
+  },
+  actions: {
+    async fetchSubaccounts() {
+      const accountStore = useAccountStore()
+
+      const { injectiveAddress } = useWalletStore()
 
       if (!injectiveAddress) {
         return
@@ -167,165 +100,133 @@ export const actions = actionTree(
         )
       }
 
-      commit('setSubacccountIds', subaccountIds)
-      commit('setSubaccount', subaccount)
-
-      if (this.app.context.route.name === 'spot-spot') {
-        await this.app.$accessor.spot.fetchSubaccountOrders()
-        await this.app.$accessor.spot.fetchSubaccountTrades()
-        await this.app.$accessor.spot.streamSubaccountOrders()
-        await this.app.$accessor.spot.streamSubaccountOrderHistory()
-        await this.app.$accessor.spot.streamSubaccountTrades()
-      }
-
-      if (
-        derivativeMarketRouteNames.includes(
-          this.app.context.route.name as string
-        )
-      ) {
-        await this.app.$accessor.derivatives.fetchSubaccountOrders()
-        await this.app.$accessor.derivatives.fetchSubaccountTrades()
-        await this.app.$accessor.derivatives.streamSubaccountOrders()
-        await this.app.$accessor.derivatives.streamSubaccountOrderHistory()
-        await this.app.$accessor.derivatives.streamSubaccountTrades()
-        await this.app.$accessor.positions.fetchSubaccountPositions()
-        await this.app.$accessor.positions.streamSubaccountPositions()
-      }
+      accountStore.$patch({
+        subaccount,
+        subaccountIds
+      })
     },
 
-    async fetchSubaccountsBalances({ state }) {
-      const { subaccount } = state
+    async updateSubaccount() {
+      const accountStore = useAccountStore()
+      const { injectiveAddress } = useWalletStore()
 
-      if (!subaccount) {
-        await this.app.$accessor.account.refreshSubaccountBalances()
-      }
-
-      if (subaccount && !subaccount.balances) {
-        await this.app.$accessor.account.refreshSubaccountBalances()
-      }
-    },
-
-    async refreshSubaccountBalances({ commit, state }) {
-      await this.app.$accessor.account.fetchSubaccounts()
-
-      const { subaccount: newSubaccount } = state
-
-      if (!newSubaccount) {
+      if (!accountStore.subaccount || !injectiveAddress) {
         return
       }
 
-      const subaccountBalances = newSubaccount.balances
-      const subaccountBalancesWithToken =
-        await tokenService.getSubaccountBalancesWithToken(subaccountBalances)
-
-      commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
-    },
-
-    async fetchSubaccountsBalancesWithPrices({ commit, state }) {
-      await this.app.$accessor.account.refreshSubaccountBalances()
-
-      const { subaccountBalancesWithToken: newSubaccountBalancesWithToken } =
-        state
-
-      const subaccountBalancesWithTokenAndPrice = await Promise.all(
-        newSubaccountBalancesWithToken.map(async (balance) => {
-          return {
-            ...balance,
-            token: {
-              ...balance.token,
-              usdPrice: await tokenPrice.fetchUsdTokenPrice(
-                balance.token.coinGeckoId
-              )
-            }
-          } as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
-        })
-      )
-
-      commit(
-        'setSubaccountBalancesWithTokenAndPrice',
-        subaccountBalancesWithTokenAndPrice
-      )
-    },
-
-    async updateSubaccount({ commit, state }) {
-      const { subaccount } = state
-      const { injectiveAddress } = this.app.$accessor.wallet
-
-      if (!subaccount || !injectiveAddress) {
-        return
-      }
-
-      const { subaccountId } = subaccount
       const balances = await indexerAccountApi.fetchSubaccountBalancesList(
-        subaccountId
+        accountStore.subaccount.subaccountId
       )
       const updatedSubaccount = {
-        subaccountId,
+        subaccountId: accountStore.subaccount.subaccountId,
         balances: balances.map((b) =>
           UiAccountTransformer.accountBalanceToUiAccountBalance(b)
         )
       }
 
-      commit('setSubaccount', updatedSubaccount)
+      accountStore.$patch({
+        subaccount: updatedSubaccount
+      })
     },
 
-    async fetchAccountPortfolio({ commit, state }) {
-      const { subaccount } = state
-      const { injectiveAddress } = this.app.$accessor.wallet
+    async fetchAccountPortfolio() {
+      const accountStore = useAccountStore()
+      const { injectiveAddress } = useWalletStore()
 
       if (!injectiveAddress) {
         return
       }
 
-      if (!subaccount) {
-        await this.app.$accessor.account.init()
+      if (!accountStore.subaccount) {
+        await accountStore.fetchSubaccounts()
       }
 
-      const portfolio = await indexerAccountApi.fetchPortfolio(injectiveAddress)
+      const accountPortfolio = await indexerAccountApi.fetchPortfolio(
+        injectiveAddress
+      )
 
-      commit('setPortfolioValue', portfolio)
+      accountStore.$patch({
+        accountPortfolio
+      })
     },
 
-    streamSubaccountBalances({ commit, state }) {
-      const { subaccount } = state
+    streamSubaccountBalances() {
+      const accountStore = useAccountStore()
 
-      if (!subaccount) {
+      if (!accountStore.subaccount) {
         return
       }
 
       streamSubaccountBalances({
-        subaccountId: subaccount.subaccountId,
-        callback: ({ balance }) => {
-          if (!balance) {
+        subaccountId: accountStore.subaccount.subaccountId,
+        callback: ({ balance }: { balance?: SubaccountBalance }) => {
+          if (!balance || !accountStore.subaccount) {
             return
           }
 
-          commit(
-            'setSubaccountBalance',
-            UiAccountTransformer.accountBalanceToUiAccountBalance(balance)
+          const balances = [...accountStore.subaccount.balances]
+
+          const currentBalanceIndex = balances.findIndex(
+            ({ denom }) => denom === balance.denom
           )
+
+          if (balance.deposit) {
+            const updatedBalance = {
+              totalBalance: balance.deposit.totalBalance,
+              availableBalance: balance.deposit.availableBalance,
+              denom: balance.denom
+            }
+
+            if (currentBalanceIndex !== -1) {
+              const balanceToBeUpdated = balances[currentBalanceIndex]
+
+              balances[currentBalanceIndex] = {
+                totalBalance:
+                  updatedBalance.totalBalance ||
+                  balanceToBeUpdated.totalBalance,
+                availableBalance:
+                  updatedBalance.availableBalance ||
+                  balanceToBeUpdated.availableBalance,
+                denom: updatedBalance.denom
+              }
+            } else {
+              balances.push(updatedBalance)
+            }
+
+            accountStore.$patch({
+              subaccount: {
+                ...accountStore.subaccount,
+                balances
+              }
+            })
+          }
         }
       })
     },
 
-    async deposit(
-      { state },
-      { amount, token }: { amount: BigNumberInBase; token: Token }
-    ) {
-      const { subaccount } = state
-      const { address, injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+    async deposit({
+      amount,
+      token
+    }: {
+      amount: BigNumberInBase
+      token: Token
+    }) {
+      const accountStore = useAccountStore()
+      const bankStore = useBankStore()
+      const { queue } = useAppStore()
+      const { address, injectiveAddress, isUserWalletConnected, validate } =
+        useWalletStore()
 
-      if (!subaccount || !isUserWalletConnected) {
+      if (!accountStore.subaccount || !isUserWalletConnected) {
         return
       }
 
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
+      await queue()
+      await validate()
 
       const message = MsgDeposit.fromJSON({
         injectiveAddress,
-        subaccountId: subaccount.subaccountId,
+        subaccountId: accountStore.subaccount.subaccountId,
         amount: {
           denom: token.denom,
           amount: denomAmountToChainDenomAmountToFixed({
@@ -340,30 +241,33 @@ export const actions = actionTree(
         address
       })
 
-      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await backupPromiseCall(() =>
-        this.app.$accessor.account.updateSubaccount()
-      )
+      await backupPromiseCall(() => bankStore.fetchBalances())
+      await backupPromiseCall(() => accountStore.updateSubaccount())
     },
 
-    async withdraw(
-      { state },
-      { amount, token }: { amount: BigNumberInBase; token: Token }
-    ) {
-      const { subaccount } = state
-      const { address, injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+    async withdraw({
+      amount,
+      token
+    }: {
+      amount: BigNumberInBase
+      token: Token
+    }) {
+      const accountStore = useAccountStore()
+      const bankStore = useBankStore()
+      const { queue } = useAppStore()
+      const { address, injectiveAddress, isUserWalletConnected, validate } =
+        useWalletStore()
 
-      if (!subaccount || !isUserWalletConnected) {
+      if (!accountStore.subaccount || !isUserWalletConnected) {
         return
       }
 
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
+      await queue()
+      await validate()
 
       const message = MsgWithdraw.fromJSON({
         injectiveAddress,
-        subaccountId: subaccount.subaccountId,
+        subaccountId: accountStore.subaccount.subaccountId,
         amount: {
           denom: token.denom,
           amount: denomAmountToChainDenomAmountToFixed({
@@ -378,15 +282,16 @@ export const actions = actionTree(
         address
       })
 
-      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await backupPromiseCall(() =>
-        this.app.$accessor.account.updateSubaccount()
-      )
+      await backupPromiseCall(() => bankStore.fetchBalances())
+      await backupPromiseCall(() => accountStore.updateSubaccount())
     },
 
-    async reset({ commit }) {
+    async reset() {
+      const accountStore = useAccountStore()
+
       await cancelSubaccountStreams()
-      commit('reset')
+
+      accountStore.$reset()
     }
   }
-)
+})

@@ -1,0 +1,78 @@
+:root {
+  --header-height: 56px;
+  --footer-height: 697px;
+  --market-info-height: 208px;
+}
+
+@media (min-width: 480px) {
+  :root {
+    --footer-height: 565px;
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --footer-height: 445px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --market-info-height: 162px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --footer-height: 377px;
+    --market-info-height: 56px;
+  }
+}
+
+html {
+  @apply bg-gray-1000;
+}
+
+body {
+  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-gray-1000;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+}
+
+body .vue-grid-item.vue-grid-placeholder {
+  @apply rounded bg-blue-500;
+  opacity: 0.35;
+}
+
+body .vue-grid-item {
+  touch-action: none;
+}
+
+.max-h-screen-excluding-header {
+  max-height: calc(100vh - var(--header-height));
+}
+
+.min-h-screen-excluding-header {
+  min-height: calc(100vh - var(--header-height));
+}
+
+.min-h-screen-excluding-header-and-footer {
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+.h-market-info {
+  height: var(--market-info-height);
+}
+
+.h-screen-excluding-header-and-market-info {
+  --trade-height: calc(var(--header-height) + var(--market-info-height));
+  height: calc(100vh - var(--trade-height) - 4px);
+}
+
+.h-full-grow {
+  @apply flex flex-col flex-grow h-full;
+}
+
+.top-market-info {
+  top: var(--market-info-height);
+}

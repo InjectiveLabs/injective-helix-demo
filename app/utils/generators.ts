@@ -9,7 +9,7 @@ export const mapKeys = <T, V, U>(
   return new Map(Array.from(m.entries(), transformPair))
 }
 
-export const uniqueId = (characters: number = 6): string =>
+export const uniqueId = (characters = 6): string =>
   (
     Number(String(Math.random()).slice(2)) +
     Date.now() +

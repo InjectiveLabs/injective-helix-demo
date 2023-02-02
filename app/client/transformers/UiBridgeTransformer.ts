@@ -11,7 +11,7 @@ import {
   UiBridgeTransaction,
   UiSubaccountTransfer
 } from '@injectivelabs/sdk-ui-ts'
-import { NETWORK } from '~/app/utils/constants'
+import { NETWORK } from '@/app/utils/constants'
 
 export class UiBridgeTransformer {
   static convertBankMsgSendTransactionToUiBridgeTransaction(

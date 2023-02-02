@@ -1,56 +1,31 @@
-import { actionTree, mutationTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { RefereeInfo, ReferrerInfo } from '@injectivelabs/referral-consumer'
 import {
   getFeeRecipient,
   getReferralInfo,
   refer
-} from '~/app/services/referrals'
-import { REFERRALS_ENABLED } from '~/app/utils/constants'
+} from '@/app/services/referrals'
+import { REFERRALS_ENABLED } from '@/app/utils/constants'
 
-const initialStateFactory = () => ({
-  feeRecipient: undefined as AccountAddress | undefined,
-  refereeInfo: undefined as RefereeInfo | undefined,
-  referralInfo: undefined as ReferrerInfo | undefined
+type ReferralStoreState = {
+  feeRecipient?: AccountAddress
+  refereeInfo?: RefereeInfo
+  referrerInfo?: ReferrerInfo
+}
+
+const initialStateFactory = (): ReferralStoreState => ({
+  feeRecipient: undefined,
+  refereeInfo: undefined,
+  referrerInfo: undefined
 })
 
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  feeRecipient: initialState.feeRecipient as AccountAddress | undefined,
-  refereeInfo: initialState.refereeInfo as RefereeInfo | undefined,
-  referrerInfo: initialState.refereeInfo as ReferrerInfo | undefined
-})
-
-export type ReferralStoreState = ReturnType<typeof state>
-
-export const mutations = mutationTree(state, {
-  setFeeRecipient(state: ReferralStoreState, feeRecipient: AccountAddress) {
-    state.feeRecipient = feeRecipient
-  },
-
-  setRefereeInfo(state: ReferralStoreState, refereeInfo: RefereeInfo) {
-    state.refereeInfo = refereeInfo
-  },
-
-  setReferrerInfo(state: ReferralStoreState, referrerInfo: ReferrerInfo) {
-    state.referrerInfo = referrerInfo
-  },
-
-  reset(state: ReferralStoreState) {
-    const initialState = initialStateFactory()
-
-    state.feeRecipient = initialState.feeRecipient
-    state.refereeInfo = initialState.refereeInfo
-  }
-})
-
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async init(_) {
-      const { injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+export const useReferralStore = defineStore('referral', {
+  state: (): ReferralStoreState => initialStateFactory(),
+  actions: {
+    async init() {
+      const referralStore = useReferralStore()
+      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -60,11 +35,13 @@ export const actions = actionTree(
         return
       }
 
-      await this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
-      await this.app.$accessor.referral.getRefereeInfo(injectiveAddress)
+      await referralStore.getFeeRecipient(injectiveAddress)
+      await referralStore.getRefereeInfo(injectiveAddress)
     },
 
-    async getRefereeInfo({ commit }, address: AccountAddress) {
+    async getRefereeInfo(address: AccountAddress) {
+      const referralStore = useReferralStore()
+
       if (!REFERRALS_ENABLED) {
         return
       }
@@ -72,27 +49,33 @@ export const actions = actionTree(
       const { refereeInfo, referrerInfo } = await getReferralInfo(address)
 
       if (refereeInfo) {
-        commit('setRefereeInfo', refereeInfo)
+        referralStore.$patch({
+          refereeInfo
+        })
       }
 
       if (referrerInfo) {
-        commit('setReferrerInfo', referrerInfo)
+        referralStore.$patch({
+          referrerInfo
+        })
       }
     },
 
-    async getFeeRecipient({ commit }, address: AccountAddress) {
+    async getFeeRecipient(address: AccountAddress) {
+      const referralStore = useReferralStore()
+
       if (!REFERRALS_ENABLED) {
         return
       }
 
-      const feeRecipient = await getFeeRecipient(address)
-
-      commit('setFeeRecipient', feeRecipient)
+      referralStore.$patch({
+        feeRecipient: await getFeeRecipient(address)
+      })
     },
 
-    async refer(_, code: string) {
-      const { injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+    async refer(code: string) {
+      const referralStore = useReferralStore()
+      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -104,8 +87,8 @@ export const actions = actionTree(
 
       await refer({ address: injectiveAddress, code })
 
-      await this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
-      await this.app.$accessor.referral.getRefereeInfo(injectiveAddress)
+      await referralStore.getFeeRecipient(injectiveAddress)
+      await referralStore.getRefereeInfo(injectiveAddress)
     }
   }
-)
+})

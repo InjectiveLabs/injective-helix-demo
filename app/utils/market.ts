@@ -11,15 +11,15 @@ import {
   MarketCategoryType,
   MarketQuoteType,
   MarketRoute
-} from '~/types'
+} from '@/types'
 import {
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
   slugsToExcludeFromEthereumCategory,
   upcomingMarkets,
   deprecatedMarkets
-} from '~/app/data/market'
-import { USDT_COIN_GECKO_ID } from '~/app/utils/constants'
+} from '@/app/data/market'
+import { USDT_COIN_GECKO_ID, USDC_COIN_GECKO_ID } from '@/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -28,7 +28,6 @@ export const getMarketRoute = (
     return {
       name: 'market-market',
       params: {
-        marketId: market.marketId,
         market: market.slug
       }
     }
@@ -38,7 +37,6 @@ export const getMarketRoute = (
     return {
       name: 'market-market',
       params: {
-        marketId: market.marketId,
         market: market.slug
       }
     }
@@ -49,7 +47,6 @@ export const getMarketRoute = (
       return {
         name: 'binary-options-binaryOption',
         params: {
-          marketId: market.marketId,
           binaryOption: market.slug
         }
       }
@@ -59,7 +56,6 @@ export const getMarketRoute = (
       return {
         name: 'futures-futures',
         params: {
-          marketId: market.marketId,
           futures: market.slug
         }
       }
@@ -69,7 +65,6 @@ export const getMarketRoute = (
     return {
       name: 'derivatives-derivative',
       params: {
-        marketId: market.marketId,
         derivative: market.slug
       }
     }
@@ -79,7 +74,6 @@ export const getMarketRoute = (
     return {
       name: 'spot-spot',
       params: {
-        marketId: market.marketId,
         spot: market.slug
       }
     }
@@ -88,7 +82,6 @@ export const getMarketRoute = (
   return {
     name: 'market-market',
     params: {
-      marketId: market.marketId,
       market: market.slug
     }
   }
@@ -99,7 +92,6 @@ export const getDefaultPerpetualMarketRoute = () => {
     to: {
       name: 'futures-futures',
       params: {
-        marketId: '',
         futures: DefaultMarket.Perpetual
       }
     }
@@ -111,7 +103,6 @@ export const getDefaultSpotMarketRoute = () => {
     to: {
       name: 'spot-spot',
       params: {
-        marketId: '',
         spot: DefaultMarket.Spot
       }
     }
@@ -122,7 +113,6 @@ export const getDefaultPerpetualMarketRouteParams = () => {
   return {
     name: 'futures-futures',
     params: {
-      marketId: '',
       futures: DefaultMarket.Perpetual
     }
   }
@@ -132,36 +122,9 @@ export const getDefaultSpotMarketRouteParams = () => {
   return {
     name: 'spot-spot',
     params: {
-      marketId: '',
       spot: DefaultMarket.Spot
     }
   }
-}
-
-export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
-  const thousand = 1000
-  const million = 1000000
-  const billion = 1000000000
-
-  if (value.gt(billion)) {
-    return `${value
-      .dividedBy(billion)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}B`
-  }
-
-  if (value.gt(million)) {
-    return `${value
-      .dividedBy(million)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}M`
-  }
-
-  if (value.gt(thousand)) {
-    return `${value
-      .dividedBy(thousand)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
-  }
-
-  return value.toFormat(2, BigNumberInBase.ROUND_DOWN)
 }
 
 export const marketIsPartOfCategory = (
@@ -208,6 +171,13 @@ export const marketIsQuotePair = (
       market.quoteToken.coinGeckoId,
       market.baseToken.coinGeckoId
     ].includes(USDT_COIN_GECKO_ID)
+  }
+
+  if (activeQuote === MarketQuoteType.USDC) {
+    return [
+      market.quoteToken.coinGeckoId,
+      market.baseToken.coinGeckoId
+    ].includes(USDC_COIN_GECKO_ID)
   }
 
   return true
@@ -270,7 +240,7 @@ export const getFormattedMarketsHistoryChartData = (
   })
 }
 
-export const marketIsRecentlyExpired = (market: ExpiryFuturesMarket) => {
+export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   const now = Date.now() / 1000
   const secondsInADay = SECONDS_IN_A_DAY.toNumber()
 

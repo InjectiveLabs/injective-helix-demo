@@ -1,5 +1,3 @@
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-
 export enum Change {
   New = 'new',
   NoChange = 'no-change',
@@ -40,25 +38,28 @@ export enum Icon {
 }
 
 export enum Modal {
-  AuctionCountdown = 'auction-countdown',
+  AddMarginToPosition = 'add-margin-to-position',
+  AssetDetails = 'asset-details',
+  Bridge = 'bridge',
+  BridgeCompleted = 'bridge-completed',
+  BridgeConfirm = 'bridge-confirm',
   Connect = 'connect',
+  ConvertUSDC = 'convert-usdc',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
-  MarketRewardFactors = 'market-reward-factors',
-  OrderConfirm = 'order-confirm',
-  Terms = 'terms',
-  MarketBeta = 'market-beta',
-  MarketNew = 'market-new',
-  MarketExpired = 'market-expired',
-  MarketDeprecated = 'market-deprecated',
-  Bridge = 'bridge',
-  BridgeConfirm = 'bridge-confirm',
-  BridgeCompleted = 'bridge-completed',
-  RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
-  MobileTradeFilter = 'mobile-trade-filter',
+  MarketBeta = 'market-beta',
+  MarketDeprecated = 'market-deprecated',
+  MarketExpired = 'market-expired',
+  MarketNew = 'market-new',
+  MarketRewardFactors = 'market-reward-factors',
   MobileTradeDetails = 'mobile-trade-details',
-  NinjaPassWinner = 'ninja-pass-winner'
+  NinjaPassWinner = 'ninja-pass-winner',
+  OrderConfirm = 'order-confirm',
+  PriceDeviation = 'price-deviation',
+  RefereeOnboarding = 'referee-onboarding',
+  Terms = 'terms',
+  USDCDetected = 'usdc-detected'
 }
 
 export enum Breakpoint {
@@ -123,12 +124,9 @@ export enum MarketCategoryType {
 
 export enum MarketQuoteType {
   All = 'all',
-  USDT = 'usdt'
+  USDT = 'usdt',
+  USDC = 'usdc'
   // UST = 'ust'
-}
-
-export enum MarketTypeFavorite {
-  Favorite = 'Favorite'
 }
 
 export enum StreamType {
@@ -149,8 +147,6 @@ export enum StreamType {
   DerivativesPositions = 'derivatives-positions',
   OraclePrices = 'oracle-prices'
 }
-
-export { MarketType }
 
 export enum AveragePriceOptions {
   None = 0,
@@ -195,4 +191,116 @@ export enum OrderbookLayout {
 export enum TradingLayout {
   Left = 'left',
   Right = 'right'
+}
+
+export enum BalanceHeaderType {
+  None = 'none',
+  Asset = 'asset',
+  Total = 'total',
+  Wallet = 'wallet',
+  TradingAccount = 'trading-account',
+  Available = 'available',
+  Value = 'value'
+}
+
+export enum BusEvents {
+  AddMarginToPosition = 'add-margin-to-position',
+  AssetDetailsModalPayload = 'asset-details-modal-payload',
+  ConvertUSDC = 'convert-usdc',
+  FundingRefresh = 'funding-refresh',
+  NavLinkClicked = 'nav-link-clicked',
+  OrderbookNotionalClick = 'orderbook-notional-click',
+  OrderbookPriceClick = 'orderbook-price-click',
+  OrderbookSizeClick = 'orderbook-size-click',
+  PostOnlyToggled = 'post-only-toggled',
+  ShowLedgerConnect = 'show-ledger-connect',
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
+  WalletConnected = 'wallet-connected'
+}
+
+export enum BridgeBusEvents {
+  Transfer = 'transfer',
+  TransferToBank = 'transfer-to-bank',
+  Deposit = 'deposit',
+  Withdraw = 'withdraw'
+}
+
+export enum ActivityField {
+  Denom = 'Denom',
+  Limit = 'Limit',
+  Page = 'Page',
+  Side = 'Side',
+  Type = 'Type'
+}
+
+export enum BridgeField {
+  BridgingNetwork = 'Bridging Network',
+  TransferDirection = 'Transfer Direction',
+  Token = 'Token',
+  Denom = 'Denom',
+  Amount = 'Amount',
+  Memo = 'Memo',
+  Destination = 'Destination'
+}
+
+export enum TradeField {
+  BaseAmount = 'Base amount',
+  BaseDenom = 'Base denom',
+  Leverage = 'Leverage',
+  LimitPrice = 'Limit price',
+  OrderType = 'Order type',
+  PostOnly = 'Post-Only',
+  ProportionalPercentage = 'Proportional percentage',
+  QuoteAmount = 'Quote amount',
+  QuoteDenom = 'Quote denom',
+  ReduceOnly = 'Reduce-Only',
+  SlippageTolerance = 'Slippage tolerance',
+  TradingType = 'Trading type',
+  TriggerPrice = 'Trigger price'
+}
+
+export type BaseQuoteFields = Exclude<
+  TradeField,
+  | TradeField.LimitPrice
+  | TradeField.TriggerPrice
+  | TradeField.BaseDenom
+  | TradeField.QuoteDenom
+  | TradeField.ProportionalPercentage
+>
+
+export enum TradeExecutionType {
+  Market = 'market',
+  LimitFill = 'limitFill',
+  LimitMatchRestingOrder = 'limitMatchRestingOrder',
+  LimitMatchNewOrder = 'limitMatchNewOrder',
+  StopLimit = 'stopLimit',
+  StopMarket = 'stopMarket'
+}
+
+export enum WalletModalType {
+  All = 'all',
+  Ledger = 'ledger',
+  Trezor = 'trezor'
+}
+
+export enum ActivityView {
+  Positions = 'Positions/Index',
+  FundingPayments = 'Positions/FundingPayments',
+  SpotOrders = 'Spot/Index',
+  SpotOrderHistory = 'Spot/OrderHistory',
+  SpotTradeHistory = 'Spot/TradeHistory',
+  DerivativeOrders = 'Derivatives/Index',
+  DerivativeTriggers = 'Derivatives/Triggers',
+  DerivativeOrderHistory = 'Derivatives/OrderHistory',
+  DerivativeTradeHistory = 'Derivatives/TradeHistory',
+  WalletTransfers = 'WalletHistory/Transfers',
+  WalletDeposits = 'WalletHistory/Deposits',
+  WalletWithdrawals = 'WalletHistory/Withdrawals'
+}
+
+export enum ActivityTab {
+  Positions = 'positions',
+  Derivatives = 'derivatives',
+  Spot = 'spot',
+  WalletHistory = 'walletHistory'
 }
