@@ -1,16 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { Status } from '@injectivelabs/utils'
-
 defineProps({
   active: Boolean,
   lg: Boolean,
-
-  status: {
-    required: false,
-    type: Object as PropType<Status>,
-    default: () => new Status()
-  }
+  showLoading: Boolean
 })
 </script>
 
@@ -35,7 +27,7 @@ defineProps({
         class="flex items-center h-full gap-4"
         :class="{ 'justify-between': lg }"
       >
-        <AppSpinner v-if="status.isLoading()" />
+        <AppSpinner v-if="showLoading" />
 
         <div
           v-else

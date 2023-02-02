@@ -24,6 +24,9 @@ const props = defineProps({
   }
 })
 
+const tabCountElement = document.getElementById(
+  'activity-derivative-tab-count-default'
+)
 const actionStatus = reactive(new Status(StatusType.Idle))
 
 const markets = computed(() => {
@@ -44,6 +47,9 @@ const filteredOrders = computed(() =>
     return orderMatchesDenom && orderMatchesSide
   })
 )
+
+onMounted(() => tabCountElement?.classList.add('hidden'))
+onUnmounted(() => tabCountElement?.classList.remove('hidden'))
 
 function handleCancelOrders() {
   actionStatus.setLoading()
@@ -68,7 +74,7 @@ function handleCancelOrders() {
 
 <template>
   <div>
-    <Teleport to="#activity-tab-count">
+    <Teleport to="#activity-derivative-tab-count">
       <span>({{ filteredOrders.length }})</span>
     </Teleport>
 

@@ -2,6 +2,10 @@
 import { PropType } from 'vue'
 import { ActivityTab, ActivityView } from '@/types'
 
+const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
+const spotStore = useSpotStore()
+
 const props = defineProps({
   tab: {
     type: String as PropType<ActivityTab>,
@@ -138,7 +142,42 @@ const tabViewList = computed(() => {
                 </span>
               </span>
 
-              <span id="activity-tab-count" />
+              <!-- Count display -->
+              <span
+                v-if="viewOption === ActivityView.Positions"
+                id="activity-position-tab-count"
+              >
+                <span id="activity-position-tab-count-default">
+                  ({{ positionStore.subaccountPositionsCount }})
+                </span>
+              </span>
+
+              <span
+                v-if="viewOption === ActivityView.SpotOrders"
+                id="activity-spot-tab-count"
+              >
+                <span id="activity-spot-tab-count-default">
+                  ({{ spotStore.subaccountOrdersCount }})
+                </span>
+              </span>
+
+              <span
+                v-if="viewOption === ActivityView.DerivativeOrders"
+                id="activity-derivative-tab-count"
+              >
+                <span id="activity-derivative-tab-count-default">
+                  ({{ derivativeStore.subaccountOrdersCount }})
+                </span>
+              </span>
+
+              <span
+                v-if="viewOption === ActivityView.DerivativeTriggers"
+                id="activity-derivative-triggers-tab-count"
+              >
+                <span id="activity-derivative-triggers-tab-count-default">
+                  ({{ derivativeStore.subaccountConditionalOrdersCount }})
+                </span>
+              </span>
             </div>
           </div>
         </template>

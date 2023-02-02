@@ -47,7 +47,7 @@ const activeTab = computed({
           <CommonCardSelect
             data-cy="activity-open-positions-panel"
             :active="active"
-            :status="status"
+            :show-loading="active && status.isLoading()"
           >
             <template #icon>
               <span class="font-semibold text-sm md:text-lg">

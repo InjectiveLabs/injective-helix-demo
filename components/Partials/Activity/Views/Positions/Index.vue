@@ -27,6 +27,9 @@ const props = defineProps({
   }
 })
 
+const tabCountElement = document.getElementById(
+  'activity-position-tab-count-default'
+)
 const actionStatus = reactive(new Status(StatusType.Idle))
 
 const markets = computed(() => {
@@ -47,6 +50,9 @@ const filteredPositions = computed(() =>
     return positionMatchesSide && positionMatchesMarket
   })
 )
+
+onMounted(() => tabCountElement?.classList.add('hidden'))
+onUnmounted(() => tabCountElement?.classList.remove('hidden'))
 
 function closePosition(position: UiPosition) {
   const market = derivativeStore.markets.find(
@@ -91,7 +97,7 @@ function handleClosePositions() {
 
 <template>
   <div>
-    <Teleport to="#activity-tab-count">
+    <Teleport to="#activity-position-tab-count">
       <span>({{ filteredPositions.length }})</span>
     </Teleport>
 

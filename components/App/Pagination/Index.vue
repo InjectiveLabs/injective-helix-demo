@@ -51,7 +51,10 @@ defineProps({
         class="text-2xs tracking-1.5 flex items-center justify-center text-center"
       >
         <span
-          :class="hasPrevPage ? 'cursor-pointer text-black' : 'text-gray-600'"
+          v-if="hasPrevPage"
+          :class="
+            hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+          "
           @click="handlePrevEvent"
         >
           <BaseIcon name="caret-thin" class="h-auto w-3" />
@@ -68,8 +71,8 @@ defineProps({
           >
             <template #default="{ active }">
               <span
-                class="px-2 py-1 hover:bg-blue-400 hover:bg-opacity-80 hover:text-blue-800"
-                :class="{ 'bg-blue-400 text-blue-800': active }"
+                class="px-2 py-1 hover:bg-blue-500 hover:bg-opacity-80 hover:text-blue-800"
+                :class="{ 'bg-blue-500 text-blue-800': active }"
               >
                 {{ displayPage }}
               </span>
@@ -78,7 +81,10 @@ defineProps({
         </div>
 
         <span
-          :class="hasNextPage ? 'cursor-pointer text-black' : 'text-gray-600'"
+          v-if="hasNextPage"
+          :class="
+            hasNextPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+          "
           @click="handleNextEvent"
         >
           <BaseIcon name="caret-thin" class="h-auto w-3 -rotate-180" />

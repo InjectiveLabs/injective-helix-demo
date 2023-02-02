@@ -35,6 +35,9 @@ const props = defineProps({
   }
 })
 
+const tabCountElement = document.getElementById(
+  'activity-derivative-triggers-tab-count-default'
+)
 const actionStatus = reactive(new Status(StatusType.Idle))
 
 const markets = computed(() => {
@@ -70,6 +73,9 @@ const filteredTriggers = computed(() => {
   })
 })
 
+onMounted(() => tabCountElement?.classList.add('hidden'))
+onUnmounted(() => tabCountElement?.classList.remove('hidden'))
+
 function handleCancelOrders() {
   actionStatus.setLoading()
 
@@ -93,7 +99,7 @@ function handleCancelOrders() {
 
 <template>
   <div>
-    <Teleport to="#activity-tab-count">
+    <Teleport to="#activity-derivative-triggers-tab-count">
       <span>({{ filteredTriggers.length }})</span>
     </Teleport>
 
