@@ -8,6 +8,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  Modal,
   OrderAttemptStatus,
   TradeField,
   TradeForm,
@@ -20,6 +21,7 @@ import {
 } from '@/app/utils/constants'
 
 const accountStore = useAccountStore()
+const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -328,6 +330,16 @@ function submitMarketOrder() {
     })
 }
 
+function handleRequestSubmit() {
+  if (highDeviation.value) {
+    return modalStore.openModal({
+      type: Modal.PriceDeviation
+    })
+  }
+
+  return handleSubmit()
+}
+
 function handleSubmit() {
   switch (formValues.value[TradeField.TradingType]) {
     case TradeExecutionType.LimitFill:
@@ -440,7 +452,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         maxOrdersError,
         status
       }"
-      @submit:request="handleSubmit"
+      @submit:request="handleRequestSubmit"
     />
+
+    <ModalsPriceDeviation @confirmed="handleSubmit" />
   </div>
 </template>

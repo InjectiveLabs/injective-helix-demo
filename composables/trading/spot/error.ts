@@ -44,7 +44,7 @@ export function useSpotError({
     const [trade] = spotStore.trades
 
     return new BigNumberInBase(
-      new BigNumberInWei(trade.price).toBase(
+      new BigNumberInBase(trade.price).toWei(
         market.value.baseToken.decimals - market.value.quoteToken.decimals
       )
     )
