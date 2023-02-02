@@ -136,7 +136,7 @@ function handleClear(e: any) {
                   <div
                     :class="{
                       'text-white': !active,
-                      'text-blue-500 hover:text-white': active
+                      'text-blue-500 group-hover:text-white': active
                     }"
                   >
                     <span>

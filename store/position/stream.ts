@@ -8,6 +8,7 @@ export const cancelSubaccountPositionsStream =
   grpcCancelSubaccountPositionsStream
 
 export const streamSubaccountPositions = (marketId?: string) => {
+  const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
 
   const { subaccount } = useAccountStore()
@@ -28,6 +29,14 @@ export const streamSubaccountPositions = (marketId?: string) => {
           (p) => p.marketId === position.marketId
         )
 
+        // filter out non-tradable markets
+        if (
+          !marketId &&
+          !derivativeStore.activeMarketIds.includes(position.marketId)
+        ) {
+          return
+        }
+
         if (positionExist) {
           if (positionQuantity.lte(0)) {
             // Position closed
@@ -37,9 +46,7 @@ export const streamSubaccountPositions = (marketId?: string) => {
 
             positionStore.$patch({
               subaccountPositions,
-              subaccountPositionsCount: subaccountPositions.length,
-              subaccountTotalPositionsCount:
-                positionStore.subaccountTotalPositionsCount - 1
+              subaccountPositionsCount: subaccountPositions.length
             })
           } else {
             // Position updated
@@ -63,9 +70,7 @@ export const streamSubaccountPositions = (marketId?: string) => {
 
           positionStore.$patch({
             subaccountPositions,
-            subaccountPositionsCount: subaccountPositions.length,
-            subaccountTotalPositionsCount:
-              positionStore.subaccountTotalPositionsCount + 1
+            subaccountPositionsCount: subaccountPositions.length
           })
         }
       }

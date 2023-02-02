@@ -19,6 +19,8 @@ const props = defineProps({
 
 const isOpen = ref(false)
 
+/* TODO - bank <> default trading account merge
+
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
   computed(() => props.balance.totalBalanceInUsd),
   {
@@ -28,6 +30,21 @@ const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
 
 const { valueToString: totalBalanceInString } = useBigNumberFormatter(
   computed(() => props.balance.totalBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+*/
+
+const { valueToString: bankBalanceInString } = useBigNumberFormatter(
+  computed(() => props.balance.bankBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: subaccountBalanceInString } = useBigNumberFormatter(
+  computed(() => props.balance.subaccountBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -75,6 +92,7 @@ function handleOpenAssetDetailsModal() {
       </div>
     </td>
 
+    <!-- TODO - bank <> default trading account merge
     <td class="no-padding">
       <div class="flex flex-col py-4">
         <div class="flex flex-col items-end gap-1">
@@ -95,6 +113,33 @@ function handleOpenAssetDetailsModal() {
 
             <span v-else class="font-mono text-sm text-right">
               {{ totalBalanceInUsdToString }} USD
+            </span>
+          </div>
+        </div>
+      </div>
+    </td>
+    -->
+
+    <td class="no-padding">
+      <div class="flex flex-col py-4">
+        <div class="flex flex-col items-end gap-1">
+          <div data-cy="wallet-balance-bank-table-data">
+            <span v-if="hideBalances" class="font-mono text-sm text-right">
+              {{ HIDDEN_BALANCE_DISPLAY }}
+            </span>
+
+            <span v-else class="font-mono text-sm text-right">
+              {{ bankBalanceInString }}
+            </span>
+          </div>
+
+          <div>
+            <span v-if="hideBalances" class="font-mono text-sm text-right">
+              {{ HIDDEN_BALANCE_DISPLAY }}
+            </span>
+
+            <span v-else class="font-mono text-sm text-right">
+              {{ subaccountBalanceInString }}
             </span>
           </div>
         </div>

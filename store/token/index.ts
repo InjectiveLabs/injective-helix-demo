@@ -116,7 +116,7 @@ export const useTokenStore = defineStore('token', {
             ...ercTokensWithBalanceAndAllowance
           ].map((token) => [token.denom, token])
         ).values()
-      ].filter(({ address }) => address)
+      ].filter(({ erc20Address }) => erc20Address)
 
       tokenStore.$patch({
         ibcTokensWithBalanceAndPriceFromBank,
@@ -149,7 +149,7 @@ export const useTokenStore = defineStore('token', {
           const erc20Token = token as Erc20Token
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address,
-            contractAddress: erc20Token.address
+            contractAddress: erc20Token.erc20Address
           })
 
           return {

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { UiDerivativeOrderbook, UiPosition } from '@injectivelabs/sdk-ui-ts'
+import { useDerivativeStore } from '../derivative'
 import { indexerDerivativesApi } from '@/app/Services'
 import { ActivityFetchOptions } from '@/types'
 import {
@@ -19,14 +20,12 @@ type PositionStoreState = {
   orderbooks: OrderBookMap
   subaccountPositions: UiPosition[]
   subaccountPositionsCount: number
-  subaccountTotalPositionsCount: number
 }
 
 const initialStateFactory = (): PositionStoreState => ({
   orderbooks: {} as OrderBookMap,
   subaccountPositions: [],
-  subaccountPositionsCount: 0,
-  subaccountTotalPositionsCount: 0
+  subaccountPositionsCount: 0
 })
 
 export const usePositionStore = defineStore('position', {
@@ -43,6 +42,7 @@ export const usePositionStore = defineStore('position', {
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
+      const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
       const { subaccount } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
@@ -51,33 +51,19 @@ export const usePositionStore = defineStore('position', {
         return
       }
 
-      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime = paginationOptions?.endTime || 0
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
-          marketId: filters?.marketId,
-          marketIds: filters?.marketIds,
+          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           subaccountId: subaccount.subaccountId,
-          direction: filters?.direction,
-          pagination: {
-            skip: paginationOptions ? paginationOptions.skip : 0,
-            limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime
-          }
+          direction: filters?.direction
         })
 
       positionStore.$patch({
         subaccountPositions: positions,
         subaccountPositionsCount: pagination.total
       })
-
-      if (activityFetchOptions?.options?.updateTotalCounts) {
-        positionStore.$patch({
-          subaccountTotalPositionsCount: pagination.total
-        })
-      }
     },
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within

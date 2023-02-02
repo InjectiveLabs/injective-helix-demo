@@ -16,7 +16,7 @@ export const injToken = {
   name: 'Injective',
   decimals: 18,
   coinGeckoId: INJ_COIN_GECKO_ID,
-  address: getContractAddressesForNetworkOrThrow(NETWORK).injective,
+  erc20Address: getContractAddressesForNetworkOrThrow(NETWORK).injective,
   denom: INJ_DENOM,
   usdPrice: 0,
   tokenType: TokenType.Native
@@ -46,17 +46,17 @@ export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
     return ''
   }
 
-  return `factory/${adapterContract}/${tokenMeta.address}`
+  return `factory/${adapterContract}/${tokenMeta.cw20Address}`
 }
 
 export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
   const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
 
-  if (!tokenMeta || !tokenMeta.address) {
+  if (!tokenMeta || !tokenMeta.erc20Address) {
     return ''
   }
 
-  return `peggy${tokenMeta.address.toLowerCase()}`
+  return `peggy${tokenMeta.erc20Address.toLowerCase()}`
 }
 
 export const usdcTokenDenom = {
@@ -68,3 +68,9 @@ export const usdcTokenDenom = {
     USDCSymbol.WormholeSolana
   )
 }
+
+export const usdcTokenDenoms = [
+  usdcTokenDenom.USDC,
+  usdcTokenDenom.USDCet
+  // usdcTokenDenom.USDCso
+]

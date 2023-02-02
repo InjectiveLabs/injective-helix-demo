@@ -8,6 +8,7 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
+import { AccountBalance } from '~~/types'
 
 definePageMeta({
   middleware: ['connected']
@@ -90,29 +91,42 @@ const balances = computed(() => {
     const margin = totalPositionsMarginByQuoteDenom.value[denom] || ZERO_IN_BASE
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
-    const subaccountBalance = accountStore.subaccount?.balances.find(
-      (subaccountBalance) => subaccountBalance.denom.toLowerCase() === denom
+    const subaccountBalance = accountStore.subaccountBalances.find(
+      (balance) => balance.denom.toLowerCase() === denom
+    )
+    const subaccountAvailableBalance =
+      subaccountBalance?.availableBalance || '0'
+    const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
+
+    const bankBalanceDenom =
+      Object.keys(bankStore.bankBalances).find(
+        (balanceDenom) => balanceDenom.toLowerCase() === denom
+      ) || ''
+    const bankBalance = bankStore.bankBalances[bankBalanceDenom]
+
+    const inOrderBalance = new BigNumberInBase(subaccountTotalBalance).minus(
+      subaccountAvailableBalance
     )
 
-    const inOrderBalance = subaccountBalance
-      ? new BigNumberInBase(subaccountBalance.totalBalance).minus(
-          subaccountBalance.availableBalance
-        )
-      : ZERO_IN_BASE
-    const inOrderBalanceInToken = new BigNumberInWei(inOrderBalance).toBase(
-      balance.token.decimals
-    )
-
-    const reservedBalance = inOrderBalanceInToken.plus(margin).plus(pnl)
-    const totalBalance = reservedBalance.plus(balance.balanceInToken)
+    const reservedBalance = new BigNumberInWei(inOrderBalance)
+      .toBase(balance.token.decimals)
+      .plus(margin)
+      .plus(pnl)
+    const totalBalance = reservedBalance.plus(balance.balanceToBase)
     const totalBalanceInUsd = totalBalance.times(usdPrice)
 
     return {
       ...balance,
+      bankBalance: new BigNumberInWei(bankBalance)
+        .toBase(balance.token.decimals)
+        .toFixed(),
+      subaccountBalance: new BigNumberInWei(subaccountAvailableBalance)
+        .toBase(balance.token.decimals)
+        .toFixed(),
       totalBalance: totalBalance.toFixed(),
       totalBalanceInUsd: totalBalanceInUsd.toFixed(),
       reservedBalance: reservedBalance.toFixed()
-    }
+    } as AccountBalance
   })
 })
 

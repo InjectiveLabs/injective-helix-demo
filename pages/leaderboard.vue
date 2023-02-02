@@ -11,11 +11,11 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const FilterList = {
-  Overall: 'overall'
-  // Volume: 'volume',
-  // ROI: 'roi',
-  // PnL: 'pnl',
-  // Competition: 'competition'
+  Overall: 'overall',
+  Volume: 'volume',
+  ROI: 'roi',
+  PnL: 'pnl',
+  Competition: 'competition'
 }
 
 const SelectList = {

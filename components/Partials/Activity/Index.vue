@@ -1,147 +1,31 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
-import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
-import {
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
-  orderTypeToOrderTypes,
-  tradeTypesToTradeExecutionTypes
-} from '@/app/client/utils/activity'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
-import { ActivityView, TradeTypes, FilterOptions } from '@/types'
+import { ActivityTab, ActivityView, ActivityForm, ActivityField } from '@/types'
 
 const spotStore = useSpotStore()
 const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const { $onError, $onRejected } = useNuxtApp()
-const { resetForm } = useForm()
+const { $onError } = useNuxtApp()
+const { resetForm, values: formValues, setFieldValue } = useForm<ActivityForm>()
 
 const status = reactive(new Status(StatusType.Loading))
-const { value: side } = useStringField({ name: 'side', rule: '' })
-const { value: denom } = useStringField({ name: 'denom', rule: '' })
-const { value: type } = useStringField({ name: 'type', rule: '' })
 
-const limit = ref(UI_DEFAULT_PAGINATION_LIMIT_COUNT)
-const page = ref(1)
+const filterRef = ref()
+const paginationRef = ref()
+const tab = ref(ActivityTab.Positions)
 const view = ref(ActivityView.Positions)
-const endTime = ref(undefined as number | undefined)
-
-const isStreamingView = computed(() => {
-  return (
-    view.value === ActivityView.Positions ||
-    view.value === ActivityView.SpotOrders ||
-    view.value === ActivityView.SpotTriggers ||
-    view.value === ActivityView.DerivativeOrders ||
-    view.value === ActivityView.DerivativeTriggers
-  )
-})
-
-const isSpot = computed(() => {
-  return (
-    view.value === ActivityView.SpotOrders ||
-    view.value === ActivityView.SpotTriggers ||
-    view.value === ActivityView.SpotOrderHistory ||
-    view.value === ActivityView.SpotTradeHistory
-  )
-})
-
-const spotMarkets = computed(() => {
-  return spotStore.markets
-})
-
-const derivativeMarkets = computed(() => {
-  return derivativeStore.markets
-})
-
-const markets = computed(() => {
-  if (!denom.value || denom.value === '') {
-    return isSpot.value ? spotMarkets.value : derivativeMarkets.value
-  }
-
-  if (isSpot.value) {
-    return spotMarkets.value.filter(
-      (m: UiSpotMarketWithToken) =>
-        m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
-    )
-  }
-
-  return derivativeMarkets.value.filter(
-    (m: UiDerivativeMarketWithToken) =>
-      m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
-  )
-})
-
-const marketId = computed(() => {
-  if (markets.value.length === 0) {
-    return undefined
-  }
-
-  return markets.value[0].marketId
-})
-
-const marketIds = computed(() => {
-  return markets.value.map((m) => m.marketId)
-})
-
-const activeMarket = computed(() => {
-  if (isSpot.value) {
-    return spotMarkets.value.find(
-      (m: UiSpotMarketWithToken) => m.marketId === marketId.value
-    )
-  }
-
-  return derivativeMarkets.value.find(
-    (m: UiDerivativeMarketWithToken) => m.marketId === marketId.value
-  )
-})
-
-const orderType = computed(() => {
-  const [executionType, orderType] = type.value.split('-')
-
-  return { executionType, orderType }
-})
-
-const executionTypes = computed(() => {
-  if (!orderType.value || !orderType.value.executionType) {
-    return undefined
-  }
-
-  return [orderType.value.executionType] as TradeExecutionType[]
-})
-
-const orderTypes = computed(() => {
-  if (!orderType.value || !orderType.value.executionType) {
-    return []
-  }
-
-  return orderTypeToOrderTypes(orderType.value.orderType)
-})
-
-const tradeTypes = computed(() => {
-  return tradeTypesToTradeExecutionTypes(type.value as TradeTypes)
-})
 
 const action = computed(() => {
   switch (view.value) {
-    case ActivityView.Positions:
-      return positionStore.fetchSubaccountPositions
     case ActivityView.FundingPayments:
       return activityStore.fetchSubaccountFundingPayments
-    case ActivityView.SpotOrders:
-      return spotStore.fetchSubaccountOrders
     case ActivityView.SpotOrderHistory:
       return spotStore.fetchSubaccountOrderHistory
     case ActivityView.SpotTradeHistory:
       return spotStore.fetchSubaccountTrades
-    case ActivityView.DerivativeOrders:
-      return derivativeStore.fetchSubaccountOrders
-    case ActivityView.DerivativeTriggers:
-      return derivativeStore.fetchSubaccountConditionalOrders
     case ActivityView.DerivativeOrderHistory:
       return derivativeStore.fetchSubaccountOrderHistory
     case ActivityView.DerivativeTradeHistory:
@@ -149,6 +33,11 @@ const action = computed(() => {
     case ActivityView.WalletTransfers:
       return bridgeStore.fetchSubaccountTransfers
     case ActivityView.WalletDeposits:
+      return [
+        bridgeStore.fetchPeggyDepositTransactions,
+        bridgeStore.fetchIBCTransferTransactions,
+        bridgeStore.fetchInjectiveTransactions
+      ]
     case ActivityView.WalletWithdrawals:
       return [
         bridgeStore.fetchPeggyWithdrawalTransactions,
@@ -160,126 +49,20 @@ const action = computed(() => {
   }
 })
 
-const filterParams = computed(() => {
-  const defaultFilterParams = {
-    marketIds: marketIds.value
-  }
-
-  switch (view.value) {
-    case ActivityView.Positions:
-      return {
-        ...defaultFilterParams,
-        direction: side.value as TradeDirection
-      }
-    case ActivityView.FundingPayments:
-      return defaultFilterParams
-    case ActivityView.SpotOrders:
-      return {
-        ...defaultFilterParams,
-        orderSide: side.value as SpotOrderSide
-      }
-    case ActivityView.SpotOrderHistory:
-      return {
-        marketIds: marketIds.value,
-        orderTypes: orderTypes.value,
-        executionTypes: executionTypes.value,
-        direction: side.value as TradeDirection
-      }
-    case ActivityView.SpotTradeHistory:
-      return {
-        ...defaultFilterParams,
-        types: tradeTypes.value,
-        direction: side.value as TradeDirection
-      }
-    case ActivityView.DerivativeOrders:
-      return {
-        ...defaultFilterParams,
-        orderSide: side.value as DerivativeOrderSide
-      }
-    case ActivityView.DerivativeTriggers:
-      return {
-        marketIds: marketIds.value,
-        orderTypes: orderTypes.value,
-        executionTypes: executionTypes.value,
-        direction: side.value as DerivativeOrderSide
-      }
-    case ActivityView.DerivativeOrderHistory:
-      return {
-        marketIds: marketIds.value,
-        orderTypes: orderTypes.value,
-        executionTypes: executionTypes.value,
-        direction: side.value as TradeDirection
-      }
-    case ActivityView.DerivativeTradeHistory:
-      return {
-        ...defaultFilterParams,
-        types: tradeTypes.value,
-        direction: side.value as TradeDirection
-      }
-    case ActivityView.WalletTransfers:
-      return {
-        denom: denom.value
-      }
-    default:
-      return {}
-  }
-})
-
-const shouldUpdateTotalCounts = computed(() => {
-  if (
-    ![
-      ActivityView.Positions,
-      ActivityView.SpotOrders,
-      ActivityView.DerivativeOrders
-    ].includes(view.value)
-  ) {
-    return false
-  }
-
-  const hasNoSide = side.value === ''
-  const hasNoMarketFilter = isSpot.value
-    ? spotStore.markets.every((m) => marketIds.value.includes(m.marketId))
-    : derivativeStore.markets.every((m) => marketIds.value.includes(m.marketId))
-
-  return hasNoSide && hasNoMarketFilter
-})
-
-const skip = computed(() => (page.value - 1) * limit.value)
-
-const symbol = computed(() => {
-  if (!activeMarket.value) {
-    return ''
-  }
-
-  if (activeMarket.value.baseToken.denom === denom.value) {
-    return activeMarket.value.baseToken.symbol
-  }
-
-  return activeMarket.value.quoteToken.symbol
-})
-
 onMounted(() => {
-  const fetchOptions = {
-    options: { updateTotalCounts: true }
-  }
-
   const promises = [
-    derivativeStore.fetchSubaccountOrders(fetchOptions),
-    spotStore.fetchSubaccountOrders(fetchOptions),
-    positionStore.streamSubaccountPositions(),
-    spotStore.streamSubaccountOrders(),
-    spotStore.streamSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountTrades(),
+    activityStore.streamSpotSubaccountOrderHistory(),
+    activityStore.streamSpotSubaccountTrades(),
+    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountConditionalOrders(),
     derivativeStore.streamSubaccountOrders(),
-    derivativeStore.streamSubaccountOrderHistory()
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    spotStore.fetchSubaccountOrders(),
+    spotStore.streamSubaccountOrders()
   ]
-
-  if (activeMarket.value && marketId.value) {
-    promises.push(
-      isSpot.value
-        ? spotStore.streamSubaccountTrades(marketId.value)
-        : derivativeStore.streamTrades(marketId.value)
-    )
-  }
 
   Promise.all(promises)
     .then(() => {
@@ -288,120 +71,131 @@ onMounted(() => {
     .catch($onError)
 })
 
-watch([page, limit, denom, side, type], () => fetchData())
-watch([view], () => fetchDataAndUpdateEndTime())
+onUnmounted(() => {
+  activityStore.$reset()
+  derivativeStore.resetSubaccount()
+  spotStore.resetSubaccount()
+})
 
 function fetchData() {
+  if (!action.value) {
+    status.setIdle()
+
+    return
+  }
+
   status.setLoading()
 
-  _fetchData()
-    .catch($onRejected)
+  Promise.all(
+    Array.isArray(action.value)
+      ? action.value
+      : [
+          action.value({
+            filters: filterRef.value?.filterParams,
+            pagination: paginationRef.value?.paginationOptions
+          })
+        ]
+  )
+    .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 }
 
-function fetchDataAndUpdateEndTime() {
-  _fetchData()
-    .catch($onRejected)
-    .then(() => {
-      updateEndTime()
-    })
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
-function _fetchData() {
-  return new Promise((resolve, reject) => {
-    if (!action.value) {
-      return reject(new Error('Invalid action. Could not fetch results.'))
-    }
-
-    if (Array.isArray(action.value)) {
-      return Promise.all(action.value).catch(reject).then(resolve)
-    }
-
-    action
-      .value({
-        filters: filterParams.value as FilterOptions,
-        pagination: {
-          skip: skip.value,
-          limit: limit.value,
-          endTime: !isStreamingView.value ? endTime.value : undefined
-        },
-        options: {
-          updateTotalCounts: shouldUpdateTotalCounts.value
-        }
-      })
-      .catch(reject)
-      .then(resolve)
-  })
-}
-
-function updateEndTime() {
-  switch (view.value) {
-    case ActivityView.FundingPayments:
-      endTime.value = activityStore.subaccountFundingPayments[0]?.timestamp || 0
+function onTabChange(tab: string) {
+  switch (tab) {
+    case ActivityTab.Positions:
+      view.value = ActivityView.Positions
       break
-    case ActivityView.SpotOrderHistory:
-      endTime.value = spotStore.subaccountOrderHistory[0]?.updatedAt || 0
+    case ActivityTab.Derivatives:
+      view.value = ActivityView.DerivativeOrders
       break
-    case ActivityView.SpotTradeHistory:
-      endTime.value = spotStore.subaccountTrades[0]?.timestamp || 0
-      break
-    case ActivityView.DerivativeOrderHistory:
-      endTime.value = derivativeStore.subaccountOrderHistory[0]?.updatedAt || 0
-      break
-    case ActivityView.DerivativeTradeHistory:
-      endTime.value = derivativeStore.subaccountTrades[0]?.executedAt || 0
+    case ActivityTab.Spot:
+      view.value = ActivityView.SpotOrders
       break
     default:
-      endTime.value = undefined
+      view.value = ActivityView.WalletTransfers
       break
   }
+
+  onViewChange()
+}
+
+function handleFilterChange() {
+  setFieldValue(ActivityField.Page, 1)
+  setFieldValue(ActivityField.Limit, UI_DEFAULT_PAGINATION_LIMIT_COUNT)
+
+  nextTick(() => {
+    fetchData()
+  })
 }
 
 function onViewChange() {
   resetForm()
-  page.value = 1
-  limit.value = UI_DEFAULT_PAGINATION_LIMIT_COUNT
+  nextTick(() => {
+    fetchData()
+  })
 }
 </script>
 
 <template>
-  <div class="h-full min-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col">
+  <div
+    class="h-full min-h-screen-excluding-header max-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col"
+  >
     <PartialsActivityCommonNavigation
-      v-model:view="view"
+      v-model:tab="tab"
       :status="status"
-      @update:view="onViewChange"
+      @update:tab="onTabChange"
     />
 
     <div class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t" />
 
     <PartialsActivityCommonTabs
       v-model:view="view"
-      :status="status"
+      :tab="tab"
       @update:view="onViewChange"
     />
 
-    <CommonCard md class="h-full mt-4 xs:mt-6 flex flex-col grow">
+    <CommonCard
+      md
+      class="h-full mt-4 xs:mt-6 flex flex-col grow overflow-y-hidden"
+    >
       <PartialsActivityCommonToolbar
-        v-model:side="side"
-        v-model:type="type"
-        v-model:denom="denom"
+        ref="filterRef"
         :view="view"
-        @update:view="onViewChange"
+        :tab="tab"
+        :status="status"
+        @update:filter="handleFilterChange"
+        @reset:filter="onViewChange"
       />
 
-      <PartialsActivityView v-bind="{ view, status, symbol }" :key="view" />
+      <PartialsActivityView
+        v-bind="{
+          view,
+          status,
+          denom: formValues[ActivityField.Denom],
+          side: formValues[ActivityField.Side],
+          type: formValues[ActivityField.Type]
+        }"
+        :key="view"
+        class="h-full-flex"
+      />
 
       <PartialsActivityCommonPagination
-        v-model:page="page"
-        v-model:limit="limit"
-        v-model:view="view"
+        v-if="
+          ![
+            ActivityView.Positions,
+            ActivityView.DerivativeOrders,
+            ActivityView.DerivativeTriggers,
+            ActivityView.SpotOrders,
+            ActivityView.WalletDeposits,
+            ActivityView.WalletWithdrawals
+          ].includes(view)
+        "
+        ref="paginationRef"
+        :view="view"
         :status="status"
-        @update:view="onViewChange"
+        @update:filter="fetchData"
       />
     </CommonCard>
   </div>

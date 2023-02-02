@@ -35,9 +35,8 @@ const hasUSDCPeggyBalance = computed(() => {
   }
 
   const peggyUSDCSubaccountBalance =
-    accountStore.subaccount.balances.find(
-      () => (balance: UiSubaccountBalance) =>
-        [usdcTokenDenom.USDC].includes(balance.denom.toLowerCase())
+    accountStore.subaccount.balances.find((balance: UiSubaccountBalance) =>
+      [usdcTokenDenom.USDC].includes(balance.denom.toLowerCase())
     )?.totalBalance || '0'
 
   return (
@@ -48,18 +47,20 @@ const hasUSDCPeggyBalance = computed(() => {
 
 onMounted(() => {
   if (hasUSDCPeggyBalance.value) {
-    modalStore.openModal({ type: Modal.USDCDetected })
+    openModal()
   }
 })
+
+function openModal() {
+  modalStore.openModal({ type: Modal.USDCDetected })
+}
 </script>
 
 <template>
-  <div>
-    <NuxtLink v-if="hasUSDCPeggyBalance" :to="{ name: 'account' }">
-      <span class="text-blue-500 font-semibold">{{
-        $t('trade.convert.convert')
-      }}</span>
-    </NuxtLink>
+  <div v-if="hasUSDCPeggyBalance" class="cursor-pointer" @click="openModal">
+    <span class="text-blue-500 font-semibold">{{
+      $t('trade.convert.convert')
+    }}</span>
   </div>
 
   <ModalsPeggyUSDCDetected :market="market" />

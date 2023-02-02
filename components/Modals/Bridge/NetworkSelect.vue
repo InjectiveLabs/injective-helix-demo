@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { networksMeta } from '~/app/data/bridge'
+import { networksMeta } from '@/app/data/bridge'
 import { BridgeType } from '@/types'
 
 const props = defineProps({
@@ -60,7 +60,11 @@ const value = computed({
       :placeholder="$t('connect.selectDerivationPath')"
     >
       <template #selected-option="{ option }">
-        <ModalsBridgeNetworkSelectOption selected :option="option" />
+        <ModalsBridgeNetworkSelectOption
+          v-if="option"
+          selected
+          :option="option"
+        />
       </template>
 
       <template #option="{ option, active }">

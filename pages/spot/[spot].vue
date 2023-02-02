@@ -3,6 +3,10 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 
+definePageMeta({
+  middleware: ['markets']
+})
+
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
@@ -38,7 +42,7 @@ function refreshSubaccountDetails() {
   const fetchOptions = filterByCurrentMarket.value
     ? {
         filters: {
-          marketId: market.value.marketId
+          marketIds: [market.value.marketId]
         }
       }
     : undefined
@@ -53,8 +57,10 @@ function refreshSubaccountDetails() {
 function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
   fetchStatus.setLoading()
 
+  const marketIds = fetchOptions?.filters?.marketIds
+
   Promise.all([
-    spotStore.fetchSubaccountOrders(fetchOptions),
+    spotStore.fetchSubaccountOrders(marketIds),
     spotStore.fetchSubaccountOrderHistory(fetchOptions),
     spotStore.fetchSubaccountTrades(fetchOptions)
   ])

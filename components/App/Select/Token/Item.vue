@@ -4,6 +4,7 @@ import { Token } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   sm: Boolean,
+  xl: Boolean,
   showBalance: Boolean,
 
   token: {
@@ -15,6 +16,18 @@ const props = defineProps({
     type: String,
     default: ''
   }
+})
+
+const classes = computed(() => {
+  if (props.sm) {
+    return 'text-sm'
+  }
+
+  if (props.xl) {
+    return 'text-xl'
+  }
+
+  return 'text-base'
 })
 
 const emit = defineEmits<{
@@ -34,10 +47,7 @@ function handleClick() {
   <div class="flex items-center justify-between" @click="handleClick">
     <div class="flex items-center gap-2">
       <CommonTokenIcon :token="token" />
-      <span
-        class="font-semibold max-w-2xs truncate"
-        :class="[sm ? 'text-sm' : 'text-base']"
-      >
+      <span class="font-semibold max-w-2xs truncate" :class="classes">
         {{ token.symbol }}
       </span>
     </div>

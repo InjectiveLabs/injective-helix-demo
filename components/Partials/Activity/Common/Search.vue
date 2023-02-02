@@ -1,21 +1,19 @@
 <script lang="ts" setup>
 import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
-import { ActivityView, UiMarketWithToken } from '@/types'
+import { ActivityTab, UiMarketWithToken } from '@/types'
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
-  markets: {
-    type: Array as PropType<UiMarketWithToken[]>,
-    default: undefined
-  },
-
   modelValue: {
     type: String,
     default: ''
   },
 
-  view: {
-    type: String,
+  tab: {
+    type: String as PropType<ActivityTab>,
     required: true
   }
 })
@@ -24,13 +22,19 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
+const markets = computed<UiMarketWithToken[]>(() => {
+  const isSpot = props.tab === ActivityTab.Spot
+
+  return isSpot ? spotStore.markets : derivativeStore.markets
+})
+
 const tokens = computed(() => {
-  if (!props.markets) {
+  if (!markets.value) {
     return []
   }
 
   // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
-  const tokens = props.markets.reduce((list, market) => {
+  const tokens = markets.value.reduce((tokens, market) => {
     const baseToken = {
       balance: '',
       denom: market.baseToken.denom,
@@ -43,7 +47,7 @@ const tokens = computed(() => {
       token: market.quoteToken
     } as BankBalanceWithToken
 
-    return [...list, baseToken, quoteToken]
+    return [...tokens, baseToken, quoteToken]
   }, [] as BankBalanceWithToken[])
 
   const uniqueTokens = [
@@ -65,6 +69,7 @@ const value = computed({
   get(): string {
     return props.modelValue
   },
+
   set(val: string) {
     emit('update:modelValue', val)
   }
@@ -76,9 +81,7 @@ const value = computed({
     v-model="value"
     :options="options"
     :placeholder="
-      props.view === ActivityView.WalletDeposits ||
-      props.view === ActivityView.WalletTransfers ||
-      props.view === ActivityView.WalletWithdrawals
+      tab === ActivityTab.WalletHistory
         ? $t('walletHistory.transfers.asset')
         : $t('account.positions.market.label')
     "

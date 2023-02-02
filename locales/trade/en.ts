@@ -81,7 +81,7 @@ export default {
     futures: 'Futures',
     trading: 'Trading',
     high_execution_price_deviation_warning_note:
-      'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
+      'The execution price for your order deviates at least {percentage}% from the last traded price. Click confirm if you still want to execute it.',
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
     max_leverage_warn: 'Please decrease leverage',

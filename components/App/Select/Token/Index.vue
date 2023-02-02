@@ -36,7 +36,10 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:denom', state: string): void
-  (e: 'update:modelValue', state: string): void
+  (
+    e: 'update:amount',
+    { amount, isBase }: { amount: string; isBase: boolean }
+  ): void
   (e: 'update:max', state: string): void
 }>()
 
@@ -50,7 +53,7 @@ const {
   valueToString: maxBalanceToString
 } = useBigNumberFormatter(
   computed(() =>
-    selectedToken.value ? selectedToken.value.balanceInToken : '0'
+    selectedToken.value ? selectedToken.value.balanceToBase : '0'
   ),
   {
     decimalPlaces: props.maxDecimals
@@ -86,8 +89,12 @@ const inputPlaceholder = computed(() =>
 )
 
 function handleAmountUpdate(amount: string) {
-  emit('update:modelValue', amount)
   setAmountValue(amount)
+
+  emit('update:amount', {
+    amount,
+    isBase: props.amountFieldName === TradeField.BaseAmount
+  })
 }
 
 function handleMax() {
@@ -180,6 +187,6 @@ export default {
 
 <style>
 .dropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-800 border-blue-300 pb-4 shadow-sm;
+  @apply bg-gray-800 border-blue-300 shadow-sm;
 }
 </style>

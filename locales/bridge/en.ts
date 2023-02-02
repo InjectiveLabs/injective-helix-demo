@@ -12,8 +12,10 @@ export default {
     depositToInjective: 'Deposit to Injective',
     selectOriginNetwork: 'Select origin network',
     selectDestinationNetwork: 'Select destination network',
-    ibcTransfersNote:
-      'IBC transfers are not supported on the lite version of the Bridge. Please use the fully fledged Bridge on the Injective Hub.',
+    ibc: 'IBC',
+    wormhole: 'Wormhole',
+    transfersNote:
+      '{network} transfers are not supported on the lite version of the Bridge. Please use the fully fledged Bridge on the Injective Hub.',
     confirmTransaction: 'Confirm your transaction',
     reviewTransaction: 'Please review your transaction details',
     amount: 'Amount',

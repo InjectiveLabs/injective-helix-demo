@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { walletConnectedRequiredRouteNames } from '@/nuxt-config/hooks/route'
+import { ROUTES } from '@/app/utils/constants'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,7 +17,7 @@ defineProps({
 function handleClickOnDisconnect() {
   walletStore.logout()
 
-  if (walletConnectedRequiredRouteNames.includes(route.name as string)) {
+  if (ROUTES.walletConnectedRequiredRouteNames.includes(route.name as string)) {
     router.push({ name: 'index' })
   }
 }

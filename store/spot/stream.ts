@@ -48,6 +48,11 @@ export const streamTrades = (marketId: string) => {
         return
       }
 
+      // filter out non-tradable markets
+      if (!marketId && !spotStore.activeMarketIds.includes(trade.marketId)) {
+        return
+      }
+
       switch (operation) {
         case StreamOperation.Insert:
           spotStore.$patch({
@@ -76,6 +81,11 @@ export const streamSubaccountOrders = (marketId?: string) => {
         return
       }
 
+      // filter out non-tradable markets
+      if (!marketId && !spotStore.activeMarketIds.includes(order.marketId)) {
+        return
+      }
+
       switch (order.state) {
         case SpotOrderState.Booked:
         case SpotOrderState.Unfilled:
@@ -89,8 +99,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           spotStore.$patch({
             subaccountOrders,
-            subaccountOrdersCount: subaccountOrders.length,
-            subaccountTotalOrdersCount: spotStore.subaccountTotalOrdersCount + 1
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
@@ -103,8 +112,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           spotStore.$patch({
             subaccountOrders,
-            subaccountOrdersCount: subaccountOrders.length,
-            subaccountTotalOrdersCount: spotStore.subaccountTotalOrdersCount - 1
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
@@ -129,6 +137,11 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
     marketId,
     callback: ({ order }) => {
       if (!order) {
+        return
+      }
+
+      // filter out non-tradable markets
+      if (!marketId && !spotStore.activeMarketIds.includes(order.marketId)) {
         return
       }
 
@@ -185,6 +198,11 @@ export const streamSubaccountTrades = (marketId?: string) => {
     subaccountId: subaccount.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
+        return
+      }
+
+      // filter out non-tradable markets
+      if (!marketId && !spotStore.activeMarketIds.includes(trade.marketId)) {
         return
       }
 

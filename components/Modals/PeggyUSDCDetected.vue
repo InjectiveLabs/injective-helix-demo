@@ -28,7 +28,9 @@ function handleClose() {
         class="whitespace-nowrap w-full bg-blue-500 text-black rounded"
         :to="{ name: 'account' }"
       >
-        <div class="flex items-center justify-center py-2 text-white">
+        <div
+          class="flex items-center justify-center py-2 text-blue-900 font-bold"
+        >
           {{ $t('trade.viewUSDC') }}
         </div>
       </NuxtLink>

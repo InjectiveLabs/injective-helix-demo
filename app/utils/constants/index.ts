@@ -39,7 +39,14 @@ export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
 
 export const ETH_COIN_GECKO_ID = 'ethereum'
 export const USDT_COIN_GECKO_ID = 'tether'
+export const USDC_COIN_GECKO_ID = 'usd-coin'
 export const UST_COIN_GECKO_ID = 'terrausd'
+export const QUOTE_DENOMS_GECKO_IDS = [
+  ETH_COIN_GECKO_ID,
+  USDT_COIN_GECKO_ID,
+  USDC_COIN_GECKO_ID,
+  UST_COIN_GECKO_ID
+]
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const INJ_GAS_BUFFER = 0.002
 export const INJ_GAS_BUFFER_FOR_BRIDGE = 0.003

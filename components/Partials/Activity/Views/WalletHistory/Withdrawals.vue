@@ -9,33 +9,27 @@ const props = defineProps({
     default: () => new Status()
   },
 
-  symbol: {
+  denom: {
     type: String,
-    required: true
+    default: ''
   }
 })
 
 const bridgeStore = useBridgeStore()
 
-const transactions = computed(() => {
-  return bridgeStore.subaccountTransferBridgeTransactions
-})
-
 const filteredTransactions = computed(() => {
-  return transactions.value.filter((transaction) => {
-    const isCompletedTransaction =
-      transaction.state === BridgeTransactionState.Completed
+  return bridgeStore.subaccountTransferBridgeTransactions.filter(
+    (transaction) => {
+      const isCompletedTransaction =
+        transaction.state === BridgeTransactionState.Completed
 
-    if (!props.symbol && isCompletedTransaction) {
-      return true
+      const isPartOfSearchFilter =
+        !props.denom ||
+        transaction.denom.toLowerCase() === props.denom.toLowerCase()
+
+      return isPartOfSearchFilter && isCompletedTransaction
     }
-
-    const isPartOfSearchFilter = transaction.token.symbol
-      .toLowerCase()
-      .includes(props.symbol.trim().toLowerCase())
-
-    return isPartOfSearchFilter && isCompletedTransaction
-  })
+  )
 })
 
 const sortedTransactions = computed(() => {

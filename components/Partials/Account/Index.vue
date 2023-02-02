@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { AccountBalance, BusEvents, Modal } from '@/types'
+import { Token } from '@injectivelabs/token-metadata'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -10,6 +12,7 @@ const accountStore = useAccountStore()
 const bankStore = useBankStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
+const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 
 defineProps({
@@ -28,25 +31,41 @@ const status = reactive(new Status(StatusType.Loading))
 const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
 
+const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
+
 onMounted(() => {
   handleViewFromRoute()
   initBalances()
 
-  useEventBus(BusEvents.FundingRefresh).on(() => refreshBalances())
+  useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
+  useEventBus<Token>(BusEvents.ConvertUSDC).on(setMarketFromToken)
 })
 
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
+  spotStore.reset()
 })
+
+function setMarketFromToken(token: Token) {
+  usdcConvertMarket.value = [
+    ...spotStore.markets,
+    ...spotStore.hiddenMarkets
+  ].find(
+    (market) =>
+      market.baseToken.symbol === token.symbol &&
+      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
+  )
+}
 
 function initBalances() {
   handleViewFromRoute()
 
   Promise.all([
-    tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
-    positionStore.fetchSubaccountPositions(),
     accountStore.streamSubaccountBalances(),
-    positionStore.streamSubaccountPositions()
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
   ])
     .catch($onError)
     .finally(() => {
@@ -145,6 +164,13 @@ function handleHideBalances(value: boolean) {
       v-if="modalStore.modals[Modal.AssetDetails]"
     />
     <PartialsAccountBridge />
+
     <ModalsAddMargin />
+
+    <ModalsConvertUSDCWrapper
+      v-if="usdcConvertMarket"
+      :balances="balances"
+      :market="usdcConvertMarket"
+    />
   </div>
 </template>

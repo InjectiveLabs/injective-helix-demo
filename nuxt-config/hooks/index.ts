@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import path from 'path'
 import { copy, removeSync, pathExistsSync, copySync } from 'fs-extra'
-import staticRouteConfig from './route'
+import nitroConfig from './nitro'
 import webpackConfig from './webpack'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -44,6 +44,6 @@ export default {
       console.log(`Error copying token images: ${e}`)
     }
   },
-  ...staticRouteConfig,
+  ...nitroConfig,
   ...webpackConfig
 }
