@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiAccountTransformer, UiSubaccount } from '@injectivelabs/sdk-ui-ts'
+import {
+  BankBalances,
+  SubaccountBalanceWithToken,
+  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
+  UiAccountTransformer,
+  UiSubaccount
+} from '@injectivelabs/sdk-ui-ts'
 import {
   AccountPortfolio,
   denomAmountToChainDenomAmountToFixed,
@@ -20,12 +26,16 @@ type AccountStoreState = {
   subaccountIds: string[]
   subaccount?: UiSubaccount
   accountPortfolio?: AccountPortfolio
+  subaccountBalancesWithToken: SubaccountBalanceWithToken[]
+  subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   subaccountIds: [],
   subaccount: undefined,
-  accountPortfolio: undefined
+  accountPortfolio: undefined,
+  subaccountBalancesWithToken: [],
+  subaccountBalancesWithTokenAndPrice: []
 })
 
 export const useAccountStore = defineStore('account', {
@@ -37,6 +47,28 @@ export const useAccountStore = defineStore('account', {
       }
 
       return state.subaccount.balances.length > 0
+    },
+
+    subaccountBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return []
+      }
+
+      return state.subaccount.balances
+    },
+
+    subaccountBalancesAsBankBalances(state) {
+      if (!state.subaccount || !state.subaccount.balances) {
+        return {}
+      }
+
+      return state.subaccount.balances.reduce(
+        (balances, { availableBalance, denom }) => ({
+          ...balances,
+          [denom]: availableBalance
+        }),
+        {} as BankBalances
+      )
     }
   },
   actions: {

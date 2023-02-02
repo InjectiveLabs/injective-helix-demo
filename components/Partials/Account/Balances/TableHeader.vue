@@ -48,14 +48,12 @@ const ascendingValue = computed({
       :value="BalanceHeaderType.Asset"
       class="pl-2"
     >
-      <span
-        class="text-gray-350 text-xs normal-case"
-        data-cy="markets-market-table-header"
-      >
+      <span class="text-gray-350 text-xs normal-case">
         {{ $t('account.balances.cols.asset') }}
       </span>
     </AppSortableHeaderItem>
 
+    <!-- 
     <AppSortableHeaderItem
       v-model:sort-by="sortByValue"
       v-model:ascending="ascendingValue"
@@ -64,9 +62,21 @@ const ascendingValue = computed({
     >
       <span
         class="text-gray-350 text-xs normal-case"
-        data-cy="markets-change_24h-table-header"
+        
       >
         {{ $t('account.balances.cols.totalBalance') }}
+      </span>
+    </AppSortableHeaderItem>
+    -->
+
+    <AppSortableHeaderItem
+      v-model:sort-by="sortByValue"
+      v-model:ascending="ascendingValue"
+      class="justify-end"
+      :value="BalanceHeaderType.Wallet"
+    >
+      <span class="text-gray-350 text-xs normal-case">
+        {{ $t('account.balances.cols.walletBalance') }}
       </span>
     </AppSortableHeaderItem>
 
@@ -74,21 +84,28 @@ const ascendingValue = computed({
       v-model:sort-by="sortByValue"
       v-model:ascending="ascendingValue"
       class="justify-end"
-      :value="BalanceHeaderType.Available"
+      :value="BalanceHeaderType.TradingAccount"
     >
-      <span
-        class="text-gray-350 text-xs normal-case"
-        data-cy="markets-volume_24h-table-header"
-      >
-        {{ $t('account.balances.cols.availableBalance') }}
+      <span class="text-gray-350 text-xs normal-case">
+        {{ $t('account.balances.cols.tradingAccountBalance') }}
       </span>
     </AppSortableHeaderItem>
 
+    <!--
+    <AppSortableHeaderItem
+      v-model:sort-by="sortByValue"
+      v-model:ascending="ascendingValue"
+      class="justify-end"
+      :value="BalanceHeaderType.Available"
+    >
+      <span class="text-gray-350 text-xs normal-case">
+        {{ $t('account.balances.cols.availableBalance') }}
+      </span>
+    </AppSortableHeaderItem>
+    -->
+
     <AppHeaderItem class="justify-end">
-      <span
-        class="text-gray-350 text-xs normal-case"
-        data-cy="markets-volume_24h-table-header"
-      >
+      <span class="text-gray-350 text-xs normal-case">
         {{ $t('account.balances.cols.inUseReserved') }}
       </span>
     </AppHeaderItem>
@@ -99,10 +116,7 @@ const ascendingValue = computed({
       class="select-none justify-end"
       :value="BalanceHeaderType.Value"
     >
-      <span
-        class="text-gray-350 text-xs normal-case"
-        data-cy="markets-volume_24h-table-header"
-      >
+      <span class="text-gray-350 text-xs normal-case">
         {{ $t('account.balances.cols.value', { symbol: 'USD' }) }}
       </span>
     </AppSortableHeaderItem>

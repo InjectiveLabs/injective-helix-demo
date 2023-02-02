@@ -30,7 +30,7 @@ const tokens = computed(() => {
   }
 
   // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
-  const tokens = props.markets.reduce((list, market) => {
+  const tokens = props.markets.reduce((tokens, market) => {
     const baseToken = {
       balance: '',
       denom: market.baseToken.denom,
@@ -43,7 +43,7 @@ const tokens = computed(() => {
       token: market.quoteToken
     } as BankBalanceWithToken
 
-    return [...list, baseToken, quoteToken]
+    return [...tokens, baseToken, quoteToken]
   }, [] as BankBalanceWithToken[])
 
   const uniqueTokens = [

@@ -58,7 +58,13 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push('cre-usdt', 'sol-usdc', 'usdc-usdcet', 'usdcso-usdcet')
+    spot.push(
+      'cre-usdt',
+      'sol-usdc',
+      'usdc-usdcet',
+      'usdcso-usdcet',
+      'usdt-usdc'
+    )
   }
 
   const futures = [...perpetuals, ...expiryFutures]

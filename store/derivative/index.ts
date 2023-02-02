@@ -481,7 +481,7 @@ export const useDerivativeStore = defineStore('derivative', {
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
-        executionTypes: filters?.types,
+        executionTypes: filters?.types as TradeExecutionType[] | undefined,
         direction: filters?.direction,
         pagination: {
           endTime,

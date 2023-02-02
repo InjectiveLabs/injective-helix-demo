@@ -29,13 +29,13 @@ const props = defineProps({
 
 const isAggregateRow = !props.balance.token.denom
 
-const isUSDCDenom =
+const isUsdcDenom =
   !isAggregateRow &&
   [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
     props.balance.token.denom.toLowerCase()
   )
 
-const convertUSDC = [usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
+const convertUsdc = [usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
   props.balance.token.denom.toLowerCase()
 )
 
@@ -56,18 +56,40 @@ const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
   }
 )
 
+/* TODO - bank <> default trading account merge
+
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  computed(() => props.balance.balanceInToken),
+  computed(() => props.balance.balanceToBase),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
-)
+) 
 
 const {
   valueToBigNumber: totalBalanceInBigNumber,
   valueToString: totalBalanceInString
 } = useBigNumberFormatter(
   computed(() => props.balance.totalBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+) */
+
+const {
+  valueToBigNumber: bankBalanceInBigNumber,
+  valueToString: bankBalanceInString
+} = useBigNumberFormatter(
+  computed(() => props.balance.bankBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const {
+  valueToBigNumber: subaccountBalanceInBigNumber,
+  valueToString: subaccountBalanceInString
+} = useBigNumberFormatter(
+  computed(() => props.balance.subaccountBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -111,7 +133,7 @@ function handleConvert() {
   <tr
     class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{
-      'last-of-type:border-b-transparent': !isUSDCDenom,
+      'last-of-type:border-b-transparent': !isUsdcDenom,
       'max-h-20': !isOpen,
       'max-h-screen': isOpen
     }"
@@ -120,9 +142,9 @@ function handleConvert() {
     <td class="pl-4">
       <div
         class="flex justify-start items-center gap-2"
-        :class="{ 'ml-8': isUSDCDenom }"
+        :class="{ 'ml-8': isUsdcDenom }"
       >
-        <CommonTokenIcon v-if="!isUSDCDenom" :token="balance.token" />
+        <CommonTokenIcon v-if="!isUsdcDenom" :token="balance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
@@ -131,32 +153,13 @@ function handleConvert() {
           >
             {{ balance.token.symbol }}
           </span>
-          <span class="text-gray-500 text-xs">
-            <span v-if="!isUSDCDenom">
-              {{ balance.token.name }}
-            </span>
-            <span
-              v-else-if="
-                balance.token.denom.toLowerCase() === usdcTokenDenom.USDC
-              "
-            >
-              {{ $t('account.usdcPeggyToken') }}
-            </span>
-            <span
-              v-else-if="
-                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCet
-              "
-            >
-              {{ $t('account.usdcWHEthereumToken') }}
-            </span>
-            <span
-              v-else-if="
-                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCso
-              "
-            >
-              {{ $t('account.usdcWHSolanaToken') }}
-            </span>
-          </span>
+
+          <PartialsAccountBalancesUsdcLabel
+            v-bind="{
+              isUsdcDenom,
+              balance
+            }"
+          />
 
           <BaseIcon
             v-if="isAggregateRow"
@@ -168,6 +171,7 @@ function handleConvert() {
       </div>
     </td>
 
+    <!-- TODO - bank <> default trading account merge
     <td>
       <div class="flex justify-end" data-cy="wallet-balance-total-table-data">
         <span v-if="hideBalances" class="font-mono text-sm text-right">
@@ -184,7 +188,46 @@ function handleConvert() {
         <span v-else> &mdash; </span>
       </div>
     </td>
+    -->
 
+    <td>
+      <div class="flex justify-end" data-cy="wallet-balance-wallet-table-data">
+        <span v-if="hideBalances" class="font-mono text-sm text-right">
+          {{ HIDDEN_BALANCE_DISPLAY }}
+        </span>
+
+        <span
+          v-else-if="bankBalanceInBigNumber.gt(0)"
+          class="font-mono text-sm text-right"
+        >
+          {{ bankBalanceInString }}
+        </span>
+
+        <span v-else> &mdash; </span>
+      </div>
+    </td>
+
+    <td>
+      <div
+        class="flex justify-end"
+        data-cy="wallet-balance-trading-account-table-data"
+      >
+        <span v-if="hideBalances" class="font-mono text-sm text-right">
+          {{ HIDDEN_BALANCE_DISPLAY }}
+        </span>
+
+        <span
+          v-else-if="subaccountBalanceInBigNumber.gt(0)"
+          class="font-mono text-sm text-right"
+        >
+          {{ subaccountBalanceInString }}
+        </span>
+
+        <span v-else> &mdash; </span>
+      </div>
+    </td>
+
+    <!-- TODO - bank <> default trading account merge
     <td>
       <div class="flex justify-end">
         <span v-if="hideBalances" class="font-mono text-sm text-right">
@@ -196,6 +239,7 @@ function handleConvert() {
         </span>
       </div>
     </td>
+    -->
 
     <td>
       <div class="flex justify-end">
@@ -221,7 +265,7 @@ function handleConvert() {
       </div>
     </td>
 
-    <td v-if="convertUSDC" class="pr-4">
+    <td v-if="convertUsdc" class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <div
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
@@ -229,7 +273,7 @@ function handleConvert() {
           @click="handleConvert"
         >
           <span class="text-blue-500 text-sm font-medium">
-            {{ $t('account.convertUSDC') }}
+            {{ $t('account.convertUsdc') }}
           </span>
         </div>
       </div>
@@ -269,7 +313,7 @@ function handleConvert() {
         </BaseDropdown>
 
         <div
-          v-if="filteredMarkets.length === 1 && !isUSDCDenom"
+          v-if="filteredMarkets.length === 1 && !isUsdcDenom"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           @click="handleNavigateToMarket(filteredMarkets[0])"
         >

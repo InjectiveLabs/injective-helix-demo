@@ -111,7 +111,7 @@ export const setTokenAllowance = async (tokenWithBalance: TokenWithBalance) => {
   const { address, validate } = useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
 
-  const tokenAddress = tokenWithBalance.address as keyof Erc20Token
+  const tokenAddress = tokenWithBalance.erc20Address as keyof Erc20Token
 
   await queue()
   await fetchGasPrice()
@@ -133,14 +133,18 @@ export const setTokenAllowance = async (tokenWithBalance: TokenWithBalance) => {
     (token) => {
       const erc20Token = token as Erc20Token
 
-      return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
+      return (
+        erc20Token.erc20Address.toLowerCase() === tokenAddress.toLowerCase()
+      )
     }
   )
   const index = tokenStore.erc20TokensWithBalanceAndPriceFromBank.findIndex(
     (token) => {
       const erc20Token = token as Erc20Token
 
-      return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
+      return (
+        erc20Token.erc20Address.toLowerCase() === tokenAddress.toLowerCase()
+      )
     }
   )
 

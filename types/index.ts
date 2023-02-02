@@ -142,6 +142,5 @@ export interface DropdownOptionWithToken extends BaseDropdownOption {
 export * from './balance'
 export * from './bridge'
 export * from './enums'
-export * from './errors'
 export * from './states'
 export * from './trade'

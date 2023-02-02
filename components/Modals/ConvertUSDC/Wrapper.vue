@@ -109,7 +109,7 @@ function submitForm() {
     .catch($onError)
     .finally(() => {
       submitStatus.setIdle()
-      accountStore.fetchSubaccountsBalancesWithPrices()
+      accountStore.updateSubaccount()
       modalStore.closeModal(Modal.ConvertUSDC)
     })
 }
@@ -133,7 +133,7 @@ function closeModal() {
   >
     <template #title>
       <h3>
-        {{ $t('account.convertUSDC') }}
+        {{ $t('account.convertUsdc') }}
       </h3>
     </template>
     <AppHocLoading :status="status" class="justify-center">

@@ -124,7 +124,8 @@ export enum MarketCategoryType {
 
 export enum MarketQuoteType {
   All = 'all',
-  USDT = 'usdt'
+  USDT = 'usdt',
+  USDC = 'usdc'
   // UST = 'ust'
 }
 
@@ -196,6 +197,8 @@ export enum BalanceHeaderType {
   None = 'none',
   Asset = 'asset',
   Total = 'total',
+  Wallet = 'wallet',
+  TradingAccount = 'trading-account',
   Available = 'available',
   Value = 'value'
 }

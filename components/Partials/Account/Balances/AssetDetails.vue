@@ -55,7 +55,7 @@ const filteredMarketsWithSummary = computed(() => {
 })
 
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  computed(() => balance.value?.balanceInToken || '0'),
+  computed(() => balance.value?.balanceToBase || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }

@@ -60,7 +60,11 @@ const value = computed({
       :placeholder="$t('connect.selectDerivationPath')"
     >
       <template #selected-option="{ option }">
-        <ModalsBridgeNetworkSelectOption selected :option="option" />
+        <ModalsBridgeNetworkSelectOption
+          v-if="option"
+          selected
+          :option="option"
+        />
       </template>
 
       <template #option="{ option, active }">

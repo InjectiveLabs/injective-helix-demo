@@ -45,7 +45,7 @@ const filteredPositions = computed(() => {
 })
 
 const supportedTokens = computed(() => {
-  const tokens = markets.value.reduce((list, market) => {
+  const tokens = markets.value.reduce((tokens, market) => {
     const baseToken = {
       balance: '',
       denom: market.baseToken.denom,
@@ -58,7 +58,7 @@ const supportedTokens = computed(() => {
       token: market.quoteToken
     } as BankBalanceWithTokenAndBalanceInBase
 
-    return [...list, baseToken, quoteToken]
+    return [...tokens, baseToken, quoteToken]
   }, [] as BankBalanceWithTokenAndBalanceInBase[])
 
   const uniqueTokens = [

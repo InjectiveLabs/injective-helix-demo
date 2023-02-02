@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  ETH_COIN_GECKO_ID,
-  USDT_COIN_GECKO_ID,
-  UST_COIN_GECKO_ID
-} from '@/app/utils/constants'
+import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
@@ -54,8 +50,8 @@ const transformedBalance = computed(() => {
       return {
         ...balance,
         denom: '',
-        balanceInToken: new BigNumberInBase(aggregatedUsdc.balanceInToken)
-          .plus(balance.balanceInToken)
+        balanceToBase: new BigNumberInBase(aggregatedUsdc.balanceToBase)
+          .plus(balance.balanceToBase)
           .toFixed(),
         totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
           .plus(balance.totalBalanceInUsd)
@@ -94,9 +90,7 @@ const filteredBalances = computed(() => {
 
     const isMarginCurrency =
       !showMarginCurrencyOnly.value ||
-      [ETH_COIN_GECKO_ID, UST_COIN_GECKO_ID, USDT_COIN_GECKO_ID].includes(
-        balance.token.coinGeckoId
-      )
+      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
 
     const tokenNameMatch = balance.token.name
       .toLowerCase()
@@ -128,6 +122,28 @@ const sortedBalances = computed(() => {
           return totalB.minus(totalA).toNumber()
         }
 
+        case BalanceHeaderType.Wallet: {
+          const totalA = new BigNumberInBase(a.bankBalance)
+          const totalB = new BigNumberInBase(b.bankBalance)
+
+          if (totalA.eq(totalB)) {
+            return 0
+          }
+
+          return totalB.minus(totalA).toNumber()
+        }
+
+        case BalanceHeaderType.TradingAccount: {
+          const totalA = new BigNumberInBase(a.subaccountBalance)
+          const totalB = new BigNumberInBase(b.subaccountBalance)
+
+          if (totalA.eq(totalB)) {
+            return 0
+          }
+
+          return totalB.minus(totalA).toNumber()
+        }
+
         case BalanceHeaderType.Value: {
           const totalInUsdA = new BigNumberInBase(a.totalBalanceInUsd)
           const totalInUsdB = new BigNumberInBase(b.totalBalanceInUsd)
@@ -140,8 +156,8 @@ const sortedBalances = computed(() => {
         }
 
         case BalanceHeaderType.Available: {
-          const availableA = new BigNumberInBase(a.balanceInToken)
-          const availableB = new BigNumberInBase(a.balanceInToken)
+          const availableA = new BigNumberInBase(a.balanceToBase)
+          const availableB = new BigNumberInBase(a.balanceToBase)
 
           if (availableA.eq(availableB)) {
             return 0
@@ -183,7 +199,7 @@ const sortedBalances = computed(() => {
           :balance="balance"
           :hide-balances="hideBalances"
         />
-        <PartialsAccountBalancesUSDCBalances
+        <PartialsAccountBalancesUsdcBalances
           v-else
           :balances="balances"
           :balance="balance"

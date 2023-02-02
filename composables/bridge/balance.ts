@@ -21,7 +21,7 @@ const appendCachedTokens = (
 ) => {
   const cachedTokensWithBalance = cachedTokens.map((token) => ({
     balance: '0',
-    balanceInToken: '0',
+    balanceToBase: '0',
     denom: token.denom,
     token
   }))
@@ -61,7 +61,7 @@ export function useBridgeBalance({
           token: { ...b } as Token,
           denom: b.denom,
           balance,
-          balanceInToken: balance
+          balanceToBase: balance
         } as BalanceWithToken
       }
     )
@@ -78,7 +78,7 @@ export function useBridgeBalance({
       return {
         ...b,
         balance,
-        balanceInToken: balance
+        balanceToBase: balance
       } as BalanceWithToken
     })
 
@@ -103,7 +103,7 @@ export function useBridgeBalance({
         return {
           denom: subaccountBalance.denom,
           balance: subaccountBalance.availableBalance,
-          balanceInToken: new BigNumberInWei(subaccountBalance.availableBalance)
+          balanceToBase: new BigNumberInWei(subaccountBalance.availableBalance)
             .toBase(token.decimals)
             .toFixed(),
           token
@@ -150,13 +150,13 @@ export function useBridgeBalance({
         ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
 
         if (transferableBalance.lte(ZERO_IN_BASE)) {
-          return { ...balanceWithToken, balance: '0', balanceInToken: '0' }
+          return { ...balanceWithToken, balance: '0', balanceToBase: '0' }
         }
 
         return {
           ...balanceWithToken,
           balance: transferableBalance.toString(),
-          balanceInToken: transferableBalance.toString()
+          balanceToBase: transferableBalance.toString()
         }
       })
       .filter(({ denom }) => denom && !denom.startsWith('share'))

@@ -50,7 +50,7 @@ const {
   valueToString: maxBalanceToString
 } = useBigNumberFormatter(
   computed(() =>
-    selectedToken.value ? selectedToken.value.balanceInToken : '0'
+    selectedToken.value ? selectedToken.value.balanceToBase : '0'
   ),
   {
     decimalPlaces: props.maxDecimals

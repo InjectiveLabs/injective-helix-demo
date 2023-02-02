@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
-import {
-  ETH_COIN_GECKO_ID,
-  USDT_COIN_GECKO_ID,
-  UST_COIN_GECKO_ID
-} from '@/app/utils/constants'
+import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
@@ -53,11 +49,7 @@ onMounted(() => {
 
 function pollMarkets() {
   Promise.all([
-    tokenStore.getTokenUsdPriceMap([
-      ETH_COIN_GECKO_ID,
-      USDT_COIN_GECKO_ID,
-      UST_COIN_GECKO_ID
-    ]),
+    tokenStore.getTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()
   ]).catch($onError)

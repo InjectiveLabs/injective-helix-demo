@@ -33,9 +33,9 @@ export default defineNuxtConfig({
   },
 
   hooks,
-  vite: isProduction ? undefined : vite
+  vite: isProduction ? undefined : vite,
 
-  // typescript: {
-  //   typeCheck: true
-  // }
+  typescript: {
+    typeCheck: true
+  }
 })

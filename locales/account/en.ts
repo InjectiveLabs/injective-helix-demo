@@ -2,7 +2,7 @@ export default {
   account: {
     accountOverview: 'Account Overview',
     available: 'Available',
-    convertUSDC: 'Convert USDC',
+    convertUsdc: 'Convert USDC',
     fee: 'Fee',
     netWorth: 'Net Worth',
     deposit: 'Deposit',
@@ -25,6 +25,8 @@ export default {
       cols: {
         asset: 'Asset',
         total: 'Total',
+        walletBalance: 'Wallet balance',
+        tradingAccountBalance: 'Trading balance',
         totalBalance: 'Total balance',
         availableBalance: 'Available balance',
         inUseReserved: 'In Use/Reserved',
