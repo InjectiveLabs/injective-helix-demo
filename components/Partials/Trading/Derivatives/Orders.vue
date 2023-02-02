@@ -229,7 +229,8 @@ function handleCloseAllPositionsClick() {
 
         <AppButton
           v-if="
-            activeType !== FilterList.OpenPositions && filteredOrders.length > 0
+            [FilterList.OpenOrders, FilterList.Triggers].includes(activeType) &&
+            filteredOrders.length > 0
           "
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           xs
