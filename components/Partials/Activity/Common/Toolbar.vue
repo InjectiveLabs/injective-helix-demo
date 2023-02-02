@@ -143,26 +143,36 @@ const typeOptions = computed(() => {
     return result
   }
 
-  if (props.tab === ActivityTab.Derivatives) {
-    result = [
-      ...result,
-      {
-        display: `${t('trade.stopLoss')} ${t('trade.limit')}`,
-        value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.StopLoss}`
-      },
-      {
-        display: `${t('trade.stopLoss')} ${t('trade.market')}`,
-        value: `${TradeExecutionType.Market}-${ConditionalOrderType.StopLoss}`
-      },
-      {
-        display: `${t('trade.takeProfit')} ${t('trade.limit')}`,
-        value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.TakeProfit}`
-      },
-      {
-        display: `${t('trade.takeProfit')} ${t('trade.market')}`,
-        value: `${TradeExecutionType.Market}-${ConditionalOrderType.TakeProfit}`
-      }
-    ]
+  const derivativeTypes = [
+    {
+      display: `${t('trade.stopLoss')} ${t('trade.limit')}`,
+      value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.StopLoss}`
+    },
+    {
+      display: `${t('trade.stopLoss')} ${t('trade.market')}`,
+      value: `${TradeExecutionType.Market}-${ConditionalOrderType.StopLoss}`
+    },
+    {
+      display: `${t('trade.takeProfit')} ${t('trade.limit')}`,
+      value: `${TradeExecutionType.LimitFill}-${ConditionalOrderType.TakeProfit}`
+    },
+    {
+      display: `${t('trade.takeProfit')} ${t('trade.market')}`,
+      value: `${TradeExecutionType.Market}-${ConditionalOrderType.TakeProfit}`
+    }
+  ]
+
+  if (props.view === ActivityView.DerivativeTriggers) {
+    return derivativeTypes
+  }
+
+  if (
+    [
+      ActivityView.DerivativeOrderHistory,
+      ActivityView.DerivativeTradeHistory
+    ].includes(props.view)
+  ) {
+    result = [...result, ...derivativeTypes]
   }
 
   return result

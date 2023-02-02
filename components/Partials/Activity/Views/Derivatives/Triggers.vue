@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderTypes,
-  executionOrderTypeToTradeExecutionTypes
+  executionOrderTypeToOrderExecutionTypes
 } from '@/app/client/utils/activity'
-import { ConditionalOrderSide } from '@/types'
+import { ConditionalOrderSide, TradeTypes } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -51,7 +50,7 @@ const markets = computed(() => {
 
 const filteredTriggers = computed(() => {
   const orderTypes = executionOrderTypeToOrderTypes(props.type)
-  const executionTypes = executionOrderTypeToTradeExecutionTypes(props.type)
+  const executionTypes = executionOrderTypeToOrderExecutionTypes(props.type)
 
   return derivativeStore.subaccountConditionalOrders.filter((order) => {
     const orderMatchesDenom =
@@ -62,7 +61,7 @@ const filteredTriggers = computed(() => {
       orderTypes.includes(order.orderType as ConditionalOrderSide)
     const orderMatchesExecutionTypes =
       !executionTypes ||
-      executionTypes.includes(order.executionType as TradeExecutionType)
+      executionTypes.includes(order.executionType as TradeTypes)
 
     return (
       orderMatchesDenom &&

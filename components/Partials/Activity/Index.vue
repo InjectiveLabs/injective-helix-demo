@@ -56,6 +56,7 @@ onMounted(() => {
     activityStore.streamSpotSubaccountOrderHistory(),
     activityStore.streamSpotSubaccountTrades(),
     derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountConditionalOrders(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
