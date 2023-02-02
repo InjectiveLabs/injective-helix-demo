@@ -26,8 +26,7 @@ import {
 } from '@/types'
 import {
   DEBUG_CALCULATION,
-  TRADE_FORM_PRICE_ROUNDING_MODE,
-  TRADE_FORM_QUANTITY_ROUNDING_MODE
+  TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 import {
   calculateLiquidationPrice,
@@ -139,6 +138,7 @@ const {
   maxAmountOnOrderbook,
   maxReduceOnly,
   slippage,
+  updateAmountFromBase,
   worstPriceWithSlippage
 } = useDerivativePrice({
   formValues,
@@ -454,59 +454,12 @@ function updateAmount({
 }) {
   isBase.value = isBaseUpdate
 
-  const price = tradingTypeStopMarket.value
-    ? triggerPrice.value || ZERO_IN_BASE
-    : executionPrice.value
+  const amountToUpdate = updateAmountFromBase({ amount, isBase: isBaseUpdate })
 
-  if (isBaseUpdate) {
-    const updatedQuoteAmount = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.BaseAmount]
-    ).times(price)
-
-    if (updatedQuoteAmount.isNaN()) {
-      return
-    }
-
-    const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedQuoteAmountToString) {
-      return
-    }
-
-    const tradingTypeStopLimitAndTriggerPriceExists =
-      !tradingTypeStopLimit.value ||
-      new BigNumberInBase(formValues.value[TradeField.TriggerPrice]).gt(0)
-
-    if (tradingTypeStopLimitAndTriggerPriceExists) {
-      updateFormValue({
-        field: TradeField.QuoteAmount,
-        value: updatedQuoteAmountToString
-      })
-    }
-  } else {
-    const baseAmountFromPrice = new BigNumberInBase(
-      amount ?? formValues.value[TradeField.QuoteAmount]
-    ).dividedBy(price)
-
-    if (baseAmountFromPrice.isNaN() || baseAmountFromPrice.lte(0)) {
-      return
-    }
-
-    const updatedBaseAmountToString = baseAmountFromPrice.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-
-    if (!updatedBaseAmountToString) {
-      return
-    }
-
+  if (amountToUpdate) {
     updateFormValue({
-      field: TradeField.BaseAmount,
-      value: updatedBaseAmountToString
+      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      value: amountToUpdate
     })
   }
 }

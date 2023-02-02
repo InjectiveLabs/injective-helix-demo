@@ -6,12 +6,15 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotOrderSide } from '@injectivelabs/sdk-ts'
-import { ONE_IN_BASE } from '@/app/utils/constants'
+import {
+  ONE_IN_BASE,
+  TRADE_FORM_QUANTITY_ROUNDING_MODE
+} from '@/app/utils/constants'
 import {
   calculateAveragePrice,
   calculateWorstPrice
 } from '@/app/client/utils/orderbook'
-import { TradeField, TradeForm } from '@/types'
+import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useSpotPrice({
   formValues,
@@ -161,12 +164,74 @@ export function useSpotPrice({
     )
   })
 
+  function updateAmountFromBase({
+    amount,
+    isBase: isBaseUpdate
+  }: {
+    amount?: string
+    isBase: boolean
+  }) {
+    if (!market.value) {
+      return
+    }
+
+    const executionPrice =
+      formValues.value[TradeField.TradingType] === TradeExecutionType.Market ||
+      !formValues.value[TradeField.TradingType]
+        ? worstPriceWithSlippage.value
+        : new BigNumberInBase(formValues.value[TradeField.LimitPrice])
+
+    if (isBaseUpdate) {
+      const updatedQuoteAmount = new BigNumberInBase(
+        amount ?? formValues.value[TradeField.BaseAmount]
+      ).times(executionPrice)
+
+      if (updatedQuoteAmount.isNaN()) {
+        return
+      }
+
+      const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
+        market.value.priceDecimals,
+        TRADE_FORM_QUANTITY_ROUNDING_MODE
+      )
+
+      if (!updatedQuoteAmountToString) {
+        return
+      }
+
+      return updatedQuoteAmountToString
+    } else {
+      const baseAmountFromAveragePrice = new BigNumberInBase(
+        amount ?? formValues.value[TradeField.QuoteAmount]
+      ).dividedBy(executionPrice)
+
+      if (
+        baseAmountFromAveragePrice.isNaN() ||
+        baseAmountFromAveragePrice.lte(0)
+      ) {
+        return
+      }
+
+      const updatedBaseAmountToString = baseAmountFromAveragePrice.toFixed(
+        market.value.quantityDecimals,
+        TRADE_FORM_QUANTITY_ROUNDING_MODE
+      )
+
+      if (!updatedBaseAmountToString) {
+        return
+      }
+
+      return updatedBaseAmountToString
+    }
+  }
+
   return {
     amountForCalculation,
     averagePrice,
     averagePriceWithSlippage,
     maxAmountOnOrderbook,
     slippage,
+    updateAmountFromBase,
     worstPrice,
     worstPriceWithSlippage
   }

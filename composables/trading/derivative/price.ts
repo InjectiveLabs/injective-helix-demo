@@ -6,7 +6,10 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ONE_IN_BASE } from '@/app/utils/constants'
+import {
+  ONE_IN_BASE,
+  TRADE_FORM_QUANTITY_ROUNDING_MODE
+} from '@/app/utils/constants'
 import {
   calculateAveragePrice,
   calculateWorstPrice
@@ -177,6 +180,11 @@ export function useDerivativePrice({
       formValues.value[TradeField.TradingType] === TradeExecutionType.StopMarket
   )
 
+  const tradingTypeStopLimit = computed(
+    () =>
+      formValues.value[TradeField.TradingType] === TradeExecutionType.StopLimit
+  )
+
   const worstPriceWithSlippage = computed<BigNumberInBase>(() => {
     if (tradingTypeStopMarket.value) {
       if (!formValues.value[TradeField.TriggerPrice]) {
@@ -198,6 +206,74 @@ export function useDerivativePrice({
     )
   })
 
+  function updateAmountFromBase({
+    amount,
+    isBase: isBaseUpdate
+  }: {
+    amount?: string
+    isBase: boolean
+  }) {
+    if (!market.value) {
+      return
+    }
+
+    const executionPrice =
+      formValues.value[TradeField.TradingType] === TradeExecutionType.Market
+        ? worstPriceWithSlippage.value
+        : new BigNumberInBase(formValues.value[TradeField.LimitPrice])
+
+    const price = tradingTypeStopMarket.value
+      ? new BigNumberInBase(formValues.value[TradeField.TriggerPrice]) ||
+        ZERO_IN_BASE
+      : executionPrice
+
+    if (isBaseUpdate) {
+      const updatedQuoteAmount = new BigNumberInBase(
+        amount ?? formValues.value[TradeField.BaseAmount]
+      ).times(price)
+
+      if (updatedQuoteAmount.isNaN()) {
+        return
+      }
+
+      const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
+        market.value.priceDecimals,
+        TRADE_FORM_QUANTITY_ROUNDING_MODE
+      )
+
+      if (!updatedQuoteAmountToString) {
+        return
+      }
+
+      const tradingTypeStopLimitAndTriggerPriceExists =
+        !tradingTypeStopLimit.value ||
+        new BigNumberInBase(formValues.value[TradeField.TriggerPrice]).gt(0)
+
+      if (tradingTypeStopLimitAndTriggerPriceExists) {
+        return updatedQuoteAmountToString
+      }
+    } else {
+      const baseAmountFromPrice = new BigNumberInBase(
+        amount ?? formValues.value[TradeField.QuoteAmount]
+      ).dividedBy(price)
+
+      if (baseAmountFromPrice.isNaN() || baseAmountFromPrice.lte(0)) {
+        return
+      }
+
+      const updatedBaseAmountToString = baseAmountFromPrice.toFixed(
+        market.value.quantityDecimals,
+        TRADE_FORM_QUANTITY_ROUNDING_MODE
+      )
+
+      if (!updatedBaseAmountToString) {
+        return
+      }
+
+      return updatedBaseAmountToString
+    }
+  }
+
   return {
     amountForCalculation,
     averagePrice,
@@ -205,6 +281,7 @@ export function useDerivativePrice({
     maxAmountOnOrderbook,
     maxReduceOnly,
     slippage,
+    updateAmountFromBase,
     worstPrice,
     worstPriceWithSlippage
   }

@@ -25,7 +25,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: string): void
+  (
+    e: 'update:amount',
+    { amount, isBase }: { amount: string; isBase: boolean }
+  ): void
 }>()
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
@@ -66,8 +69,12 @@ onMounted(() => {
 })
 
 function handleAmountUpdate(amount: string) {
-  emit('update:modelValue', amount)
   setAmountValue(amount)
+
+  emit('update:amount', {
+    amount,
+    isBase: props.amountFieldName === TradeField.BaseAmount
+  })
 }
 </script>
 

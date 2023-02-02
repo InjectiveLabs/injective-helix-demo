@@ -36,7 +36,10 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:denom', state: string): void
-  (e: 'update:modelValue', state: string): void
+  (
+    e: 'update:amount',
+    { amount, isBase }: { amount: string; isBase: boolean }
+  ): void
   (e: 'update:max', state: string): void
 }>()
 
@@ -86,8 +89,12 @@ const inputPlaceholder = computed(() =>
 )
 
 function handleAmountUpdate(amount: string) {
-  emit('update:modelValue', amount)
   setAmountValue(amount)
+
+  emit('update:amount', {
+    amount,
+    isBase: props.amountFieldName === TradeField.BaseAmount
+  })
 }
 
 function handleMax() {
