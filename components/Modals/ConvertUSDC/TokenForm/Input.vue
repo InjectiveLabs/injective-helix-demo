@@ -142,9 +142,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style>
-.dropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-800 border-blue-300 pb-4 shadow-sm;
-}
-</style>
