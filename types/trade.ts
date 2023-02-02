@@ -1,6 +1,8 @@
 import {
+  UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiDerivativeOrderHistory,
   UiDerivativeTrade,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
@@ -24,6 +26,10 @@ export type CurrentMarket = UiMarketWithToken | undefined
 
 export type UiMarketSummary = UiDerivativeMarketSummary | UiSpotMarketSummary
 export type UiTrade = UiDerivativeTrade | UiSpotTrade
+
+export type UIDerivativeOrder =
+  | UiDerivativeOrderHistory
+  | UiDerivativeLimitOrder
 
 export interface UiMarketAndSummary {
   market: UiMarketWithToken

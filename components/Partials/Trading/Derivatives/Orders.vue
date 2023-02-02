@@ -6,6 +6,7 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { UIDerivativeOrder } from '@/types'
 
 const FilterList = {
   OpenPositions: 'OpenPositions',
@@ -42,8 +43,16 @@ const emit = defineEmits<{
 const actionStatus = reactive(new Status(StatusType.Idle))
 const activeType = ref(FilterList.OpenOrders)
 
+const orders = computed<UIDerivativeOrder[]>(() => {
+  if (activeType.value === FilterList.OpenOrders) {
+    return derivativeStore.subaccountOrders
+  }
+
+  return derivativeStore.subaccountConditionalOrders
+})
+
 const filteredOrders = computed(() => {
-  return derivativeStore.subaccountOrders.filter((order) => {
+  return orders.value.filter((order) => {
     if (props.market.subType !== MarketType.BinaryOptions) {
       return derivativeStore.markets.some(
         (market) => market.marketId === order.marketId
@@ -74,14 +83,6 @@ const filteredPositions = computed(() => {
   })
 })
 
-const orders = computed(() => {
-  if (activeType.value === FilterList.OpenOrders) {
-    return derivativeStore.subaccountOrders
-  }
-
-  return derivativeStore.subaccountConditionalOrders
-})
-
 const checked = computed({
   get: (): boolean => {
     return props.filterByCurrentMarket
@@ -103,9 +104,9 @@ function handleCancelAllClick() {
   actionStatus.setLoading()
 
   const action =
-    orders.value.length === 1
-      ? derivativeStore.cancelOrder(orders.value[0])
-      : derivativeStore.batchCancelOrder(orders.value)
+    filteredOrders.value.length === 1
+      ? derivativeStore.cancelOrder(filteredOrders.value[0])
+      : derivativeStore.batchCancelOrder(filteredOrders.value)
 
   action
     .then(() => {
@@ -227,7 +228,9 @@ function handleCloseAllPositionsClick() {
         </AppCheckbox>
 
         <AppButton
-          v-if="activeType === FilterList.OpenOrders && orders.length > 0"
+          v-if="
+            activeType !== FilterList.OpenPositions && filteredOrders.length > 0
+          "
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           xs
           :status="actionStatus"
