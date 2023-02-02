@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>()
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => props.balance.balanceToBase),
+  computed(() => props.balance.subaccountBalance),
   {
     decimalPlaces: props.maxDecimals
   }
@@ -142,9 +142,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style>
-.dropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-800 border-blue-300 pb-4 shadow-sm;
-}
-</style>

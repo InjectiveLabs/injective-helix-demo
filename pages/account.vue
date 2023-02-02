@@ -98,8 +98,11 @@ const balances = computed(() => {
       subaccountBalance?.availableBalance || '0'
     const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
 
-    const bankBalance =
-      bankStore.bankBalances[denom] || bankStore.ibcBalances[denom]
+    const bankBalanceDenom =
+      Object.keys(bankStore.bankBalances).find(
+        (balanceDenom) => balanceDenom.toLowerCase() === denom
+      ) || ''
+    const bankBalance = bankStore.bankBalances[bankBalanceDenom]
 
     const inOrderBalance = new BigNumberInBase(subaccountTotalBalance).minus(
       subaccountAvailableBalance

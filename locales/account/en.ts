@@ -74,7 +74,7 @@ export default {
     from: 'FROM',
     to: 'TO',
     injectiveBridge: 'Injective Bridge',
-    wormhole: 'Wormhole',
-    solana: 'Solana'
+    wormhole: 'Wormhole (Ethereum)',
+    solana: 'Wormhole (Solana)'
   }
 }

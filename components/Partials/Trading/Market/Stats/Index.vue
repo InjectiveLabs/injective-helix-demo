@@ -71,6 +71,7 @@ function handleTokenClick() {
           :summary="summary"
           lg
           is-stats-bar
+          show-initial-spinner
         />
       </div>
 

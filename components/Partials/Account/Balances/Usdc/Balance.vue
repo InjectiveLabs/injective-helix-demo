@@ -87,7 +87,11 @@ function toggleUSDCBalances() {
         :class="{
           'border-b-transparent': index < filteredUSDCBalances.length - 1
         }"
-        v-bind="{ hideBalances, balance: usdcBalance }"
+        v-bind="{
+          hideBalances,
+          balance: usdcBalance,
+          hasOneUsdcBalance: usdcBalances.length === 1
+        }"
       />
     </template>
   </tbody>
