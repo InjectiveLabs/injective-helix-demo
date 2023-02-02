@@ -22,14 +22,11 @@ export const getRoutes = (network: Network, env: string) => {
   const spot = [
     'inj-usdt',
     'strd-usdt',
-    'dot-usdt',
     'atom-usdt',
     'usdc-usdt',
     'xprt-usdt',
     'weth-usdt',
     'evmos-usdt',
-    'ape-usdt',
-    'link-usdt',
     'gf-usdt',
     'somm-usdt',
     'ethbtctrend-usdt',
@@ -59,8 +56,12 @@ export const getRoutes = (network: Network, env: string) => {
     spot.push('proj-usdt')
   }
 
+  if (IS_MAINNET && !IS_STAGING) {
+    spot.push('cre-usdt', 'dot-usdt', 'ape-usdt', 'link-usdt')
+  }
+
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push('cre-usdt', 'sol-usdc', 'usdt-usdc', ...hiddenMarkets)
+    spot.push('sol-usdc', 'usdt-usdc', ...hiddenMarkets)
   }
 
   const futures = [...perpetuals, ...expiryFutures]
