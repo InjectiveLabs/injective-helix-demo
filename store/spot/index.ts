@@ -189,12 +189,10 @@ export const useSpotStore = defineStore('spot', {
           pagination: options?.pagination
         })
 
-      if (!options?.updateTotalCount) {
-        spotStore.$patch({
-          subaccountOrderHistory: orderHistory,
-          subaccountOrderHistoryCount: pagination.total
-        })
-      }
+      spotStore.$patch({
+        subaccountOrderHistory: orderHistory,
+        subaccountOrderHistoryCount: pagination.total
+      })
     },
 
     async fetchOrderbook(marketId: string) {

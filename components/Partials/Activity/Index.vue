@@ -124,7 +124,9 @@ function handleFilterChange() {
   setFieldValue(ActivityField.Page, 1)
   setFieldValue(ActivityField.Limit, UI_DEFAULT_PAGINATION_LIMIT_COUNT)
 
-  fetchData()
+  nextTick(() => {
+    fetchData()
+  })
 }
 
 function onViewChange() {
@@ -162,8 +164,8 @@ function onViewChange() {
         :view="view"
         :tab="tab"
         :status="status"
-        @update:filter="fetchData"
-        @reset:filter="handleFilterChange"
+        @update:filter="handleFilterChange"
+        @reset:filter="onViewChange"
       />
 
       <PartialsActivityView

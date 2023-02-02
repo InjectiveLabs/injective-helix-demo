@@ -94,6 +94,11 @@ function handleLimitChange(limit: string) {
 
 const paginationOptions = computed(() => {
   const skip = (page.value - 1) * limit.value
+  const isPageOne = skip === 0
+
+  if (isPageOne) {
+    return undefined
+  }
 
   return {
     skip,

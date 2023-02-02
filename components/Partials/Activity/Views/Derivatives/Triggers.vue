@@ -4,7 +4,7 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderTypes,
-  executionOrderTypeToExecutionTypes
+  executionOrderTypeToTradeExecutionTypes
 } from '@/app/client/utils/activity'
 import { ConditionalOrderSide } from '@/types'
 
@@ -48,7 +48,7 @@ const markets = computed(() => {
 
 const filteredTriggers = computed(() => {
   const orderTypes = executionOrderTypeToOrderTypes(props.type)
-  const executionTypes = executionOrderTypeToExecutionTypes(props.type)
+  const executionTypes = executionOrderTypeToTradeExecutionTypes(props.type)
 
   return derivativeStore.subaccountConditionalOrders.filter((order) => {
     const orderMatchesDenom =
