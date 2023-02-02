@@ -6,9 +6,10 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeExecutionType, TradeField, TradeForm } from '@/types'
-import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
-
-const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = 10
+import {
+  DEFAULT_PRICE_WARNING_DEVIATION,
+  UI_DEFAULT_MAX_NUMBER_OF_ORDERS
+} from '@/app/utils/constants'
 
 export function useSpotError({
   executionPrice,
@@ -43,7 +44,7 @@ export function useSpotError({
     const [trade] = spotStore.trades
 
     return new BigNumberInBase(
-      new BigNumberInWei(trade.price).toBase(
+      new BigNumberInBase(trade.price).toWei(
         market.value.baseToken.decimals - market.value.quoteToken.decimals
       )
     )
@@ -67,7 +68,7 @@ export function useSpotError({
       : executionPrice.value.div(lastTradedPrice.value)
     const deviation = new BigNumberInBase(1).minus(deviationPrice).times(100)
 
-    return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
+    return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
   })
 
   const availableBalanceError = computed(() => {
