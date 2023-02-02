@@ -1749,10 +1749,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.494":
-  version "1.0.494"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.494.tgz#c6edcb33f68f9a381f0acada2673a80d40e924d2"
-  integrity sha512-xGnndIszvfGv40Qx5ICAiKamx6sYTnnNgVdGGxgpTUk8gFrP4eeFXmExSd8OJAld46IxNX6WI8mMebrHfgaVoA==
+"@injectivelabs/sdk-ui-ts@1.0.496":
+  version "1.0.496"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.496.tgz#e7d47161ff593f929a4600200330b2102a6ffe22"
+  integrity sha512-c4q1qVuht9p3hW553GJ+eSy1LESeNZFPO3a8PmaWYdLovYqKw497qrMnz2uQrZmgTAPOeoDYQCwGBAmliq1EKw==
   dependencies:
     "@alch/alchemy-web3" "1.4.7"
     "@injectivelabs/contracts" "^1.0.97"

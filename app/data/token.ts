@@ -68,3 +68,9 @@ export const usdcTokenDenom = {
     USDCSymbol.WormholeSolana
   )
 }
+
+export const usdcTokenDenoms = [
+  usdcTokenDenom.USDC,
+  usdcTokenDenom.USDCet
+  // usdcTokenDenom.USDCso
+]

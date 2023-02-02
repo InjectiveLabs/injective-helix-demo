@@ -198,8 +198,7 @@ function handleTradeClickedTrack() {
               <CommonTokenIcon
                 v-if="market.baseToken"
                 :token="market.baseToken"
-                class="md:w-6 md:h-6 mr-3"
-                sm
+                class="w-4 h-4 md:w-6 md:h-6 mr-3"
               />
 
               <div class="text-left text-gray-700 text-sm whitespace-nowrap">

@@ -138,12 +138,12 @@ export const useSpotStore = defineStore('spot', {
 
       const hiddenMarketsWithToken = uiMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.hiddenMarkets.includes(market.slug)
+          return MARKETS_SLUGS.hiddenSpotMarkets.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            MARKETS_SLUGS.hiddenMarkets.indexOf(a.slug) -
-            MARKETS_SLUGS.hiddenMarkets.indexOf(b.slug)
+            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(a.slug) -
+            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(b.slug)
           )
         })
 

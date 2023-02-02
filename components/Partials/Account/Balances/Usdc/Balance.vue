@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSubaccountBalance } from '@injectivelabs/sdk-ui-ts'
 import { AccountBalance } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
+import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 
 const accountStore = useAccountStore()
 const bankStore = useBankStore()
@@ -29,11 +29,7 @@ const showUSDCBalances = ref(true)
 
 const usdcBalances = computed(() =>
   props.balances.filter((balance) => {
-    return [
-      usdcTokenDenom.USDC,
-      usdcTokenDenom.USDCet,
-      usdcTokenDenom.USDCso
-    ].includes(balance.token.denom.toLowerCase())
+    return usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
   })
 )
 

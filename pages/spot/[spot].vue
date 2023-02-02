@@ -3,6 +3,10 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 
+definePageMeta({
+  middleware: ['markets']
+})
+
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()

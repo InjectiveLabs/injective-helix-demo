@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
+import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: {
@@ -25,20 +25,11 @@ const ascending = ref(false)
 
 const transformedBalance = computed(() => {
   const nonUsdcBalances = props.balances.filter(
-    (balance) =>
-      ![
-        usdcTokenDenom.USDC,
-        usdcTokenDenom.USDCet,
-        usdcTokenDenom.USDCso
-      ].includes(balance.token.denom.toLowerCase())
+    (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
   )
 
   const usdcBalances = props.balances.filter((balance) =>
-    [
-      usdcTokenDenom.USDC,
-      usdcTokenDenom.USDCet,
-      usdcTokenDenom.USDCso
-    ].includes(balance.token.denom.toLowerCase())
+    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
   )
 
   if (!usdcBalances.length) {

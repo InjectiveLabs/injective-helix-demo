@@ -21,9 +21,12 @@ export const getRoutes = (network: Network, env: string) => {
 
   const spot = [
     'inj-usdt',
-    'strd-usdt',
     'atom-usdt',
-    'usdc-usdt',
+    'sol-usdcet',
+    'usdt-usdcet',
+    'ape-usdt',
+    'link-usdt',
+    'strd-usdt',
     'xprt-usdt',
     'weth-usdt',
     'evmos-usdt',
@@ -33,6 +36,9 @@ export const getRoutes = (network: Network, env: string) => {
     'steadyeth-usdt',
     'steadybtc-usdt'
   ]
+
+  // Market we want to load to the app state but we don't want to show on the UI
+  const hiddenSpotMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   const perpetuals = [
     'btc-usdt-perp',
@@ -45,10 +51,6 @@ export const getRoutes = (network: Network, env: string) => {
     'atom-usdt-perp'
   ]
 
-  const hiddenMarkets = ['usdc-usdcet', 'usdcso-usdcet']
-
-  const walletConnectedRequiredRouteNames = ['activity', 'account']
-
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22']
 
@@ -56,16 +58,20 @@ export const getRoutes = (network: Network, env: string) => {
     spot.push('proj-usdt')
   }
 
-  if (IS_MAINNET && !IS_STAGING) {
-    spot.push('cre-usdt', 'dot-usdt', 'ape-usdt', 'link-usdt')
+  if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
+    spot.push(...hiddenSpotMarkets)
   }
 
-  if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push('sol-usdc', 'usdt-usdc', ...hiddenMarkets)
-  }
+  // Redirection pairs
+  const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
+
+  // Middleware routes
+  const walletConnectedRequiredRouteNames = ['activity', 'account']
+
+  const spotRoutes = spot.map((s) => `/spot/${s}`) || []
+  const spotRedirectRoutes = Object.keys(spotRoutes).map((s) => `/spot/${s}`)
 
   const futures = [...perpetuals, ...expiryFutures]
-  const spotRoutes = spot.map((s) => `/spot/${s}`) || []
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
@@ -74,21 +80,32 @@ export const getRoutes = (network: Network, env: string) => {
   const upcomingMarketsRoutes: string[] = []
   const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
+  const derivativeMarketRouteNames = [
+    'perpetuals-perpetual',
+    'futures-futures',
+    'binary-options-binaryOption',
+    'derivatives-derivative'
+  ]
+  const spotMarketRouteNames = ['spot-spot']
+
   return {
     MARKETS_SLUGS: {
-      hiddenMarkets,
       spot,
       futures,
+      expiryFutures,
       binaryOptions,
-      expiryFutures
+      hiddenSpotMarkets,
+      spotMarketRedirectsSlugsPairs
     },
     ROUTES: {
-      spotRoutes,
+      spotRoutes: [...spotRoutes, ...spotRedirectRoutes],
       futuresRoutes,
-      binaryOptionsRoutes,
       customStaticRoutes,
+      binaryOptionsRoutes,
+      spotMarketRouteNames,
       upcomingMarketsRoutes,
       deprecatedMarketsRoutes,
+      derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames
     }
   }

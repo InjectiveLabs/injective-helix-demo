@@ -33,9 +33,9 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
-  'bonk-usdt-perp',
-  'somm-usdt',
-  'cre-usdt',
+  'sol-usdcet',
+  'atom-usdt-perp',
+  'usdc-usdcet',
   'strd-usdt',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
@@ -78,15 +78,6 @@ export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
 
 export const deprecatedMarkets =
   IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
-
-export const derivativeMarketRouteNames = [
-  'perpetuals-perpetual',
-  'futures-futures',
-  'binary-options-binaryOption',
-  'derivatives-derivative'
-]
-
-export const spotMarketRouteNames = ['spot-spot']
 
 export const marketPromotions = [
   {

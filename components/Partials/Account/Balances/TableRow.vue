@@ -7,7 +7,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents, BusEvents, Modal } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
+import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
@@ -32,9 +32,7 @@ const isAggregateRow = !props.balance.token.denom
 
 const isUsdcDenom =
   !isAggregateRow &&
-  [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-    props.balance.token.denom.toLowerCase()
-  )
+  usdcTokenDenoms.includes(props.balance.token.denom.toLowerCase())
 
 const convertUsdc = [usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
   props.balance.token.denom.toLowerCase()
