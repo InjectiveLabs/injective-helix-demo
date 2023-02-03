@@ -37,11 +37,10 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import { MARKETS_SLUGS, IS_MAINNET, IS_STAGING } from '@/app/utils/constants'
+import { MARKETS_SLUGS } from '@/app/utils/constants'
 import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
-  hiddenMarkets: UiSpotMarketWithToken[]
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
   orderbook?: UiSpotOrderbook
@@ -52,10 +51,11 @@ type SpotStoreState = {
   subaccountOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
+
+  usdcConversionModalMarkets: UiSpotMarketWithToken[]
 }
 
 const initialStateFactory = (): SpotStoreState => ({
-  hiddenMarkets: [],
   markets: [],
   marketsSummary: [],
   orderbook: undefined,
@@ -65,7 +65,9 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
-  subaccountOrderHistoryCount: 0
+  subaccountOrderHistoryCount: 0,
+
+  usdcConversionModalMarkets: []
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -152,33 +154,31 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
-    async fetchHiddenMarkets() {
-      if (IS_MAINNET && !IS_STAGING) {
-        const spotStore = useSpotStore()
+    async fetchUsdcConversionMarkets() {
+      const spotStore = useSpotStore()
 
-        const markets = await indexerSpotApi.fetchMarkets()
+      const markets = await indexerSpotApi.fetchMarkets()
 
-        const marketsWithToken = await tokenService.getSpotMarketsWithToken(
-          markets
-        )
-        const uiMarkets =
-          UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+      const marketsWithToken = await tokenService.getSpotMarketsWithToken(
+        markets
+      )
+      const uiMarkets =
+        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
-        const hiddenMarketsWithToken = uiMarkets
-          .filter((market) => {
-            return MARKETS_SLUGS.hiddenSpotMarkets.includes(market.slug)
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.hiddenSpotMarkets.indexOf(a.slug) -
-              MARKETS_SLUGS.hiddenSpotMarkets.indexOf(b.slug)
-            )
-          })
-
-        spotStore.$patch({
-          hiddenMarkets: hiddenMarketsWithToken
+      const usdcConversionModalMarketsWithToken = uiMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.usdcConversionModalMarkets.includes(market.slug)
         })
-      }
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(a.slug) -
+            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(b.slug)
+          )
+        })
+
+      spotStore.$patch({
+        usdcConversionModalMarkets: usdcConversionModalMarketsWithToken
+      })
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
