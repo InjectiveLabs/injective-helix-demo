@@ -73,7 +73,7 @@ const { value: quoteAmount, setValue } = useStringField({
 function onQuoteAmountChange(quoteAmount: string) {
   emit('update:formValue', {
     field: TradeField.ProportionalPercentage,
-    value: ''
+    value: 0
   })
 
   emit('update:amount', { amount: quoteAmount || '0', isBase: false })

@@ -266,6 +266,7 @@ watch(destination, (value: string) => {
         <div class="mt-6">
           <AppInput
             v-model="destination"
+            clear-on-paste
             placeholder="inj"
             wrapper-classes="py-2 px-1"
             :label="$t('bridge.injAddress')"

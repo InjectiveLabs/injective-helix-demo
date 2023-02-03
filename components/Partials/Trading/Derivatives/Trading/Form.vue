@@ -130,8 +130,7 @@ const orderTypeToSubmit = computed(() => {
 })
 
 const { lastTradedPrice } = useDerivativeLastPriceFormatter(
-  props.market,
-  computed(() => derivativeStore.trades || [])
+  computed(() => props.market)
 )
 
 const {

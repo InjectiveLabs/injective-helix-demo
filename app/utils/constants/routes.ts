@@ -25,6 +25,7 @@ export const getRoutes = (network: Network, env: string) => {
     'sol-usdcet',
     'usdt-usdcet',
     'ape-usdt',
+    'cre-usdt',
     'link-usdt',
     'strd-usdt',
     'xprt-usdt',
@@ -36,9 +37,6 @@ export const getRoutes = (network: Network, env: string) => {
     'steadyeth-usdt',
     'steadybtc-usdt'
   ]
-
-  // Market we want to load to the app state but we don't want to show on the UI
-  const hiddenSpotMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   const perpetuals = [
     'btc-usdt-perp',
@@ -53,14 +51,6 @@ export const getRoutes = (network: Network, env: string) => {
 
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22']
-
-  if (IS_DEVNET) {
-    spot.push('proj-usdt')
-  }
-
-  if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push(...hiddenSpotMarkets)
-  }
 
   // Redirection pairs
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
@@ -88,13 +78,24 @@ export const getRoutes = (network: Network, env: string) => {
   ]
   const spotMarketRouteNames = ['spot-spot']
 
+  // Market we want to load to the app state but we don't want to show on the UI
+  const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
+
+  if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
+    spot.push(...usdcConversionModalMarkets)
+  }
+
+  if (IS_DEVNET) {
+    spot.push('proj-usdt')
+  }
+
   return {
     MARKETS_SLUGS: {
       spot,
       futures,
-      expiryFutures,
       binaryOptions,
-      hiddenSpotMarkets,
+      expiryFutures,
+      usdcConversionModalMarkets,
       spotMarketRedirectsSlugsPairs
     },
     ROUTES: {

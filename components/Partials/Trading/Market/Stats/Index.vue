@@ -70,8 +70,8 @@ function handleTokenClick() {
           :market="market"
           :summary="summary"
           lg
+          is-current-market
           is-stats-bar
-          show-initial-spinner
         />
       </div>
 

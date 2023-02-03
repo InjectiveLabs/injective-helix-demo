@@ -156,8 +156,7 @@ const feeRate = computed(() => {
 const hasExecutionPrice = computed(() => executionPrice.value.gt('0'))
 
 const { lastTradedPrice } = useSpotLastPriceFormatter(
-  props.market,
-  computed(() => spotStore.trades || [])
+  computed(() => props.market)
 )
 
 const {
