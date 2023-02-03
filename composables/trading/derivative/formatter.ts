@@ -32,9 +32,9 @@ export function useDerivativeLastPriceFormatter(
     )
   })
 
-  const lastTradedPriceChange = computed(() => {
+  const changeInPercentage = computed(() => {
     if (!latestTrade.value) {
-      return Change.NoChange
+      return 0
     }
 
     const [secondLastTrade] = derivateStore.trades.filter(
@@ -45,16 +45,35 @@ export function useDerivativeLastPriceFormatter(
     )
 
     if (!secondLastTrade) {
-      return Change.NoChange
+      return 0
     }
 
     const lastPrice = new BigNumberInBase(latestTrade.value.executionPrice)
     const secondLastPrice = new BigNumberInBase(secondLastTrade.executionPrice)
 
-    return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
+    return lastPrice
+      .minus(secondLastPrice)
+      .dividedBy(secondLastPrice)
+      .times(100)
+      .toFixed()
+  })
+
+  const lastTradedPriceChange = computed(() => {
+    const changeInPercentageInBigNumber = new BigNumberInBase(
+      changeInPercentage.value
+    )
+
+    if (changeInPercentageInBigNumber.eq(0)) {
+      return Change.NoChange
+    }
+
+    return changeInPercentageInBigNumber.gt(0)
+      ? Change.Increase
+      : Change.Decrease
   })
 
   return {
+    changeInPercentage,
     lastTradedPrice,
     lastTradedPriceChange
   }

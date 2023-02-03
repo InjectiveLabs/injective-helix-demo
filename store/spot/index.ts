@@ -36,6 +36,7 @@ import {
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
 import { MARKETS_SLUGS, IS_MAINNET, IS_STAGING } from '@/app/utils/constants'
 import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
@@ -126,12 +127,12 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
+      await spotStore.fetchMarketsSummary()
       const markets = await indexerSpotApi.fetchMarkets()
-      const marketsSummary =
-        await indexerRestSpotChronosApi.fetchMarketsSummary()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
+
       const uiMarkets =
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
@@ -146,14 +147,8 @@ export const useSpotStore = defineStore('spot', {
           )
         })
 
-      const actualMarketsSummary =
-        marketsSummary && marketsSummary.length > 0
-          ? marketsSummary
-          : [zeroSpotMarketSummary('')]
-
       spotStore.$patch({
-        markets: uiMarketsWithToken,
-        marketsSummary: actualMarketsSummary
+        markets: uiMarketsWithToken
       })
     },
 
@@ -292,34 +287,26 @@ export const useSpotStore = defineStore('spot', {
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
 
-      const { marketsSummary, markets } = spotStore
+      const { markets } = spotStore
 
-      if (marketsSummary.length === 0) {
-        return
-      }
-
-      const updatedMarketsSummary =
+      const marketSummaries =
         await indexerRestSpotChronosApi.fetchMarketsSummary()
-      const combinedMarketsSummary =
-        UiSpotTransformer.spotMarketsSummaryComparisons(
-          updatedMarketsSummary,
-          marketsSummary
-        )
 
-      if (
-        !combinedMarketsSummary ||
-        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
-      ) {
-        spotStore.$patch({
-          marketsSummary: markets.map((market) =>
-            zeroSpotMarketSummary(market.marketId)
+      const marketsWithoutMarketSummaries = marketSummaries.filter(
+        ({ marketId }) =>
+          !markets.some((market) => market.marketId === marketId)
+      )
+
+      spotStore.$patch({
+        marketsSummary: [
+          ...marketSummaries.map(
+            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+          ),
+          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+            zeroSpotMarketSummary(marketId)
           )
-        })
-      } else {
-        spotStore.$patch({
-          marketsSummary: combinedMarketsSummary
-        })
-      }
+        ]
+      })
     },
 
     cancelSubaccountStream() {

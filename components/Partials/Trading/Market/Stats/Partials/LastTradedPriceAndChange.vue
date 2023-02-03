@@ -23,23 +23,27 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
-
 const status = reactive(new Status(StatusType.Loading))
 
+const isSpot = computed(() => props.market.type === MarketType.Spot)
+
 const {
+  changeInPercentage: spotChangeInPercentage,
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
 } = useSpotLastPriceFormatter(computed(() => props.market))
 
 const {
+  changeInPercentage: derivativeChangeInPercentage,
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
 } = useDerivativeLastPriceFormatter(computed(() => props.market))
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
-    return isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
+    return isSpot.value
+      ? spotLastTradedPrice.value
+      : derivativeLastTradedPrice.value
   }
 
   return new BigNumberInBase(
@@ -49,7 +53,7 @@ const lastTradedPrice = computed(() => {
 
 const lastTradedPriceChange = computed(() => {
   if (props.isCurrentMarket) {
-    return isSpot
+    return isSpot.value
       ? spotLastTradedPriceChange.value
       : derivativeLastTradedPriceChange.value
   }
@@ -58,7 +62,7 @@ const lastTradedPriceChange = computed(() => {
 })
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
-  lastTradedPrice,
+  computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
     displayAbsoluteDecimalPlace: true
@@ -68,6 +72,12 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 const { valueToFixed: changeToFormat, valueToBigNumber: change } =
   useBigNumberFormatter(
     computed(() => {
+      if (props.isCurrentMarket) {
+        return isSpot.value
+          ? spotChangeInPercentage.value
+          : derivativeChangeInPercentage.value
+      }
+
       if (!props.summary || !props.summary.change) {
         return ZERO_IN_BASE
       }

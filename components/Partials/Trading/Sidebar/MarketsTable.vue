@@ -7,7 +7,6 @@ import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
 
 enum SortableKeys {
   Market = 'market',
-  Change = 'change',
   Volume = 'volume'
 }
 
@@ -55,16 +54,6 @@ const sortedMarkets = computed(() => {
     ) => {
       if (sortBy.value === SortableKeys.Market) {
         return m2.market.ticker.localeCompare(m1.market.ticker)
-      }
-
-      if (sortBy.value === SortableKeys.Change) {
-        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
-          return m1.market.ticker.localeCompare(m2.market.ticker)
-        }
-
-        return new BigNumberInBase(m2.summary.change)
-          .minus(m1.summary.change)
-          .toNumber()
       }
 
       if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
@@ -117,19 +106,9 @@ const sortedMarkets = computed(() => {
       <div
         class="flex flex-col xl:flex-row items-end xl:items-center gap-1 text-gray-200 text-xs justify-self-end"
       >
-        <span class="font-normal"> {{ $t('trade.price') }} / </span>
-
-        <AppSortableHeaderItem
-          v-model:sort-by="sortBy"
-          v-model:ascending="ascending"
-          class="justify-end"
-          data-cy="markets-change_24h-table-header"
-          :value="SortableKeys.Change"
-        >
-          <span class="font-normal order-last">
-            {{ $t('trade.market_change') }}
-          </span>
-        </AppSortableHeaderItem>
+        <span class="font-normal">
+          {{ $t('trade.price') }} / {{ $t('trade.market_change') }}
+        </span>
       </div>
     </CommonTableHeader>
 
@@ -147,7 +126,7 @@ const sortedMarkets = computed(() => {
         :market="marketSummary.market"
         :summary="marketSummary.summary"
         :volume-in-usd="marketSummary.volumeInUsd"
-        :is-current-market="market === marketSummary.market"
+        :is-current-market="market.marketId === marketSummary.market.marketId"
         v-bind="$attrs"
       />
 
