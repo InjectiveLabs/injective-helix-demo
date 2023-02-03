@@ -16,7 +16,6 @@ import {
   indexerSpotApi,
   tokenService
 } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
   cancelSubaccountOrdersHistoryStream,
@@ -38,6 +37,7 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import { MARKETS_SLUGS, IS_MAINNET, IS_STAGING } from '@/app/utils/constants'
+import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
   hiddenMarkets: UiSpotMarketWithToken[]
@@ -82,7 +82,17 @@ export const useSpotStore = defineStore('spot', {
           .flat()
           .map((item) => [item.denom, item])
       ).values()
-    ]
+    ],
+
+    marketsWithSummary: (state) =>
+      state.markets
+        .map((market) => ({
+          market,
+          summary: state.marketsSummary.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
     cancelOrderbookStream,

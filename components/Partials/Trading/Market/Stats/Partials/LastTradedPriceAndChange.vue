@@ -1,23 +1,16 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import {
-  MarketType,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Change, UiMarketWithToken, UiMarketSummary } from '@/types'
 import { metaTags } from '@/nuxt-config/meta'
 
-const derivativeStore = useDerivativeStore()
-const spotStore = useSpotStore()
 const { t } = useLang()
 
 const props = defineProps({
   lg: Boolean,
+  isCurrentMarket: Boolean,
   isStatsBar: Boolean,
-  showInitialSpinner: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -37,21 +30,15 @@ const status = reactive(new Status(StatusType.Loading))
 const {
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(
-  props.market as UiSpotMarketWithToken,
-  computed(() => spotStore.trades || [])
-)
+} = useSpotLastPriceFormatter(computed(() => props.market))
 
 const {
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(
-  props.market as UiDerivativeMarketWithToken,
-  computed(() => derivativeStore.trades || [])
-)
+} = useDerivativeLastPriceFormatter(computed(() => props.market))
 
 const lastTradedPrice = computed(() => {
-  if (props.isStatsBar) {
+  if (props.isCurrentMarket) {
     return isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
   }
 
@@ -60,11 +47,15 @@ const lastTradedPrice = computed(() => {
   )
 })
 
-const lastTradedPriceChange = computed(() =>
-  isSpot
-    ? spotLastTradedPriceChange.value
-    : derivativeLastTradedPriceChange.value
-)
+const lastTradedPriceChange = computed(() => {
+  if (props.isCurrentMarket) {
+    return isSpot
+      ? spotLastTradedPriceChange.value
+      : derivativeLastTradedPriceChange.value
+  }
+
+  return props.summary.lastPriceChange || Change.NoChange
+})
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
@@ -109,7 +100,7 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
     <div
       v-if="
         status.isLoading() &&
-        showInitialSpinner &&
+        isStatsBar &&
         (lastTradedPrice.isNaN() || lastTradedPrice.lte(0))
       "
     >

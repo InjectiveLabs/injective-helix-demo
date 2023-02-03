@@ -29,7 +29,6 @@ import {
   indexerRestDerivativesChronosApi,
   tokenService
 } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
 import { marketHasRecentlyExpired } from '@/app/utils/market'
 import {
   cancelOrder,
@@ -50,6 +49,7 @@ import {
   streamMarketMarkPrices,
   cancelSubaccountTradesStream
 } from '@/store/derivative/stream'
+import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -99,9 +99,15 @@ export const useDerivativeStore = defineStore('derivative', {
         .filter(({ slug }) => MARKETS_SLUGS.futures.includes(slug))
         .map((m) => m.marketId),
 
-    buys: (state) => state.orderbook?.buys || [],
-
-    sells: (state) => state.orderbook?.sells || []
+    marketsWithSummary: (state) =>
+      state.markets
+        .map((market) => ({
+          market,
+          summary: state.marketsSummary.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
     cancelOrder,

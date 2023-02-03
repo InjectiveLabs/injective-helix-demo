@@ -2,8 +2,8 @@
 import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
+import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
 
 enum SortableKeys {
   Market = 'market',
@@ -14,6 +14,11 @@ enum SortableKeys {
 const appStore = useAppStore()
 
 const props = defineProps({
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
+  },
+
   markets: {
     type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
     required: true
@@ -133,15 +138,16 @@ const sortedMarkets = computed(() => {
       class="rounded overflow-hidden"
     >
       <PartialsTradingSidebarMarketsTableRow
-        v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
+        v-for="(marketSummary, index) in sortedMarkets"
         :key="`market-row-${index}-${market.marketId}`"
         :class="{
           'pt-4': index === 0,
           'pb-4': index + 1 === sortedMarkets.length
         }"
-        :market="market"
-        :summary="summary"
-        :volume-in-usd="volumeInUsd"
+        :market="marketSummary.market"
+        :summary="marketSummary.summary"
+        :volume-in-usd="marketSummary.volumeInUsd"
+        :is-current-market="market === marketSummary.market"
         v-bind="$attrs"
       />
 

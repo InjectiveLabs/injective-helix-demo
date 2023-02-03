@@ -18,7 +18,7 @@ import {
 } from '@/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
+import { UiMarketWithToken, UiMarketSummary, UiMarketAndSummary } from '@/types'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
@@ -56,6 +56,28 @@ const initialStateFactory = (): ExchangeStoreState => ({
 
 export const useExchangeStore = defineStore('exchange', {
   state: (): ExchangeStoreState => initialStateFactory(),
+
+  getters: {
+    deprecatedMarketsWithSummary: (state) =>
+      state.deprecatedMarkets
+        .map((market) => ({
+          market,
+          summary: state.deprecatedMarketsSummaries.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[],
+
+    upcomingMarketsWithSummary: (state) =>
+      state.upcomingMarkets
+        .map((market) => ({
+          market,
+          summary: state.upcomingMarketsSummaries.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[]
+  },
 
   actions: {
     async initFeeDiscounts() {
