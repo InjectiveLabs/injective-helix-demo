@@ -105,8 +105,11 @@ function handleClickEvent() {
       </div>
 
       <PartialsTradingMarketStatsPartialsLastTradedPriceAndChange
-        :market="market"
-        :summary="summary"
+        v-bind="{
+          ...$attrs,
+          market,
+          summary
+        }"
       />
     </NuxtLink>
   </div>

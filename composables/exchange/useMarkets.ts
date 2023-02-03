@@ -8,7 +8,7 @@ export function useMarketTradeableDenoms() {
     })
     const tradeableSpotDenoms = [
       ...spotStore.markets,
-      ...spotStore.hiddenMarkets
+      ...spotStore.usdcConversionModalMarkets
     ].reduce((denoms, market) => {
       return [...denoms, market.baseDenom, market.quoteDenom]
     }, [] as string[])

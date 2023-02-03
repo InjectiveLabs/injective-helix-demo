@@ -175,7 +175,7 @@ function recalculateBaseQuoteAmountValue() {
   // recalculate base or quote amount input fields
   emit('update:formValue', {
     field: TradeField.ProportionalPercentage,
-    value: ''
+    value: 0
   })
 
   emit('update:amount', { isBase: props.isBase })

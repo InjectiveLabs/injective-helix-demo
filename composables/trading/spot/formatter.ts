@@ -1,51 +1,71 @@
 import { Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  Change,
-  UiSpotMarketWithToken,
-  UiSpotTrade,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { Change, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiMarketWithToken } from '@/types'
 
-export function useSpotLastPriceFormatter(
-  market: UiSpotMarketWithToken,
-  trades: Ref<UiSpotTrade[]>
-) {
+export function useSpotLastPriceFormatter(market: Ref<UiMarketWithToken>) {
+  const spotStore = useSpotStore()
+
+  const latestTrade = computed(() => {
+    if (spotStore.trades.length === 0) {
+      return undefined
+    }
+
+    return spotStore.trades[0]
+  })
+
   const lastTradedPrice = computed(() => {
-    if (trades.value.length === 0) {
+    if (!latestTrade.value) {
       return ZERO_IN_BASE
     }
 
-    const [trade] = trades.value
-
     return new BigNumberInBase(
-      new BigNumberInBase(trade.price).toWei(
-        market.baseToken.decimals - market.quoteToken.decimals
+      new BigNumberInBase(latestTrade.value.price).toWei(
+        market.value.baseToken.decimals - market.value.quoteToken.decimals
       )
     )
   })
 
-  const lastTradedPriceChange = computed(() => {
-    if (trades.value.length === 0) {
-      return Change.NoChange
+  const changeInPercentage = computed(() => {
+    if (!latestTrade.value) {
+      return 0
     }
 
-    const [trade] = trades.value
-    const [secondLastTrade] = trades.value.filter(
-      (t) => !new BigNumberInBase(t.price).eq(trade.price)
+    const latestTradePrice = latestTrade.value.price
+    const [secondLastTrade] = spotStore.trades.filter(
+      (t) => !new BigNumberInBase(t.price).eq(latestTradePrice)
     )
 
     if (!secondLastTrade) {
+      return 0
+    }
+
+    const lastPrice = new BigNumberInBase(latestTradePrice)
+    const secondLastPrice = new BigNumberInBase(secondLastTrade.price)
+
+    return lastPrice
+      .minus(secondLastPrice)
+      .dividedBy(secondLastPrice)
+      .times(100)
+      .toFixed()
+  })
+
+  const lastTradedPriceChange = computed(() => {
+    const changeInPercentageInBigNumber = new BigNumberInBase(
+      changeInPercentage.value
+    )
+
+    if (changeInPercentageInBigNumber.eq(0)) {
       return Change.NoChange
     }
 
-    const lastPrice = new BigNumberInBase(trade.price)
-    const secondLastPrice = new BigNumberInBase(secondLastTrade.price)
-
-    return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
+    return changeInPercentageInBigNumber.gt(0)
+      ? Change.Increase
+      : Change.Decrease
   })
 
   return {
+    changeInPercentage,
     lastTradedPrice,
     lastTradedPriceChange
   }

@@ -1,47 +1,36 @@
 <script lang="ts" setup>
+import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
 
-const markets = computed(() => {
-  return [...derivativeStore.markets, ...spotStore.markets]
+defineProps({
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
+  }
 })
 
-const marketsSummary = computed(() => {
-  return [...derivativeStore.marketsSummary, ...spotStore.marketsSummary]
-})
-
-const mappedMarkets = computed<UiMarketAndSummaryWithVolumeInUsd[]>(() => {
-  return markets.value
-    .map((market) => {
-      const summary = marketsSummary.value.find(
-        (summary) => summary.marketId === market.marketId
-      )
-
+const marketsWithSummaryAndVolumeInUsd = computed(() =>
+  [...derivativeStore.marketsWithSummary, ...spotStore.marketsWithSummary].map(
+    ({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId]
-      )
-
-      const volumeInUsd = quoteTokenUsdPrice.multipliedBy(
-        summary?.volume || '0'
+        tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId] || 0
       )
 
       return {
         market,
-        volumeInUsd,
-        summary
+        summary,
+        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
       }
-    })
-    .filter(
-      ({ summary, volumeInUsd }) =>
-        summary !== undefined && !volumeInUsd.isNaN() && volumeInUsd.isFinite()
-    ) as UiMarketAndSummaryWithVolumeInUsd[]
-})
+    }
+  )
+)
 
 onMounted(() => {
   pollMarkets()
@@ -65,11 +54,11 @@ useIntervalFn(pollMarkets, 10 * 1000, { immediate: true })
   >
     <AppHocLoading
       loader-class="relative"
-      :show-loading="mappedMarkets.length === 0"
+      :show-loading="marketsWithSummaryAndVolumeInUsd.length === 0"
     >
       <PartialsTradingSidebarMarketsTable
-        v-bind="$attrs"
-        :markets="mappedMarkets"
+        :market="market"
+        :markets="marketsWithSummaryAndVolumeInUsd"
       />
     </AppHocLoading>
   </CommonCard>
