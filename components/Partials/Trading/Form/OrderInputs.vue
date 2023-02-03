@@ -182,7 +182,8 @@ function onOrderbookSizeClick(quantityAndOderType: OrderBookQuantityAndType) {
 
 function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
   if (
-    props.formValues[TradeField.TradingType] === TradeExecutionType.LimitFill
+    props.formValues[TradeField.TradingType] === TradeExecutionType.LimitFill ||
+    props.formValues[TradeField.TradingType] === TradeExecutionType.StopLimit
   ) {
     updateFormValue({
       field: TradeField.LimitPrice,
