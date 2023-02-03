@@ -37,7 +37,7 @@ import {
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
+import { MARKETS_SLUGS, IS_MAINNET, IS_STAGING } from '@/app/utils/constants'
 
 type SpotStoreState = {
   hiddenMarkets: UiSpotMarketWithToken[]
@@ -136,27 +136,44 @@ export const useSpotStore = defineStore('spot', {
           )
         })
 
-      const hiddenMarketsWithToken = uiMarkets
-        .filter((market) => {
-          return MARKETS_SLUGS.hiddenSpotMarkets.includes(market.slug)
-        })
-        .sort((a, b) => {
-          return (
-            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(a.slug) -
-            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(b.slug)
-          )
-        })
-
       const actualMarketsSummary =
         marketsSummary && marketsSummary.length > 0
           ? marketsSummary
           : [zeroSpotMarketSummary('')]
 
       spotStore.$patch({
-        hiddenMarkets: hiddenMarketsWithToken,
         markets: uiMarketsWithToken,
         marketsSummary: actualMarketsSummary
       })
+    },
+
+    async fetchHiddenMarkets() {
+      if (IS_MAINNET && !IS_STAGING) {
+        const spotStore = useSpotStore()
+
+        const markets = await indexerSpotApi.fetchMarkets()
+
+        const marketsWithToken = await tokenService.getSpotMarketsWithToken(
+          markets
+        )
+        const uiMarkets =
+          UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+
+        const hiddenMarketsWithToken = uiMarkets
+          .filter((market) => {
+            return MARKETS_SLUGS.hiddenSpotMarkets.includes(market.slug)
+          })
+          .sort((a, b) => {
+            return (
+              MARKETS_SLUGS.hiddenSpotMarkets.indexOf(a.slug) -
+              MARKETS_SLUGS.hiddenSpotMarkets.indexOf(b.slug)
+            )
+          })
+
+        spotStore.$patch({
+          hiddenMarkets: hiddenMarketsWithToken
+        })
+      }
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {

@@ -65,6 +65,7 @@ function initBalances() {
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
+    spotStore.fetchHiddenMarkets(),
     tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
   ])
     .catch($onError)
