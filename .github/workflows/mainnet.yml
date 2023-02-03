@@ -7,7 +7,7 @@ on:
 
 jobs:
   mainnet:
-    if: true
+    if: false
     name: 'Deploy to mainnet'
     env:
       ## Public
