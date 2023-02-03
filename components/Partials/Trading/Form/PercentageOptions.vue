@@ -86,9 +86,11 @@ const { value: percentage, setValue } = useNumberField({
 const spotAvailableBalanceGreaterThanOrderbook = computed(() => {
   const { totalNotional, totalQuantity } = props.maxAmountOnOrderbook
 
+  const percentageToNumber = new BigNumberInBase(percentage.value).div(100)
+
   return props.isBuy
-    ? props.quoteAvailableBalance.gt(totalNotional)
-    : props.baseAvailableBalance?.gt(totalQuantity)
+    ? props.quoteAvailableBalance.times(percentageToNumber).gt(totalNotional)
+    : props.baseAvailableBalance?.times(percentageToNumber).gt(totalQuantity)
 })
 
 const derivativeAvailableBalanceGreaterThanOrderbook = computed(() => {
@@ -148,12 +150,23 @@ function handleReduceOnly() {
     return
   }
 
+  const { totalQuantity } = props.maxAmountOnOrderbook
+
+  const maxReduceOnlyFromPercentage = props.maxReduceOnly
+    .times(percentage.value)
+    .dividedBy(100)
+
+  const amount = BigNumberInBase.minimum(
+    maxReduceOnlyFromPercentage,
+    totalQuantity
+  )
+
   emit('update:formValue', {
     field: TradeField.BaseAmount,
-    value: props.maxReduceOnly
-      .times(percentage.value)
-      .dividedBy(100)
-      .toFixed(props.market.quantityDecimals, TRADE_FORM_QUANTITY_ROUNDING_MODE)
+    value: amount.toFixed(
+      props.market.quantityDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
   })
 
   emit('update:amount', { isBase: true })
@@ -198,7 +211,7 @@ function handleSpotPercentageChange() {
       ? props.market.quantityDecimals
       : props.market.priceDecimals
   const roundingMode =
-    derivativeAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
+    spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? TRADE_FORM_QUANTITY_ROUNDING_MODE
       : TRADE_FORM_PRICE_ROUNDING_MODE
 

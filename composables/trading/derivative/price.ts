@@ -157,13 +157,9 @@ export function useDerivativePrice({
       ZERO_IN_BASE
     )
 
-    const reduceOnlyAmount = new BigNumberInBase(position.quantity).minus(
+    return new BigNumberInBase(position.quantity).minus(
       aggregateReduceOnlyQuantity
     )
-
-    const { totalQuantity } = maxAmountOnOrderbook.value
-
-    return reduceOnlyAmount.gt(totalQuantity) ? totalQuantity : reduceOnlyAmount
   })
 
   const averagePriceWithSlippage = computed<BigNumberInBase>(() => {

@@ -218,6 +218,7 @@ watch(
           <PartialsTradingSidebar
             v-show="showMarketList"
             key="market-selection"
+            :market="market"
             @close="close"
           />
         </div>

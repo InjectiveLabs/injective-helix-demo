@@ -2,18 +2,22 @@
 import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
+import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
 
 enum SortableKeys {
   Market = 'market',
-  Change = 'change',
   Volume = 'volume'
 }
 
 const appStore = useAppStore()
 
 const props = defineProps({
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
+  },
+
   markets: {
     type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
     required: true
@@ -50,16 +54,6 @@ const sortedMarkets = computed(() => {
     ) => {
       if (sortBy.value === SortableKeys.Market) {
         return m2.market.ticker.localeCompare(m1.market.ticker)
-      }
-
-      if (sortBy.value === SortableKeys.Change) {
-        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
-          return m1.market.ticker.localeCompare(m2.market.ticker)
-        }
-
-        return new BigNumberInBase(m2.summary.change)
-          .minus(m1.summary.change)
-          .toNumber()
       }
 
       if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
@@ -112,19 +106,9 @@ const sortedMarkets = computed(() => {
       <div
         class="flex flex-col xl:flex-row items-end xl:items-center gap-1 text-gray-200 text-xs justify-self-end"
       >
-        <span class="font-normal"> {{ $t('trade.price') }} / </span>
-
-        <AppSortableHeaderItem
-          v-model:sort-by="sortBy"
-          v-model:ascending="ascending"
-          class="justify-end"
-          data-cy="markets-change_24h-table-header"
-          :value="SortableKeys.Change"
-        >
-          <span class="font-normal order-last">
-            {{ $t('trade.market_change') }}
-          </span>
-        </AppSortableHeaderItem>
+        <span class="font-normal">
+          {{ $t('trade.price') }} / {{ $t('trade.market_change') }}
+        </span>
       </div>
     </CommonTableHeader>
 
@@ -133,15 +117,16 @@ const sortedMarkets = computed(() => {
       class="rounded overflow-hidden"
     >
       <PartialsTradingSidebarMarketsTableRow
-        v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
+        v-for="(marketSummary, index) in sortedMarkets"
         :key="`market-row-${index}-${market.marketId}`"
         :class="{
           'pt-4': index === 0,
           'pb-4': index + 1 === sortedMarkets.length
         }"
-        :market="market"
-        :summary="summary"
-        :volume-in-usd="volumeInUsd"
+        :market="marketSummary.market"
+        :summary="marketSummary.summary"
+        :volume-in-usd="marketSummary.volumeInUsd"
+        :is-current-market="market.marketId === marketSummary.market.marketId"
         v-bind="$attrs"
       />
 

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE } from '@/app/utils/constants'
 import { TradeFormValue, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
@@ -161,6 +162,12 @@ const showSlippageError = computed(
     (tradingTypeMarket.value || tradingTypeStopMarket.value) &&
     slippageToleranceError.value.includes(tradeErrorMessages.slippageExceed())
 )
+
+watch(slippageTolerance, (tolerance) => {
+  if (new BigNumberInBase(tolerance).gt(0)) {
+    slippageIsToggleable.value = true
+  }
+})
 
 function handleBlur(value: string): void {
   if (value === '') {

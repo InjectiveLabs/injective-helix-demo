@@ -1,17 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  AccountBalance,
-  BusEvents,
-  Modal,
-  UiMarketAndSummary,
-  BridgeBusEvents
-} from '@/types'
+import { AccountBalance, BusEvents, Modal, BridgeBusEvents } from '@/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -28,29 +19,17 @@ const isModalOpen = computed(
   () => modalStore.modals[Modal.AssetDetails] && !!balance.value
 )
 
-const filteredMarkets = computed(() => {
-  return spotStore.markets.filter((m) => {
+const filteredMarketsWithSummary = computed(() => {
+  return spotStore.marketsWithSummary.filter(({ market }) => {
     if (!balance.value) {
       return false
     }
 
     return (
-      m.baseDenom === balance.value.token.denom ||
-      m.quoteDenom === balance.value.token.denom
+      (market as UiSpotMarketWithToken).baseDenom ===
+        balance.value.token.denom ||
+      market.quoteDenom === balance.value.token.denom
     )
-  })
-})
-
-const filteredMarketsWithSummary = computed(() => {
-  return filteredMarkets.value.map((market: UiSpotMarketWithToken) => {
-    const summary = spotStore.marketsSummary.find(
-      (s: UiSpotMarketSummary) => s.marketId === market.marketId
-    )
-
-    return {
-      market,
-      summary
-    } as UiMarketAndSummary
   })
 })
 
@@ -223,8 +202,8 @@ function handleWithdrawClick() {
             </span>
 
             <div
-              v-if="filteredMarkets.length > 0"
-              class="h-full overflow-y-auto"
+              v-if="filteredMarketsWithSummary.length > 0"
+              class="h-full overflow-marketsWithSummary-auto"
             >
               <div class="grid grid-cols-2 gap-4">
                 <NuxtLink

@@ -71,6 +71,9 @@ export function useSpotError({
     return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
   })
 
+  /*
+  prevents user from entering too high of a quote amount field compared to their available balance
+  */
   const availableBalanceError = computed(() => {
     if (
       !quoteAvailableBalance ||

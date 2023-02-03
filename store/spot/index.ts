@@ -16,7 +16,6 @@ import {
   indexerSpotApi,
   tokenService
 } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
   cancelSubaccountOrdersHistoryStream,
@@ -37,10 +36,11 @@ import {
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
 import { MARKETS_SLUGS } from '@/app/utils/constants'
+import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
-  hiddenMarkets: UiSpotMarketWithToken[]
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
   orderbook?: UiSpotOrderbook
@@ -51,10 +51,11 @@ type SpotStoreState = {
   subaccountOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
+
+  usdcConversionModalMarkets: UiSpotMarketWithToken[]
 }
 
 const initialStateFactory = (): SpotStoreState => ({
-  hiddenMarkets: [],
   markets: [],
   marketsSummary: [],
   orderbook: undefined,
@@ -64,7 +65,9 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
-  subaccountOrderHistoryCount: 0
+  subaccountOrderHistoryCount: 0,
+
+  usdcConversionModalMarkets: []
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -82,7 +85,17 @@ export const useSpotStore = defineStore('spot', {
           .flat()
           .map((item) => [item.denom, item])
       ).values()
-    ]
+    ],
+
+    marketsWithSummary: (state) =>
+      state.markets
+        .map((market) => ({
+          market,
+          summary: state.marketsSummary.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
     cancelOrderbookStream,
@@ -116,12 +129,12 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
+      await spotStore.fetchMarketsSummary()
       const markets = await indexerSpotApi.fetchMarkets()
-      const marketsSummary =
-        await indexerRestSpotChronosApi.fetchMarketsSummary()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
+
       const uiMarkets =
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
@@ -136,26 +149,35 @@ export const useSpotStore = defineStore('spot', {
           )
         })
 
-      const hiddenMarketsWithToken = uiMarkets
+      spotStore.$patch({
+        markets: uiMarketsWithToken
+      })
+    },
+
+    async fetchUsdcConversionMarkets() {
+      const spotStore = useSpotStore()
+
+      const markets = await indexerSpotApi.fetchMarkets()
+
+      const marketsWithToken = await tokenService.getSpotMarketsWithToken(
+        markets
+      )
+      const uiMarkets =
+        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+
+      const usdcConversionModalMarketsWithToken = uiMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.hiddenSpotMarkets.includes(market.slug)
+          return MARKETS_SLUGS.usdcConversionModalMarkets.includes(market.slug)
         })
         .sort((a, b) => {
           return (
-            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(a.slug) -
-            MARKETS_SLUGS.hiddenSpotMarkets.indexOf(b.slug)
+            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(a.slug) -
+            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(b.slug)
           )
         })
 
-      const actualMarketsSummary =
-        marketsSummary && marketsSummary.length > 0
-          ? marketsSummary
-          : [zeroSpotMarketSummary('')]
-
       spotStore.$patch({
-        hiddenMarkets: hiddenMarketsWithToken,
-        markets: uiMarketsWithToken,
-        marketsSummary: actualMarketsSummary
+        usdcConversionModalMarkets: usdcConversionModalMarketsWithToken
       })
     },
 
@@ -265,34 +287,26 @@ export const useSpotStore = defineStore('spot', {
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
 
-      const { marketsSummary, markets } = spotStore
+      const { markets } = spotStore
 
-      if (marketsSummary.length === 0) {
-        return
-      }
-
-      const updatedMarketsSummary =
+      const marketSummaries =
         await indexerRestSpotChronosApi.fetchMarketsSummary()
-      const combinedMarketsSummary =
-        UiSpotTransformer.spotMarketsSummaryComparisons(
-          updatedMarketsSummary,
-          marketsSummary
-        )
 
-      if (
-        !combinedMarketsSummary ||
-        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
-      ) {
-        spotStore.$patch({
-          marketsSummary: markets.map((market) =>
-            zeroSpotMarketSummary(market.marketId)
+      const marketsWithoutMarketSummaries = marketSummaries.filter(
+        ({ marketId }) =>
+          !markets.some((market) => market.marketId === marketId)
+      )
+
+      spotStore.$patch({
+        marketsSummary: [
+          ...marketSummaries.map(
+            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+          ),
+          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+            zeroSpotMarketSummary(marketId)
           )
-        })
-      } else {
-        spotStore.$patch({
-          marketsSummary: combinedMarketsSummary
-        })
-      }
+        ]
+      })
     },
 
     cancelSubaccountStream() {
