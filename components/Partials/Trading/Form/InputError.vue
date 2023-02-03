@@ -78,11 +78,23 @@ const availableBalanceGreaterThanAllowableWarning = computed(() => {
     props.formValues[TradeField.ProportionalPercentage]
   ).div(100)
 
+  const availableBalanceWithPercentage = percentageAsAmount.gt(0)
+    ? availableBalance.times(percentageAsAmount)
+    : availableBalance
+
+  const amount = new BigNumberInBase(
+    useNotional
+      ? props.formValues[TradeField.QuoteAmount]
+      : props.formValues[TradeField.BaseAmount]
+  )
+
+  const formattedBalance = !props.formValues[TradeField.ProportionalPercentage]
+    ? amount
+    : availableBalanceWithPercentage
+
   const maxAmount = useNotional ? totalNotional : totalQuantity
 
-  return new BigNumberInBase(availableBalance.times(percentageAsAmount)).gt(
-    maxAmount
-  )
+  return formattedBalance.gt(maxAmount)
 })
 </script>
 
@@ -92,13 +104,13 @@ const availableBalanceGreaterThanAllowableWarning = computed(() => {
       class="text-2xs font-semibold text-red-500"
       data-cy="trading-page-error-text-content"
     >
+      <span v-if="error">{{ error }}</span>
       <p
-        v-if="availableBalanceGreaterThanAllowableWarning"
+        v-else-if="availableBalanceGreaterThanAllowableWarning"
         class="text-2xs text-orange-500 mb-4"
       >
         {{ $t('trade.balance_higher_than_orderbook_liquidity') }}
       </p>
-      <span v-if="error">{{ error }}</span>
       <span v-else-if="availableBalanceError">{{
         $t('trade.insufficient_balance')
       }}</span>

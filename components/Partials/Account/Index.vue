@@ -38,7 +38,7 @@ onMounted(() => {
   initBalances()
 
   useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
-  useEventBus<Token>(BusEvents.ConvertUSDC).on(setMarketFromToken)
+  useEventBus<Token>(BusEvents.ConvertUSDC).on(setUsdcConvertMarket)
 })
 
 onBeforeUnmount(() => {
@@ -46,11 +46,8 @@ onBeforeUnmount(() => {
   spotStore.reset()
 })
 
-function setMarketFromToken(token: Token) {
-  usdcConvertMarket.value = [
-    ...spotStore.markets,
-    ...spotStore.hiddenMarkets
-  ].find(
+function setUsdcConvertMarket(token: Token) {
+  usdcConvertMarket.value = spotStore.usdcConversionModalMarkets.find(
     (market) =>
       market.baseToken.symbol === token.symbol &&
       market.quoteToken.symbol === USDCSymbol.WormholeEthereum
@@ -65,6 +62,7 @@ function initBalances() {
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
+    spotStore.fetchUsdcConversionMarkets(),
     tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
   ])
     .catch($onError)

@@ -43,16 +43,22 @@ const emit = defineEmits<{
 const actionStatus = reactive(new Status(StatusType.Idle))
 const activeType = ref(FilterList.OpenOrders)
 
-const orders = computed<UIDerivativeOrder[]>(() => {
-  if (activeType.value === FilterList.OpenOrders) {
-    return derivativeStore.subaccountOrders
-  }
+const filteredConditionalOrders = computed(() => {
+  return derivativeStore.subaccountConditionalOrders.filter((order) => {
+    if (props.market.subType !== MarketType.BinaryOptions) {
+      return derivativeStore.markets.some(
+        (market) => market.marketId === order.marketId
+      )
+    }
 
-  return derivativeStore.subaccountConditionalOrders
+    return derivativeStore.binaryOptionsMarkets.some(
+      (market) => market.marketId === order.marketId
+    )
+  })
 })
 
 const filteredOrders = computed(() => {
-  return orders.value.filter((order) => {
+  return derivativeStore.subaccountOrders.filter((order) => {
     if (props.market.subType !== MarketType.BinaryOptions) {
       return derivativeStore.markets.some(
         (market) => market.marketId === order.marketId
@@ -83,6 +89,14 @@ const filteredPositions = computed(() => {
   })
 })
 
+const orders = computed<UIDerivativeOrder[]>(() => {
+  if (activeType.value === FilterList.OpenOrders) {
+    return derivativeStore.subaccountOrders
+  }
+
+  return filteredOrders.value
+})
+
 const checked = computed({
   get: (): boolean => {
     return props.filterByCurrentMarket
@@ -104,9 +118,9 @@ function handleCancelAllClick() {
   actionStatus.setLoading()
 
   const action =
-    filteredOrders.value.length === 1
-      ? derivativeStore.cancelOrder(filteredOrders.value[0])
-      : derivativeStore.batchCancelOrder(filteredOrders.value)
+    orders.value.length === 1
+      ? derivativeStore.cancelOrder(orders.value[0])
+      : derivativeStore.batchCancelOrder(orders.value)
 
   action
     .then(() => {
@@ -192,9 +206,7 @@ function handleCloseAllPositionsClick() {
 
                   <span v-if="filterType === FilterList.Triggers">
                     {{ $t('activity.triggers') }}
-                    {{
-                      `(${derivativeStore.subaccountConditionalOrders.length})`
-                    }}
+                    {{ `(${filteredConditionalOrders.length})` }}
                   </span>
 
                   <span v-if="filterType === FilterList.TradeHistory">
@@ -230,7 +242,7 @@ function handleCloseAllPositionsClick() {
         <AppButton
           v-if="
             [FilterList.OpenOrders, FilterList.Triggers].includes(activeType) &&
-            filteredOrders.length > 0
+            orders.length > 0
           "
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           xs

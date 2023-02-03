@@ -11,8 +11,6 @@ import {
   UiDerivativeLimitOrder,
   ZERO_IN_BASE,
   MarketType,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken,
   UiSpotLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
@@ -75,18 +73,12 @@ const buyRecordListRef = ref<{ element: HTMLElement }[]>([])
 const {
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(
-  props.market as UiSpotMarketWithToken,
-  computed(() => spotStore.trades || [])
-)
+} = useSpotLastPriceFormatter(computed(() => props.market))
 
 const {
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(
-  props.market as UiDerivativeMarketWithToken,
-  computed(() => derivativeStore.trades || [])
-)
+} = useDerivativeLastPriceFormatter(computed(() => props.market))
 
 const lastTradedPrice = computed(() =>
   isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value

@@ -2,12 +2,10 @@
 import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { MarketFilterType, UiMarketAndSummary } from '@/types'
+  MarketFilterType,
+  UiMarketAndSummary,
+  UiMarketWithToken
+} from '@/types'
 import { deprecatedMarkets, newMarketsSlug } from '@/app/data/market'
 
 const appStore = useAppStore()
@@ -39,60 +37,14 @@ const markets = computed(() => {
   ]
 })
 
-const marketsSummary = computed(() => {
-  return [
-    ...derivativeStore.marketsSummary,
-    ...spotStore.marketsSummary,
-    ...exchangeStore.upcomingMarketsSummaries
-  ]
-})
-
-const mappedMarkets = computed(() => {
-  const result = markets.value.map(
-    (market: UiSpotMarketWithToken | UiDerivativeMarketWithToken) => {
-      return {
-        market,
-        summary: marketsSummary.value.find(
-          (summary: UiSpotMarketSummary | UiDerivativeMarketSummary) =>
-            summary.marketId === market.marketId
-        )
-      }
-    }
-  ) as UiMarketAndSummary[]
-
-  return result.filter((m: UiMarketAndSummary) => m.summary !== undefined)
-})
-
-const filteredMarkets = computed(() => {
-  const upcomingMarketsSlugs = exchangeStore.upcomingMarkets.map(
-    (market: UiSpotMarketWithToken | UiDerivativeMarketWithToken) => market.slug
-  )
-
-  const deprecatedMarketsSlugs = deprecatedMarkets.map(
-    (market: UiSpotMarketWithToken | UiDerivativeMarketWithToken) => market.slug
-  )
-
-  return mappedMarkets.value.filter(
-    (m: UiMarketAndSummary) =>
-      ![...upcomingMarketsSlugs, ...deprecatedMarketsSlugs].includes(
-        m.market.slug
-      )
-  )
-})
-
-const marketsSortedByVolume = computed(() => {
-  return filteredMarkets.value.sort(
-    (a: UiMarketAndSummary, b: UiMarketAndSummary) => {
-      const aVolume = a.summary.volume
-      const bVolume = b.summary.volume
-
-      return new BigNumberInBase(bVolume).minus(aVolume).toNumber()
-    }
-  )
-})
+const marketsWithSummary = computed<UiMarketAndSummary[]>(() => [
+  ...derivativeStore.marketsWithSummary,
+  ...exchangeStore.upcomingMarketsWithSummary,
+  ...spotStore.marketsWithSummary
+])
 
 const newMarketsList = computed(() => {
-  return mappedMarkets.value
+  return marketsWithSummary.value
     .filter((summary: UiMarketAndSummary) => {
       return newMarketsSlug.includes(summary.market.slug.toLowerCase())
     })
@@ -104,20 +56,34 @@ const newMarketsList = computed(() => {
 })
 
 const filteredMarketsList = computed(() => {
+  const slugs = [...exchangeStore.upcomingMarkets, deprecatedMarkets].map(
+    (market) => (market as UiMarketWithToken).slug
+  )
+
+  const filteredMarkets = marketsWithSummary.value.filter(
+    (m: UiMarketAndSummary) => !slugs.includes(m.market.slug)
+  )
+
   if (props.filterType === MarketFilterType.New) {
-    return newMarketsList
+    return newMarketsList.value
   }
 
   if (props.filterType === MarketFilterType.Volume) {
-    return marketsSortedByVolume
+    return filteredMarkets.sort(
+      (a: UiMarketAndSummary, b: UiMarketAndSummary) => {
+        const aVolume = a.summary.volume
+        const bVolume = b.summary.volume
+
+        return new BigNumberInBase(bVolume).minus(aVolume).toNumber()
+      }
+    )
   }
 
   return filteredMarkets
 })
 
 const marketsList = computed(() => {
-  // TODO: refactor so we can avoid value.value
-  return filteredMarketsList.value.value.slice(0, props.limit)
+  return filteredMarketsList.value.slice(0, props.limit)
 })
 
 const heroMarketsList = computed(() => {

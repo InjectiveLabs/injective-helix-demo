@@ -29,7 +29,7 @@ import {
   indexerRestDerivativesChronosApi,
   tokenService
 } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
 import { marketHasRecentlyExpired } from '@/app/utils/market'
 import {
   cancelOrder,
@@ -50,6 +50,7 @@ import {
   streamMarketMarkPrices,
   cancelSubaccountTradesStream
 } from '@/store/derivative/stream'
+import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -99,9 +100,15 @@ export const useDerivativeStore = defineStore('derivative', {
         .filter(({ slug }) => MARKETS_SLUGS.futures.includes(slug))
         .map((m) => m.marketId),
 
-    buys: (state) => state.orderbook?.buys || [],
-
-    sells: (state) => state.orderbook?.sells || []
+    marketsWithSummary: (state) =>
+      state.markets
+        .map((market) => ({
+          market,
+          summary: state.marketsSummary.find(
+            (summary) => summary.marketId === market.marketId
+          )
+        }))
+        .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
     cancelOrder,
@@ -147,8 +154,7 @@ export const useDerivativeStore = defineStore('derivative', {
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketHasRecentlyExpired)
 
-      const marketsSummary =
-        await indexerRestDerivativesChronosApi.fetchMarketsSummary()
+      await derivativeStore.fetchMarketsSummary()
 
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
@@ -217,11 +223,6 @@ export const useDerivativeStore = defineStore('derivative', {
           )
         })
 
-      const actualMarketsSummary =
-        marketsSummary && marketsSummary.length > 0
-          ? marketsSummary
-          : [zeroDerivativeMarketSummary('')]
-
       derivativeStore.$patch({
         perpetualMarkets: uiPerpetualMarketsWithToken,
         expiryFuturesMarkets: uiExpiryFuturesWithToken,
@@ -231,8 +232,7 @@ export const useDerivativeStore = defineStore('derivative', {
           ...uiPerpetualMarketsWithToken,
           ...uiExpiryFuturesWithToken,
           ...uiBinaryOptionsMarketsWithToken
-        ],
-        marketsSummary: actualMarketsSummary
+        ]
       })
     },
 
@@ -366,34 +366,26 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchMarketsSummary() {
       const derivativeStore = useDerivativeStore()
 
-      const { marketsSummary, markets } = derivativeStore
+      const { markets } = derivativeStore
 
-      if (marketsSummary.length === 0) {
-        return
-      }
-
-      const updatedMarketsSummary =
+      const marketSummaries =
         await indexerRestDerivativesChronosApi.fetchMarketsSummary()
-      const combinedMarketsSummary =
-        UiDerivativeTransformer.derivativeMarketsSummaryComparisons(
-          updatedMarketsSummary,
-          derivativeStore.marketsSummary
-        )
 
-      if (
-        !combinedMarketsSummary ||
-        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
-      ) {
-        derivativeStore.$patch({
-          marketsSummary: markets.map((market) =>
-            zeroDerivativeMarketSummary(market.marketId)
+      const marketsWithoutMarketSummaries = marketSummaries.filter(
+        ({ marketId }) =>
+          !markets.some((market) => market.marketId === marketId)
+      )
+
+      derivativeStore.$patch({
+        marketsSummary: [
+          ...marketSummaries.map(
+            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+          ),
+          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+            zeroDerivativeMarketSummary(marketId)
           )
-        })
-      } else {
-        derivativeStore.$patch({
-          marketsSummary: combinedMarketsSummary
-        })
-      }
+        ]
+      })
     },
 
     async fetchMarket(marketId: string) {

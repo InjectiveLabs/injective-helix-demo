@@ -1,23 +1,16 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import {
-  MarketType,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Change, UiMarketWithToken, UiMarketSummary } from '@/types'
 import { metaTags } from '@/nuxt-config/meta'
 
-const derivativeStore = useDerivativeStore()
-const spotStore = useSpotStore()
 const { t } = useLang()
 
 const props = defineProps({
   lg: Boolean,
+  isCurrentMarket: Boolean,
   isStatsBar: Boolean,
-  showInitialSpinner: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -30,29 +23,27 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
-
 const status = reactive(new Status(StatusType.Loading))
 
+const isSpot = computed(() => props.market.type === MarketType.Spot)
+
 const {
+  changeInPercentage: spotChangeInPercentage,
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(
-  props.market as UiSpotMarketWithToken,
-  computed(() => spotStore.trades || [])
-)
+} = useSpotLastPriceFormatter(computed(() => props.market))
 
 const {
+  changeInPercentage: derivativeChangeInPercentage,
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(
-  props.market as UiDerivativeMarketWithToken,
-  computed(() => derivativeStore.trades || [])
-)
+} = useDerivativeLastPriceFormatter(computed(() => props.market))
 
 const lastTradedPrice = computed(() => {
-  if (props.isStatsBar) {
-    return isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
+  if (props.isCurrentMarket) {
+    return isSpot.value
+      ? spotLastTradedPrice.value
+      : derivativeLastTradedPrice.value
   }
 
   return new BigNumberInBase(
@@ -60,14 +51,18 @@ const lastTradedPrice = computed(() => {
   )
 })
 
-const lastTradedPriceChange = computed(() =>
-  isSpot
-    ? spotLastTradedPriceChange.value
-    : derivativeLastTradedPriceChange.value
-)
+const lastTradedPriceChange = computed(() => {
+  if (props.isCurrentMarket) {
+    return isSpot.value
+      ? spotLastTradedPriceChange.value
+      : derivativeLastTradedPriceChange.value
+  }
+
+  return props.summary.lastPriceChange || Change.NoChange
+})
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
-  lastTradedPrice,
+  computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
     displayAbsoluteDecimalPlace: true
@@ -77,6 +72,12 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 const { valueToFixed: changeToFormat, valueToBigNumber: change } =
   useBigNumberFormatter(
     computed(() => {
+      if (props.isCurrentMarket) {
+        return isSpot.value
+          ? spotChangeInPercentage.value
+          : derivativeChangeInPercentage.value
+      }
+
       if (!props.summary || !props.summary.change) {
         return ZERO_IN_BASE
       }
@@ -109,7 +110,7 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
     <div
       v-if="
         status.isLoading() &&
-        showInitialSpinner &&
+        isStatsBar &&
         (lastTradedPrice.isNaN() || lastTradedPrice.lte(0))
       "
     >
