@@ -21,7 +21,7 @@ const quoteDenoms = computed(() => {
     <template #title>
       <div class="flex items-center justify-center">
         {{ $t('trade.quote_denoms') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2"
           :tooltip="$t('trade.quote_denoms_tooltip')"
         />

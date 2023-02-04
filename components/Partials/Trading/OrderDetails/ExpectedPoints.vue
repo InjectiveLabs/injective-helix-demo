@@ -108,13 +108,13 @@ const expectedPtsToFormat = computed(() => {
 </script>
 
 <template>
-  <AppTextInfo
+  <CommonTextInfo
     v-if="expectedPts.gte(0)"
     :title="$t('trade.expected_points')"
     class="mt-2"
   >
     <template #context>
-      <AppInfoTooltip
+      <CommonInfoTooltip
         class="ml-2"
         :tooltip="$t('trade.expected_points_note')"
       />
@@ -126,5 +126,5 @@ const expectedPtsToFormat = computed(() => {
         {{ $t('pts') }}
       </span>
     </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 </template>

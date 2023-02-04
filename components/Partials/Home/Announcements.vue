@@ -72,7 +72,7 @@ onMounted(() => {
         v-if="attachmentsWithAnnouncements.length > 0"
         class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 lg:gap-6"
       >
-        <CommonAnnouncementsCard
+        <CommonCardAnnouncement
           v-for="(card, index) in attachmentsWithAnnouncements"
           :key="`news-card-${index}`"
           class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden"
@@ -87,7 +87,7 @@ onMounted(() => {
               class="cover h-full block rounded-lg"
             />
           </template>
-        </CommonAnnouncementsCard>
+        </CommonCardAnnouncement>
       </div>
     </div>
   </AppHocLoading>

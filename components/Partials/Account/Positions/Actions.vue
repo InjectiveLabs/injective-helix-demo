@@ -35,20 +35,14 @@ const emit = defineEmits<{
 const showFilters = ref(true)
 
 const side = computed({
-  get: (): string => {
-    return props.side
-  },
-
+  get: (): string => props.side,
   set: (value: string) => {
     emit('update:side', value)
   }
 })
 
 const marketDenom = computed({
-  get: (): string => {
-    return props.marketDenom
-  },
-
+  get: (): string => props.marketDenom,
   set: (value: string) => {
     emit('update:market-denom', value)
   }

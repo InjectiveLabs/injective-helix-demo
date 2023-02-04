@@ -26,20 +26,14 @@ const filterList = [
 ]
 
 const activeTypeValue = computed({
-  get: (): string => {
-    return props.activeType
-  },
-
+  get: (): string => props.activeType,
   set: (type: string) => {
     emit('update:activeType', type)
   }
 })
 
 const searchValue = computed({
-  get: (): string => {
-    return props.search
-  },
-
+  get: (): string => props.search,
   set: (value: string) => {
     emit('update:search', value)
   }

@@ -645,7 +645,7 @@ function handleBuyOrderHover(position: number | null) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <AppInfoTooltip
+        <CommonInfoTooltip
           v-if="!isSpot"
           :tooltip="$t('trade.mark_price_tooltip_verbose')"
           data-cy="orderbook-mark-price-text-content"
@@ -655,7 +655,7 @@ function handleBuyOrderHover(position: number | null) {
           >
             {{ markPriceToFormat }}
           </span>
-        </AppInfoTooltip>
+        </CommonInfoTooltip>
       </div>
     </div>
 

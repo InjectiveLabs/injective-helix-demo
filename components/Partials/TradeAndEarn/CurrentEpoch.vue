@@ -175,14 +175,14 @@ onMounted(() => {
       <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
         <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
           <template #value>
-            <AppEmpNumber
+            <AppNumberEmp
               :number="injMaxCampaignRewards"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
               <span>INJ</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
 
-            <AppEmpNumber
+            <AppNumberEmp
               class="text-gray-450"
               sm
               prefix="≈"
@@ -190,13 +190,13 @@ onMounted(() => {
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
               <span>USD</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
           </template>
 
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('max_campaign_rewards') }}
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2 text-gray-450"
                 :tooltip="$t('max_campaign_rewards_tooltip')"
               />
@@ -209,13 +209,13 @@ onMounted(() => {
               v-if="walletStore.isUserWalletConnected"
               class="flex flex-wrap justify-center"
             >
-              <AppEmpNumber :number="tradeRewardPointsFactored">
+              <AppNumberEmp :number="tradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
-              </AppEmpNumber>
+              </AppNumberEmp>
               <span class="px-2 text-xl self-center">/</span>
-              <AppEmpNumber :number="totalTradeRewardPointsFactored">
+              <AppNumberEmp :number="totalTradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
-              </AppEmpNumber>
+              </AppNumberEmp>
             </div>
             <span v-else class="text-gray-450">&mdash;</span>
           </template>
@@ -225,7 +225,7 @@ onMounted(() => {
               class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2 text-gray-450"
                 :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
@@ -234,15 +234,15 @@ onMounted(() => {
         </PartialsCommonStatsItem>
         <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
           <template #value>
-            <AppEmpNumber
+            <AppNumberEmp
               v-if="walletStore.isUserWalletConnected"
               :number="estimatedRewards"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
               <span>INJ</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
             <span v-else>&mdash;</span>
-            <AppEmpNumber
+            <AppNumberEmp
               v-if="walletStore.isUserWalletConnected"
               sm
               class="text-gray-450"
@@ -251,13 +251,13 @@ onMounted(() => {
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
               <span class="text-sm">USD</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
           </template>
 
           <template #title>
             <div class="flex items-center justify-center text-xs text-gray-450">
               {{ $t('est_rewards') }}
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2 text-gray-450"
                 :tooltip="
                   $t('est_rewards_tooltip', {

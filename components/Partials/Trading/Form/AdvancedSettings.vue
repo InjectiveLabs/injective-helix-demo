@@ -298,7 +298,7 @@ function toggleDrawer() {
             v-show="showSlippageInputFieldForMarket"
             class="basis-1/5 flex items-center"
           >
-            <AppNumericInput
+            <AppInputNumeric
               id="focusOnInput"
               v-model="slippageTolerance"
               transparent-bg
@@ -315,7 +315,7 @@ function toggleDrawer() {
               <template #addon>
                 <span class="lg:hidden"> % </span>
               </template>
-            </AppNumericInput>
+            </AppInputNumeric>
           </div>
         </div>
         <AppCheckbox

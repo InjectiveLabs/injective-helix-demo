@@ -227,7 +227,7 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
           {{ $t('bridge.transferFromToTradingAccount') }}
         </span>
 
-        <AppInfoTooltip
+        <CommonInfoTooltip
           v-if="bridgeType === BridgeType.Transfer"
           class="ml-2"
           :tooltip="$t('bridge.transferTitleTooltip')"
@@ -284,11 +284,11 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
         </div>
         <div class="my-4 w-full">
           <div class="flex items-center justify-between text-gray-200">
-            <AppInfoTooltip :tooltip="$t('memo.memoTooltip')">
+            <CommonInfoTooltip :tooltip="$t('memo.memoTooltip')">
               <span class="text-xs">
                 {{ $t('memo.memo') }}
               </span>
-            </AppInfoTooltip>
+            </CommonInfoTooltip>
 
             <AppCheckbox v-model="memoRequired" @input="resetMemo">
               {{ $t('common.required') }}

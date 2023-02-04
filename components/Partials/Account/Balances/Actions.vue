@@ -16,30 +16,21 @@ const emit = defineEmits<{
 }>()
 
 const hideSmallBalancesCheck = computed({
-  get: (): boolean => {
-    return props.hideSmallBalances
-  },
-
+  get: (): boolean => props.hideSmallBalances,
   set: (type: boolean) => {
     emit('update:hide-small-balances', type)
   }
 })
 
 const showMarginCurrencyOnlyCheck = computed({
-  get: (): boolean => {
-    return props.showMarginCurrencyOnly
-  },
-
+  get: (): boolean => props.showMarginCurrencyOnly,
   set: (type: boolean) => {
     emit('update:show-margin-currency-only', type)
   }
 })
 
 const search = computed({
-  get: (): string => {
-    return props.searchQuery
-  },
-
+  get: (): string => props.searchQuery,
   set: (type: string) => {
     emit('update:search', type)
   }
@@ -83,7 +74,7 @@ const search = computed({
         <div class="flex items-center justify-start">
           <span>{{ $t('account.hideSmallBalances') }}</span>
 
-          <AppInfoTooltip
+          <CommonInfoTooltip
             class="ml-2"
             :tooltip="$t('account.hideSmallBalancesTooltip')"
           />

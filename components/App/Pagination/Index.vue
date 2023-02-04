@@ -34,7 +34,9 @@ defineProps({
     :total-count="totalCount"
   >
     <template #summary="{ from, to }">
-      <span>From {{ from }} to {{ to }} total {{ totalCount }}</span>
+      <span>{{
+        $t('pagination.paginationPages', { from, to, total: totalCount })
+      }}</span>
     </template>
 
     <template

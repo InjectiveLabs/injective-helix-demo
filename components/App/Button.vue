@@ -68,9 +68,11 @@ const hasBackground = computed(() => {
 })
 
 function click() {
-  if (!props.status.isLoading()) {
-    emit('click')
+  if (props.status.isLoading()) {
+    return
   }
+
+  emit('click')
 }
 </script>
 

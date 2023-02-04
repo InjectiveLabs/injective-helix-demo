@@ -24,7 +24,7 @@ const disqualifiedMarkets = computed(() =>
     <template #title>
       <div class="flex items-center justify-center text-gray-450">
         {{ $t('trade.disqualified_markets') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-450"
           :tooltip="$t('trade.disqualified_markets_tooltip')"
         />

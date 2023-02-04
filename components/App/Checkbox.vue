@@ -23,10 +23,7 @@ const uid = computed(() => {
 })
 
 const checked = computed({
-  get: (): boolean => {
-    return props.modelValue
-  },
-
+  get: (): boolean => props.modelValue,
   set: (value: boolean) => {
     emit('update:modelValue', value)
   }

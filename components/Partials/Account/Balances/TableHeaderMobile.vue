@@ -17,20 +17,14 @@ const emit = defineEmits<{
 }>()
 
 const sortByValue = computed({
-  get: (): string => {
-    return props.sortBy
-  },
-
+  get: (): string => props.sortBy,
   set: (type: string) => {
     emit('update:sort-by', type)
   }
 })
 
 const ascendingValue = computed({
-  get: (): boolean => {
-    return props.ascending
-  },
-
+  get: (): boolean => props.ascending,
   set: (type: boolean) => {
     emit('update:ascending', type)
   }

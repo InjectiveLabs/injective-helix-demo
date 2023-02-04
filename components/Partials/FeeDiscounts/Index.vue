@@ -36,7 +36,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.staked_amount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.staked_amount_tooltip')"
               />
@@ -48,7 +48,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.trading_volume') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.trading_volume_tooltip')"
               />
@@ -59,7 +59,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.maker_rate_discount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.maker_rate_discount_tooltip')"
               />
@@ -70,7 +70,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.taker_rate_discount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.taker_rate_discount_tooltip')"
               />

@@ -79,7 +79,7 @@ const submit = handleSubmit(() => {
         <p class="uppercase text-xs font-semibold text-gray-200">
           {{ $t('trade.availableMargin') }}
         </p>
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-200"
           :tooltip="$t('trade.availableMarginTooltip')"
         />
@@ -98,7 +98,7 @@ const submit = handleSubmit(() => {
     <div class="mt-4">
       <div class="flex flex-wrap">
         <div class="w-full">
-          <AppNumericInput
+          <AppInputNumeric
             v-model="amountValue"
             :errors="status.isLoading() ? [] : amountErrors"
             :max="availableMarginToString"
@@ -122,7 +122,7 @@ const submit = handleSubmit(() => {
             <template #addon>
               {{ market.quoteToken.symbol }}
             </template>
-          </AppNumericInput>
+          </AppInputNumeric>
 
           <p
             v-if="amountErrors.length > 0"

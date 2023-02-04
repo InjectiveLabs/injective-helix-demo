@@ -90,7 +90,7 @@ function onQuoteAmountBlur(quoteAmount = '') {
 </script>
 
 <template>
-  <AppNumericInput
+  <AppInputNumeric
     v-model="quoteAmount"
     :max-decimals="market.priceDecimals"
     :placeholder="amountStep"
@@ -106,5 +106,5 @@ function onQuoteAmountBlur(quoteAmount = '') {
     <template #addon>
       <span>{{ market.quoteToken.symbol }}</span>
     </template>
-  </AppNumericInput>
+  </AppInputNumeric>
 </template>

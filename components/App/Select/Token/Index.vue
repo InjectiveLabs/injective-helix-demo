@@ -144,7 +144,7 @@ export default {
     >
       <div class="px-4">
         <div class="flex justify-between">
-          <AppNumericInput
+          <AppInputNumeric
             v-model="amount"
             sm
             no-padding

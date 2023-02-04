@@ -122,7 +122,7 @@ function onBaseAmountBlur(baseAmount = '') {
 
 <template>
   <div class="flex-1">
-    <AppNumericInput
+    <AppInputNumeric
       v-model="baseAmount"
       :max-decimals="market ? market.quantityDecimals : 6"
       :placeholder="amountStep"
@@ -140,6 +140,6 @@ function onBaseAmountBlur(baseAmount = '') {
       <template #addon>
         <span>{{ market.baseToken.symbol.toUpperCase() }}</span>
       </template>
-    </AppNumericInput>
+    </AppInputNumeric>
   </div>
 </template>

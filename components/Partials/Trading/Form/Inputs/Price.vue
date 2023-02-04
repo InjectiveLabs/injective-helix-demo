@@ -197,7 +197,7 @@ function onPriceBlur(price = '') {
 
 <template>
   <div class="mb-6">
-    <AppNumericInput
+    <AppInputNumeric
       v-model="price"
       :placeholder="priceStep"
       :step="priceStep"
@@ -221,6 +221,6 @@ function onPriceBlur(price = '') {
       <template #addon>
         <span>{{ market.quoteToken.symbol }}</span>
       </template>
-    </AppNumericInput>
+    </AppInputNumeric>
   </div>
 </template>

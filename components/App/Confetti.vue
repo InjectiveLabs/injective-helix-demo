@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 const canvas = ref(null)
 
-const { init } = useConfetti()
-
 onMounted(() => {
-  init(canvas)
+  useConfetti().init(canvas)
 })
 </script>
 

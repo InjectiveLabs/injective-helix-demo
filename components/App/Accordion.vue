@@ -8,9 +8,7 @@ const emit = defineEmits<{
   (e: 'togglePanel'): void
 }>()
 
-function handleToggle(e: MouseEvent) {
-  e.stopPropagation()
-
+function handleToggle() {
   emit('togglePanel')
 }
 </script>
@@ -24,7 +22,7 @@ function handleToggle(e: MouseEvent) {
           'items-center': sm
         }"
         :aria-expanded="isOpen"
-        @click="handleToggle"
+        @click.stop="handleToggle"
       >
         <div class="font-semibold text-gray-200 flex items-start">
           <slot name="title" />

@@ -54,21 +54,15 @@ const quoteOptions = Object.entries(MarketQuoteType).map(([key, value]) => ({
 }))
 
 const activeQuoteValue = computed({
-  get(): MarketQuoteType {
-    return props.activeQuote
-  },
-
-  set(value: MarketQuoteType) {
+  get: (): MarketQuoteType => props.activeQuote,
+  set: (value: MarketQuoteType) => {
     emit('update:activeQuote', value)
   }
 })
 
 const activeFilterType = computed({
-  get() {
-    return props.activeType
-  },
-
-  set(type: string) {
+  get: (): string => props.activeType,
+  set: (type: string) => {
     emit('update:activeType', type)
 
     if (type === props.activeType) {

@@ -38,10 +38,8 @@ const options = computed(() => {
 })
 
 const value = computed({
-  get(): string {
-    return props.value
-  },
-  set(value: string) {
+  get: (): string => props.value,
+  set: (value: string) => {
     emit('update:network', value)
   }
 })

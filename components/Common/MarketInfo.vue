@@ -19,7 +19,7 @@ defineProps({
       class="text-gray-500 mb-1 w-full lg:text-right text-xs flex items-center lg:justify-between whitespace-nowrap"
     >
       {{ title }}
-      <AppInfoTooltip v-if="tooltip" class="ml-2" :tooltip="tooltip" />
+      <CommonInfoTooltip v-if="tooltip" class="ml-2" :tooltip="tooltip" />
     </span>
     <div>
       <slot></slot>

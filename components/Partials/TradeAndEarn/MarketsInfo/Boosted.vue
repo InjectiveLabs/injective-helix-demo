@@ -156,7 +156,7 @@ const spotBoostedMarkets = computed(() => {
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.derivatives') }}
         </p>
-        <AppTextInfo
+        <CommonTextInfo
           v-for="derivative in derivativeBoostedMarkets"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
@@ -176,14 +176,14 @@ const spotBoostedMarkets = computed(() => {
               </span>
             </span>
           </p>
-        </AppTextInfo>
+        </CommonTextInfo>
       </div>
 
       <div class="flex-1 px-4 lg:px-12">
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.spot') }}
         </p>
-        <AppTextInfo
+        <CommonTextInfo
           v-for="spot in spotBoostedMarkets"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
@@ -203,14 +203,14 @@ const spotBoostedMarkets = computed(() => {
               </span>
             </span>
           </p>
-        </AppTextInfo>
+        </CommonTextInfo>
       </div>
     </div>
 
     <template #title>
       <div class="flex items-center justify-center text-gray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-450"
           :tooltip="$t('trade.boosted_markets_tooltip')"
         />

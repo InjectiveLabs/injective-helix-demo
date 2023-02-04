@@ -38,9 +38,9 @@ const { tradingTypeMarket } = useSpotFormFormatter(
     <AppDrawer>
       <template #header>
         <p class="flex justify-between text-sm">
-          <AppTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" lg>
             <template v-if="tradingTypeMarket" #context>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('trade.market_total_tooltip')"
               />
@@ -56,18 +56,18 @@ const { tradingTypeMarket } = useSpotFormFormatter(
                 {{ market.quoteToken.symbol }}
               </span>
             </span>
-          </AppTextInfo>
+          </CommonTextInfo>
         </p>
       </template>
 
       <div class="mt-4">
-        <AppTextInfo
+        <CommonTextInfo
           v-if="tradingTypeMarket"
           class="mt-2"
           :title="$t('trade.amount')"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.min_received_amount')"
             />
@@ -85,9 +85,9 @@ const { tradingTypeMarket } = useSpotFormFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
-        <AppTextInfo :title="$t('trade.price')" class="mt-2">
+        <CommonTextInfo :title="$t('trade.price')" class="mt-2">
           <span
             v-if="executionPrice.gt(0)"
             data-cy="trading-page-details-execution-price-text-content"
@@ -99,7 +99,7 @@ const { tradingTypeMarket } = useSpotFormFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
         <slot name="makerTakerFeeRate" />
         <slot name="feeRate" />
