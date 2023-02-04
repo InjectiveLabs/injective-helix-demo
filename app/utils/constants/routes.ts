@@ -59,14 +59,16 @@ export const getRoutes = (network: Network, env: string) => {
   const walletConnectedRequiredRouteNames = ['activity', 'account']
 
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-  const spotRedirectRoutes = Object.keys(spotRoutes).map((s) => `/spot/${s}`)
+  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
+    (s) => `/spot/${s}`
+  )
 
   const futures = [...perpetuals, ...expiryFutures]
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['register']
+  const customStaticRoutes: string[] = ['/register']
   const upcomingMarketsRoutes: string[] = []
   const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 

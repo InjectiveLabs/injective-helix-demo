@@ -30,13 +30,11 @@ export default {
 
       if (outDirPathExist) {
         copySync(tokenMetadataSrcDir, tokenMetadataDstDir, {
-          overwrite: true,
-          recursive: true
+          overwrite: true
         })
       } else {
         copy(tokenMetadataSrcDir, tokenMetadataDstDir, {
-          overwrite: true,
-          recursive: true
+          overwrite: true
         })
       }
       console.log('✔ Successfully copied token images!')
