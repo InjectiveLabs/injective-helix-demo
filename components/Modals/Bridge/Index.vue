@@ -60,6 +60,13 @@ const { destinationIsInjective, isWithdraw, networkIsNotSupported } =
 
 const memoRequired = ref(false)
 
+const isUsdcDenomDepositOrWithdraw = computed(
+  () =>
+    [usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+      props.formValues[BridgeField.Token].denom.toLowerCase()
+    ) && props.bridgeType !== BridgeType.Transfer
+)
+
 const filteredBalances = computed(() =>
   transferableBalancesWithToken.value.filter(
     (balance) => ![usdcTokenDenom.USDCso].includes(balance.denom.toLowerCase())
@@ -302,14 +309,16 @@ watch(destination, (value: string) => {
         </div>
       </div>
 
-      <div
-        v-if="
-          !networkIsNotSupported &&
-          ![usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-            formValues[BridgeField.Token].denom.toLowerCase()
-          )
-        "
-      >
+      <ModalsBridgeNotSupportedBridgeTypeNote
+        v-if="networkIsNotSupported || isUsdcDenomDepositOrWithdraw"
+        v-bind="{
+          formValues,
+          selectedNetwork: formValues[BridgeField.BridgingNetwork],
+          bridgeType
+        }"
+      />
+
+      <div v-else>
         <div v-if="hasAllowance">
           <AppSelectToken
             v-model:denom="denom"
@@ -362,15 +371,6 @@ watch(destination, (value: string) => {
           </template>
         </div>
       </div>
-
-      <ModalsBridgeNotSupportedBridgeTypeNote
-        v-else
-        v-bind="{
-          formValues,
-          selectedNetwork: formValues[BridgeField.BridgingNetwork],
-          bridgeType
-        }"
-      />
     </div>
     <CommonUserNotConnectedNote v-else />
   </AppModalWrapper>
