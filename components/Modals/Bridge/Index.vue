@@ -64,6 +64,13 @@ const filteredBalances = computed(() =>
   )
 )
 
+const isUsdcDenomDepositOrWithdraw = computed(
+  () =>
+    [usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+      props.formValues[BridgeField.Token].denom.toLowerCase()
+    ) && props.bridgeType !== BridgeType.Transfer
+)
+
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
     UI_DEFAULT_DISPLAY_DECIMALS < props.formValues[BridgeField.Token].decimals
@@ -297,14 +304,16 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
         </div>
       </div>
 
-      <div
-        v-if="
-          !networkIsNotSupported &&
-          ![usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-            formValues[BridgeField.Token].denom.toLowerCase()
-          )
-        "
-      >
+      <ModalsBridgeNotSupportedBridgeTypeNote
+        v-if="networkIsNotSupported || isUsdcDenomDepositOrWithdraw"
+        v-bind="{
+          formValues,
+          selectedNetwork: formValues[BridgeField.BridgingNetwork],
+          bridgeType
+        }"
+      />
+
+      <div v-else>
         <div v-if="hasAllowance">
           <AppSelectToken
             v-model:denom="denom"
@@ -357,15 +366,6 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
           </template>
         </div>
       </div>
-
-      <ModalsBridgeNotSupportedBridgeTypeNote
-        v-else
-        v-bind="{
-          formValues,
-          selectedNetwork: formValues[BridgeField.BridgingNetwork],
-          bridgeType
-        }"
-      />
     </div>
     <CommonUserNotConnectedNote v-else />
   </AppModalWrapper>
