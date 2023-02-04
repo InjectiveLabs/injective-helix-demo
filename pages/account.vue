@@ -130,7 +130,7 @@ const balances = computed(() => {
   })
 })
 
-onWalletConnected(() => {
+onMounted(() => {
   status.setLoading()
 
   Promise.all([spotStore.init(), derivativeStore.init()])
