@@ -39,6 +39,7 @@ const checked = computed({
   get: (): boolean => {
     return props.filterByCurrentMarket
   },
+
   set: (value: boolean) => {
     emit('update:filterByCurrentMarket', value)
   }

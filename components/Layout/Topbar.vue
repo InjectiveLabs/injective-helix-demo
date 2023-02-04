@@ -11,8 +11,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'sidebar-closed'): void
-  (e: 'sidebar-opened'): void
+  (e: 'sidebar:closed'): void
+  (e: 'sidebar:opened'): void
 }>()
 
 const isUserConnectedProcessCompleted = ref(false)
@@ -46,10 +46,10 @@ onMounted(() => {
 
 function handleClickOnSidebarToggle() {
   if (props.isSidebarOpen) {
-    return emit('sidebar-closed')
+    return emit('sidebar:closed')
   }
 
-  emit('sidebar-opened')
+  emit('sidebar:opened')
 }
 
 function handleShowNinjaPassModal() {

@@ -205,11 +205,13 @@ const handlerFunction = computed(() => {
 
 function handleModalClose() {
   emit('form:reset')
+
   modalStore.closeModal(Modal.BridgeConfirm)
 }
 
 function handleConfirmation() {
   handleTransferTradingAccountTrack()
+
   handlerFunction.value()
 }
 
@@ -528,16 +530,14 @@ function handleTransferTradingAccountTrack() {
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               :disabled="
                 !amountLargerThanEthBridgeFee ||
-                (originIsInjectiveNetwork && !walletStore.hasEnoughInjForGas)
+                (originIsInjectiveNetwork && !bankStore.hasEnoughInjForGas)
               "
               :status="status"
               data-cy="transfer-confirm-modal-confirm-button"
               @click="handleConfirmation"
             >
               <span
-                v-if="
-                  originIsInjectiveNetwork && !walletStore.hasEnoughInjForGas
-                "
+                v-if="originIsInjectiveNetwork && !bankStore.hasEnoughInjForGas"
               >
                 {{ $t('bridge.insufficientINJForGas') }}
               </span>

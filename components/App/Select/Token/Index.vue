@@ -4,8 +4,8 @@ import { BalanceWithToken, BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
 const props = defineProps({
-  disabled: Boolean,
   hideMax: Boolean,
+  disabled: Boolean,
   required: Boolean,
 
   additionalRules: {
@@ -71,6 +71,7 @@ const {
     if (!props.required) {
       return ''
     }
+
     return `insufficientBalance:${maxBalanceToFixed.value}|required`
   })
 })

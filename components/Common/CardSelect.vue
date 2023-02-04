@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps({
-  active: Boolean,
   lg: Boolean,
+  active: Boolean,
   showLoading: Boolean
 })
 </script>

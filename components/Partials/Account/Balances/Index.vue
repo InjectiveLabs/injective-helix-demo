@@ -6,10 +6,7 @@ import { AccountBalance, BalanceHeaderType } from '@/types'
 import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
-  hideBalances: {
-    type: Boolean,
-    required: true
-  },
+  hideBalances: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -70,32 +67,30 @@ const transformedBalance = computed(() => {
 })
 
 const filteredBalances = computed(() => {
-  return transformedBalance.value.filter((balance) => {
-    if (!balance) {
-      return false
-    }
+  return transformedBalance.value
+    .filter((balance) => balance)
+    .filter((balance) => {
+      const isNotSmallBalance =
+        !hideSmallBalances.value ||
+        new BigNumberInBase(balance.totalBalance).gte('10')
 
-    const isNotSmallBalance =
-      !hideSmallBalances.value ||
-      new BigNumberInBase(balance.totalBalance).gte('10')
+      const isMarginCurrency =
+        !showMarginCurrencyOnly.value ||
+        QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
 
-    const isMarginCurrency =
-      !showMarginCurrencyOnly.value ||
-      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
+      const tokenNameMatch = balance.token.name
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
 
-    const tokenNameMatch = balance.token.name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
+      const tokenSymbolMatch = balance.token.symbol
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
 
-    const tokenSymbolMatch = balance.token.symbol
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
+      const isPartOfSearchFilter =
+        searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
 
-    const isPartOfSearchFilter =
-      searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
-
-    return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
-  })
+      return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
+    })
 })
 
 const sortedBalances = computed(() => {

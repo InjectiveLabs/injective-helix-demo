@@ -54,7 +54,7 @@ const entries = computed(() => {
           :key="`leaderboard-row-${index}`"
           :rank="index + 1"
           :address="entry.accountID"
-          :perc="entry.perc"
+          :percentage="entry.perc"
           :volume="entry.volume"
         />
 

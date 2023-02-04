@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 const emit = defineEmits<{
-  (e: 'sidebar-closed'): void
+  (e: 'sidebar:closed'): void
 }>()
 
 function closeSidebar() {
-  emit('sidebar-closed')
+  emit('sidebar:closed')
 }
 </script>
 

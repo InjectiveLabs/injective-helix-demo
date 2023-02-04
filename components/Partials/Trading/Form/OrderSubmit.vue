@@ -11,6 +11,7 @@ import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import { TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
+const bankStore = useBankStore()
 const walletStore = useWalletStore()
 const { t } = useLang()
 const { error } = useNotifications()
@@ -110,7 +111,7 @@ const disabled = computed(() => {
   const commonErrors =
     hasError.value ||
     !walletStore.isUserWalletConnected ||
-    !walletStore.hasEnoughInjForGas ||
+    !bankStore.hasEnoughInjForGas ||
     !props.hasBaseAmount
 
   if (commonErrors) {

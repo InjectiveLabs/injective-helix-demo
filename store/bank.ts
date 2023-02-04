@@ -7,9 +7,15 @@ import {
   IbcBankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
+import { isCosmosWallet } from '@injectivelabs/wallet-ts'
 import { bankApi, msgBroadcastClient, tokenService } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
+import { INJ_GAS_BUFFER, IS_DEVNET } from '@/app/utils/constants'
 
 type BankStoreState = {
   balances: BankBalances
@@ -47,6 +53,22 @@ export const useBankStore = defineStore('bank', {
         ...state.bankErc20BalancesWithToken,
         ...state.bankIbcBalancesWithToken
       ]
+    },
+
+    hasEnoughInjForGas: (state) => {
+      const walletStore = useWalletStore()
+
+      // fee delegation don't work on devnet
+      const isWalletExemptFromGasFee =
+        !isCosmosWallet(walletStore.wallet) && !IS_DEVNET
+
+      const hasEnoughInjForGas = new BigNumberInWei(
+        state.balances[INJ_DENOM] || 0
+      )
+        .toBase()
+        .gte(INJ_GAS_BUFFER)
+
+      return isWalletExemptFromGasFee || hasEnoughInjForGas
     }
   },
   actions: {

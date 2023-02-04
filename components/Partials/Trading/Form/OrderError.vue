@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const walletStore = useWalletStore()
+const bankStore = useBankStore()
 
 defineProps({
   highDeviation: Boolean
@@ -8,7 +9,7 @@ defineProps({
 const faucetUrl = 'https://inj.supply/'
 
 const notEnoughInjForGas = computed(() => {
-  return walletStore.isUserWalletConnected && !walletStore.hasEnoughInjForGas
+  return walletStore.isUserWalletConnected && !bankStore.hasEnoughInjForGas
 })
 </script>
 

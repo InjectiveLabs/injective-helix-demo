@@ -13,6 +13,7 @@ const orderbookLayoutType = computed({
   get: (): OrderbookLayout => {
     return appStore.userState.orderbookLayout
   },
+
   set: (orderbookLayout: OrderbookLayout) => {
     appStore.setUserState({
       ...appStore.userState,

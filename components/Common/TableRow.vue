@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const props = defineProps({
-  dense: Boolean,
   lg: Boolean,
-  md: Boolean
+  md: Boolean,
+  dense: Boolean
 })
 
 const isDefaultSize = computed(() => {

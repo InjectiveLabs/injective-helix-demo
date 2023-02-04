@@ -15,15 +15,11 @@ const modalStore = useModalStore()
 
 const props = defineProps({
   expand: Boolean,
+  hideBalances: Boolean,
   hasOneUsdcBalance: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
-    required: true
-  },
-
-  hideBalances: {
-    type: Boolean,
     required: true
   }
 })

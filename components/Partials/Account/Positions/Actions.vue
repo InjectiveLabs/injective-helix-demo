@@ -29,7 +29,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:market-denom', state: string): void
   (e: 'update:side', state: string): void
-  (e: 'close-all-positions'): void
+  (e: 'positions:close'): void
 }>()
 
 const showFilters = ref(true)
@@ -38,6 +38,7 @@ const side = computed({
   get: (): string => {
     return props.side
   },
+
   set: (value: string) => {
     emit('update:side', value)
   }
@@ -47,6 +48,7 @@ const marketDenom = computed({
   get: (): string => {
     return props.marketDenom
   },
+
   set: (value: string) => {
     emit('update:market-denom', value)
   }
@@ -61,7 +63,7 @@ function updateFilterVisibility() {
 }
 
 function handleCloseAllPositions() {
-  emit('close-all-positions')
+  emit('positions:close')
 }
 
 function handleToggleFilters() {

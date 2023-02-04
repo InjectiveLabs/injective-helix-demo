@@ -7,6 +7,7 @@ import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 const modalStore = useModalStore()
 const router = useRouter()
+const bankStore = useBankStore()
 const walletStore = useWalletStore()
 
 const props = defineProps({
@@ -71,7 +72,7 @@ const disabled = computed<boolean>(() => {
   return (
     hasFormErrors.value ||
     props.amount === '' ||
-    !walletStore.hasEnoughInjForGas ||
+    !bankStore.hasEnoughInjForGas ||
     insufficientLiquidity.value
   )
 })
@@ -117,7 +118,7 @@ function handleNavigation() {
       @click="submit"
     >
       <div class="max-auto w-full">
-        <span v-if="!walletStore.hasEnoughInjForGas">
+        <span v-if="!bankStore.hasEnoughInjForGas">
           {{ $t('insufficientGas.insufficientGas') }}
         </span>
         <span v-else-if="insufficientLiquidity">

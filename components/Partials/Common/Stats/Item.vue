@@ -1,16 +1,7 @@
 <script lang="ts" setup>
 defineProps({
-  sm: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-
-  horizontal: {
-    type: Boolean,
-    required: false,
-    default: false
-  }
+  sm: Boolean,
+  horizontal: Boolean
 })
 </script>
 
@@ -25,7 +16,10 @@ defineProps({
     <h4
       v-if="$slots['title-horizontal']"
       class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500 mt-auto"
-      :class="{ 'text-left': horizontal, 'text-center': !horizontal }"
+      :class="{
+        'text-left': horizontal,
+        'text-center': !horizontal
+      }"
     >
       <slot name="title-horizontal" />
     </h4>
@@ -68,7 +62,10 @@ defineProps({
     <h4
       v-if="$slots['title']"
       class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500 mt-auto"
-      :class="{ 'text-left': horizontal, 'text-center': !horizontal }"
+      :class="{
+        'text-left': horizontal,
+        'text-center': !horizontal
+      }"
     >
       <slot name="title" />
     </h4>

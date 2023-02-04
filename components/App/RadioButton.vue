@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  active: {
-    type: Boolean,
-    required: true
-  }
+  active: Boolean
 })
 
 const emit = defineEmits<{

@@ -68,7 +68,7 @@ watch(showModal, (newShowModalState) => {
 
 <template>
   <div v-if="walletStore.isUserWalletConnected">
-    <LayoutWalletDetailsDropdown />
+    <LayoutWalletDetails />
   </div>
 
   <AppButton
@@ -106,13 +106,13 @@ watch(showModal, (newShowModalState) => {
       v-else
       class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
     >
-      <LayoutWalletConnectMetamask />
-      <LayoutWalletConnectKeplr />
-      <LayoutWalletConnectCosmostation />
-      <LayoutWalletConnectLeap />
-      <LayoutWalletConnectTorus />
-      <LayoutWalletConnectLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletMetamask />
+      <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletCosmostation />
+      <LayoutWalletConnectWalletLeap />
+      <LayoutWalletConnectWalletTorus />
+      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
     </ul>
   </AppModalWrapper>
   <ModalsTerms />

@@ -58,8 +58,6 @@ const { destinationIsInjective, isWithdraw, networkIsNotSupported } =
     bridgeType: computed(() => props.bridgeType)
   })
 
-const memoRequired = ref(false)
-
 const filteredBalances = computed(() =>
   transferableBalancesWithToken.value.filter(
     (balance) => ![usdcTokenDenom.USDCso].includes(balance.denom.toLowerCase())
@@ -125,12 +123,6 @@ const { value: denom } = useStringField({
   name: BridgeField.Denom
 })
 
-const { value: memo, resetField: resetMemo } = useStringField({
-  name: BridgeField.Memo,
-  rule: '',
-  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
-})
-
 const { value: destination, errors: destinationErrors } = useStringField({
   name: BridgeField.Destination,
   rule: '',
@@ -139,6 +131,18 @@ const { value: destination, errors: destinationErrors } = useStringField({
       ? 'required|injAddress'
       : ''
   )
+})
+
+const memoRequired = computed(() => {
+  return (
+    !!destination.value && BINANCE_DEPOSIT_ADDRESSES.includes(destination.value)
+  )
+})
+
+const { value: memo, resetField: resetMemo } = useStringField({
+  name: BridgeField.Memo,
+  rule: '',
+  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
 })
 
 function handleMaxAmountChange(amount: string) {
@@ -194,15 +198,6 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
     value: bridgingNetwork
   })
 }
-
-watch(destination, (value: string) => {
-  if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
-    memoRequired.value = true
-  } else {
-    memo.value = ''
-    memoRequired.value = false
-  }
-})
 </script>
 
 <template>

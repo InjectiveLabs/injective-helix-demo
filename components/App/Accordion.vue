@@ -10,6 +10,7 @@ const emit = defineEmits<{
 
 function handleToggle(e: MouseEvent) {
   e.stopPropagation()
+
   emit('togglePanel')
 }
 </script>
@@ -19,7 +20,9 @@ function handleToggle(e: MouseEvent) {
     <dt class="text-lg">
       <button
         class="text-left w-full flex justify-between items-start text-gray-200"
-        :class="{ 'items-center': sm }"
+        :class="{
+          'items-center': sm
+        }"
         :aria-expanded="isOpen"
         @click="handleToggle"
       >
@@ -51,7 +54,13 @@ function handleToggle(e: MouseEvent) {
         </span>
       </button>
     </dt>
-    <dd v-show="isOpen" class="mt-2" :class="{ 'pr-12': !sm }">
+    <dd
+      v-show="isOpen"
+      class="mt-2"
+      :class="{
+        'pr-12': !sm
+      }"
+    >
       <slot name="content" />
     </dd>
   </div>

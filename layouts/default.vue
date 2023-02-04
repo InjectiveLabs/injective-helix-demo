@@ -100,14 +100,14 @@ function onCloseSideBar() {
         <div>
           <LayoutSidebarMobile
             v-if="isOpenSidebar"
-            @sidebar-closed="onCloseSideBar"
+            @sidebar:closed="onCloseSideBar"
           />
           <client-only>
             <div class="relative bg-gray-1000">
               <LayoutTopbar
                 :is-sidebar-open="isOpenSidebar"
-                @sidebar-opened="isOpenSidebar = true"
-                @sidebar-closed="onCloseSideBar"
+                @sidebar:opened="isOpenSidebar = true"
+                @sidebar:closed="onCloseSideBar"
               />
               <main
                 class="w-full h-full min-h-screen-excluding-header flex flex-col"

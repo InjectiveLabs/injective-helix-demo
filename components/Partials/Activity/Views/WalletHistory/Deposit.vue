@@ -11,14 +11,14 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const { t } = useLang()
+
 const props = defineProps({
   transaction: {
     required: true,
     type: Object as PropType<UiBridgeTransactionWithToken>
   }
 })
-
-const { t } = useLang()
 
 const formattedOrigin = computed(() => {
   return formatWalletAddress(props.transaction.sender)

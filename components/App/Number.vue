@@ -7,21 +7,17 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const slots = useSlots()
 
 const props = defineProps({
-  dense: Boolean,
-  flex: Boolean,
   sm: Boolean,
   xs: Boolean,
+  flex: Boolean,
+  dense: Boolean,
+  useNumberDecimals: Boolean,
+  dontGroupValues: Boolean,
 
   decimals: {
     required: false,
     default: UI_DEFAULT_DISPLAY_DECIMALS,
     type: Number
-  },
-
-  useNumberDecimals: {
-    required: false,
-    default: false,
-    type: Boolean
   },
 
   abbreviationFloor: {
@@ -45,12 +41,6 @@ const props = defineProps({
   number: {
     required: true,
     type: Object as PropType<BigNumberInBase>
-  },
-
-  dontGroupValues: {
-    required: false,
-    default: false,
-    type: Boolean
   },
 
   roundingMode: {

@@ -73,8 +73,7 @@ watch(
   () => isModalOpen.value,
   (value: boolean) => {
     if (value) {
-      handleOpen()
-      return
+      return handleOpen()
     }
 
     handleClosed()
@@ -211,10 +210,10 @@ function handleWithdrawClick() {
                   :key="market.slug"
                   :to="{
                     name: 'spot-spot',
-                    params: { marketId: market.marketId, spot: market.slug }
+                    params: { spot: market.slug }
                   }"
                 >
-                  <PartialsAccountBalancesMarketCard
+                  <PartialsAccountBalancesAssetDetailsMarketCard
                     :market="market"
                     :summary="summary"
                   />

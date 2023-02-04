@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { t } = useLang()
 
-const aboutUsList = ref([
+const aboutUsList = [
   {
     text: t('footer.feeDiscounts'),
     link: 'fee-discounts'
@@ -18,14 +18,14 @@ const aboutUsList = ref([
     text: t('footer.termsAndConditions'),
     link: 'https://injectivelabs.org/terms-and-conditions'
   }
-])
+]
 
-const learnList = ref([
+const learnList = [
   {
     text: t('footer.faq'),
     link: 'https://helixapp.zendesk.com/'
   }
-])
+]
 </script>
 
 <template>

@@ -107,10 +107,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </NuxtLink>
 
           <NuxtLink
-            :to="{
-              name: 'convert',
-              query: { from: 'usdt', to: 'inj' }
-            }"
+            :to="{ name: 'convert' }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-convert-link"
           >

@@ -61,7 +61,7 @@ const lastPriceChange = computed(() => {
     class="rounded-lg bg-gray-750 p-4 flex flex-col gap-2"
     :to="{
       name: 'spot-spot',
-      params: { marketId: market.marketId, spot: market.slug }
+      params: { spot: market.slug }
     }"
   >
     <span class="font-bold text-sm">

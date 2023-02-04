@@ -1,45 +1,13 @@
 <script lang="ts" setup>
 const props = defineProps({
-  sm: {
-    required: false,
-    default: true,
-    type: Boolean
-  },
-  xs: {
-    required: false,
-    default: true,
-    type: Boolean
-  },
-  md: {
-    required: false,
-    default: false,
-    type: Boolean
-  },
-  lg: {
-    required: false,
-    default: false,
-    type: Boolean
-  },
-  blue: {
-    required: false,
-    default: false,
-    type: Boolean
-  },
-  green: {
-    required: false,
-    default: false,
-    type: Boolean
-  },
-  red: {
-    required: false,
-    default: false,
-    type: Boolean
-  },
-  gray: {
-    required: false,
-    default: false,
-    type: Boolean
-  }
+  sm: Boolean,
+  xs: Boolean,
+  md: Boolean,
+  lg: Boolean,
+  blue: Boolean,
+  green: Boolean,
+  red: Boolean,
+  gray: Boolean
 })
 
 const classes = computed(() => {

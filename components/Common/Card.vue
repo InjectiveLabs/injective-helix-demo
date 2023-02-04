@@ -2,9 +2,9 @@
 const props = defineProps({
   lg: Boolean,
   md: Boolean,
+  tight: Boolean,
   noPadding: Boolean,
   noTopBorderRadius: Boolean,
-  tight: Boolean,
 
   bgColor: {
     type: String,

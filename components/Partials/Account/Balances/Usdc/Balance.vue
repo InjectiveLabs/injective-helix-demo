@@ -9,6 +9,8 @@ const accountStore = useAccountStore()
 const bankStore = useBankStore()
 
 const props = defineProps({
+  hideBalances: Boolean,
+
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
@@ -16,11 +18,6 @@ const props = defineProps({
 
   balances: {
     type: Object as PropType<AccountBalance[]>,
-    required: true
-  },
-
-  hideBalances: {
-    type: Boolean,
     required: true
   }
 })

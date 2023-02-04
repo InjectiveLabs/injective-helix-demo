@@ -15,6 +15,7 @@ import { denomClient } from '@/app/Services'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
 const walletStore = useWalletStore()
+const bankStore = useBankStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const { query } = useRoute()
@@ -124,7 +125,7 @@ function handleTransfer(token: Token = injToken) {
   formValues[BridgeField.TransferDirection] =
     TransferDirection.bankToTradingAccount
 
-  if (!walletStore.hasEnoughInjForGas) {
+  if (!bankStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

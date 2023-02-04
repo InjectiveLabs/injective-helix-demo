@@ -7,9 +7,7 @@ import {
   ErrorType,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { CosmosChainId } from '@injectivelabs/ts-types'
-import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
@@ -19,7 +17,6 @@ import {
   confirmCorrectKeplrAddress,
   validateCosmosWallet
 } from '@/app/services/cosmos'
-import { INJ_GAS_BUFFER, IS_DEVNET } from '@/app/utils/constants'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -56,22 +53,6 @@ export const useWalletStore = defineStore('wallet', {
 
     isCosmosWallet: (state) => {
       return isCosmosWallet(state.wallet)
-    },
-
-    hasEnoughInjForGas: (state) => {
-      const bankStore = useBankStore()
-
-      // fee delegation don't work on devnet
-      const isWalletExemptFromGasFee =
-        !isCosmosWallet(state.wallet) && !IS_DEVNET
-
-      const hasEnoughInjForGas = new BigNumberInWei(
-        bankStore.balances[INJ_DENOM] || 0
-      )
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
-
-      return isWalletExemptFromGasFee || hasEnoughInjForGas
     }
   },
   actions: {
@@ -359,7 +340,7 @@ export const useWalletStore = defineStore('wallet', {
     async validate() {
       const { wallet, injectiveAddress, address } = useWalletStore()
       const { ethereumChainId, chainId } = useAppStore()
-      const { hasEnoughInjForGas } = useWalletStore()
+      const { hasEnoughInjForGas } = useBankStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)

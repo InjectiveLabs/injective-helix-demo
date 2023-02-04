@@ -22,12 +22,10 @@ const emit = defineEmits<{
 const status = reactive(new Status(StatusType.Idle))
 
 function handleClickOnSetAllowance() {
-  const { tokenWithBalance } = props
-
   status.setLoading()
 
   tokenStore
-    .setTokenAllowance(tokenWithBalance)
+    .setTokenAllowance(props.tokenWithBalance)
     .then(() => {
       emit('unlocked')
 

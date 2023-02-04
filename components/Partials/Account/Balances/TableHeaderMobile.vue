@@ -3,13 +3,10 @@ import { PropType } from 'vue'
 import { BalanceHeaderType } from '@/types'
 
 const props = defineProps({
+  ascending: Boolean,
+
   sortBy: {
     type: String as PropType<BalanceHeaderType>,
-    required: true
-  },
-
-  ascending: {
-    type: Boolean,
     required: true
   }
 })

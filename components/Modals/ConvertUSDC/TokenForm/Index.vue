@@ -13,7 +13,7 @@ import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const bankStore = useBankStore()
 
 const props = defineProps({
   isBase: Boolean,
@@ -147,7 +147,7 @@ watch(
 )
 
 onMounted(() => {
-  if (!walletStore.hasEnoughInjForGas) {
+  if (!bankStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 })

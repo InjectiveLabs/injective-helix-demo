@@ -25,6 +25,7 @@ const marketRoute = computed(() => {
   return marketRoute || { name: 'markets' }
 })
 </script>
+
 <template>
   <CommonTableRow v-if="market" dense>
     <div

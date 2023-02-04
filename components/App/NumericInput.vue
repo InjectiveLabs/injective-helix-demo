@@ -5,9 +5,9 @@ const slots = useSlots()
 
 const props = defineProps({
   sm: Boolean,
+  valid: Boolean,
   noPadding: Boolean,
   transparentBg: Boolean,
-  valid: Boolean,
 
   errors: {
     type: Array as PropType<string[]>,

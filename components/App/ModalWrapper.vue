@@ -3,12 +3,12 @@ const slots = useSlots()
 const { width } = useWindowSize()
 
 const props = defineProps({
-  hideCloseButton: Boolean,
-  isAlwaysOpen: Boolean,
-  noPadding: Boolean,
   lg: Boolean,
   md: Boolean,
-  sm: Boolean
+  sm: Boolean,
+  noPadding: Boolean,
+  isAlwaysOpen: Boolean,
+  hideCloseButton: Boolean
 })
 
 const emit = defineEmits<{
@@ -83,7 +83,11 @@ watchDebounced(
           <AppSpinner lg />
         </div>
         <div v-else>
-          <div :class="{ 'px-6': !noPadding }">
+          <div
+            :class="{
+              'px-6': !noPadding
+            }"
+          >
             <slot />
           </div>
 

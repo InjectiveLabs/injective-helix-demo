@@ -16,7 +16,7 @@ const props = defineProps({
     required: true
   },
 
-  perc: {
+  percentage: {
     type: String,
     required: true
   },
@@ -30,7 +30,7 @@ const props = defineProps({
 const avatarSrc = ref('')
 
 const percentage = computed(() => {
-  return Number(props.perc)
+  return Number(props.percentage)
 })
 
 const volumeInBase = computed(() => {

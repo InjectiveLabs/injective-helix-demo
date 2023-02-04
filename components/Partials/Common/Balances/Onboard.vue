@@ -5,7 +5,6 @@ import { BridgeBusEvents, Modal, UiMarketWithToken } from '@/types'
 
 const bankStore = useBankStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 
 const props = defineProps({
   market: {
@@ -17,7 +16,7 @@ const props = defineProps({
 const activeStep = computed(() => (bankStore.hasAnyBankBalance ? 2 : 1))
 
 function handleClickOnButton() {
-  if (!walletStore.hasEnoughInjForGas) {
+  if (!bankStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

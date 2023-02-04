@@ -13,7 +13,7 @@ import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const bankStore = useBankStore()
 const { getMarketIdByRouteQuery, tradableTokenMaps } = useConvertFormatter()
 
 const props = defineProps({
@@ -77,7 +77,7 @@ const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 onMounted(() => {
   const { market, orderType } = getMarketIdByRouteQuery()
 
-  if (!walletStore.hasEnoughInjForGas) {
+  if (!bankStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

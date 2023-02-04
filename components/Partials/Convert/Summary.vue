@@ -78,7 +78,6 @@ const priceForDisplay = computed(() => {
   Sell:
   quantity * execution_price * (1 - slippage_tolerance) * (1 - feeRate)
 */
-
 const minimalReceived = computed<BigNumberInBase>(() => {
   const quantity = new BigNumberInBase(props.amount || 0)
   const feeRate = new BigNumberInBase(takerFeeRate.value)

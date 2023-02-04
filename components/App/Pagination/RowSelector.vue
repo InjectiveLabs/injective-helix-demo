@@ -46,11 +46,9 @@ function handleUpdateLimit(limit: any) {
           <BaseIcon
             name="chevron-down"
             class="h-4 w-4 min-w-4 rotate-180"
-            :class="[
-              {
-                'ease-in-out duration-300 rotate-0': shown
-              }
-            ]"
+            :class="{
+              'ease-in-out duration-300 rotate-0': shown
+            }"
           />
         </div>
       </div>
@@ -72,7 +70,10 @@ function handleUpdateLimit(limit: any) {
             >
               <span
                 class="font-semibold group-hover:text-black text-sm"
-                :class="{ 'text-white': !active, 'text-blue-500': active }"
+                :class="{
+                  'text-white': !active,
+                  'text-blue-500': active
+                }"
               >
                 {{ item }}
               </span>

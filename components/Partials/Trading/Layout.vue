@@ -151,7 +151,7 @@ watch(
                   v-if="
                     fetchStatus.isIdle() &&
                     walletStore.isUserWalletConnected &&
-                    !walletStore.hasEnoughInjForGas
+                    !bankStore.hasEnoughInjForGas
                   "
                   class="bg-gray-1000 rounded-lg mb-1 p-6"
                 >

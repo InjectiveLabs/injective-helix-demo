@@ -154,7 +154,7 @@ function closePosition() {
       v-model:side="side"
       :market-options="marketOptions"
       :side-options="sideOptions"
-      @close-all-positions="handleCloseAllPositions"
+      @positions:close="handleCloseAllPositions"
     />
 
     <table class="w-full border-collapse hidden lg:table">

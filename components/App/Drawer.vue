@@ -19,7 +19,9 @@ function toggle() {
         <BaseIcon
           name="caret-down"
           class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
-          :class="{ 'transform rotate-180': isOpen }"
+          :class="{
+            'transform rotate-180': isOpen
+          }"
         />
       </div>
     </div>

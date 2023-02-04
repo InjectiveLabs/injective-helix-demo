@@ -5,11 +5,11 @@ import { Status } from '@injectivelabs/utils'
 const attrs = useAttrs()
 
 const props = defineProps({
-  disabled: Boolean,
   xs: Boolean,
   sm: Boolean,
   lg: Boolean,
   xl: Boolean,
+  disabled: Boolean,
 
   status: {
     type: Object as PropType<Status>,

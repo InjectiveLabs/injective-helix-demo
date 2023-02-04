@@ -133,11 +133,11 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
 }
 
 function submitForm() {
-  submitStatus.setLoading()
-
   if (!market) {
     return
   }
+
+  submitStatus.setLoading()
 
   spotStore
     .submitMarketOrder({
