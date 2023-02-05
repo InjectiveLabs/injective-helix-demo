@@ -28,19 +28,19 @@ const { balancesWithToken } = useBalance()
 const status = reactive(new Status(StatusType.Loading))
 
 const totalPositionsPnlByQuoteDenom = computed(() => {
-  return positionStore.subaccountPositions.reduce((list, p) => {
+  return positionStore.subaccountPositions.reduce((positions, p) => {
     const market = derivativeStore.markets.find(
       (m) => m.marketId === p.marketId
     )
 
     if (!market) {
-      return list
+      return positions
     }
 
     const quoteDenom = market.quoteDenom.toLowerCase()
 
-    if (!list[quoteDenom]) {
-      list[quoteDenom] = ZERO_IN_BASE
+    if (!positions[quoteDenom]) {
+      positions[quoteDenom] = ZERO_IN_BASE
     }
 
     const price = new BigNumberInWei(p.entryPrice).toBase(
@@ -54,9 +54,9 @@ const totalPositionsPnlByQuoteDenom = computed(() => {
       .times(markPrice.minus(price))
       .times(p.direction === TradeDirection.Long ? 1 : -1)
 
-    list[quoteDenom] = list[quoteDenom].plus(pnl)
+    positions[quoteDenom] = positions[quoteDenom].plus(pnl)
 
-    return list
+    return positions
   }, {} as Record<string, BigNumberInBase>)
 })
 

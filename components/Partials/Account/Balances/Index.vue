@@ -45,6 +45,9 @@ const aggregatedUsdcBalance = computed(() => {
       reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
         .plus(balance.reservedBalance)
         .toFixed(),
+      subaccountBalance: new BigNumberInBase(aggregatedUsdc.subaccountBalance)
+        .plus(balance.subaccountBalance)
+        .toFixed(),
       balance: new BigNumberInBase(aggregatedUsdc.balance)
         .plus(balance.balance)
         .toFixed()
