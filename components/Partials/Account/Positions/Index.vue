@@ -106,7 +106,7 @@ function handleCloseAllPositions() {
 }
 
 function closeAllPositions() {
-  return positionStore
+  positionStore
     .closeAllPosition(positions.value)
     .then(() => {
       success({
@@ -118,7 +118,6 @@ function closeAllPositions() {
 
 function closePosition() {
   const [position] = positions.value
-
   const market = markets.value.find((m) => m.marketId === position.marketId)
 
   if (!market) {
@@ -131,7 +130,7 @@ function closePosition() {
     )
   }
 
-  return positionStore
+  positionStore
     .closePosition({
       position,
       market
