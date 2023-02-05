@@ -12,7 +12,6 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const {
   errors,
-  handleSubmit,
   resetForm,
   setFieldValue,
   values: formValues
@@ -30,6 +29,12 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
     market,
     isBaseAmount
   })
+
+const hasFormErrors = computed(() =>
+  Object.keys(errors).filter(
+    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+  )
+)
 
 const isBuy = computed(
   () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
@@ -137,7 +142,7 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   ]).finally(() => fetchStatus.setIdle())
 }
 
-function submitForm() {
+function handleFormSubmit() {
   if (!market) {
     return
   }
@@ -160,16 +165,6 @@ function submitForm() {
       submitStatus.setIdle()
     })
 }
-
-const submit = handleSubmit(submitForm, ({ errors }) => {
-  const filteredErrors = Object.keys(errors).filter(
-    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
-  )
-
-  if (filteredErrors.length === 0) {
-    submitForm()
-  }
-})
 </script>
 
 <template>
@@ -185,6 +180,11 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
       <PartialsConvertTokenForm
         v-model:isBaseAmount="isBaseAmount"
         v-model:market="market"
+        v-bind="{
+          formValues,
+          worstPriceWithSlippage,
+          isLoading: fetchStatus.isLoading() || submitStatus.isLoading()
+        }"
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
         :form-values="formValues"
@@ -197,11 +197,11 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
       <PartialsConvertSummary
         class="mt-4"
         v-bind="{
-          formValues,
           isBuy,
-          amount,
-          worstPriceWithSlippage,
           market,
+          amount,
+          formValues,
+          worstPriceWithSlippage,
           isLoading: fetchStatus.isLoading()
         }"
       />
@@ -210,15 +210,16 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
         v-if="market"
         class="mt-6"
         v-bind="{
-          formValues,
+          isBuy,
           amount,
           errors,
-          isBuy,
           market,
-          executionPrice: worstPrice,
-          status: submitStatus
+          formValues,
+          hasFormErrors,
+          status: submitStatus,
+          executionPrice: worstPrice
         }"
-        @form:submit="submit"
+        @form:submit="handleFormSubmit"
       />
     </div>
   </AppHocLoading>
