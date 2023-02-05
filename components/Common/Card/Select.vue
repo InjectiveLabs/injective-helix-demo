@@ -19,13 +19,17 @@ defineProps({
   >
     <div
       class="h-full flex flex-col"
-      :class="{ 'min-w-2xs sm:min-w-full': lg }"
+      :class="{
+        'min-w-2xs sm:min-w-full': lg
+      }"
     >
       <slot name="subtitle" />
 
       <div
         class="flex items-center h-full gap-4"
-        :class="{ 'justify-between': lg }"
+        :class="{
+          'justify-between': lg
+        }"
       >
         <AppSpinner v-if="showLoading" />
 

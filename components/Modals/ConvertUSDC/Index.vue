@@ -37,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const isBase = ref(false)
+const isBaseAmount = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
@@ -58,23 +58,28 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
     formValues: computed(() => formValues),
     market: computed(() => props.market),
-    isBase
+    isBaseAmount
   })
 
 function updateAmount({
   amount,
-  isBase: isBaseUpdate
+  isBaseAmount: isBaseAmountUpdate
 }: {
   amount: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  isBase.value = isBaseUpdate
+  isBaseAmount.value = isBaseAmountUpdate
 
-  const updatedAmount = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+  const updatedAmount = updateAmountFromBase({
+    amount,
+    isBaseAmount: isBaseAmountUpdate
+  })
 
   if (updatedAmount) {
     updateFormValue({
-      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      field: isBaseAmountUpdate
+        ? TradeField.QuoteAmount
+        : TradeField.BaseAmount,
       value: updatedAmount
     })
   }
@@ -96,7 +101,7 @@ function resetFormValues() {
 
   resetForm()
 
-  isBase.value = !isBuyState
+  isBaseAmount.value = !isBuyState
 
   updateFormValue({
     field: TradeField.OrderType,
@@ -162,7 +167,7 @@ function closeModal() {
         </div>
 
         <ModalsConvertUsdcTokenForm
-          v-model:isBase="isBase"
+          v-model:isBaseAmount="isBaseAmount"
           v-bind="{
             balances,
             formValues,

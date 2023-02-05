@@ -14,18 +14,20 @@ const props = defineProps({
     default: () => []
   },
 
-  wrapperClasses: {
+  inputClasses: {
     type: String,
     default: ''
   },
 
-  inputClasses: {
+  wrapperClasses: {
     type: String,
     default: ''
   }
 })
 
-const emit = defineEmits<{ (e: 'blur', value: string): void }>()
+const emit = defineEmits<{
+  (e: 'blur', value: string): void
+}>()
 
 const wrapperClass = computed(() => {
   const result = ['shadow-none']
@@ -73,7 +75,7 @@ const classes = computed(() => {
   return result.join(' ')
 })
 
-function onBlur(e?: Event) {
+function handleBlur(e?: Event) {
   const { value } = e?.target as HTMLInputElement
 
   if (isNaN(parseInt(value))) {
@@ -108,7 +110,7 @@ export default {
             v-bind="$attrs"
             :class="inputClass"
             class="input"
-            @blur="onBlur"
+            @blur="handleBlur"
           />
 
           <div v-if="slots.max" class="mr-3">

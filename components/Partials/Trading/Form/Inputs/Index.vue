@@ -18,9 +18,9 @@ const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 
 const props = defineProps({
-  isBase: Boolean,
   isBuy: Boolean,
   isSpot: Boolean,
+  isBaseAmount: Boolean,
   orderTypeReduceOnly: Boolean,
 
   amountStep: {
@@ -87,7 +87,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
@@ -120,12 +120,12 @@ const tradingTypeLimit = props.isSpot
 
 function updateAmount({
   amount,
-  isBase
+  isBaseAmount
 }: {
   amount?: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  emit('update:amount', { amount, isBase })
+  emit('update:amount', { amount, isBaseAmount })
 }
 
 function updateFormValue({ field, value }: TradeFormValue) {
@@ -139,7 +139,7 @@ function updateFormValue({ field, value }: TradeFormValue) {
       v-if="tradingTypeStopLimit || tradingTypeStopMarket"
       v-bind="{
         formValues,
-        isBase,
+        isBaseAmount,
         isSpot,
         lastTradedPrice,
         market,
@@ -154,7 +154,7 @@ function updateFormValue({ field, value }: TradeFormValue) {
       v-if="tradingTypeLimit || tradingTypeStopLimit"
       v-bind="{
         formValues,
-        isBase,
+        isBaseAmount,
         isBuy,
         isSpot,
         lastTradedPrice,
@@ -173,7 +173,7 @@ function updateFormValue({ field, value }: TradeFormValue) {
       v-bind="{
         amountStep,
         baseAvailableBalance,
-        isBase,
+        isBaseAmount,
         isBuy,
         isSpot,
         formValues,

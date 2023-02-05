@@ -6,7 +6,7 @@ export const computeOrderbookSummary = (
   record: UiOrderbookPriceLevel
 ) => {
   return {
-    quantity: summary.quantity.plus(new BigNumberInWei(record.quantity)),
-    total: summary.total.plus(new BigNumberInBase(record.total || 0))
+    total: summary.total.plus(new BigNumberInBase(record.total || 0)),
+    quantity: summary.quantity.plus(new BigNumberInWei(record.quantity))
   }
 }

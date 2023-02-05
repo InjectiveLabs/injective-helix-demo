@@ -215,7 +215,7 @@ defineExpose({
               ? aggregatedValue
               : aggregatedPriceInBigNumber
           "
-          dont-group-values
+          no-grouping
           data-cy="orderbook-record-price-text-content"
         />
       </span>
@@ -233,7 +233,7 @@ defineExpose({
           :decimals="market.quantityDecimals"
           :number="quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
-          dont-group-values
+          no-grouping
           data-cy="orderbook-record-quantity-text-content"
         />
       </span>
@@ -246,7 +246,7 @@ defineExpose({
         xs
         :decimals="market.priceDecimals"
         :number="total"
-        dont-group-values
+        no-grouping
         data-cy="orderbook-record-total-text-content"
       />
     </span>

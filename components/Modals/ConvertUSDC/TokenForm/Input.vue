@@ -27,7 +27,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
 }>()
 
@@ -65,7 +65,7 @@ onMounted(() => {
     setAmountValue(maxBalanceToFixed.value)
 
     emit('update:amount', {
-      isBase: props.amountFieldName === TradeField.BaseAmount,
+      isBaseAmount: props.amountFieldName === TradeField.BaseAmount,
       amount: maxBalanceToFixed.value
     })
   }
@@ -76,7 +76,7 @@ function handleAmountUpdate(amount: string) {
 
   emit('update:amount', {
     amount,
-    isBase: props.amountFieldName === TradeField.BaseAmount
+    isBaseAmount: props.amountFieldName === TradeField.BaseAmount
   })
 }
 </script>

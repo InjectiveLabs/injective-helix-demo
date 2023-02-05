@@ -7,13 +7,8 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
+  search: {
+    type: String,
     required: true
   },
 
@@ -22,8 +17,13 @@ const props = defineProps({
     required: true
   },
 
-  search: {
-    type: String,
+  activeQuote: {
+    type: String as PropType<MarketQuoteType>,
+    required: true
+  },
+
+  activeCategory: {
+    type: String as PropType<MarketCategoryType>,
     required: true
   }
 })

@@ -1,4 +1,4 @@
-import { TokenWithBalance, UNLIMITED_ALLOWANCE } from '@injectivelabs/sdk-ui-ts'
+import { UNLIMITED_ALLOWANCE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
@@ -8,6 +8,7 @@ import {
   web3Composer
 } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
+import { BalanceWithToken } from '~~/types'
 
 export const transfer = async ({
   amount,
@@ -105,13 +106,13 @@ export const withdraw = async ({
   await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
-export const setTokenAllowance = async (tokenWithBalance: TokenWithBalance) => {
+export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
   const tokenStore = useTokenStore()
 
   const { address, validate } = useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
 
-  const tokenAddress = tokenWithBalance.erc20Address as keyof Erc20Token
+  const tokenAddress = tokenWithBalance.token.erc20Address as keyof Erc20Token
 
   await queue()
   await fetchGasPrice()

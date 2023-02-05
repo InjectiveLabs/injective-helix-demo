@@ -8,11 +8,11 @@ const derivativeStore = useDerivativeStore()
 
 const {
   boostInfo,
-  derivativeBoostedMarketIdList,
-  derivativeBoostedMultiplierList,
-  disqualifiedMarketIdsList,
   spotBoostedMarketIdList,
-  spotBoostedMultiplierList
+  disqualifiedMarketIdsList,
+  spotBoostedMultiplierList,
+  derivativeBoostedMarketIdList,
+  derivativeBoostedMultiplierList
 } = useTradeReward()
 
 const derivativeBoostedMarkets = computed(() => {

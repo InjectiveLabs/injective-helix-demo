@@ -12,15 +12,15 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>
   },
 
+  prefix: {
+    type: String,
+    default: ''
+  },
+
   decimals: {
     required: false,
     default: UI_DEFAULT_DISPLAY_DECIMALS,
     type: Number
-  },
-
-  prefix: {
-    type: String,
-    default: ''
   }
 })
 
@@ -31,11 +31,12 @@ const formattedNumberWithDecimals = computed(() =>
 const classes = computed(() => {
   const result = ['flex', 'items-end', 'justify-center']
 
+  const formattedNumber = formattedNumberWithDecimals.value.number.toFixed(
+    formattedNumberWithDecimals.value.decimals
+  )
+
   if (
-    formattedNumberWithDecimals.value.number.toFixed(
-      formattedNumberWithDecimals.value.decimals
-    ).length >
-      12 + formattedNumberWithDecimals.value.decimals ||
+    formattedNumber.length > 12 + formattedNumberWithDecimals.value.decimals ||
     props.sm
   ) {
     result.push('text-sm')

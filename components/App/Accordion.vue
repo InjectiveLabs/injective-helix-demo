@@ -1,20 +1,25 @@
 <script lang="ts" setup>
 defineProps({
-  isOpen: Boolean,
-  sm: Boolean
+  sm: Boolean,
+  isOpen: Boolean
 })
 
 const emit = defineEmits<{
-  (e: 'togglePanel'): void
+  (e: 'panel:toggle'): void
 }>()
 
 function handleToggle() {
-  emit('togglePanel')
+  emit('panel:toggle')
 }
 </script>
 
 <template>
-  <div :class="{ 'pt-6': !sm, 'py-2 px-6': sm }">
+  <div
+    :class="{
+      'pt-6': !sm,
+      'py-2 px-6': sm
+    }"
+  >
     <dt class="text-lg">
       <button
         class="text-left w-full flex justify-between items-start text-gray-200"

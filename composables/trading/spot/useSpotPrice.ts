@@ -17,13 +17,13 @@ import {
 import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useSpotPrice({
+  market,
   formValues,
-  isBase,
-  market
+  isBaseAmount
 }: {
-  formValues: Ref<TradeForm>
-  isBase: Ref<boolean>
   market: Ref<UiSpotMarketWithToken | undefined>
+  formValues: Ref<TradeForm>
+  isBaseAmount: Ref<boolean>
 }) {
   const spotStore = useSpotStore()
 
@@ -36,7 +36,7 @@ export function useSpotPrice({
   )
 
   const amountForCalculation = computed(() => {
-    const amount = isBase.value
+    const amount = isBaseAmount.value
       ? formValues.value[TradeField.BaseAmount]
       : formValues.value[TradeField.QuoteAmount]
 
@@ -79,7 +79,7 @@ export function useSpotPrice({
 
     const { filledNotional, totalFilledBaseQuantity } = calculateAveragePrice({
       isSpot: true,
-      isBase: isBase.value,
+      isBaseAmount: isBaseAmount.value,
       records: orderbookOrders.value,
       quantity: amountForCalculation.value,
       market: market.value
@@ -100,7 +100,7 @@ export function useSpotPrice({
 
     const { worstPrice } = calculateWorstPrice({
       isSpot: true,
-      isBase: isBase.value,
+      isBaseAmount: isBaseAmount.value,
       records: orderbookOrders.value,
       quantity: amountForCalculation.value,
       market: market.value
@@ -144,7 +144,7 @@ export function useSpotPrice({
     }
 
     const { priceDecimals, quantityDecimals } = market.value
-    const decimalPlaces = isBase.value ? priceDecimals : quantityDecimals
+    const decimalPlaces = isBaseAmount.value ? priceDecimals : quantityDecimals
 
     return new BigNumberInBase(
       averagePrice.value.times(slippage.value).toFixed(decimalPlaces)
@@ -157,7 +157,7 @@ export function useSpotPrice({
     }
 
     const { priceDecimals } = market.value
-    const decimalPlaces = isBase.value ? priceDecimals : priceDecimals
+    const decimalPlaces = isBaseAmount.value ? priceDecimals : priceDecimals
 
     return new BigNumberInBase(
       worstPrice.value.times(slippage.value).toFixed(decimalPlaces)
@@ -166,10 +166,10 @@ export function useSpotPrice({
 
   function updateAmountFromBase({
     amount,
-    isBase: isBaseUpdate
+    isBaseAmount: isBaseAmountUpdate
   }: {
     amount?: string
-    isBase: boolean
+    isBaseAmount: boolean
   }) {
     if (!market.value) {
       return
@@ -181,7 +181,7 @@ export function useSpotPrice({
         ? worstPriceWithSlippage.value
         : new BigNumberInBase(formValues.value[TradeField.LimitPrice])
 
-    if (isBaseUpdate) {
+    if (isBaseAmountUpdate) {
       const updatedQuoteAmount = new BigNumberInBase(
         amount ?? formValues.value[TradeField.BaseAmount]
       ).times(executionPrice)

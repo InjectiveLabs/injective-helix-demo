@@ -13,7 +13,7 @@ function handleClick() {
 </script>
 
 <template>
-  <button class="flex justify-start gap-2" @click="handleClick">
+  <button class="flex justify-start gap-2" @click.stop="handleClick">
     <div class="w-4 h-4 border border-white rounded-full p-[3px]">
       <div v-if="active" class="w-full h-full bg-white rounded-full" />
     </div>

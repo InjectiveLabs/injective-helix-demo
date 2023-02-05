@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TokenWithBalance } from '@injectivelabs/sdk-ui-ts'
+import { BalanceWithToken } from '~~/types'
 
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
@@ -10,13 +10,13 @@ const { t } = useLang()
 
 const props = defineProps({
   tokenWithBalance: {
-    type: Object as PropType<TokenWithBalance>,
+    type: Object as PropType<BalanceWithToken>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  (e: 'unlocked'): void
+  (e: 'allowance:set'): void
 }>()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -27,7 +27,7 @@ function handleSetAllowance() {
   tokenStore
     .setTokenAllowance(props.tokenWithBalance)
     .then(() => {
-      emit('unlocked')
+      emit('allowance:set')
 
       success({
         title: t('bridge.successfullySetAllowance')
@@ -42,9 +42,6 @@ function handleSetAllowance() {
 
 <template>
   <div class="w-full">
-    <p class="mb-4">
-      {{ $t('bridge.setAllowanceFor', { asset: tokenWithBalance.symbol }) }}
-    </p>
     <AppButton
       lg
       :status="status"

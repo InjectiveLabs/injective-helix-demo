@@ -12,10 +12,9 @@ import {
   BigNumberInWei,
   INJ_DENOM
 } from '@injectivelabs/utils'
-import { isCosmosWallet } from '@injectivelabs/wallet-ts'
 import { bankApi, msgBroadcastClient, tokenService } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
-import { INJ_GAS_BUFFER, IS_DEVNET } from '@/app/utils/constants'
+import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 
 type BankStoreState = {
   balances: BankBalances
@@ -58,17 +57,13 @@ export const useBankStore = defineStore('bank', {
     hasEnoughInjForGas: (state) => {
       const walletStore = useWalletStore()
 
-      // fee delegation don't work on devnet
-      const isWalletExemptFromGasFee =
-        !isCosmosWallet(walletStore.wallet) && !IS_DEVNET
-
       const hasEnoughInjForGas = new BigNumberInWei(
         state.balances[INJ_DENOM] || 0
       )
         .toBase()
         .gte(INJ_GAS_BUFFER)
 
-      return isWalletExemptFromGasFee || hasEnoughInjForGas
+      return walletStore.isWalletExemptFromGasFee || hasEnoughInjForGas
     }
   },
   actions: {

@@ -3,14 +3,14 @@ const props = defineProps({
   disabled: Boolean,
   modelValue: Boolean,
 
-  dataCy: {
-    type: String,
-    default: 'unknown-id'
-  },
-
   tooltip: {
     type: String,
     default: ''
+  },
+
+  dataCy: {
+    type: String,
+    default: 'unknown-id'
   }
 })
 
@@ -42,7 +42,9 @@ const checked = computed({
         :for="uid"
         :data-cy="dataCy"
         class="top-0 left-0 flex items-center justify-center absolute"
-        :class="{ 'cursor-pointer': !disabled }"
+        :class="{
+          'cursor-pointer': !disabled
+        }"
       >
         <BaseIcon name="check" class="w-2 h-2 text-gray-750 checkmark" />
         <BaseIcon name="minus" class="w-2 h-2 text-gray-500 minus" />

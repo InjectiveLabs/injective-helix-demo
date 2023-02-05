@@ -67,7 +67,7 @@ const hasBackground = computed(() => {
   return classes.includes('bg-')
 })
 
-function click() {
+function handleClick() {
   if (props.status.isLoading()) {
     return
   }
@@ -100,7 +100,7 @@ export default {
     ]"
     class="font-bold rounded-md border box-border focus:outline-none"
     v-bind="filteredAttrs"
-    @click="click"
+    @click="handleClick"
   >
     <slot v-if="status && status.isNotLoading()" />
     <span

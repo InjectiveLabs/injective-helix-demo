@@ -12,11 +12,11 @@ const tierLevelsWithZeroTierLevel = computed(() => {
 
   return [
     {
-      makerDiscountRate: '0',
-      takerDiscountRate: '0',
+      volume: '0',
       stakedAmount: '0',
       feePaidAmount: '0',
-      volume: '0'
+      makerDiscountRate: '0',
+      takerDiscountRate: '0'
     },
     ...feeDiscountSchedule.value.tierInfosList
   ]

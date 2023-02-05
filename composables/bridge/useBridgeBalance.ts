@@ -1,88 +1,51 @@
-import type { Ref } from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  INJ_DENOM
-} from '@injectivelabs/utils'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { INJ_GAS_BUFFER_FOR_BRIDGE, IS_DEVNET } from '@/app/utils/constants'
 import {
   BalanceWithToken,
   BridgeField,
-  BridgeForm,
   BridgeType,
   TransferDirection
 } from '@/types'
 
-const appendCachedTokens = (
-  balances: BalanceWithToken[],
-  cachedTokens: Token[]
-) => {
-  const cachedTokensWithBalance = cachedTokens.map((token) => ({
-    balance: '0',
-    balanceToBase: '0',
-    denom: token.denom,
-    token
-  }))
-
-  return [
-    ...new Map(
-      [...cachedTokensWithBalance, ...balances].map((token) => [
-        token.denom,
-        token
-      ])
-    ).values()
-  ]
-}
-
-export function useBridgeBalance({
-  bridgeForm,
-  bridgeType,
-  cachedTokens
-}: {
-  bridgeForm: Ref<BridgeForm>
-  bridgeType: Ref<BridgeType>
-  cachedTokens: Ref<Token[]>
-}) {
+export function useBridgeBalance() {
+  const state = useBridgeState()
   const accountStore = useAccountStore()
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
-  const walletStore = useWalletStore()
 
   const erc20Balances = computed(() => {
     const balances = tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(
-      (b) => {
-        const balance = new BigNumberInWei(b.balance)
-          .toBase(b.decimals)
+      (token) => {
+        const balance = new BigNumberInWei(token.balance)
+          .toBase(token.decimals)
           .toString()
 
         return {
-          token: { ...b } as Token,
-          denom: b.denom,
-          balance,
+          token: token as Token,
+          denom: token.denom,
+          balance: token.balance,
           balanceToBase: balance
         } as BalanceWithToken
       }
     )
 
-    return appendCachedTokens(balances, cachedTokens.value)
+    return balances
   })
 
   const bankBalances = computed(() => {
-    const balances = bankStore.bankBalancesWithToken.map((b) => {
-      const balance = new BigNumberInWei(b.balance || 0)
-        .toBase(b.token.decimals)
+    const balances = bankStore.bankBalancesWithToken.map((tokenWithBalance) => {
+      const balance = new BigNumberInWei(tokenWithBalance.balance || 0)
+        .toBase(tokenWithBalance.token.decimals)
         .toString()
 
       return {
-        ...b,
-        balance,
+        ...tokenWithBalance,
         balanceToBase: balance
       } as BalanceWithToken
     })
 
-    return appendCachedTokens(balances, cachedTokens.value)
+    return balances
   })
 
   const accountBalances = computed(() => {
@@ -96,71 +59,76 @@ export function useBridgeBalance({
           (token) => token.denom === subaccountBalance.denom
         )
 
-        if (!token) {
-          return undefined
-        }
-
         return {
+          token,
           denom: subaccountBalance.denom,
           balance: subaccountBalance.availableBalance,
           balanceToBase: new BigNumberInWei(subaccountBalance.availableBalance)
-            .toBase(token.decimals)
-            .toFixed(),
-          token
+            .toBase(token?.decimals)
+            .toFixed()
         }
       })
-      .filter((balance) => balance) as BalanceWithToken[]
+      .filter((balance) => balance.token) as BalanceWithToken[]
 
-    return appendCachedTokens(balances, cachedTokens.value)
+    return balances
   })
 
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
-    switch (bridgeType.value) {
-      case BridgeType.Deposit:
-        return erc20Balances.value
-      case BridgeType.Withdraw:
-        return bankBalances.value
-      default: {
-        return bridgeForm.value[BridgeField.TransferDirection] ===
-          TransferDirection.bankToTradingAccount
-          ? bankBalances.value
-          : accountBalances.value
-      }
+    if (state.bridgeType.value === BridgeType.Deposit) {
+      return erc20Balances.value
     }
+
+    if (state.bridgeType.value === BridgeType.Withdraw) {
+      const destinationIsEthereum =
+        state.form[BridgeField.BridgingNetwork] === BridgingNetwork.Ethereum
+
+      if (destinationIsEthereum) {
+        return bankBalances.value.filter(
+          (balance) => balance.token.erc20Address
+        )
+      }
+
+      return bankBalances.value
+    }
+
+    return state.form[BridgeField.TransferDirection] ===
+      TransferDirection.bankToTradingAccount
+      ? bankBalances.value
+      : accountBalances.value
   })
 
-  const transferableBalancesWithToken = computed(() => {
-    return balancesWithToken.value
-      .map((balanceWithToken) => {
-        // fee delegation don't work on devnet
-        const isWalletExemptFromGasFee =
-          !walletStore.isCosmosWallet && !IS_DEVNET
-
-        if (
-          isWalletExemptFromGasFee ||
-          bridgeForm.value[BridgeField.TransferDirection] ===
+  /**
+   * const noGasBufferNeededForTransfer =
+          walletStore.isWalletExemptFromGasFee ||
+          state.form[BridgeField.TransferDirection] ===
             TransferDirection.tradingAccountToBank ||
           balanceWithToken.denom !== INJ_DENOM
-        ) {
+
+        if (noGasBufferNeededForTransfer) {
           return balanceWithToken
         }
 
         const transferableBalance = new BigNumberInBase(
           balanceWithToken.balance
         ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
-
-        if (transferableBalance.lte(ZERO_IN_BASE)) {
-          return { ...balanceWithToken, balance: '0', balanceToBase: '0' }
-        }
+        const transferableBalanceCapped = transferableBalance.gt(0)
+          ? transferableBalance
+          : ZERO_IN_BASE
 
         return {
           ...balanceWithToken,
-          balance: transferableBalance.toString(),
-          balanceToBase: transferableBalance.toString()
+          balance: transferableBalanceCapped.toString(),
+          balanceToBase: transferableBalanceCapped.toString()
         }
-      })
-      .filter(({ denom }) => denom && !denom.startsWith('share'))
+   */
+
+  const transferableBalancesWithToken = computed(() => {
+    return balancesWithToken.value.filter(
+      ({ denom }) => denom && !denom.startsWith('share')
+    )
   })
 
-  return { transferableBalancesWithToken }
+  return {
+    transferableBalancesWithToken
+  }
 }

@@ -17,13 +17,13 @@ import {
 import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useDerivativePrice({
+  market,
   formValues,
-  isBase,
-  market
+  isBaseAmount
 }: {
-  formValues: Ref<TradeForm>
-  isBase: Ref<boolean>
   market: Ref<UiDerivativeMarketWithToken>
+  formValues: Ref<TradeForm>
+  isBaseAmount: Ref<boolean>
 }) {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
@@ -37,7 +37,7 @@ export function useDerivativePrice({
   )
 
   const amountForCalculation = computed(() => {
-    const amount = isBase.value
+    const amount = isBaseAmount.value
       ? formValues.value[TradeField.BaseAmount]
       : formValues.value[TradeField.QuoteAmount]
 
@@ -79,7 +79,7 @@ export function useDerivativePrice({
     }
 
     const { filledNotional, totalFilledBaseQuantity } = calculateAveragePrice({
-      isBase: isBase.value,
+      isBaseAmount: isBaseAmount.value,
       isSpot: false,
       records: orderbookOrders.value,
       quantity: amountForCalculation.value,
@@ -100,7 +100,7 @@ export function useDerivativePrice({
     }
 
     const { worstPrice } = calculateWorstPrice({
-      isBase: isBase.value,
+      isBaseAmount: isBaseAmount.value,
       isSpot: false,
       records: orderbookOrders.value,
       quantity: amountForCalculation.value,
@@ -162,7 +162,7 @@ export function useDerivativePrice({
 
   const averagePriceWithSlippage = computed<BigNumberInBase>(() => {
     const { priceDecimals, quantityDecimals } = market.value
-    const decimalPlaces = isBase ? priceDecimals : quantityDecimals
+    const decimalPlaces = isBaseAmount ? priceDecimals : quantityDecimals
 
     return new BigNumberInBase(
       averagePrice.value.times(slippage.value).toFixed(decimalPlaces)
@@ -193,7 +193,7 @@ export function useDerivativePrice({
     }
 
     const { priceDecimals, quantityDecimals } = market.value
-    const decimalPlaces = isBase ? priceDecimals : quantityDecimals
+    const decimalPlaces = isBaseAmount ? priceDecimals : quantityDecimals
 
     return new BigNumberInBase(
       worstPrice.value.times(slippage.value).toFixed(decimalPlaces)
@@ -202,10 +202,10 @@ export function useDerivativePrice({
 
   function updateAmountFromBase({
     amount,
-    isBase: isBaseUpdate
+    isBaseAmount: isBaseAmountUpdate
   }: {
     amount?: string
-    isBase: boolean
+    isBaseAmount: boolean
   }) {
     if (!market.value) {
       return
@@ -221,7 +221,7 @@ export function useDerivativePrice({
         ZERO_IN_BASE
       : executionPrice
 
-    if (isBaseUpdate) {
+    if (isBaseAmountUpdate) {
       const updatedQuoteAmount = new BigNumberInBase(
         amount ?? formValues.value[TradeField.BaseAmount]
       ).times(price)

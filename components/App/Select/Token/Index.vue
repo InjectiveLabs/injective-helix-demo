@@ -7,20 +7,16 @@ const props = defineProps({
   hideMax: Boolean,
   disabled: Boolean,
   required: Boolean,
-
-  additionalRules: {
-    type: Object,
-    default: undefined
-  },
-
-  amountFieldName: {
-    type: String as PropType<TradeField | BridgeField>,
-    default: TradeField.BaseAmount
-  },
+  inputDisabled: Boolean,
 
   denom: {
     type: String,
     default: ''
+  },
+
+  options: {
+    type: Array as PropType<BalanceWithToken[]>,
+    default: () => []
   },
 
   maxDecimals: {
@@ -28,9 +24,14 @@ const props = defineProps({
     default: 6
   },
 
-  options: {
-    type: Array as PropType<BalanceWithToken[]>,
-    default: () => []
+  amountFieldName: {
+    type: String as PropType<TradeField | BridgeField>,
+    default: TradeField.BaseAmount
+  },
+
+  additionalRules: {
+    type: Object,
+    default: undefined
   }
 })
 
@@ -38,7 +39,7 @@ const emit = defineEmits<{
   (e: 'update:denom', state: string): void
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
   (e: 'update:max', state: string): void
 }>()
@@ -80,7 +81,7 @@ const {
 })
 
 const denomValue = computed({
-  get: (): string | undefined => props.denom || '',
+  get: (): string => props.denom || '',
   set: (denom?: string) => {
     if (denom) {
       emit('update:denom', denom)
@@ -93,7 +94,7 @@ function handleAmountUpdate(amount: string) {
 
   emit('update:amount', {
     amount,
-    isBase: props.amountFieldName === TradeField.BaseAmount
+    isBaseAmount: props.amountFieldName === TradeField.BaseAmount
   })
 }
 
@@ -137,7 +138,8 @@ export default {
       :disabled="disabled"
       :distance="amountErrors.length > 0 ? 44 : 24"
       :flip="false"
-      auto-size="true"
+      :auto-size="true"
+      placement="bottom"
       auto-boundary-max-size
       popper-class="dropdown"
     >
@@ -150,7 +152,7 @@ export default {
             transparent-bg
             input-classes="p-0 text-xl font-bold"
             :placeholder="inputPlaceholder"
-            :disabled="disabled || !selectedToken"
+            :disabled="disabled || !selectedToken || inputDisabled"
             :max-decimals="maxDecimals"
             @update:model-value="handleAmountUpdate"
             @click.stop

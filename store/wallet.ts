@@ -17,6 +17,7 @@ import {
   confirmCorrectKeplrAddress,
   validateCosmosWallet
 } from '@/app/services/cosmos'
+import { IS_DEVNET } from '~~/app/utils/constants'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -29,13 +30,13 @@ type WalletStoreState = {
 }
 
 const initialStateFactory = (): WalletStoreState => ({
-  walletConnectStatus: WalletConnectStatus.idle,
   address: '',
+  addresses: [],
   injectiveAddress: '',
   addressConfirmation: '',
-  addresses: [],
+  wallet: Wallet.Metamask,
   metamaskInstalled: false,
-  wallet: Wallet.Metamask
+  walletConnectStatus: WalletConnectStatus.idle
 })
 
 export const useWalletStore = defineStore('wallet', {
@@ -53,6 +54,15 @@ export const useWalletStore = defineStore('wallet', {
 
     isCosmosWallet: (state) => {
       return isCosmosWallet(state.wallet)
+    },
+
+    /**
+     * Fee delegation doesn't
+     * work for cosmos wallets and its disabled
+     * on devnet
+     */
+    isWalletExemptFromGasFee: (state) => {
+      return !isCosmosWallet(state.wallet) && !IS_DEVNET
     }
   },
   actions: {

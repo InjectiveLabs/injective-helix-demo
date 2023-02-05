@@ -18,7 +18,7 @@ const {
   values: formValues
 } = useForm<TradeForm>()
 
-const isBase = ref(false)
+const isBaseAmount = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>()
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -38,7 +38,7 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
     formValues: computed(() => formValues),
     market,
-    isBase
+    isBaseAmount
   })
 
 onMounted(() => {
@@ -58,18 +58,23 @@ function updateFormValue({ field, value }: TradeFormValue) {
 
 function updateAmount({
   amount,
-  isBase: isBaseUpdate
+  isBaseAmount: isBaseAmountUpdate
 }: {
   amount: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  isBase.value = isBaseUpdate
+  isBaseAmount.value = isBaseAmountUpdate
 
-  const updatedAmount = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+  const updatedAmount = updateAmountFromBase({
+    amount,
+    isBaseAmount: isBaseAmountUpdate
+  })
 
   if (updatedAmount) {
     updateFormValue({
-      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      field: isBaseAmountUpdate
+        ? TradeField.QuoteAmount
+        : TradeField.BaseAmount,
       value: updatedAmount
     })
   }
@@ -80,7 +85,7 @@ function resetFormValues() {
 
   resetForm()
 
-  isBase.value = !isBuyState
+  isBaseAmount.value = !isBuyState
 
   updateFormValue({
     field: TradeField.OrderType,
@@ -178,7 +183,7 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
       </div>
 
       <PartialsConvertTokenForm
-        v-model:isBase="isBase"
+        v-model:isBaseAmount="isBaseAmount"
         v-model:market="market"
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"

@@ -16,11 +16,11 @@ export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
 )
 
 export const streamSubaccountSpotOrders = ({
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
-  subaccountId: string
   callback: SpotOrdersStreamCallback
+  subaccountId: string
 }) => {
   const streamFn = spotMarketStream.streamSpotOrders.bind(spotMarketStream)
   const streamFnArgs = {
@@ -36,11 +36,11 @@ export const streamSubaccountSpotOrders = ({
 }
 
 export const streamSubaccountSpotTrades = ({
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
-  subaccountId: string
   callback: SpotTradesStreamCallback
+  subaccountId: string
 }) => {
   const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
@@ -56,11 +56,11 @@ export const streamSubaccountSpotTrades = ({
 }
 
 export const streamSubaccountDerivativeOrders = ({
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
-  subaccountId: string
   callback: DerivativeOrdersStreamCallback
+  subaccountId: string
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeOrders.bind(
     derivativesMarketStream
@@ -78,11 +78,11 @@ export const streamSubaccountDerivativeOrders = ({
 }
 
 export const streamSubaccountDerivativeTrades = ({
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
-  subaccountId: string
   callback: DerivativeTradesStreamCallback
+  subaccountId: string
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeTrades.bind(
     derivativesMarketStream

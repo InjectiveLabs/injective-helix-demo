@@ -14,8 +14,8 @@ enum SlippageDisplayOptions {
 const { t } = useLang()
 
 const props = defineProps({
-  isBase: Boolean,
   isSpot: Boolean,
+  isBaseAmount: Boolean,
   isConditionalOrder: Boolean,
   reduceOnlyDisabled: Boolean,
 
@@ -26,7 +26,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBase }: { isBase: boolean }): void
+  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
   (e: 'update:hasAdvancedSettingsErrors', showSlippageError: boolean): void
 }>()

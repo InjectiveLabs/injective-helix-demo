@@ -162,7 +162,7 @@ function closePosition() {
 
       <PartialsAccountPositionsTableRow
         v-for="(position, i) in filteredPositions"
-        :key="i"
+        :key="`position-${i}`"
         :position="position"
         :hide-balances="hideBalances"
       />
@@ -171,7 +171,7 @@ function closePosition() {
     <table class="w-full border-collapse table lg:hidden">
       <PartialsAccountPositionsTableRowMobile
         v-for="(position, i) in filteredPositions"
-        :key="i"
+        :key="`position-${i}`"
         class=""
         :position="position"
         :hide-balances="hideBalances"

@@ -1,50 +1,36 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { NETWORK } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
-import { Modal, BridgeField, BridgeForm, BridgeType } from '@/types'
+import { Modal, BridgeField, BridgeType } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const props = defineProps({
-  bridgeType: {
-    type: String as PropType<BridgeType>,
-    required: true
-  },
-
-  formValues: {
-    required: true,
-    type: Object as PropType<BridgeForm>
-  }
-})
-
-const emit = defineEmits<{
-  (e: 'form:reset'): void
-}>()
+const hubUrl = `${getHubUrl()}/bridge`
 
 const {
-  destinationIsInjective,
+  form,
+  resetForm,
+  bridgeType,
   isTransfer,
   isWithdraw,
+  destinationIsInjective,
   networkIsNotSupported
-} = useBridgeNetwork({
-  bridgeForm: computed(() => props.formValues),
-  bridgeType: computed(() => props.bridgeType)
-})
+} = useBridgeState()
 
-const hubUrl = `${getHubUrl()}/bridge`
-const explorerUrl = `${getExplorerUrl(NETWORK)}/account/${
-  walletStore.injectiveAddress
-}/`
+const explorerUrl = computed(
+  () => `${getExplorerUrl(NETWORK)}/account/${walletStore.injectiveAddress}/`
+)
+
+const isModalOpen = computed(() => modalStore.modals[Modal.BridgeCompleted])
 
 const isOnChainTransaction = computed(
   () => isTransfer.value || (isWithdraw.value && destinationIsInjective.value)
 )
 
-function close() {
-  emit('form:reset')
+function handleModalClose() {
+  resetForm()
 
   modalStore.closeModal(Modal.BridgeCompleted)
 }
@@ -52,10 +38,10 @@ function close() {
 
 <template>
   <AppModal
-    :show="modalStore.modals[Modal.BridgeCompleted]"
+    :show="isModalOpen"
     sm
     data-cy="transfer-completed-modal"
-    @modal:closed="close"
+    @modal:closed="handleModalClose"
   >
     <template #title>
       <h3>
@@ -113,7 +99,7 @@ function close() {
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-completed-modal-ok-button"
               lg
-              @click="close"
+              @click="handleModalClose"
             >
               {{ $t('common.ok') }}
             </AppButton>
@@ -123,9 +109,7 @@ function close() {
         <ModalsBridgeNotSupportedBridgeTypeNote
           v-else
           v-bind="{
-            formValues,
-            selectedNetwork: formValues[BridgeField.BridgingNetwork],
-            bridgeType
+            selectedNetwork: form[BridgeField.BridgingNetwork]
           }"
         />
       </div>

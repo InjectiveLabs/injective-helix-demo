@@ -24,7 +24,6 @@ const emit = defineEmits<{
 
 const view = computed({
   get: (): string => props.view,
-
   set: (value: string) => {
     emit('update:view', value)
   }

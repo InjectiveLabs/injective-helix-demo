@@ -74,7 +74,7 @@ const quoteTradingAvailableBalanceToFormat = computed(() => {
         {{ $t('trade.available_asset', { asset: market.quoteToken.symbol }) }}
       </span>
       <div class="flex gap-2">
-        <PartialsCommonBalancesPeggyUSDCConvert
+        <PartialsCommonBalancesPeggyUsdcConvert
           v-if="market"
           :market="market"
         />

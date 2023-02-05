@@ -71,9 +71,9 @@ const { valueToString: quoteVolumeToFormat } = useBigNumberFormatter(
   }
 )
 
-const volumeInUsdToFormat = computed(() => {
-  return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
-})
+const volumeInUsdToFormat = computed(() =>
+  props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
+)
 
 const formatterOptions = computed(() => {
   return stableCoinDenoms.includes(props.market.quoteToken.symbol)

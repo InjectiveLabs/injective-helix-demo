@@ -3,14 +3,14 @@ import { PropType } from 'vue'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 
 const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
   options: {
     type: Array as PropType<BaseDropdownOption[]>,
     required: true
+  },
+
+  modelValue: {
+    type: String,
+    default: ''
   },
 
   wrapperClass: {

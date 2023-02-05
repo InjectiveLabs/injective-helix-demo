@@ -8,7 +8,10 @@ defineProps({
 <template>
   <div
     class="grid grid-cols-1"
-    :class="{ 'rounded-lg overflow-hidden': round, 'h-full': showEmpty }"
+    :class="{
+      'rounded-lg overflow-hidden': round,
+      'h-full': showEmpty
+    }"
   >
     <slot />
 

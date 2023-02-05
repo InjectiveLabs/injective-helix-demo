@@ -41,13 +41,13 @@ const futuresMarket = computed(() => {
   return attributes.to.params.futures
 })
 
-const market = computed(() => {
-  return spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
-})
+const market = computed(() =>
+  spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+)
 
-const marketType = computed(() => {
-  return spotMarket ? MarketType.Spot : MarketType.Perpetual
-})
+const marketType = computed(() =>
+  spotMarket ? MarketType.Spot : MarketType.Perpetual
+)
 
 function handleVisit() {
   if (spotMarket.value || futuresMarket.value) {

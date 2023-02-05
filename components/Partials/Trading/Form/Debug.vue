@@ -12,7 +12,7 @@ import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
-  isBase: Boolean,
+  isBaseAmount: Boolean,
 
   fees: {
     type: Object as PropType<BigNumberInBase>,
@@ -59,7 +59,7 @@ const {
   worstPriceWithSlippage: worstPriceWithSlippageForSpot
 } = useSpotPrice({
   formValues: computed(() => props.formValues),
-  isBase: computed(() => props.isBase),
+  isBaseAmount: computed(() => props.isBaseAmount),
   market: computed(() => props.market as UiSpotMarketWithToken)
 })
 
@@ -72,7 +72,7 @@ const {
   worstPriceWithSlippage: worstPriceWithSlippageForDerivative
 } = useDerivativePrice({
   formValues: computed(() => props.formValues),
-  isBase: computed(() => props.isBase),
+  isBaseAmount: computed(() => props.isBaseAmount),
   market: computed(() => props.market as UiDerivativeMarketWithToken)
 })
 
@@ -108,7 +108,7 @@ const initialMarginRatio = computed(() => {
       <div class="flex items center justify-between">
         <span>Locked base quantity</span>
         <span>
-          {{ isBase }}
+          {{ isBaseAmount }}
         </span>
       </div>
 

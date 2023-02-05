@@ -60,8 +60,8 @@ type DerivativeStoreState = {
   markets: UiDerivativeMarketWithToken[]
   marketsSummary: UiDerivativeMarketSummary[]
   marketMarkPrice: string
-  orderbook?: UiDerivativeOrderbook
   trades: UiDerivativeTrade[]
+  orderbook?: UiDerivativeOrderbook
   subaccountTrades: UiDerivativeTrade[]
   subaccountTradesCount: number
   subaccountOrders: UiDerivativeLimitOrder[]

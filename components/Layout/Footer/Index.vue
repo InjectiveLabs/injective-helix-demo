@@ -97,7 +97,7 @@ const learnList = [
           <NuxtLink
             v-else-if="item.link"
             :to="{ name: item.link }"
-            class="opacity-75 yarcursor-pointer hover:text-blue-500"
+            class="opacity-75 cursor-pointer hover:text-blue-500"
           >
             {{ item.text }}
           </NuxtLink>

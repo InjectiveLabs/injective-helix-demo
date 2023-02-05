@@ -17,8 +17,8 @@ const bankStore = useBankStore()
 const { getMarketIdByRouteQuery, tradableTokenMaps } = useConvertFormatter()
 
 const props = defineProps({
-  isBase: Boolean,
   isLoading: Boolean,
+  isBaseAmount: Boolean,
 
   formValues: {
     type: Object as PropType<TradeForm>,
@@ -37,12 +37,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:isBase', state: boolean): void
+  (e: 'update:isBaseAmount', state: boolean): void
   (e: 'update:market', state: UiSpotMarketWithToken): void
   (e: 'update:formValue', state: TradeFormValue): void
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
 }>()
 
@@ -108,7 +108,7 @@ function toggleOrderType() {
 function handleSwap() {
   animationCount.value = animationCount.value + 1
 
-  emit('update:isBase', !props.isBase)
+  emit('update:isBaseAmount', !props.isBaseAmount)
 
   emit('update:formValue', {
     field: TradeField.BaseAmount,
@@ -123,8 +123,14 @@ function handleSwap() {
   toggleOrderType()
 }
 
-function updateAmount({ amount, isBase }: { amount: string; isBase: boolean }) {
-  emit('update:amount', { amount, isBase })
+function updateAmount({
+  amount,
+  isBaseAmount
+}: {
+  amount: string
+  isBaseAmount: boolean
+}) {
+  emit('update:amount', { amount, isBaseAmount })
 }
 
 function handleMaxBaseAmountChange(amount: string) {
@@ -133,7 +139,7 @@ function handleMaxBaseAmountChange(amount: string) {
     value: amount
   })
 
-  updateAmount({ amount, isBase: true })
+  updateAmount({ amount, isBaseAmount: true })
 }
 
 function handleMaxQuoteAmountChange(amount: string) {
@@ -152,17 +158,17 @@ function handleMaxQuoteAmountChange(amount: string) {
     value: amountDeductFeeToFixed
   })
 
-  emit('update:amount', { amount: amountDeductFeeToFixed, isBase: false })
+  emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
 }
 
 watch(
   () => props.worstPriceWithSlippage,
   () => {
     emit('update:amount', {
-      amount: props.isBase
+      amount: props.isBaseAmount
         ? props.formValues[TradeField.BaseAmount]
         : props.formValues[TradeField.QuoteAmount],
-      isBase: props.isBase
+      isBaseAmount: props.isBaseAmount
     })
   }
 )
@@ -172,7 +178,7 @@ watch(
   <div class="flex flex-col">
     <transition :name="isBuy ? 'fade-up' : 'fade-down'" mode="out-in">
       <div
-        :key="animationCount"
+        :key="`animation-${animationCount}`"
         :class="[isBuy ? 'order-first' : 'order-last']"
       >
         <AppSelectToken
@@ -200,7 +206,7 @@ watch(
 
     <transition :name="isBuy ? 'fade-down' : 'fade-up'" mode="out-in">
       <div
-        :key="animationCount"
+        :key="`animation-${animationCount}`"
         :class="[isBuy ? 'order-last' : 'order-first']"
       >
         <AppSelectToken

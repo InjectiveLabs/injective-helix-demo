@@ -11,20 +11,8 @@ const props = defineProps({
   xs: Boolean,
   flex: Boolean,
   dense: Boolean,
+  noGrouping: Boolean,
   useNumberDecimals: Boolean,
-  dontGroupValues: Boolean,
-
-  decimals: {
-    required: false,
-    default: UI_DEFAULT_DISPLAY_DECIMALS,
-    type: Number
-  },
-
-  abbreviationFloor: {
-    required: false,
-    default: 0,
-    type: Number
-  },
 
   prefix: {
     required: false,
@@ -43,39 +31,55 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>
   },
 
+  decimals: {
+    required: false,
+    default: UI_DEFAULT_DISPLAY_DECIMALS,
+    type: Number
+  },
+
   roundingMode: {
     type: Number as PropType<BigNumber.RoundingMode>,
     default: BigNumberInBase.ROUND_DOWN
+  },
+
+  abbreviationFloor: {
+    required: false,
+    default: 0,
+    type: Number
   }
 })
+
+const actualDecimals = computed(() =>
+  props.useNumberDecimals
+    ? getExactDecimalsFromNumber(props.number.toNumber())
+    : props.decimals
+)
+
+const { valueToString: formattedNumberToString } = useBigNumberFormatter(
+  computed(() => props.number),
+  {
+    abbreviationFloor: props.abbreviationFloor,
+    decimalPlaces: actualDecimals.value,
+    roundingMode: props.roundingMode,
+    displayAbsoluteDecimalPlace: true
+  }
+)
 
 const formattedNumber = computed(() => {
   if (props.number.eq(0)) {
     return ['0.00']
   }
 
-  const actualDecimals = props.useNumberDecimals
-    ? getExactDecimalsFromNumber(props.number.toNumber())
-    : props.decimals
-
-  const { valueToString: formattedNumber } = useBigNumberFormatter(
-    computed(() => props.number),
-    {
-      abbreviationFloor: props.abbreviationFloor,
-      decimalPlaces: actualDecimals,
-      roundingMode: props.roundingMode,
-      displayAbsoluteDecimalPlace: true
-    }
-  )
-
-  if (props.dontGroupValues) {
-    return [formattedNumber.value]
+  if (props.noGrouping) {
+    return [formattedNumberToString.value]
   }
 
-  const match = formattedNumber.value.match(/^(-?[\d,]+)((\.)(\d+?\d+?)(0*))?$/)
+  const match = formattedNumberToString.value.match(
+    /^(-?[\d,]+)((\.)(\d+?\d+?)(0*))?$/
+  )
   const groups = !match
-    ? formattedNumber.value
-      ? [formattedNumber.value]
+    ? formattedNumberToString.value
+      ? [formattedNumberToString.value]
       : []
     : match[2]
     ? [`${match[1]}${match[3]}${match[4]}`, match[5]]

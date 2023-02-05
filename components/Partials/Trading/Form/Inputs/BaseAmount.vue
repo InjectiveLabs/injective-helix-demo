@@ -49,7 +49,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
@@ -107,7 +107,7 @@ function onBaseAmountChange(baseAmount: string) {
     value: 0
   })
 
-  emit('update:amount', { amount: baseAmount || '0', isBase: true })
+  emit('update:amount', { amount: baseAmount || '0', isBaseAmount: true })
 }
 
 function onBaseAmountBlur(baseAmount = '') {

@@ -12,6 +12,7 @@ import {
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
+import { getHubUrl } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const tokenStore = useTokenStore()
@@ -19,16 +20,18 @@ const exchangeStore = useExchangeStore()
 const { rewardsCampaign } = useTradeReward()
 
 const props = defineProps({
-  schedule: {
-    type: Object as PropType<CampaignRewardPool>,
-    required: true
-  },
-
   index: {
     type: Number,
     required: true
+  },
+
+  schedule: {
+    type: Object as PropType<CampaignRewardPool>,
+    required: true
   }
 })
+
+const hubUrl = `${getHubUrl()}/staking`
 
 const stakedAmount = computed(() => {
   if (!exchangeStore.feeDiscountAccountInfo) {
@@ -177,8 +180,6 @@ const pendingEstimatedRewardsCappedInUsd = computed(() => {
     new BigNumberInBase(tokenStore.injUsdPrice)
   )
 })
-
-const hubUrl = 'https://hub.injective.network/staking'
 </script>
 
 <template>

@@ -6,14 +6,14 @@ const props = defineProps({
   clearable: Boolean,
   searchable: Boolean,
 
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
   options: {
     type: Array as PropType<DropdownOptionWithToken[]>,
     default: () => []
+  },
+
+  modelValue: {
+    type: String,
+    default: ''
   },
 
   placeholder: {

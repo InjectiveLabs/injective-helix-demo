@@ -11,13 +11,13 @@ const { $onError } = useNuxtApp()
 const { handleSubmit, resetForm } = useForm()
 
 const props = defineProps({
-  balance: {
-    type: Object as PropType<BigNumberInBase>,
+  market: {
+    type: Object as PropType<UiDerivativeMarketWithToken>,
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+  balance: {
+    type: Object as PropType<BigNumberInBase>,
     required: true
   }
 })

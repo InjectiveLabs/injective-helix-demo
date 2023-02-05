@@ -18,9 +18,9 @@ const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 
 const props = defineProps({
-  isBase: Boolean,
   isBuy: Boolean,
   isSpot: Boolean,
+  isBaseAmount: Boolean,
   tradingTypeLimit: Boolean,
   tradingTypeStopLimit: Boolean,
 
@@ -56,7 +56,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBase }: { isBase: boolean }): void
+  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
@@ -174,7 +174,7 @@ function recalculateBaseQuoteAmountValue() {
     value: 0
   })
 
-  emit('update:amount', { isBase: props.isBase })
+  emit('update:amount', { isBaseAmount: props.isBaseAmount })
 }
 
 function onPriceBlur(price = '') {

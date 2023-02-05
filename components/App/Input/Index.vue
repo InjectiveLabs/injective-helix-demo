@@ -14,12 +14,12 @@ const props = defineProps({
     default: () => []
   },
 
-  wrapperClasses: {
+  inputClasses: {
     type: String,
     default: ''
   },
 
-  inputClasses: {
+  wrapperClasses: {
     type: String,
     default: ''
   }
@@ -82,6 +82,13 @@ export default {
   <div class="w-full input-wrap" :class="classes">
     <div>
       <div class="flex items-center justify-between">
+        <label
+          v-if="$attrs.label"
+          class="block text-xs font-semibold text-gray-300 mb-2"
+        >
+          {{ $attrs.label || '' }}
+        </label>
+
         <div v-if="slots.context" class="leading-none">
           <slot name="context" />
         </div>

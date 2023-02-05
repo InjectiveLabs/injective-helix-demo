@@ -13,42 +13,39 @@ import { setTokenAllowance, transfer, withdraw } from '@/store/token/message'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
-  erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
-  ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
-  tokenUsdPriceMap: TokenUsdPriceMap
+  tokens: Token[]
   btcUsdPrice: number
   injUsdPrice: number
-  tokens: Token[]
+  tokenUsdPriceMap: TokenUsdPriceMap
+  erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
+  ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
 }
 const initialStateFactory = (): TokenStoreState => ({
-  erc20TokensWithBalanceAndPriceFromBank: [],
-  ibcTokensWithBalanceAndPriceFromBank: [],
-  tokenUsdPriceMap: {},
+  tokens: [],
   btcUsdPrice: 0,
   injUsdPrice: 0,
-  tokens: []
+  tokenUsdPriceMap: {},
+  ibcTokensWithBalanceAndPriceFromBank: [],
+  erc20TokensWithBalanceAndPriceFromBank: []
 })
 
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   actions: {
-    setTokenAllowance,
     transfer,
     withdraw,
+    setTokenAllowance,
 
     async getErc20TokensWithBalanceAndPriceFromBankAndMarkets() {
       const tokenStore = useTokenStore()
+      const bankStore = useBankStore()
+      const derivativeStore = useDerivativeStore()
+      const spotStore = useSpotStore()
+      const walletStore = useWalletStore()
 
-      const { markets: derivativeMarkets } = useDerivativeStore()
-      const { markets: spotMarkets } = useSpotStore()
-      const { address, isUserWalletConnected } = useWalletStore()
-
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
       }
-
-      const { bankErc20BalancesWithToken, bankIbcBalancesWithToken } =
-        useBankStore()
 
       const tokenToTokenWithBalanceAndAllowance = async ({
         token
@@ -62,32 +59,38 @@ export const useTokenStore = defineStore('token', {
       }
 
       const ercTokensWithBalanceAndAllowance = await Promise.all(
-        bankErc20BalancesWithToken.map(tokenToTokenWithBalanceAndAllowance)
+        bankStore.bankErc20BalancesWithToken.map(
+          tokenToTokenWithBalanceAndAllowance
+        )
       )
 
       const ibcTokensWithBalanceAndPriceFromBank = await Promise.all(
-        bankIbcBalancesWithToken.map(tokenToTokenWithBalanceAndAllowance)
+        bankStore.bankIbcBalancesWithToken.map(
+          tokenToTokenWithBalanceAndAllowance
+        )
       )
 
       const denomsInBankBalances = [
         ...ercTokensWithBalanceAndAllowance,
         ...ibcTokensWithBalanceAndPriceFromBank
       ].map((balance) => balance.denom)
-      const spotBaseDenomsNotInBankBalances = spotMarkets
+
+      const spotBaseDenomsNotInBankBalances = spotStore.markets
         .filter((market) => {
           return !denomsInBankBalances.includes(market.baseDenom)
         })
         .map((market) => market.baseDenom)
-      const spotQuoteDenomsNotInBankBalances = spotMarkets
+      const spotQuoteDenomsNotInBankBalances = spotStore.markets
         .filter((market) => {
           return !denomsInBankBalances.includes(market.quoteDenom)
         })
         .map((market) => market.quoteDenom)
-      const derivativeQuoteDenomsNotInBankBalances = derivativeMarkets
+      const derivativeQuoteDenomsNotInBankBalances = derivativeStore.markets
         .filter((market) => {
           return !denomsInBankBalances.includes(market.quoteDenom)
         })
         .map((market) => market.quoteDenom)
+
       const denomsNotInBankBalances = [
         ...spotBaseDenomsNotInBankBalances,
         ...spotQuoteDenomsNotInBankBalances,
@@ -96,6 +99,7 @@ export const useTokenStore = defineStore('token', {
       const uniqueDenomsNotInBankBalances = [
         ...new Set(denomsNotInBankBalances)
       ]
+
       const tradeableTokensWithBalanceAndPrice = await Promise.all(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
@@ -127,9 +131,9 @@ export const useTokenStore = defineStore('token', {
 
     async updateErc20TokensBalanceAndAllowanceFromBankAndMarkets() {
       const tokenStore = useTokenStore()
-      const { address, isUserWalletConnected } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
       }
 
@@ -148,7 +152,7 @@ export const useTokenStore = defineStore('token', {
         tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(async (token) => {
           const erc20Token = token as Erc20Token
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
-            address,
+            address: walletStore.address,
             contractAddress: erc20Token.erc20Address
           })
 
