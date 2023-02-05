@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
+import {
+  QUOTE_DENOMS_GECKO_IDS,
+  SMALL_BALANCE_THRESHOLD
+} from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
 import { usdcTokenDenoms } from '@/app/data/token'
 
@@ -61,7 +64,7 @@ const filteredBalances = computed(() => {
     .filter((balance) => {
       const isNotSmallBalance =
         !hideSmallBalances.value ||
-        new BigNumberInBase(balance.totalBalance).gte('10')
+        new BigNumberInBase(balance.totalBalance).gte(SMALL_BALANCE_THRESHOLD)
 
       const isMarginCurrency =
         !showMarginCurrencyOnly.value ||

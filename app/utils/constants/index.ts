@@ -52,6 +52,7 @@ export const INJ_GAS_BUFFER = 0.002
 export const INJ_GAS_BUFFER_FOR_BRIDGE = 0.003
 export const INJ_GAS_FEE = 0.002
 export const HIDDEN_BALANCE_DISPLAY = '********'
+export const SMALL_BALANCE_THRESHOLD = '10'
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6

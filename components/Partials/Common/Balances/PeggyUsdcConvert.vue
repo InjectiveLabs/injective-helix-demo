@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const hasUSDCPeggyBalance = computed(() => {
+const hasUsdcPeggyBalance = computed(() => {
   if (
     ![usdcTokenDenom.USDCet].includes(
       props.market.quoteToken.denom.toLowerCase()
@@ -47,7 +47,7 @@ const hasUSDCPeggyBalance = computed(() => {
 
 onMounted(() => {
   nextTick(() => {
-    if (hasUSDCPeggyBalance.value) {
+    if (hasUsdcPeggyBalance.value) {
       openModal()
     }
   })
@@ -59,7 +59,7 @@ function openModal() {
 </script>
 
 <template>
-  <div v-if="hasUSDCPeggyBalance" class="cursor-pointer" @click="openModal">
+  <div v-if="hasUsdcPeggyBalance" class="cursor-pointer" @click="openModal">
     <span class="text-blue-500 font-semibold">{{
       $t('trade.convert.convert')
     }}</span>
