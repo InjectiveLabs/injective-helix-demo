@@ -97,9 +97,9 @@ const tokenWithBalance = computed(() => {
   const transferableBalanceCappedToBase = transferableBalanceCapped.toBase()
 
   return {
-    ...transferableBalance,
-    balance: transferableBalanceCapped.toString(),
-    balanceToBase: transferableBalanceCappedToBase.toString()
+    ...tokenWithBalance,
+    balance: transferableBalanceCapped.toFixed(),
+    balanceToBase: transferableBalanceCappedToBase.toFixed()
   }
 })
 
