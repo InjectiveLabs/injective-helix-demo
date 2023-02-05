@@ -11,14 +11,20 @@ import {
 } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
+const route = useRoute()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const bankStore = useBankStore()
-const { getMarketIdByRouteQuery, tradableTokenMaps } = useConvertFormatter()
+const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
 
 const props = defineProps({
   isLoading: Boolean,
   isBaseAmount: Boolean,
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    default: () => null
+  },
 
   formValues: {
     type: Object as PropType<TradeForm>,
@@ -28,11 +34,6 @@ const props = defineProps({
   worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
-    default: () => null
   }
 })
 
@@ -47,6 +48,16 @@ const emit = defineEmits<{
 }>()
 
 const animationCount = ref(0)
+
+const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
+
+const baseTokens = computed<BalanceWithToken[]>(
+  () => tradableTokenMaps.value[baseTokenDenom.value] || []
+)
+
+const quoteTokens = computed<BalanceWithToken[]>(
+  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
+)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
@@ -65,28 +76,12 @@ const { value: orderType, setValue: setOrderType } = useStringField({
   initialValue: SpotOrderSide.Buy
 })
 
-const baseTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
-)
-const quoteTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
-)
-
-const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
-
 onMounted(() => {
-  const { market, orderType } = getMarketIdByRouteQuery()
-
   if (!bankStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 
-  if (market) {
-    emit('update:market', market)
-    setOrderType(orderType)
-    setBaseTokenDenom(market.baseDenom)
-    setQuoteTokenDenom(market.quoteDenom)
-  }
+  setMarketFromQuery()
 })
 
 function handleUpdateMarket() {
@@ -159,6 +154,24 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
   })
 
   emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
+}
+
+function setMarketFromQuery() {
+  const { to, from } = route.query
+  const querySlug = `${from}-${to}`
+
+  const { market, orderType } =
+    tradableSlugMap.value[querySlug.toLowerCase()] ||
+    tradableSlugMap.value['usdt-inj']
+
+  if (!market) {
+    return
+  }
+
+  emit('update:market', market)
+  setOrderType(orderType)
+  setBaseTokenDenom(market.baseDenom)
+  setQuoteTokenDenom(market.quoteDenom)
 }
 
 watch(

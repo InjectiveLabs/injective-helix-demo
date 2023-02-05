@@ -226,13 +226,13 @@ export function useSpotPrice({
   }
 
   return {
-    amountForCalculation,
-    averagePrice,
-    averagePriceWithSlippage,
-    maxAmountOnOrderbook,
     slippage,
-    updateAmountFromBase,
     worstPrice,
-    worstPriceWithSlippage
+    averagePrice,
+    maxAmountOnOrderbook,
+    updateAmountFromBase,
+    amountForCalculation,
+    worstPriceWithSlippage,
+    averagePriceWithSlippage
   }
 }

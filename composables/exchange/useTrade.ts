@@ -20,11 +20,11 @@ export function useTrade(
   const derivativeStore = useDerivativeStore()
   const { t } = useLang()
 
-  const market = computed(() => {
-    return isSpot.value
+  const market = computed(() =>
+    isSpot.value
       ? spotStore.markets.find((m) => m.marketId === trade.value.marketId)
       : derivativeStore.markets.find((m) => m.marketId === trade.value.marketId)
-  })
+  )
 
   /** Unifying both spot and derivative to spot trade type */
   const tradeToSpotTrade = computed(() => {
@@ -47,17 +47,15 @@ export function useTrade(
       return ZERO_IN_BASE
     }
 
-    if (isSpot.value) {
-      return new BigNumberInBase(
-        new BigNumberInBase(tradeToSpotTrade.value.price).toWei(
-          market.value.baseToken.decimals - market.value.quoteToken.decimals
+    return isSpot.value
+      ? new BigNumberInBase(
+          new BigNumberInBase(tradeToSpotTrade.value.price).toWei(
+            market.value.baseToken.decimals - market.value.quoteToken.decimals
+          )
         )
-      )
-    }
-
-    return new BigNumberInWei(tradeToSpotTrade.value.price).toBase(
-      market.value.quoteToken.decimals
-    )
+      : new BigNumberInWei(tradeToSpotTrade.value.price).toBase(
+          market.value.quoteToken.decimals
+        )
   })
 
   const quantity = computed(() => {
@@ -72,21 +70,19 @@ export function useTrade(
       : new BigNumberInBase(tradeToSpotTrade.value.quantity)
   })
 
-  const total = computed(() => {
-    return quantity.value.times(price.value)
-  })
+  const total = computed(() => quantity.value.times(price.value))
 
-  const priceDecimals = computed(() => {
-    return market.value
+  const priceDecimals = computed(() =>
+    market.value
       ? market.value.priceDecimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
+  )
 
-  const quantityDecimals = computed(() => {
-    return market.value
+  const quantityDecimals = computed(() =>
+    market.value
       ? market.value.quantityDecimals
       : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
+  )
 
   const time = computed(() => {
     if (!market.value || !trade.value.executedAt) {

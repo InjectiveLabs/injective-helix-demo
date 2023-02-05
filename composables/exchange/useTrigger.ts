@@ -22,6 +22,18 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
 
   const isMarketOrder = computed(() => trigger.value.executionType === 'market')
 
+  const priceDecimals = computed(() =>
+    market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  )
+
+  const quantityDecimals = computed(() =>
+    market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  )
+
   const isReduceOnly = computed(() => {
     if (trigger.value.isReduceOnly) {
       return true
@@ -48,18 +60,6 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
     return new BigNumberInWei(trigger.value.triggerPrice).toBase(
       market.value.quoteToken.decimals
     )
-  })
-
-  const priceDecimals = computed(() => {
-    return market.value
-      ? market.value.priceDecimals
-      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
-
-  const quantityDecimals = computed(() => {
-    return market.value
-      ? market.value.quantityDecimals
-      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const margin = computed(() => {
@@ -120,12 +120,11 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
     }
   })
 
-  const isStopLoss = computed(() => {
-    return (
+  const isStopLoss = computed(
+    () =>
       trigger.value.orderType === DerivativeOrderSide.StopBuy ||
       trigger.value.orderType === DerivativeOrderSide.StopSell
-    )
-  })
+  )
 
   const isTakeProfit = computed(
     () =>

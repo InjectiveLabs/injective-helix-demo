@@ -32,8 +32,11 @@ export function useDerivativePrice({
     () => formValues.value[TradeField.OrderType] === DerivativeOrderSide.Buy
   )
 
-  const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
-    isBuy.value ? derivativeStore.sells : derivativeStore.buys
+  const orderbookOrders = computed(
+    () =>
+      (isBuy.value
+        ? derivativeStore.sells
+        : derivativeStore.buys) as UiPriceLevel[]
   )
 
   const amountForCalculation = computed(() => {
@@ -269,14 +272,14 @@ export function useDerivativePrice({
   }
 
   return {
-    amountForCalculation,
-    averagePrice,
-    averagePriceWithSlippage,
-    maxAmountOnOrderbook,
-    maxReduceOnly,
     slippage,
-    updateAmountFromBase,
     worstPrice,
-    worstPriceWithSlippage
+    averagePrice,
+    maxReduceOnly,
+    updateAmountFromBase,
+    maxAmountOnOrderbook,
+    amountForCalculation,
+    worstPriceWithSlippage,
+    averagePriceWithSlippage
   }
 }

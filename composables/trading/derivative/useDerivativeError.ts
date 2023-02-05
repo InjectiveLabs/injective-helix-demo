@@ -17,20 +17,20 @@ import {
 } from '@/app/utils/constants'
 
 export function useDerivativeError({
-  executionPrice,
-  formValues,
   isBuy,
   market,
-  notionalWithLeverage,
-  notionalWithLeverageBasedOnWorstPrice,
-  notionalWithLeverageAndFees,
+  formValues,
+  executionPrice,
   orderTypeReduceOnly,
+  notionalWithLeverage,
   quoteAvailableBalance,
-  worstPriceWithSlippage
+  worstPriceWithSlippage,
+  notionalWithLeverageBasedOnWorstPrice,
+  notionalWithLeverageAndFees
 }: {
-  executionPrice: Ref<BigNumberInBase>
-  formValues: Ref<TradeForm>
   isBuy: Ref<boolean>
+  formValues: Ref<TradeForm>
+  executionPrice: Ref<BigNumberInBase>
   market: Ref<UiDerivativeMarketWithToken>
   notionalWithLeverage: Ref<BigNumberInBase>
   notionalWithLeverageBasedOnWorstPrice: Ref<BigNumberInBase>
@@ -230,8 +230,11 @@ export function useDerivativeError({
     )
   })
 
-  const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
-    isBuy.value ? derivativeStore.sells : derivativeStore.buys
+  const orderbookOrders = computed(
+    () =>
+      (isBuy.value
+        ? derivativeStore.sells
+        : derivativeStore.buys) as UiPriceLevel[]
   )
 
   const filteredConditionalOrders = computed(() =>
@@ -260,10 +263,10 @@ export function useDerivativeError({
   })
 
   return {
-    availableBalanceError,
     highDeviation,
-    initialMinMarginRequirementError,
+    maxOrdersError,
+    availableBalanceError,
     markPriceThresholdError,
-    maxOrdersError
+    initialMinMarginRequirementError
   }
 }

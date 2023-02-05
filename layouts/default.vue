@@ -5,6 +5,7 @@ import {
   CosmoverseGiveawayCampaignArgs
 } from '@/app/providers/AmplitudeTracker'
 import { BusEvents } from '@/types'
+import { ROUTES } from '@/app/utils/constants'
 
 const route = useRoute()
 const accountStore = useAccountStore()
@@ -23,13 +24,7 @@ const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
 
 const showFooter = computed(() => {
-  return [
-    'index',
-    'markets',
-    'fee-discounts',
-    'leaderboard',
-    'account'
-  ].includes(route.name as string)
+  return ROUTES.footerEnabledRoutes.includes(route.name as string)
 })
 
 onMounted(() => {
@@ -45,7 +40,7 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
 
-  onLoadMarketsInit()
+  handleMarketsInit()
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
@@ -73,7 +68,7 @@ function handleNinjaPassGiveaway() {
   ninjaPassStore.fetchCodes()
 }
 
-function onLoadMarketsInit() {
+function handleMarketsInit() {
   appStore.setMarketsLoadingState(StatusType.Loading)
 
   Promise.all([spotStore.init(), derivativeStore.init()])

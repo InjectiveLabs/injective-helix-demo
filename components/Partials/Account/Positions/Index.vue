@@ -34,7 +34,7 @@ const marketIds = computed(() => {
     return []
   }
 
-  return derivativeStore.markets
+  return markets.value
     .filter((m) => {
       return (
         m.baseToken.denom === marketDenom.value ||

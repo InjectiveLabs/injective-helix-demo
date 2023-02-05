@@ -38,8 +38,8 @@ export function useDerivativeLastPriceFormatter(
     }
 
     const [secondLastTrade] = derivateStore.trades.filter(
-      (t) =>
-        !new BigNumberInBase(t.executionPrice).eq(
+      (trade) =>
+        !new BigNumberInBase(trade.executionPrice).eq(
           (latestTrade.value as UiDerivativeTrade).executionPrice
         )
     )
@@ -73,8 +73,8 @@ export function useDerivativeLastPriceFormatter(
   })
 
   return {
-    changeInPercentage,
     lastTradedPrice,
+    changeInPercentage,
     lastTradedPriceChange
   }
 }

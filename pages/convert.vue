@@ -24,22 +24,22 @@ const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
-const isBuy = computed(
-  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
-)
-
-const amount = computed(() => {
-  return isBuy.value
-    ? formValues[TradeField.QuoteAmount]
-    : formValues[TradeField.BaseAmount]
-})
-
 const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
     formValues: computed(() => formValues),
     market,
     isBaseAmount
   })
+
+const isBuy = computed(
+  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
+)
+
+const amount = computed(() =>
+  isBuy.value
+    ? formValues[TradeField.QuoteAmount]
+    : formValues[TradeField.BaseAmount]
+)
 
 onMounted(() => {
   Promise.all([

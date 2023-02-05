@@ -73,10 +73,10 @@ export function useTradeFee(market: Ref<UiMarketWithToken | undefined>) {
   })
 
   return {
-    makerFeeRateDiscount,
+    tierLevel,
     makerFeeRate,
     takerFeeRate,
-    takerFeeRateDiscount,
-    tierLevel
+    makerFeeRateDiscount,
+    takerFeeRateDiscount
   }
 }

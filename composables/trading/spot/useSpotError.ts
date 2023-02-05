@@ -12,17 +12,17 @@ import {
 } from '@/app/utils/constants'
 
 export function useSpotError({
-  executionPrice,
-  formValues,
   isBuy,
   market,
+  formValues,
+  executionPrice,
   notionalWithFees,
   quoteAvailableBalance
 }: {
-  executionPrice: Ref<BigNumberInBase>
-  formValues: Ref<TradeForm>
   isBuy: Ref<boolean>
+  formValues: Ref<TradeForm>
   market: Ref<UiSpotMarketWithToken>
+  executionPrice: Ref<BigNumberInBase>
   notionalWithFees?: Ref<BigNumberInBase>
   quoteAvailableBalance?: Ref<BigNumberInBase>
 }) {
@@ -32,8 +32,8 @@ export function useSpotError({
     () => formValues.value[TradeField.TradingType] === TradeExecutionType.Market
   )
 
-  const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
-    isBuy.value ? spotStore.sells : spotStore.buys
+  const orderbookOrders = computed(
+    () => (isBuy.value ? spotStore.sells : spotStore.buys) as UiPriceLevel[]
   )
 
   const lastTradedPrice = computed(() => {
@@ -131,9 +131,9 @@ export function useSpotError({
   })
 
   return {
-    availableBalanceError,
     highDeviation,
     maxOrdersError,
-    insufficientLiquidity
+    insufficientLiquidity,
+    availableBalanceError
   }
 }

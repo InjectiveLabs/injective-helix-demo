@@ -137,15 +137,15 @@ const networkIsNotSupported = computed(() => {
   )
 })
 
+function resetForm(token: Token = injToken) {
+  Object.assign(form, getInitialBridgeFormValues())
+  bridgeType.value = BridgeType.Transfer
+
+  form[BridgeField.Token] = token
+  form[BridgeField.Denom] = token.denom
+}
+
 export default function useBridgeState() {
-  function resetForm(token: Token = injToken) {
-    Object.assign(form, getInitialBridgeFormValues())
-    bridgeType.value = BridgeType.Transfer
-
-    form[BridgeField.Token] = token
-    form[BridgeField.Denom] = token.denom
-  }
-
   return {
     form,
     resetForm,

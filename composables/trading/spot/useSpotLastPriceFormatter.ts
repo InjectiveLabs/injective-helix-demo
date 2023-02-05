@@ -65,8 +65,8 @@ export function useSpotLastPriceFormatter(market: Ref<UiMarketWithToken>) {
   })
 
   return {
-    changeInPercentage,
     lastTradedPrice,
+    changeInPercentage,
     lastTradedPriceChange
   }
 }

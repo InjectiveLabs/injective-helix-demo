@@ -32,11 +32,11 @@ export function useSpotFormFormatter(tradeForm: Ref<TradeForm>) {
   )
 
   return {
-    baseAmount,
-    hasBaseAmount,
     limitPrice,
+    baseAmount,
     quoteAmount,
-    tradingTypeMarket,
-    tradingTypeLimit
+    hasBaseAmount,
+    tradingTypeLimit,
+    tradingTypeMarket
   }
 }

@@ -13,11 +13,23 @@ export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
 
   const UI_MINIMAL_AMOUNT = new BigNumberInWei(1).shiftedBy(-6)
 
-  const market = computed(() => {
-    return derivativeStore.markets.find(
+  const market = computed(() =>
+    derivativeStore.markets.find(
       (m) => m.marketId === fundingPayment.value.marketId
     )
-  })
+  )
+
+  const priceDecimals = computed(() =>
+    market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  )
+
+  const quantityDecimals = computed(() =>
+    market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  )
 
   const total = computed(() => {
     if (!fundingPayment.value.amount) {
@@ -33,18 +45,6 @@ export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
     return new BigNumberInWei(fundingPayment.value.amount).toBase(decimals)
-  })
-
-  const priceDecimals = computed(() => {
-    return market.value
-      ? market.value.priceDecimals
-      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
-
-  const quantityDecimals = computed(() => {
-    return market.value
-      ? market.value.quantityDecimals
-      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const time = computed(() => {

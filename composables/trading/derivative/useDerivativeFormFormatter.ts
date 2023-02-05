@@ -56,16 +56,16 @@ export function useDerivativeFormFormatter(tradeForm: Ref<TradeForm>) {
   })
 
   return {
+    limitPrice,
     baseAmount,
+    quoteAmount,
+    triggerPrice,
     hasBaseAmount,
     hasTriggerPrice,
-    isConditionalOrder,
-    limitPrice,
-    quoteAmount,
     tradingTypeLimit,
     tradingTypeMarket,
+    isConditionalOrder,
     tradingTypeStopLimit,
-    tradingTypeStopMarket,
-    triggerPrice
+    tradingTypeStopMarket
   }
 }
