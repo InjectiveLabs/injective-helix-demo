@@ -22,14 +22,14 @@ import {
 } from '@/types'
 
 const props = defineProps({
-  availableBalanceError: Boolean,
-  initialMinMarginRequirementError: Boolean,
-  markPriceThresholdError: Boolean,
-  isBase: Boolean,
   isBuy: Boolean,
+  isBase: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
   showReduceOnly: Boolean,
+  orderTypeReduceOnly: Boolean,
+  availableBalanceError: Boolean,
+  markPriceThresholdError: Boolean,
+  initialMinMarginRequirementError: Boolean,
 
   amountStep: {
     type: String,

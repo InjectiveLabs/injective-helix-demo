@@ -11,7 +11,7 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
-import { marketStableCoinQuoteSymbols } from '~~/app/data/market'
+import { stableCoinDenoms } from '@/app/data/token'
 
 const derivativeStore = useDerivativeStore()
 
@@ -167,9 +167,7 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
       return new BigNumberInBase(props.summary.volume)
     }),
     {
-      decimalPlaces: marketStableCoinQuoteSymbols.includes(
-        props.market.quoteToken.symbol
-      )
+      decimalPlaces: stableCoinDenoms.includes(props.market.quoteToken.symbol)
         ? 0
         : props.market.priceDecimals
     }

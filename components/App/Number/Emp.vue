@@ -24,9 +24,9 @@ const props = defineProps({
   }
 })
 
-const formattedNumberWithDecimals = computed(() => {
-  return getDecimalsBasedOnNumber(props.number, props.decimals)
-})
+const formattedNumberWithDecimals = computed(() =>
+  getDecimalsBasedOnNumber(props.number, props.decimals)
+)
 
 const classes = computed(() => {
   const result = ['flex', 'items-end', 'justify-center']

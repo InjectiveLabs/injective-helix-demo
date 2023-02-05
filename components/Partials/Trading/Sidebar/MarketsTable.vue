@@ -118,16 +118,18 @@ const sortedMarkets = computed(() => {
     >
       <PartialsTradingSidebarMarketsTableRow
         v-for="(marketSummary, index) in sortedMarkets"
+        v-bind="{
+          ...$attrs,
+          market: marketSummary.market,
+          summary: marketSummary.summary,
+          volumeInUsd: marketSummary.volumeInUsd,
+          inCurrentMarket: market.marketId === marketSummary.market.marketId
+        }"
         :key="`market-row-${index}-${market.marketId}`"
         :class="{
           'pt-4': index === 0,
           'pb-4': index + 1 === sortedMarkets.length
         }"
-        :market="marketSummary.market"
-        :summary="marketSummary.summary"
-        :volume-in-usd="marketSummary.volumeInUsd"
-        :is-current-market="market.marketId === marketSummary.market.marketId"
-        v-bind="$attrs"
       />
 
       <template #empty>

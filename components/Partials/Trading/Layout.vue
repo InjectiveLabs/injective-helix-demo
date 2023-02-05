@@ -44,34 +44,38 @@ const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
 
-onMounted(async () => {
-  await Promise.all([
+onMounted(() => {
+  Promise.all([
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
     bankStore.fetchBankBalancesWithToken(),
     ninjaPassStore.fetchCodes(),
     ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
-  ]).catch($onError)
+  ])
+    .then(() => {
+      if (betaMarketSlugs.includes(slug)) {
+        modalStore.openModal({ type: Modal.MarketBeta })
+      }
 
-  const marketBySlug = getMarketBySlug()
+      const marketBySlug = getMarketBySlug()
 
-  if (betaMarketSlugs.includes(slug)) {
-    modalStore.openModal({ type: Modal.MarketBeta })
-  }
+      if (!marketBySlug) {
+        router.push({ name: 'markets' })
 
-  if (!marketBySlug) {
-    router.push({ name: 'markets' })
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
+      }
 
-    throw new GeneralException(
-      new Error('Market not found. Please refresh the page.')
-    )
-  }
+      market.value = marketBySlug
 
-  market.value = marketBySlug
-
-  status.setIdle()
-  fetchStatus.setIdle()
-  emit('loaded', marketBySlug as UiMarketWithToken)
+      emit('loaded', marketBySlug as UiMarketWithToken)
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+      fetchStatus.setIdle()
+    })
 })
 
 onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))

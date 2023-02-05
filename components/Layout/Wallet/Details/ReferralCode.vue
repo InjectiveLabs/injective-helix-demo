@@ -4,13 +4,11 @@ import { getReferralUrl } from '@/app/utils/helpers'
 
 const referralStore = useReferralStore()
 
-const refereeInfo = computed(() => {
-  return referralStore.refereeInfo
-})
+const referralDashboardLink = getReferralUrl()
 
-const referrerInfo = computed(() => {
-  return referralStore.referrerInfo
-})
+const refereeInfo = computed(() => referralStore.refereeInfo)
+const referrerInfo = computed(() => referralStore.referrerInfo)
+const showReferralCode = computed(() => REFERRALS_ENABLED && referralCode.value)
 
 const referralCode = computed(() => {
   if (!refereeInfo.value && !referrerInfo.value) {
@@ -18,14 +16,6 @@ const referralCode = computed(() => {
   }
 
   return refereeInfo.value?.referralCode || referrerInfo.value?.referralCode
-})
-
-const showReferralCode = computed(() => {
-  return REFERRALS_ENABLED && referralCode.value
-})
-
-const referralDashboardLink = computed(() => {
-  return getReferralUrl()
 })
 </script>
 

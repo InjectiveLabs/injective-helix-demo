@@ -7,13 +7,8 @@ import {
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
 
-const defaultPerpetualMarketRoute = computed(() => {
-  return getDefaultPerpetualMarketRoute()
-})
-
-const defaultSpotMarketRoute = computed(() => {
-  return getDefaultSpotMarketRoute()
-})
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRoute()
+const defaultSpotMarketRoute = getDefaultSpotMarketRoute()
 
 function handleToggleTradeMenu() {
   tradeMenuOpen.value = !tradeMenuOpen.value

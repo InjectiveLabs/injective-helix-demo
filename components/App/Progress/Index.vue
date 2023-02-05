@@ -6,9 +6,7 @@ const props = defineProps({
   }
 })
 
-const style = computed(() => {
-  return `transform: scaleX(${props.value / 100})`
-})
+const style = computed(() => `transform: scaleX(${props.value / 100})`)
 </script>
 
 <template>

@@ -79,7 +79,7 @@ watch(showModal, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppModalWrapper
+  <AppModal
     :show="showModal"
     :show-loading="showLoading"
     :ignore="['.v-popper__popper']"
@@ -114,6 +114,6 @@ watch(showModal, (newShowModalState) => {
       <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
       <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
     </ul>
-  </AppModalWrapper>
+  </AppModal>
   <ModalsTerms />
 </template>

@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const status = reactive(new Status(StatusType.Idle))
 
-function handleClickOnSetAllowance() {
+function handleSetAllowance() {
   status.setLoading()
 
   tokenStore
@@ -50,7 +50,7 @@ function handleClickOnSetAllowance() {
       :status="status"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       data-cy="allowance-modal-set-button"
-      @click="handleClickOnSetAllowance"
+      @click="handleSetAllowance"
     >
       {{ $t('bridge.setAllowance') }}
     </AppButton>

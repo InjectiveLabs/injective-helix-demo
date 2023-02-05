@@ -98,6 +98,10 @@ const {
   tradingTypeLimit: derivativeTradingTypeLimit
 } = useDerivativeFormFormatter(computed(() => props.formValues))
 
+const { tradingTypeLimit: spotTradingTypeLimit } = useSpotFormFormatter(
+  computed(() => props.formValues)
+)
+
 const orderbookOrders = computed<UiPriceLevel[]>(() => {
   const orderbook = props.isSpot
     ? spotStore.orderbook
@@ -109,10 +113,6 @@ const orderbookOrders = computed<UiPriceLevel[]>(() => {
 
   return orderbook?.buys || []
 })
-
-const { tradingTypeLimit: spotTradingTypeLimit } = useSpotFormFormatter(
-  computed(() => props.formValues)
-)
 
 const tradingTypeLimit = props.isSpot
   ? spotTradingTypeLimit

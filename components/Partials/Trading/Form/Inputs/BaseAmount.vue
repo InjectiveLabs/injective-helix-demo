@@ -46,6 +46,14 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (
+    e: 'update:amount',
+    { amount, isBase }: { amount?: string; isBase: boolean }
+  ): void
+  (e: 'update:formValue', { field, value }: TradeFormValue): void
+}>()
+
 const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
   computed(() => props.formValues)
 )
@@ -61,14 +69,6 @@ const orderbookQuantity = computed(() =>
     )
   }, ZERO_IN_BASE)
 )
-
-const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
-  ): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
-}>()
 
 const { value: baseAmount, setValue } = useStringField({
   name: props.baseAmountFieldName,

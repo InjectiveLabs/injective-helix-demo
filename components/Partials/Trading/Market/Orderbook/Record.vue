@@ -70,21 +70,20 @@ const existsInUserOrders = computed(() =>
   })
 )
 
-const recordTypeBuy = computed(() => {
-  return (
+const recordTypeBuy = computed(
+  () =>
     props.type === DerivativeOrderSide.Buy || props.type === SpotOrderSide.Buy
-  )
-})
+)
 
 const total = computed(() => new BigNumberInBase(props.record.total || 0))
 
-const quantity = computed(() => {
-  return isSpot
+const quantity = computed(() =>
+  isSpot
     ? new BigNumberInWei(props.record.quantity).toBase(
         props.market.baseToken.decimals
       )
     : new BigNumberInBase(props.record.quantity)
-})
+)
 
 const depthWidth = computed(() => ({
   width: `${props.record.depth}%`

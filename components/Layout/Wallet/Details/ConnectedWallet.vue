@@ -17,10 +17,12 @@ defineProps({
 
 const showDropdown = ref(false)
 
-const formattedInjectiveAddress = formatWalletAddress(
-  walletStore.injectiveAddress
+const formattedInjectiveAddress = computed(() =>
+  formatWalletAddress(walletStore.injectiveAddress)
 )
-const formattedAddress = formatWalletAddress(walletStore.address)
+const formattedAddress = computed(() =>
+  formatWalletAddress(walletStore.address)
+)
 
 function toggleShowDropdown() {
   showDropdown.value = !showDropdown.value

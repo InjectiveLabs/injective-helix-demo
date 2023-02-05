@@ -53,6 +53,7 @@ const sortedBalances = computed(() => {
 
 function handleClick(denom: string) {
   emit('update:modelValue', denom)
+
   props.close()
 }
 </script>

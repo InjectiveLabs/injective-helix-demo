@@ -16,7 +16,7 @@ import {
 import { Change, TradeClickOrigin } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
-import { marketStableCoinQuoteSymbols } from '@/app/data/market'
+import { stableCoinDenoms } from '@/app/data/token'
 
 const appStore = useAppStore()
 
@@ -76,7 +76,7 @@ const volumeInUsdToFormat = computed(() => {
 })
 
 const formatterOptions = computed(() => {
-  return marketStableCoinQuoteSymbols.includes(props.market.quoteToken.symbol)
+  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR

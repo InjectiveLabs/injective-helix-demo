@@ -69,12 +69,12 @@ const isWHSolUSDTBaseDenom = computed(
   () => props.market.baseToken.denom === usdcTokenDenom.USDCso
 )
 
+const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
+
 const { value: orderType, setValue: setOrderType } = useStringField({
   name: TradeField.OrderType,
   initialValue: SpotOrderSide.Sell
 })
-
-const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
 function toggleOrderType() {
   setOrderType(isBuy.value ? SpotOrderSide.Sell : SpotOrderSide.Buy)
@@ -88,12 +88,10 @@ function handleSwap() {
   animationCount.value = animationCount.value + 1
 
   emit('update:isBase', !props.isBase)
-
   emit('update:formValue', {
     field: TradeField.BaseAmount,
     value: ''
   })
-
   emit('update:formValue', {
     field: TradeField.QuoteAmount,
     value: ''
@@ -130,7 +128,6 @@ function handleMaxQuoteAmountChange(amount: string) {
     field: TradeField.BaseAmount,
     value: amountDeductFeeToFixed
   })
-
   emit('update:amount', { amount: amountDeductFeeToFixed, isBase: false })
 }
 
@@ -168,13 +165,13 @@ onMounted(() => {
             !isBuy ? $t('account.from') : $t('account.to')
           }}</span>
 
-          <ModalsConvertUSDCTokenFormPill
+          <ModalsConvertUsdcTokenFormPill
             v-if="baseBalance"
             :balance="baseBalance"
           />
         </div>
 
-        <ModalsConvertUSDCTokenFormInput
+        <ModalsConvertUsdcTokenFormInput
           v-if="baseBalance"
           :amount-field-name="TradeField.BaseAmount"
           :balance="baseBalance"
@@ -213,13 +210,13 @@ onMounted(() => {
           <span class="font-semibold">{{
             isBuy ? $t('account.from') : $t('account.to')
           }}</span>
-          <ModalsConvertUSDCTokenFormPill
+          <ModalsConvertUsdcTokenFormPill
             v-if="quoteBalance"
             :balance="quoteBalance"
           />
         </div>
 
-        <ModalsConvertUSDCTokenFormInput
+        <ModalsConvertUsdcTokenFormInput
           v-if="quoteBalance"
           :amount-field-name="TradeField.QuoteAmount"
           :balance="quoteBalance"

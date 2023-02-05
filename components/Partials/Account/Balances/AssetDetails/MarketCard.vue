@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  Change,
-  UiSpotMarketSummary,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { Change, UiSpotMarketSummary } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
@@ -21,13 +17,9 @@ const props = defineProps({
   }
 })
 
-const lastTradedPrice = computed(() => {
-  if (!props.summary.price) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
-})
+const lastTradedPrice = computed(
+  () => new BigNumberInBase(props.summary.lastPrice || props.summary.price || 0)
+)
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
@@ -37,23 +29,13 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const change = computed(() => {
-  if (!props.summary.change) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.change)
-})
+const change = computed(() => new BigNumberInBase(props.summary.change || 0))
 
 const { valueToString: changeToFormat } = useBigNumberFormatter(change)
 
-const lastPriceChange = computed(() => {
-  if (!props.summary.lastPriceChange) {
-    return Change.NoChange
-  }
-
-  return props.summary.lastPriceChange
-})
+const lastPriceChange = computed(
+  () => props.summary.lastPriceChange || Change.NoChange
+)
 </script>
 
 <template>

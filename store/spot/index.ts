@@ -78,6 +78,9 @@ export const useSpotStore = defineStore('spot', {
         .filter(({ slug }) => MARKETS_SLUGS.spot.includes(slug))
         .map((m) => m.marketId),
 
+    buys: (state) => state.orderbook?.buys || [],
+    sells: (state) => state.orderbook?.sells || [],
+
     supportedTokens: (state) => [
       ...new Map(
         state.markets

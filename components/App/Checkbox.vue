@@ -18,9 +18,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: boolean): void
 }>()
 
-const uid = computed(() => {
-  return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
-})
+const uid = window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
 
 const checked = computed({
   get: (): boolean => props.modelValue,

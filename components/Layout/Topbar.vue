@@ -17,9 +17,7 @@ const emit = defineEmits<{
 
 const isUserConnectedProcessCompleted = ref(false)
 
-const isUserWalletConnected = computed(() => {
-  return walletStore.isUserWalletConnected
-})
+const isUserWalletConnected = computed(() => walletStore.isUserWalletConnected)
 
 const hasNinjaPassCodes = computed(() => {
   if (!ninjaPassStore.codes) {
@@ -44,7 +42,7 @@ onMounted(() => {
   }
 })
 
-function handleClickOnSidebarToggle() {
+function handleSidebarToggle() {
   if (props.isSidebarOpen) {
     return emit('sidebar:closed')
   }
@@ -108,7 +106,7 @@ function handleShowNinjaPassModal() {
     </div>
     <button
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
-      @click.stop="handleClickOnSidebarToggle"
+      @click.stop="handleSidebarToggle"
     >
       <BaseIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
       <BaseIcon v-else name="menu" class="w-6 h-6" />

@@ -59,44 +59,37 @@ const {
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
+const gasFee = new BigNumberInBase(INJ_GAS_FEE)
+const gasFeeToString = gasFee.toFormat()
+
 const status = reactive(new Status())
 
-const injTokenWithPrice = computed(() => {
-  return {
-    ...injToken,
-    usdPrice: tokenStore.injUsdPrice
-  } as TokenWithUsdPrice
-})
+const injTokenWithPrice = computed<TokenWithUsdPrice>(() => ({
+  ...injToken,
+  usdPrice: tokenStore.injUsdPrice
+}))
 
 const tokenWithBalanceAndPrice = computed<TokenWithBalanceAndPrice | undefined>(
-  () => {
-    return tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+  () =>
+    tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
       (token) => token.denom === props.formValues[BridgeField.Token].denom
     )
-  }
 )
 
-const usdPrice = computed(() => {
-  if (
-    tokenWithBalanceAndPrice.value &&
-    tokenWithBalanceAndPrice.value.usdPrice
-  ) {
-    return new BigNumberInBase(tokenWithBalanceAndPrice.value.usdPrice || 0)
-  }
+const usdPrice = computed(
+  () => new BigNumberInBase(tokenWithBalanceAndPrice.value?.usdPrice || 0)
+)
 
-  return ZERO_IN_BASE
-})
+const amount = computed(
+  () => new BigNumberInBase(props.formValues[BridgeField.Amount] || 0)
+)
 
-const amount = computed(() => {
-  return new BigNumberInBase(props.formValues[BridgeField.Amount] || 0)
-})
+const amountInUsd = computed(() =>
+  amount.value.multipliedBy(new BigNumberInBase(usdPrice.value))
+)
 
 const { valueToString: amountToString } = useBigNumberFormatter(amount, {
   decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-})
-
-const amountInUsd = computed(() => {
-  return amount.value.multipliedBy(new BigNumberInBase(usdPrice.value))
 })
 
 const { valueToString: amountInUsdToString } = useBigNumberFormatter(
@@ -127,26 +120,16 @@ const { valueToString: ethBridgeFeeToString } = useBigNumberFormatter(
   }
 )
 
-const ethBridgeFeeInUsd = computed(() => {
-  return ethBridgeFee.value.multipliedBy(new BigNumberInBase(usdPrice.value))
-})
+const ethBridgeFeeInUsd = computed(() =>
+  ethBridgeFee.value.multipliedBy(new BigNumberInBase(usdPrice.value))
+)
 
 const { valueToString: ethBridgeFeeInUsdToString } =
   useBigNumberFormatter(ethBridgeFeeInUsd)
 
-const gasFee = computed(() => {
-  return new BigNumberInBase(INJ_GAS_FEE)
-})
-
-const gasFeeToString = computed(() => {
-  return gasFee.value.toFormat()
-})
-
-const gasFeeInUsd = computed(() => {
-  return gasFee.value.multipliedBy(
-    new BigNumberInBase(injTokenWithPrice.value.usdPrice)
-  )
-})
+const gasFeeInUsd = computed(() =>
+  gasFee.multipliedBy(new BigNumberInBase(injTokenWithPrice.value.usdPrice))
+)
 
 const transferAmount = computed(() => {
   if (destinationIsEthereumNetwork.value) {
@@ -333,7 +316,7 @@ function handleTransferTradingAccountTrack() {
 </script>
 
 <template>
-  <AppModalWrapper
+  <AppModal
     :show="modalStore.modals[Modal.BridgeConfirm]"
     sm
     data-cy="transfer-confirm-modal"
@@ -561,5 +544,5 @@ function handleTransferTradingAccountTrack() {
       </div>
       <CommonUserNotConnectedNote v-else />
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

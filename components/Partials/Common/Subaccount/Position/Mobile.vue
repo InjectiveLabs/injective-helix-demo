@@ -49,13 +49,13 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-function onAddMarginButtonClick() {
+function handleAddMargin() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
 
   modalStore.openModal({ type: Modal.AddMarginToPosition })
 }
 
-function onClosePositionClick() {
+function handleClosePositionClick() {
   if (!market.value) {
     return
   }
@@ -156,7 +156,7 @@ function closePositionAndReduceOnlyOrders() {
         v-if="!hideBalance"
         class="cursor-pointer rounded"
         :status="status"
-        @click="onClosePositionClick"
+        @click="handleClosePositionClick"
       >
         <div
           class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-500 text-red-500"
@@ -248,7 +248,7 @@ function closePositionAndReduceOnlyOrders() {
           role="button"
           type="button"
           class="border border-gray-500 text-gray-500 ml-2 px-1"
-          @click.stop.prevent="onAddMarginButtonClick"
+          @click.stop.prevent="handleAddMargin"
         >
           &plus;
         </button>

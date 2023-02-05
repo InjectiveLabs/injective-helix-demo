@@ -58,7 +58,7 @@ function close() {
 </script>
 
 <template>
-  <AppModalWrapper :show="isModalOpen" sm @modal:closed="close">
+  <AppModal :show="isModalOpen" sm @modal:closed="close">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
@@ -71,10 +71,10 @@ function close() {
           <ModalsAddMarginForm
             :balance="quoteBalance"
             :market="market"
-            @close="close"
+            @modal:close="close"
           />
         </div>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

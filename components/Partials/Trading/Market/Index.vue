@@ -40,17 +40,17 @@ onMounted(() => {
   const { marketId } = props.market
 
   Promise.all(
-    !isSpot
+    isSpot
       ? [
-          derivativeStore.fetchOrderbook(marketId),
-          derivativeStore.fetchTrades({
+          spotStore.fetchOrderbook(marketId),
+          spotStore.fetchTrades({
             marketId,
             executionSide: TradeExecutionSide.Taker
           })
         ]
       : [
-          spotStore.fetchOrderbook(marketId),
-          spotStore.fetchTrades({
+          derivativeStore.fetchOrderbook(marketId),
+          derivativeStore.fetchTrades({
             marketId,
             executionSide: TradeExecutionSide.Taker
           })

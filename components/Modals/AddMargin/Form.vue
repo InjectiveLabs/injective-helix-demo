@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'close'): void
+  (e: 'modal:close'): void
 }>()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -51,7 +51,7 @@ function handleMax() {
   setAmountValue(availableMarginToFixed.value)
 }
 
-const submit = handleSubmit(() => {
+const handleFormSubmit = handleSubmit(() => {
   status.setLoading()
 
   positionStore
@@ -62,8 +62,7 @@ const submit = handleSubmit(() => {
     .then(() => {
       resetForm()
       success({ title: t('trade.success_added_margin') })
-
-      emit('close')
+      emit('modal:close')
     })
     .catch($onError)
     .finally(() => {
@@ -138,7 +137,7 @@ const submit = handleSubmit(() => {
             :disabled="amountErrors.length > 0"
             :status="status"
             data-cy="add-margin-modal-execute-button"
-            @click="submit"
+            @click="handleFormSubmit"
           >
             {{ $t('trade.add_margin') }}
           </AppButton>

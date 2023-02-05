@@ -10,8 +10,8 @@ import {
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
-  isSpot: Boolean,
   isBuy: Boolean,
+  isSpot: Boolean,
   isBase: Boolean,
 
   fees: {

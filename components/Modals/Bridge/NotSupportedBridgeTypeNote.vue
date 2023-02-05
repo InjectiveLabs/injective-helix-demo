@@ -17,6 +17,8 @@ const props = defineProps({
   }
 })
 
+const bridgeUrl = `${getHubUrl()}/bridge`
+
 const isWormholeTransfer = computed(
   () =>
     [BridgingNetwork.Solana].includes(props.selectedNetwork) ||
@@ -24,8 +26,6 @@ const isWormholeTransfer = computed(
       props.formValues[BridgeField.Denom].toLowerCase()
     )
 )
-
-const bridgeUrl = `${getHubUrl()}/bridge`
 </script>
 
 <template>

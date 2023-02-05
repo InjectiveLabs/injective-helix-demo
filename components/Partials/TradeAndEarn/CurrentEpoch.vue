@@ -54,13 +54,13 @@ const stakedAmount = computed(() => {
   )
 })
 
-const tradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(tradeRewardPoints.value).toBase(USDT_DECIMALS)
-})
+const tradeRewardPointsFactored = computed(() =>
+  new BigNumberInWei(tradeRewardPoints.value).toBase(USDT_DECIMALS)
+)
 
-const totalTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(totalTradeRewardPoints.value).toBase(USDT_DECIMALS)
-})
+const totalTradeRewardPointsFactored = computed(() =>
+  new BigNumberInWei(totalTradeRewardPoints.value).toBase(USDT_DECIMALS)
+)
 
 const campaignDurationInSeconds = computed(() => {
   if (!campaignInfo.value) {
@@ -86,12 +86,12 @@ const currentEpochStartTimestamp = computed(() => {
   return new BigNumberInBase(schedule.startTimestamp).toNumber()
 })
 
-const epochCountdown = computed(() => {
-  return format(
+const epochCountdown = computed(() =>
+  format(
     (currentEpochStartTimestamp.value + campaignDurationInSeconds.value) * 1000,
     'dd MMM HH:mm:ss'
   )
-})
+)
 
 const injMaxCampaignRewards = computed(() => {
   if (!poolCampaignScheduleList.value) {
@@ -113,21 +113,20 @@ const injMaxCampaignRewards = computed(() => {
   return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
 })
 
-const injMaxCampaignRewardsInUsd = computed(() => {
-  return injMaxCampaignRewards.value.multipliedBy(
+const injMaxCampaignRewardsInUsd = computed(() =>
+  injMaxCampaignRewards.value.multipliedBy(
     new BigNumberInBase(tokenStore.injUsdPrice)
   )
-})
+)
 
-const totalTradeRewardPoints = computed(() => {
-  if (!rewardsCampaign.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(
-    cosmosSdkDecToBigNumber(rewardsCampaign.value.totalTradeRewardPoints || 0)
-  )
-})
+const totalTradeRewardPoints = computed(
+  () =>
+    new BigNumberInBase(
+      cosmosSdkDecToBigNumber(
+        rewardsCampaign.value?.totalTradeRewardPoints || 0
+      )
+    )
+)
 
 const estimatedRewards = computed(() => {
   if (totalTradeRewardPoints.value.lte(0)) {
@@ -149,11 +148,11 @@ const estimatedRewards = computed(() => {
   return estRewards.gte(stakedAmount.value) ? stakedAmount.value : estRewards
 })
 
-const estimatedRewardsInUsd = computed(() => {
-  return estimatedRewards.value.multipliedBy(
+const estimatedRewardsInUsd = computed(() =>
+  estimatedRewards.value.multipliedBy(
     new BigNumberInBase(tokenStore.injUsdPrice)
   )
-})
+)
 
 onMounted(() => {
   Promise.all([exchangeStore.fetchTradeRewardPoints()])

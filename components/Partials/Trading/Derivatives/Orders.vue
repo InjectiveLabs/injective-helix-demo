@@ -89,13 +89,11 @@ const filteredPositions = computed(() => {
   })
 })
 
-const orders = computed<UIDerivativeOrder[]>(() => {
-  if (activeType.value === FilterList.OpenOrders) {
-    return derivativeStore.subaccountOrders
-  }
-
-  return filteredOrders.value
-})
+const orders = computed<UIDerivativeOrder[]>(() =>
+  activeType.value === FilterList.OpenOrders
+    ? derivativeStore.subaccountOrders
+    : filteredOrders.value
+)
 
 const checked = computed({
   get: (): boolean => props.filterByCurrentMarket,

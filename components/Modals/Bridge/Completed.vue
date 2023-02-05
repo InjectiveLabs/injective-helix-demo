@@ -51,7 +51,7 @@ function close() {
 </script>
 
 <template>
-  <AppModalWrapper
+  <AppModal
     :show="modalStore.modals[Modal.BridgeCompleted]"
     sm
     data-cy="transfer-completed-modal"
@@ -131,5 +131,5 @@ function close() {
       </div>
       <CommonUserNotConnectedNote v-else />
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

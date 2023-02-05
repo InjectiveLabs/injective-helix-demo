@@ -122,8 +122,9 @@ function handleWithdrawClick() {
 }
 
 function handleConvert() {
-  useEventBus<Token>(BusEvents.ConvertUSDC).emit(props.balance.token as Token)
-  modalStore.openModal({ type: Modal.ConvertUSDC })
+  useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
+
+  modalStore.openModal({ type: Modal.ConvertUsdc })
 }
 </script>
 

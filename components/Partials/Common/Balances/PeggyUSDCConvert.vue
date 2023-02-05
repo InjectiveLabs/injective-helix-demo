@@ -46,9 +46,11 @@ const hasUSDCPeggyBalance = computed(() => {
 })
 
 onMounted(() => {
-  if (hasUSDCPeggyBalance.value) {
-    openModal()
-  }
+  nextTick(() => {
+    if (hasUSDCPeggyBalance.value) {
+      openModal()
+    }
+  })
 })
 
 function openModal() {
@@ -63,5 +65,5 @@ function openModal() {
     }}</span>
   </div>
 
-  <ModalsPeggyUSDCDetected :market="market" />
+  <ModalsPeggyUsdcDetected :market="market" />
 </template>

@@ -81,7 +81,7 @@ const hasInsufficientBalance = computed(() =>
   Object.values(props.errors).includes(tradeErrorMessages.insufficientBalance())
 )
 
-function handleClickOnConnect() {
+function handleConnect() {
   modalStore.openModal({ type: Modal.Connect })
 }
 
@@ -90,8 +90,8 @@ function submit() {
 }
 
 function handleNavigation() {
-  if (modalStore.modals[Modal.ConvertUSDC]) {
-    modalStore.closeModal(Modal.ConvertUSDC)
+  if (modalStore.modals[Modal.ConvertUsdc]) {
+    modalStore.closeModal(Modal.ConvertUsdc)
   }
 
   router.push({ name: 'account' })
@@ -104,7 +104,7 @@ function handleNavigation() {
       v-if="!walletStore.isUserWalletConnected"
       lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      @click="handleClickOnConnect"
+      @click="handleConnect"
     >
       {{ $t('trade.convert.connect_wallet') }}
     </AppButton>

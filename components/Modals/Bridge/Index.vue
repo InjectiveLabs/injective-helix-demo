@@ -46,6 +46,8 @@ const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
+const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
+
 const { transferableBalancesWithToken } = useBridgeBalance({
   bridgeForm: computed(() => props.formValues),
   bridgeType: computed(() => props.bridgeType),
@@ -208,8 +210,8 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.Bridge]"
+  <AppModal
+    :show="isModalOpen"
     :ignore="['.v-popper__popper']"
     sm
     :modal-closed:animation="handleResetBridge"
@@ -368,5 +370,5 @@ function handleBridgingNetworkChange(bridgingNetwork: string) {
       </div>
     </div>
     <CommonUserNotConnectedNote v-else />
-  </AppModalWrapper>
+  </AppModal>
 </template>

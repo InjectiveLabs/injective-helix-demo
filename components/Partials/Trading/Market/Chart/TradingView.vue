@@ -24,6 +24,7 @@ const emit = defineEmits<{ (e: 'ready'): void }>()
 const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
+
 const tradingView = ref(null as any)
 
 onMounted(() => {

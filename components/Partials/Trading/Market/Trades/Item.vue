@@ -24,8 +24,8 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 
-const price = computed(() => {
-  return isSpot
+const price = computed(() =>
+  isSpot
     ? new BigNumberInBase(
         new BigNumberInBase((props.trade as UiSpotTrade).price).toWei(
           props.market.baseToken.decimals - props.market.quoteToken.decimals
@@ -34,15 +34,15 @@ const price = computed(() => {
     : new BigNumberInWei(
         (props.trade as UiDerivativeTrade).executionPrice
       ).toBase(props.market.quoteToken.decimals)
-})
+)
 
-const quantity = computed(() => {
-  return isSpot
+const quantity = computed(() =>
+  isSpot
     ? new BigNumberInWei((props.trade as UiSpotTrade).quantity).toBase(
         props.market.baseToken.decimals
       )
     : new BigNumberInBase((props.trade as UiDerivativeTrade).executionQuantity)
-})
+)
 
 const { valueToFixed: priceToFormat } = useBigNumberFormatter(price, {
   decimalPlaces: props.market.priceDecimals

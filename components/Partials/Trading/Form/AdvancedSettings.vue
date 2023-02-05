@@ -15,8 +15,8 @@ const { t } = useLang()
 
 const props = defineProps({
   isBase: Boolean,
-  isConditionalOrder: Boolean,
   isSpot: Boolean,
+  isConditionalOrder: Boolean,
   reduceOnlyDisabled: Boolean,
 
   formValues: {

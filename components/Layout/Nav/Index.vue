@@ -9,16 +9,11 @@ import {
 
 const walletStore = useWalletStore()
 
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
+const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
+
 const tradeDropdownShown = ref(false)
 const rewardsDropdownShown = ref(false)
-
-const defaultPerpetualMarketRoute = computed(() => {
-  return getDefaultPerpetualMarketRouteParams()
-})
-
-const defaultSpotMarketRoute = computed(() => {
-  return getDefaultSpotMarketRouteParams()
-})
 
 function handleSpotTradeClickedTrack() {
   amplitudeTracker.submitTradeClickedTrackEvent({

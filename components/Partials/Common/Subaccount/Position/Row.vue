@@ -121,7 +121,7 @@ function closePositionAndReduceOnlyOrders() {
     })
 }
 
-function handleClickOnMarket() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -136,7 +136,7 @@ function handleClickOnMarket() {
     :data-cy="'open-position-table-row-' + position.ticker"
     class="h-[60px]"
   >
-    <td class="text-left cursor-pointer pl-3" @click="handleClickOnMarket">
+    <td class="text-left cursor-pointer pl-3" @click="handleVisitMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" />

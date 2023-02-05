@@ -231,9 +231,7 @@ export function useDerivativeError({
   })
 
   const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
-    isBuy.value
-      ? derivativeStore.orderbook?.sells
-      : derivativeStore.orderbook?.buys
+    isBuy.value ? derivativeStore.sells : derivativeStore.buys
   )
 
   const filteredConditionalOrders = computed(() =>

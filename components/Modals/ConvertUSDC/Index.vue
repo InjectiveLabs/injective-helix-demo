@@ -42,6 +42,8 @@ const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
+const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
+
 const isBuy = computed(
   () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
 )
@@ -100,12 +102,10 @@ function resetFormValues() {
     field: TradeField.OrderType,
     value: isBuyState ? SpotOrderSide.Buy : SpotOrderSide.Sell
   })
-
   updateFormValue({
     field: TradeField.BaseDenom,
     value: props.market.baseDenom
   })
-
   updateFormValue({
     field: TradeField.QuoteDenom,
     value: props.market.quoteDenom
@@ -130,7 +130,7 @@ function submitForm() {
     .finally(() => {
       submitStatus.setIdle()
       accountStore.updateSubaccount()
-      modalStore.closeModal(Modal.ConvertUSDC)
+      modalStore.closeModal(Modal.ConvertUsdc)
     })
 }
 
@@ -141,16 +141,12 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
 })
 
 function closeModal() {
-  modalStore.closeModal(Modal.ConvertUSDC)
+  modalStore.closeModal(Modal.ConvertUsdc)
 }
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.ConvertUSDC]"
-    sm
-    @modal:closed="closeModal"
-  >
+  <AppModal :show="isModalOpen" sm @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('account.convertUsdc') }}
@@ -165,7 +161,7 @@ function closeModal() {
           {{ $t('account.whyConvert') }}
         </div>
 
-        <ModalsConvertUSDCTokenForm
+        <ModalsConvertUsdcTokenForm
           v-model:isBase="isBase"
           v-bind="{
             balances,
@@ -178,7 +174,7 @@ function closeModal() {
           @update:formValue="updateFormValue"
         />
 
-        <ModalsConvertUSDCSummary
+        <ModalsConvertUsdcSummary
           class="mt-4"
           v-bind="{
             formValues,
@@ -206,5 +202,5 @@ function closeModal() {
         />
       </div>
     </AppHocLoading>
-  </AppModalWrapper>
+  </AppModal>
 </template>

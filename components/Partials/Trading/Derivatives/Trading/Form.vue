@@ -768,9 +768,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         tradingType: formValues[TradeField.TradingType],
         triggerPrice: triggerPrice
       }"
-      @confirmed="handleSubmit"
+      @order:confirmed="handleSubmit"
     />
 
-    <ModalsPriceDeviation @confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
   </div>
 </template>

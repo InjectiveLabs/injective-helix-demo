@@ -65,9 +65,7 @@ const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
 )
 
 const highestBuy = computed(() => {
-  const buys = props.isSpot
-    ? spotStore.orderbook?.buys
-    : derivativeStore.orderbook?.buys
+  const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
 
   const [buy] = buys || []
 
@@ -79,9 +77,7 @@ const highestBuy = computed(() => {
 })
 
 const lowestSell = computed(() => {
-  const sells = props.isSpot
-    ? spotStore.orderbook?.sells
-    : derivativeStore.orderbook?.sells
+  const sells = props.isSpot ? spotStore.sells : derivativeStore.sells
 
   const [sell] = sells || []
 

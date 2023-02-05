@@ -46,6 +46,9 @@ const emit = defineEmits<{
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
+const inputPlaceholder = computed(() =>
+  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
+)
 
 const {
   valueToBigNumber,
@@ -84,10 +87,6 @@ const denomValue = computed({
     }
   }
 })
-
-const inputPlaceholder = computed(() =>
-  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
-)
 
 function handleAmountUpdate(amount: string) {
   setAmountValue(amount)

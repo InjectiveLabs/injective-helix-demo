@@ -14,17 +14,17 @@ const emit = defineEmits<{
   (e: 'transfer-direction:switch'): void
 }>()
 
-const originNetworkMeta = computed(() => {
-  return props.transferDirection === TransferDirection.bankToTradingAccount
+const originNetworkMeta = computed(() =>
+  props.transferDirection === TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.Bank]
     : transferSideMeta[TransferSide.TradingAccount]
-})
+)
 
-const destinationNetworkMeta = computed(() => {
-  return props.transferDirection === TransferDirection.bankToTradingAccount
+const destinationNetworkMeta = computed(() =>
+  props.transferDirection === TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.TradingAccount]
     : transferSideMeta[TransferSide.Bank]
-})
+)
 
 function handleDirectionSwitch() {
   emit('transfer-direction:switch')

@@ -25,9 +25,9 @@ const emit = defineEmits<{
 
 const uuid = Math.random()
 
-const selectedOption = computed(() => {
-  return props.options.find((option) => option.value === props.modelValue)
-})
+const selectedOption = computed(() =>
+  props.options.find((option) => option.value === props.modelValue)
+)
 
 function handleSelect(option: BaseDropdownOption) {
   emit('update:modelValue', option.value)

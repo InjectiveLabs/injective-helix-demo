@@ -38,7 +38,7 @@ onMounted(() => {
   initBalances()
 
   useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
-  useEventBus<Token>(BusEvents.ConvertUSDC).on(setUsdcConvertMarket)
+  useEventBus<Token>(BusEvents.ConvertUsdc).on(setUsdcConvertMarket)
 })
 
 onBeforeUnmount(() => {
@@ -164,8 +164,7 @@ function handleHideBalances(value: boolean) {
     <PartialsAccountBridge />
 
     <ModalsAddMargin />
-
-    <ModalsConvertUSDCWrapper
+    <ModalsConvertUsdc
       v-if="usdcConvertMarket"
       :balances="balances"
       :market="usdcConvertMarket"

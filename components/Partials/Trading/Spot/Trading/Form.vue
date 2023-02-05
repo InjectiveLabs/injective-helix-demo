@@ -57,19 +57,19 @@ const {
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const amountStep = computed(() => {
-  return props.market
+const amountStep = computed(() =>
+  props.market
     ? new BigNumberInBase(1)
         .shiftedBy(props.market.quantityTensMultiplier)
         .toFixed()
     : defaultStep
-})
+)
 
-const priceStep = computed(() => {
-  return props.market
+const priceStep = computed(() =>
+  props.market
     ? new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals).toFixed()
     : defaultStep
-})
+)
 
 const isBuy = computed(
   () => formValues.value[TradeField.OrderType] === SpotOrderSide.Buy
@@ -454,6 +454,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
       @submit:request="handleRequestSubmit"
     />
 
-    <ModalsPriceDeviation @confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
   </div>
 </template>

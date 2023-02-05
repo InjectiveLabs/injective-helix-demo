@@ -22,9 +22,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: number): void
 }>()
 
-const selectedOption = computed(() => {
-  return props.options.find((option) => option === props.limit)
-})
+const selectedOption = computed(() =>
+  props.options.find((option) => option === props.limit)
+)
 
 function handleUpdateLimit(limit: any) {
   emit('update:modelValue', limit)

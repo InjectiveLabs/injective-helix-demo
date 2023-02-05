@@ -6,15 +6,11 @@ const route = useRoute()
 const router = useRouter()
 const walletStore = useWalletStore()
 
-const injectiveAddress = computed(() => {
-  return walletStore.injectiveAddress
-})
+const formattedInjectiveAddress = computed(() =>
+  formatWalletAddress(walletStore.injectiveAddress)
+)
 
-const formattedInjectiveAddress = computed(() => {
-  return formatWalletAddress(injectiveAddress.value)
-})
-
-function handleClickOnDisconnect() {
+function handleDisconnect() {
   walletStore.logout()
 
   if (ROUTES.walletConnectedRequiredRouteNames.includes(route.name as string)) {
@@ -49,7 +45,7 @@ function handleClickOnDisconnect() {
                 </span>
                 <span
                   class="text-blue-500 hover:text-opacity-80 cursor-pointer text-xs font-medium"
-                  @click="handleClickOnDisconnect"
+                  @click="handleDisconnect"
                 >
                   {{ $t('navigation.disconnect') }}
                 </span>

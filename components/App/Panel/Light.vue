@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const slots = useSlots()
+
 defineProps({
   dense: Boolean,
 
@@ -22,7 +24,7 @@ defineProps({
 <template>
   <div class="flex flex-col">
     <div
-      v-if="title || $slots['title'] || $slots['title-context']"
+      v-if="title || slots['title'] || slots['title-context']"
       class="flex justify-between items-center"
     >
       <h3 class="text-xl font-bold text-gray-200">

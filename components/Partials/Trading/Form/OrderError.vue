@@ -8,9 +8,9 @@ defineProps({
 
 const faucetUrl = 'https://inj.supply/'
 
-const notEnoughInjForGas = computed(() => {
-  return walletStore.isUserWalletConnected && !bankStore.hasEnoughInjForGas
-})
+const notEnoughInjForGas = computed(
+  () => walletStore.isUserWalletConnected && !bankStore.hasEnoughInjForGas
+)
 </script>
 
 <template>

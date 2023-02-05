@@ -32,7 +32,7 @@ export function useSpotPrice({
   })
 
   const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
-    isBuy.value ? spotStore.orderbook?.sells : spotStore.orderbook?.buys
+    isBuy.value ? spotStore.sells : spotStore.buys
   )
 
   const amountForCalculation = computed(() => {

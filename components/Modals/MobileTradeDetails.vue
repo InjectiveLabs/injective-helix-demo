@@ -18,7 +18,7 @@ const props = defineProps({
   }
 })
 
-const showModal = computed(
+const isModalOpen = computed(
   () => modalStore.modals[Modal.MobileTradeDetails] && !!props.trade
 )
 
@@ -34,12 +34,7 @@ function close() {
 </script>
 
 <template>
-  <AppModalWrapper
-    v-if="trade && market"
-    :show="showModal"
-    sm
-    @modal:closed="close"
-  >
+  <AppModal v-if="trade && market" :show="isModalOpen" sm @modal:closed="close">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3 cursor-pointer" @click="close">
@@ -166,5 +161,5 @@ function close() {
         </AppNumber>
       </span>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>
