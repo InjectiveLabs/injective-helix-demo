@@ -110,7 +110,7 @@ function updateAmount({
   emit('update:amount', { amount, isBaseAmount })
 }
 
-function handleMaxBaseAmountChange(amount: string) {
+function handleMaxBaseAmountChange({ amount }: { amount: string }) {
   emit('update:formValue', {
     field: TradeField.BaseAmount,
     value: amount
@@ -119,7 +119,7 @@ function handleMaxBaseAmountChange(amount: string) {
   updateAmount({ amount, isBaseAmount: true })
 }
 
-function handleMaxQuoteAmountChange(amount: string) {
+function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
   const amountInBigNumber = new BigNumberInBase(amount)
 
   const feeRateToDeduct = amountInBigNumber.times(takerFeeRate.value)

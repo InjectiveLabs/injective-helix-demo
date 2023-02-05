@@ -9,6 +9,7 @@ import {
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
 import { AccountBalance } from '~~/types'
+import { getCoinGeckoIdListWithDenomBalanceLargerThenZero } from '@/composables/account/useBalance'
 
 definePageMeta({
   middleware: ['connected']
@@ -22,7 +23,7 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { balancesWithToken, fetchTokensUsdPrice } = useBalance()
+const { balancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -60,26 +61,26 @@ const totalPositionsPnlByQuoteDenom = computed(() => {
 })
 
 const totalPositionsMarginByQuoteDenom = computed(() => {
-  return positionStore.subaccountPositions.reduce((list, p) => {
+  return positionStore.subaccountPositions.reduce((positions, position) => {
     const market = derivativeStore.markets.find(
-      (m) => m.marketId === p.marketId
+      (m) => m.marketId === position.marketId
     )
 
     if (!market) {
-      return list
+      return positions
     }
 
     const quoteDenom = market.quoteDenom.toLowerCase()
 
-    if (!list[quoteDenom]) {
-      list[quoteDenom] = ZERO_IN_BASE
+    if (!positions[quoteDenom]) {
+      positions[quoteDenom] = ZERO_IN_BASE
     }
 
-    list[quoteDenom] = list[quoteDenom].plus(
-      new BigNumberInWei(p.margin).toBase(market.quoteToken.decimals)
+    positions[quoteDenom] = positions[quoteDenom].plus(
+      new BigNumberInWei(position.margin).toBase(market.quoteToken.decimals)
     )
 
-    return list
+    return positions
   }, {} as Record<string, BigNumberInBase>)
 })
 
@@ -130,13 +131,22 @@ const balances = computed(() => {
   })
 })
 
+function fetchTokensUsdPrice() {
+  const coinGeckoIdList = getCoinGeckoIdListWithDenomBalanceLargerThenZero(
+    balancesWithToken.value,
+    tokenStore.tokens
+  )
+
+  tokenStore.fetchTokenUsdPriceMap(coinGeckoIdList)
+}
+
 onMounted(() => {
   status.setLoading()
 
   Promise.all([spotStore.init(), derivativeStore.init()])
     .then(() => {
       Promise.all([
-        tokenStore.getBitcoinUsdPrice(),
+        tokenStore.fetchBitcoinUsdPrice(),
         bankStore.fetchBankBalancesWithToken(),
         accountStore.fetchSubaccounts(),
         fetchTokensUsdPrice()

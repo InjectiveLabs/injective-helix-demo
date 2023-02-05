@@ -32,20 +32,20 @@ const emit = defineEmits<{
 
 const {
   form,
-  resetForm,
   isDeposit,
-  isWithdraw,
+  resetForm,
   bridgeType,
+  isWithdraw,
   originIsEthereum,
-  destinationIsInjective,
-  networkIsNotSupported
+  networkIsNotSupported,
+  destinationIsInjective
 } = useBridgeState()
 
 const { transferableBalancesWithToken } = useBridgeBalance()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
 
-const hasFormErrors = computed(() => Object.keys(errors).length > 0)
+const hasFormErrors = computed(() => Object.keys(errors.value).length > 0)
 
 const isConfirmDisabled = computed(() => {
   return hasFormErrors.value || form[BridgeField.Amount] === ''
@@ -105,7 +105,7 @@ const tokenWithBalance = computed(() => {
 
 const needsAllowanceSet = computed(() => {
   const tokenWithBalanceAndAllowance =
-    tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+    tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
       (token) => token.denom === denom.value
     )
 
@@ -143,12 +143,6 @@ const { value: memo, resetField: resetMemo } = useStringField({
   dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
 })
 
-function handleMaxAmountChange(amount: string) {
-  form[BridgeField.Amount] = amount
-
-  setFieldValue(BridgeField.Amount, amount)
-}
-
 const memoValue = computed({
   get: (): string => memo.value,
   set: (memo: string) => {
@@ -176,6 +170,12 @@ const destinationValue = computed({
   }
 })
 
+function handleAmountChange({ amount }: { amount: string }) {
+  form[BridgeField.Amount] = amount
+
+  setFieldValue(BridgeField.Amount, amount)
+}
+
 function handleTokenChange() {
   nextTick(() => {
     if (tokenWithBalance.value) {
@@ -188,10 +188,6 @@ function handleTokenChange() {
   })
 }
 
-function handleModalClose() {
-  modalStore.closeModal(Modal.Bridge)
-}
-
 function handleBridgeInit() {
   emit('bridge:init')
 }
@@ -199,6 +195,12 @@ function handleBridgeInit() {
 function handleResetBridge() {
   resetFormValidation()
   resetForm()
+}
+
+function handleModalClose() {
+  handleResetBridge()
+
+  modalStore.closeModal(Modal.Bridge)
 }
 </script>
 
@@ -310,8 +312,9 @@ function handleResetBridge() {
               amountFieldName: BridgeField.Amount,
               options: transferableBalancesWithToken
             }"
+            @update:amount="handleAmountChange"
             @update:denom="handleTokenChange"
-            @update:max="handleMaxAmountChange"
+            @update:max="handleAmountChange"
           >
             <span> {{ $t('bridge.amount') }} </span>
           </AppSelectToken>

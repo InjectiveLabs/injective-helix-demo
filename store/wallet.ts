@@ -76,18 +76,6 @@ export const useWalletStore = defineStore('wallet', {
       await connect({ wallet: walletStore.wallet })
     },
 
-    async initPage() {
-      const accountStore = useAccountStore()
-      const bankStore = useBankStore()
-      const onBoardStore = useOnboardStore()
-      const tokenStore = useTokenStore()
-
-      await bankStore.fetchBankBalancesWithToken()
-      await accountStore.fetchSubaccounts()
-      await onBoardStore.init()
-      await tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
-    },
-
     async connectWallet(wallet: Wallet) {
       const walletStore = useWalletStore()
 

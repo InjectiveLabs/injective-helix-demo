@@ -58,7 +58,7 @@ const injTokenWithPrice = computed<TokenWithUsdPrice>(() => ({
 }))
 
 const tokenWithBalanceAndPrice = computed(() => {
-  return tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+  return tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
     (token) => token.denom === form[BridgeField.Token].denom
   ) as TokenWithBalanceAndPrice | undefined
 })
@@ -129,12 +129,11 @@ const { valueToString: transferAmountToString } = useBigNumberFormatter(
   }
 )
 
-const amountLargerThanEthBridgeFee = computed(() => {
-  if (!destinationIsEthereum.value) {
-    return true
-  }
-
-  return amountInUsd.value.gt(ethBridgeFeeInUsd.value)
+const isConfirmationDisabled = computed(() => {
+  return (
+    transferAmount.value.lte(0) ||
+    (originIsInjective && !bankStore.hasEnoughInjForGas)
+  )
 })
 
 const transferAmountInUsd = computed(() =>
@@ -495,10 +494,7 @@ function handleTransferTradingAccountTrack() {
             <AppButton
               lg
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
-              :disabled="
-                !amountLargerThanEthBridgeFee ||
-                (originIsInjective && !bankStore.hasEnoughInjForGas)
-              "
+              :disabled="isConfirmationDisabled"
               :status="status"
               data-cy="transfer-confirm-modal-confirm-button"
               @click="handleConfirmation"
@@ -506,7 +502,7 @@ function handleTransferTradingAccountTrack() {
               <span v-if="originIsInjective && !bankStore.hasEnoughInjForGas">
                 {{ $t('bridge.insufficientINJForGas') }}
               </span>
-              <span v-if="!amountLargerThanEthBridgeFee">
+              <span v-if="transferAmount.lte(0)">
                 {{ $t('bridge.insufficientAmount') }}
               </span>
               <span v-else>

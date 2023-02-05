@@ -15,7 +15,7 @@ export function useBridgeBalance() {
   const tokenStore = useTokenStore()
 
   const erc20Balances = computed(() => {
-    const balances = tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(
+    const balances = tokenStore.tradeableErc20TokensWithBalanceAndPrice.map(
       (token) => {
         const balance = new BigNumberInWei(token.balance)
           .toBase(token.decimals)
@@ -34,39 +34,39 @@ export function useBridgeBalance() {
   })
 
   const bankBalances = computed(() => {
-    const balances = bankStore.bankBalancesWithToken
-      .filter((token) => !token.denom.startsWith('share'))
-      .map((tokenWithBalance) => {
-        const balance = new BigNumberInWei(tokenWithBalance.balance || 0)
-          .toBase(tokenWithBalance.token.decimals)
-          .toString()
+    const balances = tokenStore.tradeableTokens.map((token) => {
+      const balanceWithToken = bankStore.bankBalancesWithToken.find(
+        (balance) => balance.denom === token.denom
+      )
 
-        return {
-          ...tokenWithBalance,
-          balanceToBase: balance
-        } as BalanceWithToken
-      })
+      return {
+        token,
+        denom: token.denom,
+        balance: balanceWithToken?.balance || '0',
+        balanceToBase: new BigNumberInWei(balanceWithToken?.balance || 0)
+          .toBase(token.decimals)
+          .toFixed()
+      } as BalanceWithToken
+    })
 
     return balances
   })
 
   const accountBalances = computed(() => {
-    if (!accountStore.subaccount) {
-      return []
-    }
-
-    const balances = accountStore.subaccount.balances
-      .map((subaccountBalance) => {
-        const token = tokenStore.tokens.find(
-          (token) => token.denom === subaccountBalance.denom
+    const balances = tokenStore.tradeableTokens
+      .map((token) => {
+        const accountBalance = accountStore.subaccount?.balances.find(
+          (balance) => balance.denom === token.denom
         )
 
         return {
           token,
-          denom: subaccountBalance.denom,
-          balance: subaccountBalance.availableBalance,
-          balanceToBase: new BigNumberInWei(subaccountBalance.availableBalance)
-            .toBase(token?.decimals)
+          denom: token.denom,
+          balance: accountBalance?.availableBalance || '0',
+          balanceToBase: new BigNumberInWei(
+            accountBalance?.availableBalance || '0'
+          )
+            .toBase(token.decimals)
             .toFixed()
         }
       })

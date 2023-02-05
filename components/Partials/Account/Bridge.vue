@@ -83,7 +83,7 @@ function handleDeposit(token: Token = injToken) {
   form[BridgeField.TransferDirection] = TransferDirection.tradingAccountToBank
 
   // Update ERC20 balances when we open the bridge instead of loading them when we open the page
-  tokenStore.updateErc20TokensBalanceAndAllowanceFromBankAndMarkets()
+  tokenStore.updateErc20TokensWithBalanceAndPrice()
 
   modalStore.openModal({ type: Modal.Bridge })
 }

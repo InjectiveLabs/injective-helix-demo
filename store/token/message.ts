@@ -130,7 +130,7 @@ export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
     address
   })
 
-  const token = tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+  const token = tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
     (token) => {
       const erc20Token = token as Erc20Token
 
@@ -139,7 +139,7 @@ export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
       )
     }
   )
-  const index = tokenStore.erc20TokensWithBalanceAndPriceFromBank.findIndex(
+  const index = tokenStore.tradeableErc20TokensWithBalanceAndPrice.findIndex(
     (token) => {
       const erc20Token = token as Erc20Token
 
@@ -153,16 +153,16 @@ export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
     return
   }
 
-  const erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance = [
-    ...tokenStore.erc20TokensWithBalanceAndPriceFromBank
+  const tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance = [
+    ...tokenStore.tradeableErc20TokensWithBalanceAndPrice
   ]
-  erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance[index] = {
+  tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance[index] = {
     ...token,
     allowance: UNLIMITED_ALLOWANCE.toString()
   }
 
   tokenStore.$patch({
-    erc20TokensWithBalanceAndPriceFromBank:
-      erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance
+    tradeableErc20TokensWithBalanceAndPrice:
+      tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance
   })
 }

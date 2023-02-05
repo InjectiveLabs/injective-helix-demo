@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 import {
-  BankBalanceWithToken,
-  TokenWithBalanceAndPrice,
+  UiBankTransformer,
   INJ_COIN_GECKO_ID,
-  UiBankTransformer
+  TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import { bankApi, tokenPrice, tokenService, web3Client } from '@/app/Services'
 import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
@@ -17,119 +16,71 @@ type TokenStoreState = {
   btcUsdPrice: number
   injUsdPrice: number
   tokenUsdPriceMap: TokenUsdPriceMap
-  erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
-  ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
+  tradeableErc20TokensWithBalanceAndPrice: TokenWithBalanceAndPrice[]
 }
+
 const initialStateFactory = (): TokenStoreState => ({
   tokens: [],
   btcUsdPrice: 0,
   injUsdPrice: 0,
   tokenUsdPriceMap: {},
-  ibcTokensWithBalanceAndPriceFromBank: [],
-  erc20TokensWithBalanceAndPriceFromBank: []
+  tradeableErc20TokensWithBalanceAndPrice: []
 })
 
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
+  getters: {
+    tradeableTokens: (state) => {
+      const derivativeStore = useDerivativeStore()
+      const spotStore = useSpotStore()
+
+      const tradeableDenoms = [
+        ...new Set([
+          ...derivativeStore.tradeableDenoms,
+          ...spotStore.tradeableDenoms
+        ])
+      ]
+
+      return state.tokens.filter((token) => {
+        return tradeableDenoms.includes(token.denom)
+      })
+    }
+  },
   actions: {
     transfer,
     withdraw,
     setTokenAllowance,
 
-    async getErc20TokensWithBalanceAndPriceFromBankAndMarkets() {
+    async fetchErc20TokensWithBalanceAndPrice() {
       const tokenStore = useTokenStore()
-      const bankStore = useBankStore()
-      const derivativeStore = useDerivativeStore()
-      const spotStore = useSpotStore()
       const walletStore = useWalletStore()
 
       if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
       }
 
-      const tokenToTokenWithBalanceAndAllowance = async ({
-        token
-      }: BankBalanceWithToken) => {
-        return {
-          ...token,
-          balance: '0',
-          allowance: '0',
-          usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
-        } as TokenWithBalanceAndPrice
-      }
-
-      const ercTokensWithBalanceAndAllowance = await Promise.all(
-        bankStore.bankErc20BalancesWithToken.map(
-          tokenToTokenWithBalanceAndAllowance
-        )
+      const tradeableErc20Tokens = tokenStore.tradeableTokens.filter(
+        (token) => token.erc20Address
       )
-
-      const ibcTokensWithBalanceAndPriceFromBank = await Promise.all(
-        bankStore.bankIbcBalancesWithToken.map(
-          tokenToTokenWithBalanceAndAllowance
-        )
-      )
-
-      const denomsInBankBalances = [
-        ...ercTokensWithBalanceAndAllowance,
-        ...ibcTokensWithBalanceAndPriceFromBank
-      ].map((balance) => balance.denom)
-
-      const spotBaseDenomsNotInBankBalances = spotStore.markets
-        .filter((market) => {
-          return !denomsInBankBalances.includes(market.baseDenom)
-        })
-        .map((market) => market.baseDenom)
-      const spotQuoteDenomsNotInBankBalances = spotStore.markets
-        .filter((market) => {
-          return !denomsInBankBalances.includes(market.quoteDenom)
-        })
-        .map((market) => market.quoteDenom)
-      const derivativeQuoteDenomsNotInBankBalances = derivativeStore.markets
-        .filter((market) => {
-          return !denomsInBankBalances.includes(market.quoteDenom)
-        })
-        .map((market) => market.quoteDenom)
-
-      const denomsNotInBankBalances = [
-        ...spotBaseDenomsNotInBankBalances,
-        ...spotQuoteDenomsNotInBankBalances,
-        ...derivativeQuoteDenomsNotInBankBalances
-      ]
-      const uniqueDenomsNotInBankBalances = [
-        ...new Set(denomsNotInBankBalances)
-      ]
-
-      const tradeableTokensWithBalanceAndPrice = await Promise.all(
-        uniqueDenomsNotInBankBalances.map(async (denom) => {
-          const token = await tokenService.getDenomToken(denom)
-
+      const tradeableTokensWithBalanceAndPrice = await awaitAll(
+        tradeableErc20Tokens,
+        async (token) => {
           return {
             ...token,
             balance: '0',
             allowance: '0',
             usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
           } as TokenWithBalanceAndPrice
-        })
+        }
       )
 
-      const ercTokensWithBalanceAndAllowanceWithTradeableTokens = [
-        ...new Map(
-          [
-            ...tradeableTokensWithBalanceAndPrice,
-            ...ercTokensWithBalanceAndAllowance
-          ].map((token) => [token.denom, token])
-        ).values()
-      ].filter(({ erc20Address }) => erc20Address)
-
       tokenStore.$patch({
-        ibcTokensWithBalanceAndPriceFromBank,
-        erc20TokensWithBalanceAndPriceFromBank:
-          ercTokensWithBalanceAndAllowanceWithTradeableTokens
+        tradeableErc20TokensWithBalanceAndPrice:
+          tradeableTokensWithBalanceAndPrice
       })
     },
 
-    async updateErc20TokensBalanceAndAllowanceFromBankAndMarkets() {
+    async updateErc20TokensWithBalanceAndPrice() {
       const tokenStore = useTokenStore()
       const walletStore = useWalletStore()
 
@@ -138,7 +89,7 @@ export const useTokenStore = defineStore('token', {
       }
 
       const erc20TokenBalancesAreFetched =
-        tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+        tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
           (token) =>
             new BigNumberInBase(token.balance).gt(0) ||
             new BigNumberInBase(token.allowance).gt(0)
@@ -148,8 +99,9 @@ export const useTokenStore = defineStore('token', {
         return
       }
 
-      const updatedErc20TokensWithBalanceAndPriceFromBank = await Promise.all(
-        tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(async (token) => {
+      const updatedTradeableErc20TokensWithBalanceAndPrice = await awaitAll(
+        tokenStore.tradeableErc20TokensWithBalanceAndPrice,
+        async (token) => {
           const erc20Token = token as Erc20Token
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address: walletStore.address,
@@ -159,17 +111,17 @@ export const useTokenStore = defineStore('token', {
           return {
             ...token,
             ...tokenBalance
-          }
-        })
+          } as TokenWithBalanceAndPrice
+        }
       )
 
       tokenStore.$patch({
-        erc20TokensWithBalanceAndPriceFromBank:
-          updatedErc20TokensWithBalanceAndPriceFromBank
+        tradeableErc20TokensWithBalanceAndPrice:
+          updatedTradeableErc20TokensWithBalanceAndPrice
       })
     },
 
-    async getTokenUsdPriceMap(coinGeckoIdList: string[]) {
+    async fetchTokenUsdPriceMap(coinGeckoIdList: string[]) {
       const tokenStore = useTokenStore()
 
       const tokenUsdPriceList = await Promise.all(
@@ -179,7 +131,7 @@ export const useTokenStore = defineStore('token', {
       )
 
       const tokenUsdPriceMap = tokenUsdPriceList.reduce(
-        (list, tokenUsdPriceMap) => Object.assign(list, tokenUsdPriceMap),
+        (prices, tokenUsdPriceMap) => Object.assign(prices, tokenUsdPriceMap),
         {}
       )
 
@@ -188,7 +140,7 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
-    async getInjUsdPrice() {
+    async fetchInjUsdPrice() {
       const tokenStore = useTokenStore()
 
       tokenStore.$patch({
@@ -196,7 +148,7 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
-    async getBitcoinUsdPrice() {
+    async fetchBitcoinUsdPrice() {
       const tokenStore = useTokenStore()
 
       tokenStore.$patch({

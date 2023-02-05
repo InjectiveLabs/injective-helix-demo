@@ -12,6 +12,17 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
+const sideOptions = [
+  {
+    display: t('account.positions.side.short'),
+    value: 'short'
+  },
+  {
+    display: t('account.positions.side.long'),
+    value: 'long'
+  }
+]
+
 const side = ref('')
 const marketDenom = ref('')
 
@@ -66,19 +77,6 @@ const supportedTokens = computed(() => {
   ]
 
   return uniqueTokens
-})
-
-const sideOptions = computed(() => {
-  return [
-    {
-      display: t('account.positions.side.short'),
-      value: 'short'
-    },
-    {
-      display: t('account.positions.side.long'),
-      value: 'long'
-    }
-  ]
 })
 
 const marketOptions = computed(() => {

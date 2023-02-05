@@ -95,13 +95,22 @@ const initialStateFactory = (): DerivativeStoreState => ({
 export const useDerivativeStore = defineStore('derivative', {
   state: (): DerivativeStoreState => initialStateFactory(),
   getters: {
+    buys: (state) => state.orderbook?.buys || [],
+    sells: (state) => state.orderbook?.sells || [],
+
     activeMarketIds: (state) =>
       state.markets
         .filter(({ slug }) => MARKETS_SLUGS.futures.includes(slug))
         .map((m) => m.marketId),
 
-    buys: (state) => state.orderbook?.buys || [],
-    sells: (state) => state.orderbook?.sells || [],
+    tradeableDenoms: (state) =>
+      state.markets.reduce((denoms, market) => {
+        if (!denoms.includes(market.quoteDenom)) {
+          denoms.push(market.quoteDenom)
+        }
+
+        return denoms
+      }, [] as string[]),
 
     marketsWithSummary: (state) =>
       state.markets

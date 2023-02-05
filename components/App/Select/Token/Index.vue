@@ -41,7 +41,7 @@ const emit = defineEmits<{
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
-  (e: 'update:max', state: string): void
+  (e: 'update:max', { amount }: { amount: string }): void
 }>()
 
 const selectedToken = computed(() =>
@@ -99,7 +99,7 @@ function handleAmountUpdate(amount: string) {
 }
 
 function handleMax() {
-  emit('update:max', maxBalanceToFixed.value)
+  emit('update:max', { amount: maxBalanceToFixed.value })
 }
 </script>
 
