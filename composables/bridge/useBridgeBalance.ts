@@ -34,16 +34,18 @@ export function useBridgeBalance() {
   })
 
   const bankBalances = computed(() => {
-    const balances = bankStore.bankBalancesWithToken.map((tokenWithBalance) => {
-      const balance = new BigNumberInWei(tokenWithBalance.balance || 0)
-        .toBase(tokenWithBalance.token.decimals)
-        .toString()
+    const balances = bankStore.bankBalancesWithToken
+      .filter((token) => !token.denom.startsWith('share'))
+      .map((tokenWithBalance) => {
+        const balance = new BigNumberInWei(tokenWithBalance.balance || 0)
+          .toBase(tokenWithBalance.token.decimals)
+          .toString()
 
-      return {
-        ...tokenWithBalance,
-        balanceToBase: balance
-      } as BalanceWithToken
-    })
+        return {
+          ...tokenWithBalance,
+          balanceToBase: balance
+        } as BalanceWithToken
+      })
 
     return balances
   })
@@ -97,38 +99,7 @@ export function useBridgeBalance() {
       : accountBalances.value
   })
 
-  /**
-   * const noGasBufferNeededForTransfer =
-          walletStore.isWalletExemptFromGasFee ||
-          state.form[BridgeField.TransferDirection] ===
-            TransferDirection.tradingAccountToBank ||
-          balanceWithToken.denom !== INJ_DENOM
-
-        if (noGasBufferNeededForTransfer) {
-          return balanceWithToken
-        }
-
-        const transferableBalance = new BigNumberInBase(
-          balanceWithToken.balance
-        ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
-        const transferableBalanceCapped = transferableBalance.gt(0)
-          ? transferableBalance
-          : ZERO_IN_BASE
-
-        return {
-          ...balanceWithToken,
-          balance: transferableBalanceCapped.toString(),
-          balanceToBase: transferableBalanceCapped.toString()
-        }
-   */
-
-  const transferableBalancesWithToken = computed(() => {
-    return balancesWithToken.value.filter(
-      ({ denom }) => denom && !denom.startsWith('share')
-    )
-  })
-
   return {
-    transferableBalancesWithToken
+    transferableBalancesWithToken: balancesWithToken
   }
 }

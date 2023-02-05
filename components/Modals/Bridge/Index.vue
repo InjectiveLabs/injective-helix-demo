@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import {
   BINANCE_DEPOSIT_ADDRESSES,
+  INJ_GAS_BUFFER_FOR_BRIDGE,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Modal, BridgeForm, BridgeType, BridgeField } from '@/types'
+import {
+  Modal,
+  BridgeForm,
+  BridgeType,
+  BridgeField,
+  TransferDirection
+} from '@/types'
 
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
@@ -56,9 +67,40 @@ const maxDecimals = computed(() => {
 })
 
 const tokenWithBalance = computed(() => {
-  return transferableBalancesWithToken.value.find(
+  const tokenWithBalance = transferableBalancesWithToken.value.find(
     (b) => b.token.denom === denom.value
   )
+
+  if (!tokenWithBalance) {
+    return
+  }
+
+  if (tokenWithBalance.denom !== INJ_DENOM) {
+    return tokenWithBalance
+  }
+
+  const noGasBufferNeededForTransfer =
+    walletStore.isWalletExemptFromGasFee ||
+    form[BridgeField.TransferDirection] ===
+      TransferDirection.tradingAccountToBank
+
+  if (noGasBufferNeededForTransfer) {
+    return tokenWithBalance
+  }
+
+  const transferableBalance = new BigNumberInWei(tokenWithBalance.balance)
+    .toBase()
+    .minus(INJ_GAS_BUFFER_FOR_BRIDGE)
+  const transferableBalanceCapped = new BigNumberInWei(
+    transferableBalance.gt(0) ? transferableBalance : 0
+  )
+  const transferableBalanceCappedToBase = transferableBalanceCapped.toBase()
+
+  return {
+    ...transferableBalance,
+    balance: transferableBalanceCapped.toString(),
+    balanceToBase: transferableBalanceCappedToBase.toString()
+  }
 })
 
 const needsAllowanceSet = computed(() => {
