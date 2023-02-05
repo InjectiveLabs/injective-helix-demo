@@ -17,29 +17,35 @@ export const getCoinGeckoIdListWithDenomBalanceLargerThenZero = (
   return coinGeckoIdList
 }
 
+/**
+ * For the account page balances, we use all
+ * balances that the user has in their bank balance
+ */
 export function useBalance() {
   const accountStore = useAccountStore()
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
 
   const balancesWithToken = computed(() => {
-    return tokenStore.tradeableTokens.map((token) => {
-      const bankBalance = bankStore.bankBalances[token.denom] || 0
-      const subaccountBalance =
-        accountStore.subaccountBalancesAsBankBalances[token.denom] || 0
+    return tokenStore.tokens
+      .map((token) => {
+        const bankBalance = bankStore.bankBalances[token.denom] || 0
+        const subaccountBalance =
+          accountStore.subaccountBalancesAsBankBalances[token.denom] || 0
 
-      const totalBalance = new BigNumberInWei(bankBalance).plus(
-        subaccountBalance
-      )
+        const totalBalance = new BigNumberInWei(bankBalance).plus(
+          subaccountBalance
+        )
 
-      return {
-        token,
-        denom: token.denom,
-        balance: totalBalance.toFixed(),
-        usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0,
-        balanceToBase: totalBalance.toBase(token.decimals).toFixed()
-      }
-    }, [] as BalanceWithTokenAndUsdPrice[])
+        return {
+          token,
+          denom: token.denom,
+          balance: totalBalance.toFixed(),
+          usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0,
+          balanceToBase: totalBalance.toBase(token.decimals).toFixed()
+        }
+      }, [] as BalanceWithTokenAndUsdPrice[])
+      .filter((token) => new BigNumberInBase(token.balance).gt(0))
   })
 
   return {

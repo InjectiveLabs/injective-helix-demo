@@ -1,40 +1,27 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
-
-const router = useRouter()
-const spotStore = useSpotStore()
+import { AccountBalance } from '@/types'
 
 const props = defineProps({
   expand: Boolean,
   hideBalances: Boolean,
 
-  balance: {
+  aggregatedBalance: {
     type: Object as PropType<AccountBalance>,
     required: true
   }
 })
 
-const isOpen = ref(false)
-
-const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
-  return spotStore.markets.filter(
-    (m) =>
-      m.baseDenom === props.balance.token.denom ||
-      m.quoteDenom === props.balance.token.denom
-  )
-})
-
-const filteredMarket = computed(() => filteredMarkets.value[0])
+const emit = defineEmits<{
+  (e: 'drawer:toggle'): void
+}>()
 
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
+  computed(() => props.aggregatedBalance.totalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -43,7 +30,7 @@ const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
 /* TODO - bank <> default trading account merge
 
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  computed(() => props.balance.balanceToBase),
+  computed(() => props.aggregatedBalance.balanceToBase),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -53,7 +40,7 @@ const {
   valueToBigNumber: totalBalanceInBigNumber,
   valueToString: totalBalanceInString
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalance),
+  computed(() => props.aggregatedBalance.totalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -63,7 +50,7 @@ const {
   valueToBigNumber: bankBalanceInBigNumber,
   valueToString: bankBalanceInString
 } = useBigNumberFormatter(
-  computed(() => props.balance.bankBalance),
+  computed(() => props.aggregatedBalance.bankBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -73,38 +60,21 @@ const {
   valueToBigNumber: subaccountBalanceInBigNumber,
   valueToString: subaccountBalanceInString
 } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountBalance),
+  computed(() => props.aggregatedBalance.subaccountBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: reservedBalanceToString } = useBigNumberFormatter(
-  computed(() => props.balance.reservedBalance),
+  computed(() => props.aggregatedBalance.reservedBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-function handleNavigateToMarket(market: UiSpotMarketWithToken) {
-  router.push({
-    name: 'spot-spot',
-    params: {
-      spot: market.slug
-    }
-  })
-}
-
-function handleDepositClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
-    props.balance.token
-  )
-}
-
-function handleWithdrawClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
-    props.balance.token
-  )
+function handleDrawerToggle() {
+  emit('drawer:toggle')
 }
 </script>
 
@@ -112,22 +82,31 @@ function handleWithdrawClick() {
   <tr
     class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{
-      'max-h-20': !isOpen,
-      'max-h-screen': isOpen
+      'max-h-20': !expand,
+      'max-h-screen': expand
     }"
-    :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
       <div class="flex justify-start items-center gap-2">
-        <CommonTokenIcon :token="balance.token" />
+        <CommonTokenIcon :token="aggregatedBalance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
             class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
             data-cy="wallet-balance-token-symbol-table-data"
           >
-            {{ balance.token.symbol }}
+            {{ aggregatedBalance.token.symbol }}
           </span>
+
+          <BaseIcon
+            v-if="aggregatedBalance"
+            name="caret-down"
+            class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
+            :class="{
+              'rotate-0': !expand
+            }"
+            @click="handleDrawerToggle"
+          />
         </div>
       </div>
     </td>
@@ -223,67 +202,6 @@ function handleWithdrawClick() {
         <span v-else class="font-mono text-sm text-right">
           {{ totalBalanceInUsdToString }} USD
         </span>
-      </div>
-    </td>
-
-    <td class="pr-4">
-      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
-        <BaseDropdown
-          v-if="filteredMarkets.length > 1"
-          popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
-        >
-          <template #default>
-            <div
-              class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-            >
-              <span class="text-blue-500 text-sm font-medium cursor-pointer">
-                {{ $t('account.trade') }}
-              </span>
-            </div>
-          </template>
-
-          <template #content>
-            <div class="flex flex-col py-2">
-              <span
-                v-for="market in filteredMarkets"
-                :key="market.slug"
-                class="px-4 py-2 font-semibold text-sm uppercase cursor-pointer text-white hover:text-blue-500"
-                @click="handleNavigateToMarket(market)"
-              >
-                {{ market.baseToken.symbol }}/{{ market.quoteToken.symbol }}
-              </span>
-            </div>
-          </template>
-        </BaseDropdown>
-        <div
-          v-if="filteredMarkets.length === 1"
-          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-          @click="handleNavigateToMarket(filteredMarket)"
-        >
-          <span class="text-blue-500 text-sm font-medium cursor-pointer">
-            {{ $t('account.trade') }}
-          </span>
-        </div>
-
-        <div
-          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-          data-cy="wallet-balance-deposit-link"
-          @click="handleDepositClick"
-        >
-          <span class="text-blue-500 text-sm font-medium">
-            {{ $t('account.deposit') }}
-          </span>
-        </div>
-
-        <div
-          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-          data-cy="wallet-balance-withdraw-link"
-          @click="handleWithdrawClick"
-        >
-          <span class="text-blue-500 text-sm font-medium">
-            {{ $t('account.withdraw') }}
-          </span>
-        </div>
       </div>
     </td>
   </tr>

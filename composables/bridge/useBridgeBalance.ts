@@ -8,6 +8,10 @@ import {
   TransferDirection
 } from '@/types'
 
+/**
+ * For the bridge balances, we only use
+ * the tradeable tokens that we have on the DEX
+ */
 export function useBridgeBalance() {
   const state = useBridgeState()
   const accountStore = useAccountStore()

@@ -30,17 +30,18 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
     isBaseAmount
   })
 
-const hasFormErrors = computed(() =>
-  Object.keys(errors).filter(
-    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
-  )
+const hasFormErrors = computed(
+  () =>
+    Object.keys(errors).filter(
+      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+    ).length > 0
 )
 
 const isBuy = computed(
   () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
 )
 
-const amount = computed(() =>
+const amount = computed<string>(() =>
   isBuy.value
     ? formValues[TradeField.QuoteAmount]
     : formValues[TradeField.BaseAmount]

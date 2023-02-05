@@ -12,7 +12,6 @@ const walletStore = useWalletStore()
 
 const props = defineProps({
   isBuy: Boolean,
-  isLoading: Boolean,
   hasFormErrors: Boolean,
 
   amount: {

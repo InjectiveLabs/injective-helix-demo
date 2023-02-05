@@ -1,27 +1,27 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeBusEvents, BusEvents, Modal } from '@/types'
+import { usdcTokenDenom } from '~~/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
+const modalStore = useModalStore()
 
 const props = defineProps({
-  expand: Boolean,
   hideBalances: Boolean,
+  hasPeggyUsdcBalance: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
   }
 })
-
-const isOpen = ref(false)
 
 const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
   return spotStore.markets.filter(
@@ -32,6 +32,10 @@ const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
 })
 
 const filteredMarket = computed(() => filteredMarkets.value[0])
+
+const isDenomTradeable = computed(
+  () => ![usdcTokenDenom.USDC].includes(props.balance.token.denom.toLowerCase())
+)
 
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
   computed(() => props.balance.totalBalanceInUsd),
@@ -106,21 +110,21 @@ function handleWithdrawClick() {
     props.balance.token
   )
 }
+
+function handleConvert() {
+  useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
+
+  modalStore.openModal({ type: Modal.ConvertUsdc })
+}
 </script>
 
 <template>
   <tr
-    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
-    :class="{
-      'max-h-20': !isOpen,
-      'max-h-screen': isOpen
-    }"
+    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all max-h-screen"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
-      <div class="flex justify-start items-center gap-2">
-        <CommonTokenIcon :token="balance.token" />
-
+      <div class="flex justify-start items-center gap-2 ml-8">
         <div class="flex justify-start gap-2 items-center">
           <span
             class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
@@ -128,6 +132,12 @@ function handleWithdrawClick() {
           >
             {{ balance.token.symbol }}
           </span>
+
+          <PartialsAccountBalancesUsdcLabel
+            v-bind="{
+              balance
+            }"
+          />
         </div>
       </div>
     </td>
@@ -229,7 +239,7 @@ function handleWithdrawClick() {
     <td class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <BaseDropdown
-          v-if="filteredMarkets.length > 1"
+          v-if="filteredMarkets.length > 1 && isDenomTradeable"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
         >
           <template #default>
@@ -266,6 +276,18 @@ function handleWithdrawClick() {
         </div>
 
         <div
+          v-if="!isDenomTradeable && hasPeggyUsdcBalance"
+          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+          data-cy="wallet-balance-convert"
+          @click="handleConvert"
+        >
+          <span class="text-blue-500 text-sm font-medium">
+            {{ $t('account.convertUsdc') }}
+          </span>
+        </div>
+
+        <div
+          v-if="isDenomTradeable"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-deposit-link"
           @click="handleDepositClick"
@@ -276,6 +298,7 @@ function handleWithdrawClick() {
         </div>
 
         <div
+          v-if="isDenomTradeable"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-withdraw-link"
           @click="handleWithdrawClick"

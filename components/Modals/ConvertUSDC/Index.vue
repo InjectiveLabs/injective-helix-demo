@@ -19,7 +19,6 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const {
   errors,
-  handleSubmit,
   resetForm,
   setFieldValue,
   values: formValues
@@ -42,6 +41,7 @@ const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
+const hasFormErrors = computed(() => Object.keys(errors).length === 0)
 const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
 
 const isBuy = computed(
@@ -117,7 +117,7 @@ function resetFormValues() {
   })
 }
 
-function submitForm() {
+function handleFormSubmit() {
   submitStatus.setLoading()
 
   spotStore
@@ -138,12 +138,6 @@ function submitForm() {
       modalStore.closeModal(Modal.ConvertUsdc)
     })
 }
-
-const submit = handleSubmit(submitForm, ({ errors }) => {
-  if (Object.keys(errors).length === 0) {
-    submitForm()
-  }
-})
 
 function closeModal() {
   modalStore.closeModal(Modal.ConvertUsdc)
@@ -169,9 +163,9 @@ function closeModal() {
         <ModalsConvertUsdcTokenForm
           v-model:isBaseAmount="isBaseAmount"
           v-bind="{
+            market,
             balances,
             formValues,
-            market,
             worstPriceWithSlippage,
             isLoading: status.isLoading()
           }"
@@ -182,11 +176,11 @@ function closeModal() {
         <ModalsConvertUsdcSummary
           class="mt-4"
           v-bind="{
-            formValues,
             isBuy,
-            amount,
-            worstPriceWithSlippage,
             market,
+            amount,
+            formValues,
+            worstPriceWithSlippage,
             isLoading: fetchStatus.isLoading()
           }"
         />
@@ -195,15 +189,16 @@ function closeModal() {
           v-if="market"
           class="mt-6"
           v-bind="{
-            formValues,
             amount,
             errors,
             isBuy,
             market,
+            formValues,
+            hasFormErrors,
             executionPrice: worstPrice,
             status: submitStatus
           }"
-          @form:submit="submit"
+          @form:submit="handleFormSubmit"
         />
       </div>
     </AppHocLoading>
