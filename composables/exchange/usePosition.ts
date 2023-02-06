@@ -40,6 +40,13 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
       return ZERO_IN_BASE
     }
 
+    const markPriceFromStream =
+      derivativeStore.marketMarkPriceMap[market.value.marketId]
+
+    if (markPriceFromStream) {
+      return new BigNumberInBase(markPriceFromStream.price)
+    }
+
     return new BigNumberInWei(position.value.markPrice).toBase(
       market.value.quoteToken.decimals
     )

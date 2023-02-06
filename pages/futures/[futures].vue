@@ -31,7 +31,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
   Promise.all([
     derivativeStore.streamTrades(derivativeMarket.marketId),
     derivativeStore.streamOrderbook(derivativeMarket.marketId),
-    derivativeStore.streamMarketMarkPrices(derivativeMarket),
+    derivativeStore.streamMarketsMarkPrices(),
     derivativeStore.getMarketMarkPrice(derivativeMarket)
   ]).catch($onError)
 

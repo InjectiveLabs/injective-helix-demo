@@ -20,6 +20,7 @@ export function useDerivativeError({
   isBuy,
   market,
   formValues,
+  markPrice,
   executionPrice,
   orderTypeReduceOnly,
   notionalWithLeverage,
@@ -30,6 +31,7 @@ export function useDerivativeError({
 }: {
   isBuy: Ref<boolean>
   formValues: Ref<TradeForm>
+  markPrice: Ref<string>
   executionPrice: Ref<BigNumberInBase>
   market: Ref<UiDerivativeMarketWithToken>
   notionalWithLeverage: Ref<BigNumberInBase>
@@ -149,7 +151,7 @@ export function useDerivativeError({
 
   const markPriceThresholdError = computed(() => {
     if (
-      !derivativeStore.marketMarkPrice ||
+      !markPrice.value ||
       !market.value ||
       !executionPrice.value.gt(0) ||
       !formValues.value[TradeField.BaseAmount] ||
@@ -179,9 +181,9 @@ export function useDerivativeError({
       | UiPerpetualMarketWithToken
       | UiExpiryFuturesMarketWithToken
 
-    const markPrice = new BigNumberInBase(derivativeStore.marketMarkPrice)
+    const markPriceInBigNumber = new BigNumberInBase(markPrice.value)
 
-    if (markPrice.lte(0)) {
+    if (markPriceInBigNumber.lte(0)) {
       return true
     }
 
@@ -210,14 +212,14 @@ export function useDerivativeError({
     )
 
     const priceLessThanMarginRatioBasedPrice = isConditionalMarketOrder
-      ? markPrice.lt(priceBasedOnNotionalAndMarginRatio) ||
+      ? markPriceInBigNumber.lt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.lt(priceBasedOnNotionalAndMarginRatio)
-      : markPrice.lt(priceBasedOnNotionalAndMarginRatio)
+      : markPriceInBigNumber.lt(priceBasedOnNotionalAndMarginRatio)
 
     const priceGreaterThanMarginRatioBasedPrice = isConditionalMarketOrder
-      ? markPrice.gt(priceBasedOnNotionalAndMarginRatio) ||
+      ? markPriceInBigNumber.gt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.gt(priceBasedOnNotionalAndMarginRatio)
-      : markPrice.gt(priceBasedOnNotionalAndMarginRatio)
+      : markPriceInBigNumber.gt(priceBasedOnNotionalAndMarginRatio)
 
     const isBuyPriceLessThanMarginBasedPrice =
       isBuy.value && priceLessThanMarginRatioBasedPrice
