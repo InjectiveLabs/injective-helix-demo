@@ -19,7 +19,7 @@
     "test": "vitest --segfault-retry=3",
     "test:coverage": "vitest run --coverage --segfault-retry=3",
     "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.cache/nuxt && rm -rf ./node_modules/.vite",
-    "lint": "eslint --max-warnings 0 '**/*.{ts,vue,html}' --fix",
+    "lint": "eslint --max-warnings 0 '**/*.{js,ts,vue,html}' --fix && stylelint '**/*.{css,.vue}'",
     "coverage": "yarn jest --coverage",
     "prepare": "husky install"
   },
