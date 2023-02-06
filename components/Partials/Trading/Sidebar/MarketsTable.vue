@@ -47,7 +47,7 @@ const sortedMarkets = computed(() => {
     return filteredMarkets.value
   }
 
-  const list = [...filteredMarkets.value].sort(
+  const markets = [...filteredMarkets.value].sort(
     (
       m1: UiMarketAndSummaryWithVolumeInUsd,
       m2: UiMarketAndSummaryWithVolumeInUsd
@@ -65,7 +65,7 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return ascending.value ? list.reverse() : list
+  return ascending.value ? markets.reverse() : markets
 })
 </script>
 
@@ -77,8 +77,8 @@ const sortedMarkets = computed(() => {
       class="mb-2"
     />
 
-    <CommonTableHeader classes="grid grid-cols-2 md:grid">
-      <div class="flex flex-col xl:flex-row items-start xl:items-center gap-1">
+    <CommonTableHeader classes="flex flex-wrap mb-2">
+      <div class="flex items-center flex-1">
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
@@ -103,10 +103,8 @@ const sortedMarkets = computed(() => {
         </AppSortableHeaderItem>
       </div>
 
-      <div
-        class="flex flex-col xl:flex-row items-end xl:items-center gap-1 text-gray-200 text-xs justify-self-end"
-      >
-        <span class="font-normal">
+      <div class="flex items-center justify-end flex-1">
+        <span class="font-normal text-gray-200 text-xs">
           {{ $t('trade.price') }} / {{ $t('trade.market_change') }}
         </span>
       </div>
@@ -125,11 +123,7 @@ const sortedMarkets = computed(() => {
           volumeInUsd: marketSummary.volumeInUsd,
           inCurrentMarket: market.marketId === marketSummary.market.marketId
         }"
-        :key="`market-row-${index}-${market.marketId}`"
-        :class="{
-          'pt-4': index === 0,
-          'pb-4': index + 1 === sortedMarkets.length
-        }"
+        :key="`market-row-${index}-${marketSummary.market.marketId}`"
       />
 
       <template #empty>

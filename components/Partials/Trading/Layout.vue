@@ -217,7 +217,7 @@ watch(
         </div>
 
         <div
-          class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1 z-[20] absolute w-full h-screen-excluding-header-and-market-info top-market-info pointer-events-none"
+          class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1 z-[50] lg:z-[20] absolute w-full h-screen-excluding-header-and-market-info top-market-info pointer-events-none"
         >
           <PartialsTradingSidebar
             v-show="showMarketList"

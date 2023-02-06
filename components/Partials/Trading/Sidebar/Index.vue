@@ -44,7 +44,7 @@ function pollMarkets() {
   ]).catch($onError)
 }
 
-useIntervalFn(pollMarkets, 10 * 1000, { immediate: true })
+useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
 </script>
 
 <template>

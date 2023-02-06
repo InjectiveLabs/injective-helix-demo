@@ -85,7 +85,7 @@ const searchValue = computed({
     <div class="w-full mt-4">
       <AppSearch
         v-model="searchValue"
-        class="w-full"
+        class="w-full text-xs py-2"
         data-cy="markets-search-input"
         :placeholder="$t('trade.search_markets')"
       />
