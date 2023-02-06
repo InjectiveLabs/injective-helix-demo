@@ -170,13 +170,13 @@ watch(
           </div>
 
           <div
-            class="col-span-6 lg:col-span-9 4xl:col-span-9"
+            class="col-span-6 lg:col-span-9 4xl:col-span-9 max-h-screen-excluding-header-and-market-info"
             :class="{
               '-order-1':
                 appStore.userState.tradingLayout === TradingLayout.Right
             }"
           >
-            <div class="flex flex-wrap flex-col w-full h-full">
+            <div class="h-full-flex">
               <div class="w-full">
                 <CommonCard tight class="relative">
                   <div class="grid grid-cols-6 lg:grid-cols-12">
@@ -209,7 +209,7 @@ watch(
                   </CommonCard>
                 </div>
               </div>
-              <div class="w-full flex-1">
+              <div class="w-full flex-1 overflow-hidden">
                 <slot name="orders" />
               </div>
             </div>

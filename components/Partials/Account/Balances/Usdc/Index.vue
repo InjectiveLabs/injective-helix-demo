@@ -61,14 +61,14 @@ function toggleUsdcBalances() {
         />
       </template>
     </template>
-    <template v-else>
-      <PartialsAccountBalancesTableRow
-        :key="balances[0].token.denom"
-        v-bind="{
-          hideBalances,
-          balance: balances[0]
-        }"
-      />
-    </template>
+
+    <PartialsAccountBalancesTableRow
+      v-else
+      :key="balances[0].token.denom"
+      v-bind="{
+        hideBalances,
+        balance: balances[0]
+      }"
+    />
   </tbody>
 </template>

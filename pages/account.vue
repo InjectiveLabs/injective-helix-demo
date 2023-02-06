@@ -8,7 +8,7 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
-import { AccountBalance } from '~~/types'
+import { AccountBalance } from '@/types'
 import { getCoinGeckoIdListWithDenomBalanceLargerThenZero } from '@/composables/account/useBalance'
 
 definePageMeta({

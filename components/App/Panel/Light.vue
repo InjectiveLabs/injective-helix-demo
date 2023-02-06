@@ -37,7 +37,7 @@ defineProps({
     <CommonCard
       class="relative flex-1"
       :lg="!dense"
-      :class="[cardWrapperClass]"
+      :class="cardWrapperClass"
       :bg-color="'bg-transparent'"
     >
       <div class="v-panel-content">

@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden">
+  <div class="flex flex-col h-full">
     <div class="grid grid-cols-12 z-10">
       <slot name="actions" />
     </div>
@@ -15,6 +15,7 @@ defineProps({
         'card-table-wrap-content': !bgLighter,
         'card-table-wrap-content-lighter': bgLighter
       }"
+      class="overflow-y-hidden"
     >
       <div class="h-full relative">
         <slot></slot>

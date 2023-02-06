@@ -9,8 +9,7 @@ defineProps({
 
   stepsNotes: {
     type: Array,
-    default: () => [],
-    required: false
+    default: () => []
   },
 
   activeStep: {
@@ -20,8 +19,7 @@ defineProps({
 
   stepsLabels: {
     type: Array,
-    default: () => [],
-    required: false
+    default: () => []
   }
 })
 </script>

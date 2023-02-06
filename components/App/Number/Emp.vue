@@ -18,9 +18,8 @@ const props = defineProps({
   },
 
   decimals: {
-    required: false,
-    default: UI_DEFAULT_DISPLAY_DECIMALS,
-    type: Number
+    type: Number,
+    default: UI_DEFAULT_DISPLAY_DECIMALS
   }
 })
 

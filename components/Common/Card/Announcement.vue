@@ -19,7 +19,7 @@ defineProps({
     :no-padding="slots.illustration ? true : false"
     class="text-xl h-full relative"
   >
-    <a
+    <NuxtLink
       :href="htmlUrl"
       class="hover:text-black hover:cursor-pointer text-gray-900 flex-1 flex flex-col gap-2 h-full"
       target="_blank"
@@ -34,6 +34,6 @@ defineProps({
       <div class="overflow-hidden h-full">
         <slot name="illustration" />
       </div>
-    </a>
+    </NuxtLink>
   </CommonCard>
 </template>
