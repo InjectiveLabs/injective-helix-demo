@@ -86,6 +86,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.168",
     "@types/node": "^18.11.17",
+    "@types/rimraf": "^4.0.5",
     "@types/vue-select": "^3.16.2",
     "@vitest/coverage-c8": "^0.26.0",
     "@vue/test-utils": "^2.2.8",

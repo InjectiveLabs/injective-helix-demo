@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import path from 'path'
-import { copy, mkdir, removeSync, pathExistsSync, copySync } from 'fs-extra'
+import rimraf from 'rimraf'
+import { copy, mkdir, pathExistsSync, copySync } from 'fs-extra'
 import nitroConfig from './nitro'
 import webpackConfig from './webpack'
 
@@ -20,7 +21,7 @@ export default {
   'build:before'() {
     try {
       if (outDirPathExist) {
-        removeSync(tokenMetadataDstDir)
+        rimraf.sync(tokenMetadataDstDir)
       }
     } catch (e) {
       console.log(`Error deleting dir: ${e}`)
