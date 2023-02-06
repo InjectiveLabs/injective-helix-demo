@@ -5,7 +5,9 @@
     "strict": true,
     "types": [
       "@vueuse/nuxt",
+      "@intlify/nuxt3",
       "@pinia/nuxt",
+      "nuxt-bugsnag"
     ]
   },
   "exclude": [

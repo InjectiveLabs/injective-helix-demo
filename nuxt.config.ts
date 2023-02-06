@@ -2,12 +2,13 @@ import { vite, head, hooks } from './nuxt-config'
 import { vitePlugins } from './nuxt-config/vite'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
 
 export default defineNuxtConfig({
+  app: { head },
   ssr: false,
   debug: !isProduction,
-  builder: isProduction ? 'webpack' : 'vite',
-  app: { head },
+  builder: isWebpack ? 'webpack' : 'vite',
   css: ['@/assets/css/tailwind.css'],
 
   modules: [
@@ -16,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['nuxt-bugsnag'] : [])
+    'nuxt-bugsnag'
   ],
 
   imports: {
@@ -25,15 +26,20 @@ export default defineNuxtConfig({
 
   plugins: [...vitePlugins],
 
-  // @ts-ignore
   bugsnag: {
+    disabled: !isWebpack || !isProduction,
+    publishRelease: true,
+    baseUrl: process.env.VITE_BASE_URL,
     config: {
+      releaseStage: process.env.NODE_ENV,
+      enabledReleaseStages: ['staging', 'production'],
+      appVersion: process.env.npm_package_version,
       apiKey: process.env.VITE_BUGSNAG_KEY
     }
   },
 
   hooks,
-  vite: isProduction ? undefined : vite,
+  vite: isWebpack ? undefined : vite,
 
   typescript: {
     typeCheck: true

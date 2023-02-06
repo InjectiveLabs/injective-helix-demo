@@ -8,7 +8,7 @@ import {
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
-import { IS_PRODUCTION } from '@/app/utils/constants'
+import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 import { Modal } from '@/types/enums'
 
 const reportToUser = (error: ThrownException) => {
@@ -47,8 +47,7 @@ const reportToBugSnag = (error: ThrownException) => {
     return
   }
 
-  if (process.env.VITE_BUGSNAG_KEY) {
-    // @ts-ignore
+  if (BUGSNAG_KEY) {
     useBugsnag().notify(error.toCompactError())
   }
 }
