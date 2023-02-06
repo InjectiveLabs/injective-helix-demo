@@ -1681,10 +1681,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/node-globals-polyfill/-/node-globals-polyfill-0.1.3.tgz#0d68870d48b97ed55abbb74c22b69ad9a8ab0a03"
   integrity sha512-+4jgMHJdkVTEFUI8LHFZBKWv2+d0+xppO6NCUfxufqrV0fnB+oo4w3xMGw+VJ6Mgihfton7y0QQp3L78OarwAA==
 
-"@injectivelabs/nuxt-bugsnag@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/nuxt-bugsnag/-/nuxt-bugsnag-0.0.2.tgz#eb9759ce1bd62bb29f1c5b9e9d643a7dc857bf20"
-  integrity sha512-VUgfEk343EWJibQd1ijn+ry+tpAjsuRq10sOtF5C6PVShxv73vYVMAuWVxL8eKhN68fr3C2uYwIgMY/GnkoO9Q==
+"@injectivelabs/nuxt-bugsnag@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/nuxt-bugsnag/-/nuxt-bugsnag-0.0.3.tgz#dfd40f7dbf89f8feaf96fdfa7cb59a128c06fc46"
+  integrity sha512-pQ0l9oDTmVGw5vpSlQgHNsc6pEUmuG5975gaDksxKYSzDO5pXM8f3Gj1HNRRVvRQmj1XuMdYqkFbIPJHTPJLiw==
   dependencies:
     "@bugsnag/js" "^7.16.5"
     "@bugsnag/plugin-vue" "^7.16.5"
@@ -16222,7 +16222,7 @@ ts-loader@~9.4.2:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-ts-node@^10.8.1, ts-node@latest:
+ts-node@^10.8.1, ts-node@^10.9.1:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==

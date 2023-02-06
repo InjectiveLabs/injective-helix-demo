@@ -14,5 +14,12 @@
     "node_modules",
     "dist",
     ".output"
-  ]
+  ],
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true
+    }
+  },
 }

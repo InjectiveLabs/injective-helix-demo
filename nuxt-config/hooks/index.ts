@@ -1,49 +1,10 @@
-/* eslint-disable no-console */
-import path from 'path'
-import rimraf from 'rimraf'
-import { copy, mkdir, pathExistsSync, copySync } from 'fs-extra'
 import nitroConfig from './nitro'
 import webpackConfig from './webpack'
-
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
-
-const outputPathPrefix = isWebpack && isProduction ? '.output/public' : 'public'
-const tokenMetadataDstDir = path.resolve(
-  `${outputPathPrefix}/vendor/@injectivelabs/token-metadata`
-)
-const tokenMetadataSrcDir = path.resolve(
-  'node_modules/@injectivelabs/token-metadata/dist/images'
-)
-const outDirPathExist = pathExistsSync(tokenMetadataDstDir)
+import { tokenMetadata } from './../../scripts/scripts/tokens'
 
 export default {
-  'build:before'() {
-    try {
-      if (outDirPathExist) {
-        rimraf.sync(tokenMetadataDstDir)
-      }
-    } catch (e) {
-      console.log(`Error deleting dir: ${e}`)
-    }
-  },
-
   'build:done'() {
-    try {
-      if (outDirPathExist) {
-        copySync(tokenMetadataSrcDir, tokenMetadataDstDir, {
-          overwrite: true
-        })
-      } else {
-        mkdir(tokenMetadataDstDir)
-        copy(tokenMetadataSrcDir, tokenMetadataDstDir, {
-          overwrite: true
-        })
-      }
-      console.log('✔ Successfully copied token images!')
-    } catch (e) {
-      console.log(`Error copying token images: ${e}`)
-    }
+    tokenMetadata()
   },
   ...nitroConfig,
   ...webpackConfig
