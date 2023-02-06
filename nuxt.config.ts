@@ -36,7 +36,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['nuxt-bugsnag'] : [])
+    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 
   webpack: {

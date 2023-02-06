@@ -7,7 +7,7 @@
       "@vueuse/nuxt",
       "@intlify/nuxt3",
       "@pinia/nuxt",
-      "nuxt-bugsnag"
+      "@injectivelabs/nuxt-bugsnag"
     ]
   },
   "exclude": [

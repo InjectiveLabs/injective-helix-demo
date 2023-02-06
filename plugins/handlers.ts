@@ -55,8 +55,13 @@ const reportToBugSnag = (error: ThrownException) => {
 
   if (BUGSNAG_KEY) {
     useBugsnag().notify(error, (event: any) => {
-      event.errors[0].errorClass = error.name
-      event.addMetadata('context', error.toObject())
+      event.errors[0].errorClass = error.errorClass || error.name
+
+      if (useWalletStore().isUserWalletConnected) {
+        event.setUser(useWalletStore().injectiveAddress)
+      }
+
+      event.addMetadata('error-context', error.toObject())
     })
   }
 }
