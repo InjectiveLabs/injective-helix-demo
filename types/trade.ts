@@ -81,3 +81,11 @@ export enum USDCSymbol {
   WormholeEthereum = 'USDCet',
   WormholeSolana = 'USDCso'
 }
+
+export type MarketMarkPrice = {
+  price: string
+  marketId: string
+  timestamp?: number
+}
+
+export type MarketMarkPriceMap = Record<string, MarketMarkPrice>

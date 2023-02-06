@@ -74,6 +74,7 @@ const {
 } = useSpotLastPrice(computed(() => props.market))
 
 const {
+  markPrice,
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
 } = useDerivativeLastPrice(computed(() => props.market))
@@ -95,7 +96,7 @@ const { valueToFixed: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 const { valueToFixed: markPriceToFormat } = useBigNumberFormatter(
-  computed(() => derivativeStore.marketMarkPrice),
+  computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
   }

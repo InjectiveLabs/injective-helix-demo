@@ -20,6 +20,7 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotOrderHistory
   | typeof spotMarketStream.streamSpotTrades
   | typeof oracleStream.streamOraclePrices
+  | typeof oracleStream.streamOraclePricesByMarkets
   | typeof subaccountStream.streamSubaccountBalance
 
 type Stream = ReturnType<StreamFn>

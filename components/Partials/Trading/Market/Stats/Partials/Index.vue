@@ -13,8 +13,6 @@ import {
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
 import { stableCoinDenoms } from '@/app/data/token'
 
-const derivativeStore = useDerivativeStore()
-
 const props = defineProps({
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -30,23 +28,23 @@ const props = defineProps({
 const userTimezone = format(new Date(), 'OOOO')
 const now = ref(Date.now() / 1000)
 
-const { valueToString: markPriceToFormat, valueToBigNumber: markPrice } =
-  useBigNumberFormatter(
-    computed(() => {
-      if (!derivativeStore.marketMarkPrice) {
-        return ZERO_IN_BASE
-      }
+const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 
-      if (props.market.type === MarketType.Spot) {
-        return ZERO_IN_BASE
-      }
-
-      return derivativeStore.marketMarkPrice
-    }),
-    {
-      decimalPlaces: props.market.priceDecimals
+const {
+  valueToString: markPriceToFormat,
+  valueToBigNumber: markPriceToBigNumber
+} = useBigNumberFormatter(
+  computed(() => {
+    if (props.market.type === MarketType.Spot) {
+      return ZERO_IN_BASE
     }
-  )
+
+    return markPrice.value
+  }),
+  {
+    decimalPlaces: props.market.priceDecimals
+  }
+)
 
 const { valueToString: highToFormat, valueToBigNumber: high } =
   useBigNumberFormatter(
@@ -288,7 +286,7 @@ useIntervalFn(() => {
         :tooltip="$t('trade.mark_price_tooltip')"
       >
         <span
-          v-if="!markPrice.isNaN()"
+          v-if="!markPriceToBigNumber.isNaN()"
           class="lg:text-right font-mono block"
           data-cy="market-info-mark-price-span"
         >

@@ -64,6 +64,7 @@ function initBalances() {
     bankStore.fetchBankBalancesWithToken(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
     spotStore.fetchUsdcConversionMarkets(),

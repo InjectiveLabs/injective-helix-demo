@@ -60,6 +60,7 @@ const emit = defineEmits<{
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
+const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
   computed(() => props.formValues)
 )
@@ -130,9 +131,7 @@ const { value: price, setValue: setPriceField } = useStringField({
     const rules = [`integer:${props.priceFieldName}`]
 
     if (props.priceFieldName === TradeField.TriggerPrice) {
-      rules.push(
-        `triggerPriceEqualsMarkPrice:${derivativeStore.marketMarkPrice}`
-      )
+      rules.push(`triggerPriceEqualsMarkPrice:${markPrice.value}`)
     }
 
     if (
