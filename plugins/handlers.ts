@@ -11,6 +11,12 @@ import { defineNuxtPlugin } from '#imports'
 import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 import { Modal } from '@/types/enums'
 
+/**
+ * As we conditionally include the nuxt-bugsnag module
+ * the type of it can be undefined
+ **/
+declare let useBugsnag: () => any
+
 const reportToUser = (error: ThrownException) => {
   const { error: errorToast } = useNotifications()
   const shouldIgnoreToast =
@@ -48,7 +54,10 @@ const reportToBugSnag = (error: ThrownException) => {
   }
 
   if (BUGSNAG_KEY) {
-    useBugsnag().notify(error.toCompactError())
+    useBugsnag().notify(error, (event: any) => {
+      event.errors[0].errorClass = error.name
+      event.addMetadata('context', error.toObject())
+    })
   }
 }
 

@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-bugsnag'
+    ...(process.env.VITE_BUGSNAG_KEY ? ['nuxt-bugsnag'] : [])
   ],
 
   imports: {
@@ -42,6 +42,8 @@ export default defineNuxtConfig({
 
   hooks,
   vite: isWebpack ? undefined : vite,
+
+  sourcemap: { client: true },
 
   typescript: {
     typeCheck: true
