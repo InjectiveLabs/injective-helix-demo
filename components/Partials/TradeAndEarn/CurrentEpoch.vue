@@ -19,10 +19,10 @@ const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
+const status = reactive(new Status(StatusType.Loading))
+
 const { rewardsCampaign, campaignInfo, poolCampaignScheduleList } =
   useTradeReward()
-
-const status = reactive(new Status(StatusType.Loading))
 
 const tradeRewardPoints = computed(() => {
   if (!exchangeStore.tradeRewardsPoints.length) {

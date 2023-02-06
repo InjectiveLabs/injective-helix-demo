@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-const { campaignInfo } = useTradeReward()
-
 const quoteDenoms = computed(() => {
-  if (!campaignInfo.value) {
-    return ''
-  }
-
-  return campaignInfo.value.quoteSymbolsList.join(', ')
+  return useTradeReward().quoteSymbolsList.value.join(', ')
 })
 </script>
 

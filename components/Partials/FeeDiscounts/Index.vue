@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 const exchangeStore = useExchangeStore()
 
-const feeDiscountSchedule = computed(() => {
-  return exchangeStore.feeDiscountSchedule
-})
-
-const tierLevelsWithZeroTierLevel = computed(() => {
-  if (!feeDiscountSchedule.value) {
-    return []
-  }
-
-  return [
-    {
-      volume: '0',
-      stakedAmount: '0',
-      feePaidAmount: '0',
-      makerDiscountRate: '0',
-      takerDiscountRate: '0'
-    },
-    ...feeDiscountSchedule.value.tierInfosList
-  ]
-})
+const tierLevelsWithZeroTierLevel = computed(() =>
+  exchangeStore.feeDiscountSchedule
+    ? [
+        {
+          volume: '0',
+          stakedAmount: '0',
+          feePaidAmount: '0',
+          makerDiscountRate: '0',
+          takerDiscountRate: '0'
+        },
+        ...exchangeStore.feeDiscountSchedule.tierInfosList
+      ]
+    : []
+)
 </script>
 
 <template>
@@ -79,7 +73,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
         </tr>
       </thead>
 
-      <tbody v-if="feeDiscountSchedule">
+      <tbody v-if="exchangeStore.feeDiscountSchedule">
         <PartialsFeeDiscountsTier
           v-for="(tier, index) in tierLevelsWithZeroTierLevel"
           :key="`tier-${index}`"

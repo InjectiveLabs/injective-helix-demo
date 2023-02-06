@@ -11,26 +11,18 @@ const appStore = useAppStore()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const announcements = computed(() => {
-  return appStore.announcements
-})
-
-const attachments = computed(() => {
-  return appStore.attachments
-})
-
 const attachmentsWithAnnouncements = computed(() => {
   const defaultAnnouncementsSize = 3
 
-  if (announcements.value.length === 0) {
+  if (appStore.announcements.length === 0) {
     return []
   }
 
-  const filteredAttachments = attachments.value.filter(
+  const filteredAttachments = appStore.attachments.filter(
     (attachment: Attachment) => attachment
   )
 
-  const formattedAttachmentsWithAnnouncements = announcements.value.map(
+  const formattedAttachmentsWithAnnouncements = appStore.announcements.map(
     (announcement: Announcement) => {
       const matchingAttachment = filteredAttachments.find(
         (attachment: Attachment) => {

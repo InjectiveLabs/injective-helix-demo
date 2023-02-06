@@ -175,11 +175,11 @@ const pendingEstimatedRewardsCapped = computed(() => {
     : pendingEstimatedRewards.value
 })
 
-const pendingEstimatedRewardsCappedInUsd = computed(() => {
-  return pendingEstimatedRewardsCapped.value.multipliedBy(
+const pendingEstimatedRewardsCappedInUsd = computed(() =>
+  pendingEstimatedRewardsCapped.value.multipliedBy(
     new BigNumberInBase(tokenStore.injUsdPrice)
   )
-})
+)
 </script>
 
 <template>

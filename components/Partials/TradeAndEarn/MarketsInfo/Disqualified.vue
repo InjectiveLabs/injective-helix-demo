@@ -2,11 +2,11 @@
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
-const { disqualifiedMarketIdsList } = useTradeReward()
-
 const disqualifiedMarkets = computed(() =>
   [...derivativeStore.markets, ...spotStore.markets]
-    .filter((m) => disqualifiedMarketIdsList.value.includes(m.marketId))
+    .filter((m) =>
+      useTradeReward().disqualifiedMarketIdsList.value.includes(m.marketId)
+    )
     .map((m) => m.ticker)
 )
 </script>

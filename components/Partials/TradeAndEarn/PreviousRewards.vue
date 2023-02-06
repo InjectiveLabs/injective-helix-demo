@@ -17,10 +17,11 @@ import {
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
-const { poolCampaignScheduleList, rewardsCampaign } = useTradeReward()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
+
+const { poolCampaignScheduleList, rewardsCampaign } = useTradeReward()
 
 const stakedAmount = computed(() => {
   if (!exchangeStore.feeDiscountAccountInfo) {

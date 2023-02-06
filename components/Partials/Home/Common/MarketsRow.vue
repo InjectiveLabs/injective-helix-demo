@@ -2,12 +2,11 @@
 import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   UiMarketHistory,
-  ZERO_IN_BASE,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   MARKETS_HISTORY_CHART_ONE_HOUR,
@@ -55,13 +54,9 @@ const lastTradedPriceTextColorClass = computed(() => {
   }
 })
 
-const lastTradedPrice = computed(() => {
-  if (!props.market || !props.summary) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.price)
-})
+const lastTradedPrice = computed(
+  () => new BigNumberInBase(props.summary?.price || 0)
+)
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
@@ -72,13 +67,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const change = computed(() => {
-  if (!props.market || !props.summary || !props.summary.change) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.change)
-})
+const change = computed(() => new BigNumberInBase(props.summary?.change || 0))
 
 const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
   decimalPlaces: 2,

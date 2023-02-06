@@ -24,6 +24,14 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
     return rewardsCampaign.value.tradingRewardCampaignInfo
   })
 
+  const quoteSymbolsList = computed(() => {
+    if (!campaignInfo.value) {
+      return []
+    }
+
+    return campaignInfo.value.quoteSymbolsList
+  })
+
   const poolCampaignScheduleList = computed(() => {
     if (
       !rewardsCampaign.value ||
@@ -48,41 +56,30 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
 
   const boostInfo = computed(() => {
     if (!campaignInfo.value || !campaignInfo.value.tradingRewardBoostInfo) {
-      return undefined
+      return {
+        boostedSpotMarketIdsList: [],
+        spotMarketMultipliersList: [],
+        boostedDerivativeMarketIdsList: [],
+        derivativeMarketMultipliersList: []
+      }
     }
 
     return campaignInfo.value.tradingRewardBoostInfo
   })
 
   const derivativeBoostedMarketIdList = computed(() => {
-    if (!boostInfo.value) {
-      return []
-    }
-
     return boostInfo.value.boostedDerivativeMarketIdsList || []
   })
 
   const spotBoostedMarketIdList = computed(() => {
-    if (!boostInfo.value) {
-      return []
-    }
-
     return boostInfo.value.boostedSpotMarketIdsList || []
   })
 
   const derivativeBoostedMultiplierList = computed(() => {
-    if (!boostInfo.value) {
-      return []
-    }
-
     return boostInfo.value.derivativeMarketMultipliersList || []
   })
 
   const spotBoostedMultiplierList = computed(() => {
-    if (!boostInfo.value) {
-      return []
-    }
-
     return boostInfo.value.spotMarketMultipliersList || []
   })
 
@@ -120,9 +117,9 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
     }
 
     return derivativeBoostedMarketIdList.value.reduce(
-      (list, marketId, index) => {
+      (boostedMarkets, marketId, index) => {
         return {
-          ...list,
+          ...boostedMarkets,
           [marketId]: derivativeBoostedMultiplierList.value[index]
         }
       },
@@ -135,12 +132,15 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       return {}
     }
 
-    return spotBoostedMarketIdList.value.reduce((list, marketId, index) => {
-      return {
-        ...list,
-        [marketId]: spotBoostedMultiplierList.value[index]
-      }
-    }, {} as Record<string, PointsMultiplier>)
+    return spotBoostedMarketIdList.value.reduce(
+      (boostedMarkets, marketId, index) => {
+        return {
+          ...boostedMarkets,
+          [marketId]: spotBoostedMultiplierList.value[index]
+        }
+      },
+      {} as Record<string, PointsMultiplier>
+    )
   })
 
   const marketTakerMakerExpectedPts = computed(() => {
@@ -158,6 +158,7 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
     boostInfo,
     campaignInfo,
     rewardsCampaign,
+    quoteSymbolsList,
     isMarketDisqualified,
     spotBoostedMarketIdList,
     poolCampaignScheduleList,

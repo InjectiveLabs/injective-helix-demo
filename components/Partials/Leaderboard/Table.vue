@@ -9,11 +9,7 @@ defineProps({
   }
 })
 
-const leaderboardStore = useLeaderboardStore()
-
-const entries = computed(() => {
-  return leaderboardStore.entries.slice(0, 6)
-})
+const entries = computed(() => useLeaderboardStore().entries.slice(0, 6))
 </script>
 
 <template>

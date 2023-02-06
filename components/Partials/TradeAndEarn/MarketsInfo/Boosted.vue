@@ -7,7 +7,6 @@ const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
 const {
-  boostInfo,
   spotBoostedMarketIdList,
   disqualifiedMarketIdsList,
   spotBoostedMultiplierList,
@@ -16,10 +15,6 @@ const {
 } = useTradeReward()
 
 const derivativeBoostedMarkets = computed(() => {
-  if (!boostInfo.value) {
-    return []
-  }
-
   const derivativeMarketIds = derivativeBoostedMarketIdList.value
   const derivativeMarketsBoosts = derivativeBoostedMultiplierList.value
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
@@ -78,19 +73,14 @@ const derivativeBoostedMarkets = computed(() => {
       ]
     }, [] as PointsMultiplierWithMarketTicker[])
 
-  return [...derivatives, ...nonBoostedDerivatives].sort((a, b) => {
-    return (
+  return [...derivatives, ...nonBoostedDerivatives].sort(
+    (a, b) =>
       MARKETS_SLUGS.futures.indexOf(a.slug) -
       MARKETS_SLUGS.futures.indexOf(b.slug)
-    )
-  })
+  )
 })
 
 const spotBoostedMarkets = computed(() => {
-  if (!boostInfo.value) {
-    return []
-  }
-
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
   const spotMarketIds = spotBoostedMarketIdList.value
   const spotMarketsBoosts = spotBoostedMultiplierList.value
@@ -141,11 +131,10 @@ const spotBoostedMarkets = computed(() => {
       ]
     }, [] as PointsMultiplierWithMarketTicker[])
 
-  return [...spot, ...nonBoostedSpot].sort((a, b) => {
-    return (
+  return [...spot, ...nonBoostedSpot].sort(
+    (a, b) =>
       MARKETS_SLUGS.spot.indexOf(a.slug) - MARKETS_SLUGS.spot.indexOf(b.slug)
-    )
-  })
+  )
 })
 </script>
 
