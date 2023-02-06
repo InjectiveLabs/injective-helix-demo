@@ -26,17 +26,19 @@ export default defineNuxtConfig({
 
   plugins: [...vitePlugins],
 
-  bugsnag: {
-    disabled: !isWebpack || !isProduction,
-    publishRelease: true,
-    baseUrl: process.env.VITE_BASE_URL,
-    config: {
-      releaseStage: process.env.VITE_ENV,
-      enabledReleaseStages: ['staging', 'mainnet'],
-      appVersion: process.env.npm_package_version,
-      apiKey: process.env.VITE_BUGSNAG_KEY
-    }
-  },
+  bugsnag: process.env.VITE_BUGSNAG_KEY
+    ? {
+        disabled: !isWebpack || !isProduction,
+        publishRelease: true,
+        baseUrl: process.env.VITE_BASE_URL,
+        config: {
+          releaseStage: process.env.VITE_ENV,
+          enabledReleaseStages: ['staging', 'mainnet'],
+          appVersion: process.env.npm_package_version,
+          apiKey: process.env.VITE_BUGSNAG_KEY
+        }
+      }
+    : undefined,
 
   hooks,
   vite: isWebpack ? undefined : vite,
