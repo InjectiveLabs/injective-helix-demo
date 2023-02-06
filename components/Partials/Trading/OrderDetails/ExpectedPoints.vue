@@ -28,10 +28,11 @@ const props = defineProps({
 })
 
 const {
-  marketIncludedInTradingReward,
+  isMarketDisqualified,
   marketTakerMakerExpectedPts,
-  isMarketDisqualified
+  marketIncludedInTradingReward
 } = useTradeReward(computed(() => props.market))
+
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const tradeTypeMarket = computed(() =>
