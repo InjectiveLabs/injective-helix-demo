@@ -2990,13 +2990,6 @@
     tailwindcss "^3.2.4"
     ufo "^1.0.1"
 
-"@nuxtjs/vendor@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@nuxtjs/vendor/-/vendor-1.1.7.tgz#5d6a0f7308066fe43c33cfeab75c3e50fe7211d9"
-  integrity sha512-JYwqbA1xOqta7sqtzLAC2BgaTbZnufqbkSpC8gcD0NTgn44FTpnL1eXc+M/vBxbxMpj+A288lozi+TYSrc4qew==
-  dependencies:
-    fs-extra "^8.1.0"
-
 "@particle-network/auth@^0.5.5":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@particle-network/auth/-/auth-0.5.6.tgz#058e00980511fdf72189b6d4a7576e67934a008a"
