@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BalanceWithToken } from '~~/types'
+import { BalanceWithToken } from '@/types'
 
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()

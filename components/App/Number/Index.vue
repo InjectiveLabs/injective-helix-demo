@@ -15,13 +15,11 @@ const props = defineProps({
   useNumberDecimals: Boolean,
 
   prefix: {
-    required: false,
     type: String,
     default: ''
   },
 
   suffix: {
-    required: false,
     type: String,
     default: ''
   },
@@ -32,9 +30,8 @@ const props = defineProps({
   },
 
   decimals: {
-    required: false,
-    default: UI_DEFAULT_DISPLAY_DECIMALS,
-    type: Number
+    type: Number,
+    default: UI_DEFAULT_DISPLAY_DECIMALS
   },
 
   roundingMode: {
@@ -43,9 +40,8 @@ const props = defineProps({
   },
 
   abbreviationFloor: {
-    required: false,
-    default: 0,
-    type: Number
+    type: Number,
+    default: 0
   }
 })
 

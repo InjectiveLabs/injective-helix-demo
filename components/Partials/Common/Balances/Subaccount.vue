@@ -9,19 +9,18 @@ import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
-    required: true,
-    type: Object as PropType<UiMarketWithToken>
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
   },
 
   baseTradingBalance: {
-    required: false,
-    default: undefined,
-    type: Object as PropType<UiSubaccountBalanceWithToken>
+    type: Object as PropType<UiSubaccountBalanceWithToken>,
+    default: undefined
   },
 
   quoteTradingBalance: {
-    default: undefined,
-    type: Object as PropType<UiSubaccountBalanceWithToken>
+    type: Object as PropType<UiSubaccountBalanceWithToken>,
+    default: undefined
   }
 })
 

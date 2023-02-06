@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 defineProps({
   title: {
-    required: true,
-    type: String
+    type: String,
+    required: true
   },
 
   tooltip: {
-    required: false,
-    default: '',
-    type: String
+    type: String,
+    default: ''
   }
 })
 </script>
