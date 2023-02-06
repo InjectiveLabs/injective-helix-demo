@@ -31,8 +31,8 @@ export default defineNuxtConfig({
     publishRelease: true,
     baseUrl: process.env.VITE_BASE_URL,
     config: {
-      releaseStage: process.env.NODE_ENV,
-      enabledReleaseStages: ['staging', 'production'],
+      releaseStage: process.env.VITE_ENV,
+      enabledReleaseStages: ['staging', 'mainnet'],
       appVersion: process.env.npm_package_version,
       apiKey: process.env.VITE_BUGSNAG_KEY
     }

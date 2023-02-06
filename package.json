@@ -25,7 +25,7 @@
   },
   "lint-staged": {
     "**/*.{js,ts,vue,html}": [
-      "eslint --max-warnings 0 --no-warn-ignored"
+      "eslint --max-warnings 0"
     ],
     "*.{css,vue}": "stylelint"
   },
