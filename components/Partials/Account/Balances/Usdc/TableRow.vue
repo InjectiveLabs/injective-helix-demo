@@ -14,6 +14,7 @@ const spotStore = useSpotStore()
 const modalStore = useModalStore()
 
 const props = defineProps({
+  isHoldingSingleUsdcDenom: Boolean,
   hideBalances: Boolean,
   hasPeggyUsdcBalance: Boolean,
 
@@ -124,20 +125,30 @@ function handleConvert() {
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
-      <div class="flex justify-start items-center gap-2 ml-8">
-        <div class="flex justify-start gap-2 items-center">
-          <span
-            class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
-            data-cy="wallet-balance-token-symbol-table-data"
-          >
-            {{ balance.token.symbol }}
-          </span>
+      <div
+        class="flex justify-start items-center gap-2"
+        :class="{ 'ml-8': !isHoldingSingleUsdcDenom }"
+      >
+        <CommonTokenIcon
+          v-if="isHoldingSingleUsdcDenom"
+          :token="balance.token"
+        />
 
-          <PartialsAccountBalancesUsdcLabel
-            v-bind="{
-              balance
-            }"
-          />
+        <div class="flex justify-start items-center gap-2">
+          <div class="flex justify-start gap-2 items-center">
+            <span
+              class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
+              data-cy="wallet-balance-token-symbol-table-data"
+            >
+              {{ balance.token.symbol }}
+            </span>
+
+            <PartialsAccountBalancesUsdcLabel
+              v-bind="{
+                balance
+              }"
+            />
+          </div>
         </div>
       </div>
     </td>
