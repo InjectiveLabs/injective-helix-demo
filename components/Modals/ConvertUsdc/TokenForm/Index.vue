@@ -171,13 +171,13 @@ onMounted(() => {
             !isBuy ? $t('account.from') : $t('account.to')
           }}</span>
 
-          <ModalsConvertUSDCTokenFormPill
+          <ModalsConvertUsdcTokenFormPill
             v-if="baseBalance"
             :balance="baseBalance"
           />
         </div>
 
-        <ModalsConvertUSDCTokenFormInput
+        <ModalsConvertUsdcTokenFormInput
           v-if="baseBalance"
           :amount-field-name="TradeField.BaseAmount"
           :balance="baseBalance"
@@ -216,13 +216,13 @@ onMounted(() => {
           <span class="font-semibold">{{
             isBuy ? $t('account.from') : $t('account.to')
           }}</span>
-          <ModalsConvertUSDCTokenFormPill
+          <ModalsConvertUsdcTokenFormPill
             v-if="quoteBalance"
             :balance="quoteBalance"
           />
         </div>
 
-        <ModalsConvertUSDCTokenFormInput
+        <ModalsConvertUsdcTokenFormInput
           v-if="quoteBalance"
           :amount-field-name="TradeField.QuoteAmount"
           :balance="quoteBalance"
