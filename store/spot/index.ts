@@ -82,17 +82,20 @@ export const useSpotStore = defineStore('spot', {
         .map((m) => m.marketId),
 
     tradeableDenoms: (state) =>
-      state.markets.reduce((denoms, market) => {
-        if (!denoms.includes(market.baseDenom)) {
-          denoms.push(market.baseDenom)
-        }
+      [...state.usdcConversionModalMarkets, ...state.markets].reduce(
+        (denoms, market) => {
+          if (!denoms.includes(market.baseDenom)) {
+            denoms.push(market.baseDenom)
+          }
 
-        if (!denoms.includes(market.quoteDenom)) {
-          denoms.push(market.quoteDenom)
-        }
+          if (!denoms.includes(market.quoteDenom)) {
+            denoms.push(market.quoteDenom)
+          }
 
-        return denoms
-      }, [] as string[]),
+          return denoms
+        },
+        [] as string[]
+      ),
 
     marketsWithSummary: (state) =>
       state.markets

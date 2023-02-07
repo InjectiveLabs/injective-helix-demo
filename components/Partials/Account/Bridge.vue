@@ -3,6 +3,7 @@ import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
   Modal,
+  BridgeForm,
   BridgeType,
   BridgeField,
   BridgeBusEvents,
@@ -18,7 +19,19 @@ const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const { query } = useRoute()
 
-const { form, resetForm, bridgeType } = useBridgeState()
+const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({
+  initialValues: {
+    [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
+    [BridgeField.TransferDirection]: TransferDirection.bankToTradingAccount,
+    [BridgeField.BridgeType]: BridgeType.Transfer,
+    [BridgeField.Token]: injToken,
+    [BridgeField.Denom]: injToken.denom,
+    [BridgeField.Amount]: '',
+    [BridgeField.Memo]: '',
+    [BridgeField.Destination]: ''
+  },
+  keepValuesOnUnmount: true
+})
 
 onMounted(() => {
   handleQueryParams()
@@ -34,7 +47,7 @@ onMounted(() => {
 
 function handlePreFillCosmosWallet() {
   if (walletStore.isCosmosWallet) {
-    form[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+    formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
   }
 }
 
@@ -43,6 +56,17 @@ function handleBridgeInit() {
     modalStore.closeModal(Modal.Bridge)
     modalStore.openModal({ type: Modal.BridgeConfirm })
   })
+}
+
+function resetForm(token?: Token) {
+  resetBridgeForm()
+
+  formValues[BridgeField.BridgeType] = BridgeType.Transfer
+
+  if (token) {
+    formValues[BridgeField.Token] = token
+    formValues[BridgeField.Denom] = token.denom
+  }
 }
 
 function handleBridgeConfirmed() {
@@ -55,8 +79,9 @@ function handleBridgeConfirmed() {
 function handleTransfer(token: Token = injToken) {
   resetForm(token)
 
-  bridgeType.value = BridgeType.Transfer
-  form[BridgeField.TransferDirection] = TransferDirection.bankToTradingAccount
+  formValues[BridgeField.BridgeType] = BridgeType.Transfer
+  formValues[BridgeField.TransferDirection] =
+    TransferDirection.bankToTradingAccount
 
   if (!bankStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
@@ -68,8 +93,9 @@ function handleTransfer(token: Token = injToken) {
 function handleTransferToBank(token: Token = injToken) {
   resetForm(token)
 
-  bridgeType.value = BridgeType.Transfer
-  form[BridgeField.TransferDirection] = TransferDirection.tradingAccountToBank
+  formValues[BridgeField.BridgeType] = BridgeType.Transfer
+  formValues[BridgeField.TransferDirection] =
+    TransferDirection.tradingAccountToBank
 
   modalStore.openModal({ type: Modal.Bridge })
 }
@@ -77,10 +103,12 @@ function handleTransferToBank(token: Token = injToken) {
 function handleDeposit(token: Token = injToken) {
   resetForm(token)
 
-  bridgeType.value = BridgeType.Deposit
-
-  form[BridgeField.BridgingNetwork] = getBridgingNetworkBySymbol(token.symbol)
-  form[BridgeField.TransferDirection] = TransferDirection.tradingAccountToBank
+  formValues[BridgeField.BridgeType] = BridgeType.Deposit
+  formValues[BridgeField.BridgingNetwork] = getBridgingNetworkBySymbol(
+    token.symbol
+  )
+  formValues[BridgeField.TransferDirection] =
+    TransferDirection.tradingAccountToBank
 
   // Update ERC20 balances when we open the bridge instead of loading them when we open the page
   tokenStore.updateErc20TokensWithBalanceAndPrice()
@@ -93,9 +121,10 @@ function handleWithdraw(token: Token = injToken) {
 
   const bridgingNetworkValue = getBridgingNetworkBySymbol(token.symbol)
 
-  bridgeType.value = BridgeType.Withdraw
-  form[BridgeField.BridgingNetwork] = bridgingNetworkValue
-  form[BridgeField.TransferDirection] = TransferDirection.tradingAccountToBank
+  formValues[BridgeField.BridgeType] = BridgeType.Withdraw
+  formValues[BridgeField.BridgingNetwork] = bridgingNetworkValue
+  formValues[BridgeField.TransferDirection] =
+    TransferDirection.tradingAccountToBank
 
   modalStore.openModal({ type: Modal.Bridge })
 }
@@ -118,7 +147,7 @@ function handleQueryParams() {
   }
 
   resetForm(token)
-  bridgeType.value = bridgeTypeFromQuery
+  formValues[BridgeField.BridgeType] = bridgeTypeFromQuery
 
   modalStore.openModal({ type: Modal.Bridge })
 }
@@ -126,14 +155,7 @@ function handleQueryParams() {
 
 <template>
   <div>
-    <ModalsBridge
-      v-bind="{
-        form,
-        bridgeType
-      }"
-      @bridge:init="handleBridgeInit"
-    />
-
+    <ModalsBridge @bridge:init="handleBridgeInit" />
     <ModalsBridgeConfirm @form:submit="handleBridgeConfirmed" />
     <ModalsBridgeCompleted />
   </div>
