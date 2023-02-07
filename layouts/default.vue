@@ -86,29 +86,28 @@ function onCloseSideBar() {
 </script>
 
 <template>
-  <div
-    id="pro"
-    class="w-full h-full min-h-screen bg-gray-1000 text-gray-100 relative"
-  >
+  <div id="pro" class="flex min-h-screen bg-gray-1000 text-gray-100 relative">
     <transition name="page" appear>
       <AppHocLoading :status="status">
-        <div>
+        <div class="w-full">
           <LayoutSidebarMobile
             v-if="isOpenSidebar"
             @sidebar:closed="onCloseSideBar"
           />
           <client-only>
-            <div class="relative bg-gray-1000">
+            <div class="bg-gray-1000">
               <LayoutTopbar
                 :is-sidebar-open="isOpenSidebar"
                 @sidebar:opened="isOpenSidebar = true"
                 @sidebar:closed="onCloseSideBar"
               />
               <main
-                class="w-full h-full min-h-screen-excluding-header flex flex-col"
-                :class="{ 'pt-12': isOpenSidebar }"
+                class="flex flex-wrap relative min-h-screen-excluding-header"
+                :class="{
+                  'pt-12': isOpenSidebar
+                }"
               >
-                <div class="relative h-full-flex">
+                <div class="w-screen flex-1 py-4">
                   <NuxtPage />
                 </div>
                 <LayoutFooter v-if="showFooter" />

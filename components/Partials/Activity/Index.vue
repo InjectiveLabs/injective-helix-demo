@@ -139,9 +139,7 @@ function onViewChange() {
 </script>
 
 <template>
-  <div
-    class="h-full min-h-screen-excluding-header max-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col"
-  >
+  <div class="pt-6 sm:pb-8">
     <PartialsActivityCommonNavigation
       v-model:tab="tab"
       :status="status"

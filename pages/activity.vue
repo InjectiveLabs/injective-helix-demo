@@ -21,9 +21,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full mx-auto px-6 3xl:px-0 3xl:w-11/12 4xl:w-10/12 h-full-flex">
-    <AppHocLoading :status="status">
-      <PartialsActivity />
-    </AppHocLoading>
-  </div>
+  <AppHocLoading :status="status">
+    <div class="container">
+      <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
+        <PartialsActivity />
+      </div>
+    </div>
+  </AppHocLoading>
 </template>

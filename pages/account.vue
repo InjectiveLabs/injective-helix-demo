@@ -165,9 +165,11 @@ useIntervalFn(fetchTokensUsdPrice, 1000 * 30)
 
 <template>
   <AppHocLoading :status="status">
-    <div class="h-full-flex">
-      <PartialsAccount :balances="balances" />
-      <ModalsRefereeOnboarding v-if="REFERRALS_ENABLED" />
+    <div class="container">
+      <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
+        <PartialsAccount :balances="balances" />
+        <ModalsRefereeOnboarding v-if="REFERRALS_ENABLED" />
+      </div>
     </div>
   </AppHocLoading>
 </template>

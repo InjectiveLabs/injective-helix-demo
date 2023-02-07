@@ -29,17 +29,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="h-full w-full flex flex-wrap fee-discounts min-h-screen-excluding-header-and-footer"
-  >
-    <AppHocLoading :status="status">
+  <AppHocLoading :status="status">
+    <div class="fee-discounts min-h-screen-excluding-header-and-footer">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
-          <div class="my-12">
+          <div class="mt-6">
             <h3 class="text-xl font-bold text-gray-200">
               {{ $t('fee_discounts.page_title') }}
             </h3>
-            <div class="mt-6 mb-8">
+            <div class="mt-6">
               <p class="text-sm font-normal mb-2">
                 {{ $t('fee_discounts.page_description') }}
               </p>
@@ -54,8 +52,8 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>
 
 <style scoped>

@@ -13,29 +13,27 @@ defineProps({
 
   loaderClass: {
     type: String,
-    default: 'absolute'
+    default: 'relative'
   }
 })
 </script>
 
 <template>
-  <div class="h-full-flex">
-    <Suspense>
-      <div
-        v-if="status.isLoading() || showLoading"
-        class="flex grow items-center relative justify-center"
-        :class="{
-          'py-4': !noPadding
-        }"
-      >
+  <Suspense>
+    <div
+      v-if="status.isLoading() || showLoading"
+      class="h-full"
+      :class="{
+        'py-4': !noPadding
+      }"
+    >
+      <AppLoading :class="loaderClass" />
+    </div>
+    <slot v-else />
+    <template #fallback>
+      <div class="h-full">
         <AppLoading :class="loaderClass" />
       </div>
-      <slot v-else />
-      <template #fallback>
-        <div class="flex grow items-center">
-          <AppLoading :class="loaderClass" />
-        </div>
-      </template>
-    </Suspense>
-  </div>
+    </template>
+  </Suspense>
 </template>

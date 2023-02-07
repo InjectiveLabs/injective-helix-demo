@@ -96,78 +96,76 @@ function handleHideBalances(value: boolean) {
 </script>
 
 <template>
-  <div class="h-full-flex w-full flex-wrap">
+  <div class="pt-6 sm:pb-8">
     <AppHocLoading :status="status">
-      <div class="container pt-6 pb-12">
-        <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 flex flex-col">
-          <h2 class="text-2xl text-white font-bold mb-4">
-            {{ $t('account.accountOverview') }}
-          </h2>
+      <div>
+        <h2 class="text-2xl text-white font-bold mb-4">
+          {{ $t('account.accountOverview') }}
+        </h2>
 
-          <span class="text-gray-450 text-lg mb-1">
-            {{ $t('account.netWorth') }}
-          </span>
+        <span class="text-gray-450 text-lg mb-1">
+          {{ $t('account.netWorth') }}
+        </span>
 
-          <PartialsAccountOverview
-            :balances="balances"
-            :hide-balances="hideBalances"
-            @update:hide-balances="handleHideBalances"
-          />
+        <PartialsAccountOverview
+          :balances="balances"
+          :hide-balances="hideBalances"
+          @update:hide-balances="handleHideBalances"
+        />
 
-          <CommonTabMenu>
-            <AppSelectButton
-              v-for="filterType in Object.values(FilterList)"
-              :key="`account-tabs-${filterType}`"
-              v-model="activeType"
-              :value="filterType"
-            >
-              <template #default="{ active }">
-                <NuxtLink
-                  :to="{
-                    name: 'account',
-                    query: { view: filterType }
-                  }"
-                >
-                  <CommonTabMenuItem :active="active">
-                    <p v-if="filterType === FilterList.Balances">
-                      {{ $t('account.tabs.balances') }}
-                    </p>
+        <CommonTabMenu>
+          <AppSelectButton
+            v-for="filterType in Object.values(FilterList)"
+            :key="`account-tabs-${filterType}`"
+            v-model="activeType"
+            :value="filterType"
+          >
+            <template #default="{ active }">
+              <NuxtLink
+                :to="{
+                  name: 'account',
+                  query: { view: filterType }
+                }"
+              >
+                <CommonTabMenuItem :active="active">
+                  <p v-if="filterType === FilterList.Balances">
+                    {{ $t('account.tabs.balances') }}
+                  </p>
 
-                    <p v-if="filterType === FilterList.Positions">
-                      {{ $t('account.tabs.positions') }}
-                    </p>
-                  </CommonTabMenuItem>
-                </NuxtLink>
-              </template>
-            </AppSelectButton>
-          </CommonTabMenu>
+                  <p v-if="filterType === FilterList.Positions">
+                    {{ $t('account.tabs.positions') }}
+                  </p>
+                </CommonTabMenuItem>
+              </NuxtLink>
+            </template>
+          </AppSelectButton>
+        </CommonTabMenu>
 
-          <PartialsAccountBalances
-            v-if="activeType === FilterList.Balances"
-            v-bind="{
-              hideBalances,
-              balances
-            }"
-          />
+        <PartialsAccountBalances
+          v-if="activeType === FilterList.Balances"
+          v-bind="{
+            hideBalances,
+            balances
+          }"
+        />
 
-          <PartialsAccountPositions
-            v-if="activeType === FilterList.Positions"
-            v-bind="{ hideBalances, balances }"
-          />
-        </div>
+        <PartialsAccountPositions
+          v-if="activeType === FilterList.Positions"
+          v-bind="{ hideBalances, balances }"
+        />
       </div>
+
+      <PartialsAccountBalancesAssetDetails
+        v-if="modalStore.modals[Modal.AssetDetails]"
+      />
+      <PartialsAccountBridge />
+
+      <ModalsAddMargin />
+      <ModalsConvertUsdc
+        v-if="usdcConvertMarket"
+        :balances="balances"
+        :market="usdcConvertMarket"
+      />
     </AppHocLoading>
-
-    <PartialsAccountBalancesAssetDetails
-      v-if="modalStore.modals[Modal.AssetDetails]"
-    />
-    <PartialsAccountBridge />
-
-    <ModalsAddMargin />
-    <ModalsConvertUsdc
-      v-if="usdcConvertMarket"
-      :balances="balances"
-      :market="usdcConvertMarket"
-    />
   </div>
 </template>

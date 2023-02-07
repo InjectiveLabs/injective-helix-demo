@@ -20,7 +20,7 @@ onWalletConnected(() => {
 
 <template>
   <AppHocLoading :status="status">
-    <div v-if="walletStore.isUserWalletConnected">
+    <div v-if="walletStore.isUserWalletConnected" class="my-8">
       <AppHorizontalScrollView>
         <PartialsFeeDiscountsTierInfo class="flex-0-full md:col-span-6" />
         <PartialsFeeDiscountsStakedAmount class="flex-0-full md:col-span-3" />
