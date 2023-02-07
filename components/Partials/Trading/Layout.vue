@@ -178,7 +178,7 @@ watch(
                 appStore.userState.tradingLayout === TradingLayout.Right
             }"
           >
-            <div class="h-full-flex">
+            <div class="flex flex-wrap flex-col w-full">
               <div class="w-full">
                 <CommonCard tight class="relative">
                   <div class="grid grid-cols-6 lg:grid-cols-12">
@@ -211,7 +211,7 @@ watch(
                   </CommonCard>
                 </div>
               </div>
-              <div class="w-full flex-1 overflow-hidden">
+              <div class="w-full flex-1">
                 <slot name="orders" />
               </div>
             </div>

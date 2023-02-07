@@ -164,7 +164,7 @@ function handleHideBalances(value: boolean) {
     <PartialsAccountBridge />
 
     <ModalsAddMargin />
-    <ModalsConvertUSDC
+    <ModalsConvertUsdc
       v-if="usdcConvertMarket"
       :balances="balances"
       :market="usdcConvertMarket"

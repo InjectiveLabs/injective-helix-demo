@@ -160,7 +160,7 @@ function closeModal() {
           {{ $t('account.whyConvert') }}
         </div>
 
-        <ModalsConvertUSDCTokenForm
+        <ModalsConvertUsdcTokenForm
           v-model:isBaseAmount="isBaseAmount"
           v-bind="{
             market,

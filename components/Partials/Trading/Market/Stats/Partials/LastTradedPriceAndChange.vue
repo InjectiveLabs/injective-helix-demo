@@ -9,8 +9,8 @@ const { t } = useLang()
 
 const props = defineProps({
   lg: Boolean,
-  isCurrentMarket: Boolean,
   isStatsBar: Boolean,
+  isCurrentMarket: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
