@@ -11,9 +11,7 @@ defineProps({
 
 const activityStore = useActivityStore()
 
-const fundingPayments = computed(() => {
-  return activityStore.subaccountFundingPayments
-})
+const fundingPayments = computed(() => activityStore.subaccountFundingPayments)
 </script>
 
 <template>

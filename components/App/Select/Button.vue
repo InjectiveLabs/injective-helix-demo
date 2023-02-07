@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 defineProps({
-  modelValue: {
+  value: {
     type: String,
     required: true
   },
 
-  value: {
+  modelValue: {
     type: String,
     required: true
   }

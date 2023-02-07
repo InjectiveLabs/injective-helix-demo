@@ -27,16 +27,9 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
 }>()
-
-const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountBalance),
-  {
-    decimalPlaces: props.maxDecimals
-  }
-)
 
 const {
   errors: amountErrors,
@@ -53,6 +46,13 @@ const {
   })
 })
 
+const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
+  computed(() => props.balance.subaccountBalance),
+  {
+    decimalPlaces: props.maxDecimals
+  }
+)
+
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
 )
@@ -65,7 +65,7 @@ onMounted(() => {
     setAmountValue(maxBalanceToFixed.value)
 
     emit('update:amount', {
-      isBase: props.amountFieldName === TradeField.BaseAmount,
+      isBaseAmount: props.amountFieldName === TradeField.BaseAmount,
       amount: maxBalanceToFixed.value
     })
   }
@@ -76,7 +76,7 @@ function handleAmountUpdate(amount: string) {
 
   emit('update:amount', {
     amount,
-    isBase: props.amountFieldName === TradeField.BaseAmount
+    isBaseAmount: props.amountFieldName === TradeField.BaseAmount
   })
 }
 </script>
@@ -99,7 +99,7 @@ export default {
     >
       <div class="px-4">
         <div class="flex justify-between">
-          <AppNumericInput
+          <AppInputNumeric
             v-model="amount"
             sm
             no-padding

@@ -3,7 +3,6 @@ import { getSubaccountTokenWithBalance } from '@/app/utils/balance'
 import { BalanceWithToken } from '@/types'
 
 export default function useConvertFormatter() {
-  const route = useRoute()
   const accountStore = useAccountStore()
   const spotStore = useSpotStore()
 
@@ -20,7 +19,7 @@ export default function useConvertFormatter() {
   })
 
   const tradableTokenMaps = computed(() => {
-    return spotStore.markets.reduce((list, market) => {
+    return spotStore.markets.reduce((tokens, market) => {
       const baseTokenWithBalance = getSubaccountTokenWithBalance(
         market.baseToken,
         accountStore.subaccount
@@ -31,31 +30,21 @@ export default function useConvertFormatter() {
         accountStore.subaccount
       )
 
-      const baseTokens = list[market.quoteDenom]
-        ? [...list[market.quoteDenom], baseTokenWithBalance]
+      const baseTokens = tokens[market.quoteDenom]
+        ? [...tokens[market.quoteDenom], baseTokenWithBalance]
         : [baseTokenWithBalance]
 
-      const quoteToken = list[market.baseDenom]
-        ? [...list[market.baseDenom], quoteTokenWithBalance]
+      const quoteToken = tokens[market.baseDenom]
+        ? [...tokens[market.baseDenom], quoteTokenWithBalance]
         : [quoteTokenWithBalance]
 
       return {
-        ...list,
+        ...tokens,
         [market.quoteDenom]: baseTokens,
         [market.baseDenom]: quoteToken
       }
     }, {} as Record<string, BalanceWithToken[]>)
   })
-
-  const getMarketIdByRouteQuery = () => {
-    const { to, from } = route.query
-    const querySlug = `${from}-${to}`
-
-    return (
-      tradableSlugMap.value[querySlug.toLowerCase()] ||
-      tradableSlugMap.value['usdt-inj'] // set default market
-    )
-  }
 
   /* todo: verify if showing the current token price is necessary */
   // const fetchTokenPairUsdValue = (market: UiSpotMarketWithToken) => {
@@ -65,5 +54,8 @@ export default function useConvertFormatter() {
   //   ])
   // }
 
-  return { getMarketIdByRouteQuery, tradableTokenMaps }
+  return {
+    tradableSlugMap,
+    tradableTokenMaps
+  }
 }

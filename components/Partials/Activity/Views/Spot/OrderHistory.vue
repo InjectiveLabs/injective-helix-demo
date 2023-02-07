@@ -11,9 +11,7 @@ defineProps({
 
 const spotStore = useSpotStore()
 
-const orderHistory = computed(() => {
-  return spotStore.subaccountOrderHistory
-})
+const orderHistory = computed(() => spotStore.subaccountOrderHistory)
 </script>
 
 <template>

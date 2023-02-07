@@ -11,6 +11,8 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const { t } = useLang()
+
 const props = defineProps({
   transaction: {
     required: true,
@@ -18,15 +20,12 @@ const props = defineProps({
   }
 })
 
-const { t } = useLang()
-
-const formattedOrigin = computed(() => {
-  return formatWalletAddress(props.transaction.sender)
-})
-
-const formattedDestination = computed(() => {
-  return formatWalletAddress(props.transaction.receiver)
-})
+const formattedOrigin = computed(() =>
+  formatWalletAddress(props.transaction.sender)
+)
+const formattedDestination = computed(() =>
+  formatWalletAddress(props.transaction.receiver)
+)
 
 const amount = computed(() => {
   if (!props.transaction.amount) {

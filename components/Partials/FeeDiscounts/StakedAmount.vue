@@ -7,29 +7,24 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const paramStore = useParamStore()
 const exchangeStore = useExchangeStore()
 
-const feeDiscountAccountInfo = computed(() => {
-  return exchangeStore.feeDiscountAccountInfo
-})
-
-const apr = computed(() => {
-  return paramStore.apr.times(100)
-})
-
-const { valueToString: aprToFormat } = useBigNumberFormatter(apr, {
-  decimalPlaces: 2
-})
+const { valueToString: aprToFormat } = useBigNumberFormatter(
+  computed(() => paramStore.apr.times(100)),
+  {
+    decimalPlaces: 2
+  }
+)
 
 const stakedAmount = computed(() => {
   if (
-    !feeDiscountAccountInfo.value ||
-    !feeDiscountAccountInfo.value.accountInfo
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountInfo
   ) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInBase(
     cosmosSdkDecToBigNumber(
-      feeDiscountAccountInfo.value.accountInfo.stakedAmount
+      exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
     )
   )
 })

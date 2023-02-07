@@ -6,57 +6,32 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents, BusEvents, Modal } from '@/types'
-import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
+import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const router = useRouter()
 const spotStore = useSpotStore()
-const modalStore = useModalStore()
 
 const props = defineProps({
   expand: Boolean,
-  hasOneUsdcBalance: Boolean,
+  hideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
-  },
-
-  hideBalances: {
-    type: Boolean,
-    required: true
   }
 })
-
-const isAggregateRow = !props.balance.token.denom
-
-const isUsdcDenom =
-  !isAggregateRow &&
-  usdcTokenDenoms.includes(props.balance.token.denom.toLowerCase())
-
-const convertUsdc = [usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
-  props.balance.token.denom.toLowerCase()
-)
 
 const isOpen = ref(false)
 
-const filteredMarkets = computed(() => {
+const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
   return spotStore.markets.filter(
     (m) =>
-      (m.baseDenom === props.balance.token.denom ||
-        m.quoteDenom === props.balance.token.denom) &&
-      ![usdcTokenDenom.USDC, usdcTokenDenom.USDCso].includes(
-        m.baseDenom.toLowerCase()
-      )
+      m.baseDenom === props.balance.token.denom ||
+      m.quoteDenom === props.balance.token.denom
   )
 })
 
-const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
+const filteredMarket = computed(() => filteredMarkets.value[0])
 
 /* TODO - bank <> default trading account merge
 
@@ -76,6 +51,13 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 ) */
+
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => props.balance.totalBalanceInUsd),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const {
   valueToBigNumber: bankBalanceInBigNumber,
@@ -124,32 +106,20 @@ function handleWithdrawClick() {
     props.balance.token
   )
 }
-
-function handleConvert() {
-  useEventBus<Token>(BusEvents.ConvertUSDC).emit(props.balance.token as Token)
-  modalStore.openModal({ type: Modal.ConvertUSDC })
-}
 </script>
 
 <template>
   <tr
     class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{
-      'last-of-type:border-b-transparent': !isUsdcDenom,
       'max-h-20': !isOpen,
       'max-h-screen': isOpen
     }"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
-      <div
-        class="flex justify-start items-center gap-2"
-        :class="{ 'ml-8': isUsdcDenom && !hasOneUsdcBalance }"
-      >
-        <CommonTokenIcon
-          v-if="!isUsdcDenom || hasOneUsdcBalance"
-          :token="balance.token"
-        />
+      <div class="flex justify-start items-center gap-2">
+        <CommonTokenIcon :token="balance.token" />
 
         <div class="flex justify-start gap-2 items-center">
           <span
@@ -158,20 +128,6 @@ function handleConvert() {
           >
             {{ balance.token.symbol }}
           </span>
-
-          <PartialsAccountBalancesUsdcLabel
-            v-bind="{
-              isUsdcDenom,
-              balance
-            }"
-          />
-
-          <BaseIcon
-            v-if="isAggregateRow"
-            name="caret-down"
-            class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
-            :class="{ 'rotate-0': !expand }"
-          />
         </div>
       </div>
     </td>
@@ -271,22 +227,9 @@ function handleConvert() {
     </td>
 
     <td class="pr-4">
-      <div
-        v-show="!isAggregateRow"
-        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
-      >
-        <div
-          v-if="convertUsdc"
-          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-          data-cy="wallet-balance-convert"
-          @click="handleConvert"
-        >
-          <span class="text-blue-500 text-sm font-medium">
-            {{ $t('account.convertUsdc') }}
-          </span>
-        </div>
+      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <BaseDropdown
-          v-if="filteredMarkets.length > 1 && !convertUsdc"
+          v-if="filteredMarkets.length > 1"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
         >
           <template #default>
@@ -313,9 +256,9 @@ function handleConvert() {
           </template>
         </BaseDropdown>
         <div
-          v-if="filteredMarkets.length === 1 && !convertUsdc"
+          v-if="filteredMarkets.length === 1"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-          @click="handleNavigateToMarket(filteredMarkets[0])"
+          @click="handleNavigateToMarket(filteredMarket)"
         >
           <span class="text-blue-500 text-sm font-medium cursor-pointer">
             {{ $t('account.trade') }}
@@ -323,9 +266,6 @@ function handleConvert() {
         </div>
 
         <div
-          v-if="
-            ![usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
-          "
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-deposit-link"
           @click="handleDepositClick"
@@ -336,9 +276,6 @@ function handleConvert() {
         </div>
 
         <div
-          v-if="
-            ![usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
-          "
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-withdraw-link"
           @click="handleWithdrawClick"

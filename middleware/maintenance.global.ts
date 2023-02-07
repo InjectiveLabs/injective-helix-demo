@@ -1,11 +1,11 @@
-export default defineNuxtRouteMiddleware((to) => {
-  const maintenanceEnabled = process.env.VITE_MAINTENANCE_ENABLED === 'true'
+import { MAINTENANCE_ENABLED } from '@/app/utils/constants'
 
-  if (to.name !== 'maintenance' && maintenanceEnabled) {
+export default defineNuxtRouteMiddleware((to) => {
+  if (to.name !== 'maintenance' && MAINTENANCE_ENABLED) {
     return navigateTo('/maintenance')
   }
 
-  if (to.name === 'maintenance' && !maintenanceEnabled) {
+  if (to.name === 'maintenance' && !MAINTENANCE_ENABLED) {
     return navigateTo('/')
   }
 })

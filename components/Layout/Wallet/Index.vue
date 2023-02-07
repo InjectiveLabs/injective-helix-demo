@@ -10,35 +10,29 @@ const walletStore = useWalletStore()
 const status: Status = reactive(new Status(StatusType.Loading))
 const walletModalType = ref<WalletModalType>(WalletModalType.All)
 
-const showLoading = computed<boolean>(
-  () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
-)
-const showModal = computed<boolean>(
+const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
+const showLoading = computed<boolean>(
+  () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
+)
+
 onMounted(() => {
-  useEventBus<string>(BusEvents.ShowLedgerConnect).on(showLedgerConnect)
+  useEventBus<string>(BusEvents.ShowLedgerConnect).on(handleLedgerConnect)
 
   Promise.all([walletStore.isMetamaskInstalled()]).finally(() =>
     status.setIdle()
   )
 })
 
-function showLedgerConnect() {
+function handleLedgerConnect() {
   walletModalType.value = WalletModalType.Ledger
+
   modalStore.openModal({ type: Modal.Connect })
 }
 
-function close() {
-  modalStore.closeModal(Modal.Connect)
-}
-
-function updateWalletModalType(type: WalletModalType) {
-  walletModalType.value = type
-}
-
-function handleWalletConnectClicked() {
+function handleWalletConnect() {
   amplitudeTracker.submitWalletConnectClickedTrackEvent()
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
@@ -46,6 +40,14 @@ function handleWalletConnectClicked() {
   } else {
     modalStore.openModal({ type: Modal.Connect })
   }
+}
+
+function handleModalClose() {
+  modalStore.closeModal(Modal.Connect)
+}
+
+function updateWalletModalType(type: WalletModalType) {
+  walletModalType.value = type
 }
 
 watch(
@@ -58,9 +60,9 @@ watch(
   }
 )
 
-watch(showModal, (newShowModalState) => {
+watch(isModalOpen, (newShowModalState) => {
   if (!newShowModalState) {
-    close()
+    handleModalClose()
     walletModalType.value = WalletModalType.All
   }
 })
@@ -68,23 +70,23 @@ watch(showModal, (newShowModalState) => {
 
 <template>
   <div v-if="walletStore.isUserWalletConnected">
-    <LayoutWalletDetailsDropdown />
+    <LayoutWalletDetails />
   </div>
 
   <AppButton
     v-else
     class="bg-blue-500 text-blue-900 font-semibold whitespace-nowrap"
-    @click="handleWalletConnectClicked"
+    @click="handleWalletConnect"
   >
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppModalWrapper
-    :show="showModal"
+  <AppModal
+    :show="isModalOpen"
     :show-loading="showLoading"
     :ignore="['.v-popper__popper']"
     md
-    @modal:closed="close"
+    @modal:closed="handleModalClose"
   >
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
@@ -106,14 +108,14 @@ watch(showModal, (newShowModalState) => {
       v-else
       class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
     >
-      <LayoutWalletConnectMetamask />
-      <LayoutWalletConnectKeplr />
-      <LayoutWalletConnectCosmostation />
-      <LayoutWalletConnectLeap />
-      <LayoutWalletConnectTorus />
-      <LayoutWalletConnectLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletMetamask />
+      <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletCosmostation />
+      <LayoutWalletConnectWalletLeap />
+      <LayoutWalletConnectWalletTorus />
+      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
     </ul>
-  </AppModalWrapper>
+  </AppModal>
   <ModalsTerms />
 </template>

@@ -44,7 +44,7 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   BridgeConfirm = 'bridge-confirm',
   Connect = 'connect',
-  ConvertUSDC = 'convert-usdc',
+  ConvertUsdc = 'convert-usdc',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
@@ -206,7 +206,7 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
-  ConvertUSDC = 'convert-usdc',
+  ConvertUsdc = 'convert-usdc',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
   OrderbookNotionalClick = 'orderbook-notional-click',

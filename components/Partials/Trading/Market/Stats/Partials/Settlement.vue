@@ -23,10 +23,10 @@ const expiredAt = computed(() =>
 </script>
 
 <template>
-  <AppMarketInfo
+  <CommonMarketInfo
     :title="$t('trade.binaryOptions.settlement')"
     :tooltip="$t('trade.binaryOptions.settlement_tooltip')"
   >
     {{ expiredAt }}
-  </AppMarketInfo>
+  </CommonMarketInfo>
 </template>

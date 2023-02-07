@@ -24,11 +24,8 @@ const emit = defineEmits<{
 }>()
 
 const activeTab = computed({
-  get(): ActivityTab {
-    return props.tab
-  },
-
-  set(tab: ActivityTab) {
+  get: (): ActivityTab => props.tab,
+  set: (tab: ActivityTab) => {
     emit('update:tab', tab)
   }
 })

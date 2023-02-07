@@ -1,32 +1,21 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '@/app/data/bridge'
-import { BridgeType } from '@/types'
+import { BridgeField } from '@/types'
 
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
+const { isWithdraw, form } = useBridgeState()
 
-  bridgeType: {
-    type: String as PropType<BridgeType>,
-    required: true
-  }
-})
-
-const emit = defineEmits<{
-  (e: 'update:network', state: string): void
-}>()
-
+/**
+ * We remove injective option from options when depositing
+ **/
 const options = computed(() => {
-  // TODO: Remove injective option from options when depositing
   return networksMeta
     .filter((option) => {
-      return props.bridgeType !== BridgeType.Withdraw
-        ? option.value !== BridgingNetwork.Injective
-        : true
+      if (isWithdraw.value) {
+        return true
+      }
+
+      return option.value !== BridgingNetwork.Injective
     })
     .map((option) => {
       return {
@@ -38,11 +27,9 @@ const options = computed(() => {
 })
 
 const value = computed({
-  get(): string {
-    return props.value
-  },
-  set(value: string) {
-    emit('update:network', value)
+  get: (): BridgingNetwork => form[BridgeField.BridgingNetwork],
+  set: (value: BridgingNetwork) => {
+    form[BridgeField.BridgingNetwork] = value
   }
 })
 </script>

@@ -41,15 +41,15 @@ const futuresMarket = computed(() => {
   return attributes.to.params.futures
 })
 
-const market = computed(() => {
-  return spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
-})
+const market = computed(() =>
+  spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+)
 
-const marketType = computed(() => {
-  return spotMarket ? MarketType.Spot : MarketType.Perpetual
-})
+const marketType = computed(() =>
+  spotMarket ? MarketType.Spot : MarketType.Perpetual
+)
 
-function handleClickEvent() {
+function handleVisit() {
   if (spotMarket.value || futuresMarket.value) {
     handleTradeClickedTrack()
   }
@@ -72,7 +72,7 @@ function handleTradeClickedTrack() {
     class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center"
     :class="classes"
     exact
-    @click="handleClickEvent"
+    @click="handleVisit"
   >
     <span class="block">
       <slot></slot>

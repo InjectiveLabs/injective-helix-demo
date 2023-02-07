@@ -1,11 +1,11 @@
 import type { Ref } from 'vue'
 import {
-  DerivativeOrderSide,
+  ZERO_IN_BASE,
   SpotOrderSide,
-  UiDerivativeOrderHistory,
-  UiSpotMarketWithToken,
   UiSpotOrderHistory,
-  ZERO_IN_BASE
+  DerivativeOrderSide,
+  UiSpotMarketWithToken,
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'

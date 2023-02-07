@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
+import {
+  QUOTE_DENOMS_GECKO_IDS,
+  SMALL_BALANCE_THRESHOLD
+} from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
-import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
+import { usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
-  hideBalances: {
-    type: Boolean,
-    required: true
-  },
+  hideBalances: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -23,79 +23,66 @@ const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.None)
 const ascending = ref(false)
 
-const transformedBalance = computed(() => {
-  const nonUsdcBalances = props.balances.filter(
-    (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
-  )
-
+const aggregatedUsdcBalance = computed(() => {
   const usdcBalances = props.balances.filter((balance) =>
     usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
   )
 
   if (!usdcBalances.length) {
-    return nonUsdcBalances
+    return
   }
 
-  const aggregatedUsdcBalances = usdcBalances.reduce(
-    (aggregatedUsdc, balance) => {
-      return {
-        ...balance,
-        denom: '',
-        balanceToBase: new BigNumberInBase(aggregatedUsdc.balanceToBase)
-          .plus(balance.balanceToBase)
-          .toFixed(),
-        totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
-          .plus(balance.totalBalanceInUsd)
-          .toFixed(),
-        totalBalance: new BigNumberInBase(aggregatedUsdc.totalBalance)
-          .plus(balance.totalBalance)
-          .toFixed(),
-        reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
-          .plus(balance.reservedBalance)
-          .toFixed(),
-        balance: new BigNumberInBase(aggregatedUsdc.balance)
-          .plus(balance.balance)
-          .toFixed(),
-        token: {
-          ...([usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
-            ? balance.token
-            : aggregatedUsdc.token),
-          denom: ''
-        }
-      }
+  return usdcBalances.reduce((aggregatedUsdc, balance) => {
+    return {
+      ...balance,
+      denom: usdcTokenDenoms.join('-'),
+      balanceToBase: new BigNumberInBase(aggregatedUsdc.balanceToBase)
+        .plus(balance.balanceToBase)
+        .toFixed(),
+      totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
+        .plus(balance.totalBalanceInUsd)
+        .toFixed(),
+      totalBalance: new BigNumberInBase(aggregatedUsdc.totalBalance)
+        .plus(balance.totalBalance)
+        .toFixed(),
+      reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
+        .plus(balance.reservedBalance)
+        .toFixed(),
+      subaccountBalance: new BigNumberInBase(aggregatedUsdc.subaccountBalance)
+        .plus(balance.subaccountBalance)
+        .toFixed(),
+      balance: new BigNumberInBase(aggregatedUsdc.balance)
+        .plus(balance.balance)
+        .toFixed()
     }
-  )
-
-  return [...nonUsdcBalances, aggregatedUsdcBalances]
+  })
 })
 
 const filteredBalances = computed(() => {
-  return transformedBalance.value.filter((balance) => {
-    if (!balance) {
-      return false
-    }
+  return props.balances
+    .filter((balance) => balance)
+    .filter((balance) => {
+      const isNotSmallBalance =
+        !hideSmallBalances.value ||
+        new BigNumberInBase(balance.totalBalance).gte(SMALL_BALANCE_THRESHOLD)
 
-    const isNotSmallBalance =
-      !hideSmallBalances.value ||
-      new BigNumberInBase(balance.totalBalance).gte('10')
+      const isMarginCurrency =
+        !showMarginCurrencyOnly.value ||
+        QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
 
-    const isMarginCurrency =
-      !showMarginCurrencyOnly.value ||
-      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
+      const tokenNameMatch = balance.token.name
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
 
-    const tokenNameMatch = balance.token.name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
+      const tokenSymbolMatch = balance.token.symbol
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
 
-    const tokenSymbolMatch = balance.token.symbol
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
+      const isPartOfSearchFilter =
+        searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
 
-    const isPartOfSearchFilter =
-      searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
-
-    return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
-  })
+      return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
+    })
 })
 
 const sortedBalances = computed(() => {
@@ -169,6 +156,18 @@ const sortedBalances = computed(() => {
 
   return ascending.value ? result.reverse() : result
 })
+
+const sortedNonUsdcBalances = computed(() =>
+  sortedBalances.value.filter(
+    (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+  )
+)
+
+const sortedUsdcBalances = computed(() =>
+  sortedBalances.value.filter((balance) =>
+    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+  )
+)
 </script>
 
 <template>
@@ -184,15 +183,17 @@ const sortedBalances = computed(() => {
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"
       />
-      <template v-for="balance in sortedBalances" :key="balance.token.denom">
+      <PartialsAccountBalancesUsdc
+        v-if="aggregatedUsdcBalance && sortedUsdcBalances.length"
+        :aggregated-balance="aggregatedUsdcBalance"
+        :balances="sortedUsdcBalances"
+        :hide-balances="hideBalances"
+      />
+      <template
+        v-for="balance in sortedNonUsdcBalances"
+        :key="balance.token.denom"
+      >
         <PartialsAccountBalancesTableRow
-          v-if="balance.token.denom"
-          :balance="balance"
-          :hide-balances="hideBalances"
-        />
-        <PartialsAccountBalancesUsdcBalance
-          v-else
-          :balances="balances"
           :balance="balance"
           :hide-balances="hideBalances"
         />

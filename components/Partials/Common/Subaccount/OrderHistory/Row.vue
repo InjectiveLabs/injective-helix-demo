@@ -38,7 +38,7 @@ const {
   computed(() => props.isSpot)
 )
 
-function handleClickOnMarket() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -59,7 +59,7 @@ function handleClickOnMarket() {
       </span>
     </td>
 
-    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleVisitMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" md />

@@ -17,12 +17,14 @@ defineProps({
 
 const showDropdown = ref(false)
 
-const formattedInjectiveAddress = formatWalletAddress(
-  walletStore.injectiveAddress
+const formattedInjectiveAddress = computed(() =>
+  formatWalletAddress(walletStore.injectiveAddress)
 )
-const formattedAddress = formatWalletAddress(walletStore.address)
+const formattedAddress = computed(() =>
+  formatWalletAddress(walletStore.address)
+)
 
-function toggleShowDropdown() {
+function handleToggleDropdown() {
   showDropdown.value = !showDropdown.value
 }
 
@@ -57,7 +59,7 @@ function copyInjectiveAddress() {
           name="caret-down"
           class="h-6 w-6 transition duration-500 hover:text-blue-500"
           :class="{ '-rotate-180': showDropdown }"
-          @click="toggleShowDropdown"
+          @click="handleToggleDropdown"
         />
       </div>
     </div>

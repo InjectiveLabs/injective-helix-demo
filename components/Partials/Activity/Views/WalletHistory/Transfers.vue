@@ -11,9 +11,9 @@ defineProps({
 
 const bridgeStore = useBridgeStore()
 
-const transactions = computed(() => {
-  return bridgeStore.subaccountTransferBridgeTransactions
-})
+const transactions = computed(
+  () => bridgeStore.subaccountTransferBridgeTransactions
+)
 </script>
 
 <template>

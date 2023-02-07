@@ -44,34 +44,38 @@ const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
 
-onMounted(async () => {
-  await Promise.all([
+onMounted(() => {
+  Promise.all([
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
     bankStore.fetchBankBalancesWithToken(),
     ninjaPassStore.fetchCodes(),
     ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
-  ]).catch($onError)
+  ])
+    .then(() => {
+      if (betaMarketSlugs.includes(slug)) {
+        modalStore.openModal({ type: Modal.MarketBeta })
+      }
 
-  const marketBySlug = getMarketBySlug()
+      const marketBySlug = getMarketBySlug()
 
-  if (betaMarketSlugs.includes(slug)) {
-    modalStore.openModal({ type: Modal.MarketBeta })
-  }
+      if (!marketBySlug) {
+        router.push({ name: 'markets' })
 
-  if (!marketBySlug) {
-    router.push({ name: 'markets' })
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
+      }
 
-    throw new GeneralException(
-      new Error('Market not found. Please refresh the page.')
-    )
-  }
+      market.value = marketBySlug
 
-  market.value = marketBySlug
-
-  status.setIdle()
-  fetchStatus.setIdle()
-  emit('loaded', marketBySlug as UiMarketWithToken)
+      emit('loaded', marketBySlug as UiMarketWithToken)
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+      fetchStatus.setIdle()
+    })
 })
 
 onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
@@ -151,7 +155,7 @@ watch(
                   v-if="
                     fetchStatus.isIdle() &&
                     walletStore.isUserWalletConnected &&
-                    !walletStore.hasEnoughInjForGas
+                    !bankStore.hasEnoughInjForGas
                   "
                   class="bg-gray-1000 rounded-lg mb-1 p-6"
                 >
@@ -166,13 +170,13 @@ watch(
           </div>
 
           <div
-            class="col-span-6 lg:col-span-9 4xl:col-span-9"
+            class="col-span-6 lg:col-span-9 4xl:col-span-9 max-h-screen-excluding-header-and-market-info"
             :class="{
               '-order-1':
                 appStore.userState.tradingLayout === TradingLayout.Right
             }"
           >
-            <div class="flex flex-wrap flex-col w-full h-full">
+            <div class="h-full-flex">
               <div class="w-full">
                 <CommonCard tight class="relative">
                   <div class="grid grid-cols-6 lg:grid-cols-12">
@@ -205,7 +209,7 @@ watch(
                   </CommonCard>
                 </div>
               </div>
-              <div class="w-full flex-1">
+              <div class="w-full flex-1 overflow-hidden">
                 <slot name="orders" />
               </div>
             </div>
@@ -213,7 +217,7 @@ watch(
         </div>
 
         <div
-          class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1 z-[20] absolute w-full h-screen-excluding-header-and-market-info top-market-info pointer-events-none"
+          class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1 z-[50] lg:z-[20] absolute w-full h-screen-excluding-header-and-market-info top-market-info pointer-events-none"
         >
           <PartialsTradingSidebar
             v-show="showMarketList"

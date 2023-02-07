@@ -7,13 +7,8 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
+  search: {
+    type: String,
     required: true
   },
 
@@ -22,8 +17,13 @@ const props = defineProps({
     required: true
   },
 
-  search: {
-    type: String,
+  activeQuote: {
+    type: String as PropType<MarketQuoteType>,
+    required: true
+  },
+
+  activeCategory: {
+    type: String as PropType<MarketCategoryType>,
     required: true
   }
 })
@@ -54,21 +54,15 @@ const quoteOptions = Object.entries(MarketQuoteType).map(([key, value]) => ({
 }))
 
 const activeQuoteValue = computed({
-  get(): MarketQuoteType {
-    return props.activeQuote
-  },
-
-  set(value: MarketQuoteType) {
+  get: (): MarketQuoteType => props.activeQuote,
+  set: (value: MarketQuoteType) => {
     emit('update:activeQuote', value)
   }
 })
 
 const activeFilterType = computed({
-  get() {
-    return props.activeType
-  },
-
-  set(type: string) {
+  get: (): string => props.activeType,
+  set: (type: string) => {
     emit('update:activeType', type)
 
     if (type === props.activeType) {

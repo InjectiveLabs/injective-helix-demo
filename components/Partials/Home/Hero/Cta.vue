@@ -8,14 +8,10 @@ const router = useRouter()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const isUserWalletConnected = computed(() => {
-  return walletStore.isUserWalletConnected
-})
-
 function handleGetStartedClick() {
   handleTradeClickedTrack()
 
-  if (isUserWalletConnected) {
+  if (walletStore.isUserWalletConnected) {
     router.push(getDefaultPerpetualMarketRouteParams())
   } else {
     modalStore.openModal({ type: Modal.Connect })

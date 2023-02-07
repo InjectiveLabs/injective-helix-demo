@@ -9,16 +9,11 @@ import {
 
 const walletStore = useWalletStore()
 
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
+const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
+
 const tradeDropdownShown = ref(false)
 const rewardsDropdownShown = ref(false)
-
-const defaultPerpetualMarketRoute = computed(() => {
-  return getDefaultPerpetualMarketRouteParams()
-})
-
-const defaultSpotMarketRoute = computed(() => {
-  return getDefaultSpotMarketRouteParams()
-})
 
 function handleSpotTradeClickedTrack() {
   amplitudeTracker.submitTradeClickedTrackEvent({
@@ -107,10 +102,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </NuxtLink>
 
           <NuxtLink
-            :to="{
-              name: 'convert',
-              query: { from: 'usdt', to: 'inj' }
-            }"
+            :to="{ name: 'convert' }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-convert-link"
           >

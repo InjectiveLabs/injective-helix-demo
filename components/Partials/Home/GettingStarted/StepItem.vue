@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps({
-  modelValue: {
-    type: String,
+  step: {
+    type: Number,
     required: true
   },
 
@@ -10,8 +10,8 @@ defineProps({
     required: true
   },
 
-  step: {
-    type: Number,
+  modelValue: {
+    type: String,
     required: true
   }
 })

@@ -14,9 +14,9 @@ enum SlippageDisplayOptions {
 const { t } = useLang()
 
 const props = defineProps({
-  isBase: Boolean,
-  isConditionalOrder: Boolean,
   isSpot: Boolean,
+  isBaseAmount: Boolean,
+  isConditionalOrder: Boolean,
   reduceOnlyDisabled: Boolean,
 
   formValues: {
@@ -26,7 +26,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBase }: { isBase: boolean }): void
+  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
   (e: 'update:hasAdvancedSettingsErrors', showSlippageError: boolean): void
 }>()
@@ -298,7 +298,7 @@ function toggleDrawer() {
             v-show="showSlippageInputFieldForMarket"
             class="basis-1/5 flex items-center"
           >
-            <AppNumericInput
+            <AppInputNumeric
               id="focusOnInput"
               v-model="slippageTolerance"
               transparent-bg
@@ -315,7 +315,7 @@ function toggleDrawer() {
               <template #addon>
                 <span class="lg:hidden"> % </span>
               </template>
-            </AppNumericInput>
+            </AppInputNumeric>
           </div>
         </div>
         <AppCheckbox

@@ -10,9 +10,7 @@ const FilterList = [
 ]
 
 const orderbookLayoutType = computed({
-  get: (): OrderbookLayout => {
-    return appStore.userState.orderbookLayout
-  },
+  get: (): OrderbookLayout => appStore.userState.orderbookLayout,
   set: (orderbookLayout: OrderbookLayout) => {
     appStore.setUserState({
       ...appStore.userState,

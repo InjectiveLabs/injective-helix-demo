@@ -24,31 +24,24 @@ const props = defineProps({
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 
-const isUserWalletConnected = computed(() => {
-  return walletStore.isUserWalletConnected
-})
-
-const feeDiscountAccountInfo = computed(() => {
-  return exchangeStore.feeDiscountAccountInfo
-})
-
 const isUserTierLevel = computed(() => {
-  if (!feeDiscountAccountInfo.value || !isUserWalletConnected.value) {
+  if (!walletStore.isUserWalletConnected) {
     return false
   }
 
-  return new BigNumberInBase(feeDiscountAccountInfo.value.tierLevel).eq(
+  if (!exchangeStore.feeDiscountAccountInfo) {
+    return false
+  }
+
+  return new BigNumberInBase(exchangeStore.feeDiscountAccountInfo.tierLevel).eq(
     props.index
   )
 })
 
-const stakedAmount = computed(() => {
-  if (!props.tier.stakedAmount) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(cosmosSdkDecToBigNumber(props.tier.stakedAmount))
-})
+const stakedAmount = computed(
+  () =>
+    new BigNumberInBase(cosmosSdkDecToBigNumber(props.tier.stakedAmount || 0))
+)
 
 const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
   stakedAmount,
@@ -57,15 +50,11 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
   }
 )
 
-const volume = computed(() => {
-  if (!props.tier.volume) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(cosmosSdkDecToBigNumber(props.tier.volume)).toBase(
+const volume = computed(() =>
+  new BigNumberInWei(cosmosSdkDecToBigNumber(props.tier.volume || 0)).toBase(
     USDT_DECIMALS
   )
-})
+)
 
 const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
   decimalPlaces: 0
@@ -99,7 +88,15 @@ const takerFeeDiscount = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInWei(props.tier.takerDiscountRate).times(100).toBase()
+  const takerDiscountRate = new BigNumberInWei(props.tier.makerDiscountRate)
+    .times(100)
+    .toBase()
+
+  if (takerDiscountRate.lte(UI_MINIMAL_AMOUNT)) {
+    return ZERO_IN_BASE
+  }
+
+  return takerDiscountRate
 })
 
 const { valueToString: takerFeeDiscountToFormat } = useBigNumberFormatter(

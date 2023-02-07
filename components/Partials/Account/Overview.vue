@@ -10,6 +10,8 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
+const tokenStore = useTokenStore()
+
 const props = defineProps({
   hideBalances: Boolean,
 
@@ -22,12 +24,6 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:hide-balances', state: boolean): void
 }>()
-
-const tokenStore = useTokenStore()
-
-const btcUsdPrice = computed(() => {
-  return tokenStore.btcUsdPrice
-})
 
 const totalBalance = computed(() =>
   props.balances.reduce(
@@ -47,20 +43,14 @@ const shouldAbbreviateTotalBalance = computed(() =>
   totalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
 
-const { valueToString: abbreviatedTotalBalanceToString } =
-  useBigNumberFormatter(totalBalanceInUsd, {
-    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
-    abbreviationFloor: shouldAbbreviateTotalBalance.value
-      ? UI_MINIMAL_ABBREVIATION_FLOOR
-      : undefined
-  })
-
 const totalBalanceInBtc = computed(() => {
-  if (!btcUsdPrice.value) {
+  if (!tokenStore.btcUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return totalBalance.value.dividedBy(new BigNumberInBase(btcUsdPrice.value))
+  return totalBalance.value.dividedBy(
+    new BigNumberInBase(tokenStore.btcUsdPrice)
+  )
 })
 
 const totalBalanceInBtcToString = computed(() => {
@@ -74,6 +64,14 @@ const totalBalanceInBtcToString = computed(() => {
 
   return totalBalanceInBtc.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
 })
+
+const { valueToString: abbreviatedTotalBalanceToString } =
+  useBigNumberFormatter(totalBalanceInUsd, {
+    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
+    abbreviationFloor: shouldAbbreviateTotalBalance.value
+      ? UI_MINIMAL_ABBREVIATION_FLOOR
+      : undefined
+  })
 
 function toggleHideBalances() {
   emit('update:hide-balances', !props.hideBalances)

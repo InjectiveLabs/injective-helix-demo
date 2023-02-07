@@ -12,6 +12,8 @@ import { Change } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
+const router = useRouter()
+
 const props = defineProps({
   market: {
     type: Object as PropType<
@@ -39,6 +41,18 @@ const lastTradedPrice = computed(() => {
   return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
 })
 
+const change = computed(() => {
+  if (!props.summary || !props.summary.change) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(props.summary.change)
+})
+
+const volumeInUsdToFormat = computed(() => {
+  return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
+})
+
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
@@ -48,33 +62,23 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const change = computed(() => {
-  if (!props.summary || !props.summary.change) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.change)
-})
-
 const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
   decimalPlaces: 2
 })
 
-const volumeInUsdToFormat = computed(() => {
-  return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
-})
+function handleVisitMarket() {
+  if (!props.market) {
+    return
+  }
 
-const marketRoute = computed(() => {
-  const marketRoute = getMarketRoute(props.market)
-
-  return marketRoute || { name: 'index' }
-})
+  return router.push(getMarketRoute(props.market))
+}
 </script>
 
 <template>
-  <NuxtLink
-    class="rounded-lg bg-transparent shadow-card p-4 bg-gray-750 bg-opacity-30 block"
-    :to="marketRoute"
+  <div
+    class="rounded-lg bg-transparent shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
+    @click.stop="handleVisitMarket"
   >
     <div class="flex items-center justify-between text-gray-500">
       <p class="tracking-widest uppercase text-xs">
@@ -137,5 +141,5 @@ const marketRoute = computed(() => {
       {{ $t('markets.vol') }}
       <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
     </span>
-  </NuxtLink>
+  </div>
 </template>

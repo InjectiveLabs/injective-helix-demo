@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 defineProps({
   alignStart: Boolean,
+
   title: {
     type: String,
     required: true

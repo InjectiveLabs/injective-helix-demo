@@ -4,6 +4,8 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
+const router = useRouter()
+
 const props = defineProps({
   isSpot: Boolean,
 
@@ -28,15 +30,13 @@ const {
   computed(() => props.isSpot)
 )
 
-const marketRoute = computed(() => {
+function handleVisitMarket() {
   if (!market.value) {
-    return { name: 'markets' }
+    return
   }
 
-  const marketRoute = getMarketRoute(market.value)
-
-  return marketRoute || { name: 'markets' }
-})
+  return router.push(getMarketRoute(market.value))
+}
 </script>
 
 <template>
@@ -46,8 +46,8 @@ const marketRoute = computed(() => {
         {{ time }}
       </span>
     </td>
-    <td class="h-12 text-left cursor-pointer">
-      <NuxtLink class="flex items-center justify-start" :to="marketRoute">
+    <td class="h-12 text-left cursor-pointer" @click="handleVisitMarket">
+      <div class="flex items-center justify-start">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" md />
         </div>
@@ -59,7 +59,7 @@ const marketRoute = computed(() => {
             {{ market.ticker }}
           </span>
         </div>
-      </NuxtLink>
+      </div>
     </td>
 
     <td

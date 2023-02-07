@@ -1,33 +1,8 @@
-import { MarketBase } from '@injectivelabs/sdk-ui-ts'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import { MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
-}
-
-export const marketBase = {
-  [MarketBase.Terra]: ['UST', 'LUNA']
-}
-
-export const marketStableCoinQuoteSymbols = ['USDT', 'USDC', 'USDCet', 'USDCso']
-
-export const marketBaseFromTicker = (
-  ticker: string
-): MarketBase | undefined => {
-  const keys = Object.keys(marketBase) as MarketBase[]
-
-  for (const key of keys) {
-    const symbols = marketBase[key]
-
-    for (const symbol of symbols) {
-      if (ticker.includes(symbol)) {
-        return key
-      }
-    }
-  }
-
-  return undefined
 }
 
 export const betaMarketSlugs = [] as string[]

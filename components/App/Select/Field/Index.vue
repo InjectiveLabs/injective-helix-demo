@@ -6,14 +6,14 @@ const props = defineProps({
   clearable: Boolean,
   searchable: Boolean,
 
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
   options: {
     type: Array as PropType<DropdownOptionWithToken[]>,
     default: () => []
+  },
+
+  modelValue: {
+    type: String,
+    default: ''
   },
 
   placeholder: {
@@ -59,9 +59,7 @@ const filteredList = computed(() => {
   })
 })
 
-function handleClear(e: any) {
-  e.stopPropagation()
-
+function handleClear() {
   emit('update:modelValue', '')
 }
 </script>
@@ -96,7 +94,7 @@ function handleClear(e: any) {
             v-if="clearable && selectedItem"
             name="close"
             class="min-w-4 w-4 h-4 text-gray-500 hover:text-white"
-            @click="handleClear"
+            @click.stop="handleClear"
           />
 
           <BaseIcon

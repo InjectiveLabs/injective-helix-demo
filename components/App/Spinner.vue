@@ -4,7 +4,6 @@ const props = defineProps({
   md: Boolean,
   lg: Boolean,
   xl: Boolean,
-
   white: Boolean
 })
 

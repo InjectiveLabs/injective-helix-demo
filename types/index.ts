@@ -103,3 +103,5 @@ export * from './bridge'
 export * from './enums'
 export * from './states'
 export * from './trade'
+
+export type useBugsnag = () => any

@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalances,
-  SubaccountBalanceWithToken,
-  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   UiAccountTransformer,
   UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
@@ -26,16 +24,12 @@ type AccountStoreState = {
   subaccountIds: string[]
   subaccount?: UiSubaccount
   accountPortfolio?: AccountPortfolio
-  subaccountBalancesWithToken: SubaccountBalanceWithToken[]
-  subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   subaccountIds: [],
   subaccount: undefined,
-  accountPortfolio: undefined,
-  subaccountBalancesWithToken: [],
-  subaccountBalancesWithTokenAndPrice: []
+  accountPortfolio: undefined
 })
 
 export const useAccountStore = defineStore('account', {

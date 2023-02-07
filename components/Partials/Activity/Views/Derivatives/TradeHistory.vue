@@ -16,9 +16,7 @@ const derivativeStore = useDerivativeStore()
 
 const tradeDetails = ref(undefined as UiDerivativeTrade | undefined)
 
-const trades = computed(() => {
-  return derivativeStore.subaccountTrades
-})
+const trades = computed(() => derivativeStore.subaccountTrades)
 
 function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
   tradeDetails.value = value as UiDerivativeTrade

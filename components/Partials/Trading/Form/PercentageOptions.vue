@@ -71,7 +71,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBase }: { isBase: boolean }): void
+  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
@@ -169,7 +169,7 @@ function handleReduceOnly() {
     )
   })
 
-  emit('update:amount', { isBase: true })
+  emit('update:amount', { isBaseAmount: true })
 }
 
 function handleDerivativePercentageChange() {
@@ -193,7 +193,7 @@ function handleDerivativePercentageChange() {
   })
 
   emit('update:amount', {
-    isBase: derivativeAvailableBalanceGreaterThanOrderbook.value
+    isBaseAmount: derivativeAvailableBalanceGreaterThanOrderbook.value
   })
 }
 
@@ -221,7 +221,8 @@ function handleSpotPercentageChange() {
   })
 
   emit('update:amount', {
-    isBase: derivativeAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
+    isBaseAmount:
+      derivativeAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
   })
 }
 
@@ -244,7 +245,7 @@ function handlePercentageChange(percentage: number) {
   <div class="text-xs text-gray-400 flex items-center font-mono">
     <span
       v-for="(percent, index) in percentages"
-      :key="index"
+      :key="`percentage-${index}`"
       :data-cy="`trading-page-percentage-selector-${percent}-span`"
       class="mr-1 cursor-pointer"
       @click.stop="handlePercentageChange(percent)"

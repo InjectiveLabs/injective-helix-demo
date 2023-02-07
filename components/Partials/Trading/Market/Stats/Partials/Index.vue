@@ -11,7 +11,7 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
-import { marketStableCoinQuoteSymbols } from '~~/app/data/market'
+import { stableCoinDenoms } from '@/app/data/token'
 
 const derivativeStore = useDerivativeStore()
 
@@ -167,9 +167,7 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
       return new BigNumberInBase(props.summary.volume)
     }),
     {
-      decimalPlaces: marketStableCoinQuoteSymbols.includes(
-        props.market.quoteToken.symbol
-      )
+      decimalPlaces: stableCoinDenoms.includes(props.market.quoteToken.symbol)
         ? 0
         : props.market.priceDecimals
     }
@@ -284,7 +282,7 @@ useIntervalFn(() => {
     <div
       class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-hidden text-xs"
     >
-      <AppMarketInfo
+      <CommonMarketInfo
         v-if="market.type === MarketType.Derivative"
         :title="$t('trade.mark_price')"
         :tooltip="$t('trade.mark_price_tooltip')"
@@ -297,8 +295,8 @@ useIntervalFn(() => {
           {{ markPriceToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
-      </AppMarketInfo>
-      <AppMarketInfo
+      </CommonMarketInfo>
+      <CommonMarketInfo
         :title="$t('trade.volume_asset', { asset: market.quoteToken.symbol })"
         :tooltip="$t('trade.market_volume_24h_tooltip')"
       >
@@ -310,8 +308,8 @@ useIntervalFn(() => {
           {{ volumeToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
-      </AppMarketInfo>
-      <AppMarketInfo :title="$t('trade.high')">
+      </CommonMarketInfo>
+      <CommonMarketInfo :title="$t('trade.high')">
         <span class="lg:text-right font-mono block">
           <span
             v-if="high.gt(0) && !high.isNaN()"
@@ -321,8 +319,8 @@ useIntervalFn(() => {
           </span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
-      </AppMarketInfo>
-      <AppMarketInfo :title="$t('trade.low')">
+      </CommonMarketInfo>
+      <CommonMarketInfo :title="$t('trade.low')">
         <span class="lg:text-right font-mono block">
           <span
             v-if="low.gt(0) && !low.isNaN()"
@@ -332,8 +330,8 @@ useIntervalFn(() => {
           </span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
-      </AppMarketInfo>
-      <AppMarketInfo
+      </CommonMarketInfo>
+      <CommonMarketInfo
         v-if="
           market.type === MarketType.Derivative &&
           market.subType === MarketType.Perpetual
@@ -356,7 +354,7 @@ useIntervalFn(() => {
           </span>
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
-      </AppMarketInfo>
+      </CommonMarketInfo>
       <PartialsTradingMarketStatsPartialsNextFunding
         v-if="market.subType === MarketType.Perpetual"
         :market="(market as UiDerivativeMarketWithToken)"
@@ -365,7 +363,7 @@ useIntervalFn(() => {
         v-if="market.subType === MarketType.BinaryOptions"
         :market="(market as UiDerivativeMarketWithToken)"
       />
-      <AppMarketInfo
+      <CommonMarketInfo
         v-if="market.subType === MarketType.Futures && timeToExpiry"
         :title="$t('trade.time_to_expiry')"
       >
@@ -373,8 +371,8 @@ useIntervalFn(() => {
           {{ timeToExpiry }}
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
-      </AppMarketInfo>
-      <AppMarketInfo
+      </CommonMarketInfo>
+      <CommonMarketInfo
         v-if="market.subType === MarketType.Futures && expiryAt"
         :title="
           $t('trade.expiry_time_with_timezone', { timezone: userTimezone })
@@ -384,7 +382,7 @@ useIntervalFn(() => {
           {{ expiryAt }}
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
-      </AppMarketInfo>
+      </CommonMarketInfo>
     </div>
   </div>
 </template>

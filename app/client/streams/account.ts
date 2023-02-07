@@ -9,11 +9,11 @@ import { StreamType } from '@/types/enums'
 export const subaccountStream = new IndexerGrpcAccountStream(ENDPOINTS.indexer)
 
 export const streamSubaccountBalances = ({
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
-  subaccountId: string
   callback: BalanceStreamCallback
+  subaccountId: string
 }) => {
   const streamFn =
     subaccountStream.streamSubaccountBalance.bind(subaccountStream)

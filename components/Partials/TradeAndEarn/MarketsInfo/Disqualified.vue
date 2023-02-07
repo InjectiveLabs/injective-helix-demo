@@ -2,11 +2,11 @@
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
-const { disqualifiedMarketIdsList } = useTradeReward()
-
 const disqualifiedMarkets = computed(() =>
   [...derivativeStore.markets, ...spotStore.markets]
-    .filter((m) => disqualifiedMarketIdsList.value.includes(m.marketId))
+    .filter((m) =>
+      useTradeReward().disqualifiedMarketIdsList.value.includes(m.marketId)
+    )
     .map((m) => m.ticker)
 )
 </script>
@@ -24,7 +24,7 @@ const disqualifiedMarkets = computed(() =>
     <template #title>
       <div class="flex items-center justify-center text-gray-450">
         {{ $t('trade.disqualified_markets') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-450"
           :tooltip="$t('trade.disqualified_markets_tooltip')"
         />

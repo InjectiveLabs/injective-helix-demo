@@ -19,7 +19,8 @@ const { handleSubmit, resetForm } = useForm()
 const status = new Status(StatusType.Idle)
 const metamaskStatus = new Status(StatusType.Idle)
 
-const showModal = computed(() => modalStore.modals[Modal.RefereeOnboarding])
+const isModalOpen = computed(() => modalStore.modals[Modal.RefereeOnboarding])
+
 const { value: referralCode, errors: referralCodeErrors } = useStringField({
   name: 'referralCode',
   rule: 'required|referralCode'
@@ -44,7 +45,6 @@ onMounted(() => {
 
 function close() {
   modalStore.closeModal(Modal.RefereeOnboarding)
-
   modalStore.$patch({
     persistModal: undefined
   })
@@ -66,7 +66,6 @@ const confirm = handleSubmit(() => {
 })
 
 function connectLedger() {
-  // https://github.com/InjectiveLabs/injective-helix/blob/505435db18157d3c94905823b91faf2f29e24148/components/partials/modals/referee-onboarding.vue#L182
   modalStore.$patch({
     persistModal: Modal.RefereeOnboarding
   })
@@ -87,7 +86,7 @@ function connectMetamask() {
 </script>
 
 <template>
-  <AppModalWrapper :show="showModal" sm @modal:closed="close">
+  <AppModal :show="isModalOpen" sm @modal:closed="close">
     <template #title>
       <h3>
         {{ $t('referralModal.title') }}
@@ -185,5 +184,5 @@ function connectMetamask() {
         </AppButton>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

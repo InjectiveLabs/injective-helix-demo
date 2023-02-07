@@ -3,14 +3,14 @@ const props = defineProps({
   disabled: Boolean,
   modelValue: Boolean,
 
-  dataCy: {
-    type: String,
-    default: 'unknown-id'
-  },
-
   tooltip: {
     type: String,
     default: ''
+  },
+
+  dataCy: {
+    type: String,
+    default: 'unknown-id'
   }
 })
 
@@ -18,14 +18,10 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: boolean): void
 }>()
 
-const uid = computed(() => {
-  return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
-})
+const uid = window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
 
 const checked = computed({
-  get: (): boolean => {
-    return props.modelValue
-  },
+  get: (): boolean => props.modelValue,
   set: (value: boolean) => {
     emit('update:modelValue', value)
   }
@@ -46,7 +42,9 @@ const checked = computed({
         :for="uid"
         :data-cy="dataCy"
         class="top-0 left-0 flex items-center justify-center absolute"
-        :class="{ 'cursor-pointer': !disabled }"
+        :class="{
+          'cursor-pointer': !disabled
+        }"
       >
         <BaseIcon name="check" class="w-2 h-2 text-gray-750 checkmark" />
         <BaseIcon name="minus" class="w-2 h-2 text-gray-500 minus" />

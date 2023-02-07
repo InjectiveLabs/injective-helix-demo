@@ -12,6 +12,7 @@ import {
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
+import { getHubUrl } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const tokenStore = useTokenStore()
@@ -19,16 +20,18 @@ const exchangeStore = useExchangeStore()
 const { rewardsCampaign } = useTradeReward()
 
 const props = defineProps({
-  schedule: {
-    type: Object as PropType<CampaignRewardPool>,
-    required: true
-  },
-
   index: {
     type: Number,
     required: true
+  },
+
+  schedule: {
+    type: Object as PropType<CampaignRewardPool>,
+    required: true
   }
 })
+
+const hubUrl = `${getHubUrl()}/staking`
 
 const stakedAmount = computed(() => {
   if (!exchangeStore.feeDiscountAccountInfo) {
@@ -172,13 +175,11 @@ const pendingEstimatedRewardsCapped = computed(() => {
     : pendingEstimatedRewards.value
 })
 
-const pendingEstimatedRewardsCappedInUsd = computed(() => {
-  return pendingEstimatedRewardsCapped.value.multipliedBy(
+const pendingEstimatedRewardsCappedInUsd = computed(() =>
+  pendingEstimatedRewardsCapped.value.multipliedBy(
     new BigNumberInBase(tokenStore.injUsdPrice)
   )
-})
-
-const hubUrl = 'https://hub.injective.network/staking'
+)
 </script>
 
 <template>
@@ -192,14 +193,14 @@ const hubUrl = 'https://hub.injective.network/staking'
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
         <template #value>
-          <AppEmpNumber
+          <AppNumberEmp
             :number="injMaxPendingCampaignRewards"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
-          </AppEmpNumber>
+          </AppNumberEmp>
 
-          <AppEmpNumber
+          <AppNumberEmp
             sm
             class="text-gray-450"
             prefix="≈"
@@ -207,12 +208,12 @@ const hubUrl = 'https://hub.injective.network/staking'
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>USD</span>
-          </AppEmpNumber>
+          </AppNumberEmp>
         </template>
         <template #title>
           <div class="flex items-center justify-center text-gray-450 text-xs">
             {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2 text-gray-450"
               :tooltip="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
             />
@@ -225,13 +226,13 @@ const hubUrl = 'https://hub.injective.network/staking'
             v-if="walletStore.isUserWalletConnected"
             class="flex flex-wrap justify-center"
           >
-            <AppEmpNumber :number="pendingTradeRewardPointsFactored">
+            <AppNumberEmp :number="pendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
             <span class="px-2 text-xl self-center">/</span>
-            <AppEmpNumber :number="totalPendingTradeRewardPointsFactored">
+            <AppNumberEmp :number="totalPendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
-            </AppEmpNumber>
+            </AppNumberEmp>
           </div>
           <span v-else class="text-gray-450">&mdash;</span>
         </template>
@@ -240,7 +241,7 @@ const hubUrl = 'https://hub.injective.network/staking'
             class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
           >
             {{ $t('tradeAndEarn.myRewardPoints') }}
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2 text-gray-450"
               :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
             />
@@ -249,15 +250,15 @@ const hubUrl = 'https://hub.injective.network/staking'
       </PartialsCommonStatsItem>
       <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
         <template #value>
-          <AppEmpNumber
+          <AppNumberEmp
             v-if="walletStore.isUserWalletConnected"
             :number="pendingEstimatedRewardsCapped"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
-          </AppEmpNumber>
+          </AppNumberEmp>
           <span v-else>&mdash;</span>
-          <AppEmpNumber
+          <AppNumberEmp
             v-if="walletStore.isUserWalletConnected"
             sm
             class="text-gray-450"
@@ -266,7 +267,7 @@ const hubUrl = 'https://hub.injective.network/staking'
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span class="text-sm">USD</span>
-          </AppEmpNumber>
+          </AppNumberEmp>
         </template>
         <template
           v-if="
@@ -282,7 +283,7 @@ const hubUrl = 'https://hub.injective.network/staking'
             target="_blank"
           >
             {{ $t('stake_more') }}
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2 text-gray-450"
               :tooltip="
                 $t('tradeAndEarn.stake_total_to_receive_full_amount', {
@@ -295,7 +296,7 @@ const hubUrl = 'https://hub.injective.network/staking'
         <template #title>
           <div class="flex items-center justify-center text-gray-450">
             {{ $t('tradeAndEarn.est_rewards_stake') }}
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2 text-gray-450"
               :tooltip="
                 $t('tradeAndEarn.est_rewards_stake_tooltip', {

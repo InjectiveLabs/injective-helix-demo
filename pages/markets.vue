@@ -32,7 +32,7 @@ onMounted(() => getQuoteTokenPrice())
 
 function getQuoteTokenPrice() {
   Promise.all([
-    tokenStore.getTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
+    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
     appStore.pollMarkets()
   ]).catch($onError)
 }

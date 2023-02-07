@@ -15,16 +15,16 @@ export const networksMeta = [
     symbol: 'ethereum.svg'
   },
   {
+    text: 'Ethereum (Wormhole)',
+    value: BridgingNetwork.EthereumWh,
+    icon: '/bridgingNetworks/ethereum.png',
+    symbol: 'ethereum.svg'
+  },
+  {
     text: 'CosmosHub',
     value: BridgingNetwork.CosmosHub,
     icon: '/bridgingNetworks/cosmosHub.png',
     symbol: 'atom.svg'
-  },
-  {
-    text: 'Terra',
-    value: BridgingNetwork.Terra,
-    icon: '/bridgingNetworks/terra.png',
-    symbol: 'luna.png'
   },
   {
     text: 'Osmosis',
@@ -156,6 +156,10 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
 
   if (['SOL', 'USDCSO'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Solana
+  }
+
+  if (['USDCET'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.EthereumWh
   }
 
   return BridgingNetwork.Ethereum

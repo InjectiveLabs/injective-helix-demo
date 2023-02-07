@@ -5,11 +5,11 @@ const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
-const { pendingPoolCampaignScheduleList } = useTradeReward()
-
 const status = reactive(new Status(StatusType.Loading))
 
-const schedules = computed(() => pendingPoolCampaignScheduleList.value || [])
+const schedules = computed(
+  () => useTradeReward().pendingPoolCampaignScheduleList.value || []
+)
 
 onMounted(() => {
   Promise.all([exchangeStore.fetchPendingTradeRewardPoints()])

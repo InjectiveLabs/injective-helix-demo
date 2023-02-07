@@ -92,7 +92,7 @@ function handleAddMargin() {
   modalStore.openModal({ type: Modal.AddMarginToPosition })
 }
 
-function handleClick() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -172,7 +172,11 @@ function closePositionAndReduceOnlyOrders() {
 </script>
 
 <template>
-  <div v-if="market" class="border-t border-gray-600 py-4" @click="handleClick">
+  <div
+    v-if="market"
+    class="border-t border-gray-600 py-4"
+    @click="handleVisitMarket"
+  >
     <div class="flex justify-between items-center gap-2">
       <div class="col-span-1 flex justify-start items-center gap-2">
         <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
