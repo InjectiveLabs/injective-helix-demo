@@ -139,7 +139,14 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
-      await spotStore.fetchMarketsSummary()
+      const marketsAlreadyFetched = spotStore.markets.length
+
+      if (marketsAlreadyFetched) {
+        await spotStore.fetchMarketsSummary()
+
+        return
+      }
+
       const markets = await indexerSpotApi.fetchMarkets()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
@@ -162,6 +169,8 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         markets: uiMarketsWithToken
       })
+
+      await spotStore.fetchMarketsSummary()
     },
 
     async fetchUsdcConversionMarkets() {

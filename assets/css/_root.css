@@ -65,7 +65,7 @@ body .vue-grid-item {
 }
 
 .h-screen-excluding-header-and-market-info {
-  height: calc(100vh - var(--trade-height) - var(--market-info-height) - 4px);
+  height: calc(100vh - var(--header-height) - var(--market-info-height) - 4px);
 }
 
 .max-h-screen-excluding-header-and-market-info {
