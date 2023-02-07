@@ -11,9 +11,7 @@ defineProps({
 
 const derivativeStore = useDerivativeStore()
 
-const orders = computed(() => {
-  return derivativeStore.subaccountOrderHistory
-})
+const orders = computed(() => derivativeStore.subaccountOrderHistory)
 </script>
 
 <template>

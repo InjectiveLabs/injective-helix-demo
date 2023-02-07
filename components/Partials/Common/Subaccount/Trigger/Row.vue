@@ -18,9 +18,9 @@ const props = defineProps({
   }
 })
 
-const status = reactive(new Status())
-
 const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+
+const status = reactive(new Status())
 
 const {
   type,

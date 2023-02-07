@@ -5,12 +5,12 @@ import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 const positionStore = usePositionStore()
 
 const props = defineProps({
-  marketDenom: {
+  side: {
     type: String,
     default: ''
   },
 
-  side: {
+  marketDenom: {
     type: String,
     default: ''
   },

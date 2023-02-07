@@ -21,20 +21,20 @@ const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary.lastPrice || props.summary.price || 0)
 )
 
+const change = computed(() => new BigNumberInBase(props.summary.change || 0))
+
+const lastPriceChange = computed(
+  () => props.summary.lastPriceChange || Change.NoChange
+)
+
+const { valueToString: changeToFormat } = useBigNumberFormatter(change)
+
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
       props.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
-)
-
-const change = computed(() => new BigNumberInBase(props.summary.change || 0))
-
-const { valueToString: changeToFormat } = useBigNumberFormatter(change)
-
-const lastPriceChange = computed(
-  () => props.summary.lastPriceChange || Change.NoChange
 )
 </script>
 

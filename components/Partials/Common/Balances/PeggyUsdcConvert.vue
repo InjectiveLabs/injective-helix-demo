@@ -18,31 +18,24 @@ const props = defineProps({
 
 const hasUsdcPeggyBalance = computed(() => {
   if (
-    ![usdcTokenDenom.USDCet].includes(
-      props.market.quoteToken.denom.toLowerCase()
-    )
+    usdcTokenDenom.USDCet.toLowerCase() !==
+    props.market.quoteDenom.toLowerCase()
   ) {
     return false
   }
 
-  const peggyUSDCBankBalance =
-    bankStore.bankBalancesWithToken.find((balance) =>
-      [usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
-    )?.balance || '0'
-
-  if (!accountStore.subaccount || !accountStore.subaccount.balances) {
-    return new BigNumberInBase(peggyUSDCBankBalance).gt(0)
-  }
-
-  const peggyUSDCSubaccountBalance =
-    accountStore.subaccount.balances.find((balance: UiSubaccountBalance) =>
-      [usdcTokenDenom.USDC].includes(balance.denom.toLowerCase())
-    )?.totalBalance || '0'
-
-  return (
-    new BigNumberInBase(peggyUSDCBankBalance).gt(0) ||
-    new BigNumberInBase(peggyUSDCSubaccountBalance).gt(0)
+  const peggyUsdcBankBalance = bankStore.bankBalancesWithToken.find(
+    (balance) =>
+      usdcTokenDenom.USDC.toLowerCase() === balance.token.denom.toLowerCase()
   )
+  const peggyUsdcSubaccountBalance = accountStore.subaccount?.balances.find(
+    (balance: UiSubaccountBalance) =>
+      usdcTokenDenom.USDC.toLowerCase() === balance.denom.toLowerCase()
+  )
+
+  return new BigNumberInBase(peggyUsdcBankBalance?.balance || 0)
+    .plus(peggyUsdcSubaccountBalance?.totalBalance || 0)
+    .gt(0)
 })
 
 onMounted(() => {

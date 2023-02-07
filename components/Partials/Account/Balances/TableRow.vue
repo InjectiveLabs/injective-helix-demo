@@ -33,13 +33,6 @@ const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
 
 const filteredMarket = computed(() => filteredMarkets.value[0])
 
-const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
-
 /* TODO - bank <> default trading account merge
 
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
@@ -58,6 +51,13 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 ) */
+
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => props.balance.totalBalanceInUsd),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const {
   valueToBigNumber: bankBalanceInBigNumber,

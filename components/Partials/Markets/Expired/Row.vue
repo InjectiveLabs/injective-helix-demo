@@ -10,6 +10,8 @@ import { format, fromUnixTime } from 'date-fns'
 import { getMarketRoute } from '@/app/utils/market'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
+const router = useRouter()
+
 const props = defineProps({
   market: {
     type: Object as PropType<UiExpiryFuturesMarketWithToken>,
@@ -42,12 +44,6 @@ const { valueToString: settlementPriceToFormat } = useBigNumberFormatter(
       props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
-
-const marketRoute = computed(() => {
-  const marketRoute = getMarketRoute(props.market)
-
-  return marketRoute || { name: 'index' }
-})
 
 const expiryAt = computed(() => {
   if (!props.market) {
@@ -82,6 +78,14 @@ const expiryAt = computed(() => {
     'dd LLL yyyy, HH:mm:ss'
   )
 })
+
+function handleVisitMarket() {
+  if (!props.market) {
+    return
+  }
+
+  return router.push(getMarketRoute(props.market))
+}
 </script>
 
 <template>
@@ -90,7 +94,7 @@ const expiryAt = computed(() => {
     :data-cy="`markets-expired-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
-      <NuxtLink :to="marketRoute">
+      <div class="cursor-pointer" @click="handleVisitMarket">
         <div class="cursor-pointer flex items-center">
           <CommonTokenIcon
             v-if="market.baseToken"
@@ -108,7 +112,7 @@ const expiryAt = computed(() => {
             </span>
           </div>
         </div>
-      </NuxtLink>
+      </div>
     </span>
 
     <!-- Mobile column -->

@@ -23,25 +23,18 @@ const props = defineProps({
   }
 })
 
-const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
-  return spotStore.markets.filter(
+const filteredMarkets = computed<UiSpotMarketWithToken[]>(() =>
+  spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||
       m.quoteDenom === props.balance.token.denom
   )
-})
+)
 
 const filteredMarket = computed(() => filteredMarkets.value[0])
 
 const isDenomTradeable = computed(
   () => ![usdcTokenDenom.USDC].includes(props.balance.token.denom.toLowerCase())
-)
-
-const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
 )
 
 /* TODO - bank <> default trading account merge
@@ -62,6 +55,13 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 ) */
+
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => props.balance.totalBalanceInUsd),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const {
   valueToBigNumber: bankBalanceInBigNumber,

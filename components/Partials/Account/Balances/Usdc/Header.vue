@@ -20,13 +20,6 @@ const emit = defineEmits<{
   (e: 'drawer:toggle'): void
 }>()
 
-const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.aggregatedBalance.totalBalanceInUsd),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
-
 /* TODO - bank <> default trading account merge
 
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
@@ -45,6 +38,13 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 ) */
+
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => props.aggregatedBalance.totalBalanceInUsd),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const {
   valueToBigNumber: bankBalanceInBigNumber,

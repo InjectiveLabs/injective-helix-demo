@@ -29,11 +29,11 @@ const tabCountElement = document.getElementById(
 )
 const actionStatus = reactive(new Status(StatusType.Idle))
 
-const markets = computed(() => {
-  return spotStore.markets
+const markets = computed(() =>
+  spotStore.markets
     .filter((m) => m.baseDenom === props.denom || m.quoteDenom === props.denom)
     .map(({ marketId }) => marketId)
-})
+)
 
 const filteredOrders = computed(() =>
   spotStore.subaccountOrders.filter((order) => {

@@ -22,11 +22,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const markets = computed<UiMarketWithToken[]>(() => {
-  const isSpot = props.tab === ActivityTab.Spot
-
-  return isSpot ? spotStore.markets : derivativeStore.markets
-})
+const markets = computed<UiMarketWithToken[]>(() =>
+  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+)
 
 const tokens = computed(() => {
   if (!markets.value) {

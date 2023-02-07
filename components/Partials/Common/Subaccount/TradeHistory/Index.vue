@@ -27,6 +27,7 @@ const sortedTrades = computed(() =>
 
 function handleShowTradeDetails(trade: UiTrade) {
   tradeDetails.value = trade
+
   modalStore.openModal({ type: Modal.MobileTradeDetails })
 }
 </script>

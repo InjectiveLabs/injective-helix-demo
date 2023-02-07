@@ -18,6 +18,7 @@ const props = defineProps({
 })
 
 const status = reactive(new Status())
+
 const {
   isBuy,
   total,

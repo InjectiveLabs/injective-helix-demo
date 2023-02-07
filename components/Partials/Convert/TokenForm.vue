@@ -15,7 +15,6 @@ const route = useRoute()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const bankStore = useBankStore()
-const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -49,6 +48,10 @@ const emit = defineEmits<{
 
 const animationCount = ref(0)
 
+const { takerFeeRate } = useTradeFee(computed(() => props.market))
+
+const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
+
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
 const baseTokens = computed<BalanceWithToken[]>(
@@ -58,8 +61,6 @@ const baseTokens = computed<BalanceWithToken[]>(
 const quoteTokens = computed<BalanceWithToken[]>(
   () => tradableTokenMaps.value[quoteTokenDenom.value] || []
 )
-
-const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom

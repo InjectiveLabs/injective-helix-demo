@@ -39,13 +39,11 @@ const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
 const ascending = ref(false)
 
-const recentlyExpiredMarkets = computed(() => {
-  return derivativeStore.recentlyExpiredMarkets
-})
+const recentlyExpiredMarkets = computed(
+  () => derivativeStore.recentlyExpiredMarkets
+)
 
-const favoriteMarkets = computed(() => {
-  return appStore.favoriteMarkets
-})
+const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() => {
   return props.markets.filter(({ market }) => {
@@ -73,7 +71,7 @@ const sortedMarkets = computed(() => {
     return filteredMarkets.value
   }
 
-  const list = [...filteredMarkets.value].sort(
+  const markets = [...filteredMarkets.value].sort(
     (
       m1: UiMarketAndSummaryWithVolumeInUsd,
       m2: UiMarketAndSummaryWithVolumeInUsd
@@ -108,7 +106,7 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return ascending.value ? list.reverse() : list
+  return ascending.value ? markets.reverse() : markets
 })
 
 onMounted(() => {

@@ -20,13 +20,12 @@ const props = defineProps({
   }
 })
 
-const formattedOrigin = computed(() => {
-  return formatWalletAddress(props.transaction.sender)
-})
-
-const formattedDestination = computed(() => {
-  return formatWalletAddress(props.transaction.receiver)
-})
+const formattedOrigin = computed(() =>
+  formatWalletAddress(props.transaction.sender)
+)
+const formattedDestination = computed(() =>
+  formatWalletAddress(props.transaction.receiver)
+)
 
 const amount = computed(() => {
   if (!props.transaction.amount) {
