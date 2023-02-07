@@ -7,6 +7,7 @@ import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
 
 enum SortableKeys {
   Market = 'market',
+  Change = 'change',
   Volume = 'volume'
 }
 
@@ -56,6 +57,16 @@ const sortedMarkets = computed(() => {
         return m2.market.ticker.localeCompare(m1.market.ticker)
       }
 
+      if (sortBy.value === SortableKeys.Change) {
+        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
+          return m1.market.ticker.localeCompare(m2.market.ticker)
+        }
+
+        return new BigNumberInBase(m2.summary.change)
+          .minus(m1.summary.change)
+          .toNumber()
+      }
+
       if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
         return m1.market.ticker.localeCompare(m2.market.ticker)
       }
@@ -96,8 +107,9 @@ const sortedMarkets = computed(() => {
           v-model:ascending="ascending"
           data-cy="markets-volume_24h-table-header"
           :value="SortableKeys.Volume"
+          icon-class="order-last"
         >
-          <span class="text-gray-200 text-xs font-normal order-last">
+          <span class="text-gray-200 text-xs font-normal ml-1">
             {{ $t('trade.volume') }}
           </span>
         </AppSortableHeaderItem>
@@ -105,8 +117,19 @@ const sortedMarkets = computed(() => {
 
       <div class="flex items-center justify-end flex-1">
         <span class="font-normal text-gray-200 text-xs">
-          {{ $t('trade.price') }} / {{ $t('trade.market_change') }}
+          {{ $t('trade.price') }} /
         </span>
+        <AppSortableHeaderItem
+          v-model:sort-by="sortBy"
+          v-model:ascending="ascending"
+          data-cy="markets-volume_24h-table-header"
+          :value="SortableKeys.Change"
+          icon-class="order-last"
+        >
+          <span class="text-gray-200 text-xs font-normal">
+            {{ $t('trade.market_change_24h') }}
+          </span>
+        </AppSortableHeaderItem>
       </div>
     </CommonTableHeader>
 
@@ -121,9 +144,11 @@ const sortedMarkets = computed(() => {
           market: marketSummary.market,
           summary: marketSummary.summary,
           volumeInUsd: marketSummary.volumeInUsd,
-          inCurrentMarket: market.marketId === marketSummary.market.marketId
+          isCurrentMarket: market.marketId === marketSummary.market.marketId
         }"
         :key="`market-row-${index}-${marketSummary.market.marketId}`"
+        :aaa="marketSummary.market.marketId"
+        :bbb="market.marketId"
       />
 
       <template #empty>
