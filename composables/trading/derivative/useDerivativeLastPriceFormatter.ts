@@ -7,9 +7,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
-export function useDerivativeLastPriceFormatter(
-  market: Ref<UiMarketWithToken>
-) {
+export function useDerivativeLastPrice(market: Ref<UiMarketWithToken>) {
   const derivateStore = useDerivativeStore()
 
   const latestTrade = computed<UiDerivativeTrade | undefined>(() => {

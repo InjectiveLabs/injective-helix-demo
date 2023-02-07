@@ -157,6 +157,14 @@ export const useDerivativeStore = defineStore('derivative', {
     async init() {
       const derivativeStore = useDerivativeStore()
 
+      const marketsAlreadyFetched = derivativeStore.markets.length
+
+      if (marketsAlreadyFetched) {
+        await derivativeStore.fetchMarketsSummary()
+
+        return
+      }
+
       const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
@@ -165,8 +173,6 @@ export const useDerivativeStore = defineStore('derivative', {
           marketStatus: 'expired'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketHasRecentlyExpired)
-
-      await derivativeStore.fetchMarketsSummary()
 
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
@@ -246,6 +252,8 @@ export const useDerivativeStore = defineStore('derivative', {
           ...uiBinaryOptionsMarketsWithToken
         ]
       })
+
+      await derivativeStore.fetchMarketsSummary()
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {

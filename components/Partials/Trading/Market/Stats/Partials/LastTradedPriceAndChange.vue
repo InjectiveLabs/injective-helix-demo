@@ -25,19 +25,15 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Loading))
 
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
+
+const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
+
 const isSpot = computed(() => props.market.type === MarketType.Spot)
-
-const {
-  changeInPercentage: spotChangeInPercentage,
-  lastTradedPrice: spotLastTradedPrice,
-  lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(computed(() => props.market))
-
-const {
-  changeInPercentage: derivativeChangeInPercentage,
-  lastTradedPrice: derivativeLastTradedPrice,
-  lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(computed(() => props.market))
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
@@ -51,14 +47,12 @@ const lastTradedPrice = computed(() => {
   )
 })
 
-const lastTradedPriceChange = computed(() => {
-  if (props.isCurrentMarket) {
-    return isSpot.value
-      ? spotLastTradedPriceChange.value
-      : derivativeLastTradedPriceChange.value
+const percentageChangeStatus = computed(() => {
+  if (change.value.eq(0)) {
+    return Change.NoChange
   }
 
-  return props.summary.lastPriceChange || Change.NoChange
+  return change.value.gt(0) ? Change.Increase : Change.Decrease
 })
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
@@ -72,12 +66,6 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 const { valueToFixed: changeToFormat, valueToBigNumber: change } =
   useBigNumberFormatter(
     computed(() => {
-      if (props.isCurrentMarket) {
-        return isSpot.value
-          ? spotChangeInPercentage.value
-          : derivativeChangeInPercentage.value
-      }
-
       if (!props.summary || !props.summary.change) {
         return ZERO_IN_BASE
       }
@@ -109,8 +97,8 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
   <div>
     <div
       v-if="
-        status.isLoading() &&
         isStatsBar &&
+        status.isLoading() &&
         (lastTradedPrice.isNaN() || lastTradedPrice.lte(0))
       "
     >
@@ -123,22 +111,23 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
       >
         <BaseIcon
           v-if="
-            [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
+            [Change.Increase, Change.Decrease].includes(percentageChangeStatus)
           "
           name="arrow"
           class="transform w-3 h-3 mr-1"
           :class="{
             'text-green-500 rotate-90':
-              lastTradedPriceChange === Change.Increase,
-            'text-red-500 -rotate-90': lastTradedPriceChange === Change.Decrease
+              percentageChangeStatus === Change.Increase,
+            'text-red-500 -rotate-90':
+              percentageChangeStatus === Change.Decrease
           }"
         />
         <span
           data-cy="markets-last-traded-price-table-data"
           :class="{
-            'text-green-500': lastTradedPriceChange === Change.Increase,
-            'text-white': lastTradedPriceChange === Change.NoChange,
-            'text-red-500': lastTradedPriceChange === Change.Decrease
+            'text-green-500': percentageChangeStatus === Change.Increase,
+            'text-white': percentageChangeStatus === Change.NoChange,
+            'text-red-500': percentageChangeStatus === Change.Decrease
           }"
         >
           {{ lastTradedPriceToFormat }}
@@ -148,9 +137,9 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
       <div v-if="!change.isNaN()" class="mt-1 text-xs">
         <span
           :class="{
-            'text-green-500': change.gt(0),
-            'text-white': change.eq(0),
-            'text-red-500': change.lt(0)
+            'text-green-500': percentageChangeStatus === Change.Increase,
+            'text-white': percentageChangeStatus === Change.NoChange,
+            'text-red-500': percentageChangeStatus === Change.Decrease
           }"
           data-cy="markets-change_24h-table-data"
         >

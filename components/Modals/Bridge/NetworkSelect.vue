@@ -1,10 +1,17 @@
 <script lang="ts" setup>
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '@/app/data/bridge'
-import { BridgeField } from '@/types'
+import { BridgeField, BridgeForm } from '@/types'
 
-const { isWithdraw, form } = useBridgeState()
+const formValues = useFormValues<BridgeForm>()
 
+const { isWithdraw } = useBridgeState({
+  formValues
+})
+
+const { value: network } = useStringField({
+  name: BridgeField.BridgingNetwork
+})
 /**
  * We remove injective option from options when depositing
  **/
@@ -25,13 +32,6 @@ const options = computed(() => {
       }
     })
 })
-
-const value = computed({
-  get: (): BridgingNetwork => form[BridgeField.BridgingNetwork],
-  set: (value: BridgingNetwork) => {
-    form[BridgeField.BridgingNetwork] = value
-  }
-})
 </script>
 
 <template>
@@ -41,7 +41,7 @@ const value = computed({
     </h3>
 
     <AppSelectField
-      v-model="value"
+      v-model="network"
       selected-class="h-20 bg-gray-1000"
       :options="options"
       :placeholder="$t('connect.selectDerivationPath')"

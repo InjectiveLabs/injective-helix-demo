@@ -6,7 +6,7 @@ import {
   SMALL_BALANCE_THRESHOLD
 } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
-import { usdcTokenDenoms } from '@/app/data/token'
+import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -159,7 +159,12 @@ const sortedBalances = computed(() => {
 
 const sortedNonUsdcBalances = computed(() =>
   sortedBalances.value.filter(
-    (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+    (balance) =>
+      ![
+        usdcTokenDenom.USDC,
+        usdcTokenDenom.USDCet,
+        usdcTokenDenom.USDCso
+      ].includes(balance.token.denom.toLowerCase())
   )
 )
 

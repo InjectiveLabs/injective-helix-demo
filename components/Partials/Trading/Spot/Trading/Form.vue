@@ -155,9 +155,7 @@ const feeRate = computed(() => {
 
 const hasExecutionPrice = computed(() => executionPrice.value.gt('0'))
 
-const { lastTradedPrice } = useSpotLastPriceFormatter(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const {
   maxAmountOnOrderbook,

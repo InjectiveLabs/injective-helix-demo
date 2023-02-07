@@ -164,7 +164,9 @@ watch(
                 <PartialsCommonBalances :market="market" />
               </CommonCard>
               <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
-                <slot name="trading-form" />
+                <div :class="{ invisible: showMarketList }">
+                  <slot name="trading-form" />
+                </div>
               </CommonCard>
             </div>
           </div>

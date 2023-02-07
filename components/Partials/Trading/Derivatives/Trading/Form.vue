@@ -129,9 +129,7 @@ const orderTypeToSubmit = computed(() => {
   }
 })
 
-const { lastTradedPrice } = useDerivativeLastPriceFormatter(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useDerivativeLastPrice(computed(() => props.market))
 
 const {
   maxAmountOnOrderbook,

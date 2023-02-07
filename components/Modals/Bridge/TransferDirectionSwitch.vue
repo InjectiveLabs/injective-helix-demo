@@ -1,29 +1,36 @@
 <script setup lang="ts">
-import { BridgeField, TransferDirection, TransferSide } from '@/types'
-import { transferSideMeta } from '~/app/data/bridge'
+import {
+  BridgeForm,
+  BridgeField,
+  TransferDirection,
+  TransferSide
+} from '@/types'
+import { transferSideMeta } from '@/app/data/bridge'
 
-const { form } = useBridgeState()
+const formValues = useFormValues<BridgeForm>()
 
 const originNetworkMeta = computed(() =>
-  form[BridgeField.TransferDirection] === TransferDirection.bankToTradingAccount
+  formValues.value[BridgeField.TransferDirection] ===
+  TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.Bank]
     : transferSideMeta[TransferSide.TradingAccount]
 )
 
 const destinationNetworkMeta = computed(() =>
-  form[BridgeField.TransferDirection] === TransferDirection.bankToTradingAccount
+  formValues.value[BridgeField.TransferDirection] ===
+  TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.TradingAccount]
     : transferSideMeta[TransferSide.Bank]
 )
 
 function handleDirectionSwitch() {
   const updatedTransferDirection =
-    form[BridgeField.TransferDirection] ===
+    formValues.value[BridgeField.TransferDirection] ===
     TransferDirection.bankToTradingAccount
       ? TransferDirection.tradingAccountToBank
       : TransferDirection.bankToTradingAccount
 
-  form[BridgeField.TransferDirection] = updatedTransferDirection
+  formValues.value[BridgeField.TransferDirection] = updatedTransferDirection
 }
 </script>
 

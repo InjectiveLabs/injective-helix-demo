@@ -56,7 +56,8 @@ function toggleUsdcBalances() {
             hideBalances,
             hasPeggyUsdcBalance,
             isOpen: showUsdcBalances,
-            balance: usdcBalance
+            balance: usdcBalance,
+            isHoldingSingleUsdcDenom: balances.length === 1
           }"
         />
       </template>

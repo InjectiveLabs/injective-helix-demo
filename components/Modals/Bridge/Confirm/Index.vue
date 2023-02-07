@@ -7,8 +7,7 @@ import {
   TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { useI18n } from 'vue-i18n'
-import { Modal, BridgeType, BridgeField } from '@/types/enums'
-import { BusEvents } from '@/types'
+import { Modal, BridgeField, BridgeForm, BusEvents } from '@/types'
 import { injToken } from '@/app/data/token'
 import {
   INJ_GAS_FEE,
@@ -26,14 +25,17 @@ const { t } = useI18n()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 
+const formValues = useFormValues<BridgeForm>()
+const resetForm = useResetForm()
+
 const emit = defineEmits<{
   (e: 'form:submit'): void
 }>()
 
 const {
-  form,
-  resetForm,
-  bridgeType,
+  isDeposit,
+  isTransfer,
+  isWithdraw,
   originNetworkMeta,
   destinationNetworkMeta,
   destinationIsEthereum,
@@ -41,7 +43,9 @@ const {
   isBankToTradingAccount,
   networkIsNotSupported,
   originIsInjective
-} = useBridgeState()
+} = useBridgeState({
+  formValues
+})
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
@@ -59,7 +63,7 @@ const injTokenWithPrice = computed<TokenWithUsdPrice>(() => ({
 
 const tokenWithBalanceAndPrice = computed(() => {
   return tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
-    (token) => token.denom === form[BridgeField.Token].denom
+    (token) => token.denom === formValues.value[BridgeField.Token].denom
   ) as TokenWithBalanceAndPrice | undefined
 })
 
@@ -68,7 +72,7 @@ const usdPrice = computed(
 )
 
 const amount = computed(
-  () => new BigNumberInBase(form[BridgeField.Amount] || 0)
+  () => new BigNumberInBase(formValues.value[BridgeField.Amount] || 0)
 )
 
 const { valueToString: amountToString } = useBigNumberFormatter(amount, {
@@ -151,20 +155,17 @@ const { valueToString: gasFeeInUsdToString } =
   useBigNumberFormatter(gasFeeInUsd)
 
 const handlerFunction = computed(() => {
-  if (bridgeType.value === BridgeType.Transfer) {
+  if (isTransfer.value) {
     return isBankToTradingAccount.value
       ? handleTransferToTradingAccount
       : handleTransferToBank
   }
 
-  if (bridgeType.value === BridgeType.Deposit) {
+  if (isDeposit.value) {
     return handleDeposit
   }
 
-  if (
-    bridgeType.value === BridgeType.Withdraw &&
-    destinationIsInjective.value
-  ) {
+  if (isWithdraw.value && destinationIsInjective.value) {
     return handleWithdrawToInjective
   }
 
@@ -189,11 +190,11 @@ function handleWithdrawToInjective() {
 
   bankStore
     .transfer({
-      amount: new BigNumberInBase(form[BridgeField.Amount]),
-      denom: form[BridgeField.Token].denom,
-      destination: form[BridgeField.Destination],
-      memo: form[BridgeField.Memo],
-      token: form[BridgeField.Token]
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
+      denom: formValues.value[BridgeField.Token].denom,
+      destination: formValues.value[BridgeField.Destination],
+      memo: formValues.value[BridgeField.Memo],
+      token: formValues.value[BridgeField.Token]
     })
     .then(() => {
       success({ title: t('bridge.withdrawToInjectiveAddressSuccess') })
@@ -212,8 +213,8 @@ function handleTransferToTradingAccount() {
 
   accountStore
     .deposit({
-      amount: new BigNumberInBase(form[BridgeField.Amount]),
-      token: form[BridgeField.Token]
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
+      token: formValues.value[BridgeField.Token]
     })
     .then(() => {
       success({ title: t('bridge.depositToTradingAccountSuccess') })
@@ -230,15 +231,15 @@ function handleTransferToTradingAccount() {
 function handleWithdraw() {
   status.setLoading()
 
-  if (ethBridgeFee.value.gte(form[BridgeField.Amount])) {
+  if (ethBridgeFee.value.gte(formValues.value[BridgeField.Amount])) {
     return
   }
 
   tokenStore
     .withdraw({
       bridgeFee: ethBridgeFee.value,
-      token: form[BridgeField.Token],
-      amount: new BigNumberInBase(form[BridgeField.Amount])
+      token: formValues.value[BridgeField.Token],
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount])
     })
     .then(() => {
       success({ title: t('bridge.withdrawFromInjectiveSuccess') })
@@ -257,8 +258,8 @@ function handleDeposit() {
 
   tokenStore
     .transfer({
-      amount: new BigNumberInBase(form[BridgeField.Amount]),
-      token: form[BridgeField.Token]
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
+      token: formValues.value[BridgeField.Token]
     })
     .then(() => {
       success({ title: t('bridge.depositToInjectiveSuccess') })
@@ -277,8 +278,8 @@ function handleTransferToBank() {
 
   accountStore
     .withdraw({
-      amount: new BigNumberInBase(form[BridgeField.Amount]),
-      token: form[BridgeField.Token]
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
+      token: formValues.value[BridgeField.Token]
     })
     .then(() => {
       success({ title: t('bridge.withdrawFromTradingAccountSuccess') })
@@ -294,9 +295,9 @@ function handleTransferToBank() {
 
 function handleTransferTradingAccountTrack() {
   amplitudeTracker.transferTradingAccountTrack({
-    transferDirection: form[BridgeField.TransferDirection],
-    token: form[BridgeField.Token].name,
-    amount: form[BridgeField.Amount]
+    transferDirection: formValues.value[BridgeField.TransferDirection],
+    token: formValues.value[BridgeField.Token].name,
+    amount: formValues.value[BridgeField.Amount]
   })
 }
 </script>
@@ -310,10 +311,10 @@ function handleTransferTradingAccountTrack() {
   >
     <template #title>
       <h3>
-        <span v-if="bridgeType === BridgeType.Deposit">
+        <span v-if="isDeposit">
           {{ $t('bridge.depositToInjective') }}
         </span>
-        <span v-else-if="bridgeType === BridgeType.Withdraw">
+        <span v-else-if="isWithdraw">
           {{ $t('bridge.withdrawFromInjective') }}
         </span>
         <span v-else>
@@ -329,10 +330,10 @@ function handleTransferTradingAccountTrack() {
             {{ $t('bridge.confirmTransaction') }}
           </h3>
 
-          <div v-if="form[BridgeField.Token]" class="text-center my-8">
+          <div v-if="formValues[BridgeField.Token]" class="text-center my-8">
             <CommonTokenIcon
-              v-if="form[BridgeField.Token].logo"
-              :token="form[BridgeField.Token]"
+              v-if="formValues[BridgeField.Token].logo"
+              :token="formValues[BridgeField.Token]"
               xl
               class="mx-auto"
             />
@@ -346,7 +347,7 @@ function handleTransferTradingAccountTrack() {
               data-cy="transfer-confirm-modal-value-text-content"
             >
               {{ amountToString }}
-              {{ form[BridgeField.Token].symbol }}
+              {{ formValues[BridgeField.Token].symbol }}
             </p>
             <p
               v-if="amountInUsd.gt(0)"
@@ -399,7 +400,7 @@ function handleTransferTradingAccountTrack() {
               <template #amount>
                 <span data-cy="transfer-confirm-modal-amount-text-content">
                   {{ amountToString }}
-                  {{ form[BridgeField.Token].symbol }}
+                  {{ formValues[BridgeField.Token].symbol }}
                 </span>
               </template>
 
@@ -419,7 +420,7 @@ function handleTransferTradingAccountTrack() {
               <template #amount>
                 <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
                   {{ ethBridgeFeeToString }}
-                  {{ form[BridgeField.Token].symbol }}
+                  {{ formValues[BridgeField.Token].symbol }}
                 </span>
               </template>
 
@@ -444,7 +445,7 @@ function handleTransferTradingAccountTrack() {
                   data-cy="transfer-confirm-modal-transfer-amount-text-content"
                 >
                   {{ transferAmountToString }}
-                  {{ form[BridgeField.Token].symbol }}
+                  {{ formValues[BridgeField.Token].symbol }}
                 </span>
               </template>
 
@@ -514,9 +515,7 @@ function handleTransferTradingAccountTrack() {
         <ModalsBridgeNotSupportedBridgeTypeNote
           v-else
           v-bind="{
-            bridgeType,
-            form,
-            selectedNetwork: form[BridgeField.BridgingNetwork]
+            selectedNetwork: formValues[BridgeField.BridgingNetwork]
           }"
         />
       </div>
