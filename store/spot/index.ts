@@ -136,34 +136,36 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
+      await spotStore.fetchMarketsSummary()
+
       const marketsAlreadyFetched = spotStore.markets.length
 
-      if (!marketsAlreadyFetched) {
-        const markets = await indexerSpotApi.fetchMarkets()
-        const marketsWithToken = await tokenService.getSpotMarketsWithToken(
-          markets
-        )
-
-        const uiMarkets =
-          UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
-
-        const uiMarketsWithToken = uiMarkets
-          .filter((market) => {
-            return MARKETS_SLUGS.spot.includes(market.slug)
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.spot.indexOf(a.slug) -
-              MARKETS_SLUGS.spot.indexOf(b.slug)
-            )
-          })
-
-        spotStore.$patch({
-          markets: uiMarketsWithToken
-        })
+      if (marketsAlreadyFetched) {
+        return
       }
 
-      await spotStore.fetchMarketsSummary()
+      const markets = await indexerSpotApi.fetchMarkets()
+      const marketsWithToken = await tokenService.getSpotMarketsWithToken(
+        markets
+      )
+
+      const uiMarkets =
+        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+
+      const uiMarketsWithToken = uiMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.spot.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.spot.indexOf(a.slug) -
+            MARKETS_SLUGS.spot.indexOf(b.slug)
+          )
+        })
+
+      spotStore.$patch({
+        markets: uiMarketsWithToken
+      })
     },
 
     async fetchUsdcConversionMarkets() {

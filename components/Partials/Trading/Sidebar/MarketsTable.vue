@@ -88,16 +88,14 @@ const sortedMarkets = computed(() => {
       class="mb-2"
     />
 
-    <CommonTableHeader classes="flex flex-wrap mb-2">
-      <div class="flex items-center flex-1">
+    <CommonTableHeader classes="flex flex-wrap mb-2 max-3xl:px-0">
+      <div class="flex items-center flex-1 text-2xs">
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
           :value="SortableKeys.Market"
         >
-          <span
-            class="text-gray-200 text-xs font-normal order-last whitespace-nowrap"
-          >
+          <span class="text-gray-200 font-normal order-last whitespace-nowrap">
             {{ $t('trade.market') }} /
           </span>
         </AppSortableHeaderItem>
@@ -109,14 +107,16 @@ const sortedMarkets = computed(() => {
           :value="SortableKeys.Volume"
           icon-class="order-last"
         >
-          <span class="text-gray-200 text-xs font-normal ml-1">
+          <span class="text-gray-200 font-normal ml-1">
             {{ $t('trade.volume') }}
           </span>
         </AppSortableHeaderItem>
       </div>
 
-      <div class="flex items-center justify-end flex-1">
-        <span class="font-normal text-gray-200 text-xs">
+      <div
+        class="flex items-center justify-end flex-1 text-2xs whitespace-nowrap"
+      >
+        <span class="font-normal text-gray-200">
           {{ $t('trade.price') }} /
         </span>
         <AppSortableHeaderItem
@@ -126,7 +126,7 @@ const sortedMarkets = computed(() => {
           :value="SortableKeys.Change"
           icon-class="order-last"
         >
-          <span class="text-gray-200 text-xs font-normal">
+          <span class="text-gray-200 font-normal">
             {{ $t('trade.market_change_24h') }}
           </span>
         </AppSortableHeaderItem>

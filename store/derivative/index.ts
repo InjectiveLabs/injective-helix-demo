@@ -157,100 +157,101 @@ export const useDerivativeStore = defineStore('derivative', {
     async init() {
       const derivativeStore = useDerivativeStore()
 
+      await derivativeStore.fetchMarketsSummary()
+
       const marketsAlreadyFetched = derivativeStore.markets.length
 
-      if (!marketsAlreadyFetched) {
-        const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
-          PerpetualMarket | ExpiryFuturesMarket
-        >
-        const recentlyExpiredMarkets = (
-          (await indexerDerivativesApi.fetchMarkets({
-            marketStatus: 'expired'
-          })) as Array<ExpiryFuturesMarket>
-        ).filter(marketHasRecentlyExpired)
-
-        const marketsWithToken =
-          await tokenService.getDerivativeMarketsWithToken(markets)
-        const recentlyExpiredMarketsWithToken =
-          await tokenService.getDerivativeMarketsWithToken(
-            recentlyExpiredMarkets
-          )
-
-        const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
-        const expiryFuturesMarkets = marketsWithToken.filter(
-          (m) => !m.isPerpetual
-        )
-
-        const uiPerpetualMarkets =
-          UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
-            perpetualMarkets
-          )
-        const uiExpiryFuturesMarkets =
-          UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
-            expiryFuturesMarkets
-          )
-        const uiRecentlyExpiredMarkets =
-          UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
-            recentlyExpiredMarketsWithToken
-          )
-        const binaryOptionsMarkets = IS_DEVNET
-          ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
-          : []
-        const binaryOptionsMarketsWithToken =
-          await tokenService.getBinaryOptionsMarketsWithToken(
-            binaryOptionsMarkets
-          )
-        const uiBinaryOptionsMarkets =
-          UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
-            binaryOptionsMarketsWithToken
-          )
-
-        // Only include markets that we pre-defined to generate static routes for
-        const uiPerpetualMarketsWithToken = uiPerpetualMarkets
-          .filter((market) => {
-            return MARKETS_SLUGS.futures.includes(market.slug)
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.futures.indexOf(a.slug) -
-              MARKETS_SLUGS.futures.indexOf(b.slug)
-            )
-          })
-        const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
-          .filter((market) => {
-            return MARKETS_SLUGS.expiryFutures.includes(market.slug)
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.expiryFutures.indexOf(a.slug) -
-              MARKETS_SLUGS.expiryFutures.indexOf(b.slug)
-            )
-          })
-        const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
-          .filter((market) => {
-            return MARKETS_SLUGS.binaryOptions.includes(market.slug)
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.binaryOptions.indexOf(a.slug) -
-              MARKETS_SLUGS.binaryOptions.indexOf(b.slug)
-            )
-          })
-
-        derivativeStore.$patch({
-          perpetualMarkets: uiPerpetualMarketsWithToken,
-          expiryFuturesMarkets: uiExpiryFuturesWithToken,
-          recentlyExpiredMarkets: uiRecentlyExpiredMarkets,
-          binaryOptionsMarkets: uiBinaryOptionsMarketsWithToken,
-          markets: [
-            ...uiPerpetualMarketsWithToken,
-            ...uiExpiryFuturesWithToken,
-            ...uiBinaryOptionsMarketsWithToken
-          ]
-        })
+      if (marketsAlreadyFetched) {
+        return
       }
 
-      await derivativeStore.fetchMarketsSummary()
+      const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
+        PerpetualMarket | ExpiryFuturesMarket
+      >
+      const recentlyExpiredMarkets = (
+        (await indexerDerivativesApi.fetchMarkets({
+          marketStatus: 'expired'
+        })) as Array<ExpiryFuturesMarket>
+      ).filter(marketHasRecentlyExpired)
+
+      const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
+        markets
+      )
+      const recentlyExpiredMarketsWithToken =
+        await tokenService.getDerivativeMarketsWithToken(recentlyExpiredMarkets)
+
+      const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
+      const expiryFuturesMarkets = marketsWithToken.filter(
+        (m) => !m.isPerpetual
+      )
+
+      const uiPerpetualMarkets =
+        UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
+          perpetualMarkets
+        )
+      const uiExpiryFuturesMarkets =
+        UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
+          expiryFuturesMarkets
+        )
+      const uiRecentlyExpiredMarkets =
+        UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
+          recentlyExpiredMarketsWithToken
+        )
+      const binaryOptionsMarkets = IS_DEVNET
+        ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
+        : []
+      const binaryOptionsMarketsWithToken =
+        await tokenService.getBinaryOptionsMarketsWithToken(
+          binaryOptionsMarkets
+        )
+      const uiBinaryOptionsMarkets =
+        UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
+          binaryOptionsMarketsWithToken
+        )
+
+      // Only include markets that we pre-defined to generate static routes for
+      const uiPerpetualMarketsWithToken = uiPerpetualMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.futures.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.futures.indexOf(a.slug) -
+            MARKETS_SLUGS.futures.indexOf(b.slug)
+          )
+        })
+      const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.expiryFutures.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.expiryFutures.indexOf(a.slug) -
+            MARKETS_SLUGS.expiryFutures.indexOf(b.slug)
+          )
+        })
+      const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
+        .filter((market) => {
+          return MARKETS_SLUGS.binaryOptions.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            MARKETS_SLUGS.binaryOptions.indexOf(a.slug) -
+            MARKETS_SLUGS.binaryOptions.indexOf(b.slug)
+          )
+        })
+
+      derivativeStore.$patch({
+        perpetualMarkets: uiPerpetualMarketsWithToken,
+        expiryFuturesMarkets: uiExpiryFuturesWithToken,
+        recentlyExpiredMarkets: uiRecentlyExpiredMarkets,
+        binaryOptionsMarkets: uiBinaryOptionsMarketsWithToken,
+        markets: [
+          ...uiPerpetualMarketsWithToken,
+          ...uiExpiryFuturesWithToken,
+          ...uiBinaryOptionsMarketsWithToken
+        ]
+      })
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {
