@@ -25,6 +25,7 @@ const props = defineProps({
 })
 
 const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+
 const status = reactive(new Status(StatusType.Idle))
 
 const {
@@ -71,7 +72,7 @@ function onCancelOrder() {
     })
 }
 
-function handleClickOnMarket() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -82,7 +83,7 @@ function handleClickOnMarket() {
 
 <template>
   <tr v-if="market" :data-cy="'order-table-row-' + market.ticker">
-    <td class="h-12 text-left cursor-pointer pl-3" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer pl-3" @click="handleVisitMarket">
       <div class="flex items-center justify-start">
         <div v-if="market && market.baseToken">
           <CommonTokenIcon :token="market.baseToken" md />
@@ -186,7 +187,7 @@ function handleClickOnMarket() {
         <span
           v-if="false"
           class="cursor-pointer text-blue-500 mr-6"
-          @click="handleClickOnMarket"
+          @click="handleVisitMarket"
         >
           {{ $t('common.view') }}
         </span>

@@ -68,9 +68,9 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
     <AppDrawer>
       <template #header>
         <p class="flex justify-between text-sm">
-          <AppTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" lg>
             <template v-if="tradingTypeMarket" #context>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('trade.market_total_tooltip')"
               />
@@ -86,19 +86,19 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
                 {{ market.quoteToken.symbol }}
               </span>
             </span>
-          </AppTextInfo>
+          </CommonTextInfo>
         </p>
       </template>
 
       <div class="mt-4">
         <!-- TODO: remove this if product gives the go ahead since is always - for perp markets-->
-        <!-- <AppTextInfo
+        <!-- <CommonTextInfo
           v-if="tradingTypeMarket"
           :title="$t('trade.amount')"
           class="mt-2"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.min_received_amount')"
             />
@@ -115,9 +115,9 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="ml-1"> &mdash; </span>
-        </AppTextInfo> -->
+        </CommonTextInfo> -->
 
-        <AppTextInfo
+        <CommonTextInfo
           v-if="tradingTypeMarket"
           :title="$t('trade.averagePrice')"
           class="mt-2"
@@ -133,15 +133,15 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
-        <AppTextInfo
+        <CommonTextInfo
           v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.liquidation_price_tooltip')"
             />
@@ -157,15 +157,15 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
-        <AppTextInfo
+        <CommonTextInfo
           v-if="!orderTypeReduceOnly"
           :title="$t('trade.margin')"
           class="mt-2"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.margin_tooltip')"
             />
@@ -181,7 +181,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
         <slot name="makerTakerFeeRate" />
         <slot name="feeRate" />

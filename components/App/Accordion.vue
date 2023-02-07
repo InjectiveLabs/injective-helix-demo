@@ -1,27 +1,33 @@
 <script lang="ts" setup>
 defineProps({
-  isOpen: Boolean,
-  sm: Boolean
+  sm: Boolean,
+  isOpen: Boolean
 })
 
 const emit = defineEmits<{
-  (e: 'togglePanel'): void
+  (e: 'panel:toggle'): void
 }>()
 
-function handleToggle(e: MouseEvent) {
-  e.stopPropagation()
-  emit('togglePanel')
+function handleToggle() {
+  emit('panel:toggle')
 }
 </script>
 
 <template>
-  <div :class="{ 'pt-6': !sm, 'py-2 px-6': sm }">
+  <div
+    :class="{
+      'pt-6': !sm,
+      'py-2 px-6': sm
+    }"
+  >
     <dt class="text-lg">
       <button
         class="text-left w-full flex justify-between items-start text-gray-200"
-        :class="{ 'items-center': sm }"
+        :class="{
+          'items-center': sm
+        }"
         :aria-expanded="isOpen"
-        @click="handleToggle"
+        @click.stop="handleToggle"
       >
         <div class="font-semibold text-gray-200 flex items-start">
           <slot name="title" />
@@ -51,7 +57,13 @@ function handleToggle(e: MouseEvent) {
         </span>
       </button>
     </dt>
-    <dd v-show="isOpen" class="mt-2" :class="{ 'pr-12': !sm }">
+    <dd
+      v-show="isOpen"
+      class="mt-2"
+      :class="{
+        'pr-12': !sm
+      }"
+    >
       <slot name="content" />
     </dd>
   </div>

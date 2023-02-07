@@ -7,19 +7,14 @@ const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
 const {
-  boostInfo,
-  derivativeBoostedMarketIdList,
-  derivativeBoostedMultiplierList,
-  disqualifiedMarketIdsList,
   spotBoostedMarketIdList,
-  spotBoostedMultiplierList
+  disqualifiedMarketIdsList,
+  spotBoostedMultiplierList,
+  derivativeBoostedMarketIdList,
+  derivativeBoostedMultiplierList
 } = useTradeReward()
 
 const derivativeBoostedMarkets = computed(() => {
-  if (!boostInfo.value) {
-    return []
-  }
-
   const derivativeMarketIds = derivativeBoostedMarketIdList.value
   const derivativeMarketsBoosts = derivativeBoostedMultiplierList.value
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
@@ -78,19 +73,14 @@ const derivativeBoostedMarkets = computed(() => {
       ]
     }, [] as PointsMultiplierWithMarketTicker[])
 
-  return [...derivatives, ...nonBoostedDerivatives].sort((a, b) => {
-    return (
+  return [...derivatives, ...nonBoostedDerivatives].sort(
+    (a, b) =>
       MARKETS_SLUGS.futures.indexOf(a.slug) -
       MARKETS_SLUGS.futures.indexOf(b.slug)
-    )
-  })
+  )
 })
 
 const spotBoostedMarkets = computed(() => {
-  if (!boostInfo.value) {
-    return []
-  }
-
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
   const spotMarketIds = spotBoostedMarketIdList.value
   const spotMarketsBoosts = spotBoostedMultiplierList.value
@@ -141,11 +131,10 @@ const spotBoostedMarkets = computed(() => {
       ]
     }, [] as PointsMultiplierWithMarketTicker[])
 
-  return [...spot, ...nonBoostedSpot].sort((a, b) => {
-    return (
+  return [...spot, ...nonBoostedSpot].sort(
+    (a, b) =>
       MARKETS_SLUGS.spot.indexOf(a.slug) - MARKETS_SLUGS.spot.indexOf(b.slug)
-    )
-  })
+  )
 })
 </script>
 
@@ -156,7 +145,7 @@ const spotBoostedMarkets = computed(() => {
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.derivatives') }}
         </p>
-        <AppTextInfo
+        <CommonTextInfo
           v-for="derivative in derivativeBoostedMarkets"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
@@ -176,14 +165,14 @@ const spotBoostedMarkets = computed(() => {
               </span>
             </span>
           </p>
-        </AppTextInfo>
+        </CommonTextInfo>
       </div>
 
       <div class="flex-1 px-4 lg:px-12">
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.spot') }}
         </p>
-        <AppTextInfo
+        <CommonTextInfo
           v-for="spot in spotBoostedMarkets"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
@@ -203,14 +192,14 @@ const spotBoostedMarkets = computed(() => {
               </span>
             </span>
           </p>
-        </AppTextInfo>
+        </CommonTextInfo>
       </div>
     </div>
 
     <template #title>
       <div class="flex items-center justify-center text-gray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-450"
           :tooltip="$t('trade.boosted_markets_tooltip')"
         />

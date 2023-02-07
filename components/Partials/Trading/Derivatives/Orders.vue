@@ -89,18 +89,14 @@ const filteredPositions = computed(() => {
   })
 })
 
-const orders = computed<UIDerivativeOrder[]>(() => {
-  if (activeType.value === FilterList.OpenOrders) {
-    return derivativeStore.subaccountOrders
-  }
-
-  return filteredOrders.value
-})
+const orders = computed<UIDerivativeOrder[]>(() =>
+  activeType.value === FilterList.OpenOrders
+    ? derivativeStore.subaccountOrders
+    : filteredOrders.value
+)
 
 const checked = computed({
-  get: (): boolean => {
-    return props.filterByCurrentMarket
-  },
+  get: (): boolean => props.filterByCurrentMarket,
   set: (value: boolean) => {
     emit('update:filterByCurrentMarket', value)
   }
@@ -270,7 +266,7 @@ function handleCloseAllPositionsClick() {
     </template>
 
     <AppHocLoading :status="status">
-      <CommonCard class="h-full p-2 relative" no-padding>
+      <CommonCard class="h-full p-2 relative overflow-y-auto" no-padding>
         <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"

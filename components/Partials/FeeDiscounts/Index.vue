@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 const exchangeStore = useExchangeStore()
 
-const feeDiscountSchedule = computed(() => {
-  return exchangeStore.feeDiscountSchedule
-})
-
-const tierLevelsWithZeroTierLevel = computed(() => {
-  if (!feeDiscountSchedule.value) {
-    return []
-  }
-
-  return [
-    {
-      makerDiscountRate: '0',
-      takerDiscountRate: '0',
-      stakedAmount: '0',
-      feePaidAmount: '0',
-      volume: '0'
-    },
-    ...feeDiscountSchedule.value.tierInfosList
-  ]
-})
+const tierLevelsWithZeroTierLevel = computed(() =>
+  exchangeStore.feeDiscountSchedule
+    ? [
+        {
+          volume: '0',
+          stakedAmount: '0',
+          feePaidAmount: '0',
+          makerDiscountRate: '0',
+          takerDiscountRate: '0'
+        },
+        ...exchangeStore.feeDiscountSchedule.tierInfosList
+      ]
+    : []
+)
 </script>
 
 <template>
@@ -36,7 +30,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.staked_amount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.staked_amount_tooltip')"
               />
@@ -48,7 +42,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.trading_volume') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.trading_volume_tooltip')"
               />
@@ -59,7 +53,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.maker_rate_discount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.maker_rate_discount_tooltip')"
               />
@@ -70,7 +64,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
               <span>
                 {{ $t('fee_discounts.taker_rate_discount') }}
               </span>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discounts.taker_rate_discount_tooltip')"
               />
@@ -79,7 +73,7 @@ const tierLevelsWithZeroTierLevel = computed(() => {
         </tr>
       </thead>
 
-      <tbody v-if="feeDiscountSchedule">
+      <tbody v-if="exchangeStore.feeDiscountSchedule">
         <PartialsFeeDiscountsTier
           v-for="(tier, index) in tierLevelsWithZeroTierLevel"
           :key="`tier-${index}`"

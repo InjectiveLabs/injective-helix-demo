@@ -75,14 +75,14 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
 </script>
 
 <template>
-  <AppTextInfo
+  <CommonTextInfo
     v-if="!(postOnly && marketHasNegativeMakerFee) || tradeTypeMarket"
     :title="$t('trade.fee')"
     class="mt-2"
   >
     <template v-if="!tradeTypeMarket" #context>
       <div class="flex items-center gap-2 ml-2">
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2"
           :tooltip="
             marketHasNegativeMakerFee
@@ -93,7 +93,7 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
           "
         />
 
-        <AppInfoTooltip
+        <CommonInfoTooltip
           v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
           class="text-blue-500"
           :tooltip="
@@ -104,15 +104,15 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
           "
         >
           <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
-        </AppInfoTooltip>
+        </CommonInfoTooltip>
       </div>
     </template>
 
     <template v-else #context>
       <div class="flex items-center gap-2 ml-2">
-        <AppInfoTooltip :tooltip="$t('trade.fees_tooltip')" />
+        <CommonInfoTooltip :tooltip="$t('trade.fees_tooltip')" />
 
-        <AppInfoTooltip
+        <CommonInfoTooltip
           v-if="takerFeeRateDiscount.gt(0)"
           class="text-blue-500"
           :tooltip="
@@ -122,7 +122,7 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
           "
         >
           <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
-        </AppInfoTooltip>
+        </CommonInfoTooltip>
       </div>
     </template>
 
@@ -138,5 +138,5 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
       </span>
     </span>
     <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 </template>

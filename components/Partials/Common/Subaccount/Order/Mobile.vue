@@ -59,7 +59,7 @@ function onCancelOrder() {
     })
 }
 
-function handleClickOnMarket() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -70,7 +70,7 @@ function handleClickOnMarket() {
 
 <template>
   <CommonTableRow v-if="market" dense>
-    <div class="pb-1 col-span-2" @click="handleClickOnMarket">
+    <div class="pb-1 col-span-2" @click="handleVisitMarket">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
           <span

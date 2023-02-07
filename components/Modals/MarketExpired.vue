@@ -13,18 +13,19 @@ const props = defineProps({
   }
 })
 
-const showModal = computed(
+const isModalOpen = computed(
   () => modalStore.modals[Modal.MarketExpired] && props.market
 )
 
 function close() {
   modalStore.closeModal(Modal.MarketExpired)
+
   router.push({ name: 'markets' })
 }
 </script>
 
 <template>
-  <AppModalWrapper :show="showModal" sm hide-close-button @modal:closed="close">
+  <AppModal :show="isModalOpen" sm hide-close-button @modal:closed="close">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketExpired.title') }}
@@ -74,5 +75,5 @@ function close() {
         </NuxtLink>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

@@ -1,10 +1,10 @@
 import type { Ref } from 'vue'
 import {
+  ZERO_IN_BASE,
   SpotOrderSide,
-  UiDerivativeLimitOrder,
   UiSpotLimitOrder,
   UiSpotMarketWithToken,
-  ZERO_IN_BASE
+  UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
@@ -26,6 +26,18 @@ export function useOrder(
 
   const market = computed(() =>
     markets.find((m) => m.marketId === order.value.marketId)
+  )
+
+  const priceDecimals = computed(() =>
+    market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  )
+
+  const quantityDecimals = computed(() =>
+    market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   )
 
   const isReduceOnly = computed(() => {
@@ -53,18 +65,6 @@ export function useOrder(
       default:
         return false
     }
-  })
-
-  const priceDecimals = computed(() => {
-    return market.value
-      ? market.value.priceDecimals
-      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
-
-  const quantityDecimals = computed(() => {
-    return market.value
-      ? market.value.quantityDecimals
-      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const margin = computed(() => {

@@ -5,8 +5,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeForm, TradeField } from '@/types'
 
 const props = defineProps({
-  isLoading: Boolean,
   isBuy: Boolean,
+  isLoading: Boolean,
 
   amount: {
     type: String,

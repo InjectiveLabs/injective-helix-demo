@@ -16,9 +16,10 @@ import {
 import { Change, TradeClickOrigin } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
-import { marketStableCoinQuoteSymbols } from '@/app/data/market'
+import { stableCoinDenoms } from '@/app/data/token'
 
 const appStore = useAppStore()
+const router = useRouter()
 
 const props = defineProps({
   market: {
@@ -47,13 +48,8 @@ const lastTradedPrice = computed(() => {
   return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces:
-      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
+const isFavorite = computed(() =>
+  appStore.favoriteMarkets.includes(props.market.marketId)
 )
 
 const quoteVolume = computed(() => {
@@ -64,19 +60,12 @@ const quoteVolume = computed(() => {
   return new BigNumberInBase(props.summary.volume)
 })
 
-const { valueToString: quoteVolumeToFormat } = useBigNumberFormatter(
-  quoteVolume,
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
+const volumeInUsdToFormat = computed(() =>
+  props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
 )
 
-const volumeInUsdToFormat = computed(() => {
-  return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
-})
-
 const formatterOptions = computed(() => {
-  return marketStableCoinQuoteSymbols.includes(props.market.quoteToken.symbol)
+  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
@@ -87,22 +76,12 @@ const formatterOptions = computed(() => {
       }
 })
 
-const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
-  computed(() => props.volumeInUsd),
-  formatterOptions.value
-)
-
 const change = computed(() => {
   if (!props.summary || !props.summary.change) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInBase(props.summary.change)
-})
-
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
-  decimalPlaces: 2,
-  minimalDecimalPlaces: 4
 })
 
 const lastPriceChange = computed(() => {
@@ -117,15 +96,31 @@ const lastPriceChange = computed(() => {
   return props.summary.lastPriceChange
 })
 
-const marketRoute = computed(() => {
-  const marketRoute = getMarketRoute(props.market)
-
-  return marketRoute || { name: 'index' }
+const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+  decimalPlaces: 2,
+  minimalDecimalPlaces: 4
 })
 
-const isFavorite = computed(() => {
-  return appStore.favoriteMarkets.includes(props.market.marketId)
-})
+const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+  lastTradedPrice,
+  {
+    decimalPlaces:
+      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+    displayAbsoluteDecimalPlace: true
+  }
+)
+
+const { valueToString: quoteVolumeToFormat } = useBigNumberFormatter(
+  quoteVolume,
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
+  computed(() => props.volumeInUsd),
+  formatterOptions.value
+)
 
 function updateWatchList() {
   appStore.updateFavoriteMarkets(props.market.marketId)
@@ -137,6 +132,14 @@ function handleTradeClickedTrack() {
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage
   })
+}
+
+function handleVisitMarket() {
+  if (!props.market) {
+    return
+  }
+
+  return router.push(getMarketRoute(props.market))
 }
 </script>
 
@@ -155,7 +158,7 @@ function handleTradeClickedTrack() {
         <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
-      <NuxtLink :to="marketRoute" class="w-full">
+      <div class="w-full cursor-pointer" @click.stop="handleVisitMarket">
         <div
           class="cursor-pointer flex items-center"
           @click="handleTradeClickedTrack"
@@ -185,7 +188,7 @@ function handleTradeClickedTrack() {
             class="visible sm:invisible lg:visible ml-auto"
           />
         </div>
-      </NuxtLink>
+      </div>
     </span>
 
     <!-- Mobile column -->
@@ -263,15 +266,15 @@ function handleTradeClickedTrack() {
     </span>
 
     <span class="hidden 3md:flex col-span-2 items-center justify-end">
-      <NuxtLink
-        class="text-blue-500 hover:text-blue-600"
+      <div
+        class="text-blue-500 hover:text-blue-600 cursor-pointer"
         data-cy="markets-trade-link"
-        :to="marketRoute"
+        @click.stop="handleVisitMarket"
       >
-        <div @click="handleTradeClickedTrack">
+        <div @click.stop="handleTradeClickedTrack">
           {{ $t('trade.trade') }}
         </div>
-      </NuxtLink>
+      </div>
 
       <div
         class="text-blue-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-blue-500 hover:bg-opacity-10"

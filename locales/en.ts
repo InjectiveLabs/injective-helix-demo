@@ -38,7 +38,8 @@ export default {
     open: 'Open',
     close: 'Close',
     required: 'Required',
-    waived: 'Waived'
+    waived: 'Waived',
+    network: 'Network'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -268,7 +269,8 @@ export default {
 
   pagination: {
     showRows: 'Show rows',
-    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}'
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}',
+    paginationPages: 'From {from} to {to} total {totalCount}'
   },
 
   filters: {

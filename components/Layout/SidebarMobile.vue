@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 const emit = defineEmits<{
-  (e: 'sidebar-closed'): void
+  (e: 'sidebar:closed'): void
 }>()
 
-function closeSidebar() {
-  emit('sidebar-closed')
+function handleSidebarClose() {
+  emit('sidebar:closed')
 }
 </script>
 
@@ -23,7 +23,7 @@ function closeSidebar() {
           ref="sidebar"
           class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-gray-900"
         >
-          <LayoutSidebarContent @click="closeSidebar" />
+          <LayoutSidebarContent @click="handleSidebarClose" />
         </div>
       </transition>
     </div>

@@ -55,7 +55,7 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <AppMarketInfo
+  <CommonMarketInfo
     v-if="isPerpetualMarket"
     :title="$t('trade.next_funding')"
     :tooltip="$t('trade.next_funding_tooltip')"
@@ -66,5 +66,5 @@ useIntervalFn(() => {
     >
       {{ countdown }}
     </span>
-  </AppMarketInfo>
+  </CommonMarketInfo>
 </template>

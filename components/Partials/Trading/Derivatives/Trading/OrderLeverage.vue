@@ -136,7 +136,7 @@ function validateLeverage(value: string) {
         @update:modelValue="validateLeverage"
       />
       <div class="relative max-h-6">
-        <AppNumericInput
+        <AppInputNumeric
           v-model="leverage"
           min="0"
           step="0.01"

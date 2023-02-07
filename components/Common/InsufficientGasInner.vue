@@ -9,13 +9,8 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const faucetUrl = computed(() => {
-  return 'https://inj.supply/'
-})
-
-const hubUrl = computed(() => {
-  return `${getHubUrl()}/bridge`
-})
+const faucetUrl = 'https://inj.supply/'
+const hubUrl = `${getHubUrl()}/bridge`
 
 function handleClose() {
   emit('close')

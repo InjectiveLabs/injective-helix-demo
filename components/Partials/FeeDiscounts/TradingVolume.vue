@@ -10,25 +10,19 @@ import {
 
 const exchangeStore = useExchangeStore()
 
-const feeDiscountAccountInfo = computed(() => {
-  return exchangeStore.feeDiscountAccountInfo
-})
-
-const feeDiscountSchedule = computed(() => {
-  return exchangeStore.feeDiscountSchedule
-})
-
 const volume = computed(() => {
   if (
-    !feeDiscountAccountInfo.value ||
-    !feeDiscountAccountInfo.value.accountInfo ||
-    !feeDiscountAccountInfo.value.accountInfo.volume
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountInfo.volume
   ) {
     return ZERO_IN_BASE
   }
 
   const volume = new BigNumberInBase(
-    cosmosSdkDecToBigNumber(feeDiscountAccountInfo.value.accountInfo.volume)
+    cosmosSdkDecToBigNumber(
+      exchangeStore.feeDiscountAccountInfo.accountInfo.volume
+    )
   )
 
   return new BigNumberInWei(volume).toBase(USDT_DECIMALS)
@@ -46,13 +40,13 @@ const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
 })
 
 const daysPassed = computed(() => {
-  if (!feeDiscountSchedule.value) {
+  if (!exchangeStore.feeDiscountSchedule) {
     return '0'
   }
 
   const totalInSeconds =
-    feeDiscountSchedule.value.bucketDuration *
-    feeDiscountSchedule.value.bucketCount
+    exchangeStore.feeDiscountSchedule.bucketDuration *
+    exchangeStore.feeDiscountSchedule.bucketCount
 
   const { days } = intervalToDuration({
     start: 0,

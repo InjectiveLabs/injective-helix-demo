@@ -14,6 +14,7 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 const interval = '120'
+
 const status = reactive(new Status(StatusType.Loading))
 
 const symbol = computed(() => {
@@ -28,11 +29,11 @@ const symbol = computed(() => {
   return spotTicker.replaceAll('ibc/', 'ibc@')
 })
 
-const datafeedEndpoint = computed(() => {
-  return getChronosDatafeedEndpoint(
+const datafeedEndpoint = computed(() =>
+  getChronosDatafeedEndpoint(
     props.market.type === MarketType.Derivative ? 'derivative' : 'spot'
   )
-})
+)
 
 function onReady() {
   status.setIdle()

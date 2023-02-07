@@ -33,7 +33,7 @@ const takerFeeRateToFormat = computed(() => {
 </script>
 
 <template>
-  <AppTextInfo
+  <CommonTextInfo
     v-if="
       [TradeExecutionType.Market, TradeExecutionType.StopMarket].includes(
         tradingType
@@ -43,7 +43,7 @@ const takerFeeRateToFormat = computed(() => {
     class="mt-2"
   >
     <template #context>
-      <AppInfoTooltip class="ml-2" :tooltip="$t('trade.taker_rate_note')" />
+      <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.taker_rate_note')" />
     </template>
     <span
       class="font-mono flex items-center"
@@ -53,15 +53,15 @@ const takerFeeRateToFormat = computed(() => {
         {{ `${takerFeeRateToFormat}%` }}
       </span>
     </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 
-  <AppTextInfo
+  <CommonTextInfo
     v-else-if="postOnly"
     :title="$t('trade.maker_rate')"
     class="mt-2"
   >
     <template #context>
-      <AppInfoTooltip class="ml-2" :tooltip="$t('trade.maker_rate_note')" />
+      <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.maker_rate_note')" />
     </template>
     <span
       class="font-mono flex items-center"
@@ -71,11 +71,11 @@ const takerFeeRateToFormat = computed(() => {
         {{ `${makerFeeRateToFormat}%` }}
       </span>
     </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 
-  <AppTextInfo v-else :title="$t('trade.maker_taker_rate')" class="mt-2">
+  <CommonTextInfo v-else :title="$t('trade.maker_taker_rate')" class="mt-2">
     <template #context>
-      <AppInfoTooltip
+      <CommonInfoTooltip
         class="ml-2"
         :tooltip="$t('trade.maker_taker_rate_note')"
       />
@@ -88,5 +88,5 @@ const takerFeeRateToFormat = computed(() => {
         {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
       </span>
     </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 </template>

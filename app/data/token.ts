@@ -10,16 +10,16 @@ import { USDCSymbol } from '@/types'
 const adapterContract = CW20_ADAPTER_CONTRACT_BY_NETWORK[NETWORK]
 
 export const injToken = {
+  usdPrice: 0,
+  decimals: 18,
   symbol: 'INJ',
+  name: 'Injective',
+  denom: INJ_DENOM,
+  tokenType: TokenType.Native,
+  coinGeckoId: INJ_COIN_GECKO_ID,
   logo: '/bridgingNetworks/injective.png',
   icon: '/bridgingNetworks/injective.png',
-  name: 'Injective',
-  decimals: 18,
-  coinGeckoId: INJ_COIN_GECKO_ID,
-  erc20Address: getContractAddressesForNetworkOrThrow(NETWORK).injective,
-  denom: INJ_DENOM,
-  usdPrice: 0,
-  tokenType: TokenType.Native
+  erc20Address: getContractAddressesForNetworkOrThrow(NETWORK).injective
 } as Token
 
 interface NetworkToSymbolMap {
@@ -74,3 +74,5 @@ export const usdcTokenDenoms = [
   usdcTokenDenom.USDCet
   // usdcTokenDenom.USDCso
 ]
+
+export const stableCoinDenoms = ['USDT', 'USDC', 'USDCet', 'USDCso']

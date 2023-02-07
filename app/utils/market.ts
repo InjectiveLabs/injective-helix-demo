@@ -19,7 +19,6 @@ import {
   upcomingMarkets,
   deprecatedMarkets
 } from '@/app/data/market'
-import { USDT_COIN_GECKO_ID, USDC_COIN_GECKO_ID } from '@/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -166,18 +165,21 @@ export const marketIsQuotePair = (
     return true
   }
 
+  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
+  const marketBaseSymbol = market.baseToken.symbol.toLowerCase()
+  const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
+  const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
+
   if (activeQuote === MarketQuoteType.USDT) {
-    return [
-      market.quoteToken.coinGeckoId,
-      market.baseToken.coinGeckoId
-    ].includes(USDT_COIN_GECKO_ID)
+    return (
+      marketQuoteSymbol.includes(usdtSymbolLowercased) ||
+      marketBaseSymbol.includes(usdtSymbolLowercased)
+    )
   }
 
   if (activeQuote === MarketQuoteType.USDC) {
-    return [
-      market.quoteToken.coinGeckoId,
-      market.baseToken.coinGeckoId
-    ].includes(USDC_COIN_GECKO_ID)
+    marketQuoteSymbol.includes(usdcSymbolLowercased) ||
+      marketBaseSymbol.includes(usdcSymbolLowercased)
   }
 
   return true

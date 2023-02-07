@@ -58,15 +58,25 @@ export const getRoutes = (network: Network, env: string) => {
   // Middleware routes
   const walletConnectedRequiredRouteNames = ['activity', 'account']
 
+  // Layout routes
+  const footerEnabledRoutes = [
+    'index',
+    'markets',
+    'fee-discounts',
+    'leaderboard'
+  ]
+
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-  const spotRedirectRoutes = Object.keys(spotRoutes).map((s) => `/spot/${s}`)
+  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
+    (s) => `/spot/${s}`
+  )
 
   const futures = [...perpetuals, ...expiryFutures]
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['register']
+  const customStaticRoutes: string[] = ['/register']
   const upcomingMarketsRoutes: string[] = []
   const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
@@ -103,6 +113,7 @@ export const getRoutes = (network: Network, env: string) => {
       futuresRoutes,
       customStaticRoutes,
       binaryOptionsRoutes,
+      footerEnabledRoutes,
       spotMarketRouteNames,
       upcomingMarketsRoutes,
       deprecatedMarketsRoutes,

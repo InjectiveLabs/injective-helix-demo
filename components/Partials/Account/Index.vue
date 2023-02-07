@@ -38,7 +38,7 @@ onMounted(() => {
   initBalances()
 
   useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
-  useEventBus<Token>(BusEvents.ConvertUSDC).on(setUsdcConvertMarket)
+  useEventBus<Token>(BusEvents.ConvertUsdc).on(setUsdcConvertMarket)
 })
 
 onBeforeUnmount(() => {
@@ -63,7 +63,7 @@ function initBalances() {
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
     spotStore.fetchUsdcConversionMarkets(),
-    tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
+    tokenStore.fetchErc20TokensWithBalanceAndPrice()
   ])
     .catch($onError)
     .finally(() => {
@@ -164,8 +164,7 @@ function handleHideBalances(value: boolean) {
     <PartialsAccountBridge />
 
     <ModalsAddMargin />
-
-    <ModalsConvertUSDCWrapper
+    <ModalsConvertUSDC
       v-if="usdcConvertMarket"
       :balances="balances"
       :market="usdcConvertMarket"

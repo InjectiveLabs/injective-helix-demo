@@ -35,7 +35,9 @@ function handleTokenClick() {
     <div
       class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
     >
-      <div class="flex justify-between items-center w-full lg:w-auto gap-6">
+      <div
+        class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
+      >
         <div class="flex items-center gap-4" @click="handleTokenClick">
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 

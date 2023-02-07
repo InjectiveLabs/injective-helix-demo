@@ -5,7 +5,6 @@ import { BridgeBusEvents, Modal, UiMarketWithToken } from '@/types'
 
 const bankStore = useBankStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 
 const props = defineProps({
   market: {
@@ -16,8 +15,8 @@ const props = defineProps({
 
 const activeStep = computed(() => (bankStore.hasAnyBankBalance ? 2 : 1))
 
-function handleClickOnButton() {
-  if (!walletStore.hasEnoughInjForGas) {
+function handleOnboard() {
+  if (!bankStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 
@@ -33,7 +32,7 @@ function handleClickOnButton() {
   <div>
     <AppButton
       class="w-full rounded bg-blue-500 text-blue-900"
-      @click="handleClickOnButton"
+      @click="handleOnboard"
     >
       <span v-if="activeStep === 1" data-cy="onboarding-banner-deposit-button">
         {{ $t('common.deposit') }}

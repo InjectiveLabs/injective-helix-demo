@@ -16,9 +16,7 @@ const modalStore = useModalStore()
 
 const tradeDetails = ref(undefined as UiSpotTrade | undefined)
 
-const trades = computed(() => {
-  return spotStore.subaccountTrades
-})
+const trades = computed(() => spotStore.subaccountTrades)
 
 function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
   tradeDetails.value = value as UiSpotTrade

@@ -11,26 +11,18 @@ const appStore = useAppStore()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const announcements = computed(() => {
-  return appStore.announcements
-})
-
-const attachments = computed(() => {
-  return appStore.attachments
-})
-
 const attachmentsWithAnnouncements = computed(() => {
   const defaultAnnouncementsSize = 3
 
-  if (announcements.value.length === 0) {
+  if (appStore.announcements.length === 0) {
     return []
   }
 
-  const filteredAttachments = attachments.value.filter(
+  const filteredAttachments = appStore.attachments.filter(
     (attachment: Attachment) => attachment
   )
 
-  const formattedAttachmentsWithAnnouncements = announcements.value.map(
+  const formattedAttachmentsWithAnnouncements = appStore.announcements.map(
     (announcement: Announcement) => {
       const matchingAttachment = filteredAttachments.find(
         (attachment: Attachment) => {
@@ -72,7 +64,7 @@ onMounted(() => {
         v-if="attachmentsWithAnnouncements.length > 0"
         class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 lg:gap-6"
       >
-        <CommonAnnouncementsCard
+        <CommonCardAnnouncement
           v-for="(card, index) in attachmentsWithAnnouncements"
           :key="`news-card-${index}`"
           class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden"
@@ -87,7 +79,7 @@ onMounted(() => {
               class="cover h-full block rounded-lg"
             />
           </template>
-        </CommonAnnouncementsCard>
+        </CommonCardAnnouncement>
       </div>
     </div>
   </AppHocLoading>

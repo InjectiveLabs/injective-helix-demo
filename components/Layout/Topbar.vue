@@ -11,15 +11,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'sidebar-closed'): void
-  (e: 'sidebar-opened'): void
+  (e: 'sidebar:closed'): void
+  (e: 'sidebar:opened'): void
 }>()
 
 const isUserConnectedProcessCompleted = ref(false)
 
-const isUserWalletConnected = computed(() => {
-  return walletStore.isUserWalletConnected
-})
+const isUserWalletConnected = computed(() => walletStore.isUserWalletConnected)
 
 const hasNinjaPassCodes = computed(() => {
   if (!ninjaPassStore.codes) {
@@ -44,12 +42,12 @@ onMounted(() => {
   }
 })
 
-function handleClickOnSidebarToggle() {
+function handleSidebarToggle() {
   if (props.isSidebarOpen) {
-    return emit('sidebar-closed')
+    return emit('sidebar:closed')
   }
 
-  emit('sidebar-opened')
+  emit('sidebar:opened')
 }
 
 function handleShowNinjaPassModal() {
@@ -62,7 +60,10 @@ function handleShowNinjaPassModal() {
 <template>
   <header
     class="w-full z-1100 flex-shrink-0 flex h-12 lg:h-14 bg-gray-1000 items-center border-b border-b-gray-900"
-    :class="{ fixed: isSidebarOpen, relative: !isSidebarOpen }"
+    :class="{
+      fixed: isSidebarOpen,
+      relative: !isSidebarOpen
+    }"
   >
     <div
       class="cursor-pointer pl-6 lg:pr-6 lg:border-r flex items-center"
@@ -108,7 +109,7 @@ function handleShowNinjaPassModal() {
     </div>
     <button
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
-      @click.stop="handleClickOnSidebarToggle"
+      @click.stop="handleSidebarToggle"
     >
       <BaseIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
       <BaseIcon v-else name="menu" class="w-6 h-6" />

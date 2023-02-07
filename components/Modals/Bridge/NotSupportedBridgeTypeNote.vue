@@ -1,31 +1,26 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { BridgingNetwork, CosmosNetworks } from '@injectivelabs/sdk-ui-ts'
 import { getHubUrl } from '@/app/utils/helpers'
-import { BridgeField, BridgeForm } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
-  formValues: {
-    required: true,
-    type: Object as PropType<BridgeForm>
-  },
-
   selectedNetwork: {
-    type: Object as PropType<BridgingNetwork>,
+    type: String as PropType<BridgingNetwork>,
     required: true
   }
 })
 
+const bridgeUrl = `${getHubUrl()}/bridge`
+
 const isWormholeTransfer = computed(
   () =>
     [BridgingNetwork.Solana].includes(props.selectedNetwork) ||
-    [usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-      props.formValues[BridgeField.Denom].toLowerCase()
-    )
+    [BridgingNetwork.EthereumWh].includes(props.selectedNetwork)
 )
 
-const bridgeUrl = `${getHubUrl()}/bridge`
+const isIbcTransfer = computed(() =>
+  CosmosNetworks.includes(props.selectedNetwork)
+)
 </script>
 
 <template>
@@ -33,13 +28,15 @@ const bridgeUrl = `${getHubUrl()}/bridge`
     <div class="flex justify-start items-center">
       <p class="text-xs text-orange-500 ml-2 flex items-center gap-2">
         <BaseIcon name="circle-info" md />
-        <span>{{
-          $t('bridge.transfersNote', {
-            network: isWormholeTransfer
-              ? $t('bridge.wormhole')
-              : $t('bridge.ibc')
-          })
-        }}</span>
+        <span v-if="isWormholeTransfer">
+          {{ $t('bridge.transfersNote', { network: $t('bridge.wormhole') }) }}
+        </span>
+        <span v-else-if="isIbcTransfer">
+          {{ $t('bridge.transfersNote', { network: $t('bridge.ibc') }) }}
+        </span>
+        <span v-else>
+          {{ $t('bridge.transfersNote', { network: $t('common.network') }) }}
+        </span>
       </p>
     </div>
     <div class="text-center mt-6">

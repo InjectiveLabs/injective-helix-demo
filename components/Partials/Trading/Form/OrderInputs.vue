@@ -22,14 +22,14 @@ import {
 } from '@/types'
 
 const props = defineProps({
-  availableBalanceError: Boolean,
-  initialMinMarginRequirementError: Boolean,
-  markPriceThresholdError: Boolean,
-  isBase: Boolean,
   isBuy: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isBaseAmount: Boolean,
   showReduceOnly: Boolean,
+  orderTypeReduceOnly: Boolean,
+  availableBalanceError: Boolean,
+  markPriceThresholdError: Boolean,
+  initialMinMarginRequirementError: Boolean,
 
   amountStep: {
     type: String,
@@ -110,7 +110,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
@@ -131,12 +131,12 @@ onMounted(() => {
 
 function updateAmount({
   amount,
-  isBase
+  isBaseAmount
 }: {
   amount?: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  emit('update:amount', { amount, isBase })
+  emit('update:amount', { amount, isBaseAmount })
 }
 
 function updateFormValue({ field, value }: TradeFormValue) {
@@ -166,7 +166,7 @@ function onOrderbookNotionalClick(notionalAndType: OrderBookNotionalAndType) {
     value: notionalAndType.total
   })
 
-  updateAmount({ isBase: false })
+  updateAmount({ isBaseAmount: false })
 }
 
 function onOrderbookSizeClick(quantityAndOderType: OrderBookQuantityAndType) {
@@ -177,7 +177,7 @@ function onOrderbookSizeClick(quantityAndOderType: OrderBookQuantityAndType) {
     value: quantityAndOderType.quantity
   })
 
-  updateAmount({ isBase: true })
+  updateAmount({ isBaseAmount: true })
 }
 
 function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
@@ -190,7 +190,7 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
       value: priceAndOrderType.price
     })
 
-    updateAmount({ isBase: true })
+    updateAmount({ isBaseAmount: true })
   }
 }
 </script>
@@ -204,7 +204,7 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
         feeRate,
         fees,
         formValues,
-        isBase,
+        isBaseAmount,
         isBuy,
         isSpot,
         lastTradedPrice,

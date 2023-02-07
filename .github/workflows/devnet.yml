@@ -7,7 +7,7 @@ on:
 
 jobs:
   devnet:
-    if: true
+    if: false
     name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:

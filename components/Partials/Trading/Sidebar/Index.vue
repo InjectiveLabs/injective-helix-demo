@@ -38,13 +38,13 @@ onMounted(() => {
 
 function pollMarkets() {
   Promise.all([
-    tokenStore.getTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
+    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()
   ]).catch($onError)
 }
 
-useIntervalFn(pollMarkets, 10 * 1000, { immediate: true })
+useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
 </script>
 
 <template>

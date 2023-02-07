@@ -45,13 +45,16 @@ const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
 </script>
 
 <template>
-  <AppTextInfo
+  <CommonTextInfo
     v-if="marketHasNegativeMakerFee"
     :title="$t('trade.est_fee_rebate')"
     class="mt-2"
   >
     <template #context>
-      <AppInfoTooltip class="ml-2" :tooltip="$t('trade.est_fee_rebate_note')" />
+      <CommonInfoTooltip
+        class="ml-2"
+        :tooltip="$t('trade.est_fee_rebate_note')"
+      />
     </template>
     <span
       v-if="feeRebates.gt(0)"
@@ -64,5 +67,5 @@ const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
       </span>
     </span>
     <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-  </AppTextInfo>
+  </CommonTextInfo>
 </template>

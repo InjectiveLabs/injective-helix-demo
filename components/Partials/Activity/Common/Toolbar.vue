@@ -49,20 +49,19 @@ const hasActiveFilters = computed(
   () => !!denom.value || !!side.value || !!type.value
 )
 
-const marketIds = computed(() => {
-  const markets: UiMarketWithToken[] =
-    props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+const markets = computed<UiMarketWithToken[]>(() =>
+  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+)
 
-  if (!denom.value) {
-    return undefined
-  }
-
-  return markets
-    .filter(({ baseToken, quoteToken }) =>
-      [baseToken.denom, quoteToken.denom].includes(denom.value)
-    )
-    .map(({ marketId }) => marketId)
-})
+const marketIds = computed(() =>
+  denom.value
+    ? markets.value
+        .filter(({ baseToken, quoteToken }) =>
+          [baseToken.denom, quoteToken.denom].includes(denom.value)
+        )
+        .map(({ marketId }) => marketId)
+    : undefined
+)
 
 const filterParams = computed(() => {
   const defaultFilterParams = {

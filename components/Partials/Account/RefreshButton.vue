@@ -68,7 +68,7 @@ const showRefreshBtn = computed(() => {
   }
 })
 
-function handleClick() {
+function handleRefresh() {
   emit('click')
 }
 </script>
@@ -79,7 +79,7 @@ function handleClick() {
     name="exchange"
     class="border-blue-500 text-blue-500 px-3"
     sm
-    @click="handleClick"
+    @click="handleRefresh"
   >
     {{
       [

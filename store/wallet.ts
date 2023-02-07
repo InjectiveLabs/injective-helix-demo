@@ -7,9 +7,7 @@ import {
   ErrorType,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { CosmosChainId } from '@injectivelabs/ts-types'
-import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
@@ -19,7 +17,7 @@ import {
   confirmCorrectKeplrAddress,
   validateCosmosWallet
 } from '@/app/services/cosmos'
-import { INJ_GAS_BUFFER, IS_DEVNET } from '@/app/utils/constants'
+import { IS_DEVNET } from '~~/app/utils/constants'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -32,13 +30,13 @@ type WalletStoreState = {
 }
 
 const initialStateFactory = (): WalletStoreState => ({
-  walletConnectStatus: WalletConnectStatus.idle,
   address: '',
+  addresses: [],
   injectiveAddress: '',
   addressConfirmation: '',
-  addresses: [],
+  wallet: Wallet.Metamask,
   metamaskInstalled: false,
-  wallet: Wallet.Metamask
+  walletConnectStatus: WalletConnectStatus.idle
 })
 
 export const useWalletStore = defineStore('wallet', {
@@ -58,20 +56,13 @@ export const useWalletStore = defineStore('wallet', {
       return isCosmosWallet(state.wallet)
     },
 
-    hasEnoughInjForGas: (state) => {
-      const bankStore = useBankStore()
-
-      // fee delegation don't work on devnet
-      const isWalletExemptFromGasFee =
-        !isCosmosWallet(state.wallet) && !IS_DEVNET
-
-      const hasEnoughInjForGas = new BigNumberInWei(
-        bankStore.balances[INJ_DENOM] || 0
-      )
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
-
-      return isWalletExemptFromGasFee || hasEnoughInjForGas
+    /**
+     * Fee delegation doesn't
+     * work for cosmos wallets and its disabled
+     * on devnet
+     */
+    isWalletExemptFromGasFee: (state) => {
+      return !isCosmosWallet(state.wallet) && !IS_DEVNET
     }
   },
   actions: {
@@ -83,18 +74,6 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       await connect({ wallet: walletStore.wallet })
-    },
-
-    async initPage() {
-      const accountStore = useAccountStore()
-      const bankStore = useBankStore()
-      const onBoardStore = useOnboardStore()
-      const tokenStore = useTokenStore()
-
-      await bankStore.fetchBankBalancesWithToken()
-      await accountStore.fetchSubaccounts()
-      await onBoardStore.init()
-      await tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
     },
 
     async connectWallet(wallet: Wallet) {
@@ -359,7 +338,7 @@ export const useWalletStore = defineStore('wallet', {
     async validate() {
       const { wallet, injectiveAddress, address } = useWalletStore()
       const { ethereumChainId, chainId } = useAppStore()
-      const { hasEnoughInjForGas } = useWalletStore()
+      const { hasEnoughInjForGas } = useBankStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)

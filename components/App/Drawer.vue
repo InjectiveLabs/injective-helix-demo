@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const isOpen = ref(true)
 
-function toggle() {
+function handleToggle() {
   isOpen.value = !isOpen.value
 }
 </script>
@@ -10,7 +10,7 @@ function toggle() {
   <div>
     <div
       class="group flex justify-end w-full cursor-pointer relative"
-      @click.stop="toggle"
+      @click.stop="handleToggle"
     >
       <div class="max-w-full flex-1 pr-5">
         <slot name="header" />
@@ -19,7 +19,9 @@ function toggle() {
         <BaseIcon
           name="caret-down"
           class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
-          :class="{ 'transform rotate-180': isOpen }"
+          :class="{
+            'transform rotate-180': isOpen
+          }"
         />
       </div>
     </div>

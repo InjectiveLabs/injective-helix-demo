@@ -18,6 +18,10 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (e: 'click', state: string): void
+}>()
+
 const classes = computed(() => {
   if (props.sm) {
     return 'text-sm'
@@ -29,10 +33,6 @@ const classes = computed(() => {
 
   return 'text-base'
 })
-
-const emit = defineEmits<{
-  (e: 'click', state: string): void
-}>()
 
 const { valueToString: balanceToString } = useBigNumberFormatter(
   computed(() => props.balance)

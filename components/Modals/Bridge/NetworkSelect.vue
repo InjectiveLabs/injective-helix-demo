@@ -1,32 +1,28 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '@/app/data/bridge'
-import { BridgeType } from '@/types'
+import { BridgeField, BridgeForm } from '@/types'
 
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
+const formValues = useFormValues<BridgeForm>()
 
-  bridgeType: {
-    type: String as PropType<BridgeType>,
-    required: true
-  }
+const { isWithdraw } = useBridgeState({
+  formValues
 })
 
-const emit = defineEmits<{
-  (e: 'update:network', state: string): void
-}>()
-
+const { value: network } = useStringField({
+  name: BridgeField.BridgingNetwork
+})
+/**
+ * We remove injective option from options when depositing
+ **/
 const options = computed(() => {
-  // TODO: Remove injective option from options when depositing
   return networksMeta
     .filter((option) => {
-      return props.bridgeType !== BridgeType.Withdraw
-        ? option.value !== BridgingNetwork.Injective
-        : true
+      if (isWithdraw.value) {
+        return true
+      }
+
+      return option.value !== BridgingNetwork.Injective
     })
     .map((option) => {
       return {
@@ -35,15 +31,6 @@ const options = computed(() => {
         icon: option.icon
       }
     })
-})
-
-const value = computed({
-  get(): string {
-    return props.value
-  },
-  set(value: string) {
-    emit('update:network', value)
-  }
 })
 </script>
 
@@ -54,7 +41,7 @@ const value = computed({
     </h3>
 
     <AppSelectField
-      v-model="value"
+      v-model="network"
       selected-class="h-20 bg-gray-1000"
       :options="options"
       :placeholder="$t('connect.selectDerivationPath')"

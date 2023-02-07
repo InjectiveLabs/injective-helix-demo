@@ -32,14 +32,14 @@ const tabCountElement = document.getElementById(
 )
 const actionStatus = reactive(new Status(StatusType.Idle))
 
-const markets = computed(() => {
-  return derivativeStore.markets
+const markets = computed(() =>
+  derivativeStore.markets
     .filter(
       (m) =>
         m.baseToken.denom === props.denom || m.quoteToken.denom === props.denom
     )
     .map(({ marketId }) => marketId)
-})
+)
 
 const filteredPositions = computed(() =>
   positionStore.subaccountPositions.filter((position) => {

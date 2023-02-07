@@ -3,17 +3,15 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
+const isModalOpen = computed(() => modalStore.modals[Modal.USDCDetected])
+
 function handleClose() {
   modalStore.closeModal(Modal.USDCDetected)
 }
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.USDCDetected]"
-    sm
-    @modal:closed="handleClose"
-  >
+  <AppModal :show="isModalOpen" sm @modal:closed="handleClose">
     <template #title>
       <h3>
         {{ $t('trade.usdcLegacyBalanceDetected') }}
@@ -35,5 +33,5 @@ function handleClose() {
         </div>
       </NuxtLink>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

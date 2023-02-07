@@ -40,5 +40,3 @@ declare module '@nuxt/types' {
     $attrs: Record<string, any>
   }
 }
-
-declare module '@skjnldsv/vue-plyr'

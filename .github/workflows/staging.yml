@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - staging
+      - master
 
 jobs:
   staging:
-    if: true
+    if: false
     name: 'Deploy to staging'
     env:
       ## Public

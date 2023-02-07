@@ -70,8 +70,8 @@ export const streamTrades = ({
 
 export const streamSubaccountTrades = ({
   marketId,
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
   marketId?: string
   subaccountId?: string
@@ -99,8 +99,8 @@ export const cancelSubaccountTradesStream = () => {
 
 export const streamSubaccountOrders = ({
   marketId,
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
   marketId?: string
   subaccountId?: string
@@ -128,8 +128,8 @@ export const cancelSubaccountOrdersStream = () => {
 
 export const streamSubaccountOrderHistory = ({
   marketId,
-  subaccountId,
-  callback
+  callback,
+  subaccountId
 }: {
   marketId?: string
   subaccountId?: string
@@ -156,9 +156,9 @@ export const cancelSubaccountOrderHistoryStream = () => {
 }
 
 export const streamSubaccountPositions = ({
-  subaccountId,
   marketId,
-  callback
+  callback,
+  subaccountId
 }: {
   subaccountId?: string
   marketId?: string

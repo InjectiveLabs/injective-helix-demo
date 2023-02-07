@@ -6,10 +6,10 @@ export class UiAnnouncementTransformer {
     announcement: Record<string, any>
   ): Announcement {
     return {
-      announcementId: announcement.id,
+      title: announcement.title,
       htmlUrl: announcement.html_url,
-      createdAt: format(new Date(announcement.created_at), 'MMM d'),
-      title: announcement.title
+      announcementId: announcement.id,
+      createdAt: format(new Date(announcement.created_at), 'MMM d')
     }
   }
 
@@ -27,8 +27,8 @@ export class UiAnnouncementTransformer {
     const [attachmentInfo] = attachment.article_attachments
 
     return {
-      announcementId: attachmentInfo.article_id,
-      contentUrl: attachmentInfo.content_url
+      contentUrl: attachmentInfo.content_url,
+      announcementId: attachmentInfo.article_id
     }
   }
 }

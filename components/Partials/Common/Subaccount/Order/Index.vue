@@ -14,6 +14,7 @@ const props = defineProps({
 })
 
 const isSpot = props.market.type === MarketType.Spot
+
 const store = computed(() => (isSpot ? spotStore : derivativeStore))
 
 const sortedOrders = computed(() =>

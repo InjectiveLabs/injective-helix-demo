@@ -36,9 +36,7 @@ const activeType = ref(FilterList.OpenOrders)
 const actionStatus = reactive(new Status(StatusType.Idle))
 
 const checked = computed({
-  get: (): boolean => {
-    return props.filterByCurrentMarket
-  },
+  get: (): boolean => props.filterByCurrentMarket,
   set: (value: boolean) => {
     emit('update:filterByCurrentMarket', value)
   }

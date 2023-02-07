@@ -3,11 +3,12 @@ name: Helix Testnet Deployments
 on:
   push:
     branches:
-    #  - testnet
+      - testnet
+      - master
 
 jobs:
   testnet:
-    if: true
+    if: false
     name: 'Deploy to testnet'
     runs-on: ubuntu-latest
     env:

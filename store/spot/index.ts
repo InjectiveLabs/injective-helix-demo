@@ -73,19 +73,29 @@ const initialStateFactory = (): SpotStoreState => ({
 export const useSpotStore = defineStore('spot', {
   state: (): SpotStoreState => initialStateFactory(),
   getters: {
+    buys: (state) => state.orderbook?.buys || [],
+    sells: (state) => state.orderbook?.sells || [],
+
     activeMarketIds: (state) =>
       state.markets
         .filter(({ slug }) => MARKETS_SLUGS.spot.includes(slug))
         .map((m) => m.marketId),
 
-    supportedTokens: (state) => [
-      ...new Map(
-        state.markets
-          .map(({ baseToken, quoteToken }) => [baseToken, quoteToken])
-          .flat()
-          .map((item) => [item.denom, item])
-      ).values()
-    ],
+    tradeableDenoms: (state) =>
+      [...state.usdcConversionModalMarkets, ...state.markets].reduce(
+        (denoms, market) => {
+          if (!denoms.includes(market.baseDenom)) {
+            denoms.push(market.baseDenom)
+          }
+
+          if (!denoms.includes(market.quoteDenom)) {
+            denoms.push(market.quoteDenom)
+          }
+
+          return denoms
+        },
+        [] as string[]
+      ),
 
     marketsWithSummary: (state) =>
       state.markets
@@ -129,7 +139,14 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
-      await spotStore.fetchMarketsSummary()
+      const marketsAlreadyFetched = spotStore.markets.length
+
+      if (marketsAlreadyFetched) {
+        await spotStore.fetchMarketsSummary()
+
+        return
+      }
+
       const markets = await indexerSpotApi.fetchMarkets()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
@@ -152,6 +169,8 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         markets: uiMarketsWithToken
       })
+
+      await spotStore.fetchMarketsSummary()
     },
 
     async fetchUsdcConversionMarkets() {

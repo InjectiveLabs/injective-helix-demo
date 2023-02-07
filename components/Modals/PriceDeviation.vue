@@ -3,15 +3,15 @@ import { DEFAULT_PRICE_WARNING_DEVIATION } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const emit = defineEmits<{
-  (e: 'confirmed'): void
+  (e: 'order:confirmed'): void
 }>()
 
 const modalStore = useModalStore()
 
-const showModal = computed(() => modalStore.modals[Modal.PriceDeviation])
+const isModalOpen = computed(() => modalStore.modals[Modal.PriceDeviation])
 
 function confirm() {
-  emit('confirmed')
+  emit('order:confirmed')
   close()
 }
 
@@ -21,8 +21,8 @@ function close() {
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="showModal"
+  <AppModal
+    :show="isModalOpen"
     data-cy="price-deviation-modal"
     sm
     @modal:closed="close"
@@ -59,5 +59,5 @@ function close() {
         </AppButton>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

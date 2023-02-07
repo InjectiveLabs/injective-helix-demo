@@ -1,134 +1,123 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
-import { TokenWithBalance } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import {
   BINANCE_DEPOSIT_ADDRESSES,
+  INJ_GAS_BUFFER_FOR_BRIDGE,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  BridgeForm,
-  BridgeFormValue,
-  BridgeField,
-  BridgeType,
   Modal,
+  BridgeForm,
+  BridgeType,
+  BridgeField,
   TransferDirection
 } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
-
-const props = defineProps({
-  hasFormErrors: Boolean,
-
-  bridgeType: {
-    required: true,
-    type: String as PropType<BridgeType>
-  },
-
-  cachedTokens: {
-    required: true,
-    type: Array as PropType<Token[]>
-  },
-
-  formValues: {
-    required: true,
-    type: Object as PropType<BridgeForm>
-  }
-})
-
-const emit = defineEmits<{
-  (e: 'form:update', state: BridgeFormValue): void
-  (e: 'form:submit'): void
-  (e: 'form:reset', state?: Token): void
-}>()
 
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const { transferableBalancesWithToken } = useBridgeBalance({
-  bridgeForm: computed(() => props.formValues),
-  bridgeType: computed(() => props.bridgeType),
-  cachedTokens: computed(() => props.cachedTokens)
+const formValues = useFormValues<BridgeForm>()
+const resetForm = useResetForm()
+const formErrors = useFormErrors()
+
+const emit = defineEmits<{
+  (e: 'bridge:init'): void
+  (e: 'form:reset', state?: Token): void
+}>()
+
+const {
+  isDeposit,
+  isWithdraw,
+  originIsEthereum,
+  networkIsNotSupported,
+  destinationIsInjective
+} = useBridgeState({
+  formValues
 })
 
-const { destinationIsInjective, isWithdraw, networkIsNotSupported } =
-  useBridgeNetwork({
-    bridgeForm: computed(() => props.formValues),
-    bridgeType: computed(() => props.bridgeType)
-  })
+const { transferableBalancesWithToken } = useBridgeBalance({
+  formValues
+})
 
 const memoRequired = ref(false)
 
-const filteredBalances = computed(() =>
-  transferableBalancesWithToken.value.filter(
-    (balance) => ![usdcTokenDenom.USDCso].includes(balance.denom.toLowerCase())
-  )
+const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
+const hasFormErrors = computed(() => Object.keys(formErrors.value).length > 0)
+
+const shouldConnectMetamask = computed(
+  () => walletStore.isCosmosWallet && isDeposit.value && originIsEthereum.value
 )
 
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
-    UI_DEFAULT_DISPLAY_DECIMALS < props.formValues[BridgeField.Token].decimals
+    UI_DEFAULT_DISPLAY_DECIMALS < formValues.value[BridgeField.Token].decimals
 
   if (defaultDecimalsLessThanTokenDecimals) {
     return UI_DEFAULT_DISPLAY_DECIMALS
   }
 
-  return props.formValues[BridgeField.Token].decimals
+  return formValues.value[BridgeField.Token].decimals
 })
 
 const tokenWithBalance = computed(() => {
-  return transferableBalancesWithToken.value.find(
+  const tokenWithBalance = transferableBalancesWithToken.value.find(
     (b) => b.token.denom === denom.value
   )
-})
 
-const tokenWithAllowance = computed(() => {
-  return tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
-    (token) => token.denom === denom.value
-  )
-})
-
-const tokenWithAllowanceAndBalance = computed(() => {
-  if (!tokenWithBalance.value || !tokenWithAllowance.value) {
-    return { ...props.formValues[BridgeField.Token] } as TokenWithBalance
+  if (!tokenWithBalance) {
+    return
   }
+
+  if (tokenWithBalance.denom !== INJ_DENOM) {
+    return tokenWithBalance
+  }
+
+  const noGasBufferNeededForTransfer =
+    walletStore.isWalletExemptFromGasFee ||
+    formValues.value[BridgeField.TransferDirection] ===
+      TransferDirection.tradingAccountToBank
+
+  if (noGasBufferNeededForTransfer) {
+    return tokenWithBalance
+  }
+
+  const transferableBalance = new BigNumberInWei(tokenWithBalance.balance)
+    .toBase()
+    .minus(INJ_GAS_BUFFER_FOR_BRIDGE)
+  const transferableBalanceCapped = new BigNumberInWei(
+    transferableBalance.gt(0) ? transferableBalance : 0
+  )
+  const transferableBalanceCappedToBase = transferableBalanceCapped.toBase()
 
   return {
-    ...props.formValues[BridgeField.Token],
-    allowance: tokenWithAllowance.value.allowance,
-    balance: tokenWithBalance.value.balance
-  } as TokenWithBalance
-})
-
-const hasAllowance = computed(() => {
-  if ([BridgeType.Transfer, BridgeType.Withdraw].includes(props.bridgeType)) {
-    return true
+    ...tokenWithBalance,
+    balance: transferableBalanceCapped.toFixed(),
+    balanceToBase: transferableBalanceCappedToBase.toFixed()
   }
-
-  if (!tokenWithAllowance.value) {
-    return false
-  }
-
-  return new BigNumberInBase(tokenWithAllowance.value.allowance).gt(0)
 })
 
-const shouldConnectMetamask = computed(() => {
-  return walletStore.isCosmosWallet && props.bridgeType === BridgeType.Deposit
-})
+const needsAllowanceSet = computed(() => {
+  const tokenWithBalanceAndAllowance =
+    tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
+      (token) => token.denom === denom.value
+    )
 
-const isConfirmDisabled = computed(() => {
-  return props.hasFormErrors || props.formValues[BridgeField.Amount] === ''
+  const allowance = new BigNumberInBase(
+    tokenWithBalanceAndAllowance?.allowance || 0
+  )
+
+  return isDeposit.value && originIsEthereum.value && allowance.lte(0)
 })
 
 const { value: denom } = useStringField({
-  name: BridgeField.Denom
-})
-
-const { value: memo, resetField: resetMemo } = useStringField({
-  name: BridgeField.Memo,
-  rule: '',
-  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
+  name: BridgeField.Denom,
+  initialValue: formValues.value[BridgeField.Denom]
 })
 
 const { value: destination, errors: destinationErrors } = useStringField({
@@ -141,92 +130,71 @@ const { value: destination, errors: destinationErrors } = useStringField({
   )
 })
 
-function handleMaxAmountChange(amount: string) {
-  emit('form:update', { field: BridgeField.Amount, value: amount })
+const { value: memo, resetField: resetMemo } = useStringField({
+  name: BridgeField.Memo,
+  rule: '',
+  dynamicRule: computed(() => {
+    return memoRequired.value ? 'required' : ''
+  })
+})
+
+function handleAmountChange({ amount }: { amount: string }) {
+  formValues.value[BridgeField.Amount] = amount
 }
 
 function handleTokenChange() {
   nextTick(() => {
     if (tokenWithBalance.value) {
-      emit('form:update', {
-        field: BridgeField.Amount,
-        value: ''
-      })
-
-      emit('form:update', {
-        field: BridgeField.Token,
-        value: tokenWithBalance.value.token
-      })
+      formValues.value[BridgeField.Amount] = ''
+      formValues.value[BridgeField.Token] = tokenWithBalance.value.token
     }
   })
 }
 
-function handleCloseModal() {
+function handleBridgeInit() {
+  emit('bridge:init')
+}
+
+function handleModalClose() {
+  resetForm()
+
   modalStore.closeModal(Modal.Bridge)
-}
-
-function handleConfirm() {
-  emit('form:submit')
-}
-
-function handleResetBridge() {
-  emit('form:reset')
-}
-
-function handleTransferDirectionSwitch() {
-  const updatedTransferDirection =
-    props.formValues[BridgeField.TransferDirection] ===
-    TransferDirection.bankToTradingAccount
-      ? TransferDirection.tradingAccountToBank
-      : TransferDirection.bankToTradingAccount
-
-  emit('form:update', {
-    field: BridgeField.TransferDirection,
-    value: updatedTransferDirection
-  })
-}
-
-function handleBridgingNetworkChange(bridgingNetwork: string) {
-  handleResetBridge()
-
-  emit('form:update', {
-    field: BridgeField.BridgingNetwork,
-    value: bridgingNetwork
-  })
 }
 
 watch(destination, (value: string) => {
   if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
     memoRequired.value = true
   } else {
-    memo.value = ''
+    formValues.value[BridgeField.Memo] = ''
     memoRequired.value = false
   }
 })
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.Bridge]"
+  <AppModal
+    :show="isModalOpen"
     :ignore="['.v-popper__popper']"
     sm
-    :modal-closed:animation="handleResetBridge"
-    @modal:closed="handleCloseModal"
+    :modal-closed:animation="resetForm"
+    @modal:closed="handleModalClose"
   >
     <template #title>
       <h3 class="flex items-center">
-        <span v-if="bridgeType === BridgeType.Deposit">
+        <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit">
           {{ $t('bridge.depositToInjective') }}
         </span>
-        <span v-else-if="bridgeType === BridgeType.Withdraw">
+        <span
+          v-else-if="formValues[BridgeField.BridgeType] === BridgeType.Withdraw"
+        >
           {{ $t('bridge.withdrawFromInjective') }}
         </span>
         <span v-else>
           {{ $t('bridge.transferFromToTradingAccount') }}
         </span>
 
-        <AppInfoTooltip
-          v-if="bridgeType === BridgeType.Transfer"
+        <CommonInfoTooltip
+          v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
           class="ml-2"
           :tooltip="$t('bridge.transferTitleTooltip')"
         />
@@ -236,23 +204,14 @@ watch(destination, (value: string) => {
     <div v-if="walletStore.isUserWalletConnected">
       <div class="mb-4">
         <ModalsBridgeTransferDirectionSwitch
-          v-if="bridgeType === BridgeType.Transfer"
-          v-bind="{
-            transferDirection: formValues[BridgeField.TransferDirection]
-          }"
-          @transfer-direction:switch="handleTransferDirectionSwitch"
+          v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
         />
 
-        <ModalsBridgeNetworkSelect
-          v-else
-          v-bind="{
-            value: formValues[BridgeField.BridgingNetwork],
-            bridgeType
-          }"
-          @update:network="handleBridgingNetworkChange"
-        >
+        <ModalsBridgeNetworkSelect v-else>
           <template #title>
-            <span v-if="bridgeType === BridgeType.Deposit">
+            <span
+              v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"
+            >
               {{ $t('bridge.selectOriginNetwork') }}
             </span>
             <span v-else>
@@ -282,11 +241,15 @@ watch(destination, (value: string) => {
         </div>
         <div class="my-4 w-full">
           <div class="flex items-center justify-between text-gray-200">
-            <AppInfoTooltip :tooltip="$t('memo.memoTooltip')">
-              <span class="text-xs">
+            <CommonInfoTooltip :tooltip="$t('memo.memoTooltip')">
+              <span class="text-xs flex items-center">
                 {{ $t('memo.memo') }}
+                <BaseIcon
+                  name="circle-info"
+                  class="text-gray-500 w-3 h-3 ml-2"
+                />
               </span>
-            </AppInfoTooltip>
+            </CommonInfoTooltip>
 
             <AppCheckbox v-model="memoRequired" @input="resetMemo">
               {{ $t('common.required') }}
@@ -302,23 +265,26 @@ watch(destination, (value: string) => {
         </div>
       </div>
 
-      <div
-        v-if="
-          !networkIsNotSupported &&
-          ![usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-            formValues[BridgeField.Token].denom.toLowerCase()
-          )
-        "
-      >
-        <div v-if="hasAllowance">
+      <ModalsBridgeNotSupportedBridgeTypeNote
+        v-if="networkIsNotSupported"
+        v-bind="{
+          selectedNetwork: formValues[BridgeField.BridgingNetwork]
+        }"
+      />
+
+      <div v-else>
+        <div>
           <AppSelectToken
             v-model:denom="denom"
-            required
-            :amount-field-name="BridgeField.Amount"
-            :max-decimals="maxDecimals"
-            :options="filteredBalances"
+            v-bind="{
+              maxDecimals,
+              required: true,
+              inputDisabled: needsAllowanceSet,
+              amountFieldName: BridgeField.Amount,
+              options: transferableBalancesWithToken
+            }"
             @update:denom="handleTokenChange"
-            @update:max="handleMaxAmountChange"
+            @update:max="handleAmountChange"
           >
             <span> {{ $t('bridge.amount') }} </span>
           </AppSelectToken>
@@ -337,22 +303,28 @@ watch(destination, (value: string) => {
 
           <template v-else>
             <CommonAllowance
-              v-if="!hasAllowance"
-              :token-with-balance="tokenWithAllowanceAndBalance"
+              v-if="needsAllowanceSet && tokenWithBalance"
+              :token-with-balance="tokenWithBalance"
             />
 
             <AppButton
               v-else
               lg
-              :disabled="isConfirmDisabled"
+              :disabled="hasFormErrors || formValues[BridgeField.Amount] === ''"
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-modal-transfer-now-button"
-              @click="handleConfirm"
+              @click="handleBridgeInit"
             >
-              <span v-if="bridgeType === BridgeType.Deposit">
+              <span
+                v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"
+              >
                 {{ $t('bridge.depositNow') }}
               </span>
-              <span v-else-if="bridgeType === BridgeType.Withdraw">
+              <span
+                v-else-if="
+                  formValues[BridgeField.BridgeType] === BridgeType.Withdraw
+                "
+              >
                 {{ $t('bridge.withdrawNow') }}
               </span>
               <span v-else>
@@ -362,16 +334,7 @@ watch(destination, (value: string) => {
           </template>
         </div>
       </div>
-
-      <ModalsBridgeNotSupportedBridgeTypeNote
-        v-else
-        v-bind="{
-          formValues,
-          selectedNetwork: formValues[BridgeField.BridgingNetwork],
-          bridgeType
-        }"
-      />
     </div>
     <CommonUserNotConnectedNote v-else />
-  </AppModalWrapper>
+  </AppModal>
 </template>

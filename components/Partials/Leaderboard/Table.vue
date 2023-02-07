@@ -9,11 +9,7 @@ defineProps({
   }
 })
 
-const leaderboardStore = useLeaderboardStore()
-
-const entries = computed(() => {
-  return leaderboardStore.entries.slice(0, 6)
-})
+const entries = computed(() => useLeaderboardStore().entries.slice(0, 6))
 </script>
 
 <template>
@@ -54,7 +50,7 @@ const entries = computed(() => {
           :key="`leaderboard-row-${index}`"
           :rank="index + 1"
           :address="entry.accountID"
-          :perc="entry.perc"
+          :percentage="entry.perc"
           :volume="entry.volume"
         />
 

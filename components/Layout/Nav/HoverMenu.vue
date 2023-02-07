@@ -9,15 +9,15 @@ const emit = defineEmits<{
   (e: 'dropdown:toggle', state: boolean): void
 }>()
 
-function show() {
+function handleMouseEnter() {
   emit('dropdown:toggle', true)
 }
 
-function hide() {
+function handleMouseLeave() {
   emit('dropdown:toggle', false)
 }
 
-function updateShown(value: boolean) {
+function handleUpdate(value: boolean) {
   emit('dropdown:toggle', value)
 }
 </script>
@@ -31,9 +31,9 @@ function updateShown(value: boolean) {
     :distance="8"
     :shown="shown"
     :triggers="['click', 'hover', 'focus']"
-    @update:shown="updateShown"
+    @update:shown="handleUpdate"
   >
-    <div @mouseenter="show" @mouseleave="hide">
+    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
       <slot />
     </div>
 

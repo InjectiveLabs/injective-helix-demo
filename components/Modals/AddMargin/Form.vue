@@ -11,19 +11,19 @@ const { $onError } = useNuxtApp()
 const { handleSubmit, resetForm } = useForm()
 
 const props = defineProps({
-  balance: {
-    type: Object as PropType<BigNumberInBase>,
+  market: {
+    type: Object as PropType<UiDerivativeMarketWithToken>,
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+  balance: {
+    type: Object as PropType<BigNumberInBase>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  (e: 'close'): void
+  (e: 'modal:close'): void
 }>()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -51,7 +51,7 @@ function handleMax() {
   setAmountValue(availableMarginToFixed.value)
 }
 
-const submit = handleSubmit(() => {
+const handleFormSubmit = handleSubmit(() => {
   status.setLoading()
 
   positionStore
@@ -62,8 +62,7 @@ const submit = handleSubmit(() => {
     .then(() => {
       resetForm()
       success({ title: t('trade.success_added_margin') })
-
-      emit('close')
+      emit('modal:close')
     })
     .catch($onError)
     .finally(() => {
@@ -79,7 +78,7 @@ const submit = handleSubmit(() => {
         <p class="uppercase text-xs font-semibold text-gray-200">
           {{ $t('trade.availableMargin') }}
         </p>
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2 text-gray-200"
           :tooltip="$t('trade.availableMarginTooltip')"
         />
@@ -98,7 +97,7 @@ const submit = handleSubmit(() => {
     <div class="mt-4">
       <div class="flex flex-wrap">
         <div class="w-full">
-          <AppNumericInput
+          <AppInputNumeric
             v-model="amountValue"
             :errors="status.isLoading() ? [] : amountErrors"
             :max="availableMarginToString"
@@ -122,7 +121,7 @@ const submit = handleSubmit(() => {
             <template #addon>
               {{ market.quoteToken.symbol }}
             </template>
-          </AppNumericInput>
+          </AppInputNumeric>
 
           <p
             v-if="amountErrors.length > 0"
@@ -138,7 +137,7 @@ const submit = handleSubmit(() => {
             :disabled="amountErrors.length > 0"
             :status="status"
             data-cy="add-margin-modal-execute-button"
-            @click="submit"
+            @click="handleFormSubmit"
           >
             {{ $t('trade.add_margin') }}
           </AppButton>

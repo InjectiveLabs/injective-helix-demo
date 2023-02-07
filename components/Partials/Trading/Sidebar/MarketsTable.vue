@@ -7,6 +7,7 @@ import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
 
 enum SortableKeys {
   Market = 'market',
+  Change = 'change',
   Volume = 'volume'
 }
 
@@ -47,13 +48,23 @@ const sortedMarkets = computed(() => {
     return filteredMarkets.value
   }
 
-  const list = [...filteredMarkets.value].sort(
+  const markets = [...filteredMarkets.value].sort(
     (
       m1: UiMarketAndSummaryWithVolumeInUsd,
       m2: UiMarketAndSummaryWithVolumeInUsd
     ) => {
       if (sortBy.value === SortableKeys.Market) {
         return m2.market.ticker.localeCompare(m1.market.ticker)
+      }
+
+      if (sortBy.value === SortableKeys.Change) {
+        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
+          return m1.market.ticker.localeCompare(m2.market.ticker)
+        }
+
+        return new BigNumberInBase(m2.summary.change)
+          .minus(m1.summary.change)
+          .toNumber()
       }
 
       if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
@@ -65,7 +76,7 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return ascending.value ? list.reverse() : list
+  return ascending.value ? markets.reverse() : markets
 })
 </script>
 
@@ -77,16 +88,14 @@ const sortedMarkets = computed(() => {
       class="mb-2"
     />
 
-    <CommonTableHeader classes="grid grid-cols-2 md:grid">
-      <div class="flex flex-col xl:flex-row items-start xl:items-center gap-1">
+    <CommonTableHeader classes="flex flex-wrap mb-2 max-3xl:px-0">
+      <div class="flex items-center flex-1 text-2xs">
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
           :value="SortableKeys.Market"
         >
-          <span
-            class="text-gray-200 text-xs font-normal order-last whitespace-nowrap"
-          >
+          <span class="text-gray-200 font-normal order-last whitespace-nowrap">
             {{ $t('trade.market') }} /
           </span>
         </AppSortableHeaderItem>
@@ -96,19 +105,31 @@ const sortedMarkets = computed(() => {
           v-model:ascending="ascending"
           data-cy="markets-volume_24h-table-header"
           :value="SortableKeys.Volume"
+          icon-class="order-last"
         >
-          <span class="text-gray-200 text-xs font-normal order-last">
+          <span class="text-gray-200 font-normal ml-1">
             {{ $t('trade.volume') }}
           </span>
         </AppSortableHeaderItem>
       </div>
 
       <div
-        class="flex flex-col xl:flex-row items-end xl:items-center gap-1 text-gray-200 text-xs justify-self-end"
+        class="flex items-center justify-end flex-1 text-2xs whitespace-nowrap"
       >
-        <span class="font-normal">
-          {{ $t('trade.price') }} / {{ $t('trade.market_change') }}
+        <span class="font-normal text-gray-200">
+          {{ $t('trade.price') }} /
         </span>
+        <AppSortableHeaderItem
+          v-model:sort-by="sortBy"
+          v-model:ascending="ascending"
+          data-cy="markets-volume_24h-table-header"
+          :value="SortableKeys.Change"
+          icon-class="order-last"
+        >
+          <span class="text-gray-200 font-normal">
+            {{ $t('trade.market_change_24h') }}
+          </span>
+        </AppSortableHeaderItem>
       </div>
     </CommonTableHeader>
 
@@ -118,16 +139,16 @@ const sortedMarkets = computed(() => {
     >
       <PartialsTradingSidebarMarketsTableRow
         v-for="(marketSummary, index) in sortedMarkets"
-        :key="`market-row-${index}-${market.marketId}`"
-        :class="{
-          'pt-4': index === 0,
-          'pb-4': index + 1 === sortedMarkets.length
+        v-bind="{
+          ...$attrs,
+          market: marketSummary.market,
+          summary: marketSummary.summary,
+          volumeInUsd: marketSummary.volumeInUsd,
+          isCurrentMarket: market.marketId === marketSummary.market.marketId
         }"
-        :market="marketSummary.market"
-        :summary="marketSummary.summary"
-        :volume-in-usd="marketSummary.volumeInUsd"
-        :is-current-market="market.marketId === marketSummary.market.marketId"
-        v-bind="$attrs"
+        :key="`market-row-${index}-${marketSummary.market.marketId}`"
+        :aaa="marketSummary.market.marketId"
+        :bbb="market.marketId"
       />
 
       <template #empty>

@@ -11,7 +11,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModalWrapper :show="isModalOpen" sm hide-close-button>
+  <AppModal :show="isModalOpen" sm hide-close-button>
     <template #title>
       <h3>
         {{ $t('marketBeta.title') }}
@@ -30,5 +30,5 @@ function closeModal() {
         </AppButton>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

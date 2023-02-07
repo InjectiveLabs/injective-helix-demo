@@ -3,11 +3,11 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
-import { marketStableCoinQuoteSymbols } from '~~/app/data/market'
+import { stableCoinDenoms } from '@/app/data/token'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_MINIMAL_ABBREVIATION_FLOOR
-} from '~~/app/utils/constants'
+} from '@/app/utils/constants'
 
 const appStore = useAppStore()
 
@@ -28,10 +28,6 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits<{
-  (e: 'close'): void
-}>()
-
 const marketRoute = getMarketRoute(props.market) || { name: 'markets' }
 
 const isFavorite = computed(() => {
@@ -39,7 +35,7 @@ const isFavorite = computed(() => {
 })
 
 const formatterOptions = computed(() => {
-  return marketStableCoinQuoteSymbols.includes(props.market.quoteToken.symbol)
+  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
@@ -57,10 +53,6 @@ const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
 
 function updateWatchList() {
   appStore.updateFavoriteMarkets(props.market.marketId)
-}
-
-function handleClickEvent() {
-  emit('close')
 }
 </script>
 
@@ -87,7 +79,6 @@ function handleClickEvent() {
       class="cursor-pointer flex items-center justify-between w-full"
       :to="marketRoute"
       data-cy="markets-trade-link"
-      @click="handleClickEvent"
     >
       <div class="flex flex-col">
         <span

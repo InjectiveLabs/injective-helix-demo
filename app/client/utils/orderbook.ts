@@ -37,13 +37,13 @@ export const getAggregationPrice = ({
 }
 
 export const calculateAveragePrice = ({
-  isBase,
+  isBaseAmount,
   isSpot,
   market,
   records,
   quantity
 }: {
-  isBase: boolean
+  isBaseAmount: boolean
   isSpot: boolean
   records: UiPriceLevel[]
   quantity: BigNumberInBase
@@ -71,8 +71,8 @@ export const calculateAveragePrice = ({
       : new BigNumberInWei(o.price).toBase(quoteToken.decimals)
 
     const orderNotional = orderQuantity.times(orderPrice)
-    const quantityToDeduct = isBase ? orderQuantity : orderNotional
-    const quantityConvertedToBase = isBase
+    const quantityToDeduct = isBaseAmount ? orderQuantity : orderNotional
+    const quantityConvertedToBase = isBaseAmount
       ? quantityToFill
       : quantityToFill.dividedBy(orderPrice) // baseQuantity calculated using quote amount
 
@@ -101,17 +101,17 @@ export const calculateAveragePrice = ({
 }
 
 export const calculateWorstPrice = ({
-  isBase,
+  market,
   isSpot,
   records,
   quantity,
-  market
+  isBaseAmount
 }: {
-  isBase: boolean
   isSpot: Boolean
   records: UiPriceLevel[]
   quantity: BigNumberInBase
   market: UiMarketWithToken
+  isBaseAmount: boolean
 }) => {
   let worstPrice = ZERO_IN_BASE
   let quantityToFill = quantity
@@ -132,7 +132,7 @@ export const calculateWorstPrice = ({
       : new BigNumberInWei(o.price).toBase(quoteToken.decimals)
 
     const orderNotional = orderQuantity.times(orderPrice)
-    const quantityToDeduct = isBase ? orderQuantity : orderNotional
+    const quantityToDeduct = isBaseAmount ? orderQuantity : orderNotional
 
     worstPrice = orderPrice
 

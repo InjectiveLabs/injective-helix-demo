@@ -23,16 +23,16 @@ export class UiBridgeTransformer {
       receiver: transaction.receiver,
       sender: transaction.sender,
       txHash: transaction.hash,
-      explorerLink: `${getExplorerUrl(NETWORK)}/transaction/${
-        transaction.hash
-      }/`,
       timestamp: Date.parse(transaction.blockTimestamp),
       state: BridgeTransactionState.Completed,
       blockHeight: transaction.blockNumber,
       type: getBridgeTransactionType(
         BridgingNetwork.Injective,
         BridgingNetwork.Injective
-      )
+      ),
+      explorerLink: `${getExplorerUrl(NETWORK)}/transaction/${
+        transaction.hash
+      }/`
     }
   }
 
@@ -58,13 +58,13 @@ export class UiBridgeTransformer {
       amount: transaction.amount,
       denom: transaction.denom,
       txHash: '',
-      explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}/`,
       timestamp: transaction.executedAt,
       state: BridgeTransactionState.Completed,
       type: getBridgeTransactionType(
         BridgingNetwork.Injective,
         BridgingNetwork.Injective
-      )
+      ),
+      explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}/`
     }
   }
 }

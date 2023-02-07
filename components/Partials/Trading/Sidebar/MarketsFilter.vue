@@ -26,18 +26,14 @@ const filterList = [
 ]
 
 const activeTypeValue = computed({
-  get: (): string => {
-    return props.activeType
-  },
+  get: (): string => props.activeType,
   set: (type: string) => {
     emit('update:activeType', type)
   }
 })
 
 const searchValue = computed({
-  get: (): string => {
-    return props.search
-  },
+  get: (): string => props.search,
   set: (value: string) => {
     emit('update:search', value)
   }
@@ -89,7 +85,7 @@ const searchValue = computed({
     <div class="w-full mt-4">
       <AppSearch
         v-model="searchValue"
-        class="w-full"
+        class="w-full text-xs py-2"
         data-cy="markets-search-input"
         :placeholder="$t('trade.search_markets')"
       />

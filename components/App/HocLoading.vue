@@ -3,8 +3,8 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 defineProps({
-  showLoading: Boolean,
   noPadding: Boolean,
+  showLoading: Boolean,
 
   status: {
     type: Object as PropType<Status>,

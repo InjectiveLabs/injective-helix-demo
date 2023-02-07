@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 defineProps({
   ascending: Boolean,
+
   value: {
     type: String,
     required: true

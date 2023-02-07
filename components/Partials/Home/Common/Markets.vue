@@ -16,26 +16,24 @@ const exchangeStore = useExchangeStore()
 const props = defineProps({
   isHero: Boolean,
 
-  filterType: {
-    type: String as PropType<MarketFilterType>,
-    default: MarketFilterType.Volume
-  },
-
   limit: {
     type: Number,
     default: 3
+  },
+
+  filterType: {
+    type: String as PropType<MarketFilterType>,
+    default: MarketFilterType.Volume
   }
 })
 
 const status = reactive(new Status(StatusType.Idle))
 
-const markets = computed(() => {
-  return [
-    ...derivativeStore.markets,
-    ...spotStore.markets,
-    ...exchangeStore.upcomingMarkets
-  ]
-})
+const markets = computed(() => [
+  ...derivativeStore.markets,
+  ...spotStore.markets,
+  ...exchangeStore.upcomingMarkets
+])
 
 const marketsWithSummary = computed<UiMarketAndSummary[]>(() => [
   ...derivativeStore.marketsWithSummary,
@@ -82,9 +80,9 @@ const filteredMarketsList = computed(() => {
   return filteredMarkets
 })
 
-const marketsList = computed(() => {
-  return filteredMarketsList.value.slice(0, props.limit)
-})
+const marketsList = computed(() =>
+  filteredMarketsList.value.slice(0, props.limit)
+)
 
 const heroMarketsList = computed(() => {
   const [latestMarket, secondLatestMarket] = newMarketsList.value
@@ -98,13 +96,9 @@ const heroMarketsList = computed(() => {
     : [...marketsList.value, latestMarket]
 })
 
-const categorizedMarketsList = computed(() => {
-  if (props.isHero) {
-    return heroMarketsList.value
-  }
-
-  return marketsList.value
-})
+const categorizedMarketsList = computed(() =>
+  props.isHero ? heroMarketsList.value : marketsList.value
+)
 
 useIntervalFn(() => appStore.pollMarkets(), 5 * 1000)
 </script>

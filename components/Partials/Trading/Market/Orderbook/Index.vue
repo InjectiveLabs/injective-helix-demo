@@ -13,7 +13,11 @@ import {
   MarketType,
   UiSpotLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
+import {
+  DerivativeOrderSide,
+  PriceLevel,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ts'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
@@ -37,26 +41,18 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 
-const subaccountOrders = computed(() =>
-  isSpot
-    ? spotStore.subaccountOrders
-    : (derivativeStore.subaccountOrders as (
-        | UiSpotLimitOrder
-        | UiDerivativeLimitOrder
-      )[])
+const subaccountOrders = computed<
+  Array<UiSpotLimitOrder | UiDerivativeLimitOrder>
+>(() =>
+  isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
 
-const buys = computed(() => {
-  const orderbook = isSpot ? spotStore.orderbook : derivativeStore.orderbook
-
-  return orderbook?.buys || []
-})
-
-const sells = computed(() => {
-  const orderBook = isSpot ? spotStore.orderbook : derivativeStore.orderbook
-
-  return orderBook?.sells || []
-})
+const buys = computed<PriceLevel[]>(() =>
+  isSpot ? spotStore.buys : derivativeStore.buys
+)
+const sells = computed<PriceLevel[]>(() =>
+  isSpot ? spotStore.sells : derivativeStore.sells
+)
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
@@ -73,12 +69,12 @@ const buyRecordListRef = ref<{ element: HTMLElement }[]>([])
 const {
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(computed(() => props.market))
+} = useSpotLastPrice(computed(() => props.market))
 
 const {
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(computed(() => props.market))
+} = useDerivativeLastPrice(computed(() => props.market))
 
 const lastTradedPrice = computed(() =>
   isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
@@ -645,7 +641,7 @@ function handleBuyOrderHover(position: number | null) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <AppInfoTooltip
+        <CommonInfoTooltip
           v-if="!isSpot"
           :tooltip="$t('trade.mark_price_tooltip_verbose')"
           data-cy="orderbook-mark-price-text-content"
@@ -655,7 +651,7 @@ function handleBuyOrderHover(position: number | null) {
           >
             {{ markPriceToFormat }}
           </span>
-        </AppInfoTooltip>
+        </CommonInfoTooltip>
       </div>
     </div>
 

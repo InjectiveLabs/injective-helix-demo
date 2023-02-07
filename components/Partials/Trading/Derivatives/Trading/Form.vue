@@ -52,7 +52,7 @@ const {
 } = useForm<TradeForm>()
 
 const defaultStep = '1'
-const isBase = ref(true)
+const isBaseAmount = ref(true)
 const status = reactive(new Status(StatusType.Idle))
 
 const formValues = computed(() => values)
@@ -129,9 +129,7 @@ const orderTypeToSubmit = computed(() => {
   }
 })
 
-const { lastTradedPrice } = useDerivativeLastPriceFormatter(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useDerivativeLastPrice(computed(() => props.market))
 
 const {
   maxAmountOnOrderbook,
@@ -141,7 +139,7 @@ const {
   worstPriceWithSlippage
 } = useDerivativePrice({
   formValues,
-  isBase,
+  isBaseAmount,
   market: computed(() => props.market)
 })
 
@@ -414,7 +412,7 @@ watch(executionPrice, () => {
     return
   }
 
-  updateAmount({ isBase: isBase.value })
+  updateAmount({ isBaseAmount: isBaseAmount.value })
 })
 
 watch(
@@ -446,18 +444,23 @@ function updateFormValue({ field, value }: TradeFormValue) {
 
 function updateAmount({
   amount,
-  isBase: isBaseUpdate
+  isBaseAmount: isBaseAmountUpdate
 }: {
   amount?: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  isBase.value = isBaseUpdate
+  isBaseAmount.value = isBaseAmountUpdate
 
-  const amountToUpdate = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+  const amountToUpdate = updateAmountFromBase({
+    amount,
+    isBaseAmount: isBaseAmountUpdate
+  })
 
   if (amountToUpdate) {
     updateFormValue({
-      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      field: isBaseAmountUpdate
+        ? TradeField.QuoteAmount
+        : TradeField.BaseAmount,
       value: amountToUpdate
     })
   }
@@ -688,7 +691,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         formErrors,
         formValues,
         initialMinMarginRequirementError,
-        isBase,
+        isBaseAmount,
         isBuy,
         lastTradedPrice,
         market,
@@ -709,7 +712,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     <PartialsTradingFormDebug
       v-if="DEBUG_CALCULATION"
       v-bind="{
-        isBase,
+        isBaseAmount,
         isBuy,
         fees,
         feeRate,
@@ -768,9 +771,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         tradingType: formValues[TradeField.TradingType],
         triggerPrice: triggerPrice
       }"
-      @confirmed="handleSubmit"
+      @order:confirmed="handleSubmit"
     />
 
-    <ModalsPriceDeviation @confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
   </div>
 </template>

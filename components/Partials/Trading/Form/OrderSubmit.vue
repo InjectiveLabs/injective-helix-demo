@@ -11,6 +11,7 @@ import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import { TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
+const bankStore = useBankStore()
 const walletStore = useWalletStore()
 const { t } = useLang()
 const { error } = useNotifications()
@@ -110,7 +111,7 @@ const disabled = computed(() => {
   const commonErrors =
     hasError.value ||
     !walletStore.isUserWalletConnected ||
-    !walletStore.hasEnoughInjForGas ||
+    !bankStore.hasEnoughInjForGas ||
     !props.hasBaseAmount
 
   if (commonErrors) {
@@ -138,8 +139,8 @@ const disabled = computed(() => {
   return false
 })
 
-function onSubmit() {
-  handleClickPlaceOrderTrack()
+function handleSubmit() {
+  trackPlaceOrder()
 
   if (!walletStore.isUserWalletConnected) {
     return error({ title: t('connect.pleaseConnectToYourWallet') })
@@ -160,7 +161,7 @@ function onSubmit() {
   emit('submit:request')
 }
 
-function handleClickPlaceOrderTrack() {
+function trackPlaceOrder() {
   const actualSlippageTolerance = tradingTypeMarket.value
     ? props.formValues[TradeField.SlippageTolerance]
     : ''
@@ -201,7 +202,7 @@ function handleClickPlaceOrderTrack() {
       }"
       class="w-full rounded font-sembold shadow-none"
       data-cy="trading-page-execute-button"
-      @click="onSubmit"
+      @click="handleSubmit"
     >
       <span v-if="isSpot">{{
         isBuy ? $t('trade.buy') : $t('trade.sell')
