@@ -1,19 +1,24 @@
+import type { Ref } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
 import {
-  BalanceWithToken,
-  BridgeField,
+  BridgeForm,
   BridgeType,
-  TransferDirection
+  BalanceWithToken,
+  TransferDirection,
+  BridgeField
 } from '@/types'
 
 /**
  * For the bridge balances, we only use
  * the tradeable tokens that we have on the DEX
  */
-export function useBridgeBalance() {
-  const state = useBridgeState()
+export function useBridgeBalance({
+  formValues
+}: {
+  formValues: Ref<Partial<BridgeForm>>
+}) {
   const accountStore = useAccountStore()
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
@@ -80,13 +85,14 @@ export function useBridgeBalance() {
   })
 
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
-    if (state.bridgeType.value === BridgeType.Deposit) {
+    if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
       return erc20Balances.value
     }
 
-    if (state.bridgeType.value === BridgeType.Withdraw) {
+    if (formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw) {
       const destinationIsEthereum =
-        state.form[BridgeField.BridgingNetwork] === BridgingNetwork.Ethereum
+        formValues.value[BridgeField.BridgingNetwork] ===
+        BridgingNetwork.Ethereum
 
       if (destinationIsEthereum) {
         return bankBalances.value.filter(
@@ -97,7 +103,7 @@ export function useBridgeBalance() {
       return bankBalances.value
     }
 
-    return state.form[BridgeField.TransferDirection] ===
+    return formValues.value[BridgeField.TransferDirection] ===
       TransferDirection.bankToTradingAccount
       ? bankBalances.value
       : accountBalances.value
