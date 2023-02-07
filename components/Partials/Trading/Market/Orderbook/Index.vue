@@ -69,12 +69,12 @@ const buyRecordListRef = ref<{ element: HTMLElement }[]>([])
 const {
   lastTradedPrice: spotLastTradedPrice,
   lastTradedPriceChange: spotLastTradedPriceChange
-} = useSpotLastPriceFormatter(computed(() => props.market))
+} = useSpotLastPrice(computed(() => props.market))
 
 const {
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
-} = useDerivativeLastPriceFormatter(computed(() => props.market))
+} = useDerivativeLastPrice(computed(() => props.market))
 
 const lastTradedPrice = computed(() =>
   isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value

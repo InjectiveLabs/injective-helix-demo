@@ -3,7 +3,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { Change, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
-export function useSpotLastPriceFormatter(market: Ref<UiMarketWithToken>) {
+export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
   const spotStore = useSpotStore()
 
   const latestTrade = computed(() => {

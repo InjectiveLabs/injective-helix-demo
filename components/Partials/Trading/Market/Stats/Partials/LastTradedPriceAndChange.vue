@@ -25,14 +25,15 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Loading))
 
-const isSpot = computed(() => props.market.type === MarketType.Spot)
-
-const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPriceFormatter(
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
 )
 
-const { lastTradedPrice: derivativeLastTradedPrice } =
-  useDerivativeLastPriceFormatter(computed(() => props.market))
+const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
+
+const isSpot = computed(() => props.market.type === MarketType.Spot)
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
@@ -44,6 +45,14 @@ const lastTradedPrice = computed(() => {
   return new BigNumberInBase(
     props.summary.lastPrice || props.summary.price || 0
   )
+})
+
+const percentageChangeStatus = computed(() => {
+  if (change.value.eq(0)) {
+    return Change.NoChange
+  }
+
+  return change.value.gt(0) ? Change.Increase : Change.Decrease
 })
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
@@ -64,14 +73,6 @@ const { valueToFixed: changeToFormat, valueToBigNumber: change } =
       return props.summary.change
     })
   )
-
-const percentageChangeStatus = computed(() => {
-  if (change.value.eq(0)) {
-    return Change.NoChange
-  }
-
-  return change.value.gt(0) ? Change.Increase : Change.Decrease
-})
 
 watch(lastTradedPriceToFormat, (newPrice: string) => {
   const marketTypePrefix = [
