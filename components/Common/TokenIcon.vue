@@ -17,9 +17,9 @@ const props = defineProps({
   }
 })
 
-const logoPath = computed(() => {
-  return getTokenLogoWithVendorPathPrefix(props.token.logo)
-})
+const logoPath = computed(() =>
+  getTokenLogoWithVendorPathPrefix(props.token.logo)
+)
 
 const sizeClasses = computed(() => {
   if (props.sm) {

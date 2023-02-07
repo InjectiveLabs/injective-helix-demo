@@ -22,7 +22,10 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <AppInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
+          <CommonInfoTooltip
+            class="ml-2"
+            :tooltip="$t('trade.amount_tooltip')"
+          />
         </div>
       </th>
       <th v-if="!isBinaryOptionsPage" class="text-right">

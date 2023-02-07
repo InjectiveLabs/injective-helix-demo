@@ -14,7 +14,7 @@ onWalletConnected(() => {
     .initTradeAndEarn()
     .then(() => {
       Promise.all([
-        tokenStore.getInjUsdPrice(),
+        tokenStore.fetchInjUsdPrice(),
         exchangeStore.fetchParams(),
         exchangeStore.fetchTradingRewardsCampaign()
       ])

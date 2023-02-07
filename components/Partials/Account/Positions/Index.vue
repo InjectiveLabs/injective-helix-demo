@@ -12,6 +12,17 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
+const sideOptions = [
+  {
+    display: t('account.positions.side.short'),
+    value: 'short'
+  },
+  {
+    display: t('account.positions.side.long'),
+    value: 'long'
+  }
+]
+
 const side = ref('')
 const marketDenom = ref('')
 
@@ -23,7 +34,7 @@ const marketIds = computed(() => {
     return []
   }
 
-  return derivativeStore.markets
+  return markets.value
     .filter((m) => {
       return (
         m.baseToken.denom === marketDenom.value ||
@@ -68,19 +79,6 @@ const supportedTokens = computed(() => {
   return uniqueTokens
 })
 
-const sideOptions = computed(() => {
-  return [
-    {
-      display: t('account.positions.side.short'),
-      value: 'short'
-    },
-    {
-      display: t('account.positions.side.long'),
-      value: 'long'
-    }
-  ]
-})
-
 const marketOptions = computed(() => {
   return supportedTokens.value.map(({ token }) => {
     return {
@@ -108,7 +106,7 @@ function handleCloseAllPositions() {
 }
 
 function closeAllPositions() {
-  return positionStore
+  positionStore
     .closeAllPosition(positions.value)
     .then(() => {
       success({
@@ -120,7 +118,6 @@ function closeAllPositions() {
 
 function closePosition() {
   const [position] = positions.value
-
   const market = markets.value.find((m) => m.marketId === position.marketId)
 
   if (!market) {
@@ -133,7 +130,7 @@ function closePosition() {
     )
   }
 
-  return positionStore
+  positionStore
     .closePosition({
       position,
       market
@@ -154,7 +151,7 @@ function closePosition() {
       v-model:side="side"
       :market-options="marketOptions"
       :side-options="sideOptions"
-      @close-all-positions="handleCloseAllPositions"
+      @positions:close="handleCloseAllPositions"
     />
 
     <table class="w-full border-collapse hidden lg:table">
@@ -162,7 +159,7 @@ function closePosition() {
 
       <PartialsAccountPositionsTableRow
         v-for="(position, i) in filteredPositions"
-        :key="i"
+        :key="`position-${i}`"
         :position="position"
         :hide-balances="hideBalances"
       />
@@ -171,7 +168,7 @@ function closePosition() {
     <table class="w-full border-collapse table lg:hidden">
       <PartialsAccountPositionsTableRowMobile
         v-for="(position, i) in filteredPositions"
-        :key="i"
+        :key="`position-${i}`"
         class=""
         :position="position"
         :hide-balances="hideBalances"

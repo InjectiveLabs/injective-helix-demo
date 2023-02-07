@@ -9,15 +9,9 @@ const feeDiscountAccountInfo = computed(() => {
   return exchangeStore.feeDiscountAccountInfo
 })
 
-const tierLevel = computed(() => {
-  if (!feeDiscountAccountInfo.value) {
-    return 0
-  }
-
-  return new BigNumberInBase(
-    feeDiscountAccountInfo.value.tierLevel || 0
-  ).toNumber()
-})
+const tierLevel = computed(() =>
+  new BigNumberInBase(feeDiscountAccountInfo.value?.tierLevel || 0).toNumber()
+)
 
 const makerFeeDiscount = computed(() => {
   if (!feeDiscountAccountInfo.value) {

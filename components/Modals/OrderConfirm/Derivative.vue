@@ -43,7 +43,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'confirmed'): void
+  (e: 'order:confirmed'): void
 }>()
 
 const appStore = useAppStore()
@@ -101,7 +101,7 @@ const { valueToString: triggerPriceToFormat } = useBigNumberFormatter(
 )
 
 function confirm() {
-  emit('confirmed')
+  emit('order:confirmed')
   close()
 }
 
@@ -118,7 +118,7 @@ function handleSkipTradeConfirmationModal() {
 </script>
 
 <template>
-  <AppModalWrapper
+  <AppModal
     :show="showModal"
     :sm="!!tradingType"
     data-cy="price-deviation-modal"
@@ -257,5 +257,5 @@ function handleSkipTradeConfirmationModal() {
         </AppCheckbox>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
+const { t } = useLang()
+
 const FilterList = {
-  // QuoteDenoms: 'QuoteDenoms',
   Boosted: 'Boosted',
   Disqualified: 'Disqualified'
 }
-
-const { t } = useLang()
 
 const activeType = ref(FilterList.Boosted)
 </script>
@@ -23,10 +22,6 @@ const activeType = ref(FilterList.Boosted)
               class="text-sm"
               :class="[active ? 'text-blue-500' : 'text-gray-500']"
             >
-              <!-- <span v-if="filterType === FilterList.QuoteDenoms">
-                {{ t('trade.quote_denoms') }}
-              </span> -->
-
               <span v-if="filterType === FilterList.Boosted">
                 {{ t('trade.boosted_markets') }}
               </span>
@@ -51,9 +46,6 @@ const activeType = ref(FilterList.Boosted)
       <PartialsTradeAndEarnMarketsInfoDisqualified
         v-if="activeType === FilterList.Disqualified"
       />
-      <!-- <PartialsTradeAndEarnMarketsInfoQuoteDenoms
-        v-if="activeType === FilterList.QuoteDenoms"
-      /> -->
     </div>
   </AppPanel>
 </template>

@@ -1,33 +1,36 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
-import { TransferDirection, TransferSide } from '@/types'
-import { transferSideMeta } from '~/app/data/bridge'
+import {
+  BridgeForm,
+  BridgeField,
+  TransferDirection,
+  TransferSide
+} from '@/types'
+import { transferSideMeta } from '@/app/data/bridge'
 
-const props = defineProps({
-  transferDirection: {
-    type: String as PropType<TransferDirection>,
-    required: true
-  }
-})
+const formValues = useFormValues<BridgeForm>()
 
-const emit = defineEmits<{
-  (e: 'transfer-direction:switch'): void
-}>()
-
-const originNetworkMeta = computed(() => {
-  return props.transferDirection === TransferDirection.bankToTradingAccount
+const originNetworkMeta = computed(() =>
+  formValues.value[BridgeField.TransferDirection] ===
+  TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.Bank]
     : transferSideMeta[TransferSide.TradingAccount]
-})
+)
 
-const destinationNetworkMeta = computed(() => {
-  return props.transferDirection === TransferDirection.bankToTradingAccount
+const destinationNetworkMeta = computed(() =>
+  formValues.value[BridgeField.TransferDirection] ===
+  TransferDirection.bankToTradingAccount
     ? transferSideMeta[TransferSide.TradingAccount]
     : transferSideMeta[TransferSide.Bank]
-})
+)
 
 function handleDirectionSwitch() {
-  emit('transfer-direction:switch')
+  const updatedTransferDirection =
+    formValues.value[BridgeField.TransferDirection] ===
+    TransferDirection.bankToTradingAccount
+      ? TransferDirection.tradingAccountToBank
+      : TransferDirection.bankToTradingAccount
+
+  formValues.value[BridgeField.TransferDirection] = updatedTransferDirection
 }
 </script>
 

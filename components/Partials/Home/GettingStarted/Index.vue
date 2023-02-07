@@ -14,9 +14,7 @@ const videoLinksId = {
 const youtube = ref()
 const selectedVideoType = ref(VideoType.HowToBridge)
 
-const videoId = computed(() => {
-  return videoLinksId[selectedVideoType.value]
-})
+const videoId = computed(() => videoLinksId[selectedVideoType.value])
 
 function switchVideo() {
   if (youtube.value?.player) {

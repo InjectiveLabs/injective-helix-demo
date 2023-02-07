@@ -4,7 +4,7 @@
       <th class="h-8 text-left pl-3">
         <div class="flex items-center justify-start">
           <span>{{ $t('trade.time') }}</span>
-          <AppInfoTooltip
+          <CommonInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.timeTooltip', { type: 'order' })"
           />
@@ -25,7 +25,10 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <AppInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
+          <CommonInfoTooltip
+            class="ml-2"
+            :tooltip="$t('trade.amount_tooltip')"
+          />
         </div>
       </th>
       <th class="h-8 text-right">

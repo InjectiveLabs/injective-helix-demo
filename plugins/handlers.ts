@@ -8,8 +8,14 @@ import {
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
-import { IS_PRODUCTION } from '@/app/utils/constants'
+import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 import { Modal } from '@/types/enums'
+
+/**
+ * As we conditionally include the nuxt-bugsnag module
+ * the type of it can be undefined
+ **/
+declare let useBugsnag: () => any
 
 const reportToUser = (error: ThrownException) => {
   const { error: errorToast } = useNotifications()
@@ -47,9 +53,16 @@ const reportToBugSnag = (error: ThrownException) => {
     return
   }
 
-  if (process.env.VITE_BUGSNAG_KEY) {
-    // @ts-ignore
-    useBugsnag().notify(error.toCompactError())
+  if (BUGSNAG_KEY) {
+    useBugsnag().notify(error, (event: any) => {
+      event.errors[0].errorClass = error.errorClass || error.name
+
+      if (useWalletStore().isUserWalletConnected) {
+        event.setUser(useWalletStore().injectiveAddress)
+      }
+
+      event.addMetadata('error-context', error.toObject())
+    })
   }
 }
 
@@ -63,9 +76,9 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
 
 const handleInsufficientGas = (error: ThrownException) => {
   const modalStore = useModalStore()
-  const walletStore = useWalletStore()
+  const bankStore = useBankStore()
 
-  if (walletStore.hasEnoughInjForGas) {
+  if (bankStore.hasEnoughInjForGas) {
     return
   }
 

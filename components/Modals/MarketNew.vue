@@ -13,16 +13,17 @@ const quoteTokenSymbol = upcomingMarket.quoteToken.symbol
 const bridgeUrl = computed(
   () => `${getHubUrl()}/bridge/?token=${baseTokenSymbol}`
 )
-const showModal = computed(() => modalStore.modals[Modal.MarketNew])
+const isModalOpen = computed(() => modalStore.modals[Modal.MarketNew])
 
 function close() {
   modalStore.closeModal(Modal.MarketNew)
+
   router.push({ name: 'index' })
 }
 </script>
 
 <template>
-  <AppModalWrapper :show="showModal" sm @modal:closed="close">
+  <AppModal :show="isModalOpen" sm @modal:closed="close">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketNew.title') }}
@@ -59,5 +60,5 @@ function close() {
         </NuxtLink>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

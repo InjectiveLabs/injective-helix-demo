@@ -2,17 +2,12 @@
 defineProps({
   disabled: Boolean,
 
-  limit: {
-    type: Number,
-    required: true
-  },
-
   page: {
     type: Number,
     required: true
   },
 
-  totalCount: {
+  limit: {
     type: Number,
     required: true
   },
@@ -20,6 +15,11 @@ defineProps({
   rowClass: {
     type: String,
     default: ''
+  },
+
+  totalCount: {
+    type: Number,
+    required: true
   }
 })
 </script>
@@ -34,7 +34,9 @@ defineProps({
     :total-count="totalCount"
   >
     <template #summary="{ from, to }">
-      <span>From {{ from }} to {{ to }} total {{ totalCount }}</span>
+      <span>{{
+        $t('pagination.paginationPages', { from, to, total: totalCount })
+      }}</span>
     </template>
 
     <template
@@ -72,7 +74,9 @@ defineProps({
             <template #default="{ active }">
               <span
                 class="px-2 py-1 hover:bg-blue-500 hover:bg-opacity-80 hover:text-blue-800"
-                :class="{ 'bg-blue-500 text-blue-800': active }"
+                :class="{
+                  'bg-blue-500 text-blue-800': active
+                }"
               >
                 {{ displayPage }}
               </span>

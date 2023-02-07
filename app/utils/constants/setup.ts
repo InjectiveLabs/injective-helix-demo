@@ -29,6 +29,9 @@ const env = {
     ? process.env.VITE_DEBUG_CALCULATION
     : import.meta.env.VITE_DEBUG_CALCULATION,
 
+  VITE_MAINTENANCE_ENABLED: (isWebpack
+    ? process.env.VITE_MAINTENANCE_ENABLED
+    : import.meta.env.VITE_MAINTENANCE_ENABLED) as string | undefined,
   VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
     ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
     : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
@@ -65,6 +68,9 @@ const env = {
   VITE_AMPLITUDE_KEY: isWebpack
     ? process.env.VITE_AMPLITUDE_KEY
     : (import.meta.env.VITE_AMPLITUDE_KEY as string),
+  VITE_BUGSNAG_KEY: (isWebpack
+    ? process.env.VITE_BUGSNAG_KEY
+    : import.meta.env.VITE_BUGSNAG_KEY) as string | undefined,
 
   VITE_NEWSLETTER_API: isWebpack
     ? process.env.VITE_NEWSLETTER_API
@@ -87,6 +93,7 @@ const env = {
   VITE_DEBUG_CALCULATION: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
   VITE_REFERRALS_ENABLED: string
+  VITE_MAINTENANCE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
   VITE_CHRONOS_API_ENDPOINT: string
@@ -98,6 +105,7 @@ const env = {
   VITE_AMPLITUDE_KEY: string
   VITE_NEWSLETTER_API: string
   VITE_ALCHEMY_GOERLI_KEY: string
+  VITE_BUGSNAG_KEY: string
   VITE_ALCHEMY_KEY: string
   VITE_FEE_RECIPIENT: string
 }
@@ -166,8 +174,6 @@ export const ENDPOINTS = {
   explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer
 }
 
-const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
-
 export const BASE_URL = env.VITE_BASE_URL || ''
 
 // override env with values
@@ -180,6 +186,7 @@ export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
+export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,
@@ -192,5 +199,8 @@ export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
 export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
+export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
+
+const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
 
 export { ROUTES, MARKETS_SLUGS }

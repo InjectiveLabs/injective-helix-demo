@@ -18,9 +18,9 @@ const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 
 const props = defineProps({
-  isBase: Boolean,
   isBuy: Boolean,
   isSpot: Boolean,
+  isBaseAmount: Boolean,
   tradingTypeLimit: Boolean,
   tradingTypeStopLimit: Boolean,
 
@@ -56,7 +56,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBase }: { isBase: boolean }): void
+  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
@@ -65,9 +65,7 @@ const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
 )
 
 const highestBuy = computed(() => {
-  const buys = props.isSpot
-    ? spotStore.orderbook?.buys
-    : derivativeStore.orderbook?.buys
+  const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
 
   const [buy] = buys || []
 
@@ -79,9 +77,7 @@ const highestBuy = computed(() => {
 })
 
 const lowestSell = computed(() => {
-  const sells = props.isSpot
-    ? spotStore.orderbook?.sells
-    : derivativeStore.orderbook?.sells
+  const sells = props.isSpot ? spotStore.sells : derivativeStore.sells
 
   const [sell] = sells || []
 
@@ -178,7 +174,7 @@ function recalculateBaseQuoteAmountValue() {
     value: 0
   })
 
-  emit('update:amount', { isBase: props.isBase })
+  emit('update:amount', { isBaseAmount: props.isBaseAmount })
 }
 
 function onPriceBlur(price = '') {
@@ -197,7 +193,7 @@ function onPriceBlur(price = '') {
 
 <template>
   <div class="mb-6">
-    <AppNumericInput
+    <AppInputNumeric
       v-model="price"
       :placeholder="priceStep"
       :step="priceStep"
@@ -221,6 +217,6 @@ function onPriceBlur(price = '') {
       <template #addon>
         <span>{{ market.quoteToken.symbol }}</span>
       </template>
-    </AppNumericInput>
+    </AppInputNumeric>
   </div>
 </template>

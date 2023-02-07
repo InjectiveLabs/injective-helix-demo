@@ -11,14 +11,19 @@ import {
 } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
+const route = useRoute()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
-const { getMarketIdByRouteQuery, tradableTokenMaps } = useConvertFormatter()
+const bankStore = useBankStore()
 
 const props = defineProps({
-  isBase: Boolean,
   isLoading: Boolean,
+  isBaseAmount: Boolean,
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    default: () => null
+  },
 
   formValues: {
     type: Object as PropType<TradeForm>,
@@ -28,27 +33,34 @@ const props = defineProps({
   worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
-    default: () => null
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:isBase', state: boolean): void
+  (e: 'update:isBaseAmount', state: boolean): void
   (e: 'update:market', state: UiSpotMarketWithToken): void
   (e: 'update:formValue', state: TradeFormValue): void
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
 }>()
 
 const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
+
+const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
+
+const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
+
+const baseTokens = computed<BalanceWithToken[]>(
+  () => tradableTokenMaps.value[baseTokenDenom.value] || []
+)
+
+const quoteTokens = computed<BalanceWithToken[]>(
+  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
+)
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom
@@ -65,28 +77,12 @@ const { value: orderType, setValue: setOrderType } = useStringField({
   initialValue: SpotOrderSide.Buy
 })
 
-const baseTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
-)
-const quoteTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
-)
-
-const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
-
 onMounted(() => {
-  const { market, orderType } = getMarketIdByRouteQuery()
-
-  if (!walletStore.hasEnoughInjForGas) {
+  if (!bankStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 
-  if (market) {
-    emit('update:market', market)
-    setOrderType(orderType)
-    setBaseTokenDenom(market.baseDenom)
-    setQuoteTokenDenom(market.quoteDenom)
-  }
+  setMarketFromQuery()
 })
 
 function handleUpdateMarket() {
@@ -108,7 +104,7 @@ function toggleOrderType() {
 function handleSwap() {
   animationCount.value = animationCount.value + 1
 
-  emit('update:isBase', !props.isBase)
+  emit('update:isBaseAmount', !props.isBaseAmount)
 
   emit('update:formValue', {
     field: TradeField.BaseAmount,
@@ -123,20 +119,26 @@ function handleSwap() {
   toggleOrderType()
 }
 
-function updateAmount({ amount, isBase }: { amount: string; isBase: boolean }) {
-  emit('update:amount', { amount, isBase })
+function updateAmount({
+  amount,
+  isBaseAmount
+}: {
+  amount: string
+  isBaseAmount: boolean
+}) {
+  emit('update:amount', { amount, isBaseAmount })
 }
 
-function handleMaxBaseAmountChange(amount: string) {
+function handleMaxBaseAmountChange({ amount }: { amount: string }) {
   emit('update:formValue', {
     field: TradeField.BaseAmount,
     value: amount
   })
 
-  updateAmount({ amount, isBase: true })
+  updateAmount({ amount, isBaseAmount: true })
 }
 
-function handleMaxQuoteAmountChange(amount: string) {
+function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
   const amountInBigNumber = new BigNumberInBase(amount)
 
   const feeRateToDeduct = amountInBigNumber.times(takerFeeRate.value)
@@ -152,17 +154,35 @@ function handleMaxQuoteAmountChange(amount: string) {
     value: amountDeductFeeToFixed
   })
 
-  emit('update:amount', { amount: amountDeductFeeToFixed, isBase: false })
+  emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
+}
+
+function setMarketFromQuery() {
+  const { to, from } = route.query
+  const querySlug = `${from}-${to}`
+
+  const { market, orderType } =
+    tradableSlugMap.value[querySlug.toLowerCase()] ||
+    tradableSlugMap.value['usdt-inj']
+
+  if (!market) {
+    return
+  }
+
+  emit('update:market', market)
+  setOrderType(orderType)
+  setBaseTokenDenom(market.baseDenom)
+  setQuoteTokenDenom(market.quoteDenom)
 }
 
 watch(
   () => props.worstPriceWithSlippage,
   () => {
     emit('update:amount', {
-      amount: props.isBase
+      amount: props.isBaseAmount
         ? props.formValues[TradeField.BaseAmount]
         : props.formValues[TradeField.QuoteAmount],
-      isBase: props.isBase
+      isBaseAmount: props.isBaseAmount
     })
   }
 )
@@ -172,7 +192,7 @@ watch(
   <div class="flex flex-col">
     <transition :name="isBuy ? 'fade-up' : 'fade-down'" mode="out-in">
       <div
-        :key="animationCount"
+        :key="`animation-${animationCount}`"
         :class="[isBuy ? 'order-first' : 'order-last']"
       >
         <AppSelectToken
@@ -200,7 +220,7 @@ watch(
 
     <transition :name="isBuy ? 'fade-down' : 'fade-up'" mode="out-in">
       <div
-        :key="animationCount"
+        :key="`animation-${animationCount}`"
         :class="[isBuy ? 'order-last' : 'order-first']"
       >
         <AppSelectToken

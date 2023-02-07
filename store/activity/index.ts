@@ -1,25 +1,23 @@
 import { defineStore } from 'pinia'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import {
-  BankBalanceWithTokenAndBalance,
-  UiDerivativeOrderHistory,
+  UiSpotTrade,
   UiDerivativeTrade,
   UiSpotOrderHistory,
-  UiSpotTrade
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
 import { ActivityFetchOptions } from '@/types'
 import {
-  streamDerivativeSubaccountOrderHistory,
-  streamDerivativeSubaccountTrades,
+  streamSpotSubaccountTrades,
   streamSpotSubaccountOrderHistory,
-  streamSpotSubaccountTrades
+  streamDerivativeSubaccountTrades,
+  streamDerivativeSubaccountOrderHistory
 } from '@/store/activity/stream'
 
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
-  supportedTokens: BankBalanceWithTokenAndBalance[]
   subaccountFundingPaymentsCount: number
   latestDerivativeOrderHistory?: UiDerivativeOrderHistory
   latestDerivativeTrade?: UiDerivativeTrade
@@ -30,7 +28,6 @@ type ActivityStoreState = {
 const initialStateFactory = (): ActivityStoreState => ({
   subaccountFundingPayments: [],
   tradingRewardsHistory: [],
-  supportedTokens: [],
   subaccountFundingPaymentsCount: 0,
   latestDerivativeOrderHistory: undefined,
   latestDerivativeTrade: undefined,

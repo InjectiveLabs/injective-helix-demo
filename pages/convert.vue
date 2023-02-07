@@ -12,34 +12,40 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const {
   errors,
-  handleSubmit,
   resetForm,
   setFieldValue,
   values: formValues
 } = useForm<TradeForm>()
 
-const isBase = ref(false)
+const isBaseAmount = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>()
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
-const isBuy = computed(
-  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
-)
-
-const amount = computed(() => {
-  return isBuy.value
-    ? formValues[TradeField.QuoteAmount]
-    : formValues[TradeField.BaseAmount]
-})
-
 const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
     formValues: computed(() => formValues),
     market,
-    isBase
+    isBaseAmount
   })
+
+const hasFormErrors = computed(
+  () =>
+    Object.keys(errors).filter(
+      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+    ).length > 0
+)
+
+const isBuy = computed(
+  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
+)
+
+const amount = computed<string>(() =>
+  isBuy.value
+    ? formValues[TradeField.QuoteAmount]
+    : formValues[TradeField.BaseAmount]
+)
 
 onMounted(() => {
   Promise.all([
@@ -58,18 +64,23 @@ function updateFormValue({ field, value }: TradeFormValue) {
 
 function updateAmount({
   amount,
-  isBase: isBaseUpdate
+  isBaseAmount: isBaseAmountUpdate
 }: {
   amount: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  isBase.value = isBaseUpdate
+  isBaseAmount.value = isBaseAmountUpdate
 
-  const updatedAmount = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+  const updatedAmount = updateAmountFromBase({
+    amount,
+    isBaseAmount: isBaseAmountUpdate
+  })
 
   if (updatedAmount) {
     updateFormValue({
-      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      field: isBaseAmountUpdate
+        ? TradeField.QuoteAmount
+        : TradeField.BaseAmount,
       value: updatedAmount
     })
   }
@@ -80,7 +91,7 @@ function resetFormValues() {
 
   resetForm()
 
-  isBase.value = !isBuyState
+  isBaseAmount.value = !isBuyState
 
   updateFormValue({
     field: TradeField.OrderType,
@@ -132,12 +143,12 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   ]).finally(() => fetchStatus.setIdle())
 }
 
-function submitForm() {
-  submitStatus.setLoading()
-
+function handleFormSubmit() {
   if (!market) {
     return
   }
+
+  submitStatus.setLoading()
 
   spotStore
     .submitMarketOrder({
@@ -155,16 +166,6 @@ function submitForm() {
       submitStatus.setIdle()
     })
 }
-
-const submit = handleSubmit(submitForm, ({ errors }) => {
-  const filteredErrors = Object.keys(errors).filter(
-    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
-  )
-
-  if (filteredErrors.length === 0) {
-    submitForm()
-  }
-})
 </script>
 
 <template>
@@ -178,8 +179,13 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
       </div>
 
       <PartialsConvertTokenForm
-        v-model:isBase="isBase"
+        v-model:isBaseAmount="isBaseAmount"
         v-model:market="market"
+        v-bind="{
+          formValues,
+          worstPriceWithSlippage,
+          isLoading: fetchStatus.isLoading() || submitStatus.isLoading()
+        }"
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
         :form-values="formValues"
@@ -192,11 +198,11 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
       <PartialsConvertSummary
         class="mt-4"
         v-bind="{
-          formValues,
           isBuy,
-          amount,
-          worstPriceWithSlippage,
           market,
+          amount,
+          formValues,
+          worstPriceWithSlippage,
           isLoading: fetchStatus.isLoading()
         }"
       />
@@ -205,15 +211,16 @@ const submit = handleSubmit(submitForm, ({ errors }) => {
         v-if="market"
         class="mt-6"
         v-bind="{
-          formValues,
+          isBuy,
           amount,
           errors,
-          isBuy,
           market,
-          executionPrice: worstPrice,
-          status: submitStatus
+          formValues,
+          hasFormErrors,
+          status: submitStatus,
+          executionPrice: worstPrice
         }"
-        @form:submit="submit"
+        @form:submit="handleFormSubmit"
       />
     </div>
   </AppHocLoading>

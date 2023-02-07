@@ -2,16 +2,17 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal, TradeForm, TradeField } from '@/types'
+import { Modal, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 const modalStore = useModalStore()
 const router = useRouter()
+const bankStore = useBankStore()
 const walletStore = useWalletStore()
 
 const props = defineProps({
   isBuy: Boolean,
-  isLoading: Boolean,
+  hasFormErrors: Boolean,
 
   amount: {
     type: String,
@@ -55,23 +56,11 @@ const { insufficientLiquidity, highDeviation } = useSpotError({
   market: computed(() => props.market)
 })
 
-const hasFormErrors = computed(() => {
-  if (Object.keys(props.errors).length === 0) {
-    return false
-  }
-
+const isSubmitDisabled = computed<boolean>(() => {
   return (
-    Object.keys(props.errors).filter(
-      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
-    ).length > 0
-  )
-})
-
-const disabled = computed<boolean>(() => {
-  return (
-    hasFormErrors.value ||
+    props.hasFormErrors ||
     props.amount === '' ||
-    !walletStore.hasEnoughInjForGas ||
+    !bankStore.hasEnoughInjForGas ||
     insufficientLiquidity.value
   )
 })
@@ -80,7 +69,7 @@ const hasInsufficientBalance = computed(() =>
   Object.values(props.errors).includes(tradeErrorMessages.insufficientBalance())
 )
 
-function handleClickOnConnect() {
+function handleConnect() {
   modalStore.openModal({ type: Modal.Connect })
 }
 
@@ -89,8 +78,8 @@ function submit() {
 }
 
 function handleNavigation() {
-  if (modalStore.modals[Modal.ConvertUSDC]) {
-    modalStore.closeModal(Modal.ConvertUSDC)
+  if (modalStore.modals[Modal.ConvertUsdc]) {
+    modalStore.closeModal(Modal.ConvertUsdc)
   }
 
   router.push({ name: 'account' })
@@ -103,7 +92,7 @@ function handleNavigation() {
       v-if="!walletStore.isUserWalletConnected"
       lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      @click="handleClickOnConnect"
+      @click="handleConnect"
     >
       {{ $t('trade.convert.connect_wallet') }}
     </AppButton>
@@ -112,12 +101,12 @@ function handleNavigation() {
       v-else
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       lg
-      :disabled="disabled"
+      :disabled="isSubmitDisabled"
       :status="status"
       @click="submit"
     >
       <div class="max-auto w-full">
-        <span v-if="!walletStore.hasEnoughInjForGas">
+        <span v-if="!bankStore.hasEnoughInjForGas">
           {{ $t('insufficientGas.insufficientGas') }}
         </span>
         <span v-else-if="insufficientLiquidity">

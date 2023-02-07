@@ -3,13 +3,10 @@ import { PropType } from 'vue'
 import { BalanceHeaderType } from '@/types'
 
 const props = defineProps({
+  ascending: Boolean,
+
   sortBy: {
     type: String as PropType<BalanceHeaderType>,
-    required: true
-  },
-
-  ascending: {
-    type: Boolean,
     required: true
   }
 })
@@ -20,20 +17,14 @@ const emit = defineEmits<{
 }>()
 
 const sortByValue = computed({
-  get: (): string => {
-    return props.sortBy
-  },
-
+  get: (): string => props.sortBy,
   set: (type: string) => {
     emit('update:sort-by', type)
   }
 })
 
 const ascendingValue = computed({
-  get: (): boolean => {
-    return props.ascending
-  },
-
+  get: (): boolean => props.ascending,
   set: (type: boolean) => {
     emit('update:ascending', type)
   }

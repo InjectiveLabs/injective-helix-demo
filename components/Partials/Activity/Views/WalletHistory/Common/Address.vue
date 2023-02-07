@@ -13,11 +13,11 @@ const { success } = useNotifications()
 const { copy } = useClipboard()
 const { t } = useLang()
 
-async function handleCopy() {
-  await copy(props.address)
-
-  success({
-    title: t('connect.addressCopied')
+function handleCopy() {
+  copy(props.address).then(() => {
+    success({
+      title: t('connect.addressCopied')
+    })
   })
 }
 </script>

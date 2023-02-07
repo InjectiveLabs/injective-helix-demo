@@ -3,6 +3,8 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
+const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
+
 function handleConfirm() {
   closeModal()
 
@@ -19,10 +21,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.Terms]"
-    @modal:closed="closeModal"
-  >
+  <AppModal :show="isModalOpen" @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('Acknowledge Terms') }}
@@ -97,5 +96,5 @@ function closeModal() {
         </AppButton>
       </div>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

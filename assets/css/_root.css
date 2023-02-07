@@ -65,8 +65,13 @@ body .vue-grid-item {
 }
 
 .h-screen-excluding-header-and-market-info {
-  --trade-height: calc(var(--header-height) + var(--market-info-height));
-  height: calc(100vh - var(--trade-height) - 4px);
+  height: calc(100vh - var(--header-height) - var(--market-info-height) - 4px);
+}
+
+.max-h-screen-excluding-header-and-market-info {
+  max-height: calc(
+    100vh - var(--header-height) - var(--market-info-height) - 4px
+  );
 }
 
 .h-full-grow {

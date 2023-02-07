@@ -6,12 +6,12 @@ import { MaxAmountOnOrderbook, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 const props = defineProps({
-  availableBalanceError: Boolean,
-  initialMinMarginRequirementError: Boolean,
   isBuy: Boolean,
   isSpot: Boolean,
-  markPriceThresholdError: Boolean,
   orderTypeReduceOnly: Boolean,
+  availableBalanceError: Boolean,
+  markPriceThresholdError: Boolean,
+  initialMinMarginRequirementError: Boolean,
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,

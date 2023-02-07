@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-const { campaignInfo } = useTradeReward()
-
 const quoteDenoms = computed(() => {
-  if (!campaignInfo.value) {
-    return ''
-  }
-
-  return campaignInfo.value.quoteSymbolsList.join(', ')
+  return useTradeReward().quoteSymbolsList.value.join(', ')
 })
 </script>
 
@@ -21,7 +15,7 @@ const quoteDenoms = computed(() => {
     <template #title>
       <div class="flex items-center justify-center">
         {{ $t('trade.quote_denoms') }}
-        <AppInfoTooltip
+        <CommonInfoTooltip
           class="ml-2"
           :tooltip="$t('trade.quote_denoms_tooltip')"
         />

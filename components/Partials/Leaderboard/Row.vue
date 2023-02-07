@@ -16,7 +16,7 @@ const props = defineProps({
     required: true
   },
 
-  perc: {
+  percentage: {
     type: String,
     required: true
   },
@@ -29,13 +29,12 @@ const props = defineProps({
 
 const avatarSrc = ref('')
 
-const percentage = computed(() => {
-  return Number(props.perc)
-})
+const explorerUrl = computed(
+  () => `${getExplorerUrl(NETWORK)}/account/${props.address}/?tab=transactions`
+)
 
-const volumeInBase = computed(() => {
-  return new BigNumberInBase(props.volume)
-})
+const percentage = computed(() => Number(props.percentage))
+const volumeInBase = computed(() => new BigNumberInBase(props.volume))
 
 const { valueToString: volumeInBaseToFormat } = useBigNumberFormatter(
   volumeInBase,
@@ -43,12 +42,6 @@ const { valueToString: volumeInBaseToFormat } = useBigNumberFormatter(
     decimalPlaces: 2
   }
 )
-
-const explorerUrl = computed(() => {
-  const baseUrl = getExplorerUrl(NETWORK)
-
-  return `${baseUrl}/account/${props.address}/?tab=transactions`
-})
 
 onMounted(() => {
   // generateAvatar()

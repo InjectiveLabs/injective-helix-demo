@@ -18,7 +18,7 @@ const props = defineProps({
   }
 })
 
-const showModal = computed(
+const isModalOpen = computed(
   () => modalStore.modals[Modal.MobileTradeDetails] && !!props.trade
 )
 
@@ -34,12 +34,7 @@ function close() {
 </script>
 
 <template>
-  <AppModalWrapper
-    v-if="trade && market"
-    :show="showModal"
-    sm
-    @modal:closed="close"
-  >
+  <AppModal v-if="trade && market" :show="isModalOpen" sm @modal:closed="close">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3 cursor-pointer" @click="close">
@@ -56,7 +51,10 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.time') }}
         </span>
-        <AppInfoTooltip class="ml-2" :tooltip="$t('trade.timestamp_tooltip')" />
+        <CommonInfoTooltip
+          class="ml-2"
+          :tooltip="$t('trade.timestamp_tooltip')"
+        />
       </div>
       <span class="text-right font-mono tracking-wide">
         {{ time }}
@@ -112,7 +110,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.amount') }}
         </span>
-        <AppInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
+        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
       </div>
       <span v-if="quantity" class="text-right">
         <AppNumber
@@ -129,7 +127,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.fee') }}
         </span>
-        <AppInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="fee" class="text-right">
         <AppNumber use-number-decimals :number="fee">
@@ -145,7 +143,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.total') }}
         </span>
-        <AppInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="total" class="text-right">
         <AppNumber
@@ -163,5 +161,5 @@ function close() {
         </AppNumber>
       </span>
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

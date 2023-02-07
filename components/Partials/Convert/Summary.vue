@@ -7,17 +7,17 @@ import { ONE_IN_BASE } from '@/app/utils/constants'
 import { TradeForm, TradeField } from '@/types'
 
 const props = defineProps({
-  isLoading: Boolean,
   isBuy: Boolean,
+  isLoading: Boolean,
 
   amount: {
     type: String,
     default: undefined
   },
 
-  worstPriceWithSlippage: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken | undefined>,
+    default: undefined
   },
 
   formValues: {
@@ -25,9 +25,9 @@ const props = defineProps({
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiSpotMarketWithToken | undefined>,
-    default: undefined
+  worstPriceWithSlippage: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
   }
 })
 
@@ -54,9 +54,9 @@ const fee = computed<BigNumberInBase>(() => {
   return quantity.times(takerFeeRate.value)
 })
 
-const feeRateToFormat = computed(() => {
-  return takerFeeRate.value.times(100).toFormat(2)
-})
+const feeRateToFormat = computed(() =>
+  takerFeeRate.value.times(100).toFormat(2)
+)
 
 const priceForDisplay = computed(() => {
   if (props.isBuy) {
@@ -78,7 +78,6 @@ const priceForDisplay = computed(() => {
   Sell:
   quantity * execution_price * (1 - slippage_tolerance) * (1 - feeRate)
 */
-
 const minimalReceived = computed<BigNumberInBase>(() => {
   const quantity = new BigNumberInBase(props.amount || 0)
   const feeRate = new BigNumberInBase(takerFeeRate.value)
@@ -92,6 +91,18 @@ const minimalReceived = computed<BigNumberInBase>(() => {
   return quantity.times(
     props.worstPriceWithSlippage.times(ONE_IN_BASE.minus(feeRate))
   )
+})
+
+const inputToken = computed<Token | undefined>(() => {
+  if (props.market) {
+    return props.isBuy ? props.market.quoteToken : props.market.baseToken
+  }
+})
+
+const outputToken = computed<Token | undefined>(() => {
+  if (props.market) {
+    return props.isBuy ? props.market.baseToken : props.market.quoteToken
+  }
 })
 
 const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
@@ -114,18 +125,6 @@ const { valueToString: minimalReceivedToFormat } = useBigNumberFormatter(
     minimalDecimalPlaces: props.market?.quantityDecimals || 3
   }
 )
-
-const inputToken = computed<Token | undefined>(() => {
-  if (props.market) {
-    return props.isBuy ? props.market.quoteToken : props.market.baseToken
-  }
-})
-
-const outputToken = computed<Token | undefined>(() => {
-  if (props.market) {
-    return props.isBuy ? props.market.baseToken : props.market.quoteToken
-  }
-})
 </script>
 
 <template>

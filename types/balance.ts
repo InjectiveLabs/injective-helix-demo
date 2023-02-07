@@ -13,7 +13,7 @@ export type AccountBalance = BalanceWithTokenAndUsdPrice & {
   bankBalance: string
   subaccountBalance: string
 
-  // bankBalance + subaccountBalance
+  // bankBalance + subaccountBalance (same as balance)
   totalBalance: string
   totalBalanceInUsd: string
 

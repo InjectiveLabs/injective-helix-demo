@@ -4,6 +4,8 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
 import { UiTrade } from '@/types'
 
+const router = useRouter()
+
 const props = defineProps({
   isSpot: Boolean,
 
@@ -30,15 +32,13 @@ const {
   computed(() => props.isSpot)
 )
 
-const marketRoute = computed(() => {
+function handleVisitMarket() {
   if (!market.value) {
-    return { name: 'markets' }
+    return
   }
 
-  const marketRoute = getMarketRoute(market.value)
-
-  return marketRoute || { name: 'markets' }
-})
+  return router.push(getMarketRoute(market.value))
+}
 
 function handleShowTradeDetails() {
   emit('showTradeDetails', props.trade)
@@ -50,7 +50,10 @@ function handleShowTradeDetails() {
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
-      <NuxtLink class="flex items-center gap-1" :to="marketRoute">
+      <div
+        class="flex items-center gap-1 cursor-pointer"
+        @click.stop="handleVisitMarket"
+      >
         <span
           :class="{
             'text-green-500': trade.tradeDirection === TradeDirection.Buy,
@@ -71,7 +74,7 @@ function handleShowTradeDetails() {
         <span class="text-gray-200 font-semibold">
           {{ market.ticker }}
         </span>
-      </NuxtLink>
+      </div>
 
       <span>{{ tradeExecutionType }}</span>
     </div>

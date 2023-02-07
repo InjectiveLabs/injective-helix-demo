@@ -5,11 +5,11 @@ import { Status } from '@injectivelabs/utils'
 const attrs = useAttrs()
 
 const props = defineProps({
-  disabled: Boolean,
   xs: Boolean,
   sm: Boolean,
   lg: Boolean,
   xl: Boolean,
+  disabled: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -67,10 +67,12 @@ const hasBackground = computed(() => {
   return classes.includes('bg-')
 })
 
-function click() {
-  if (!props.status.isLoading()) {
-    emit('click')
+function handleClick() {
+  if (props.status.isLoading()) {
+    return
   }
+
+  emit('click')
 }
 </script>
 
@@ -98,7 +100,7 @@ export default {
     ]"
     class="font-bold rounded-md border box-border focus:outline-none"
     v-bind="filteredAttrs"
-    @click="click"
+    @click="handleClick"
   >
     <slot v-if="status && status.isNotLoading()" />
     <span

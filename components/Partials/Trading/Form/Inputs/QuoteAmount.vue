@@ -44,7 +44,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (
     e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
   (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
@@ -76,7 +76,7 @@ function onQuoteAmountChange(quoteAmount: string) {
     value: 0
   })
 
-  emit('update:amount', { amount: quoteAmount || '0', isBase: false })
+  emit('update:amount', { amount: quoteAmount || '0', isBaseAmount: false })
 }
 
 function onQuoteAmountBlur(quoteAmount = '') {
@@ -90,7 +90,7 @@ function onQuoteAmountBlur(quoteAmount = '') {
 </script>
 
 <template>
-  <AppNumericInput
+  <AppInputNumeric
     v-model="quoteAmount"
     :max-decimals="market.priceDecimals"
     :placeholder="amountStep"
@@ -106,5 +106,5 @@ function onQuoteAmountBlur(quoteAmount = '') {
     <template #addon>
       <span>{{ market.quoteToken.symbol }}</span>
     </template>
-  </AppNumericInput>
+  </AppInputNumeric>
 </template>

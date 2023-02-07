@@ -26,11 +26,11 @@ const isSpot = props.market.type === MarketType.Spot
 const status = reactive(new Status(StatusType.Loading))
 
 const baseTradingBalance = computed(() => {
-  if (!accountStore.subaccount || !isSpot) {
+  if (!isSpot) {
     return undefined
   }
 
-  const baseBalance = accountStore.subaccount.balances.find(
+  const baseBalance = accountStore.subaccount?.balances.find(
     (balance) =>
       balance.denom.toLowerCase() ===
       (props.market as UiSpotMarketWithToken).baseDenom.toLowerCase()
@@ -43,11 +43,7 @@ const baseTradingBalance = computed(() => {
 })
 
 const quoteTradingBalance = computed(() => {
-  if (!accountStore.subaccount) {
-    return undefined
-  }
-
-  const quoteBalance = accountStore.subaccount.balances.find(
+  const quoteBalance = accountStore.subaccount?.balances.find(
     (balance) =>
       balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
   )

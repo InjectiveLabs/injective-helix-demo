@@ -6,9 +6,9 @@ import { BalanceWithToken } from '@/types'
 const props = defineProps({
   showBalance: Boolean,
 
-  modelValue: {
-    type: String,
-    default: ''
+  close: {
+    type: Function,
+    required: true
   },
 
   balances: {
@@ -16,9 +16,9 @@ const props = defineProps({
     default: () => []
   },
 
-  close: {
-    type: Function,
-    required: true
+  modelValue: {
+    type: String,
+    default: ''
   }
 })
 
@@ -53,6 +53,7 @@ const sortedBalances = computed(() => {
 
 function handleClick(denom: string) {
   emit('update:modelValue', denom)
+
   props.close()
 }
 </script>
@@ -65,12 +66,14 @@ function handleClick(denom: string) {
 
     <AppSelectTokenItem
       v-for="balance in sortedBalances"
+      v-bind="{
+        sm: true,
+        token: balance.token,
+        balance: balance.balanceToBase,
+        showBalance: true
+      }"
       :key="balance.denom"
       class="px-2 py-3 hover:bg-blue-500 cursor-pointer rounded text-white hover:text-black"
-      sm
-      show-balance
-      :token="balance.token"
-      :balance="balance.balanceToBase"
       @click="handleClick"
     />
   </div>

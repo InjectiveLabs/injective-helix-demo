@@ -42,7 +42,7 @@ const props = defineProps({
 })
 
 const defaultStep = '1'
-const isBase = ref(true)
+const isBaseAmount = ref(true)
 const status = ref(new Status())
 
 const formValues = computed(() => values)
@@ -57,19 +57,19 @@ const {
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const amountStep = computed(() => {
-  return props.market
+const amountStep = computed(() =>
+  props.market
     ? new BigNumberInBase(1)
         .shiftedBy(props.market.quantityTensMultiplier)
         .toFixed()
     : defaultStep
-})
+)
 
-const priceStep = computed(() => {
-  return props.market
+const priceStep = computed(() =>
+  props.market
     ? new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals).toFixed()
     : defaultStep
-})
+)
 
 const isBuy = computed(
   () => formValues.value[TradeField.OrderType] === SpotOrderSide.Buy
@@ -155,9 +155,7 @@ const feeRate = computed(() => {
 
 const hasExecutionPrice = computed(() => executionPrice.value.gt('0'))
 
-const { lastTradedPrice } = useSpotLastPriceFormatter(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const {
   maxAmountOnOrderbook,
@@ -166,7 +164,7 @@ const {
   worstPriceWithSlippage
 } = useSpotPrice({
   formValues,
-  isBase,
+  isBaseAmount,
   market: computed(() => props.market)
 })
 
@@ -239,7 +237,7 @@ watch(executionPrice, () => {
     return
   }
 
-  updateAmount({ isBase: isBase.value })
+  updateAmount({ isBaseAmount: isBaseAmount.value })
 })
 
 function updateFormValue({ field, value }: TradeFormValue) {
@@ -248,18 +246,23 @@ function updateFormValue({ field, value }: TradeFormValue) {
 
 function updateAmount({
   amount,
-  isBase: isBaseUpdate
+  isBaseAmount: isBaseAmountUpdate
 }: {
   amount?: string
-  isBase: boolean
+  isBaseAmount: boolean
 }) {
-  isBase.value = isBaseUpdate
+  isBaseAmount.value = isBaseAmountUpdate
 
-  const amountToUpdate = updateAmountFromBase({ amount, isBase: isBaseUpdate })
+  const amountToUpdate = updateAmountFromBase({
+    amount,
+    isBaseAmount: isBaseAmountUpdate
+  })
 
   if (amountToUpdate) {
     updateFormValue({
-      field: isBaseUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount,
+      field: isBaseAmountUpdate
+        ? TradeField.QuoteAmount
+        : TradeField.BaseAmount,
       value: amountToUpdate
     })
   }
@@ -396,7 +399,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         formErrors,
         formValues,
         lastTradedPrice,
-        isBase,
+        isBaseAmount,
         isBuy,
         market,
         maxAmountOnOrderbook,
@@ -411,7 +414,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     <PartialsTradingFormDebug
       v-if="DEBUG_CALCULATION"
       v-bind="{
-        isBase,
+        isBaseAmount,
         isBuy,
         fees,
         feeRate,
@@ -454,6 +457,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
       @submit:request="handleRequestSubmit"
     />
 
-    <ModalsPriceDeviation @confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
   </div>
 </template>

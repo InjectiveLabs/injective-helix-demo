@@ -9,7 +9,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModalWrapper
+  <AppModal
     :show="modalStore.modals[Modal.InsufficientInjForGas]"
     sm
     @modal:closed="closeModal"
@@ -21,5 +21,5 @@ function closeModal() {
     </template>
 
     <CommonInsufficientGasInner :hide-title="true" @close="closeModal" />
-  </AppModalWrapper>
+  </AppModal>
 </template>

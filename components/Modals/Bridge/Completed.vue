@@ -1,68 +1,57 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { NETWORK } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
-import { Modal, BridgeField, BridgeForm, BridgeType } from '@/types'
+import { BridgeForm, Modal, BridgeField } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const props = defineProps({
-  bridgeType: {
-    type: String as PropType<BridgeType>,
-    required: true
-  },
+const hubUrl = `${getHubUrl()}/bridge`
 
-  formValues: {
-    required: true,
-    type: Object as PropType<BridgeForm>
-  }
-})
-
-const emit = defineEmits<{
-  (e: 'form:reset'): void
-}>()
+const formValues = useFormValues<BridgeForm>()
+const resetForm = useResetForm()
 
 const {
-  destinationIsInjective,
+  isDeposit,
   isTransfer,
   isWithdraw,
+  destinationIsInjective,
   networkIsNotSupported
-} = useBridgeNetwork({
-  bridgeForm: computed(() => props.formValues),
-  bridgeType: computed(() => props.bridgeType)
+} = useBridgeState({
+  formValues
 })
 
-const hubUrl = `${getHubUrl()}/bridge`
-const explorerUrl = `${getExplorerUrl(NETWORK)}/account/${
-  walletStore.injectiveAddress
-}/`
+const explorerUrl = computed(
+  () => `${getExplorerUrl(NETWORK)}/account/${walletStore.injectiveAddress}/`
+)
+
+const isModalOpen = computed(() => modalStore.modals[Modal.BridgeCompleted])
 
 const isOnChainTransaction = computed(
   () => isTransfer.value || (isWithdraw.value && destinationIsInjective.value)
 )
 
-function close() {
-  emit('form:reset')
+function handleModalClose() {
+  resetForm()
 
   modalStore.closeModal(Modal.BridgeCompleted)
 }
 </script>
 
 <template>
-  <AppModalWrapper
-    :show="modalStore.modals[Modal.BridgeCompleted]"
+  <AppModal
+    :show="isModalOpen"
     sm
     data-cy="transfer-completed-modal"
-    @modal:closed="close"
+    @modal:closed="handleModalClose"
   >
     <template #title>
       <h3>
-        <span v-if="bridgeType === BridgeType.Deposit">
+        <span v-if="isDeposit">
           {{ $t('bridge.depositToInjective') }}
         </span>
-        <span v-else-if="bridgeType === BridgeType.Withdraw">
+        <span v-else-if="isWithdraw">
           {{ $t('bridge.withdrawFromInjective') }}
         </span>
         <span v-else>
@@ -78,7 +67,7 @@ function close() {
             {{ $t('bridge.transactionConfirmed') }}
           </h3>
           <p class="mt-4 text-gray-300">
-            <span v-if="bridgeType === BridgeType.Transfer">
+            <span v-if="isTransfer">
               {{ $t('bridge.defaultNote') }}
             </span>
             <span v-else>
@@ -113,7 +102,7 @@ function close() {
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-completed-modal-ok-button"
               lg
-              @click="close"
+              @click="handleModalClose"
             >
               {{ $t('common.ok') }}
             </AppButton>
@@ -123,13 +112,11 @@ function close() {
         <ModalsBridgeNotSupportedBridgeTypeNote
           v-else
           v-bind="{
-            formValues,
-            selectedNetwork: formValues[BridgeField.BridgingNetwork],
-            bridgeType
+            selectedNetwork: formValues[BridgeField.BridgingNetwork]
           }"
         />
       </div>
       <CommonUserNotConnectedNote v-else />
     </div>
-  </AppModalWrapper>
+  </AppModal>
 </template>

@@ -57,9 +57,9 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
     <AppDrawer>
       <template #header>
         <p class="flex justify-between">
-          <AppTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" lg>
             <template #context>
-              <AppInfoTooltip
+              <CommonInfoTooltip
                 class="ml-2"
                 :tooltip="$t('trade.market_total_tooltip')"
               />
@@ -74,18 +74,18 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
                 {{ market.quoteToken.symbol }}
               </span>
             </span>
-          </AppTextInfo>
+          </CommonTextInfo>
         </p>
       </template>
 
       <div class="mt-4">
-        <AppTextInfo
+        <CommonTextInfo
           v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.liquidation_price_tooltip')"
             />
@@ -102,15 +102,15 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
-        <AppTextInfo
+        <CommonTextInfo
           v-if="!orderTypeReduceOnly"
           :title="$t('trade.margin')"
           class="mt-2"
         >
           <template #context>
-            <AppInfoTooltip
+            <CommonInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.margin_tooltip')"
             />
@@ -126,7 +126,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+        </CommonTextInfo>
 
         <slot name="makerTakerFeeRate" />
       </div>

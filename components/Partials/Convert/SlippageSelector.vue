@@ -88,7 +88,7 @@ function checkForInvalidSlippageValue() {
           </h3>
           <div class="my-4 flex items-center gap-2">
             <span class="text-xs">{{ $t('trade.convert.tolerance') }}</span>
-            <AppInfoTooltip sm :tooltip="$t('trade.convert.tooltip')" />
+            <CommonInfoTooltip sm :tooltip="$t('trade.convert.tooltip')" />
           </div>
 
           <div class="flex items-center gap-2 max-xs:flex-wrap">
@@ -118,7 +118,7 @@ function checkForInvalidSlippageValue() {
               </AppSelectButton>
             </div>
 
-            <AppNumericInput
+            <AppInputNumeric
               v-model="slippageTolerance"
               class="ml-auto"
               input-classes="text-right"
@@ -133,7 +133,7 @@ function checkForInvalidSlippageValue() {
               <template #addon>
                 <span class="text-gray-500">%</span>
               </template>
-            </AppNumericInput>
+            </AppInputNumeric>
           </div>
 
           <p v-if="slippageError" class="text-orange-500 mt-4 text-sm">

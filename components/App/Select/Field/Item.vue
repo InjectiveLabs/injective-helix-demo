@@ -15,9 +15,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const isActive = computed(() => {
-  return props.modelValue === props.value
-})
+const isActive = computed(() => props.modelValue === props.value)
 
 function handleClick() {
   emit('update:modelValue', props.value)

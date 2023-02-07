@@ -4,23 +4,19 @@ import { BalanceWithToken, BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
 const props = defineProps({
-  disabled: Boolean,
   hideMax: Boolean,
+  disabled: Boolean,
   required: Boolean,
-
-  additionalRules: {
-    type: Object,
-    default: undefined
-  },
-
-  amountFieldName: {
-    type: String as PropType<TradeField | BridgeField>,
-    default: TradeField.BaseAmount
-  },
+  inputDisabled: Boolean,
 
   denom: {
     type: String,
     default: ''
+  },
+
+  options: {
+    type: Array as PropType<BalanceWithToken[]>,
+    default: () => []
   },
 
   maxDecimals: {
@@ -28,9 +24,14 @@ const props = defineProps({
     default: 6
   },
 
-  options: {
-    type: Array as PropType<BalanceWithToken[]>,
-    default: () => []
+  amountFieldName: {
+    type: String as PropType<TradeField | BridgeField>,
+    default: TradeField.BaseAmount
+  },
+
+  additionalRules: {
+    type: Object,
+    default: undefined
   }
 })
 
@@ -38,13 +39,16 @@ const emit = defineEmits<{
   (e: 'update:denom', state: string): void
   (
     e: 'update:amount',
-    { amount, isBase }: { amount: string; isBase: boolean }
+    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
   ): void
-  (e: 'update:max', state: string): void
+  (e: 'update:max', { amount }: { amount: string }): void
 }>()
 
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
+)
+const inputPlaceholder = computed(() =>
+  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
 )
 
 const {
@@ -71,12 +75,13 @@ const {
     if (!props.required) {
       return ''
     }
+
     return `insufficientBalance:${maxBalanceToFixed.value}|required`
   })
 })
 
 const denomValue = computed({
-  get: (): string | undefined => props.denom || '',
+  get: (): string => props.denom || '',
   set: (denom?: string) => {
     if (denom) {
       emit('update:denom', denom)
@@ -84,21 +89,17 @@ const denomValue = computed({
   }
 })
 
-const inputPlaceholder = computed(() =>
-  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
-)
-
 function handleAmountUpdate(amount: string) {
   setAmountValue(amount)
 
   emit('update:amount', {
     amount,
-    isBase: props.amountFieldName === TradeField.BaseAmount
+    isBaseAmount: props.amountFieldName === TradeField.BaseAmount
   })
 }
 
 function handleMax() {
-  emit('update:max', maxBalanceToFixed.value)
+  emit('update:max', { amount: maxBalanceToFixed.value })
 }
 </script>
 
@@ -137,20 +138,21 @@ export default {
       :disabled="disabled"
       :distance="amountErrors.length > 0 ? 44 : 24"
       :flip="false"
-      auto-size="true"
+      :auto-size="true"
+      placement="bottom"
       auto-boundary-max-size
       popper-class="dropdown"
     >
       <div class="px-4">
         <div class="flex justify-between">
-          <AppNumericInput
+          <AppInputNumeric
             v-model="amount"
             sm
             no-padding
             transparent-bg
             input-classes="p-0 text-xl font-bold"
             :placeholder="inputPlaceholder"
-            :disabled="disabled || !selectedToken"
+            :disabled="disabled || !selectedToken || inputDisabled"
             :max-decimals="maxDecimals"
             @update:model-value="handleAmountUpdate"
             @click.stop

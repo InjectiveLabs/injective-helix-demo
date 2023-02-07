@@ -46,6 +46,14 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (
+    e: 'update:amount',
+    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
+  ): void
+  (e: 'update:formValue', { field, value }: TradeFormValue): void
+}>()
+
 const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
   computed(() => props.formValues)
 )
@@ -61,14 +69,6 @@ const orderbookQuantity = computed(() =>
     )
   }, ZERO_IN_BASE)
 )
-
-const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBase }: { amount?: string; isBase: boolean }
-  ): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
-}>()
 
 const { value: baseAmount, setValue } = useStringField({
   name: props.baseAmountFieldName,
@@ -107,7 +107,7 @@ function onBaseAmountChange(baseAmount: string) {
     value: 0
   })
 
-  emit('update:amount', { amount: baseAmount || '0', isBase: true })
+  emit('update:amount', { amount: baseAmount || '0', isBaseAmount: true })
 }
 
 function onBaseAmountBlur(baseAmount = '') {
@@ -122,7 +122,7 @@ function onBaseAmountBlur(baseAmount = '') {
 
 <template>
   <div class="flex-1">
-    <AppNumericInput
+    <AppInputNumeric
       v-model="baseAmount"
       :max-decimals="market ? market.quantityDecimals : 6"
       :placeholder="amountStep"
@@ -140,6 +140,6 @@ function onBaseAmountBlur(baseAmount = '') {
       <template #addon>
         <span>{{ market.baseToken.symbol.toUpperCase() }}</span>
       </template>
-    </AppNumericInput>
+    </AppInputNumeric>
   </div>
 </template>

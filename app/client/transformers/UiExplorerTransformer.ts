@@ -13,13 +13,13 @@ export class UiExplorerTransformer {
     )
 
     return {
-      blockNumber: tx.blockNumber,
-      blockTimestamp: tx.blockTimestamp,
       hash: tx.hash,
-      amount: message.amount[0].amount,
-      denom: message.amount[0].denom,
+      blockNumber: tx.blockNumber,
       sender: message.from_address,
-      receiver: message.to_address
+      receiver: message.to_address,
+      denom: message.amount[0].denom,
+      amount: message.amount[0].amount,
+      blockTimestamp: tx.blockTimestamp
     }
   }
 }

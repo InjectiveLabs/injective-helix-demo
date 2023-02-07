@@ -89,7 +89,7 @@ function handleAddMargin() {
   modalStore.openModal({ type: Modal.AddMarginToPosition })
 }
 
-function handleClick() {
+function handleVisitMarket() {
   if (!market.value) {
     return
   }
@@ -173,7 +173,7 @@ function closePositionAndReduceOnlyOrders() {
     v-if="market"
     class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all cursor-pointer"
     :data-cy="'open-position-table-row-' + position.ticker"
-    @click="handleClick"
+    @click="handleVisitMarket"
   >
     <td class="pl-4">
       <div class="col-span-1 flex justify-start items-center gap-2">

@@ -30,11 +30,9 @@ const filteredTransactions = computed(() => {
   })
 })
 
-const sortedTransactions = computed(() => {
-  return filteredTransactions.value.sort((a, b) => {
-    return b.timestamp - a.timestamp
-  })
-})
+const sortedTransactions = computed(() =>
+  filteredTransactions.value.sort((a, b) => b.timestamp - a.timestamp)
+)
 </script>
 
 <template>
