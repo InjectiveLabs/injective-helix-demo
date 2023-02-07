@@ -136,11 +136,11 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
-      await spotStore.fetchMarketsSummary()
-
       const marketsAlreadyFetched = spotStore.markets.length
 
       if (marketsAlreadyFetched) {
+        await spotStore.fetchMarketsSummary()
+
         return
       }
 
@@ -166,6 +166,8 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         markets: uiMarketsWithToken
       })
+
+      await spotStore.fetchMarketsSummary()
     },
 
     async fetchUsdcConversionMarkets() {

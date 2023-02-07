@@ -157,11 +157,11 @@ export const useDerivativeStore = defineStore('derivative', {
     async init() {
       const derivativeStore = useDerivativeStore()
 
-      await derivativeStore.fetchMarketsSummary()
-
       const marketsAlreadyFetched = derivativeStore.markets.length
 
       if (marketsAlreadyFetched) {
+        await derivativeStore.fetchMarketsSummary()
+
         return
       }
 
@@ -252,6 +252,8 @@ export const useDerivativeStore = defineStore('derivative', {
           ...uiBinaryOptionsMarketsWithToken
         ]
       })
+
+      await derivativeStore.fetchMarketsSummary()
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {
