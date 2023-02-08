@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 import { AccountBalance } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -20,6 +20,20 @@ const props = defineProps({
 
 const showUsdcBalances = ref(true)
 
+const usdcBalances = computed(() => {
+  return props.balances.filter((balance) =>
+    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+  )
+})
+
+// default usdc balance to show on accounts page
+const peggyUsdcetBalance = computed(() => {
+  return props.balances.find(
+    (balance) =>
+      balance.denom.toLowerCase() === usdcTokenDenom.USDCet.toLowerCase()
+  )
+})
+
 const hasPeggyUsdcBalance = computed(() => {
   const balance = props.balances.find(
     (balance) =>
@@ -36,39 +50,43 @@ function toggleUsdcBalances() {
 
 <template>
   <tbody>
-    <template v-if="balances.length > 1">
+    <template v-if="hasPeggyUsdcBalance">
       <PartialsAccountBalancesUsdcHeader
         v-bind="{
+          ...$attrs,
           hideBalances,
+          showUsdcBalances,
           aggregatedBalance
         }"
         @drawer:toggle="toggleUsdcBalances"
       />
 
       <template v-if="showUsdcBalances">
-        <PartialsAccountBalancesUsdcTableRow
-          v-for="(usdcBalance, index) in balances"
+        <PartialsAccountBalancesUsdcRow
+          v-for="(usdcBalance, index) in usdcBalances"
           :key="usdcBalance.token.denom"
           :class="{
-            'border-b-transparent': index < balances.length - 1
+            'border-b-transparent': index < usdcBalances.length - 1
           }"
           v-bind="{
+            ...$attrs,
             hideBalances,
             hasPeggyUsdcBalance,
             isOpen: showUsdcBalances,
             balance: usdcBalance,
-            isHoldingSingleUsdcDenom: balances.length === 1
+            isHoldingSingleUsdcDenom: usdcBalances.length === 1
           }"
         />
       </template>
     </template>
 
-    <PartialsAccountBalancesTableRow
-      v-else
-      :key="balances[0].token.denom"
+    <PartialsAccountBalancesRow
+      v-else-if="peggyUsdcetBalance"
+      :key="peggyUsdcetBalance.denom"
       v-bind="{
+        ...$attrs,
         hideBalances,
-        balance: balances[0]
+        balance: peggyUsdcetBalance
       }"
     />
   </tbody>

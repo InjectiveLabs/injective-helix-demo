@@ -2,36 +2,47 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeBusEvents, BusEvents, Modal } from '@/types'
+import { usdcTokenDenom } from '~~/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
+const modalStore = useModalStore()
 
 const props = defineProps({
-  expand: Boolean,
+  isHoldingSingleUsdcDenom: Boolean,
   hideBalances: Boolean,
+  hasPeggyUsdcBalance: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
+  },
+
+  usdPriceStatus: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Loading)
   }
 })
 
-const isOpen = ref(false)
-
-const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
-  return spotStore.markets.filter(
+const filteredMarkets = computed<UiSpotMarketWithToken[]>(() =>
+  spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||
       m.quoteDenom === props.balance.token.denom
   )
-})
+)
 
 const filteredMarket = computed(() => filteredMarkets.value[0])
+
+const isDenomTradeable = computed(
+  () => ![usdcTokenDenom.USDC].includes(props.balance.token.denom.toLowerCase())
+)
 
 /* TODO - bank <> default trading account merge
 
@@ -106,28 +117,44 @@ function handleWithdrawClick() {
     props.balance.token
   )
 }
+
+function handleConvert() {
+  useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
+
+  modalStore.openModal({ type: Modal.ConvertUsdc })
+}
 </script>
 
 <template>
   <tr
-    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
-    :class="{
-      'max-h-20': !isOpen,
-      'max-h-screen': isOpen
-    }"
+    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all max-h-screen"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
-    <td class="pl-4">
-      <div class="flex justify-start items-center gap-2">
-        <CommonTokenIcon :token="balance.token" />
+    <td>
+      <div
+        class="flex justify-start items-center gap-2"
+        :class="{ 'pl-8': !isHoldingSingleUsdcDenom }"
+      >
+        <CommonTokenIcon
+          v-if="isHoldingSingleUsdcDenom"
+          :token="balance.token"
+        />
 
-        <div class="flex justify-start gap-2 items-center">
-          <span
-            class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
-            data-cy="wallet-balance-token-symbol-table-data"
-          >
-            {{ balance.token.symbol }}
-          </span>
+        <div class="flex justify-start items-center gap-2">
+          <div class="flex justify-start gap-2 items-center">
+            <span
+              class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
+              data-cy="wallet-balance-token-symbol-table-data"
+            >
+              {{ balance.token.symbol }}
+            </span>
+
+            <PartialsAccountBalancesUsdcLabel
+              v-bind="{
+                balance
+              }"
+            />
+          </div>
         </div>
       </div>
     </td>
@@ -216,7 +243,9 @@ function handleWithdrawClick() {
 
     <td>
       <div class="flex justify-end">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <AppSpinner v-if="usdPriceStatus.isLoading()" md />
+
+        <span v-else-if="hideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }} USD
         </span>
 
@@ -229,7 +258,7 @@ function handleWithdrawClick() {
     <td class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <BaseDropdown
-          v-if="filteredMarkets.length > 1"
+          v-if="filteredMarkets.length > 1 && isDenomTradeable"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
         >
           <template #default>
@@ -266,6 +295,18 @@ function handleWithdrawClick() {
         </div>
 
         <div
+          v-if="!isDenomTradeable && hasPeggyUsdcBalance"
+          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+          data-cy="wallet-balance-convert"
+          @click="handleConvert"
+        >
+          <span class="text-blue-500 text-sm font-medium">
+            {{ $t('account.convertUsdc') }}
+          </span>
+        </div>
+
+        <div
+          v-if="isDenomTradeable"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-deposit-link"
           @click="handleDepositClick"
@@ -276,6 +317,7 @@ function handleWithdrawClick() {
         </div>
 
         <div
+          v-if="isDenomTradeable"
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           data-cy="wallet-balance-withdraw-link"
           @click="handleWithdrawClick"

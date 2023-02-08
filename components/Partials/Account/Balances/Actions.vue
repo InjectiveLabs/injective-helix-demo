@@ -39,7 +39,7 @@ const search = computed({
 
 <template>
   <div
-    class="pt-4 flex flex-col gap-2 md:grid md:grid-cols-4 md:items-center md:gap-0"
+    class="pt-4 lg:px-4 flex flex-wrap justify-between gap-3 md:grid md:grid-cols-4 md:items-center md:gap-0"
   >
     <div class="col-span-2 grid grid-cols-2">
       <AppSearch
@@ -56,12 +56,11 @@ const search = computed({
     </div>
 
     <div
-      class="px-4 col-span-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-end md:gap-6 md:px-0"
+      class="col-span-2 flex gap-2 flex-row md:items-center md:justify-end md:gap-6 md:px-0"
     >
       <AppCheckbox
         v-model="showMarginCurrencyOnlyCheck"
         data-cy="trade-page-filter-by-ticker-checkbox"
-        class="lg:mr-4"
       >
         {{ $t('account.showMarginCurrencyOnly') }}
       </AppCheckbox>
@@ -69,7 +68,6 @@ const search = computed({
       <AppCheckbox
         v-model="hideSmallBalancesCheck"
         data-cy="trade-page-filter-by-ticker-checkbox"
-        class="lg:mr-4"
       >
         <div class="flex items-center justify-start">
           <span>{{ $t('account.hideSmallBalances') }}</span>

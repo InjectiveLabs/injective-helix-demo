@@ -14,6 +14,7 @@ const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
+const { fetchTokenUsdPrice } = useBalance()
 
 defineProps({
   balances: {
@@ -27,9 +28,10 @@ const FilterList = {
   Positions: 'positions'
 }
 
-const status = reactive(new Status(StatusType.Loading))
-const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
+const activeType = ref(FilterList.Balances)
+const status = reactive(new Status(StatusType.Loading))
+const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
@@ -58,6 +60,8 @@ function initBalances() {
   handleViewFromRoute()
 
   Promise.all([
+    tokenStore.fetchBitcoinUsdPrice(),
+    bankStore.fetchBankBalancesWithToken(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
@@ -68,6 +72,8 @@ function initBalances() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+
+      refreshUsdTokenPrice()
     })
 }
 
@@ -85,34 +91,41 @@ function refreshBalances() {
     bankStore.fetchBankBalancesWithToken(),
     derivativeStore.fetchSubaccountOrders(),
     positionStore.fetchSubaccountPositions() // refresh mark price
-  ]).catch(() => {
-    // silently fail
-  })
+  ])
+}
+
+function refreshUsdTokenPrice() {
+  fetchTokenUsdPrice()
+    .catch($onError)
+    .finally(() => usdPriceStatus.setIdle())
 }
 
 function handleHideBalances(value: boolean) {
   hideBalances.value = value
 }
+
+useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>
 
 <template>
   <div class="pt-6 sm:pb-8">
-    <AppHocLoading :status="status">
-      <div>
-        <h2 class="text-2xl text-white font-bold mb-4">
-          {{ $t('account.accountOverview') }}
-        </h2>
+    <div>
+      <h2 class="text-2xl text-white font-bold mb-4">
+        {{ $t('account.accountOverview') }}
+      </h2>
 
-        <span class="text-gray-450 text-lg mb-1">
-          {{ $t('account.netWorth') }}
-        </span>
+      <span class="text-gray-450 text-lg mb-1">
+        {{ $t('account.netWorth') }}
+      </span>
 
-        <PartialsAccountOverview
-          :balances="balances"
-          :hide-balances="hideBalances"
-          @update:hide-balances="handleHideBalances"
-        />
+      <PartialsAccountOverview
+        :balances="balances"
+        :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
+        :hide-balances="hideBalances"
+        @update:hide-balances="handleHideBalances"
+      />
 
+      <div class="h-full-flex grow">
         <CommonTabMenu>
           <AppSelectButton
             v-for="filterType in Object.values(FilterList)"
@@ -141,31 +154,34 @@ function handleHideBalances(value: boolean) {
           </AppSelectButton>
         </CommonTabMenu>
 
-        <PartialsAccountBalances
-          v-if="activeType === FilterList.Balances"
-          v-bind="{
-            hideBalances,
-            balances
-          }"
-        />
+        <AppHocLoading :status="status">
+          <PartialsAccountBalances
+            v-if="activeType === FilterList.Balances"
+            v-bind="{
+              balances,
+              hideBalances,
+              usdPriceStatus
+            }"
+          />
 
-        <PartialsAccountPositions
-          v-if="activeType === FilterList.Positions"
-          v-bind="{ hideBalances, balances }"
-        />
+          <PartialsAccountPositions
+            v-if="activeType === FilterList.Positions"
+            v-bind="{ hideBalances, balances }"
+          />
+        </AppHocLoading>
       </div>
+    </div>
 
-      <PartialsAccountBalancesAssetDetails
-        v-if="modalStore.modals[Modal.AssetDetails]"
-      />
-      <PartialsAccountBridge />
+    <PartialsAccountBalancesAssetDetails
+      v-if="modalStore.modals[Modal.AssetDetails]"
+    />
+    <PartialsAccountBridge />
 
-      <ModalsAddMargin />
-      <ModalsConvertUsdc
-        v-if="usdcConvertMarket"
-        :balances="balances"
-        :market="usdcConvertMarket"
-      />
-    </AppHocLoading>
+    <ModalsAddMargin />
+    <ModalsConvertUsdc
+      v-if="usdcConvertMarket"
+      :balances="balances"
+      :market="usdcConvertMarket"
+    />
   </div>
 </template>

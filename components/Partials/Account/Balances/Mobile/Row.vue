@@ -121,34 +121,34 @@ function handleOpenAssetDetailsModal() {
     -->
 
     <td class="no-padding">
-      <div class="flex flex-col py-4">
-        <div class="flex flex-col items-end gap-1">
-          <div data-cy="wallet-balance-bank-table-data">
-            <span v-if="hideBalances" class="font-mono text-sm text-right">
-              {{ HIDDEN_BALANCE_DISPLAY }}
-            </span>
+      <div class="flex items-center justify-end gap-1">
+        <div class="flex flex-col py-4">
+          <div class="flex flex-col items-end gap-1">
+            <div data-cy="wallet-balance-bank-table-data">
+              <span v-if="hideBalances" class="font-mono text-sm text-right">
+                {{ HIDDEN_BALANCE_DISPLAY }}
+              </span>
 
-            <span v-else class="font-mono text-sm text-right">
-              {{ bankBalanceInString }}
-            </span>
-          </div>
+              <span v-else class="font-mono text-sm text-right">
+                {{ bankBalanceInString }}
+              </span>
+            </div>
 
-          <div>
-            <span v-if="hideBalances" class="font-mono text-sm text-right">
-              {{ HIDDEN_BALANCE_DISPLAY }}
-            </span>
+            <div>
+              <span v-if="hideBalances" class="font-mono text-sm text-right">
+                {{ HIDDEN_BALANCE_DISPLAY }}
+              </span>
 
-            <span v-else class="font-mono text-sm text-right">
-              {{ subaccountBalanceInString }}
-            </span>
+              <span v-else class="font-mono text-sm text-right">
+                {{ subaccountBalanceInString }}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </td>
 
-    <td class="no-padding">
-      <div class="flex items-center justify-end px-4">
-        <BaseIcon name="chevron" class="text-blue-500 w-4 h-4 rotate-180" />
+        <div class="flex items-center justify-end px-4">
+          <BaseIcon name="chevron" class="text-blue-500 w-4 h-4 rotate-180" />
+        </div>
       </div>
     </td>
   </tr>

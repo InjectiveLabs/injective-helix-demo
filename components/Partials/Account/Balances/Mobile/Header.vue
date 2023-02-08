@@ -43,7 +43,7 @@ const ascendingValue = computed({
       </span>
     </AppSortableHeaderItem>
 
-    <div class="flex items-center justify-end gap-2 h-14">
+    <th class="flex items-center justify-end gap-2 h-14">
       <!-- TODO - bank <> default trading account merge
       <AppSortableHeaderItem
         v-model:sort-by="sortByValue"
@@ -77,6 +77,7 @@ const ascendingValue = computed({
         v-model:sort-by="sortByValue"
         v-model:ascending="ascendingValue"
         class="justify-end"
+        colspan="2"
         :value="BalanceHeaderType.TradingAccount"
       >
         <span class="text-gray-350 text-xs normal-case">
@@ -96,6 +97,6 @@ const ascendingValue = computed({
         </span>
       </AppSortableHeaderItem>
       -->
-    </div>
+    </th>
   </tr>
 </template>

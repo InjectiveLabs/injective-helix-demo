@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -7,12 +8,17 @@ import {
 import { AccountBalance } from '@/types'
 
 const props = defineProps({
-  expand: Boolean,
+  showUsdcBalances: Boolean,
   hideBalances: Boolean,
 
   aggregatedBalance: {
     type: Object as PropType<AccountBalance>,
     required: true
+  },
+
+  usdPriceStatus: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Loading)
   }
 })
 
@@ -82,12 +88,15 @@ function handleDrawerToggle() {
   <tr
     class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{
-      'max-h-20': !expand,
-      'max-h-screen': expand
+      'max-h-20': !showUsdcBalances,
+      'max-h-screen': showUsdcBalances
     }"
   >
     <td class="pl-4">
-      <div class="flex justify-start items-center gap-2">
+      <div
+        class="flex justify-start items-center gap-2 cursor-pointer"
+        @click="handleDrawerToggle"
+      >
         <CommonTokenIcon :token="aggregatedBalance.token" />
 
         <div class="flex justify-start gap-2 items-center">
@@ -101,11 +110,10 @@ function handleDrawerToggle() {
           <BaseIcon
             v-if="aggregatedBalance"
             name="caret-down"
-            class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
+            class="h-6 w-6 transition duration-300 hover:text-blue-500 transform"
             :class="{
-              'rotate-0': !expand
+              'rotate-180': showUsdcBalances
             }"
-            @click="handleDrawerToggle"
           />
         </div>
       </div>
@@ -195,7 +203,9 @@ function handleDrawerToggle() {
 
     <td>
       <div class="flex justify-end">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <AppSpinner v-if="usdPriceStatus.isLoading()" md />
+
+        <span v-else-if="hideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }} USD
         </span>
 
@@ -204,5 +214,7 @@ function handleDrawerToggle() {
         </span>
       </div>
     </td>
+
+    <td></td>
   </tr>
 </template>
