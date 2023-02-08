@@ -88,39 +88,41 @@ function onCloseSideBar() {
 <template>
   <div id="pro" class="flex min-h-screen bg-gray-1000 text-gray-100 relative">
     <transition name="page" appear>
-      <AppHocLoading :status="status">
-        <div class="w-full">
-          <LayoutSidebarMobile
-            v-if="isOpenSidebar"
-            @sidebar:closed="onCloseSideBar"
-          />
-          <client-only>
-            <div class="bg-gray-1000">
-              <LayoutTopbar
-                :is-sidebar-open="isOpenSidebar"
-                @sidebar:opened="isOpenSidebar = true"
-                @sidebar:closed="onCloseSideBar"
-              />
-              <main
-                class="flex flex-wrap relative min-h-screen-excluding-header"
-                :class="{
-                  'pt-12': isOpenSidebar
-                }"
-              >
-                <div class="w-screen flex-1 py-4">
-                  <NuxtPage />
-                </div>
-                <LayoutFooter v-if="showFooter" />
-              </main>
+      <div>
+        <AppHocLoading :status="status">
+          <div class="w-full">
+            <LayoutSidebarMobile
+              v-if="isOpenSidebar"
+              @sidebar:closed="onCloseSideBar"
+            />
+            <client-only>
+              <div class="bg-gray-1000">
+                <LayoutTopbar
+                  :is-sidebar-open="isOpenSidebar"
+                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:closed="onCloseSideBar"
+                />
+                <main
+                  class="flex flex-wrap relative min-h-screen-excluding-header"
+                  :class="{
+                    'pt-12': isOpenSidebar
+                  }"
+                >
+                  <div class="w-screen flex-1 py-4">
+                    <NuxtPage />
+                  </div>
+                  <LayoutFooter v-if="showFooter" />
+                </main>
 
-              <ModalsInsufficientInjForGas />
-              <ModalsNinjaPassWinner />
-              <AppConfetti />
-              <div id="modals" />
-            </div>
-          </client-only>
-        </div>
-      </AppHocLoading>
+                <ModalsInsufficientInjForGas />
+                <ModalsNinjaPassWinner />
+                <AppConfetti />
+                <div id="modals" />
+              </div>
+            </client-only>
+          </div>
+        </AppHocLoading>
+      </div>
     </transition>
 
     <Notifications

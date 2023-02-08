@@ -19,21 +19,23 @@ defineProps({
 </script>
 
 <template>
-  <Suspense>
-    <div
-      v-if="status.isLoading() || showLoading"
-      class="h-full"
-      :class="{
-        'py-4': !noPadding
-      }"
-    >
-      <AppLoading :class="loaderClass" />
-    </div>
-    <slot v-else />
-    <template #fallback>
-      <div class="h-full">
+  <div>
+    <Suspense>
+      <div
+        v-if="status.isLoading() || showLoading"
+        class="h-full"
+        :class="{
+          'py-4': !noPadding
+        }"
+      >
         <AppLoading :class="loaderClass" />
       </div>
-    </template>
-  </Suspense>
+      <slot v-else />
+      <template #fallback>
+        <div class="h-full">
+          <AppLoading :class="loaderClass" />
+        </div>
+      </template>
+    </Suspense>
+  </div>
 </template>
