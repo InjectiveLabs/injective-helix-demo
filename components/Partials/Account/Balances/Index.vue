@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import {
   QUOTE_DENOMS_GECKO_IDS,
   SMALL_BALANCE_THRESHOLD
 } from '@/app/utils/constants'
-import { AccountBalance, BalanceHeaderType } from '@/types'
-import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
+import {
+  AccountBalance,
+  AggregatedBalanceType,
+  AccountBalanceWithAggregatedType,
+  BalanceHeaderType
+} from '@/types'
+import { usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -17,72 +23,55 @@ const props = defineProps({
   }
 })
 
+const { aggregateBalanceByDenoms } = useBalance()
+
 const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)
-const sortBy = ref(BalanceHeaderType.None)
+const sortBy = ref(BalanceHeaderType.Value)
 const ascending = ref(false)
 
-const aggregatedUsdcBalance = computed(() => {
-  const usdcBalances = props.balances.filter((balance) =>
-    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
-  )
+const balancesWithAggregation = computed<AccountBalanceWithAggregatedType[]>(
+  () => {
+    const aggregatedUsdcBalance = aggregateBalanceByDenoms({
+      balances: props.balances,
+      denoms: usdcTokenDenoms
+    })
 
-  if (!usdcBalances.length) {
-    return
+    const balanceWithoutAggregationDenoms = props.balances.filter(
+      (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+    )
+
+    return [
+      ...balanceWithoutAggregationDenoms,
+      { ...aggregatedUsdcBalance, type: AggregatedBalanceType.USDC }
+    ]
   }
-
-  return usdcBalances.reduce((aggregatedUsdc, balance) => {
-    return {
-      ...balance,
-      denom: usdcTokenDenoms.join('-'),
-      balanceToBase: new BigNumberInBase(aggregatedUsdc.balanceToBase)
-        .plus(balance.balanceToBase)
-        .toFixed(),
-      totalBalanceInUsd: new BigNumberInBase(aggregatedUsdc.totalBalanceInUsd)
-        .plus(balance.totalBalanceInUsd)
-        .toFixed(),
-      totalBalance: new BigNumberInBase(aggregatedUsdc.totalBalance)
-        .plus(balance.totalBalance)
-        .toFixed(),
-      reservedBalance: new BigNumberInBase(aggregatedUsdc.reservedBalance)
-        .plus(balance.reservedBalance)
-        .toFixed(),
-      subaccountBalance: new BigNumberInBase(aggregatedUsdc.subaccountBalance)
-        .plus(balance.subaccountBalance)
-        .toFixed(),
-      balance: new BigNumberInBase(aggregatedUsdc.balance)
-        .plus(balance.balance)
-        .toFixed()
-    }
-  })
-})
+)
 
 const filteredBalances = computed(() => {
-  return props.balances
-    .filter((balance) => balance)
-    .filter((balance) => {
-      const isNotSmallBalance =
-        !hideSmallBalances.value ||
-        new BigNumberInBase(balance.totalBalance).gte(SMALL_BALANCE_THRESHOLD)
+  return balancesWithAggregation.value.filter((balance) => {
+    const isNotSmallBalance =
+      !hideSmallBalances.value ||
+      new BigNumberInBase(balance.totalBalance).gte(SMALL_BALANCE_THRESHOLD)
 
-      const isMarginCurrency =
-        !showMarginCurrencyOnly.value ||
-        QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
+    const isMarginCurrency =
+      !showMarginCurrencyOnly.value ||
+      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
 
-      const tokenNameMatch = balance.token.name
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase())
+    const tokenNameMatch = balance.token.name
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase())
 
-      const tokenSymbolMatch = balance.token.symbol
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase())
+    const tokenSymbolMatch = balance.token.symbol
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase())
 
-      const isPartOfSearchFilter =
-        searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
+    const isPartOfSearchFilter =
+      searchQuery.value.trim() === '' || tokenNameMatch || tokenSymbolMatch
 
-      return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
-    })
+    return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
+  })
 })
 
 const sortedBalances = computed(() => {
@@ -94,7 +83,7 @@ const sortedBalances = computed(() => {
           const totalB = new BigNumberInBase(b.totalBalance)
 
           if (totalA.eq(totalB)) {
-            return 0
+            return b.token.symbol.localeCompare(a.token.symbol)
           }
 
           return totalB.minus(totalA).toNumber()
@@ -105,7 +94,7 @@ const sortedBalances = computed(() => {
           const totalB = new BigNumberInBase(b.bankBalance)
 
           if (totalA.eq(totalB)) {
-            return 0
+            return b.token.symbol.localeCompare(a.token.symbol)
           }
 
           return totalB.minus(totalA).toNumber()
@@ -116,7 +105,7 @@ const sortedBalances = computed(() => {
           const totalB = new BigNumberInBase(b.subaccountBalance)
 
           if (totalA.eq(totalB)) {
-            return 0
+            return b.token.symbol.localeCompare(a.token.symbol)
           }
 
           return totalB.minus(totalA).toNumber()
@@ -127,7 +116,7 @@ const sortedBalances = computed(() => {
           const totalInUsdB = new BigNumberInBase(b.totalBalanceInUsd)
 
           if (totalInUsdA.eq(totalInUsdB)) {
-            return 0
+            return b.token.symbol.localeCompare(a.token.symbol)
           }
 
           return totalInUsdB.minus(totalInUsdA).toNumber()
@@ -138,41 +127,31 @@ const sortedBalances = computed(() => {
           const availableB = new BigNumberInBase(a.balanceToBase)
 
           if (availableA.eq(availableB)) {
-            return 0
+            return b.token.symbol.localeCompare(a.token.symbol)
           }
 
           return availableB.minus(availableA).toNumber()
         }
 
         default: {
-          const nameA = a.token.name
-          const nameB = b.token.name
-
-          return nameB.localeCompare(nameA)
+          return b.token.symbol.localeCompare(a.token.symbol)
         }
       }
     }
   )
 
-  return ascending.value ? result.reverse() : result
+  const sortedBalances = ascending.value ? result.reverse() : result
+  const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
+  const sortedBalancesWithoutInjBalance = sortedBalances.filter(
+    ({ denom }) => denom !== INJ_DENOM
+  )
+
+  // always sort INJ on top
+  return [
+    ...(injBalance ? [injBalance] : []),
+    ...sortedBalancesWithoutInjBalance
+  ]
 })
-
-const sortedNonUsdcBalances = computed(() =>
-  sortedBalances.value.filter(
-    (balance) =>
-      ![
-        usdcTokenDenom.USDC,
-        usdcTokenDenom.USDCet,
-        usdcTokenDenom.USDCso
-      ].includes(balance.token.denom.toLowerCase())
-  )
-)
-
-const sortedUsdcBalances = computed(() =>
-  sortedBalances.value.filter((balance) =>
-    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
-  )
-)
 </script>
 
 <template>
@@ -184,21 +163,24 @@ const sortedUsdcBalances = computed(() =>
     />
 
     <table class="w-full border-collapse hidden lg:table">
-      <PartialsAccountBalancesTableHeader
+      <PartialsAccountBalancesHeader
+        v-bind="$attrs"
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"
       />
-      <PartialsAccountBalancesUsdc
-        v-if="aggregatedUsdcBalance && sortedUsdcBalances.length"
-        :aggregated-balance="aggregatedUsdcBalance"
-        :balances="sortedUsdcBalances"
-        :hide-balances="hideBalances"
-      />
-      <template
-        v-for="balance in sortedNonUsdcBalances"
-        :key="balance.token.denom"
-      >
-        <PartialsAccountBalancesTableRow
+
+      <template v-for="balance in sortedBalances" :key="balance.token.denom">
+        <PartialsAccountBalancesUsdc
+          v-if="balance.type === AggregatedBalanceType.USDC"
+          v-bind="$attrs"
+          :aggregated-balance="balance"
+          :balances="balances"
+          :hide-balances="hideBalances"
+        />
+
+        <PartialsAccountBalancesRow
+          v-else
+          v-bind="$attrs"
           :balance="balance"
           :hide-balances="hideBalances"
         />
@@ -206,14 +188,15 @@ const sortedUsdcBalances = computed(() =>
     </table>
 
     <table class="w-full border-collapse sm:table lg:hidden">
-      <PartialsAccountBalancesTableHeaderMobile
+      <PartialsAccountBalancesMobileHeader
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"
       />
 
-      <PartialsAccountBalancesTableRowMobile
+      <PartialsAccountBalancesMobileRow
         v-for="balance in sortedBalances"
         :key="balance.token.denom"
+        v-bind="$attrs"
         :balance="balance"
         :hide-balances="hideBalances"
       />

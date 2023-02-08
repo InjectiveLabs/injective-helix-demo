@@ -34,8 +34,8 @@ const props = defineProps({
   },
 
   summary: {
-    required: true,
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>
+    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    default: undefined
   }
 })
 
@@ -253,22 +253,18 @@ function handleTradeClickedTrack() {
           'col-span-3': isHero
         }"
       >
-        <AppHocLoading
-          :status="status"
-          loader-class="w-6 h-6 text-center"
-          no-padding
-        >
-          <BaseLineGraph
-            v-if="chartData.length > 1"
-            style="transform: scale(-1, 1)"
-            :data="chartData"
-            :color="chartLineColor"
-            :bg-type="'transparent'"
-            :stroke-width="1"
-            :smoothness="0.05"
-            :padding="chartPadding"
-          />
-        </AppHocLoading>
+        <AppSpinner v-if="status.isLoading()" md />
+
+        <BaseLineGraph
+          v-else-if="chartData.length > 1"
+          style="transform: scale(-1, 1)"
+          :data="chartData"
+          :color="chartLineColor"
+          :bg-type="'transparent'"
+          :stroke-width="1"
+          :smoothness="0.05"
+          :padding="chartPadding"
+        />
       </div>
       <div v-if="!isHero" class="col-span-2 align-center justify-self-end">
         <NuxtLink :to="marketRoute">

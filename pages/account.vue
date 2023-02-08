@@ -9,7 +9,6 @@ import {
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
-import { getCoinGeckoIdListWithDenomBalanceLargerThenZero } from '@/composables/account/useBalance'
 
 definePageMeta({
   middleware: ['connected']
@@ -18,10 +17,10 @@ definePageMeta({
 const appStore = useAppStore()
 const bankStore = useBankStore()
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 const { balancesWithToken } = useBalance()
 
@@ -103,7 +102,7 @@ const balances = computed(() => {
       Object.keys(bankStore.bankBalances).find(
         (balanceDenom) => balanceDenom.toLowerCase() === denom
       ) || ''
-    const bankBalance = bankStore.bankBalances[bankBalanceDenom]
+    const bankBalance = bankStore.bankBalances[bankBalanceDenom] || '0'
 
     const inOrderBalance = new BigNumberInBase(subaccountTotalBalance).minus(
       subaccountAvailableBalance
@@ -131,43 +130,31 @@ const balances = computed(() => {
   })
 })
 
-function fetchTokensUsdPrice() {
-  const coinGeckoIdList = getCoinGeckoIdListWithDenomBalanceLargerThenZero(
-    balancesWithToken.value,
-    tokenStore.tokens
-  )
-
-  tokenStore.fetchTokenUsdPriceMap(coinGeckoIdList)
-}
-
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([spotStore.init(), derivativeStore.init()])
-    .then(() => {
-      Promise.all([
-        tokenStore.fetchBitcoinUsdPrice(),
-        bankStore.fetchBankBalancesWithToken(),
-        accountStore.fetchSubaccounts(),
-        fetchTokensUsdPrice()
-      ])
-        .catch($onError)
-        .finally(() => {
-          status.setIdle()
-        })
-    })
+  Promise.all([
+    accountStore.fetchSubaccounts(),
+    spotStore.init(),
+    derivativeStore.init()
+  ])
     .catch($onError)
+    .finally(() => status.setIdle())
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)
-useIntervalFn(fetchTokensUsdPrice, 1000 * 30)
 </script>
 
 <template>
-  <AppHocLoading :status="status">
-    <div class="h-full-flex">
-      <PartialsAccount :balances="balances" />
-      <ModalsRefereeOnboarding v-if="REFERRALS_ENABLED" />
+  <AppHocLoading
+    :status="status"
+    :show-loading="!walletStore.isUserWalletConnected"
+  >
+    <div class="container">
+      <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
+        <PartialsAccount :balances="balances" />
+        <ModalsRefereeOnboarding v-if="REFERRALS_ENABLED" />
+      </div>
     </div>
   </AppHocLoading>
 </template>

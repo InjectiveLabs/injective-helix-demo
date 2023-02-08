@@ -190,7 +190,6 @@ export default <Config>{
     maxHeight: ['responsive'],
     textColor: ['group-hover', 'hover']
   },
-
   // TODO: Remove
   purge: {
     enabled: process.env.NODE_ENV === 'production',

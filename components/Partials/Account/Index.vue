@@ -14,6 +14,7 @@ const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
+const { fetchTokenUsdPrice } = useBalance()
 
 defineProps({
   balances: {
@@ -27,9 +28,10 @@ const FilterList = {
   Positions: 'positions'
 }
 
-const status = reactive(new Status(StatusType.Loading))
-const activeType = ref(FilterList.Balances)
 const hideBalances = ref(false)
+const activeType = ref(FilterList.Balances)
+const status = reactive(new Status(StatusType.Loading))
+const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
@@ -58,6 +60,8 @@ function initBalances() {
   handleViewFromRoute()
 
   Promise.all([
+    tokenStore.fetchBitcoinUsdPrice(),
+    bankStore.fetchBankBalancesWithToken(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
@@ -68,6 +72,8 @@ function initBalances() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+
+      refreshUsdTokenPrice()
     })
 }
 
@@ -85,68 +91,76 @@ function refreshBalances() {
     bankStore.fetchBankBalancesWithToken(),
     derivativeStore.fetchSubaccountOrders(),
     positionStore.fetchSubaccountPositions() // refresh mark price
-  ]).catch(() => {
-    // silently fail
-  })
+  ])
+}
+
+function refreshUsdTokenPrice() {
+  fetchTokenUsdPrice()
+    .catch($onError)
+    .finally(() => usdPriceStatus.setIdle())
 }
 
 function handleHideBalances(value: boolean) {
   hideBalances.value = value
 }
+
+useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>
 
 <template>
-  <div class="h-full-flex w-full flex-wrap">
-    <AppHocLoading :status="status">
-      <div class="container pt-6 pb-12">
-        <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 flex flex-col">
-          <h2 class="text-2xl text-white font-bold mb-4">
-            {{ $t('account.accountOverview') }}
-          </h2>
+  <div class="pt-6 sm:pb-8">
+    <div>
+      <h2 class="text-2xl text-white font-bold mb-4">
+        {{ $t('account.accountOverview') }}
+      </h2>
 
-          <span class="text-gray-450 text-lg mb-1">
-            {{ $t('account.netWorth') }}
-          </span>
+      <span class="text-gray-450 text-lg mb-1">
+        {{ $t('account.netWorth') }}
+      </span>
 
-          <PartialsAccountOverview
-            :balances="balances"
-            :hide-balances="hideBalances"
-            @update:hide-balances="handleHideBalances"
-          />
+      <PartialsAccountOverview
+        :balances="balances"
+        :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
+        :hide-balances="hideBalances"
+        @update:hide-balances="handleHideBalances"
+      />
 
-          <CommonTabMenu>
-            <AppSelectButton
-              v-for="filterType in Object.values(FilterList)"
-              :key="`account-tabs-${filterType}`"
-              v-model="activeType"
-              :value="filterType"
-            >
-              <template #default="{ active }">
-                <NuxtLink
-                  :to="{
-                    name: 'account',
-                    query: { view: filterType }
-                  }"
-                >
-                  <CommonTabMenuItem :active="active">
-                    <p v-if="filterType === FilterList.Balances">
-                      {{ $t('account.tabs.balances') }}
-                    </p>
+      <div class="h-full-flex grow">
+        <CommonTabMenu>
+          <AppSelectButton
+            v-for="filterType in Object.values(FilterList)"
+            :key="`account-tabs-${filterType}`"
+            v-model="activeType"
+            :value="filterType"
+          >
+            <template #default="{ active }">
+              <NuxtLink
+                :to="{
+                  name: 'account',
+                  query: { view: filterType }
+                }"
+              >
+                <CommonTabMenuItem :active="active">
+                  <p v-if="filterType === FilterList.Balances">
+                    {{ $t('account.tabs.balances') }}
+                  </p>
 
-                    <p v-if="filterType === FilterList.Positions">
-                      {{ $t('account.tabs.positions') }}
-                    </p>
-                  </CommonTabMenuItem>
-                </NuxtLink>
-              </template>
-            </AppSelectButton>
-          </CommonTabMenu>
+                  <p v-if="filterType === FilterList.Positions">
+                    {{ $t('account.tabs.positions') }}
+                  </p>
+                </CommonTabMenuItem>
+              </NuxtLink>
+            </template>
+          </AppSelectButton>
+        </CommonTabMenu>
 
+        <AppHocLoading :status="status">
           <PartialsAccountBalances
             v-if="activeType === FilterList.Balances"
             v-bind="{
+              balances,
               hideBalances,
-              balances
+              usdPriceStatus
             }"
           />
 
@@ -154,9 +168,9 @@ function handleHideBalances(value: boolean) {
             v-if="activeType === FilterList.Positions"
             v-bind="{ hideBalances, balances }"
           />
-        </div>
+        </AppHocLoading>
       </div>
-    </AppHocLoading>
+    </div>
 
     <PartialsAccountBalancesAssetDetails
       v-if="modalStore.modals[Modal.AssetDetails]"

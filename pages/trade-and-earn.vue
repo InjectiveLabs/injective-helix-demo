@@ -32,16 +32,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="h-full-flex w-full flex-wrap py-4">
-    <AppHocLoading :status="status">
-      <div class="container">
-        <div class="w-full mx-auto xl:w-4/5">
-          <PartialsTradeAndEarnCurrentEpoch class="mt-6" />
-          <PartialsTradeAndEarnPreviousRewards v-if="false" class="mt-12" />
-          <PartialsTradeAndEarnPendingRewards class="mt-12" />
-          <PartialsTradeAndEarnMarketsInfo class="mt-12" />
-        </div>
+  <AppHocLoading :status="status">
+    <div class="container">
+      <div class="w-full mx-auto xl:w-4/5 relative">
+        <PartialsTradeAndEarnCurrentEpoch class="mt-6" />
+        <PartialsTradeAndEarnPendingRewards class="mt-12" />
+        <PartialsTradeAndEarnMarketsInfo class="mt-12" />
       </div>
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

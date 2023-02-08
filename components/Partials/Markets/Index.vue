@@ -167,7 +167,7 @@ function prefillFromQueryParams() {
 </script>
 
 <template>
-  <div class="container xl:max-w-6xl mx-auto py-6 md:py-12">
+  <div class="xl:max-w-6xl mx-auto py-6 md:py-12">
     <div>
       <h3 class="text-xl tracking-wider leading-6 font-bold md:hidden mb-6">
         {{ $t('markets.title') }}

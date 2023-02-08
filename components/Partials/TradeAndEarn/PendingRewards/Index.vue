@@ -21,29 +21,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <AppHocLoading :status="status">
-      <div>
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl font-bold text-gray-200">
-            {{ $t('tradeAndEarn.pendingRewards') }}
-          </h3>
-        </div>
-
-        <div v-if="schedules.length === 0">
-          <span className="text-gray-500">
-            {{ t('tradeAndEarn.emptyPendingRewards') }}
-          </span>
-        </div>
-
-        <PartialsTradeAndEarnPendingRewardsEpoch
-          v-for="(schedule, index) in schedules"
-          :key="`pending-rewards-epoch-${index}`"
-          :class="index > 0 ? 'mt-12' : 'mt-0'"
-          :schedule="schedule"
-          :index="index"
-        />
+  <div class="relative">
+    <div>
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-gray-200">
+          {{ $t('tradeAndEarn.pendingRewards') }}
+        </h3>
       </div>
-    </AppHocLoading>
+
+      <div v-if="schedules.length === 0">
+        <span className="text-gray-500">
+          {{ t('tradeAndEarn.emptyPendingRewards') }}
+        </span>
+      </div>
+
+      <div class="relative">
+        <AppHocLoading :status="status">
+          <PartialsTradeAndEarnPendingRewardsEpoch
+            v-for="(schedule, index) in schedules"
+            :key="`pending-rewards-epoch-${index}`"
+            :class="index > 0 ? 'mt-12' : 'mt-0'"
+            :schedule="schedule"
+            :index="index"
+          />
+        </AppHocLoading>
+      </div>
+    </div>
   </div>
 </template>
