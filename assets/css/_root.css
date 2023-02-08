@@ -48,6 +48,10 @@ body .vue-grid-item {
   touch-action: none;
 }
 
+.h-full-excluding-header {
+  height: calc(100% - var(--header-height));
+}
+
 .max-h-screen-excluding-header {
   max-height: calc(100vh - var(--header-height));
 }
@@ -68,10 +72,10 @@ body .vue-grid-item {
   height: calc(100vh - var(--header-height) - var(--market-info-height) - 4px);
 }
 
-.h-full-grow {
-  @apply flex flex-col flex-grow h-full;
-}
-
 .top-market-info {
   top: var(--market-info-height);
+}
+
+.h-full-flex {
+  @apply h-full flex flex-col grow;
 }

@@ -141,7 +141,3 @@
 .-order-1 {
   order: -1;
 }
-
-.h-full-flex {
-  @apply h-full;
-}

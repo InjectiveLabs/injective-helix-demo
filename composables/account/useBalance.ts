@@ -66,6 +66,10 @@ export function useBalance() {
       denoms.includes(balance.token.denom.toLowerCase())
     )
 
+    if (!filteredBalances.length) {
+      return undefined
+    }
+
     return filteredBalances.reduce((aggregatedBalance, balance) => {
       return {
         ...balance,
