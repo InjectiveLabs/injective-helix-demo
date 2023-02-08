@@ -12,7 +12,7 @@ import {
   AccountBalanceWithAggregatedType,
   BalanceHeaderType
 } from '@/types'
-import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
+import { usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -39,12 +39,7 @@ const balancesWithAggregation = computed<AccountBalanceWithAggregatedType[]>(
     })
 
     const balanceWithoutAggregationDenoms = props.balances.filter(
-      (balance) =>
-        ![
-          usdcTokenDenom.USDC,
-          usdcTokenDenom.USDCet,
-          usdcTokenDenom.USDCso
-        ].includes(balance.token.denom.toLowerCase())
+      (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
     )
 
     return [
@@ -145,12 +140,17 @@ const sortedBalances = computed(() => {
     }
   )
 
-  const list = ascending.value ? result.reverse() : result
-  const listWithoutInjBalance = list.filter(({ denom }) => denom !== INJ_DENOM)
-  const injBalance = list.find(({ denom }) => denom === INJ_DENOM)
+  const sortedBalances = ascending.value ? result.reverse() : result
+  const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
+  const sortedBalancesWithoutInjBalance = sortedBalances.filter(
+    ({ denom }) => denom !== INJ_DENOM
+  )
 
   // always sort INJ on top
-  return [...(injBalance ? [injBalance] : []), ...listWithoutInjBalance]
+  return [
+    ...(injBalance ? [injBalance] : []),
+    ...sortedBalancesWithoutInjBalance
+  ]
 })
 </script>
 
