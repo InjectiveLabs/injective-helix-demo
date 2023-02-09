@@ -88,7 +88,7 @@ function onCloseSideBar() {
 <template>
   <div
     id="pro"
-    class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative"
+    class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
   >
     <transition name="page" appear>
       <div>
@@ -108,12 +108,16 @@ function onCloseSideBar() {
                 <main
                   class="flex flex-wrap relative min-h-screen-excluding-header"
                   :class="{
+                    'flex-col': showFooter,
                     'pt-12': isOpenSidebar
                   }"
                 >
                   <div
-                    class="w-screen flex-1"
-                    :class="{ 'max-h-screen-excluding-header': !showFooter }"
+                    class="w-screen"
+                    :class="[
+                      { 'max-h-screen-excluding-header': !showFooter },
+                      showFooter ? 'flex-auto' : 'flex-1'
+                    ]"
                   >
                     <NuxtPage />
                   </div>

@@ -27,7 +27,7 @@ const sortedOrders = computed(() =>
     <!-- mobile table -->
     <CommonTableBody
       :show-empty="sortedOrders.length === 0"
-      class="sm:hidden max-h-lg overflow-y-auto"
+      class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountOrderMobile
         v-for="(order, index) in sortedOrders"

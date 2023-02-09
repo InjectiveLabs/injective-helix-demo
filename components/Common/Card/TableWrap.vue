@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-lg overflow-y-hidden flex-auto">
+  <div class="min-h-lg flex-auto">
     <div class="grid grid-cols-12 z-10">
       <slot name="actions" />
     </div>
