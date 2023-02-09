@@ -13,7 +13,7 @@ const sortedTriggers = computed(() =>
     <!-- mobile table -->
     <CommonTableBody
       :show-empty="sortedTriggers.length === 0"
-      class="sm:hidden max-h-lg overflow-y-auto"
+      class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountTriggerMobile
         v-for="(trigger, index) in sortedTriggers"

@@ -21,7 +21,7 @@ const transactions = computed(
     :status="status"
     :loader-class="status.isLoading() ? 'relative' : ''"
   >
-    <div class="w-full h-full-flex">
+    <div class="w-full h-full">
       <CommonTableWrapper break-md>
         <table v-if="transactions.length > 0" class="table">
           <PartialsActivityViewsWalletHistoryCommonTableHeader />

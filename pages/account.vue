@@ -147,6 +147,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
 
 <template>
   <AppHocLoading
+    class="h-full"
     :status="status"
     :show-loading="!walletStore.isUserWalletConnected"
   >

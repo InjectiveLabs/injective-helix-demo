@@ -32,7 +32,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <AppHocLoading :status="status">
+  <AppHocLoading :status="status" class="h-full">
     <div class="container">
       <div class="w-full mx-auto xl:w-4/5 relative">
         <PartialsTradeAndEarnCurrentEpoch class="mt-6" />

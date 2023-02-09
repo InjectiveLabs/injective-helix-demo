@@ -125,7 +125,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         @update:hide-balances="handleHideBalances"
       />
 
-      <div class="h-full-flex grow">
+      <div class="h-full-flex">
         <CommonTabMenu>
           <AppSelectButton
             v-for="filterType in Object.values(FilterList)"

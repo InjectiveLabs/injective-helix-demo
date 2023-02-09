@@ -130,8 +130,8 @@ function handleCancelAllClick() {
       </div>
     </template>
 
-    <AppHocLoading :status="status">
-      <CommonCard class="h-full">
+    <AppHocLoading class="h-full" :status="status">
+      <CommonCard class="h-full flex-auto">
         <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"
