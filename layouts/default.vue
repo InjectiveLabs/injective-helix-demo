@@ -23,9 +23,9 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
 
-const showFooter = computed(() => {
-  return ROUTES.footerEnabledRoutes.includes(route.name as string)
-})
+const showFooter = computed(() =>
+  ROUTES.footerEnabledRoutes.includes(route.name as string)
+)
 
 onMounted(() => {
   handleCosmoverseGiveawayCampaignTrack()
@@ -86,7 +86,10 @@ function onCloseSideBar() {
 </script>
 
 <template>
-  <div id="pro" class="flex min-h-screen bg-gray-1000 text-gray-100 relative">
+  <div
+    id="pro"
+    class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative"
+  >
     <transition name="page" appear>
       <div>
         <AppHocLoading :status="status">
@@ -108,7 +111,10 @@ function onCloseSideBar() {
                     'pt-12': isOpenSidebar
                   }"
                 >
-                  <div class="w-screen flex-1 py-4">
+                  <div
+                    class="w-screen flex-1"
+                    :class="{ 'max-h-screen-excluding-header': !showFooter }"
+                  >
                     <NuxtPage />
                   </div>
                   <LayoutFooter v-if="showFooter" />

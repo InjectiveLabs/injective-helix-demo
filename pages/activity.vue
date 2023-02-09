@@ -22,7 +22,7 @@ onMounted(() => {
 
 <template>
   <AppHocLoading :status="status" class="h-full">
-    <div class="container h-full max-h-screen-excluding-header">
+    <div class="container h-full max-h-screen-excluding-header min-h-lg">
       <div
         class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative h-full-excluding-header"
       >

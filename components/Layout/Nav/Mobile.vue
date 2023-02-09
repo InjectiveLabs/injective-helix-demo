@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import {
-  getDefaultPerpetualMarketRoute,
-  getDefaultSpotMarketRoute
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
 
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
 
-const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRoute()
-const defaultSpotMarketRoute = getDefaultSpotMarketRoute()
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
+const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function handleToggleTradeMenu() {
   tradeMenuOpen.value = !tradeMenuOpen.value

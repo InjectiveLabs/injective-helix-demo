@@ -54,22 +54,6 @@
   height: var(--orderbook-middle-height);
 }
 
-.card-table-wrap-content {
-  @apply flex-1 w-full;
-}
-
-.card-table-wrap-content .h-full-flex {
-  @apply h-full;
-}
-
-.card-table-wrap-content th {
-  @apply py-4 text-gray-200 uppercase;
-}
-
-.card-table-wrap-content-lighter {
-  @apply bg-gray-800 px-4 py-2 flex-1 w-full;
-}
-
 .bg-gradient-300 {
   background-color: rgba(181, 187, 202, 0.03);
 }

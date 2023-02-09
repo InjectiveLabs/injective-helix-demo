@@ -23,7 +23,11 @@ function handleSidebarClose() {
           ref="sidebar"
           class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-gray-900"
         >
-          <LayoutSidebarContent @click="handleSidebarClose" />
+          <div class="flex flex-col h-0 flex-1" @click="handleSidebarClose">
+            <div class="flex-1 flex flex-col overflow-y-auto">
+              <LayoutNav />
+            </div>
+          </div>
         </div>
       </transition>
     </div>
