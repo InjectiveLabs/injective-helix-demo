@@ -1,8 +1,5 @@
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  SubaccountBalanceWithToken,
-  TokenWithBalanceAndPrice
-} from '@injectivelabs/sdk-ui-ts'
+import { SubaccountBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   SpotOrderSide,
@@ -37,12 +34,6 @@ export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
   pnlInUsd: BigNumberInBase
   totalBalance: BigNumberInBase
   totalBalanceInUsd: BigNumberInBase
-}
-
-export interface BankBalanceWithTokenWithBalanceAndPrice {
-  balance: string
-  denom: string
-  token: TokenWithBalanceAndPrice
 }
 
 export interface MarketRoute {
@@ -103,5 +94,3 @@ export * from './bridge'
 export * from './enums'
 export * from './states'
 export * from './trade'
-
-export type useBugsnag = () => any

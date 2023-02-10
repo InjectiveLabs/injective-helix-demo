@@ -129,8 +129,8 @@ onWalletConnected(() => {
             <PartialsCommonBalancesSubaccount
               v-else
               v-bind="{
-                baseTradingBalance,
                 market,
+                baseTradingBalance,
                 quoteTradingBalance
               }"
               data-cy="trading-page-account-balances-component"

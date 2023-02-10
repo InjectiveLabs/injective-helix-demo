@@ -1,6 +1,6 @@
 import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
-import { Token, TokenType } from '@injectivelabs/token-metadata'
+import { TokenWithPrice, TokenType } from '@injectivelabs/token-metadata'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { CW20_ADAPTER_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
 import { NETWORK } from '@/app/utils/constants'
@@ -10,17 +10,20 @@ import { USDCSymbol } from '@/types'
 const adapterContract = CW20_ADAPTER_CONTRACT_BY_NETWORK[NETWORK]
 
 export const injToken = {
-  usdPrice: 0,
-  decimals: 18,
-  symbol: 'INJ',
-  name: 'Injective',
   denom: INJ_DENOM,
-  tokenType: TokenType.Native,
+  name: 'Injective',
+  symbol: 'INJ',
+  decimals: 18,
+  logo: '/injective-v3.svg',
   coinGeckoId: INJ_COIN_GECKO_ID,
-  logo: '/bridgingNetworks/injective.png',
-  icon: '/bridgingNetworks/injective.png',
-  erc20Address: getContractAddressesForNetworkOrThrow(NETWORK).injective
-} as Token
+  tokenType: TokenType.Native,
+
+  erc20: {
+    decimals: 18,
+    address: getContractAddressesForNetworkOrThrow(NETWORK).injective
+  },
+  usdPrice: 0
+} as TokenWithPrice
 
 interface NetworkToSymbolMap {
   [key: string]: string
@@ -42,21 +45,21 @@ export const networkToSymbolMap = {
 export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
   const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
 
-  if (!tokenMeta || !adapterContract) {
+  if (!tokenMeta || !adapterContract || !tokenMeta.cw20) {
     return ''
   }
 
-  return `factory/${adapterContract}/${tokenMeta.cw20Address}`
+  return `factory/${adapterContract}/${tokenMeta.cw20.address}`
 }
 
 export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
   const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
 
-  if (!tokenMeta || !tokenMeta.erc20Address) {
+  if (!tokenMeta || !tokenMeta.erc20) {
     return ''
   }
 
-  return `peggy${tokenMeta.erc20Address.toLowerCase()}`
+  return `peggy${tokenMeta.erc20.address.toLowerCase()}`
 }
 
 export const usdcTokenDenom = {

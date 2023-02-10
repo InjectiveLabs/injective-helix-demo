@@ -1,6 +1,9 @@
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  SpotOrderSide,
+  BalanceWithToken,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import { getSubaccountTokenWithBalance } from '@/app/utils/balance'
-import { BalanceWithToken } from '@/types'
 
 export default function useConvertFormatter() {
   const accountStore = useAccountStore()

@@ -127,8 +127,8 @@ const sortedBalances = computed(() => {
         }
 
         case BalanceHeaderType.Available: {
-          const availableA = new BigNumberInBase(a.balanceToBase)
-          const availableB = new BigNumberInBase(a.balanceToBase)
+          const availableA = new BigNumberInBase(a.balance)
+          const availableB = new BigNumberInBase(a.balance)
 
           if (availableA.eq(availableB)) {
             return b.token.symbol.localeCompare(a.token.symbol)

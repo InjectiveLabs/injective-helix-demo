@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BankBalanceWithTokenAndBalanceInBase } from '@injectivelabs/sdk-ui-ts'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 
 defineProps({
@@ -61,16 +61,16 @@ const supportedTokens = computed(() => {
       balance: '',
       denom: market.baseToken.denom,
       token: market.baseToken
-    } as BankBalanceWithTokenAndBalanceInBase
+    } as BalanceWithToken
 
     const quoteToken = {
       balance: '',
       denom: market.quoteToken.denom,
       token: market.quoteToken
-    } as BankBalanceWithTokenAndBalanceInBase
+    } as BalanceWithToken
 
     return [...tokens, baseToken, quoteToken]
-  }, [] as BankBalanceWithTokenAndBalanceInBase[])
+  }, [] as BalanceWithToken[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()

@@ -1,13 +1,14 @@
 import { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance, BalanceWithTokenAndUsdPrice } from '@/types'
+import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
+import { AccountBalance } from '@/types'
 
 export const getCoinGeckoIdListWithDenomBalanceLargerThenZero = (
-  balances: BalanceWithTokenAndUsdPrice[],
+  balances: BalanceWithTokenAndPrice[],
   tokens: Token[]
 ) => {
   const denomsWithBalanceLargerThanZero = balances
-    .filter((balance) => new BigNumberInBase(balance.balanceToBase).gt(0))
+    .filter((balance) => new BigNumberInBase(balance.balance).gt(0))
     .map((balance) => balance.denom)
 
   const coinGeckoIdList = denomsWithBalanceLargerThanZero
@@ -40,9 +41,8 @@ export function useBalance() {
         token,
         denom: token.denom,
         balance: totalBalance.toFixed(),
-        usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0,
-        balanceToBase: totalBalance.toBase(token.decimals).toFixed()
-      }
+        usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0
+      } as BalanceWithTokenAndPrice
     })
   })
 
@@ -74,9 +74,6 @@ export function useBalance() {
       return {
         ...balance,
         denom: denoms.join('-'),
-        balanceToBase: new BigNumberInBase(aggregatedBalance.balanceToBase)
-          .plus(balance.balanceToBase)
-          .toFixed(),
         totalBalanceInUsd: new BigNumberInBase(
           aggregatedBalance.totalBalanceInUsd
         )

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { PropType } from 'vue'
-import {
-  ZERO_IN_BASE,
-  UiSubaccountBalanceWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
+
+interface SubaccountBalance {
+  availableBalance: string
+  totalBalance: string
+}
 
 const props = defineProps({
   market: {
@@ -14,12 +16,12 @@ const props = defineProps({
   },
 
   baseTradingBalance: {
-    type: Object as PropType<UiSubaccountBalanceWithToken>,
+    type: Object as PropType<SubaccountBalance>,
     default: undefined
   },
 
   quoteTradingBalance: {
-    type: Object as PropType<UiSubaccountBalanceWithToken>,
+    type: Object as PropType<SubaccountBalance>,
     default: undefined
   }
 })

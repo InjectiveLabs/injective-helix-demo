@@ -110,7 +110,7 @@ export const useBridgeStore = defineStore('bridge', {
         )
 
       const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(transactions)
+        await tokenService.toBridgeTransactionsWithToken(transactions)
 
       bridgeStore.$patch({
         subaccountTransferBridgeTransactions: transactions,
@@ -155,7 +155,7 @@ export const useBridgeStore = defineStore('bridge', {
       )
 
       const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(transactions)
+        await tokenService.toBridgeTransactionsWithToken(transactions)
 
       bridgeStore.$patch({
         subaccountTransferBridgeTransactions: uiBridgeTransactionsWithToken,
@@ -185,7 +185,7 @@ export const useBridgeStore = defineStore('bridge', {
         )
       )
       const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
+        await tokenService.toBridgeTransactionsWithToken(uiBridgeTransactions)
 
       bridgeStore.$patch({
         ibcTransferTransactions: transactions,
@@ -216,7 +216,7 @@ export const useBridgeStore = defineStore('bridge', {
         )
       )
       const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
+        await tokenService.toBridgeTransactionsWithToken(uiBridgeTransactions)
 
       bridgeStore.$patch({
         peggyDepositTransactions: transactions,
@@ -247,7 +247,7 @@ export const useBridgeStore = defineStore('bridge', {
         )
       )
       const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
+        await tokenService.toBridgeTransactionsWithToken(uiBridgeTransactions)
 
       bridgeStore.$patch({
         peggyWithdrawalTransactions: transactions,

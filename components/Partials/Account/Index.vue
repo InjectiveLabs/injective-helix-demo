@@ -67,7 +67,7 @@ function initBalances() {
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
     spotStore.fetchUsdcConversionMarkets(),
-    tokenStore.fetchErc20TokensWithBalanceAndPrice()
+    tokenStore.fetchErc20BalancesWithTokenAndPrice()
   ])
     .catch($onError)
     .finally(() => {
