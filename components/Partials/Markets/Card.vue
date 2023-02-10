@@ -8,11 +8,9 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Change } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
-
-const router = useRouter()
+import { Change } from '@/types'
 
 const props = defineProps({
   market: {
@@ -33,6 +31,8 @@ const props = defineProps({
   }
 })
 
+const marketRoute = getMarketRoute(props.market)
+
 const lastTradedPrice = computed(() => {
   if (!props.summary || !props.summary.price) {
     return ZERO_IN_BASE
@@ -49,9 +49,12 @@ const change = computed(() => {
   return new BigNumberInBase(props.summary.change)
 })
 
-const volumeInUsdToFormat = computed(() => {
-  return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
-})
+const { valueToString: volumeInUsdToFormat } = useBigNumberFormatter(
+  computed(() => props.volumeInUsd),
+  {
+    decimalPlaces: 2
+  }
+)
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
@@ -65,20 +68,12 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
   decimalPlaces: 2
 })
-
-function handleVisitMarket() {
-  if (!props.market) {
-    return
-  }
-
-  return router.push(getMarketRoute(props.market))
-}
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    :to="marketRoute"
     class="rounded-lg bg-transparent shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
-    @click.stop="handleVisitMarket"
   >
     <div class="flex items-center justify-between text-gray-500">
       <p class="tracking-widest uppercase text-xs">
@@ -141,5 +136,5 @@ function handleVisitMarket() {
       {{ $t('markets.vol') }}
       <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
     </span>
-  </div>
+  </NuxtLink>
 </template>
