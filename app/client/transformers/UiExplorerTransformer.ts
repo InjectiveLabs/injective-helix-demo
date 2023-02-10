@@ -15,10 +15,10 @@ export class UiExplorerTransformer {
     return {
       hash: tx.hash,
       blockNumber: tx.blockNumber,
-      sender: message.from_address,
-      receiver: message.to_address,
-      denom: message.amount[0].denom,
-      amount: message.amount[0].amount,
+      sender: message ? message.from_address : '',
+      receiver: message ? message.to_address : '',
+      denom: message ? message.amount[0].denom : '',
+      amount: message ? message.amount[0].amount : '',
       blockTimestamp: tx.blockTimestamp
     }
   }

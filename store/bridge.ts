@@ -104,7 +104,9 @@ export const useBridgeStore = defineStore('bridge', {
       })
 
       const transactions = (txs || [])
+        .filter((tx) => tx.messages)
         .map(UiExplorerTransformer.transactionMessageToBankMsgSendTransaction)
+        .filter((tx) => tx.amount)
         .map(
           UiBridgeTransformer.convertBankMsgSendTransactionToUiBridgeTransaction
         )
