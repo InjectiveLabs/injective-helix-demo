@@ -1,6 +1,6 @@
 import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
-import { TokenWithPrice, TokenType } from '@injectivelabs/token-metadata'
+import { TokenType, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { CW20_ADAPTER_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
 import { NETWORK } from '@/app/utils/constants'
@@ -45,11 +45,23 @@ export const networkToSymbolMap = {
 export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
   const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
 
-  if (!tokenMeta || !adapterContract || !tokenMeta.cw20) {
+  if (!tokenMeta || !adapterContract) {
     return ''
   }
 
-  return `factory/${adapterContract}/${tokenMeta.cw20.address}`
+  if (tokenMeta.cw20) {
+    return `factory/${adapterContract}/${tokenMeta.cw20.address}`
+  }
+
+  const cw20TokenMeta = (tokenMeta.cw20s || []).find(
+    (cw20) => cw20.symbol.toLowerCase() === symbol.toLowerCase()
+  )
+
+  if (!cw20TokenMeta) {
+    return ''
+  }
+
+  return `factory/${adapterContract}/${cw20TokenMeta.address}`
 }
 
 export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
