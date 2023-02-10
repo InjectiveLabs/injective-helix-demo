@@ -1,16 +1,7 @@
-import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { AggregatedBalanceType } from '@/types/enums'
 
-export type BalanceWithToken = BankBalanceWithToken & {
-  balanceToBase: string
-}
-
-export type BalanceWithTokenAndUsdPrice = BankBalanceWithToken & {
-  balanceToBase: string
-  usdPrice: number
-}
-
-export type AccountBalance = BalanceWithTokenAndUsdPrice & {
+export type AccountBalance = BalanceWithTokenAndPrice & {
   bankBalance: string
   subaccountBalance: string
 

@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 import { MsgSend } from '@injectivelabs/sdk-ts'
 import {
-  UiBankTransformer,
   BankBalances,
-  BankBalanceWithToken,
-  IbcBankBalanceWithToken
+  BalanceWithToken,
+  UiBankTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
@@ -19,8 +18,8 @@ import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 type BankStoreState = {
   balances: BankBalances
   ibcBalances: BankBalances
-  bankErc20BalancesWithToken: BankBalanceWithToken[]
-  bankIbcBalancesWithToken: IbcBankBalanceWithToken[]
+  bankErc20BalancesWithToken: BalanceWithToken[]
+  bankIbcBalancesWithToken: BalanceWithToken[]
 }
 
 const initialStateFactory = (): BankStoreState => ({
@@ -100,7 +99,7 @@ export const useBankStore = defineStore('bank', {
       await bankStore.fetchBalances()
 
       const { bankBalancesWithToken, ibcBankBalancesWithToken } =
-        await tokenService.getBalancesWithToken(
+        await tokenService.toBalancesWithToken(
           bankStore.balances,
           bankStore.ibcBalances
         )

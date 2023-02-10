@@ -174,11 +174,11 @@ export const useDerivativeStore = defineStore('derivative', {
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketHasRecentlyExpired)
 
-      const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
+      const marketsWithToken = await tokenService.toDerivativeMarketsWithToken(
         markets
       )
       const recentlyExpiredMarketsWithToken =
-        await tokenService.getDerivativeMarketsWithToken(recentlyExpiredMarkets)
+        await tokenService.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
 
       const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
       const expiryFuturesMarkets = marketsWithToken.filter(
@@ -201,9 +201,7 @@ export const useDerivativeStore = defineStore('derivative', {
         ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
-        await tokenService.getBinaryOptionsMarketsWithToken(
-          binaryOptionsMarkets
-        )
+        await tokenService.toBinaryOptionsMarketsWithToken(binaryOptionsMarkets)
       const uiBinaryOptionsMarkets =
         UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
           binaryOptionsMarketsWithToken
@@ -416,7 +414,7 @@ export const useDerivativeStore = defineStore('derivative', {
       )) as PerpetualMarket | ExpiryFuturesMarket
 
       const updatedMarketWithToken =
-        await tokenService.getDerivativeMarketsWithToken([updatedMarket])
+        await tokenService.toDerivativeMarketsWithToken([updatedMarket])
 
       const marketIndex = derivativeStore.markets.findIndex(
         (m) => m.marketId === marketId

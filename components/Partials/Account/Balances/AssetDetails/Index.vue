@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { AccountBalance, BusEvents, Modal, BridgeBusEvents } from '@/types'
@@ -10,52 +10,58 @@ import {
 
 const status = reactive(new Status(StatusType.Idle))
 const scrollOffset = ref(0)
-const balance = ref<AccountBalance | undefined>(undefined)
+const accountBalance = ref<AccountBalance | undefined>(undefined)
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 
 const isModalOpen = computed(
-  () => modalStore.modals[Modal.AssetDetails] && !!balance.value
+  () => modalStore.modals[Modal.AssetDetails] && !!accountBalance.value
 )
 
 const filteredMarketsWithSummary = computed(() => {
   return spotStore.marketsWithSummary.filter(({ market }) => {
-    if (!balance.value) {
+    if (!accountBalance.value) {
       return false
     }
 
     return (
       (market as UiSpotMarketWithToken).baseDenom ===
-        balance.value.token.denom ||
-      market.quoteDenom === balance.value.token.denom
+        accountBalance.value.token.denom ||
+      market.quoteDenom === accountBalance.value.token.denom
     )
   })
 })
 
+const balance = computed(() => {
+  return new BigNumberInWei(accountBalance.value?.balance || 0).toBase(
+    accountBalance.value?.token.decimals
+  )
+})
+
 const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  computed(() => balance.value?.balanceToBase || '0'),
+  balance,
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: inOrderBalanceToString } = useBigNumberFormatter(
-  computed(() => balance.value?.reservedBalance || '0'),
+  computed(() => accountBalance.value?.reservedBalance || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: totalBalanceToString } = useBigNumberFormatter(
-  computed(() => balance.value?.totalBalance || '0'),
+  computed(() => accountBalance.value?.totalBalance || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => balance.value?.totalBalanceInUsd || '0'),
+  computed(() => accountBalance.value?.totalBalanceInUsd || '0'),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -63,8 +69,8 @@ const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
 
 onMounted(() => {
   useEventBus<AccountBalance>(BusEvents.AssetDetailsModalPayload).on(
-    (accountBalance) => {
-      balance.value = accountBalance
+    (accountBalancePayload) => {
+      accountBalance.value = accountBalancePayload
     }
   )
 })
@@ -91,28 +97,28 @@ function handleClosed() {
 
 function handleClose() {
   modalStore.closeModal(Modal.AssetDetails)
-  balance.value = undefined
+  accountBalance.value = undefined
 }
 
 function handleDepositClick() {
-  if (!balance.value) {
+  if (!accountBalance.value) {
     return
   }
 
   useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
-    balance.value.token
+    accountBalance.value.token
   )
 
   handleClose()
 }
 
 function handleWithdrawClick() {
-  if (!balance.value) {
+  if (!accountBalance.value) {
     return
   }
 
   useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
-    balance.value.token
+    accountBalance.value.token
   )
 
   handleClose()
@@ -121,7 +127,7 @@ function handleWithdrawClick() {
 
 <template>
   <div
-    v-if="isModalOpen && balance"
+    v-if="isModalOpen && accountBalance"
     class="fixed inset-0 lg:top-14 bg-gray-900 w-full z-1120"
   >
     <AppHocLoading :status="status" class="h-full">
@@ -143,17 +149,20 @@ function handleWithdrawClick() {
           </div>
 
           <div class="mt-6 border-b border-gray-600">
-            <div v-if="balance" class="flex items-center justify-start gap-2">
+            <div
+              v-if="accountBalance"
+              class="flex items-center justify-start gap-2"
+            >
               <CommonTokenIcon
-                v-if="balance && balance.token"
-                :token="balance.token"
+                v-if="accountBalance && accountBalance.token"
+                :token="accountBalance.token"
                 sm
               />
               <span class="tracking-wide font-bold text-sm">
-                {{ balance.token.symbol }}
+                {{ accountBalance.token.symbol }}
               </span>
               <span class="text-gray-450 text-xs">
-                {{ balance.token.name }}
+                {{ accountBalance.token.name }}
               </span>
             </div>
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@/types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
   showBalance: Boolean,
@@ -47,8 +47,19 @@ const sortedBalances = computed(() => {
 
   return filteredOptions.value.sort(
     (b1: BalanceWithToken, b2: BalanceWithToken) =>
-      new BigNumberInBase(b2.balanceToBase).minus(b1.balanceToBase).toNumber()
+      new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
   )
+})
+
+const sortedBalancesWithBalancesToBase = computed(() => {
+  return sortedBalances.value.map((balance) => {
+    return {
+      ...balance,
+      balance: new BigNumberInWei(balance.balance)
+        .toBase(balance.token.decimals)
+        .toFixed()
+    }
+  })
 })
 
 function handleClick(denom: string) {
@@ -65,11 +76,11 @@ function handleClick(denom: string) {
     </div>
 
     <AppSelectTokenItem
-      v-for="balance in sortedBalances"
+      v-for="balance in sortedBalancesWithBalancesToBase"
       v-bind="{
         sm: true,
         token: balance.token,
-        balance: balance.balanceToBase,
+        balance: balance.balance,
         showBalance: true
       }"
       :key="balance.denom"

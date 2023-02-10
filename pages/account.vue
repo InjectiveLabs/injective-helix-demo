@@ -108,11 +108,14 @@ const balances = computed(() => {
       subaccountAvailableBalance
     )
 
+    const balanceToBase = new BigNumberInWei(balance.balance).toBase(
+      balance.token.decimals
+    )
     const reservedBalance = new BigNumberInWei(inOrderBalance)
       .toBase(balance.token.decimals)
       .plus(margin)
       .plus(pnl)
-    const totalBalance = reservedBalance.plus(balance.balanceToBase)
+    const totalBalance = reservedBalance.plus(balanceToBase)
     const totalBalanceInUsd = totalBalance.times(usdPrice)
 
     return {

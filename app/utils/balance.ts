@@ -1,17 +1,14 @@
 import { Token } from '@injectivelabs/token-metadata'
-import { UiSubaccount } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@/types'
+import { BalanceWithToken, UiSubaccount } from '@injectivelabs/sdk-ui-ts'
 
 export const getSubaccountTokenWithBalance = (
   token: Token,
   subaccount?: UiSubaccount
 ): BalanceWithToken => {
-  const defaultBalance = {
+  const defaultBalance: BalanceWithToken = {
     token,
     denom: token.denom,
-    balance: '0',
-    balanceToBase: '0'
+    balance: '0'
   }
 
   if (!subaccount) {
@@ -28,9 +25,6 @@ export const getSubaccountTokenWithBalance = (
 
   return {
     ...defaultBalance,
-    balance: accountBalance.availableBalance,
-    balanceToBase: new BigNumberInWei(accountBalance.availableBalance)
-      .toBase(token.decimals)
-      .toFixed()
+    balance: accountBalance.availableBalance
   }
 }
