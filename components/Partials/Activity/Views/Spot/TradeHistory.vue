@@ -30,7 +30,7 @@ function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
     :status="status"
     :loader-class="status.isLoading() ? 'relative' : ''"
   >
-    <div class="w-full h-full-flex">
+    <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
         :show-empty="trades.length === 0"

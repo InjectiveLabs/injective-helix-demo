@@ -128,9 +128,9 @@ watch(
 </script>
 
 <template>
-  <AppHocLoading :key="$route.fullPath" :status="status">
-    <div v-if="market && summary" class="flex flex-col h-full flex-wrap">
-      <div class="w-full px-1 h-market-info">
+  <AppHocLoading :key="$route.fullPath" :status="status" class="h-full">
+    <div v-if="market && summary" class="min-h-lg h-full-flex">
+      <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats
           v-bind="{
             summary,
@@ -141,9 +141,9 @@ watch(
         />
       </div>
 
-      <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
+      <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1 h-full">
         <div
-          class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden"
+          class="col-span-6 lg:col-span-3 4xl:col-span-3"
           data-cy="trading-side-component"
         >
           <div
@@ -176,13 +176,13 @@ watch(
         </div>
 
         <div
-          class="col-span-6 lg:col-span-9 4xl:col-span-9"
+          class="col-span-6 lg:col-span-9 4xl:col-span-9 max-h-screen-excluding-header-and-market-info"
           :class="{
             '-order-1': appStore.userState.tradingLayout === TradingLayout.Right
           }"
         >
-          <div class="flex flex-wrap flex-col w-full">
-            <div class="w-full">
+          <div class="h-full-flex">
+            <div class="w-full flex-none">
               <CommonCard tight class="relative">
                 <div class="grid grid-cols-6 lg:grid-cols-12">
                   <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-40">
@@ -213,9 +213,8 @@ watch(
                 </CommonCard>
               </div>
             </div>
-            <div class="w-full flex-1">
-              <slot name="orders" />
-            </div>
+
+            <slot name="orders" />
           </div>
         </div>
       </div>

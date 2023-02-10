@@ -60,9 +60,7 @@ const tabViewList = computed(() => {
 </script>
 
 <template>
-  <div
-    class="h-full flex items-center gap-4 overflow-x-auto hide-scrollbar flex-none"
-  >
+  <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar flex-none">
     <template
       v-for="(viewOption, index) in Object.values(tabViewList)"
       :key="`activity-tab-${viewOption}`"

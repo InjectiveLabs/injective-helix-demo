@@ -54,7 +54,7 @@ useIntervalFn(() => {
     <!-- mobile table -->
     <CommonTableBody
       :show-empty="sortedPositions.length === 0"
-      class="sm:hidden max-h-lg overflow-y-auto"
+      class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountPositionMobile
         v-for="(position, index) in sortedPositions"

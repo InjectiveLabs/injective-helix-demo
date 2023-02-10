@@ -122,7 +122,7 @@ defineExpose({
     v-if="totalCount > 0"
     v-model:page="page"
     v-model:limit="limit"
-    class="mt-4"
+    class="flex-none mt-4 h-9"
     :row-class="'border border-transparent'"
     :disabled="status.isLoading()"
     :total-count="totalCount"

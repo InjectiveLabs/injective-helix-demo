@@ -37,7 +37,7 @@ function handleShowTradeDetails(trade: UiTrade) {
     <!-- mobile table -->
     <CommonTableBody
       :show-empty="sortedTrades.length === 0"
-      class="sm:hidden max-h-lg overflow-y-auto"
+      class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountTradeHistoryMobile
         v-for="(trade, index) in sortedTrades"

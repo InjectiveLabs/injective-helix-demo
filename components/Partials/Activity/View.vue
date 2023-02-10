@@ -34,12 +34,12 @@ export default {
 </script>
 
 <template>
-  <div class="mt-4 bg-gray-900 grow h-full-flex overflow-y-scroll">
+  <div class="mt-4 bg-gray-900 overflow-y-auto flex-auto min-h-0">
     <Suspense>
       <component v-bind="$attrs" :is="activityComponent" />
 
       <template #fallback>
-        <div class="w-full flex-grow flex justify-center items-center">
+        <div class="w-full flex-grow flex justify-center items-center h-full">
           <AppLoading class="relative" />
         </div>
       </template>

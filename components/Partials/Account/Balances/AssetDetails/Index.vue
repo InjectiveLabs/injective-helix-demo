@@ -102,6 +102,8 @@ function handleDepositClick() {
   useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
     balance.value.token
   )
+
+  handleClose()
 }
 
 function handleWithdrawClick() {
@@ -112,15 +114,17 @@ function handleWithdrawClick() {
   useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
     balance.value.token
   )
+
+  handleClose()
 }
 </script>
 
 <template>
   <div
     v-if="isModalOpen && balance"
-    class="fixed inset-0 top-12 lg:top-14 bg-gray-900 w-full z-1120"
+    class="fixed inset-0 lg:top-14 bg-gray-900 w-full z-1120"
   >
-    <AppHocLoading :status="status">
+    <AppHocLoading :status="status" class="h-full">
       <div
         class="container py-6 h-full min-h-screen-excluding-header flex flex-col"
       >

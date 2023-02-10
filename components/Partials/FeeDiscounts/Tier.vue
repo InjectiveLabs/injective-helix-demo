@@ -43,22 +43,11 @@ const stakedAmount = computed(
     new BigNumberInBase(cosmosSdkDecToBigNumber(props.tier.stakedAmount || 0))
 )
 
-const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
-  stakedAmount,
-  {
-    decimalPlaces: 0
-  }
-)
-
 const volume = computed(() =>
   new BigNumberInWei(cosmosSdkDecToBigNumber(props.tier.volume || 0)).toBase(
     USDT_DECIMALS
   )
 )
-
-const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
-  decimalPlaces: 0
-})
 
 const makerFeeDiscount = computed(() => {
   if (!props.tier.makerDiscountRate) {
@@ -76,19 +65,12 @@ const makerFeeDiscount = computed(() => {
   return makerDiscountRate
 })
 
-const { valueToString: makerFeeDiscountToFormat } = useBigNumberFormatter(
-  makerFeeDiscount,
-  {
-    decimalPlaces: getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
-  }
-)
-
 const takerFeeDiscount = computed(() => {
   if (!props.tier.takerDiscountRate) {
     return ZERO_IN_BASE
   }
 
-  const takerDiscountRate = new BigNumberInWei(props.tier.makerDiscountRate)
+  const takerDiscountRate = new BigNumberInWei(props.tier.takerDiscountRate)
     .times(100)
     .toBase()
 
@@ -97,6 +79,24 @@ const takerFeeDiscount = computed(() => {
   }
 
   return takerDiscountRate
+})
+
+const { valueToString: makerFeeDiscountToFormat } = useBigNumberFormatter(
+  makerFeeDiscount,
+  {
+    decimalPlaces: getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
+  }
+)
+
+const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
+  stakedAmount,
+  {
+    decimalPlaces: 0
+  }
+)
+
+const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+  decimalPlaces: 0
 })
 
 const { valueToString: takerFeeDiscountToFormat } = useBigNumberFormatter(

@@ -28,6 +28,13 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   })
 )
 
+const marketSummariesLoaded = computed(() => {
+  return (
+    spotStore.marketsWithSummary.length > 0 &&
+    derivativeStore.marketsWithSummary.length > 0
+  )
+})
+
 onMounted(() => getQuoteTokenPrice())
 
 function getQuoteTokenPrice() {
@@ -41,7 +48,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 </script>
 
 <template>
-  <AppHocLoading :show-loading="marketsWithSummaryAndVolumeInUsd.length === 0">
+  <AppHocLoading :show-loading="!marketSummariesLoaded" class="h-full">
     <div class="container">
       <PartialsMarketsOverview :markets="marketsWithSummaryAndVolumeInUsd" />
       <PartialsMarkets :markets="marketsWithSummaryAndVolumeInUsd" />

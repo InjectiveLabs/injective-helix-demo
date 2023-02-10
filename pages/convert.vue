@@ -169,7 +169,10 @@ function handleFormSubmit() {
 </script>
 
 <template>
-  <AppHocLoading :status="status" class="justify-center">
+  <AppHocLoading
+    :status="status"
+    class="justify-center flex h-full items-center"
+  >
     <div class="max-w-90% w-[448px] mx-auto p-6 bg-gray-850 rounded-lg">
       <div class="mb-6 flex items-center justify-between">
         <h3 class="font-bold text-lg">
