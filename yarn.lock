@@ -1825,21 +1825,21 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-notifications@^1.0.8-alpha.8":
-  version "1.0.8-alpha.8"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-notifications/-/ui-notifications-1.0.8-alpha.8.tgz#7e7381d76e5985d0a9428acbc4deb353f4dd3dab"
-  integrity sha512-n2/AXSBKbQ13OlxxUHTXS/hASIqUfTtXd+L1PhxHJ9DkaerzJSgD2ajr00HAhd3EnC2bC7+ayjw+FNexbTYEDQ==
+"@injectivelabs/ui-notifications@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-notifications/-/ui-notifications-1.0.9.tgz#36d8c22e07bcdd8376b8da9a7633b76312a5a44f"
+  integrity sha512-1Fi5G0RL0jm1coBJ/3nkkMQd0LJIGUgGgt2QYR2Jy2CTm7nzbUYnpIHoR8IpP1ZB5tb/qmU2FbZVm1uar7Q9mg==
   dependencies:
     "@nuxt/kit" "^3.0.0"
 
-"@injectivelabs/ui-shared@1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.0.9.tgz#ed97e4d64086113c6c5c1d90424d3e113ff26bf2"
-  integrity sha512-rZ6txkri1fwuzyfOlQ3kFHVEZ6mQ8/acjm2FPinazjTpRT20HbCMqV24tnsw2Kl10wFcFkwTgAgSZRgVq8wjOA==
+"@injectivelabs/ui-shared@1.0.10-alpha.0":
+  version "1.0.10-alpha.0"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.0.10-alpha.0.tgz#df5dfd243141899cc00c253bd19a2d9895adf713"
+  integrity sha512-mumGYPjOK7X24//juZpKfl0ZQFzFxTrj9LJ6nqH5jU9g4WMXggjve6yxl3csp3U9z0IXD5tTe8crK+KXaluDmg==
   dependencies:
     "@nuxt/kit" "^3.0.0"
-    floating-vue "^2.0.0-beta.20"
-    vee-validate "^4.7.3"
+    floating-vue "2.0.0-beta.20"
+    vee-validate "^4.7.4"
 
 "@injectivelabs/utils@1.0.73", "@injectivelabs/utils@^1.0.73":
   version "1.0.73"
@@ -9599,9 +9599,9 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-floating-vue@^2.0.0-beta.20:
+floating-vue@2.0.0-beta.20:
   version "2.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/floating-vue/-/floating-vue-2.0.0-beta.20.tgz#c96df528afb952cdeee54f17183333ac6558628f"
+  resolved "https://registry.npmjs.org/floating-vue/-/floating-vue-2.0.0-beta.20.tgz#c96df528afb952cdeee54f17183333ac6558628f"
   integrity sha512-N68otcpp6WwcYC7zP8GeJqNZVdfvS7tEY88lwmuAHeqRgnfWx1Un8enzLxROyVnBDZ3TwUoUdj5IFg+bUT7JeA==
   dependencies:
     "@floating-ui/dom" "^0.1.10"
@@ -16745,6 +16745,13 @@ vee-validate@^4.7.3:
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-4.7.3.tgz#0200c2f1151d28d9fb6fdb6c59c01170146094be"
   integrity sha512-1MwHLOzCrabSeChySZVVMamWStcucM1hHxapoebY9mJ7KWOvncMG19a7AlPl38zpE9pcD+G3CHKLvviGmTl5BQ==
+  dependencies:
+    "@vue/devtools-api" "^6.1.4"
+
+vee-validate@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.npmjs.org/vee-validate/-/vee-validate-4.7.4.tgz#4f7c6833eb663d465191e1583bf6f552b16b1a7b"
+  integrity sha512-pfhKluYimYvSQIiFoIY29NAgl0j24DqPsodlCny/NlOrYbougdjbL1C9yYqmba4Ka3YUY6vOZ0GE2wcwMsKQ5A==
   dependencies:
     "@vue/devtools-api" "^6.1.4"
 
