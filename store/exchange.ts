@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
 import {
+  ZERO_IN_BASE,
   UiMarketHistory,
-  UiMarketsHistoryTransformer,
   zeroSpotMarketSummary,
-  ZERO_IN_BASE
+  UiMarketsHistoryTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ExchangeParams,
-  FeeDiscountAccountInfo,
-  FeeDiscountSchedule
+  FeeDiscountSchedule,
+  FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
+  denomClient,
   exchangeApi,
-  indexerRestMarketChronosApi,
-  tokenService
+  indexerRestMarketChronosApi
 } from '@/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
@@ -109,7 +109,7 @@ export const useExchangeStore = defineStore('exchange', {
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
           feeDiscountSchedule.quoteDenomsList.map(
-            async (denom) => await tokenService.getDenomToken(denom)
+            async (denom) => await denomClient.getDenomToken(denom)
           )
         )) as Token[]
 
@@ -156,7 +156,7 @@ export const useExchangeStore = defineStore('exchange', {
           (
             await Promise.all(
               quoteDenomsList.map(
-                async (denom) => await tokenService.getDenomToken(denom)
+                async (denom) => await denomClient.getDenomToken(denom)
               )
             )
           ).filter((token) => token) as Token[]

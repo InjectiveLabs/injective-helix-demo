@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  SpotOrderSide,
   BalanceWithToken,
-  Modal,
-  TradeField,
-  TradeForm,
-  TradeFormValue
-} from '@/types'
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Modal, TradeField, TradeForm, TradeFormValue } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const route = useRoute()

@@ -30,19 +30,11 @@ const inputClass = computed(() => {
     :input-classes="inputClass"
   >
     <template v-if="showPrefix" #prefix>
-      <BaseIcon
-        name="search"
-        class="ml-1"
-        :class="[sm ? 'w-4 h-4' : 'w-5 h-5']"
-      />
+      <BaseIcon name="search" :class="[sm ? 'w-4 h-4' : 'w-5 h-5']" />
     </template>
 
     <template v-else #addon>
-      <BaseIcon
-        name="search"
-        class="ml-1"
-        :class="[sm ? 'w-4 h-4' : 'w-5 h-5']"
-      />
+      <BaseIcon name="search" :class="[sm ? 'w-4 h-4' : 'w-5 h-5']" />
     </template>
   </AppInput>
 </template>

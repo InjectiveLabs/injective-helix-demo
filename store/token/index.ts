@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import {
-  UiBankTransformer,
   INJ_COIN_GECKO_ID,
-  TokenWithBalanceAndPrice
+  UiBankTransformer,
+  BalanceWithTokenAndPrice,
+  BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
@@ -16,7 +17,7 @@ type TokenStoreState = {
   btcUsdPrice: number
   injUsdPrice: number
   tokenUsdPriceMap: TokenUsdPriceMap
-  tradeableErc20TokensWithBalanceAndPrice: TokenWithBalanceAndPrice[]
+  tradeableErc20BalancesWithTokenAndPrice: BalanceWithTokenWithErc20BalanceWithPrice[]
 }
 
 const initialStateFactory = (): TokenStoreState => ({
@@ -24,7 +25,7 @@ const initialStateFactory = (): TokenStoreState => ({
   btcUsdPrice: 0,
   injUsdPrice: 0,
   tokenUsdPriceMap: {},
-  tradeableErc20TokensWithBalanceAndPrice: []
+  tradeableErc20BalancesWithTokenAndPrice: []
 })
 
 export const useTokenStore = defineStore('token', {
@@ -51,7 +52,7 @@ export const useTokenStore = defineStore('token', {
     withdraw,
     setTokenAllowance,
 
-    async fetchErc20TokensWithBalanceAndPrice() {
+    async fetchErc20BalancesWithTokenAndPrice() {
       const tokenStore = useTokenStore()
       const walletStore = useWalletStore()
 
@@ -60,27 +61,31 @@ export const useTokenStore = defineStore('token', {
       }
 
       const tradeableErc20Tokens = tokenStore.tradeableTokens.filter(
-        (token) => token.erc20Address
+        (token) => token.erc20?.address
       )
-      const tradeableTokensWithBalanceAndPrice = await awaitAll(
+      const tradeableBalancesWithTokenAndPrice = await awaitAll(
         tradeableErc20Tokens,
         async (token) => {
           return {
-            ...token,
+            token,
+            denom: token.denom,
             balance: '0',
-            allowance: '0',
+            erc20: {
+              balance: '0',
+              allowance: '0'
+            },
             usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
-          } as TokenWithBalanceAndPrice
+          } as BalanceWithTokenWithErc20BalanceWithPrice
         }
       )
 
       tokenStore.$patch({
-        tradeableErc20TokensWithBalanceAndPrice:
-          tradeableTokensWithBalanceAndPrice
+        tradeableErc20BalancesWithTokenAndPrice:
+          tradeableBalancesWithTokenAndPrice
       })
     },
 
-    async updateErc20TokensWithBalanceAndPrice() {
+    async updateErc20BalancesWithTokenAndPrice() {
       const tokenStore = useTokenStore()
       const walletStore = useWalletStore()
 
@@ -89,35 +94,35 @@ export const useTokenStore = defineStore('token', {
       }
 
       const erc20TokenBalancesAreFetched =
-        tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
+        tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
           (token) =>
-            new BigNumberInBase(token.balance).gt(0) ||
-            new BigNumberInBase(token.allowance).gt(0)
+            new BigNumberInBase(token.erc20.balance).gt(0) ||
+            new BigNumberInBase(token.erc20.allowance).gt(0)
         )
 
       if (erc20TokenBalancesAreFetched) {
         return
       }
 
-      const updatedTradeableErc20TokensWithBalanceAndPrice = await awaitAll(
-        tokenStore.tradeableErc20TokensWithBalanceAndPrice,
+      const updatedTradeableErc20BalancesWithTokenAndPrice = await awaitAll(
+        tokenStore.tradeableErc20BalancesWithTokenAndPrice,
         async (token) => {
-          const erc20Token = token as Erc20Token
+          const erc20Token = token.token as Erc20Token
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address: walletStore.address,
-            contractAddress: erc20Token.erc20Address
+            contractAddress: erc20Token.erc20.address
           })
 
           return {
             ...token,
-            ...tokenBalance
-          } as TokenWithBalanceAndPrice
+            erc20: tokenBalance
+          } as BalanceWithTokenAndPrice
         }
       )
 
       tokenStore.$patch({
-        tradeableErc20TokensWithBalanceAndPrice:
-          updatedTradeableErc20TokensWithBalanceAndPrice
+        tradeableErc20BalancesWithTokenAndPrice:
+          updatedTradeableErc20BalancesWithTokenAndPrice
       })
     },
 
@@ -164,7 +169,7 @@ export const useTokenStore = defineStore('token', {
       const { bankSupply, ibcBankSupply } =
         UiBankTransformer.supplyToUiSupply(supply)
 
-      const tokens = await tokenService.getCoinsToken([
+      const tokens = await tokenService.toCoinsWithToken([
         ...bankSupply,
         ...ibcBankSupply
       ])

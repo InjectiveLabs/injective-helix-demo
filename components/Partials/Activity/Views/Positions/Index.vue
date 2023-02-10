@@ -116,10 +116,11 @@ function handleClosePositions() {
     </Teleport>
 
     <AppHocLoading
+      class="h-full"
       :status="status"
       :loader-class="status.isLoading() ? 'relative' : ''"
     >
-      <div class="w-full h-full-flex">
+      <div class="w-full h-full">
         <!-- mobile table -->
         <CommonTableBody
           :show-empty="filteredPositions.length === 0"

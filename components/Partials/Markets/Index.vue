@@ -167,7 +167,7 @@ function prefillFromQueryParams() {
 </script>
 
 <template>
-  <div class="container xl:max-w-6xl mx-auto py-6 md:py-12">
+  <div class="xl:max-w-6xl mx-auto py-6 md:py-12">
     <div>
       <h3 class="text-xl tracking-wider leading-6 font-bold md:hidden mb-6">
         {{ $t('markets.title') }}
@@ -272,15 +272,13 @@ function prefillFromQueryParams() {
         <span class="hidden 3md:block text-left col-span-2" />
       </CommonTableHeader>
 
-      {{}}
-
       <CommonTableBody
         :show-empty="sortedMarkets.length === 0"
         class="bg-transparent"
       >
         <PartialsMarketsRow
           v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
-          :key="`market-row-${index}`"
+          :key="`market-row-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"
           :volume-in-usd="volumeInUsd"

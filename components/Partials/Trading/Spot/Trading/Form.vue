@@ -19,6 +19,9 @@ import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
+import { defineTradeRules } from '@/app/client/utils/validation/trade'
+
+defineTradeRules()
 
 const accountStore = useAccountStore()
 const modalStore = useModalStore()

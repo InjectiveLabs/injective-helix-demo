@@ -265,8 +265,8 @@ function handleCloseAllPositionsClick() {
       </div>
     </template>
 
-    <AppHocLoading :status="status">
-      <CommonCard class="h-full p-2 relative overflow-y-auto" no-padding>
+    <AppHocLoading class="h-full" :status="status">
+      <CommonCard class="h-full">
         <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"
