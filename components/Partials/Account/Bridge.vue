@@ -10,14 +10,12 @@ import {
   TransferDirection
 } from '@/types'
 import { injToken } from '@/app/data/token'
-import { denomClient } from '@/app/Services'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
 const walletStore = useWalletStore()
 const bankStore = useBankStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
-const { query } = useRoute()
 
 const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({
   initialValues: {
@@ -34,7 +32,6 @@ const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({
 })
 
 onMounted(() => {
-  handleQueryParams()
   handlePreFillCosmosWallet()
 
   useEventBus<Token | undefined>(BridgeBusEvents.Deposit).on(handleDeposit)
@@ -111,7 +108,7 @@ function handleDeposit(token: Token = injToken) {
     TransferDirection.tradingAccountToBank
 
   // Update ERC20 balances when we open the bridge instead of loading them when we open the page
-  tokenStore.updateErc20TokensWithBalanceAndPrice()
+  tokenStore.updateErc20BalancesWithTokenAndPrice()
 
   modalStore.openModal({ type: Modal.Bridge })
 }
@@ -125,29 +122,6 @@ function handleWithdraw(token: Token = injToken) {
   formValues[BridgeField.BridgingNetwork] = bridgingNetworkValue
   formValues[BridgeField.TransferDirection] =
     TransferDirection.tradingAccountToBank
-
-  modalStore.openModal({ type: Modal.Bridge })
-}
-
-// TODO: Refactor
-function handleQueryParams() {
-  const { denom, bridgeType: bridgeTypeFromQuery } = query as {
-    denom: string
-    bridgeType: BridgeType
-  }
-
-  if (!denom || !bridgeTypeFromQuery) {
-    return
-  }
-
-  const token = denomClient.getDenomToken(denom)
-
-  if (!token) {
-    return
-  }
-
-  resetForm(token)
-  formValues[BridgeField.BridgeType] = bridgeTypeFromQuery
 
   modalStore.openModal({ type: Modal.Bridge })
 }

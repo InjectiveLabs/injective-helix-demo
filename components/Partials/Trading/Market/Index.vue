@@ -150,9 +150,9 @@ function onInit() {
           :max-tick="maxTick"
         />
       </div>
-      <AppHocLoading :status="status">
+      <AppHocLoading class="h-full" :status="status">
         <div
-          class="rounded-lg"
+          class="rounded-lg h-full"
           :class="{
             'overflow-y-auto': activeType === FilterList.Trades,
             'orderbook-h-inner': activeType === FilterList.Orderbook

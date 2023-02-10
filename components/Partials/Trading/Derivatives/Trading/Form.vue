@@ -34,6 +34,9 @@ import {
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { defineTradeRules } from '@/app/client/utils/validation/trade'
+
+defineTradeRules()
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()

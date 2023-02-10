@@ -39,10 +39,11 @@ const sortedTransactions = computed(() =>
 
 <template>
   <AppHocLoading
+    class="h-full"
     :status="status"
     :loader-class="status.isLoading() ? 'relative' : ''"
   >
-    <div class="w-full h-full-flex">
+    <div class="w-full h-full">
       <CommonTableWrapper break-md>
         <table v-if="filteredTransactions.length > 0" class="table">
           <PartialsActivityViewsWalletHistoryCommonTableHeader />

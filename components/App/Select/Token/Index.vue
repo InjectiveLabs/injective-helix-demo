@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BalanceWithToken, BridgeField, TradeField } from '@/types'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -47,6 +49,14 @@ const emit = defineEmits<{
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
+const selectedTokenBalance = computed(() => {
+  return selectedToken.value
+    ? new BigNumberInWei(selectedToken.value.balance).toBase(
+        selectedToken.value.token.decimals
+      )
+    : '0'
+})
+
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
 )
@@ -55,14 +65,9 @@ const {
   valueToBigNumber,
   valueToFixed: maxBalanceToFixed,
   valueToString: maxBalanceToString
-} = useBigNumberFormatter(
-  computed(() =>
-    selectedToken.value ? selectedToken.value.balanceToBase : '0'
-  ),
-  {
-    decimalPlaces: props.maxDecimals
-  }
-)
+} = useBigNumberFormatter(selectedTokenBalance, {
+  decimalPlaces: props.maxDecimals
+})
 
 const {
   value: amount,

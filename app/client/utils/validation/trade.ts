@@ -6,7 +6,6 @@ export const tradeErrorMessages = {
   enoughBalance: () => 'Insufficient balance',
   insufficientBalance: () => 'Insufficient balance',
   insufficientOrderbookLiquidity: () => 'Insufficient orderbook liquidity',
-  integer: (fieldName: string) => `${fieldName} must be > 0`,
   triggerPriceEqualsMarkPrice: () =>
     'The trigger price cannot be the same as the mark price',
   priceHighDeviationFromMidOrderbookPrice: () =>
@@ -24,16 +23,6 @@ export const tradeErrorMessages = {
 } as Record<string, any>
 
 export const defineTradeRules = () => {
-  defineRule('integer', (value: string, [fieldName]: string[]) => {
-    const valueInBigNumber = new BigNumberInBase(value || 0)
-
-    if (valueInBigNumber.lte(0)) {
-      return tradeErrorMessages.integer(fieldName)
-    }
-
-    return true
-  })
-
   defineRule('slippage', (value: string) => {
     const slippage = new BigNumberInBase(value)
 

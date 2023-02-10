@@ -1,14 +1,7 @@
 import type { Ref } from 'vue'
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
-import {
-  BridgeForm,
-  BridgeType,
-  BalanceWithToken,
-  TransferDirection,
-  BridgeField
-} from '@/types'
+import { BalanceWithToken, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { Erc20Token } from '@injectivelabs/token-metadata'
+import { BridgeForm, BridgeType, TransferDirection, BridgeField } from '@/types'
 
 /**
  * For the bridge balances, we only use
@@ -23,27 +16,23 @@ export function useBridgeBalance({
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
 
-  const erc20Balances = computed(() => {
-    const balances = tokenStore.tradeableErc20TokensWithBalanceAndPrice.map(
-      (token) => {
-        const balance = new BigNumberInWei(token.balance)
-          .toBase(token.decimals)
-          .toString()
+  const erc20Balances = computed(() =>
+    tokenStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
+      return {
+        ...balance,
+        token: {
+          ...balance.token,
+          symbol: balance.token.erc20
+            ? balance.token.erc20.symbol || balance.token.symbol
+            : balance.token.symbol
+        },
+        balance: balance.erc20.balance
+      } as BalanceWithToken
+    })
+  )
 
-        return {
-          token: token as Token,
-          denom: token.denom,
-          balance: token.balance,
-          balanceToBase: balance
-        } as BalanceWithToken
-      }
-    )
-
-    return balances
-  })
-
-  const bankBalances = computed(() => {
-    const balances = tokenStore.tradeableTokens.map((token) => {
+  const bankBalances = computed(() =>
+    tokenStore.tradeableTokens.map((token) => {
       const balanceWithToken = bankStore.bankBalancesWithToken.find(
         (balance) => balance.denom === token.denom
       )
@@ -51,38 +40,27 @@ export function useBridgeBalance({
       return {
         token,
         denom: token.denom,
-        balance: balanceWithToken?.balance || '0',
-        balanceToBase: new BigNumberInWei(balanceWithToken?.balance || 0)
-          .toBase(token.decimals)
-          .toFixed()
+        balance: balanceWithToken?.balance || '0'
       } as BalanceWithToken
     })
+  )
 
-    return balances
-  })
-
-  const accountBalances = computed(() => {
-    const balances = tokenStore.tradeableTokens
-      .map((token) => {
-        const accountBalance = accountStore.subaccount?.balances.find(
-          (balance) => balance.denom === token.denom
-        )
-
-        return {
-          token,
-          denom: token.denom,
-          balance: accountBalance?.availableBalance || '0',
-          balanceToBase: new BigNumberInWei(
-            accountBalance?.availableBalance || '0'
+  const accountBalances = computed(
+    () =>
+      tokenStore.tradeableTokens
+        .map((token) => {
+          const accountBalance = accountStore.subaccount?.balances.find(
+            (balance) => balance.denom === token.denom
           )
-            .toBase(token.decimals)
-            .toFixed()
-        }
-      })
-      .filter((balance) => balance.token) as BalanceWithToken[]
 
-    return balances
-  })
+          return {
+            token,
+            denom: token.denom,
+            balance: accountBalance?.availableBalance || '0'
+          }
+        })
+        .filter((balance) => balance.token) as BalanceWithToken[]
+  )
 
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
     if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
@@ -96,7 +74,7 @@ export function useBridgeBalance({
 
       if (destinationIsEthereum) {
         return bankBalances.value.filter(
-          (balance) => balance.token.erc20Address
+          (balance) => (balance.token as Erc20Token).erc20?.address
         )
       }
 

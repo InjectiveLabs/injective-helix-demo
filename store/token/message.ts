@@ -1,4 +1,7 @@
-import { UNLIMITED_ALLOWANCE } from '@injectivelabs/sdk-ui-ts'
+import {
+  UNLIMITED_ALLOWANCE,
+  BalanceWithTokenWithErc20Balance
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
@@ -8,7 +11,6 @@ import {
   web3Composer
 } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
-import { BalanceWithToken } from '~~/types'
 
 export const transfer = async ({
   amount,
@@ -106,13 +108,19 @@ export const withdraw = async ({
   await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
-export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
+export const setTokenAllowance = async (
+  balanceWithToken: BalanceWithTokenWithErc20Balance
+) => {
   const tokenStore = useTokenStore()
 
   const { address, validate } = useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
 
-  const tokenAddress = tokenWithBalance.token.erc20Address as keyof Erc20Token
+  const tokenAddress = balanceWithToken.token.erc20?.address
+
+  if (!tokenAddress) {
+    return
+  }
 
   await queue()
   await fetchGasPrice()
@@ -130,21 +138,21 @@ export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
     address
   })
 
-  const token = tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
-    (token) => {
-      const erc20Token = token as Erc20Token
+  const token = tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
+    (balance) => {
+      const erc20Token = balance.token as Erc20Token
 
       return (
-        erc20Token.erc20Address.toLowerCase() === tokenAddress.toLowerCase()
+        erc20Token.erc20.address.toLowerCase() === tokenAddress.toLowerCase()
       )
     }
   )
-  const index = tokenStore.tradeableErc20TokensWithBalanceAndPrice.findIndex(
-    (token) => {
-      const erc20Token = token as Erc20Token
+  const index = tokenStore.tradeableErc20BalancesWithTokenAndPrice.findIndex(
+    (balance) => {
+      const erc20Token = balance.token as Erc20Token
 
       return (
-        erc20Token.erc20Address.toLowerCase() === tokenAddress.toLowerCase()
+        erc20Token.erc20.address.toLowerCase() === tokenAddress.toLowerCase()
       )
     }
   )
@@ -153,16 +161,19 @@ export const setTokenAllowance = async (tokenWithBalance: BalanceWithToken) => {
     return
   }
 
-  const tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance = [
-    ...tokenStore.tradeableErc20TokensWithBalanceAndPrice
+  const tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance = [
+    ...tokenStore.tradeableErc20BalancesWithTokenAndPrice
   ]
-  tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance[index] = {
+  tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance[index] = {
     ...token,
-    allowance: UNLIMITED_ALLOWANCE.toString()
+    erc20: {
+      ...token.erc20,
+      allowance: UNLIMITED_ALLOWANCE.toString()
+    }
   }
 
   tokenStore.$patch({
-    tradeableErc20TokensWithBalanceAndPrice:
-      tradeableErc20TokensWithBalanceAndPriceWithUpdatedAllowance
+    tradeableErc20BalancesWithTokenAndPrice:
+      tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance
   })
 }

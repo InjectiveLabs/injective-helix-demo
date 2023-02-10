@@ -6,6 +6,10 @@ import {
   INJ_DENOM
 } from '@injectivelabs/utils'
 import {
+  BalanceWithToken,
+  BalanceWithTokenWithErc20Balance
+} from '@injectivelabs/sdk-ui-ts'
+import {
   BINANCE_DEPOSIT_ADDRESSES,
   INJ_GAS_BUFFER_FOR_BRIDGE,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -65,17 +69,17 @@ const maxDecimals = computed(() => {
   return formValues.value[BridgeField.Token].decimals
 })
 
-const tokenWithBalance = computed(() => {
-  const tokenWithBalance = transferableBalancesWithToken.value.find(
+const balanceWithToken = computed(() => {
+  const balanceWithToken = transferableBalancesWithToken.value.find(
     (b) => b.token.denom === denom.value
   )
 
-  if (!tokenWithBalance) {
+  if (!balanceWithToken) {
     return
   }
 
-  if (tokenWithBalance.denom !== INJ_DENOM) {
-    return tokenWithBalance
+  if (balanceWithToken.denom !== INJ_DENOM) {
+    return balanceWithToken
   }
 
   const noGasBufferNeededForTransfer =
@@ -84,32 +88,30 @@ const tokenWithBalance = computed(() => {
       TransferDirection.tradingAccountToBank
 
   if (noGasBufferNeededForTransfer) {
-    return tokenWithBalance
+    return balanceWithToken
   }
 
-  const transferableBalance = new BigNumberInWei(tokenWithBalance.balance)
+  const transferableBalance = new BigNumberInWei(balanceWithToken.balance)
     .toBase()
     .minus(INJ_GAS_BUFFER_FOR_BRIDGE)
   const transferableBalanceCapped = new BigNumberInWei(
     transferableBalance.gt(0) ? transferableBalance : 0
   )
-  const transferableBalanceCappedToBase = transferableBalanceCapped.toBase()
 
   return {
-    ...tokenWithBalance,
-    balance: transferableBalanceCapped.toFixed(),
-    balanceToBase: transferableBalanceCappedToBase.toFixed()
-  }
+    ...balanceWithToken,
+    balance: transferableBalanceCapped.toFixed()
+  } as BalanceWithToken
 })
 
 const needsAllowanceSet = computed(() => {
-  const tokenWithBalanceAndAllowance =
-    tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
+  const balanceWithTokenAndAllowance =
+    tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
       (token) => token.denom === denom.value
     )
 
   const allowance = new BigNumberInBase(
-    tokenWithBalanceAndAllowance?.allowance || 0
+    balanceWithTokenAndAllowance?.erc20?.allowance || 0
   )
 
   return isDeposit.value && originIsEthereum.value && allowance.lte(0)
@@ -144,9 +146,9 @@ function handleAmountChange({ amount }: { amount: string }) {
 
 function handleTokenChange() {
   nextTick(() => {
-    if (tokenWithBalance.value) {
+    if (balanceWithToken.value) {
       formValues.value[BridgeField.Amount] = ''
-      formValues.value[BridgeField.Token] = tokenWithBalance.value.token
+      formValues.value[BridgeField.Token] = balanceWithToken.value.token
     }
   })
 }
@@ -303,8 +305,10 @@ watch(destination, (value: string) => {
 
           <template v-else>
             <CommonAllowance
-              v-if="needsAllowanceSet && tokenWithBalance"
-              :token-with-balance="tokenWithBalance"
+              v-if="needsAllowanceSet && balanceWithToken"
+              v-bind="{
+                balanceWithToken: balanceWithToken as BalanceWithTokenWithErc20Balance
+              }"
             />
 
             <AppButton

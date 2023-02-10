@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
 import { ActivityTab, UiMarketWithToken } from '@/types'
 
@@ -23,7 +23,9 @@ const emit = defineEmits<{
 }>()
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+  [ActivityTab.Spot, ActivityTab.WalletHistory].includes(props.tab)
+    ? spotStore.markets
+    : derivativeStore.markets
 )
 
 const tokens = computed(() => {
@@ -37,16 +39,16 @@ const tokens = computed(() => {
       balance: '',
       denom: market.baseToken.denom,
       token: market.baseToken
-    } as BankBalanceWithToken
+    } as BalanceWithToken
 
     const quoteToken = {
       balance: '',
       denom: market.quoteToken.denom,
       token: market.quoteToken
-    } as BankBalanceWithToken
+    } as BalanceWithToken
 
     return [...tokens, baseToken, quoteToken]
-  }, [] as BankBalanceWithToken[])
+  }, [] as BalanceWithToken[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()

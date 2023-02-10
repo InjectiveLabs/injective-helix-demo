@@ -31,16 +31,18 @@ const ascending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
 
 const filteredMarkets = computed(() => {
-  return props.markets.filter(({ market }) => {
-    const isPartOfSearch = marketIsPartOfSearch(search.value, market)
-    const isPartOfType = marketIsPartOfType({
-      market,
-      favoriteMarkets: appStore.favoriteMarkets,
-      activeType: activeType.value as MarketType
-    })
+  return props.markets
+    .filter(({ market }) => {
+      const isPartOfSearch = marketIsPartOfSearch(search.value, market)
+      const isPartOfType = marketIsPartOfType({
+        market,
+        favoriteMarkets: appStore.favoriteMarkets,
+        activeType: activeType.value as MarketType
+      })
 
-    return isPartOfType && isPartOfSearch
-  })
+      return isPartOfType && isPartOfSearch
+    })
+    .filter((m) => m.summary)
 })
 
 const sortedMarkets = computed(() => {
@@ -147,8 +149,6 @@ const sortedMarkets = computed(() => {
           isCurrentMarket: market.marketId === marketSummary.market.marketId
         }"
         :key="`market-row-${index}-${marketSummary.market.marketId}`"
-        :aaa="marketSummary.market.marketId"
-        :bbb="market.marketId"
       />
 
       <template #empty>

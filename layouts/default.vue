@@ -23,9 +23,9 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
 
-const showFooter = computed(() => {
-  return ROUTES.footerEnabledRoutes.includes(route.name as string)
-})
+const showFooter = computed(() =>
+  ROUTES.footerEnabledRoutes.includes(route.name as string)
+)
 
 onMounted(() => {
   handleCosmoverseGiveawayCampaignTrack()
@@ -88,40 +88,51 @@ function onCloseSideBar() {
 <template>
   <div
     id="pro"
-    class="w-full h-full min-h-screen bg-gray-1000 text-gray-100 relative"
+    class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
   >
     <transition name="page" appear>
-      <AppHocLoading :status="status">
-        <div>
-          <LayoutSidebarMobile
-            v-if="isOpenSidebar"
-            @sidebar:closed="onCloseSideBar"
-          />
-          <client-only>
-            <div class="relative bg-gray-1000">
-              <LayoutTopbar
-                :is-sidebar-open="isOpenSidebar"
-                @sidebar:opened="isOpenSidebar = true"
-                @sidebar:closed="onCloseSideBar"
-              />
-              <main
-                class="w-full h-full min-h-screen-excluding-header flex flex-col"
-                :class="{ 'pt-12': isOpenSidebar }"
-              >
-                <div class="relative h-full-flex">
-                  <NuxtPage />
-                </div>
-                <LayoutFooter v-if="showFooter" />
-              </main>
+      <div>
+        <AppHocLoading :status="status">
+          <div class="w-full">
+            <LayoutSidebarMobile
+              v-if="isOpenSidebar"
+              @sidebar:closed="onCloseSideBar"
+            />
+            <client-only>
+              <div class="bg-gray-1000">
+                <LayoutTopbar
+                  :is-sidebar-open="isOpenSidebar"
+                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:closed="onCloseSideBar"
+                />
+                <main
+                  class="flex flex-wrap relative min-h-screen-excluding-header"
+                  :class="{
+                    'flex-col': showFooter,
+                    'pt-12': isOpenSidebar
+                  }"
+                >
+                  <div
+                    class="w-screen"
+                    :class="[
+                      { 'max-h-screen-excluding-header': !showFooter },
+                      showFooter ? 'flex-auto' : 'flex-1'
+                    ]"
+                  >
+                    <NuxtPage />
+                  </div>
+                  <LayoutFooter v-if="showFooter" />
+                </main>
 
-              <ModalsInsufficientInjForGas />
-              <ModalsNinjaPassWinner />
-              <AppConfetti />
-              <div id="modals" />
-            </div>
-          </client-only>
-        </div>
-      </AppHocLoading>
+                <ModalsInsufficientInjForGas />
+                <ModalsNinjaPassWinner />
+                <AppConfetti />
+                <div id="modals" />
+              </div>
+            </client-only>
+          </div>
+        </AppHocLoading>
+      </div>
     </transition>
 
     <Notifications

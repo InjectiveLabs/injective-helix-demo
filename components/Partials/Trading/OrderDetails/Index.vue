@@ -83,7 +83,7 @@ const tradingTypeMarket = isSpot
 
 const orderDetailsComponentPath = computed(() => {
   const componentName =
-    tradingTypeMarket.value || tradingTypeLimit.value
+    tradingTypeMarket.value || tradingTypeLimit.value || isSpot
       ? 'OrderDetails'
       : 'ConditionalOrderDetails'
 

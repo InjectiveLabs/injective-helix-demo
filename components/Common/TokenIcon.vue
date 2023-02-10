@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  TokenMetaWithUsdPrice,
-  getTokenLogoWithVendorPathPrefix
-} from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
+import { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   sm: Boolean,
@@ -12,7 +9,7 @@ const props = defineProps({
   xl: Boolean,
 
   token: {
-    type: Object as PropType<Token | TokenMetaWithUsdPrice>,
+    type: Object as PropType<Token | TokenWithPrice>,
     required: true
   }
 })

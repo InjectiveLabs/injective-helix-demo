@@ -52,7 +52,7 @@ const checked = computed({
     </div>
     <label
       :for="uid"
-      class="select-none text-xs"
+      class="select-none text-xs whitespace-nowrap"
       :class="{
         'text-gray-500': disabled,
         'text-white cursor-pointer': !disabled

@@ -88,46 +88,48 @@ function sortMarketsAlphabetically(
 </script>
 
 <template>
-  <div class="py-6 md:pt-12 md:pb-16 bg-cover bg-center">
-    <div class="container xl:max-w-6xl mx-auto">
-      <h3 class="text-xl tracking-wider leading-6 font-bold hidden md:block">
-        {{ $t('markets.title') }}
-      </h3>
+  <div class="w-full mx-auto xl:w-4/5 relative">
+    <div class="bg-cover bg-center">
+      <div class="mt-6">
+        <h3 class="text-xl tracking-wider leading-6 font-bold hidden md:block">
+          {{ $t('markets.title') }}
+        </h3>
 
-      <AppHorizontalScrollView class="mt-4">
-        <PartialsMarketsCard
-          v-if="newMarket"
-          class="flex-0-full col-span-6 xl:col-span-4"
-          data-cy="market-card-whats-new"
-          :market="newMarket.market"
-          :summary="newMarket.summary"
-          :volume-in-usd="newMarket.volumeInUsd"
-        >
-          {{ $t('markets.whatsNew') }}
-        </PartialsMarketsCard>
+        <AppHorizontalScrollView class="mt-4">
+          <PartialsMarketsCard
+            v-if="newMarket"
+            class="flex-0-full col-span-6 xl:col-span-4"
+            data-cy="market-card-whats-new"
+            :market="newMarket.market"
+            :summary="newMarket.summary"
+            :volume-in-usd="newMarket.volumeInUsd"
+          >
+            {{ $t('markets.whatsNew') }}
+          </PartialsMarketsCard>
 
-        <PartialsMarketsCard
-          v-if="topVolume"
-          class="flex-0-full col-span-6 xl:col-span-4"
-          data-cy="market-card-top-volume"
-          :market="topVolume.market"
-          :summary="topVolume.summary"
-          :volume-in-usd="topVolume.volumeInUsd"
-        >
-          {{ $t('markets.topVolume') }}
-        </PartialsMarketsCard>
+          <PartialsMarketsCard
+            v-if="topVolume"
+            class="flex-0-full col-span-6 xl:col-span-4"
+            data-cy="market-card-top-volume"
+            :market="topVolume.market"
+            :summary="topVolume.summary"
+            :volume-in-usd="topVolume.volumeInUsd"
+          >
+            {{ $t('markets.topVolume') }}
+          </PartialsMarketsCard>
 
-        <PartialsMarketsCard
-          v-if="topGainer"
-          class="flex-0-full col-span-6 xl:col-span-4"
-          data-cy="market-card-top-gainer"
-          :market="topGainer.market"
-          :summary="topGainer.summary"
-          :volume-in-usd="topGainer.volumeInUsd"
-        >
-          {{ $t('markets.topGainer') }}
-        </PartialsMarketsCard>
-      </AppHorizontalScrollView>
+          <PartialsMarketsCard
+            v-if="topGainer"
+            class="flex-0-full col-span-6 xl:col-span-4"
+            data-cy="market-card-top-gainer"
+            :market="topGainer.market"
+            :summary="topGainer.summary"
+            :volume-in-usd="topGainer.volumeInUsd"
+          >
+            {{ $t('markets.topGainer') }}
+          </PartialsMarketsCard>
+        </AppHorizontalScrollView>
+      </div>
     </div>
   </div>
 </template>

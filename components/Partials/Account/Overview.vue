@@ -13,6 +13,7 @@ import { AccountBalance, BridgeBusEvents } from '@/types'
 const tokenStore = useTokenStore()
 
 const props = defineProps({
+  isLoading: Boolean,
   hideBalances: Boolean,
 
   balances: {
@@ -92,9 +93,11 @@ function handleTransferClick() {
 
 <template>
   <div
-    class="flex justify-between md:items-center mb-8 gap-4 flex-col md:flex-row"
+    class="flex justify-between md:items-center gap-4 flex-col md:flex-row"
+    :class="{ 'mb-8': !isLoading, 'my-4': isLoading }"
   >
-    <div class="flex items-center justify-start gap-2">
+    <AppSpinner v-if="isLoading" lg />
+    <div v-else class="flex items-center justify-start gap-2">
       <span
         v-if="!hideBalances"
         class="text-white font-bold text-2xl md:text-3xl"
@@ -127,7 +130,10 @@ function handleTransferClick() {
       </div>
     </div>
 
-    <div class="flex items-center justify-between md:justify-end sm:gap-4">
+    <div
+      v-if="!isLoading"
+      class="flex items-center justify-between md:justify-end sm:gap-4"
+    >
       <AppButton class="bg-blue-500" @click="handleDepositClick">
         <span class="text-blue-900 font-semibold">
           {{ $t('account.deposit') }}

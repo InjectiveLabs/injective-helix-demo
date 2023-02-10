@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import type { UseScrollReturn } from '@vueuse/core'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { createPopperLite } from '@popperjs/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
@@ -18,6 +19,7 @@ import {
   PriceLevel,
   SpotOrderSide
 } from '@injectivelabs/sdk-ts'
+import { vScroll } from '@vueuse/components'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
@@ -551,6 +553,16 @@ function handleBuyOrderHover(position: number | null) {
     }
   }
 }
+
+function hidePopperOnScroll(state: UseScrollReturn) {
+  if (orderbookSummaryRef.value) {
+    if (state.isScrolling.value) {
+      orderbookSummaryRef.value.removeAttribute('data-show')
+    } else {
+      orderbookSummaryRef.value.setAttribute('data-show', '')
+    }
+  }
+}
 </script>
 
 <template>
@@ -558,6 +570,7 @@ function handleBuyOrderHover(position: number | null) {
     <div
       v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Buys"
       ref="sellOrdersContainerRef"
+      v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
         'orderbook-half-h':
@@ -658,6 +671,7 @@ function handleBuyOrderHover(position: number | null) {
     <div
       v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Sells"
       ref="buyOrdersContainerRef"
+      v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
         'orderbook-half-h':

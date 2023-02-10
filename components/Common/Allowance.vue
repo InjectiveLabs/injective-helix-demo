@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@/types'
+import { BalanceWithTokenWithErc20Balance } from '@injectivelabs/sdk-ui-ts'
 
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
@@ -9,8 +9,8 @@ const { success } = useNotifications()
 const { t } = useLang()
 
 const props = defineProps({
-  tokenWithBalance: {
-    type: Object as PropType<BalanceWithToken>,
+  balanceWithToken: {
+    type: Object as PropType<BalanceWithTokenWithErc20Balance>,
     required: true
   }
 })
@@ -25,7 +25,7 @@ function handleSetAllowance() {
   status.setLoading()
 
   tokenStore
-    .setTokenAllowance(props.tokenWithBalance)
+    .setTokenAllowance(props.balanceWithToken)
     .then(() => {
       emit('allowance:set')
 

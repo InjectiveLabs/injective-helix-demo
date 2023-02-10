@@ -95,7 +95,7 @@ export default {
       </div>
       <div class="relative" :class="wrapperClass">
         <div class="flex items-center justify-between no-shadow">
-          <div v-if="slots.prefix" class="ml-3">
+          <div v-if="slots.prefix">
             <slot name="prefix" />
           </div>
 

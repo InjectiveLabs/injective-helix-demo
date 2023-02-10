@@ -305,3 +305,7 @@ export enum ActivityTab {
   Spot = 'spot',
   WalletHistory = 'walletHistory'
 }
+
+export enum AggregatedBalanceType {
+  USDC = 'usdc'
+}

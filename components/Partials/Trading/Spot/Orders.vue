@@ -62,7 +62,7 @@ function handleCancelAllClick() {
 <template>
   <CommonCardTableWrap>
     <template #actions>
-      <div class="col-span-12 sm:col-span-6 m-4 lg:mx-0">
+      <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
         <div
           class="flex items-center justify-between sm:justify-start gap-2 ml-2"
         >
@@ -104,7 +104,7 @@ function handleCancelAllClick() {
       </div>
 
       <div
-        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
+        class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
         <AppCheckbox
           v-model="checked"
@@ -130,8 +130,8 @@ function handleCancelAllClick() {
       </div>
     </template>
 
-    <AppHocLoading :status="status">
-      <CommonCard class="h-full">
+    <AppHocLoading class="h-full" :status="status">
+      <CommonCard class="h-full flex-auto">
         <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"

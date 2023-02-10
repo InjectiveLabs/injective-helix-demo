@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
-  BRIDGE_FEE_IN_USD,
   ZERO_IN_BASE,
-  TokenWithUsdPrice,
-  TokenWithBalanceAndPrice
+  BRIDGE_FEE_IN_USD,
+  BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { useI18n } from 'vue-i18n'
+import { TokenWithPrice } from '@injectivelabs/token-metadata'
 import { Modal, BridgeField, BridgeForm, BusEvents } from '@/types'
 import { injToken } from '@/app/data/token'
 import {
@@ -56,19 +56,19 @@ const status = reactive(new Status())
 
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeConfirm])
 
-const injTokenWithPrice = computed<TokenWithUsdPrice>(() => ({
+const injTokenWithPrice = computed<TokenWithPrice>(() => ({
   ...injToken,
   usdPrice: tokenStore.injUsdPrice
 }))
 
-const tokenWithBalanceAndPrice = computed(() => {
-  return tokenStore.tradeableErc20TokensWithBalanceAndPrice.find(
+const balanceWithTokenAndPrice = computed(() => {
+  return tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
     (token) => token.denom === formValues.value[BridgeField.Token].denom
-  ) as TokenWithBalanceAndPrice | undefined
+  ) as BalanceWithTokenAndPrice | undefined
 })
 
 const usdPrice = computed(
-  () => new BigNumberInBase(tokenWithBalanceAndPrice.value?.usdPrice || 0)
+  () => new BigNumberInBase(balanceWithTokenAndPrice.value?.usdPrice || 0)
 )
 
 const amount = computed(
@@ -91,16 +91,16 @@ const { valueToString: amountInUsdToString } = useBigNumberFormatter(
 )
 
 const ethBridgeFee = computed(() => {
-  if (!tokenWithBalanceAndPrice.value) {
+  if (!balanceWithTokenAndPrice.value) {
     return ZERO_IN_BASE
   }
 
-  if (!tokenWithBalanceAndPrice.value.usdPrice) {
+  if (!balanceWithTokenAndPrice.value.usdPrice) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(
-    tokenWithBalanceAndPrice.value.usdPrice
+    balanceWithTokenAndPrice.value.usdPrice
   )
 })
 

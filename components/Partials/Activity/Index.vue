@@ -34,15 +34,15 @@ const action = computed(() => {
       return bridgeStore.fetchSubaccountTransfers
     case ActivityView.WalletDeposits:
       return [
-        bridgeStore.fetchPeggyDepositTransactions,
-        bridgeStore.fetchIBCTransferTransactions,
-        bridgeStore.fetchInjectiveTransactions
+        bridgeStore.fetchPeggyDepositTransactions(),
+        bridgeStore.fetchIBCTransferTransactions(),
+        bridgeStore.fetchInjectiveTransactions()
       ]
     case ActivityView.WalletWithdrawals:
       return [
-        bridgeStore.fetchPeggyWithdrawalTransactions,
-        bridgeStore.fetchIBCTransferTransactions,
-        bridgeStore.fetchInjectiveTransactions
+        bridgeStore.fetchPeggyWithdrawalTransactions(),
+        bridgeStore.fetchIBCTransferTransactions(),
+        bridgeStore.fetchInjectiveTransactions()
       ]
     default:
       return undefined
@@ -139,9 +139,7 @@ function onViewChange() {
 </script>
 
 <template>
-  <div
-    class="h-full min-h-screen-excluding-header max-h-screen-excluding-header pt-6 sm:pb-8 flex flex-col"
-  >
+  <div class="pt-6 h-full-flex">
     <PartialsActivityCommonNavigation
       v-model:tab="tab"
       :status="status"
@@ -156,48 +154,47 @@ function onViewChange() {
       @update:view="onViewChange"
     />
 
-    <CommonCard
-      md
-      class="h-full mt-4 xs:mt-6 flex flex-col grow overflow-y-hidden"
-    >
-      <PartialsActivityCommonToolbar
-        ref="filterRef"
-        :view="view"
-        :tab="tab"
-        :status="status"
-        @update:filter="handleFilterChange"
-        @reset:filter="onViewChange"
-      />
+    <div class="h-full rounded-xl overflow-y-auto pt-4 xs:pt-6">
+      <CommonCard md class="h-full-flex">
+        <PartialsActivityCommonToolbar
+          ref="filterRef"
+          :view="view"
+          :tab="tab"
+          :status="status"
+          @update:filter="handleFilterChange"
+          @reset:filter="onViewChange"
+        />
 
-      <PartialsActivityView
-        v-bind="{
-          view,
-          status,
-          denom: formValues[ActivityField.Denom],
-          side: formValues[ActivityField.Side],
-          type: formValues[ActivityField.Type]
-        }"
-        :key="view"
-        class="h-full-flex"
-      />
+        <PartialsActivityView
+          v-bind="{
+            view,
+            status,
+            denom: formValues[ActivityField.Denom],
+            side: formValues[ActivityField.Side],
+            type: formValues[ActivityField.Type]
+          }"
+          :key="view"
+          class="h-full"
+        />
 
-      <PartialsActivityCommonPagination
-        v-if="
-          ![
-            ActivityView.Positions,
-            ActivityView.DerivativeOrders,
-            ActivityView.DerivativeTriggers,
-            ActivityView.SpotOrders,
-            ActivityView.WalletDeposits,
-            ActivityView.WalletWithdrawals
-          ].includes(view)
-        "
-        ref="paginationRef"
-        :view="view"
-        :status="status"
-        @update:filter="fetchData"
-      />
-    </CommonCard>
+        <PartialsActivityCommonPagination
+          v-if="
+            ![
+              ActivityView.Positions,
+              ActivityView.DerivativeOrders,
+              ActivityView.DerivativeTriggers,
+              ActivityView.SpotOrders,
+              ActivityView.WalletDeposits,
+              ActivityView.WalletWithdrawals
+            ].includes(view)
+          "
+          ref="paginationRef"
+          :view="view"
+          :status="status"
+          @update:filter="fetchData"
+        />
+      </CommonCard>
+    </div>
   </div>
 
   <ModalsAddMargin />

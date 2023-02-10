@@ -19,7 +19,7 @@ const orderHistory = computed(() => spotStore.subaccountOrderHistory)
     :status="status"
     :loader-class="status.isLoading() ? 'relative' : ''"
   >
-    <div class="w-full h-full-flex">
+    <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
         :show-empty="orderHistory.length === 0"

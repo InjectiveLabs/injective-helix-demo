@@ -96,14 +96,10 @@ const paginationOptions = computed(() => {
   const skip = (page.value - 1) * limit.value
   const isPageOne = skip === 0
 
-  if (isPageOne) {
-    return undefined
-  }
-
   return {
     skip,
     limit: limit.value,
-    endTime: cachedEndTime.value
+    endTime: isPageOne ? undefined : cachedEndTime.value
   }
 })
 
@@ -122,7 +118,7 @@ defineExpose({
     v-if="totalCount > 0"
     v-model:page="page"
     v-model:limit="limit"
-    class="mt-4"
+    class="flex-none mt-4 h-9"
     :row-class="'border border-transparent'"
     :disabled="status.isLoading()"
     :total-count="totalCount"
