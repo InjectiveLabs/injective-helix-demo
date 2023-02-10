@@ -16,7 +16,10 @@ export default {
     funds: 'Funds',
     triggers: 'Triggers',
     fetchOrders: 'Fetch Orders',
-    fetchTrades: 'Fetch Trades'
+    fetchTrades: 'Fetch Trades',
+    common: {
+      type: 'Type'
+    }
   },
 
   fundingPayments: {

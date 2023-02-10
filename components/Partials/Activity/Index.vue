@@ -34,15 +34,15 @@ const action = computed(() => {
       return bridgeStore.fetchSubaccountTransfers
     case ActivityView.WalletDeposits:
       return [
-        bridgeStore.fetchPeggyDepositTransactions,
-        bridgeStore.fetchIBCTransferTransactions,
-        bridgeStore.fetchInjectiveTransactions
+        bridgeStore.fetchPeggyDepositTransactions(),
+        bridgeStore.fetchIBCTransferTransactions(),
+        bridgeStore.fetchInjectiveTransactions()
       ]
     case ActivityView.WalletWithdrawals:
       return [
-        bridgeStore.fetchPeggyWithdrawalTransactions,
-        bridgeStore.fetchIBCTransferTransactions,
-        bridgeStore.fetchInjectiveTransactions
+        bridgeStore.fetchPeggyWithdrawalTransactions(),
+        bridgeStore.fetchIBCTransferTransactions(),
+        bridgeStore.fetchInjectiveTransactions()
       ]
     default:
       return undefined

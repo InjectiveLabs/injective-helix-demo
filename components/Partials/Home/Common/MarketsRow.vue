@@ -40,7 +40,6 @@ const props = defineProps({
 })
 
 const status = reactive(new Status(StatusType.Loading))
-const chartPadding = ref({ top: 4, right: 10, bottom: 4, left: 10 })
 const useDefaultLastTradedPriceColor = ref(true)
 
 const lastTradedPriceTextColorClass = computed(() => {
@@ -104,7 +103,7 @@ const chartData = computed(() => {
   return getFormattedMarketsHistoryChartData(matchingMarket)
 })
 
-const chartLineColor = computed(() => {
+const chartIsPositive = computed(() => {
   const minimumChartDataPoints = 2
 
   if (chartData.value.length < minimumChartDataPoints) {
@@ -117,12 +116,8 @@ const chartLineColor = computed(() => {
     .toNumber()
   const [, firstYaxisHolcPrice] = firstChartDataPoint
   const [, lastYAxisHolcPrice] = chartData.value[lastChartDataPointPosition]
-  const positiveChangeColor = '#12B17C'
-  const negativeChangeColor = '#F3164D'
 
   return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)
-    ? positiveChangeColor
-    : negativeChangeColor
 })
 
 const marketRoute = computed(() => {
@@ -256,14 +251,10 @@ function handleTradeClickedTrack() {
         <AppSpinner v-if="status.isLoading()" md />
 
         <BaseLineGraph
-          v-else-if="chartData.length > 1"
-          style="transform: scale(-1, 1)"
+          v-if="chartData.length > 1"
           :data="chartData"
-          :color="chartLineColor"
-          :bg-type="'transparent'"
+          :color="chartIsPositive ? '#0BB67D' : '#F3164D'"
           :stroke-width="1"
-          :smoothness="0.05"
-          :padding="chartPadding"
         />
       </div>
       <div v-if="!isHero" class="col-span-2 align-center justify-self-end">

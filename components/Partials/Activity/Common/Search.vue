@@ -23,7 +23,9 @@ const emit = defineEmits<{
 }>()
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+  [ActivityTab.Spot, ActivityTab.WalletHistory].includes(props.tab)
+    ? spotStore.markets
+    : derivativeStore.markets
 )
 
 const tokens = computed(() => {

@@ -209,7 +209,7 @@ defineExpose({
         "
         v-model="type"
         :options="typeOptions"
-        :placeholder="'Type'"
+        :placeholder="$t('activity.common.type')"
         class="col-span-2 sm:col-span-1"
         clearable
         data-cy="universal-table-filter-by-type-drop-down"

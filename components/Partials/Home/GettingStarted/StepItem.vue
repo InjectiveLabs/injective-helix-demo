@@ -33,15 +33,10 @@ defineProps({
       >
         <div
           class="w-8 h-8 ml-6 rounded-full flex items-center justify-center"
-          :class="[active ? 'bg-blue-100' : 'bg-gray-600 opacity-50']"
+          :class="[active ? 'bg-blue-500' : 'bg-gray-600 opacity-50']"
         >
           <span class="font-semibold text-white">{{ step }}</span>
         </div>
-        <!-- <BaseIcon
-          name="circle"
-          class="ml-6"
-          :class="[!active ? 'text-blue-100' : 'text-gray-450']"
-        /> -->
         <slot />
       </div>
     </template>
