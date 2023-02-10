@@ -96,14 +96,10 @@ const paginationOptions = computed(() => {
   const skip = (page.value - 1) * limit.value
   const isPageOne = skip === 0
 
-  if (isPageOne) {
-    return undefined
-  }
-
   return {
     skip,
     limit: limit.value,
-    endTime: cachedEndTime.value
+    endTime: isPageOne ? undefined : cachedEndTime.value
   }
 })
 
