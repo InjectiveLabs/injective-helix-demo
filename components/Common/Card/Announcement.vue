@@ -17,7 +17,7 @@ defineProps({
     "
     :bg-color="'bg-gray-150'"
     :no-padding="slots.illustration ? true : false"
-    class="text-xl h-full relative"
+    class="text-xl relative"
   >
     <NuxtLink
       :href="htmlUrl"

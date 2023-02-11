@@ -41,7 +41,7 @@ const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
-const hasFormErrors = computed(() => Object.keys(errors).length === 0)
+const hasFormErrors = computed(() => Object.keys(errors.value).length === 0)
 const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
 
 const isBuy = computed(

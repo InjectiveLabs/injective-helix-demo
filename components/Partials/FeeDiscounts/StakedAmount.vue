@@ -60,7 +60,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
     </div>
     <div class="mt-4">
       <span class="text-xs text-gray-400">
-        {{ $t('fee_discounts.current_apr') }}: {{ aprToFormat }}%
+        {{ $t('fee_discounts.current_apr') }}: ≈ {{ aprToFormat }}%
       </span>
     </div>
   </div>
