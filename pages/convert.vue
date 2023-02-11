@@ -32,7 +32,7 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
 
 const hasFormErrors = computed(
   () =>
-    Object.keys(errors).filter(
+    Object.keys(errors.value).filter(
       (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
     ).length > 0
 )
