@@ -2,6 +2,9 @@
 import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeField, TradeForm, TradeFormValue } from '@/types'
+import { defineTradeRules } from '@/app/client/utils/validation/trade'
+
+defineTradeRules()
 
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
@@ -32,7 +35,7 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
 
 const hasFormErrors = computed(
   () =>
-    Object.keys(errors).filter(
+    Object.keys(errors.value).filter(
       (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
     ).length > 0
 )
