@@ -95,7 +95,9 @@ function onCloseSideBar() {
         <AppHocLoading :status="status">
           <div class="w-full">
             <LayoutSidebarMobile
-              v-if="isOpenSidebar"
+              v-bind="{
+                isOpenSidebar
+              }"
               @sidebar:closed="onCloseSideBar"
             />
             <client-only>
