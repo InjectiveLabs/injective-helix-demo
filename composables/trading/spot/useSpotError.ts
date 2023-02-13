@@ -19,8 +19,8 @@ export function useSpotError({
   notionalWithFees,
   quoteAvailableBalance
 }: {
+  formValues: Ref<Partial<TradeForm>>
   isBuy: Ref<boolean>
-  formValues: Ref<TradeForm>
   market: Ref<UiSpotMarketWithToken>
   executionPrice: Ref<BigNumberInBase>
   notionalWithFees?: Ref<BigNumberInBase>

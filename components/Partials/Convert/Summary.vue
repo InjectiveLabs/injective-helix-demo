@@ -6,6 +6,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 import { TradeForm, TradeField } from '@/types'
 
+const formValues = useFormValues<TradeForm>()
+
 const props = defineProps({
   isBuy: Boolean,
   isLoading: Boolean,
@@ -18,11 +20,6 @@ const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken | undefined>,
     default: undefined
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
   },
 
   worstPriceWithSlippage: {
@@ -44,7 +41,7 @@ const showEmpty = computed(() => {
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
   const quantity = new BigNumberInBase(
-    props.formValues[TradeField.QuoteAmount] || 0
+    formValues.value[TradeField.QuoteAmount] || 0
   )
 
   if (quantity.isNaN() || quantity.lte(0)) {
