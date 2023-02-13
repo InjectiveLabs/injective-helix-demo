@@ -6,8 +6,6 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
-const router = useRouter()
-
 const props = defineProps({
   isSpot: Boolean,
 
@@ -38,13 +36,13 @@ const {
   computed(() => props.isSpot)
 )
 
-function handleVisitMarket() {
+const marketRoute = computed(() => {
   if (!market.value) {
-    return
+    return undefined
   }
 
-  return router.push(getMarketRoute(market.value))
-}
+  return getMarketRoute(market.value)
+})
 </script>
 
 <template>
@@ -59,8 +57,8 @@ function handleVisitMarket() {
       </span>
     </td>
 
-    <td class="h-12 text-left cursor-pointer" @click="handleVisitMarket">
-      <div class="flex items-center justify-start">
+    <td class="h-12 text-left cursor-pointer">
+      <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" md />
         </div>
@@ -72,7 +70,7 @@ function handleVisitMarket() {
             {{ market.ticker }}
           </span>
         </div>
-      </div>
+      </NuxtLink>
     </td>
 
     <td class="h-12 text-left">

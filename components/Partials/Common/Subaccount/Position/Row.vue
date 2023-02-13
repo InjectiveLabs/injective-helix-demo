@@ -11,7 +11,6 @@ const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const modalStore = useModalStore()
 const route = useRoute()
-const router = useRouter()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { error, success } = useNotifications()
@@ -55,6 +54,14 @@ const reduceOnlyCurrentOrders = computed(() =>
 const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
+
+const marketRoute = computed(() => {
+  if (!market.value) {
+    return undefined
+  }
+
+  return getMarketRoute(market.value)
+})
 
 function onAddMarginButtonClick() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
@@ -120,14 +127,6 @@ function closePositionAndReduceOnlyOrders() {
       status.setIdle()
     })
 }
-
-function handleVisitMarket() {
-  if (!market.value) {
-    return
-  }
-
-  return router.push(getMarketRoute(market.value))
-}
 </script>
 
 <template>
@@ -136,8 +135,8 @@ function handleVisitMarket() {
     :data-cy="'open-position-table-row-' + position.ticker"
     class="h-[60px]"
   >
-    <td class="text-left cursor-pointer pl-3" @click="handleVisitMarket">
-      <div class="flex items-center justify-start">
+    <td class="text-left cursor-pointer pl-3">
+      <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" />
         </div>
@@ -149,7 +148,7 @@ function handleVisitMarket() {
             {{ position.ticker }}
           </span>
         </div>
-      </div>
+      </NuxtLink>
     </td>
 
     <td class="text-left pl-1text-xs">

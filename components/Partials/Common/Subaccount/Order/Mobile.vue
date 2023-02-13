@@ -13,7 +13,6 @@ const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
-const router = useRouter()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -42,6 +41,14 @@ const {
   computed(() => props.isSpot)
 )
 
+const marketRoute = computed(() => {
+  if (!market.value) {
+    return undefined
+  }
+
+  return getMarketRoute(market.value)
+})
+
 function onCancelOrder() {
   status.setLoading()
 
@@ -58,19 +65,11 @@ function onCancelOrder() {
       status.setIdle()
     })
 }
-
-function handleVisitMarket() {
-  if (!market.value) {
-    return
-  }
-
-  return router.push(getMarketRoute(market.value))
-}
 </script>
 
 <template>
   <CommonTableRow v-if="market" dense>
-    <div class="pb-1 col-span-2" @click="handleVisitMarket">
+    <NuxtLink class="pb-1 col-span-2" :to="marketRoute">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
           <span
@@ -110,7 +109,7 @@ function handleVisitMarket() {
       >
         {{ $t('trade.reduce_only') }}
       </div>
-    </div>
+    </NuxtLink>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
       {{ $t('trade.price') }}
