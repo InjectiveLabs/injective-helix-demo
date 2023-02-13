@@ -143,7 +143,7 @@ onWalletConnected(() => {
           </div>
         </AppHocLoading>
       </div>
-      <CommonUserNotConnectedNote v-else />
+      <CommonUserNotConnectedNote v-else cta />
     </div>
   </AppPanel>
 </template>

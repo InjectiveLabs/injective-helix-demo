@@ -240,6 +240,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
         DerivativeOrderSide.StopSell
       ].includes(order.orderType as DerivativeOrderSide)
 
+      // console.log(order.state, order)
+
       switch (order.state) {
         case DerivativeOrderState.Booked:
         case DerivativeOrderState.Unfilled:
