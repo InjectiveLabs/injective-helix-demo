@@ -23,6 +23,8 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
 
+const container = computed(() => document.getElementById('pro'))
+
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as string)
 )
@@ -78,9 +80,17 @@ function handleMarketsInit() {
     })
 }
 
+function onOpenSideBar() {
+  isOpenSidebar.value = true
+
+  container.value?.classList.add('overflow-y-hidden')
+}
+
 function onCloseSideBar() {
   if (isOpenSidebar.value) {
     isOpenSidebar.value = false
+
+    container.value?.classList.remove('overflow-y-hidden')
   }
 }
 </script>
@@ -104,7 +114,7 @@ function onCloseSideBar() {
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
-                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:opened="onOpenSideBar"
                   @sidebar:closed="onCloseSideBar"
                 />
                 <main

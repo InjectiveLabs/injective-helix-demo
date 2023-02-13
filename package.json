@@ -43,7 +43,7 @@
     "@injectivelabs/token-utils": "1.0.80",
     "@injectivelabs/ts-types": "1.0.28",
     "@injectivelabs/ui-notifications": "^1.0.9",
-    "@injectivelabs/ui-shared": "1.0.11-alpha.0",
+    "@injectivelabs/ui-shared": "1.0.12-alpha.0",
     "@injectivelabs/utils": "1.0.76",
     "@injectivelabs/wallet-ts": "1.0.424",
     "@metamask/detect-provider": "2.0.0",
