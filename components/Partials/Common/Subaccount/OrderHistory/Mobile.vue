@@ -6,8 +6,6 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
-const router = useRouter()
-
 const props = defineProps({
   isSpot: Boolean,
 
@@ -34,18 +32,18 @@ const {
   computed(() => props.isSpot)
 )
 
-function handleVisitMarket() {
+const marketRoute = computed(() => {
   if (!market.value) {
-    return
+    return undefined
   }
 
-  return router.push(getMarketRoute(market.value))
-}
+  return getMarketRoute(market.value)
+})
 </script>
 
 <template>
   <CommonTableRow v-if="market" dense>
-    <div class="pb-1 col-span-2" @click="handleVisitMarket">
+    <NuxtLink class="pb-1 col-span-2" :to="marketRoute">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
           <span
@@ -74,7 +72,7 @@ function handleVisitMarket() {
       >
         {{ $t('trade.reduce_only') }}
       </div>
-    </div>
+    </NuxtLink>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
       {{ $t('trade.price') }}

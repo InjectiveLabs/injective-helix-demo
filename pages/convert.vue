@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TradeField, TradeForm, TradeFormValue } from '@/types'
+import { TradeField, TradeForm } from '@/types'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 
 defineTradeRules()
@@ -13,12 +13,8 @@ const spotStore = useSpotStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
-const {
-  errors,
-  resetForm,
-  setFieldValue,
-  values: formValues
-} = useForm<TradeForm>()
+
+const { resetForm, values: formValues } = useForm<TradeForm>()
 
 const isBaseAmount = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>()
@@ -32,13 +28,6 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
     market,
     isBaseAmount
   })
-
-const hasFormErrors = computed(
-  () =>
-    Object.keys(errors.value).filter(
-      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
-    ).length > 0
-)
 
 const isBuy = computed(
   () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
@@ -61,10 +50,6 @@ onMounted(() => {
     .finally(() => status.setIdle())
 })
 
-function updateFormValue({ field, value }: TradeFormValue) {
-  setFieldValue(field, value)
-}
-
 function updateAmount({
   amount,
   isBaseAmount: isBaseAmountUpdate
@@ -80,12 +65,11 @@ function updateAmount({
   })
 
   if (updatedAmount) {
-    updateFormValue({
-      field: isBaseAmountUpdate
-        ? TradeField.QuoteAmount
-        : TradeField.BaseAmount,
-      value: updatedAmount
-    })
+    const field = isBaseAmountUpdate
+      ? TradeField.QuoteAmount
+      : TradeField.BaseAmount
+
+    formValues[field] = updatedAmount
   }
 }
 
@@ -96,21 +80,13 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  updateFormValue({
-    field: TradeField.OrderType,
-    value: isBuyState ? SpotOrderSide.Buy : SpotOrderSide.Sell
-  })
+  formValues[TradeField.OrderType] = isBuyState
+    ? SpotOrderSide.Buy
+    : SpotOrderSide.Sell
 
   if (market.value) {
-    updateFormValue({
-      field: TradeField.BaseDenom,
-      value: market.value.baseDenom
-    })
-
-    updateFormValue({
-      field: TradeField.QuoteDenom,
-      value: market.value.quoteDenom
-    })
+    formValues[TradeField.BaseDenom] = market.value.baseDenom
+    formValues[TradeField.QuoteDenom] = market.value.quoteDenom
   }
 }
 
@@ -188,17 +164,12 @@ function handleFormSubmit() {
         v-model:isBaseAmount="isBaseAmount"
         v-model:market="market"
         v-bind="{
-          formValues,
           worstPriceWithSlippage,
           isLoading: fetchStatus.isLoading() || submitStatus.isLoading()
         }"
-        :worst-price-with-slippage="worstPriceWithSlippage"
-        :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
-        :form-values="formValues"
         @update:amount="updateAmount"
         @update:isBuy="updateUrlQuery"
         @update:market="handleMarketUpdate"
-        @update:formValue="updateFormValue"
       />
 
       <PartialsConvertSummary
@@ -207,7 +178,6 @@ function handleFormSubmit() {
           isBuy,
           market,
           amount,
-          formValues,
           worstPriceWithSlippage,
           isLoading: fetchStatus.isLoading()
         }"
@@ -219,10 +189,7 @@ function handleFormSubmit() {
         v-bind="{
           isBuy,
           amount,
-          errors,
           market,
-          formValues,
-          hasFormErrors,
           status: submitStatus,
           executionPrice: worstPrice
         }"

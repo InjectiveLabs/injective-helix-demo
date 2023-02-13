@@ -273,6 +273,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           break
         }
+        case DerivativeOrderState.Triggered:
         case DerivativeOrderState.Canceled:
         case DerivativeOrderState.Filled: {
           if (isConditional) {

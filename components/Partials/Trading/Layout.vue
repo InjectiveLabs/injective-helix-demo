@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { GeneralException } from '@injectivelabs/exceptions'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { betaMarketSlugs } from '@/app/data/market'
+import {
+  getDefaultSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
+} from '@/app/utils/market'
 import {
   Modal,
   TradingLayout,
@@ -35,7 +38,7 @@ const emit = defineEmits<{
   (e: 'loaded', state: UiMarketWithToken): void
 }>()
 
-const slug = props.hardcodedSlug || (Object.values(params)[0] as string)
+const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
@@ -60,16 +63,16 @@ onMounted(() => {
       const marketBySlug = getMarketBySlug()
 
       if (!marketBySlug) {
-        router.push({ name: 'markets' })
+        const defaultRoute = props.isSpot
+          ? getDefaultSpotMarketRouteParams()
+          : getDefaultPerpetualMarketRouteParams()
 
-        throw new GeneralException(
-          new Error('Market not found. Please refresh the page.')
-        )
+        router.push(defaultRoute)
+      } else {
+        market.value = marketBySlug
+
+        emit('loaded', marketBySlug as UiMarketWithToken)
       }
-
-      market.value = marketBySlug
-
-      emit('loaded', marketBySlug as UiMarketWithToken)
     })
     .catch($onError)
     .finally(() => {
