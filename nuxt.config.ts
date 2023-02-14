@@ -31,7 +31,6 @@ export default defineNuxtConfig({
   plugins: [...vitePlugins],
 
   modules: [
-    '@injectivelabs/ui-notifications',
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
