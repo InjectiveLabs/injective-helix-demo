@@ -33,6 +33,7 @@ export const getRoutes = (network: Network, env: string) => {
     'evmos-usdt',
     'gf-usdt',
     'somm-usdt',
+    'chz-usdcet',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
     'steadybtc-usdt'
