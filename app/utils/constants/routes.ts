@@ -94,6 +94,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
     spot.push(...usdcConversionModalMarkets)
+    spot.push('canto-usdt')
   }
 
   if (IS_DEVNET) {

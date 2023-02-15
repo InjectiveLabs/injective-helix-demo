@@ -67,11 +67,19 @@ const reportToBugSnag = (error: ThrownException) => {
 }
 
 const reportUnknownErrorToBugsnag = (error: Error) => {
+  if (!IS_PRODUCTION) {
+    console.error({ error, stack: error.stack })
+  }
+
   const newError = new Error(
     `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
 
   console.warn(newError.message, newError.stack)
+
+  if (BUGSNAG_KEY) {
+    useBugsnag().notify(newError)
+  }
 }
 
 const handleInsufficientGas = (error: ThrownException) => {
