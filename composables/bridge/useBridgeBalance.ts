@@ -20,12 +20,6 @@ export function useBridgeBalance({
     tokenStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
       return {
         ...balance,
-        token: {
-          ...balance.token,
-          symbol: balance.token.erc20
-            ? balance.token.erc20.symbol || balance.token.symbol
-            : balance.token.symbol
-        },
         balance: balance.erc20.balance
       } as BalanceWithToken
     })

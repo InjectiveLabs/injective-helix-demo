@@ -2,9 +2,6 @@
 import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeField, TradeForm } from '@/types'
-import { defineTradeRules } from '@/app/client/utils/validation/trade'
-
-defineTradeRules()
 
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
