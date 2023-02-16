@@ -31,6 +31,13 @@ const emit = defineEmits<{
   ): void
 }>()
 
+const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
+  computed(() => props.balance.subaccountBalance),
+  {
+    decimalPlaces: props.maxDecimals
+  }
+)
+
 const {
   errors: amountErrors,
   setValue: setAmountValue,
@@ -45,13 +52,6 @@ const {
     return `insufficientBalance:${maxBalanceToFixed.value}|required`
   })
 })
-
-const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountBalance),
-  {
-    decimalPlaces: props.maxDecimals
-  }
-)
 
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
