@@ -67,7 +67,7 @@ function handleClear() {
 <template>
   <BaseDropdown
     class="w-full"
-    :delay="100"
+    :delay="200"
     auto-size="true"
     auto-boundary-max-size
     popper-class="dropdown"
