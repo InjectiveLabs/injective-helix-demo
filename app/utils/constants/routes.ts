@@ -33,7 +33,6 @@ export const getRoutes = (network: Network, env: string) => {
     'evmos-usdt',
     'gf-usdt',
     'somm-usdt',
-    'chz-usdcet',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
     'steadybtc-usdt'
@@ -94,6 +93,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
     spot.push(...usdcConversionModalMarkets)
+    spot.push('chz-usdcet')
     spot.push('canto-usdt')
   }
 
