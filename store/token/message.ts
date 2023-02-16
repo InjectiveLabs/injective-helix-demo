@@ -166,8 +166,8 @@ export const setTokenAllowance = async (
   ]
   tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance[index] = {
     ...token,
-    erc20: {
-      ...token.erc20,
+    erc20Balance: {
+      ...token.erc20Balance,
       allowance: UNLIMITED_ALLOWANCE.toString()
     }
   }

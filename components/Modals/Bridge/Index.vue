@@ -111,7 +111,7 @@ const needsAllowanceSet = computed(() => {
     )
 
   const allowance = new BigNumberInBase(
-    balanceWithTokenAndAllowance?.erc20?.allowance || 0
+    balanceWithTokenAndAllowance?.erc20Balance?.allowance || 0
   )
 
   return isDeposit.value && originIsEthereum.value && allowance.lte(0)

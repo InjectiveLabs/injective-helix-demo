@@ -1,6 +1,6 @@
 {
   "name": "injective-helix",
-  "version": "1.9.5-rc2",
+  "version": "1.9.5-rc3",
   "description": "The Premier Decentralized Crypto Exchange",
   "license": "Apache-2.0",
   "author": "@InjectiveLabs",
@@ -38,7 +38,7 @@
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
     "@injectivelabs/referral-consumer": "0.5.7",
     "@injectivelabs/sdk-ts": "1.0.446",
-    "@injectivelabs/sdk-ui-ts": "1.0.568",
+    "@injectivelabs/sdk-ui-ts": "1.0.570",
     "@injectivelabs/token-metadata": "1.0.167",
     "@injectivelabs/token-utils": "1.0.83",
     "@injectivelabs/ts-types": "1.0.29",

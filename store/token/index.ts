@@ -70,7 +70,7 @@ export const useTokenStore = defineStore('token', {
             token,
             denom: token.denom,
             balance: '0',
-            erc20: {
+            erc20Balance: {
               balance: '0',
               allowance: '0'
             },
@@ -96,8 +96,8 @@ export const useTokenStore = defineStore('token', {
       const erc20TokenBalancesAreFetched =
         tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
           (token) =>
-            new BigNumberInBase(token.erc20.balance).gt(0) ||
-            new BigNumberInBase(token.erc20.allowance).gt(0)
+            new BigNumberInBase(token.erc20Balance.balance).gt(0) ||
+            new BigNumberInBase(token.erc20Balance.allowance).gt(0)
         )
 
       if (erc20TokenBalancesAreFetched) {
