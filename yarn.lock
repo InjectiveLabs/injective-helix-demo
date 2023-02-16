@@ -1722,10 +1722,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.443", "@injectivelabs/sdk-ts@^1.0.443":
-  version "1.0.443"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.443.tgz#262b0acf793725f1b02d0b2e186d4f520a825e09"
-  integrity sha512-8T3xU+gE4KV7VRYowFqwrIkKZnw3dmL+PBGrdxwomd5Zy5rvm2iAJTh+bnABw2awWgofJE+5R8srjb041pzuKg==
+"@injectivelabs/sdk-ts@1.0.446", "@injectivelabs/sdk-ts@^1.0.446":
+  version "1.0.446"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.446.tgz#20c6a4eb06d3b6720aebe2d1e7a46ec984a8407e"
+  integrity sha512-NfSDyQ1ypVB581gMkV/VsBQOAM89/HxiYwMBAeMKbxGtHnH1kyhX4KWe1vs42eEyNXGi4qVEh33PBtr7E7CICQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.29.5"
@@ -1741,7 +1741,7 @@
     "@injectivelabs/indexer-api" "1.9.3"
     "@injectivelabs/networks" "^1.0.91"
     "@injectivelabs/ninja-api" "^1.0.11"
-    "@injectivelabs/token-metadata" "^1.0.166"
+    "@injectivelabs/token-metadata" "^1.0.167"
     "@injectivelabs/ts-types" "^1.0.29"
     "@injectivelabs/utils" "^1.0.79"
     "@metamask/eth-sig-util" "^4.0.0"
@@ -1764,17 +1764,17 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.562":
-  version "1.0.562"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.562.tgz#2424d962b78196b096dca0c3034320431ea08a70"
-  integrity sha512-7BA1XnT50PaRdsgHs3iPvry7HeNhHFh+IoAXhPCmYMHp6zhDI9/g7K+/ZRkWIztl77VDrfkVlreQWsx0K7uh/g==
+"@injectivelabs/sdk-ui-ts@1.0.567":
+  version "1.0.567"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.567.tgz#80864c2800ee8d38258797fd14586df1a12c6ccc"
+  integrity sha512-Zh2IlUC3B0Gj/2AgMn6HynKh29EThjUj4wLHnHCoA5N8LtJytePn/i1Z3ti/GmIIIvUngQ8n3nUtmir9KLjVwg==
   dependencies:
     "@alch/alchemy-web3" "1.4.7"
     "@injectivelabs/contracts" "^1.0.107"
     "@injectivelabs/exceptions" "^1.0.55"
     "@injectivelabs/networks" "^1.0.91"
-    "@injectivelabs/sdk-ts" "^1.0.443"
-    "@injectivelabs/token-metadata" "^1.0.166"
+    "@injectivelabs/sdk-ts" "^1.0.446"
+    "@injectivelabs/token-metadata" "^1.0.167"
     "@injectivelabs/token-utils" "^1.0.83"
     "@injectivelabs/ts-types" "^1.0.29"
     "@injectivelabs/utils" "^1.0.79"
@@ -1789,10 +1789,10 @@
   dependencies:
     stylelint-config-standard latest
 
-"@injectivelabs/token-metadata@1.0.166", "@injectivelabs/token-metadata@^1.0.166":
-  version "1.0.166"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.0.166.tgz#d56c6b70e16f95492248490f6b314f6ddb353958"
-  integrity sha512-QR5Sd34K03ZgkldpSgDZBEMP0sTj/DmPwuLGBR9tyS+uLVjf4noHSESIjadAs/LvF4OIDWpAY2cEopX84/lowQ==
+"@injectivelabs/token-metadata@1.0.167", "@injectivelabs/token-metadata@^1.0.167":
+  version "1.0.167"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.0.167.tgz#daaf4b87b41adf0aa058635674b57eb2d435f0e4"
+  integrity sha512-W21zZO5iOSkln8NYRIM2WImrk/BmLJRjbgHw88xXAk+7Mqsec3hWZt+U05Kekotjw0UpiCSEA/xHabB2xQx2dQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.55"
     "@injectivelabs/networks" "^1.0.91"
@@ -1870,10 +1870,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.0.442":
-  version "1.0.442"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.442.tgz#d9305c65217d0cb113eea31a4afa6690efed933a"
-  integrity sha512-4XNpPaWVf46fWkx8bZOH+kjztFtgMW91+t93NnyCdEqNpZhgvzzqCUB3KTfk1hFfjfffyV3l7j9KfgLTTNw9Xw==
+"@injectivelabs/wallet-ts@1.0.445":
+  version "1.0.445"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.445.tgz#fea4954c5b617704ca7dcec0a383e143345498e7"
+  integrity sha512-o9vXv2bJ4WOVy+Ub3dNhS8+C4kiW7xOh0xGh8UGJF9p5d9F/dH/IMXJ8M3pSN6o6sQWUUWsEVIJs/4oDh3Wy+g==
   dependencies:
     "@alch/alchemy-web3" "1.4.7"
     "@cosmjs/launchpad" "0.27.1"
@@ -1886,8 +1886,8 @@
     "@injectivelabs/contracts" "^1.0.107"
     "@injectivelabs/exceptions" "^1.0.55"
     "@injectivelabs/networks" "^1.0.91"
-    "@injectivelabs/sdk-ts" "^1.0.443"
-    "@injectivelabs/token-metadata" "^1.0.166"
+    "@injectivelabs/sdk-ts" "^1.0.446"
+    "@injectivelabs/token-metadata" "^1.0.167"
     "@injectivelabs/ts-types" "^1.0.29"
     "@injectivelabs/utils" "^1.0.79"
     "@keplr-wallet/cosmos" "^0.11.17"
