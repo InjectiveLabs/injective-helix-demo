@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
-import { ActivityTab, UiMarketWithToken } from '@/types'
-
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
+import { ActivityTab } from '@/types'
 
 const props = defineProps({
   modelValue: {
@@ -15,6 +12,11 @@ const props = defineProps({
   tab: {
     type: String as PropType<ActivityTab>,
     required: true
+  },
+
+  tokens: {
+    type: Array as PropType<BalanceWithToken[]>,
+    required: true
   }
 })
 
@@ -22,43 +24,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const markets = computed<UiMarketWithToken[]>(() =>
-  [ActivityTab.Spot, ActivityTab.WalletHistory].includes(props.tab)
-    ? spotStore.markets
-    : derivativeStore.markets
-)
-
-const tokens = computed(() => {
-  if (!markets.value) {
-    return []
-  }
-
-  // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
-  const tokens = markets.value.reduce((tokens, market) => {
-    const baseToken = {
-      balance: '',
-      denom: market.baseToken.denom,
-      token: market.baseToken
-    } as BalanceWithToken
-
-    const quoteToken = {
-      balance: '',
-      denom: market.quoteToken.denom,
-      token: market.quoteToken
-    } as BalanceWithToken
-
-    return [...tokens, baseToken, quoteToken]
-  }, [] as BalanceWithToken[])
-
-  const uniqueTokens = [
-    ...new Map(tokens.map((token) => [token.denom, token])).values()
-  ]
-
-  return uniqueTokens
-})
-
 const options = computed(() =>
-  tokens.value.map(({ token }) => ({
+  props.tokens.map(({ token }) => ({
     token,
     display: token.symbol,
     value: token.denom

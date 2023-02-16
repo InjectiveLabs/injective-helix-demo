@@ -9,7 +9,7 @@ const props = defineProps({
     default: () => new Status()
   },
 
-  denom: {
+  symbol: {
     type: String,
     default: ''
   }
@@ -23,8 +23,8 @@ const filteredTransactions = computed(() => {
       transaction.state === BridgeTransactionState.Completed
 
     const isPartOfSearchFilter =
-      !props.denom ||
-      transaction.denom.toLowerCase() === props.denom.toLowerCase()
+      !props.symbol ||
+      transaction.token.symbol.toLowerCase() === props.symbol.toLowerCase()
 
     return isPartOfSearchFilter && isCompletedTransaction
   })
