@@ -23,6 +23,7 @@ export const getRoutes = (network: Network, env: string) => {
     'inj-usdt',
     'atom-usdt',
     'sol-usdcet',
+    'canto-usdt',
     'usdt-usdcet',
     'ape-usdt',
     'cre-usdt',
