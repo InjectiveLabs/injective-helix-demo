@@ -7,7 +7,7 @@ on:
 
 jobs:
   mainnet:
-    if: false
+    if: true
     name: 'Deploy to mainnet'
     env:
       ## Public
@@ -27,6 +27,7 @@ jobs:
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_REFERRALS_ENABLED: true
+      VITE_HELIX_APP_REDIRECTION: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
