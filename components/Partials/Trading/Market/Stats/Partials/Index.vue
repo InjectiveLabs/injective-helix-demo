@@ -42,7 +42,8 @@ const {
     return markPrice.value
   }),
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
   }
 )
 
