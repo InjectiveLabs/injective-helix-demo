@@ -226,6 +226,7 @@ export enum BridgeBusEvents {
 }
 
 export enum ActivityField {
+  Symbol = 'Symbol',
   Denom = 'Denom',
   Limit = 'Limit',
   Page = 'Page',
