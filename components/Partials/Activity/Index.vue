@@ -9,7 +9,11 @@ const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { resetForm, values: formValues, setFieldValue } = useForm<ActivityForm>()
+const {
+  resetForm,
+  values: formValues,
+  setFieldValue
+} = useForm<ActivityForm>({ keepValuesOnUnmount: true })
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -171,6 +175,7 @@ function onViewChange() {
             status,
             denom: formValues[ActivityField.Denom],
             side: formValues[ActivityField.Side],
+            symbol: formValues[ActivityField.Symbol],
             type: formValues[ActivityField.Type]
           }"
           :key="view"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   ActivityField,
@@ -44,14 +45,48 @@ const emit = defineEmits<{
 const { value: denom } = useStringField({ name: ActivityField.Denom, rule: '' })
 const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
 const { value: type } = useStringField({ name: ActivityField.Type, rule: '' })
+const { value: symbol } = useStringField({
+  name: ActivityField.Symbol,
+  rule: ''
+})
 
 const hasActiveFilters = computed(
   () => !!denom.value || !!side.value || !!type.value
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+  [ActivityTab.Spot, ActivityTab.WalletHistory].includes(props.tab)
+    ? spotStore.markets
+    : derivativeStore.markets
 )
+
+const tokens = computed(() => {
+  if (!markets.value) {
+    return []
+  }
+
+  const tokens = markets.value.reduce((tokens, market) => {
+    const baseToken = {
+      balance: '',
+      denom: market.baseToken.denom,
+      token: market.baseToken
+    } as BalanceWithToken
+
+    const quoteToken = {
+      balance: '',
+      denom: market.quoteToken.denom,
+      token: market.quoteToken
+    } as BalanceWithToken
+
+    return [...tokens, baseToken, quoteToken]
+  }, [] as BalanceWithToken[])
+
+  const uniqueTokens = [
+    ...new Map(tokens.map((token) => [token.denom, token])).values()
+  ]
+
+  return uniqueTokens
+})
 
 const marketIds = computed(() =>
   denom.value
@@ -193,10 +228,25 @@ defineExpose({
 <template>
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
-      <PartialsActivityCommonSearch
+      <PartialsActivityCommonSymbolFilter
+        v-if="
+          [
+            ActivityView.WalletDeposits,
+            ActivityView.WalletWithdrawals
+          ].includes(view)
+        "
+        v-model="symbol"
+        class="col-span-2 sm:col-span-1"
+        :tokens="tokens"
+        @update:model-value="handleUpdate"
+      />
+
+      <PartialsActivityCommonMarketFilter
+        v-else
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tab="tab"
+        :tokens="tokens"
         @update:model-value="handleUpdate"
       />
 
