@@ -38,6 +38,9 @@ const env = {
   VITE_REFERRALS_ENABLED: isWebpack
     ? process.env.VITE_REFERRALS_ENABLED
     : import.meta.env.VITE_REFERRALS_ENABLED,
+  VITE_HELIX_APP_REDIRECTION: isWebpack
+    ? process.env.VITE_HELIX_APP_REDIRECTION
+    : import.meta.env.VITE_HELIX_APP_REDIRECTION,
 
   VITE_ETHEREUM_CHAIN_ID: isWebpack
     ? process.env.VITE_ETHEREUM_CHAIN_ID
@@ -94,6 +97,7 @@ const env = {
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
   VITE_REFERRALS_ENABLED: string
   VITE_MAINTENANCE_ENABLED: string
+  VITE_HELIX_APP_REDIRECTION: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
   VITE_CHRONOS_API_ENDPOINT: string
@@ -200,6 +204,7 @@ export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
 export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
+export const HELIX_APP_REDIRECTION = env.VITE_HELIX_APP_REDIRECTION === 'true'
 
 const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
 

@@ -76,7 +76,7 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['/register']
+  const customStaticRoutes: string[] = ['/register', '/helix']
   const upcomingMarketsRoutes: string[] = []
   const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
