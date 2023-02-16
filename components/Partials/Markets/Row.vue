@@ -19,7 +19,6 @@ import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import { stableCoinDenoms } from '@/app/data/token'
 
 const appStore = useAppStore()
-const router = useRouter()
 
 const props = defineProps({
   market: {
@@ -39,6 +38,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const marketRoute = getMarketRoute(props.market)
 
 const lastTradedPrice = computed(() => {
   if (!props.summary || !props.summary.price) {
@@ -133,14 +134,6 @@ function handleTradeClickedTrack() {
     origin: TradeClickOrigin.MarketsPage
   })
 }
-
-function handleVisitMarket() {
-  if (!props.market) {
-    return
-  }
-
-  return router.push(getMarketRoute(props.market))
-}
 </script>
 
 <template>
@@ -158,7 +151,7 @@ function handleVisitMarket() {
         <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
-      <div class="w-full cursor-pointer" @click.stop="handleVisitMarket">
+      <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
         <div
           class="cursor-pointer flex items-center"
           @click="handleTradeClickedTrack"
@@ -188,7 +181,7 @@ function handleVisitMarket() {
             class="visible sm:invisible lg:visible ml-auto"
           />
         </div>
-      </div>
+      </NuxtLink>
     </span>
 
     <!-- Mobile column -->
@@ -266,15 +259,15 @@ function handleVisitMarket() {
     </span>
 
     <span class="hidden 3md:flex col-span-2 items-center justify-end">
-      <div
+      <NuxtLink
+        :to="marketRoute"
         class="text-blue-500 hover:text-blue-600 cursor-pointer"
         data-cy="markets-trade-link"
-        @click.stop="handleVisitMarket"
       >
         <div @click.stop="handleTradeClickedTrack">
           {{ $t('trade.trade') }}
         </div>
-      </div>
+      </NuxtLink>
 
       <div
         class="text-blue-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-blue-500 hover:bg-opacity-10"

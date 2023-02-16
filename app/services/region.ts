@@ -27,7 +27,7 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
 export const validateGeoLocation = (geoLocation: GeoLocation) => {
   if (restrictedCountries.includes(geoLocation.country)) {
     throw new GeneralException(
-      new Error('Your country is restricted from trading on this relayer')
+      new Error('Helix is currently not available in your region')
     )
   }
 }

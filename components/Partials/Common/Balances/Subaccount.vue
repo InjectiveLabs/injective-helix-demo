@@ -45,14 +45,14 @@ const quoteTradingAvailableBalanceToFormat = computed(() => {
     !props.quoteTradingBalance.availableBalance
   ) {
     return ZERO_IN_BASE.toFormat(
-      props.market.quantityDecimals,
+      props.market.priceDecimals,
       BigNumberInBase.ROUND_DOWN
     )
   }
 
   return new BigNumberInWei(props.quoteTradingBalance.availableBalance)
     .toBase(props.market.quoteToken.decimals)
-    .toFormat(props.market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+    .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
 })
 </script>
 

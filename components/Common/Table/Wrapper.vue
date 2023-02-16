@@ -16,6 +16,7 @@ const walletStore = useWalletStore()
   >
     <CommonUserNotConnectedNote
       v-if="!walletStore.isUserWalletConnected"
+      cta
       class="bg-gray-1000"
     />
     <slot v-else />

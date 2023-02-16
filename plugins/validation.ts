@@ -4,6 +4,7 @@ import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { defineTradeRules } from '@/app/client/utils/validation/trade'
 
 // eslint-disable-next-line prefer-regex-literals
 const REFER_CODE_REGEX = new RegExp(/^[A-Z]([A-Z0-9]{7})$/)
@@ -90,4 +91,5 @@ export const defineGlobalRules = () => {
 
 export default defineNuxtPlugin(() => {
   defineGlobalRules()
+  defineTradeRules()
 })

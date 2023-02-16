@@ -23,6 +23,8 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
 
+const container = computed(() => document.getElementById('pro'))
+
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as string)
 )
@@ -78,9 +80,17 @@ function handleMarketsInit() {
     })
 }
 
+function onOpenSideBar() {
+  isOpenSidebar.value = true
+
+  container.value?.classList.add('overflow-y-hidden')
+}
+
 function onCloseSideBar() {
   if (isOpenSidebar.value) {
     isOpenSidebar.value = false
+
+    container.value?.classList.remove('overflow-y-hidden')
   }
 }
 </script>
@@ -95,14 +105,16 @@ function onCloseSideBar() {
         <AppHocLoading :status="status">
           <div class="w-full">
             <LayoutSidebarMobile
-              v-if="isOpenSidebar"
+              v-bind="{
+                isOpenSidebar
+              }"
               @sidebar:closed="onCloseSideBar"
             />
             <client-only>
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
-                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:opened="onOpenSideBar"
                   @sidebar:closed="onCloseSideBar"
                 />
                 <main
@@ -134,12 +146,11 @@ function onCloseSideBar() {
         </AppHocLoading>
       </div>
     </transition>
-
-    <Notifications
+    <BaseNotifications
       class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
-        <Notification
+        <BaseNotification
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
         >
@@ -150,8 +161,8 @@ function onCloseSideBar() {
               @click="close"
             />
           </template>
-        </Notification>
+        </BaseNotification>
       </template>
-    </Notifications>
+    </BaseNotifications>
   </div>
 </template>

@@ -73,7 +73,7 @@ const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
 <template>
   <NuxtLink
     :to="marketRoute"
-    class="rounded-lg bg-transparent shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
+    class="rounded-lg shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
   >
     <div class="flex items-center justify-between text-gray-500">
       <p class="tracking-widest uppercase text-xs">

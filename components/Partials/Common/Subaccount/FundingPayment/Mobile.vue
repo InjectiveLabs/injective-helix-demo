@@ -4,8 +4,6 @@ import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
-const router = useRouter()
-
 const props = defineProps({
   fundingPayment: {
     required: true,
@@ -17,13 +15,13 @@ const { market, time, total, minimalDisplayAmount } = useFundingPayment(
   computed(() => props.fundingPayment)
 )
 
-function handleVisitMarket() {
+const marketRoute = computed(() => {
   if (!market.value) {
-    return
+    return undefined
   }
 
-  return router.push(getMarketRoute(market.value))
-}
+  return getMarketRoute(market.value)
+})
 </script>
 
 <template>
@@ -31,7 +29,7 @@ function handleVisitMarket() {
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
-      <div class="flex flex-col cursor-pointer" @click="handleVisitMarket">
+      <NuxtLink :to="marketRoute" class="flex flex-col cursor-pointer">
         <div class="flex items-center justify-start">
           <div v-if="market.baseToken" class="w-4 h-4">
             <CommonTokenIcon :token="market.baseToken" sm />
@@ -43,7 +41,8 @@ function handleVisitMarket() {
           </div>
         </div>
         <span class="text-gray-200 text-xs font-mono">{{ time }}</span>
-      </div>
+      </NuxtLink>
+
       <div>
         <AppNumber
           v-if="total.abs().gt(minimalDisplayAmount)"

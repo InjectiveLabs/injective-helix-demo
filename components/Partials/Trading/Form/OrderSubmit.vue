@@ -8,10 +8,11 @@ import {
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
-import { TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { Modal, TradeField, TradeForm } from '@/types'
 
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const { t } = useLang()
 const { error } = useNotifications()
@@ -180,6 +181,10 @@ function trackPlaceOrder() {
     marketType: props.market.subType
   })
 }
+
+function handleConnect() {
+  modalStore.openModal({ type: Modal.Connect })
+}
 </script>
 
 <template>
@@ -191,6 +196,16 @@ function trackPlaceOrder() {
     />
 
     <AppButton
+      v-if="!walletStore.isUserWalletConnected"
+      lg
+      class="bg-blue-500 text-blue-900 font-semibold w-full"
+      @click="handleConnect"
+    >
+      <span>{{ $t('connect.connect') }}</span>
+    </AppButton>
+
+    <AppButton
+      v-else
       lg
       :status="status"
       :disabled="disabled"
@@ -200,7 +215,7 @@ function trackPlaceOrder() {
         'hover:text-red-900 bg-red-500 text-red-800':
           !disabled && !hasError && !isBuy
       }"
-      class="w-full rounded font-sembold shadow-none"
+      class="w-full font-sembold shadow-none"
       data-cy="trading-page-execute-button"
       @click="handleSubmit"
     >
