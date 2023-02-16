@@ -74,7 +74,7 @@ const tokens = computed(() => {
 
     const quoteToken = {
       balance: '',
-      denom: market.quoteToken.denom,
+      denom: market.quoteDenom,
       token: market.quoteToken
     } as BalanceWithToken
 

@@ -115,7 +115,7 @@ export const marketIsPartOfCategory = (
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
       market.baseToken.denom.startsWith('ibc') ||
-      market.quoteToken.denom.startsWith('ibc') ||
+      market.quoteDenom.startsWith('ibc') ||
       slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
@@ -123,7 +123,7 @@ export const marketIsPartOfCategory = (
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
       !market.baseToken.denom.startsWith('ibc') &&
-      !market.quoteToken.denom.startsWith('ibc') &&
+      !market.quoteDenom.startsWith('ibc') &&
       !slugsToExcludeFromEthereumCategory.includes(market.slug)
     )
   }
