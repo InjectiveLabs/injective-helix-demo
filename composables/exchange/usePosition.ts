@@ -158,7 +158,8 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     computed(() => markPrice.value),
     {
       decimalPlaces:
-        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      displayAbsoluteDecimalPlace: true
     }
   )
 
