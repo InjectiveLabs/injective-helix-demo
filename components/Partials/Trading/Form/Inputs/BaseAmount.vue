@@ -74,7 +74,11 @@ const { value: baseAmount, setValue } = useStringField({
   name: props.baseAmountFieldName,
   rule: '',
   dynamicRule: computed(() => {
-    const rules = []
+    const rules = [
+      `minBaseAmount:${new BigNumberInWei(props.market.minQuantityTickSize)
+        .toBase()
+        .toFixed()}`
+    ]
 
     const formIsStopMarketAndHasNoTriggerPrice =
       tradingTypeStopMarket.value && !hasTriggerPrice.value
