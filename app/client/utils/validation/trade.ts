@@ -21,7 +21,9 @@ export const tradeErrorMessages = {
   tooHighPostOnlyPrice: () => 'Post-Only limit price is too high',
   tooLowPostOnlyPrice: () => 'Post-Only limit price is too low',
   minBaseAmount: (minBaseAmount: string) =>
-    `Base amount must be >= ${minBaseAmount}`
+    `Base amount must be >= ${minBaseAmount}`,
+  quantityTensMultiplier: (tensMultiplier: string) =>
+    `Quantity must be a multiple of ${tensMultiplier}`
 } as Record<string, any>
 
 export const defineTradeRules = () => {
@@ -60,7 +62,7 @@ export const defineTradeRules = () => {
       return true
     }
 
-    if (new BigNumberInBase(value).lt(new BigNumberInBase(minAmount))) {
+    if (new BigNumberInBase(value).lt(minAmount)) {
       return tradeErrorMessages.minBaseAmount(minAmount)
     }
 
@@ -159,6 +161,21 @@ export const defineTradeRules = () => {
         new BigNumberInBase(value).lte(orderbookPrice)
       ) {
         return tradeErrorMessages.tooLowPostOnlyPrice()
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'quantityTensMultiplier',
+    (value: string | number, [quantityTensMultiplier]: string[]) => {
+      const tensMul = new BigNumberInBase(10)
+        .pow(quantityTensMultiplier)
+        .toNumber()
+
+      if (Number(value) % tensMul !== 0) {
+        return tradeErrorMessages.quantityTensMultiplier(tensMul)
       }
 
       return true
