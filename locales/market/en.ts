@@ -24,6 +24,7 @@ export default {
     balances: 'Balances',
     portfolio: 'Portfolio',
     account: 'Account',
+    noTradingBalance: 'Deposit to start trading!',
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote: 'Use Injective Bridge to transfer assets to Injective.',
     noTradingAccountBalance:

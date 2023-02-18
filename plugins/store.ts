@@ -38,29 +38,30 @@ const stateToPersist = {
 } as Record<string, Record<string, any>>
 
 const actionsThatSetAppStateToBusy = [
-  'activity/batchCancelDerivativeOrders',
-  'activity/batchCancelSpotOrders',
+  'bank/transfer',
+  'peggy/deposit',
+  'peggy/withdraw',
   'account/deposit',
   'account/withdraw',
-  'derivative/cancelOrder',
-  'derivative/batchCancelOrder',
-  'derivative/submitLimitOrder',
-  'derivative/submitMarketOrder',
-  'derivative/submitStopLimitOrder',
-  'derivative/submitStopMarketOrder',
-  'position/closePosition',
-  'position/closePositionAndReduceOnlyOrders',
-  'position/closeAllPosition',
-  'position/addMarginToPosition',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
+  'derivative/cancelOrder',
+  'position/closePosition',
   'spot/submitMarketOrder',
+  'peggy/setTokenAllowance',
+  'position/closeAllPosition',
   'spot/submitStopLimitOrder',
   'spot/submitStopMarketOrder',
-  'token/setTokenAllowance',
-  'token/transfer',
-  'token/withdraw'
+  'derivative/batchCancelOrder',
+  'derivative/submitLimitOrder',
+  'derivative/submitMarketOrder',
+  'position/addMarginToPosition',
+  'activity/batchCancelSpotOrders',
+  'derivative/submitStopLimitOrder',
+  'derivative/submitStopMarketOrder',
+  'activity/batchCancelDerivativeOrders',
+  'position/closePositionAndReduceOnlyOrders'
 ]
 
 const persistState = (

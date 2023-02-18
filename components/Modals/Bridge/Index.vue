@@ -7,7 +7,8 @@ import {
 } from '@injectivelabs/utils'
 import {
   BalanceWithToken,
-  BalanceWithTokenWithErc20Balance
+  BalanceWithTokenWithErc20Balance,
+  BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BINANCE_DEPOSIT_ADDRESSES,
@@ -23,12 +24,12 @@ import {
 } from '@/types'
 
 const modalStore = useModalStore()
-const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
 
-const formValues = useFormValues<BridgeForm>()
 const resetForm = useResetForm()
 const formErrors = useFormErrors()
+const formValues = useFormValues<BridgeForm>()
 
 const emit = defineEmits<{
   (e: 'bridge:init'): void
@@ -106,9 +107,9 @@ const balanceWithToken = computed(() => {
 
 const needsAllowanceSet = computed(() => {
   const balanceWithTokenAndAllowance =
-    tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
+    peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
       (token) => token.denom === denom.value
-    )
+    ) as BalanceWithTokenWithErc20BalanceWithPrice
 
   const allowance = new BigNumberInBase(
     balanceWithTokenAndAllowance?.erc20Balance?.allowance || 0
@@ -228,9 +229,9 @@ watch(destination, (value: string) => {
           <AppInput
             v-model="destination"
             clear-on-paste
+            :label="$t('bridge.injAddress')"
             placeholder="inj"
             wrapper-classes="py-2 px-1"
-            :label="$t('bridge.injAddress')"
             data-cy="transfer-modal-inj-address-input"
           />
 

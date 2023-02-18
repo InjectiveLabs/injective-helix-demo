@@ -5,13 +5,13 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
-const modalStore = useModalStore()
 const router = useRouter()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const formValues = useFormValues<TradeForm>()
 const formErrors = useFormErrors()
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isBuy: Boolean,

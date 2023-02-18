@@ -16,11 +16,12 @@ import {
 } from '@/app/utils/constants'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
-const walletStore = useWalletStore()
-const tokenStore = useTokenStore()
-const accountStore = useAccountStore()
 const bankStore = useBankStore()
+const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const { t } = useI18n()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -62,7 +63,7 @@ const injTokenWithPrice = computed<TokenWithPrice>(() => ({
 }))
 
 const balanceWithTokenAndPrice = computed(() => {
-  return tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
+  return peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
     (token) => token.denom === formValues.value[BridgeField.Token].denom
   ) as BalanceWithTokenAndPrice | undefined
 })
@@ -235,7 +236,7 @@ function handleWithdraw() {
     return
   }
 
-  tokenStore
+  peggyStore
     .withdraw({
       bridgeFee: ethBridgeFee.value,
       token: formValues.value[BridgeField.Token],
@@ -256,7 +257,7 @@ function handleWithdraw() {
 function handleDeposit() {
   status.setLoading()
 
-  tokenStore
+  peggyStore
     .transfer({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       token: formValues.value[BridgeField.Token]

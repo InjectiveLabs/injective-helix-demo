@@ -15,9 +15,10 @@ export function useBridgeBalance({
   const accountStore = useAccountStore()
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
+  const peggyStore = usePeggyStore()
 
   const erc20Balances = computed(() =>
-    tokenStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
+    peggyStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
       return {
         ...balance,
         balance: balance.erc20Balance.balance
