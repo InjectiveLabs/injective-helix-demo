@@ -83,8 +83,8 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
 }
 
 const handleInsufficientGas = (error: ThrownException) => {
-  const modalStore = useModalStore()
   const bankStore = useBankStore()
+  const modalStore = useModalStore()
 
   if (bankStore.hasEnoughInjForGas) {
     return

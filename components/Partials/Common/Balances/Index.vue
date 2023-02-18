@@ -9,10 +9,10 @@ import {
 } from '@injectivelabs/utils'
 import { UiMarketWithToken, WalletConnectStatus } from '@/types'
 
-const accountStore = useAccountStore()
 const bankStore = useBankStore()
-const onboardStore = useOnboardStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const onboardStore = useOnboardStore()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
@@ -77,19 +77,10 @@ const hasTradingAccountBalances = computed(() => {
   )
 })
 
-watch(
-  () => walletStore.walletConnectStatus,
-  (walletConnectStatus) => {
-    if (walletConnectStatus === WalletConnectStatus.connecting) {
-      status.setLoading()
-    }
-  }
-)
-
 onWalletConnected(() => {
   status.setLoading()
 
-  Promise.all([onboardStore.init(), bankStore.fetchBankBalancesWithToken()])
+  Promise.all([onboardStore.init(), accountStore.fetchSubaccounts()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -112,13 +103,20 @@ onWalletConnected(() => {
           {{ $t('marketPage.account') }}
         </NuxtLink>
       </div>
-      <div v-if="walletStore.isUserWalletConnected" class="mt-4 relative">
-        <AppHocLoading :status="status">
-          <div
-            v-if="
-              walletStore.walletConnectStatus !== WalletConnectStatus.connecting
-            "
-          >
+      <div class="mt-4 relative">
+        <CommonUserNotConnectedNote
+          v-if="!walletStore.isUserWalletConnected"
+          cta
+        />
+
+        <AppHocLoading
+          v-else
+          :show-loading="
+            status.isLoading() ||
+            walletStore.walletConnectStatus === WalletConnectStatus.connecting
+          "
+        >
+          <div>
             <div
               v-if="!bankStore.hasAnyBankBalance && !hasTradingAccountBalances"
             >
@@ -143,7 +141,6 @@ onWalletConnected(() => {
           </div>
         </AppHocLoading>
       </div>
-      <CommonUserNotConnectedNote v-else cta />
     </div>
   </AppPanel>
 </template>

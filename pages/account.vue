@@ -2,10 +2,10 @@
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { REFERRALS_ENABLED } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
@@ -17,10 +17,10 @@ definePageMeta({
 const appStore = useAppStore()
 const bankStore = useBankStore()
 const spotStore = useSpotStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 const { balancesWithToken } = useBalance()
 
@@ -136,11 +136,7 @@ const balances = computed(() => {
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([
-    accountStore.fetchSubaccounts(),
-    spotStore.init(),
-    derivativeStore.init()
-  ])
+  Promise.all([spotStore.init(), derivativeStore.init()])
     .catch($onError)
     .finally(() => status.setIdle())
 })

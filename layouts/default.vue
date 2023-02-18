@@ -8,16 +8,15 @@ import { BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
 
 const route = useRoute()
-const accountStore = useAccountStore()
 const appStore = useAppStore()
 const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
-const ninjaPassStore = useNinjaPassStore()
-const referralStore = useReferralStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
+const referralStore = useReferralStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -31,28 +30,30 @@ const showFooter = computed(() =>
 
 onMounted(() => {
   handleCosmoverseGiveawayCampaignTrack()
-  handleNinjaPassGiveaway()
 
-  Promise.all([walletStore.init()])
+  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 
   // Actions that should't block the app from loading
-  Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
-
-  handleMarketsInit()
+  Promise.all([
+    appStore.init(),
+    spotStore.init(),
+    derivativeStore.init(),
+    exchangeStore.initFeeDiscounts()
+  ])
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 onWalletConnected(() => {
   Promise.all([
-    accountStore.fetchSubaccounts(),
-    bankStore.init(),
     referralStore.init(),
-    tokenStore.fetchSupplyTokenMeta()
+    bankStore.fetchBalances(),
+    accountStore.fetchSubaccounts(),
+    accountStore.streamSubaccountBalances()
   ]).catch($onError)
 })
 
@@ -64,20 +65,6 @@ function handleCosmoverseGiveawayCampaignTrack() {
   amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
     route.query as unknown as CosmoverseGiveawayCampaignArgs
   )
-}
-
-function handleNinjaPassGiveaway() {
-  ninjaPassStore.fetchCodes()
-}
-
-function handleMarketsInit() {
-  appStore.setMarketsLoadingState(StatusType.Loading)
-
-  Promise.all([spotStore.init(), derivativeStore.init()])
-    .catch($onError)
-    .finally(() => {
-      appStore.setMarketsLoadingState(StatusType.Idle)
-    })
 }
 
 function onOpenSideBar() {

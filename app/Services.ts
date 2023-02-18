@@ -11,25 +11,25 @@ import {
 import {
   DenomClient,
   ApolloConsumer,
-  ChainGrpcBankApi,
-  ChainGrpcDistributionApi,
-  ChainGrpcExchangeApi,
   ChainGrpcGovApi,
-  ChainGrpcInsuranceFundApi,
-  ChainGrpcPeggyApi,
+  ChainGrpcBankApi,
   ChainGrpcMintApi,
-  ChainGrpcStakingApi,
-  IndexerRestExplorerApi,
-  IndexerGrpcExplorerApi,
+  ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
-  IndexerGrpcDerivativesApi,
   IndexerGrpcSpotApi,
+  ChainGrpcStakingApi,
+  ChainGrpcExchangeApi,
+  IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
-  IndexerRestDerivativesChronosApi,
+  IndexerGrpcExplorerApi,
+  IndexerRestExplorerApi,
+  ChainGrpcDistributionApi,
   IndexerRestSpotChronosApi,
+  ChainGrpcInsuranceFundApi,
+  IndexerGrpcDerivativesApi,
   IndexerRestMarketChronosApi,
-  IndexerRestLeaderboardChronosApi,
-  IndexerGrpcOracleApi
+  IndexerRestDerivativesChronosApi,
+  IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import {

@@ -2,7 +2,7 @@
 import { PropType } from 'vue'
 import { AccountBalance, BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
-import { usdcTokenDenom } from '~~/app/data/token'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   disabled: Boolean,

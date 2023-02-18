@@ -12,10 +12,10 @@ import {
 import { injToken } from '@/app/data/token'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
-const walletStore = useWalletStore()
 const bankStore = useBankStore()
-const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 
 const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({
   initialValues: {
@@ -108,7 +108,7 @@ function handleDeposit(token: Token = injToken) {
     TransferDirection.tradingAccountToBank
 
   // Update ERC20 balances when we open the bridge instead of loading them when we open the page
-  tokenStore.updateErc20BalancesWithTokenAndPrice()
+  peggyStore.updateErc20BalancesWithTokenAndPrice()
 
   modalStore.openModal({ type: Modal.Bridge })
 }

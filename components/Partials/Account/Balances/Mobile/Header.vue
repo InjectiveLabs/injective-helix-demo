@@ -44,22 +44,6 @@ const ascendingValue = computed({
     </AppSortableHeaderItem>
 
     <th class="flex items-center justify-end gap-2 h-14">
-      <!-- TODO - bank <> default trading account merge
-      <AppSortableHeaderItem
-        v-model:sort-by="sortByValue"
-        v-model:ascending="ascendingValue"
-        class="justify-end"
-        :value="BalanceHeaderType.Total"
-      >
-        <span
-          class="text-gray-350 text-xs normal-case"
-          
-        >
-          {{ $t('account.balances.cols.total') }}
-        </span>
-      </AppSortableHeaderItem>
-      -->
-
       <AppSortableHeaderItem
         v-model:sort-by="sortByValue"
         v-model:ascending="ascendingValue"
@@ -84,19 +68,6 @@ const ascendingValue = computed({
           {{ $t('account.balances.cols.tradingAccountBalance') }}
         </span>
       </AppSortableHeaderItem>
-
-      <!-- TODO - bank <> default trading account merge
-      <AppSortableHeaderItem
-        v-model:sort-by="sortByValue"
-        v-model:ascending="ascendingValue"
-        class="justify-end"
-        :value="BalanceHeaderType.Value"
-      >
-        <span class="text-gray-350 text-xs normal-case">
-          {{ $t('account.balances.cols.value', { symbol: 'USD' }) }}
-        </span>
-      </AppSortableHeaderItem>
-      -->
     </th>
   </tr>
 </template>

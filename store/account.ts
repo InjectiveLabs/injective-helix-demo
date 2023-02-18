@@ -18,7 +18,6 @@ import {
   streamSubaccountBalances,
   cancelSubaccountStreams
 } from '@/app/client/streams/account'
-import { backupPromiseCall } from '@/app/utils/async'
 
 type AccountStoreState = {
   subaccountIds: string[]
@@ -100,50 +99,6 @@ export const useAccountStore = defineStore('account', {
       })
     },
 
-    async updateSubaccount() {
-      const accountStore = useAccountStore()
-      const { injectiveAddress } = useWalletStore()
-
-      if (!accountStore.subaccount || !injectiveAddress) {
-        return
-      }
-
-      const balances = await indexerAccountApi.fetchSubaccountBalancesList(
-        accountStore.subaccount.subaccountId
-      )
-      const updatedSubaccount = {
-        subaccountId: accountStore.subaccount.subaccountId,
-        balances: balances.map((b) =>
-          UiAccountTransformer.accountBalanceToUiAccountBalance(b)
-        )
-      }
-
-      accountStore.$patch({
-        subaccount: updatedSubaccount
-      })
-    },
-
-    async fetchAccountPortfolio() {
-      const accountStore = useAccountStore()
-      const { injectiveAddress } = useWalletStore()
-
-      if (!injectiveAddress) {
-        return
-      }
-
-      if (!accountStore.subaccount) {
-        await accountStore.fetchSubaccounts()
-      }
-
-      const accountPortfolio = await indexerAccountApi.fetchPortfolio(
-        injectiveAddress
-      )
-
-      accountStore.$patch({
-        accountPortfolio
-      })
-    },
-
     streamSubaccountBalances() {
       const accountStore = useAccountStore()
 
@@ -206,7 +161,6 @@ export const useAccountStore = defineStore('account', {
       token: Token
     }) {
       const accountStore = useAccountStore()
-      const bankStore = useBankStore()
       const { queue } = useAppStore()
       const { address, injectiveAddress, isUserWalletConnected, validate } =
         useWalletStore()
@@ -234,9 +188,6 @@ export const useAccountStore = defineStore('account', {
         msgs: message,
         address
       })
-
-      await backupPromiseCall(() => bankStore.fetchBalances())
-      await backupPromiseCall(() => accountStore.updateSubaccount())
     },
 
     async withdraw({
@@ -247,7 +198,6 @@ export const useAccountStore = defineStore('account', {
       token: Token
     }) {
       const accountStore = useAccountStore()
-      const bankStore = useBankStore()
       const { queue } = useAppStore()
       const { address, injectiveAddress, isUserWalletConnected, validate } =
         useWalletStore()
@@ -275,9 +225,6 @@ export const useAccountStore = defineStore('account', {
         msgs: message,
         address
       })
-
-      await backupPromiseCall(() => bankStore.fetchBalances())
-      await backupPromiseCall(() => accountStore.updateSubaccount())
     },
 
     async reset() {
