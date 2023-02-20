@@ -128,7 +128,7 @@ function handleWithdrawClick() {
 <template>
   <div
     v-if="isModalOpen && accountBalance"
-    class="fixed inset-0 lg:top-14 bg-gray-900 w-full z-1120"
+    class="fixed inset-0 lg:top-14 bg-gray-900 w-full z-40"
   >
     <AppHocLoading :status="status" class="h-full">
       <div

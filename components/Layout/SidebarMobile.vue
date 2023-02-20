@@ -14,7 +14,7 @@ function handleSidebarClose() {
 
 <template>
   <div class="lg:hidden">
-    <div class="fixed inset-0 max-w-xs flex z-1100 top-[48px]">
+    <div class="fixed inset-0 max-w-xs flex z-40 top-[48px]">
       <transition
         enter-from-class="-translate-x-full"
         enter-active-class="transition ease-in-out duration-300 transform"
