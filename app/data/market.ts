@@ -8,14 +8,12 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'chz-usdt',
   'canto-usdt',
   'sol-usdcet',
   'atom-usdt-perp',
   'usdc-usdcet',
-  'strd-usdt',
-  'ethbtctrend-usdt',
-  'steadyeth-usdt',
-  'steadybtc-usdt'
+  'strd-usdt'
 ]
 
 export const experimentalMarketsSlug = [
