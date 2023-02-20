@@ -1,8 +1,8 @@
-import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
-import { TokenType, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { CW20_ADAPTER_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
+import { Token, TokenType, TokenWithPrice } from '@injectivelabs/token-metadata'
+import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
 import { NETWORK } from '@/app/utils/constants'
 import { denomClient } from '@/app/Services'
 import { USDCSymbol } from '@/types'
@@ -42,6 +42,30 @@ export const networkToSymbolMap = {
   [BridgingNetwork.Stride]: 'STRD'
 } as NetworkToSymbolMap
 
+export const getFactoryDenomFromDenom = (address: string): string =>
+  `factory/${adapterContract}/${address}`
+
+export const getDenomsFromToken = (token: Token): string[] => {
+  const cw20sDenom = (token.cw20s || []).map(({ address }) =>
+    getFactoryDenomFromDenom(address)
+  )
+  const cw20Denom = token.cw20
+    ? getFactoryDenomFromDenom(token.cw20.address)
+    : ''
+  const ibc20Denom = token.ibc ? `ibc/${token.ibc.hash}` : ''
+  const peggyDenom = token.erc20 ? `peggy/${token.erc20.address}` : ''
+
+  const denoms = [
+    cw20Denom,
+    ibc20Denom,
+    peggyDenom,
+    token.denom,
+    ...cw20sDenom
+  ].filter((denom) => denom)
+
+  return [...new Set(denoms)]
+}
+
 export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
   const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
 
@@ -50,7 +74,7 @@ export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
   }
 
   if (tokenMeta.cw20) {
-    return `factory/${adapterContract}/${tokenMeta.cw20.address}`
+    return getFactoryDenomFromDenom(tokenMeta.cw20.address)
   }
 
   const cw20TokenMeta = (tokenMeta.cw20s || []).find(
@@ -61,7 +85,7 @@ export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
     return ''
   }
 
-  return `factory/${adapterContract}/${cw20TokenMeta.address}`
+  return getFactoryDenomFromDenom(cw20TokenMeta.address)
 }
 
 export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {

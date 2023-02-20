@@ -1,12 +1,12 @@
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
 import {
-  TokenService,
   TokenPrice,
-  peggyGraphQlEndpointForNetwork,
-  UiBridgeTransformer,
   Web3Client,
-  Web3Composer
+  Web3Composer,
+  TokenService,
+  UiBridgeTransformer,
+  peggyGraphQlEndpointForNetwork
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DenomClient,
@@ -28,33 +28,33 @@ import {
   ChainGrpcInsuranceFundApi,
   IndexerGrpcDerivativesApi,
   IndexerRestMarketChronosApi,
-  IndexerRestDerivativesChronosApi,
-  IndexerRestLeaderboardChronosApi
+  IndexerRestLeaderboardChronosApi,
+  IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import {
   NETWORK,
-  ETHEREUM_CHAIN_ID,
-  COIN_GECKO_OPTIONS,
   CHAIN_ID,
   ENDPOINTS,
-  FEE_PAYER_PUB_KEY
+  FEE_PAYER_PUB_KEY,
+  ETHEREUM_CHAIN_ID,
+  COIN_GECKO_OPTIONS
 } from '@/app/utils/constants'
 import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
 export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
-export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.grpc)
-export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
-export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
-export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
-export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
+export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
+export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.grpc)
+export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
+export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
+export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
 
-export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
+export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(
@@ -92,12 +92,12 @@ export const msgBroadcastClient = new MsgBroadcaster({
 })
 
 export const web3Client = new Web3Client({
-  rpc: alchemyRpcEndpoint,
-  network: NETWORK
+  network: NETWORK,
+  rpc: alchemyRpcEndpoint
 })
 export const web3Composer = new Web3Composer({
-  rpc: alchemyRpcEndpoint,
   network: NETWORK,
+  rpc: alchemyRpcEndpoint,
   ethereumChainId: ETHEREUM_CHAIN_ID
 })
 export const web3Broadcaster = new Web3Broadcaster({

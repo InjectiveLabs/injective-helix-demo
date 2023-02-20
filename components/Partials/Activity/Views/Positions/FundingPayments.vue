@@ -39,7 +39,7 @@ const fundingPayments = computed(() => activityStore.subaccountFundingPayments)
     </CommonTableBody>
 
     <CommonTableWrapper break-md class="hidden sm:block">
-      <table v-if="fundingPayments.length > 0" class="table h-full">
+      <table v-if="fundingPayments.length > 0" class="table">
         <PartialsCommonSubaccountFundingPaymentHeader />
         <tbody>
           <PartialsCommonSubaccountFundingPaymentRow

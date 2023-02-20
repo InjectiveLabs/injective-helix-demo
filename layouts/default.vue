@@ -88,8 +88,8 @@ function onCloseSideBar() {
     class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
   >
     <transition name="page" appear>
-      <div>
-        <AppHocLoading :status="status">
+      <div class="min-h-screen w-full">
+        <AppHocLoading :status="status" class="h-full">
           <div class="w-full">
             <LayoutSidebarMobile
               v-bind="{
