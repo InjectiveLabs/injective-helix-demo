@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Status, StatusType } from '@injectivelabs/utils'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 
@@ -11,6 +12,8 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
+
+const status = reactive(new Status(StatusType.Loading))
 
 const sideOptions = [
   {
@@ -101,6 +104,23 @@ const showEmpty = computed(() => {
   return hasUnavailableMarkets
 })
 
+onMounted(() => {
+  Promise.all([
+    derivativeStore.streamMarketsMarkPrices(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions()
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+
+onBeforeUnmount(() => {
+  derivativeStore.cancelMarketsMarkPrices()
+  positionStore.cancelSubaccountPositionsStream()
+})
+
 function handleCloseAllPositions() {
   return positions.value.length === 1 ? closePosition() : closeAllPositions()
 }
@@ -145,45 +165,47 @@ function closePosition() {
 </script>
 
 <template>
-  <div>
-    <PartialsAccountPositionsActions
-      v-model:market-denom="marketDenom"
-      v-model:side="side"
-      :market-options="marketOptions"
-      :side-options="sideOptions"
-      @positions:close="handleCloseAllPositions"
-    />
-
-    <table class="w-full border-collapse hidden lg:table">
-      <PartialsAccountPositionsTableHeader />
-
-      <PartialsAccountPositionsTableRow
-        v-for="(position, i) in filteredPositions"
-        :key="`position-${i}`"
-        :position="position"
-        :hide-balances="hideBalances"
+  <div class="relative">
+    <AppHocLoading :status="status">
+      <PartialsAccountPositionsActions
+        v-model:market-denom="marketDenom"
+        v-model:side="side"
+        :market-options="marketOptions"
+        :side-options="sideOptions"
+        @positions:close="handleCloseAllPositions"
       />
-    </table>
 
-    <table class="w-full border-collapse table lg:hidden">
-      <PartialsAccountPositionsTableRowMobile
-        v-for="(position, i) in filteredPositions"
-        :key="`position-${i}`"
-        class=""
-        :position="position"
-        :hide-balances="hideBalances"
-      />
-    </table>
+      <table class="w-full border-collapse hidden lg:table">
+        <PartialsAccountPositionsTableHeader />
 
-    <CommonEmptyList
-      v-if="showEmpty"
-      class="min-h-3xs bg-gray-900"
-      data-cy="markets-no-data-table"
-      :message="$t('account.positions.empty')"
-    >
-      <span class="mt-2 text-xs text-gray-500">
-        {{ $t('account.positions.empty') }}
-      </span>
-    </CommonEmptyList>
+        <PartialsAccountPositionsTableRow
+          v-for="(position, i) in filteredPositions"
+          :key="`position-${i}`"
+          :position="position"
+          :hide-balances="hideBalances"
+        />
+      </table>
+
+      <table class="w-full border-collapse table lg:hidden">
+        <PartialsAccountPositionsTableRowMobile
+          v-for="(position, i) in filteredPositions"
+          :key="`position-${i}`"
+          class=""
+          :position="position"
+          :hide-balances="hideBalances"
+        />
+      </table>
+
+      <CommonEmptyList
+        v-if="showEmpty"
+        class="min-h-3xs bg-gray-900"
+        data-cy="markets-no-data-table"
+        :message="$t('account.positions.empty')"
+      >
+        <span class="mt-2 text-xs text-gray-500">
+          {{ $t('account.positions.empty') }}
+        </span>
+      </CommonEmptyList>
+    </AppHocLoading>
   </div>
 </template>
