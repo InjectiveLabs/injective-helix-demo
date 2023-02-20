@@ -66,6 +66,7 @@ function initBalances() {
     spotStore.fetchUsdcConversionMarkets(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
     peggyStore.fetchErc20BalancesWithTokenAndPrice()
