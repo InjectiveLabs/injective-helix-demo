@@ -197,3 +197,7 @@ export const streamMarketsMarkPrices = ({
     key: StreamType.OraclePrices
   })
 }
+
+export const cancelMarketsMarkPrices = () => {
+  streamProvider.cancel(StreamType.OraclePrices)
+}

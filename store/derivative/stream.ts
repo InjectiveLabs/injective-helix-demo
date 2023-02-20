@@ -12,7 +12,8 @@ import {
   streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
   cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
-  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream
+  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
+  cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices
 } from '@/app/client/streams/derivatives'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
@@ -322,3 +323,5 @@ export const streamMarketsMarkPrices = () => {
 
 export const cancelSubaccountTradesStream = () =>
   grpcCancelSubaccountTradesStream()
+
+export const cancelMarketsMarkPrices = () => grpcCancelMarketsMarkPrices()
