@@ -27,8 +27,7 @@ watchDebounced(
 <template>
   <div class="lg:hidden">
     <div
-      class="fixed inset-0 flex top-[48px]"
-      :class="{ 'z-1100': isOpenSidebar }"
+      class="fixed inset-0 flex z-1100 top-[48px]"
       @click="handleSidebarClose"
     >
       <transition
