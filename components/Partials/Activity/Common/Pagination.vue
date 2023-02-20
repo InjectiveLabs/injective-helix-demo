@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
 const cachedEndTime = ref<number | undefined>(undefined)
 
-const { value: page, setValue: setPageValue } = useNumberField({
+const { value: page } = useNumberField({
   name: ActivityField.Page,
   initialValue: 1,
   rule: ''
@@ -82,13 +82,11 @@ function handlePageChange(page: string) {
     cachedEndTime.value = endTime.value
   }
 
-  setPageValue(Number(page))
   emit('update:filter')
 }
 
 function handleLimitChange(limit: string) {
   setLimitValue(Number(limit))
-  setPageValue(1)
   emit('update:filter')
 }
 
