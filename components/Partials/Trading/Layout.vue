@@ -188,7 +188,7 @@ watch(
             <div class="w-full flex-none">
               <CommonCard tight class="relative">
                 <div class="grid grid-cols-6 lg:grid-cols-12">
-                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-40">
+                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-30">
                     <PartialsTradingMarket :market="market" />
                   </div>
                   <div
