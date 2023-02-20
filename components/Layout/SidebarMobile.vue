@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const { width } = useWindowSize()
-const zIndexValue = ref(0)
+
+const zIndex = ref(0)
 
 defineProps<{
   isOpenSidebar: Boolean
@@ -30,7 +31,7 @@ watchDebounced(
     <div
       class="fixed inset-0 flex top-[48px]"
       :style="{
-        zIndex: zIndexValue
+        zIndex,
       }"
       @click="handleSidebarClose"
     >
@@ -41,7 +42,7 @@ watchDebounced(
         leave-active-class="transition ease-in-out duration-300 transform"
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-full"
-        @before-enter="zIndexValue = 1100"
+        @before-enter="zIndex = 40"
         @after-leave="zIndexValue = 0"
       >
         <div

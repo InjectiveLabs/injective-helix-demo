@@ -52,7 +52,7 @@ watchDebounced(
   <BaseModalWrapper
     class="relative mx-auto sm:rounded-lg bg-gray-850 max-sm:h-full max-sm:max-w-full max-sm:w-full"
     :class="classes"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-950 bg-opacity-90 max-sm:z-[1100]"
+    wrapper-class="backdrop-filter backdrop-blur bg-gray-950 bg-opacity-90 max-sm:z-40"
     v-bind="$attrs"
     @close="handleClose"
   >

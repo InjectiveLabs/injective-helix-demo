@@ -6,15 +6,9 @@ import {
   DerivativeTradesStreamCallback,
   IndexerGrpcDerivativesStream,
   IndexerGrpcOracleStream,
-  OraclePriceStreamCallback,
+  OraclePricesByMarketsStreamCallback,
   PositionsStreamCallback
 } from '@injectivelabs/sdk-ts'
-import {
-  MarketType,
-  UiBinaryOptionsMarketWithToken,
-  UiDerivativeMarketWithToken,
-  UiPerpetualMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '@/app/utils/constants'
 import { StreamType } from '@/types'
@@ -22,7 +16,9 @@ import { StreamType } from '@/types'
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.indexer
 )
+
 export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexer)
+
 export const streamOrderbook = ({
   marketId,
   callback
@@ -185,33 +181,23 @@ export const cancelSubaccountPositionsStream = () => {
   streamProvider.cancel(StreamType.DerivativesSubaccountPositions)
 }
 
-export const streamMarketMarkPrice = ({
-  market,
+export const streamMarketsMarkPrices = ({
+  marketIds,
   callback
 }: {
-  market: UiDerivativeMarketWithToken
-  callback: OraclePriceStreamCallback
+  marketIds: string[]
+  callback: OraclePricesByMarketsStreamCallback
 }) => {
-  const streamFn = oracleStream.streamOraclePrices.bind(oracleStream)
-  const streamFnArgs =
-    market.subType !== MarketType.BinaryOptions
-      ? {
-          baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-          quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
-          oracleType: market.oracleType,
-          callback
-        }
-      : {
-          oracleType: market.oracleType,
-          baseSymbol: (market as UiBinaryOptionsMarketWithToken).oracleSymbol,
-          quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
-            .oracleProvider,
-          callback
-        }
+  const streamFn = oracleStream.streamOraclePricesByMarkets.bind(oracleStream)
+  const streamFnArgs = { marketIds, callback }
 
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
     key: StreamType.OraclePrices
   })
+}
+
+export const cancelMarketsMarkPrices = () => {
+  streamProvider.cancel(StreamType.OraclePrices)
 }

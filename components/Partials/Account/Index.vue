@@ -12,7 +12,6 @@ const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const accountStore = useAccountStore()
-const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useBalance()
@@ -66,8 +65,6 @@ function initBalances() {
     spotStore.fetchUsdcConversionMarkets(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions(),
-    positionStore.streamSubaccountPositions(),
     peggyStore.fetchErc20BalancesWithTokenAndPrice()
   ])
     .catch($onError)
@@ -90,8 +87,7 @@ function handleViewFromRoute() {
 function refreshBalances() {
   Promise.all([
     bankStore.fetchBankBalancesWithToken(),
-    derivativeStore.fetchSubaccountOrders(),
-    positionStore.fetchSubaccountPositions() // refresh mark price
+    derivativeStore.fetchSubaccountOrders()
   ])
 }
 

@@ -78,6 +78,9 @@ const {
 } = useDerivativeFormFormatter(formValues)
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
+const { markPrice, lastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
 
 const amountStep = computed(() => {
   return props.market
@@ -102,10 +105,10 @@ const orderTypeToSubmit = computed(() => {
     const triggerPriceInBase = triggerPrice.value || ZERO_IN_BASE
 
     return isBuy.value
-      ? triggerPriceInBase.lt(derivativeStore.marketMarkPrice)
+      ? triggerPriceInBase.lt(markPrice.value)
         ? DerivativeOrderSide.TakeBuy
         : DerivativeOrderSide.StopBuy
-      : triggerPriceInBase.gt(derivativeStore.marketMarkPrice)
+      : triggerPriceInBase.gt(markPrice.value)
       ? DerivativeOrderSide.TakeSell
       : DerivativeOrderSide.StopSell
   }
@@ -128,8 +131,6 @@ const orderTypeToSubmit = computed(() => {
     }
   }
 })
-
-const { lastTradedPrice } = useDerivativeLastPrice(computed(() => props.market))
 
 const {
   slippage,
@@ -396,6 +397,7 @@ const {
   initialMinMarginRequirementError
 } = useDerivativeError({
   isBuy,
+  markPrice,
   formValues,
   executionPrice,
   orderTypeReduceOnly,

@@ -4,19 +4,16 @@ import {
   DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
 import {
-  MarketType,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
   streamOrderbook as grpcStreamsOrderbook,
   streamTrades as grpcStreamsTrades,
   streamSubaccountOrders as grpcStreamsSubaccountOrders,
   streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
-  streamMarketMarkPrice as grpcStreamsMarketMarkPrice,
+  streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
   cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
-  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream
+  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
+  cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices
 } from '@/app/client/streams/derivatives'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
@@ -306,23 +303,19 @@ export const streamSubaccountOrders = (marketId?: string) => {
   })
 }
 
-export const streamMarketMarkPrices = (market: UiDerivativeMarketWithToken) => {
+export const streamMarketsMarkPrices = () => {
   const derivativeStore = useDerivativeStore()
 
-  if (market.subType === MarketType.BinaryOptions) {
-    return
-  }
-
-  grpcStreamsMarketMarkPrice({
-    market,
-    callback: ({ price, operation }) => {
-      if (!price) {
+  grpcStreamMarketsMarkPrices({
+    marketIds: derivativeStore.activeMarketIds,
+    callback: (marketMarkPrice) => {
+      if (!marketMarkPrice.price || !marketMarkPrice.marketId) {
         return
       }
 
-      switch (operation) {
-        case StreamOperation.Update:
-          derivativeStore.$patch({ marketMarkPrice: price })
+      derivativeStore.marketMarkPriceMap = {
+        ...derivativeStore.marketMarkPriceMap,
+        [marketMarkPrice.marketId]: marketMarkPrice
       }
     }
   })
@@ -330,3 +323,5 @@ export const streamMarketMarkPrices = (market: UiDerivativeMarketWithToken) => {
 
 export const cancelSubaccountTradesStream = () =>
   grpcCancelSubaccountTradesStream()
+
+export const cancelMarketsMarkPrices = () => grpcCancelMarketsMarkPrices()

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   MarketType,
-  ZERO_TO_STRING,
   UiDerivativeTrade,
   UiDerivativeOrderbook,
   UiDerivativeLimitOrder,
@@ -48,13 +47,18 @@ import {
   streamOrderbook,
   streamSubaccountTrades,
   streamSubaccountOrders,
-  streamMarketMarkPrices,
+  streamMarketsMarkPrices,
+  cancelMarketsMarkPrices,
   cancelSubaccountTradesStream,
   cancelSubaccountOrdersStream,
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
+import {
+  ActivityFetchOptions,
+  MarketMarkPriceMap,
+  UiMarketAndSummary
+} from '@/types'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -63,7 +67,7 @@ type DerivativeStoreState = {
   binaryOptionsMarkets: UiBinaryOptionsMarketWithToken[]
   markets: UiDerivativeMarketWithToken[]
   marketsSummary: UiDerivativeMarketSummary[]
-  marketMarkPrice: string
+  marketMarkPriceMap: MarketMarkPriceMap
   trades: UiDerivativeTrade[]
   orderbook?: UiDerivativeOrderbook
   subaccountTrades: UiDerivativeTrade[]
@@ -83,7 +87,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   binaryOptionsMarkets: [],
   markets: [],
   marketsSummary: [],
-  marketMarkPrice: ZERO_TO_STRING,
+  marketMarkPriceMap: {},
   orderbook: undefined,
   trades: [],
   subaccountTrades: [],
@@ -138,7 +142,8 @@ export const useDerivativeStore = defineStore('derivative', {
     streamOrderbook,
     streamSubaccountTrades,
     streamSubaccountOrders,
-    streamMarketMarkPrices,
+    streamMarketsMarkPrices,
+    cancelMarketsMarkPrices,
     cancelSubaccountOrdersStream,
     streamSubaccountOrderHistory,
     cancelSubaccountTradesStream,
@@ -152,7 +157,6 @@ export const useDerivativeStore = defineStore('derivative', {
       derivativeStore.$patch({
         trades: initialState.trades,
         orderbook: initialState.orderbook,
-        marketMarkPrice: initialState.marketMarkPrice,
         subaccountTrades: initialState.subaccountTrades,
         subaccountOrders: initialState.subaccountOrders
       })
@@ -276,9 +280,13 @@ export const useDerivativeStore = defineStore('derivative', {
               oracleType: market.oracleType
             })
 
-      derivativeStore.$patch({
-        marketMarkPrice: oraclePrice.price
-      })
+      derivativeStore.marketMarkPriceMap = {
+        ...derivativeStore.marketMarkPriceMap,
+        [market.marketId]: {
+          marketId: market.marketId,
+          price: oraclePrice.price
+        }
+      }
     },
 
     async fetchOrderbook(marketId: string) {

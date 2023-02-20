@@ -93,7 +93,7 @@ const selectedSymbol = computed(() => {
 })
 
 const marketIds = computed(() => {
-  if (!selectedDenoms.value) {
+  if (!selectedDenoms.value.length) {
     return undefined
   }
 
