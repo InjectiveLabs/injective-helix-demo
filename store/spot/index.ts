@@ -37,7 +37,10 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
+import {
+  MARKETS_SLUGS,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
 import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
@@ -212,12 +215,18 @@ export const useSpotStore = defineStore('spot', {
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketIds: marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId
+        subaccountId: subaccount.subaccountId,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
       })
 
       spotStore.$patch({
         subaccountOrders: orders,
-        subaccountOrdersCount: pagination.total
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
       })
     },
 
