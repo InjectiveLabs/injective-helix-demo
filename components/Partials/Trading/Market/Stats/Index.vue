@@ -86,7 +86,7 @@ function handleTokenClick() {
 
       <div class="ml-auto hidden lg:block">
         <BaseHoverMenu
-          popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-750 shadow-dropdown z-1100"
+          popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-750 shadow-dropdown z-40"
         >
           <template #default>
             <button
