@@ -400,13 +400,10 @@ const {
   markPrice,
   formValues,
   executionPrice,
-  notionalWithLeverage,
   orderTypeReduceOnly,
   notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
-  notionalWithLeverageAndFees,
-  notionalWithLeverageBasedOnWorstPrice,
   notionalWithLeverageAndFees,
   notionalWithLeverageBasedOnWorstPrice,
   market: computed(() => props.market as UiDerivativeMarketWithToken)
