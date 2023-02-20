@@ -49,14 +49,6 @@ export default function useConvertFormatter() {
     }, {} as Record<string, BalanceWithToken[]>)
   })
 
-  /* todo: verify if showing the current token price is necessary */
-  // const fetchTokenPairUsdValue = (market: UiSpotMarketWithToken) => {
-  //   return Promise.all([
-  //     tokenPrice.fetchUsdTokenPrice(market.baseToken.coinGeckoId),
-  //     tokenPrice.fetchUsdTokenPrice(market.quoteToken.coinGeckoId)
-  //   ])
-  // }
-
   return {
     tradableSlugMap,
     tradableTokenMaps

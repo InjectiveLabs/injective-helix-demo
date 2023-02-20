@@ -7,39 +7,39 @@ import {
   BigNumberInWei
 } from '@injectivelabs/utils'
 import {
-  DerivativeOrderSide,
   MarketType,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
+  ZERO_IN_BASE,
+  DerivativeOrderSide,
   UiPerpetualMarketWithToken,
-  ZERO_IN_BASE
+  UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
 import {
   Modal,
-  OrderAttemptStatus,
-  TradeField,
   TradeForm,
+  TradeField,
   TradeFormValue,
-  TradeExecutionType
+  TradeExecutionType,
+  OrderAttemptStatus
 } from '@/types'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 import {
-  calculateLiquidationPrice,
   calculateMargin,
+  calculateLiquidationPrice,
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
-const accountStore = useAccountStore()
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
 const modalStore = useModalStore()
+const accountStore = useAccountStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { success } = useNotifications()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -66,18 +66,21 @@ const props = defineProps({
 
 const {
   baseAmount,
-  hasBaseAmount,
-  isConditionalOrder,
   limitPrice,
+  triggerPrice,
+  hasBaseAmount,
+  hasTriggerPrice,
   tradingTypeLimit,
   tradingTypeMarket,
+  isConditionalOrder,
   tradingTypeStopLimit,
-  tradingTypeStopMarket,
-  triggerPrice,
-  hasTriggerPrice
+  tradingTypeStopMarket
 } = useDerivativeFormFormatter(formValues)
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
+const { markPrice, lastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
 
 const amountStep = computed(() => {
   return props.market
@@ -102,10 +105,10 @@ const orderTypeToSubmit = computed(() => {
     const triggerPriceInBase = triggerPrice.value || ZERO_IN_BASE
 
     return isBuy.value
-      ? triggerPriceInBase.lt(derivativeStore.marketMarkPrice)
+      ? triggerPriceInBase.lt(markPrice.value)
         ? DerivativeOrderSide.TakeBuy
         : DerivativeOrderSide.StopBuy
-      : triggerPriceInBase.gt(derivativeStore.marketMarkPrice)
+      : triggerPriceInBase.gt(markPrice.value)
       ? DerivativeOrderSide.TakeSell
       : DerivativeOrderSide.StopSell
   }
@@ -129,12 +132,10 @@ const orderTypeToSubmit = computed(() => {
   }
 })
 
-const { lastTradedPrice } = useDerivativeLastPrice(computed(() => props.market))
-
 const {
-  maxAmountOnOrderbook,
-  maxReduceOnly,
   slippage,
+  maxReduceOnly,
+  maxAmountOnOrderbook,
   updateAmountFromBase,
   worstPriceWithSlippage
 } = useDerivativePrice({
@@ -281,9 +282,9 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
   if (props.market.subType === MarketType.BinaryOptions) {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
+        price: worstPriceWithSlippage.value.toFixed(),
         orderSide: formValues.value[TradeField.OrderType],
         quantity: formValues.value[TradeField.BaseAmount],
-        price: worstPriceWithSlippage.value.toFixed(),
         tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
     )
@@ -291,9 +292,9 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
 
   return new BigNumberInBase(
     calculateMargin({
-      quantity: formValues.value[TradeField.BaseAmount],
       price: worstPriceWithSlippage.value.toFixed(),
       leverage: formValues.value[TradeField.Leverage],
+      quantity: formValues.value[TradeField.BaseAmount],
       tensMultiplier: props.market.quantityTensMultiplier
     }).toFixed()
   )
@@ -380,30 +381,31 @@ const liquidationPrice = computed(() => {
       : executionPrice.value.toFixed()
 
   return calculateLiquidationPrice({
-    market: derivativeMarket,
-    orderType: formValues.value[TradeField.OrderType],
-    notionalWithLeverage: notionalWithLeverage.value.toFixed(),
     price,
-    quantity: formValues.value[TradeField.BaseAmount]
+    market: derivativeMarket,
+    quantity: formValues.value[TradeField.BaseAmount],
+    orderType: formValues.value[TradeField.OrderType],
+    notionalWithLeverage: notionalWithLeverage.value.toFixed()
   })
 })
 
 const {
-  availableBalanceError,
   highDeviation,
-  initialMinMarginRequirementError,
+  maxOrdersError,
+  availableBalanceError,
   markPriceThresholdError,
-  maxOrdersError
+  initialMinMarginRequirementError
 } = useDerivativeError({
-  executionPrice,
-  formValues,
   isBuy,
-  notionalWithLeverage,
-  notionalWithLeverageBasedOnWorstPrice,
-  notionalWithLeverageAndFees,
+  markPrice,
+  formValues,
+  executionPrice,
   orderTypeReduceOnly,
+  notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
+  notionalWithLeverageAndFees,
+  notionalWithLeverageBasedOnWorstPrice,
   market: computed(() => props.market as UiDerivativeMarketWithToken)
 })
 
@@ -471,12 +473,12 @@ function submitLimitOrder() {
 
   derivativeStore
     .submitLimitOrder({
+      market: props.market,
       price: limitPrice.value,
+      quantity: baseAmount.value,
       margin: notionalWithLeverage.value,
       orderType: orderTypeToSubmit.value,
-      reduceOnly: orderTypeReduceOnly.value,
-      quantity: baseAmount.value,
-      market: props.market
+      reduceOnly: orderTypeReduceOnly.value
     })
     .then(() => {
       handleAttemptPlaceOrderTrack()
@@ -501,13 +503,13 @@ function submitStopLimitOrder() {
 
   derivativeStore
     .submitStopLimitOrder({
+      market: props.market,
       price: limitPrice.value,
+      quantity: baseAmount.value,
       triggerPrice: triggerPrice.value,
       margin: notionalWithLeverage.value,
       orderType: orderTypeToSubmit.value,
-      reduceOnly: orderTypeReduceOnly.value,
-      quantity: baseAmount.value,
-      market: props.market
+      reduceOnly: orderTypeReduceOnly.value
     })
     .then(() => {
       handleAttemptPlaceOrderTrack()
@@ -528,12 +530,12 @@ function submitMarketOrder() {
 
   derivativeStore
     .submitMarketOrder({
-      orderType: formValues.value[TradeField.OrderType],
-      margin: notionalWithLeverageBasedOnWorstPrice.value,
-      reduceOnly: orderTypeReduceOnly.value,
-      price: worstPriceWithSlippage.value,
+      market: props.market,
       quantity: baseAmount.value,
-      market: props.market
+      price: worstPriceWithSlippage.value,
+      reduceOnly: orderTypeReduceOnly.value,
+      orderType: formValues.value[TradeField.OrderType],
+      margin: notionalWithLeverageBasedOnWorstPrice.value
     })
     .then(() => {
       handleAttemptPlaceOrderTrack()
@@ -558,13 +560,13 @@ function submitStopMarketOrder() {
 
   derivativeStore
     .submitStopMarketOrder({
-      orderType: orderTypeToSubmit.value,
-      margin: notionalWithLeverageBasedOnWorstPrice.value,
-      reduceOnly: orderTypeReduceOnly.value,
-      price: worstPriceWithSlippage.value,
-      triggerPrice: triggerPrice.value,
+      market: props.market,
       quantity: baseAmount.value,
-      market: props.market
+      triggerPrice: triggerPrice.value,
+      orderType: orderTypeToSubmit.value,
+      price: worstPriceWithSlippage.value,
+      reduceOnly: orderTypeReduceOnly.value,
+      margin: notionalWithLeverageBasedOnWorstPrice.value
     })
     .then(() => {
       handleAttemptPlaceOrderTrack()
@@ -654,17 +656,17 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
   amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
     status,
     postOnly,
-    orderType: formValues.value[TradeField.OrderType],
-    tradingType: formValues.value[TradeField.TradingType],
     slippageTolerance,
-    amount: formValues.value[TradeField.BaseAmount],
-    leverage: formValues.value[TradeField.Leverage],
+    error: errorMessage,
     market: props.market.slug,
     marketType: props.market.subType,
-    triggerPrice: formValues.value[TradeField.TriggerPrice],
+    amount: formValues.value[TradeField.BaseAmount],
+    leverage: formValues.value[TradeField.Leverage],
+    orderType: formValues.value[TradeField.OrderType],
     reduceOnly: formValues.value[TradeField.ReduceOnly],
     limitPrice: formValues.value[TradeField.LimitPrice],
-    error: errorMessage
+    tradingType: formValues.value[TradeField.TradingType],
+    triggerPrice: formValues.value[TradeField.TriggerPrice]
   })
 }
 </script>
@@ -683,27 +685,27 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 
     <PartialsTradingFormOrderInputs
       v-bind="{
-        amountStep,
-        availableBalanceError,
-        executionPrice,
-        feeRate,
         fees,
-        formErrors,
-        formValues,
-        initialMinMarginRequirementError,
-        isBaseAmount,
         isBuy,
-        lastTradedPrice,
         market,
-        markPriceThresholdError,
-        maxAmountOnOrderbook,
-        maxReduceOnly,
-        orderTypeReduceOnly,
+        feeRate,
         position,
         priceStep,
-        quoteAvailableBalance,
+        amountStep,
+        formErrors,
+        formValues,
+        isBaseAmount,
+        maxReduceOnly,
+        executionPrice,
         showReduceOnly,
-        worstPriceWithSlippage
+        lastTradedPrice,
+        orderTypeReduceOnly,
+        maxAmountOnOrderbook,
+        availableBalanceError,
+        quoteAvailableBalance,
+        worstPriceWithSlippage,
+        markPriceThresholdError,
+        initialMinMarginRequirementError
       }"
       @update:amount="updateAmount"
       @update:formValue="updateFormValue"
@@ -712,12 +714,12 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     <PartialsTradingFormDebug
       v-if="DEBUG_CALCULATION"
       v-bind="{
-        isBaseAmount,
-        isBuy,
         fees,
+        isBuy,
+        market,
         feeRate,
         formValues,
-        market,
+        isBaseAmount,
         liquidationPrice,
         notionalValue: notionalWithLeverage,
         notionalWithFees: notionalWithLeverageAndFees
@@ -727,15 +729,15 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     <PartialsTradingOrderDetails
       :key="formValues[TradeField.TradingType]"
       v-bind="{
-        executionPrice,
-        feeRate,
         fees,
-        formValues,
         isBuy,
-        liquidationPrice,
         market,
-        orderTypeReduceOnly,
+        feeRate,
         slippage,
+        formValues,
+        executionPrice,
+        liquidationPrice,
+        orderTypeReduceOnly,
         notionalValue: notionalWithLeverage,
         notionalWithFees: notionalWithLeverageAndFees
       }"
@@ -743,33 +745,33 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 
     <PartialsTradingFormOrderSubmit
       v-bind="{
-        availableBalanceError,
-        executionPrice,
+        isBuy,
+        status,
+        market,
         formErrors,
         formValues,
         hasBaseAmount,
-        hasTriggerPrice,
         highDeviation,
-        initialMinMarginRequirementError,
-        isBuy,
-        market,
-        markPriceThresholdError,
+        executionPrice,
         maxOrdersError,
+        hasTriggerPrice,
         orderTypeReduceOnly,
-        status
+        availableBalanceError,
+        markPriceThresholdError,
+        initialMinMarginRequirementError
       }"
       @submit:request="handleRequestSubmit"
     />
 
     <ModalsOrderConfirmDerivative
       v-bind="{
-        isReduceOnly: formValues[TradeField.ReduceOnly],
-        amount: baseAmount,
         market: market,
+        amount: baseAmount,
+        triggerPrice: triggerPrice,
         orderType: orderTypeToSubmit,
-        price: tradingTypeStopLimit ? limitPrice : undefined,
+        isReduceOnly: formValues[TradeField.ReduceOnly],
         tradingType: formValues[TradeField.TradingType],
-        triggerPrice: triggerPrice
+        price: tradingTypeStopLimit ? limitPrice : undefined
       }"
       @order:confirmed="handleSubmit"
     />

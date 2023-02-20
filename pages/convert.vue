@@ -3,10 +3,10 @@ import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeField, TradeForm } from '@/types'
 
-const accountStore = useAccountStore()
-const exchangeStore = useExchangeStore()
 const router = useRouter()
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -38,10 +38,10 @@ const amount = computed<string>(() =>
 
 onMounted(() => {
   Promise.all([
-    exchangeStore.fetchTradingRewardsCampaign(),
-    exchangeStore.fetchFeeDiscountAccountInfo(),
     spotStore.init(),
-    accountStore.streamSubaccountBalances()
+    accountStore.streamSubaccountBalances(),
+    exchangeStore.fetchTradingRewardsCampaign(),
+    exchangeStore.fetchFeeDiscountAccountInfo()
   ])
     .catch($onError)
     .finally(() => status.setIdle())
@@ -110,12 +110,12 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   fetchStatus.setLoading()
 
   Promise.all([
-    spotStore.cancelOrderbookStream(),
     spotStore.cancelTradesStream(),
-    spotStore.fetchTrades({ marketId: market.marketId }),
-    spotStore.fetchOrderbook(market.marketId),
+    spotStore.cancelOrderbookStream(),
     spotStore.streamTrades(market.marketId),
-    spotStore.streamOrderbook(market.marketId)
+    spotStore.fetchOrderbook(market.marketId),
+    spotStore.streamOrderbook(market.marketId),
+    spotStore.fetchTrades({ marketId: market.marketId })
   ]).finally(() => fetchStatus.setIdle())
 }
 
@@ -129,9 +129,9 @@ function handleFormSubmit() {
   spotStore
     .submitMarketOrder({
       isBuy: isBuy.value,
-      market: market.value as UiSpotMarketWithToken,
       price: worstPriceWithSlippage.value,
-      quantity: formValues[TradeField.BaseAmount]
+      quantity: formValues[TradeField.BaseAmount],
+      market: market.value as UiSpotMarketWithToken
     })
     .then(() => {
       resetFormValues()
@@ -158,8 +158,8 @@ function handleFormSubmit() {
       </div>
 
       <PartialsConvertTokenForm
-        v-model:isBaseAmount="isBaseAmount"
         v-model:market="market"
+        v-model:isBaseAmount="isBaseAmount"
         v-bind="{
           worstPriceWithSlippage,
           isLoading: fetchStatus.isLoading() || submitStatus.isLoading()

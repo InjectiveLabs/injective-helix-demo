@@ -12,8 +12,8 @@ import {
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const modalStore = useModalStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 
 const props = defineProps({
   isLoading: Boolean,

@@ -8,9 +8,9 @@ const { $onError } = useNuxtApp()
 const { t } = useLang()
 
 const props = defineProps({
-  denom: {
-    type: String,
-    default: ''
+  denoms: {
+    type: Array as PropType<string[]>,
+    default: () => []
   },
 
   side: {
@@ -31,7 +31,9 @@ const actionStatus = reactive(new Status(StatusType.Idle))
 
 const markets = computed(() =>
   spotStore.markets
-    .filter((m) => m.baseDenom === props.denom || m.quoteDenom === props.denom)
+    .filter((m) =>
+      props.denoms.some((denom) => [m.baseDenom, m.quoteDenom].includes(denom))
+    )
     .map(({ marketId }) => marketId)
 )
 

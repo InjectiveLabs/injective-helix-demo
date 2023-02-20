@@ -2,32 +2,35 @@ import { defineStore } from 'pinia'
 import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   MarketType,
-  UiBinaryOptionsMarketWithToken,
+  UiDerivativeTrade,
+  UiDerivativeOrderbook,
   UiDerivativeLimitOrder,
+  UiDerivativeTransformer,
   UiDerivativeOrderHistory,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiDerivativeOrderbook,
-  UiDerivativeTrade,
-  UiDerivativeTransformer,
-  UiExpiryFuturesMarketWithToken,
   UiPerpetualMarketWithToken,
-  ZERO_TO_STRING,
-  zeroDerivativeMarketSummary
+  zeroDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiBinaryOptionsMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  PerpetualMarket,
   BinaryOptionsMarket,
   DerivativeOrderSide,
-  DerivativeOrderState,
   ExpiryFuturesMarket,
-  PerpetualMarket
+  DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
-import { IS_DEVNET, MARKETS_SLUGS } from '@/app/utils/constants'
 import {
-  indexerDerivativesApi,
+  IS_DEVNET,
+  MARKETS_SLUGS,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
+import {
+  tokenService,
   indexerOracleApi,
-  indexerRestDerivativesChronosApi,
-  tokenService
+  indexerDerivativesApi,
+  indexerRestDerivativesChronosApi
 } from '@/app/Services'
 import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
 import { marketHasRecentlyExpired } from '@/app/utils/market'
@@ -35,22 +38,26 @@ import {
   cancelOrder,
   batchCancelOrder,
   submitLimitOrder,
-  submitStopLimitOrder,
   submitMarketOrder,
+  submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/derivative/message'
 import {
-  streamOrderbook,
   streamTrades,
-  cancelSubaccountOrdersStream,
-  streamSubaccountOrderHistory,
-  cancelSubaccountOrderHistoryStream,
+  streamOrderbook,
   streamSubaccountTrades,
   streamSubaccountOrders,
-  streamMarketMarkPrices,
-  cancelSubaccountTradesStream
+  streamMarketsMarkPrices,
+  cancelSubaccountTradesStream,
+  cancelSubaccountOrdersStream,
+  streamSubaccountOrderHistory,
+  cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
+import {
+  ActivityFetchOptions,
+  MarketMarkPriceMap,
+  UiMarketAndSummary
+} from '@/types'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -59,7 +66,7 @@ type DerivativeStoreState = {
   binaryOptionsMarkets: UiBinaryOptionsMarketWithToken[]
   markets: UiDerivativeMarketWithToken[]
   marketsSummary: UiDerivativeMarketSummary[]
-  marketMarkPrice: string
+  marketMarkPriceMap: MarketMarkPriceMap
   trades: UiDerivativeTrade[]
   orderbook?: UiDerivativeOrderbook
   subaccountTrades: UiDerivativeTrade[]
@@ -79,7 +86,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   binaryOptionsMarkets: [],
   markets: [],
   marketsSummary: [],
-  marketMarkPrice: ZERO_TO_STRING,
+  marketMarkPriceMap: {},
   orderbook: undefined,
   trades: [],
   subaccountTrades: [],
@@ -126,19 +133,19 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelOrder,
     batchCancelOrder,
     submitLimitOrder,
-    submitStopLimitOrder,
     submitMarketOrder,
+    submitStopLimitOrder,
     submitStopMarketOrder,
 
-    streamOrderbook,
     streamTrades,
-    cancelSubaccountOrdersStream,
-    streamSubaccountOrderHistory,
-    cancelSubaccountOrderHistoryStream,
+    streamOrderbook,
     streamSubaccountTrades,
     streamSubaccountOrders,
-    streamMarketMarkPrices,
+    streamMarketsMarkPrices,
+    cancelSubaccountOrdersStream,
+    streamSubaccountOrderHistory,
     cancelSubaccountTradesStream,
+    cancelSubaccountOrderHistoryStream,
 
     reset() {
       const derivativeStore = useDerivativeStore()
@@ -146,11 +153,10 @@ export const useDerivativeStore = defineStore('derivative', {
       const initialState = initialStateFactory()
 
       derivativeStore.$patch({
-        marketMarkPrice: initialState.marketMarkPrice,
-        orderbook: initialState.orderbook,
         trades: initialState.trades,
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades
+        orderbook: initialState.orderbook,
+        subaccountTrades: initialState.subaccountTrades,
+        subaccountOrders: initialState.subaccountOrders
       })
     },
 
@@ -245,8 +251,8 @@ export const useDerivativeStore = defineStore('derivative', {
         recentlyExpiredMarkets: uiRecentlyExpiredMarkets,
         binaryOptionsMarkets: uiBinaryOptionsMarketsWithToken,
         markets: [
-          ...uiPerpetualMarketsWithToken,
           ...uiExpiryFuturesWithToken,
+          ...uiPerpetualMarketsWithToken,
           ...uiBinaryOptionsMarketsWithToken
         ]
       })
@@ -260,9 +266,9 @@ export const useDerivativeStore = defineStore('derivative', {
       const oraclePrice =
         market.subType !== MarketType.BinaryOptions
           ? await indexerOracleApi.fetchOraclePrice({
+              oracleType: market.oracleType,
               baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
-              oracleType: market.oracleType
+              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote
             })
           : await indexerOracleApi.fetchOraclePriceNoThrow({
               baseSymbol: (market as UiBinaryOptionsMarketWithToken)
@@ -272,9 +278,13 @@ export const useDerivativeStore = defineStore('derivative', {
               oracleType: market.oracleType
             })
 
-      derivativeStore.$patch({
-        marketMarkPrice: oraclePrice.price
-      })
+      derivativeStore.marketMarkPriceMap = {
+        ...derivativeStore.marketMarkPriceMap,
+        [market.marketId]: {
+          marketId: market.marketId,
+          price: oraclePrice.price
+        }
+      }
     },
 
     async fetchOrderbook(marketId: string) {
@@ -315,14 +325,20 @@ export const useDerivativeStore = defineStore('derivative', {
       }
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
-        marketIds: marketIds || derivativeStore.activeMarketIds,
+        isConditional: false,
         subaccountId: subaccount.subaccountId,
-        isConditional: false
+        marketIds: marketIds || derivativeStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
       })
 
       derivativeStore.$patch({
         subaccountOrders: orders,
-        subaccountOrdersCount: pagination.total
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
       })
     },
 
@@ -342,13 +358,13 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
-          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
-          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[],
-          executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
+          pagination: options?.pagination,
+          subaccountId: subaccount.subaccountId,
           isConditional: filters?.isConditional,
-          pagination: options?.pagination
+          executionTypes: filters?.executionTypes as TradeExecutionType[],
+          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
+          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[]
         })
 
       derivativeStore.$patch({
@@ -369,15 +385,21 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
-          marketIds: marketIds || derivativeStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
           isConditional: true,
-          state: DerivativeOrderState.Booked
+          state: DerivativeOrderState.Booked,
+          subaccountId: subaccount.subaccountId,
+          marketIds: marketIds || derivativeStore.activeMarketIds,
+          pagination: {
+            limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+          }
         })
 
       derivativeStore.$patch({
         subaccountConditionalOrders: orderHistory,
-        subaccountConditionalOrdersCount: pagination.total
+        subaccountConditionalOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
       })
     },
 
@@ -446,11 +468,11 @@ export const useDerivativeStore = defineStore('derivative', {
       const filters = options?.filters
 
       const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
-        marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
+        direction: filters?.direction,
+        pagination: options?.pagination,
         subaccountId: subaccount.subaccountId,
         executionTypes: filters?.executionTypes as TradeExecutionType[],
-        direction: filters?.direction,
-        pagination: options?.pagination
+        marketIds: filters?.marketIds || derivativeStore.activeMarketIds
       })
 
       derivativeStore.$patch({
@@ -475,12 +497,12 @@ export const useDerivativeStore = defineStore('derivative', {
       derivativeStore.cancelSubaccountStream()
 
       derivativeStore.$patch({
-        subaccountOrderHistory: initialState.subaccountOrderHistory,
-        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
         subaccountOrders: initialState.subaccountOrders,
-        subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountTradesCount: initialState.subaccountOrdersCount
+        subaccountTradesCount: initialState.subaccountOrdersCount,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
       })
     }
   }

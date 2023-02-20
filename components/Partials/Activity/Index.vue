@@ -9,11 +9,9 @@ const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const {
-  resetForm,
-  values: formValues,
-  setFieldValue
-} = useForm<ActivityForm>({ keepValuesOnUnmount: true })
+const { resetForm, setFieldValue } = useForm<ActivityForm>({
+  keepValuesOnUnmount: true
+})
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -60,6 +58,7 @@ onMounted(() => {
     activityStore.streamSpotSubaccountOrderHistory(),
     activityStore.streamSpotSubaccountTrades(),
     derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
     derivativeStore.fetchSubaccountConditionalOrders(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions(),
@@ -154,50 +153,40 @@ function onViewChange() {
 
     <PartialsActivityCommonTabs
       v-model:view="view"
+      class="pb-4 xs:pb-6"
       :tab="tab"
       @update:view="onViewChange"
     />
 
-    <div class="h-full rounded-xl overflow-y-auto pt-4 xs:pt-6">
+    <div class="h-full rounded-xl overflow-y-auto">
       <CommonCard md class="h-full-flex">
-        <PartialsActivityCommonToolbar
-          ref="filterRef"
-          :view="view"
-          :tab="tab"
-          :status="status"
-          @update:filter="handleFilterChange"
-          @reset:filter="onViewChange"
-        />
+        <div class="h-full-flex">
+          <PartialsActivityCommonViewWrapper
+            ref="filterRef"
+            :tab="tab"
+            :view="view"
+            :status="status"
+            @update:filter="handleFilterChange"
+            @reset:filter="onViewChange"
+          />
 
-        <PartialsActivityView
-          v-bind="{
-            view,
-            status,
-            denom: formValues[ActivityField.Denom],
-            side: formValues[ActivityField.Side],
-            symbol: formValues[ActivityField.Symbol],
-            type: formValues[ActivityField.Type]
-          }"
-          :key="view"
-          class="h-full"
-        />
-
-        <PartialsActivityCommonPagination
-          v-if="
-            ![
-              ActivityView.Positions,
-              ActivityView.DerivativeOrders,
-              ActivityView.DerivativeTriggers,
-              ActivityView.SpotOrders,
-              ActivityView.WalletDeposits,
-              ActivityView.WalletWithdrawals
-            ].includes(view)
-          "
-          ref="paginationRef"
-          :view="view"
-          :status="status"
-          @update:filter="fetchData"
-        />
+          <PartialsActivityCommonPagination
+            v-if="
+              ![
+                ActivityView.Positions,
+                ActivityView.SpotOrders,
+                ActivityView.WalletDeposits,
+                ActivityView.DerivativeOrders,
+                ActivityView.WalletWithdrawals,
+                ActivityView.DerivativeTriggers
+              ].includes(view)
+            "
+            ref="paginationRef"
+            :view="view"
+            :status="status"
+            @update:filter="fetchData"
+          />
+        </div>
       </CommonCard>
     </div>
   </div>

@@ -18,15 +18,15 @@ const { t } = useLang()
 const { error } = useNotifications()
 
 const props = defineProps({
-  availableBalanceError: Boolean,
-  hasBaseAmount: Boolean,
-  hasTriggerPrice: Boolean,
-  highDeviation: Boolean,
-  initialMinMarginRequirementError: Boolean,
   isBuy: Boolean,
-  markPriceThresholdError: Boolean,
+  hasBaseAmount: Boolean,
+  highDeviation: Boolean,
   maxOrdersError: Boolean,
+  hasTriggerPrice: Boolean,
   orderTypeReduceOnly: Boolean,
+  availableBalanceError: Boolean,
+  markPriceThresholdError: Boolean,
+  initialMinMarginRequirementError: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -111,9 +111,9 @@ const tradingTypeMarket = isSpot
 const disabled = computed(() => {
   const commonErrors =
     hasError.value ||
-    !walletStore.isUserWalletConnected ||
+    !props.hasBaseAmount ||
     !bankStore.hasEnoughInjForGas ||
-    !props.hasBaseAmount
+    !walletStore.isUserWalletConnected
 
   if (commonErrors) {
     return true
@@ -168,17 +168,17 @@ function trackPlaceOrder() {
     : ''
 
   amplitudeTracker.submitClickPlaceOrderTrackEvent({
+    market: props.market.slug,
+    marketType: props.market.subType,
+    reduceOnly: props.orderTypeReduceOnly,
+    slippageTolerance: actualSlippageTolerance,
     amount: props.formValues[TradeField.BaseAmount],
     leverage: props.formValues[TradeField.Leverage],
     orderType: props.formValues[TradeField.OrderType],
-    reduceOnly: props.orderTypeReduceOnly,
+    limitPrice: props.formValues[TradeField.LimitPrice],
     tradingType: props.formValues[TradeField.TradingType],
     triggerPrice: props.formValues[TradeField.TriggerPrice],
-    limitPrice: props.formValues[TradeField.LimitPrice],
-    market: props.market.slug,
-    postOnly: tradingTypeLimit.value && props.formValues[TradeField.PostOnly],
-    slippageTolerance: actualSlippageTolerance,
-    marketType: props.market.subType
+    postOnly: tradingTypeLimit.value && props.formValues[TradeField.PostOnly]
   })
 }
 

@@ -6,12 +6,9 @@ import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 
-// eslint-disable-next-line prefer-regex-literals
-const REFER_CODE_REGEX = new RegExp(/^[A-Z]([A-Z0-9]{7})$/)
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
 export const errorMessages = {
-  referralCode: () => 'This is not a valid refer code',
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
   integer: (fieldName: string) => `${fieldName} must be > 0`,
@@ -60,14 +57,6 @@ export const defineGlobalRules = () => {
     }
 
     return errorMessages.positiveNumber()
-  })
-
-  defineRule('referralCode', (value: string) => {
-    if (REFER_CODE_REGEX.test(value)) {
-      return true
-    }
-
-    return errorMessages.referralCode()
   })
 
   defineRule('positiveNumber', (value: string) => {

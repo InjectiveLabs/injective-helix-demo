@@ -15,7 +15,6 @@ RUN echo "VITE_ALCHEMY_GOERLI_KEY=$VITE_ALCHEMY_GOERLI_KEY" >> .env
 RUN echo "VITE_FEE_RECIPIENT=$HELIX_FEE_RECIPIENT" >> .env
 RUN echo "VITE_MAINTENANCE_ENABLED=false" >> .env
 RUN echo "VITE_GEO_IP_RESTRICTIONS_ENABLED=false" >> .env
-RUN echo "VITE_REFERRALS_ENABLED=false" >> .env
 
 COPY package.json yarn.lock ./
 RUN --mount=type=cache,target=/src/.yarn YARN_CACHE_FOLDER=/src/.yarn yarn install --frozen-lockfile

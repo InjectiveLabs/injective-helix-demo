@@ -35,9 +35,6 @@ const env = {
   VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
     ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
     : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_REFERRALS_ENABLED: isWebpack
-    ? process.env.VITE_REFERRALS_ENABLED
-    : import.meta.env.VITE_REFERRALS_ENABLED,
 
   VITE_ETHEREUM_CHAIN_ID: isWebpack
     ? process.env.VITE_ETHEREUM_CHAIN_ID
@@ -92,7 +89,6 @@ const env = {
   VITE_FEE_PAYER_PUB_KEY: string
   VITE_DEBUG_CALCULATION: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
-  VITE_REFERRALS_ENABLED: string
   VITE_MAINTENANCE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
@@ -197,7 +193,6 @@ export const COIN_GECKO_OPTIONS = {
 
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
-export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 

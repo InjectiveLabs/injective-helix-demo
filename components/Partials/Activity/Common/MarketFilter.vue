@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import { PropType } from 'vue'
 import { ActivityTab } from '@/types'
 
@@ -15,7 +15,7 @@ const props = defineProps({
   },
 
   tokens: {
-    type: Array as PropType<BalanceWithToken[]>,
+    type: Array as PropType<Token[]>,
     required: true
   }
 })
@@ -25,7 +25,7 @@ const emit = defineEmits<{
 }>()
 
 const options = computed(() =>
-  props.tokens.map(({ token }) => ({
+  props.tokens.map((token) => ({
     token,
     display: token.symbol,
     value: token.denom

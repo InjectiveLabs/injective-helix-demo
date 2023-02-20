@@ -3,16 +3,16 @@ import { PropType } from 'vue'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
-  UiSpotMarketWithToken,
+  ZERO_IN_BASE,
   SpotOrderSide,
-  ZERO_IN_BASE
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   Modal,
-  OrderAttemptStatus,
-  TradeField,
   TradeForm,
-  TradeFormValue
+  TradeField,
+  TradeFormValue,
+  OrderAttemptStatus
 } from '@/types'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
@@ -20,9 +20,9 @@ import {
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
+const modalStore = useModalStore()
+const accountStore = useAccountStore()
 const { success } = useNotifications()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -49,8 +49,8 @@ const formValues = computed(() => values)
 
 const {
   baseAmount,
-  hasBaseAmount,
   limitPrice,
+  hasBaseAmount,
   tradingTypeLimit,
   tradingTypeMarket
 } = useSpotFormFormatter(formValues)
@@ -158,8 +158,8 @@ const hasExecutionPrice = computed(() => executionPrice.value.gt('0'))
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const {
-  maxAmountOnOrderbook,
   slippage,
+  maxAmountOnOrderbook,
   updateAmountFromBase,
   worstPriceWithSlippage
 } = useSpotPrice({
@@ -205,12 +205,12 @@ const notionalWithFees = computed(() => {
 })
 
 const { availableBalanceError, highDeviation, maxOrdersError } = useSpotError({
-  executionPrice,
-  formValues,
   isBuy,
-  market: computed(() => props.market),
+  formValues,
+  executionPrice,
   notionalWithFees,
-  quoteAvailableBalance
+  quoteAvailableBalance,
+  market: computed(() => props.market)
 })
 
 watch(
@@ -364,14 +364,14 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
   amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
     status,
     postOnly,
-    orderType: formValues.value[TradeField.OrderType],
-    tradingType: formValues.value[TradeField.TradingType],
     slippageTolerance,
-    amount: formValues.value[TradeField.BaseAmount],
+    error: errorMessage,
     market: props.market.slug,
     marketType: props.market.subType,
+    amount: formValues.value[TradeField.BaseAmount],
+    orderType: formValues.value[TradeField.OrderType],
     limitPrice: formValues.value[TradeField.LimitPrice],
-    error: errorMessage
+    tradingType: formValues.value[TradeField.TradingType]
   })
 }
 </script>
@@ -390,20 +390,20 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 
     <PartialsTradingFormOrderInputs
       v-bind="{
-        availableBalanceError,
-        amountStep,
-        baseAvailableBalance,
-        executionPrice,
-        feeRate,
         fees,
-        formErrors,
-        formValues,
-        lastTradedPrice,
-        isBaseAmount,
         isBuy,
         market,
-        maxAmountOnOrderbook,
+        feeRate,
         priceStep,
+        amountStep,
+        formErrors,
+        formValues,
+        isBaseAmount,
+        executionPrice,
+        lastTradedPrice,
+        baseAvailableBalance,
+        maxAmountOnOrderbook,
+        availableBalanceError,
         quoteAvailableBalance,
         worstPriceWithSlippage
       }"
@@ -414,45 +414,45 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     <PartialsTradingFormDebug
       v-if="DEBUG_CALCULATION"
       v-bind="{
-        isBaseAmount,
-        isBuy,
         fees,
+        isBuy,
+        market,
         feeRate,
         formValues,
-        market,
+        isSpot: true,
+        isBaseAmount,
         notionalValue,
-        notionalWithFees,
-        isSpot: true
+        notionalWithFees
       }"
     />
 
     <PartialsTradingOrderDetails
       :key="formValues[TradeField.TradingType]"
       v-bind="{
-        executionPrice,
-        feeRate,
         fees,
-        formValues,
         isBuy,
         market,
+        feeRate,
+        slippage,
+        formValues,
         notionalValue,
-        notionalWithFees,
-        slippage
+        executionPrice,
+        notionalWithFees
       }"
     />
 
     <PartialsTradingFormOrderSubmit
       v-bind="{
-        availableBalanceError,
-        executionPrice,
+        isBuy,
+        status,
+        market,
         formErrors,
         formValues,
         hasBaseAmount,
         highDeviation,
-        isBuy,
-        market,
+        executionPrice,
         maxOrdersError,
-        status
+        availableBalanceError
       }"
       @submit:request="handleRequestSubmit"
     />

@@ -11,9 +11,8 @@ import {
 } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
+const modalStore = useModalStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -134,7 +133,6 @@ function handleFormSubmit() {
     .catch($onError)
     .finally(() => {
       submitStatus.setIdle()
-      accountStore.updateSubaccount()
       modalStore.closeModal(Modal.ConvertUsdc)
     })
 }
