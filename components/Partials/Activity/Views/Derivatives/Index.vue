@@ -8,9 +8,9 @@ const { success } = useNotifications()
 const { t } = useLang()
 
 const props = defineProps({
-  denom: {
-    type: String,
-    default: ''
+  denoms: {
+    type: Array as PropType<string[]>,
+    default: () => []
   },
 
   side: {
@@ -31,9 +31,10 @@ const actionStatus = reactive(new Status(StatusType.Idle))
 
 const markets = computed(() => {
   return derivativeStore.markets
-    .filter(
-      (m) =>
-        m.baseToken.denom === props.denom || m.quoteToken.denom === props.denom
+    .filter((m) =>
+      props.denoms.some((denom) =>
+        [m.baseToken.denom, m.quoteDenom].includes(denom)
+      )
     )
     .map(({ marketId }) => marketId)
 })

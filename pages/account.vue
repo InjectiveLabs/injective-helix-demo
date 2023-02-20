@@ -7,7 +7,6 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { REFERRALS_ENABLED } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
 definePageMeta({
@@ -153,7 +152,6 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
     <div class="container">
       <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
         <PartialsAccount :balances="balances" />
-        <ModalsRefereeOnboarding v-if="REFERRALS_ENABLED" />
       </div>
     </div>
   </AppHocLoading>

@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, Modal } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const accountStore = useAccountStore()
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
 const modalStore = useModalStore()
+const accountStore = useAccountStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -153,11 +153,11 @@ const handleFormSubmit = handleSubmit(() => {
               <div class="w-full">
                 <AppInputNumeric
                   v-model="amountValue"
-                  :errors="status.isLoading() ? [] : amountErrors"
+                  :label="$t('trade.amount')"
                   :max="availableMarginToString"
                   :max-selector="availableMargin.gt(0.01)"
-                  :label="$t('trade.amount')"
                   :placeholder="$t('trade.enter_your_amount')"
+                  :errors="status.isLoading() ? [] : amountErrors"
                   class="no-shadow"
                   step="0.001"
                   data-cy="add-margin-modal-amount-input"
@@ -188,8 +188,8 @@ const handleFormSubmit = handleSubmit(() => {
                 <AppButton
                   lg
                   class="w-full bg-blue-500 text-blue-900"
-                  :disabled="amountErrors.length > 0"
                   :status="status"
+                  :disabled="amountErrors.length > 0"
                   data-cy="add-margin-modal-execute-button"
                   @click="handleFormSubmit"
                 >

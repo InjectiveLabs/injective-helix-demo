@@ -60,12 +60,6 @@ export default {
         children: []
       },
       {
-        name: 'register',
-        path: '/register',
-        file: resolvePagePath('pages/account.vue'),
-        children: []
-      },
-      {
         name: 'binary-options-binaryOption',
         path: '/binary-options/:binaryOption',
         file: resolvePagePath('pages/futures/[futures].vue'),

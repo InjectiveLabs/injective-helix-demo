@@ -2,31 +2,31 @@ import { defineStore } from 'pinia'
 import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotLimitOrder,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiSpotOrderbook,
-  UiSpotOrderHistory,
   UiSpotTrade,
+  UiSpotOrderbook,
+  UiSpotLimitOrder,
   UiSpotTransformer,
-  zeroSpotMarketSummary
+  UiSpotOrderHistory,
+  UiSpotMarketSummary,
+  zeroSpotMarketSummary,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  indexerRestSpotChronosApi,
+  tokenService,
   indexerSpotApi,
-  tokenService
+  indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
+  streamTrades,
+  streamOrderbook,
+  cancelTradesStream,
   cancelOrderbookStream,
-  cancelSubaccountOrdersHistoryStream,
+  streamSubaccountTrades,
+  streamSubaccountOrders,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
-  cancelTradesStream,
-  streamOrderbook,
-  streamTrades,
-  streamSubaccountOrders,
   streamSubaccountOrderHistory,
-  streamSubaccountTrades
+  cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import {
   batchCancelOrder,
@@ -37,7 +37,10 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
+import {
+  MARKETS_SLUGS,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
 import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
 
 type SpotStoreState = {
@@ -108,16 +111,16 @@ export const useSpotStore = defineStore('spot', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
-    cancelOrderbookStream,
-    cancelTradesStream,
-    streamOrderbook,
     streamTrades,
+    streamOrderbook,
+    cancelTradesStream,
+    cancelOrderbookStream,
     streamSubaccountOrders,
-    streamSubaccountOrderHistory,
     streamSubaccountTrades,
+    streamSubaccountOrderHistory,
 
-    batchCancelOrder,
     cancelOrder,
+    batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
     submitStopLimitOrder,
@@ -129,10 +132,10 @@ export const useSpotStore = defineStore('spot', {
       const initialState = initialStateFactory()
 
       spotStore.$patch({
-        orderbook: initialState.orderbook,
         trades: initialState.trades,
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades
+        orderbook: initialState.orderbook,
+        subaccountTrades: initialState.subaccountTrades,
+        subaccountOrders: initialState.subaccountOrders
       })
     },
 
@@ -212,12 +215,18 @@ export const useSpotStore = defineStore('spot', {
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketIds: marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId
+        subaccountId: subaccount.subaccountId,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
       })
 
       spotStore.$patch({
         subaccountOrders: orders,
-        subaccountOrdersCount: pagination.total
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
       })
     },
 
@@ -235,13 +244,13 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          marketIds: filters?.marketIds || spotStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
-          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
-          executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
+          pagination: options?.pagination,
+          subaccountId: subaccount.subaccountId,
           isConditional: filters?.isConditional,
-          pagination: options?.pagination
+          marketIds: filters?.marketIds || spotStore.activeMarketIds,
+          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[]
         })
 
       spotStore.$patch({
@@ -290,11 +299,11 @@ export const useSpotStore = defineStore('spot', {
       const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        marketIds: filters?.marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId,
-        executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
-        pagination: options?.pagination
+        pagination: options?.pagination,
+        subaccountId: subaccount.subaccountId,
+        marketIds: filters?.marketIds || spotStore.activeMarketIds,
+        executionTypes: filters?.executionTypes as TradeExecutionType[]
       })
 
       spotStore.$patch({
@@ -330,8 +339,8 @@ export const useSpotStore = defineStore('spot', {
 
     cancelSubaccountStream() {
       cancelSubaccountOrdersStream()
-      cancelSubaccountOrdersHistoryStream()
       cancelSubaccountTradesStream()
+      cancelSubaccountOrdersHistoryStream()
     },
 
     resetSubaccount() {
@@ -342,12 +351,12 @@ export const useSpotStore = defineStore('spot', {
       spotStore.cancelSubaccountStream()
 
       spotStore.$patch({
-        subaccountOrderHistory: initialState.subaccountOrderHistory,
-        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
         subaccountOrders: initialState.subaccountOrders,
-        subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountTradesCount: initialState.subaccountOrdersCount
+        subaccountTradesCount: initialState.subaccountOrdersCount,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
       })
     }
   }
