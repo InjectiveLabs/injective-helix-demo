@@ -31,7 +31,7 @@ watchDebounced(
     <div
       class="fixed inset-0 flex top-[48px]"
       :style="{
-        zIndex,
+        zIndex
       }"
       @click="handleSidebarClose"
     >
@@ -43,7 +43,7 @@ watchDebounced(
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-full"
         @before-enter="zIndex = 40"
-        @after-leave="zIndexValue = 0"
+        @after-leave="zIndex = 0"
       >
         <div
           v-if="isOpenSidebar"
