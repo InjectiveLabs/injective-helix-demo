@@ -4,11 +4,11 @@ import { UiPriceLevel, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
-  TradeExecutionType,
-  TradeField,
   TradeForm,
+  TradeField,
   TradeFormValue,
-  UiMarketWithToken
+  UiMarketWithToken,
+  TradeExecutionType
 } from '@/types'
 
 const props = defineProps({
@@ -74,7 +74,17 @@ const { value: baseAmount, setValue } = useStringField({
   name: props.baseAmountFieldName,
   rule: '',
   dynamicRule: computed(() => {
-    const rules = []
+    const rules = [
+      `minBaseAmount:${new BigNumberInWei(props.market.minQuantityTickSize)
+        .toBase()
+        .toFixed()}`
+    ]
+
+    if (props.market.quantityTensMultiplier >= 1) {
+      rules.push(
+        `quantityTensMultiplier:${props.market.quantityTensMultiplier}`
+      )
+    }
 
     const formIsStopMarketAndHasNoTriggerPrice =
       tradingTypeStopMarket.value && !hasTriggerPrice.value
@@ -111,12 +121,18 @@ function onBaseAmountChange(baseAmount: string) {
 }
 
 function onBaseAmountBlur(baseAmount = '') {
-  setValue(
-    formatAmountToAllowableAmount(
-      baseAmount || 0,
-      props.market.quantityTensMultiplier
-    )
+  if (props.market.quantityTensMultiplier < 1) {
+    return
+  }
+
+  const formattedAmount = formatAmountToAllowableAmount(
+    baseAmount || 0,
+    props.market.quantityTensMultiplier
   )
+
+  setValue(formattedAmount)
+
+  emit('update:amount', { amount: formattedAmount || '0', isBaseAmount: true })
 }
 </script>
 
