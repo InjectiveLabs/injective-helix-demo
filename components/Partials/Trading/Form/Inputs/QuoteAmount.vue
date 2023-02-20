@@ -53,7 +53,7 @@ const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
   computed(() => props.formValues)
 )
 
-const { value: quoteAmount, setValue } = useStringField({
+const { value: quoteAmount } = useStringField({
   name: props.quoteAmountFieldName,
   rule: '',
   dynamicRule: computed(() => {
@@ -79,13 +79,22 @@ function onQuoteAmountChange(quoteAmount: string) {
   emit('update:amount', { amount: quoteAmount || '0', isBaseAmount: false })
 }
 
-function onQuoteAmountBlur(quoteAmount = '') {
-  setValue(
-    formatAmountToAllowableAmount(
-      quoteAmount || 0,
+function onQuoteAmountBlur() {
+  if (props.market.quantityTensMultiplier < 1) {
+    return
+  }
+
+  emit('update:formValue', {
+    field: TradeField.BaseAmount,
+    value: formatAmountToAllowableAmount(
+      props.formValues[TradeField.BaseAmount],
       props.market.quantityTensMultiplier
     )
-  )
+  })
+
+  emit('update:amount', {
+    isBaseAmount: true
+  })
 }
 </script>
 

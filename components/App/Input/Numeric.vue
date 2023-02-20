@@ -82,8 +82,13 @@ function handleBlur(e?: Event) {
     return
   }
 
-  emit('blur', value)
+  debounceOnBlur(value)
 }
+
+const debounceOnBlur = useDebounceFn(
+  (value: string) => emit('blur', value),
+  500
+)
 </script>
 
 <script lang="ts">

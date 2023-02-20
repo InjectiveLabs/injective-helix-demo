@@ -13,6 +13,7 @@ const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useBalance()
 
@@ -63,8 +64,7 @@ function initBalances() {
     tokenStore.fetchBitcoinUsdPrice(),
     bankStore.fetchBankBalancesWithToken(),
     spotStore.fetchUsdcConversionMarkets(),
-    accountStore.streamSubaccountBalances(),
-    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
     peggyStore.fetchErc20BalancesWithTokenAndPrice()
   ])
     .catch($onError)
@@ -73,6 +73,13 @@ function initBalances() {
 
       refreshUsdTokenPrice()
     })
+
+  Promise.all([
+    accountStore.streamSubaccountBalances(),
+    derivativeStore.streamSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
+    positionStore.streamSubaccountPositions()
+  ])
 }
 
 function handleViewFromRoute() {
