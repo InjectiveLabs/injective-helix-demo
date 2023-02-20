@@ -55,7 +55,7 @@ const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
 
 const { value: quoteAmount, setValue } = useStringField({
   name: props.quoteAmountFieldName,
-  rule: ``,
+  rule: '',
   dynamicRule: computed(() => {
     const rules = []
 

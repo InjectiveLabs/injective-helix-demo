@@ -66,12 +66,6 @@ export const useBankStore = defineStore('bank', {
     }
   },
   actions: {
-    async init() {
-      const bankStore = useBankStore()
-
-      await bankStore.fetchBalances()
-    },
-
     async fetchBalances() {
       const bankStore = useBankStore()
       const { injectiveAddress } = useWalletStore()

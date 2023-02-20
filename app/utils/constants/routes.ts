@@ -23,6 +23,7 @@ export const getRoutes = (network: Network, env: string) => {
     'inj-usdt',
     'atom-usdt',
     'sol-usdcet',
+    'canto-usdt',
     'usdt-usdcet',
     'ape-usdt',
     'cre-usdt',
@@ -76,7 +77,7 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['/register']
+  const customStaticRoutes: string[] = ['']
   const upcomingMarketsRoutes: string[] = []
   const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
@@ -93,6 +94,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
     spot.push(...usdcConversionModalMarkets)
+    spot.push('chz-usdcet')
   }
 
   if (IS_DEVNET) {

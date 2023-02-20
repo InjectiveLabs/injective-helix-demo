@@ -4,7 +4,6 @@ import {
   SECONDS_IN_A_DAY,
   fetchGasPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { StatusType } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import {
@@ -50,7 +49,6 @@ type AppStoreState = {
 
   // Loading States
   state: AppState
-  marketsLoadingState: StatusType
 
   // User settings
   userState: UserBasedState
@@ -67,7 +65,6 @@ const initialStateFactory = (): AppStoreState => ({
 
   // Loading States
   state: AppState.Idle,
-  marketsLoadingState: StatusType.Idle,
 
   // User settings
   userState: {
@@ -122,12 +119,6 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       appStore.$patch({ userState })
-    },
-
-    setMarketsLoadingState(marketsLoadingState: StatusType) {
-      const appStore = useAppStore()
-
-      appStore.$patch({ marketsLoadingState })
     },
 
     async detectVPNOrProxyUsage() {

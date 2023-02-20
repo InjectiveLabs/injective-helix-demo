@@ -3,8 +3,7 @@ import {
   ChainCosmosErrorCode,
   ErrorType,
   isThrownException,
-  ThrownException,
-  UnspecifiedErrorCode
+  ThrownException
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
@@ -19,19 +18,12 @@ declare let useBugsnag: () => any
 
 const reportToUser = (error: ThrownException) => {
   const { error: errorToast } = useNotifications()
-  const shouldIgnoreToast =
-    ['referrals'].includes(error.contextModule as string) &&
-    error.code === UnspecifiedErrorCode
 
   // Timedout requests happening in the background should not be reported to the user
   if (
     error.type === ErrorType.HttpRequest &&
     error.code === StatusCodes.REQUEST_TOO_LONG
   ) {
-    return
-  }
-
-  if (shouldIgnoreToast) {
     return
   }
 
@@ -67,16 +59,24 @@ const reportToBugSnag = (error: ThrownException) => {
 }
 
 const reportUnknownErrorToBugsnag = (error: Error) => {
+  if (!IS_PRODUCTION) {
+    console.error({ error, stack: error.stack })
+  }
+
   const newError = new Error(
     `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
 
   console.warn(newError.message, newError.stack)
+
+  if (BUGSNAG_KEY) {
+    useBugsnag().notify(newError)
+  }
 }
 
 const handleInsufficientGas = (error: ThrownException) => {
-  const modalStore = useModalStore()
   const bankStore = useBankStore()
+  const modalStore = useModalStore()
 
   if (bankStore.hasEnoughInjForGas) {
     return

@@ -1,25 +1,25 @@
 import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
+  streamTrades as grpcStreamTrades,
+  streamOrderbook as grpcStreamOrderbook,
+  cancelTradesStream as grpcCancelTradesStream,
   cancelOrderbookStream as grpcCancelOrderbookStream,
-  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream,
+  streamSubaccountTrades as grpcStreamSubaccountTrade,
+  streamSubaccountOrders as grpcStreamSubaccountOrders,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
-  cancelTradesStream as grpcCancelTradesStream,
-  streamOrderbook as grpcStreamOrderbook,
-  streamTrades as grpcStreamTrades,
-  streamSubaccountOrders as grpcStreamSubaccountOrders,
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
-  streamSubaccountTrades as grpcStreamSubaccountTrade
+  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
+export const cancelTradesStream = grpcCancelTradesStream
 export const cancelOrderbookStream = grpcCancelOrderbookStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrdersHistoryStream =
   grpcCancelSubaccountOrdersHistoryStream
-export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
-export const cancelTradesStream = grpcCancelTradesStream
 
 export const streamOrderbook = (marketId: string) => {
   const spotStore = useSpotStore()

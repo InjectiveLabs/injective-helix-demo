@@ -57,7 +57,6 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   OrderConfirm = 'order-confirm',
   PriceDeviation = 'price-deviation',
-  RefereeOnboarding = 'referee-onboarding',
   Terms = 'terms',
   USDCDetected = 'usdc-detected'
 }
@@ -226,6 +225,7 @@ export enum BridgeBusEvents {
 }
 
 export enum ActivityField {
+  Symbol = 'Symbol',
   Denom = 'Denom',
   Limit = 'Limit',
   Page = 'Page',

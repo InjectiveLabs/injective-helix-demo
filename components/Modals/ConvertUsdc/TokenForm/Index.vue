@@ -12,8 +12,8 @@ import {
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const modalStore = useModalStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -55,18 +55,18 @@ const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const baseBalance = computed(() =>
   props.balances.find(
-    (balance) => balance.token.denom === props.market.baseToken.denom
+    (balance) => balance.token.denom === props.market.baseDenom
   )
 )
 
 const quoteBalance = computed(() =>
   props.balances.find(
-    (balance) => balance.token.denom === props.market.quoteToken.denom
+    (balance) => balance.token.denom === props.market.quoteDenom
   )
 )
 
 const isWHSolUSDTBaseDenom = computed(
-  () => props.market.baseToken.denom === usdcTokenDenom.USDCso
+  () => props.market.baseDenom === usdcTokenDenom.USDCso
 )
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)

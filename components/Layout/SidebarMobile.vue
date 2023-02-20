@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { width } = useWindowSize()
+
 defineProps<{
   isOpenSidebar: Boolean
 }>()
@@ -10,6 +12,16 @@ const emit = defineEmits<{
 function handleSidebarClose() {
   emit('sidebar:closed')
 }
+
+watchDebounced(
+  width,
+  (newWidth, oldWidth) => {
+    if (oldWidth && newWidth >= 640) {
+      handleSidebarClose()
+    }
+  },
+  { debounce: 200, immediate: true }
+)
 </script>
 
 <template>
@@ -25,10 +37,12 @@ function handleSidebarClose() {
       >
         <div
           v-if="isOpenSidebar"
-          ref="sidebar"
-          class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-gray-900"
+          class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-gray-900 max-w-xs"
         >
-          <div class="flex flex-col h-0 flex-1" @click="handleSidebarClose">
+          <div
+            class="flex flex-col h-0 flex-1"
+            @click.stop="handleSidebarClose"
+          >
             <div class="flex-1 flex flex-col overflow-y-auto">
               <LayoutNav />
             </div>

@@ -164,7 +164,7 @@ watch(
               >
                 <CommonInsufficientGasInner />
               </div>
-              <PartialsCommonBalances :market="market" />
+              <PartialsCommonBalances v-else :market="market" />
             </CommonCard>
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div

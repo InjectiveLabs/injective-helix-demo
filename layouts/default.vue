@@ -8,20 +8,20 @@ import { BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
 
 const route = useRoute()
-const accountStore = useAccountStore()
 const appStore = useAppStore()
 const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
-const ninjaPassStore = useNinjaPassStore()
-const referralStore = useReferralStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
+
+const container = computed(() => document.getElementById('pro'))
 
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as string)
@@ -29,28 +29,29 @@ const showFooter = computed(() =>
 
 onMounted(() => {
   handleCosmoverseGiveawayCampaignTrack()
-  handleNinjaPassGiveaway()
 
-  Promise.all([walletStore.init()])
+  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 
   // Actions that should't block the app from loading
-  Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
-
-  handleMarketsInit()
+  Promise.all([
+    appStore.init(),
+    spotStore.init(),
+    derivativeStore.init(),
+    exchangeStore.initFeeDiscounts()
+  ])
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 onWalletConnected(() => {
   Promise.all([
+    bankStore.fetchBalances(),
     accountStore.fetchSubaccounts(),
-    bankStore.init(),
-    referralStore.init(),
-    tokenStore.fetchSupplyTokenMeta()
+    accountStore.streamSubaccountBalances()
   ]).catch($onError)
 })
 
@@ -64,23 +65,17 @@ function handleCosmoverseGiveawayCampaignTrack() {
   )
 }
 
-function handleNinjaPassGiveaway() {
-  ninjaPassStore.fetchCodes()
-}
+function onOpenSideBar() {
+  isOpenSidebar.value = true
 
-function handleMarketsInit() {
-  appStore.setMarketsLoadingState(StatusType.Loading)
-
-  Promise.all([spotStore.init(), derivativeStore.init()])
-    .catch($onError)
-    .finally(() => {
-      appStore.setMarketsLoadingState(StatusType.Idle)
-    })
+  container.value?.classList.add('overflow-y-hidden')
 }
 
 function onCloseSideBar() {
   if (isOpenSidebar.value) {
     isOpenSidebar.value = false
+
+    container.value?.classList.remove('overflow-y-hidden')
   }
 }
 </script>
@@ -91,8 +86,8 @@ function onCloseSideBar() {
     class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
   >
     <transition name="page" appear>
-      <div>
-        <AppHocLoading :status="status">
+      <div class="min-h-screen w-full">
+        <AppHocLoading :status="status" class="h-full">
           <div class="w-full">
             <LayoutSidebarMobile
               v-bind="{
@@ -104,7 +99,7 @@ function onCloseSideBar() {
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
-                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:opened="onOpenSideBar"
                   @sidebar:closed="onCloseSideBar"
                 />
                 <main
@@ -136,12 +131,11 @@ function onCloseSideBar() {
         </AppHocLoading>
       </div>
     </transition>
-
-    <Notifications
+    <BaseNotifications
       class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
-        <Notification
+        <BaseNotification
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
         >
@@ -152,8 +146,8 @@ function onCloseSideBar() {
               @click="close"
             />
           </template>
-        </Notification>
+        </BaseNotification>
       </template>
-    </Notifications>
+    </BaseNotifications>
   </div>
 </template>

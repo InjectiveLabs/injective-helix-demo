@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BalanceWithTokenWithErc20Balance } from '@injectivelabs/sdk-ui-ts'
 
-const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -24,7 +24,7 @@ const status = reactive(new Status(StatusType.Idle))
 function handleSetAllowance() {
   status.setLoading()
 
-  tokenStore
+  peggyStore
     .setTokenAllowance(props.balanceWithToken)
     .then(() => {
       emit('allowance:set')

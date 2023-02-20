@@ -29,29 +29,29 @@ function handleClose() {
       class="text-xs"
     >
       <template #faucetLink>
-        <a
+        <NuxtLink
           target="_blank"
           class="text-blue-500"
-          :href="faucetUrl"
+          :to="faucetUrl"
           @click="handleClose"
         >
           {{ $t('insufficientGas.communityDrivenFaucet') }}
-        </a>
+        </NuxtLink>
       </template>
 
       <template #hubLink>
-        <a
+        <NuxtLink
           target="_blank"
           class="text-blue-500"
-          :href="hubUrl"
+          :to="hubUrl"
           @click="handleClose"
         >
           {{ $t('insufficientGas.injectiveHub') }}
-        </a>
+        </NuxtLink>
       </template>
     </i18n-t>
 
-    <a :href="hubUrl">
+    <NuxtLink :to="faucetUrl">
       <AppButton
         type="button"
         class="whitespace-nowrap w-full bg-blue-500 text-black"
@@ -62,6 +62,6 @@ function handleClose() {
           <BaseIcon name="external-link" class="w-3 h-3" />
         </div>
       </AppButton>
-    </a>
+    </NuxtLink>
   </div>
 </template>

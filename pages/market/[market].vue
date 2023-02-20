@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal, UiMarketWithToken } from '@/types'
 import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
 
@@ -15,32 +16,23 @@ const deprecatedMarket = deprecatedMarkets.find(
   (m) => m.slug === routeParamMarket
 )
 
-const market = ref<UiMarketWithToken | undefined>(undefined)
+const market = ref<UiDerivativeMarketWithToken | undefined>(undefined)
 
-function onLoad() {
+function onLoad(pageMarket: UiMarketWithToken) {
+  market.value = pageMarket as UiDerivativeMarketWithToken
+
   if (marketIsNew) {
     modalStore.openModal({ type: Modal.MarketNew })
   } else if (deprecatedMarket) {
     modalStore.openModal({ type: Modal.MarketDeprecated })
   }
 }
-
-onLoad()
 </script>
 
 <template>
   <PartialsTradingLayout hardcoded-slug="btc-usdt-perp" @loaded="onLoad">
-    <template #trading-panel>
-      <PartialsCommonBalances v-if="market" :market="market" />
-      <PartialsCommonTrading class="mt-1 flex-1" :market="market" />
-    </template>
-
-    <template #chart>
-      <PartialsTradingMarketStatsChart
-        v-if="market"
-        :market="market"
-        class="hidden lg:block"
-      />
+    <template #trading-form>
+      <PartialsTradingDerivativesTradingForm v-if="market" :market="market" />
     </template>
 
     <template #orders>

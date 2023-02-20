@@ -69,9 +69,7 @@ watch(isModalOpen, (newShowModalState) => {
 </script>
 
 <template>
-  <div v-if="walletStore.isUserWalletConnected">
-    <LayoutWalletDetails />
-  </div>
+  <LayoutWalletDetails v-if="walletStore.isUserWalletConnected" />
 
   <AppButton
     v-else

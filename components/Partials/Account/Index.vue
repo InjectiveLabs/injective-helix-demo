@@ -6,13 +6,14 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
+const bankStore = useBankStore()
+const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const accountStore = useAccountStore()
-const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
-const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useBalance()
 
@@ -62,13 +63,13 @@ function initBalances() {
   Promise.all([
     tokenStore.fetchBitcoinUsdPrice(),
     bankStore.fetchBankBalancesWithToken(),
+    spotStore.fetchUsdcConversionMarkets(),
     accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
     derivativeStore.streamMarketsMarkPrices(),
     positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
-    spotStore.fetchUsdcConversionMarkets(),
-    tokenStore.fetchErc20BalancesWithTokenAndPrice()
+    peggyStore.fetchErc20BalancesWithTokenAndPrice()
   ])
     .catch($onError)
     .finally(() => {
