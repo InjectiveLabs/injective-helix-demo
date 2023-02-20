@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -239,6 +240,27 @@ function handlePercentageChange(percentage: number) {
 
   return handleSpotPercentageChange()
 }
+
+watch(
+  () => props.formValues[TradeField.BaseAmount],
+  () => {
+    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
+      return
+    }
+
+    emit('update:formValue', {
+      field: TradeField.BaseAmount,
+      value: formatAmountToAllowableAmount(
+        props.formValues[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    })
+
+    emit('update:amount', {
+      isBaseAmount: true
+    })
+  }
+)
 </script>
 
 <template>
