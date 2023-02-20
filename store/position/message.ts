@@ -31,7 +31,6 @@ export const closePosition = async ({
   const { subaccount } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
   if (!isUserWalletConnected || !subaccount || !market) {
     return
@@ -52,14 +51,14 @@ export const closePosition = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
-    injectiveAddress,
     margin: '0',
+    injectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
+    feeRecipient: FEE_RECIPIENT,
+    price: liquidationPrice.toFixed(),
     subaccountId: subaccount.subaccountId,
     orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-    price: liquidationPrice.toFixed(),
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     })
@@ -79,7 +78,6 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
   if (!isUserWalletConnected || !subaccount || positions.length === 0) {
     return
@@ -115,23 +113,23 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
           value: position.quantity
         })
       } as {
+        price: string
+        marketId: string
+        quantity: string
+        orderType: DerivativeOrderSide
         messageType:
           | typeof MsgCreateBinaryOptionsMarketOrder
           | typeof MsgCreateDerivativeMarketOrder
-        orderType: DerivativeOrderSide
-        marketId: string
-        price: string
-        quantity: string
       }
     })
     .filter((p) => p !== undefined) as {
+    price: string
+    marketId: string
+    quantity: string
+    orderType: DerivativeOrderSide
     messageType:
       | typeof MsgCreateBinaryOptionsMarketOrder
       | typeof MsgCreateDerivativeMarketOrder
-    orderType: DerivativeOrderSide
-    marketId: string
-    price: string
-    quantity: string
   }[]
 
   const messages = formattedPositions.map((position) =>
@@ -139,12 +137,12 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
       injectiveAddress,
       margin: '0',
       triggerPrice: '0',
-      marketId: position.marketId,
-      subaccountId: subaccount.subaccountId,
-      orderType: derivativeOrderTypeToGrpcOrderType(position.orderType),
-      feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
       price: position.price,
-      quantity: position.quantity
+      quantity: position.quantity,
+      marketId: position.marketId,
+      feeRecipient: FEE_RECIPIENT,
+      subaccountId: subaccount.subaccountId,
+      orderType: derivativeOrderTypeToGrpcOrderType(position.orderType)
     })
   )
 
@@ -160,8 +158,8 @@ export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  market?: UiDerivativeMarketWithToken
   position: UiPosition
+  market?: UiDerivativeMarketWithToken
   reduceOnlyOrders: UiDerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
@@ -170,7 +168,6 @@ export const closePositionAndReduceOnlyOrders = async ({
   const { subaccount } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
   const actualMarket = market as UiDerivativeMarketWithToken
 
@@ -199,7 +196,7 @@ export const closePositionAndReduceOnlyOrders = async ({
         derivativeOrdersToCreate: [
           {
             orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-            feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+            feeRecipient: FEE_RECIPIENT,
             margin: '0',
             triggerPrice: '0',
             marketId: actualMarket.marketId,
@@ -217,17 +214,17 @@ export const closePositionAndReduceOnlyOrders = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
-    injectiveAddress,
     margin: '0',
+    injectiveAddress,
     triggerPrice: '0',
+    feeRecipient: FEE_RECIPIENT,
     marketId: actualMarket.marketId,
-    subaccountId: subaccount.subaccountId,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
     price: liquidationPrice.toFixed(),
+    subaccountId: subaccount.subaccountId,
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
-    })
+    }),
+    orderType: derivativeOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({

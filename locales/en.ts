@@ -207,8 +207,6 @@ export default {
     myAccount: 'My Account',
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
-    referral: 'Referral',
-    referralCode: 'Referral Code',
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',

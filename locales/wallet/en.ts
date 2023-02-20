@@ -62,16 +62,6 @@ export default {
     memoPlaceholder: 'Your memo'
   },
 
-  referralModal: {
-    title: 'New user onboarding',
-    header: 'Welcome to Helix!',
-    connectTheWallet: 'Connect the wallet',
-    confirm: 'Confirm',
-    usingReferCode: "You're using refer code",
-    enterCode: 'Enter code',
-    alreadyReferredToast: 'This address has already been referred'
-  },
-
   insufficientGas: {
     insufficientGas: 'Insufficient Funds for Gas',
     insufficientGasNoteDescription:

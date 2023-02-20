@@ -15,7 +15,6 @@ const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
-const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -50,7 +49,6 @@ onMounted(() => {
 
 onWalletConnected(() => {
   Promise.all([
-    referralStore.init(),
     bankStore.fetchBalances(),
     accountStore.fetchSubaccounts(),
     accountStore.streamSubaccountBalances()

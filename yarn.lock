@@ -1601,11 +1601,6 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/common-rpc@^1.0.2":
-  version "1.0.10"
-  resolved "https://registry.npmjs.org/@injectivelabs/common-rpc/-/common-rpc-1.0.10.tgz#19f4b16cf1b333c5f3f3b8edfb47b0c332ae5b9e"
-  integrity sha512-l6y0cgebkpEtv0LIszU5nOuzI3uXg9ky+g4smLBCoQN3dKGEsaIOKqtO5vGqPGoFqnAQ8arL7hVHF2K/Shs0jg==
-
 "@injectivelabs/contracts@1.0.107", "@injectivelabs/contracts@^1.0.107":
   version "1.0.107"
   resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.0.107.tgz#14b82a8b7606aae3b36ac709581f6ecd439fd768"
@@ -1642,15 +1637,6 @@
     "@improbable-eng/grpc-web" "^0.15.0"
     "@injectivelabs/ts-types" "^1.0.29"
     http-status-codes "^2.2.0"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
-"@injectivelabs/exceptions@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.npmjs.org/@injectivelabs/exceptions/-/exceptions-0.5.5.tgz#f47e42f7e00b07236e95d1a8963a4a528b0b29f6"
-  integrity sha512-xINDf/rNa8WBZpFLcOCORykBb/gaHNOFuv4Gyv4A7xDqKfA9H9UIsPn5fPmy6yIesl9dy9gmd13B4NE7zrIQ1Q==
-  dependencies:
-    "@injectivelabs/ts-types" "^0.5.4"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -1700,27 +1686,6 @@
   version "1.0.1-alpha.0"
   resolved "https://registry.npmjs.org/@injectivelabs/prettier-config/-/prettier-config-1.0.1-alpha.0.tgz#b3e7abf4b5da50aa8b58d05d01c5b105949bed2a"
   integrity sha512-86GWxldPJfBQUIhW0dWFWIPo/Qw703KWu5ag0AHlBRZbxi+vKSxxRXXcP5AUB9iuVcFNikdYptowdOvdk7Qh2w==
-
-"@injectivelabs/referral-api@^1.0.20":
-  version "1.0.26"
-  resolved "https://registry.npmjs.org/@injectivelabs/referral-api/-/referral-api-1.0.26.tgz#4fe1e0c9ddd447e64c60ce4000e8ecf31ecf6f27"
-  integrity sha512-sO5AvlOgZTAs6nGU9DLd8OLLy2KxGQc37WGsmFGOHf9hV02xt6AyBEANPUAwesV4TRdiWZM4AIf7ANxtIc094Q==
-
-"@injectivelabs/referral-consumer@0.5.7":
-  version "0.5.7"
-  resolved "https://registry.npmjs.org/@injectivelabs/referral-consumer/-/referral-consumer-0.5.7.tgz#60bae46ad0955e09b910fddd37306846a6cccf2a"
-  integrity sha512-XFYImbWTPIKxDHQ9H7r2H1sNMLW6OMPAnLDvETPWmb/HhJupoOVvGEkjRFAVRPIWDDIsOYPFHrFV80Vg/AXPBQ==
-  dependencies:
-    "@improbable-eng/grpc-web" "^0.15.0"
-    "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
-    "@injectivelabs/common-rpc" "^1.0.2"
-    "@injectivelabs/exceptions" "^0.5.5"
-    "@injectivelabs/referral-api" "^1.0.20"
-    "@injectivelabs/ts-types" "^0.5.4"
-    "@injectivelabs/utils" "^0.5.7"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-    snakecase-keys "^3.2.1"
 
 "@injectivelabs/sdk-ts@1.0.446", "@injectivelabs/sdk-ts@^1.0.446":
   version "1.0.446"
@@ -1824,14 +1789,6 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.5.4.tgz#d322dd8f8ad9b291e1c447f9d1c631c982491d92"
-  integrity sha512-ocBdRFB7nHf9ja+uTzle2m3NLntQ1j9fJWt0TuW/tXuDzvlVIARSB/ycRVgUQBTDxh1HY1r66ARFwaof6rCoLg==
-  dependencies:
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
 "@injectivelabs/ui-shared@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.1.0.tgz#38f79a7c56c51c578dee8bc9b7615607ced09eaf"
@@ -1851,20 +1808,6 @@
     axios "^0.21.1"
     bignumber.js "^9.0.1"
     http-status-codes "^2.2.0"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-    snakecase-keys "^5.1.2"
-    store2 "^2.12.0"
-
-"@injectivelabs/utils@^0.5.7":
-  version "0.5.7"
-  resolved "https://registry.npmjs.org/@injectivelabs/utils/-/utils-0.5.7.tgz#6408956f6624a0bd80260cdda85405b9b251e9db"
-  integrity sha512-8LrWsBeBCcVtZcuafh4SWGwTJTW9EHe7wq3n6MNGf288LVmvUsAL5Er6BYT8V7qVTW7H+FSNSJS9XbjlajejBg==
-  dependencies:
-    "@injectivelabs/exceptions" "^0.5.5"
-    "@injectivelabs/ts-types" "^0.5.4"
-    axios "^0.21.1"
-    bignumber.js "^9.0.1"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
     snakecase-keys "^5.1.2"
@@ -15236,14 +15179,6 @@ snake-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-snakecase-keys@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/snakecase-keys/-/snakecase-keys-3.2.1.tgz#ce5d1a2de8a93c939d7992f76f2743aa59f3d5ad"
-  integrity sha512-CjU5pyRfwOtaOITYv5C8DzpZ8XA/ieRsDpr93HI2r6e3YInC6moZpSQbmUtg8cTk58tq2x3jcG2gv+p1IZGmMA==
-  dependencies:
-    map-obj "^4.1.0"
-    to-snake-case "^1.0.0"
-
 snakecase-keys@^5.1.2, snakecase-keys@^5.4.1:
   version "5.4.5"
   resolved "https://registry.npmjs.org/snakecase-keys/-/snakecase-keys-5.4.5.tgz#1d452c1557faf8d68f17f04a4991ccfd27afa239"
@@ -16060,31 +15995,12 @@ to-fast-properties@^2.0.0:
   resolved "https://registry.npmjs.org/to-fast-properties/-/to-fast-properties-2.0.0.tgz#dc5e698cbd079265bc73e0377681a4e4e83f616e"
   integrity sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==
 
-to-no-case@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/to-no-case/-/to-no-case-1.0.2.tgz#c722907164ef6b178132c8e69930212d1b4aa16a"
-  integrity sha512-Z3g735FxuZY8rodxV4gH7LxClE4H0hTIyHNIHdk+vpQxjLm0cwnKXq/OFVZ76SOQmto7txVcwSCwkU5kqp+FKg==
-
 to-regex-range@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz#1648c44aae7c8d988a326018ed72f5b4dd0392e4"
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
-
-to-snake-case@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/to-snake-case/-/to-snake-case-1.0.0.tgz#ce746913897946019a87e62edfaeaea4c608ab8c"
-  integrity sha512-joRpzBAk1Bhi2eGEYBjukEWHOe/IvclOkiJl3DtA91jV6NwQ3MwXA4FHYeqk8BNp/D8bmi9tcNbRu/SozP0jbQ==
-  dependencies:
-    to-space-case "^1.0.0"
-
-to-space-case@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/to-space-case/-/to-space-case-1.0.0.tgz#b052daafb1b2b29dc770cea0163e5ec0ebc9fc17"
-  integrity sha512-rLdvwXZ39VOn1IxGL3V6ZstoTbwLRckQmn/U8ZDLuWwIXNpuZDhQ3AiRUlhTbOXFVE9C+dR51wM0CBDhk31VcA==
-  dependencies:
-    to-no-case "^1.0.0"
 
 toggle-selection@^1.0.6:
   version "1.0.6"

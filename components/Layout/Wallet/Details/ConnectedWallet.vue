@@ -87,7 +87,6 @@ function copyInjectiveAddress() {
           </div>
         </div>
         <LayoutWalletDetailsTierLevel />
-        <LayoutWalletDetailsReferralCode />
       </div>
     </transition>
   </div>

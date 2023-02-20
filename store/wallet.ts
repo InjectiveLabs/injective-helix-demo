@@ -92,7 +92,6 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const exchangeStore = useExchangeStore()
-      const referralStore = useReferralStore()
 
       useEventBus(BusEvents.WalletConnected).emit()
 
@@ -111,8 +110,6 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
       })
-
-      await referralStore.init()
     },
 
     async isMetamaskInstalled() {
@@ -372,7 +369,6 @@ export const useWalletStore = defineStore('wallet', {
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
-      const referralStore = useReferralStore()
       const derivativeStore = useDerivativeStore()
 
       await walletStrategy.disconnectWallet()
@@ -386,7 +382,6 @@ export const useWalletStore = defineStore('wallet', {
       peggyStore.$reset()
       activityStore.$reset()
       positionStore.$reset()
-      referralStore.$reset()
     },
 
     reset() {
