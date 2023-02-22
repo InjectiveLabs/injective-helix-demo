@@ -2,12 +2,10 @@ import {
   DerivativeOrderSide,
   DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
-import { BigNumber } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamsTrades,
-  streamOrderbook as grpcStreamsOrderbook,
-  streamOrderbookV2 as grpcStreamsOrderbookV2,
+  streamOrderbookUpdate as grpcStreamOrderbookUpdate,
   streamSubaccountOrders as grpcStreamsSubaccountOrders,
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
   streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
@@ -17,7 +15,7 @@ import {
   streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream
 } from '@/app/client/streams/derivatives'
-import { updateOrderbookRecord } from '@/app/utils/market'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
@@ -26,27 +24,10 @@ export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrderHistoryStream =
   grpcCancelSubaccountOrderHistoryStream
 
-export const streamOrderbook = (marketId: string) => {
+export const streamOrderbookUpdate = (marketId: string) => {
   const derivativeStore = useDerivativeStore()
 
-  grpcStreamsOrderbook({
-    marketId,
-    callback: ({ orderbook }) => {
-      if (!orderbook) {
-        return
-      }
-
-      derivativeStore.$patch({
-        orderbook
-      })
-    }
-  })
-}
-
-export const streamOrderbookV2 = (marketId: string) => {
-  const derivativeStore = useDerivativeStore()
-
-  grpcStreamsOrderbookV2({
+  grpcStreamOrderbookUpdate({
     marketId,
     callback: ({ orderbook }) => {
       if (!orderbook) {
@@ -56,34 +37,34 @@ export const streamOrderbookV2 = (marketId: string) => {
       /**
        * The current orderbook doesn't exist
        **/
-      if (!derivativeStore.orderbookV2) {
+      if (!derivativeStore.orderbook) {
         derivativeStore.$patch({
-          orderbookV2: orderbook
+          orderbook
         })
       }
 
-      const sequence = derivativeStore.orderbookV2?.sequence || 0
+      const sequence = derivativeStore.orderbook?.sequence || 0
 
       /**
        * The current exists and we need to update it
        **/
       if (sequence < orderbook.sequence) {
-        const newBuys = updateOrderbookRecord(
-          derivativeStore.buys,
-          orderbook.buys
-        ).sort((a, b) => new BigNumber(a.price).minus(b.price).toNumber())
-        const newSells = updateOrderbookRecord(
-          derivativeStore.sells,
-          orderbook.sells
-        ).sort((a, b) => new BigNumber(b.price).minus(a.price).toNumber())
-
-        derivativeStore.$patch({
-          orderbookV2: {
-            sequence: orderbook.sequence,
-            buys: newBuys,
-            sells: newSells
-          }
+        const newBuys = combineOrderbookRecords({
+          isBuy: true,
+          updatedRecords: orderbook.buys,
+          currentRecords: derivativeStore.buys
         })
+        const newSells = combineOrderbookRecords({
+          isBuy: false,
+          updatedRecords: orderbook.sells,
+          currentRecords: derivativeStore.sells
+        })
+
+        derivativeStore.orderbook = {
+          sequence: orderbook.sequence,
+          buys: newBuys,
+          sells: newSells
+        }
       }
     }
   })

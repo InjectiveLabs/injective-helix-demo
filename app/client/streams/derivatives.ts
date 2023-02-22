@@ -6,9 +6,9 @@ import {
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
   DerivativeOrderbookStreamCallback,
-  DerivativeOrderbookV2StreamCallback,
   OraclePricesByMarketsStreamCallback,
-  DerivativeOrderHistoryStreamCallback
+  DerivativeOrderHistoryStreamCallback,
+  DerivativeOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { ENDPOINTS } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
@@ -58,14 +58,14 @@ export const streamOrderbook = ({
   })
 }
 
-export const streamOrderbookV2 = ({
+export const streamOrderbookUpdate = ({
   marketId,
   callback
 }: {
   marketId: string
-  callback: DerivativeOrderbookV2StreamCallback
+  callback: DerivativeOrderbookUpdateStreamCallback
 }) => {
-  const streamFn = derivativesMarketStream.streamDerivativeOrderbookV2.bind(
+  const streamFn = derivativesMarketStream.streamDerivativeOrderbookUpdate.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
@@ -76,7 +76,7 @@ export const streamOrderbookV2 = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: StreamType.DerivativesOrderbookV2
+    key: StreamType.DerivativesOrderbookUpdate
   })
 }
 

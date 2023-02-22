@@ -3,8 +3,8 @@ import {
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback,
   SpotOrderbookStreamCallback,
-  SpotOrderbookV2StreamCallback,
   SpotOrderHistoryStreamCallback,
+  SpotOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { ENDPOINTS } from '@/app/utils/constants'
@@ -17,8 +17,8 @@ export const cancelOrderbookStream = () => {
   streamProvider.cancel(StreamType.SpotOrderbook)
 }
 
-export const cancelOrderbookV2Stream = () => {
-  streamProvider.cancel(StreamType.SpotOrderbookV2)
+export const cancelOrderbookUpdateStream = () => {
+  streamProvider.cancel(StreamType.SpotOrderbookUpdate)
 }
 
 export const cancelTradesStream = () => {
@@ -57,14 +57,15 @@ export const streamOrderbook = ({
   })
 }
 
-export const streamOrderbookV2 = ({
+export const streamOrderbookUpdate = ({
   marketId,
   callback
 }: {
   marketId: string
-  callback: SpotOrderbookV2StreamCallback
+  callback: SpotOrderbookUpdateStreamCallback
 }) => {
-  const streamFn = spotMarketStream.streamSpotOrderbookV2.bind(spotMarketStream)
+  const streamFn =
+    spotMarketStream.streamSpotOrderbookUpdate.bind(spotMarketStream)
   const streamFnArgs = {
     marketIds: [marketId],
     callback
@@ -73,7 +74,7 @@ export const streamOrderbookV2 = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: StreamType.SpotOrderbookV2
+    key: StreamType.SpotOrderbookUpdate
   })
 }
 

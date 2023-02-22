@@ -3,7 +3,6 @@ import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
   UiSpotTrade,
-  UiSpotOrderbook,
   UiSpotLimitOrder,
   UiSpotTransformer,
   UiSpotOrderHistory,
@@ -12,44 +11,46 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  tokenService,
-  indexerSpotApi,
-  indexerRestSpotChronosApi
-} from '@/app/Services'
-import {
   streamTrades,
-  streamOrderbook,
-  streamOrderbookV2,
   cancelTradesStream,
-  cancelOrderbookStream,
+  streamOrderbookUpdate,
   streamSubaccountTrades,
   streamSubaccountOrders,
-  cancelOrderbookV2Stream,
+  cancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import {
-  batchCancelOrder,
   cancelOrder,
+  batchCancelOrder,
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
-import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
+import {
+  tokenService,
+  indexerSpotApi,
+  indexerRestSpotChronosApi
+} from '@/app/Services'
 import {
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
-import { ActivityFetchOptions, UiSpotOrderbookWithSequence, UiMarketAndSummary } from '@/types'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
+import {
+  UiMarketAndSummary,
+  ActivityFetchOptions,
+  UiSpotOrderbookWithSequence
+} from '@/types'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
-  orderbook?: UiSpotOrderbook
-  orderbookV2?: UiSpotOrderbookWithSequence
+  orderbook?: UiSpotOrderbookWithSequence
   trades: UiSpotTrade[]
   subaccountTrades: UiSpotTrade[]
   subaccountTradesCount: number
@@ -65,7 +66,6 @@ const initialStateFactory = (): SpotStoreState => ({
   markets: [],
   marketsSummary: [],
   orderbook: undefined,
-  orderbookV2: undefined,
   trades: [],
   subaccountTrades: [],
   subaccountTradesCount: 0,
@@ -80,8 +80,8 @@ const initialStateFactory = (): SpotStoreState => ({
 export const useSpotStore = defineStore('spot', {
   state: (): SpotStoreState => initialStateFactory(),
   getters: {
-    buys: (state) => state.orderbookV2?.buys || [],
-    sells: (state) => state.orderbookV2?.sells || [],
+    buys: (state) => state.orderbook?.buys || [],
+    sells: (state) => state.orderbook?.sells || [],
 
     activeMarketIds: (state) =>
       state.markets
@@ -116,13 +116,11 @@ export const useSpotStore = defineStore('spot', {
   },
   actions: {
     streamTrades,
-    streamOrderbook,
-    streamOrderbookV2,
     cancelTradesStream,
-    cancelOrderbookStream,
+    streamOrderbookUpdate,
     streamSubaccountOrders,
     streamSubaccountTrades,
-    cancelOrderbookV2Stream,
+    cancelOrderbookUpdateStream,
     streamSubaccountOrderHistory,
 
     cancelOrder,
@@ -138,11 +136,10 @@ export const useSpotStore = defineStore('spot', {
       const initialState = initialStateFactory()
 
       spotStore.$patch({
-        orderbook: initialState.orderbook,
-        orderbookV2: initialState.orderbookV2,
         trades: initialState.trades,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        orderbook: initialState.orderbook,
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountTrades: initialState.subaccountTrades
       })
     },
 
@@ -269,17 +266,27 @@ export const useSpotStore = defineStore('spot', {
     async fetchOrderbook(marketId: string) {
       const spotStore = useSpotStore()
 
-      spotStore.$patch({
-        orderbook: await indexerSpotApi.fetchOrderbook(marketId)
-      })
-    },
+      const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
+      const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
 
-    async fetchOrderbookV2(marketId: string) {
-      const spotStore = useSpotStore()
+      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+        spotStore.orderbook = latestOrderbook
+      }
 
-      spotStore.$patch({
-        orderbookV2: await indexerSpotApi.fetchOrderbookV2(marketId)
-      })
+      // handle race condition between fetch and stream
+      spotStore.orderbook = {
+        sequence: currentOrderbookSequence,
+        buys: combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: latestOrderbook.buys,
+          updatedRecords: spotStore.orderbook?.buys
+        }),
+        sells: combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: latestOrderbook.sells,
+          updatedRecords: spotStore.orderbook?.sells
+        })
+      }
     },
 
     async fetchTrades({

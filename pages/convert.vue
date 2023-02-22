@@ -111,10 +111,10 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
 
   Promise.all([
     spotStore.cancelTradesStream(),
-    spotStore.cancelOrderbookStream(),
+    spotStore.cancelOrderbookUpdateStream(),
     spotStore.streamTrades(market.marketId),
     spotStore.fetchOrderbook(market.marketId),
-    spotStore.streamOrderbook(market.marketId),
+    spotStore.streamOrderbookUpdate(market.marketId),
     spotStore.fetchTrades({ marketId: market.marketId })
   ]).finally(() => fetchStatus.setIdle())
 }

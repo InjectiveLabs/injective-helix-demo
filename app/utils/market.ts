@@ -1,8 +1,8 @@
 import {
-  UiDerivativeMarketWithToken,
+  MarketType,
   UiMarketHistory,
   UiSpotMarketWithToken,
-  MarketType
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BigNumber,
@@ -17,11 +17,11 @@ import {
   MarketRoute
 } from '@/types'
 import {
+  upcomingMarkets,
+  deprecatedMarkets,
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
-  slugsToExcludeFromEthereumCategory,
-  upcomingMarkets,
-  deprecatedMarkets
+  slugsToExcludeFromEthereumCategory
 } from '@/app/data/market'
 
 export const getMarketRoute = (
@@ -147,10 +147,10 @@ export const marketIsQuotePair = (
     return true
   }
 
-  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
   const marketBaseSymbol = market.baseToken.symbol.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
+  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
 
   if (activeQuote === MarketQuoteType.USDT) {
     return (
@@ -282,4 +282,25 @@ export const updateOrderbookRecord = (
     .filter((record) => new BigNumber(record.quantity).gt(0))
 
   return [...newRecords, ...affectedRecords]
+}
+
+export const combineOrderbookRecords = ({
+  isBuy,
+  updatedRecords = [],
+  currentRecords = []
+}: {
+  isBuy: boolean
+  updatedRecords?: PriceLevel[]
+  currentRecords?: PriceLevel[]
+}) => {
+  const combinedOrderbookRecords = updateOrderbookRecord(
+    currentRecords,
+    updatedRecords
+  )
+
+  return combinedOrderbookRecords.sort((a, b) => {
+    return isBuy
+      ? new BigNumber(b.price).minus(a.price).toNumber()
+      : new BigNumber(b.price).minus(a.price).toNumber()
+  })
 }

@@ -87,7 +87,7 @@ function updateAmount({
 onMounted(() => {
   Promise.all([
     spotStore.fetchOrderbook(props.market.marketId),
-    spotStore.streamOrderbook(props.market.marketId)
+    spotStore.streamOrderbookUpdate(props.market.marketId)
   ]).finally(() => fetchStatus.setIdle())
 })
 

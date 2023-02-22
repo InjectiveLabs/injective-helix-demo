@@ -7,10 +7,10 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
@@ -32,8 +32,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
     derivativeStore.streamMarketsMarkPrices(),
     derivativeStore.getMarketMarkPrice(derivativeMarket),
     derivativeStore.streamTrades(derivativeMarket.marketId),
-    derivativeStore.streamOrderbook(derivativeMarket.marketId),
-    derivativeStore.streamOrderbookV2(derivativeMarket.marketId)
+    derivativeStore.streamOrderbookUpdate(derivativeMarket.marketId)
   ]).catch($onError)
 
   market.value = derivativeMarket
@@ -90,10 +89,10 @@ function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
 
   Promise.all([
     derivativeStore.fetchSubaccountOrders(marketIds),
-    derivativeStore.fetchSubaccountOrderHistory(fetchOptions),
-    derivativeStore.fetchSubaccountConditionalOrders(marketIds),
     derivativeStore.fetchSubaccountTrades(fetchOptions),
-    positionStore.fetchSubaccountPositions(fetchOptions)
+    positionStore.fetchSubaccountPositions(fetchOptions),
+    derivativeStore.fetchSubaccountOrderHistory(fetchOptions),
+    derivativeStore.fetchSubaccountConditionalOrders(marketIds)
   ])
     .catch($onError)
     .finally(() => fetchStatus.setIdle())
@@ -101,10 +100,10 @@ function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
 
 function streamSubaccountOrderDetails(marketId?: string) {
   Promise.all([
-    positionStore.streamSubaccountPositions(marketId),
     derivativeStore.streamSubaccountOrders(marketId),
-    derivativeStore.streamSubaccountOrderHistory(marketId),
-    derivativeStore.streamSubaccountTrades(marketId)
+    derivativeStore.streamSubaccountTrades(marketId),
+    positionStore.streamSubaccountPositions(marketId),
+    derivativeStore.streamSubaccountOrderHistory(marketId)
   ])
 }
 
