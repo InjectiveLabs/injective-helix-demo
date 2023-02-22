@@ -92,10 +92,7 @@ function handleViewFromRoute() {
 }
 
 function refreshBalances() {
-  Promise.all([
-    bankStore.fetchBankBalancesWithToken(),
-    derivativeStore.fetchSubaccountOrders()
-  ])
+  Promise.all([derivativeStore.fetchSubaccountOrders()])
 }
 
 function refreshUsdTokenPrice() {
