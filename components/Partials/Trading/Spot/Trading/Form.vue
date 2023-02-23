@@ -20,12 +20,12 @@ import {
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
+const bankStore = useBankStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
-const { success } = useNotifications()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 
 const {
   values,
@@ -96,47 +96,21 @@ const orderTypeToSubmit = computed(() => {
 })
 
 const baseAvailableBalance = computed(() => {
-  if (!accountStore.subaccount || !accountStore.subaccount.balances) {
-    return ZERO_IN_BASE
-  }
+  const balance = bankStore.balanceMap[props.market.baseDenom] || '0'
 
-  const balance = accountStore.subaccount.balances.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market.baseDenom.toLowerCase()
+  const baseAvailableBalance = new BigNumberInWei(balance).toBase(
+    props.market.baseToken.decimals
   )
-
-  if (!balance) {
-    return ZERO_IN_BASE
-  }
-
-  const baseAvailableBalance = new BigNumberInWei(
-    balance.availableBalance || 0
-  ).toBase(props.market.baseToken.decimals)
-
-  if (baseAvailableBalance.isNaN()) {
-    return ZERO_IN_BASE
-  }
 
   return baseAvailableBalance
 })
 
 const quoteAvailableBalance = computed(() => {
-  if (!accountStore.subaccount) {
-    return ZERO_IN_BASE
-  }
+  const balance = bankStore.balanceMap[props.market.quoteDenom] || '0'
 
-  const balance = accountStore.subaccount.balances.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
+  const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
+    props.market.quoteToken.decimals
   )
-
-  if (!balance) {
-    return ZERO_IN_BASE
-  }
-
-  const quoteAvailableBalance = new BigNumberInWei(
-    balance.availableBalance || 0
-  ).toBase(props.market.quoteToken.decimals)
 
   if (quoteAvailableBalance.isNaN()) {
     return ZERO_IN_BASE
@@ -289,9 +263,9 @@ function submitLimitOrder() {
 
   spotStore
     .submitLimitOrder({
+      market: props.market,
       price: limitPrice.value,
       quantity: baseAmount.value,
-      market: props.market,
       orderType: orderTypeToSubmit.value
     })
     .then(() => {

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSubaccountBalance } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, UiMarketWithToken } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const accountStore = useAccountStore()
-const bankStore = useBankStore()
 const modalStore = useModalStore()
+
+const { balancesWithToken } = useBalance()
 
 const props = defineProps({
   market: {
@@ -24,17 +23,17 @@ const hasUsdcPeggyBalance = computed(() => {
     return false
   }
 
-  const peggyUsdcBankBalance = bankStore.bankBalancesWithToken.find(
+  const peggyUsdcBankBalance = balancesWithToken.value.find(
     (balance) =>
       usdcTokenDenom.USDC.toLowerCase() === balance.token.denom.toLowerCase()
   )
-  const peggyUsdcSubaccountBalance = accountStore.subaccount?.balances.find(
-    (balance: UiSubaccountBalance) =>
+  const peggyUsdcSubaccountBalance = balancesWithToken.value.find(
+    (balance) =>
       usdcTokenDenom.USDC.toLowerCase() === balance.denom.toLowerCase()
   )
 
   return new BigNumberInBase(peggyUsdcBankBalance?.balance || 0)
-    .plus(peggyUsdcSubaccountBalance?.totalBalance || 0)
+    .plus(peggyUsdcSubaccountBalance?.balance || 0)
     .gt(0)
 })
 

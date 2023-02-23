@@ -85,10 +85,6 @@ function handleDepositClick() {
 function handleWithdrawClick() {
   useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit()
 }
-
-function handleTransferClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Transfer).emit()
-}
 </script>
 
 <template>
@@ -143,12 +139,6 @@ function handleTransferClick() {
       <AppButton class="border border-blue-500" @click="handleWithdrawClick">
         <span class="text-blue-500 font-semibold">
           {{ $t('account.withdraw') }}
-        </span>
-      </AppButton>
-
-      <AppButton class="border border-blue-500" @click="handleTransferClick">
-        <span class="text-blue-500 font-semibold">
-          {{ $t('account.transfer') }}
         </span>
       </AppButton>
     </div>

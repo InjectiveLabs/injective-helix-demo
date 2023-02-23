@@ -34,8 +34,8 @@ const {
 )
 
 const {
-  valueToString: bankBalanceInString,
-  valueToBigNumber: bankBalanceInBigNumber
+  valueToString: totalBalanceInString,
+  valueToBigNumber: totalBalanceInBigNumber
 } = useBigNumberFormatter(
   computed(() => props.balance.totalBalance),
   {
@@ -90,10 +90,10 @@ function handleOpenAssetDetailsModal() {
             </span>
 
             <span
-              v-else-if="bankBalanceInBigNumber.gt(0)"
+              v-else-if="totalBalanceInBigNumber.gt(0)"
               class="font-mono text-sm text-right"
             >
-              {{ bankBalanceInString }}
+              {{ totalBalanceInString }}
             </span>
 
             <span v-else> &mdash; </span>

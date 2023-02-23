@@ -92,15 +92,15 @@ export const streamTrades = (marketId: string) => {
 export const streamSubaccountOrders = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !defaultSubaccountId) {
     return
   }
 
   grpcStreamSubaccountOrders({
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -151,15 +151,15 @@ export const streamSubaccountOrders = (marketId?: string) => {
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !defaultSubaccountId) {
     return
   }
 
   grpcStreamSubaccountOrderHistory({
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -212,16 +212,16 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !defaultSubaccountId) {
     return
   }
 
   grpcStreamSubaccountTrade({
     marketId,
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return

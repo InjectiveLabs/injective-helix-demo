@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>()
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountBalance),
+  computed(() => props.balance.availableBalance),
   {
     decimalPlaces: props.maxDecimals
   }

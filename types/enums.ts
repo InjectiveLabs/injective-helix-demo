@@ -135,6 +135,7 @@ export enum StreamType {
   OraclePrices = 'oracle-prices',
   DerivativesTrades = 'derivatives-trades',
   DerivativesOrders = 'derivatives-orders',
+  BankBalance = 'bank-balance',
   SubaccountBalances = 'subaccount-balances',
   SpotOrderbookUpdate = 'spot-orderbook-update',
   DerivativesPositions = 'derivatives-positions',
@@ -202,8 +203,6 @@ export enum BalanceHeaderType {
   None = 'none',
   Asset = 'asset',
   Total = 'total',
-  Wallet = 'wallet',
-  TradingAccount = 'trading-account',
   Available = 'available',
   Value = 'value'
 }

@@ -6,9 +6,9 @@ import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const route = useRoute()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 
 const formValues = useFormValues<TradeForm>()
 
@@ -40,7 +40,9 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
+const { balancesWithToken } = useBalance()
+const { tradableSlugMap, tradableTokenMaps } =
+  useConvertFormatter(balancesWithToken)
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
