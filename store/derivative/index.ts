@@ -3,7 +3,6 @@ import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   MarketType,
   UiDerivativeTrade,
-  UiDerivativeOrderbook,
   UiDerivativeLimitOrder,
   UiDerivativeTransformer,
   UiDerivativeOrderHistory,
@@ -22,19 +21,6 @@ import {
   DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
 import {
-  IS_DEVNET,
-  MARKETS_SLUGS,
-  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-} from '@/app/utils/constants'
-import {
-  tokenService,
-  indexerOracleApi,
-  indexerDerivativesApi,
-  indexerRestDerivativesChronosApi
-} from '@/app/Services'
-import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import { marketHasRecentlyExpired } from '@/app/utils/market'
-import {
   cancelOrder,
   batchCancelOrder,
   submitLimitOrder,
@@ -44,7 +30,7 @@ import {
 } from '@/store/derivative/message'
 import {
   streamTrades,
-  streamOrderbook,
+  streamOrderbookUpdate,
   streamSubaccountTrades,
   streamSubaccountOrders,
   streamMarketsMarkPrices,
@@ -55,9 +41,26 @@ import {
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
 import {
-  ActivityFetchOptions,
+  combineOrderbookRecords,
+  marketHasRecentlyExpired
+} from '@/app/utils/market'
+import {
+  tokenService,
+  indexerOracleApi,
+  indexerDerivativesApi,
+  indexerRestDerivativesChronosApi
+} from '@/app/Services'
+import {
+  IS_DEVNET,
+  MARKETS_SLUGS,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
+import {
+  UiMarketAndSummary,
   MarketMarkPriceMap,
-  UiMarketAndSummary
+  ActivityFetchOptions,
+  UiDerivativeOrderbookWithSequence
 } from '@/types'
 
 type DerivativeStoreState = {
@@ -69,7 +72,7 @@ type DerivativeStoreState = {
   marketsSummary: UiDerivativeMarketSummary[]
   marketMarkPriceMap: MarketMarkPriceMap
   trades: UiDerivativeTrade[]
-  orderbook?: UiDerivativeOrderbook
+  orderbook?: UiDerivativeOrderbookWithSequence
   subaccountTrades: UiDerivativeTrade[]
   subaccountTradesCount: number
   subaccountOrders: UiDerivativeLimitOrder[]
@@ -139,7 +142,7 @@ export const useDerivativeStore = defineStore('derivative', {
     submitStopMarketOrder,
 
     streamTrades,
-    streamOrderbook,
+    streamOrderbookUpdate,
     streamSubaccountTrades,
     streamSubaccountOrders,
     streamMarketsMarkPrices,
@@ -292,9 +295,29 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchOrderbook(marketId: string) {
       const derivativeStore = useDerivativeStore()
 
-      derivativeStore.$patch({
-        orderbook: await indexerDerivativesApi.fetchOrderbook(marketId)
-      })
+      const currentOrderbookSequence = derivativeStore.orderbook?.sequence || 0
+      const latestOrderbook = await indexerDerivativesApi.fetchOrderbookV2(
+        marketId
+      )
+
+      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+        derivativeStore.orderbook = latestOrderbook
+      }
+
+      // handle race condition between fetch and stream
+      derivativeStore.orderbook = {
+        sequence: currentOrderbookSequence,
+        buys: combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: latestOrderbook.buys,
+          updatedRecords: derivativeStore.orderbook?.buys
+        }),
+        sells: combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: latestOrderbook.sells,
+          updatedRecords: derivativeStore.orderbook?.sells
+        })
+      }
     },
 
     async fetchTrades({
@@ -486,10 +509,10 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountStream() {
       const positionStore = usePositionStore()
 
-      positionStore.cancelSubaccountPositionsStream()
-      cancelSubaccountOrderHistoryStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
+      cancelSubaccountOrderHistoryStream()
+      positionStore.cancelSubaccountPositionsStream()
     },
 
     resetSubaccount() {

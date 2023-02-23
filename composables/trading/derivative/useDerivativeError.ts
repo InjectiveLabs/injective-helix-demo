@@ -1,45 +1,45 @@
 import type { Ref } from 'vue'
 import {
   MarketType,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
-  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE,
   UiPriceLevel,
   DerivativeOrderSide,
-  ZERO_IN_BASE
+  UiPerpetualMarketWithToken,
+  UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken,
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
-import { excludedPriceDeviationSlugs } from '@/app/data/market'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '@/app/utils/constants'
+import { excludedPriceDeviationSlugs } from '@/app/data/market'
+import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useDerivativeError({
   isBuy,
   market,
-  formValues,
   markPrice,
+  formValues,
   executionPrice,
   orderTypeReduceOnly,
   notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
+  notionalWithLeverageAndFees,
   notionalWithLeverageBasedOnWorstPrice,
-  notionalWithLeverageAndFees
 }: {
   isBuy: Ref<boolean>
-  formValues: Ref<TradeForm>
   markPrice: Ref<string>
+  formValues: Ref<TradeForm>
   executionPrice: Ref<BigNumberInBase>
   market: Ref<UiDerivativeMarketWithToken>
-  notionalWithLeverage: Ref<BigNumberInBase>
-  notionalWithLeverageBasedOnWorstPrice: Ref<BigNumberInBase>
-  notionalWithLeverageAndFees: Ref<BigNumberInBase>
   orderTypeReduceOnly: Ref<BigNumberInBase>
+  notionalWithLeverage: Ref<BigNumberInBase>
   quoteAvailableBalance: Ref<BigNumberInBase>
   worstPriceWithSlippage: Ref<BigNumberInBase>
+  notionalWithLeverageAndFees: Ref<BigNumberInBase>
+  notionalWithLeverageBasedOnWorstPrice: Ref<BigNumberInBase>
 }) {
   const derivativeStore = useDerivativeStore()
 

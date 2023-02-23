@@ -1,9 +1,9 @@
 import type { Ref } from 'vue'
 import {
-  DerivativeOrderSide,
+  ZERO_IN_BASE,
   UiPriceLevel,
+  DerivativeOrderSide,
   UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
@@ -21,9 +21,9 @@ export function useDerivativePrice({
   formValues,
   isBaseAmount
 }: {
-  market: Ref<UiDerivativeMarketWithToken>
   formValues: Ref<TradeForm>
   isBaseAmount: Ref<boolean>
+  market: Ref<UiDerivativeMarketWithToken>
 }) {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()

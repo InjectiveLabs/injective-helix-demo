@@ -130,22 +130,24 @@ export enum MarketQuoteType {
 }
 
 export enum StreamType {
-  SubaccountBalances = 'subaccount-balances',
-  SpotSubaccountOrders = 'spot-subaccount-orders',
-  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
-  SpotSubaccountTrades = 'spot-subaccount-trades',
-  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
-  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',
-  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
-  DerivativesSubaccountPositions = 'derivatives-positions-trades',
-  DerivativesOrderbook = 'derivatives-orderbook',
-  DerivativesTrades = 'derivatives-trades',
-  DerivativesOrders = 'derivatives-orders',
-  SpotOrderbook = 'spot-orderbook',
   SpotTrades = 'spot-trades',
   SpotOrders = 'spot-orders',
+  OraclePrices = 'oracle-prices',
+  SpotOrderbook = 'spot-orderbook',
+  DerivativesTrades = 'derivatives-trades',
+  DerivativesOrders = 'derivatives-orders',
+  SubaccountBalances = 'subaccount-balances',
+  SpotOrderbookUpdate = 'spot-orderbook-update',
+  DerivativesOrderbook = 'derivatives-orderbook',
   DerivativesPositions = 'derivatives-positions',
-  OraclePrices = 'oracle-prices'
+  SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountTrades = 'spot-subaccount-trades',
+  DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
+  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
+  DerivativesSubaccountPositions = 'derivatives-positions-trades',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history'
 }
 
 export enum AveragePriceOptions {

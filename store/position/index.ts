@@ -82,7 +82,7 @@ export const usePositionStore = defineStore('position', {
         return
       }
 
-      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooksV2(
         markets.map((market) => market.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
@@ -117,7 +117,7 @@ export const usePositionStore = defineStore('position', {
         return
       }
 
-      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooksV2(
         subaccountPositions.map((position) => position.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(

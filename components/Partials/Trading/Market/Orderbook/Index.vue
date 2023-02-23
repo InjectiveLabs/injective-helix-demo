@@ -1,28 +1,27 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import type { UseScrollReturn } from '@vueuse/core'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { createPopperLite } from '@popperjs/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
-  UiOrderbookPriceLevel,
-  UiOrderbookSummary,
-  UiPriceLevel,
-  UiDerivativeLimitOrder,
-  ZERO_IN_BASE,
   MarketType,
-  UiSpotLimitOrder
+  UiPriceLevel,
+  ZERO_IN_BASE,
+  UiSpotLimitOrder,
+  UiOrderbookSummary,
+  UiOrderbookPriceLevel,
+  UiDerivativeLimitOrder,
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  SpotOrderSide,
   DerivativeOrderSide,
-  PriceLevel,
-  SpotOrderSide
 } from '@injectivelabs/sdk-ts'
 import { vScroll } from '@vueuse/components'
-import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
-import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
+import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
+import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
 import { OrderbookLayout, TradingLayout, UiMarketWithToken } from '@/types'
 
 const appStore = useAppStore()
@@ -49,12 +48,13 @@ const subaccountOrders = computed<
   isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
 
-const buys = computed<PriceLevel[]>(() =>
-  isSpot ? spotStore.buys : derivativeStore.buys
-)
-const sells = computed<PriceLevel[]>(() =>
-  isSpot ? spotStore.sells : derivativeStore.sells
-)
+const buys = computed(() => {
+  return isSpot ? spotStore.buys : derivativeStore.buys
+})
+
+const sells = computed(() => {
+  return isSpot ? spotStore.sells : derivativeStore.sells
+})
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
