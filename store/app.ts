@@ -37,6 +37,7 @@ export interface UserBasedState {
   orderbookLayout: OrderbookLayout
   tradingLayout: TradingLayout
   ninjaPassWinnerModalViewed: boolean
+  userFeedbackModalViewed: boolean
   skipTradeConfirmationModal: boolean
 }
 
@@ -77,6 +78,7 @@ const initialStateFactory = (): AppStoreState => ({
     orderbookLayout: OrderbookLayout.Default,
     tradingLayout: TradingLayout.Left,
     ninjaPassWinnerModalViewed: false,
+    userFeedbackModalViewed: false,
     skipTradeConfirmationModal: false
   },
   announcements: [],

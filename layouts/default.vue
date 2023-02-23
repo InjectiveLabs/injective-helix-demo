@@ -4,12 +4,13 @@ import {
   amplitudeTracker,
   CosmoverseGiveawayCampaignArgs
 } from '@/app/providers/AmplitudeTracker'
-import { BusEvents } from '@/types'
+import { Modal, BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
 
 const route = useRoute()
 const appStore = useAppStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -29,6 +30,12 @@ const showFooter = computed(() =>
 
 onMounted(() => {
   handleCosmoverseGiveawayCampaignTrack()
+
+  if (!appStore.userState.userFeedbackModalViewed) {
+    setTimeout(() => {
+      modalStore.openModal({ type: Modal.UserFeedback })
+    }, 5000)
+  }
 
   Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
@@ -123,6 +130,7 @@ function onCloseSideBar() {
 
                 <ModalsInsufficientInjForGas />
                 <ModalsNinjaPassWinner />
+                <ModalsUserFeedback />
                 <AppConfetti />
                 <div id="modals" />
               </div>

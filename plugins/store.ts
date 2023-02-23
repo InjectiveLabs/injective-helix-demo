@@ -20,7 +20,8 @@ const stateToPersist = {
       },
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
-      ninjaPassWinnerModalViewed: false
+      ninjaPassWinnerModalViewed: false,
+      userFeedbackModalViewed: false
     }
   },
   wallet: {
