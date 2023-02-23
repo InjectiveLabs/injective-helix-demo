@@ -60,7 +60,7 @@ export interface TradeConfirmationModalData {
   triggerPriceSymbol?: string
 }
 
-export declare type TokenUsdPriceMap = Record<string, number>
+export type TokenUsdPriceMap = Record<string, number>
 
 export interface TabOption {
   value: string

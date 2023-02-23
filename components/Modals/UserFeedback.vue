@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { AmplitudeEvent, Modal } from '@/types'
+import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -29,6 +30,18 @@ function updateUserFeedbackModalViewed() {
   })
 
   handleClose()
+}
+
+function handleTakeSurveyClickEvent() {
+  amplitudeTracker.trackEvent(AmplitudeEvent.FebSurveyAccepted)
+
+  updateUserFeedbackModalViewed()
+}
+
+function handleRejectSurveyClickEvent() {
+  amplitudeTracker.trackEvent(AmplitudeEvent.FebSurveyRejected)
+
+  updateUserFeedbackModalViewed()
 }
 </script>
 
@@ -60,7 +73,7 @@ function updateUserFeedbackModalViewed() {
         class="whitespace-nowrap w-full bg-blue-500 text-blue-900 rounded mb-4"
         :to="url"
         target="_blank"
-        @click="updateUserFeedbackModalViewed"
+        @click="handleTakeSurveyClickEvent"
       >
         <div
           class="flex items-center justify-center py-2 text-blue-900 font-semibold text-sm"
@@ -71,7 +84,7 @@ function updateUserFeedbackModalViewed() {
 
       <AppButton
         class="bg-transparent w-full hover:bg-gray-700 font-semibold text-sm"
-        @click="updateUserFeedbackModalViewed"
+        @click="handleRejectSurveyClickEvent"
       >
         {{ $t('banners.userFeedback.notRightNow') }}
       </AppButton>

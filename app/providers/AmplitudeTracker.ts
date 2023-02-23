@@ -1,4 +1,3 @@
-import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   Identify,
   identify as amplitudeIdentify,
@@ -6,28 +5,29 @@ import {
   track
 } from '@amplitude/analytics-browser'
 import { BaseEvent } from '@amplitude/analytics-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import {
-  DerivativeOrderSide,
   MarketType,
-  SpotOrderSide
+  SpotOrderSide,
+  DerivativeOrderSide
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
-  AMPLITUDE_CLICK_PLACE_ORDER_COUNT,
+  AMPLITUDE_WALLET,
   AMPLITUDE_LOGIN_COUNT,
-  AMPLITUDE_TRANSFERS_MADE_COUNT,
   AMPLITUDE_VIP_TIER_LEVEL,
-  AMPLITUDE_WALLET
+  AMPLITUDE_TRANSFERS_MADE_COUNT,
+  AMPLITUDE_CLICK_PLACE_ORDER_COUNT,
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT
 } from '@/app/utils/vendor'
 import { AMPLITUDE_KEY } from '@/app/utils/constants'
-import {
-  AmplitudeEvents,
-  OrderAttemptStatus,
-  TradeClickOrigin,
-  TradeExecutionType,
-  TransferDirection
-} from '@/types'
 import { localStorage } from '@/app/Services'
+import {
+  AmplitudeEvent,
+  TradeClickOrigin,
+  TransferDirection,
+  OrderAttemptStatus,
+  TradeExecutionType
+} from '@/types'
 
 type TrackAmplitudeFn = <T extends string | BaseEvent>(
   args: T,
@@ -96,10 +96,6 @@ export class AmplitudeTracker {
     return identify
   }
 
-  submitWalletConnectClickedTrackEvent() {
-    trackAmplitude(AmplitudeEvents.ConnectClicked)
-  }
-
   submitWalletConnectedTrackEvent() {
     const { user } = this
     const identify = this.getIdentify()
@@ -111,14 +107,14 @@ export class AmplitudeTracker {
     identify.add(AMPLITUDE_LOGIN_COUNT, 1)
     amplitudeIdentify(identify)
 
-    trackAmplitude(AmplitudeEvents.Login, {
+    trackAmplitude(AmplitudeEvent.Login, {
       wallet: user.wallet,
       address: user.address
     })
   }
 
   submitWalletSelectedTrackEvent(wallet: Wallet) {
-    trackAmplitude(AmplitudeEvents.WalletSelected, {
+    trackAmplitude(AmplitudeEvent.WalletSelected, {
       wallet
     })
   }
@@ -141,7 +137,7 @@ export class AmplitudeTracker {
 
     amplitudeIdentify(identify)
 
-    trackAmplitude(AmplitudeEvents.TradeClicked, {
+    trackAmplitude(AmplitudeEvent.TradeClicked, {
       market,
       marketType,
       origin
@@ -183,7 +179,7 @@ export class AmplitudeTracker {
     identify.add(AMPLITUDE_CLICK_PLACE_ORDER_COUNT, 1)
     amplitudeIdentify(identify)
 
-    trackAmplitude(AmplitudeEvents.ClickPlaceOrder, {
+    trackAmplitude(AmplitudeEvent.ClickPlaceOrder, {
       amount,
       market,
       marketType,
@@ -237,7 +233,7 @@ export class AmplitudeTracker {
     identify.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
     amplitudeIdentify(identify)
 
-    trackAmplitude(AmplitudeEvents.AttemptPlaceOrder, {
+    trackAmplitude(AmplitudeEvent.AttemptPlaceOrder, {
       amount,
       market,
       marketType,
@@ -259,7 +255,7 @@ export class AmplitudeTracker {
     utmMedium,
     utmCampaign
   }: CosmoverseGiveawayCampaignArgs) {
-    trackAmplitude(AmplitudeEvents.CosmoverseGiveawayCampaign, {
+    trackAmplitude(AmplitudeEvent.CosmoverseGiveawayCampaign, {
       utm_source: utmSource,
       utm_medium: utmMedium,
       utm_campaign: utmCampaign
@@ -285,11 +281,22 @@ export class AmplitudeTracker {
     identify.add(AMPLITUDE_TRANSFERS_MADE_COUNT, 1)
     amplitudeIdentify(identify)
 
-    trackAmplitude(AmplitudeEvents.Transfer, {
+    trackAmplitude(AmplitudeEvent.Transfer, {
       transferDirection,
       token,
       amount
     })
+  }
+
+  trackEvent(event: AmplitudeEvent) {
+    const { user } = this
+    const identify = this.getIdentify()
+
+    if (user || identify) {
+      amplitudeIdentify(identify)
+    }
+
+    trackAmplitude(event)
   }
 }
 

@@ -155,14 +155,16 @@ export enum AveragePriceOptions {
   Percentage = 3
 }
 
-export enum AmplitudeEvents {
+export enum AmplitudeEvent {
+  Login = 'Login',
+  Transfer = 'Transfer',
+  TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  Login = 'Login',
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
-  TradeClicked = 'Trade Clicked',
-  Transfer = 'Transfer',
+  FebSurveyRejected = 'Feb 23 Survey - Rejected',
+  FebSurveyAccepted = 'Feb 23 Survey - Accepted',
   CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
 }
 
