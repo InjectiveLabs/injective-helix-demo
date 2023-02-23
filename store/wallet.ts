@@ -10,7 +10,6 @@ import {
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
-import { BusEvents, WalletConnectStatus } from '@/types'
 import { walletStrategy } from '@/app/wallet-strategy'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
@@ -18,6 +17,7 @@ import {
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
 import { IS_DEVNET } from '@/app/utils/constants'
+import { BusEvents, WalletConnectStatus } from '@/types'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -90,13 +90,11 @@ export const useWalletStore = defineStore('wallet', {
     async onConnect() {
       const bankStore = useBankStore()
       const walletStore = useWalletStore()
-      const accountStore = useAccountStore()
       const exchangeStore = useExchangeStore()
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await bankStore.fetchBalances()
-      await accountStore.fetchSubaccounts()
+      await bankStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
       amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
@@ -285,8 +283,8 @@ export const useWalletStore = defineStore('wallet', {
       const ethereumAddress = getEthereumAddress(injectiveAddress)
 
       walletStore.$patch({
-        addressConfirmation,
         injectiveAddress,
+        addressConfirmation,
         address: ethereumAddress,
         addresses: injectiveAddresses
       })
@@ -333,9 +331,9 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { wallet, injectiveAddress, address } = useWalletStore()
-      const { ethereumChainId, chainId } = useAppStore()
       const { hasEnoughInjForGas } = useBankStore()
+      const { ethereumChainId, chainId } = useAppStore()
+      const { wallet, injectiveAddress, address } = useWalletStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)
@@ -366,7 +364,6 @@ export const useWalletStore = defineStore('wallet', {
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
-      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
@@ -374,7 +371,6 @@ export const useWalletStore = defineStore('wallet', {
       await walletStrategy.disconnectWallet()
 
       walletStore.reset()
-      accountStore.reset()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
 

@@ -21,7 +21,6 @@ const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const { t } = useI18n()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -212,7 +211,7 @@ function handleWithdrawToInjective() {
 function handleTransferToTradingAccount() {
   status.setLoading()
 
-  accountStore
+  bankStore
     .deposit({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       token: formValues.value[BridgeField.Token]
@@ -277,7 +276,7 @@ function handleDeposit() {
 function handleTransferToBank() {
   status.setLoading()
 
-  accountStore
+  bankStore
     .withdraw({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       token: formValues.value[BridgeField.Token]

@@ -45,10 +45,10 @@ export const useActivityStore = defineStore('activity', {
 
     async fetchTradingRewardsHistory() {
       const activityStore = useActivityStore()
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
+      if (!isUserWalletConnected || !defaultSubaccountId || !injectiveAddress) {
         return
       }
 
@@ -64,10 +64,10 @@ export const useActivityStore = defineStore('activity', {
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
 
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -76,7 +76,7 @@ export const useActivityStore = defineStore('activity', {
       const { fundingPayments: subaccountFundingPayments, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
+          subaccountId: defaultSubaccountId,
           pagination: options?.pagination
         })
 

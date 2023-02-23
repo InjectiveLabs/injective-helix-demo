@@ -93,28 +93,6 @@ const sortedBalances = computed(() => {
           return totalB.minus(totalA).toNumber()
         }
 
-        case BalanceHeaderType.Wallet: {
-          const totalA = new BigNumberInBase(a.bankBalance)
-          const totalB = new BigNumberInBase(b.bankBalance)
-
-          if (totalA.eq(totalB)) {
-            return b.token.symbol.localeCompare(a.token.symbol)
-          }
-
-          return totalB.minus(totalA).toNumber()
-        }
-
-        case BalanceHeaderType.TradingAccount: {
-          const totalA = new BigNumberInBase(a.subaccountBalance)
-          const totalB = new BigNumberInBase(b.subaccountBalance)
-
-          if (totalA.eq(totalB)) {
-            return b.token.symbol.localeCompare(a.token.symbol)
-          }
-
-          return totalB.minus(totalA).toNumber()
-        }
-
         case BalanceHeaderType.Value: {
           const totalInUsdA = new BigNumberInBase(a.totalBalanceInUsd)
           const totalInUsdB = new BigNumberInBase(b.totalBalanceInUsd)

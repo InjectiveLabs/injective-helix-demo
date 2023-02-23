@@ -28,6 +28,7 @@ import {
   ChainGrpcInsuranceFundApi,
   IndexerGrpcDerivativesApi,
   IndexerRestMarketChronosApi,
+  IndexerGrpcAccountPortfolioApi,
   IndexerRestLeaderboardChronosApi,
   IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
@@ -55,6 +56,9 @@ export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
+  ENDPOINTS.indexer
+)
 
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(

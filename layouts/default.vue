@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
+import { BusEvents } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -9,7 +9,6 @@ const bankStore = useBankStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -35,18 +34,15 @@ onMounted(() => {
     appStore.init(),
     spotStore.init(),
     derivativeStore.init(),
-    exchangeStore.initFeeDiscounts()
+    exchangeStore.initFeeDiscounts(),
+    tokenStore.fetchSupplyTokenMeta()
   ])
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 onWalletConnected(() => {
-  Promise.all([
-    bankStore.fetchBalances(),
-    accountStore.fetchSubaccounts(),
-    accountStore.streamSubaccountBalances()
-  ]).catch($onError)
+  Promise.all([bankStore.fetchAccountPortfolio()]).catch($onError)
 })
 
 function onOpenSideBar() {

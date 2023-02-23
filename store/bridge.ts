@@ -122,10 +122,10 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
       const bridgeStore = useBridgeStore()
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -133,7 +133,7 @@ export const useBridgeStore = defineStore('bridge', {
 
       const { transfers, pagination } =
         await indexerAccountApi.fetchSubaccountHistory({
-          subaccountId: subaccount.subaccountId,
+          subaccountId: defaultSubaccountId,
           denom: filters?.denom,
           pagination: options?.pagination
         })
