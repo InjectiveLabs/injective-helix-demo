@@ -1,11 +1,15 @@
-import { Token } from '@injectivelabs/token-metadata'
-import { SubaccountBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   SpotOrderSide,
   DerivativeOrderSide,
   PointsMultiplier
 } from '@injectivelabs/sdk-ts'
+import {
+  UiSpotOrderbook,
+  UiDerivativeOrderbook,
+  SubaccountBalanceWithToken,
+} from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { TradeExecutionType } from '@/types'
 
@@ -60,7 +64,7 @@ export interface TradeConfirmationModalData {
   triggerPriceSymbol?: string
 }
 
-export declare type TokenUsdPriceMap = Record<string, number>
+export type TokenUsdPriceMap = Record<string, number>
 
 export interface TabOption {
   value: string
@@ -88,9 +92,19 @@ export interface DropdownOptionWithToken extends BaseDropdownOption {
   token?: Token
 }
 
-export * from './activity'
-export * from './balance'
-export * from './bridge'
+export interface UiSpotOrderbookWithSequence extends UiSpotOrderbook {
+  sequence: number
+}
+
+export interface UiDerivativeOrderbookWithSequence
+  extends UiDerivativeOrderbook {
+  sequence: number
+}
+
+
 export * from './enums'
-export * from './states'
 export * from './trade'
+export * from './bridge'
+export * from './states'
+export * from './balance'
+export * from './activity'

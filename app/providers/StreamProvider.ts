@@ -1,27 +1,29 @@
 import { StreamStatusResponse } from '@injectivelabs/ts-types'
-import { subaccountStream } from '../client/streams/account'
-import { spotMarketStream } from '../client/streams/spot'
+import { spotMarketStream } from '@/app/client/streams/spot'
+import { subaccountStream } from '@/app/client/streams/account'
 import {
-  derivativesMarketStream,
-  oracleStream
-} from '../client/streams/derivatives'
+  oracleStream,
+  derivativesMarketStream
+} from '@/app/client/streams/derivatives'
 import { StreamType } from '@/types'
 
 type StreamFn =
-  | typeof derivativesMarketStream.streamDerivativeMarket
-  | typeof derivativesMarketStream.streamDerivativeOrderbook
-  | typeof derivativesMarketStream.streamDerivativeOrders
-  | typeof derivativesMarketStream.streamDerivativeOrderHistory
-  | typeof derivativesMarketStream.streamDerivativePositions
-  | typeof derivativesMarketStream.streamDerivativeTrades
-  | typeof spotMarketStream.streamSpotOrderbook
+  | typeof oracleStream.streamOraclePrices
   | typeof spotMarketStream.streamSpotMarket
   | typeof spotMarketStream.streamSpotOrders
-  | typeof spotMarketStream.streamSpotOrderHistory
   | typeof spotMarketStream.streamSpotTrades
-  | typeof oracleStream.streamOraclePrices
+  | typeof spotMarketStream.streamSpotOrderbook
+  | typeof spotMarketStream.streamSpotOrderHistory
   | typeof oracleStream.streamOraclePricesByMarkets
   | typeof subaccountStream.streamSubaccountBalance
+  | typeof spotMarketStream.streamSpotOrderbookUpdate
+  | typeof derivativesMarketStream.streamDerivativeMarket
+  | typeof derivativesMarketStream.streamDerivativeOrders
+  | typeof derivativesMarketStream.streamDerivativeTrades
+  | typeof derivativesMarketStream.streamDerivativeOrderbook
+  | typeof derivativesMarketStream.streamDerivativePositions
+  | typeof derivativesMarketStream.streamDerivativeOrderHistory
+  | typeof derivativesMarketStream.streamDerivativeOrderbookUpdate
 
 type Stream = ReturnType<StreamFn>
 

@@ -49,10 +49,10 @@ const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
 
 onMounted(() => {
   Promise.all([
+    ninjaPassStore.fetchCodes(),
+    bankStore.fetchBankBalancesWithToken(),
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
-    bankStore.fetchBankBalancesWithToken(),
-    ninjaPassStore.fetchCodes(),
     ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
   ])
     .then(() => {

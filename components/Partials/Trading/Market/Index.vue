@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   customAggregations,
   getDecimalPlaceFromValue
 } from '@/app/data/aggregation'
+import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
 const FilterList = {
@@ -16,8 +16,8 @@ const FilterList = {
   Charts: 'MarketChart'
 }
 
-const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { width } = useWindowSize()
 
@@ -30,11 +30,11 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 
-const status = reactive(new Status(StatusType.Loading))
-const aggregation = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
-const minTick = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
 const activeType = ref(FilterList.Orderbook)
 const maxTick = ref<string | undefined>(undefined)
+const status = reactive(new Status(StatusType.Loading))
+const minTick = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
+const aggregation = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
 
 onMounted(() => {
   const { marketId } = props.market

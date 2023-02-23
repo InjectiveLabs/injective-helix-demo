@@ -30,7 +30,7 @@ const props = defineProps({
 
   summary: {
     type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
-    required: true
+    default: undefined
   },
 
   volumeInUsd: {

@@ -3,7 +3,6 @@ import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
   UiSpotTrade,
-  UiSpotOrderbook,
   UiSpotLimitOrder,
   UiSpotTransformer,
   UiSpotOrderHistory,
@@ -12,41 +11,46 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  tokenService,
-  indexerSpotApi,
-  indexerRestSpotChronosApi
-} from '@/app/Services'
-import {
   streamTrades,
-  streamOrderbook,
   cancelTradesStream,
-  cancelOrderbookStream,
+  streamOrderbookUpdate,
   streamSubaccountTrades,
   streamSubaccountOrders,
+  cancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import {
-  batchCancelOrder,
   cancelOrder,
+  batchCancelOrder,
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
-import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
+import {
+  tokenService,
+  indexerSpotApi,
+  indexerRestSpotChronosApi
+} from '@/app/Services'
 import {
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
-import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
+import {
+  UiMarketAndSummary,
+  ActivityFetchOptions,
+  UiSpotOrderbookWithSequence
+} from '@/types'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
-  orderbook?: UiSpotOrderbook
+  orderbook?: UiSpotOrderbookWithSequence
   trades: UiSpotTrade[]
   subaccountTrades: UiSpotTrade[]
   subaccountTradesCount: number
@@ -112,11 +116,11 @@ export const useSpotStore = defineStore('spot', {
   },
   actions: {
     streamTrades,
-    streamOrderbook,
     cancelTradesStream,
-    cancelOrderbookStream,
+    streamOrderbookUpdate,
     streamSubaccountOrders,
     streamSubaccountTrades,
+    cancelOrderbookUpdateStream,
     streamSubaccountOrderHistory,
 
     cancelOrder,
@@ -134,8 +138,8 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         trades: initialState.trades,
         orderbook: initialState.orderbook,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountTrades: initialState.subaccountTrades
       })
     },
 
@@ -262,9 +266,27 @@ export const useSpotStore = defineStore('spot', {
     async fetchOrderbook(marketId: string) {
       const spotStore = useSpotStore()
 
-      spotStore.$patch({
-        orderbook: await indexerSpotApi.fetchOrderbook(marketId)
-      })
+      const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
+      const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
+
+      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+        spotStore.orderbook = latestOrderbook
+      }
+
+      // handle race condition between fetch and stream
+      spotStore.orderbook = {
+        sequence: currentOrderbookSequence,
+        buys: combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: latestOrderbook.buys,
+          updatedRecords: spotStore.orderbook?.buys
+        }),
+        sells: combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: latestOrderbook.sells,
+          updatedRecords: spotStore.orderbook?.sells
+        })
+      }
     },
 
     async fetchTrades({

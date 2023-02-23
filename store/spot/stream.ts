@@ -2,38 +2,64 @@ import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamTrades,
-  streamOrderbook as grpcStreamOrderbook,
   cancelTradesStream as grpcCancelTradesStream,
-  cancelOrderbookStream as grpcCancelOrderbookStream,
+  streamOrderbookUpdate as grpcStreamOrderbookUpdate,
   streamSubaccountTrades as grpcStreamSubaccountTrade,
   streamSubaccountOrders as grpcStreamSubaccountOrders,
+  cancelOrderbookUpdateStream as grpcCancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const cancelTradesStream = grpcCancelTradesStream
-export const cancelOrderbookStream = grpcCancelOrderbookStream
+export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrdersHistoryStream =
   grpcCancelSubaccountOrdersHistoryStream
 
-export const streamOrderbook = (marketId: string) => {
+export const streamOrderbookUpdate = (marketId: string) => {
   const spotStore = useSpotStore()
 
-  grpcStreamOrderbook({
+  grpcStreamOrderbookUpdate({
     marketId,
     callback: ({ orderbook }) => {
       if (!orderbook) {
         return
       }
 
-      spotStore.$patch({
-        orderbook
-      })
+      /**
+       * The current orderbook doesn't exist
+       **/
+      if (!spotStore.orderbook) {
+        spotStore.orderbook = orderbook
+      }
+
+      const sequence = spotStore.orderbook?.sequence || 0
+
+      if (sequence < orderbook.sequence) {
+        const newBuys = combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: spotStore.buys,
+          updatedRecords: orderbook.buys
+        })
+
+        const newSells = combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: spotStore.sells,
+          updatedRecords: orderbook.sells
+        })
+
+        spotStore.orderbook = {
+          buys: newBuys,
+          sells: newSells,
+          sequence: orderbook.sequence
+        }
+      }
     }
   })
 }
