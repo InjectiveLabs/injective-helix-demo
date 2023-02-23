@@ -288,7 +288,7 @@ export class AmplitudeTracker {
     })
   }
 
-  trackEvent(event: AmplitudeEvent) {
+  trackEvent(event: AmplitudeEvent, eventProperties?: Record<string, any>) {
     const { user } = this
     const identify = this.getIdentify()
 
@@ -296,7 +296,7 @@ export class AmplitudeTracker {
       amplitudeIdentify(identify)
     }
 
-    trackAmplitude(event)
+    trackAmplitude(event, eventProperties)
   }
 }
 

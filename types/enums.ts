@@ -163,9 +163,13 @@ export enum AmplitudeEvent {
   WalletSelected = 'Wallet Selected',
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
-  FebSurveyRejected = 'Feb 23 Survey - Rejected',
-  FebSurveyAccepted = 'Feb 23 Survey - Accepted',
+  SurveyRejected = 'Survey - Accepted',
+  SurveyAccepted = 'Survey - Rejected',
   CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
+}
+
+export enum SurveyTitle {
+  HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
 
 export enum DefaultMarket {

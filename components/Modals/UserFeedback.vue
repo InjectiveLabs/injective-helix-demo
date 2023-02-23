@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AmplitudeEvent, Modal } from '@/types'
+import { AmplitudeEvent, Modal, SurveyTitle } from '@/types'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
@@ -33,13 +33,17 @@ function updateUserFeedbackModalViewed() {
 }
 
 function handleTakeSurveyClickEvent() {
-  amplitudeTracker.trackEvent(AmplitudeEvent.FebSurveyAccepted)
+  amplitudeTracker.trackEvent(AmplitudeEvent.SurveyAccepted, {
+    surveyTitle: SurveyTitle.HelixUserSurveyFeb23
+  })
 
   updateUserFeedbackModalViewed()
 }
 
 function handleRejectSurveyClickEvent() {
-  amplitudeTracker.trackEvent(AmplitudeEvent.FebSurveyRejected)
+  amplitudeTracker.trackEvent(AmplitudeEvent.SurveyRejected, {
+    surveyTitle: SurveyTitle.HelixUserSurveyFeb23
+  })
 
   updateUserFeedbackModalViewed()
 }
