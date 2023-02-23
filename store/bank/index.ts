@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
-import { PortfolioSubaccountBalanceV2 } from '@injectivelabs/sdk-ts'
+import {
+  PortfolioSubaccountBalanceV2,
+  getDefaultSubaccountId
+} from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
@@ -13,12 +16,14 @@ import {
 import { deposit, transfer, withdraw } from '@/store/bank/message'
 
 type BankStoreState = {
+  defaultSubaccountId: string
   bankBalances: Coin[]
   defaultAccountBalances: Coin[]
   subaccountBalanceList: PortfolioSubaccountBalanceV2[]
 }
 
 const initialStateFactory = (): BankStoreState => ({
+  defaultSubaccountId: '',
   bankBalances: [],
   defaultAccountBalances: [],
   subaccountBalanceList: []
@@ -35,12 +40,6 @@ export const useBankStore = defineStore('bank', {
 
     subaccountIds: (state: BankStoreState) => {
       return state.subaccountBalanceList.map(({ subaccountId }) => subaccountId)
-    },
-
-    defaultSubaccountId: (state: BankStoreState) => {
-      return state.subaccountBalanceList.find(({ subaccountId }) =>
-        subaccountId.endsWith('0'.repeat(24))
-      )?.subaccountId
     },
 
     hasEnoughInjForGas: (state) => {
@@ -91,6 +90,7 @@ export const useBankStore = defineStore('bank', {
       bankStore.$patch({
         defaultAccountBalances,
         bankBalances: accountPortfolio?.bankBalancesList || [],
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress),
         subaccountBalanceList: accountPortfolio?.subaccountsList || []
       })
     },
