@@ -1,12 +1,30 @@
+import type { Ref } from 'vue'
+import { Token } from '@injectivelabs/token-metadata'
 import {
   SpotOrderSide,
   BalanceWithToken,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { getSubaccountTokenWithBalance } from '@/app/utils/balance'
 
-export default function useConvertFormatter() {
-  const accountStore = useAccountStore()
+const getBalanceWithToken = (
+  token: Token,
+  balances: BalanceWithTokenAndPrice[]
+) => {
+  const defaultBalanceWithToken = {
+    token,
+    denom: token.denom,
+    balance: '0'
+  }
+
+  const balanceWithToken = balances.find(({ denom }) => denom === token.denom)
+
+  return balanceWithToken || defaultBalanceWithToken
+}
+
+export default function useConvertFormatter(
+  balances: Ref<BalanceWithTokenAndPrice[]>
+) {
   const spotStore = useSpotStore()
 
   const tradableSlugMap = computed(() => {
@@ -23,14 +41,14 @@ export default function useConvertFormatter() {
 
   const tradableTokenMaps = computed(() => {
     return spotStore.markets.reduce((tokens, market) => {
-      const baseTokenWithBalance = getSubaccountTokenWithBalance(
+      const baseTokenWithBalance = getBalanceWithToken(
         market.baseToken,
-        accountStore.subaccount
+        balances.value
       )
 
-      const quoteTokenWithBalance = getSubaccountTokenWithBalance(
+      const quoteTokenWithBalance = getBalanceWithToken(
         market.quoteToken,
-        accountStore.subaccount
+        balances.value
       )
 
       const baseTokens = tokens[market.quoteDenom]

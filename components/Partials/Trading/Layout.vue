@@ -12,16 +12,14 @@ import {
   UiMarketSummary
 } from '@/types'
 
-const accountStore = useAccountStore()
-const appStore = useAppStore()
-const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
-const modalStore = useModalStore()
-const ninjaPassStore = useNinjaPassStore()
-const spotStore = useSpotStore()
-const walletStore = useWalletStore()
 const router = useRouter()
+const appStore = useAppStore()
+const spotStore = useSpotStore()
+const bankStore = useBankStore()
+const modalStore = useModalStore()
+const walletStore = useWalletStore()
+const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const { params } = useRoute()
 const { $onError } = useNuxtApp()
 
@@ -49,8 +47,6 @@ const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
 
 onMounted(() => {
   Promise.all([
-    ninjaPassStore.fetchCodes(),
-    bankStore.fetchBankBalancesWithToken(),
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
     ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
@@ -84,11 +80,6 @@ onMounted(() => {
 onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
 
 onWalletConnected(() => {
-  Promise.all([
-    bankStore.fetchBankBalancesWithToken(),
-    accountStore.streamSubaccountBalances()
-  ]).finally(() => fetchStatus.setIdle())
-
   if (market.value) {
     emit('loaded', market.value)
   }
@@ -164,7 +155,7 @@ watch(
               >
                 <CommonInsufficientGasInner />
               </div>
-              <PartialsCommonBalances v-else :market="market" />
+              <PartialsTradingBalances v-else :market="market" />
             </CommonCard>
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
@@ -208,7 +199,7 @@ watch(
 
               <div class="w-full lg:hidden mt-2">
                 <slot name="trading-panel" />
-                <PartialsCommonBalances :market="market" />
+                <PartialsTradingBalances :market="market" />
                 <CommonCard class="mt-1">
                   <div class="px-6 pt-2">
                     <slot name="trading-form" />

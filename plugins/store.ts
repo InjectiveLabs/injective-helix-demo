@@ -24,26 +24,26 @@ const stateToPersist = {
       userFeedbackModalViewed: false
     }
   },
+
+  bank: {
+    defaultSubaccountId: ''
+  },
+
   wallet: {
     wallet: Wallet.Metamask,
     addresses: '',
     address: '',
     injectiveAddress: '',
     addressConfirmation: ''
-  },
-
-  account: {
-    subaccountIds: '',
-    subaccount: ''
   }
 } as Record<string, Record<string, any>>
 
 const actionsThatSetAppStateToBusy = [
+  'bank/deposit',
   'bank/transfer',
   'peggy/deposit',
+  'bank/withdraw',
   'peggy/withdraw',
-  'account/deposit',
-  'account/withdraw',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
