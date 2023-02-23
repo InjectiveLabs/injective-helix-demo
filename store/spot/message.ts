@@ -20,11 +20,11 @@ import { FEE_RECIPIENT } from '@/app/utils/constants'
 export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !defaultSubaccountId) {
     return
   }
 
@@ -55,11 +55,11 @@ export const cancelOrder = async (
 ) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !defaultSubaccountId) {
     return
   }
 
@@ -92,11 +92,11 @@ export const submitLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !defaultSubaccountId || !market) {
     return
   }
 
@@ -107,7 +107,7 @@ export const submitLimitOrder = async ({
     injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -139,11 +139,11 @@ export const submitMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !defaultSubaccountId || !market) {
     return
   }
 
@@ -156,7 +156,7 @@ export const submitMarketOrder = async ({
     injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -190,11 +190,11 @@ export const submitStopLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !defaultSubaccountId || !market) {
     return
   }
 
@@ -205,7 +205,7 @@ export const submitStopLimitOrder = async ({
     injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -244,11 +244,11 @@ export const submitStopMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { defaultSubaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !defaultSubaccountId || !market) {
     return
   }
 
@@ -259,7 +259,7 @@ export const submitStopMarketOrder = async ({
     injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId,
+    subaccountId: defaultSubaccountId,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,

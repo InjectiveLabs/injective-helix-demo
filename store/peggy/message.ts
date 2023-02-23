@@ -10,7 +10,6 @@ import {
   web3Broadcaster,
   web3Composer
 } from '@/app/Services'
-import { backupPromiseCall } from '@/app/utils/async'
 
 export const transfer = async ({
   amount,
@@ -19,8 +18,6 @@ export const transfer = async ({
   amount: BigNumberInBase
   token: Token
 }) => {
-  const bankStore = useBankStore()
-
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
@@ -52,8 +49,6 @@ export const transfer = async ({
     tx,
     address
   })
-
-  await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
 export const withdraw = async ({
@@ -66,7 +61,6 @@ export const withdraw = async ({
   token: Token
 }) => {
   const appStore = useAppStore()
-  const bankStore = useBankStore()
 
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -104,8 +98,6 @@ export const withdraw = async ({
     address,
     msgs: message
   })
-
-  await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
 export const setTokenAllowance = async (

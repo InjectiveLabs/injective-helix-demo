@@ -4,8 +4,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeField, TradeForm } from '@/types'
 
 const router = useRouter()
+const bankStore = useBankStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -37,14 +37,21 @@ const amount = computed<string>(() =>
 )
 
 onMounted(() => {
+  Promise.all([spotStore.init(), exchangeStore.fetchTradingRewardsCampaign()])
+    .catch($onError)
+    .finally(() => status.setIdle())
+})
+
+onWalletConnected(() => {
+  fetchStatus.setLoading()
+
   Promise.all([
-    spotStore.init(),
-    accountStore.streamSubaccountBalances(),
-    exchangeStore.fetchTradingRewardsCampaign(),
+    bankStore.streamBankBalance(),
+    bankStore.fetchAccountPortfolio(),
     exchangeStore.fetchFeeDiscountAccountInfo()
   ])
     .catch($onError)
-    .finally(() => status.setIdle())
+    .finally(() => fetchStatus.setIdle())
 })
 
 function updateAmount({

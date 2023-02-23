@@ -210,16 +210,16 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketIds: marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId,
+        subaccountId: defaultSubaccountId,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
         }
@@ -237,10 +237,10 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -250,7 +250,7 @@ export const useSpotStore = defineStore('spot', {
         await indexerSpotApi.fetchOrderHistory({
           direction: filters?.direction,
           pagination: options?.pagination,
-          subaccountId: subaccount.subaccountId,
+          subaccountId: defaultSubaccountId,
           isConditional: filters?.isConditional,
           marketIds: filters?.marketIds || spotStore.activeMarketIds,
           orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
@@ -311,10 +311,10 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -323,7 +323,7 @@ export const useSpotStore = defineStore('spot', {
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
         direction: filters?.direction,
         pagination: options?.pagination,
-        subaccountId: subaccount.subaccountId,
+        subaccountId: defaultSubaccountId,
         marketIds: filters?.marketIds || spotStore.activeMarketIds,
         executionTypes: filters?.executionTypes as TradeExecutionType[]
       })

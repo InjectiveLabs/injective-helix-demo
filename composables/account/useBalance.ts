@@ -1,5 +1,5 @@
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { AccountBalance } from '@/types'
 
@@ -23,24 +23,17 @@ export const getCoinGeckoIdListWithDenomBalanceLargerThenZero = (
  * balances that the user has in their bank balance
  */
 export function useBalance() {
-  const accountStore = useAccountStore()
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
 
   const balancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
-      const bankBalance = bankStore.bankBalances[token.denom] || 0
-      const subaccountBalance =
-        accountStore.subaccountBalancesAsBankBalances[token.denom] || 0
-
-      const totalBalance = new BigNumberInWei(bankBalance).plus(
-        subaccountBalance
-      )
+      const balance = bankStore.balanceMap[token.denom] || 0
 
       return {
+        balance,
         token,
         denom: token.denom,
-        balance: totalBalance.toFixed(),
         usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0
       } as BalanceWithTokenAndPrice
     })
@@ -74,10 +67,8 @@ export function useBalance() {
       return {
         ...balance,
         denom: denoms.join('-'),
-        totalBalanceInUsd: new BigNumberInBase(
-          aggregatedBalance.totalBalanceInUsd
-        )
-          .plus(balance.totalBalanceInUsd)
+        balance: new BigNumberInBase(aggregatedBalance.balance)
+          .plus(balance.balance)
           .toFixed(),
         totalBalance: new BigNumberInBase(aggregatedBalance.totalBalance)
           .plus(balance.totalBalance)
@@ -85,21 +76,18 @@ export function useBalance() {
         reservedBalance: new BigNumberInBase(aggregatedBalance.reservedBalance)
           .plus(balance.reservedBalance)
           .toFixed(),
-        subaccountBalance: new BigNumberInBase(
-          aggregatedBalance.subaccountBalance
+        totalBalanceInUsd: new BigNumberInBase(
+          aggregatedBalance.totalBalanceInUsd
         )
-          .plus(balance.subaccountBalance)
-          .toFixed(),
-        balance: new BigNumberInBase(aggregatedBalance.balance)
-          .plus(balance.balance)
+          .plus(balance.totalBalanceInUsd)
           .toFixed()
       }
     })
   }
 
   return {
-    aggregateBalanceByDenoms,
+    balancesWithToken,
     fetchTokenUsdPrice,
-    balancesWithToken
+    aggregateBalanceByDenoms
   }
 }

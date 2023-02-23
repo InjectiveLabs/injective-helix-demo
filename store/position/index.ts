@@ -44,10 +44,10 @@ export const usePositionStore = defineStore('position', {
     ) {
       const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -56,7 +56,7 @@ export const usePositionStore = defineStore('position', {
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
+          subaccountId: defaultSubaccountId,
           direction: filters?.direction
         })
 
@@ -71,10 +71,10 @@ export const usePositionStore = defineStore('position', {
       const positionStore = usePositionStore()
 
       const { markets } = useDerivativeStore()
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
@@ -104,12 +104,12 @@ export const usePositionStore = defineStore('position', {
     async fetchOpenPositionsMarketsOrderbook() {
       const positionStore = usePositionStore()
 
-      const { subaccount } = useAccountStore()
+      const { defaultSubaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
       const { subaccountPositions } = positionStore
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !defaultSubaccountId) {
         return
       }
 
