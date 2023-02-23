@@ -2,6 +2,7 @@
 import { AmplitudeEvent, Modal, SurveyTitle } from '@/types'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
+const route = useRoute()
 const appStore = useAppStore()
 const modalStore = useModalStore()
 
@@ -10,11 +11,22 @@ const url = 'https://helixapp.xyz/3IGFwb9'
 const isModalOpen = computed(() => modalStore.modals[Modal.UserFeedback])
 
 onMounted(() => {
-  const DELAY_MODAL_DISPLAY_TIME = 20 * 1000
+  const DELAY_MODAL_DISPLAY_TIME = 15 * 1000
 
   if (!appStore.userState.userFeedbackModalViewed) {
     setTimeout(() => {
-      modalStore.openModal({ type: Modal.UserFeedback })
+      const disabledRoutes = [
+        'spot-spot',
+        'market-market',
+        'futures-futures',
+        'perpetual-perpetual',
+        'derivative-derivative',
+        'binary-options-binaryOption'
+      ]
+
+      if (!disabledRoutes.includes(route.name as string)) {
+        modalStore.openModal({ type: Modal.UserFeedback })
+      }
     }, DELAY_MODAL_DISPLAY_TIME)
   }
 })
