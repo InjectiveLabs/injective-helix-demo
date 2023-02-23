@@ -1,12 +1,20 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
 const appStore = useAppStore()
+const modalStore = useModalStore()
 
 const url = 'https://helixapp.xyz/3IGFwb9'
 
 const isModalOpen = computed(() => modalStore.modals[Modal.UserFeedback])
+
+onMounted(() => {
+  if (!appStore.userState.userFeedbackModalViewed) {
+    setTimeout(() => {
+      modalStore.openModal({ type: Modal.UserFeedback })
+    }, 5000)
+  }
+})
 
 function handleClose() {
   modalStore.closeModal(Modal.UserFeedback)
