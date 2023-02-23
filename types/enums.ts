@@ -58,7 +58,8 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   PriceDeviation = 'price-deviation',
   Terms = 'terms',
-  USDCDetected = 'usdc-detected'
+  USDCDetected = 'usdc-detected',
+  UserFeedback = 'user-feedback'
 }
 
 export enum Breakpoint {

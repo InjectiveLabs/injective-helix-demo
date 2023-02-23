@@ -123,6 +123,7 @@ function onCloseSideBar() {
 
                 <ModalsInsufficientInjForGas />
                 <ModalsNinjaPassWinner />
+                <ModalsUserFeedback />
                 <AppConfetti />
                 <div id="modals" />
               </div>
