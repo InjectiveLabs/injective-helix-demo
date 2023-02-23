@@ -5,7 +5,6 @@ import {
   IndexerGrpcDerivativesStream,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
-  DerivativeOrderbookStreamCallback,
   OraclePricesByMarketsStreamCallback,
   DerivativeOrderHistoryStreamCallback,
   DerivativeOrderbookUpdateStreamCallback
@@ -34,28 +33,6 @@ export const cancelSubaccountOrdersStream = () => {
 
 export const cancelSubaccountOrderHistoryStream = () => {
   streamProvider.cancel(StreamType.DerivativesSubaccountOrderHistory)
-}
-
-export const streamOrderbook = ({
-  marketId,
-  callback
-}: {
-  marketId: string
-  callback: DerivativeOrderbookStreamCallback
-}) => {
-  const streamFn = derivativesMarketStream.streamDerivativeOrderbook.bind(
-    derivativesMarketStream
-  )
-  const streamFnArgs = {
-    marketIds: [marketId],
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: StreamType.DerivativesOrderbook
-  })
 }
 
 export const streamOrderbookUpdate = ({

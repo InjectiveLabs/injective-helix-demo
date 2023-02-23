@@ -133,12 +133,10 @@ export enum StreamType {
   SpotTrades = 'spot-trades',
   SpotOrders = 'spot-orders',
   OraclePrices = 'oracle-prices',
-  SpotOrderbook = 'spot-orderbook',
   DerivativesTrades = 'derivatives-trades',
   DerivativesOrders = 'derivatives-orders',
   SubaccountBalances = 'subaccount-balances',
   SpotOrderbookUpdate = 'spot-orderbook-update',
-  DerivativesOrderbook = 'derivatives-orderbook',
   DerivativesPositions = 'derivatives-positions',
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
@@ -165,8 +163,8 @@ export enum AmplitudeEvent {
   WalletSelected = 'Wallet Selected',
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
-  SurveyRejected = 'Survey - Accepted',
-  SurveyAccepted = 'Survey - Rejected',
+  SurveyAccepted = 'Survey - Accepted',
+  SurveyRejected = 'Survey - Rejected',
   CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
 }
 

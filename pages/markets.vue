@@ -30,6 +30,12 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
 
 onMounted(() => getQuoteTokenPrice())
 
+const marketsWithSummariesLoaded = computed(
+  () =>
+    spotStore.marketsWithSummary.some(({ summary }) => summary) &&
+    derivativeStore.marketsWithSummary.some(({ summary }) => summary)
+)
+
 function getQuoteTokenPrice() {
   Promise.all([
     appStore.pollMarkets(),
@@ -41,15 +47,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 </script>
 
 <template>
-  <AppHocLoading
-    :show-loading="
-      !(
-        spotStore.marketsWithSummary.length &&
-        derivativeStore.marketsWithSummary.length
-      )
-    "
-    class="h-full"
-  >
+  <AppHocLoading :show-loading="!marketsWithSummariesLoaded" class="h-full">
     <div class="container">
       <PartialsMarketsOverview :markets="marketsWithSummaryAndVolumeInUsd" />
       <PartialsMarkets :markets="marketsWithSummaryAndVolumeInUsd" />

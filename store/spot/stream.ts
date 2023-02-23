@@ -3,7 +3,6 @@ import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamTrades,
   cancelTradesStream as grpcCancelTradesStream,
-  cancelOrderbookStream as grpcCancelOrderbookStream,
   streamOrderbookUpdate as grpcStreamOrderbookUpdate,
   streamSubaccountTrades as grpcStreamSubaccountTrade,
   streamSubaccountOrders as grpcStreamSubaccountOrders,
@@ -17,7 +16,6 @@ import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const cancelTradesStream = grpcCancelTradesStream
-export const cancelOrderbookStream = grpcCancelOrderbookStream
 export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
