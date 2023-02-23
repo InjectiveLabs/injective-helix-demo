@@ -1789,10 +1789,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.1.1-alpha-0.0":
-  version "1.1.1-alpha-0.0"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.1.1-alpha-0.0.tgz#a271ea4a5a64de68ac0a7aedd1d18d7ecb743893"
-  integrity sha512-ianQhdwtp2muLFQiLsMulLIqNIvfwVps1/51ZoZiJ53bbnXJLd5Li2/zuoVWz7ErQNzc5ZqIT53JDBxBT1HeVQ==
+"@injectivelabs/ui-shared@1.1.1-alpha-0.1":
+  version "1.1.1-alpha-0.1"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.1.1-alpha-0.1.tgz#50b7a954f33cf525fa5c56925aa57228ef5f04c4"
+  integrity sha512-r5EOT29U8JFlbPe3wUmxw/AvErM14sK+KKSsIlrcg0pFbT86WjQ/L4D+0xnZxGeHth5ubjSk5JWoVH0fImJl7A==
   dependencies:
     "@nuxt/kit" "3.0.0"
     floating-vue "2.0.0-beta.20"

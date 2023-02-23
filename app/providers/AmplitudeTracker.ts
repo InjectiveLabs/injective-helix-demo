@@ -1,8 +1,8 @@
 import {
+  track,
   Identify,
-  identify as amplitudeIdentify,
   setUserId,
-  track
+  identify as amplitudeIdentify
 } from '@amplitude/analytics-browser'
 import { BaseEvent } from '@amplitude/analytics-types'
 import { Wallet } from '@injectivelabs/wallet-ts'
@@ -47,12 +47,6 @@ export interface AmplitudeTrackerUser {
   tierLevel: number
   address: string
   wallet: Wallet
-}
-
-export interface CosmoverseGiveawayCampaignArgs {
-  utmSource: string | (string | null)[]
-  utmMedium: string | (string | null)[]
-  utmCampaign: string | (string | null)[]
 }
 
 export class AmplitudeTracker {
@@ -247,18 +241,6 @@ export class AmplitudeTracker {
       slippageTolerance,
       status,
       error
-    })
-  }
-
-  submitCosmoverseGiveawayCampaignTrackEvent({
-    utmSource,
-    utmMedium,
-    utmCampaign
-  }: CosmoverseGiveawayCampaignArgs) {
-    trackAmplitude(AmplitudeEvent.CosmoverseGiveawayCampaign, {
-      utm_source: utmSource,
-      utm_medium: utmMedium,
-      utm_campaign: utmCampaign
     })
   }
 

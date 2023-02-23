@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  amplitudeTracker,
-  CosmoverseGiveawayCampaignArgs
-} from '@/app/providers/AmplitudeTracker'
 import { BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
 
@@ -28,8 +24,6 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  handleCosmoverseGiveawayCampaignTrack()
-
   Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
     .finally(() => {
@@ -54,16 +48,6 @@ onWalletConnected(() => {
     accountStore.streamSubaccountBalances()
   ]).catch($onError)
 })
-
-function handleCosmoverseGiveawayCampaignTrack() {
-  if (!route.query || !route.query.utm_source) {
-    return
-  }
-
-  amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
-    route.query as unknown as CosmoverseGiveawayCampaignArgs
-  )
-}
 
 function onOpenSideBar() {
   isOpenSidebar.value = true

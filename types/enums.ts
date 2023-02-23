@@ -161,11 +161,10 @@ export enum AmplitudeEvent {
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  ClickPlaceOrder = 'Place Order Attempt',
-  AttemptPlaceOrder = 'Place Order Confirm',
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
-  CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
+  ClickPlaceOrder = 'Place Order Attempt',
+  AttemptPlaceOrder = 'Place Order Confirm'
 }
 
 export enum SurveyTitle {
