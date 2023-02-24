@@ -155,9 +155,6 @@ const { value: price, setValue: setPriceField } = useStringField({
 })
 
 function recalculateBaseQuoteAmountValue() {
-  /* TODO: check if v-model updates price before trying to update the amounts */
-  // recalculate base or quote amount input fields
-
   formValues.value[TradeField.ProportionalPercentage] = 0
 
   emit('update:amount', { isBaseAmount: props.isBaseAmount })

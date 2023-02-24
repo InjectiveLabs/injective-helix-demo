@@ -12,6 +12,7 @@ enum SlippageDisplayOptions {
 }
 
 const { t } = useLang()
+
 const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
