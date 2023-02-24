@@ -5,6 +5,9 @@ import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { MaxAmountOnOrderbook, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
+const formValues = useFormValues<TradeForm>()
+const formErrors = useFormErrors()
+
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
@@ -16,11 +19,6 @@ const props = defineProps({
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
     default: ZERO_IN_BASE
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
   },
 
   maxAmountOnOrderbook: {
@@ -36,11 +34,6 @@ const props = defineProps({
   quoteAvailableBalance: {
     type: Object as PropType<BigNumberInBase>,
     required: true
-  },
-
-  formErrors: {
-    type: Object as PropType<Partial<Record<TradeField, string>>>,
-    required: true
   }
 })
 
@@ -49,11 +42,11 @@ const slippageError = computed(() =>
     tradeErrorMessages.slippageExceed(),
     tradeErrorMessages.slippageTooHigh(),
     tradeErrorMessages.slippageTooLow()
-  ].find((error) => Object.values(props.formErrors).includes(error))
+  ].find((error) => Object.values(formErrors.value).includes(error))
 )
 
 const error = computed(() => {
-  const [error] = Object.values(props.formErrors)
+  const [error] = Object.values(formErrors.value)
 
   if (error && error.includes(slippageError.value)) {
     return ''
@@ -75,7 +68,7 @@ const availableBalanceGreaterThanAllowableWarning = computed(() => {
     : props.baseAvailableBalance
 
   const percentageAsAmount = new BigNumberInBase(
-    props.formValues[TradeField.ProportionalPercentage]
+    formValues.value[TradeField.ProportionalPercentage]
   ).div(100)
 
   const availableBalanceWithPercentage = percentageAsAmount.gt(0)
@@ -84,11 +77,11 @@ const availableBalanceGreaterThanAllowableWarning = computed(() => {
 
   const amount = new BigNumberInBase(
     useNotional
-      ? props.formValues[TradeField.QuoteAmount]
-      : props.formValues[TradeField.BaseAmount]
+      ? formValues.value[TradeField.QuoteAmount]
+      : formValues.value[TradeField.BaseAmount]
   )
 
-  const formattedBalance = !props.formValues[TradeField.ProportionalPercentage]
+  const formattedBalance = !formValues.value[TradeField.ProportionalPercentage]
     ? amount
     : availableBalanceWithPercentage
 

@@ -5,32 +5,20 @@ import {
   MarketType,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  TradeField,
-  TradeForm,
-  TradeFormValue,
-  UiMarketWithToken
-} from '@/types'
+import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
+
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
   }
 })
 
-const emit = defineEmits<{
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
-}>()
-
 const isSpot = props.market.type === MarketType.Spot
 
-const FilterList = isSpot
+const filterList = isSpot
   ? [SpotOrderSide.Buy, SpotOrderSide.Sell]
   : [DerivativeOrderSide.Buy, DerivativeOrderSide.Sell]
 
@@ -41,17 +29,14 @@ const { value: orderType } = useStringField({
 })
 
 function handleSelectOrderType() {
-  emit('update:formValue', {
-    field: TradeField.ProportionalPercentage,
-    value: 0
-  })
+  formValues.value[TradeField.ProportionalPercentage] = 0
 }
 </script>
 
 <template>
   <div class="rounded flex h-9">
     <AppSelectButton
-      v-for="orderSide in FilterList"
+      v-for="orderSide in filterList"
       :key="`trade-form-order-${orderSide}`"
       v-model="orderType"
       class="w-1/2 bg-gray-1000 shadow-sm"
