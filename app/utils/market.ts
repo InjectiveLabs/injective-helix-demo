@@ -300,7 +300,7 @@ export const combineOrderbookRecords = ({
 
   return combinedOrderbookRecords.sort((a, b) => {
     return isBuy
-      ? new BigNumber(b.price).minus(a.price).toNumber()
-      : new BigNumber(b.price).minus(a.price).toNumber()
+      ? new BigNumberInBase(b.price).minus(a.price).toNumber()
+      : new BigNumberInBase(a.price).minus(b.price).toNumber()
   })
 }
