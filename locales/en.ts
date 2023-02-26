@@ -50,7 +50,7 @@ export default {
     'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'View status',
   maintenance_body:
-    'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
+    'We are constantly improving Parallel. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
@@ -189,7 +189,7 @@ export default {
 
   marketDeprecated: {
     title: 'No longer tradable',
-    description: '{ticker} is no longer tradable on Helix.',
+    description: '{ticker} is no longer tradable on Parallel.',
     subDescriptionOne:
       'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
     subDescriptionTwo:
@@ -225,7 +225,7 @@ export default {
     tradeAndEarnDescription: 'Earn rewards with every trade',
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
-      'Earn crypto commission by inviting friends to trade on Helix',
+      'Earn crypto commission by inviting friends to trade on Parallel',
     dmmProgram: 'DMM Program',
     dmmProgramDescription:
       'Provide liquidity and mine INJ as our dedicated market makers',
