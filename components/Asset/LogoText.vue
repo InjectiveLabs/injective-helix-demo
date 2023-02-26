@@ -1,21 +1,11 @@
 <template>
-  <svg viewBox="0 0 254 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M0 56H6.32V30.8H38.64V56H44.96V0H38.64V24.88H6.32V0H0V56Z"
-      fill="currentColor"
-    />
-    <path
-      d="M65.7812 56H106.661V50.24H72.1012V30.64H102.661V24.88H72.1012V5.76H106.261V0H65.7812V56Z"
-      fill="currentColor"
-    />
-    <path
-      d="M124.375 56H162.215V50.16H130.695V0H124.375V56Z"
-      fill="currentColor"
-    />
-    <path d="M179.466 56H185.786V0H179.466V56Z" fill="currentColor" />
-    <path
-      d="M245.428 0L228.307 23.04L211.188 0H203.747L224.387 27.44L202.947 56H210.228L228.148 31.84L246.068 56H253.588L232.148 27.44L252.787 0H245.428Z"
-      fill="currentColor"
-    />
-  </svg>
-</template>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" class="font">
+    <defs>
+      <linearGradient gradientTransform="rotate(25)" id="9dbad364-927f-4a03-96b3-2f6c8860a0d4" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3616AC" stop-opacity="1"></stop>
+        <stop offset="100%" stop-color="#E09BED" stop-opacity="1"></stop>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#9dbad364-927f-4a03-96b3-2f6c8860a0d4)" x="0" y="0" width="300px" height="300px" class="logo-background-square"></rect>
+    <g fill="#ffffff" transform="matrix(4.389465376864622,0,0,4.389465376864622,33.547485770425396,113.12848936919504)">
+      <path d="M5.29 3.75L5.29 3.75Q7.20 3.75 8.29 4.66L8.29 4.66L8.29 4.66Q9.38 5.57 9.38 7.17L9.38 7.17L9.38 7.17Q9.38 8.76 8.29 9.67L8.29 9.67L8.29 9.67Q7.20 10.58 5.29 10.58L5.29 10.58L2.87 10.58L2.87 13.55L1.47 13.55L1.47 3.75L5.29 3.75ZM5.25 9.37L5.25 9.37Q6.58 9.37 7.28 8.80L7.28 8.80L7.28 8.80Q7.98 8.23 7.98 7.17L7.98 7.17L7.98 7.17Q7.98 6.10 7.28 5.54L7.28 5.54L7.28 5.54Q6.58 4.97 5.25 4.97L5.25 4.97L2.87 4.97L2.87 9.37L5.25 9.37ZM14.08 6.06L14.08 6.06Q15.62 6.06 16.44 6.82L16.44 6.82L16.44 6.82Q17.26 7.57 17.26 9.07L17.26 9.07L17.26 13.55L15.99 13.55L15.99 12.57L15.99 12.57Q15.65 13.09 15.03 13.36L15.03 13.36L15.03 13.36Q14.41 13.64 13.55 13.64L13.
