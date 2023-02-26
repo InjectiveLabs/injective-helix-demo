@@ -16,8 +16,8 @@ export default {
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
     builtOn: 'Built on',
-    startTradingNote: 'Start Trading on Helix Now',
-    whyTradeOnHelix: 'Why Trade on Helix',
+    startTradingNote: 'Start Trading on Parallel Now',
+    whyTradeOnParallel: 'Why Trade on Parallel',
     decentralizedWithAdvancedTypeOrders:
       'Decentralized exchange with advanced order types',
     enjoySpotTrading:
@@ -75,7 +75,7 @@ export default {
   },
 
   newsletter: {
-    title: 'Subscribe to Helix newsletter',
+    title: 'Subscribe to Parallel newsletter',
     emailAddress: 'Email address',
     subscribe: 'Subscribe',
     disclaimer: 'Disclaimer',
@@ -98,6 +98,6 @@ export default {
     apiDocumentation: 'API Documentation',
     community: 'Community',
     helixProvides:
-      '*Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
+      '*Note: Parallel is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }
