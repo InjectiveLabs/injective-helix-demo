@@ -114,7 +114,8 @@ export const web3Broadcaster = new Web3Broadcaster({
 // Token Services
 export const tokenService = new TokenService({
   chainId: CHAIN_ID,
-  network: NETWORK
+  network: NETWORK,
+  endpoints: ENDPOINTS
 })
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
