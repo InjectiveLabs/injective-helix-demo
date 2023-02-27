@@ -17,7 +17,7 @@ export default {
     institutionalTrader: 'An Institutional Trader',
     builtOn: 'Built on',
     startTradingNote: 'Start Trading on Parallel Now',
-    whyTradeOnParallel: 'Why Trade on Parallel',
+    whyTradeOnHelix: 'Why Trade on Parallel',
     decentralizedWithAdvancedTypeOrders:
       'Decentralized exchange with advanced order types',
     enjoySpotTrading:
