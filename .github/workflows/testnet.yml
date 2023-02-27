@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - testnet
+      - master
 
 jobs:
   testnet:
@@ -20,7 +21,7 @@ jobs:
       ## Public
       VITE_NAME: 'TESTNET - Helix | The Premier Decentralized Spot and Derivatives Exchange'
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnet
+      VITE_NETWORK: testnetK8s
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
 
