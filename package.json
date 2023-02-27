@@ -114,6 +114,6 @@
     "vite-plugin-notifier": "latest",
     "vite-tsconfig-paths": "latest",
     "vitest": "^0.28.5",
-    "vue-tsc": "^1.0.24"
+    "vue-tsc": "1.0.24"
   }
 }
