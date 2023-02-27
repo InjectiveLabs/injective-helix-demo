@@ -3,12 +3,11 @@ import { TradeExecutionType, TradeField } from '@/types'
 
 const { t } = useLang()
 const route = useRoute()
-
 const emit = defineEmits<{
   (e: 'form:reset'): void
 }>()
 
-const FilterList = [TradeExecutionType.LimitFill, TradeExecutionType.Market]
+const filterList = [TradeExecutionType.LimitFill, TradeExecutionType.Market]
 const dropdownOptions = [
   {
     display: t('trade.stopLimit'),
@@ -35,7 +34,7 @@ function resetForm() {
 <template>
   <div class="flex items-center justify-start gap-4">
     <AppSelectButton
-      v-for="tradeType in FilterList"
+      v-for="tradeType in filterList"
       :key="`trade-type-${tradeType}`"
       v-model="tradingType"
       :value="tradeType"

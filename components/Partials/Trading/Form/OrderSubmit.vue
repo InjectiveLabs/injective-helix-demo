@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
@@ -14,6 +14,8 @@ import { Modal, TradeField, TradeForm } from '@/types'
 const bankStore = useBankStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const formValues = useFormValues() as Ref<TradeForm>
+const formErrors = useFormErrors()
 const { t } = useLang()
 const { error } = useNotifications()
 
@@ -30,16 +32,6 @@ const props = defineProps({
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formErrors: {
-    type: Object as PropType<Partial<Record<TradeField, string | undefined>>>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -71,7 +63,7 @@ const hasError = computed(() => {
     return true
   }
 
-  const filteredErrors = Object.keys(props.formErrors).filter(
+  const filteredErrors = Object.keys(formErrors.value).filter(
     (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
   )
 
@@ -83,7 +75,7 @@ const hasError = computed(() => {
 })
 
 const triggerPriceEqualsMarkPrice = computed(() =>
-  Object.values(props.formErrors).includes(
+  Object.values(formErrors.value).includes(
     tradeErrorMessages.triggerPriceEqualsMarkPrice()
   )
 )
@@ -93,12 +85,12 @@ const {
   tradingTypeStopMarket,
   tradingTypeLimit: derivativeTradingTypeLimit,
   tradingTypeMarket: derivativeTradingTypeMarket
-} = useDerivativeFormFormatter(computed(() => props.formValues))
+} = useDerivativeFormFormatter(formValues)
 
 const {
   tradingTypeLimit: spotTradingTypeLimit,
   tradingTypeMarket: spotTradingTypeMarket
-} = useSpotFormFormatter(computed(() => props.formValues))
+} = useSpotFormFormatter(formValues)
 
 const tradingTypeLimit = isSpot
   ? spotTradingTypeLimit
@@ -164,7 +156,7 @@ function handleSubmit() {
 
 function trackPlaceOrder() {
   const actualSlippageTolerance = tradingTypeMarket.value
-    ? props.formValues[TradeField.SlippageTolerance]
+    ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
   amplitudeTracker.submitClickPlaceOrderTrackEvent({
@@ -172,13 +164,13 @@ function trackPlaceOrder() {
     marketType: props.market.subType,
     reduceOnly: props.orderTypeReduceOnly,
     slippageTolerance: actualSlippageTolerance,
-    amount: props.formValues[TradeField.BaseAmount],
-    leverage: props.formValues[TradeField.Leverage],
-    orderType: props.formValues[TradeField.OrderType],
-    limitPrice: props.formValues[TradeField.LimitPrice],
-    tradingType: props.formValues[TradeField.TradingType],
-    triggerPrice: props.formValues[TradeField.TriggerPrice],
-    postOnly: tradingTypeLimit.value && props.formValues[TradeField.PostOnly]
+    amount: formValues.value[TradeField.BaseAmount],
+    leverage: formValues.value[TradeField.Leverage],
+    orderType: formValues.value[TradeField.OrderType],
+    limitPrice: formValues.value[TradeField.LimitPrice],
+    tradingType: formValues.value[TradeField.TradingType],
+    triggerPrice: formValues.value[TradeField.TriggerPrice],
+    postOnly: tradingTypeLimit.value && formValues.value[TradeField.PostOnly]
   })
 }
 

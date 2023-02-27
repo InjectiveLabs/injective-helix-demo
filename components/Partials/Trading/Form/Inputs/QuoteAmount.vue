@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
-import {
-  TradeField,
-  TradeForm,
-  TradeFormValue,
-  UiMarketWithToken
-} from '@/types'
+import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   amountStep: {
@@ -30,11 +27,6 @@ const props = defineProps({
     required: true
   },
 
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -46,12 +38,10 @@ const emit = defineEmits<{
     e: 'update:amount',
     { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
-const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
-  computed(() => props.formValues)
-)
+const { hasTriggerPrice, tradingTypeStopMarket } =
+  useDerivativeFormFormatter(formValues)
 
 const { value: quoteAmount } = useStringField({
   name: props.quoteAmountFieldName,
@@ -71,10 +61,7 @@ const { value: quoteAmount } = useStringField({
 })
 
 function onQuoteAmountChange(quoteAmount: string) {
-  emit('update:formValue', {
-    field: TradeField.ProportionalPercentage,
-    value: 0
-  })
+  formValues.value[TradeField.ProportionalPercentage] = 0
 
   emit('update:amount', { amount: quoteAmount || '0', isBaseAmount: false })
 }
@@ -84,13 +71,10 @@ function onQuoteAmountBlur() {
     return
   }
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: formatAmountToAllowableAmount(
-      props.formValues[TradeField.BaseAmount],
-      props.market.quantityTensMultiplier
-    )
-  })
+  formValues.value[TradeField.BaseAmount] = formatAmountToAllowableAmount(
+    formValues.value[TradeField.BaseAmount],
+    props.market.quantityTensMultiplier
+  )
 
   emit('update:amount', {
     isBaseAmount: true
