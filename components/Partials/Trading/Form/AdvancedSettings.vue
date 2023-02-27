@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE } from '@/app/utils/constants'
-import { TradeFormValue, TradeField, TradeForm } from '@/types'
+import { TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 enum SlippageDisplayOptions {
@@ -13,23 +13,14 @@ enum SlippageDisplayOptions {
 
 const { t } = useLang()
 
+const formValues = useFormValues() as Ref<TradeForm>
+
 const props = defineProps({
   isSpot: Boolean,
   isBaseAmount: Boolean,
   isConditionalOrder: Boolean,
-  reduceOnlyDisabled: Boolean,
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  }
+  reduceOnlyDisabled: Boolean
 })
-
-const emit = defineEmits<{
-  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
-  (e: 'update:hasAdvancedSettingsErrors', showSlippageError: boolean): void
-}>()
 
 const drawerIsOpen = ref(true)
 const slippageSelection = ref(SlippageDisplayOptions.Selectable)
@@ -40,12 +31,12 @@ const {
   tradingTypeStopMarket,
   tradingTypeLimit: derivativeTradingTypeLimit,
   tradingTypeMarket: derivativeTradingTypeMarket
-} = useDerivativeFormFormatter(computed(() => props.formValues))
+} = useDerivativeFormFormatter(formValues)
 
 const {
   tradingTypeLimit: spotTradingTypeLimit,
   tradingTypeMarket: spotTradingTypeMarket
-} = useSpotFormFormatter(computed(() => props.formValues))
+} = useSpotFormFormatter(formValues)
 
 const tradingTypeLimit = props.isSpot
   ? spotTradingTypeLimit
@@ -87,10 +78,7 @@ const reduceOnlyValue = computed({
 
     setReduceOnlyValue(reduceOnly)
 
-    emit('update:formValue', {
-      field: TradeField.Leverage,
-      value: LEVERAGE_FOR_REDUCE_ONLY
-    })
+    formValues.value[TradeField.Leverage] = LEVERAGE_FOR_REDUCE_ONLY
   }
 })
 

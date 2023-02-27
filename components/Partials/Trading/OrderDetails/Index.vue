@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
@@ -7,6 +7,8 @@ import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
@@ -24,11 +26,6 @@ const props = defineProps({
 
   feeRate: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -65,14 +62,14 @@ const {
   quoteAmount: derivativeQuoteAmount,
   tradingTypeLimit: derivativeTradingTypeLimit,
   tradingTypeMarket: derivativeTradingTypeMarket
-} = useDerivativeFormFormatter(computed(() => props.formValues))
+} = useDerivativeFormFormatter(formValues)
 
 const {
   baseAmount: spotBaseAmount,
   quoteAmount: spotQuoteAmount,
   tradingTypeLimit: spotTradingTypeLimit,
   tradingTypeMarket: spotTradingTypeMarket
-} = useSpotFormFormatter(computed(() => props.formValues))
+} = useSpotFormFormatter(formValues)
 
 const tradingTypeLimit = isSpot
   ? spotTradingTypeLimit
@@ -157,14 +154,15 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
     <Suspense>
       <component
         :is="orderDetailsComponent"
-        :execution-price="executionPrice"
-        :form-values="formValues"
-        :is-buy="isBuy"
-        :liquidation-price="liquidationPrice"
-        :market="market"
-        :minimum-received-amount="minimumReceivedAmount"
-        :notional-value="notionalValue"
-        :order-type-reduce-only="orderTypeReduceOnly"
+        v-bind="{
+          executionPrice,
+          isBuy,
+          liquidationPrice,
+          market,
+          minimumReceivedAmount,
+          notionalValue,
+          orderTypeReduceOnly
+        }"
       >
         <template #total>{{ notionalWithFeesToFormat }}</template>
         <template #executionPrice>{{ executionPriceToFormat }}</template>
@@ -174,35 +172,40 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
 
         <template #makerTakerFeeRate>
           <PartialsTradingOrderDetailsMakerTakerFeeRate
-            :market="market"
-            :post-only="formValues[TradeField.PostOnly]"
-            :trading-type="formValues[TradeField.TradingType]"
+            v-bind="{
+              market,
+              postOnly: formValues[TradeField.PostOnly],
+              tradingType: formValues[TradeField.TradingType]
+            }"
           />
         </template>
 
         <template #feeRate>
           <PartialsTradingOrderDetailsFeeRate
-            :post-only="formValues[TradeField.PostOnly]"
-            :fees="fees"
-            :market="market"
-            :notional-value="notionalValue"
-            :trading-type="formValues[TradeField.TradingType]"
+            v-bind="{
+              fees,
+              market,
+              notionalValue,
+              postOnly: formValues[TradeField.PostOnly],
+              tradingType: formValues[TradeField.TradingType]
+            }"
           />
         </template>
 
         <template #feeRebate>
           <PartialsTradingOrderDetailsFeeRebate
-            :notional-value="notionalValue"
-            :market="market"
+            v-bind="{ market, notionalValue }"
           />
         </template>
 
         <template #expectedPts>
           <PartialsTradingOrderDetailsExpectedPoints
-            :post-only="formValues[TradeField.PostOnly]"
-            :fees="fees"
-            :market="market"
-            :trading-type="formValues[TradeField.TradingType]"
+            v-bind="{
+              fees,
+              market,
+              postOnly: formValues[TradeField.PostOnly],
+              tradingType: formValues[TradeField.TradingType]
+            }"
           />
         </template>
       </component>
