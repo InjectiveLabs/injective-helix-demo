@@ -92,6 +92,7 @@ export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
+  networkEndpoints: ENDPOINTS,
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
