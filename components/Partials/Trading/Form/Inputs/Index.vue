@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiPriceLevel,
@@ -10,12 +10,12 @@ import {
   MaxAmountOnOrderbook,
   TradeField,
   TradeForm,
-  TradeFormValue,
   UiMarketWithToken
 } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
@@ -41,11 +41,6 @@ const props = defineProps({
   fees: {
     type: Object as PropType<BigNumberInBase>,
     default: undefined
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
   },
 
   lastTradedPrice: {
@@ -89,18 +84,16 @@ const emit = defineEmits<{
     e: 'update:amount',
     { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
 const {
   tradingTypeStopLimit,
   tradingTypeStopMarket,
   tradingTypeLimit: derivativeTradingTypeLimit
-} = useDerivativeFormFormatter(computed(() => props.formValues))
+} = useDerivativeFormFormatter(formValues)
 
-const { tradingTypeLimit: spotTradingTypeLimit } = useSpotFormFormatter(
-  computed(() => props.formValues)
-)
+const { tradingTypeLimit: spotTradingTypeLimit } =
+  useSpotFormFormatter(formValues)
 
 const orderbookOrders = computed<UiPriceLevel[]>(() => {
   const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
@@ -122,10 +115,6 @@ function updateAmount({
 }) {
   emit('update:amount', { amount, isBaseAmount })
 }
-
-function updateFormValue({ field, value }: TradeFormValue) {
-  emit('update:formValue', { field, value })
-}
 </script>
 
 <template>
@@ -133,7 +122,6 @@ function updateFormValue({ field, value }: TradeFormValue) {
     <PartialsTradingFormInputsPrice
       v-if="tradingTypeStopLimit || tradingTypeStopMarket"
       v-bind="{
-        formValues,
         isBaseAmount,
         isSpot,
         lastTradedPrice,
@@ -142,13 +130,11 @@ function updateFormValue({ field, value }: TradeFormValue) {
         priceFieldName: TradeField.TriggerPrice
       }"
       @update:amount="updateAmount"
-      @update:formValue="updateFormValue"
     />
 
     <PartialsTradingFormInputsPrice
       v-if="tradingTypeLimit || tradingTypeStopLimit"
       v-bind="{
-        formValues,
         isBaseAmount,
         isBuy,
         isSpot,
@@ -171,7 +157,6 @@ function updateFormValue({ field, value }: TradeFormValue) {
         isBaseAmount,
         isBuy,
         isSpot,
-        formValues,
         tradingTypeLimit,
         tradingTypeStopLimit,
         market,
@@ -179,7 +164,6 @@ function updateFormValue({ field, value }: TradeFormValue) {
         baseAmountFieldName: TradeField.BaseAmount
       }"
       @update:amount="updateAmount"
-      @update:formValue="updateFormValue"
     />
     <div class="flex flex-1 flex-col items-end">
       <PartialsTradingFormPercentageOptions
@@ -187,7 +171,6 @@ function updateFormValue({ field, value }: TradeFormValue) {
         v-bind="{
           baseAvailableBalance,
           feeRate,
-          formValues,
           isBuy,
           isSpot,
           market,
@@ -200,19 +183,17 @@ function updateFormValue({ field, value }: TradeFormValue) {
           percentageFieldName: TradeField.ProportionalPercentage
         }"
         @update:amount="updateAmount"
-        @update:formValue="updateFormValue"
       />
       <PartialsTradingFormInputsQuoteAmount
         v-bind="{
           amountStep,
           fees,
-          formValues,
+
           market,
           quoteAvailableBalance,
           quoteAmountFieldName: TradeField.QuoteAmount
         }"
         @update:amount="updateAmount"
-        @update:formValue="updateFormValue"
       />
     </div>
   </div>

@@ -20,7 +20,6 @@ import {
   Modal,
   TradeForm,
   TradeField,
-  TradeFormValue,
   TradeExecutionType,
   OrderAttemptStatus
 } from '@/types'
@@ -44,12 +43,7 @@ const { success } = useNotifications()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const {
-  values,
-  setFieldValue,
-  errors: formErrors,
-  resetForm: resetFormValues
-} = useForm<TradeForm>()
+const { values, resetForm: resetFormValues } = useForm<TradeForm>()
 
 const defaultStep = '1'
 const isBaseAmount = ref(true)
@@ -419,15 +413,11 @@ watch(
         TRADE_FORM_PRICE_ROUNDING_MODE
       )
 
-      updateFormValue({ field: TradeField.LimitPrice, value: formattedPrice })
+      formValues.value[TradeField.LimitPrice] = formattedPrice
     }
   },
   { immediate: true }
 )
-
-function updateFormValue({ field, value }: TradeFormValue) {
-  setFieldValue(field, value)
-}
 
 function updateAmount({
   amount,
@@ -444,12 +434,9 @@ function updateAmount({
   })
 
   if (amountToUpdate) {
-    updateFormValue({
-      field: isBaseAmountUpdate
-        ? TradeField.QuoteAmount
-        : TradeField.BaseAmount,
-      value: amountToUpdate
-    })
+    formValues.value[
+      isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount
+    ] = amountToUpdate
   }
 }
 
@@ -568,19 +555,13 @@ function submitStopMarketOrder() {
 }
 
 function setDefaultFormValues() {
-  updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
-  updateFormValue({ field: TradeField.QuoteAmount, value: priceStep.value })
-  updateFormValue({
-    field: TradeField.LimitPrice,
-    value: lastTradedPrice.value.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_PRICE_ROUNDING_MODE
-    )
-  })
-  updateFormValue({
-    field: TradeField.ReduceOnly,
-    value: false
-  })
+  formValues.value[TradeField.BaseAmount] = amountStep.value
+  formValues.value[TradeField.QuoteAmount] = priceStep.value
+  formValues.value[TradeField.LimitPrice] = lastTradedPrice.value.toFixed(
+    props.market.priceDecimals,
+    TRADE_FORM_PRICE_ROUNDING_MODE
+  )
+  formValues.value[TradeField.ReduceOnly] = false
 }
 
 function resetForm() {
@@ -659,14 +640,10 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 <template>
   <div class="w-full flex flex-col gap-6">
     <PartialsTradingFormTradeExecutionTypeButtons
-      v-bind="{ formValues }"
       @form:reset="setDefaultFormValues"
     />
 
-    <PartialsTradingFormOrderTypeSelect
-      v-bind="{ formValues, market: props.market }"
-      @update:formValue="updateFormValue"
-    />
+    <PartialsTradingFormOrderTypeSelect v-bind="{ market }" />
 
     <PartialsTradingFormOrderInputs
       v-bind="{
@@ -677,8 +654,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         position,
         priceStep,
         amountStep,
-        formErrors,
-        formValues,
         isBaseAmount,
         maxReduceOnly,
         executionPrice,
@@ -693,7 +668,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         initialMinMarginRequirementError
       }"
       @update:amount="updateAmount"
-      @update:formValue="updateFormValue"
     />
 
     <PartialsTradingFormDebug
@@ -703,7 +677,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         isBuy,
         market,
         feeRate,
-        formValues,
         isBaseAmount,
         liquidationPrice,
         notionalValue: notionalWithLeverage,
@@ -733,8 +706,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         isBuy,
         status,
         market,
-        formErrors,
-        formValues,
         hasBaseAmount,
         highDeviation,
         executionPrice,
@@ -750,9 +721,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 
     <ModalsOrderConfirmDerivative
       v-bind="{
-        market: market,
+        market,
+        triggerPrice,
         amount: baseAmount,
-        triggerPrice: triggerPrice,
         orderType: orderTypeToSubmit,
         isReduceOnly: formValues[TradeField.ReduceOnly],
         tradingType: formValues[TradeField.TradingType],

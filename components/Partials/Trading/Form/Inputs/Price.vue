@@ -1,14 +1,9 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { Ref, PropType } from 'vue'
 import { formatPriceToAllowablePrice } from '@injectivelabs/sdk-ts'
 import { UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  TradeField,
-  TradeForm,
-  TradeFormValue,
-  UiMarketWithToken
-} from '@/types'
+import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 import {
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE
@@ -16,6 +11,7 @@ import {
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
@@ -23,11 +19,6 @@ const props = defineProps({
   isBaseAmount: Boolean,
   tradingTypeLimit: Boolean,
   tradingTypeStopLimit: Boolean,
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
 
   lastTradedPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -57,13 +48,11 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
-const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
-  computed(() => props.formValues)
-)
+const { hasTriggerPrice, tradingTypeStopMarket } =
+  useDerivativeFormFormatter(formValues)
 
 const highestBuy = computed(() => {
   const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
@@ -136,7 +125,7 @@ const { value: price, setValue: setPriceField } = useStringField({
 
     if (
       props.priceFieldName === TradeField.LimitPrice &&
-      props.formValues[TradeField.PostOnly]
+      formValues.value[TradeField.PostOnly]
     ) {
       rules.push(
         `invalidPostOnlyPrice:${topOfOrderbookPrice.value},${props.isBuy}`
@@ -154,7 +143,7 @@ const { value: price, setValue: setPriceField } = useStringField({
       props.tradingTypeLimit &&
       props.lastTradedPrice.gt(0) &&
       middlePrice.value.gt(0) &&
-      new BigNumberInBase(props.formValues[TradeField.LimitPrice]).gt(0)
+      new BigNumberInBase(formValues.value[TradeField.LimitPrice]).gt(0)
     ) {
       rules.push(
         `priceHighDeviationFromMidOrderbookPrice:${cappedAcceptableMin.value.toFixed()},${acceptableMax.value.toFixed()}`
@@ -166,12 +155,7 @@ const { value: price, setValue: setPriceField } = useStringField({
 })
 
 function recalculateBaseQuoteAmountValue() {
-  /* TODO: check if v-model updates price before trying to update the amounts */
-  // recalculate base or quote amount input fields
-  emit('update:formValue', {
-    field: TradeField.ProportionalPercentage,
-    value: 0
-  })
+  formValues.value[TradeField.ProportionalPercentage] = 0
 
   emit('update:amount', { isBaseAmount: props.isBaseAmount })
 }
@@ -194,9 +178,11 @@ function onPriceBlur(price = '') {
   <div class="mb-6">
     <AppInputNumeric
       v-model="price"
-      :placeholder="priceStep"
-      :step="priceStep"
-      :max-decimals="market.priceDecimals"
+      v-bind="{
+        placeholder: priceStep,
+        step: priceStep,
+        maxDecimals: market.priceDecimals
+      }"
       min="0"
       @update:modelValue="recalculateBaseQuoteAmountValue"
       @input="recalculateBaseQuoteAmountValue"

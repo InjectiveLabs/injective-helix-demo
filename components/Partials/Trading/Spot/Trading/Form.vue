@@ -353,12 +353,11 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 <template>
   <div v-if="lastTradedPrice" class="w-full flex flex-col gap-6">
     <PartialsTradingFormTradeExecutionTypeButtons
-      v-bind="{ formValues }"
       @form:reset="setDefaultFormValues"
     />
 
     <PartialsTradingFormOrderTypeSelect
-      v-bind="{ formValues, market: props.market }"
+      v-bind="{ market: props.market }"
       @update:formValue="updateFormValue"
     />
 
@@ -370,8 +369,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         feeRate,
         priceStep,
         amountStep,
-        formErrors,
-        formValues,
         isBaseAmount,
         executionPrice,
         lastTradedPrice,
@@ -382,7 +379,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         worstPriceWithSlippage
       }"
       @update:amount="updateAmount"
-      @update:formValue="updateFormValue"
     />
 
     <PartialsTradingFormDebug
@@ -392,7 +388,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         isBuy,
         market,
         feeRate,
-        formValues,
         isSpot: true,
         isBaseAmount,
         notionalValue,
@@ -408,7 +403,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         market,
         feeRate,
         slippage,
-        formValues,
         notionalValue,
         executionPrice,
         notionalWithFees

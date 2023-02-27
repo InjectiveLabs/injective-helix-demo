@@ -92,6 +92,7 @@ export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
+  networkEndpoints: ENDPOINTS,
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
@@ -113,7 +114,8 @@ export const web3Broadcaster = new Web3Broadcaster({
 // Token Services
 export const tokenService = new TokenService({
   chainId: CHAIN_ID,
-  network: NETWORK
+  network: NETWORK,
+  endpoints: ENDPOINTS
 })
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })

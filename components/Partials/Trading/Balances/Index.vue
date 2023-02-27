@@ -87,7 +87,10 @@ const quoteTradingBalanceToFormat = computed(() => {
 onWalletConnected(() => {
   status.setLoading()
 
-  Promise.all([bankStore.fetchAccountPortfolio()])
+  Promise.all([
+    bankStore.fetchAccountPortfolio(),
+    bankStore.streamBankBalance()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()

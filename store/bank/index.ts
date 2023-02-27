@@ -33,6 +33,10 @@ export const useBankStore = defineStore('bank', {
   state: (): BankStoreState => initialStateFactory(),
   getters: {
     balanceMap: (state: BankStoreState) => {
+      if (state.bankBalances.length === 0) {
+        return {}
+      }
+
       return state.bankBalances.reduce((list, balance) => {
         return { ...list, [balance.denom]: balance.amount }
       }, {} as Record<string, string>)
@@ -74,18 +78,19 @@ export const useBankStore = defineStore('bank', {
       const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolio(injectiveAddress)
 
-      const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
-        (accountBalances, { subaccountId, denom, deposit }) => {
-          if (subaccountId.endsWith('0'.repeat(24))) {
-            return [
-              ...accountBalances,
-              { denom, amount: deposit?.totalBalance || '0' }
-            ]
-          }
-          return accountBalances
-        },
-        [] as Coin[]
-      )
+      const defaultAccountBalances =
+        accountPortfolio?.subaccountsList.reduce(
+          (accountBalances, { subaccountId, denom, deposit }) => {
+            if (subaccountId.endsWith('0'.repeat(24))) {
+              return [
+                ...accountBalances,
+                { denom, amount: deposit?.totalBalance || '0' }
+              ]
+            }
+            return accountBalances
+          },
+          [] as Coin[]
+        ) || []
 
       bankStore.$patch({
         defaultAccountBalances,
