@@ -1,6 +1,6 @@
 export default {
   home: {
-    title: 'Revolutionize your crypto journey with the ultimate decentralized exchange experience.',
+    title: 'Revolutionize your Crypto journey with the ultimate decentralized exchange experience.',
     subtitle:
       'Trade unlimited cross-chain crypto assets and perpetual markets with market leading rebates*',
     tradeNow: 'Trade Now',
