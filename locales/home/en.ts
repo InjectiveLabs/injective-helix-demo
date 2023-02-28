@@ -1,6 +1,6 @@
 export default {
   home: {
-    title: 'The Premier Decentralized Crypto Exchange',
+    title: 'Revolutionize your crypto trading journey with the ultimate decentralized exchange experience.',
     subtitle:
       'Trade unlimited cross-chain crypto assets and perpetual markets with market leading rebates*',
     tradeNow: 'Trade Now',
@@ -15,7 +15,7 @@ export default {
     newToCrypto: 'New to Crypto',
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
-    builtOn: 'Built on',
+    builtOn: 'Proudly built on',
     startTradingNote: 'Start Trading on Parallel Now',
     whyTradeOnHelix: 'Why Trade on Parallel',
     decentralizedWithAdvancedTypeOrders:
