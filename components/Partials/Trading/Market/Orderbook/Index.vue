@@ -12,12 +12,9 @@ import {
   UiSpotLimitOrder,
   UiOrderbookSummary,
   UiOrderbookPriceLevel,
-  UiDerivativeLimitOrder,
+  UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  SpotOrderSide,
-  DerivativeOrderSide,
-} from '@injectivelabs/sdk-ts'
+import { SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { vScroll } from '@vueuse/components'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
@@ -588,7 +585,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           <PartialsTradingMarketOrderbookRecord
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${sell.aggregatedPrice || sell.price}`"
+            :key="`order-book-sell-${
+              sell.aggregatedPrice || sell.price
+            }-${aggregation}`"
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
@@ -690,7 +689,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           <!-- TODO: test the dynamic ref assignment -->
           <PartialsTradingMarketOrderbookRecord
             v-for="(buy, index) in buysWithDepth"
-            :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
+            :key="`order-book-buy-${
+              buy.aggregatedPrice || buy.price
+            }-${aggregation}`"
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
