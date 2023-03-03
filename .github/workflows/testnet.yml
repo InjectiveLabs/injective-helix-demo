@@ -4,33 +4,29 @@ on:
   push:
     branches:
       - testnet
-      - master
+#       - mainnet
 
 jobs:
   testnet:
     if: true
     name: 'Deploy to testnet'
-    runs-on: ubuntu-latest
     env:
-      SSH_USER: ${{ secrets.TESTNET_SSH_USER }}
-      SSH_KEY: ${{ secrets.TESTNET_SSH_KEY }}
-      SSH_HOST: ${{ secrets.TESTNET_SSH_HOST }}
-      SOURCE_DIR: ${{ secrets.TESTNET_SOURCE_PATH}}
-      GIT_BRANCH: ${{secrets.TESTNET_GIT_BRANCH}}
-
       ## Public
-      VITE_NAME: 'TESTNET - Helix | The Premier Decentralized Spot and Derivatives Exchange'
+      VITE_NAME: 'TESTNET - Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       VITE_BASE_URL: https://testnet.helixapp.com
       VITE_NETWORK: testnetK8s
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
+      VITE_ETHEREUM_CHAIN_ID: 5
+      SOURCE_DIR: .output/public
+      DEST_DIR: www
 
       ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
       VITE_MAINTENANCE_ENABLED: false
-      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
@@ -46,32 +42,38 @@ jobs:
       VITE_ALCHEMY_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
 
-    steps:
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/testnet.key
-          chmod 600 ~/.ssh/testnet.key
-          cat >>~/.ssh/config <<END
-          Host testnet
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/testnet.key
-            StrictHostKeyChecking no
-            SendEnv $SOURCE_DIR
-          END
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
+      AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
+    runs-on: ubuntu-latest
 
-      - name: Check out the source
-        run: ssh testnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Using Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
 
       - name: Install Dependencies
-        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
+        run: yarn install
 
       - name: Remove prev build
-        run: ssh testnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
+        run: yarn clean-up
 
       - name: Generating the static pages
-        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
+        run: yarn generate
 
-      - name: Proper permissions for dist folder
-        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/.output/public/'
+      - name: Use AWS CLI
+        uses: chrislennon/action-aws-cli@v1.1
+
+      - name: Sync to S3 bucket
+        run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
+
+      - name: Set Cache Headers
+        run: aws s3 cp s3://$AWS_S3_BUCKET/www s3://$AWS_S3_BUCKET/www --exclude "*" --include "*.js" --include "*.css" --include "*.svg" --include "*.woff2" --include "*.woff" --include "*.ttf" --recursive --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --cache-control max-age=2592000,public
+
+      - name: Invalidate Cloudfront CDN
+        run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
