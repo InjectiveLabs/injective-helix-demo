@@ -55,11 +55,11 @@
 }
 
 .bg-gradient-300 {
-  background-color: rgba(181, 187, 202, 0.03);
+  background-color: rgb(238, 204, 255);
 }
 
 .bg-gradient-200 {
-  background-color: rgba(176, 187, 202, 0.08) !important;
+  background-color: rgb(238, 204, 255) !important;
 }
 
 .wallet-not-connected {
