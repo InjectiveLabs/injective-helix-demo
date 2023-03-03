@@ -11,7 +11,7 @@ const url = 'https://helixapp.xyz/3IGFwb9'
 const isModalOpen = computed(() => modalStore.modals[Modal.UserFeedback])
 
 onMounted(() => {
-  const DELAY_MODAL_DISPLAY_TIME = 15 * 1000
+  const DELAY_MODAL_DISPLAY_TIME = 8 * 1000
 
   if (!appStore.userState.userFeedbackModalViewed) {
     setTimeout(() => {
