@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - testnet
+      - mainnet
 
 jobs:
-  mainnet:
+  testnet:
     if: true
     name: 'Deploy to testnet'
     env:

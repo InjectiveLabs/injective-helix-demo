@@ -117,9 +117,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     if (IS_PRODUCTION) {
       reportToBugSnag(error)
-    } else {
-      console.error(error)
     }
+
+    console.warn(error.toObject())
 
     handleInsufficientGas(error)
   }
