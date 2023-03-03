@@ -11,7 +11,7 @@ const url = computed(() => {
 </script>
 
 <template>
-  <div class="h-14 w-full bg-[#182855] flex items-center justify-center gap-2">
+  <div class="h-14 w-full bg-[#7e38b7] flex items-center justify-center gap-2">
     <span class="text-sm md:text-lg">
       {{ $t('banners.kado.title') }}
     </span>
