@@ -40,7 +40,7 @@ body {
 }
 
 body .vue-grid-item.vue-grid-placeholder {
-  @apply rounded bg-indigo-900;
+  @apply rounded bg-blue-500;
   opacity: 0.35;
 }
 
