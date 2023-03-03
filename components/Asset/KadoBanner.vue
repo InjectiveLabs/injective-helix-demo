@@ -18,11 +18,11 @@ const url = computed(() => {
 
     <NuxtLink :to="url" target="_blank">
       <div class="flex items-center justify-start gap-1">
-        <span class="text-sm md:text-lg text-blue-500 font-medium">
+        <span class="text-sm md:text-lg text-purple-500 font-medium">
           {{ $t('banners.kado.tryNow') }}
         </span>
 
-        <BaseIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
+        <BaseIcon name="arrow" class="rotate-135 w-3 h-3 text-purple-500" />
       </div>
     </NuxtLink>
   </div>
