@@ -274,14 +274,14 @@ html.theme-dark .chart-page {
   --tv-color-platform-background: #101219;
   --tv-color-pane-background: #101219;
   --tv-color-pane-background-secondary: #191c27;
-  --tv-color-toolbar-button-background-hover: #2891E9;
-  --tv-color-toolbar-button-background-secondary-hover: #2891E9;
-  --tv-color-toolbar-button-background-expanded: #2891E9;
+  --tv-color-toolbar-button-background-hover: #8800cc;
+  --tv-color-toolbar-button-background-secondary-hover: #8800cc;
+  --tv-color-toolbar-button-background-expanded: #8800cc;
   --tv-color-toolbar-button-text: #282C39;
   --tv-color-toolbar-button-text-hover: #0F5894;
-  --tv-color-toolbar-button-text-active: #2891E9;
+  --tv-color-toolbar-button-text-active: #8800cc;
   --tv-color-toolbar-button-text-active-hover: #0F5894;
   --tv-color-item-active-text: #0EE29B;
-  --tv-color-toolbar-toggle-button-background-active: #2891E9;
+  --tv-color-toolbar-toggle-button-background-active: #8800cc;
   --tv-color-toolbar-toggle-button-background-active-hover: #0F5894;
 }
