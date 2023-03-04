@@ -30,7 +30,7 @@ function handleTradeClickedTrack() {
 <template>
   <div>
     <div
-      :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
+      :style="{ backgroundImage: `url('/svg/wawa-area.svg')` }"
       class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
     >
       <div
@@ -45,7 +45,7 @@ function handleTradeClickedTrack() {
         <div class="text-center">
           <AppButton
             lg
-            class="mt-2 md:mt-10 bg-blue-500 text-blue-900 hover:bg-blue-600 hover:bg-opacity-100"
+            class="mt-2 md:mt-10 bg-indigo-500 text-blue-900 hover:bg-blue-600 hover:bg-opacity-100"
             @click="handleGetStartedClick"
           >
             {{ $t('home.tradeNow') }}
