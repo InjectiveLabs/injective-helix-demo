@@ -30,7 +30,7 @@ export const colors = {
     1000: '#0C0D13'
   },
 
-  blue: {
+  indigo: {
   50: '#FEE7EC',
     100: '#FDCEDA',
     200: '#FAA3B9',
