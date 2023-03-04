@@ -30,7 +30,7 @@ function handleTradeClickedTrack() {
 <template>
   <div>
     <div
-      :style="{ backgroundImage: `url('/svg/5166956.eps')` }"
+      :style="{ backgroundImage: `url('/svg/5166956.png')` }"
       class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
     >
       <div
