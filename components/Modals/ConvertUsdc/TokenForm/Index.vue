@@ -2,35 +2,25 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  AccountBalance,
-  Modal,
-  TradeField,
-  TradeForm,
-  TradeFormValue
-} from '@/types'
+import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const bankStore = useBankStore()
 const modalStore = useModalStore()
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isLoading: Boolean,
   isBaseAmount: Boolean,
 
-  balances: {
-    type: Object as PropType<AccountBalance[]>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  balances: {
+    type: Object as PropType<AccountBalance[]>,
     required: true
   },
 
@@ -42,7 +32,6 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:isBaseAmount', state: boolean): void
-  (e: 'update:formValue', state: TradeFormValue): void
   (
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
@@ -88,14 +77,9 @@ function handleSwap() {
   animationCount.value = animationCount.value + 1
 
   emit('update:isBaseAmount', !props.isBaseAmount)
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: ''
-  })
-  emit('update:formValue', {
-    field: TradeField.QuoteAmount,
-    value: ''
-  })
+
+  formValues.value[TradeField.BaseAmount] = ''
+  formValues.value[TradeField.QuoteAmount] = ''
 
   toggleOrderType()
 }
@@ -111,10 +95,7 @@ function updateAmount({
 }
 
 function handleMaxBaseAmountChange({ amount }: { amount: string }) {
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amount
-  })
+  formValues.value[TradeField.BaseAmount] = amount
 
   updateAmount({ amount, isBaseAmount: true })
 }
@@ -130,10 +111,8 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
     TRADE_FORM_PRICE_ROUNDING_MODE
   )
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amountDeductFeeToFixed
-  })
+  formValues.value[TradeField.BaseAmount] = amountDeductFeeToFixed
+
   emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
 }
 
@@ -142,8 +121,8 @@ watch(
   () => {
     emit('update:amount', {
       amount: props.isBaseAmount
-        ? props.formValues[TradeField.BaseAmount]
-        : props.formValues[TradeField.QuoteAmount],
+        ? formValues.value[TradeField.BaseAmount]
+        : formValues.value[TradeField.QuoteAmount],
       isBaseAmount: props.isBaseAmount
     })
   }

@@ -63,7 +63,6 @@ onMounted(() => {
     [usdcTokenDenom.USDC].includes(props.balance.denom.toLowerCase())
   ) {
     setAmountValue(maxBalanceToFixed.value)
-
     emit('update:amount', {
       isBaseAmount: props.amountFieldName === TradeField.BaseAmount,
       amount: maxBalanceToFixed.value
