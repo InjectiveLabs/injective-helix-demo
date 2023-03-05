@@ -178,7 +178,7 @@ export default <Config>{
       },
 
       backgroundImage: {
-        hero: 'url(/svg/helix-hero-bg.svg)'
+        hero: 'url(/svg/wawa.eps)'
       }
     }
   },
