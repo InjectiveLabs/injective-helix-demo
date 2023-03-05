@@ -21,7 +21,8 @@ const stateToPersist = {
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
       ninjaPassWinnerModalViewed: false,
-      userFeedbackModalViewed: false
+      userFeedbackModalViewed: false,
+      noticeBannersClosed: []
     }
   },
   wallet: {

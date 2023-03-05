@@ -315,3 +315,7 @@ export enum ActivityTab {
 export enum AggregatedBalanceType {
   USDC = 'usdc'
 }
+
+export enum NoticeBanner {
+  sheduledUpgradeMarch = 'sheduled-upgrade-march'
+}

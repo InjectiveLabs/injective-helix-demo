@@ -2,6 +2,7 @@
 
 <template>
   <div>
+    <AssetNoticeBanners />
     <AssetKadoBanner />
     <div class="bg-white">
       <PartialsHomeHero />

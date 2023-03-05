@@ -6,11 +6,12 @@ import {
 import {
   UiSpotOrderbook,
   UiDerivativeOrderbook,
-  SubaccountBalanceWithToken,
+  SubaccountBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
@@ -101,6 +102,12 @@ export interface UiDerivativeOrderbookWithSequence
   sequence: number
 }
 
+export interface NoticeBannerType {
+  label: string
+  key: NoticeBanner
+  viewMore: string
+  viewMoreLink: string
+}
 
 export * from './enums'
 export * from './trade'
