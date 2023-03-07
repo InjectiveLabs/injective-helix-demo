@@ -4,6 +4,7 @@ import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -40,16 +41,15 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
+const { tradableSlugMap, tradableTokenMaps, getMarketsForQuoteDenom } =
+  useConvertFormatter()
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-const baseTokens = computed(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
-)
-
-const quoteTokens = computed(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
+const isPeggyUsdcToUsdcet = computed(
+  () =>
+    props.market.baseDenom.toLowerCase() === usdcTokenDenom.USDC &&
+    props.market.quoteDenom.toLowerCase() === usdcTokenDenom.USDCet
 )
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
@@ -60,6 +60,30 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
   {
     name: TradeField.QuoteDenom
   }
+)
+
+const baseTokens = computed(
+  () =>
+    tradableTokenMaps.value[baseTokenDenom.value].filter((balance) => {
+      // limit convert usdc modal to only USDCet
+      if (isPeggyUsdcToUsdcet.value) {
+        return balance.denom.toLowerCase() === usdcTokenDenom.USDCet
+      }
+
+      return true
+    }) || []
+)
+
+const quoteTokens = computed(
+  () =>
+    tradableTokenMaps.value[quoteTokenDenom.value].filter((balance) => {
+      // limit convert usdc modal to only USDC
+      if (isPeggyUsdcToUsdcet.value) {
+        return balance.denom.toLowerCase() === usdcTokenDenom.USDC
+      }
+
+      return true
+    }) || []
 )
 
 const { value: orderType, setValue: setOrderType } = useStringField({
@@ -76,11 +100,24 @@ onMounted(() => {
 })
 
 function handleUpdateMarket() {
-  const market = spotStore.markets.find(({ baseDenom, quoteDenom }) => {
+  let market = [
+    ...spotStore.markets,
+    ...spotStore.usdcConversionModalMarkets
+  ].find(({ baseDenom, quoteDenom }) => {
     return (
       baseDenom === baseTokenDenom.value && quoteDenom === quoteTokenDenom.value
     )
   })
+
+  if (!market) {
+    market = getMarketsForQuoteDenom({
+      baseTokenDenom: baseTokenDenom.value,
+      quoteTokenDenom: quoteTokenDenom.value
+    })
+
+    setBaseTokenDenom(market.baseDenom)
+    setQuoteTokenDenom(market.quoteDenom)
+  }
 
   if (market) {
     emit('update:market', market)
@@ -92,6 +129,10 @@ function toggleOrderType() {
 }
 
 function handleSwap() {
+  if (isPeggyUsdcToUsdcet.value) {
+    return
+  }
+
   animationCount.value = animationCount.value + 1
 
   emit('update:isBaseAmount', !props.isBaseAmount)
@@ -192,7 +233,14 @@ watch(
     </transition>
 
     <div class="my-4">
-      <BaseIcon name="arrow-up-down" class="mx-auto" @click="handleSwap" />
+      <BaseIcon
+        :name="isPeggyUsdcToUsdcet ? 'arrow' : 'arrow-up-down'"
+        class="mx-auto w-6 h-6"
+        :class="{
+          '-rotate-90': isPeggyUsdcToUsdcet
+        }"
+        @click="handleSwap"
+      />
     </div>
 
     <transition :name="isBuy ? 'fade-down' : 'fade-up'" mode="out-in">

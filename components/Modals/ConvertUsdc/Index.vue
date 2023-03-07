@@ -6,7 +6,10 @@ import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
+const route = useRoute()
+const router = useRouter()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -73,8 +76,17 @@ onMounted(() => {
   Promise.all([
     spotStore.fetchOrderbook(props.market.marketId),
     spotStore.streamOrderbookUpdate(props.market.marketId)
-  ]).finally(() => fetchStatus.setIdle())
+  ])
+    .then(() => setMaxBaseAmount())
+    .finally(() => fetchStatus.setIdle())
 })
+
+// TODO: update to use availableBalance instead of subaccount balance after merge
+function setMaxBaseAmount() {
+  formValues[TradeField.BaseAmount] =
+    props.balances.find((balance) => balance.denom === props.market.baseDenom)
+      ?.subaccountBalance || '0'
+}
 
 function resetFormValues() {
   const isBuyState = unref(isBuy.value)
@@ -114,6 +126,41 @@ function handleFormSubmit() {
 function closeModal() {
   modalStore.closeModal(Modal.ConvertUsdc)
 }
+
+function updateUrlQuery() {
+  if (!props.market) {
+    return
+  }
+
+  const { baseToken, quoteToken } = props.market
+  const baseSymbol = baseToken.symbol.toLowerCase()
+  const quoteSymbol = quoteToken.symbol.toLowerCase()
+
+  router.replace({
+    query: isBuy.value
+      ? { from: quoteSymbol, to: baseSymbol }
+      : { from: baseSymbol, to: quoteSymbol }
+  })
+}
+
+function fetchLatestBalances() {
+  Promise.all([accountStore.fetchSubaccounts()]).finally(() =>
+    setMaxBaseAmount()
+  )
+}
+
+watch(
+  isModalOpen,
+  (isOpen) => {
+    if (!isOpen) {
+      return router.replace({ query: {} })
+    }
+
+    fetchLatestBalances()
+    updateUrlQuery()
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -132,13 +179,13 @@ function closeModal() {
           {{ $t('account.whyConvert') }}
         </div>
 
-        <ModalsConvertUsdcTokenForm
+        <PartialsConvertTokenForm
+          v-if="Object.keys(route.query).length > 0"
           v-model:isBaseAmount="isBaseAmount"
           v-bind="{
             market,
-            balances,
             worstPriceWithSlippage,
-            isLoading: status.isLoading()
+            isLoading: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
           @update:amount="updateAmount"
         />
