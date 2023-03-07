@@ -34,7 +34,7 @@ function handleTradeClickedTrack() {
       <AssetLogoText class="block ml-2 h-6 text-gray-900" />
     </div>
     <h1
-      class="text-gray-900 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[72px] 3xl:text-[60px] 4xl:leading-[77px] 4xl:text-[64px] mb-8"
+      class="text-blue-300 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[72px] 3xl:text-[60px] 4xl:leading-[77px] 4xl:text-[64px] mb-8"
     >
       {{ $t('home.title') }}
     </h1>
