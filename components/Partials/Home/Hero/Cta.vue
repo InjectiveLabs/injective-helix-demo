@@ -34,7 +34,7 @@ function handleTradeClickedTrack() {
       <AssetLogoText class="block ml-2 h-6 text-gray-900" />
     </div>
     <h1
-      class="text-blue-300 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[72px] 3xl:text-[60px] 4xl:leading-[77px] 4xl:text-[64px] mb-8"
+      class="text-blue-100 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[72px] 3xl:text-[60px] 4xl:leading-[77px] 4xl:text-[64px] mb-8"
     >
       {{ $t('home.title') }}
     </h1>
@@ -52,23 +52,23 @@ function handleTradeClickedTrack() {
       <div class="col-span-6 flex items-center justify-start">
         <BaseIcon
           name="bounding-box-circles"
-          class="text-gray-900 w-6 h-6 mr-3"
+          class="text-blue-100 w-6 h-6 mr-3"
         />
-        <span class="text-gray-900 text-lg">
+        <span class="text-blue-100 text-lg">
           {{ $t('home.interoperable') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
         <BaseIcon name="gas" class="text-gray-900 w-6 h-6 mr-3" />
-        <span class="text-gray-900 text-lg">
+        <span class="text-blue-100 text-lg">
           {{ $t('home.gasFree') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
         <BaseIcon name="shield-lock-fill" class="text-gray-900 w-6 h-6 mr-3" />
-        <span class="text-gray-900 text-lg">
+        <span class="text-blue-100 text-lg">
           {{ $t('home.secure') }}
         </span>
       </div>
