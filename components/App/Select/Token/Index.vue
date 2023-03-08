@@ -49,13 +49,13 @@ const emit = defineEmits<{
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
-const selectedTokenBalance = computed(() => {
-  return selectedToken.value
+const selectedTokenBalance = computed(() =>
+  selectedToken.value
     ? new BigNumberInWei(selectedToken.value.balance).toBase(
         selectedToken.value.token.decimals
       )
     : '0'
-})
+)
 
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()

@@ -41,18 +41,11 @@ const animationCount = ref(0)
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const { balancesWithToken } = useBalance()
-const { tradableSlugMap, tradableTokenMaps } =
+
+const { tradableSlugMap, tradableTokensMap, getMarketsForQuoteDenom } =
   useConvertFormatter(balancesWithToken)
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
-
-const baseTokens = computed(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
-)
-
-const quoteTokens = computed(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
-)
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom
@@ -62,6 +55,13 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
   {
     name: TradeField.QuoteDenom
   }
+)
+
+const baseTokens = computed(
+  () => tradableTokensMap.value[baseTokenDenom.value] || []
+)
+const quoteTokens = computed(
+  () => tradableTokensMap.value[quoteTokenDenom.value] || []
 )
 
 const { value: orderType, setValue: setOrderType } = useStringField({
@@ -78,11 +78,24 @@ onMounted(() => {
 })
 
 function handleUpdateMarket() {
-  const market = spotStore.markets.find(({ baseDenom, quoteDenom }) => {
+  let market = [
+    ...spotStore.markets,
+    ...spotStore.usdcConversionModalMarkets
+  ].find(({ baseDenom, quoteDenom }) => {
     return (
       baseDenom === baseTokenDenom.value && quoteDenom === quoteTokenDenom.value
     )
   })
+
+  if (!market) {
+    market = getMarketsForQuoteDenom({
+      baseTokenDenom: baseTokenDenom.value,
+      quoteTokenDenom: quoteTokenDenom.value
+    })
+
+    setBaseTokenDenom(market.baseDenom)
+    setQuoteTokenDenom(market.quoteDenom)
+  }
 
   if (market) {
     emit('update:market', market)
@@ -194,7 +207,11 @@ watch(
     </transition>
 
     <div class="my-4">
-      <BaseIcon name="arrow-up-down" class="mx-auto" @click="handleSwap" />
+      <BaseIcon
+        name="arrow-up-down"
+        class="mx-auto w-6 h-6"
+        @click="handleSwap"
+      />
     </div>
 
     <transition :name="isBuy ? 'fade-down' : 'fade-up'" mode="out-in">

@@ -278,13 +278,13 @@ export const useSpotStore = defineStore('spot', {
         sequence: currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
-          currentRecords: latestOrderbook.buys,
-          updatedRecords: spotStore.orderbook?.buys
+          currentRecords: spotStore.orderbook?.buys,
+          updatedRecords: latestOrderbook.buys
         }),
         sells: combineOrderbookRecords({
           isBuy: false,
-          currentRecords: latestOrderbook.sells,
-          updatedRecords: spotStore.orderbook?.sells
+          currentRecords: spotStore.orderbook?.sells,
+          updatedRecords: latestOrderbook.sells
         })
       }
     },

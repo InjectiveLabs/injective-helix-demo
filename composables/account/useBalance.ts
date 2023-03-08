@@ -26,13 +26,14 @@ export function useBalance() {
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
 
+  // TODO - support for multi subaccounts (take available from the subaccount available balance not only from bank)
   const balancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
       const balance = bankStore.balanceMap[token.denom] || 0
 
       return {
-        balance,
         token,
+        balance,
         denom: token.denom,
         usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0
       } as BalanceWithTokenAndPrice
