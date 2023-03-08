@@ -22,7 +22,7 @@ const stateToPersist = {
       tradingLayout: TradingLayout.Left,
       ninjaPassWinnerModalViewed: false,
       userFeedbackModalViewed: false,
-      noticeBannersClosed: []
+      bannersViewed: []
     }
   },
   wallet: {

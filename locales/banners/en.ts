@@ -17,6 +17,8 @@ export default {
       title: 'Onboard onto Injective instantly with fiat!',
       tryNow: 'Get started'
     },
+    'banner-sheduled-upgrade-march':
+      "There is a scheduled maintenance between 14-16 March. Please note that you won't be able to place orders and manage positions during the downtime.",
     userFeedback: {
       loveFeedback: "We'd love to hear your feedback!",
       thankYouBeginning:

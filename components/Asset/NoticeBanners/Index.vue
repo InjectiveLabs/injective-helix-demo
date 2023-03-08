@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { VITE_BANNER_NOTICE_ENABLED } from '@/app/utils/constants/setup'
-import { NoticeBanner, NoticeBannerType } from '@/types'
+import { NoticeBanner, Banner } from '@/types'
 
 const appStore = useAppStore()
 
-const banners: NoticeBannerType[] = [
+const banners: Banner[] = [
   {
     key: NoticeBanner.sheduledUpgradeMarch,
-    label:
-      "There is a scheduled maintenance between 14-16 March. Please note that you won't be able to place orders and manage positions during the downtime.",
+    label: `banners.banner-${NoticeBanner.sheduledUpgradeMarch}`,
     viewMore: 'View More',
     viewMoreLink: '/#'
   }
@@ -16,14 +15,14 @@ const banners: NoticeBannerType[] = [
 
 const filteredBanners = computed(() =>
   banners.filter(
-    (banner) => !appStore.userState.noticeBannersClosed.includes(banner.key)
+    (banner) => !appStore.userState.bannersViewed.includes(banner.key)
   )
 )
 </script>
 
 <template>
   <div v-if="VITE_BANNER_NOTICE_ENABLED">
-    <AssetNoticeBanner
+    <AssetNoticeBannersBanner
       v-for="banner in filteredBanners"
       :key="`banner-${banner.key}`"
       v-bind="{ noticeBanner: banner }"

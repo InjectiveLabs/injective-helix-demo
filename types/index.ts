@@ -102,7 +102,7 @@ export interface UiDerivativeOrderbookWithSequence
   sequence: number
 }
 
-export interface NoticeBannerType {
+export interface Banner {
   label: string
   key: NoticeBanner
   viewMore: string

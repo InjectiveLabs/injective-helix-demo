@@ -45,7 +45,7 @@ export interface UserBasedState {
   ninjaPassWinnerModalViewed: boolean
   userFeedbackModalViewed: boolean
   skipTradeConfirmationModal: boolean
-  noticeBannersClosed: NoticeBanner[]
+  bannersViewed: NoticeBanner[]
 }
 
 type AppStoreState = {
@@ -87,7 +87,7 @@ const initialStateFactory = (): AppStoreState => ({
     ninjaPassWinnerModalViewed: false,
     userFeedbackModalViewed: false,
     skipTradeConfirmationModal: false,
-    noticeBannersClosed: []
+    bannersViewed: []
   },
   announcements: [],
   attachments: []
