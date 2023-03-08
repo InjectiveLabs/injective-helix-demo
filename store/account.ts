@@ -6,7 +6,6 @@ import {
   UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  AccountPortfolio,
   denomAmountToChainDenomAmountToFixed,
   MsgDeposit,
   MsgWithdraw,
@@ -22,13 +21,11 @@ import {
 type AccountStoreState = {
   subaccountIds: string[]
   subaccount?: UiSubaccount
-  accountPortfolio?: AccountPortfolio
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   subaccountIds: [],
-  subaccount: undefined,
-  accountPortfolio: undefined
+  subaccount: undefined
 })
 
 export const useAccountStore = defineStore('account', {
