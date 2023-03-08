@@ -40,7 +40,7 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const { tradableSlugMap, tradableTokenMaps, getMarketsForQuoteDenom } =
+const { tradableSlugMap, tradableTokensMap, getMarketsForQuoteDenom } =
   useConvertFormatter()
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
@@ -56,10 +56,10 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
 )
 
 const baseTokens = computed(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
+  () => tradableTokensMap.value[baseTokenDenom.value] || []
 )
 const quoteTokens = computed(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
+  () => tradableTokensMap.value[quoteTokenDenom.value] || []
 )
 
 const { value: orderType, setValue: setOrderType } = useStringField({

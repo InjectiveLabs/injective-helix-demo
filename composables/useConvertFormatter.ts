@@ -45,7 +45,7 @@ export default function useConvertFormatter() {
     )
   )
 
-  const tradableTokenMaps = computed(() => {
+  const tradableTokensMap = computed(() => {
     return [
       ...spotStore.markets,
       ...spotStore.usdcConversionModalMarkets
@@ -72,7 +72,8 @@ export default function useConvertFormatter() {
       )
 
       /**
-       * For markets with base denom that are also quote denoms, we only need to add it's  corresponding quoteTokenWithBalance, i.e. USDT/USDCet
+       * For markets where the base could also be the quote for another market, we only need to add the corresponding quoteTokenWithBalance
+       * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
        */
       return {
         ...tokens,
@@ -117,7 +118,7 @@ export default function useConvertFormatter() {
 
   return {
     tradableSlugMap,
-    tradableTokenMaps,
+    tradableTokensMap,
     getMarketsForQuoteDenom
   }
 }

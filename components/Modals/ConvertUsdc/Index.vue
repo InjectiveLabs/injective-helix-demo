@@ -70,24 +70,11 @@ function updateAmount({
   }
 }
 
-watch(
-  isModalOpen,
-  (isOpen) => {
-    if (isOpen) {
-      fetchStatus.setLoading()
-
-      Promise.all([accountStore.fetchSubaccounts()]).finally(() =>
-        fetchStatus.setIdle()
-      )
-    }
-  },
-  { immediate: true }
-)
-
 onMounted(() => {
   fetchStatus.setLoading()
 
   Promise.all([
+    accountStore.fetchSubaccounts(),
     spotStore.fetchOrderbook(props.market.marketId),
     spotStore.streamOrderbookUpdate(props.market.marketId)
   ]).finally(() => fetchStatus.setIdle())
@@ -119,6 +106,7 @@ function handleFormSubmit() {
     })
     .then(() => {
       resetFormValues()
+      accountStore.fetchSubaccounts()
       success({ title: t('trade.convert.convert_success') })
     })
     .catch($onError)
