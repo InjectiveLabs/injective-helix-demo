@@ -54,22 +54,32 @@ export default function useConvertFormatter() {
         market.baseToken,
         accountStore.subaccount
       )
+      const quoteTokenWithBalance = getSubaccountTokenWithBalance(
+        market.quoteToken,
+        accountStore.subaccount
+      )
 
-      // filter out USDT from the base tokens
       const baseTokens = tokens[market.quoteDenom]
-        ? [...tokens[market.quoteDenom], baseTokenWithBalance].filter(
-            ({ denom }) => denom !== market.quoteDenom
-          )
+        ? [...tokens[market.quoteDenom], baseTokenWithBalance]
         : [baseTokenWithBalance]
 
       const quoteToken = tokens[market.baseDenom]
         ? [...tokens[market.baseDenom], ...availableQuoteDenoms.value]
         : availableQuoteDenoms.value
 
+      const tokenCanBeBaseOrQuote = availableQuoteDenoms.value.some(
+        ({ denom }) => denom === market.baseDenom
+      )
+
+      /**
+       * For markets with base denom that are also quote denoms, we only need to add it's  corresponding quoteTokenWithBalance, i.e. USDT/USDCet
+       */
       return {
         ...tokens,
         [market.quoteDenom]: baseTokens,
-        [market.baseDenom]: quoteToken
+        [market.baseDenom]: !tokenCanBeBaseOrQuote
+          ? quoteToken
+          : [quoteTokenWithBalance]
       }
     }, {} as Record<string, BalanceWithToken[]>)
   })

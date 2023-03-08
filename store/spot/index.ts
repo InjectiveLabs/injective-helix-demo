@@ -265,16 +265,12 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchOrderbook(marketId: string) {
       const spotStore = useSpotStore()
-      const initialState = initialStateFactory()
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
       const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
 
       if (latestOrderbook.sequence >= currentOrderbookSequence) {
         spotStore.orderbook = latestOrderbook
-      } else {
-        // reset orderbook since previous orderbook could be from a different market
-        spotStore.orderbook = initialState.orderbook
       }
 
       // handle race condition between fetch and stream
