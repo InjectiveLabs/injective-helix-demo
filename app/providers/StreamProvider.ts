@@ -6,7 +6,6 @@ import {
 } from '@/app/client/streams/derivatives'
 import { portfolioStream } from '@/app/client/streams/bank'
 import { spotMarketStream } from '@/app/client/streams/spot'
-import { subaccountStream } from '@/app/client/streams/account'
 import { StreamType } from '@/types'
 
 type StreamFn =
@@ -17,7 +16,6 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotOrderbook
   | typeof spotMarketStream.streamSpotOrderHistory
   | typeof oracleStream.streamOraclePricesByMarkets
-  | typeof subaccountStream.streamSubaccountBalance
   | typeof spotMarketStream.streamSpotOrderbookUpdate
   | typeof derivativesMarketStream.streamDerivativeMarket
   | typeof derivativesMarketStream.streamDerivativeOrders

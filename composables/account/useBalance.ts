@@ -67,21 +67,34 @@ export function useBalance() {
       return {
         ...balance,
         denom: denoms.join('-'),
-        balance: new BigNumberInBase(aggregatedBalance.balance)
-          .plus(balance.balance)
+        bankBalance: new BigNumberInBase(aggregatedBalance.bankBalance)
+          .plus(balance.bankBalance)
+          .toFixed(),
+        availableBalance: new BigNumberInBase(
+          aggregatedBalance.availableBalance
+        )
+          .plus(balance.availableBalance)
           .toFixed(),
         totalBalance: new BigNumberInBase(aggregatedBalance.totalBalance)
           .plus(balance.totalBalance)
           .toFixed(),
-        reservedBalance: new BigNumberInBase(aggregatedBalance.reservedBalance)
-          .plus(balance.reservedBalance)
+        inOrderBalance: new BigNumberInBase(aggregatedBalance.inOrderBalance)
+          .plus(balance.inOrderBalance)
           .toFixed(),
-        totalBalanceInUsd: new BigNumberInBase(
-          aggregatedBalance.totalBalanceInUsd
+        unrealizedPnl: new BigNumberInBase(aggregatedBalance.unrealizedPnl)
+          .plus(balance.unrealizedPnl)
+          .toFixed(),
+        accountTotalBalance: new BigNumberInBase(
+          aggregatedBalance.accountTotalBalance
         )
-          .plus(balance.totalBalanceInUsd)
+          .plus(balance.accountTotalBalance)
+          .toFixed(),
+        accountTotalBalanceInUsd: new BigNumberInBase(
+          aggregatedBalance.accountTotalBalanceInUsd
+        )
+          .plus(balance.accountTotalBalanceInUsd)
           .toFixed()
-      }
+      } as AccountBalance
     })
   }
 

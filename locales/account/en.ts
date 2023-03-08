@@ -27,9 +27,10 @@ export default {
         total: 'Total',
         walletBalance: 'Wallet balance',
         tradingAccountBalance: 'Trading balance',
-        totalBalance: 'Total balance',
-        availableBalance: 'Available balance',
+        totalBalance: 'Total',
+        availableBalance: 'Available',
         inUseReserved: 'In Use/Reserved',
+        unrealized: 'Unrealized PnL',
         value: 'Value ({symbol})'
       }
     },

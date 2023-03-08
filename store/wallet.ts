@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
-import { getEthereumAddress, getInjectiveAddress } from '@injectivelabs/sdk-ts'
+import {
+  getDefaultSubaccountId,
+  getEthereumAddress,
+  getInjectiveAddress
+} from '@injectivelabs/sdk-ts'
 import {
   ErrorType,
   UnspecifiedErrorCode,
@@ -50,6 +54,14 @@ export const useWalletStore = defineStore('wallet', {
       return (
         hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
       )
+    },
+
+    defaultSubaccountId: (state) => {
+      if (!state.injectiveAddress) {
+        return ''
+      }
+
+      return getDefaultSubaccountId(state.injectiveAddress)
     },
 
     isCosmosWallet: (state) => {

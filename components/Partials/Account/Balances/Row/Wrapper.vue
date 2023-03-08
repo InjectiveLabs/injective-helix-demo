@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Token } from '@injectivelabs/token-metadata'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
+
+const walletStore = useWalletStore()
+const bankStore = useBankStore()
 
 const props = defineProps({
   hideActions: Boolean,
@@ -23,41 +26,63 @@ const props = defineProps({
   }
 })
 
+const isDefaultTradingAccount = computed(() => {
+  return walletStore.defaultSubaccountId === bankStore.subaccountId
+})
+
 const {
-  valueToString: totalBalanceInUsdInString,
-  valueToBigNumber: totalBalanceInUsdInBigNumber
+  valueToString: accountTotalBalanceInUsdInString,
+  valueToBigNumber: accountTotalBalanceInUsdInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
+  computed(() => props.balance.accountTotalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const {
-  valueToString: totalBalanceInString,
-  valueToBigNumber: totalBalanceInBigNumber
+  valueToString: accountTotalBalanceInString,
+  valueToBigNumber: accountTotalBalanceInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalance),
+  computed(() => props.balance.accountTotalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
+/**
+ * For the default trading account the
+ * available balance is bankBalance + available balance
+ **/
 const {
   valueToString: availableBalanceInString,
   valueToBigNumber: availableBalanceInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.availableBalance),
+  computed(() =>
+    new BigNumberInBase(props.balance.availableBalance).plus(
+      isDefaultTradingAccount.value ? props.balance.bankBalance : 0
+    )
+  ),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const {
-  valueToString: reservedBalanceInString,
-  valueToBigNumber: reservedBalanceInBigNumber
+  valueToString: inOrderBalanceInString,
+  valueToBigNumber: inOrderBalanceInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.reservedBalance),
+  computed(() => props.balance.inOrderBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const {
+  valueToString: unrealizedPnlInString,
+  valueToBigNumber: unrealizedPnlInBigNumber
+} = useBigNumberFormatter(
+  computed(() => props.balance.unrealizedPnl),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -88,23 +113,6 @@ function handleWithdrawClick() {
     </td>
 
     <td>
-      <div class="flex justify-end" data-cy="wallet-balance-wallet-table-data">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
-          {{ HIDDEN_BALANCE_DISPLAY }}
-        </span>
-
-        <span
-          v-else-if="totalBalanceInBigNumber.gt(0)"
-          class="font-mono text-sm text-right"
-        >
-          {{ totalBalanceInString }}
-        </span>
-
-        <span v-else> &mdash; </span>
-      </div>
-    </td>
-
-    <td>
       <div
         class="flex justify-end"
         data-cy="wallet-balance-trading-account-table-data"
@@ -131,10 +139,44 @@ function handleWithdrawClick() {
         </span>
 
         <span
-          v-else-if="reservedBalanceInBigNumber.gt(0)"
+          v-else-if="inOrderBalanceInBigNumber.gt(0)"
           class="font-mono text-sm text-right"
         >
-          {{ reservedBalanceInString }}
+          {{ inOrderBalanceInString }}
+        </span>
+
+        <span v-else> &mdash; </span>
+      </div>
+    </td>
+
+    <td>
+      <div class="flex justify-end">
+        <span v-if="hideBalances" class="font-mono text-sm text-right">
+          {{ HIDDEN_BALANCE_DISPLAY }}
+        </span>
+
+        <span
+          v-else-if="unrealizedPnlInBigNumber.gt(0)"
+          class="font-mono text-sm text-right"
+        >
+          {{ unrealizedPnlInString }}
+        </span>
+
+        <span v-else> &mdash; </span>
+      </div>
+    </td>
+
+    <td>
+      <div class="flex justify-end" data-cy="wallet-balance-wallet-table-data">
+        <span v-if="hideBalances" class="font-mono text-sm text-right">
+          {{ HIDDEN_BALANCE_DISPLAY }}
+        </span>
+
+        <span
+          v-else-if="accountTotalBalanceInBigNumber.gt(0)"
+          class="font-mono text-sm text-right"
+        >
+          {{ accountTotalBalanceInString }}
         </span>
 
         <span v-else> &mdash; </span>
@@ -150,10 +192,10 @@ function handleWithdrawClick() {
         </span>
 
         <span
-          v-else-if="totalBalanceInUsdInBigNumber.gt(0)"
+          v-else-if="accountTotalBalanceInUsdInBigNumber.gt(0)"
           class="font-mono text-sm text-right"
         >
-          {{ totalBalanceInUsdInString }} USD
+          {{ accountTotalBalanceInUsdInString }} USD
         </span>
 
         <span v-else> &mdash; </span>
