@@ -32,16 +32,14 @@ export default function useConvertFormatter() {
           accountStore.subaccount
         )
 
-        // prevent duplicate USDT keys
-        const quoteTokenIsNotAKey = !tokens.find(
+        // remove duplicate USDT keys
+        const quoteTokenExistOnTokensList = tokens.some(
           (token) => token.denom === quoteTokenWithBalance.denom
         )
 
-        if (quoteTokenIsNotAKey) {
-          tokens.push(quoteTokenWithBalance)
-        }
-
-        return tokens
+        return quoteTokenExistOnTokensList
+          ? tokens
+          : [quoteTokenWithBalance, ...tokens]
       },
       [] as BalanceWithToken[]
     )

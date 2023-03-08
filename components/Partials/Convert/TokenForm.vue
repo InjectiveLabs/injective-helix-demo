@@ -4,7 +4,6 @@ import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
-import { usdcTokenDenom } from '@/app/data/token'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -46,12 +45,6 @@ const { tradableSlugMap, tradableTokenMaps, getMarketsForQuoteDenom } =
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-const isPeggyUsdcToUsdcet = computed(
-  () =>
-    props.market.baseDenom.toLowerCase() === usdcTokenDenom.USDC &&
-    props.market.quoteDenom.toLowerCase() === usdcTokenDenom.USDCet
-)
-
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom
 })
@@ -63,27 +56,10 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
 )
 
 const baseTokens = computed(
-  () =>
-    tradableTokenMaps.value[baseTokenDenom.value].filter((balance) => {
-      // limit convert usdc modal to only USDCet
-      if (isPeggyUsdcToUsdcet.value) {
-        return balance.denom.toLowerCase() === usdcTokenDenom.USDCet
-      }
-
-      return true
-    }) || []
+  () => tradableTokenMaps.value[baseTokenDenom.value] || []
 )
-
 const quoteTokens = computed(
-  () =>
-    tradableTokenMaps.value[quoteTokenDenom.value].filter((balance) => {
-      // limit convert usdc modal to only USDC
-      if (isPeggyUsdcToUsdcet.value) {
-        return balance.denom.toLowerCase() === usdcTokenDenom.USDC
-      }
-
-      return true
-    }) || []
+  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
 )
 
 const { value: orderType, setValue: setOrderType } = useStringField({
@@ -129,10 +105,6 @@ function toggleOrderType() {
 }
 
 function handleSwap() {
-  if (isPeggyUsdcToUsdcet.value) {
-    return
-  }
-
   animationCount.value = animationCount.value + 1
 
   emit('update:isBaseAmount', !props.isBaseAmount)
@@ -234,11 +206,8 @@ watch(
 
     <div class="my-4">
       <BaseIcon
-        :name="isPeggyUsdcToUsdcet ? 'arrow' : 'arrow-up-down'"
+        name="arrow-up-down"
         class="mx-auto w-6 h-6"
-        :class="{
-          '-rotate-90': isPeggyUsdcToUsdcet
-        }"
         @click="handleSwap"
       />
     </div>
