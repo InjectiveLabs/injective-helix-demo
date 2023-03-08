@@ -2,7 +2,9 @@
 
 <template>
   <div>
+    <AssetNoticeBanners />
     <AssetKadoBanner />
+
     <div class="bg-white">
       <PartialsHomeHero />
       <div class="h-full w-full flex flex-wrap pb-4">

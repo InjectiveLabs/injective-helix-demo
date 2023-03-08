@@ -35,6 +35,9 @@ const env = {
   VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
     ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
     : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
+  VITE_BANNER_NOTICE_ENABLED: (isWebpack
+    ? process.env.VITE_BANNER_NOTICE_ENABLED
+    : import.meta.env.VITE_BANNER_NOTICE_ENABLED) as string | undefined,
 
   VITE_ETHEREUM_CHAIN_ID: isWebpack
     ? process.env.VITE_ETHEREUM_CHAIN_ID
@@ -90,6 +93,7 @@ const env = {
   VITE_DEBUG_CALCULATION: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
   VITE_MAINTENANCE_ENABLED: string
+  VITE_BANNER_NOTICE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
   VITE_CHRONOS_API_ENDPOINT: string
@@ -176,6 +180,9 @@ export const BASE_URL = env.VITE_BASE_URL || ''
 export const VITE_NINJA_PASS_ENDPOINT: string =
   env.VITE_NINJA_PASS_ENDPOINT || 'https://api.ninjapass.injective.dev'
 export const FEE_PAYER_PUB_KEY = (env.VITE_FEE_PAYER_PUB_KEY || '') as string
+
+export const VITE_BANNER_NOTICE_ENABLED =
+  env.VITE_BANNER_NOTICE_ENABLED === 'true'
 
 export const VITE_NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
 export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''

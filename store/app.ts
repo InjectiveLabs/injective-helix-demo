@@ -14,7 +14,13 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '@/app/utils/constants'
 import { Locale, english } from '@/locales'
-import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '@/types'
+import {
+  AppState,
+  GeoLocation,
+  NoticeBanner,
+  OrderbookLayout,
+  TradingLayout
+} from '@/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -39,6 +45,7 @@ export interface UserBasedState {
   ninjaPassWinnerModalViewed: boolean
   userFeedbackModalViewed: boolean
   skipTradeConfirmationModal: boolean
+  bannersViewed: NoticeBanner[]
 }
 
 type AppStoreState = {
@@ -79,7 +86,8 @@ const initialStateFactory = (): AppStoreState => ({
     tradingLayout: TradingLayout.Left,
     ninjaPassWinnerModalViewed: false,
     userFeedbackModalViewed: false,
-    skipTradeConfirmationModal: false
+    skipTradeConfirmationModal: false,
+    bannersViewed: []
   },
   announcements: [],
   attachments: []
