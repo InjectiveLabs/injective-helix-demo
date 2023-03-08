@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TradeField, TradeForm } from '@/types'
+import { TradeField, TradeForm, UiSpotOrderbookWithSequence } from '@/types'
 
 const router = useRouter()
 const spotStore = useSpotStore()
@@ -108,6 +108,8 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   updateUrlQuery()
 
   fetchStatus.setLoading()
+
+  spotStore.orderbook = {} as UiSpotOrderbookWithSequence
 
   Promise.all([
     spotStore.cancelTradesStream(),
