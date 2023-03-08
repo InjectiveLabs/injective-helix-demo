@@ -75,27 +75,28 @@ export const useBankStore = defineStore('bank', {
         return
       }
 
+      const defaultSubaccountId = getDefaultSubaccountId(injectiveAddress)
       const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolio(injectiveAddress)
 
-      const defaultAccountBalances =
-        accountPortfolio?.subaccountsList.reduce(
-          (accountBalances, { subaccountId, denom, deposit }) => {
-            if (subaccountId.endsWith('0'.repeat(24))) {
-              return [
-                ...accountBalances,
-                { denom, amount: deposit?.totalBalance || '0' }
-              ]
-            }
-            return accountBalances
-          },
-          [] as Coin[]
-        ) || []
+      const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
+        (accountBalances, { subaccountId, denom, deposit }) => {
+          if (subaccountId === defaultSubaccountId) {
+            return [
+              ...accountBalances,
+              { denom, amount: deposit?.totalBalance || '0' }
+            ]
+          }
+
+          return accountBalances
+        },
+        [] as Coin[]
+      )
 
       bankStore.$patch({
-        defaultAccountBalances,
+        defaultSubaccountId,
+        defaultAccountBalances: defaultAccountBalances || [],
         bankBalances: accountPortfolio?.bankBalancesList || [],
-        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress),
         subaccountBalanceList: accountPortfolio?.subaccountsList || []
       })
     },
