@@ -32,7 +32,10 @@ export default {
         inUseReserved: 'In Use/Reserved',
         unrealized: 'Unrealized PnL',
         value: 'Value ({symbol})'
-      }
+      },
+      inUseReservedTooltip: 'Sum of in order amount and margin held',
+      unrealizedTooltip:
+        'Total margin and unrealized PnL from your open positions'
     },
     positions: {
       empty: 'No positions found',
