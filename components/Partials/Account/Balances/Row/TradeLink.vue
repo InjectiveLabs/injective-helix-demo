@@ -43,7 +43,7 @@ const filteredMarketsWithRoute = computed(() => {
 
     <BaseDropdown
       v-else
-      popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
+      popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute max-w-52 bg-gray-750 shadow-dropdown"
     >
       <template #default>
         <div
