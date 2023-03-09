@@ -44,24 +44,23 @@ export default function useConvertFormatter() {
         ? [...tokens[market.quoteDenom], market.baseToken]
         : [market.baseToken]
 
-      const quoteToken = tokens[market.baseDenom]
-        ? [...tokens[market.baseDenom], ...availableQuoteDenoms.value]
-        : availableQuoteDenoms.value
-
-      const tokenCanBeBaseOrQuote = availableQuoteDenoms.value.some(
-        ({ denom }) => denom === market.baseDenom
-      )
-
       /**
-       * For markets where the base could also be the quote for another market, we only need to add the corresponding market.quoteToken
+       * For markets where the base could also be the quote for another market, we only need to add the denoms
+       * which are not the base of the current market
        * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
        */
+      const filteredAvailableQuoteDenoms = availableQuoteDenoms.value.filter(
+        (token) => token.denom !== market.baseDenom
+      )
+
+      const quoteToken = tokens[market.baseDenom]
+        ? [...tokens[market.baseDenom], ...filteredAvailableQuoteDenoms]
+        : filteredAvailableQuoteDenoms
+
       return {
         ...tokens,
         [market.quoteDenom]: baseTokens,
-        [market.baseDenom]: !tokenCanBeBaseOrQuote
-          ? quoteToken
-          : [market.quoteToken]
+        [market.baseDenom]: quoteToken
       }
     }, {} as Record<string, Token[]>)
   })
