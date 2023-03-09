@@ -1,53 +1,117 @@
-import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
-export const getCoinGeckoIdListWithDenomBalanceLargerThenZero = (
-  balances: BalanceWithTokenAndPrice[],
-  tokens: Token[]
-) => {
-  const denomsWithBalanceLargerThanZero = balances
-    .filter((balance) => new BigNumberInBase(balance.balance).gt(0))
-    .map((balance) => balance.denom)
-
-  const coinGeckoIdList = denomsWithBalanceLargerThanZero
-    .map((denom) => tokens.find((token) => token.denom === denom)?.coinGeckoId)
-    .filter((coinGeckoId) => coinGeckoId) as string[]
-
-  return coinGeckoIdList
-}
-
-/**
- * For the account page balances, we use all
- * balances that the user has in their bank balance
- */
 export function useBalance() {
   const bankStore = useBankStore()
   const tokenStore = useTokenStore()
+  const walletStore = useWalletStore()
 
-  // TODO - support for multi subaccounts (take available from the subaccount available balance not only from bank)
-  const balancesWithToken = computed(() => {
+  const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
-      const balance = bankStore.balanceMap[token.denom] || 0
+      const isDefaultTradingAccount =
+        walletStore.defaultSubaccountId === bankStore.subaccountId
+      const denom = token.denom.toLowerCase()
+      const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
+
+      const bankBalance = bankStore.balanceMap[token.denom] || 0
+
+      const subaccountBalances =
+        bankStore.subaccountBalancesMap[bankStore.subaccountId]
+
+      const subaccountBalance = subaccountBalances.find(
+        (balance) => balance.denom.toLowerCase() === denom
+      )
+      const subaccountAvailableBalance =
+        subaccountBalance?.availableBalance || 0
+
+      const inOrderBalance = new BigNumberInWei(
+        subaccountBalance?.totalBalance || 0
+      )
+        .minus(subaccountAvailableBalance)
+        .toFixed()
+
+      const availableMargin = new BigNumberInWei(
+        isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
+      )
+
+      const accountTotalBalance = new BigNumberInWei(bankBalance)
+        .plus(isDefaultTradingAccount ? 0 : subaccountAvailableBalance)
+        .plus(inOrderBalance)
+      const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
       return {
         token,
-        balance,
+        usdPrice,
+        bankBalance,
+        inOrderBalance,
         denom: token.denom,
-        usdPrice: tokenStore.tokenUsdPriceMap[token.coinGeckoId] || 0
-      } as BalanceWithTokenAndPrice
+        availableMargin: availableMargin.toFixed(),
+        availableBalance: isDefaultTradingAccount
+          ? 0
+          : subaccountAvailableBalance,
+        totalBalance: subaccountBalance?.totalBalance || 0,
+        accountTotalBalance: accountTotalBalance.toFixed(),
+        accountTotalBalanceInUsd: accountTotalBalanceInUsd.toFixed(),
+        unrealizedPnl: '0'
+      } as AccountBalance
     })
   })
 
-  const fetchTokenUsdPrice = () => {
-    const coinGeckoIdList = getCoinGeckoIdListWithDenomBalanceLargerThenZero(
-      balancesWithToken.value,
-      tokenStore.tokens
-    )
+  const accountBalancesWithTokenInBases = computed(() => {
+    return accountBalancesWithToken.value.map((accountBalance) => {
+      return {
+        ...accountBalance,
+        availableMargin: new BigNumberInWei(accountBalance.availableMargin)
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        inOrderBalance: new BigNumberInWei(accountBalance.inOrderBalance)
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        bankBalance: new BigNumberInWei(accountBalance.bankBalance)
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        accountTotalBalance: new BigNumberInWei(
+          accountBalance.accountTotalBalance
+        )
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        accountTotalBalanceInUsd: new BigNumberInWei(
+          accountBalance.accountTotalBalanceInUsd
+        )
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        availableBalance: new BigNumberInWei(accountBalance.availableBalance)
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        totalBalance: new BigNumberInWei(accountBalance.totalBalance)
+          .toBase(accountBalance.token.decimals)
+          .toFixed(),
+        unrealizedPnl: '0'
+      } as AccountBalance
+    })
+  })
 
-    return tokenStore.fetchTokenUsdPriceMap(coinGeckoIdList)
-  }
+  /**
+   * A minimal representation of an AccountBalance based on the current
+   * subaccountId
+   *
+   * @deprecated should use accountBalances instead
+   */
+  const balancesWithToken = computed(() => {
+    return accountBalancesWithToken.value.map((accountBalance) => {
+      const isDefaultTradingAccount =
+        walletStore.defaultSubaccountId === bankStore.subaccountId
+
+      return {
+        token: accountBalance.token,
+        denom: accountBalance.denom,
+        balance: isDefaultTradingAccount
+          ? accountBalance.bankBalance
+          : accountBalance.availableBalance,
+        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token.coinGeckoId)
+      }
+    })
+  })
 
   const aggregateBalanceByDenoms = ({
     balances,
@@ -70,6 +134,9 @@ export function useBalance() {
         denom: denoms.join('-'),
         bankBalance: new BigNumberInBase(aggregatedBalance.bankBalance)
           .plus(balance.bankBalance)
+          .toFixed(),
+        availableMargin: new BigNumberInBase(aggregatedBalance.availableMargin)
+          .plus(balance.availableMargin)
           .toFixed(),
         availableBalance: new BigNumberInBase(
           aggregatedBalance.availableBalance
@@ -101,7 +168,8 @@ export function useBalance() {
 
   return {
     balancesWithToken,
-    fetchTokenUsdPrice,
-    aggregateBalanceByDenoms
+    aggregateBalanceByDenoms,
+    accountBalancesWithToken,
+    accountBalancesWithTokenInBases
   }
 }

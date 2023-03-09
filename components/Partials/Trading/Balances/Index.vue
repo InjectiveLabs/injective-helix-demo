@@ -28,14 +28,14 @@ const props = defineProps({
 const isSpot = props.market.type === MarketType.Spot
 const status = reactive(new Status(StatusType.Loading))
 
-const { balancesWithToken } = useBalance()
+const { accountBalancesWithToken } = useBalance()
 
 const baseTradingBalance = computed(() => {
   if (!isSpot) {
     return undefined
   }
 
-  return balancesWithToken.value.find(
+  return accountBalancesWithToken.value.find(
     (balance) =>
       balance.denom.toLowerCase() ===
       (props.market as UiSpotMarketWithToken).baseDenom.toLowerCase()
@@ -43,7 +43,7 @@ const baseTradingBalance = computed(() => {
 })
 
 const quoteTradingBalance = computed(() => {
-  return balancesWithToken.value.find(
+  return accountBalancesWithToken.value.find(
     (balance) =>
       balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
   )
@@ -55,11 +55,11 @@ const hasTradingAccountBalances = computed(() => {
   )
 
   const baseTradingBalanceInBase = new BigNumberInWei(
-    baseTradingBalance.value?.balance || 0
+    baseTradingBalance.value?.availableMargin || 0
   ).toBase(props.market.baseToken.decimals)
 
   const quoteTradingBalanceInBase = new BigNumberInWei(
-    quoteTradingBalance.value?.balance || 0
+    quoteTradingBalance.value?.availableMargin || 0
   ).toBase(props.market.quoteToken.decimals)
 
   if (props.market.type === MarketType.Derivative) {
@@ -73,13 +73,13 @@ const hasTradingAccountBalances = computed(() => {
 })
 
 const baseTradingBalanceToFormat = computed(() => {
-  return new BigNumberInWei(baseTradingBalance.value?.balance || '0')
+  return new BigNumberInWei(baseTradingBalance.value?.availableMargin || '0')
     .toBase(props.market.baseToken.decimals)
     .toFormat(props.market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 })
 
 const quoteTradingBalanceToFormat = computed(() => {
-  return new BigNumberInWei(quoteTradingBalance.value?.balance || '0')
+  return new BigNumberInWei(quoteTradingBalance.value?.availableMargin || '0')
     .toBase(props.market.quoteToken.decimals)
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
 })

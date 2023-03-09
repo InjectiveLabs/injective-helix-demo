@@ -64,7 +64,7 @@ const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 TODO: update to use availableBalance instead of subaccount balance after merge
 */
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.subaccountBalance),
+  computed(() => baseBalance.value?.bankBalance),
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -188,7 +188,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: baseBalance.token,
                 denom: baseBalance.denom,
-                balance: new BigNumberInBase(baseBalance.subaccountBalance)
+                balance: new BigNumberInBase(baseBalance.bankBalance)
                   .toWei(baseBalance.token.decimals)
                   .toFixed()
               }
@@ -250,7 +250,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: quoteBalance.token,
                 denom: quoteBalance.denom,
-                balance: new BigNumberInBase(quoteBalance.subaccountBalance)
+                balance: new BigNumberInBase(quoteBalance.bankBalance)
                   .toWei(quoteBalance.token.decimals)
                   .toFixed()
               }

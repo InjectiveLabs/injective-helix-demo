@@ -18,6 +18,8 @@ export type AccountBalance = Omit<BalanceWithTokenAndPrice, 'balance'> & {
   unrealizedPnl: string
   // Balance in orders (total - available from the subaccount)
   inOrderBalance: string
+  // the available margin depending on the subaccount (bank for default, subaccount available for non-default)
+  availableMargin: string
 
   // The total balance of the account - bank + available + inOrderBalance + unrealizedPnL
   accountTotalBalance: string

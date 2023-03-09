@@ -1,40 +1,7 @@
-import { Ref } from 'vue'
-import {
-  SpotOrderSide,
-  BalanceWithToken,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 
-export const getSubaccountTokenWithBalance = (
-  token: Token,
-  balances: Ref<BalanceWithToken[]>
-): BalanceWithToken => {
-  const defaultBalance: BalanceWithToken = {
-    token,
-    denom: token.denom,
-    balance: '0'
-  }
-
-  if (balances.value.length === 0) {
-    return defaultBalance
-  }
-
-  const accountBalance = balances.value.find(
-    ({ denom }) => denom === token.denom
-  )
-
-  if (!accountBalance) {
-    return defaultBalance
-  }
-
-  return {
-    ...defaultBalance,
-    balance: accountBalance.balance
-  }
-}
-
-export default function useConvertFormatter(balances: Ref<BalanceWithToken[]>) {
+export default function useConvertFormatter() {
   const spotStore = useSpotStore()
 
   const tradableSlugMap = computed(() => {
@@ -55,21 +22,16 @@ export default function useConvertFormatter(balances: Ref<BalanceWithToken[]>) {
   const availableQuoteDenoms = computed(() =>
     [...spotStore.markets, ...spotStore.usdcConversionModalMarkets].reduce(
       (tokens, market) => {
-        const quoteTokenWithBalance = getSubaccountTokenWithBalance(
-          market.quoteToken,
-          balances
-        )
-
         // remove duplicate USDT keys
         const quoteTokenExistOnTokensList = tokens.some(
-          (token) => token.denom === quoteTokenWithBalance.denom
+          (token) => token.denom === market.quoteDenom
         )
 
         return quoteTokenExistOnTokensList
           ? tokens
-          : [quoteTokenWithBalance, ...tokens]
+          : [market.quoteToken, ...tokens]
       },
-      [] as BalanceWithToken[]
+      [] as Token[]
     )
   )
 
@@ -78,18 +40,9 @@ export default function useConvertFormatter(balances: Ref<BalanceWithToken[]>) {
       ...spotStore.markets,
       ...spotStore.usdcConversionModalMarkets
     ].reduce((tokens, market) => {
-      const baseTokenWithBalance = getSubaccountTokenWithBalance(
-        market.baseToken,
-        balances
-      )
-      const quoteTokenWithBalance = getSubaccountTokenWithBalance(
-        market.quoteToken,
-        balances
-      )
-
       const baseTokens = tokens[market.quoteDenom]
-        ? [...tokens[market.quoteDenom], baseTokenWithBalance]
-        : [baseTokenWithBalance]
+        ? [...tokens[market.quoteDenom], market.baseToken]
+        : [market.baseToken]
 
       const quoteToken = tokens[market.baseDenom]
         ? [...tokens[market.baseDenom], ...availableQuoteDenoms.value]
@@ -100,7 +53,7 @@ export default function useConvertFormatter(balances: Ref<BalanceWithToken[]>) {
       )
 
       /**
-       * For markets where the base could also be the quote for another market, we only need to add the corresponding quoteTokenWithBalance
+       * For markets where the base could also be the quote for another market, we only need to add the corresponding market.quoteToken
        * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
        */
       return {
@@ -108,9 +61,9 @@ export default function useConvertFormatter(balances: Ref<BalanceWithToken[]>) {
         [market.quoteDenom]: baseTokens,
         [market.baseDenom]: !tokenCanBeBaseOrQuote
           ? quoteToken
-          : [quoteTokenWithBalance]
+          : [market.quoteToken]
       }
-    }, {} as Record<string, BalanceWithToken[]>)
+    }, {} as Record<string, Token[]>)
   })
 
   function getMarketsForQuoteDenom({

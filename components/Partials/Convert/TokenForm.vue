@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  BalanceWithToken,
+  SpotOrderSide,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
@@ -9,6 +13,7 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const bankStore = useBankStore()
 const modalStore = useModalStore()
+const tokenStore = useTokenStore()
 
 const formValues = useFormValues<TradeForm>()
 
@@ -40,10 +45,9 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const { balancesWithToken } = useBalance()
-
+const { accountBalancesWithToken } = useBalance()
 const { tradableSlugMap, tradableTokensMap, getMarketsForQuoteDenom } =
-  useConvertFormatter(balancesWithToken)
+  useConvertFormatter()
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
@@ -60,9 +64,44 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
 const baseTokens = computed(
   () => tradableTokensMap.value[baseTokenDenom.value] || []
 )
+
 const quoteTokens = computed(
   () => tradableTokensMap.value[quoteTokenDenom.value] || []
 )
+
+const baseTokensWithBalance = computed(() => {
+  return baseTokens.value.map((baseToken) => {
+    const accountBalance = accountBalancesWithToken.value.find(
+      (accountBalance) => {
+        return accountBalance.denom === baseToken.denom
+      }
+    )
+
+    return {
+      token: baseToken,
+      denom: baseToken.denom,
+      balance: accountBalance?.availableMargin || '0',
+      usdPrice: tokenStore.tokenUsdPrice(baseToken.coinGeckoId)
+    } as BalanceWithToken
+  })
+})
+
+const quoteTokensWithBalance = computed(() => {
+  return quoteTokens.value.map((quoteToken) => {
+    const accountBalance = accountBalancesWithToken.value.find(
+      (accountBalance) => {
+        return accountBalance.denom === quoteToken.denom
+      }
+    )
+
+    return {
+      token: quoteToken,
+      denom: quoteToken.denom,
+      balance: accountBalance?.availableMargin || '0',
+      usdPrice: tokenStore.tokenUsdPrice(quoteToken.coinGeckoId)
+    } as BalanceWithToken
+  })
+})
 
 const { value: orderType, setValue: setOrderType } = useStringField({
   name: TradeField.OrderType,
@@ -194,7 +233,7 @@ watch(
           :disabled="isLoading"
           :hide-max="!isBuy"
           :max-decimals="market?.quantityDecimals"
-          :options="baseTokens"
+          :options="baseTokensWithBalance"
           @update:amount="updateAmount"
           @update:denom="handleUpdateMarket"
           @update:max="handleMaxQuoteAmountChange"
@@ -226,7 +265,7 @@ watch(
           :required="!isBuy"
           :hide-max="isBuy"
           :max-decimals="market?.quantityDecimals"
-          :options="quoteTokens"
+          :options="quoteTokensWithBalance"
           @update:amount="updateAmount"
           @update:max="handleMaxBaseAmountChange"
           @update:denom="handleUpdateMarket"

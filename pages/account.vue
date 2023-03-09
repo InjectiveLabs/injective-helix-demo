@@ -20,7 +20,7 @@ const walletStore = useWalletStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { balancesWithToken } = useBalance()
+const { accountBalancesWithTokenInBases } = useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -82,50 +82,21 @@ const totalPositionsMarginByQuoteDenom = computed(() => {
 })
 
 const balances = computed(() => {
-  return balancesWithToken.value.map((balance) => {
+  return accountBalancesWithTokenInBases.value.map((balance) => {
     const denom = balance.denom.toLowerCase()
-    const usdPrice = balance.usdPrice
 
-    const subaccountBalances = bankStore.defaultSubaccountBalances
     const margin = totalPositionsMarginByQuoteDenom.value[denom] || ZERO_IN_BASE
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
-    const subaccountBalance = subaccountBalances.find(
-      (balance) => balance.denom.toLowerCase() === denom
-    )
-    const inOrderBalance = new BigNumberInWei(
-      subaccountBalance?.totalBalance || 0
-    )
-      .minus(subaccountBalance?.availableBalance || 0)
-      .toFixed()
-
-    const inOrderBalanceToBase = new BigNumberInWei(inOrderBalance).toBase(
-      balance.token.decimals
-    )
-    const balanceToBase = new BigNumberInWei(balance.balance).toBase(
-      balance.token.decimals
-    )
-    const availableBalanceToBase = new BigNumberInWei(
-      subaccountBalance?.availableBalance || 0
-    ).toBase(balance.token.decimals)
-    const totalBalanceToBase = new BigNumberInWei(
-      subaccountBalance?.totalBalance || 0
-    ).toBase(balance.token.decimals)
-
-    const accountTotalBalance = balanceToBase
-      .plus(inOrderBalanceToBase)
+    const accountTotalBalance = new BigNumberInBase(balance.accountTotalBalance)
       .plus(margin)
       .plus(pnl)
-    const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
+    const accountTotalBalanceInUsd = accountTotalBalance.times(balance.usdPrice)
 
     return {
       ...balance,
-      inOrderBalance: inOrderBalanceToBase.toFixed(),
-      bankBalance: balanceToBase.toFixed(),
       accountTotalBalance: accountTotalBalance.toFixed(),
       accountTotalBalanceInUsd: accountTotalBalanceInUsd.toFixed(),
-      availableBalance: availableBalanceToBase.toFixed(),
-      totalBalance: totalBalanceToBase.toFixed(),
       unrealizedPnl: margin.plus(pnl).toFixed()
     } as AccountBalance
   })
