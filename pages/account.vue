@@ -58,8 +58,8 @@ const totalPositionsPnlByQuoteDenom = computed(() => {
   }, {} as Record<string, BigNumberInBase>)
 })
 
-const totalPositionsMarginByQuoteDenom = computed(() => {
-  return positionStore.subaccountPositions.reduce((positions, position) => {
+const totalPositionsMarginByQuoteDenom = computed(() =>
+  positionStore.subaccountPositions.reduce((positions, position) => {
     const market = derivativeStore.markets.find(
       (m) => m.marketId === position.marketId
     )
@@ -80,10 +80,10 @@ const totalPositionsMarginByQuoteDenom = computed(() => {
 
     return positions
   }, {} as Record<string, BigNumberInBase>)
-})
+)
 
-const balances = computed(() => {
-  return balancesWithToken.value.map((balance) => {
+const balances = computed(() =>
+  balancesWithToken.value.map((balance) => {
     const denom = balance.denom.toLowerCase()
     const usdPrice = balance.usdPrice
 
@@ -130,7 +130,7 @@ const balances = computed(() => {
       reservedBalance: reservedBalance.toFixed()
     } as AccountBalance
   })
-})
+)
 
 onMounted(() => {
   status.setLoading()
