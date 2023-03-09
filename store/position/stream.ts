@@ -11,15 +11,15 @@ export const streamSubaccountPositions = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
 
-  const { defaultSubaccountId } = useBankStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !defaultSubaccountId) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamSubaccountPositions({
-    subaccountId: defaultSubaccountId,
+    subaccountId,
     marketId,
     callback: ({ position }) => {
       if (position) {

@@ -12,9 +12,9 @@ const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { fetchTokenUsdPrice } = useBalance()
+const { fetchTokenUsdPrice } = useToken()
 
-defineProps({
+const props = defineProps({
   balances: {
     type: Array as PropType<AccountBalance[]>,
     required: true
@@ -91,7 +91,7 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice()
+  fetchTokenUsdPrice(props.balances.map((b) => b.token))
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }

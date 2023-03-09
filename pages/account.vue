@@ -20,7 +20,7 @@ const walletStore = useWalletStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { balancesWithToken } = useBalance()
+const { accountBalancesWithTokenInBases } = useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -82,35 +82,22 @@ const totalPositionsMarginByQuoteDenom = computed(() => {
 })
 
 const balances = computed(() => {
-  return balancesWithToken.value.map((balance) => {
+  return accountBalancesWithTokenInBases.value.map((balance) => {
     const denom = balance.denom.toLowerCase()
-    const usdPrice = balance.usdPrice
 
     const margin = totalPositionsMarginByQuoteDenom.value[denom] || ZERO_IN_BASE
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
-    const inOrderBalance =
-      bankStore.defaultAccountBalances.find(
-        (balance) => balance.denom.toLowerCase() === denom
-      )?.amount || '0'
-
-    const inOrderBalanceToBase = new BigNumberInWei(inOrderBalance).toBase(
-      balance.token.decimals
-    )
-    const balanceToBase = new BigNumberInWei(balance.balance).toBase(
-      balance.token.decimals
-    )
-
-    const reservedBalance = inOrderBalanceToBase.plus(margin).plus(pnl)
-    const totalBalance = reservedBalance.plus(balanceToBase)
-    const totalBalanceInUsd = totalBalance.times(usdPrice)
+    const accountTotalBalance = new BigNumberInBase(balance.accountTotalBalance)
+      .plus(margin)
+      .plus(pnl)
+    const accountTotalBalanceInUsd = accountTotalBalance.times(balance.usdPrice)
 
     return {
       ...balance,
-      totalBalance: totalBalance.toFixed(),
-      reservedBalance: reservedBalance.toFixed(),
-      totalBalanceInUsd: totalBalanceInUsd.toFixed(),
-      availableBalance: totalBalance.minus(reservedBalance).toFixed()
+      accountTotalBalance: accountTotalBalance.toFixed(),
+      accountTotalBalanceInUsd: accountTotalBalanceInUsd.toFixed(),
+      unrealizedPnl: margin.plus(pnl).toFixed()
     } as AccountBalance
   })
 })

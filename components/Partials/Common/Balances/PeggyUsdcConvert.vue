@@ -6,7 +6,7 @@ import { usdcTokenDenom } from '@/app/data/token'
 
 const modalStore = useModalStore()
 
-const { balancesWithToken } = useBalance()
+const { accountBalancesWithToken } = useBalance()
 
 const props = defineProps({
   market: {
@@ -23,18 +23,15 @@ const hasUsdcPeggyBalance = computed(() => {
     return false
   }
 
-  const peggyUsdcBankBalance = balancesWithToken.value.find(
-    (balance) =>
-      usdcTokenDenom.USDC.toLowerCase() === balance.token.denom.toLowerCase()
-  )
-  const peggyUsdcSubaccountBalance = balancesWithToken.value.find(
-    (balance) =>
-      usdcTokenDenom.USDC.toLowerCase() === balance.denom.toLowerCase()
+  const peggyUsdcBalance = accountBalancesWithToken.value.find(
+    (accountBalance) => {
+      return (
+        accountBalance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
+      )
+    }
   )
 
-  return new BigNumberInBase(peggyUsdcBankBalance?.balance || 0)
-    .plus(peggyUsdcSubaccountBalance?.balance || 0)
-    .gt(0)
+  return new BigNumberInBase(peggyUsdcBalance?.availableMargin || 0).gt(0)
 })
 
 onMounted(() => {

@@ -22,6 +22,10 @@ const initialStateFactory = (): TokenStoreState => ({
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   getters: {
+    tokenUsdPrice: (state) => (coinGeckoId: string) => {
+      return state.tokenUsdPriceMap[coinGeckoId] || 0
+    },
+
     tradeableTokens: (state) => {
       const derivativeStore = useDerivativeStore()
       const spotStore = useSpotStore()
@@ -77,7 +81,7 @@ export const useTokenStore = defineStore('token', {
     async fetchSupplyTokenMeta() {
       const tokenStore = useTokenStore()
 
-      const { supply } = await bankApi.fetchTotalSupply()
+      const { supply } = await bankApi.fetchTotalSupply({ limit: 200 })
 
       const { bankSupply, ibcBankSupply } =
         UiBankTransformer.supplyToUiSupply(supply)

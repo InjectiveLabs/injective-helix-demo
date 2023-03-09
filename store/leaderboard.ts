@@ -37,7 +37,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     //   const { subaccount } = this.app.$accessor.account
     //   const { isUserWalletConnected, injectiveAddress } = this.app.$accessor.wallet
 
-    //   if (!isUserWalletConnected || !defaultSubaccountId || !injectiveAddress) {
+    //   if (!isUserWalletConnected || !subaccountId || !injectiveAddress) {
     //     return
     //   }
 

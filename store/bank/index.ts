@@ -1,10 +1,6 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
-import {
-  PortfolioSubaccountBalanceV2,
-  getDefaultSubaccountId
-} from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
@@ -14,19 +10,19 @@ import {
   cancelSubaccountBalanceStream
 } from '@/store/bank/stream'
 import { deposit, transfer, withdraw } from '@/store/bank/message'
+import { SubaccountBalance } from '~~/types'
 
 type BankStoreState = {
-  defaultSubaccountId: string
+  // currently selected subaccountId, set at the default one until we have multi-subaccount support
+  subaccountId: string
   bankBalances: Coin[]
-  defaultAccountBalances: Coin[]
-  subaccountBalanceList: PortfolioSubaccountBalanceV2[]
+  subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): BankStoreState => ({
-  defaultSubaccountId: '',
   bankBalances: [],
-  defaultAccountBalances: [],
-  subaccountBalanceList: []
+  subaccountId: '',
+  subaccountBalancesMap: {}
 })
 
 export const useBankStore = defineStore('bank', {
@@ -42,8 +38,14 @@ export const useBankStore = defineStore('bank', {
       }, {} as Record<string, string>)
     },
 
-    subaccountIds: (state: BankStoreState) => {
-      return state.subaccountBalanceList.map(({ subaccountId }) => subaccountId)
+    defaultSubaccountBalances: (state: BankStoreState) => {
+      const walletStore = useWalletStore()
+
+      if (!walletStore.defaultSubaccountId) {
+        return []
+      }
+
+      return state.subaccountBalancesMap[walletStore.defaultSubaccountId]
     },
 
     hasEnoughInjForGas: (state) => {
@@ -69,34 +71,46 @@ export const useBankStore = defineStore('bank', {
 
     async fetchAccountPortfolio() {
       const bankStore = useBankStore()
-      const { injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!injectiveAddress) {
+      if (!walletStore.injectiveAddress) {
         return
       }
 
       const accountPortfolio =
-        await indexerAccountPortfolioApi.fetchAccountPortfolio(injectiveAddress)
+        await indexerAccountPortfolioApi.fetchAccountPortfolio(
+          walletStore.injectiveAddress
+        )
 
-      const defaultAccountBalances =
-        accountPortfolio?.subaccountsList.reduce(
-          (accountBalances, { subaccountId, denom, deposit }) => {
-            if (subaccountId.endsWith('0'.repeat(24))) {
-              return [
-                ...accountBalances,
-                { denom, amount: deposit?.totalBalance || '0' }
-              ]
-            }
-            return accountBalances
-          },
-          [] as Coin[]
-        ) || []
+      /**
+       * We handle only the default subaccount for now, once we have
+       * multiple subaccounts support on Helix we can
+       * handle multiple here as a map of {subaccountId: SubaccountDeposit}
+       */
+      const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
+        (accountBalances, balance) => {
+          if (balance.subaccountId === walletStore.defaultSubaccountId) {
+            return [
+              ...accountBalances,
+              {
+                denom: balance.denom,
+                totalBalance: balance.deposit?.totalBalance || '0',
+                availableBalance: balance.deposit?.availableBalance || '0'
+              } as SubaccountBalance
+            ]
+          }
+
+          return accountBalances
+        },
+        [] as SubaccountBalance[]
+      )
 
       bankStore.$patch({
-        defaultAccountBalances,
+        subaccountId: walletStore.defaultSubaccountId,
         bankBalances: accountPortfolio?.bankBalancesList || [],
-        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress),
-        subaccountBalanceList: accountPortfolio?.subaccountsList || []
+        subaccountBalancesMap: {
+          [walletStore.defaultSubaccountId]: defaultAccountBalances
+        }
       })
     },
 

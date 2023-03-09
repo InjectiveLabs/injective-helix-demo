@@ -49,11 +49,8 @@ const {
   formValues
 })
 
-const { balancesWithToken } = useBalance()
-
 const { transferableBalancesWithToken } = useBridgeBalance({
-  formValues,
-  balancesWithToken
+  formValues
 })
 
 const memoRequired = ref(false)

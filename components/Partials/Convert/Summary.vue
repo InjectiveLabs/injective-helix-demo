@@ -30,13 +30,12 @@ const props = defineProps({
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const showEmpty = computed(() => {
-  return (
+const showEmpty = computed(
+  () =>
     !props.market ||
     props.worstPriceWithSlippage.eq(0) ||
     new BigNumberInBase(props.amount || 0).isNaN()
-  )
-})
+)
 
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
