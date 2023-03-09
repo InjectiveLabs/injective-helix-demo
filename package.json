@@ -25,7 +25,9 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.{js,ts,vue,html}": [],
+    "**/*.{js,ts,vue,html}": [
+      "eslint --max-warnings 0"
+    ],
     "*.{css,vue}": "stylelint"
   },
   "dependencies": {
