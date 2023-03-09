@@ -10,7 +10,6 @@ import {
   web3Broadcaster,
   web3Composer
 } from '@/app/Services'
-import { backupPromiseCall } from '@/app/utils/async'
 
 export const transfer = async ({
   amount,
@@ -19,8 +18,6 @@ export const transfer = async ({
   amount: BigNumberInBase
   token: Token
 }) => {
-  const bankStore = useBankStore()
-
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
@@ -52,8 +49,6 @@ export const transfer = async ({
     tx,
     address
   })
-
-  await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
 export const withdraw = async ({
@@ -66,7 +61,6 @@ export const withdraw = async ({
   token: Token
 }) => {
   const appStore = useAppStore()
-  const bankStore = useBankStore()
 
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -104,14 +98,12 @@ export const withdraw = async ({
     address,
     msgs: message
   })
-
-  await backupPromiseCall(() => bankStore.fetchBalances())
 }
 
 export const setTokenAllowance = async (
   balanceWithToken: BalanceWithTokenWithErc20Balance
 ) => {
-  const tokenStore = useTokenStore()
+  const peggyStore = usePeggyStore()
 
   const { address, validate } = useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
@@ -138,7 +130,7 @@ export const setTokenAllowance = async (
     address
   })
 
-  const token = tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
+  const token = peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
     (balance) => {
       const erc20Token = balance.token as Erc20Token
 
@@ -147,7 +139,7 @@ export const setTokenAllowance = async (
       )
     }
   )
-  const index = tokenStore.tradeableErc20BalancesWithTokenAndPrice.findIndex(
+  const index = peggyStore.tradeableErc20BalancesWithTokenAndPrice.findIndex(
     (balance) => {
       const erc20Token = balance.token as Erc20Token
 
@@ -162,17 +154,17 @@ export const setTokenAllowance = async (
   }
 
   const tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance = [
-    ...tokenStore.tradeableErc20BalancesWithTokenAndPrice
+    ...peggyStore.tradeableErc20BalancesWithTokenAndPrice
   ]
   tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance[index] = {
     ...token,
-    erc20: {
-      ...token.erc20,
+    erc20Balance: {
+      ...token.erc20Balance,
       allowance: UNLIMITED_ALLOWANCE.toString()
     }
   }
 
-  tokenStore.$patch({
+  peggyStore.$patch({
     tradeableErc20BalancesWithTokenAndPrice:
       tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance
   })

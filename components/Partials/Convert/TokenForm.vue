@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import {
-  SpotOrderSide,
   BalanceWithToken,
+  SpotOrderSide,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Modal, TradeField, TradeForm, TradeFormValue } from '@/types'
+import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const route = useRoute()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
+const tokenStore = useTokenStore()
+
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -21,11 +24,6 @@ const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     default: () => null
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
   },
 
   worstPriceWithSlippage: {
@@ -37,7 +35,6 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:isBaseAmount', state: boolean): void
   (e: 'update:market', state: UiSpotMarketWithToken): void
-  (e: 'update:formValue', state: TradeFormValue): void
   (
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
@@ -48,17 +45,11 @@ const animationCount = ref(0)
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const { tradableSlugMap, tradableTokenMaps } = useConvertFormatter()
+const { accountBalancesWithToken } = useBalance()
+const { tradableSlugMap, tradableTokensMap, getMarketsForQuoteDenom } =
+  useConvertFormatter()
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
-
-const baseTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[baseTokenDenom.value] || []
-)
-
-const quoteTokens = computed<BalanceWithToken[]>(
-  () => tradableTokenMaps.value[quoteTokenDenom.value] || []
-)
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom
@@ -69,6 +60,48 @@ const { value: quoteTokenDenom, setValue: setQuoteTokenDenom } = useStringField(
     name: TradeField.QuoteDenom
   }
 )
+
+const baseTokens = computed(
+  () => tradableTokensMap.value[baseTokenDenom.value] || []
+)
+
+const quoteTokens = computed(
+  () => tradableTokensMap.value[quoteTokenDenom.value] || []
+)
+
+const baseTokensWithBalance = computed(() => {
+  return baseTokens.value.map((baseToken) => {
+    const accountBalance = accountBalancesWithToken.value.find(
+      (accountBalance) => {
+        return accountBalance.denom === baseToken.denom
+      }
+    )
+
+    return {
+      token: baseToken,
+      denom: baseToken.denom,
+      balance: accountBalance?.availableMargin || '0',
+      usdPrice: tokenStore.tokenUsdPrice(baseToken.coinGeckoId)
+    } as BalanceWithToken
+  })
+})
+
+const quoteTokensWithBalance = computed(() => {
+  return quoteTokens.value.map((quoteToken) => {
+    const accountBalance = accountBalancesWithToken.value.find(
+      (accountBalance) => {
+        return accountBalance.denom === quoteToken.denom
+      }
+    )
+
+    return {
+      token: quoteToken,
+      denom: quoteToken.denom,
+      balance: accountBalance?.availableMargin || '0',
+      usdPrice: tokenStore.tokenUsdPrice(quoteToken.coinGeckoId)
+    } as BalanceWithToken
+  })
+})
 
 const { value: orderType, setValue: setOrderType } = useStringField({
   name: TradeField.OrderType,
@@ -84,11 +117,24 @@ onMounted(() => {
 })
 
 function handleUpdateMarket() {
-  const market = spotStore.markets.find(({ baseDenom, quoteDenom }) => {
+  let market = [
+    ...spotStore.markets,
+    ...spotStore.usdcConversionModalMarkets
+  ].find(({ baseDenom, quoteDenom }) => {
     return (
       baseDenom === baseTokenDenom.value && quoteDenom === quoteTokenDenom.value
     )
   })
+
+  if (!market) {
+    market = getMarketsForQuoteDenom({
+      baseTokenDenom: baseTokenDenom.value,
+      quoteTokenDenom: quoteTokenDenom.value
+    })
+
+    setBaseTokenDenom(market.baseDenom)
+    setQuoteTokenDenom(market.quoteDenom)
+  }
 
   if (market) {
     emit('update:market', market)
@@ -104,15 +150,8 @@ function handleSwap() {
 
   emit('update:isBaseAmount', !props.isBaseAmount)
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: ''
-  })
-
-  emit('update:formValue', {
-    field: TradeField.QuoteAmount,
-    value: ''
-  })
+  formValues.value[TradeField.BaseAmount] = ''
+  formValues.value[TradeField.QuoteAmount] = ''
 
   toggleOrderType()
 }
@@ -128,10 +167,7 @@ function updateAmount({
 }
 
 function handleMaxBaseAmountChange({ amount }: { amount: string }) {
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amount
-  })
+  formValues.value[TradeField.BaseAmount] = amount
 
   updateAmount({ amount, isBaseAmount: true })
 }
@@ -147,10 +183,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
     TRADE_FORM_PRICE_ROUNDING_MODE
   )
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amountDeductFeeToFixed
-  })
+  formValues.value[TradeField.QuoteAmount] = amountDeductFeeToFixed
 
   emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
 }
@@ -178,8 +211,8 @@ watch(
   () => {
     emit('update:amount', {
       amount: props.isBaseAmount
-        ? props.formValues[TradeField.BaseAmount]
-        : props.formValues[TradeField.QuoteAmount],
+        ? formValues.value[TradeField.BaseAmount]
+        : formValues.value[TradeField.QuoteAmount],
       isBaseAmount: props.isBaseAmount
     })
   }
@@ -200,7 +233,7 @@ watch(
           :disabled="isLoading"
           :hide-max="!isBuy"
           :max-decimals="market?.quantityDecimals"
-          :options="baseTokens"
+          :options="baseTokensWithBalance"
           @update:amount="updateAmount"
           @update:denom="handleUpdateMarket"
           @update:max="handleMaxQuoteAmountChange"
@@ -213,7 +246,11 @@ watch(
     </transition>
 
     <div class="my-4">
-      <BaseIcon name="arrow-up-down" class="mx-auto" @click="handleSwap" />
+      <BaseIcon
+        name="arrow-up-down"
+        class="mx-auto w-6 h-6"
+        @click="handleSwap"
+      />
     </div>
 
     <transition :name="isBuy ? 'fade-down' : 'fade-up'" mode="out-in">
@@ -228,7 +265,7 @@ watch(
           :required="!isBuy"
           :hide-max="isBuy"
           :max-decimals="market?.quantityDecimals"
-          :options="quoteTokens"
+          :options="quoteTokensWithBalance"
           @update:amount="updateAmount"
           @update:max="handleMaxBaseAmountChange"
           @update:denom="handleUpdateMarket"

@@ -27,7 +27,6 @@ jobs:
       ## Flags
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
-      VITE_REFERRALS_ENABLED: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''

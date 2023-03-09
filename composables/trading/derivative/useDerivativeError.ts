@@ -1,43 +1,45 @@
 import type { Ref } from 'vue'
 import {
   MarketType,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
-  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE,
   UiPriceLevel,
   DerivativeOrderSide,
-  ZERO_IN_BASE
+  UiPerpetualMarketWithToken,
+  UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken,
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
-import { excludedPriceDeviationSlugs } from '@/app/data/market'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '@/app/utils/constants'
+import { excludedPriceDeviationSlugs } from '@/app/data/market'
+import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useDerivativeError({
   isBuy,
   market,
+  markPrice,
   formValues,
   executionPrice,
   orderTypeReduceOnly,
   notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
+  notionalWithLeverageAndFees,
   notionalWithLeverageBasedOnWorstPrice,
-  notionalWithLeverageAndFees
 }: {
   isBuy: Ref<boolean>
+  markPrice: Ref<string>
   formValues: Ref<TradeForm>
   executionPrice: Ref<BigNumberInBase>
   market: Ref<UiDerivativeMarketWithToken>
-  notionalWithLeverage: Ref<BigNumberInBase>
-  notionalWithLeverageBasedOnWorstPrice: Ref<BigNumberInBase>
-  notionalWithLeverageAndFees: Ref<BigNumberInBase>
   orderTypeReduceOnly: Ref<BigNumberInBase>
+  notionalWithLeverage: Ref<BigNumberInBase>
   quoteAvailableBalance: Ref<BigNumberInBase>
   worstPriceWithSlippage: Ref<BigNumberInBase>
+  notionalWithLeverageAndFees: Ref<BigNumberInBase>
+  notionalWithLeverageBasedOnWorstPrice: Ref<BigNumberInBase>
 }) {
   const derivativeStore = useDerivativeStore()
 
@@ -149,7 +151,7 @@ export function useDerivativeError({
 
   const markPriceThresholdError = computed(() => {
     if (
-      !derivativeStore.marketMarkPrice ||
+      !markPrice.value ||
       !market.value ||
       !executionPrice.value.gt(0) ||
       !formValues.value[TradeField.BaseAmount] ||
@@ -179,9 +181,9 @@ export function useDerivativeError({
       | UiPerpetualMarketWithToken
       | UiExpiryFuturesMarketWithToken
 
-    const markPrice = new BigNumberInBase(derivativeStore.marketMarkPrice)
+    const markPriceInBigNumber = new BigNumberInBase(markPrice.value)
 
-    if (markPrice.lte(0)) {
+    if (markPriceInBigNumber.lte(0)) {
       return true
     }
 
@@ -210,14 +212,14 @@ export function useDerivativeError({
     )
 
     const priceLessThanMarginRatioBasedPrice = isConditionalMarketOrder
-      ? markPrice.lt(priceBasedOnNotionalAndMarginRatio) ||
+      ? markPriceInBigNumber.lt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.lt(priceBasedOnNotionalAndMarginRatio)
-      : markPrice.lt(priceBasedOnNotionalAndMarginRatio)
+      : markPriceInBigNumber.lt(priceBasedOnNotionalAndMarginRatio)
 
     const priceGreaterThanMarginRatioBasedPrice = isConditionalMarketOrder
-      ? markPrice.gt(priceBasedOnNotionalAndMarginRatio) ||
+      ? markPriceInBigNumber.gt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.gt(priceBasedOnNotionalAndMarginRatio)
-      : markPrice.gt(priceBasedOnNotionalAndMarginRatio)
+      : markPriceInBigNumber.gt(priceBasedOnNotionalAndMarginRatio)
 
     const isBuyPriceLessThanMarginBasedPrice =
       isBuy.value && priceLessThanMarginRatioBasedPrice

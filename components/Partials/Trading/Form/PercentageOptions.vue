@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -10,14 +11,14 @@ import {
   MaxAmountOnOrderbook,
   TradeField,
   TradeForm,
-  TradeFormValue,
   UiMarketWithToken
 } from '@/types'
 import {
-  ONE_IN_BASE,
   TRADE_FORM_QUANTITY_ROUNDING_MODE,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
@@ -32,11 +33,6 @@ const props = defineProps({
   feeRate: {
     type: Object as PropType<BigNumberInBase>,
     default: ZERO_IN_BASE
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    default: ONE_IN_BASE
   },
 
   market: {
@@ -72,16 +68,16 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
 const percentages = [25, 50, 75, 100]
 
-const { value: percentage, setValue } = useNumberField({
-  name: TradeField.ProportionalPercentage,
-  initialValue: 0,
-  rule: ''
-})
+const { value: percentage, setValue: setProportionalPercentageValue } =
+  useNumberField({
+    name: TradeField.ProportionalPercentage,
+    initialValue: 0,
+    rule: ''
+  })
 
 const spotAvailableBalanceGreaterThanOrderbook = computed(() => {
   const { totalNotional, totalQuantity } = props.maxAmountOnOrderbook
@@ -127,7 +123,7 @@ const balanceToUpdateDerivativesWithFees = computed(() => {
     props.quoteAvailableBalance || ZERO_IN_BASE
   )
     .times(percentageFormatted)
-    .times(props.formValues[TradeField.Leverage])
+    .times(formValues.value[TradeField.Leverage])
 
   return balanceToUpdateDerivative.minus(
     balanceToUpdateDerivative.times(feeRate.value)
@@ -161,13 +157,10 @@ function handleReduceOnly() {
     totalQuantity
   )
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amount.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-  })
+  formValues.value[TradeField.BaseAmount] = amount.toFixed(
+    props.market.quantityDecimals,
+    TRADE_FORM_QUANTITY_ROUNDING_MODE
+  )
 
   emit('update:amount', { isBaseAmount: true })
 }
@@ -187,10 +180,7 @@ function handleDerivativePercentageChange() {
     ? TRADE_FORM_QUANTITY_ROUNDING_MODE
     : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  emit('update:formValue', {
-    field,
-    value: amount.toFixed(decimals, roundingMode)
-  })
+  formValues.value[field] = amount.toFixed(decimals, roundingMode)
 
   emit('update:amount', {
     isBaseAmount: derivativeAvailableBalanceGreaterThanOrderbook.value
@@ -215,10 +205,7 @@ function handleSpotPercentageChange() {
       ? TRADE_FORM_QUANTITY_ROUNDING_MODE
       : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  emit('update:formValue', {
-    field,
-    value: amount.toFixed(decimals, roundingMode)
-  })
+  formValues.value[field] = amount.toFixed(decimals, roundingMode)
 
   emit('update:amount', {
     isBaseAmount:
@@ -227,7 +214,7 @@ function handleSpotPercentageChange() {
 }
 
 function handlePercentageChange(percentage: number) {
-  setValue(percentage)
+  setProportionalPercentageValue(percentage)
 
   if (props.orderTypeReduceOnly) {
     return handleReduceOnly()
@@ -239,6 +226,24 @@ function handlePercentageChange(percentage: number) {
 
   return handleSpotPercentageChange()
 }
+
+watch(
+  () => formValues.value[TradeField.BaseAmount],
+  () => {
+    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
+      return
+    }
+
+    formValues.value[TradeField.BaseAmount] = formatAmountToAllowableAmount(
+      formValues.value[TradeField.BaseAmount],
+      props.market.quantityTensMultiplier
+    )
+
+    emit('update:amount', {
+      isBaseAmount: true
+    })
+  }
+)
 </script>
 
 <template>

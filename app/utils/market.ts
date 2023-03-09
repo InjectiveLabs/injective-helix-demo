@@ -1,11 +1,15 @@
 import {
-  UiDerivativeMarketWithToken,
+  MarketType,
   UiMarketHistory,
   UiSpotMarketWithToken,
-  MarketType
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
-import { ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
+import {
+  BigNumber,
+  BigNumberInBase,
+  SECONDS_IN_A_DAY
+} from '@injectivelabs/utils'
+import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
 import {
   DefaultMarket,
   MarketCategoryType,
@@ -13,11 +17,11 @@ import {
   MarketRoute
 } from '@/types'
 import {
+  upcomingMarkets,
+  deprecatedMarkets,
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
-  slugsToExcludeFromEthereumCategory,
-  upcomingMarkets,
-  deprecatedMarkets
+  slugsToExcludeFromEthereumCategory
 } from '@/app/data/market'
 
 export const getMarketRoute = (
@@ -115,7 +119,7 @@ export const marketIsPartOfCategory = (
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
       market.baseToken.denom.startsWith('ibc') ||
-      market.quoteToken.denom.startsWith('ibc') ||
+      market.quoteDenom.startsWith('ibc') ||
       slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
@@ -123,7 +127,7 @@ export const marketIsPartOfCategory = (
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
       !market.baseToken.denom.startsWith('ibc') &&
-      !market.quoteToken.denom.startsWith('ibc') &&
+      !market.quoteDenom.startsWith('ibc') &&
       !slugsToExcludeFromEthereumCategory.includes(market.slug)
     )
   }
@@ -143,10 +147,10 @@ export const marketIsQuotePair = (
     return true
   }
 
-  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
   const marketBaseSymbol = market.baseToken.symbol.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
+  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
 
   if (activeQuote === MarketQuoteType.USDT) {
     return (
@@ -245,4 +249,58 @@ export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   return (
     market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
   )
+}
+
+/**
+ * 1. if new exists in current, update quantity in current,
+ * 2. if new exists in current and quantity is 0, delete from current
+ * 3. If new doesn't exist in current, add to current
+ **/
+export const updateOrderbookRecord = (
+  currentRecords: PriceLevel[] = [],
+  updatedRecords: PriceLevel[] = []
+) => {
+  const newRecords = [...updatedRecords].reduce((records, record) => {
+    const existingRecord = currentRecords.find((r) => r.price === record.price)
+
+    return existingRecord ? records : [...records, record]
+  }, [] as PriceLevel[])
+
+  const affectedRecords = [...currentRecords]
+    .map((record) => {
+      const updatedRecord = updatedRecords.find((r) => r.price === record.price)
+
+      if (!updatedRecord) {
+        return record
+      }
+
+      return {
+        ...record,
+        quantity: updatedRecord.quantity
+      }
+    })
+    .filter((record) => new BigNumber(record.quantity).gt(0))
+
+  return [...newRecords, ...affectedRecords]
+}
+
+export const combineOrderbookRecords = ({
+  isBuy,
+  updatedRecords = [],
+  currentRecords = []
+}: {
+  isBuy: boolean
+  updatedRecords?: PriceLevel[]
+  currentRecords?: PriceLevel[]
+}) => {
+  const combinedOrderbookRecords = updateOrderbookRecord(
+    currentRecords,
+    updatedRecords
+  )
+
+  return combinedOrderbookRecords.sort((a, b) => {
+    return isBuy
+      ? new BigNumberInBase(b.price).minus(a.price).toNumber()
+      : new BigNumberInBase(a.price).minus(b.price).toNumber()
+  })
 }

@@ -1,86 +1,61 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  amplitudeTracker,
-  CosmoverseGiveawayCampaignArgs
-} from '@/app/providers/AmplitudeTracker'
-import { BusEvents } from '@/types'
 import { ROUTES } from '@/app/utils/constants'
+import { BusEvents } from '@/types'
 
 const route = useRoute()
-const accountStore = useAccountStore()
 const appStore = useAppStore()
 const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
-const ninjaPassStore = useNinjaPassStore()
-const referralStore = useReferralStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 const isOpenSidebar = ref(false)
+
+const container = computed(() => document.getElementById('pro'))
 
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as string)
 )
 
 onMounted(() => {
-  handleCosmoverseGiveawayCampaignTrack()
-  handleNinjaPassGiveaway()
-
-  Promise.all([walletStore.init()])
+  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 
   // Actions that should't block the app from loading
-  Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
-
-  handleMarketsInit()
+  Promise.all([
+    appStore.init(),
+    spotStore.init(),
+    derivativeStore.init(),
+    exchangeStore.initFeeDiscounts(),
+    tokenStore.fetchSupplyTokenMeta()
+  ])
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 onWalletConnected(() => {
-  Promise.all([
-    accountStore.fetchSubaccounts(),
-    bankStore.init(),
-    referralStore.init(),
-    tokenStore.fetchSupplyTokenMeta()
-  ]).catch($onError)
+  Promise.all([bankStore.fetchAccountPortfolio()]).catch($onError)
 })
 
-function handleCosmoverseGiveawayCampaignTrack() {
-  if (!route.query || !route.query.utm_source) {
-    return
-  }
+function onOpenSideBar() {
+  isOpenSidebar.value = true
 
-  amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
-    route.query as unknown as CosmoverseGiveawayCampaignArgs
-  )
-}
-
-function handleNinjaPassGiveaway() {
-  ninjaPassStore.fetchCodes()
-}
-
-function handleMarketsInit() {
-  appStore.setMarketsLoadingState(StatusType.Loading)
-
-  Promise.all([spotStore.init(), derivativeStore.init()])
-    .catch($onError)
-    .finally(() => {
-      appStore.setMarketsLoadingState(StatusType.Idle)
-    })
+  container.value?.classList.add('overflow-y-hidden')
 }
 
 function onCloseSideBar() {
   if (isOpenSidebar.value) {
     isOpenSidebar.value = false
+
+    container.value?.classList.remove('overflow-y-hidden')
   }
 }
 </script>
@@ -91,18 +66,20 @@ function onCloseSideBar() {
     class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
   >
     <transition name="page" appear>
-      <div>
-        <AppHocLoading :status="status">
+      <div class="min-h-screen w-full">
+        <AppHocLoading :status="status" class="h-full">
           <div class="w-full">
             <LayoutSidebarMobile
-              v-if="isOpenSidebar"
+              v-bind="{
+                isOpenSidebar
+              }"
               @sidebar:closed="onCloseSideBar"
             />
             <client-only>
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
-                  @sidebar:opened="isOpenSidebar = true"
+                  @sidebar:opened="onOpenSideBar"
                   @sidebar:closed="onCloseSideBar"
                 />
                 <main
@@ -126,6 +103,7 @@ function onCloseSideBar() {
 
                 <ModalsInsufficientInjForGas />
                 <ModalsNinjaPassWinner />
+                <ModalsUserFeedback />
                 <AppConfetti />
                 <div id="modals" />
               </div>
@@ -134,12 +112,11 @@ function onCloseSideBar() {
         </AppHocLoading>
       </div>
     </transition>
-
-    <Notifications
+    <BaseNotifications
       class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
-        <Notification
+        <BaseNotification
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
         >
@@ -150,8 +127,8 @@ function onCloseSideBar() {
               @click="close"
             />
           </template>
-        </Notification>
+        </BaseNotification>
       </template>
-    </Notifications>
+    </BaseNotifications>
   </div>
 </template>

@@ -1,28 +1,24 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import type { UseScrollReturn } from '@vueuse/core'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { createPopperLite } from '@popperjs/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
-  UiOrderbookPriceLevel,
-  UiOrderbookSummary,
-  UiPriceLevel,
-  UiDerivativeLimitOrder,
-  ZERO_IN_BASE,
   MarketType,
-  UiSpotLimitOrder
+  UiPriceLevel,
+  ZERO_IN_BASE,
+  UiSpotLimitOrder,
+  UiOrderbookSummary,
+  UiOrderbookPriceLevel,
+  UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  DerivativeOrderSide,
-  PriceLevel,
-  SpotOrderSide
-} from '@injectivelabs/sdk-ts'
+import { SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { vScroll } from '@vueuse/components'
-import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
-import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
+import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
+import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
 import { OrderbookLayout, TradingLayout, UiMarketWithToken } from '@/types'
 
 const appStore = useAppStore()
@@ -49,12 +45,13 @@ const subaccountOrders = computed<
   isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
 
-const buys = computed<PriceLevel[]>(() =>
-  isSpot ? spotStore.buys : derivativeStore.buys
-)
-const sells = computed<PriceLevel[]>(() =>
-  isSpot ? spotStore.sells : derivativeStore.sells
-)
+const buys = computed(() => {
+  return isSpot ? spotStore.buys : derivativeStore.buys
+})
+
+const sells = computed(() => {
+  return isSpot ? spotStore.sells : derivativeStore.sells
+})
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
@@ -74,6 +71,7 @@ const {
 } = useSpotLastPrice(computed(() => props.market))
 
 const {
+  markPrice,
   lastTradedPrice: derivativeLastTradedPrice,
   lastTradedPriceChange: derivativeLastTradedPriceChange
 } = useDerivativeLastPrice(computed(() => props.market))
@@ -95,7 +93,7 @@ const { valueToFixed: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 const { valueToFixed: markPriceToFormat } = useBigNumberFormatter(
-  computed(() => derivativeStore.marketMarkPrice),
+  computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
   }
@@ -587,7 +585,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           <PartialsTradingMarketOrderbookRecord
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${sell.aggregatedPrice || sell.price}`"
+            :key="`order-book-sell-${
+              sell.aggregatedPrice || sell.price
+            }-${aggregation}`"
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
@@ -689,7 +689,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           <!-- TODO: test the dynamic ref assignment -->
           <PartialsTradingMarketOrderbookRecord
             v-for="(buy, index) in buysWithDepth"
-            :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
+            :key="`order-book-buy-${
+              buy.aggregatedPrice || buy.price
+            }-${aggregation}`"
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{

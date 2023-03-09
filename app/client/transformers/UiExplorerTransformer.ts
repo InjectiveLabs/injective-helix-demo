@@ -8,9 +8,11 @@ export class UiExplorerTransformer {
   static transactionMessageToBankMsgSendTransaction(
     tx: Transaction
   ): BankMsgSendTransaction {
-    const [message] = (tx.messages || []).map(
+    const messages = (tx.messages || []).map(
       (m) => m.value as unknown as GrpcBankMsgSendMessage['value']
     )
+
+    const message = messages.find((msg) => msg.amount)
 
     return {
       hash: tx.hash,

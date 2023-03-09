@@ -44,45 +44,6 @@ const ascendingValue = computed({
       </span>
     </AppSortableHeaderItem>
 
-    <!-- 
-    <AppSortableHeaderItem
-      v-model:sort-by="sortByValue"
-      v-model:ascending="ascendingValue"
-      class="justify-end"
-      :value="BalanceHeaderType.Total"
-    >
-      <span
-        class="text-gray-350 text-xs normal-case"
-        
-      >
-        {{ $t('account.balances.cols.totalBalance') }}
-      </span>
-    </AppSortableHeaderItem>
-    -->
-
-    <AppSortableHeaderItem
-      v-model:sort-by="sortByValue"
-      v-model:ascending="ascendingValue"
-      class="justify-end"
-      :value="BalanceHeaderType.Wallet"
-    >
-      <span class="text-gray-350 text-xs normal-case">
-        {{ $t('account.balances.cols.walletBalance') }}
-      </span>
-    </AppSortableHeaderItem>
-
-    <AppSortableHeaderItem
-      v-model:sort-by="sortByValue"
-      v-model:ascending="ascendingValue"
-      class="justify-end"
-      :value="BalanceHeaderType.TradingAccount"
-    >
-      <span class="text-gray-350 text-xs normal-case">
-        {{ $t('account.balances.cols.tradingAccountBalance') }}
-      </span>
-    </AppSortableHeaderItem>
-
-    <!--
     <AppSortableHeaderItem
       v-model:sort-by="sortByValue"
       v-model:ascending="ascendingValue"
@@ -93,13 +54,38 @@ const ascendingValue = computed({
         {{ $t('account.balances.cols.availableBalance') }}
       </span>
     </AppSortableHeaderItem>
-    -->
 
     <AppHeaderItem class="justify-end">
       <span class="text-gray-350 text-xs normal-case">
         {{ $t('account.balances.cols.inUseReserved') }}
       </span>
+      <CommonInfoTooltip
+        class="text-gray-200"
+        :tooltip="$t('account.balances.inUseReservedTooltip')"
+      />
     </AppHeaderItem>
+
+    <AppHeaderItem class="justify-end">
+      <span class="text-gray-350 text-xs normal-case">
+        {{ $t('account.balances.cols.unrealized') }}
+      </span>
+
+      <CommonInfoTooltip
+        class="text-gray-200"
+        :tooltip="$t('account.balances.unrealizedTooltip')"
+      />
+    </AppHeaderItem>
+
+    <AppSortableHeaderItem
+      v-model:sort-by="sortByValue"
+      v-model:ascending="ascendingValue"
+      class="justify-end"
+      :value="BalanceHeaderType.Total"
+    >
+      <span class="text-gray-350 text-xs normal-case">
+        {{ $t('account.balances.cols.totalBalance') }}
+      </span>
+    </AppSortableHeaderItem>
 
     <AppSortableHeaderItem
       v-model:sort-by="sortByValue"

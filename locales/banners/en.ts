@@ -16,6 +16,18 @@ export default {
     kado: {
       title: 'Onboard onto Injective instantly with fiat!',
       tryNow: 'Get started'
+    },
+    'banner-sheduled-upgrade-march':
+      "There is a scheduled maintenance between 14-16 March. Please note that you won't be able to place orders and manage positions during the downtime.",
+    userFeedback: {
+      loveFeedback: "We'd love to hear your feedback!",
+      thankYouBeginning:
+        'Thank you for using Helix. We are constantly improving our products for our users and we’d love to hear from you! The survey should take fewer than ',
+      threeMinutes: '3 minutes ',
+      thankYouEnd:
+        'to complete and the information will help us know how to improve your future experience on Helix.',
+      takeSurvey: 'Take the survey',
+      notRightNow: 'Not right now'
     }
   }
 }

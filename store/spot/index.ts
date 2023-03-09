@@ -2,48 +2,55 @@ import { defineStore } from 'pinia'
 import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotLimitOrder,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiSpotOrderbook,
-  UiSpotOrderHistory,
   UiSpotTrade,
+  UiSpotLimitOrder,
   UiSpotTransformer,
-  zeroSpotMarketSummary
+  UiSpotOrderHistory,
+  UiSpotMarketSummary,
+  zeroSpotMarketSummary,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  indexerRestSpotChronosApi,
-  indexerSpotApi,
-  tokenService
-} from '@/app/Services'
-import {
-  cancelOrderbookStream,
-  cancelSubaccountOrdersHistoryStream,
+  streamTrades,
+  cancelTradesStream,
+  streamOrderbookUpdate,
+  streamSubaccountTrades,
+  streamSubaccountOrders,
+  cancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
-  cancelTradesStream,
-  streamOrderbook,
-  streamTrades,
-  streamSubaccountOrders,
   streamSubaccountOrderHistory,
-  streamSubaccountTrades
+  cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import {
-  batchCancelOrder,
   cancelOrder,
+  batchCancelOrder,
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
   submitStopMarketOrder
 } from '@/store/spot/message'
+import {
+  tokenService,
+  indexerSpotApi,
+  indexerRestSpotChronosApi
+} from '@/app/Services'
+import {
+  MARKETS_SLUGS,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
-import { ActivityFetchOptions, UiMarketAndSummary } from '@/types'
+import {
+  UiMarketAndSummary,
+  ActivityFetchOptions,
+  UiSpotOrderbookWithSequence
+} from '@/types'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
   marketsSummary: UiSpotMarketSummary[]
-  orderbook?: UiSpotOrderbook
+  orderbook?: UiSpotOrderbookWithSequence
   trades: UiSpotTrade[]
   subaccountTrades: UiSpotTrade[]
   subaccountTradesCount: number
@@ -108,16 +115,16 @@ export const useSpotStore = defineStore('spot', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
-    cancelOrderbookStream,
-    cancelTradesStream,
-    streamOrderbook,
     streamTrades,
+    cancelTradesStream,
+    streamOrderbookUpdate,
     streamSubaccountOrders,
-    streamSubaccountOrderHistory,
     streamSubaccountTrades,
+    cancelOrderbookUpdateStream,
+    streamSubaccountOrderHistory,
 
-    batchCancelOrder,
     cancelOrder,
+    batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
     submitStopLimitOrder,
@@ -129,8 +136,8 @@ export const useSpotStore = defineStore('spot', {
       const initialState = initialStateFactory()
 
       spotStore.$patch({
-        orderbook: initialState.orderbook,
         trades: initialState.trades,
+        orderbook: initialState.orderbook,
         subaccountOrders: initialState.subaccountOrders,
         subaccountTrades: initialState.subaccountTrades
       })
@@ -203,31 +210,37 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        subaccountId,
         marketIds: marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
       })
 
       spotStore.$patch({
         subaccountOrders: orders,
-        subaccountOrdersCount: pagination.total
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
       })
     },
 
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
@@ -235,13 +248,13 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          marketIds: filters?.marketIds || spotStore.activeMarketIds,
-          subaccountId: subaccount.subaccountId,
-          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
-          executionTypes: filters?.executionTypes as TradeExecutionType[],
+          subaccountId,
           direction: filters?.direction,
+          pagination: options?.pagination,
           isConditional: filters?.isConditional,
-          pagination: options?.pagination
+          marketIds: filters?.marketIds || spotStore.activeMarketIds,
+          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[]
         })
 
       spotStore.$patch({
@@ -253,9 +266,27 @@ export const useSpotStore = defineStore('spot', {
     async fetchOrderbook(marketId: string) {
       const spotStore = useSpotStore()
 
-      spotStore.$patch({
-        orderbook: await indexerSpotApi.fetchOrderbook(marketId)
-      })
+      const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
+      const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
+
+      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+        spotStore.orderbook = latestOrderbook
+      }
+
+      // handle race condition between fetch and stream
+      spotStore.orderbook = {
+        sequence: currentOrderbookSequence,
+        buys: combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: spotStore.orderbook?.buys,
+          updatedRecords: latestOrderbook.buys
+        }),
+        sells: combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: spotStore.orderbook?.sells,
+          updatedRecords: latestOrderbook.sells
+        })
+      }
     },
 
     async fetchTrades({
@@ -280,21 +311,21 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
       const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        marketIds: filters?.marketIds || spotStore.activeMarketIds,
-        subaccountId: subaccount.subaccountId,
-        executionTypes: filters?.executionTypes as TradeExecutionType[],
+        subaccountId,
         direction: filters?.direction,
-        pagination: options?.pagination
+        pagination: options?.pagination,
+        marketIds: filters?.marketIds || spotStore.activeMarketIds,
+        executionTypes: filters?.executionTypes as TradeExecutionType[]
       })
 
       spotStore.$patch({
@@ -330,8 +361,8 @@ export const useSpotStore = defineStore('spot', {
 
     cancelSubaccountStream() {
       cancelSubaccountOrdersStream()
-      cancelSubaccountOrdersHistoryStream()
       cancelSubaccountTradesStream()
+      cancelSubaccountOrdersHistoryStream()
     },
 
     resetSubaccount() {
@@ -342,12 +373,12 @@ export const useSpotStore = defineStore('spot', {
       spotStore.cancelSubaccountStream()
 
       spotStore.$patch({
-        subaccountOrderHistory: initialState.subaccountOrderHistory,
-        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
         subaccountOrders: initialState.subaccountOrders,
-        subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountTradesCount: initialState.subaccountOrdersCount
+        subaccountTradesCount: initialState.subaccountOrdersCount,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
       })
     }
   }

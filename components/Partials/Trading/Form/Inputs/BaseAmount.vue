@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { UiPriceLevel, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
-  TradeExecutionType,
-  TradeField,
   TradeForm,
-  TradeFormValue,
-  UiMarketWithToken
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType
 } from '@/types'
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
@@ -30,11 +31,6 @@ const props = defineProps({
     default: ZERO_IN_BASE
   },
 
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -51,12 +47,10 @@ const emit = defineEmits<{
     e: 'update:amount',
     { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
   ): void
-  (e: 'update:formValue', { field, value }: TradeFormValue): void
 }>()
 
-const { hasTriggerPrice, tradingTypeStopMarket } = useDerivativeFormFormatter(
-  computed(() => props.formValues)
-)
+const { hasTriggerPrice, tradingTypeStopMarket } =
+  useDerivativeFormFormatter(formValues)
 
 const orderbookQuantity = computed(() =>
   props.orderbookOrders.reduce((totalAmount, { quantity }) => {
@@ -70,11 +64,21 @@ const orderbookQuantity = computed(() =>
   }, ZERO_IN_BASE)
 )
 
-const { value: baseAmount, setValue } = useStringField({
+const { value: baseAmount, setValue: setBaseAmountValue } = useStringField({
   name: props.baseAmountFieldName,
   rule: '',
   dynamicRule: computed(() => {
-    const rules = []
+    const rules = [
+      `minBaseAmount:${new BigNumberInWei(props.market.minQuantityTickSize)
+        .toBase()
+        .toFixed()}`
+    ]
+
+    if (props.market.quantityTensMultiplier >= 1) {
+      rules.push(
+        `quantityTensMultiplier:${props.market.quantityTensMultiplier}`
+      )
+    }
 
     const formIsStopMarketAndHasNoTriggerPrice =
       tradingTypeStopMarket.value && !hasTriggerPrice.value
@@ -91,7 +95,7 @@ const { value: baseAmount, setValue } = useStringField({
       TradeExecutionType.LimitFill,
       TradeExecutionType.StopLimit,
       TradeExecutionType.StopMarket
-    ].includes(props.formValues[TradeField.TradingType])
+    ].includes(formValues.value[TradeField.TradingType])
 
     if (!canSubmitHigherThanOrderbook) {
       rules.push(`maxOrderbookLiquidity:${orderbookQuantity.value.toFixed()}`)
@@ -102,21 +106,24 @@ const { value: baseAmount, setValue } = useStringField({
 })
 
 function onBaseAmountChange(baseAmount: string) {
-  emit('update:formValue', {
-    field: TradeField.ProportionalPercentage,
-    value: 0
-  })
+  formValues.value[TradeField.ProportionalPercentage] = 0
 
   emit('update:amount', { amount: baseAmount || '0', isBaseAmount: true })
 }
 
 function onBaseAmountBlur(baseAmount = '') {
-  setValue(
-    formatAmountToAllowableAmount(
-      baseAmount || 0,
-      props.market.quantityTensMultiplier
-    )
+  if (props.market.quantityTensMultiplier < 1) {
+    return
+  }
+
+  const formattedAmount = formatAmountToAllowableAmount(
+    baseAmount || 0,
+    props.market.quantityTensMultiplier
   )
+
+  setBaseAmountValue(formattedAmount)
+
+  emit('update:amount', { amount: formattedAmount || '0', isBaseAmount: true })
 }
 </script>
 

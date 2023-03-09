@@ -1,39 +1,65 @@
 import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  cancelOrderbookStream as grpcCancelOrderbookStream,
-  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream,
+  streamTrades as grpcStreamTrades,
+  cancelTradesStream as grpcCancelTradesStream,
+  streamOrderbookUpdate as grpcStreamOrderbookUpdate,
+  streamSubaccountTrades as grpcStreamSubaccountTrade,
+  streamSubaccountOrders as grpcStreamSubaccountOrders,
+  cancelOrderbookUpdateStream as grpcCancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
-  cancelTradesStream as grpcCancelTradesStream,
-  streamOrderbook as grpcStreamOrderbook,
-  streamTrades as grpcStreamTrades,
-  streamSubaccountOrders as grpcStreamSubaccountOrders,
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
-  streamSubaccountTrades as grpcStreamSubaccountTrade
+  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
-export const cancelOrderbookStream = grpcCancelOrderbookStream
+export const cancelTradesStream = grpcCancelTradesStream
+export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrdersHistoryStream =
   grpcCancelSubaccountOrdersHistoryStream
-export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
-export const cancelTradesStream = grpcCancelTradesStream
 
-export const streamOrderbook = (marketId: string) => {
+export const streamOrderbookUpdate = (marketId: string) => {
   const spotStore = useSpotStore()
 
-  grpcStreamOrderbook({
+  grpcStreamOrderbookUpdate({
     marketId,
     callback: ({ orderbook }) => {
       if (!orderbook) {
         return
       }
 
-      spotStore.$patch({
-        orderbook
-      })
+      /**
+       * The current orderbook doesn't exist
+       **/
+      if (!spotStore.orderbook) {
+        spotStore.orderbook = orderbook
+      }
+
+      const sequence = spotStore.orderbook?.sequence || 0
+
+      if (sequence < orderbook.sequence) {
+        const newBuys = combineOrderbookRecords({
+          isBuy: true,
+          currentRecords: spotStore.buys,
+          updatedRecords: orderbook.buys
+        })
+
+        const newSells = combineOrderbookRecords({
+          isBuy: false,
+          currentRecords: spotStore.sells,
+          updatedRecords: orderbook.sells
+        })
+
+        spotStore.orderbook = {
+          buys: newBuys,
+          sells: newSells,
+          sequence: orderbook.sequence
+        }
+      }
     }
   })
 }
@@ -66,15 +92,15 @@ export const streamTrades = (marketId: string) => {
 export const streamSubaccountOrders = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamSubaccountOrders({
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -125,15 +151,15 @@ export const streamSubaccountOrders = (marketId?: string) => {
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamSubaccountOrderHistory({
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -186,16 +212,16 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamSubaccountTrade({
     marketId,
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return

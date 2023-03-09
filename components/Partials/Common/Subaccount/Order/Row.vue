@@ -11,7 +11,6 @@ const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 const { t } = useLang()
 const route = useRoute()
-const router = useRouter()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
@@ -46,6 +45,14 @@ const {
   computed(() => props.isSpot)
 )
 
+const marketRoute = computed(() => {
+  if (!market.value) {
+    return undefined
+  }
+
+  return getMarketRoute(market.value)
+})
+
 function onCancelOrder() {
   status.setLoading()
 
@@ -71,20 +78,12 @@ function onCancelOrder() {
       status.setIdle()
     })
 }
-
-function handleVisitMarket() {
-  if (!market.value) {
-    return
-  }
-
-  return router.push(getMarketRoute(market.value))
-}
 </script>
 
 <template>
   <tr v-if="market" :data-cy="'order-table-row-' + market.ticker">
-    <td class="h-12 text-left cursor-pointer pl-3" @click="handleVisitMarket">
-      <div class="flex items-center justify-start">
+    <td class="h-12 text-left cursor-pointer pl-3">
+      <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market && market.baseToken">
           <CommonTokenIcon :token="market.baseToken" md />
         </div>
@@ -96,7 +95,7 @@ function handleVisitMarket() {
             {{ market.ticker }}
           </span>
         </div>
-      </div>
+      </NuxtLink>
     </td>
 
     <td class="h-12 text-left">
@@ -184,13 +183,13 @@ function handleVisitMarket() {
     </td>
     <td class="h-12 relative text-right pr-3">
       <div class="flex items-center justify-end">
-        <span
+        <NuxtLink
           v-if="false"
+          :to="marketRoute"
           class="cursor-pointer text-blue-500 mr-6"
-          @click="handleVisitMarket"
         >
           {{ $t('common.view') }}
-        </span>
+        </NuxtLink>
 
         <PartialsTradingFormCancelButton
           v-if="orderFillable"

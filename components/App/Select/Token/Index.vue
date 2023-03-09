@@ -49,13 +49,13 @@ const emit = defineEmits<{
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
-const selectedTokenBalance = computed(() => {
-  return selectedToken.value
+const selectedTokenBalance = computed(() =>
+  selectedToken.value
     ? new BigNumberInWei(selectedToken.value.balance).toBase(
         selectedToken.value.token.decimals
       )
     : '0'
-})
+)
 
 const inputPlaceholder = computed(() =>
   ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
@@ -156,9 +156,9 @@ export default {
             no-padding
             transparent-bg
             input-classes="p-0 text-xl font-bold"
+            :max-decimals="maxDecimals"
             :placeholder="inputPlaceholder"
             :disabled="disabled || !selectedToken || inputDisabled"
-            :max-decimals="maxDecimals"
             @update:model-value="handleAmountUpdate"
             @click.stop
           />
@@ -176,8 +176,8 @@ export default {
       <template #content="{ close }">
         <AppSelectTokenList
           v-model="denomValue"
-          :balances="options"
           :close="close"
+          :balances="options"
         />
       </template>
     </BaseDropdown>

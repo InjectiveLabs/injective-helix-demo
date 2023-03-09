@@ -48,9 +48,15 @@ export default {
   'pages:extend'(pages: any[]) {
     const routes = [
       {
-        name: 'register',
-        path: '/register',
-        file: resolvePagePath('pages/account.vue'),
+        name: 'futures',
+        path: '/futures',
+        file: resolvePagePath('pages/futures/[futures].vue'),
+        children: []
+      },
+      {
+        name: 'spot',
+        path: '/spot',
+        file: resolvePagePath('pages/spot/[spot].vue'),
         children: []
       },
       {

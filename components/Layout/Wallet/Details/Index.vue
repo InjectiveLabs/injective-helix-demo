@@ -24,9 +24,10 @@ function handleDisconnect() {
     <BaseHoverMenu
       popper-class="min-w-[310px] sm:min-w-[356px] bg-gray-850 shadow-dropdown rounded-lg"
     >
-      <template #default>
+      <template #default="{ toggle }">
         <div
           class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
+          @click="toggle"
         >
           <BaseIcon name="user" class="w-4 h-4 lg:mr-2" />
           <span class="hidden lg:block font-mono">

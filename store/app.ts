@@ -4,7 +4,6 @@ import {
   SECONDS_IN_A_DAY,
   fetchGasPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { StatusType } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import {
@@ -15,7 +14,13 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '@/app/utils/constants'
 import { Locale, english } from '@/locales'
-import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '@/types'
+import {
+  AppState,
+  GeoLocation,
+  NoticeBanner,
+  OrderbookLayout,
+  TradingLayout
+} from '@/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -38,7 +43,9 @@ export interface UserBasedState {
   orderbookLayout: OrderbookLayout
   tradingLayout: TradingLayout
   ninjaPassWinnerModalViewed: boolean
+  userFeedbackModalViewed: boolean
   skipTradeConfirmationModal: boolean
+  bannersViewed: NoticeBanner[]
 }
 
 type AppStoreState = {
@@ -50,7 +57,6 @@ type AppStoreState = {
 
   // Loading States
   state: AppState
-  marketsLoadingState: StatusType
 
   // User settings
   userState: UserBasedState
@@ -67,7 +73,6 @@ const initialStateFactory = (): AppStoreState => ({
 
   // Loading States
   state: AppState.Idle,
-  marketsLoadingState: StatusType.Idle,
 
   // User settings
   userState: {
@@ -80,7 +85,9 @@ const initialStateFactory = (): AppStoreState => ({
     orderbookLayout: OrderbookLayout.Default,
     tradingLayout: TradingLayout.Left,
     ninjaPassWinnerModalViewed: false,
-    skipTradeConfirmationModal: false
+    userFeedbackModalViewed: false,
+    skipTradeConfirmationModal: false,
+    bannersViewed: []
   },
   announcements: [],
   attachments: []
@@ -122,12 +129,6 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       appStore.$patch({ userState })
-    },
-
-    setMarketsLoadingState(marketsLoadingState: StatusType) {
-      const appStore = useAppStore()
-
-      appStore.$patch({ marketsLoadingState })
     },
 
     async detectVPNOrProxyUsage() {
