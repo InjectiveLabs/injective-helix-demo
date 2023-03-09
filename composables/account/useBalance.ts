@@ -6,6 +6,10 @@ export function useBalance() {
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
+  /**
+   * Unrealized PnL and positions margin is not
+   * included by default
+   */
   const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
       const isDefaultTradingAccount =
@@ -13,43 +17,42 @@ export function useBalance() {
       const denom = token.denom.toLowerCase()
       const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
 
-      const bankBalance = bankStore.balanceMap[token.denom] || 0
+      const bankBalance = bankStore.balanceMap[token.denom] || '0'
 
       const subaccountBalances =
         bankStore.subaccountBalancesMap[bankStore.subaccountId]
-
       const subaccountBalance = subaccountBalances.find(
         (balance) => balance.denom.toLowerCase() === denom
       )
       const subaccountAvailableBalance =
-        subaccountBalance?.availableBalance || 0
+        subaccountBalance?.availableBalance || '0'
+      const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
 
-      const inOrderBalance = new BigNumberInWei(
-        subaccountBalance?.totalBalance || 0
-      )
-        .minus(isDefaultTradingAccount ? 0 : subaccountAvailableBalance)
-        .toFixed()
-
+      const inOrderBalance = isDefaultTradingAccount
+        ? new BigNumberInWei(subaccountTotalBalance)
+        : new BigNumberInWei(subaccountTotalBalance).minus(
+            subaccountAvailableBalance
+          )
       const availableMargin = new BigNumberInWei(
         isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
       )
 
-      const accountTotalBalance = new BigNumberInWei(bankBalance)
-        .plus(isDefaultTradingAccount ? 0 : subaccountAvailableBalance)
-        .plus(inOrderBalance)
+      const accountTotalBalance = isDefaultTradingAccount
+        ? new BigNumberInWei(bankBalance).plus(subaccountTotalBalance)
+        : new BigNumberInWei(subaccountTotalBalance)
       const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
       return {
         token,
         usdPrice,
-        bankBalance,
-        inOrderBalance,
         denom: token.denom,
+        bankBalance: isDefaultTradingAccount ? bankBalance : '0',
+        inOrderBalance: inOrderBalance.toFixed(),
         availableMargin: availableMargin.toFixed(),
         availableBalance: isDefaultTradingAccount
-          ? 0
+          ? '0'
           : subaccountAvailableBalance,
-        totalBalance: subaccountBalance?.totalBalance || 0,
+        totalBalance: subaccountTotalBalance,
         accountTotalBalance: accountTotalBalance.toFixed(),
         accountTotalBalanceInUsd: accountTotalBalanceInUsd.toFixed(),
         unrealizedPnl: '0'
