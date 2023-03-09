@@ -27,7 +27,7 @@ export function useBalance() {
       const inOrderBalance = new BigNumberInWei(
         subaccountBalance?.totalBalance || 0
       )
-        .minus(subaccountAvailableBalance)
+        .minus(isDefaultTradingAccount ? 0 : subaccountAvailableBalance)
         .toFixed()
 
       const availableMargin = new BigNumberInWei(
