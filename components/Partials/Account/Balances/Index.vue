@@ -108,10 +108,10 @@ const sortedBalances = computed(() => {
 
         case BalanceHeaderType.Available: {
           const availableA = new BigNumberInBase(a.bankBalance).plus(
-            a.availableBalance
+            a.availableMargin
           )
           const availableB = new BigNumberInBase(a.bankBalance).plus(
-            a.availableBalance
+            a.availableMargin
           )
 
           if (availableA.eq(availableB)) {

@@ -8,9 +8,6 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
-const walletStore = useWalletStore()
-const bankStore = useBankStore()
-
 const props = defineProps({
   hideActions: Boolean,
   hideBalances: Boolean,
@@ -24,10 +21,6 @@ const props = defineProps({
     type: Object as PropType<Status>,
     default: new Status(StatusType.Loading)
   }
-})
-
-const isDefaultTradingAccount = computed(() => {
-  return walletStore.defaultSubaccountId === bankStore.subaccountId
 })
 
 const {
@@ -50,19 +43,11 @@ const {
   }
 )
 
-/**
- * For the default trading account the
- * available balance is bankBalance + available balance
- **/
 const {
-  valueToString: availableBalanceInString,
-  valueToBigNumber: availableBalanceInBigNumber
+  valueToString: availableMarginInString,
+  valueToBigNumber: availableMarginInBigNumber
 } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(props.balance.availableBalance).plus(
-      isDefaultTradingAccount.value ? props.balance.bankBalance : 0
-    )
-  ),
+  computed(() => new BigNumberInBase(props.balance.availableMargin)),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -122,10 +107,10 @@ function handleWithdrawClick() {
         </span>
 
         <span
-          v-else-if="availableBalanceInBigNumber.gt(0)"
+          v-else-if="availableMarginInBigNumber.gt(0)"
           class="font-mono text-sm text-right"
         >
-          {{ availableBalanceInString }}
+          {{ availableMarginInString }}
         </span>
 
         <span v-else> &mdash; </span>

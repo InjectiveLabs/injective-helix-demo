@@ -10,16 +10,10 @@ import {
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
-const bankStore = useBankStore()
 
 const status = reactive(new Status(StatusType.Idle))
 const scrollOffset = ref(0)
 const accountBalance = ref<AccountBalance | undefined>(undefined)
-
-const isDefaultTradingAccount = computed(() => {
-  return walletStore.defaultSubaccountId === bankStore.subaccountId
-})
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AssetDetails] && !!accountBalance.value
@@ -39,18 +33,12 @@ const filteredMarketsWithSummary = computed(() => {
   })
 })
 
-/**
- * For the default trading account the
- * available balance is bankBalance + available balance
- **/
-const availableBalance = computed(() => {
-  return new BigNumberInBase(accountBalance.value?.availableBalance || 0).plus(
-    isDefaultTradingAccount ? accountBalance.value?.bankBalance || 0 : 0
-  )
+const availableMargin = computed(() => {
+  return new BigNumberInBase(accountBalance.value?.availableMargin || 0)
 })
 
-const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  availableBalance,
+const { valueToString: availableMarginToString } = useBigNumberFormatter(
+  availableMargin,
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -184,7 +172,7 @@ function handleWithdrawClick() {
                 </span>
 
                 <span class="font-mono text-sm tracking-wide">
-                  {{ availableBalanceToString }}
+                  {{ availableMarginToString }}
                 </span>
               </div>
 
