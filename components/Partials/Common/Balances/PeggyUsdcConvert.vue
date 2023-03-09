@@ -1,21 +1,16 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSubaccountBalance } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, UiMarketWithToken } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
-
-const accountStore = useAccountStore()
-const bankStore = useBankStore()
 const modalStore = useModalStore()
-
+const { accountBalancesWithToken } = useBalance()
 const props = defineProps({
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
   }
 })
-
 const hasUsdcPeggyBalance = computed(() => {
   if (
     usdcTokenDenom.USDCet.toLowerCase() !==
@@ -23,21 +18,15 @@ const hasUsdcPeggyBalance = computed(() => {
   ) {
     return false
   }
-
-  const peggyUsdcBankBalance = bankStore.bankBalancesWithToken.find(
-    (balance) =>
-      usdcTokenDenom.USDC.toLowerCase() === balance.token.denom.toLowerCase()
+  const peggyUsdcBalance = accountBalancesWithToken.value.find(
+    (accountBalance) => {
+      return (
+        accountBalance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
+      )
+    }
   )
-  const peggyUsdcSubaccountBalance = accountStore.subaccount?.balances.find(
-    (balance: UiSubaccountBalance) =>
-      usdcTokenDenom.USDC.toLowerCase() === balance.denom.toLowerCase()
-  )
-
-  return new BigNumberInBase(peggyUsdcBankBalance?.balance || 0)
-    .plus(peggyUsdcSubaccountBalance?.totalBalance || 0)
-    .gt(0)
+  return new BigNumberInBase(peggyUsdcBalance?.availableMargin || 0).gt(0)
 })
-
 onMounted(() => {
   nextTick(() => {
     if (hasUsdcPeggyBalance.value) {
@@ -45,7 +34,6 @@ onMounted(() => {
     }
   })
 })
-
 function openModal() {
   modalStore.openModal({ type: Modal.USDCDetected })
 }
