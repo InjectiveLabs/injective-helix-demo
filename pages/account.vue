@@ -100,7 +100,7 @@ const balances = computed(() => {
       unrealizedPnl: margin.plus(pnl).toFixed()
     } as AccountBalance
   })
-)
+})
 
 onMounted(() => {
   status.setLoading()
