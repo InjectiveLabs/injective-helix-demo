@@ -152,19 +152,6 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountTradesStream,
     cancelSubaccountOrderHistoryStream,
 
-    reset() {
-      const derivativeStore = useDerivativeStore()
-
-      const initialState = initialStateFactory()
-
-      derivativeStore.$patch({
-        trades: initialState.trades,
-        orderbook: initialState.orderbook,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
-      })
-    },
-
     async init() {
       const derivativeStore = useDerivativeStore()
 
@@ -528,6 +515,20 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountOrderHistory: initialState.subaccountOrderHistory,
         subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
+      })
+    },
+
+    reset() {
+      const derivativeStore = useDerivativeStore()
+
+      const { trades, orderbook, subaccountTrades, subaccountOrders } =
+        initialStateFactory()
+
+      derivativeStore.$patch({
+        trades,
+        orderbook,
+        subaccountTrades,
+        subaccountOrders
       })
     }
   }

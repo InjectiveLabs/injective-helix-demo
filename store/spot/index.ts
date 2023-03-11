@@ -130,19 +130,6 @@ export const useSpotStore = defineStore('spot', {
     submitStopLimitOrder,
     submitStopMarketOrder,
 
-    reset() {
-      const spotStore = useSpotStore()
-
-      const initialState = initialStateFactory()
-
-      spotStore.$patch({
-        trades: initialState.trades,
-        orderbook: initialState.orderbook,
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades
-      })
-    },
-
     async init() {
       const spotStore = useSpotStore()
 
@@ -368,17 +355,38 @@ export const useSpotStore = defineStore('spot', {
     resetSubaccount() {
       const spotStore = useSpotStore()
 
-      const initialState = initialStateFactory()
+      const {
+        subaccountOrders,
+        subaccountTrades,
+        subaccountOrdersCount,
+        subaccountTradesCount,
+        subaccountOrderHistory,
+        subaccountOrderHistoryCount
+      } = initialStateFactory()
 
       spotStore.cancelSubaccountStream()
 
       spotStore.$patch({
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountTradesCount: initialState.subaccountOrdersCount,
-        subaccountOrdersCount: initialState.subaccountOrdersCount,
-        subaccountOrderHistory: initialState.subaccountOrderHistory,
-        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
+        subaccountOrders,
+        subaccountTrades,
+        subaccountTradesCount,
+        subaccountOrdersCount,
+        subaccountOrderHistory,
+        subaccountOrderHistoryCount
+      })
+    },
+
+    reset() {
+      const spotStore = useSpotStore()
+
+      const { trades, orderbook, subaccountOrders, subaccountTrades } =
+        initialStateFactory()
+
+      spotStore.$patch({
+        trades,
+        orderbook,
+        subaccountOrders,
+        subaccountTrades
       })
     }
   }

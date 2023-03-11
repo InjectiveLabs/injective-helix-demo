@@ -248,11 +248,7 @@ export const useBridgeStore = defineStore('bridge', {
     },
 
     reset() {
-      const bridgeStore = useBridgeStore()
-
-      bridgeStore.$patch({
-        ...initialStateFactory()
-      })
+      useBridgeStore().$reset()
     }
   }
 })
