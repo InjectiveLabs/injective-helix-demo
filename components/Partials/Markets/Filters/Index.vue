@@ -7,6 +7,8 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
+  hideLowVolumeMarkets: Boolean,
+
   search: {
     type: String,
     required: true
@@ -33,6 +35,7 @@ const emit = defineEmits<{
   (e: 'update:search', state: string): void
   (e: 'update:activeQuote', state: MarketQuoteType): void
   (e: 'update:activeType', state: string): void
+  (e: 'update:hideLowVolumeMarkets', state: boolean): void
 }>()
 
 const FilterList = {
@@ -57,6 +60,13 @@ const activeQuoteValue = computed({
   get: (): MarketQuoteType => props.activeQuote,
   set: (value: MarketQuoteType) => {
     emit('update:activeQuote', value)
+  }
+})
+
+const hideLowVolumeMarketsValue = computed({
+  get: (): boolean => props.hideLowVolumeMarkets,
+  set: (type: boolean) => {
+    emit('update:hideLowVolumeMarkets', type)
   }
 })
 
@@ -193,30 +203,36 @@ function fillRouteQueryParams(params: Record<string, string>) {
         </PartialsMarketsFiltersCategorySelector>
       </div>
 
-      <AppSelect
-        v-model="activeQuoteValue"
-        :options="quoteOptions"
-        class="self-end"
-        @update:modelValue="handleQuoteChange"
-      >
-        <template #prefix>
-          <span class="text-xs text-gray-300 uppercase">
-            {{ $t('markets.quote') }}
-          </span>
-        </template>
+      <div class="flex items-center">
+        <AppSelect
+          v-model="activeQuoteValue"
+          :options="quoteOptions"
+          class="self-end"
+          @update:modelValue="handleQuoteChange"
+        >
+          <template #prefix>
+            <span class="text-xs text-gray-300 uppercase">
+              {{ $t('markets.quote') }}
+            </span>
+          </template>
 
-        <template #default="{ selected }">
-          <span v-if="selected" class="text-xs text-blue-500 uppercase">
-            {{ selected.display }}
-          </span>
-        </template>
+          <template #default="{ selected }">
+            <span v-if="selected" class="text-xs text-blue-500 uppercase">
+              {{ selected.display }}
+            </span>
+          </template>
 
-        <template #option="{ option }">
-          <span class="text-xs uppercase text-white">
-            {{ option.display }}
-          </span>
-        </template>
-      </AppSelect>
+          <template #option="{ option }">
+            <span class="text-xs uppercase text-white">
+              {{ option.display }}
+            </span>
+          </template>
+        </AppSelect>
+
+        <AppCheckbox v-model="hideLowVolumeMarketsValue" class="ml-4" sm>
+          {{ $t('markets.hideLowVol') }}
+        </AppCheckbox>
+      </div>
     </div>
   </div>
 </template>
