@@ -7,7 +7,7 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
-  hideLowVolumeMarkets: Boolean,
+  showLowVolumeMarkets: Boolean,
 
   search: {
     type: String,
@@ -35,7 +35,7 @@ const emit = defineEmits<{
   (e: 'update:search', state: string): void
   (e: 'update:activeQuote', state: MarketQuoteType): void
   (e: 'update:activeType', state: string): void
-  (e: 'update:hideLowVolumeMarkets', state: boolean): void
+  (e: 'update:showLowVolumeMarkets', state: boolean): void
 }>()
 
 const FilterList = {
@@ -63,10 +63,10 @@ const activeQuoteValue = computed({
   }
 })
 
-const hideLowVolumeMarketsValue = computed({
-  get: (): boolean => props.hideLowVolumeMarkets,
+const showLowVolumeMarketsValue = computed({
+  get: (): boolean => props.showLowVolumeMarkets,
   set: (type: boolean) => {
-    emit('update:hideLowVolumeMarkets', type)
+    emit('update:showLowVolumeMarkets', type)
   }
 })
 
@@ -229,8 +229,8 @@ function fillRouteQueryParams(params: Record<string, string>) {
           </template>
         </AppSelect>
 
-        <AppCheckbox v-model="hideLowVolumeMarketsValue" class="ml-4" sm>
-          {{ $t('markets.hideLowVol') }}
+        <AppCheckbox v-model="showLowVolumeMarketsValue" class="ml-4" sm>
+          {{ $t('markets.showLowVol') }}
         </AppCheckbox>
       </div>
     </div>

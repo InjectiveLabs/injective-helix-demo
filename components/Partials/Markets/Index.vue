@@ -39,7 +39,7 @@ const activeType = ref('')
 const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
 const ascending = ref(false)
-const hideLowVolumeMarkets = ref(true)
+const showLowVolumeMarkets = ref(false)
 
 const recentlyExpiredMarkets = computed(
   () => derivativeStore.recentlyExpiredMarkets
@@ -60,16 +60,15 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isHighVolumeMarket =
-      !hideLowVolumeMarkets.value ||
-      volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+    const isLowVolumeMarket =
+      showLowVolumeMarkets.value || volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
     return (
       isPartOfCategory &&
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      isHighVolumeMarket
+      isLowVolumeMarket
     )
   })
 })
@@ -188,7 +187,7 @@ function prefillFromQueryParams() {
         v-model:active-category="activeCategory"
         v-model:active-quote="activeQuote"
         v-model:active-type="activeType"
-        v-model:hide-low-volume-markets="hideLowVolumeMarkets"
+        v-model:show-low-volume-markets="showLowVolumeMarkets"
         v-model:search="search"
       />
 
