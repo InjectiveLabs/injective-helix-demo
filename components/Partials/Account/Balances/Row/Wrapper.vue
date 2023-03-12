@@ -37,7 +37,7 @@ const {
   valueToString: bankBalanceInString,
   valueToBigNumber: bankBalanceInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalance),
+  computed(() => props.balance.bankBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }

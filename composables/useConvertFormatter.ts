@@ -10,7 +10,10 @@ export default function useConvertFormatter() {
   const spotStore = useSpotStore()
 
   const tradableSlugMap = computed(() => {
-    return spotStore.markets.reduce((list, market) => {
+    return [
+      ...spotStore.markets,
+      ...spotStore.usdcConversionModalMarkets
+    ].reduce((list, market) => {
       const reversedSlug = market.slug.split('-').reverse().join('-')
 
       return {
@@ -21,13 +24,36 @@ export default function useConvertFormatter() {
     }, {} as Record<string, { orderType: SpotOrderSide; market: UiSpotMarketWithToken }>)
   })
 
-  const tradableTokenMaps = computed(() => {
-    return spotStore.markets.reduce((tokens, market) => {
+  const availableQuoteDenoms = computed(() =>
+    [...spotStore.markets, ...spotStore.usdcConversionModalMarkets].reduce(
+      (tokens, market) => {
+        const quoteTokenWithBalance = getSubaccountTokenWithBalance(
+          market.quoteToken,
+          accountStore.subaccount
+        )
+
+        // remove duplicate USDT keys
+        const quoteTokenExistOnTokensList = tokens.some(
+          (token) => token.denom === quoteTokenWithBalance.denom
+        )
+
+        return quoteTokenExistOnTokensList
+          ? tokens
+          : [quoteTokenWithBalance, ...tokens]
+      },
+      [] as BalanceWithToken[]
+    )
+  )
+
+  const tradableTokensMap = computed(() => {
+    return [
+      ...spotStore.markets,
+      ...spotStore.usdcConversionModalMarkets
+    ].reduce((tokens, market) => {
       const baseTokenWithBalance = getSubaccountTokenWithBalance(
         market.baseToken,
         accountStore.subaccount
       )
-
       const quoteTokenWithBalance = getSubaccountTokenWithBalance(
         market.quoteToken,
         accountStore.subaccount
@@ -38,19 +64,61 @@ export default function useConvertFormatter() {
         : [baseTokenWithBalance]
 
       const quoteToken = tokens[market.baseDenom]
-        ? [...tokens[market.baseDenom], quoteTokenWithBalance]
-        : [quoteTokenWithBalance]
+        ? [...tokens[market.baseDenom], ...availableQuoteDenoms.value]
+        : availableQuoteDenoms.value
 
+      const tokenCanBeBaseOrQuote = availableQuoteDenoms.value.some(
+        ({ denom }) => denom === market.baseDenom
+      )
+
+      /**
+       * For markets where the base could also be the quote for another market, we only need to add the corresponding quoteTokenWithBalance
+       * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
+       */
       return {
         ...tokens,
         [market.quoteDenom]: baseTokens,
-        [market.baseDenom]: quoteToken
+        [market.baseDenom]: !tokenCanBeBaseOrQuote
+          ? quoteToken
+          : [quoteTokenWithBalance]
       }
     }, {} as Record<string, BalanceWithToken[]>)
   })
 
+  function getMarketsForQuoteDenom({
+    baseTokenDenom,
+    quoteTokenDenom
+  }: {
+    baseTokenDenom: string
+    quoteTokenDenom: string
+  }) {
+    const existingMarket = spotStore.markets.find(
+      ({ baseDenom, quoteDenom }) => {
+        const foundBaseTokenDenom = [quoteDenom, baseDenom].includes(
+          baseTokenDenom
+        )
+        const foundQuoteTokenDenom = [quoteDenom, baseDenom].includes(
+          quoteTokenDenom
+        )
+
+        return foundBaseTokenDenom && foundQuoteTokenDenom
+      }
+    )
+
+    if (existingMarket) {
+      return existingMarket
+    }
+
+    const defaultMarket = spotStore.markets.find(({ quoteDenom }) =>
+      [baseTokenDenom, quoteTokenDenom].includes(quoteDenom)
+    )
+
+    return defaultMarket || spotStore.markets[0]
+  }
+
   return {
     tradableSlugMap,
-    tradableTokenMaps
+    tradableTokensMap,
+    getMarketsForQuoteDenom
   }
 }
