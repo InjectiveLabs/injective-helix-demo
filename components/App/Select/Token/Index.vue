@@ -168,7 +168,7 @@ export default {
               v-if="selectedToken"
               :token="selectedToken.token"
             />
-            <BaseIcon name="caret-down-slim" sm />
+            <BaseIcon v-if="!disabled" name="caret-down-slim" sm />
           </div>
         </div>
       </div>
