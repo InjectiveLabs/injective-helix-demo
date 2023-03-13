@@ -72,11 +72,8 @@ const isWHSolUSDTBaseDenom = computed(
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-/*
-TODO: update to use availableBalance instead of subaccount balance after merge
-*/
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.bankBalance),
+  computed(() => baseBalance.value?.availableMargin),
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -186,7 +183,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="baseBalance"
           v-bind="{
@@ -246,7 +242,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="quoteBalance"
           v-bind="{

@@ -7,7 +7,7 @@ export function useBalance() {
   const walletStore = useWalletStore()
 
   /**
-   * Unrealized PnL and positions margin is not
+   * Unrealized PnL and positions margin are not
    * included by default
    */
   const accountBalancesWithToken = computed(() => {
