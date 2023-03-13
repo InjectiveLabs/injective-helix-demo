@@ -52,8 +52,8 @@ const marketCategoryTypes = Object.entries(MarketCategoryType).map(
   })
 )
 const quoteOptions = Object.entries(MarketQuoteType).map(([key, value]) => ({
-  display: value,
-  value: key
+  display: key,
+  value
 }))
 
 const activeQuoteValue = computed({
@@ -97,7 +97,7 @@ function handleCategoryChange(category: string) {
   if (!category || category === MarketCategoryType.All) {
     clearRouteQueryParam('category')
   } else {
-    fillRouteQueryParams({ category })
+    fillRouteQueryParams({ category: category.toLowerCase() })
   }
 }
 
@@ -113,7 +113,7 @@ function handleQuoteChange(quote: string) {
   if (!quote || quote === MarketQuoteType.All) {
     clearRouteQueryParam('quote')
   } else {
-    fillRouteQueryParams({ quote })
+    fillRouteQueryParams({ quote: quote.toLowerCase() })
   }
 }
 
