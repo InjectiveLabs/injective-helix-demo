@@ -48,9 +48,21 @@ const baseBalance = computed(() =>
   )
 )
 
+const baseBalanceToBase = computed(() =>
+  new BigNumberInBase(baseBalance.value?.availableMargin || 0).toWei(
+    baseBalance.value?.token.decimals
+  )
+)
+
 const quoteBalance = computed(() =>
   props.balances.find(
     (balance) => balance.token.denom === props.market.quoteDenom
+  )
+)
+
+const quoteBalanceToBase = computed(() =>
+  new BigNumberInBase(quoteBalance.value?.availableMargin || 0).toWei(
+    quoteBalance.value?.token.decimals
   )
 )
 
@@ -188,9 +200,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: baseBalance.token,
                 denom: baseBalance.denom,
-                balance: new BigNumberInBase(baseBalance.bankBalance)
-                  .toWei(baseBalance.token.decimals)
-                  .toFixed()
+                balance: baseBalanceToBase.toFixed()
               }
             ]
           }"
@@ -250,9 +260,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: quoteBalance.token,
                 denom: quoteBalance.denom,
-                balance: new BigNumberInBase(quoteBalance.bankBalance)
-                  .toWei(quoteBalance.token.decimals)
-                  .toFixed()
+                balance: quoteBalanceToBase.toFixed()
               }
             ]
           }"

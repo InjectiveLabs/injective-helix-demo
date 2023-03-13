@@ -140,7 +140,7 @@ export default {
 
     <BaseDropdown
       class="w-full"
-      :disabled="disabled"
+      :disabled="disabled || options.length <= 1"
       :distance="amountErrors.length > 0 ? 44 : 24"
       :flip="false"
       :auto-size="true"
@@ -168,7 +168,11 @@ export default {
               v-if="selectedToken"
               :token="selectedToken.token"
             />
-            <BaseIcon name="caret-down-slim" sm />
+            <BaseIcon
+              v-if="!disabled && options.length > 1"
+              name="caret-down-slim"
+              sm
+            />
           </div>
         </div>
       </div>

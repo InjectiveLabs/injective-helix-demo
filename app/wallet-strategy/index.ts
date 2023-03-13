@@ -1,4 +1,4 @@
-import { WalletStrategy } from '@injectivelabs/wallet-ts'
+import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts'
 import {
   ALCHEMY_GOERLI_KEY,
   ALCHEMY_KEY,
@@ -26,5 +26,10 @@ export const walletStrategy = new WalletStrategy({
     ethereumChainId: ETHEREUM_CHAIN_ID,
     wsRpcUrl: alchemyWsRpcEndpoint,
     rpcUrl: alchemyRpcEndpoint
-  }
+  },
+  disabledWallets: [
+    Wallet.WalletConnect,
+    Wallet.Cosmostation,
+    Wallet.CosmostationEth
+  ]
 })

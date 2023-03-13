@@ -114,7 +114,7 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
-      <LayoutWalletConnectWalletCosmostation />
+      <LayoutWalletConnectWalletCosmostation v-if="false" />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletTorus />
       <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
