@@ -192,7 +192,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           v-bind="{
             denom: baseBalance.denom,
             amountFieldName: TradeField.BaseAmount,
-            disabled: true,
+            disabled: isLoading,
             required: !isBuy,
             hideMax: isBuy,
             maxDecimals: market?.quantityDecimals,
@@ -252,7 +252,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           v-bind="{
             denom: quoteBalance.denom,
             amountFieldName: TradeField.QuoteAmount,
-            disabled: true,
+            disabled: isLoading,
             required: isBuy,
             hideMax: !isBuy,
             maxDecimals: market?.quantityDecimals,
