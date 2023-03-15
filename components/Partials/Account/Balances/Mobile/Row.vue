@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -14,37 +15,29 @@ const props = defineProps({
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
+  },
+
+  usdPriceStatus: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Loading)
   }
 })
 
-const isOpen = ref(false)
-
-/* TODO - bank <> default trading account merge
-
-const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
+const {
+  valueToString: accountTotalBalanceInUsdInString,
+  valueToBigNumber: accountTotalBalanceInUsdInBigNumber
+} = useBigNumberFormatter(
+  computed(() => props.balance.accountTotalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: totalBalanceInString } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalance),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
-*/
-
-const { valueToString: bankBalanceInString } = useBigNumberFormatter(
-  computed(() => props.balance.bankBalance),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToString: subaccountBalanceInString } = useBigNumberFormatter(
-  computed(() => props.balance.subaccountBalance),
+const {
+  valueToString: accountTotalBalanceInString,
+  valueToBigNumber: accountTotalBalanceInBigNumber
+} = useBigNumberFormatter(
+  computed(() => props.balance.accountTotalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -65,10 +58,6 @@ function handleOpenAssetDetailsModal() {
 <template>
   <tr
     class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent overflow-hidden gap-2 transition-all"
-    :class="{
-      'max-h-20': !isOpen,
-      'max-h-screen': isOpen
-    }"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
     @click="handleOpenAssetDetailsModal"
   >
@@ -92,7 +81,6 @@ function handleOpenAssetDetailsModal() {
       </div>
     </td>
 
-    <!-- TODO - bank <> default trading account merge
     <td class="no-padding">
       <div class="flex flex-col py-4">
         <div class="flex flex-col items-end gap-1">
@@ -101,53 +89,32 @@ function handleOpenAssetDetailsModal() {
               {{ HIDDEN_BALANCE_DISPLAY }}
             </span>
 
-            <span v-else class="font-mono text-sm text-right">
-              {{ totalBalanceInString }}
+            <span
+              v-else-if="accountTotalBalanceInBigNumber.gt(0)"
+              class="font-mono text-sm text-right"
+            >
+              {{ accountTotalBalanceInString }}
             </span>
+
+            <span v-else> &mdash; </span>
           </div>
 
           <div>
-            <span v-if="hideBalances" class="font-mono text-sm text-right">
+            <AppSpinner v-if="usdPriceStatus.isLoading()" md />
+
+            <span v-else-if="hideBalances" class="font-mono text-sm text-right">
               {{ HIDDEN_BALANCE_DISPLAY }} USD
             </span>
 
-            <span v-else class="font-mono text-sm text-right">
-              {{ totalBalanceInUsdToString }} USD
+            <span
+              v-else-if="accountTotalBalanceInUsdInBigNumber.gt(0)"
+              class="font-mono text-sm text-right"
+            >
+              {{ accountTotalBalanceInUsdInString }} USD
             </span>
+
+            <span v-else> &mdash; </span>
           </div>
-        </div>
-      </div>
-    </td>
-    -->
-
-    <td class="no-padding">
-      <div class="flex items-center justify-end gap-1">
-        <div class="flex flex-col py-4">
-          <div class="flex flex-col items-end gap-1">
-            <div data-cy="wallet-balance-bank-table-data">
-              <span v-if="hideBalances" class="font-mono text-sm text-right">
-                {{ HIDDEN_BALANCE_DISPLAY }}
-              </span>
-
-              <span v-else class="font-mono text-sm text-right">
-                {{ bankBalanceInString }}
-              </span>
-            </div>
-
-            <div>
-              <span v-if="hideBalances" class="font-mono text-sm text-right">
-                {{ HIDDEN_BALANCE_DISPLAY }}
-              </span>
-
-              <span v-else class="font-mono text-sm text-right">
-                {{ subaccountBalanceInString }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-end px-4">
-          <BaseIcon name="chevron" class="text-blue-500 w-4 h-4 rotate-180" />
         </div>
       </div>
     </td>

@@ -20,11 +20,11 @@ import { FEE_RECIPIENT } from '@/app/utils/constants'
 export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
@@ -55,11 +55,11 @@ export const cancelOrder = async (
 ) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
@@ -81,23 +81,22 @@ export const cancelOrder = async (
 
 export const submitLimitOrder = async ({
   price,
+  market,
   quantity,
-  orderType,
-  market
+  orderType
 }: {
   price: BigNumberInBase
-  quantity: BigNumberInBase
   orderType: SpotOrderSide
+  quantity: BigNumberInBase
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -105,8 +104,10 @@ export const submitLimitOrder = async ({
   await validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
+    subaccountId,
     injectiveAddress,
-    orderType: spotOrderTypeToGrpcOrderType(orderType),
+    marketId: market.marketId,
+    feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -116,9 +117,7 @@ export const submitLimitOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    marketId: market.marketId,
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    orderType: spotOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -129,9 +128,9 @@ export const submitLimitOrder = async ({
 
 export const submitMarketOrder = async ({
   isBuy,
-  quantity,
   price,
-  market
+  market,
+  quantity
 }: {
   isBuy: Boolean
   price: BigNumberInBase
@@ -140,12 +139,11 @@ export const submitMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -155,8 +153,10 @@ export const submitMarketOrder = async ({
   const orderType = isBuy ? SpotOrderSide.Buy : SpotOrderSide.Sell
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
+    subaccountId,
     injectiveAddress,
-    orderType: spotOrderTypeToGrpcOrderType(orderType),
+    marketId: market.marketId,
+    feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -166,9 +166,7 @@ export const submitMarketOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    marketId: market.marketId,
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    orderType: spotOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -179,25 +177,24 @@ export const submitMarketOrder = async ({
 
 export const submitStopLimitOrder = async ({
   price,
-  triggerPrice,
+  market,
   quantity,
   orderType,
-  market
+  triggerPrice
 }: {
   price: BigNumberInBase
-  triggerPrice: BigNumberInBase
-  quantity: BigNumberInBase
   orderType: SpotOrderSide
+  quantity: BigNumberInBase
+  triggerPrice: BigNumberInBase
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -205,8 +202,10 @@ export const submitStopLimitOrder = async ({
   await validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
+    subaccountId,
     injectiveAddress,
-    orderType: spotOrderTypeToGrpcOrderType(orderType),
+    marketId: market.marketId,
+    feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -221,9 +220,7 @@ export const submitStopLimitOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    marketId: market.marketId,
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    orderType: spotOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -233,26 +230,25 @@ export const submitStopLimitOrder = async ({
 }
 
 export const submitStopMarketOrder = async ({
-  quantity,
   price,
-  triggerPrice,
+  market,
+  quantity,
   orderType,
-  market
+  triggerPrice
 }: {
   price: BigNumberInBase
-  triggerPrice: BigNumberInBase
-  quantity: BigNumberInBase
   orderType: SpotOrderSide
+  quantity: BigNumberInBase
+  triggerPrice: BigNumberInBase
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -260,8 +256,10 @@ export const submitStopMarketOrder = async ({
   await validate()
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
+    subaccountId,
     injectiveAddress,
-    orderType: spotOrderTypeToGrpcOrderType(orderType),
+    marketId: market.marketId,
+    feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
       value: price,
       baseDecimals: market.baseToken.decimals,
@@ -276,9 +274,7 @@ export const submitStopMarketOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    marketId: market.marketId,
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    orderType: spotOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({

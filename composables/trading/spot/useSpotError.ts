@@ -1,15 +1,15 @@
 import type { Ref } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
+  ZERO_IN_BASE,
   UiPriceLevel,
   UiSpotMarketWithToken,
-  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '@/app/utils/constants'
+import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
 export function useSpotError({
   isBuy,
@@ -20,8 +20,8 @@ export function useSpotError({
   quoteAvailableBalance
 }: {
   isBuy: Ref<boolean>
-  formValues: Ref<TradeForm>
   market: Ref<UiSpotMarketWithToken>
+  formValues: Ref<Partial<TradeForm>>
   executionPrice: Ref<BigNumberInBase>
   notionalWithFees?: Ref<BigNumberInBase>
   quoteAvailableBalance?: Ref<BigNumberInBase>
@@ -76,10 +76,10 @@ export function useSpotError({
   */
   const availableBalanceError = computed(() => {
     if (
-      !quoteAvailableBalance ||
-      !quoteAvailableBalance.value ||
       !notionalWithFees ||
-      !notionalWithFees.value
+      !quoteAvailableBalance ||
+      !notionalWithFees.value ||
+      !quoteAvailableBalance.value
     ) {
       return false
     }

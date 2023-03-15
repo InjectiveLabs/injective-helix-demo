@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
@@ -8,37 +8,30 @@ import {
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
-import { TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { Modal, TradeField, TradeForm } from '@/types'
 
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const formValues = useFormValues() as Ref<TradeForm>
+const formErrors = useFormErrors()
 const { t } = useLang()
 const { error } = useNotifications()
 
 const props = defineProps({
-  availableBalanceError: Boolean,
-  hasBaseAmount: Boolean,
-  hasTriggerPrice: Boolean,
-  highDeviation: Boolean,
-  initialMinMarginRequirementError: Boolean,
   isBuy: Boolean,
-  markPriceThresholdError: Boolean,
+  hasBaseAmount: Boolean,
+  highDeviation: Boolean,
   maxOrdersError: Boolean,
+  hasTriggerPrice: Boolean,
   orderTypeReduceOnly: Boolean,
+  availableBalanceError: Boolean,
+  markPriceThresholdError: Boolean,
+  initialMinMarginRequirementError: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formErrors: {
-    type: Object as PropType<Partial<Record<TradeField, string | undefined>>>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -70,7 +63,7 @@ const hasError = computed(() => {
     return true
   }
 
-  const filteredErrors = Object.keys(props.formErrors).filter(
+  const filteredErrors = Object.keys(formErrors.value).filter(
     (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
   )
 
@@ -82,7 +75,7 @@ const hasError = computed(() => {
 })
 
 const triggerPriceEqualsMarkPrice = computed(() =>
-  Object.values(props.formErrors).includes(
+  Object.values(formErrors.value).includes(
     tradeErrorMessages.triggerPriceEqualsMarkPrice()
   )
 )
@@ -92,12 +85,12 @@ const {
   tradingTypeStopMarket,
   tradingTypeLimit: derivativeTradingTypeLimit,
   tradingTypeMarket: derivativeTradingTypeMarket
-} = useDerivativeFormFormatter(computed(() => props.formValues))
+} = useDerivativeFormFormatter(formValues)
 
 const {
   tradingTypeLimit: spotTradingTypeLimit,
   tradingTypeMarket: spotTradingTypeMarket
-} = useSpotFormFormatter(computed(() => props.formValues))
+} = useSpotFormFormatter(formValues)
 
 const tradingTypeLimit = isSpot
   ? spotTradingTypeLimit
@@ -110,9 +103,9 @@ const tradingTypeMarket = isSpot
 const disabled = computed(() => {
   const commonErrors =
     hasError.value ||
-    !walletStore.isUserWalletConnected ||
+    !props.hasBaseAmount ||
     !bankStore.hasEnoughInjForGas ||
-    !props.hasBaseAmount
+    !walletStore.isUserWalletConnected
 
   if (commonErrors) {
     return true
@@ -163,22 +156,26 @@ function handleSubmit() {
 
 function trackPlaceOrder() {
   const actualSlippageTolerance = tradingTypeMarket.value
-    ? props.formValues[TradeField.SlippageTolerance]
+    ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
   amplitudeTracker.submitClickPlaceOrderTrackEvent({
-    amount: props.formValues[TradeField.BaseAmount],
-    leverage: props.formValues[TradeField.Leverage],
-    orderType: props.formValues[TradeField.OrderType],
-    reduceOnly: props.orderTypeReduceOnly,
-    tradingType: props.formValues[TradeField.TradingType],
-    triggerPrice: props.formValues[TradeField.TriggerPrice],
-    limitPrice: props.formValues[TradeField.LimitPrice],
     market: props.market.slug,
-    postOnly: tradingTypeLimit.value && props.formValues[TradeField.PostOnly],
+    marketType: props.market.subType,
+    reduceOnly: props.orderTypeReduceOnly,
     slippageTolerance: actualSlippageTolerance,
-    marketType: props.market.subType
+    amount: formValues.value[TradeField.BaseAmount],
+    leverage: formValues.value[TradeField.Leverage],
+    orderType: formValues.value[TradeField.OrderType],
+    limitPrice: formValues.value[TradeField.LimitPrice],
+    tradingType: formValues.value[TradeField.TradingType],
+    triggerPrice: formValues.value[TradeField.TriggerPrice],
+    postOnly: tradingTypeLimit.value && formValues.value[TradeField.PostOnly]
   })
+}
+
+function handleConnect() {
+  modalStore.openModal({ type: Modal.Connect })
 }
 </script>
 
@@ -191,6 +188,16 @@ function trackPlaceOrder() {
     />
 
     <AppButton
+      v-if="!walletStore.isUserWalletConnected"
+      lg
+      class="bg-blue-500 text-blue-900 font-semibold w-full"
+      @click="handleConnect"
+    >
+      <span>{{ $t('connect.connect') }}</span>
+    </AppButton>
+
+    <AppButton
+      v-else
       lg
       :status="status"
       :disabled="disabled"
@@ -200,7 +207,7 @@ function trackPlaceOrder() {
         'hover:text-red-900 bg-red-500 text-red-800':
           !disabled && !hasError && !isBuy
       }"
-      class="w-full rounded font-sembold shadow-none"
+      class="w-full font-sembold shadow-none"
       data-cy="trading-page-execute-button"
       @click="handleSubmit"
     >

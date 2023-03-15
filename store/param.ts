@@ -123,7 +123,7 @@ export const useParamStore = defineStore('param', {
 
     async fetchInjSupply() {
       const paramStore = useParamStore()
-      const { supply } = await bankApi.fetchTotalSupply()
+      const { supply } = await bankApi.fetchTotalSupply({ limit: 200 })
       const injSupply = supply.find((s) => s.denom === INJ_DENOM)!
 
       paramStore.$patch({

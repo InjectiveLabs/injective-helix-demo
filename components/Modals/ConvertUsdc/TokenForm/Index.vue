@@ -2,35 +2,25 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  AccountBalance,
-  Modal,
-  TradeField,
-  TradeForm,
-  TradeFormValue
-} from '@/types'
+import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const modalStore = useModalStore()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isLoading: Boolean,
   isBaseAmount: Boolean,
 
-  balances: {
-    type: Object as PropType<AccountBalance[]>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  balances: {
+    type: Object as PropType<AccountBalance[]>,
     required: true
   },
 
@@ -42,7 +32,6 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:isBaseAmount', state: boolean): void
-  (e: 'update:formValue', state: TradeFormValue): void
   (
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
@@ -55,25 +44,61 @@ const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const baseBalance = computed(() =>
   props.balances.find(
-    (balance) => balance.token.denom === props.market.baseToken.denom
+    (balance) => balance.token.denom === props.market.baseDenom
   )
 )
 
 const quoteBalance = computed(() =>
   props.balances.find(
-    (balance) => balance.token.denom === props.market.quoteToken.denom
+    (balance) => balance.token.denom === props.market.quoteDenom
   )
 )
 
 const isWHSolUSDTBaseDenom = computed(
-  () => props.market.baseToken.denom === usdcTokenDenom.USDCso
+  () => props.market.baseDenom === usdcTokenDenom.USDCso
 )
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
+/*
+TODO: update to use availableBalance instead of subaccount balance after merge
+*/
+const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
+  computed(() => baseBalance.value?.bankBalance),
+  {
+    decimalPlaces: props.market?.quantityDecimals
+  }
+)
+
 const { value: orderType, setValue: setOrderType } = useStringField({
   name: TradeField.OrderType,
   initialValue: SpotOrderSide.Sell
+})
+
+watch(
+  () => props.worstPriceWithSlippage,
+  () => {
+    emit('update:amount', {
+      amount: props.isBaseAmount
+        ? formValues.value[TradeField.BaseAmount]
+        : formValues.value[TradeField.QuoteAmount],
+      isBaseAmount: props.isBaseAmount
+    })
+  }
+)
+
+onMounted(() => {
+  if (!bankStore.hasEnoughInjForGas) {
+    modalStore.openModal({ type: Modal.InsufficientInjForGas })
+  }
+
+  if (
+    [usdcTokenDenom.USDC].includes(baseBalance.value?.denom.toLowerCase() || '')
+  ) {
+    handleMaxBaseAmountChange({
+      amount: maxBalanceToFixed.value
+    })
+  }
 })
 
 function toggleOrderType() {
@@ -88,14 +113,9 @@ function handleSwap() {
   animationCount.value = animationCount.value + 1
 
   emit('update:isBaseAmount', !props.isBaseAmount)
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: ''
-  })
-  emit('update:formValue', {
-    field: TradeField.QuoteAmount,
-    value: ''
-  })
+
+  formValues.value[TradeField.BaseAmount] = ''
+  formValues.value[TradeField.QuoteAmount] = ''
 
   toggleOrderType()
 }
@@ -111,10 +131,7 @@ function updateAmount({
 }
 
 function handleMaxBaseAmountChange({ amount }: { amount: string }) {
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amount
-  })
+  formValues.value[TradeField.BaseAmount] = amount
 
   updateAmount({ amount, isBaseAmount: true })
 }
@@ -130,30 +147,10 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
     TRADE_FORM_PRICE_ROUNDING_MODE
   )
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: amountDeductFeeToFixed
-  })
+  formValues.value[TradeField.BaseAmount] = amountDeductFeeToFixed
+
   emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
 }
-
-watch(
-  () => props.worstPriceWithSlippage,
-  () => {
-    emit('update:amount', {
-      amount: props.isBaseAmount
-        ? props.formValues[TradeField.BaseAmount]
-        : props.formValues[TradeField.QuoteAmount],
-      isBaseAmount: props.isBaseAmount
-    })
-  }
-)
-
-onMounted(() => {
-  if (!bankStore.hasEnoughInjForGas) {
-    modalStore.openModal({ type: Modal.InsufficientInjForGas })
-  }
-})
 </script>
 
 <template>
@@ -177,16 +174,33 @@ onMounted(() => {
           />
         </div>
 
-        <ModalsConvertUsdcTokenFormInput
+        <!-- TODO: update to availableBalance after merge-->
+        <AppSelectToken
           v-if="baseBalance"
-          :amount-field-name="TradeField.BaseAmount"
-          :balance="baseBalance"
-          :required="!isBuy"
-          :disabled="isLoading"
-          :max-decimals="market?.quantityDecimals"
+          v-bind="{
+            denom: baseBalance.denom,
+            amountFieldName: TradeField.BaseAmount,
+            disabled: isLoading,
+            required: !isBuy,
+            hideMax: isBuy,
+            maxDecimals: market?.quantityDecimals,
+            options: [
+              {
+                token: baseBalance.token,
+                denom: baseBalance.denom,
+                balance: new BigNumberInBase(baseBalance.bankBalance)
+                  .toWei(baseBalance.token.decimals)
+                  .toFixed()
+              }
+            ]
+          }"
           @update:amount="updateAmount"
           @update:max="handleMaxBaseAmountChange"
-        />
+        >
+          <span>
+            {{ $t(`trade.convert.${isBuy ? 'youReceive' : 'youPay'}`) }}
+          </span>
+        </AppSelectToken>
       </div>
     </transition>
 
@@ -222,16 +236,33 @@ onMounted(() => {
           />
         </div>
 
-        <ModalsConvertUsdcTokenFormInput
+        <!-- TODO: update to availableBalance after merge-->
+        <AppSelectToken
           v-if="quoteBalance"
-          :amount-field-name="TradeField.QuoteAmount"
-          :balance="quoteBalance"
-          :required="isBuy"
-          :disabled="isLoading"
-          :max-decimals="market?.quantityDecimals"
+          v-bind="{
+            denom: quoteBalance.denom,
+            amountFieldName: TradeField.QuoteAmount,
+            disabled: isLoading,
+            required: isBuy,
+            hideMax: !isBuy,
+            maxDecimals: market?.quantityDecimals,
+            options: [
+              {
+                token: quoteBalance.token,
+                denom: quoteBalance.denom,
+                balance: new BigNumberInBase(quoteBalance.bankBalance)
+                  .toWei(quoteBalance.token.decimals)
+                  .toFixed()
+              }
+            ]
+          }"
           @update:amount="updateAmount"
           @update:max="handleMaxQuoteAmountChange"
-        />
+        >
+          <span>
+            {{ $t(`trade.convert.${isBuy ? 'youPay' : 'youReceive'}`) }}
+          </span>
+        </AppSelectToken>
       </div>
     </transition>
   </div>

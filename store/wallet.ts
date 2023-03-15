@@ -1,23 +1,27 @@
 import { defineStore } from 'pinia'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
-import { getEthereumAddress, getInjectiveAddress } from '@injectivelabs/sdk-ts'
 import {
-  ChainCosmosErrorCode,
-  CosmosWalletException,
+  getDefaultSubaccountId,
+  getEthereumAddress,
+  getInjectiveAddress
+} from '@injectivelabs/sdk-ts'
+import {
   ErrorType,
-  UnspecifiedErrorCode
+  UnspecifiedErrorCode,
+  ChainCosmosErrorCode,
+  CosmosWalletException
 } from '@injectivelabs/exceptions'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
-import { BusEvents, WalletConnectStatus } from '@/types'
 import { walletStrategy } from '@/app/wallet-strategy'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
-  confirmCorrectKeplrAddress,
-  validateCosmosWallet
+  validateCosmosWallet,
+  confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
-import { IS_DEVNET } from '~~/app/utils/constants'
+import { IS_DEVNET } from '@/app/utils/constants'
+import { BusEvents, WalletConnectStatus } from '@/types'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -50,6 +54,14 @@ export const useWalletStore = defineStore('wallet', {
       return (
         hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
       )
+    },
+
+    defaultSubaccountId: (state) => {
+      if (!state.injectiveAddress) {
+        return ''
+      }
+
+      return getDefaultSubaccountId(state.injectiveAddress)
     },
 
     isCosmosWallet: (state) => {
@@ -88,31 +100,26 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async onConnect() {
-      const accountStore = useAccountStore()
       const bankStore = useBankStore()
-      const exchangeStore = useExchangeStore()
-      const referralStore = useReferralStore()
       const walletStore = useWalletStore()
+      const exchangeStore = useExchangeStore()
 
-      await accountStore.fetchSubaccounts()
-      await bankStore.fetchBalances()
+      useEventBus(BusEvents.WalletConnected).emit()
+
+      await bankStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
       amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
       amplitudeTracker.setUser({
-        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0,
+        wallet: walletStore.wallet,
         address: walletStore.injectiveAddress,
-        wallet: walletStore.wallet
+        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
       amplitudeTracker.submitWalletConnectedTrackEvent()
 
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
       })
-
-      useEventBus(BusEvents.WalletConnected).emit()
-
-      await referralStore.init()
     },
 
     async isMetamaskInstalled() {
@@ -156,9 +163,9 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         address,
-        addressConfirmation,
         addresses,
-        injectiveAddress
+        injectiveAddress,
+        addressConfirmation
       })
 
       await walletStore.onConnect()
@@ -177,9 +184,9 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         address,
-        addressConfirmation,
         addresses,
-        injectiveAddress
+        injectiveAddress,
+        addressConfirmation
       })
 
       await walletStore.onConnect()
@@ -199,9 +206,9 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         address,
-        addressConfirmation,
         addresses,
-        injectiveAddress
+        injectiveAddress,
+        addressConfirmation
       })
 
       await walletStore.onConnect()
@@ -221,9 +228,9 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         address,
-        addressConfirmation,
         addresses,
-        injectiveAddress
+        injectiveAddress,
+        addressConfirmation
       })
 
       await walletStore.onConnect()
@@ -288,8 +295,8 @@ export const useWalletStore = defineStore('wallet', {
       const ethereumAddress = getEthereumAddress(injectiveAddress)
 
       walletStore.$patch({
-        addressConfirmation,
         injectiveAddress,
+        addressConfirmation,
         address: ethereumAddress,
         addresses: injectiveAddresses
       })
@@ -312,8 +319,8 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         address,
         addresses,
-        addressConfirmation,
-        injectiveAddress
+        injectiveAddress,
+        addressConfirmation
       })
 
       await walletStore.onConnect()
@@ -336,9 +343,9 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { wallet, injectiveAddress, address } = useWalletStore()
-      const { ethereumChainId, chainId } = useAppStore()
       const { hasEnoughInjForGas } = useBankStore()
+      const { ethereumChainId, chainId } = useAppStore()
+      const { wallet, injectiveAddress, address } = useWalletStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)
@@ -365,28 +372,24 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async logout() {
-      const accountStore = useAccountStore()
-      const activityStore = useActivityStore()
       const bankStore = useBankStore()
-      const derivativeStore = useDerivativeStore()
-      const positionStore = usePositionStore()
-      const referralStore = useReferralStore()
       const spotStore = useSpotStore()
-      const tokenStore = useTokenStore()
+      const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
+      const activityStore = useActivityStore()
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
 
       await walletStrategy.disconnectWallet()
 
-      accountStore.reset()
       walletStore.reset()
-      derivativeStore.resetSubaccount()
       spotStore.resetSubaccount()
+      derivativeStore.resetSubaccount()
 
-      activityStore.$reset()
       bankStore.$reset()
+      peggyStore.$reset()
+      activityStore.$reset()
       positionStore.$reset()
-      referralStore.$reset()
-      tokenStore.$reset()
     },
 
     reset() {

@@ -57,9 +57,9 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   OrderConfirm = 'order-confirm',
   PriceDeviation = 'price-deviation',
-  RefereeOnboarding = 'referee-onboarding',
   Terms = 'terms',
-  USDCDetected = 'usdc-detected'
+  USDCDetected = 'usdc-detected',
+  UserFeedback = 'user-feedback'
 }
 
 export enum Breakpoint {
@@ -130,22 +130,23 @@ export enum MarketQuoteType {
 }
 
 export enum StreamType {
-  SubaccountBalances = 'subaccount-balances',
-  SpotSubaccountOrders = 'spot-subaccount-orders',
-  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
-  SpotSubaccountTrades = 'spot-subaccount-trades',
-  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
-  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',
-  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
-  DerivativesSubaccountPositions = 'derivatives-positions-trades',
-  DerivativesOrderbook = 'derivatives-orderbook',
-  DerivativesTrades = 'derivatives-trades',
-  DerivativesOrders = 'derivatives-orders',
-  SpotOrderbook = 'spot-orderbook',
   SpotTrades = 'spot-trades',
   SpotOrders = 'spot-orders',
+  OraclePrices = 'oracle-prices',
+  DerivativesTrades = 'derivatives-trades',
+  DerivativesOrders = 'derivatives-orders',
+  BankBalance = 'bank-balance',
+  SubaccountBalances = 'subaccount-balances',
+  SpotOrderbookUpdate = 'spot-orderbook-update',
   DerivativesPositions = 'derivatives-positions',
-  OraclePrices = 'oracle-prices'
+  SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountTrades = 'spot-subaccount-trades',
+  DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
+  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
+  DerivativesSubaccountPositions = 'derivatives-positions-trades',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history'
 }
 
 export enum AveragePriceOptions {
@@ -155,15 +156,20 @@ export enum AveragePriceOptions {
   Percentage = 3
 }
 
-export enum AmplitudeEvents {
+export enum AmplitudeEvent {
+  Login = 'Login',
+  Transfer = 'Transfer',
+  TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  Login = 'Login',
+  SurveyAccepted = 'Survey - Accepted',
+  SurveyRejected = 'Survey - Rejected',
   ClickPlaceOrder = 'Place Order Attempt',
-  AttemptPlaceOrder = 'Place Order Confirm',
-  TradeClicked = 'Trade Clicked',
-  Transfer = 'Transfer',
-  CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
+  AttemptPlaceOrder = 'Place Order Confirm'
+}
+
+export enum SurveyTitle {
+  HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
 
 export enum DefaultMarket {
@@ -197,8 +203,6 @@ export enum BalanceHeaderType {
   None = 'none',
   Asset = 'asset',
   Total = 'total',
-  Wallet = 'wallet',
-  TradingAccount = 'trading-account',
   Available = 'available',
   Value = 'value'
 }
@@ -226,6 +230,7 @@ export enum BridgeBusEvents {
 }
 
 export enum ActivityField {
+  Symbol = 'Symbol',
   Denom = 'Denom',
   Limit = 'Limit',
   Page = 'Page',
@@ -308,4 +313,8 @@ export enum ActivityTab {
 
 export enum AggregatedBalanceType {
   USDC = 'usdc'
+}
+
+export enum NoticeBanner {
+  sheduledUpgradeMarch = 'sheduled-upgrade-march'
 }

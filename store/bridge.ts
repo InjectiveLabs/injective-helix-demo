@@ -3,16 +3,16 @@ import {
   IBCTransferTx,
   PeggyDepositTx,
   PeggyWithdrawalTx,
+  UiSubaccountTransfer,
   UiAccountTransformer,
-  UiBridgeTransactionWithToken,
-  UiSubaccountTransfer
+  UiBridgeTransactionWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BankMsgSendTransaction } from '@injectivelabs/sdk-ts'
 import {
+  tokenService,
   bridgeTransformer,
   indexerAccountApi,
-  indexerExplorerApi,
-  tokenService
+  indexerExplorerApi
 } from '@/app/Services'
 import { UiBridgeTransformer } from '@/app/client/transformers/UiBridgeTransformer'
 import { UiExplorerTransformer } from '@/app/client/transformers/UiExplorerTransformer'
@@ -120,32 +120,22 @@ export const useBridgeStore = defineStore('bridge', {
       })
     },
 
-    async fetchSubaccountTransfers(
-      activityFetchOptions: ActivityFetchOptions | undefined
-    ) {
+    async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
       const bridgeStore = useBridgeStore()
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
-      const paginationOptions = activityFetchOptions?.pagination
-      const filters = activityFetchOptions?.filters
+      const filters = options?.filters
 
       const { transfers, pagination } =
         await indexerAccountApi.fetchSubaccountHistory({
-          subaccountId: subaccount.subaccountId,
+          subaccountId,
           denom: filters?.denom,
-          pagination: {
-            skip: paginationOptions ? paginationOptions.skip : 0,
-            limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime:
-              bridgeStore.subaccountTransferBridgeTransactions.length > 0
-                ? bridgeStore.subaccountTransferBridgeTransactions[0].timestamp
-                : 0
-          }
+          pagination: options?.pagination
         })
 
       const uiTransfers = transfers.map(

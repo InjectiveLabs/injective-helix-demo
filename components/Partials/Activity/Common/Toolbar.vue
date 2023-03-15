@@ -1,22 +1,18 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { Token } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  ActivityField,
   ActivityTab,
   ActivityView,
-  ConditionalOrderType,
-  UiMarketWithToken
+  ActivityField,
+  UiMarketWithToken,
+  ConditionalOrderType
 } from '@/types'
-import {
-  executionOrderTypeToOrderTypes,
-  executionOrderTypeToOrderExecutionTypes,
-  executionOrderTypeToTradeExecutionTypes
-} from '@/app/client/utils/activity'
 
-const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 
 const props = defineProps({
@@ -50,54 +46,25 @@ const hasActiveFilters = computed(
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  props.tab === ActivityTab.Spot ? spotStore.markets : derivativeStore.markets
+  [ActivityTab.Spot, ActivityTab.WalletHistory].includes(props.tab)
+    ? spotStore.markets
+    : derivativeStore.markets
 )
 
-const marketIds = computed(() =>
-  denom.value
-    ? markets.value
-        .filter(({ baseToken, quoteToken }) =>
-          [baseToken.denom, quoteToken.denom].includes(denom.value)
-        )
-        .map(({ marketId }) => marketId)
-    : undefined
-)
-
-const filterParams = computed(() => {
-  const defaultFilterParams = {
-    marketIds: marketIds.value
+const tokens = computed(() => {
+  if (!markets.value) {
+    return []
   }
 
-  if (!hasActiveFilters.value) {
-    return undefined
-  }
+  const tokens = markets.value.reduce((tokens, market) => {
+    return [...tokens, market.baseToken, market.quoteToken]
+  }, [] as Token[])
 
-  switch (props.view) {
-    case ActivityView.FundingPayments:
-      return defaultFilterParams
-    case ActivityView.DerivativeOrderHistory:
-    case ActivityView.SpotOrderHistory:
-      return {
-        ...defaultFilterParams,
-        orderTypes: executionOrderTypeToOrderTypes(type.value),
-        executionTypes: executionOrderTypeToOrderExecutionTypes(type.value),
-        direction: side.value
-      }
-    case ActivityView.DerivativeTradeHistory:
-    case ActivityView.SpotTradeHistory:
-      return {
-        ...defaultFilterParams,
-        orderTypes: executionOrderTypeToOrderTypes(type.value),
-        executionTypes: executionOrderTypeToTradeExecutionTypes(type.value),
-        direction: side.value
-      }
-    case ActivityView.WalletTransfers:
-      return {
-        denom: denom.value
-      }
-    default:
-      return {}
-  }
+  const uniqueTokens = [
+    ...new Map(tokens.map((token) => [token.denom, token])).values()
+  ]
+
+  return uniqueTokens
 })
 
 const sideOptions = computed(() => {
@@ -184,19 +151,16 @@ function handleClearFilters() {
 function handleUpdate() {
   emit('update:filter')
 }
-
-defineExpose({
-  filterParams
-})
 </script>
 
 <template>
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
-      <PartialsActivityCommonSearch
+      <PartialsActivityCommonMarketFilter
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tab="tab"
+        :tokens="tokens"
         @update:model-value="handleUpdate"
       />
 
@@ -208,9 +172,9 @@ defineExpose({
           )
         "
         v-model="type"
+        class="col-span-2 sm:col-span-1"
         :options="typeOptions"
         :placeholder="$t('activity.common.type')"
-        class="col-span-2 sm:col-span-1"
         clearable
         data-cy="universal-table-filter-by-type-drop-down"
         @update:model-value="handleUpdate"
@@ -222,9 +186,9 @@ defineExpose({
           view !== ActivityView.FundingPayments
         "
         v-model="side"
+        class="col-span-2 sm:col-span-1"
         :options="sideOptions"
         :placeholder="$t('trade.side')"
-        class="col-span-2 sm:col-span-1"
         clearable
         data-cy="universal-table-filter-by-asset-input"
         @update:model-value="handleUpdate"

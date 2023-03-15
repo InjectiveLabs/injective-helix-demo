@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { injToken } from '@/app/data/token'
+import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 import {
   Modal,
   BridgeForm,
@@ -9,13 +11,11 @@ import {
   BridgeBusEvents,
   TransferDirection
 } from '@/types'
-import { injToken } from '@/app/data/token'
-import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
-const walletStore = useWalletStore()
 const bankStore = useBankStore()
-const tokenStore = useTokenStore()
 const modalStore = useModalStore()
+const peggyStore = usePeggyStore()
+const walletStore = useWalletStore()
 
 const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({
   initialValues: {
@@ -108,7 +108,7 @@ function handleDeposit(token: Token = injToken) {
     TransferDirection.tradingAccountToBank
 
   // Update ERC20 balances when we open the bridge instead of loading them when we open the page
-  tokenStore.updateErc20BalancesWithTokenAndPrice()
+  peggyStore.updateErc20BalancesWithTokenAndPrice()
 
   modalStore.openModal({ type: Modal.Bridge })
 }

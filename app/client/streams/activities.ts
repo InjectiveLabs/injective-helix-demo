@@ -6,7 +6,7 @@ import {
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { streamProvider } from '../../providers/StreamProvider'
+import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 import { ENDPOINTS } from '@/app/utils/constants'
 

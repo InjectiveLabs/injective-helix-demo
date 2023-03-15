@@ -36,12 +36,6 @@ watch(
   }
 )
 
-onMounted(() => {
-  if (walletStore.isUserWalletConnected) {
-    ninjaPassStore.fetchCodes()
-  }
-})
-
 onWalletConnected(() => {
   ninjaPassStore.fetchCodes()
 })

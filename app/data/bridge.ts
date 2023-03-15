@@ -81,6 +81,13 @@ export const networksMeta = [
     icon: '/bridgingNetworks/crescent.jpeg',
     symbol: 'crescent.jpeg'
   },
+  /*
+  {
+    text: 'Canto',
+    value: BridgingNetwork.Canto,
+    icon: '/bridgingNetworks/canto.png',
+    symbol: 'canto.png'
+  }, */
   {
     text: 'Solana',
     value: BridgingNetwork.Solana,

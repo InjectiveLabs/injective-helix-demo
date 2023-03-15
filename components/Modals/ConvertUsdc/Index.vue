@@ -2,36 +2,25 @@
 import { PropType } from 'vue'
 import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  AccountBalance,
-  Modal,
-  TradeField,
-  TradeForm,
-  TradeFormValue
-} from '@/types'
+import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
+const bankStore = useBankStore()
+const modalStore = useModalStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
-const {
-  errors,
-  resetForm,
-  setFieldValue,
-  values: formValues
-} = useForm<TradeForm>()
+const { errors, resetForm, values: formValues } = useForm<TradeForm>()
 
 const props = defineProps({
-  balances: {
-    type: Object as PropType<AccountBalance[]>,
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+  balances: {
+    type: Object as PropType<AccountBalance[]>,
     required: true
   }
 })
@@ -41,18 +30,17 @@ const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 const submitStatus = reactive(new Status(StatusType.Idle))
 
-const hasFormErrors = computed(() => Object.keys(errors.value).length === 0)
 const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
 
 const isBuy = computed(
   () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
 )
 
-const amount = computed(() => {
-  return isBuy.value
+const amount = computed(() =>
+  isBuy.value
     ? formValues[TradeField.QuoteAmount]
     : formValues[TradeField.BaseAmount]
-})
+)
 
 const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
@@ -76,25 +64,21 @@ function updateAmount({
   })
 
   if (updatedAmount) {
-    updateFormValue({
-      field: isBaseAmountUpdate
-        ? TradeField.QuoteAmount
-        : TradeField.BaseAmount,
-      value: updatedAmount
-    })
+    formValues[
+      isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount
+    ] = updatedAmount
   }
 }
 
 onMounted(() => {
+  fetchStatus.setLoading()
+
   Promise.all([
+    bankStore.fetchAccountPortfolio(),
     spotStore.fetchOrderbook(props.market.marketId),
-    spotStore.streamOrderbook(props.market.marketId)
+    spotStore.streamOrderbookUpdate(props.market.marketId)
   ]).finally(() => fetchStatus.setIdle())
 })
-
-function updateFormValue({ field, value }: TradeFormValue) {
-  setFieldValue(field, value)
-}
 
 function resetFormValues() {
   const isBuyState = unref(isBuy.value)
@@ -103,18 +87,11 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  updateFormValue({
-    field: TradeField.OrderType,
-    value: isBuyState ? SpotOrderSide.Buy : SpotOrderSide.Sell
-  })
-  updateFormValue({
-    field: TradeField.BaseDenom,
-    value: props.market.baseDenom
-  })
-  updateFormValue({
-    field: TradeField.QuoteDenom,
-    value: props.market.quoteDenom
-  })
+  formValues[TradeField.OrderType] = isBuyState
+    ? SpotOrderSide.Buy
+    : SpotOrderSide.Sell
+  formValues[TradeField.BaseDenom] = props.market.baseDenom
+  formValues[TradeField.QuoteDenom] = props.market.quoteDenom
 }
 
 function handleFormSubmit() {
@@ -129,12 +106,12 @@ function handleFormSubmit() {
     })
     .then(() => {
       resetFormValues()
+      bankStore.fetchAccountPortfolio()
       success({ title: t('trade.convert.convert_success') })
     })
     .catch($onError)
     .finally(() => {
       submitStatus.setIdle()
-      accountStore.updateSubaccount()
       modalStore.closeModal(Modal.ConvertUsdc)
     })
 }
@@ -165,12 +142,10 @@ function closeModal() {
           v-bind="{
             market,
             balances,
-            formValues,
             worstPriceWithSlippage,
-            isLoading: status.isLoading()
+            isLoading: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
           @update:amount="updateAmount"
-          @update:formValue="updateFormValue"
         />
 
         <ModalsConvertUsdcSummary
@@ -179,7 +154,6 @@ function closeModal() {
             isBuy,
             market,
             amount,
-            formValues,
             worstPriceWithSlippage,
             isLoading: fetchStatus.isLoading()
           }"
@@ -193,8 +167,6 @@ function closeModal() {
             errors,
             isBuy,
             market,
-            formValues,
-            hasFormErrors,
             executionPrice: worstPrice,
             status: submitStatus
           }"

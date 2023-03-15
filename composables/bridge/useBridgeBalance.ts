@@ -1,7 +1,11 @@
 import type { Ref } from 'vue'
-import { BalanceWithToken, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import {
+  BalanceWithToken,
+  BalanceWithTokenAndPrice,
+  BridgingNetwork
+} from '@injectivelabs/sdk-ui-ts'
 import { Erc20Token } from '@injectivelabs/token-metadata'
-import { BridgeForm, BridgeType, TransferDirection, BridgeField } from '@/types'
+import { BridgeForm, BridgeType, BridgeField } from '@/types'
 
 /**
  * For the bridge balances, we only use
@@ -12,82 +16,57 @@ export function useBridgeBalance({
 }: {
   formValues: Ref<Partial<BridgeForm>>
 }) {
-  const accountStore = useAccountStore()
-  const bankStore = useBankStore()
   const tokenStore = useTokenStore()
+  const peggyStore = usePeggyStore()
+  const bankStore = useBankStore()
+
+  const bankBalancesWithToken = computed(() => {
+    return bankStore.bankBalances
+      .map((bankBalance) => {
+        const token = tokenStore.tradeableTokens.find(
+          (token) =>
+            token.denom.toLowerCase() === bankBalance.denom.toLowerCase()
+        )
+
+        return {
+          token,
+          denom: bankBalance.denom,
+          balance: bankBalance.amount,
+          usdPrice: tokenStore.tokenUsdPrice(token?.coinGeckoId || '')
+        }
+      })
+      .filter(
+        (balanceWithToken) => balanceWithToken.token
+      ) as BalanceWithTokenAndPrice[]
+  })
 
   const erc20Balances = computed(() =>
-    tokenStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
+    peggyStore.tradeableErc20BalancesWithTokenAndPrice.map((balance) => {
       return {
         ...balance,
-        token: {
-          ...balance.token,
-          symbol: balance.token.erc20
-            ? balance.token.erc20.symbol || balance.token.symbol
-            : balance.token.symbol
-        },
-        balance: balance.erc20.balance
+        balance: balance.erc20Balance.balance
       } as BalanceWithToken
     })
   )
 
-  const bankBalances = computed(() =>
-    tokenStore.tradeableTokens.map((token) => {
-      const balanceWithToken = bankStore.bankBalancesWithToken.find(
-        (balance) => balance.denom === token.denom
-      )
-
-      return {
-        token,
-        denom: token.denom,
-        balance: balanceWithToken?.balance || '0'
-      } as BalanceWithToken
-    })
-  )
-
-  const accountBalances = computed(
-    () =>
-      tokenStore.tradeableTokens
-        .map((token) => {
-          const accountBalance = accountStore.subaccount?.balances.find(
-            (balance) => balance.denom === token.denom
-          )
-
-          return {
-            token,
-            denom: token.denom,
-            balance: accountBalance?.availableBalance || '0'
-          }
-        })
-        .filter((balance) => balance.token) as BalanceWithToken[]
-  )
-
-  const balancesWithToken = computed<BalanceWithToken[]>(() => {
+  const transferableBalancesWithToken = computed<BalanceWithToken[]>(() => {
     if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
       return erc20Balances.value
     }
 
-    if (formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw) {
-      const destinationIsEthereum =
-        formValues.value[BridgeField.BridgingNetwork] ===
-        BridgingNetwork.Ethereum
+    const destinationIsEthereum =
+      formValues.value[BridgeField.BridgingNetwork] === BridgingNetwork.Ethereum
 
-      if (destinationIsEthereum) {
-        return bankBalances.value.filter(
-          (balance) => (balance.token as Erc20Token).erc20?.address
-        )
-      }
-
-      return bankBalances.value
+    if (destinationIsEthereum) {
+      return bankBalancesWithToken.value.filter(
+        (balance) => (balance.token as Erc20Token).erc20?.address
+      )
     }
 
-    return formValues.value[BridgeField.TransferDirection] ===
-      TransferDirection.bankToTradingAccount
-      ? bankBalances.value
-      : accountBalances.value
+    return bankBalancesWithToken.value
   })
 
   return {
-    transferableBalancesWithToken: balancesWithToken
+    transferableBalancesWithToken
   }
 }

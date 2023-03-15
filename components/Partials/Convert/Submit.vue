@@ -2,31 +2,23 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal, TradeForm } from '@/types'
+import { Modal, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
-const modalStore = useModalStore()
 const router = useRouter()
 const bankStore = useBankStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
+
+const formErrors = useFormErrors()
+const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isBuy: Boolean,
-  hasFormErrors: Boolean,
 
   amount: {
     type: String,
     default: ''
-  },
-
-  errors: {
-    type: Object as PropType<Record<string, string | undefined>>,
-    default: () => ({})
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
   },
 
   executionPrice: {
@@ -50,15 +42,22 @@ const emit = defineEmits<{
 }>()
 
 const { insufficientLiquidity, highDeviation } = useSpotError({
+  formValues,
   executionPrice: computed(() => props.executionPrice),
-  formValues: computed(() => props.formValues),
   isBuy: computed(() => props.isBuy),
   market: computed(() => props.market)
 })
 
+const hasFormErrors = computed(
+  () =>
+    Object.keys(formErrors.value).filter(
+      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+    ).length > 0
+)
+
 const isSubmitDisabled = computed<boolean>(() => {
   return (
-    props.hasFormErrors ||
+    hasFormErrors.value ||
     props.amount === '' ||
     !bankStore.hasEnoughInjForGas ||
     insufficientLiquidity.value
@@ -66,7 +65,9 @@ const isSubmitDisabled = computed<boolean>(() => {
 })
 
 const hasInsufficientBalance = computed(() =>
-  Object.values(props.errors).includes(tradeErrorMessages.insufficientBalance())
+  Object.values(formErrors.value).includes(
+    tradeErrorMessages.insufficientBalance()
+  )
 )
 
 function handleConnect() {

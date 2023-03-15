@@ -17,7 +17,10 @@ defineProps({
     <CommonTokenIcon v-if="option && option.token" :token="option.token" />
     <span
       class="text-sm"
-      :class="{ 'text-white': !active, 'text-blue-500': active }"
+      :class="{
+        'text-white': !active,
+        'text-blue-500 group-hover:text-white': active
+      }"
     >
       {{ option.display }}
     </span>

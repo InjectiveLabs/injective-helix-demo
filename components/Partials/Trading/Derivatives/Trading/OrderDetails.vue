@@ -1,20 +1,17 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TradeForm, UiMarketWithToken } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   orderTypeReduceOnly: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -39,9 +36,7 @@ const props = defineProps({
   }
 })
 
-const { tradingTypeMarket } = useDerivativeFormFormatter(
-  computed(() => props.formValues)
-)
+const { tradingTypeMarket } = useDerivativeFormFormatter(formValues)
 
 const isBinaryOption = computed(
   () => props.market.subType === MarketType.BinaryOptions

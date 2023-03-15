@@ -91,8 +91,8 @@ export default {
       $attrs.class,
       classes,
       {
-        'border-transparent': hasBackground,
-        'border-gray-600 bg-transparent text-gray-600 cursor-not-allowed':
+        'border-transparent': hasBackground && !disabled,
+        ' border-gray-600 bg-transparent text-gray-600 cursor-not-allowed':
           disabled,
         'hover:bg-opacity-80 hover:text-opacity-80 hover:border-opacity-80':
           !disabled

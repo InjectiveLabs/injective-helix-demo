@@ -10,8 +10,6 @@ import { format, fromUnixTime } from 'date-fns'
 import { getMarketRoute } from '@/app/utils/market'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const router = useRouter()
-
 const props = defineProps({
   market: {
     type: Object as PropType<UiExpiryFuturesMarketWithToken>,
@@ -79,13 +77,13 @@ const expiryAt = computed(() => {
   )
 })
 
-function handleVisitMarket() {
+const marketRoute = computed(() => {
   if (!props.market) {
-    return
+    return undefined
   }
 
-  return router.push(getMarketRoute(props.market))
-}
+  return getMarketRoute(props.market)
+})
 </script>
 
 <template>
@@ -94,7 +92,7 @@ function handleVisitMarket() {
     :data-cy="`markets-expired-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
-      <div class="cursor-pointer" @click="handleVisitMarket">
+      <NuxtLink class="cursor-pointer" :to="marketRoute">
         <div class="cursor-pointer flex items-center">
           <CommonTokenIcon
             v-if="market.baseToken"
@@ -112,7 +110,7 @@ function handleVisitMarket() {
             </span>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </span>
 
     <!-- Mobile column -->
