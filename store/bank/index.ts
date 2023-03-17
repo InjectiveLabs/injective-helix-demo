@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
-import { indexerAccountPortfolioApi } from '@/app/Services'
+import { bankApi, indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
@@ -81,6 +81,9 @@ export const useBankStore = defineStore('bank', {
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
           walletStore.injectiveAddress
         )
+      const bankBalances = await bankApi.fetchBalances(
+        walletStore.injectiveAddress
+      )
 
       /**
        * We handle only the default subaccount for now, once we have
@@ -105,11 +108,43 @@ export const useBankStore = defineStore('bank', {
         [] as SubaccountBalance[]
       )
 
+      const nonDefaultSubaccounts = accountPortfolio?.subaccountsList.reduce(
+        (accountBalances, subaccountBalance) => {
+          if (
+            subaccountBalance.subaccountId === walletStore.defaultSubaccountId
+          ) {
+            return accountBalances
+          }
+
+          const existingAccountBalances =
+            accountBalances[subaccountBalance.subaccountId] || []
+
+          const subaccountAvailableBalance =
+            subaccountBalance?.deposit?.availableBalance || '0'
+          const subaccountTotalBalance =
+            subaccountBalance?.deposit?.totalBalance || '0'
+
+          return {
+            ...accountBalances,
+            [subaccountBalance.subaccountId]: [
+              ...existingAccountBalances,
+              {
+                denom: subaccountBalance.denom,
+                totalBalance: subaccountTotalBalance,
+                availableBalance: subaccountAvailableBalance
+              }
+            ]
+          }
+        },
+        {} as Record<string, SubaccountBalance[]>
+      )
+
       bankStore.$patch({
         subaccountId: walletStore.defaultSubaccountId,
-        bankBalances: accountPortfolio?.bankBalancesList || [],
+        bankBalances: bankBalances.balances || [],
         subaccountBalancesMap: {
-          [walletStore.defaultSubaccountId]: defaultAccountBalances
+          [walletStore.defaultSubaccountId]: defaultAccountBalances,
+          ...nonDefaultSubaccounts
         }
       })
     },

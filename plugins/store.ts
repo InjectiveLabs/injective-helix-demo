@@ -27,14 +27,15 @@ const stateToPersist = {
   },
 
   bank: {
-    defaultSubaccountId: ''
+    subaccountId: ''
   },
 
   wallet: {
     wallet: Wallet.Metamask,
-    addresses: '',
     address: '',
+    addresses: '',
     injectiveAddress: '',
+    defaultSubaccountId: '',
     addressConfirmation: ''
   }
 } as Record<string, Record<string, any>>
