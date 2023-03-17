@@ -85,11 +85,6 @@ export const useBankStore = defineStore('bank', {
         walletStore.injectiveAddress
       )
 
-      /**
-       * We handle only the default subaccount for now, once we have
-       * multiple subaccounts support on Helix we can
-       * handle multiple here as a map of {subaccountId: SubaccountDeposit}
-       */
       const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
         (accountBalances, balance) => {
           if (balance.subaccountId === walletStore.defaultSubaccountId) {
