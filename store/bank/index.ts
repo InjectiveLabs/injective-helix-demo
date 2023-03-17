@@ -16,7 +16,7 @@ type BankStoreState = {
   // currently selected subaccountId, set at the default one until we have multi-subaccount support
   subaccountId: string
   bankBalances: Coin[]
-  subaccountBalancesMap: Record<string, SubaccountBalance[]>
+  subaccountBalancesMap: Record<string, SubaccountBalance[] | undefined>
 }
 
 const initialStateFactory = (): BankStoreState => ({
