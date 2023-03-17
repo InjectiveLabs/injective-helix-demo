@@ -105,11 +105,43 @@ export const useBankStore = defineStore('bank', {
         [] as SubaccountBalance[]
       )
 
+      const nonDefaultSubaccounts = accountPortfolio?.subaccountsList.reduce(
+        (accountBalances, subaccountBalance) => {
+          if (
+            subaccountBalance.subaccountId === walletStore.defaultSubaccountId
+          ) {
+            return accountBalances
+          }
+
+          const existingAccountBalances =
+            accountBalances[subaccountBalance.subaccountId] || []
+
+          const subaccountAvailableBalance =
+            subaccountBalance?.deposit?.availableBalance || '0'
+          const subaccountTotalBalance =
+            subaccountBalance?.deposit?.totalBalance || '0'
+
+          return {
+            ...accountBalances,
+            [subaccountBalance.subaccountId]: [
+              ...existingAccountBalances,
+              {
+                denom: subaccountBalance.denom,
+                totalBalance: subaccountTotalBalance,
+                availableBalance: subaccountAvailableBalance
+              }
+            ]
+          }
+        },
+        {} as Record<string, SubaccountBalance[]>
+      )
+
       bankStore.$patch({
         subaccountId: walletStore.defaultSubaccountId,
         bankBalances: accountPortfolio?.bankBalancesList || [],
         subaccountBalancesMap: {
-          [walletStore.defaultSubaccountId]: defaultAccountBalances
+          [walletStore.defaultSubaccountId]: defaultAccountBalances,
+          ...nonDefaultSubaccounts
         }
       })
     },
