@@ -18,7 +18,7 @@ export default {
       tryNow: 'Get started'
     },
     'banner-sheduled-upgrade-march':
-      "A scheduled maintenance will take place at 13:00 UTC, 17 March 2023. Please note that you won't be able to place orders and manage positions during the downtime.",
+      "A scheduled maintenance will take place around 16:00 UTC, 17 March 2023. Please note that you won't be able to place orders and manage positions during the downtime.",
     userFeedback: {
       loveFeedback: "We'd love to hear your feedback!",
       thankYouBeginning:
