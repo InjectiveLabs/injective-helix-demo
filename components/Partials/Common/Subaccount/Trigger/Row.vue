@@ -6,7 +6,6 @@ import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
 const route = useRoute()
-const router = useRouter()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { success } = useNotifications()
@@ -40,6 +39,14 @@ const {
   quantityDecimals
 } = useTrigger(computed(() => props.trigger))
 
+const marketRoute = computed(() => {
+  if (!market.value) {
+    return undefined
+  }
+
+  return getMarketRoute(market.value)
+})
+
 function onCancelOrder(): void {
   status.setLoading()
 
@@ -53,14 +60,6 @@ function onCancelOrder(): void {
       status.setIdle()
     })
 }
-
-function handleVisitMarket() {
-  if (!market.value) {
-    return
-  }
-
-  return router.push(getMarketRoute(market.value))
-}
 </script>
 
 <template>
@@ -69,8 +68,8 @@ function handleVisitMarket() {
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="trigger.orderHash"
   >
-    <td class="text-left cursor-pointer pl-3" @click="handleVisitMarket">
-      <div class="flex items-center justify-start">
+    <td class="text-left cursor-pointer pl-3">
+      <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken" class="w-4 h-4">
           <CommonTokenIcon :token="market.baseToken" sm />
         </div>
@@ -83,7 +82,7 @@ function handleVisitMarket() {
             {{ market.ticker }}
           </span>
         </div>
-      </div>
+      </NuxtLink>
     </td>
 
     <td class="text-left">
@@ -193,14 +192,14 @@ function handleVisitMarket() {
 
     <td class="relative text-right pr-3">
       <div class="flex items-center justify-end">
-        <span
+        <NuxtLink
           v-if="false"
           class="cursor-pointer text-blue-500 mr-6"
           data-cy="derivative-order-view-link"
-          @click="handleVisitMarket"
+          :to="marketRoute"
         >
           {{ $t('common.view') }}
-        </span>
+        </NuxtLink>
 
         <PartialsTradingFormCancelButton
           v-if="isCancelable"

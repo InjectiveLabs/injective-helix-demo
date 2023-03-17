@@ -6,6 +6,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 import { TradeForm, TradeField } from '@/types'
 
+const formValues = useFormValues<TradeForm>()
+
 const props = defineProps({
   isBuy: Boolean,
   isLoading: Boolean,
@@ -20,11 +22,6 @@ const props = defineProps({
     default: undefined
   },
 
-  formValues: {
-    type: Object as PropType<TradeForm>,
-    required: true
-  },
-
   worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -33,18 +30,17 @@ const props = defineProps({
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const showEmpty = computed(() => {
-  return (
+const showEmpty = computed(
+  () =>
     !props.market ||
     props.worstPriceWithSlippage.eq(0) ||
     new BigNumberInBase(props.amount || 0).isNaN()
-  )
-})
+)
 
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
   const quantity = new BigNumberInBase(
-    props.formValues[TradeField.QuoteAmount] || 0
+    formValues.value[TradeField.QuoteAmount] || 0
   )
 
   if (quantity.isNaN() || quantity.lte(0)) {
@@ -130,11 +126,13 @@ const { valueToString: minimalReceivedToFormat } = useBigNumberFormatter(
 <template>
   <div>
     <div v-if="isLoading" class="flex items-center justify-end gap-2">
-      <span>{{ $t('trade.convert.fetching_price') }}</span>
       <AppSpinner sm />
+      <span class="text-xs text-gray-500">{{
+        $t('trade.convert.fetching_price')
+      }}</span>
     </div>
 
-    <div v-else-if="inputToken && outputToken" class="space-y-3">
+    <div v-else-if="inputToken && outputToken" class="space-y-3 mt-2">
       <PartialsConvertSummaryRow :title="$t('trade.convert.rate')">
         <span v-if="showEmpty">&mdash;</span>
         <div v-else>

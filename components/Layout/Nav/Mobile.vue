@@ -81,16 +81,6 @@ function handleToggleRewardsMenu() {
               {{ $t('navigation.dmmProgram') }}
             </span>
           </a>
-
-          <a
-            class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center px-6 py-2"
-            href="https://affiliate.helixapp.com"
-            target="_blank"
-          >
-            <span class="font-normal tracking-wide">
-              {{ $t('navigation.affiliateProgram') }}
-            </span>
-          </a>
         </div>
       </template>
     </AppAccordion>

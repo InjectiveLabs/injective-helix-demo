@@ -4,20 +4,20 @@ import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
 const tokenStore = useTokenStore()
+const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
+    ...spotStore.marketsWithSummary,
     ...derivativeStore.marketsWithSummary,
-    ...exchangeStore.deprecatedMarketsWithSummary,
     ...exchangeStore.upcomingMarketsWithSummary,
-    ...spotStore.marketsWithSummary
+    ...exchangeStore.deprecatedMarketsWithSummary
   ].map(({ market, summary }) => {
     const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId] || 0
+      tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
     )
 
     return {
@@ -30,10 +30,16 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
 
 onMounted(() => getQuoteTokenPrice())
 
+const marketsWithSummariesLoaded = computed(
+  () =>
+    spotStore.marketsWithSummary.some(({ summary }) => summary) &&
+    derivativeStore.marketsWithSummary.some(({ summary }) => summary)
+)
+
 function getQuoteTokenPrice() {
   Promise.all([
-    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
-    appStore.pollMarkets()
+    appStore.pollMarkets(),
+    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
   ]).catch($onError)
 }
 
@@ -41,15 +47,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 </script>
 
 <template>
-  <AppHocLoading
-    :show-loading="
-      !(
-        spotStore.marketsWithSummary.length &&
-        derivativeStore.marketsWithSummary.length
-      )
-    "
-    class="h-full"
-  >
+  <AppHocLoading :show-loading="!marketsWithSummariesLoaded" class="h-full">
     <div class="container">
       <PartialsMarketsOverview :markets="marketsWithSummaryAndVolumeInUsd" />
       <PartialsMarkets :markets="marketsWithSummaryAndVolumeInUsd" />

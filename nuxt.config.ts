@@ -31,7 +31,6 @@ export default defineNuxtConfig({
   plugins: [...vitePlugins],
 
   modules: [
-    '@injectivelabs/ui-notifications',
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
@@ -42,7 +41,7 @@ export default defineNuxtConfig({
   webpack: {
     terser: {
       terserOptions: {
-        keep_classnames: false
+        keep_classnames: true
       }
     }
   },

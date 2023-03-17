@@ -15,7 +15,8 @@ export default {
     quote: 'Quote',
     expiredRecently: 'Expired in last 24 hours',
     settledAt: 'Settled at',
-    airdrop: 'Airdrop'
+    airdrop: 'Airdrop',
+    showLowVol: 'Show low Vol.'
   },
 
   marketPage: {
@@ -24,6 +25,7 @@ export default {
     balances: 'Balances',
     portfolio: 'Portfolio',
     account: 'Account',
+    noTradingBalance: 'Deposit to start trading!',
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote: 'Use Injective Bridge to transfer assets to Injective.',
     noTradingAccountBalance:

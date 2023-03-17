@@ -14,6 +14,7 @@ import {
   marketIsPartOfSearch
 } from '@/app/utils/market'
 import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
+import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum MarketHeaderType {
   Market = 'market',
@@ -38,6 +39,7 @@ const activeType = ref('')
 const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
 const ascending = ref(false)
+const showLowVolumeMarkets = ref(false)
 
 const recentlyExpiredMarkets = computed(
   () => derivativeStore.recentlyExpiredMarkets
@@ -46,7 +48,7 @@ const recentlyExpiredMarkets = computed(
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() => {
-  return props.markets.filter(({ market }) => {
+  return props.markets.filter(({ market, volumeInUsd }) => {
     const isPartOfCategory = marketIsPartOfCategory(
       activeCategory.value,
       market
@@ -58,8 +60,16 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
+    const isLowVolumeMarket =
+      showLowVolumeMarkets.value || volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-    return isPartOfCategory && isPartOfType && isPartOfSearch && isQuotePair
+    return (
+      isPartOfCategory &&
+      isPartOfType &&
+      isPartOfSearch &&
+      isQuotePair &&
+      isLowVolumeMarket
+    )
   })
 })
 
@@ -177,6 +187,7 @@ function prefillFromQueryParams() {
         v-model:active-category="activeCategory"
         v-model:active-quote="activeQuote"
         v-model:active-type="activeType"
+        v-model:show-low-volume-markets="showLowVolumeMarkets"
         v-model:search="search"
       />
 

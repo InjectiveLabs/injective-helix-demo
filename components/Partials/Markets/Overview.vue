@@ -12,8 +12,10 @@ const props = defineProps({
 })
 
 const marketsWithLastTradedPriceGreaterThanZero = computed(() => {
-  return props.markets.filter(({ summary: { lastPrice, price } }) => {
-    const lastTradedPrice = new BigNumberInBase(lastPrice || price)
+  return props.markets.filter(({ summary }) => {
+    const lastTradedPrice = new BigNumberInBase(
+      summary?.lastPrice || summary?.price || '0'
+    )
 
     return lastTradedPrice.gt('0')
   })
@@ -40,7 +42,7 @@ const topVolume = computed(() => {
     return undefined
   }
 
-  return props.markets.reduce(
+  const market = props.markets.reduce(
     (
       initialMarket: UiMarketAndSummaryWithVolumeInUsd,
       market: UiMarketAndSummaryWithVolumeInUsd
@@ -54,6 +56,12 @@ const topVolume = computed(() => {
         : market
     }
   )
+
+  if (market.volumeInUsd.lte(0)) {
+    return
+  }
+
+  return market
 })
 
 const topGainer = computed(() => {
@@ -97,7 +105,7 @@ function sortMarketsAlphabetically(
 
         <AppHorizontalScrollView class="mt-4">
           <PartialsMarketsCard
-            v-if="newMarket"
+            v-if="newMarket && newMarket.summary"
             class="flex-0-full col-span-6 xl:col-span-4"
             data-cy="market-card-whats-new"
             :market="newMarket.market"
@@ -108,7 +116,7 @@ function sortMarketsAlphabetically(
           </PartialsMarketsCard>
 
           <PartialsMarketsCard
-            v-if="topVolume"
+            v-if="topVolume && topVolume.summary"
             class="flex-0-full col-span-6 xl:col-span-4"
             data-cy="market-card-top-volume"
             :market="topVolume.market"
@@ -119,7 +127,7 @@ function sortMarketsAlphabetically(
           </PartialsMarketsCard>
 
           <PartialsMarketsCard
-            v-if="topGainer"
+            v-if="topGainer && topGainer.summary"
             class="flex-0-full col-span-6 xl:col-span-4"
             data-cy="market-card-top-gainer"
             :market="topGainer.market"

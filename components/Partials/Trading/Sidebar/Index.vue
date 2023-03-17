@@ -20,7 +20,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...derivativeStore.marketsWithSummary, ...spotStore.marketsWithSummary].map(
     ({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId] || 0
+        tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
       )
 
       return {

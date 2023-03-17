@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiPerpetualMarketWithToken,
@@ -7,18 +7,13 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
-const derivativeStore = useDerivativeStore()
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -38,9 +33,8 @@ const props = defineProps({
   }
 })
 
-const { tradingTypeMarket } = useSpotFormFormatter(
-  computed(() => props.formValues)
-)
+const { tradingTypeMarket } = useSpotFormFormatter(formValues)
+const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 
 const maxLeverageAvailable = computed(() => {
   const maxLeverage = new BigNumberInBase(
@@ -74,9 +68,7 @@ const maxLeverageAllowed = computed(() => {
     ? props.executionPrice
     : props.worstPriceWithSlippage
 
-  const priceWithMarginRatio = new BigNumberInBase(
-    derivativeStore.marketMarkPrice
-  ).times(
+  const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
     (
       props.market as
         | UiPerpetualMarketWithToken
@@ -85,8 +77,8 @@ const maxLeverageAllowed = computed(() => {
   )
 
   const priceBasedOnOrderType = props.isBuy
-    ? priceWithMarginRatio.minus(derivativeStore.marketMarkPrice).plus(price)
-    : priceWithMarginRatio.plus(derivativeStore.marketMarkPrice).minus(price)
+    ? priceWithMarginRatio.minus(markPrice.value).plus(price)
+    : priceWithMarginRatio.plus(markPrice.value).minus(price)
 
   return price.dividedBy(priceBasedOnOrderType)
 })

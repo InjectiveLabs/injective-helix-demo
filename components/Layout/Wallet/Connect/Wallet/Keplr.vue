@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { isCosmosWalletInstalled, Wallet } from '@injectivelabs/wallet-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
@@ -6,16 +7,23 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
+const isWalletInstalled = isCosmosWalletInstalled(Wallet.Keplr)
+const downloadKeplrLink = ref<any>(null)
+
 function connect() {
-  walletStore
-    .connectKeplr()
-    .then(() => {
-      success({ title: t('connect.successfullyConnected') })
-    })
-    .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
-      $onError(e)
-    })
+  if (isWalletInstalled) {
+    walletStore
+      .connectKeplr()
+      .then(() => {
+        success({ title: t('connect.successfullyConnected') })
+      })
+      .catch((e) => {
+        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+        $onError(e)
+      })
+  } else if (downloadKeplrLink.value && downloadKeplrLink.value.$el) {
+    downloadKeplrLink.value.$el.click()
+  }
 }
 </script>
 
@@ -35,6 +43,17 @@ function connect() {
           {{ $t('connect.connectUsingKeplr') }}
         </span>
       </div>
+    </template>
+
+    <template v-if="!isWalletInstalled" #icon>
+      <NuxtLink
+        ref="downloadKeplrLink"
+        to="https://www.keplr.app/download"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <BaseIcon name="download" class="h-5 w-5 hover:text-blue-500" />
+      </NuxtLink>
     </template>
   </LayoutWalletConnectWrapper>
 </template>

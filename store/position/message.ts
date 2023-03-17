@@ -28,12 +28,11 @@ export const closePosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -52,14 +51,14 @@ export const closePosition = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
-    injectiveAddress,
     margin: '0',
+    injectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
-    subaccountId: subaccount.subaccountId,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+    feeRecipient: FEE_RECIPIENT,
     price: liquidationPrice.toFixed(),
+    subaccountId,
+    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     })
@@ -75,13 +74,12 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-  if (!isUserWalletConnected || !subaccount || positions.length === 0) {
+  if (!isUserWalletConnected || !subaccountId || positions.length === 0) {
     return
   }
 
@@ -115,23 +113,23 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
           value: position.quantity
         })
       } as {
+        price: string
+        marketId: string
+        quantity: string
+        orderType: DerivativeOrderSide
         messageType:
           | typeof MsgCreateBinaryOptionsMarketOrder
           | typeof MsgCreateDerivativeMarketOrder
-        orderType: DerivativeOrderSide
-        marketId: string
-        price: string
-        quantity: string
       }
     })
     .filter((p) => p !== undefined) as {
+    price: string
+    marketId: string
+    quantity: string
+    orderType: DerivativeOrderSide
     messageType:
       | typeof MsgCreateBinaryOptionsMarketOrder
       | typeof MsgCreateDerivativeMarketOrder
-    orderType: DerivativeOrderSide
-    marketId: string
-    price: string
-    quantity: string
   }[]
 
   const messages = formattedPositions.map((position) =>
@@ -139,12 +137,12 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
       injectiveAddress,
       margin: '0',
       triggerPrice: '0',
-      marketId: position.marketId,
-      subaccountId: subaccount.subaccountId,
-      orderType: derivativeOrderTypeToGrpcOrderType(position.orderType),
-      feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
       price: position.price,
-      quantity: position.quantity
+      quantity: position.quantity,
+      marketId: position.marketId,
+      feeRecipient: FEE_RECIPIENT,
+      subaccountId,
+      orderType: derivativeOrderTypeToGrpcOrderType(position.orderType)
     })
   )
 
@@ -160,21 +158,20 @@ export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  market?: UiDerivativeMarketWithToken
   position: UiPosition
+  market?: UiDerivativeMarketWithToken
   reduceOnlyOrders: UiDerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
   const actualMarket = market as UiDerivativeMarketWithToken
 
-  if (!isUserWalletConnected || !subaccount || !actualMarket) {
+  if (!isUserWalletConnected || !subaccountId || !actualMarket) {
     return
   }
 
@@ -190,7 +187,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   /*
       const message = MsgBatchUpdateOrders.fromJSON({
         injectiveAddress,
-        subaccountId: subaccount.subaccountId,
+        subaccountId: subaccountId,
         derivativeOrdersToCancel: reduceOnlyOrders.map((order) => ({
           orderHash: order.orderHash,
           marketId: order.marketId,
@@ -199,7 +196,7 @@ export const closePositionAndReduceOnlyOrders = async ({
         derivativeOrdersToCreate: [
           {
             orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-            feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+            feeRecipient: FEE_RECIPIENT,
             margin: '0',
             triggerPrice: '0',
             marketId: actualMarket.marketId,
@@ -217,17 +214,17 @@ export const closePositionAndReduceOnlyOrders = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
-    injectiveAddress,
     margin: '0',
+    injectiveAddress,
     triggerPrice: '0',
+    feeRecipient: FEE_RECIPIENT,
     marketId: actualMarket.marketId,
-    subaccountId: subaccount.subaccountId,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-    feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
     price: liquidationPrice.toFixed(),
+    subaccountId,
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
-    })
+    }),
+    orderType: derivativeOrderTypeToGrpcOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -247,11 +244,11 @@ export const addMarginToPosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -261,8 +258,8 @@ export const addMarginToPosition = async ({
   const message = MsgIncreasePositionMargin.fromJSON({
     injectiveAddress,
     marketId: market.marketId,
-    srcSubaccountId: subaccount.subaccountId,
-    dstSubaccountId: subaccount.subaccountId,
+    srcSubaccountId: subaccountId,
+    dstSubaccountId: subaccountId,
     amount: derivativeMarginToChainMarginToFixed({
       value: amount,
       quoteDecimals: market.quoteToken.decimals

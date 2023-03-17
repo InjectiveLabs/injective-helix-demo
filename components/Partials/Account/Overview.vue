@@ -26,48 +26,48 @@ const emit = defineEmits<{
   (e: 'update:hide-balances', state: boolean): void
 }>()
 
-const totalBalance = computed(() =>
+const accountTotalBalance = computed(() =>
   props.balances.reduce(
-    (total, balance) => total.plus(balance.totalBalance),
+    (total, balance) => total.plus(balance.accountTotalBalance),
     ZERO_IN_BASE
   )
 )
 
-const totalBalanceInUsd = computed(() =>
+const accountTotalBalanceInUsd = computed(() =>
   props.balances.reduce(
-    (total, balance) => total.plus(balance.totalBalanceInUsd),
+    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
     ZERO_IN_BASE
   )
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
-  totalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
+  accountTotalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
 
-const totalBalanceInBtc = computed(() => {
+const accountTotalBalanceInBtc = computed(() => {
   if (!tokenStore.btcUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return totalBalance.value.dividedBy(
+  return accountTotalBalance.value.dividedBy(
     new BigNumberInBase(tokenStore.btcUsdPrice)
   )
 })
 
-const totalBalanceInBtcToString = computed(() => {
-  if (totalBalanceInBtc.value.eq('0')) {
+const accountTotalBalanceInBtcToString = computed(() => {
+  if (accountTotalBalanceInBtc.value.eq('0')) {
     return '0.00'
   }
 
-  if (totalBalanceInBtc.value.lte('0.0001')) {
+  if (accountTotalBalanceInBtc.value.lte('0.0001')) {
     return '< 0.0001'
   }
 
-  return totalBalanceInBtc.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+  return accountTotalBalanceInBtc.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
 })
 
 const { valueToString: abbreviatedTotalBalanceToString } =
-  useBigNumberFormatter(totalBalanceInUsd, {
+  useBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
     abbreviationFloor: shouldAbbreviateTotalBalance.value
       ? UI_MINIMAL_ABBREVIATION_FLOOR
@@ -84,10 +84,6 @@ function handleDepositClick() {
 
 function handleWithdrawClick() {
   useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit()
-}
-
-function handleTransferClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Transfer).emit()
 }
 </script>
 
@@ -109,7 +105,7 @@ function handleTransferClick() {
       </span>
 
       <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
-        &thickapprox; {{ totalBalanceInBtcToString }} BTC
+        &thickapprox; {{ accountTotalBalanceInBtcToString }} BTC
       </span>
       <span v-else class="text-gray-450 md:text-lg">
         &thickapprox; {{ HIDDEN_BALANCE_DISPLAY }} BTC
@@ -143,12 +139,6 @@ function handleTransferClick() {
       <AppButton class="border border-blue-500" @click="handleWithdrawClick">
         <span class="text-blue-500 font-semibold">
           {{ $t('account.withdraw') }}
-        </span>
-      </AppButton>
-
-      <AppButton class="border border-blue-500" @click="handleTransferClick">
-        <span class="text-blue-500 font-semibold">
-          {{ $t('account.transfer') }}
         </span>
       </AppButton>
     </div>

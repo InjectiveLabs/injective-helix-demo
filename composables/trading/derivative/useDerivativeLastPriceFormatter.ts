@@ -3,11 +3,14 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
   UiDerivativeTrade,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  ZERO_TO_STRING
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
-export function useDerivativeLastPrice(market: Ref<UiMarketWithToken>) {
+export function useDerivativeLastPrice(
+  market: Ref<UiMarketWithToken | undefined>
+) {
   const derivateStore = useDerivativeStore()
 
   const latestTrade = computed<UiDerivativeTrade | undefined>(() => {
@@ -19,7 +22,7 @@ export function useDerivativeLastPrice(market: Ref<UiMarketWithToken>) {
   })
 
   const lastTradedPrice = computed(() => {
-    if (!latestTrade.value) {
+    if (!market.value || !latestTrade.value) {
       return ZERO_IN_BASE
     }
 
@@ -70,7 +73,20 @@ export function useDerivativeLastPrice(market: Ref<UiMarketWithToken>) {
       : Change.Decrease
   })
 
+  const marketMarkPrice = computed(() => {
+    if (!market.value) {
+      return ZERO_TO_STRING
+    }
+
+    return derivateStore.marketMarkPriceMap[market.value.marketId]?.price
+  })
+
+  const markPrice = computed(() => {
+    return marketMarkPrice.value || lastTradedPrice.value.toFixed()
+  })
+
   return {
+    markPrice,
     lastTradedPrice,
     changeInPercentage,
     lastTradedPriceChange

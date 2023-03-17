@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-const walletStore = useWalletStore()
 const bankStore = useBankStore()
+const walletStore = useWalletStore()
 
 defineProps({
   highDeviation: Boolean

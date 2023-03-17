@@ -1,36 +1,48 @@
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
-  DerivativeOrderbookStreamCallback,
-  DerivativeOrdersStreamCallback,
-  DerivativeOrderHistoryStreamCallback,
-  DerivativeTradesStreamCallback,
-  IndexerGrpcDerivativesStream,
   IndexerGrpcOracleStream,
-  OraclePriceStreamCallback,
-  PositionsStreamCallback
+  PositionsStreamCallback,
+  IndexerGrpcDerivativesStream,
+  DerivativeOrdersStreamCallback,
+  DerivativeTradesStreamCallback,
+  OraclePricesByMarketsStreamCallback,
+  DerivativeOrderHistoryStreamCallback,
+  DerivativeOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
-import {
-  MarketType,
-  UiBinaryOptionsMarketWithToken,
-  UiDerivativeMarketWithToken,
-  UiPerpetualMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '@/app/utils/constants'
+import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.indexer
 )
+
 export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexer)
-export const streamOrderbook = ({
+
+export const cancelSubaccountPositionsStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountPositions)
+}
+
+export const cancelSubaccountTradesStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountTrades)
+}
+
+export const cancelSubaccountOrdersStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountOrders)
+}
+
+export const cancelSubaccountOrderHistoryStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountOrderHistory)
+}
+
+export const streamOrderbookUpdate = ({
   marketId,
   callback
 }: {
   marketId: string
-  callback: DerivativeOrderbookStreamCallback
+  callback: DerivativeOrderbookUpdateStreamCallback
 }) => {
-  const streamFn = derivativesMarketStream.streamDerivativeOrderbook.bind(
+  const streamFn = derivativesMarketStream.streamDerivativeOrderbookUpdate.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
@@ -41,7 +53,7 @@ export const streamOrderbook = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: StreamType.DerivativesOrderbook
+    key: StreamType.DerivativesOrderbookUpdate
   })
 }
 
@@ -93,10 +105,6 @@ export const streamSubaccountTrades = ({
   })
 }
 
-export const cancelSubaccountTradesStream = () => {
-  streamProvider.cancel(StreamType.DerivativesSubaccountTrades)
-}
-
 export const streamSubaccountOrders = ({
   marketId,
   callback,
@@ -122,10 +130,6 @@ export const streamSubaccountOrders = ({
   })
 }
 
-export const cancelSubaccountOrdersStream = () => {
-  streamProvider.cancel(StreamType.DerivativesSubaccountOrders)
-}
-
 export const streamSubaccountOrderHistory = ({
   marketId,
   callback,
@@ -149,10 +153,6 @@ export const streamSubaccountOrderHistory = ({
     args: streamFnArgs,
     key: StreamType.DerivativesSubaccountOrderHistory
   })
-}
-
-export const cancelSubaccountOrderHistoryStream = () => {
-  streamProvider.cancel(StreamType.DerivativesSubaccountOrderHistory)
 }
 
 export const streamSubaccountPositions = ({
@@ -181,37 +181,23 @@ export const streamSubaccountPositions = ({
   })
 }
 
-export const cancelSubaccountPositionsStream = () => {
-  streamProvider.cancel(StreamType.DerivativesSubaccountPositions)
-}
-
-export const streamMarketMarkPrice = ({
-  market,
+export const streamMarketsMarkPrices = ({
+  marketIds,
   callback
 }: {
-  market: UiDerivativeMarketWithToken
-  callback: OraclePriceStreamCallback
+  marketIds: string[]
+  callback: OraclePricesByMarketsStreamCallback
 }) => {
-  const streamFn = oracleStream.streamOraclePrices.bind(oracleStream)
-  const streamFnArgs =
-    market.subType !== MarketType.BinaryOptions
-      ? {
-          baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-          quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
-          oracleType: market.oracleType,
-          callback
-        }
-      : {
-          oracleType: market.oracleType,
-          baseSymbol: (market as UiBinaryOptionsMarketWithToken).oracleSymbol,
-          quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
-            .oracleProvider,
-          callback
-        }
+  const streamFn = oracleStream.streamOraclePricesByMarkets.bind(oracleStream)
+  const streamFnArgs = { marketIds, callback }
 
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
     key: StreamType.OraclePrices
   })
+}
+
+export const cancelMarketsMarkPrices = () => {
+  streamProvider.cancel(StreamType.OraclePrices)
 }

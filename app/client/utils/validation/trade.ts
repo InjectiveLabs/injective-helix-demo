@@ -19,7 +19,11 @@ export const tradeErrorMessages = {
   slippageTooLow: () =>
     'Your transaction might not be executed if slippage % is set too low',
   tooHighPostOnlyPrice: () => 'Post-Only limit price is too high',
-  tooLowPostOnlyPrice: () => 'Post-Only limit price is too low'
+  tooLowPostOnlyPrice: () => 'Post-Only limit price is too low',
+  minBaseAmount: (minBaseAmount: string) =>
+    `Base amount must be >= ${minBaseAmount}`,
+  quantityTensMultiplier: (tensMultiplier: string) =>
+    `Quantity must be a multiple of ${tensMultiplier}`
 } as Record<string, any>
 
 export const defineTradeRules = () => {
@@ -52,6 +56,18 @@ export const defineTradeRules = () => {
       return tradeErrorMessages.enoughBalance()
     }
   )
+
+  defineRule('minBaseAmount', (value: string, [minAmount]: string) => {
+    if (!value) {
+      return true
+    }
+
+    if (new BigNumberInBase(value).lt(minAmount)) {
+      return tradeErrorMessages.minBaseAmount(minAmount)
+    }
+
+    return true
+  })
 
   defineRule('insufficientBalance', (value: string, max: number[]) => {
     if (!value) {
@@ -145,6 +161,21 @@ export const defineTradeRules = () => {
         new BigNumberInBase(value).lte(orderbookPrice)
       ) {
         return tradeErrorMessages.tooLowPostOnlyPrice()
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'quantityTensMultiplier',
+    (value: string | number, [quantityTensMultiplier]: string[]) => {
+      const tensMul = new BigNumberInBase(10)
+        .pow(quantityTensMultiplier)
+        .toNumber()
+
+      if (Number(value) % tensMul !== 0) {
+        return tradeErrorMessages.quantityTensMultiplier(tensMul)
       }
 
       return true

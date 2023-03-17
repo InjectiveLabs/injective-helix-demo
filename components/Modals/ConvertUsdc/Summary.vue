@@ -4,6 +4,8 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeForm, TradeField } from '@/types'
 
+const formValues = useFormValues<TradeForm>()
+
 const props = defineProps({
   isBuy: Boolean,
   isLoading: Boolean,
@@ -15,11 +17,6 @@ const props = defineProps({
 
   worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  formValues: {
-    type: Object as PropType<TradeForm>,
     required: true
   },
 
@@ -42,7 +39,7 @@ const showEmpty = computed(() => {
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
   const quantity = new BigNumberInBase(
-    props.formValues[TradeField.QuoteAmount] || 0
+    formValues.value[TradeField.QuoteAmount] || 0
   )
 
   if (quantity.isNaN() || quantity.lte(0)) {
@@ -61,11 +58,13 @@ const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
 <template>
   <div>
     <div v-if="isLoading" class="flex items-center justify-end gap-2">
-      <span>{{ $t('trade.convert.fetching_price') }}</span>
       <AppSpinner sm />
+      <span class="text-xs text-gray-500">{{
+        $t('trade.convert.fetching_price')
+      }}</span>
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-3 mt-2">
       <PartialsConvertSummaryRow :title="`${$t('account.fee')}`">
         <span v-if="showEmpty">&mdash;</span>
         <span v-else>≈ {{ feeToFormat }} {{ market?.quoteToken.symbol }} </span>

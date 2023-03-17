@@ -7,6 +7,8 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
+  showLowVolumeMarkets: Boolean,
+
   search: {
     type: String,
     required: true
@@ -33,6 +35,7 @@ const emit = defineEmits<{
   (e: 'update:search', state: string): void
   (e: 'update:activeQuote', state: MarketQuoteType): void
   (e: 'update:activeType', state: string): void
+  (e: 'update:showLowVolumeMarkets', state: boolean): void
 }>()
 
 const FilterList = {
@@ -49,14 +52,21 @@ const marketCategoryTypes = Object.entries(MarketCategoryType).map(
   })
 )
 const quoteOptions = Object.entries(MarketQuoteType).map(([key, value]) => ({
-  display: value,
-  value: key
+  display: key,
+  value
 }))
 
 const activeQuoteValue = computed({
   get: (): MarketQuoteType => props.activeQuote,
   set: (value: MarketQuoteType) => {
     emit('update:activeQuote', value)
+  }
+})
+
+const showLowVolumeMarketsValue = computed({
+  get: (): boolean => props.showLowVolumeMarkets,
+  set: (type: boolean) => {
+    emit('update:showLowVolumeMarkets', type)
   }
 })
 
@@ -87,7 +97,7 @@ function handleCategoryChange(category: string) {
   if (!category || category === MarketCategoryType.All) {
     clearRouteQueryParam('category')
   } else {
-    fillRouteQueryParams({ category })
+    fillRouteQueryParams({ category: category.toLowerCase() })
   }
 }
 
@@ -103,7 +113,7 @@ function handleQuoteChange(quote: string) {
   if (!quote || quote === MarketQuoteType.All) {
     clearRouteQueryParam('quote')
   } else {
-    fillRouteQueryParams({ quote })
+    fillRouteQueryParams({ quote: quote.toLowerCase() })
   }
 }
 
@@ -193,30 +203,36 @@ function fillRouteQueryParams(params: Record<string, string>) {
         </PartialsMarketsFiltersCategorySelector>
       </div>
 
-      <AppSelect
-        v-model="activeQuoteValue"
-        :options="quoteOptions"
-        class="self-end"
-        @update:modelValue="handleQuoteChange"
-      >
-        <template #prefix>
-          <span class="text-xs text-gray-300 uppercase">
-            {{ $t('markets.quote') }}
-          </span>
-        </template>
+      <div class="flex items-center">
+        <AppSelect
+          v-model="activeQuoteValue"
+          :options="quoteOptions"
+          class="self-end"
+          @update:modelValue="handleQuoteChange"
+        >
+          <template #prefix>
+            <span class="text-xs text-gray-300 uppercase">
+              {{ $t('markets.quote') }}
+            </span>
+          </template>
 
-        <template #default="{ selected }">
-          <span v-if="selected" class="text-xs text-blue-500 uppercase">
-            {{ selected.display }}
-          </span>
-        </template>
+          <template #default="{ selected }">
+            <span v-if="selected" class="text-xs text-blue-500 uppercase">
+              {{ selected.display }}
+            </span>
+          </template>
 
-        <template #option="{ option }">
-          <span class="text-xs uppercase text-white">
-            {{ option.display }}
-          </span>
-        </template>
-      </AppSelect>
+          <template #option="{ option }">
+            <span class="text-xs uppercase text-white">
+              {{ option.display }}
+            </span>
+          </template>
+        </AppSelect>
+
+        <AppCheckbox v-model="showLowVolumeMarketsValue" class="ml-4" sm>
+          {{ $t('markets.showLowVol') }}
+        </AppCheckbox>
+      </div>
     </div>
   </div>
 </template>

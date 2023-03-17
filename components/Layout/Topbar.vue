@@ -59,7 +59,7 @@ function handleShowNinjaPassModal() {
 
 <template>
   <header
-    class="w-full z-1100 h-12 lg:h-14 bg-gray-1000 flex items-center border-b border-b-gray-900"
+    class="w-full z-40 h-12 lg:h-14 bg-gray-1000 flex items-center border-b border-b-gray-900"
     :class="{
       fixed: isSidebarOpen,
       relative: !isSidebarOpen

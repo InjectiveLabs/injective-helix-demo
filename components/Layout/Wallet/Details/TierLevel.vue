@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UI_MINIMAL_AMOUNT } from '~~/app/utils/constants'
+import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 

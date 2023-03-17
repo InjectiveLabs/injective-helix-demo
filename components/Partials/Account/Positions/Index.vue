@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// import { Status, StatusType } from '@injectivelabs/utils'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 
@@ -11,6 +12,8 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
+
+// const status = reactive(new Status(StatusType.Loading))
 
 const sideOptions = [
   {
@@ -65,7 +68,7 @@ const supportedTokens = computed(() => {
 
     const quoteToken = {
       balance: '',
-      denom: market.quoteToken.denom,
+      denom: market.quoteDenom,
       token: market.quoteToken
     } as BalanceWithToken
 
@@ -99,6 +102,15 @@ const showEmpty = computed(() => {
   )
 
   return hasUnavailableMarkets
+})
+
+onMounted(() => {
+  //
+})
+
+onBeforeUnmount(() => {
+  derivativeStore.cancelMarketsMarkPrices()
+  positionStore.cancelSubaccountPositionsStream()
 })
 
 function handleCloseAllPositions() {
@@ -145,7 +157,7 @@ function closePosition() {
 </script>
 
 <template>
-  <div>
+  <div class="relative">
     <PartialsAccountPositionsActions
       v-model:market-denom="marketDenom"
       v-model:side="side"

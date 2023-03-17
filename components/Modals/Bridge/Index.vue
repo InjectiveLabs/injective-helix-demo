@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { Token } from '@injectivelabs/token-metadata'
 import {
+  Status,
+  StatusType,
   BigNumberInBase,
   BigNumberInWei,
   INJ_DENOM
 } from '@injectivelabs/utils'
 import {
   BalanceWithToken,
-  BalanceWithTokenWithErc20Balance
+  BalanceWithTokenWithErc20Balance,
+  BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BINANCE_DEPOSIT_ADDRESSES,
@@ -23,12 +26,13 @@ import {
 } from '@/types'
 
 const modalStore = useModalStore()
-const tokenStore = useTokenStore()
+const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
+const { $onError } = useNuxtApp()
 
-const formValues = useFormValues<BridgeForm>()
 const resetForm = useResetForm()
 const formErrors = useFormErrors()
+const formValues = useFormValues<BridgeForm>()
 
 const emit = defineEmits<{
   (e: 'bridge:init'): void
@@ -50,6 +54,7 @@ const { transferableBalancesWithToken } = useBridgeBalance({
 })
 
 const memoRequired = ref(false)
+const status = reactive(new Status(StatusType.Loading))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
 const hasFormErrors = computed(() => Object.keys(formErrors.value).length > 0)
@@ -106,12 +111,12 @@ const balanceWithToken = computed(() => {
 
 const needsAllowanceSet = computed(() => {
   const balanceWithTokenAndAllowance =
-    tokenStore.tradeableErc20BalancesWithTokenAndPrice.find(
+    peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
       (token) => token.denom === denom.value
-    )
+    ) as BalanceWithTokenWithErc20BalanceWithPrice
 
   const allowance = new BigNumberInBase(
-    balanceWithTokenAndAllowance?.erc20?.allowance || 0
+    balanceWithTokenAndAllowance?.erc20Balance?.allowance || 0
   )
 
   return isDeposit.value && originIsEthereum.value && allowance.lte(0)
@@ -163,6 +168,16 @@ function handleModalClose() {
   modalStore.closeModal(Modal.Bridge)
 }
 
+watch(isModalOpen, (modalShown: boolean) => {
+  if (modalShown) {
+    status.setLoading()
+
+    Promise.all([peggyStore.fetchErc20BalancesWithTokenAndPrice()])
+      .catch($onError)
+      .finally(() => status.setIdle())
+  }
+})
+
 watch(destination, (value: string) => {
   if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
     memoRequired.value = true
@@ -175,9 +190,10 @@ watch(destination, (value: string) => {
 
 <template>
   <AppModal
+    sm
     :show="isModalOpen"
     :ignore="['.v-popper__popper']"
-    sm
+    :show-loading="status.isLoading()"
     :modal-closed:animation="resetForm"
     @modal:closed="handleModalClose"
   >
@@ -228,9 +244,9 @@ watch(destination, (value: string) => {
           <AppInput
             v-model="destination"
             clear-on-paste
+            :label="$t('bridge.injAddress')"
             placeholder="inj"
             wrapper-classes="py-2 px-1"
-            :label="$t('bridge.injAddress')"
             data-cy="transfer-modal-inj-address-input"
           />
 

@@ -1,38 +1,71 @@
-import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   DerivativeOrderState
 } from '@injectivelabs/sdk-ts'
+import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  MarketType,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
-  streamOrderbook as grpcStreamsOrderbook,
   streamTrades as grpcStreamsTrades,
+  streamOrderbookUpdate as grpcStreamOrderbookUpdate,
   streamSubaccountOrders as grpcStreamsSubaccountOrders,
-  streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
-  streamMarketMarkPrice as grpcStreamsMarketMarkPrice,
-  cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream,
+  streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
+  cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
-  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream
+  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
+  streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
+  cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream
 } from '@/app/client/streams/derivatives'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
-export const streamOrderbook = (marketId: string) => {
+export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
+export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
+export const cancelSubaccountOrderHistoryStream =
+  grpcCancelSubaccountOrderHistoryStream
+
+export const streamOrderbookUpdate = (marketId: string) => {
   const derivativeStore = useDerivativeStore()
 
-  grpcStreamsOrderbook({
+  grpcStreamOrderbookUpdate({
     marketId,
     callback: ({ orderbook }) => {
       if (!orderbook) {
         return
       }
 
-      derivativeStore.$patch({
-        orderbook
-      })
+      /**
+       * The current orderbook doesn't exist
+       **/
+      if (!derivativeStore.orderbook) {
+        derivativeStore.$patch({
+          orderbook
+        })
+      }
+
+      const sequence = derivativeStore.orderbook?.sequence || 0
+
+      /**
+       * The current exists and we need to update it
+       **/
+      if (sequence < orderbook.sequence) {
+        const newBuys = combineOrderbookRecords({
+          isBuy: true,
+          updatedRecords: orderbook.buys,
+          currentRecords: derivativeStore.buys
+        })
+        const newSells = combineOrderbookRecords({
+          isBuy: false,
+          updatedRecords: orderbook.sells,
+          currentRecords: derivativeStore.sells
+        })
+
+        derivativeStore.orderbook = {
+          sequence: orderbook.sequence,
+          buys: newBuys,
+          sells: newSells
+        }
+      }
     }
   })
 }
@@ -65,25 +98,18 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const cancelSubaccountOrdersStream = () => {
-  grpcCancelSubaccountOrdersStream()
-}
-
-export const cancelSubaccountOrderHistoryStream = () =>
-  grpcCancelSubaccountOrderHistoryStream()
-
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamsSubaccountOrderHistory({
     marketId,
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -138,16 +164,16 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
 export const streamSubaccountTrades = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamsSubaccountTrades({
     marketId,
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return
@@ -210,16 +236,16 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
 export const streamSubaccountOrders = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { isUserWalletConnected } = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
   grpcStreamsSubaccountOrders({
     marketId,
-    subaccountId: subaccount.subaccountId,
+    subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -273,6 +299,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           break
         }
+        case DerivativeOrderState.Triggered:
         case DerivativeOrderState.Canceled:
         case DerivativeOrderState.Filled: {
           if (isConditional) {
@@ -305,27 +332,20 @@ export const streamSubaccountOrders = (marketId?: string) => {
   })
 }
 
-export const streamMarketMarkPrices = (market: UiDerivativeMarketWithToken) => {
+export const streamMarketsMarkPrices = () => {
   const derivativeStore = useDerivativeStore()
 
-  if (market.subType === MarketType.BinaryOptions) {
-    return
-  }
-
-  grpcStreamsMarketMarkPrice({
-    market,
-    callback: ({ price, operation }) => {
-      if (!price) {
+  grpcStreamMarketsMarkPrices({
+    marketIds: derivativeStore.activeMarketIds,
+    callback: (marketMarkPrice) => {
+      if (!marketMarkPrice.price || !marketMarkPrice.marketId) {
         return
       }
 
-      switch (operation) {
-        case StreamOperation.Update:
-          derivativeStore.$patch({ marketMarkPrice: price })
+      derivativeStore.marketMarkPriceMap = {
+        ...derivativeStore.marketMarkPriceMap,
+        [marketMarkPrice.marketId]: marketMarkPrice
       }
     }
   })
 }
-
-export const cancelSubaccountTradesStream = () =>
-  grpcCancelSubaccountTradesStream()

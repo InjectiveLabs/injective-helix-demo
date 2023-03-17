@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { GeneralException } from '@injectivelabs/exceptions'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { betaMarketSlugs } from '@/app/data/market'
+import {
+  getDefaultSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
+} from '@/app/utils/market'
 import {
   Modal,
   TradingLayout,
@@ -9,16 +12,14 @@ import {
   UiMarketSummary
 } from '@/types'
 
-const accountStore = useAccountStore()
-const appStore = useAppStore()
-const bankStore = useBankStore()
-const derivativeStore = useDerivativeStore()
-const exchangeStore = useExchangeStore()
-const modalStore = useModalStore()
-const ninjaPassStore = useNinjaPassStore()
-const spotStore = useSpotStore()
-const walletStore = useWalletStore()
 const router = useRouter()
+const appStore = useAppStore()
+const spotStore = useSpotStore()
+const bankStore = useBankStore()
+const modalStore = useModalStore()
+const walletStore = useWalletStore()
+const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const { params } = useRoute()
 const { $onError } = useNuxtApp()
 
@@ -35,7 +36,7 @@ const emit = defineEmits<{
   (e: 'loaded', state: UiMarketWithToken): void
 }>()
 
-const slug = props.hardcodedSlug || (Object.values(params)[0] as string)
+const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
@@ -48,8 +49,6 @@ onMounted(() => {
   Promise.all([
     exchangeStore.fetchTradingRewardsCampaign(),
     exchangeStore.fetchFeeDiscountAccountInfo(),
-    bankStore.fetchBankBalancesWithToken(),
-    ninjaPassStore.fetchCodes(),
     ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
   ])
     .then(() => {
@@ -60,16 +59,16 @@ onMounted(() => {
       const marketBySlug = getMarketBySlug()
 
       if (!marketBySlug) {
-        router.push({ name: 'markets' })
+        const defaultRoute = props.isSpot
+          ? getDefaultSpotMarketRouteParams()
+          : getDefaultPerpetualMarketRouteParams()
 
-        throw new GeneralException(
-          new Error('Market not found. Please refresh the page.')
-        )
+        router.push(defaultRoute)
+      } else {
+        market.value = marketBySlug
+
+        emit('loaded', marketBySlug as UiMarketWithToken)
       }
-
-      market.value = marketBySlug
-
-      emit('loaded', marketBySlug as UiMarketWithToken)
     })
     .catch($onError)
     .finally(() => {
@@ -81,11 +80,6 @@ onMounted(() => {
 onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
 
 onWalletConnected(() => {
-  Promise.all([
-    bankStore.fetchBankBalancesWithToken(),
-    accountStore.streamSubaccountBalances()
-  ]).finally(() => fetchStatus.setIdle())
-
   if (market.value) {
     emit('loaded', market.value)
   }
@@ -161,7 +155,7 @@ watch(
               >
                 <CommonInsufficientGasInner />
               </div>
-              <PartialsCommonBalances :market="market" />
+              <PartialsTradingBalances v-else :market="market" />
             </CommonCard>
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
@@ -185,7 +179,7 @@ watch(
             <div class="w-full flex-none">
               <CommonCard tight class="relative">
                 <div class="grid grid-cols-6 lg:grid-cols-12">
-                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-40">
+                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-30">
                     <PartialsTradingMarket :market="market" />
                   </div>
                   <div
@@ -205,7 +199,7 @@ watch(
 
               <div class="w-full lg:hidden mt-2">
                 <slot name="trading-panel" />
-                <PartialsCommonBalances :market="market" />
+                <PartialsTradingBalances :market="market" />
                 <CommonCard class="mt-1">
                   <div class="px-6 pt-2">
                     <slot name="trading-form" />

@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BusEvents, Modal, WalletConnectStatus, WalletModalType } from '@/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import {
+  Modal,
+  BusEvents,
+  AmplitudeEvent,
+  WalletModalType,
+  WalletConnectStatus
+} from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -33,7 +39,7 @@ function handleLedgerConnect() {
 }
 
 function handleWalletConnect() {
-  amplitudeTracker.submitWalletConnectClickedTrackEvent()
+  amplitudeTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal({ type: Modal.Terms })
@@ -69,9 +75,7 @@ watch(isModalOpen, (newShowModalState) => {
 </script>
 
 <template>
-  <div v-if="walletStore.isUserWalletConnected">
-    <LayoutWalletDetails />
-  </div>
+  <LayoutWalletDetails v-if="walletStore.isUserWalletConnected" />
 
   <AppButton
     v-else
@@ -106,11 +110,11 @@ watch(isModalOpen, (newShowModalState) => {
     />
     <ul
       v-else
-      class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
+      class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
-      <LayoutWalletConnectWalletCosmostation />
+      <LayoutWalletConnectWalletCosmostation v-if="false" />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletTorus />
       <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
