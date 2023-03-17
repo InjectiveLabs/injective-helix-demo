@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Token } from '@injectivelabs/token-metadata'
 import {
+  Status,
+  StatusType,
   BigNumberInBase,
   BigNumberInWei,
   INJ_DENOM
@@ -26,6 +28,7 @@ import {
 const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
+const { $onError } = useNuxtApp()
 
 const resetForm = useResetForm()
 const formErrors = useFormErrors()
@@ -51,6 +54,7 @@ const { transferableBalancesWithToken } = useBridgeBalance({
 })
 
 const memoRequired = ref(false)
+const status = reactive(new Status(StatusType.Loading))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
 const hasFormErrors = computed(() => Object.keys(formErrors.value).length > 0)
@@ -164,6 +168,16 @@ function handleModalClose() {
   modalStore.closeModal(Modal.Bridge)
 }
 
+watch(isModalOpen, (modalShown: boolean) => {
+  if (modalShown) {
+    status.setLoading()
+
+    Promise.all([peggyStore.fetchErc20BalancesWithTokenAndPrice()])
+      .catch($onError)
+      .finally(() => status.setIdle())
+  }
+})
+
 watch(destination, (value: string) => {
   if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
     memoRequired.value = true
@@ -176,9 +190,10 @@ watch(destination, (value: string) => {
 
 <template>
   <AppModal
+    sm
     :show="isModalOpen"
     :ignore="['.v-popper__popper']"
-    sm
+    :show-loading="status.isLoading()"
     :modal-closed:animation="resetForm"
     @modal:closed="handleModalClose"
   >

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { injToken } from '@/app/data/token'
+import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 import {
   Modal,
   BridgeForm,
@@ -9,12 +11,10 @@ import {
   BridgeBusEvents,
   TransferDirection
 } from '@/types'
-import { injToken } from '@/app/data/token'
-import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
 const bankStore = useBankStore()
-const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
+const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
 
 const { resetForm: resetBridgeForm, values: formValues } = useForm<BridgeForm>({

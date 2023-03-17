@@ -26,12 +26,12 @@ import { UIDerivativeOrder } from '@/types'
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
@@ -62,11 +62,11 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
 
   const { markets } = useDerivativeStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount) {
+  if (!isUserWalletConnected || !subaccountId) {
     return
   }
 
@@ -115,11 +115,11 @@ export const submitLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -132,6 +132,7 @@ export const submitLimitOrder = async ({
       : MsgCreateDerivativeLimitOrder
 
   const message = messageType.fromJSON({
+    subaccountId,
     injectiveAddress,
     orderType: derivativeOrderTypeToGrpcOrderType(orderType),
     price: derivativePriceToChainPriceToFixed({
@@ -147,8 +148,7 @@ export const submitLimitOrder = async ({
           quoteDecimals: market.quoteToken.decimals
         }),
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    feeRecipient: FEE_RECIPIENT
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -176,11 +176,11 @@ export const submitStopLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -211,6 +211,7 @@ export const submitStopLimitOrder = async ({
       })
 
   const message = messageType.fromJSON({
+    subaccountId,
     injectiveAddress,
     price: msgPrice,
     margin: msgMargin,
@@ -218,7 +219,6 @@ export const submitStopLimitOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     triggerPrice: msgTriggerPrice,
-    subaccountId: subaccount.subaccountId,
     orderType: derivativeOrderTypeToGrpcOrderType(orderType)
   })
 
@@ -245,11 +245,11 @@ export const submitMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -262,6 +262,7 @@ export const submitMarketOrder = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
+    subaccountId,
     injectiveAddress,
     orderType: derivativeOrderTypeToGrpcOrderType(orderType),
     price: derivativePriceToChainPriceToFixed({
@@ -277,8 +278,7 @@ export const submitMarketOrder = async ({
           quoteDecimals: market.quoteToken.decimals
         }),
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
-    subaccountId: subaccount.subaccountId
+    feeRecipient: FEE_RECIPIENT
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -306,11 +306,11 @@ export const submitStopMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccount } = useAccountStore()
+  const { subaccountId } = useBankStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!isUserWalletConnected || !subaccount || !market) {
+  if (!isUserWalletConnected || !subaccountId || !market) {
     return
   }
 
@@ -341,6 +341,7 @@ export const submitStopMarketOrder = async ({
       })
 
   const message = messageType.fromJSON({
+    subaccountId,
     injectiveAddress,
     price: msgPrice,
     margin: msgMargin,
@@ -348,7 +349,6 @@ export const submitStopMarketOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     triggerPrice: msgTriggerPrice,
-    subaccountId: subaccount.subaccountId,
     orderType: derivativeOrderTypeToGrpcOrderType(orderType)
   })
 

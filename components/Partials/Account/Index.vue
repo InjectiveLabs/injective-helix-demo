@@ -6,18 +6,15 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
-const bankStore = useBankStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
-const peggyStore = usePeggyStore()
-const accountStore = useAccountStore()
-const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { fetchTokenUsdPrice } = useBalance()
+const { fetchTokenUsdPrice } = useToken()
 
-defineProps({
+const props = defineProps({
   balances: {
     type: Array as PropType<AccountBalance[]>,
     required: true
@@ -62,10 +59,9 @@ function initBalances() {
 
   Promise.all([
     tokenStore.fetchBitcoinUsdPrice(),
-    bankStore.fetchBankBalancesWithToken(),
     spotStore.fetchUsdcConversionMarkets(),
-    positionStore.fetchSubaccountPositions(),
-    peggyStore.fetchErc20BalancesWithTokenAndPrice()
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions()
   ])
     .catch($onError)
     .finally(() => {
@@ -75,7 +71,6 @@ function initBalances() {
     })
 
   Promise.all([
-    accountStore.streamSubaccountBalances(),
     derivativeStore.streamSubaccountOrders(),
     derivativeStore.streamMarketsMarkPrices(),
     positionStore.streamSubaccountPositions()
@@ -96,7 +91,7 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice()
+  fetchTokenUsdPrice(props.balances.map((b) => b.token))
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }

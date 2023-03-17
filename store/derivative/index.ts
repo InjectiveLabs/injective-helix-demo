@@ -152,19 +152,6 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountTradesStream,
     cancelSubaccountOrderHistoryStream,
 
-    reset() {
-      const derivativeStore = useDerivativeStore()
-
-      const initialState = initialStateFactory()
-
-      derivativeStore.$patch({
-        trades: initialState.trades,
-        orderbook: initialState.orderbook,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
-      })
-    },
-
     async init() {
       const derivativeStore = useDerivativeStore()
 
@@ -342,16 +329,16 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
+        subaccountId,
         isConditional: false,
-        subaccountId: subaccount.subaccountId,
         marketIds: marketIds || derivativeStore.activeMarketIds,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -372,10 +359,10 @@ export const useDerivativeStore = defineStore('derivative', {
     ) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
@@ -383,9 +370,9 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
+          subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
-          subaccountId: subaccount.subaccountId,
           isConditional: filters?.isConditional,
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
@@ -401,18 +388,18 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
+          subaccountId,
           isConditional: true,
           state: DerivativeOrderState.Booked,
-          subaccountId: subaccount.subaccountId,
           marketIds: marketIds || derivativeStore.activeMarketIds,
           pagination: {
             limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -483,10 +470,10 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccount } = useAccountStore()
+      const { subaccountId } = useBankStore()
       const { isUserWalletConnected } = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected || !subaccountId) {
         return
       }
 
@@ -494,8 +481,8 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
         direction: filters?.direction,
+        subaccountId,
         pagination: options?.pagination,
-        subaccountId: subaccount.subaccountId,
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         marketIds: filters?.marketIds || derivativeStore.activeMarketIds
       })
@@ -528,6 +515,20 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountOrderHistory: initialState.subaccountOrderHistory,
         subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
+      })
+    },
+
+    reset() {
+      const derivativeStore = useDerivativeStore()
+
+      const { trades, orderbook, subaccountTrades, subaccountOrders } =
+        initialStateFactory()
+
+      derivativeStore.$patch({
+        trades,
+        orderbook,
+        subaccountTrades,
+        subaccountOrders
       })
     }
   }

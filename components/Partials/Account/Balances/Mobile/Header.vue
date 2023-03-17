@@ -48,10 +48,10 @@ const ascendingValue = computed({
         v-model:sort-by="sortByValue"
         v-model:ascending="ascendingValue"
         class="justify-end"
-        :value="BalanceHeaderType.Wallet"
+        :value="BalanceHeaderType.Total"
       >
         <span class="text-gray-350 text-xs normal-case">
-          {{ $t('account.balances.cols.walletBalance') }}
+          {{ $t('account.balances.cols.total') }}
         </span>
       </AppSortableHeaderItem>
 
@@ -61,11 +61,10 @@ const ascendingValue = computed({
         v-model:sort-by="sortByValue"
         v-model:ascending="ascendingValue"
         class="justify-end"
-        colspan="2"
-        :value="BalanceHeaderType.TradingAccount"
+        :value="BalanceHeaderType.Value"
       >
         <span class="text-gray-350 text-xs normal-case">
-          {{ $t('account.balances.cols.tradingAccountBalance') }}
+          {{ $t('account.balances.cols.value', { symbol: 'USD' }) }}
         </span>
       </AppSortableHeaderItem>
     </th>

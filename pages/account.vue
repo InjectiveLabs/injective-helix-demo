@@ -17,11 +17,10 @@ const appStore = useAppStore()
 const bankStore = useBankStore()
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { balancesWithToken } = useBalance()
+const { accountBalancesWithTokenInBases } = useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -82,60 +81,37 @@ const totalPositionsMarginByQuoteDenom = computed(() =>
   }, {} as Record<string, BigNumberInBase>)
 )
 
-const balances = computed(() =>
-  balancesWithToken.value.map((balance) => {
+const balances = computed(() => {
+  return accountBalancesWithTokenInBases.value.map((balance) => {
     const denom = balance.denom.toLowerCase()
-    const usdPrice = balance.usdPrice
 
     const margin = totalPositionsMarginByQuoteDenom.value[denom] || ZERO_IN_BASE
     const pnl = totalPositionsPnlByQuoteDenom.value[denom] || ZERO_IN_BASE
 
-    const subaccountBalance = accountStore.subaccountBalances.find(
-      (balance) => balance.denom.toLowerCase() === denom
-    )
-    const subaccountAvailableBalance =
-      subaccountBalance?.availableBalance || '0'
-    const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
-
-    const bankBalanceDenom =
-      Object.keys(bankStore.bankBalances).find(
-        (balanceDenom) => balanceDenom.toLowerCase() === denom
-      ) || ''
-    const bankBalance = bankStore.bankBalances[bankBalanceDenom] || '0'
-
-    const inOrderBalance = new BigNumberInBase(subaccountTotalBalance).minus(
-      subaccountAvailableBalance
-    )
-
-    const balanceToBase = new BigNumberInWei(balance.balance).toBase(
-      balance.token.decimals
-    )
-    const reservedBalance = new BigNumberInWei(inOrderBalance)
-      .toBase(balance.token.decimals)
+    const accountTotalBalance = new BigNumberInBase(balance.accountTotalBalance)
       .plus(margin)
       .plus(pnl)
-    const totalBalance = reservedBalance.plus(balanceToBase)
-    const totalBalanceInUsd = totalBalance.times(usdPrice)
+    const accountTotalBalanceInUsd = accountTotalBalance.times(balance.usdPrice)
 
     return {
       ...balance,
-      bankBalance: new BigNumberInWei(bankBalance)
-        .toBase(balance.token.decimals)
-        .toFixed(),
-      subaccountBalance: new BigNumberInWei(subaccountAvailableBalance)
-        .toBase(balance.token.decimals)
-        .toFixed(),
-      totalBalance: totalBalance.toFixed(),
-      totalBalanceInUsd: totalBalanceInUsd.toFixed(),
-      reservedBalance: reservedBalance.toFixed()
+      accountTotalBalance: accountTotalBalance.toFixed(),
+      accountTotalBalanceInUsd: accountTotalBalanceInUsd.toFixed(),
+      unrealizedPnl: margin.plus(pnl).toFixed()
     } as AccountBalance
   })
-)
+})
 
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([spotStore.init(), derivativeStore.init()])
+  Promise.all([
+    spotStore.init(),
+    derivativeStore.init(),
+    bankStore.streamBankBalance(),
+    bankStore.fetchAccountPortfolio(),
+    bankStore.streamSubaccountBalance()
+  ])
     .catch($onError)
     .finally(() => status.setIdle())
 })

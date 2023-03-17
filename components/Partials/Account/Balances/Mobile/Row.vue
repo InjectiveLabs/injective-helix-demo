@@ -24,20 +24,20 @@ const props = defineProps({
 })
 
 const {
-  valueToString: totalBalanceInUsdInString,
-  valueToBigNumber: totalBalanceInUsdInBigNumber
+  valueToString: accountTotalBalanceInUsdInString,
+  valueToBigNumber: accountTotalBalanceInUsdInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalanceInUsd),
+  computed(() => props.balance.accountTotalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const {
-  valueToString: bankBalanceInString,
-  valueToBigNumber: bankBalanceInBigNumber
+  valueToString: accountTotalBalanceInString,
+  valueToBigNumber: accountTotalBalanceInBigNumber
 } = useBigNumberFormatter(
-  computed(() => props.balance.totalBalance),
+  computed(() => props.balance.accountTotalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
@@ -90,10 +90,10 @@ function handleOpenAssetDetailsModal() {
             </span>
 
             <span
-              v-else-if="bankBalanceInBigNumber.gt(0)"
+              v-else-if="accountTotalBalanceInBigNumber.gt(0)"
               class="font-mono text-sm text-right"
             >
-              {{ bankBalanceInString }}
+              {{ accountTotalBalanceInString }}
             </span>
 
             <span v-else> &mdash; </span>
@@ -107,10 +107,10 @@ function handleOpenAssetDetailsModal() {
             </span>
 
             <span
-              v-else-if="totalBalanceInUsdInBigNumber.gt(0)"
+              v-else-if="accountTotalBalanceInUsdInBigNumber.gt(0)"
               class="font-mono text-sm text-right"
             >
-              {{ totalBalanceInUsdInString }} USD
+              {{ accountTotalBalanceInUsdInString }} USD
             </span>
 
             <span v-else> &mdash; </span>
