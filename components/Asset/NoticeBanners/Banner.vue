@@ -18,12 +18,13 @@ function closeNoticeBanner() {
   })
 }
 </script>
+g
 
 <template>
   <div
-    class="flex justify-center items-center bg-blue-500 text-blue-900 p-4 border-b"
+    class="flex justify-center items-center bg-blue-500 text-blue-900 p-1 border-b"
   >
-    <p class="font-semibold text-sm md:text-base flex-1 text-center">
+    <p class="font-semibold text-xs md:text-md flex-1 text-center">
       {{ $t(noticeBanner.label) }}
       <NuxtLink
         v-if="noticeBanner.viewMore"
