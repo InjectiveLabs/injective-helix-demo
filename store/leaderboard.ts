@@ -37,12 +37,12 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     //   const { subaccount } = this.app.$accessor.account
     //   const { isUserWalletConnected, injectiveAddress } = this.app.$accessor.wallet
 
-    //   if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
+    //   if (!isUserWalletConnected || !subaccountId || !injectiveAddress) {
     //     return
     //   }
 
     //   const { updatedAt, rank } = await indexerRestLeaderboardChronosApi.fetchLeaderboardRank({
-    //     subaccountId: subaccount.subaccountId,
+    //     subaccountId: defaultSubaccountId,
     //     resolution
     //   })
 

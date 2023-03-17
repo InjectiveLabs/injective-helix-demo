@@ -57,7 +57,9 @@ const filteredBalances = computed(() => {
   return balancesWithAggregation.value.filter((balance) => {
     const isNotSmallBalance =
       !hideSmallBalances.value ||
-      new BigNumberInBase(balance.totalBalance).gte(SMALL_BALANCE_THRESHOLD)
+      new BigNumberInBase(balance.accountTotalBalance).gte(
+        SMALL_BALANCE_THRESHOLD
+      )
 
     const isMarginCurrency =
       !showMarginCurrencyOnly.value ||
@@ -83,30 +85,8 @@ const sortedBalances = computed(() => {
     (a: AccountBalance, b: AccountBalance) => {
       switch (sortBy.value) {
         case BalanceHeaderType.Total: {
-          const totalA = new BigNumberInBase(a.totalBalance)
-          const totalB = new BigNumberInBase(b.totalBalance)
-
-          if (totalA.eq(totalB)) {
-            return b.token.symbol.localeCompare(a.token.symbol)
-          }
-
-          return totalB.minus(totalA).toNumber()
-        }
-
-        case BalanceHeaderType.Wallet: {
-          const totalA = new BigNumberInBase(a.bankBalance)
-          const totalB = new BigNumberInBase(b.bankBalance)
-
-          if (totalA.eq(totalB)) {
-            return b.token.symbol.localeCompare(a.token.symbol)
-          }
-
-          return totalB.minus(totalA).toNumber()
-        }
-
-        case BalanceHeaderType.TradingAccount: {
-          const totalA = new BigNumberInBase(a.subaccountBalance)
-          const totalB = new BigNumberInBase(b.subaccountBalance)
+          const totalA = new BigNumberInBase(a.accountTotalBalance)
+          const totalB = new BigNumberInBase(b.accountTotalBalance)
 
           if (totalA.eq(totalB)) {
             return b.token.symbol.localeCompare(a.token.symbol)
@@ -116,8 +96,8 @@ const sortedBalances = computed(() => {
         }
 
         case BalanceHeaderType.Value: {
-          const totalInUsdA = new BigNumberInBase(a.totalBalanceInUsd)
-          const totalInUsdB = new BigNumberInBase(b.totalBalanceInUsd)
+          const totalInUsdA = new BigNumberInBase(a.accountTotalBalanceInUsd)
+          const totalInUsdB = new BigNumberInBase(b.accountTotalBalanceInUsd)
 
           if (totalInUsdA.eq(totalInUsdB)) {
             return b.token.symbol.localeCompare(a.token.symbol)
@@ -127,8 +107,8 @@ const sortedBalances = computed(() => {
         }
 
         case BalanceHeaderType.Available: {
-          const availableA = new BigNumberInBase(a.balance)
-          const availableB = new BigNumberInBase(a.balance)
+          const availableA = new BigNumberInBase(a.availableMargin)
+          const availableB = new BigNumberInBase(a.availableMargin)
 
           if (availableA.eq(availableB)) {
             return b.token.symbol.localeCompare(a.token.symbol)

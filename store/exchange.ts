@@ -280,14 +280,20 @@ export const useExchangeStore = defineStore('exchange', {
     reset() {
       const exchangeStore = useExchangeStore()
 
-      const initialState = initialStateFactory()
+      const {
+        tradeRewardsPoints,
+        feeDiscountSchedule,
+        feeDiscountAccountInfo,
+        tradingRewardsCampaign,
+        pendingTradeRewardsPoints
+      } = initialStateFactory()
 
       exchangeStore.$patch({
-        feeDiscountSchedule: initialState.feeDiscountSchedule,
-        feeDiscountAccountInfo: initialState.feeDiscountAccountInfo,
-        tradingRewardsCampaign: initialState.tradingRewardsCampaign,
-        tradeRewardsPoints: initialState.tradeRewardsPoints,
-        pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints
+        tradeRewardsPoints,
+        feeDiscountSchedule,
+        feeDiscountAccountInfo,
+        tradingRewardsCampaign,
+        pendingTradeRewardsPoints
       })
     }
   }

@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 import { StreamStatusResponse } from '@injectivelabs/ts-types'
-import { spotMarketStream } from '@/app/client/streams/spot'
-import { subaccountStream } from '@/app/client/streams/account'
 import {
   oracleStream,
   derivativesMarketStream
 } from '@/app/client/streams/derivatives'
+import { portfolioStream } from '@/app/client/streams/bank'
+import { spotMarketStream } from '@/app/client/streams/spot'
 import { StreamType } from '@/types'
 
 type StreamFn =
@@ -15,7 +16,6 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotOrderbook
   | typeof spotMarketStream.streamSpotOrderHistory
   | typeof oracleStream.streamOraclePricesByMarkets
-  | typeof subaccountStream.streamSubaccountBalance
   | typeof spotMarketStream.streamSpotOrderbookUpdate
   | typeof derivativesMarketStream.streamDerivativeMarket
   | typeof derivativesMarketStream.streamDerivativeOrders
@@ -24,8 +24,11 @@ type StreamFn =
   | typeof derivativesMarketStream.streamDerivativePositions
   | typeof derivativesMarketStream.streamDerivativeOrderHistory
   | typeof derivativesMarketStream.streamDerivativeOrderbookUpdate
+  | typeof portfolioStream.streamAccountPortfolio
 
 type Stream = ReturnType<StreamFn>
+
+const MAX_RECONNECTION = 10
 
 /**
  * Every stream we extend with
@@ -41,6 +44,8 @@ export class StreamProvider {
     { fn: Function; stream: Stream; args: any }
   >
 
+  private reconnectCount: Record<string, number> = {}
+
   constructor() {
     this.streamManager = new Map()
   }
@@ -52,10 +57,15 @@ export class StreamProvider {
 
     const argsWithCallbacks = {
       ...args,
-      onEndCallback: (_status?: StreamStatusResponse): any => {
-        setTimeout(() => {
-          this.reconnect(key)
-        }, 1000)
+      onEndCallback: (status?: StreamStatusResponse): any => {
+        if (this.getReconnectCount(key) <= MAX_RECONNECTION) {
+          setTimeout(() => {
+            this.reconnect(key)
+            this.incrementReconnectCount(key)
+          }, 1000)
+        } else {
+          console.error(status)
+        }
       },
       onStatusCallback: (_status: StreamStatusResponse): any => {
         //
@@ -103,6 +113,14 @@ export class StreamProvider {
 
   private exists(key: StreamType) {
     return this.streamManager.has(key)
+  }
+
+  private getReconnectCount(key: string) {
+    return this.reconnectCount[key] || 0
+  }
+
+  private incrementReconnectCount(key: string) {
+    return (this.reconnectCount[key] = (this.reconnectCount[key] || 0) + 1)
   }
 }
 

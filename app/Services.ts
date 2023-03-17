@@ -28,6 +28,7 @@ import {
   ChainGrpcInsuranceFundApi,
   IndexerGrpcDerivativesApi,
   IndexerRestMarketChronosApi,
+  IndexerGrpcAccountPortfolioApi,
   IndexerRestLeaderboardChronosApi,
   IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
@@ -55,6 +56,9 @@ export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
+  ENDPOINTS.indexer
+)
 
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(
@@ -88,6 +92,7 @@ export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
+  networkEndpoints: ENDPOINTS,
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
@@ -109,7 +114,8 @@ export const web3Broadcaster = new Web3Broadcaster({
 // Token Services
 export const tokenService = new TokenService({
   chainId: CHAIN_ID,
-  network: NETWORK
+  network: NETWORK,
+  endpoints: ENDPOINTS
 })
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })

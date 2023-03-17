@@ -49,7 +49,7 @@ const baseBalance = computed(() =>
 )
 
 const baseBalanceToBase = computed(() =>
-  new BigNumberInBase(baseBalance.value?.subaccountBalance || 0).toWei(
+  new BigNumberInBase(baseBalance.value?.availableMargin || 0).toWei(
     baseBalance.value?.token.decimals
   )
 )
@@ -61,7 +61,7 @@ const quoteBalance = computed(() =>
 )
 
 const quoteBalanceToBase = computed(() =>
-  new BigNumberInBase(quoteBalance.value?.subaccountBalance || 0).toWei(
+  new BigNumberInBase(quoteBalance.value?.availableMargin || 0).toWei(
     quoteBalance.value?.token.decimals
   )
 )
@@ -72,11 +72,8 @@ const isWHSolUSDTBaseDenom = computed(
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-/*
-TODO: update to use availableBalance instead of subaccount balance after merge
-*/
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.subaccountBalance),
+  computed(() => baseBalance.value?.availableMargin),
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -186,7 +183,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="baseBalance"
           v-bind="{
@@ -246,7 +242,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="quoteBalance"
           v-bind="{

@@ -3,8 +3,8 @@ import { PropType } from 'vue'
 import {
   Status,
   StatusType,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import {
   MarketType,
@@ -35,8 +35,8 @@ import {
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
+const bankStore = useBankStore()
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { success } = useNotifications()
@@ -181,26 +181,11 @@ const position = computed(() => {
 })
 
 const quoteAvailableBalance = computed(() => {
-  if (!accountStore.subaccount) {
-    return ZERO_IN_BASE
-  }
+  const balance = bankStore.balanceMap[props.market.quoteDenom] || '0'
 
-  const balance = accountStore.subaccount.balances.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market!.quoteDenom.toLowerCase()
+  const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
+    props.market.quoteToken.decimals
   )
-
-  if (!balance) {
-    return ZERO_IN_BASE
-  }
-
-  const quoteAvailableBalance = new BigNumberInWei(
-    balance.availableBalance || 0
-  ).toBase(props.market.quoteToken.decimals)
-
-  if (quoteAvailableBalance.isNaN()) {
-    return ZERO_IN_BASE
-  }
 
   return quoteAvailableBalance
 })
