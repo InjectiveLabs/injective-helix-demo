@@ -16,7 +16,7 @@ type BankStoreState = {
   // currently selected subaccountId, set at the default one until we have multi-subaccount support
   subaccountId: string
   bankBalances: Coin[]
-  subaccountBalancesMap: Record<string, SubaccountBalance[] | undefined>
+  subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): BankStoreState => ({
@@ -85,23 +85,22 @@ export const useBankStore = defineStore('bank', {
         walletStore.injectiveAddress
       )
 
-      const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
-        (accountBalances, balance) => {
-          if (balance.subaccountId === walletStore.defaultSubaccountId) {
-            return [
-              ...accountBalances,
-              {
-                denom: balance.denom,
-                totalBalance: balance.deposit?.totalBalance || '0',
-                availableBalance: balance.deposit?.availableBalance || '0'
-              } as SubaccountBalance
-            ]
-          }
+      const defaultAccountBalances = (
+        accountPortfolio?.subaccountsList || []
+      ).reduce((accountBalances, balance) => {
+        if (balance.subaccountId === walletStore.defaultSubaccountId) {
+          return [
+            ...accountBalances,
+            {
+              denom: balance.denom,
+              totalBalance: balance.deposit?.totalBalance || '0',
+              availableBalance: balance.deposit?.availableBalance || '0'
+            } as SubaccountBalance
+          ]
+        }
 
-          return accountBalances
-        },
-        [] as SubaccountBalance[]
-      )
+        return accountBalances
+      }, [] as SubaccountBalance[])
 
       const nonDefaultSubaccounts = accountPortfolio?.subaccountsList.reduce(
         (accountBalances, subaccountBalance) => {

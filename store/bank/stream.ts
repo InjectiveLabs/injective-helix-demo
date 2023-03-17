@@ -44,9 +44,9 @@ export const streamSubaccountBalance = () => {
     accountAddress: walletStore.injectiveAddress,
     subaccountId: bankStore.subaccountId,
     callback: ({ amount, denom }) => {
-      const accountBalancesExcludingDenom = (
-        bankStore.subaccountBalancesMap[bankStore.subaccountId] || []
-      ).filter((balance: SubaccountBalance) => balance.denom !== denom)
+      const accountBalancesExcludingDenom = bankStore.subaccountBalancesMap[
+        bankStore.subaccountId
+      ].filter((balance: SubaccountBalance) => balance.denom !== denom)
 
       const subaccountBalancesMap = {
         [bankStore.subaccountId]: [
