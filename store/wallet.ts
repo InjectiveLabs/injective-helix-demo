@@ -395,13 +395,14 @@ export const useWalletStore = defineStore('wallet', {
     reset() {
       const walletStore = useWalletStore()
 
-      const initialState = initialStateFactory()
+      const { address, addresses, injectiveAddress, addressConfirmation } =
+        initialStateFactory()
 
       walletStore.$patch({
-        address: initialState.address,
-        addresses: initialState.addresses,
-        injectiveAddress: initialState.injectiveAddress,
-        addressConfirmation: initialState.addressConfirmation
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation
       })
     }
   }

@@ -113,7 +113,7 @@ function onCloseSideBar() {
       </div>
     </transition>
     <BaseNotifications
-      class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
+      class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
         <BaseNotification

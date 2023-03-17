@@ -115,12 +115,9 @@ export const useBankStore = defineStore('bank', {
     },
 
     reset() {
-      const bankStore = useBankStore()
-
       cancelBankBalanceStream()
       cancelSubaccountBalanceStream()
-
-      bankStore.$reset()
+      useBankStore().$reset()
     }
   }
 })

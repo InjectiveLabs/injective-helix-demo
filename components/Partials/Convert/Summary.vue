@@ -126,11 +126,13 @@ const { valueToString: minimalReceivedToFormat } = useBigNumberFormatter(
 <template>
   <div>
     <div v-if="isLoading" class="flex items-center justify-end gap-2">
-      <span>{{ $t('trade.convert.fetching_price') }}</span>
       <AppSpinner sm />
+      <span class="text-xs text-gray-500">{{
+        $t('trade.convert.fetching_price')
+      }}</span>
     </div>
 
-    <div v-else-if="inputToken && outputToken" class="space-y-3">
+    <div v-else-if="inputToken && outputToken" class="space-y-3 mt-2">
       <PartialsConvertSummaryRow :title="$t('trade.convert.rate')">
         <span v-if="showEmpty">&mdash;</span>
         <div v-else>

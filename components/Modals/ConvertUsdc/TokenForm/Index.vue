@@ -48,9 +48,21 @@ const baseBalance = computed(() =>
   )
 )
 
+const baseBalanceToBase = computed(() =>
+  new BigNumberInBase(baseBalance.value?.availableMargin || 0).toWei(
+    baseBalance.value?.token.decimals
+  )
+)
+
 const quoteBalance = computed(() =>
   props.balances.find(
     (balance) => balance.token.denom === props.market.quoteDenom
+  )
+)
+
+const quoteBalanceToBase = computed(() =>
+  new BigNumberInBase(quoteBalance.value?.availableMargin || 0).toWei(
+    quoteBalance.value?.token.decimals
   )
 )
 
@@ -60,11 +72,8 @@ const isWHSolUSDTBaseDenom = computed(
 
 const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
 
-/*
-TODO: update to use availableBalance instead of subaccount balance after merge
-*/
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.bankBalance),
+  computed(() => baseBalance.value?.availableMargin),
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -174,7 +183,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="baseBalance"
           v-bind="{
@@ -188,9 +196,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: baseBalance.token,
                 denom: baseBalance.denom,
-                balance: new BigNumberInBase(baseBalance.bankBalance)
-                  .toWei(baseBalance.token.decimals)
-                  .toFixed()
+                balance: baseBalanceToBase.toFixed()
               }
             ]
           }"
@@ -236,7 +242,6 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           />
         </div>
 
-        <!-- TODO: update to availableBalance after merge-->
         <AppSelectToken
           v-if="quoteBalance"
           v-bind="{
@@ -250,9 +255,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: quoteBalance.token,
                 denom: quoteBalance.denom,
-                balance: new BigNumberInBase(quoteBalance.bankBalance)
-                  .toWei(quoteBalance.token.decimals)
-                  .toFixed()
+                balance: quoteBalanceToBase.toFixed()
               }
             ]
           }"
