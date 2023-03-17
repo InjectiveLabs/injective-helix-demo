@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
-import { indexerAccountPortfolioApi } from '@/app/Services'
+import { bankApi, indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
@@ -81,6 +81,9 @@ export const useBankStore = defineStore('bank', {
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
           walletStore.injectiveAddress
         )
+      const bankBalances = await bankApi.fetchBalances(
+        walletStore.injectiveAddress
+      )
 
       /**
        * We handle only the default subaccount for now, once we have
@@ -138,7 +141,7 @@ export const useBankStore = defineStore('bank', {
 
       bankStore.$patch({
         subaccountId: walletStore.defaultSubaccountId,
-        bankBalances: accountPortfolio?.bankBalancesList || [],
+        bankBalances: bankBalances.balances || [],
         subaccountBalancesMap: {
           [walletStore.defaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
