@@ -110,7 +110,7 @@ watch(isModalOpen, (newShowModalState) => {
     />
     <ul
       v-else
-      class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
+      class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
