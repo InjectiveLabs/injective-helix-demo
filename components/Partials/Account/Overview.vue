@@ -153,7 +153,10 @@ function handleWithdrawClick() {
         </AppButton>
       </div>
     </div>
-    <span v-if="hasMultipleSubaccounts" class="text-xs text-gray-400">
+    <span
+      v-if="hasMultipleSubaccounts && !isLoading"
+      class="text-xs text-gray-400"
+    >
       {{ $t('account.balanceBreakdownExplorer') }}
       <a
         :href="`${getExplorerUrl(NETWORK)}/account/${
