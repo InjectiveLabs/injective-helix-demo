@@ -105,8 +105,8 @@ export interface UiDerivativeOrderbookWithSequence
 export interface Banner {
   label: string
   key: NoticeBanner
-  viewMore: string
-  viewMoreLink: string
+  viewMore?: string
+  viewMoreLink?: string
 }
 
 export * from './enums'
