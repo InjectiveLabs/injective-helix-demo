@@ -25,19 +25,9 @@ const emit = defineEmits<{
   (e: 'update:subaccount', subaccount: string): void
 }>()
 
-const subaccount = computed({
-  get: (): string => accountStore.subaccountId,
-  set: (value: string) => {
-    accountStore.$patch({
-      subaccountId: value
-    })
-
-    nextTick(() => {
-      emit('update:subaccount', value)
-    })
-  }
-})
-
+const hasMultipleSubaccounts = computed(
+  () => accountStore.hasMultipleSubaccounts
+)
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
@@ -54,6 +44,19 @@ const view = computed({
   get: (): string => props.view,
   set: (value: string) => {
     emit('update:view', value)
+  }
+})
+
+const subaccount = computed({
+  get: (): string => accountStore.subaccountId,
+  set: (value: string) => {
+    accountStore.$patch({
+      subaccountId: value
+    })
+
+    nextTick(() => {
+      emit('update:subaccount', value)
+    })
   }
 })
 
@@ -209,10 +212,7 @@ const tabViewList = computed(() => {
       <CommonSeparator v-if="index !== Object.values(tabViewList).length - 1" />
     </template>
 
-    <span
-      v-if="accountStore.hasMultipleSubaccounts"
-      class="hidden ml-auto xl:flex"
-    >
+    <span v-if="hasMultipleSubaccounts" class="hidden ml-auto xl:flex">
       <AppSelect
         v-model="subaccount"
         :options="subaccountSelectOptions"

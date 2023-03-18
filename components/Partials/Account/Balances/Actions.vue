@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+const accountStore = useAccountStore()
+const { t } = useLang()
+
 const props = defineProps({
   hideSmallBalances: Boolean,
   showMarginCurrencyOnly: Boolean,
@@ -13,7 +16,37 @@ const emit = defineEmits<{
   (e: 'update:search', state: string): void
   (e: 'update:show-margin-currency-only', state: boolean): void
   (e: 'update:hide-small-balances', state: boolean): void
+  (e: 'update:subaccount', state: string): void
 }>()
+
+const hasMultipleSubaccounts = computed(
+  () => accountStore.hasMultipleSubaccounts
+)
+
+const subaccountSelectOptions = computed(() =>
+  accountStore.hasMultipleSubaccounts
+    ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
+        value,
+        display:
+          index === 0
+            ? `${t('account.default')}`
+            : `${t('account.account')} ${index}`
+      }))
+    : []
+)
+
+const subaccount = computed({
+  get: (): string => accountStore.subaccountId,
+  set: (value: string) => {
+    accountStore.$patch({
+      subaccountId: value
+    })
+
+    nextTick(() => {
+      emit('update:subaccount', value)
+    })
+  }
+})
 
 const hideSmallBalancesCheck = computed({
   get: (): boolean => props.hideSmallBalances,
@@ -78,6 +111,31 @@ const search = computed({
           />
         </div>
       </AppCheckbox>
+
+      <AppSelect
+        v-if="hasMultipleSubaccounts"
+        v-model="subaccount"
+        :options="subaccountSelectOptions"
+        class="hidden xl:flex self-end"
+      >
+        <template #prefix>
+          <span class="text-xs text-gray-300 uppercase">
+            {{ $t('account.account') }}
+          </span>
+        </template>
+
+        <template #default="{ selected }">
+          <span v-if="selected" class="text-xs text-blue-500 uppercase">
+            {{ selected.display }}
+          </span>
+        </template>
+
+        <template #option="{ option }">
+          <span class="text-xs uppercase text-white">
+            {{ option.display }}
+          </span>
+        </template>
+      </AppSelect>
     </div>
   </div>
 </template>

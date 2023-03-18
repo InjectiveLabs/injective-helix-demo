@@ -8,6 +8,8 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
+const accountStore = useAccountStore()
+
 const props = defineProps({
   hideActions: Boolean,
   hideBalances: Boolean,
@@ -22,6 +24,8 @@ const props = defineProps({
     default: new Status(StatusType.Loading)
   }
 })
+
+const isDefaultSubaccount = computed(() => accountStore.isDefaultSubaccount)
 
 const {
   valueToString: accountTotalBalanceInUsdInString,
@@ -194,6 +198,7 @@ function handleWithdrawClick() {
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
           <div
+            v-if="isDefaultSubaccount"
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
             data-cy="wallet-balance-deposit-link"
             @click="handleDepositClick"
@@ -204,6 +209,7 @@ function handleWithdrawClick() {
           </div>
 
           <div
+            v-if="isDefaultSubaccount"
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
             data-cy="wallet-balance-withdraw-link"
             @click="handleWithdrawClick"

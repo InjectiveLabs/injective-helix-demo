@@ -84,6 +84,7 @@ export default {
     balanceBreakdownExplorer: 'Your full balance breakdown can be found on the',
     explorer: 'explorer',
     default: 'Default',
-    account: 'Account'
+    account: 'Account',
+    accountBalance: 'Account Balance'
   }
 }

@@ -3,7 +3,7 @@
 */
 
 export { useAppStore } from '@/store/app'
-export { useAccountStore } from '~~/store/account'
+export { useAccountStore } from '@/store/account'
 export { useSpotStore } from '@/store/spot'
 export { useModalStore } from '@/store/modal'
 export { useTokenStore } from '@/store/token'

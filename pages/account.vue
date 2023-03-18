@@ -81,7 +81,8 @@ const totalPositionsMarginByQuoteDenom = computed(() =>
   }, {} as Record<string, BigNumberInBase>)
 )
 
-const balances = computed(() => {
+// Including PnL and position margin, numbers in base (human readable)
+const currentSubaccountBalances = computed(() => {
   return accountBalancesWithTokenInBases.value.map((balance) => {
     const denom = balance.denom.toLowerCase()
 
@@ -127,7 +128,9 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
   >
     <div class="container">
       <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
-        <PartialsAccount :balances="balances" />
+        <PartialsAccount
+          :current-subaccount-balances="currentSubaccountBalances"
+        />
       </div>
     </div>
   </AppHocLoading>
