@@ -55,26 +55,7 @@ const action = computed(() => {
 })
 
 onMounted(() => {
-  const promises = [
-    activityStore.streamDerivativeSubaccountOrderHistory(),
-    activityStore.streamDerivativeSubaccountTrades(),
-    activityStore.streamSpotSubaccountOrderHistory(),
-    activityStore.streamSpotSubaccountTrades(),
-    derivativeStore.fetchSubaccountOrders(),
-    derivativeStore.streamMarketsMarkPrices(),
-    derivativeStore.fetchSubaccountConditionalOrders(),
-    derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions(),
-    positionStore.streamSubaccountPositions(),
-    spotStore.fetchSubaccountOrders(),
-    spotStore.streamSubaccountOrders()
-  ]
-
-  Promise.all(promises)
-    .then(() => {
-      fetchData()
-    })
-    .catch($onError)
+  refetchData()
 })
 
 onUnmounted(() => {
@@ -105,6 +86,29 @@ function fetchData() {
     .finally(() => {
       status.setIdle()
     })
+}
+
+function refetchData() {
+  const fetchDataPromises = [
+    activityStore.streamDerivativeSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountTrades(),
+    activityStore.streamSpotSubaccountOrderHistory(),
+    activityStore.streamSpotSubaccountTrades(),
+    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
+    derivativeStore.fetchSubaccountConditionalOrders(),
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    spotStore.fetchSubaccountOrders(),
+    spotStore.streamSubaccountOrders()
+  ]
+
+  Promise.all(fetchDataPromises)
+    .then(() => {
+      fetchData()
+    })
+    .catch($onError)
 }
 
 function onTabChange(tab: string) {
@@ -145,13 +149,7 @@ function onViewChange() {
 function onSubaccountChange() {
   resetForm()
   nextTick(() => {
-    fetchData()
-
-    // Reset and set streaming for the newly selected subaccount
-    derivativeStore.cancelSubaccountStream()
-    derivativeStore.streamSubaccountOrders()
-    spotStore.cancelSubaccountStream()
-    spotStore.streamSubaccountOrders()
+    refetchData()
   })
 }
 </script>
