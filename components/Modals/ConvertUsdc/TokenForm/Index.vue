@@ -6,7 +6,7 @@ import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const formValues = useFormValues<TradeForm>()
 
@@ -97,7 +97,7 @@ watch(
 )
 
 onMounted(() => {
-  if (!bankStore.hasEnoughInjForGas) {
+  if (!accountStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

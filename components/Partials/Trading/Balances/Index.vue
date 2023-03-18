@@ -14,7 +14,7 @@ import {
   WalletConnectStatus
 } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -88,8 +88,8 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    bankStore.fetchAccountPortfolio(),
-    bankStore.streamBankBalance()
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance()
   ])
     .catch($onError)
     .finally(() => {

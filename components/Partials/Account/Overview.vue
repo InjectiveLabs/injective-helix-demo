@@ -12,7 +12,7 @@ import {
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const tokenStore = useTokenStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 
 const props = defineProps({
@@ -50,7 +50,7 @@ const shouldAbbreviateTotalBalance = computed(() =>
 const hasMultipleSubaccounts = computed(() => {
   return (
     walletStore.isUserWalletConnected &&
-    Object.keys(bankStore.subaccountBalancesMap).length > 1
+    Object.keys(accountStore.subaccountBalancesMap).length > 1
   )
 })
 

@@ -9,6 +9,7 @@ import {
 import { getMarketRoute } from '@/app/utils/market'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -96,9 +97,10 @@ function onCancelOrder() {
           </span>
         </div>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="orderFillable"
           :status="status"
+          :disabled="!accountStore.isDefaultSubaccount"
           sm
           @click="onCancelOrder"
         />

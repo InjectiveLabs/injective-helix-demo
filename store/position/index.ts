@@ -44,7 +44,7 @@ export const usePositionStore = defineStore('position', {
     ) {
       const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -71,7 +71,7 @@ export const usePositionStore = defineStore('position', {
       const positionStore = usePositionStore()
 
       const { markets } = useDerivativeStore()
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -104,7 +104,7 @@ export const usePositionStore = defineStore('position', {
     async fetchOpenPositionsMarketsOrderbook() {
       const positionStore = usePositionStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       const { subaccountPositions } = positionStore

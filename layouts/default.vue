@@ -5,7 +5,7 @@ import { BusEvents } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -23,7 +23,13 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
+  Promise.all([
+    walletStore.init(),
+    tokenStore.fetchSupplyTokenMeta(),
+
+    // TODO: remove when we have proper support for multi subaccount management
+    accountStore.resetToDefaultSubaccount()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -42,7 +48,7 @@ onMounted(() => {
 })
 
 onWalletConnected(() => {
-  Promise.all([bankStore.fetchAccountPortfolio()]).catch($onError)
+  Promise.all([accountStore.fetchAccountPortfolio()]).catch($onError)
 })
 
 function onOpenSideBar() {

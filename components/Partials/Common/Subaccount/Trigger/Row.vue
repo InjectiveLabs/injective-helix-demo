@@ -5,6 +5,7 @@ import { Status } from '@injectivelabs/utils'
 import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
+const accountStore = useAccountStore()
 const route = useRoute()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -201,9 +202,10 @@ function onCancelOrder(): void {
           {{ $t('common.view') }}
         </NuxtLink>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="isCancelable"
           :status="status"
+          :disabled="!accountStore.isDefaultSubaccount"
           data-cy="derivative-order-cancel-link"
           @click="onCancelOrder"
         />

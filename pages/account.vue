@@ -14,7 +14,7 @@ definePageMeta({
 })
 
 const appStore = useAppStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const positionStore = usePositionStore()
@@ -108,9 +108,9 @@ onMounted(() => {
   Promise.all([
     spotStore.init(),
     derivativeStore.init(),
-    bankStore.streamBankBalance(),
-    bankStore.fetchAccountPortfolio(),
-    bankStore.streamSubaccountBalance()
+    accountStore.streamBankBalance(),
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamSubaccountBalance()
   ])
     .catch($onError)
     .finally(() => status.setIdle())

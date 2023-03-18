@@ -333,7 +333,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -363,7 +363,7 @@ export const useDerivativeStore = defineStore('derivative', {
     ) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -392,7 +392,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -474,7 +474,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {

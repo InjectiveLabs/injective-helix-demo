@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeField, TradeForm, UiSpotOrderbookWithSequence } from '@/types'
 
 const router = useRouter()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const exchangeStore = useExchangeStore()
 const { t } = useLang()
@@ -46,8 +46,8 @@ onWalletConnected(() => {
   fetchStatus.setLoading()
 
   Promise.all([
-    bankStore.streamBankBalance(),
-    bankStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.fetchAccountPortfolio(),
     exchangeStore.fetchFeeDiscountAccountInfo()
   ])
     .catch($onError)

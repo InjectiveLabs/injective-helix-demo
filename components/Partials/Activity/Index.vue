@@ -4,10 +4,11 @@ import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
 import { ActivityTab, ActivityView, ActivityForm, ActivityField } from '@/types'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
-const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
@@ -24,6 +25,8 @@ const action = computed(() => {
   switch (view.value) {
     case ActivityView.FundingPayments:
       return activityStore.fetchSubaccountFundingPayments
+    case ActivityView.Positions:
+      return positionStore.fetchSubaccountPositions
     case ActivityView.SpotOrderHistory:
       return spotStore.fetchSubaccountOrderHistory
     case ActivityView.SpotTradeHistory:
@@ -78,13 +81,12 @@ onUnmounted(() => {
   activityStore.$reset()
   derivativeStore.resetSubaccount()
   spotStore.resetSubaccount()
+  accountStore.resetToDefaultSubaccount()
 })
 
 function fetchData() {
   if (!action.value) {
-    status.setIdle()
-
-    return
+    return status.setIdle()
   }
 
   status.setLoading()
@@ -139,6 +141,19 @@ function onViewChange() {
     fetchData()
   })
 }
+
+function onSubaccountChange() {
+  resetForm()
+  nextTick(() => {
+    fetchData()
+
+    // Reset and set streaming for the newly selected subaccount
+    derivativeStore.cancelSubaccountStream()
+    derivativeStore.streamSubaccountOrders()
+    spotStore.cancelSubaccountStream()
+    spotStore.streamSubaccountOrders()
+  })
+}
 </script>
 
 <template>
@@ -156,6 +171,7 @@ function onViewChange() {
       class="pb-4 xs:pb-6"
       :tab="tab"
       @update:view="onViewChange"
+      @update:subaccount="onSubaccountChange"
     />
 
     <div class="h-full rounded-xl overflow-y-auto">

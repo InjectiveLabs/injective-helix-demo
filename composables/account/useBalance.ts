@@ -2,7 +2,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 export function useBalance() {
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
@@ -13,14 +13,14 @@ export function useBalance() {
   const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
       const isDefaultTradingAccount =
-        walletStore.defaultSubaccountId === bankStore.subaccountId
+        walletStore.defaultSubaccountId === accountStore.subaccountId
       const denom = token.denom.toLowerCase()
       const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
 
-      const bankBalance = bankStore.balanceMap[token.denom] || '0'
+      const bankBalance = accountStore.balanceMap[token.denom] || '0'
 
       const subaccountBalances =
-        bankStore.subaccountBalancesMap[bankStore.subaccountId]
+        accountStore.subaccountBalancesMap[accountStore.subaccountId]
 
       const subaccountBalance = subaccountBalances.find(
         (balance) => balance.denom.toLowerCase() === denom
@@ -104,7 +104,7 @@ export function useBalance() {
   const balancesWithToken = computed(() => {
     return accountBalancesWithToken.value.map((accountBalance) => {
       const isDefaultTradingAccount =
-        walletStore.defaultSubaccountId === bankStore.subaccountId
+        walletStore.defaultSubaccountId === accountStore.subaccountId
 
       return {
         token: accountBalance.token,
