@@ -21,6 +21,7 @@ export function useBalance() {
 
       const subaccountBalances =
         bankStore.subaccountBalancesMap[bankStore.subaccountId]
+
       const subaccountBalance = subaccountBalances.find(
         (balance) => balance.denom.toLowerCase() === denom
       )

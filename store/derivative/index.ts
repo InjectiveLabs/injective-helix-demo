@@ -286,14 +286,18 @@ export const useDerivativeStore = defineStore('derivative', {
       const latestOrderbook = await indexerDerivativesApi.fetchOrderbookV2(
         marketId
       )
+      const latestOrderbookIsMostRecent =
+        latestOrderbook.sequence >= currentOrderbookSequence
 
-      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+      if (latestOrderbookIsMostRecent) {
         derivativeStore.orderbook = latestOrderbook
       }
 
       // handle race condition between fetch and stream
       derivativeStore.orderbook = {
-        sequence: currentOrderbookSequence,
+        sequence: latestOrderbookIsMostRecent
+          ? latestOrderbook.sequence
+          : currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
           currentRecords: latestOrderbook.buys,

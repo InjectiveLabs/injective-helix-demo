@@ -20,11 +20,11 @@ const props = defineProps({
 
 const showUsdcBalances = ref(true)
 
-const usdcBalances = computed(() => {
-  return props.balances.filter((balance) =>
+const usdcBalances = computed(() =>
+  props.balances.filter((balance) =>
     usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
   )
-})
+)
 
 // default usdc balance to show on accounts page
 const peggyUsdcetBalance = computed(() => {
@@ -40,7 +40,7 @@ const hasPeggyUsdcBalance = computed(() => {
       balance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
   )
 
-  return new BigNumberInBase(balance?.totalBalance || 0).gt(0)
+  return new BigNumberInBase(balance?.accountTotalBalance || 0).gt(0)
 })
 
 function toggleUsdcBalances() {
