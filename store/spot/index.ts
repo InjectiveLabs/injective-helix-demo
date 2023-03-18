@@ -255,14 +255,18 @@ export const useSpotStore = defineStore('spot', {
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
       const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
+      const latestOrderbookIsMostRecent =
+        latestOrderbook.sequence >= currentOrderbookSequence
 
-      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+      if (latestOrderbookIsMostRecent) {
         spotStore.orderbook = latestOrderbook
       }
 
       // handle race condition between fetch and stream
       spotStore.orderbook = {
-        sequence: currentOrderbookSequence,
+        sequence: latestOrderbookIsMostRecent
+          ? latestOrderbook.sequence
+          : currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
           currentRecords: spotStore.orderbook?.buys,

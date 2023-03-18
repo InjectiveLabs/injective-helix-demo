@@ -46,7 +46,14 @@ export const streamOrderbookUpdate = (marketId: string) => {
       const sequence = derivativeStore.orderbook?.sequence || 0
 
       /**
-       * The current exists and we need to update it
+       * A sequence was skipped, refetch the orderbook snapshot
+       **/
+      if (orderbook.sequence > sequence + 1) {
+        return derivativeStore.fetchOrderbook(marketId)
+      }
+
+      /**
+       * The current orderbook exists and we need to update it
        **/
       if (sequence < orderbook.sequence) {
         const newBuys = combineOrderbookRecords({

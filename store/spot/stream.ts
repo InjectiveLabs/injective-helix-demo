@@ -41,6 +41,16 @@ export const streamOrderbookUpdate = (marketId: string) => {
 
       const sequence = spotStore.orderbook?.sequence || 0
 
+      /**
+       * A sequence was skipped, refetch the orderbook snapshot
+       **/
+      if (orderbook.sequence > sequence + 1) {
+        return spotStore.fetchOrderbook(marketId)
+      }
+
+      /**
+       * The current orderbook exists and we need to update it
+       **/
       if (sequence < orderbook.sequence) {
         const newBuys = combineOrderbookRecords({
           isBuy: true,
