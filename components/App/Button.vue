@@ -88,7 +88,6 @@ export default {
     type="button"
     role="button"
     :class="[
-      $attrs.class,
       classes,
       {
         'border-transparent': hasBackground && !disabled,
@@ -98,8 +97,8 @@ export default {
           !disabled
       }
     ]"
-    class="font-bold rounded-md border box-border focus:outline-none"
     v-bind="filteredAttrs"
+    class="font-bold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
     <slot v-if="status && status.isNotLoading()" />

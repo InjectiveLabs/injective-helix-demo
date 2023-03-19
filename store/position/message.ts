@@ -28,7 +28,7 @@ export const closePosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -74,7 +74,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -165,7 +165,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -244,7 +244,7 @@ export const addMarginToPosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 

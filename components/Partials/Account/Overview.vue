@@ -1,25 +1,23 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,
-  UI_MINIMAL_ABBREVIATION_FLOOR,
-  NETWORK
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const tokenStore = useTokenStore()
-const bankStore = useBankStore()
-const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 
 const props = defineProps({
   isLoading: Boolean,
   hideBalances: Boolean,
 
-  balances: {
+  currentSubaccountBalances: {
     type: Array as PropType<AccountBalance[]>,
     required: true
   }
@@ -29,37 +27,59 @@ const emit = defineEmits<{
   (e: 'update:hide-balances', state: boolean): void
 }>()
 
-const accountTotalBalance = computed(() =>
-  props.balances.reduce(
-    (total, balance) => total.plus(balance.accountTotalBalance),
+const { aggregatedPortfolioBalances } = useBalance()
+
+const remainingAccountBalances = computed(() =>
+  Object.keys(aggregatedPortfolioBalances.value).reduce(
+    (balances, subaccountId) => {
+      /**
+       * For the currently selected subaccount we use the currentSubaccountBalances
+       * because we have the PnL and margin calculations there
+       */
+      if (subaccountId === accountStore.subaccountId) {
+        return balances
+      }
+
+      return [...balances, ...aggregatedPortfolioBalances.value[subaccountId]]
+    },
+    [] as AccountBalance[]
+  )
+)
+
+const currentSubaccountTotalBalanceInUsd = computed(() =>
+  props.currentSubaccountBalances.reduce(
+    // Already converted to human readable number
+    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
+    ZERO_IN_BASE
+  )
+)
+
+const remainingAccountBalance = computed(() =>
+  remainingAccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
     ZERO_IN_BASE
   )
 )
 
 const accountTotalBalanceInUsd = computed(() =>
-  props.balances.reduce(
-    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
-    ZERO_IN_BASE
-  )
+  currentSubaccountTotalBalanceInUsd.value.plus(remainingAccountBalance.value)
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
   accountTotalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
 
-const hasMultipleSubaccounts = computed(() => {
-  return (
-    walletStore.isUserWalletConnected &&
-    Object.keys(bankStore.subaccountBalancesMap).length > 1
-  )
-})
-
 const accountTotalBalanceInBtc = computed(() => {
   if (!tokenStore.btcUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return accountTotalBalance.value.dividedBy(
+  return accountTotalBalanceInUsd.value.dividedBy(
     new BigNumberInBase(tokenStore.btcUsdPrice)
   )
 })
@@ -137,7 +157,7 @@ function handleWithdrawClick() {
       </div>
 
       <div
-        v-if="!isLoading"
+        v-if="!isLoading && accountStore.isDefaultSubaccount"
         class="flex items-center justify-between md:justify-end sm:gap-4"
       >
         <AppButton class="bg-blue-500" @click="handleDepositClick">
@@ -153,20 +173,13 @@ function handleWithdrawClick() {
         </AppButton>
       </div>
     </div>
-    <span
-      v-if="hasMultipleSubaccounts && !isLoading"
-      class="text-xs text-gray-400"
-    >
-      {{ $t('account.balanceBreakdownExplorer') }}
-      <a
-        :href="`${getExplorerUrl(NETWORK)}/account/${
-          walletStore.injectiveAddress
-        }/?tab=balances`"
-        target="_blank"
-        class="text-blue-500 font-semibold"
-      >
-        {{ $t('account.explorer') }}
-      </a>
-    </span>
+
+    <PartialsAccountSubaccountOverview
+      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
+      v-bind="{
+        hideBalances,
+        currentSubaccountBalances
+      }"
+    />
   </div>
 </template>

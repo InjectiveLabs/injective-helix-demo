@@ -26,7 +26,7 @@ import { UIDerivativeOrder } from '@/types'
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -62,7 +62,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
 
   const { markets } = useDerivativeStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -115,7 +115,7 @@ export const submitLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -176,7 +176,7 @@ export const submitStopLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -245,7 +245,7 @@ export const submitMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -306,7 +306,7 @@ export const submitStopMarketOrder = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 

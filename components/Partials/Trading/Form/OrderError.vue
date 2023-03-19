@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 
 defineProps({
@@ -9,7 +9,7 @@ defineProps({
 const faucetUrl = 'https://inj.supply/'
 
 const notEnoughInjForGas = computed(
-  () => walletStore.isUserWalletConnected && !bankStore.hasEnoughInjForGas
+  () => walletStore.isUserWalletConnected && !accountStore.hasEnoughInjForGas
 )
 </script>
 

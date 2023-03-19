@@ -100,13 +100,13 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async onConnect() {
-      const bankStore = useBankStore()
+      const accountStore = useAccountStore()
       const walletStore = useWalletStore()
       const exchangeStore = useExchangeStore()
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await bankStore.fetchAccountPortfolio()
+      await accountStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
       amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
@@ -343,7 +343,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { hasEnoughInjForGas } = useBankStore()
+      const { hasEnoughInjForGas } = useAccountStore()
       const { ethereumChainId, chainId } = useAppStore()
       const { wallet, injectiveAddress, address } = useWalletStore()
 
@@ -372,7 +372,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async logout() {
-      const bankStore = useBankStore()
+      const accountStore = useAccountStore()
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
@@ -386,7 +386,7 @@ export const useWalletStore = defineStore('wallet', {
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
 
-      bankStore.$reset()
+      accountStore.$reset()
       peggyStore.$reset()
       activityStore.$reset()
       positionStore.$reset()

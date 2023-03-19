@@ -16,7 +16,7 @@ import {
 } from '@/app/utils/constants'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
@@ -136,7 +136,7 @@ const { valueToString: transferAmountToString } = useBigNumberFormatter(
 const isConfirmationDisabled = computed(() => {
   return (
     transferAmount.value.lte(0) ||
-    (originIsInjective && !bankStore.hasEnoughInjForGas)
+    (originIsInjective && !accountStore.hasEnoughInjForGas)
   )
 })
 
@@ -188,7 +188,7 @@ function handleConfirmation() {
 function handleWithdrawToInjective() {
   status.setLoading()
 
-  bankStore
+  accountStore
     .transfer({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       denom: formValues.value[BridgeField.Token].denom,
@@ -211,7 +211,7 @@ function handleWithdrawToInjective() {
 function handleTransferToTradingAccount() {
   status.setLoading()
 
-  bankStore
+  accountStore
     .deposit({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       token: formValues.value[BridgeField.Token]
@@ -276,7 +276,7 @@ function handleDeposit() {
 function handleTransferToBank() {
   status.setLoading()
 
-  bankStore
+  accountStore
     .withdraw({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       token: formValues.value[BridgeField.Token]
@@ -500,7 +500,9 @@ function handleTransferTradingAccountTrack() {
               data-cy="transfer-confirm-modal-confirm-button"
               @click="handleConfirmation"
             >
-              <span v-if="originIsInjective && !bankStore.hasEnoughInjForGas">
+              <span
+                v-if="originIsInjective && !accountStore.hasEnoughInjForGas"
+              >
                 {{ $t('bridge.insufficientINJForGas') }}
               </span>
               <span v-if="transferAmount.lte(0)">

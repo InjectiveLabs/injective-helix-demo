@@ -13,6 +13,7 @@ const emit = defineEmits<{
   (e: 'update:search', state: string): void
   (e: 'update:show-margin-currency-only', state: boolean): void
   (e: 'update:hide-small-balances', state: boolean): void
+  (e: 'update:subaccount', state: string): void
 }>()
 
 const hideSmallBalancesCheck = computed({
@@ -56,7 +57,7 @@ const search = computed({
     </div>
 
     <div
-      class="col-span-2 flex gap-2 flex-row md:items-center md:justify-end md:gap-6 md:px-0"
+      class="col-span-2 flex flex-wrap gap-2 flex-row md:flex-nowrap md:items-center md:justify-end md:gap-6 md:px-0"
     >
       <AppCheckbox
         v-model="showMarginCurrencyOnlyCheck"
@@ -78,6 +79,10 @@ const search = computed({
           />
         </div>
       </AppCheckbox>
+
+      <PartialsCommonSubaccountSelector
+        @update:subaccount="$emit('update:subaccount')"
+      />
     </div>
   </div>
 </template>

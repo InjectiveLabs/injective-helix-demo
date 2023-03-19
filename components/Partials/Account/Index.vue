@@ -10,12 +10,13 @@ const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useToken()
 
 const props = defineProps({
-  balances: {
+  currentSubaccountBalances: {
     type: Array as PropType<AccountBalance[]>,
     required: true
   }
@@ -44,6 +45,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
   spotStore.reset()
+  accountStore.resetToDefaultSubaccount()
 })
 
 function setUsdcConvertMarket(token: Token) {
@@ -91,7 +93,7 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice(props.balances.map((b) => b.token))
+  fetchTokenUsdPrice(props.currentSubaccountBalances.map((b) => b.token))
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }
@@ -115,11 +117,11 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
       </span>
 
       <PartialsAccountOverview
-        :balances="balances"
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
-        :hide-balances="hideBalances"
+        v-bind="{ hideBalances, currentSubaccountBalances }"
         @update:hide-balances="handleHideBalances"
-      />
+      >
+      </PartialsAccountOverview>
 
       <div class="h-full-flex">
         <CommonTabMenu>
@@ -154,7 +156,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
           <PartialsAccountBalances
             v-if="activeType === FilterList.Balances"
             v-bind="{
-              balances,
+              balances: currentSubaccountBalances,
               hideBalances,
               usdPriceStatus
             }"
@@ -162,7 +164,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 
           <PartialsAccountPositions
             v-if="activeType === FilterList.Positions"
-            v-bind="{ hideBalances, balances }"
+            v-bind="{ hideBalances, balances: currentSubaccountBalances }"
           />
         </AppHocLoading>
       </div>
@@ -176,7 +178,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     <ModalsAddMargin />
     <ModalsConvertUsdc
       v-if="usdcConvertMarket"
-      :balances="balances"
+      :balances="currentSubaccountBalances"
       :market="usdcConvertMarket"
     />
   </div>

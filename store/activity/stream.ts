@@ -10,7 +10,7 @@ import {
 export const streamDerivativeSubaccountOrderHistory = (marketId?: string) => {
   const activityStore = useActivityStore()
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {
@@ -41,7 +41,7 @@ export const streamDerivativeSubaccountOrderHistory = (marketId?: string) => {
 export const streamDerivativeSubaccountTrades = (marketId?: string) => {
   const activityStore = useActivityStore()
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {
@@ -73,7 +73,7 @@ export const streamSpotSubaccountOrderHistory = (marketId?: string) => {
   const activityStore = useActivityStore()
   const spotStore = useSpotStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {
@@ -104,7 +104,7 @@ export const streamSpotSubaccountTrades = (marketId?: string) => {
   const activityStore = useActivityStore()
   const spotStore = useSpotStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {

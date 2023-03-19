@@ -197,7 +197,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -224,7 +224,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -302,7 +302,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {

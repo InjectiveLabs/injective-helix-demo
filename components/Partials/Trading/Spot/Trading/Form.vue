@@ -20,7 +20,7 @@ import {
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -96,7 +96,7 @@ const orderTypeToSubmit = computed(() => {
 })
 
 const baseAvailableBalance = computed(() => {
-  const balance = bankStore.balanceMap[props.market.baseDenom] || '0'
+  const balance = accountStore.balanceMap[props.market.baseDenom] || '0'
 
   const baseAvailableBalance = new BigNumberInWei(balance).toBase(
     props.market.baseToken.decimals
@@ -106,7 +106,7 @@ const baseAvailableBalance = computed(() => {
 })
 
 const quoteAvailableBalance = computed(() => {
-  const balance = bankStore.balanceMap[props.market.quoteDenom] || '0'
+  const balance = accountStore.balanceMap[props.market.quoteDenom] || '0'
 
   const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
     props.market.quoteToken.decimals

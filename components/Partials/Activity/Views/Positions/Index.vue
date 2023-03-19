@@ -5,6 +5,7 @@ import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const derivativeStore = useDerivativeStore()
+const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
@@ -108,6 +109,7 @@ function handleClosePositions() {
         class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
         :status="actionStatus"
         data-cy="activity-cancel-all-button"
+        :disabled="!accountStore.isDefaultSubaccount"
         @click="handleClosePositions"
       >
         <span class="whitespace-nowrap">

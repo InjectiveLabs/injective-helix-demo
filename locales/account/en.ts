@@ -82,6 +82,9 @@ export default {
     solana: 'Wormhole (Solana)',
 
     balanceBreakdownExplorer: 'Your full balance breakdown can be found on the',
-    explorer: 'explorer'
+    explorer: 'explorer',
+    default: 'Default',
+    account: 'Subaccount',
+    accountBalance: 'Subccount Balance'
   }
 }
