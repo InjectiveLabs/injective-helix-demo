@@ -177,6 +177,7 @@ function handleWithdrawClick() {
     <PartialsAccountSubaccountOverview
       v-if="!isLoading && accountStore.hasMultipleSubaccounts"
       v-bind="{
+        hideBalances,
         currentSubaccountBalances
       }"
     />

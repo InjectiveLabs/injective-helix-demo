@@ -39,15 +39,15 @@ const { valueToString: abbreviatedTotalBalanceToString } =
 <template>
   <div class="mt-4">
     <div class="hidden xl:flex items-center gap-2">
+      <span class="text-sm text-gray-400">{{
+        $t('account.accountBalance')
+      }}</span>
       <span v-if="!hideBalances" class="text-white text-sm">
         &dollar; {{ abbreviatedTotalBalanceToString }} USD
       </span>
       <span v-else class="text-white text-sm">
         &dollar; {{ HIDDEN_BALANCE_DISPLAY }} USD
       </span>
-      <span class="text-xs text-gray-400">{{
-        $t('account.accountBalance')
-      }}</span>
     </div>
   </div>
 </template>

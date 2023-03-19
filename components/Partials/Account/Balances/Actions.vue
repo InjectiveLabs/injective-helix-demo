@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-const accountStore = useAccountStore()
-const { t } = useLang()
-
 const props = defineProps({
   hideSmallBalances: Boolean,
   showMarginCurrencyOnly: Boolean,
@@ -18,31 +15,6 @@ const emit = defineEmits<{
   (e: 'update:hide-small-balances', state: boolean): void
   (e: 'update:subaccount', state: string): void
 }>()
-
-const subaccountSelectOptions = computed(() =>
-  accountStore.hasMultipleSubaccounts
-    ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
-        value,
-        display:
-          index === 0
-            ? `${t('account.default')}`
-            : `${t('account.account')} ${index}`
-      }))
-    : []
-)
-
-const subaccount = computed({
-  get: (): string => accountStore.subaccountId,
-  set: (value: string) => {
-    accountStore.$patch({
-      subaccountId: value
-    })
-
-    nextTick(() => {
-      emit('update:subaccount', value)
-    })
-  }
-})
 
 const hideSmallBalancesCheck = computed({
   get: (): boolean => props.hideSmallBalances,
@@ -85,7 +57,7 @@ const search = computed({
     </div>
 
     <div
-      class="col-span-2 flex gap-2 flex-row md:items-center md:justify-end md:gap-6 md:px-0"
+      class="col-span-2 flex flex-wrap gap-2 flex-row md:flex-nowrap md:items-center md:justify-end md:gap-6 md:px-0"
     >
       <AppCheckbox
         v-model="showMarginCurrencyOnlyCheck"
@@ -108,30 +80,9 @@ const search = computed({
         </div>
       </AppCheckbox>
 
-      <AppSelect
-        v-if="accountStore.hasMultipleSubaccounts"
-        v-model="subaccount"
-        :options="subaccountSelectOptions"
-        class="hidden xl:flex self-end"
-      >
-        <template #prefix>
-          <span class="text-xs text-gray-300 uppercase">
-            {{ $t('account.account') }}
-          </span>
-        </template>
-
-        <template #default="{ selected }">
-          <span v-if="selected" class="text-xs text-blue-500 uppercase">
-            {{ selected.display }}
-          </span>
-        </template>
-
-        <template #option="{ option }">
-          <span class="text-xs uppercase text-white">
-            {{ option.display }}
-          </span>
-        </template>
-      </AppSelect>
+      <PartialsCommonSubaccountSelector
+        @update:subaccount="$emit('update:subaccount')"
+      />
     </div>
   </div>
 </template>
