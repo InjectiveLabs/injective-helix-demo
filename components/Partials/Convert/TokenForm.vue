@@ -11,7 +11,7 @@ import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 
@@ -109,7 +109,7 @@ const { value: orderType, setValue: setOrderType } = useStringField({
 })
 
 onMounted(() => {
-  if (!bankStore.hasEnoughInjForGas) {
+  if (!accountStore.hasEnoughInjForGas) {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

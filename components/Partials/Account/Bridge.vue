@@ -12,7 +12,7 @@ import {
   TransferDirection
 } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
@@ -80,7 +80,7 @@ function handleTransfer(token: Token = injToken) {
   formValues[BridgeField.TransferDirection] =
     TransferDirection.bankToTradingAccount
 
-  if (!bankStore.hasEnoughInjForGas) {
+  if (!accountStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 

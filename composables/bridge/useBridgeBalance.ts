@@ -18,10 +18,10 @@ export function useBridgeBalance({
 }) {
   const tokenStore = useTokenStore()
   const peggyStore = usePeggyStore()
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
 
   const bankBalancesWithToken = computed(() => {
-    return bankStore.bankBalances
+    return accountStore.bankBalances
       .map((bankBalance) => {
         const token = tokenStore.tradeableTokens.find(
           (token) =>

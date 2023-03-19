@@ -15,7 +15,7 @@ import {
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -149,7 +149,7 @@ watch(
                 v-if="
                   fetchStatus.isIdle() &&
                   walletStore.isUserWalletConnected &&
-                  !bankStore.hasEnoughInjForGas
+                  !accountStore.hasEnoughInjForGas
                 "
                 class="bg-gray-1000 rounded-lg mb-1 p-6"
               >

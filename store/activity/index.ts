@@ -45,7 +45,7 @@ export const useActivityStore = defineStore('activity', {
 
     async fetchTradingRewardsHistory() {
       const activityStore = useActivityStore()
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId || !injectiveAddress) {
@@ -64,7 +64,7 @@ export const useActivityStore = defineStore('activity', {
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {

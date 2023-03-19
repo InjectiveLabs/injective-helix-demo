@@ -4,10 +4,11 @@ import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
 import { ActivityTab, ActivityView, ActivityForm, ActivityField } from '@/types'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
-const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
@@ -24,6 +25,8 @@ const action = computed(() => {
   switch (view.value) {
     case ActivityView.FundingPayments:
       return activityStore.fetchSubaccountFundingPayments
+    case ActivityView.Positions:
+      return positionStore.fetchSubaccountPositions
     case ActivityView.SpotOrderHistory:
       return spotStore.fetchSubaccountOrderHistory
     case ActivityView.SpotTradeHistory:
@@ -52,39 +55,19 @@ const action = computed(() => {
 })
 
 onMounted(() => {
-  const promises = [
-    activityStore.streamDerivativeSubaccountOrderHistory(),
-    activityStore.streamDerivativeSubaccountTrades(),
-    activityStore.streamSpotSubaccountOrderHistory(),
-    activityStore.streamSpotSubaccountTrades(),
-    derivativeStore.fetchSubaccountOrders(),
-    derivativeStore.streamMarketsMarkPrices(),
-    derivativeStore.fetchSubaccountConditionalOrders(),
-    derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions(),
-    positionStore.streamSubaccountPositions(),
-    spotStore.fetchSubaccountOrders(),
-    spotStore.streamSubaccountOrders()
-  ]
-
-  Promise.all(promises)
-    .then(() => {
-      fetchData()
-    })
-    .catch($onError)
+  refetchData()
 })
 
 onUnmounted(() => {
   activityStore.$reset()
   derivativeStore.resetSubaccount()
   spotStore.resetSubaccount()
+  accountStore.resetToDefaultSubaccount()
 })
 
 function fetchData() {
   if (!action.value) {
-    status.setIdle()
-
-    return
+    return status.setIdle()
   }
 
   status.setLoading()
@@ -103,6 +86,29 @@ function fetchData() {
     .finally(() => {
       status.setIdle()
     })
+}
+
+function refetchData() {
+  const fetchDataPromises = [
+    activityStore.streamDerivativeSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountTrades(),
+    activityStore.streamSpotSubaccountOrderHistory(),
+    activityStore.streamSpotSubaccountTrades(),
+    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
+    derivativeStore.fetchSubaccountConditionalOrders(),
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    spotStore.fetchSubaccountOrders(),
+    spotStore.streamSubaccountOrders()
+  ]
+
+  Promise.all(fetchDataPromises)
+    .then(() => {
+      fetchData()
+    })
+    .catch($onError)
 }
 
 function onTabChange(tab: string) {
@@ -139,6 +145,13 @@ function onViewChange() {
     fetchData()
   })
 }
+
+function onSubaccountChange() {
+  resetForm()
+  nextTick(() => {
+    refetchData()
+  })
+}
 </script>
 
 <template>
@@ -156,6 +169,7 @@ function onViewChange() {
       class="pb-4 xs:pb-6"
       :tab="tab"
       @update:view="onViewChange"
+      @update:subaccount="onSubaccountChange"
     />
 
     <div class="h-full rounded-xl overflow-y-auto">

@@ -11,7 +11,7 @@ export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
 
 export const streamBankBalance = () => {
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
   if (!walletStore.injectiveAddress) {
@@ -21,11 +21,11 @@ export const streamBankBalance = () => {
   grpcStreamBankBalances({
     accountAddress: walletStore.injectiveAddress,
     callback: ({ amount, denom }) => {
-      const bankBalancesExcludingDenom = bankStore.bankBalances.filter(
+      const bankBalancesExcludingDenom = accountStore.bankBalances.filter(
         (balance: Coin) => balance.denom !== denom
       )
 
-      bankStore.$patch({
+      accountStore.$patch({
         bankBalances: [...bankBalancesExcludingDenom, { denom, amount }]
       })
     }
@@ -33,29 +33,29 @@ export const streamBankBalance = () => {
 }
 
 export const streamSubaccountBalance = () => {
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  if (!bankStore.subaccountId) {
+  if (!accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountBalance({
     accountAddress: walletStore.injectiveAddress,
-    subaccountId: bankStore.subaccountId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ amount, denom }) => {
-      const accountBalancesExcludingDenom = (
-        bankStore.subaccountBalancesMap[bankStore.subaccountId] || []
-      ).filter((balance: SubaccountBalance) => balance.denom !== denom)
+      const accountBalancesExcludingDenom = accountStore.subaccountBalancesMap[
+        accountStore.subaccountId
+      ].filter((balance: SubaccountBalance) => balance.denom !== denom)
 
       const subaccountBalancesMap = {
-        [bankStore.subaccountId]: [
+        [accountStore.subaccountId]: [
           ...accountBalancesExcludingDenom,
           { denom, totalBalance: amount, availableBalance: '0' }
         ]
       }
 
-      bankStore.$patch({
+      accountStore.$patch({
         subaccountBalancesMap
       })
     }

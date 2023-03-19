@@ -1,34 +1,34 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
-import { bankApi, indexerAccountPortfolioApi } from '@/app/Services'
+import { indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
   streamSubaccountBalance,
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
-} from '@/store/bank/stream'
-import { deposit, transfer, withdraw } from '@/store/bank/message'
-import { SubaccountBalance } from '~~/types'
+} from '@/store/account/stream'
+import { deposit, transfer, withdraw } from '@/store/account/message'
+import { SubaccountBalance } from '@/types'
 
-type BankStoreState = {
+type AccountStoreState = {
   // currently selected subaccountId, set at the default one until we have multi-subaccount support
   subaccountId: string
   bankBalances: Coin[]
-  subaccountBalancesMap: Record<string, SubaccountBalance[] | undefined>
+  subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
-const initialStateFactory = (): BankStoreState => ({
+const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
   subaccountBalancesMap: {}
 })
 
-export const useBankStore = defineStore('bank', {
-  state: (): BankStoreState => initialStateFactory(),
+export const useAccountStore = defineStore('account', {
+  state: (): AccountStoreState => initialStateFactory(),
   getters: {
-    balanceMap: (state: BankStoreState) => {
+    balanceMap: (state: AccountStoreState) => {
       if (state.bankBalances.length === 0) {
         return {}
       }
@@ -38,7 +38,7 @@ export const useBankStore = defineStore('bank', {
       }, {} as Record<string, string>)
     },
 
-    defaultSubaccountBalances: (state: BankStoreState) => {
+    defaultSubaccountBalances: (state: AccountStoreState) => {
       const walletStore = useWalletStore()
 
       if (!walletStore.defaultSubaccountId) {
@@ -46,6 +46,16 @@ export const useBankStore = defineStore('bank', {
       }
 
       return state.subaccountBalancesMap[walletStore.defaultSubaccountId]
+    },
+
+    isDefaultSubaccount: (state: AccountStoreState) => {
+      const walletStore = useWalletStore()
+
+      return walletStore.defaultSubaccountId === state.subaccountId
+    },
+
+    hasMultipleSubaccounts: (state: AccountStoreState) => {
+      return Object.keys(state.subaccountBalancesMap).length > 1
     },
 
     hasEnoughInjForGas: (state) => {
@@ -70,7 +80,7 @@ export const useBankStore = defineStore('bank', {
     streamSubaccountBalance,
 
     async fetchAccountPortfolio() {
-      const bankStore = useBankStore()
+      const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
       if (!walletStore.injectiveAddress) {
@@ -81,27 +91,23 @@ export const useBankStore = defineStore('bank', {
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
           walletStore.injectiveAddress
         )
-      const bankBalances = await bankApi.fetchBalances(
-        walletStore.injectiveAddress
-      )
 
-      const defaultAccountBalances = accountPortfolio?.subaccountsList.reduce(
-        (accountBalances, balance) => {
-          if (balance.subaccountId === walletStore.defaultSubaccountId) {
-            return [
-              ...accountBalances,
-              {
-                denom: balance.denom,
-                totalBalance: balance.deposit?.totalBalance || '0',
-                availableBalance: balance.deposit?.availableBalance || '0'
-              } as SubaccountBalance
-            ]
-          }
+      const defaultAccountBalances = (
+        accountPortfolio?.subaccountsList || []
+      ).reduce((accountBalances, balance) => {
+        if (balance.subaccountId === walletStore.defaultSubaccountId) {
+          return [
+            ...accountBalances,
+            {
+              denom: balance.denom,
+              totalBalance: balance.deposit?.totalBalance || '0',
+              availableBalance: balance.deposit?.availableBalance || '0'
+            } as SubaccountBalance
+          ]
+        }
 
-          return accountBalances
-        },
-        [] as SubaccountBalance[]
-      )
+        return accountBalances
+      }, [] as SubaccountBalance[])
 
       const nonDefaultSubaccounts = accountPortfolio?.subaccountsList.reduce(
         (accountBalances, subaccountBalance) => {
@@ -134,9 +140,9 @@ export const useBankStore = defineStore('bank', {
         {} as Record<string, SubaccountBalance[]>
       )
 
-      bankStore.$patch({
+      accountStore.$patch({
         subaccountId: walletStore.defaultSubaccountId,
-        bankBalances: bankBalances.balances || [],
+        bankBalances: accountPortfolio?.bankBalancesList || [],
         subaccountBalancesMap: {
           [walletStore.defaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
@@ -147,7 +153,21 @@ export const useBankStore = defineStore('bank', {
     reset() {
       cancelBankBalanceStream()
       cancelSubaccountBalanceStream()
-      useBankStore().$reset()
+      useAccountStore().$reset()
+    },
+
+    /**
+     * Reset to the default subaccount
+     * as we don't allow using others page
+     * except the activity/account page for now
+     */
+    resetToDefaultSubaccount() {
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
+
+      accountStore.$patch({
+        subaccountId: walletStore.defaultSubaccountId
+      })
     }
   }
 })
