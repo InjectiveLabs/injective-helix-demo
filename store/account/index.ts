@@ -8,9 +8,9 @@ import {
   streamSubaccountBalance,
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
-} from '~~/store/account/stream'
-import { deposit, transfer, withdraw } from '~~/store/account/message'
-import { SubaccountBalance } from '~~/types'
+} from '@/store/account/stream'
+import { deposit, transfer, withdraw } from '@/store/account/message'
+import { SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
   // currently selected subaccountId, set at the default one until we have multi-subaccount support

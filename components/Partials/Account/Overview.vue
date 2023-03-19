@@ -29,13 +29,8 @@ const emit = defineEmits<{
 
 const { aggregatedPortfolioBalances } = useBalance()
 
-const isDefaultSubaccount = computed(() => accountStore.isDefaultSubaccount)
-const hasMultipleSubaccounts = computed(
-  () => accountStore.hasMultipleSubaccounts
-)
-
-const remainingAccountBalances = computed(() => {
-  return Object.keys(aggregatedPortfolioBalances.value).reduce(
+const remainingAccountBalances = computed(() =>
+  Object.keys(aggregatedPortfolioBalances.value).reduce(
     (balances, subaccountId) => {
       /**
        * For the currently selected subaccount we use the currentSubaccountBalances
@@ -49,7 +44,7 @@ const remainingAccountBalances = computed(() => {
     },
     [] as AccountBalance[]
   )
-})
+)
 
 const currentSubaccountTotalBalanceInUsd = computed(() =>
   props.currentSubaccountBalances.reduce(
@@ -162,7 +157,7 @@ function handleWithdrawClick() {
       </div>
 
       <div
-        v-if="!isLoading && isDefaultSubaccount"
+        v-if="!isLoading && accountStore.isDefaultSubaccount"
         class="flex items-center justify-between md:justify-end sm:gap-4"
       >
         <AppButton class="bg-blue-500" @click="handleDepositClick">
@@ -180,7 +175,7 @@ function handleWithdrawClick() {
     </div>
 
     <PartialsAccountSubaccountOverview
-      v-if="!isLoading && hasMultipleSubaccounts"
+      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
       v-bind="{
         currentSubaccountBalances
       }"

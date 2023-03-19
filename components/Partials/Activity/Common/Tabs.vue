@@ -25,9 +25,6 @@ const emit = defineEmits<{
   (e: 'update:subaccount', subaccount: string): void
 }>()
 
-const hasMultipleSubaccounts = computed(
-  () => accountStore.hasMultipleSubaccounts
-)
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
@@ -212,7 +209,10 @@ const tabViewList = computed(() => {
       <CommonSeparator v-if="index !== Object.values(tabViewList).length - 1" />
     </template>
 
-    <span v-if="hasMultipleSubaccounts" class="hidden ml-auto xl:flex">
+    <span
+      v-if="accountStore.hasMultipleSubaccounts"
+      class="hidden ml-auto xl:flex"
+    >
       <AppSelect
         v-model="subaccount"
         :options="subaccountSelectOptions"

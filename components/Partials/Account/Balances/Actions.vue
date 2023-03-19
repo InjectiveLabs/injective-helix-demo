@@ -19,10 +19,6 @@ const emit = defineEmits<{
   (e: 'update:subaccount', state: string): void
 }>()
 
-const hasMultipleSubaccounts = computed(
-  () => accountStore.hasMultipleSubaccounts
-)
-
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
@@ -113,7 +109,7 @@ const search = computed({
       </AppCheckbox>
 
       <AppSelect
-        v-if="hasMultipleSubaccounts"
+        v-if="accountStore.hasMultipleSubaccounts"
         v-model="subaccount"
         :options="subaccountSelectOptions"
         class="hidden xl:flex self-end"
