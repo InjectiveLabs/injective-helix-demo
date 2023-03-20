@@ -9,7 +9,6 @@ import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const { t } = useLang()
 const route = useRoute()
 const { $onError } = useNuxtApp()
@@ -196,7 +195,6 @@ function onCancelOrder() {
           v-if="orderFillable"
           :status="status"
           data-cy="order-cancel-link"
-          :disabled="!accountStore.isDefaultSubaccount"
           @click="onCancelOrder"
         />
         <span v-else class="inline-block">&mdash;</span>

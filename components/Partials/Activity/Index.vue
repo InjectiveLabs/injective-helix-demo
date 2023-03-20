@@ -149,6 +149,8 @@ function onViewChange() {
 function onSubaccountChange() {
   resetForm()
   nextTick(() => {
+    derivativeStore.resetSubaccount()
+    spotStore.resetSubaccount()
     refetchData()
   })
 }

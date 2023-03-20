@@ -3,7 +3,6 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const derivativeStore = useDerivativeStore()
-const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -86,7 +85,6 @@ function handleCancelOrders() {
         class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
         :status="actionStatus"
         data-cy="activity-cancel-all-button"
-        :disabled="!accountStore.isDefaultSubaccount"
         @click="handleCancelOrders"
       >
         <span class="whitespace-nowrap">
