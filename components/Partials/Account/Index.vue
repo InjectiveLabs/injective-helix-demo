@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
+import { BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
@@ -14,13 +13,6 @@ const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useToken()
-
-const props = defineProps({
-  currentSubaccountBalances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
-})
 
 const FilterList = {
   Balances: 'balances',
@@ -33,6 +25,9 @@ const status = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
+
+const { accountBalancesWithTokenInBases: currentSubaccountBalances } =
+  useBalance()
 
 onMounted(() => {
   handleViewFromRoute()
@@ -93,7 +88,7 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice(props.currentSubaccountBalances.map((b) => b.token))
+  fetchTokenUsdPrice(currentSubaccountBalances.value.map((b) => b.token))
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }
