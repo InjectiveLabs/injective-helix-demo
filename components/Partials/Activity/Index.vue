@@ -21,11 +21,7 @@ const status = reactive(new Status(StatusType.Loading))
 
 const filterRef = ref()
 const paginationRef = ref()
-const tab = ref(
-  Object.values(ActivityTab).includes(route.query.tab as ActivityTab)
-    ? route.query.tab
-    : ActivityTab.Positions
-)
+const tab = ref(ActivityTab.Positions)
 const view = ref(ActivityView.Positions)
 
 const action = computed(() => {
@@ -62,6 +58,7 @@ const action = computed(() => {
 })
 
 onMounted(() => {
+  tab.value = queryTab.value
   refetchData()
 })
 
@@ -166,6 +163,21 @@ function onSubaccountChange() {
     refetchData()
   })
 }
+
+const queryTab = computed(() => {
+  const query = (
+    typeof route.query.tab === 'string'
+      ? route.query.tab
+      : (route.query.tab && route.query.tab[0]) || null
+  ) as ActivityTab
+  if (query) {
+    return Object.values(ActivityTab).includes(query)
+      ? query
+      : ActivityTab.Positions
+  } else {
+    return ActivityTab.Positions
+  }
+})
 </script>
 
 <template>
