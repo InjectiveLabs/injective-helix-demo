@@ -44,6 +44,7 @@ export default {
     emptyWithdrawalTransactions: 'No withdrawals found',
     subaccountDepositType: 'Injective Wallet to Trading Account',
     subaccountWithdrawalType: 'Trading Account to Injective Wallet',
+    subaccountInternalTransferType: 'Trading Account to Trading Account',
     INJTransferType: 'Injective to Injective',
     axelarDepositType: 'Axelar to Injective',
     chihuahuaDepositType: 'Chihuahua to Injective',
