@@ -85,6 +85,6 @@ export default {
     explorer: 'explorer',
     default: 'Default',
     account: 'Subaccount',
-    accountBalance: 'Subccount Balance'
+    accountBalance: 'Subaccount Balance'
   }
 }
