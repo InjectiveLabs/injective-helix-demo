@@ -28,7 +28,10 @@ function handleClick() {
 <template>
   <div
     class="flex justify-end items-center"
-    :class="{ 'h-5 w-5 min-h-5 min-w-6': sm, 'h-6 w-6 min-h-6 min-w-6': !sm }"
+    :class="{
+      'h-5 w-5 min-h-5 min-w-6': sm,
+      'h-6 w-6 min-h-6 min-w-6': !sm
+    }"
     @click="handleClick"
   >
     <AppSpinner v-if="status.isLoading()" sm white />
