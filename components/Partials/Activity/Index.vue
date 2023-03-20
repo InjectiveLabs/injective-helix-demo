@@ -58,7 +58,6 @@ const action = computed(() => {
 })
 
 onMounted(() => {
-  tab.value = queryTab.value
   refetchData()
 })
 
@@ -119,28 +118,6 @@ function onTabChange(tab: string) {
   router.push({ query: { tab } })
 }
 
-watch(
-  () => tab.value,
-  () => {
-    switch (tab.value) {
-      case ActivityTab.Positions:
-        view.value = ActivityView.Positions
-        break
-      case ActivityTab.Derivatives:
-        view.value = ActivityView.DerivativeOrders
-        break
-      case ActivityTab.Spot:
-        view.value = ActivityView.SpotOrders
-        break
-      default:
-        view.value = ActivityView.WalletTransfers
-        break
-    }
-    onViewChange()
-  },
-  { immediate: true }
-)
-
 function handleFilterChange() {
   setFieldValue(ActivityField.Page, 1)
   setFieldValue(ActivityField.Limit, UI_DEFAULT_PAGINATION_LIMIT_COUNT)
@@ -164,20 +141,41 @@ function onSubaccountChange() {
   })
 }
 
-const queryTab = computed(() => {
-  const query = (
-    typeof route.query.tab === 'string'
-      ? route.query.tab
-      : (route.query.tab && route.query.tab[0]) || null
+function setTabFromQuery() {
+  const { query } = route
+
+  const activityTab = (
+    typeof query.tab === 'string' ? query.tab.trim().toLowerCase() : query.tab
   ) as ActivityTab
-  if (query) {
-    return Object.values(ActivityTab).includes(query)
-      ? query
-      : ActivityTab.Positions
-  } else {
-    return ActivityTab.Positions
+
+  if (activityTab && Object.values(ActivityTab).includes(activityTab)) {
+    tab.value = activityTab
   }
-})
+}
+
+watch(
+  () => tab.value,
+  () => {
+    switch (tab.value) {
+      case ActivityTab.Positions:
+        view.value = ActivityView.Positions
+        break
+      case ActivityTab.Derivatives:
+        view.value = ActivityView.DerivativeOrders
+        break
+      case ActivityTab.Spot:
+        view.value = ActivityView.SpotOrders
+        break
+      default:
+        view.value = ActivityView.WalletTransfers
+        break
+    }
+    onViewChange()
+  },
+  { immediate: true }
+)
+
+watch(() => route.query, setTabFromQuery, { immediate: true })
 </script>
 
 <template>
