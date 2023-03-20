@@ -45,11 +45,12 @@ export const usePeggyStore = defineStore('peggy', {
             usdPrice: 0
           } as BalanceWithTokenWithErc20BalanceWithPrice)
       )
-      const coinGeckoIdsList = tradeableBalancesWithTokenAndPrice.map(
-        (balanceWithToken) => balanceWithToken.token.coinGeckoId
-      )
 
-      tokenStore.fetchTokenUsdPriceMap(coinGeckoIdsList)
+      tokenStore.fetchTokenUsdPriceMap(
+        tradeableBalancesWithTokenAndPrice.map(
+          (balanceWithToken) => balanceWithToken.token.coinGeckoId
+        )
+      )
 
       peggyStore.$patch({
         tradeableErc20BalancesWithTokenAndPrice:

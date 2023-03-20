@@ -144,6 +144,10 @@ const { value: memo, resetField: resetMemo } = useStringField({
   })
 })
 
+onMounted(() => {
+  peggyStore.getErc20BalancesWithTokenAndPrice()
+})
+
 function handleAmountChange({ amount }: { amount: string }) {
   formValues.value[BridgeField.Amount] = amount
 }
