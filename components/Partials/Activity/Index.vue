@@ -14,11 +14,18 @@ const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
 })
 
+const router = useRouter()
+const route = useRoute()
+
 const status = reactive(new Status(StatusType.Loading))
 
 const filterRef = ref()
 const paginationRef = ref()
-const tab = ref(ActivityTab.Positions)
+const tab = ref(
+  Object.values(ActivityTab).includes(route.query.tab as ActivityTab)
+    ? route.query.tab
+    : ActivityTab.Positions
+)
 const view = ref(ActivityView.Positions)
 
 const action = computed(() => {
@@ -112,23 +119,30 @@ function refetchData() {
 }
 
 function onTabChange(tab: string) {
-  switch (tab) {
-    case ActivityTab.Positions:
-      view.value = ActivityView.Positions
-      break
-    case ActivityTab.Derivatives:
-      view.value = ActivityView.DerivativeOrders
-      break
-    case ActivityTab.Spot:
-      view.value = ActivityView.SpotOrders
-      break
-    default:
-      view.value = ActivityView.WalletTransfers
-      break
-  }
-
-  onViewChange()
+  router.push({ query: { tab } })
 }
+
+watch(
+  () => tab.value,
+  () => {
+    switch (tab.value) {
+      case ActivityTab.Positions:
+        view.value = ActivityView.Positions
+        break
+      case ActivityTab.Derivatives:
+        view.value = ActivityView.DerivativeOrders
+        break
+      case ActivityTab.Spot:
+        view.value = ActivityView.SpotOrders
+        break
+      default:
+        view.value = ActivityView.WalletTransfers
+        break
+    }
+    onViewChange()
+  },
+  { immediate: true }
+)
 
 function handleFilterChange() {
   setFieldValue(ActivityField.Page, 1)
