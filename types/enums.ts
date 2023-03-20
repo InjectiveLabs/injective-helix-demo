@@ -308,7 +308,7 @@ export enum ActivityTab {
   Positions = 'positions',
   Derivatives = 'derivatives',
   Spot = 'spot',
-  WalletHistory = 'walletHistory'
+  WalletHistory = 'wallet-history'
 }
 
 export enum AggregatedBalanceType {

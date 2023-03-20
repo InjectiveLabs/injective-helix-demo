@@ -112,6 +112,9 @@ function refetchData() {
       fetchData()
     })
     .catch($onError)
+    .finally(() => {
+      setTabFromQuery()
+    })
 }
 
 function onTabChange(tab: string) {
@@ -170,6 +173,7 @@ watch(
         view.value = ActivityView.WalletTransfers
         break
     }
+
     onViewChange()
   },
   { immediate: true }
