@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
+import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
@@ -16,12 +17,14 @@ type AccountStoreState = {
   // currently selected subaccountId, set at the default one until we have multi-subaccount support
   subaccountId: string
   bankBalances: Coin[]
+  positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
+  positionsWithUpnl: [],
   subaccountBalancesMap: {}
 })
 
@@ -93,7 +96,7 @@ export const useAccountStore = defineStore('account', {
         )
 
       const defaultAccountBalances = (
-        accountPortfolio?.subaccountsList || []
+        accountPortfolio.subaccountsList || []
       ).reduce((accountBalances, balance) => {
         if (balance.subaccountId === walletStore.defaultSubaccountId) {
           return [
@@ -109,7 +112,7 @@ export const useAccountStore = defineStore('account', {
         return accountBalances
       }, [] as SubaccountBalance[])
 
-      const nonDefaultSubaccounts = accountPortfolio?.subaccountsList.reduce(
+      const nonDefaultSubaccounts = accountPortfolio.subaccountsList.reduce(
         (accountBalances, subaccountBalance) => {
           if (
             subaccountBalance.subaccountId === walletStore.defaultSubaccountId
@@ -142,7 +145,8 @@ export const useAccountStore = defineStore('account', {
 
       accountStore.$patch({
         subaccountId: walletStore.defaultSubaccountId,
-        bankBalances: accountPortfolio?.bankBalancesList || [],
+        bankBalances: accountPortfolio.bankBalancesList || [],
+        positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {
           [walletStore.defaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
