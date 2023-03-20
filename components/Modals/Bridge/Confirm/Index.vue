@@ -68,7 +68,12 @@ const balanceWithTokenAndPrice = computed(() => {
 })
 
 const usdPrice = computed(
-  () => new BigNumberInBase(balanceWithTokenAndPrice.value?.usdPrice || 0)
+  () =>
+    new BigNumberInBase(
+      tokenStore.tokenUsdPrice(
+        balanceWithTokenAndPrice.value?.token.coinGeckoId || ''
+      )
+    )
 )
 
 const amount = computed(
@@ -95,13 +100,11 @@ const ethBridgeFee = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (!balanceWithTokenAndPrice.value.usdPrice) {
+  if (!usdPrice.value) {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(
-    balanceWithTokenAndPrice.value.usdPrice
-  )
+  return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
 })
 
 const { valueToString: ethBridgeFeeToString } = useBigNumberFormatter(

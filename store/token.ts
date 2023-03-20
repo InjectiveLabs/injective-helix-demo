@@ -101,6 +101,14 @@ export const useTokenStore = defineStore('token', {
       tokenStore.$patch({
         tokens
       })
+    },
+
+    getTradeableTokensPriceMap() {
+      const tokenStore = useTokenStore()
+
+      tokenStore.fetchTokenUsdPriceMap(
+        tokenStore.tradeableTokens.map((token) => token.coinGeckoId)
+      )
     }
   }
 })

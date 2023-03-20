@@ -129,7 +129,7 @@ export function useBalance() {
     return tokenStore.tradeableTokens.map((token) => {
       const isDefaultTradingAccount =
         walletStore.defaultSubaccountId === accountStore.subaccountId
-      const denom = token.denom.toLowerCase()
+      const denom = token.denom
       const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
 
       const bankBalance = accountStore.balanceMap[token.denom] || '0'
@@ -138,7 +138,7 @@ export function useBalance() {
         accountStore.subaccountBalancesMap[accountStore.subaccountId]
 
       const subaccountBalance = subaccountBalances.find(
-        (balance) => balance.denom.toLowerCase() === denom
+        (balance) => balance.denom === denom
       )
       const subaccountAvailableBalance =
         subaccountBalance?.availableBalance || '0'
