@@ -59,7 +59,7 @@ export function useBalance() {
           [subaccountId]: tokenStore.tradeableTokens.map((token) => {
             const isDefaultTradingAccount =
               walletStore.defaultSubaccountId === subaccountId
-            const denom = token.denom.toLowerCase()
+            const denom = token.denom
             const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
 
             const bankBalance = accountStore.balanceMap[token.denom] || '0'
@@ -68,7 +68,7 @@ export function useBalance() {
               accountStore.subaccountBalancesMap[subaccountId]
 
             const subaccountBalance = subaccountBalances.find(
-              (balance) => balance.denom.toLowerCase() === denom
+              (balance) => balance.denom === denom
             )
             const subaccountAvailableBalance =
               subaccountBalance?.availableBalance || '0'
@@ -86,7 +86,7 @@ export function useBalance() {
 
             const positionWithPnlAndDenom =
               positionsForSubaccountWithDenom.find(
-                (position) => position.denom?.toLowerCase() === denom
+                (position) => position.denom === denom
               )
             const unrealizedPnl = new BigNumberInWei(
               positionWithPnlAndDenom?.unrealizedPnl || '0'
@@ -161,7 +161,7 @@ export function useBalance() {
         .map(usePositionWithDenom)
         .filter((position) => position.denom)
       const positionWithPnlAndDenom = positionsForSubaccountWithDenom.find(
-        (position) => position.denom?.toLowerCase() === denom
+        (position) => position.denom === denom
       )
       const unrealizedPnl = new BigNumberInWei(
         positionWithPnlAndDenom?.unrealizedPnl || '0'
@@ -258,7 +258,7 @@ export function useBalance() {
     denoms: string[]
   }) => {
     const filteredBalances = balances.filter((balance) =>
-      denoms.includes(balance.token.denom.toLowerCase())
+      denoms.includes(balance.token.denom)
     )
 
     if (!filteredBalances.length) {

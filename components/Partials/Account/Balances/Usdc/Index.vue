@@ -22,22 +22,20 @@ const showUsdcBalances = ref(true)
 
 const usdcBalances = computed(() =>
   props.balances.filter((balance) =>
-    usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+    usdcTokenDenoms.includes(balance.token.denom)
   )
 )
 
 // default usdc balance to show on accounts page
 const peggyUsdcetBalance = computed(() => {
   return props.balances.find(
-    (balance) =>
-      balance.denom.toLowerCase() === usdcTokenDenom.USDCet.toLowerCase()
+    (balance) => balance.denom === usdcTokenDenom.USDCet
   )
 })
 
 const hasPeggyUsdcBalance = computed(() => {
   const balance = props.balances.find(
-    (balance) =>
-      balance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
+    (balance) => balance.denom === usdcTokenDenom.USDC
   )
 
   return new BigNumberInBase(balance?.accountTotalBalance || 0).gt(0)

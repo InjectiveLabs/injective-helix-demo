@@ -212,7 +212,7 @@ export function usePositionWithDenom(
     }
   }
 
-  const quoteDenom = market.quoteDenom.toLowerCase()
+  const quoteDenom = market.quoteDenom
 
   return {
     ...positionWithPnl,

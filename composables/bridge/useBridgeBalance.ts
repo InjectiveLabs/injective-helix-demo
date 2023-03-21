@@ -24,8 +24,7 @@ export function useBridgeBalance({
     return accountStore.bankBalances
       .map((bankBalance) => {
         const token = tokenStore.tradeableTokens.find(
-          (token) =>
-            token.denom.toLowerCase() === bankBalance.denom.toLowerCase()
+          (token) => token.denom === bankBalance.denom
         )
 
         return {

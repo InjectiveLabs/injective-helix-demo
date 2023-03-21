@@ -37,15 +37,13 @@ const baseTradingBalance = computed(() => {
 
   return accountBalancesWithToken.value.find(
     (balance) =>
-      balance.denom.toLowerCase() ===
-      (props.market as UiSpotMarketWithToken).baseDenom.toLowerCase()
+      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
   )
 })
 
 const quoteTradingBalance = computed(() => {
   return accountBalancesWithToken.value.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
+    (balance) => balance.denom === props.market.quoteDenom
   )
 })
 

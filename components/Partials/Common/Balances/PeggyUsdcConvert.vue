@@ -16,18 +16,13 @@ const props = defineProps({
 })
 
 const hasUsdcPeggyBalance = computed(() => {
-  if (
-    usdcTokenDenom.USDCet.toLowerCase() !==
-    props.market.quoteDenom.toLowerCase()
-  ) {
+  if (usdcTokenDenom.USDCet !== props.market.quoteDenom) {
     return false
   }
 
   const peggyUsdcBalance = accountBalancesWithToken.value.find(
     (accountBalance) => {
-      return (
-        accountBalance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
-      )
+      return accountBalance.denom === usdcTokenDenom.USDC
     }
   )
 

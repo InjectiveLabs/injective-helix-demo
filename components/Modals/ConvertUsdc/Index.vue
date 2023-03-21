@@ -130,10 +130,7 @@ function closeModal() {
     </template>
     <AppHocLoading :status="status" class="justify-center">
       <div class="mx-auto bg-gray-850 rounded-lg justify-center">
-        <div
-          v-if="market.baseToken.denom.toLowerCase() === usdcTokenDenom.USDC"
-          class="mb-6"
-        >
+        <div v-if="market.baseToken.denom === usdcTokenDenom.USDC" class="mb-6">
           {{ $t('account.whyConvert') }}
         </div>
 

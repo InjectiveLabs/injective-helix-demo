@@ -18,17 +18,13 @@ defineProps({
     <span v-if="!isUsdcDenom">
       {{ balance.token.name }}
     </span>
-    <span v-else-if="balance.token.denom.toLowerCase() === usdcTokenDenom.USDC">
+    <span v-else-if="balance.token.denom === usdcTokenDenom.USDC">
       {{ $t('account.usdcPeggyToken') }}
     </span>
-    <span
-      v-else-if="balance.token.denom.toLowerCase() === usdcTokenDenom.USDCet"
-    >
+    <span v-else-if="balance.token.denom === usdcTokenDenom.USDCet">
       {{ $t('account.usdcWHEthereumToken') }}
     </span>
-    <span
-      v-else-if="balance.token.denom.toLowerCase() === usdcTokenDenom.USDCso"
-    >
+    <span v-else-if="balance.token.denom === usdcTokenDenom.USDCso">
       {{ $t('account.usdcWHSolanaToken') }}
     </span>
   </span>
