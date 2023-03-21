@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
+import { BusEvents, Modal } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -44,6 +45,7 @@ onMounted(() => {
     tokenStore.fetchSupplyTokenMeta()
   ])
 
+  openDevModeModal()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
@@ -62,6 +64,15 @@ function onCloseSideBar() {
     isOpenSidebar.value = false
 
     container.value?.classList.remove('overflow-y-hidden')
+  }
+}
+
+function openDevModeModal() {
+  const devModeExistsInQuery =
+    route.query.devMode && route.query.devMode === 'true'
+
+  if (devModeExistsInQuery && !walletStore.isUserWalletConnected) {
+    modalStore.openModal({ type: Modal.DevMode })
   }
 }
 </script>
@@ -110,6 +121,7 @@ function onCloseSideBar() {
                 <ModalsInsufficientInjForGas />
                 <ModalsNinjaPassWinner />
                 <ModalsUserFeedback />
+                <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />
               </div>

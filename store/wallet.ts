@@ -326,6 +326,26 @@ export const useWalletStore = defineStore('wallet', {
       await walletStore.onConnect()
     },
 
+    async connectAddress(injectiveAddress: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Metamask)
+
+      const addressConfirmation = await confirm(injectiveAddress)
+      const address = getEthereumAddress(injectiveAddress)
+
+      walletStore.$patch({
+        address,
+        addresses: [address],
+        injectiveAddress,
+        addressConfirmation
+      })
+
+      await walletStore.onConnect()
+    },
+
     setWalletConnectStatus(walletConnectStatus: WalletConnectStatus) {
       const walletStore = useWalletStore()
 
