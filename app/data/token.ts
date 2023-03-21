@@ -1,5 +1,8 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
-import { CW20_ADAPTER_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
+import {
+  getChecksumAddress,
+  CW20_ADAPTER_CONTRACT_BY_NETWORK
+} from '@injectivelabs/sdk-ts'
 import { Token, TokenType, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
@@ -95,7 +98,7 @@ export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
     return ''
   }
 
-  return `peggy${tokenMeta.erc20.address.toLowerCase()}`
+  return `peggy${getChecksumAddress(tokenMeta.erc20.address)}`
 }
 
 export const usdcTokenDenom = {

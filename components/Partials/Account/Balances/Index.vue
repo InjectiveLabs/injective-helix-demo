@@ -43,7 +43,7 @@ const balancesWithAggregation = computed<AccountBalanceWithAggregatedType[]>(
       : []
 
     const balanceWithoutAggregationDenoms = props.balances.filter(
-      (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+      (balance) => !usdcTokenDenoms.includes(balance.token.denom)
     )
 
     return [

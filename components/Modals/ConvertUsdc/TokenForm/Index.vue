@@ -101,9 +101,7 @@ onMounted(() => {
     modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 
-  if (
-    [usdcTokenDenom.USDC].includes(baseBalance.value?.denom.toLowerCase() || '')
-  ) {
+  if ([usdcTokenDenom.USDC].includes(baseBalance.value?.denom || '')) {
     handleMaxBaseAmountChange({
       amount: maxBalanceToFixed.value
     })
