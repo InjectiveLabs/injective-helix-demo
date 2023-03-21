@@ -14,6 +14,9 @@ const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
 })
 
+const router = useRouter()
+const route = useRoute()
+
 const status = reactive(new Status(StatusType.Loading))
 
 const filterRef = ref()
@@ -109,25 +112,13 @@ function refetchData() {
       fetchData()
     })
     .catch($onError)
+    .finally(() => {
+      setTabFromQuery()
+    })
 }
 
 function onTabChange(tab: string) {
-  switch (tab) {
-    case ActivityTab.Positions:
-      view.value = ActivityView.Positions
-      break
-    case ActivityTab.Derivatives:
-      view.value = ActivityView.DerivativeOrders
-      break
-    case ActivityTab.Spot:
-      view.value = ActivityView.SpotOrders
-      break
-    default:
-      view.value = ActivityView.WalletTransfers
-      break
-  }
-
-  onViewChange()
+  router.push({ query: { tab } })
 }
 
 function handleFilterChange() {
@@ -154,6 +145,43 @@ function onSubaccountChange() {
     refetchData()
   })
 }
+
+function setTabFromQuery() {
+  const { query } = route
+
+  const activityTab = (
+    typeof query.tab === 'string' ? query.tab.trim().toLowerCase() : query.tab
+  ) as ActivityTab
+
+  if (activityTab && Object.values(ActivityTab).includes(activityTab)) {
+    tab.value = activityTab
+  }
+}
+
+watch(
+  () => tab.value,
+  () => {
+    switch (tab.value) {
+      case ActivityTab.Positions:
+        view.value = ActivityView.Positions
+        break
+      case ActivityTab.Derivatives:
+        view.value = ActivityView.DerivativeOrders
+        break
+      case ActivityTab.Spot:
+        view.value = ActivityView.SpotOrders
+        break
+      default:
+        view.value = ActivityView.WalletTransfers
+        break
+    }
+
+    onViewChange()
+  },
+  { immediate: true }
+)
+
+watch(() => route.query, setTabFromQuery, { immediate: true })
 </script>
 
 <template>
