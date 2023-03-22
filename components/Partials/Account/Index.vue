@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, Modal, USDCSymbol } from '@/types'
 

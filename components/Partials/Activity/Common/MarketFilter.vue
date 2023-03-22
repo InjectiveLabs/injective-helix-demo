@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { PropType } from 'vue'
 import { ActivityTab } from '@/types'
 

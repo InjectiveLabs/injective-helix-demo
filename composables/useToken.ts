@@ -1,4 +1,4 @@
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 
 export function useToken() {
   const tokenStore = useTokenStore()

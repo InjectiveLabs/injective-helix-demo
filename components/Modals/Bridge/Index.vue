@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   Status,
   StatusType,

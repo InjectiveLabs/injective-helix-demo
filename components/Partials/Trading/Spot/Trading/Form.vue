@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
-import {
-  ZERO_IN_BASE,
-  SpotOrderSide,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   Modal,
   TradeForm,
@@ -72,25 +68,25 @@ const priceStep = computed(() =>
 )
 
 const isBuy = computed(
-  () => formValues.value[TradeField.OrderType] === SpotOrderSide.Buy
+  () => formValues.value[TradeField.OrderSide] === OrderSide.Buy
 )
 
 const orderTypeToSubmit = computed(() => {
   switch (true) {
     case formValues.value[TradeField.PostOnly] && isBuy.value: {
-      return SpotOrderSide.BuyPO
+      return OrderSide.BuyPO
     }
     case isBuy.value: {
-      return SpotOrderSide.Buy
+      return OrderSide.Buy
     }
     case formValues.value[TradeField.PostOnly] && !isBuy.value: {
-      return SpotOrderSide.SellPO
+      return OrderSide.SellPO
     }
     case !isBuy.value: {
-      return SpotOrderSide.Sell
+      return OrderSide.Sell
     }
     default: {
-      return SpotOrderSide.Buy
+      return OrderSide.Buy
     }
   }
 })
@@ -266,7 +262,7 @@ function submitLimitOrder() {
       market: props.market,
       price: limitPrice.value,
       quantity: baseAmount.value,
-      orderType: orderTypeToSubmit.value
+      orderSide: orderTypeToSubmit.value
     })
     .then(() => {
       handleAttemptPlaceOrderTrack()
@@ -343,7 +339,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     market: props.market.slug,
     marketType: props.market.subType,
     amount: formValues.value[TradeField.BaseAmount],
-    orderType: formValues.value[TradeField.OrderType],
+    orderSide: formValues.value[TradeField.OrderSide],
     limitPrice: formValues.value[TradeField.LimitPrice],
     tradingType: formValues.value[TradeField.TradingType]
   })
@@ -356,7 +352,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
       @form:reset="setDefaultFormValues"
     />
 
-    <PartialsTradingFormOrderTypeSelect
+    <PartialsTradingFormOrderSideSelect
       v-bind="{ market: props.market }"
       @update:formValue="updateFormValue"
     />

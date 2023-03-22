@@ -7,7 +7,7 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   BridgeBusEvents,
   UiMarketWithToken,

@@ -2,10 +2,10 @@
 import { PropType } from 'vue'
 import {
   BalanceWithToken,
-  SpotOrderSide,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
@@ -49,7 +49,7 @@ const { accountBalancesWithToken } = useBalance()
 const { tradableSlugMap, tradableTokensMap, getMarketsForQuoteDenom } =
   useConvertFormatter()
 
-const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
+const isBuy = computed(() => orderType.value === OrderSide.Buy)
 
 const { value: baseTokenDenom, setValue: setBaseTokenDenom } = useStringField({
   name: TradeField.BaseDenom
@@ -103,9 +103,9 @@ const quoteTokensWithBalance = computed(() => {
   })
 })
 
-const { value: orderType, setValue: setOrderType } = useStringField({
-  name: TradeField.OrderType,
-  initialValue: SpotOrderSide.Buy
+const { value: orderType, setValue: setOrderSide } = useStringField({
+  name: TradeField.OrderSide,
+  initialValue: OrderSide.Buy
 })
 
 onMounted(() => {
@@ -141,8 +141,8 @@ function handleUpdateMarket() {
   }
 }
 
-function toggleOrderType() {
-  setOrderType(isBuy.value ? SpotOrderSide.Sell : SpotOrderSide.Buy)
+function toggleOrderSide() {
+  setOrderSide(isBuy.value ? OrderSide.Sell : OrderSide.Buy)
 }
 
 function handleSwap() {
@@ -153,7 +153,7 @@ function handleSwap() {
   formValues.value[TradeField.BaseAmount] = ''
   formValues.value[TradeField.QuoteAmount] = ''
 
-  toggleOrderType()
+  toggleOrderSide()
 }
 
 function updateAmount({
@@ -201,7 +201,7 @@ function setMarketFromQuery() {
   }
 
   emit('update:market', market)
-  setOrderType(orderType)
+  setOrderSide(orderType)
   setBaseTokenDenom(market.baseDenom)
   setQuoteTokenDenom(market.quoteDenom)
 }

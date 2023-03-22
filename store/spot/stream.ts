@@ -1,5 +1,4 @@
-import { SpotOrderState } from '@injectivelabs/sdk-ts'
-import { StreamOperation } from '@injectivelabs/ts-types'
+import { OrderState, StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -121,9 +120,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
       }
 
       switch (order.state) {
-        case SpotOrderState.Booked:
-        case SpotOrderState.Unfilled:
-        case SpotOrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Unfilled:
+        case OrderState.PartialFilled: {
           const subaccountOrders = [
             order,
             ...spotStore.subaccountOrders.filter(
@@ -138,8 +137,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           break
         }
-        case SpotOrderState.Canceled:
-        case SpotOrderState.Filled: {
+        case OrderState.Canceled:
+        case OrderState.Filled: {
           const subaccountOrders = spotStore.subaccountOrders
             .filter((o) => o.orderHash !== order.orderHash)
             .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
@@ -180,10 +179,10 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
       }
 
       switch (order.state) {
-        case SpotOrderState.Booked:
-        case SpotOrderState.Filled:
-        case SpotOrderState.Unfilled:
-        case SpotOrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Filled:
+        case OrderState.Unfilled:
+        case OrderState.PartialFilled: {
           const subaccountOrderHistory = [
             order,
             ...spotStore.subaccountOrderHistory.filter(
@@ -198,7 +197,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
           break
         }
-        case SpotOrderState.Canceled: {
+        case OrderState.Canceled: {
           if (order.orderHash) {
             const subaccountOrderHistory = spotStore.subaccountOrderHistory
               .map((o) => (o.orderHash === order.orderHash ? order : o))

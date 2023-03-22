@@ -3,28 +3,17 @@ import {
   getChecksumAddress,
   CW20_ADAPTER_CONTRACT_BY_NETWORK
 } from '@injectivelabs/sdk-ts'
-import { Token, TokenType, TokenWithPrice } from '@injectivelabs/token-metadata'
-import { INJ_COIN_GECKO_ID, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
+import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { NETWORK } from '@/app/utils/constants'
-import { denomClient } from '@/app/Services'
+import { denomClient, tokenMetaUtils } from '@/app/Services'
 import { USDCSymbol } from '@/types'
 
 const adapterContract = CW20_ADAPTER_CONTRACT_BY_NETWORK[NETWORK]
 
 export const injToken = {
   denom: INJ_DENOM,
-  name: 'Injective',
-  symbol: 'INJ',
-  decimals: 18,
-  logo: '/injective-v3.svg',
-  coinGeckoId: INJ_COIN_GECKO_ID,
-  tokenType: TokenType.Native,
-
-  erc20: {
-    decimals: 18,
-    address: getContractAddressesForNetworkOrThrow(NETWORK).injective
-  },
+  ...tokenMetaUtils.getMetaBySymbol('INJ'),
   usdPrice: 0
 } as TokenWithPrice
 

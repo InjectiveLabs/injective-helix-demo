@@ -1,6 +1,6 @@
 import { AllChronosDerivativeMarketSummary } from '@injectivelabs/sdk-ts'
 import { Change } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils/dist/classes'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketSummary } from '@/types'
 
 const getChangeStateFromPrice = (change: number) => {

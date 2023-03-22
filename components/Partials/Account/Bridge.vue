@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { injToken } from '@/app/data/token'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'

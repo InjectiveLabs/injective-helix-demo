@@ -1,8 +1,4 @@
-import {
-  DerivativeOrderSide,
-  DerivativeOrderState
-} from '@injectivelabs/sdk-ts'
-import { StreamOperation } from '@injectivelabs/ts-types'
+import { OrderState, OrderSide, StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamsTrades,
   streamOrderbookUpdate as grpcStreamOrderbookUpdate,
@@ -130,10 +126,10 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
       }
 
       switch (order.state) {
-        case DerivativeOrderState.Booked:
-        case DerivativeOrderState.Filled:
-        case DerivativeOrderState.Unfilled:
-        case DerivativeOrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Filled:
+        case OrderState.Unfilled:
+        case OrderState.PartialFilled: {
           const subaccountOrderHistory = [
             order,
             ...derivativeStore.subaccountOrderHistory.filter(
@@ -148,7 +144,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
           break
         }
-        case DerivativeOrderState.Canceled: {
+        case OrderState.Canceled: {
           if (order.orderHash) {
             const subaccountOrderHistory =
               derivativeStore.subaccountOrderHistory
@@ -266,16 +262,16 @@ export const streamSubaccountOrders = (marketId?: string) => {
       }
 
       const isConditional = [
-        DerivativeOrderSide.TakeBuy,
-        DerivativeOrderSide.TakeSell,
-        DerivativeOrderSide.StopBuy,
-        DerivativeOrderSide.StopSell
-      ].includes(order.orderType as DerivativeOrderSide)
+        OrderSide.TakeBuy,
+        OrderSide.TakeSell,
+        OrderSide.StopBuy,
+        OrderSide.StopSell
+      ].includes(order.orderType as OrderSide)
 
       switch (order.state) {
-        case DerivativeOrderState.Booked:
-        case DerivativeOrderState.Unfilled:
-        case DerivativeOrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Unfilled:
+        case OrderState.PartialFilled: {
           if (isConditional) {
             const subaccountConditionalOrders = [
               order,
@@ -305,9 +301,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           break
         }
-        case DerivativeOrderState.Triggered:
-        case DerivativeOrderState.Canceled:
-        case DerivativeOrderState.Filled: {
+        case OrderState.Triggered:
+        case OrderState.Canceled:
+        case OrderState.Filled: {
           if (isConditional) {
             const subaccountConditionalOrders = [
               ...derivativeStore.subaccountConditionalOrders
@@ -350,7 +346,10 @@ export const streamMarketsMarkPrices = () => {
 
       derivativeStore.marketMarkPriceMap = {
         ...derivativeStore.marketMarkPriceMap,
-        [marketMarkPrice.marketId]: marketMarkPrice
+        [marketMarkPrice.marketId]: {
+          ...marketMarkPrice,
+          timestamp: parseInt(marketMarkPrice.timestamp, 10)
+        }
       }
     }
   })

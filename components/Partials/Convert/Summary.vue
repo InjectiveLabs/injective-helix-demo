@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 import { TradeForm, TradeField } from '@/types'
