@@ -9,8 +9,8 @@ export default defineNuxtConfig({
   hooks,
   i18n,
   debug: !isProduction,
-  vite: isWebpack ? undefined : vite,
   builder: isWebpack ? 'webpack' : 'vite',
+  vite: isWebpack ? undefined : vite,
   css: ['@/assets/css/tailwind.css'],
 
   app: {
@@ -25,18 +25,18 @@ export default defineNuxtConfig({
     dirs: ['composables/**', 'store/**']
   },
 
+  plugins: [...vitePlugins],
+
   pinia: {
     autoImports: ['defineStore']
   },
 
-  plugins: [...vitePlugins],
-
   modules: [
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@nuxtjs/i18n',
     '@nuxt/devtools',
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],

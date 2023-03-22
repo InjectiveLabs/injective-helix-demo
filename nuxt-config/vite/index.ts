@@ -1,9 +1,6 @@
-import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { defineConfig, UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from '@bangjelkoski/vite-plugin-node-polyfills'
-import VueI18nPlugin from '@intlify/vite-plugin-vue-i18n'
 
 const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 const buildSourceMap = process.env.BUILD_SOURCEMAP !== 'false'
@@ -13,17 +10,7 @@ export default defineConfig({
     'process.env': JSON.stringify({}),
     'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
   },
-  plugins: [
-    tsconfigPaths(),
-    nodePolyfills({ protocolImports: true }),
-    VueI18nPlugin({
-      include: resolve(
-        dirname(fileURLToPath(import.meta.url)),
-        './locales/en.ts'
-      ),
-      runtimeOnly: false
-    })
-  ],
+  plugins: [tsconfigPaths(), nodePolyfills({ protocolImports: true })],
 
   build: {
     sourcemap: buildSourceMap,

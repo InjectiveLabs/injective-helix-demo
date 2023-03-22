@@ -2150,17 +2150,6 @@
     web3 "^1.7.3"
     web3-core "^1.7.3"
 
-"@intlify/bundle-utils@^3.1.2":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@intlify/bundle-utils/-/bundle-utils-3.4.0.tgz#72558611f4b223a6791f591363dc48a4bcacdf70"
-  integrity sha512-2UQkqiSAOSPEHMGWlybqWm4G2K0X+FyYho5AwXz6QklSX1EY5EDmOSxZmwscn2qmKBnp6OYsme5kUrnN9xrWzQ==
-  dependencies:
-    "@intlify/message-compiler" next
-    "@intlify/shared" next
-    jsonc-eslint-parser "^1.0.1"
-    source-map "0.6.1"
-    yaml-eslint-parser "^0.3.2"
-
 "@intlify/bundle-utils@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@intlify/bundle-utils/-/bundle-utils-4.0.0.tgz#29c1d602c7e4e33b516581496a7c6740ed7e2585"
@@ -2251,18 +2240,6 @@
     picocolors "^1.0.0"
     source-map "0.6.1"
     unplugin "^1.1.0"
-
-"@intlify/vite-plugin-vue-i18n@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@intlify/vite-plugin-vue-i18n/-/vite-plugin-vue-i18n-7.0.0.tgz#9f33b551b7540abae6854e004b532142654a254e"
-  integrity sha512-2TbDOQ8XD+vkc0s5OFmr+IY/k4mYMC7pzvx0xGQn+cU/ev314+yi7Z7N7rWcBgiYk1WOUalbGSo3d4nJDxOOyw==
-  dependencies:
-    "@intlify/bundle-utils" "^3.1.2"
-    "@intlify/shared" next
-    "@rollup/pluginutils" "^4.2.0"
-    debug "^4.3.1"
-    fast-glob "^3.2.5"
-    source-map "0.6.1"
 
 "@intlify/vue-devtools@9.3.0-beta.16":
   version "9.3.0-beta.16"
