@@ -25,10 +25,6 @@ export default defineConfig({
     }
   },
 
-  resolve: {
-    //
-  },
-
   server: {
     fs: {
       // Allow serving files from one level up to the project root
@@ -37,7 +33,9 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    exclude: ['fsevents']
+    exclude: ['fsevents'],
+
+    include: ['@keplr-wallet/unit']
   }
 }) as UserConfig
 
