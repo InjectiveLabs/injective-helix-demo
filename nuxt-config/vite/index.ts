@@ -19,7 +19,7 @@ export default defineConfig({
     VueI18nPlugin({
       include: resolve(
         dirname(fileURLToPath(import.meta.url)),
-        './app/region/messages/en.ts'
+        './locales/en.ts'
       ),
       runtimeOnly: false
     })

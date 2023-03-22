@@ -2080,10 +2080,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.1.1-alpha-0.9":
-  version "1.1.1-alpha-0.9"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.1.1-alpha-0.9.tgz#98bc9b740a0f80b1749e950b4bd65656a7ee8e9a"
-  integrity sha512-/8BBzdX7twwmgVRiK1Lv7shc3hYOdcMqCTDM9Z4VNVb3dKXmNcRCig5AB2T++8s0PrWatNXkjJbBemC52f7FbA==
+"@injectivelabs/ui-shared@^1.10.0-alpha.0":
+  version "1.10.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.0-alpha.0.tgz#e723e71a0f2251766547b72bdb51b016282a34a6"
+  integrity sha512-V3ndlFIyqZzlx4nwCHRWkm9dEiBImJs8uBmlWqVVpJ8PZvigCkuQ2kZEjzVxWqipfQSeK6cQzEfvt7QP2eWsZQ==
   dependencies:
     "@nuxt/kit" "3.0.0"
     floating-vue "2.0.0-beta.20"
