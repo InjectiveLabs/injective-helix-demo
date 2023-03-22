@@ -1,6 +1,8 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   trade: {
-    asset_only: '{asset} only',
+    asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
@@ -63,16 +65,18 @@ export default {
       'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
     long: 'Long',
     short: 'Short',
-    available_asset: 'Available {asset}',
-    buy_asset: 'Buy {asset}',
-    sell_asset: 'Sell {asset}',
+    available_asset: ({ named }: I18nMessageFunction) =>
+      `Available ${named('asset')}`,
+    buy_asset: ({ named }: I18nMessageFunction) => `Buy ${named('asset')}`,
+    sell_asset: ({ named }: I18nMessageFunction) => `Sell ${named('asset')}`,
     not_enough_fillable_orders:
       'There are not enough orders to fill this amount',
     balance_higher_than_orderbook_liquidity:
       'Balance is higher than orderbook liquidity',
     order_placed: 'Your order has been placed',
     error_in_form: 'There are errors in your form',
-    volume_asset: '24h Volume ({asset})',
+    volume_asset: ({ named }: I18nMessageFunction) =>
+      `24h Volume (${named('asset')})`,
     high: '24h High',
     low: '24h Low',
     perpetuals: 'Perpetuals',
@@ -80,16 +84,23 @@ export default {
     spots: 'Spot',
     futures: 'Futures',
     trading: 'Trading',
-    high_execution_price_deviation_warning_note:
-      'The execution price for your order deviates at least {percentage}% from the last traded price. Click confirm if you still want to execute it.',
+    high_execution_price_deviation_warning_note: ({
+      named
+    }: I18nMessageFunction) =>
+      `The execution price for your order deviates at least ${named(
+        'percentage'
+      )}% from the last traded price. Click confirm if you still want to execute it.`,
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
     max_leverage_warn: 'Please decrease leverage',
     reduce_only_in_excess:
       'Total size of reduce-only orders would exceed size of your position',
-    max_leverage: 'Max Leverage:  {max}',
-    you_can_only_have_max_orders:
-      'You can only have {number} orders per side per market per trading account',
+    max_leverage: ({ named }: I18nMessageFunction) =>
+      `Max Leverage:  ${named('max')}`,
+    you_can_only_have_max_orders: ({ named }: I18nMessageFunction) =>
+      `You can only have ${named(
+        'number'
+      )} orders per side per market per trading account`,
     no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
     order_insufficient_margin:
@@ -100,8 +111,10 @@ export default {
     add_margin: 'Add Margin',
     fee_order_details_note_negative_margin:
       "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you are not going to pay any trading fees.",
-    fee_order_details_note:
-      "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees.",
+    fee_order_details_note: ({ named }: I18nMessageFunction) =>
+      `Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay ${named(
+        'feeReturned'
+      )} in fees.`,
     buy_long: 'Buy/Long',
     sell_short: 'Sell/Short',
     mark_price: 'Mark Price',
@@ -117,7 +130,8 @@ export default {
     funding_rate: 'Funding Rate',
     est_funding_rate: 'Est. Funding Rate',
     expiry_time: 'Expiry Time',
-    expiry_time_with_timezone: 'Expiry Time ({timezone})',
+    expiry_time_with_timezone: ({ named }: I18nMessageFunction) =>
+      `Expiry Time (${named('timezone')})`,
     time_to_expiry: 'Time to expiry',
     derivatives: 'Derivatives',
     not_available_n_a: 'N/A',
@@ -147,14 +161,17 @@ export default {
     spot: 'Spot',
     asset: 'Asset',
     average_price: 'Average price',
-    total_volume_in_quote: 'Volume in {symbol}',
-    total_volume_in_base: 'Volume in {symbol}',
+    total_volume_in_quote: ({ named }: I18nMessageFunction) =>
+      `Volume in ${named('symbol')}`,
+    total_volume_in_base: ({ named }: I18nMessageFunction) =>
+      `Volume in ${named('symbol')}`,
     order_success_canceling: 'Order Cancelled',
     trade: 'Trade',
     trades: 'Trades',
     tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
-    timeTooltip: 'The time at which the {type} occurred.',
+    timeTooltip: ({ named }: I18nMessageFunction) =>
+      `The time at which the ${named('type')} occurred.`,
     max: 'Max',
     orderbook: 'Orderbook',
     markets: 'Markets',
@@ -167,10 +184,14 @@ export default {
       'Your current trading fee discount based on your fee tier.',
     market_total_tooltip:
       'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
-    fees_tooltip_discount:
-      'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
-    taker_fees_tooltip_discount:
-      'Based on your tier, you are eligible for {taker}% taker discount.',
+    fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
+      `Based on your tier, you are eligible for ${named(
+        'maker'
+      )}% maker discount and ${named('taker')}% taker discount.`,
+    taker_fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
+      `Based on your tier, you are eligible for ${named(
+        'taker'
+      )}% taker discount.`,
     quote_denoms: 'Quote Denoms',
     quote_denoms_tooltip:
       'Markets involving these assets are qualified for Trade & Earn unless explicitly disqualified otherwise (check disqualified markets). Whether that be a derivatives market using these assets as margin, or a spot market using these assets as either base or quote currency.',
@@ -205,15 +226,18 @@ export default {
     positions_closed: 'Your positions have been closed',
     not_valid_number: 'Not a valid number',
     enter_your_amount: 'Enter your amount',
-    position_market_not_found: 'Market for position {marketId} cannot be found',
+    position_market_not_found: ({ named }: I18nMessageFunction) =>
+      `Market for position ${named('marketId')} cannot be found`,
     entryMark: 'Entry / Mark',
     estLiqPrice: 'EST Liq Price',
-    balance: 'Balance: {balance}',
+    balance: ({ named }: I18nMessageFunction) => `Balance: ${named('balance')}`,
     convert: {
       connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
-      insufficient_balance_verbose:
-        'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
+      insufficient_balance_verbose: ({ named }: I18nMessageFunction) =>
+        `Insufficient ${named(
+          'symbol'
+        )} balance for this conversion. Please top up your trading account.`,
       insufficient_liquidity: 'Insufficient Liquidity',
       convert_success: 'Converted Successfully',
       convert_failed: 'Conversion Failed',
@@ -235,9 +259,12 @@ export default {
       estimated_slippage: 'Estimated Slippage',
       minimum_received: 'Minimum Received',
       fetching_price: 'Fetching price',
-      reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',
-      invalid_token_symbol_warning:
-        'Invalid token {symbol}, defaulting to {defaultSymbol}.',
+      reset_to_default_pair: ({ named }: I18nMessageFunction) =>
+        `Invalid pair ${named('pair')}, resetting to USDT/INJ`,
+      invalid_token_symbol_warning: ({ named }: I18nMessageFunction) =>
+        `Invalid token ${named('symbol')}, defaulting to ${named(
+          'defaultSymbol'
+        )}.`,
       youPay: 'You pay',
       youReceive: 'You receive'
     },
@@ -261,10 +288,50 @@ export default {
     takeProfit: 'Take-Profit',
     stopLoss: 'Stop-Loss',
     confirmOrderModal: {
-      descriptionLimit:
-        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol}, a {reduceOnly} limit order to {orderType} {amount} {amountSymbol} at a price of {price} {priceSymbol} will be placed.',
-      descriptionMarket:
-        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol}, a {tradingType} order to {orderType} {amount} {amountSymbol} will be placed.',
+      descriptionLimit: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'If the mark price ',
+          named('verb'),
+          ' to or ',
+          named('preposition'),
+          ' ',
+          named('triggerPrice'),
+          ' ',
+          named('triggerPriceSymbol'),
+          ' a ',
+          named('reduceOnly'),
+          ' limit order to ',
+          named('orderType'),
+          ' ',
+          named('amount'),
+          ' ',
+          named('amountSymbol'),
+          ' at a price of ',
+          named('price'),
+          ' ',
+          named('priceSymbol'),
+          ' will be placed.'
+        ]),
+      descriptionMarket: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'If the mark price ',
+          named('verb'),
+          ' to or ',
+          named('preposition'),
+          ' ',
+          named('triggerPrice'),
+          ' ',
+          named('triggerPriceSymbol'),
+          ' a ',
+          named('tradingType'),
+          ' order to ',
+          named('orderType'),
+          ' ',
+          named('amount'),
+          ' ',
+          named('amountSymbol'),
+          ' will be placed.'
+        ]),
       doNotShowThisConfirmationAgain: 'Do not show this confirmation again',
       rises: 'rises',
       drops: 'drops',

@@ -1,19 +1,18 @@
 import activities from './activity/en'
 import banners from './banners/en'
 import bridge from './bridge/en'
-import faq from './faq/en'
 import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
+import { I18nMessageFunction } from '@/types'
 
 export default {
   ...activities,
   ...account,
   ...banners,
-  ...faq,
   ...activities,
   ...home,
   ...market,
@@ -107,8 +106,10 @@ export default {
   current_epoch: 'Current Epoch',
   current_epoch_tooltip: 'Current Epoch tooltip',
   est_rewards: 'Est. Rewards',
-  est_rewards_tooltip:
-    'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at {maxRewards} INJ or the equivalent amount of INJ staked, whichever is higher',
+  est_rewards_tooltip: ({ named }: I18nMessageFunction) =>
+    `Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at ${named(
+      'maxRewards'
+    )} INJ or the equivalent amount of INJ staked, whichever is higher`,
   reward_points: 'My Reward Points Earned',
   reward_points_tooltip:
     'The current reward points you earned during this campaign. Reward points will reset to 0 at the beginning of next campaign.',
@@ -120,8 +121,10 @@ export default {
     'Date and time when the current campaign ends (shown in the timezone of your browser). Any reward point earned after the countdown will be counted toward the next campaign.',
   reward_earned_up_to_date: 'Rewards earned up to date',
   reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
-  fees_tooltip_discount:
-    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
+  fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
+    `Based on your tier, you are eligible for ${named(
+      'maker'
+    )}% maker discount and ${named('taker')}% taker discount.`,
   remaining: 'remaining',
   campaign_duration: 'Campaign Duration',
   campaign_duration_tooltip:
@@ -138,15 +141,20 @@ export default {
   terra: 'Terra',
   overview: 'Overview',
   trade_and_earn_my_staked_amount: 'My Staked Amount',
-  trade_and_earn_my_staked_amount_tooltip:
-    'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
+  trade_and_earn_my_staked_amount_tooltip: ({ named }: I18nMessageFunction) =>
+    `The default maximum rewards you can receive is capped at ${named(
+      'maxRewards'
+    )} INJ. You may increase this cap by staking more than ${named(
+      'maxRewards'
+    )} INJ and it will be the same level as your staked amount.`,
   stake_more: 'Stake More',
   stake_now: 'Stake Now',
   tradeAndEarn: {
     pendingRewards: 'Pending Rewards',
     emptyPendingRewards: 'No pending rewards available.',
-    campaignEndingOn: 'Ending on {date}',
-    campaignAsOf: 'As of {date}',
+    campaignEndingOn: ({ named }: I18nMessageFunction) =>
+      `Ending on ${named('date')}`,
+    campaignAsOf: ({ named }: I18nMessageFunction) => `As of ${named('date')}`,
     myRewardPoints: 'My Reward Points / Total Reward Points',
     myRewardPoints_tooltip:
       'The current reward points you earned during this campaign and the total reward points in the campaign. Reward points will reset to 0 at the beginning of next campaign.',
@@ -154,10 +162,12 @@ export default {
     pending_max_campaign_rewards_tooltip:
       'The total number of INJ that was distributed in the previous epoch. Reward distribution will happen at the end of the vesting period.',
     est_rewards_stake: 'Est. Rewards',
-    est_rewards_stake_tooltip:
-      'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at {maxRewards} INJ or the equivalent amount of INJ staked, whichever is higher',
-    stake_total_to_receive_full_amount:
-      'Stake total of {total} INJ to receive the full amount'
+    est_rewards_stake_tooltip: ({ named }: I18nMessageFunction) =>
+      `Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at ${named(
+        'maxRewards'
+      )} INJ or the equivalent amount of INJ staked, whichever is higher`,
+    stake_total_to_receive_full_amount: ({ named }: I18nMessageFunction) =>
+      `Stake total of ${named('total')} INJ to receive the full amount`
   },
 
   marketBeta: {
@@ -171,8 +181,14 @@ export default {
   marketNew: {
     title: 'Upcoming market launch',
     depositNow: 'Deposit Now',
-    description:
-      'The {baseSymbol}/{quoteSymbol} spot market will launch soon. Meanwhile, deposit at least 1 {upcomingMarketSymbol} to get a chance to win an original Bored Ape Kennel Club NFT.',
+    description: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'The',
+        named('baseSymbol'),
+        '/',
+        named('quoteSymbol'),
+        ' spot market will launch soon.'
+      ]),
     connectAndDepositNow: 'Connect and Deposit now',
     soonToBeReleased: 'Coming soon!'
   },
@@ -189,11 +205,18 @@ export default {
 
   marketDeprecated: {
     title: 'No longer tradable',
-    description: '{ticker} is no longer tradable on Helix.',
-    subDescriptionOne:
-      'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
-    subDescriptionTwo:
-      'If you would like to withdraw your {symbol} balances, you could do so via our {network} bridge on the Injective Hub.',
+    description: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([named('ticker'), ' is no longer tradable on Helix.']),
+    subDescriptionOne: ({ named }: I18nMessageFunction) =>
+      `If you would like to continue trading ${named(
+        'ticker'
+      )}, you could still do so with other exchanges in the Injective ecosystem.`,
+    subDescriptionTwo: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'If you would like to withdraw your ',
+        named('symbol'),
+        ' balances, you could do so via our {network} bridge on the Injective Hub.'
+      ]),
     terraDescription:
       'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
     exploreOtherMarkets: 'Explore Other Markets',
@@ -217,7 +240,8 @@ export default {
     portfolio: 'Portfolio',
     account: 'Account',
     home: 'Home',
-    makerTakerFee: '-{maker}% maker / -{taker}% taker',
+    makerTakerFee: ({ named }: I18nMessageFunction) =>
+      `-${named('maker')}% maker / -${named('taker')}% taker`,
     noTierLevel: 'No VIP Tier',
     tradeAndEarn: 'Trade and Earn',
     tradeAndEarnDescription: 'Earn rewards with every trade',
@@ -262,13 +286,16 @@ export default {
     off: 'Off',
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
-    in_past_days: 'In past {days} days'
+    in_past_days: ({ named }: I18nMessageFunction) =>
+      `In past ${named('days')} days`
   },
 
   pagination: {
     showRows: 'Show rows',
-    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}',
-    paginationPages: 'From {from} to {to} total {totalCount}'
+    showCountOutOfTotal: ({ named }: I18nMessageFunction) =>
+      `Showing ${named('from')} - ${named('to')} out of ${named('totalCount')}`,
+    paginationPages: ({ named }: I18nMessageFunction) =>
+      `From ${named('from')} to ${named('to')} total ${named('totalCount')}`
   },
 
   filters: {
@@ -299,8 +326,16 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimer_note:
-      'By connecting a wallet, you agree to the Injective Labs {terms}, have read the {policy} and acknowledge that you have read and understand the Injective Protocol {disclaimer}.'
+    disclaimer_note: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'By connecting a wallet, you agree to the Injective Labs ',
+        named('terms'),
+        ' have read the ',
+        named('policy'),
+        ' and acknowledge that you have read and understand the Injective ',
+        named('disclaimer'),
+        '.'
+      ])
   },
 
   devMode: {
