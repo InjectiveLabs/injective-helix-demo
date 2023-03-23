@@ -34,7 +34,6 @@ export default defineConfig({
 
   optimizeDeps: {
     exclude: ['fsevents'],
-
     include: ['@keplr-wallet/unit']
   }
 }) as UserConfig
