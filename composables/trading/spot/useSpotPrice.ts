@@ -1,11 +1,11 @@
 import type { Ref } from 'vue'
 import {
   UiPriceLevel,
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotOrderSide } from '@injectivelabs/sdk-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   ONE_IN_BASE,
   TRADE_FORM_QUANTITY_ROUNDING_MODE
@@ -28,7 +28,7 @@ export function useSpotPrice({
   const spotStore = useSpotStore()
 
   const isBuy = computed(() => {
-    return formValues.value[TradeField.OrderType] === SpotOrderSide.Buy
+    return formValues.value[TradeField.OrderSide] === OrderSide.Buy
   })
 
   const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>

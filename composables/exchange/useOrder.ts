@@ -1,12 +1,12 @@
 import type { Ref } from 'vue'
 import {
   ZERO_IN_BASE,
-  SpotOrderSide,
   UiSpotLimitOrder,
   UiSpotMarketWithToken,
   UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { UiMarketWithToken } from '@/types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -53,14 +53,14 @@ export function useOrder(
 
   const isBuy = computed(() => {
     if (isSpot.value) {
-      return (order.value as UiSpotLimitOrder).orderSide === SpotOrderSide.Buy
+      return (order.value as UiSpotLimitOrder).orderSide === OrderSide.Buy
     }
 
     switch ((order.value as UiDerivativeLimitOrder).orderType) {
-      case SpotOrderSide.TakeBuy:
-      case SpotOrderSide.StopBuy:
-      case SpotOrderSide.Buy:
-      case SpotOrderSide.BuyPO:
+      case OrderSide.TakeBuy:
+      case OrderSide.StopBuy:
+      case OrderSide.Buy:
+      case OrderSide.BuyPO:
         return true
       default:
         return false

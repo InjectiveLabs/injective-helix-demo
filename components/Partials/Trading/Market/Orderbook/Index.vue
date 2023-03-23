@@ -14,8 +14,8 @@ import {
   UiOrderbookPriceLevel,
   UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { vScroll } from '@vueuse/components'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { getAggregationPrice } from '@/app/client/utils/orderbook'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
@@ -101,18 +101,13 @@ const { valueToFixed: markPriceToFormat } = useBigNumberFormatter(
 
 const buyUserOrderPrices = computed(() =>
   subaccountOrders.value.reduce((records, { orderSide, price }) => {
-    return orderSide === DerivativeOrderSide.Buy ||
-      orderSide === SpotOrderSide.Buy
-      ? [...records, price]
-      : records
+    return orderSide === OrderSide.Buy ? [...records, price] : records
   }, [] as string[])
 )
 
 const sellUserOrderPrices = computed(() =>
   subaccountOrders.value.reduce((records, { orderSide, price }) => {
-    return orderSide === DerivativeOrderSide.Sell
-      ? [...records, price]
-      : records
+    return orderSide === OrderSide.Sell ? [...records, price] : records
   }, [] as string[])
 )
 
@@ -597,13 +592,13 @@ function hidePopperOnScroll(state: UseScrollReturn) {
               market,
               position: index,
               aggregation,
-              type: isSpot ? SpotOrderSide.Sell : DerivativeOrderSide.Sell,
+              type: OrderSide.Sell,
               userOrders: sellUserOrderPrices,
               record: sell
             }"
             :position="index"
             :aggregation="aggregation"
-            :type="DerivativeOrderSide.Sell"
+            :type="OrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
             data-cy="orderbook-sell-list-item"
@@ -702,7 +697,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
               market,
               position: index,
               record: buy,
-              type: isSpot ? SpotOrderSide.Buy : DerivativeOrderSide.Buy,
+              type: OrderSide.Buy,
               userOrders: buyUserOrderPrices
             }"
             data-cy="orderbook-buy-list-item"

@@ -8,6 +8,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'arb-usdt',
   'chz-usdcet',
   'canto-usdt',
   'sol-usdcet',
@@ -37,7 +38,7 @@ export const slugsToIncludeInCosmosCategory = [
 
 export const slugsToExcludeFromEthereumCategory = [
   ...slugsToIncludeInCosmosCategory,
-  'btc-usdt',
+  'arb-usdt',
   'btc-usdt-perp',
   'link-usdt',
   'link-usdt-perp'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,

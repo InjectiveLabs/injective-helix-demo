@@ -5,8 +5,7 @@ import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 const formValues = useFormValues() as Ref<TradeForm>
 

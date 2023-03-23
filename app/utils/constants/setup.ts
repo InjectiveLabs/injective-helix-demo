@@ -3,8 +3,7 @@ import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'

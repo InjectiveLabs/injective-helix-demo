@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - testnet
-#       - mainnet
+      - mainnet
 
 jobs:
   testnet:
@@ -47,6 +47,8 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
+
+      NODE_OPTIONS: '--max_old_space_size=15360'
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +66,7 @@ jobs:
         run: yarn clean-up
 
       - name: Generating the static pages
-        run: yarn generate
+        run: yarn generateNoSourceMap
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1

@@ -2,7 +2,7 @@
 import { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,

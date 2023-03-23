@@ -166,7 +166,7 @@ function trackPlaceOrder() {
     slippageTolerance: actualSlippageTolerance,
     amount: formValues.value[TradeField.BaseAmount],
     leverage: formValues.value[TradeField.Leverage],
-    orderType: formValues.value[TradeField.OrderType],
+    orderType: formValues.value[TradeField.OrderSide],
     limitPrice: formValues.value[TradeField.LimitPrice],
     tradingType: formValues.value[TradeField.TradingType],
     triggerPrice: formValues.value[TradeField.TriggerPrice],

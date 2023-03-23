@@ -4,7 +4,7 @@ import {
   BalanceWithTokenAndPrice,
   BridgingNetwork
 } from '@injectivelabs/sdk-ui-ts'
-import { Erc20Token } from '@injectivelabs/token-metadata'
+import type { Erc20Token } from '@injectivelabs/token-metadata'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
 
 /**

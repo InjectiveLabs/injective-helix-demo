@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   home: {
     title: 'The Premier Decentralized Crypto Exchange',
@@ -50,8 +52,16 @@ export default {
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
     subscribeToast: "You've successfully subscribed to our newsletter!",
-    disclaimerMessage:
-      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.'
+    disclaimerMessage: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'By subscribing, you agree to the ',
+        named('termsAndCondition'),
+        ' have read the ',
+        named('privacyPolicy'),
+        ' and acknowledge that you have read and understand the ',
+        named('disclaimer'),
+        '.'
+      ])
   },
 
   footer: {

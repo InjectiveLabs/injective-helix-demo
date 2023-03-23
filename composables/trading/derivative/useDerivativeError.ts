@@ -3,12 +3,12 @@ import {
   MarketType,
   ZERO_IN_BASE,
   UiPriceLevel,
-  DerivativeOrderSide,
   UiPerpetualMarketWithToken,
   UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
@@ -27,7 +27,7 @@ export function useDerivativeError({
   quoteAvailableBalance,
   worstPriceWithSlippage,
   notionalWithLeverageAndFees,
-  notionalWithLeverageBasedOnWorstPrice,
+  notionalWithLeverageBasedOnWorstPrice
 }: {
   isBuy: Ref<boolean>
   markPrice: Ref<string>
@@ -191,7 +191,7 @@ export function useDerivativeError({
       formValues.value[TradeField.BaseAmount] || ZERO_IN_BASE
     )
 
-    const notionalBasedOnOrderType = isBuy.value
+    const notionalBasedOnOrderSide = isBuy.value
       ? notionalWithLeverageBasedOnMarketType.minus(notional)
       : notionalWithLeverageBasedOnMarketType.plus(notional)
     const marginRatio = isBuy.value
@@ -200,7 +200,7 @@ export function useDerivativeError({
     const amountWithInitialMarginRatio = marginRatio.times(
       formValues.value[TradeField.BaseAmount] || ZERO_IN_BASE
     )
-    const priceBasedOnNotionalAndMarginRatio = notionalBasedOnOrderType.div(
+    const priceBasedOnNotionalAndMarginRatio = notionalBasedOnOrderSide.div(
       amountWithInitialMarginRatio
     )
 
@@ -241,9 +241,7 @@ export function useDerivativeError({
 
   const filteredConditionalOrders = computed(() =>
     derivativeStore.subaccountConditionalOrders.filter((order) => {
-      const orderType = isBuy.value
-        ? DerivativeOrderSide.Buy
-        : DerivativeOrderSide.Sell
+      const orderType = isBuy.value ? OrderSide.Buy : OrderSide.Sell
 
       return (
         order.direction === orderType &&

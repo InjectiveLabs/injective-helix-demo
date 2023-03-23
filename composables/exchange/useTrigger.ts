@@ -1,12 +1,14 @@
 import type { Ref } from 'vue'
 import {
-  DerivativeOrderSide,
   UiDerivativeOrderHistory,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
+import {
+  OrderSide,
+  OrderState,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -98,22 +100,20 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
     )
   })
 
-  const isCancelable = computed(
-    () => trigger.value.state === DerivativeOrderState.Booked
-  )
+  const isCancelable = computed(() => trigger.value.state === OrderState.Booked)
 
   const total = computed(() => price.value.multipliedBy(quantity.value))
 
   const isBuy = computed(() => {
-    if (trigger.value.direction === DerivativeOrderSide.Buy) {
+    if (trigger.value.direction === OrderSide.Buy) {
       return true
     }
 
     switch (trigger.value.orderType) {
-      case DerivativeOrderSide.TakeBuy:
-      case DerivativeOrderSide.StopBuy:
-      case DerivativeOrderSide.Buy:
-      case DerivativeOrderSide.BuyPO:
+      case OrderSide.TakeBuy:
+      case OrderSide.StopBuy:
+      case OrderSide.Buy:
+      case OrderSide.BuyPO:
         return true
       default:
         return false
@@ -122,14 +122,14 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
 
   const isStopLoss = computed(
     () =>
-      trigger.value.orderType === DerivativeOrderSide.StopBuy ||
-      trigger.value.orderType === DerivativeOrderSide.StopSell
+      trigger.value.orderType === OrderSide.StopBuy ||
+      trigger.value.orderType === OrderSide.StopSell
   )
 
   const isTakeProfit = computed(
     () =>
-      trigger.value.orderType === DerivativeOrderSide.TakeBuy ||
-      trigger.value.orderType === DerivativeOrderSide.TakeSell
+      trigger.value.orderType === OrderSide.TakeBuy ||
+      trigger.value.orderType === OrderSide.TakeSell
   )
 
   const type = computed(() => {
@@ -139,14 +139,14 @@ export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
         : t('trade.limit')
 
     switch (trigger.value.orderType) {
-      case DerivativeOrderSide.BuyPO:
-      case DerivativeOrderSide.SellPO:
+      case OrderSide.BuyPO:
+      case OrderSide.SellPO:
         return executionType
-      case DerivativeOrderSide.TakeSell:
-      case DerivativeOrderSide.TakeBuy:
+      case OrderSide.TakeSell:
+      case OrderSide.TakeBuy:
         return `${t('trade.takeProfit')} ${executionType}`
-      case DerivativeOrderSide.StopSell:
-      case DerivativeOrderSide.StopBuy:
+      case OrderSide.StopSell:
+      case OrderSide.StopBuy:
         return `${t('trade.stopLoss')} ${executionType}`
       default:
         return ''

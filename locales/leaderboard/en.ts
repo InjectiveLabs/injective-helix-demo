@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   leaderboard: {
     title: 'Helix Trading Leaderboard',
@@ -9,7 +11,8 @@ export default {
       pnl: 'PNL',
       summerTradingCompetition: 'Summer Trading competition'
     },
-    lastUpdatedAt: 'Last updated at {timestamp}',
+    lastUpdatedAt: ({ named }: I18nMessageFunction) =>
+      `Last updated at ${named('timestamp')}`,
     resolution: 'Time interval',
     resolutionOptions: {
       daily: 'Daily',

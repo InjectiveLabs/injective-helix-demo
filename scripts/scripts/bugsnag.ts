@@ -10,6 +10,10 @@ export async function bugsnagSourceMaps() {
     return
   }
 
+  if (baseUrl.includes('localhost')) {
+    return
+  }
+
   const packageVersion = process.env.npm_package_version
   const projectRoot = process.cwd()
   const outputDirectory = path.join(projectRoot, '.output')

@@ -52,6 +52,8 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+
+      NODE_OPTIONS: '--max_old_space_size=15360'
     runs-on: ubuntu-latest
 
     steps:
@@ -69,7 +71,7 @@ jobs:
         run: yarn clean-up
 
       - name: Generating the static pages
-        run: yarn generate
+        run: yarn generateNoSourceMap
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
