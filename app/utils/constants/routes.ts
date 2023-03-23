@@ -92,7 +92,7 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    spot.push(...usdcConversionModalMarkets, 'arb-usdt', 'ldo-usdcet')
   }
 
   if (IS_DEVNET) {
