@@ -51,6 +51,10 @@ export const getRoutes = (network: Network, env: string) => {
     'atom-usdt-perp'
   ]
 
+  if (IS_TESTNET) {
+    perpetuals.push('sol-usdt-perp')
+  }
+
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22']
 

@@ -122,7 +122,7 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
       const bridgeStore = useBridgeStore()
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -248,11 +248,7 @@ export const useBridgeStore = defineStore('bridge', {
     },
 
     reset() {
-      const bridgeStore = useBridgeStore()
-
-      bridgeStore.$patch({
-        ...initialStateFactory()
-      })
+      useBridgeStore().$reset()
     }
   }
 })

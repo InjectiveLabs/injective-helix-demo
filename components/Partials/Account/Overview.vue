@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
@@ -11,12 +11,13 @@ import {
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const tokenStore = useTokenStore()
+const accountStore = useAccountStore()
 
 const props = defineProps({
   isLoading: Boolean,
   hideBalances: Boolean,
 
-  balances: {
+  currentSubaccountBalances: {
     type: Array as PropType<AccountBalance[]>,
     required: true
   }
@@ -26,18 +27,47 @@ const emit = defineEmits<{
   (e: 'update:hide-balances', state: boolean): void
 }>()
 
-const accountTotalBalance = computed(() =>
-  props.balances.reduce(
-    (total, balance) => total.plus(balance.accountTotalBalance),
+const { aggregatedPortfolioBalances } = useBalance()
+
+const remainingAccountBalances = computed(() =>
+  Object.keys(aggregatedPortfolioBalances.value).reduce(
+    (balances, subaccountId) => {
+      /**
+       * For the currently selected subaccount we use the currentSubaccountBalances
+       * because we have the PnL and margin calculations there
+       */
+      if (subaccountId === accountStore.subaccountId) {
+        return balances
+      }
+
+      return [...balances, ...aggregatedPortfolioBalances.value[subaccountId]]
+    },
+    [] as AccountBalance[]
+  )
+)
+
+const currentSubaccountTotalBalanceInUsd = computed(() =>
+  props.currentSubaccountBalances.reduce(
+    // Already converted to human readable number
+    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
+    ZERO_IN_BASE
+  )
+)
+
+const remainingAccountBalance = computed(() =>
+  remainingAccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
     ZERO_IN_BASE
   )
 )
 
 const accountTotalBalanceInUsd = computed(() =>
-  props.balances.reduce(
-    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
-    ZERO_IN_BASE
-  )
+  currentSubaccountTotalBalanceInUsd.value.plus(remainingAccountBalance.value)
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
@@ -49,7 +79,7 @@ const accountTotalBalanceInBtc = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return accountTotalBalance.value.dividedBy(
+  return accountTotalBalanceInUsd.value.dividedBy(
     new BigNumberInBase(tokenStore.btcUsdPrice)
   )
 })
@@ -88,59 +118,68 @@ function handleWithdrawClick() {
 </script>
 
 <template>
-  <div
-    class="flex justify-between md:items-center gap-4 flex-col md:flex-row"
-    :class="{ 'mb-8': !isLoading, 'my-4': isLoading }"
-  >
-    <AppSpinner v-if="isLoading" lg />
-    <div v-else class="flex items-center justify-start gap-2">
-      <span
-        v-if="!hideBalances"
-        class="text-white font-bold text-2xl md:text-3xl"
+  <div :class="{ 'mb-8': !isLoading, 'my-4': isLoading }">
+    <div
+      class="flex justify-between md:items-center gap-4 flex-col md:flex-row"
+    >
+      <AppSpinner v-if="isLoading" lg />
+      <div v-else class="flex items-center justify-start gap-2">
+        <span
+          v-if="!hideBalances"
+          class="text-white font-bold text-2xl md:text-3xl"
+        >
+          &dollar; {{ abbreviatedTotalBalanceToString }} USD
+        </span>
+        <span v-else class="text-white font-bold text-2xl md:text-3xl">
+          &dollar; {{ HIDDEN_BALANCE_DISPLAY }} USD
+        </span>
+
+        <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
+          &thickapprox; {{ accountTotalBalanceInBtcToString }} BTC
+        </span>
+        <span v-else class="text-gray-450 md:text-lg">
+          &thickapprox; {{ HIDDEN_BALANCE_DISPLAY }} BTC
+        </span>
+
+        <div @click="toggleHideBalances">
+          <BaseIcon
+            v-if="hideBalances"
+            name="hide"
+            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
+          />
+
+          <BaseIcon
+            v-else
+            name="show"
+            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <div
+        v-if="!isLoading && accountStore.isDefaultSubaccount"
+        class="flex items-center justify-between md:justify-end sm:gap-4"
       >
-        &dollar; {{ abbreviatedTotalBalanceToString }} USD
-      </span>
-      <span v-else class="text-white font-bold text-2xl md:text-3xl">
-        &dollar; {{ HIDDEN_BALANCE_DISPLAY }} USD
-      </span>
+        <AppButton class="bg-blue-500" @click="handleDepositClick">
+          <span class="text-blue-900 font-semibold">
+            {{ $t('account.deposit') }}
+          </span>
+        </AppButton>
 
-      <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
-        &thickapprox; {{ accountTotalBalanceInBtcToString }} BTC
-      </span>
-      <span v-else class="text-gray-450 md:text-lg">
-        &thickapprox; {{ HIDDEN_BALANCE_DISPLAY }} BTC
-      </span>
-
-      <div @click="toggleHideBalances">
-        <BaseIcon
-          v-if="hideBalances"
-          name="hide"
-          class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-        />
-
-        <BaseIcon
-          v-else
-          name="show"
-          class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-        />
+        <AppButton class="border border-blue-500" @click="handleWithdrawClick">
+          <span class="text-blue-500 font-semibold">
+            {{ $t('account.withdraw') }}
+          </span>
+        </AppButton>
       </div>
     </div>
 
-    <div
-      v-if="!isLoading"
-      class="flex items-center justify-between md:justify-end sm:gap-4"
-    >
-      <AppButton class="bg-blue-500" @click="handleDepositClick">
-        <span class="text-blue-900 font-semibold">
-          {{ $t('account.deposit') }}
-        </span>
-      </AppButton>
-
-      <AppButton class="border border-blue-500" @click="handleWithdrawClick">
-        <span class="text-blue-500 font-semibold">
-          {{ $t('account.withdraw') }}
-        </span>
-      </AppButton>
-    </div>
+    <PartialsAccountSubaccountOverview
+      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
+      v-bind="{
+        hideBalances,
+        currentSubaccountBalances
+      }"
+    />
   </div>
 </template>

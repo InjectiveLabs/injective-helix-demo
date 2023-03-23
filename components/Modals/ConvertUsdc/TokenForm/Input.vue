@@ -60,7 +60,7 @@ const inputPlaceholder = computed(() =>
 onMounted(() => {
   if (
     props.amountFieldName === TradeField.BaseAmount &&
-    [usdcTokenDenom.USDC].includes(props.balance.denom.toLowerCase())
+    [usdcTokenDenom.USDC].includes(props.balance.denom)
   ) {
     setAmountValue(maxBalanceToFixed.value)
 

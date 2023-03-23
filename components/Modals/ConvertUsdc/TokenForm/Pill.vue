@@ -11,15 +11,15 @@ const props = defineProps({
 })
 
 const isWHSolUSDTDenom = computed(
-  () => props.balance.token.denom.toLowerCase() === usdcTokenDenom.USDCso
+  () => props.balance.token.denom === usdcTokenDenom.USDCso
 )
 
 const isPeggyEthUSDTDenom = computed(
-  () => props.balance.token.denom.toLowerCase() === usdcTokenDenom.USDC
+  () => props.balance.token.denom === usdcTokenDenom.USDC
 )
 
 const isWHEthUSDTDenom = computed(
-  () => props.balance.token.denom.toLowerCase() === usdcTokenDenom.USDCet
+  () => props.balance.token.denom === usdcTokenDenom.USDCet
 )
 </script>
 

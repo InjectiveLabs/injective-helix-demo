@@ -7,9 +7,7 @@ const appStore = useAppStore()
 const banners: Banner[] = [
   {
     key: NoticeBanner.sheduledUpgradeMarch,
-    label: `banners.banner-${NoticeBanner.sheduledUpgradeMarch}`,
-    viewMore: 'View More',
-    viewMoreLink: '/#'
+    label: `banners.banner-${NoticeBanner.sheduledUpgradeMarch}`
   }
 ]
 

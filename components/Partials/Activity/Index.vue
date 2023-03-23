@@ -4,14 +4,18 @@ import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
 import { ActivityTab, ActivityView, ActivityForm, ActivityField } from '@/types'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
-const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
 })
+
+const router = useRouter()
+const route = useRoute()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -24,6 +28,8 @@ const action = computed(() => {
   switch (view.value) {
     case ActivityView.FundingPayments:
       return activityStore.fetchSubaccountFundingPayments
+    case ActivityView.Positions:
+      return positionStore.fetchSubaccountPositions
     case ActivityView.SpotOrderHistory:
       return spotStore.fetchSubaccountOrderHistory
     case ActivityView.SpotTradeHistory:
@@ -52,39 +58,19 @@ const action = computed(() => {
 })
 
 onMounted(() => {
-  const promises = [
-    activityStore.streamDerivativeSubaccountOrderHistory(),
-    activityStore.streamDerivativeSubaccountTrades(),
-    activityStore.streamSpotSubaccountOrderHistory(),
-    activityStore.streamSpotSubaccountTrades(),
-    derivativeStore.fetchSubaccountOrders(),
-    derivativeStore.streamMarketsMarkPrices(),
-    derivativeStore.fetchSubaccountConditionalOrders(),
-    derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions(),
-    positionStore.streamSubaccountPositions(),
-    spotStore.fetchSubaccountOrders(),
-    spotStore.streamSubaccountOrders()
-  ]
-
-  Promise.all(promises)
-    .then(() => {
-      fetchData()
-    })
-    .catch($onError)
+  refetchData()
 })
 
 onUnmounted(() => {
   activityStore.$reset()
   derivativeStore.resetSubaccount()
   spotStore.resetSubaccount()
+  accountStore.resetToDefaultSubaccount()
 })
 
 function fetchData() {
   if (!action.value) {
-    status.setIdle()
-
-    return
+    return status.setIdle()
   }
 
   status.setLoading()
@@ -105,23 +91,34 @@ function fetchData() {
     })
 }
 
-function onTabChange(tab: string) {
-  switch (tab) {
-    case ActivityTab.Positions:
-      view.value = ActivityView.Positions
-      break
-    case ActivityTab.Derivatives:
-      view.value = ActivityView.DerivativeOrders
-      break
-    case ActivityTab.Spot:
-      view.value = ActivityView.SpotOrders
-      break
-    default:
-      view.value = ActivityView.WalletTransfers
-      break
-  }
+function refetchData() {
+  const fetchDataPromises = [
+    activityStore.streamDerivativeSubaccountOrderHistory(),
+    activityStore.streamDerivativeSubaccountTrades(),
+    activityStore.streamSpotSubaccountOrderHistory(),
+    activityStore.streamSpotSubaccountTrades(),
+    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.streamMarketsMarkPrices(),
+    derivativeStore.fetchSubaccountConditionalOrders(),
+    derivativeStore.streamSubaccountOrders(),
+    positionStore.fetchSubaccountPositions(),
+    positionStore.streamSubaccountPositions(),
+    spotStore.fetchSubaccountOrders(),
+    spotStore.streamSubaccountOrders()
+  ]
 
-  onViewChange()
+  Promise.all(fetchDataPromises)
+    .then(() => {
+      fetchData()
+    })
+    .catch($onError)
+    .finally(() => {
+      setTabFromQuery()
+    })
+}
+
+function onTabChange(tab: string) {
+  router.push({ query: { tab } })
 }
 
 function handleFilterChange() {
@@ -139,6 +136,52 @@ function onViewChange() {
     fetchData()
   })
 }
+
+function onSubaccountChange() {
+  resetForm()
+  nextTick(() => {
+    derivativeStore.resetSubaccount()
+    spotStore.resetSubaccount()
+    refetchData()
+  })
+}
+
+function setTabFromQuery() {
+  const { query } = route
+
+  const activityTab = (
+    typeof query.tab === 'string' ? query.tab.trim().toLowerCase() : query.tab
+  ) as ActivityTab
+
+  if (activityTab && Object.values(ActivityTab).includes(activityTab)) {
+    tab.value = activityTab
+  }
+}
+
+watch(
+  () => tab.value,
+  () => {
+    switch (tab.value) {
+      case ActivityTab.Positions:
+        view.value = ActivityView.Positions
+        break
+      case ActivityTab.Derivatives:
+        view.value = ActivityView.DerivativeOrders
+        break
+      case ActivityTab.Spot:
+        view.value = ActivityView.SpotOrders
+        break
+      default:
+        view.value = ActivityView.WalletTransfers
+        break
+    }
+
+    onViewChange()
+  },
+  { immediate: true }
+)
+
+watch(() => route.query, setTabFromQuery, { immediate: true })
 </script>
 
 <template>
@@ -156,6 +199,7 @@ function onViewChange() {
       class="pb-4 xs:pb-6"
       :tab="tab"
       @update:view="onViewChange"
+      @update:subaccount="onSubaccountChange"
     />
 
     <div class="h-full rounded-xl overflow-y-auto">

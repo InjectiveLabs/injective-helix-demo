@@ -130,19 +130,6 @@ export const useSpotStore = defineStore('spot', {
     submitStopLimitOrder,
     submitStopMarketOrder,
 
-    reset() {
-      const spotStore = useSpotStore()
-
-      const initialState = initialStateFactory()
-
-      spotStore.$patch({
-        trades: initialState.trades,
-        orderbook: initialState.orderbook,
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades
-      })
-    },
-
     async init() {
       const spotStore = useSpotStore()
 
@@ -210,7 +197,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -237,7 +224,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -268,14 +255,18 @@ export const useSpotStore = defineStore('spot', {
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
       const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
+      const latestOrderbookIsMostRecent =
+        latestOrderbook.sequence >= currentOrderbookSequence
 
-      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+      if (latestOrderbookIsMostRecent) {
         spotStore.orderbook = latestOrderbook
       }
 
       // handle race condition between fetch and stream
       spotStore.orderbook = {
-        sequence: currentOrderbookSequence,
+        sequence: latestOrderbookIsMostRecent
+          ? latestOrderbook.sequence
+          : currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
           currentRecords: spotStore.orderbook?.buys,
@@ -311,7 +302,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -368,17 +359,38 @@ export const useSpotStore = defineStore('spot', {
     resetSubaccount() {
       const spotStore = useSpotStore()
 
-      const initialState = initialStateFactory()
+      const {
+        subaccountOrders,
+        subaccountTrades,
+        subaccountOrdersCount,
+        subaccountTradesCount,
+        subaccountOrderHistory,
+        subaccountOrderHistoryCount
+      } = initialStateFactory()
 
       spotStore.cancelSubaccountStream()
 
       spotStore.$patch({
-        subaccountOrders: initialState.subaccountOrders,
-        subaccountTrades: initialState.subaccountTrades,
-        subaccountTradesCount: initialState.subaccountOrdersCount,
-        subaccountOrdersCount: initialState.subaccountOrdersCount,
-        subaccountOrderHistory: initialState.subaccountOrderHistory,
-        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
+        subaccountOrders,
+        subaccountTrades,
+        subaccountTradesCount,
+        subaccountOrdersCount,
+        subaccountOrderHistory,
+        subaccountOrderHistoryCount
+      })
+    },
+
+    reset() {
+      const spotStore = useSpotStore()
+
+      const { trades, orderbook, subaccountOrders, subaccountTrades } =
+        initialStateFactory()
+
+      spotStore.$patch({
+        trades,
+        orderbook,
+        subaccountOrders,
+        subaccountTrades
       })
     }
   }

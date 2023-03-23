@@ -59,7 +59,8 @@ export enum Modal {
   PriceDeviation = 'price-deviation',
   Terms = 'terms',
   USDCDetected = 'usdc-detected',
-  UserFeedback = 'user-feedback'
+  UserFeedback = 'user-feedback',
+  DevMode = 'dev-mode'
 }
 
 export enum Breakpoint {
@@ -308,7 +309,7 @@ export enum ActivityTab {
   Positions = 'positions',
   Derivatives = 'derivatives',
   Spot = 'spot',
-  WalletHistory = 'walletHistory'
+  WalletHistory = 'wallet-history'
 }
 
 export enum AggregatedBalanceType {

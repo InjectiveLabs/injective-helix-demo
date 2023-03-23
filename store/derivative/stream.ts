@@ -46,25 +46,31 @@ export const streamOrderbookUpdate = (marketId: string) => {
       const sequence = derivativeStore.orderbook?.sequence || 0
 
       /**
-       * The current exists and we need to update it
+       * A sequence was skipped, refetch the orderbook snapshot
        **/
-      if (sequence < orderbook.sequence) {
-        const newBuys = combineOrderbookRecords({
-          isBuy: true,
-          updatedRecords: orderbook.buys,
-          currentRecords: derivativeStore.buys
-        })
-        const newSells = combineOrderbookRecords({
-          isBuy: false,
-          updatedRecords: orderbook.sells,
-          currentRecords: derivativeStore.sells
-        })
+      if (orderbook.sequence !== sequence + 1) {
+        return derivativeStore.fetchOrderbook(marketId)
+      }
 
-        derivativeStore.orderbook = {
-          sequence: orderbook.sequence,
-          buys: newBuys,
-          sells: newSells
-        }
+      /**
+       * The current orderbook exists and we need to update it
+       **/
+
+      const newBuys = combineOrderbookRecords({
+        isBuy: true,
+        updatedRecords: orderbook.buys,
+        currentRecords: derivativeStore.buys
+      })
+      const newSells = combineOrderbookRecords({
+        isBuy: false,
+        updatedRecords: orderbook.sells,
+        currentRecords: derivativeStore.sells
+      })
+
+      derivativeStore.orderbook = {
+        sequence: orderbook.sequence,
+        buys: newBuys,
+        sells: newSells
       }
     }
   })
@@ -100,7 +106,7 @@ export const streamTrades = (marketId: string) => {
 
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {
@@ -164,7 +170,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
 export const streamSubaccountTrades = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {
@@ -236,7 +242,7 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
 export const streamSubaccountOrders = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
+import { BusEvents, Modal } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
-const bankStore = useBankStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -23,7 +24,13 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
+  Promise.all([
+    walletStore.init(),
+    tokenStore.fetchSupplyTokenMeta(),
+
+    // TODO: remove when we have proper support for multi subaccount management
+    accountStore.resetToDefaultSubaccount()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -38,11 +45,12 @@ onMounted(() => {
     tokenStore.fetchSupplyTokenMeta()
   ])
 
+  openDevModeModal()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 onWalletConnected(() => {
-  Promise.all([bankStore.fetchAccountPortfolio()]).catch($onError)
+  Promise.all([accountStore.fetchAccountPortfolio()]).catch($onError)
 })
 
 function onOpenSideBar() {
@@ -56,6 +64,15 @@ function onCloseSideBar() {
     isOpenSidebar.value = false
 
     container.value?.classList.remove('overflow-y-hidden')
+  }
+}
+
+function openDevModeModal() {
+  const devModeExistsInQuery =
+    route.query.devMode && route.query.devMode === 'true'
+
+  if (devModeExistsInQuery && !walletStore.isUserWalletConnected) {
+    modalStore.openModal({ type: Modal.DevMode })
   }
 }
 </script>
@@ -104,6 +121,7 @@ function onCloseSideBar() {
                 <ModalsInsufficientInjForGas />
                 <ModalsNinjaPassWinner />
                 <ModalsUserFeedback />
+                <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />
               </div>
@@ -113,7 +131,7 @@ function onCloseSideBar() {
       </div>
     </transition>
     <BaseNotifications
-      class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
+      class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
         <BaseNotification

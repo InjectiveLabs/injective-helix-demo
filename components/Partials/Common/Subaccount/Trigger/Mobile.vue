@@ -5,6 +5,7 @@ import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
+const accountStore = useAccountStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -81,8 +82,9 @@ const marketRoute = computed(() => {
           </span>
         </div>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="isCancelable"
+          :disabled="!accountStore.isDefaultSubaccount"
           :status="status"
           sm
           @click="onCancelOrder"

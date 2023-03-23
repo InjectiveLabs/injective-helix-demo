@@ -15,12 +15,12 @@ export const deposit = async ({
   amount: BigNumberInBase
   token: Token
 }) => {
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
   const { queue } = useAppStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!bankStore.subaccountId || !isUserWalletConnected) {
+  if (!accountStore.subaccountId || !isUserWalletConnected) {
     return
   }
 
@@ -29,7 +29,7 @@ export const deposit = async ({
 
   const message = MsgDeposit.fromJSON({
     injectiveAddress,
-    subaccountId: bankStore.subaccountId,
+    subaccountId: accountStore.subaccountId,
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
@@ -52,12 +52,12 @@ export const withdraw = async ({
   amount: BigNumberInBase
   token: Token
 }) => {
-  const bankStore = useBankStore()
+  const accountStore = useAccountStore()
   const { queue } = useAppStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
-  if (!bankStore.subaccountId || !isUserWalletConnected) {
+  if (!accountStore.subaccountId || !isUserWalletConnected) {
     return
   }
 
@@ -66,7 +66,7 @@ export const withdraw = async ({
 
   const message = MsgWithdraw.fromJSON({
     injectiveAddress,
-    subaccountId: bankStore.subaccountId,
+    subaccountId: accountStore.subaccountId,
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({

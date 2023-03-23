@@ -79,6 +79,12 @@ export default {
     to: 'TO',
     injectiveBridge: 'Injective Bridge',
     wormhole: 'Wormhole (Ethereum)',
-    solana: 'Wormhole (Solana)'
+    solana: 'Wormhole (Solana)',
+
+    balanceBreakdownExplorer: 'Your full balance breakdown can be found on the',
+    explorer: 'explorer',
+    main: 'Main',
+    account: 'Subaccount',
+    accountBalance: 'Subaccount Balance'
   }
 }

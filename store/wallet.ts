@@ -100,13 +100,13 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async onConnect() {
-      const bankStore = useBankStore()
+      const accountStore = useAccountStore()
       const walletStore = useWalletStore()
       const exchangeStore = useExchangeStore()
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await bankStore.fetchAccountPortfolio()
+      await accountStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
       amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
@@ -326,6 +326,26 @@ export const useWalletStore = defineStore('wallet', {
       await walletStore.onConnect()
     },
 
+    async connectAddress(injectiveAddress: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.validate()
+      await walletStore.connectWallet(Wallet.Metamask)
+
+      const addressConfirmation = await confirm(injectiveAddress)
+      const address = getEthereumAddress(injectiveAddress)
+
+      walletStore.$patch({
+        address,
+        addresses: [address],
+        injectiveAddress,
+        addressConfirmation
+      })
+
+      await walletStore.onConnect()
+    },
+
     setWalletConnectStatus(walletConnectStatus: WalletConnectStatus) {
       const walletStore = useWalletStore()
 
@@ -343,7 +363,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { hasEnoughInjForGas } = useBankStore()
+      const { hasEnoughInjForGas } = useAccountStore()
       const { ethereumChainId, chainId } = useAppStore()
       const { wallet, injectiveAddress, address } = useWalletStore()
 
@@ -372,7 +392,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async logout() {
-      const bankStore = useBankStore()
+      const accountStore = useAccountStore()
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
@@ -386,7 +406,7 @@ export const useWalletStore = defineStore('wallet', {
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
 
-      bankStore.$reset()
+      accountStore.$reset()
       peggyStore.$reset()
       activityStore.$reset()
       positionStore.$reset()
@@ -395,13 +415,14 @@ export const useWalletStore = defineStore('wallet', {
     reset() {
       const walletStore = useWalletStore()
 
-      const initialState = initialStateFactory()
+      const { address, addresses, injectiveAddress, addressConfirmation } =
+        initialStateFactory()
 
       walletStore.$patch({
-        address: initialState.address,
-        addresses: initialState.addresses,
-        injectiveAddress: initialState.injectiveAddress,
-        addressConfirmation: initialState.addressConfirmation
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation
       })
     }
   }

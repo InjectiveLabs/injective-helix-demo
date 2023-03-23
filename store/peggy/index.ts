@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui-ts'
 import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
 import { Erc20Token } from '@injectivelabs/token-metadata'
-import { tokenPrice, web3Client } from '@/app/Services'
+import { web3Client } from '@/app/Services'
 import { setTokenAllowance, transfer, withdraw } from '@/store/peggy/message'
 
 type TokenStoreState = {
@@ -20,7 +20,7 @@ export const usePeggyStore = defineStore('peggy', {
     withdraw,
     setTokenAllowance,
 
-    async fetchErc20BalancesWithTokenAndPrice() {
+    getErc20BalancesWithTokenAndPrice() {
       const tokenStore = useTokenStore()
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
@@ -32,10 +32,9 @@ export const usePeggyStore = defineStore('peggy', {
       const tradeableErc20Tokens = tokenStore.tradeableTokens.filter(
         (token) => token.erc20?.address
       )
-      const tradeableBalancesWithTokenAndPrice = await awaitAll(
-        tradeableErc20Tokens,
-        async (token) => {
-          return {
+      const tradeableBalancesWithTokenAndPrice = tradeableErc20Tokens.map(
+        (token) =>
+          ({
             token,
             denom: token.denom,
             balance: '0',
@@ -43,9 +42,14 @@ export const usePeggyStore = defineStore('peggy', {
               balance: '0',
               allowance: '0'
             },
-            usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
-          } as BalanceWithTokenWithErc20BalanceWithPrice
-        }
+            usdPrice: 0
+          } as BalanceWithTokenWithErc20BalanceWithPrice)
+      )
+
+      tokenStore.fetchTokenUsdPriceMap(
+        tradeableBalancesWithTokenAndPrice.map(
+          (balanceWithToken) => balanceWithToken.token.coinGeckoId
+        )
       )
 
       peggyStore.$patch({
@@ -60,6 +64,13 @@ export const usePeggyStore = defineStore('peggy', {
 
       if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
+      }
+
+      const erc20TokesAreFetched =
+        peggyStore.tradeableErc20BalancesWithTokenAndPrice.length > 0
+
+      if (!erc20TokesAreFetched) {
+        peggyStore.getErc20BalancesWithTokenAndPrice()
       }
 
       const erc20TokenBalancesAreFetched =

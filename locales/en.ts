@@ -301,5 +301,11 @@ export default {
     termsAndCondition: 'Terms and Conditions',
     disclaimer_note:
       'By connecting a wallet, you agree to the Injective Labs {terms}, have read the {policy} and acknowledge that you have read and understand the Injective Protocol {disclaimer}.'
+  },
+
+  devMode: {
+    connectWithAddress: 'Connect with address',
+    connect: 'Connect',
+    enterInjectiveAddress: 'Enter your injective address'
   }
 }

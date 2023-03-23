@@ -10,6 +10,7 @@ import { BusEvents, Modal } from '@/types'
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const modalStore = useModalStore()
+const accountStore = useAccountStore()
 const route = useRoute()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -311,16 +312,17 @@ function closePositionAndReduceOnlyOrders() {
     </td>
 
     <td class="text-center relative pr-3">
-      <PartialsTradingFormCancelButton
+      <PartialsCommonCancelButton
         v-if="!hideBalance"
         :status="status"
         data-cy="open-position-cancel-link"
+        :disabled="!accountStore.isDefaultSubaccount"
         @click="handleClosePosition"
       >
         <template #icon>
           <BaseIcon name="close" sm />
         </template>
-      </PartialsTradingFormCancelButton>
+      </PartialsCommonCancelButton>
     </td>
   </tr>
 </template>

@@ -41,7 +41,7 @@ export default defineNuxtConfig({
   webpack: {
     terser: {
       terserOptions: {
-        keep_classnames: false
+        keep_classnames: true
       }
     }
   },

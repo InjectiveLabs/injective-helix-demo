@@ -9,7 +9,7 @@ import { UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, Modal } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
@@ -43,7 +43,7 @@ const quoteBalance = computed(() => {
   const quoteToken = market.value.quoteToken
 
   return new BigNumberInWei(
-    bankStore.balanceMap[quoteToken.denom] || '0'
+    accountStore.balanceMap[quoteToken.denom] || '0'
   ).toBase(quoteToken.decimals)
 })
 

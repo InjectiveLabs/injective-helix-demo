@@ -38,6 +38,13 @@ const amount = computed(() => {
 })
 
 const transferType = computed(() => {
+  if (
+    props.transaction.sender.startsWith('0x') &&
+    props.transaction.receiver.startsWith('0x')
+  ) {
+    return t('walletHistory.subaccountInternalTransferType')
+  }
+
   if (props.transaction.sender.startsWith('0x')) {
     return t('walletHistory.subaccountWithdrawalType')
   }

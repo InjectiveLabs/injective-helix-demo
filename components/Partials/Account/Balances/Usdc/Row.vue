@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 const showConvertModalLink = computed(() => {
-  return props.balance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
+  return props.balance.denom === usdcTokenDenom.USDC
 })
 
 function handleConvert() {

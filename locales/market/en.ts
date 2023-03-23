@@ -15,7 +15,8 @@ export default {
     quote: 'Quote',
     expiredRecently: 'Expired in last 24 hours',
     settledAt: 'Settled at',
-    airdrop: 'Airdrop'
+    airdrop: 'Airdrop',
+    showLowVol: 'Show low Vol.'
   },
 
   marketPage: {

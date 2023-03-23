@@ -35,7 +35,7 @@ import {
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
@@ -181,7 +181,7 @@ const position = computed(() => {
 })
 
 const quoteAvailableBalance = computed(() => {
-  const balance = bankStore.balanceMap[props.market.quoteDenom] || '0'
+  const balance = accountStore.balanceMap[props.market.quoteDenom] || '0'
 
   const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
     props.market.quoteToken.decimals

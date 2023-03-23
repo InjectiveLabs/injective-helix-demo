@@ -14,7 +14,7 @@ import {
   WalletConnectStatus
 } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -37,15 +37,13 @@ const baseTradingBalance = computed(() => {
 
   return accountBalancesWithToken.value.find(
     (balance) =>
-      balance.denom.toLowerCase() ===
-      (props.market as UiSpotMarketWithToken).baseDenom.toLowerCase()
+      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
   )
 })
 
 const quoteTradingBalance = computed(() => {
   return accountBalancesWithToken.value.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
+    (balance) => balance.denom === props.market.quoteDenom
   )
 })
 
@@ -88,8 +86,8 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    bankStore.fetchAccountPortfolio(),
-    bankStore.streamBankBalance()
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance()
   ])
     .catch($onError)
     .finally(() => {

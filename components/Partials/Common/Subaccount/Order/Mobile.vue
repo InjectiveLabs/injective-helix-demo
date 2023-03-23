@@ -96,7 +96,7 @@ function onCancelOrder() {
           </span>
         </div>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="orderFillable"
           :status="status"
           sm

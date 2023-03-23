@@ -43,7 +43,7 @@ const balancesWithAggregation = computed<AccountBalanceWithAggregatedType[]>(
       : []
 
     const balanceWithoutAggregationDenoms = props.balances.filter(
-      (balance) => !usdcTokenDenoms.includes(balance.token.denom.toLowerCase())
+      (balance) => !usdcTokenDenoms.includes(balance.token.denom)
     )
 
     return [
@@ -107,12 +107,8 @@ const sortedBalances = computed(() => {
         }
 
         case BalanceHeaderType.Available: {
-          const availableA = new BigNumberInBase(a.bankBalance).plus(
-            a.availableMargin
-          )
-          const availableB = new BigNumberInBase(a.bankBalance).plus(
-            a.availableMargin
-          )
+          const availableA = new BigNumberInBase(a.availableMargin)
+          const availableB = new BigNumberInBase(a.availableMargin)
 
           if (availableA.eq(availableB)) {
             return b.token.symbol.localeCompare(a.token.symbol)

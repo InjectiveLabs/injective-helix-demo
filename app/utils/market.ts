@@ -147,21 +147,16 @@ export const marketIsQuotePair = (
     return true
   }
 
-  const marketBaseSymbol = market.baseToken.symbol.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
 
   if (activeQuote === MarketQuoteType.USDT) {
-    return (
-      marketQuoteSymbol.includes(usdtSymbolLowercased) ||
-      marketBaseSymbol.includes(usdtSymbolLowercased)
-    )
+    return marketQuoteSymbol.includes(usdtSymbolLowercased)
   }
 
   if (activeQuote === MarketQuoteType.USDC) {
-    marketQuoteSymbol.includes(usdcSymbolLowercased) ||
-      marketBaseSymbol.includes(usdcSymbolLowercased)
+    return marketQuoteSymbol.includes(usdcSymbolLowercased)
   }
 
   return true
@@ -266,22 +261,22 @@ export const updateOrderbookRecord = (
     return existingRecord ? records : [...records, record]
   }, [] as PriceLevel[])
 
-  const affectedRecords = [...currentRecords]
-    .map((record) => {
-      const updatedRecord = updatedRecords.find((r) => r.price === record.price)
+  const affectedRecords = [...currentRecords].map((record) => {
+    const updatedRecord = updatedRecords.find((r) => r.price === record.price)
 
-      if (!updatedRecord) {
-        return record
-      }
+    if (!updatedRecord) {
+      return record
+    }
 
-      return {
-        ...record,
-        quantity: updatedRecord.quantity
-      }
-    })
-    .filter((record) => new BigNumber(record.quantity).gt(0))
+    return {
+      ...record,
+      quantity: updatedRecord.quantity
+    }
+  })
 
-  return [...newRecords, ...affectedRecords]
+  return [...newRecords, ...affectedRecords].filter((record) =>
+    new BigNumber(record.quantity).gt(0)
+  )
 }
 
 export const combineOrderbookRecords = ({
