@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   markets: {
     title: 'Markets',
@@ -31,7 +33,8 @@ export default {
     noTradingAccountBalance:
       'Transfer to your Injective Trading Account to start trading on Helix.',
     startTrading: 'Start Trading!',
-    availableBalance: 'Available {asset}',
+    availableBalance: ({ named }: I18nMessageFunction) =>
+      `Available ${named('asset')}`,
     transferToTrade: 'Transfer to trade',
     wallet: 'Wallet'
   }

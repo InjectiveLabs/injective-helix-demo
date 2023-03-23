@@ -6,9 +6,6 @@ export const getRoutes = (network: Network, env: string) => {
     Network.Devnet1,
     Network.Local
   ].includes(network)
-  const IS_TESTNET: Boolean = [Network.Testnet, Network.TestnetK8s].includes(
-    network
-  )
   const IS_STAGING = env === 'staging'
   const IS_MAINNET =
     [
@@ -82,9 +79,9 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['']
+  const customStaticRoutes: string[] = ['/']
   const upcomingMarketsRoutes: string[] = []
-  const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
+  // const deprecatedMarketsRoutes = []
 
   const derivativeMarketRouteNames = [
     'perpetuals-perpetual',
@@ -122,7 +119,6 @@ export const getRoutes = (network: Network, env: string) => {
       footerEnabledRoutes,
       spotMarketRouteNames,
       upcomingMarketsRoutes,
-      deprecatedMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames
     }

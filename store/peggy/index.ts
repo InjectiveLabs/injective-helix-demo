@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui-ts'
 import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
-import { Erc20Token } from '@injectivelabs/token-metadata'
+import type { Erc20Token } from '@injectivelabs/token-metadata'
 import { web3Client } from '@/app/Services'
 import { setTokenAllowance, transfer, withdraw } from '@/store/peggy/message'
 

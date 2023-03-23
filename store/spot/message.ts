@@ -1,19 +1,19 @@
 import {
-  spotOrderTypeToGrpcOrderType,
   UiSpotLimitOrder,
-  UiSpotMarketWithToken,
-  UiSpotOrderHistory
+  UiSpotOrderHistory,
+  orderSideToOrderType,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  MsgBatchCancelSpotOrders,
   MsgCancelSpotOrder,
+  MsgBatchCancelSpotOrders,
   MsgCreateSpotLimitOrder,
   MsgCreateSpotMarketOrder,
-  SpotOrderSide,
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { msgBroadcastClient } from '@/app/Services'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 
@@ -83,10 +83,10 @@ export const submitLimitOrder = async ({
   price,
   market,
   quantity,
-  orderType
+  orderSide
 }: {
   price: BigNumberInBase
-  orderType: SpotOrderSide
+  orderSide: OrderSide
   quantity: BigNumberInBase
   market: UiSpotMarketWithToken
 }) => {
@@ -117,7 +117,7 @@ export const submitLimitOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    orderType: spotOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -150,7 +150,7 @@ export const submitMarketOrder = async ({
   await appStore.queue()
   await validate()
 
-  const orderType = isBuy ? SpotOrderSide.Buy : SpotOrderSide.Sell
+  const orderType = isBuy ? OrderSide.Buy : OrderSide.Sell
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId,
@@ -166,7 +166,7 @@ export const submitMarketOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    orderType: spotOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -179,11 +179,11 @@ export const submitStopLimitOrder = async ({
   price,
   market,
   quantity,
-  orderType,
+  orderSide,
   triggerPrice
 }: {
   price: BigNumberInBase
-  orderType: SpotOrderSide
+  orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   market: UiSpotMarketWithToken
@@ -220,7 +220,7 @@ export const submitStopLimitOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    orderType: spotOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -233,11 +233,11 @@ export const submitStopMarketOrder = async ({
   price,
   market,
   quantity,
-  orderType,
+  orderSide,
   triggerPrice
 }: {
   price: BigNumberInBase
-  orderType: SpotOrderSide
+  orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   market: UiSpotMarketWithToken
@@ -274,7 +274,7 @@ export const submitStopMarketOrder = async ({
       value: quantity,
       baseDecimals: market.baseToken.decimals
     }),
-    orderType: spotOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
   await msgBroadcastClient.broadcastOld({

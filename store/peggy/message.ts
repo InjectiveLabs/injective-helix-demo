@@ -4,7 +4,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
-import { Erc20Token, Token } from '@injectivelabs/token-metadata'
+import type { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   web3Broadcaster,

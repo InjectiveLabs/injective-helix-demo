@@ -1,13 +1,8 @@
 <script lang="ts" setup>
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  DerivativeOrderSide,
-  MarketType,
-  SpotOrderSide,
-  UiPosition,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   MaxAmountOnOrderbook,
@@ -129,37 +124,35 @@ function updateAmount({
   emit('update:amount', { amount, isBaseAmount })
 }
 
-function updateOrderType(isBuy: boolean) {
-  const orderTypeBuy = isSpot ? SpotOrderSide.Buy : DerivativeOrderSide.Buy
-  const orderTypeSell = isSpot ? SpotOrderSide.Sell : DerivativeOrderSide.Sell
-
-  formValues.value[TradeField.OrderType] = isBuy ? orderTypeSell : orderTypeBuy
+function updateOrderSide(isBuy: boolean) {
+  formValues.value[TradeField.OrderSide] = isBuy
+    ? OrderSide.Sell
+    : OrderSide.Buy
 }
 
 function onOrderbookNotionalClick(notionalAndType: OrderBookNotionalAndType) {
-  updateOrderType(notionalAndType.isBuy)
+  updateOrderSide(notionalAndType.isBuy)
 
   formValues.value[TradeField.TradingType] = TradeExecutionType.Market
-
   formValues.value[TradeField.QuoteAmount] = notionalAndType.total
 
   updateAmount({ isBaseAmount: false })
 }
 
-function onOrderbookSizeClick(quantityAndOrderType: OrderBookQuantityAndType) {
-  updateOrderType(quantityAndOrderType.isBuy)
+function onOrderbookSizeClick(quantityAndOrderSide: OrderBookQuantityAndType) {
+  updateOrderSide(quantityAndOrderSide.isBuy)
 
-  formValues.value[TradeField.BaseAmount] = quantityAndOrderType.quantity
+  formValues.value[TradeField.BaseAmount] = quantityAndOrderSide.quantity
 
   updateAmount({ isBaseAmount: true })
 }
 
-function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
+function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
   if (
     formValues.value[TradeField.TradingType] === TradeExecutionType.LimitFill ||
     formValues.value[TradeField.TradingType] === TradeExecutionType.StopLimit
   ) {
-    formValues.value[TradeField.LimitPrice] = priceAndOrderType.price
+    formValues.value[TradeField.LimitPrice] = priceAndOrderSide.price
 
     updateAmount({ isBaseAmount: true })
   }

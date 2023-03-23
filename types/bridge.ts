@@ -1,4 +1,4 @@
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BridgeField } from '@/types'
 
 export type BridgeForm = Record<BridgeField, any>

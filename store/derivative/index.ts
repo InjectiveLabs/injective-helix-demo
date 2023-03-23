@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  OrderState,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   MarketType,
   UiDerivativeTrade,
@@ -16,9 +21,7 @@ import {
 import {
   PerpetualMarket,
   BinaryOptionsMarket,
-  DerivativeOrderSide,
-  ExpiryFuturesMarket,
-  DerivativeOrderState
+  ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
 import {
   cancelOrder,
@@ -380,7 +383,7 @@ export const useDerivativeStore = defineStore('derivative', {
           isConditional: filters?.isConditional,
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[]
+          orderTypes: filters?.orderTypes as unknown as OrderSide[]
         })
 
       derivativeStore.$patch({
@@ -403,7 +406,7 @@ export const useDerivativeStore = defineStore('derivative', {
         await indexerDerivativesApi.fetchOrderHistory({
           subaccountId,
           isConditional: true,
-          state: DerivativeOrderState.Booked,
+          state: OrderState.Booked,
           marketIds: marketIds || derivativeStore.activeMarketIds,
           pagination: {
             limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE

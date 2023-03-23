@@ -255,7 +255,7 @@ export enum TradeField {
   BaseDenom = 'Base denom',
   Leverage = 'Leverage',
   LimitPrice = 'Limit price',
-  OrderType = 'Order type',
+  OrderSide = 'Order side',
   PostOnly = 'Post-Only',
   ProportionalPercentage = 'Proportional percentage',
   QuoteAmount = 'Quote amount',

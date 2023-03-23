@@ -1,5 +1,6 @@
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import type { Token } from '@injectivelabs/token-metadata'
+import { OrderSide } from '@injectivelabs/ts-types'
 
 export default function useConvertFormatter() {
   const spotStore = useSpotStore()
@@ -13,10 +14,10 @@ export default function useConvertFormatter() {
 
       return {
         ...list,
-        [market.slug]: { orderType: SpotOrderSide.Sell, market },
-        [reversedSlug]: { orderType: SpotOrderSide.Buy, market }
+        [market.slug]: { orderType: OrderSide.Sell, market },
+        [reversedSlug]: { orderType: OrderSide.Buy, market }
       }
-    }, {} as Record<string, { orderType: SpotOrderSide; market: UiSpotMarketWithToken }>)
+    }, {} as Record<string, { orderType: OrderSide; market: UiSpotMarketWithToken }>)
   })
 
   const availableQuoteDenoms = computed(() =>

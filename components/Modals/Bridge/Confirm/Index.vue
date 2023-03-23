@@ -5,8 +5,7 @@ import {
   BRIDGE_FEE_IN_USD,
   BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { useI18n } from 'vue-i18n'
-import { TokenWithPrice } from '@injectivelabs/token-metadata'
+import type { TokenWithPrice } from '@injectivelabs/token-metadata'
 import { Modal, BridgeField, BridgeForm, BusEvents } from '@/types'
 import { injToken } from '@/app/data/token'
 import {
@@ -21,7 +20,7 @@ const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const { t } = useI18n()
+const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 

@@ -24,6 +24,21 @@ export default {
         buffer: require.resolve('buffer'),
         stream: require.resolve('stream-browserify')
       }
+
+      if (config.module) {
+        config.module.rules = [
+          ...(config.module.rules as string[]),
+          {
+            test: /\.m?js/,
+            include: [
+              /node_modules\/@injectivelabs\/(bridge-ts|contracts|exceptions|networks|test-utils|token-metadata|token-utils|utils|core-proto-ts|indexer-proto-ts|ts-types|wallet-ts|sdk-ts|sdk-ui-ts)/
+            ],
+            resolve: {
+              fullySpecified: false
+            }
+          } as any
+        ]
+      }
     })
   }
 }

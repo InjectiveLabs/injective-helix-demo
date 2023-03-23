@@ -9,19 +9,18 @@ import {
 import {
   MarketType,
   ZERO_IN_BASE,
-  DerivativeOrderSide,
   UiPerpetualMarketWithToken,
   UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
-import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
+import { TradeDirection, OrderSide, OrderState } from '@injectivelabs/ts-types'
 import {
   Modal,
   TradeForm,
   TradeField,
   TradeExecutionType,
-  OrderAttemptStatus
+  OrderAttemptStatus,
+  TradeFormValue
 } from '@/types'
 import {
   DEBUG_CALCULATION,
@@ -43,7 +42,11 @@ const { success } = useNotifications()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const { values, resetForm: resetFormValues } = useForm<TradeForm>()
+const {
+  values,
+  setFieldValue,
+  resetForm: resetFormValues
+} = useForm<TradeForm>()
 
 const defaultStep = '1'
 const isBaseAmount = ref(true)
@@ -91,7 +94,7 @@ const priceStep = computed(() => {
 })
 
 const isBuy = computed(
-  () => formValues.value[TradeField.OrderType] === DerivativeOrderSide.Buy
+  () => formValues.value[TradeField.OrderSide] === OrderSide.Buy
 )
 
 const orderTypeToSubmit = computed(() => {
@@ -100,28 +103,28 @@ const orderTypeToSubmit = computed(() => {
 
     return isBuy.value
       ? triggerPriceInBase.lt(markPrice.value)
-        ? DerivativeOrderSide.TakeBuy
-        : DerivativeOrderSide.StopBuy
+        ? OrderSide.TakeBuy
+        : OrderSide.StopBuy
       : triggerPriceInBase.gt(markPrice.value)
-      ? DerivativeOrderSide.TakeSell
-      : DerivativeOrderSide.StopSell
+      ? OrderSide.TakeSell
+      : OrderSide.StopSell
   }
 
   switch (true) {
     case formValues.value[TradeField.PostOnly] && isBuy.value: {
-      return DerivativeOrderSide.BuyPO
+      return OrderSide.BuyPO
     }
     case isBuy.value: {
-      return DerivativeOrderSide.Buy
+      return OrderSide.Buy
     }
     case formValues.value[TradeField.PostOnly] && !isBuy.value: {
-      return DerivativeOrderSide.SellPO
+      return OrderSide.SellPO
     }
     case !isBuy.value: {
-      return DerivativeOrderSide.Sell
+      return OrderSide.Sell
     }
     default: {
-      return DerivativeOrderSide.Buy
+      return OrderSide.Buy
     }
   }
 })
@@ -144,9 +147,9 @@ const showReduceOnly = computed(() => {
       (order) =>
         order.marketId === props.market.marketId &&
         [
-          DerivativeOrderState.PartialFilled,
-          DerivativeOrderState.Unfilled,
-          DerivativeOrderState.Booked
+          OrderState.PartialFilled,
+          OrderState.Unfilled,
+          OrderState.Booked
         ].includes(order.state)
     )
 
@@ -228,7 +231,7 @@ const notionalWithLeverage = computed(() => {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
         price,
-        orderSide: formValues.value[TradeField.OrderType],
+        orderSide: formValues.value[TradeField.OrderSide],
         quantity: formValues.value[TradeField.BaseAmount],
         tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
@@ -262,7 +265,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
         price: worstPriceWithSlippage.value.toFixed(),
-        orderSide: formValues.value[TradeField.OrderType],
+        orderSide: formValues.value[TradeField.OrderSide],
         quantity: formValues.value[TradeField.BaseAmount],
         tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
@@ -363,7 +366,7 @@ const liquidationPrice = computed(() => {
     price,
     market: derivativeMarket,
     quantity: formValues.value[TradeField.BaseAmount],
-    orderType: formValues.value[TradeField.OrderType],
+    orderType: formValues.value[TradeField.OrderSide],
     notionalWithLeverage: notionalWithLeverage.value.toFixed()
   })
 })
@@ -449,7 +452,7 @@ function submitLimitOrder() {
       price: limitPrice.value,
       quantity: baseAmount.value,
       margin: notionalWithLeverage.value,
-      orderType: orderTypeToSubmit.value,
+      orderSide: orderTypeToSubmit.value,
       reduceOnly: orderTypeReduceOnly.value
     })
     .then(() => {
@@ -480,7 +483,7 @@ function submitStopLimitOrder() {
       quantity: baseAmount.value,
       triggerPrice: triggerPrice.value,
       margin: notionalWithLeverage.value,
-      orderType: orderTypeToSubmit.value,
+      orderSide: orderTypeToSubmit.value,
       reduceOnly: orderTypeReduceOnly.value
     })
     .then(() => {
@@ -506,7 +509,7 @@ function submitMarketOrder() {
       quantity: baseAmount.value,
       price: worstPriceWithSlippage.value,
       reduceOnly: orderTypeReduceOnly.value,
-      orderType: formValues.value[TradeField.OrderType],
+      orderSide: formValues.value[TradeField.OrderSide],
       margin: notionalWithLeverageBasedOnWorstPrice.value
     })
     .then(() => {
@@ -535,7 +538,7 @@ function submitStopMarketOrder() {
       market: props.market,
       quantity: baseAmount.value,
       triggerPrice: triggerPrice.value,
-      orderType: orderTypeToSubmit.value,
+      orderSide: orderTypeToSubmit.value,
       price: worstPriceWithSlippage.value,
       reduceOnly: orderTypeReduceOnly.value,
       margin: notionalWithLeverageBasedOnWorstPrice.value
@@ -554,14 +557,24 @@ function submitStopMarketOrder() {
     })
 }
 
+function updateFormValue({ field, value }: TradeFormValue) {
+  setFieldValue(field, value)
+}
+
 function setDefaultFormValues() {
-  formValues.value[TradeField.BaseAmount] = amountStep.value
-  formValues.value[TradeField.QuoteAmount] = priceStep.value
-  formValues.value[TradeField.LimitPrice] = lastTradedPrice.value.toFixed(
-    props.market.priceDecimals,
-    TRADE_FORM_PRICE_ROUNDING_MODE
-  )
-  formValues.value[TradeField.ReduceOnly] = false
+  updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
+  updateFormValue({ field: TradeField.QuoteAmount, value: priceStep.value })
+  updateFormValue({
+    field: TradeField.LimitPrice,
+    value: lastTradedPrice.value.toFixed(
+      props.market.priceDecimals,
+      TRADE_FORM_PRICE_ROUNDING_MODE
+    )
+  })
+  updateFormValue({
+    field: TradeField.ReduceOnly,
+    value: false
+  })
 }
 
 function resetForm() {
@@ -628,7 +641,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     marketType: props.market.subType,
     amount: formValues.value[TradeField.BaseAmount],
     leverage: formValues.value[TradeField.Leverage],
-    orderType: formValues.value[TradeField.OrderType],
+    orderSide: formValues.value[TradeField.OrderSide],
     reduceOnly: formValues.value[TradeField.ReduceOnly],
     limitPrice: formValues.value[TradeField.LimitPrice],
     tradingType: formValues.value[TradeField.TradingType],
@@ -643,7 +656,10 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
       @form:reset="setDefaultFormValues"
     />
 
-    <PartialsTradingFormOrderTypeSelect v-bind="{ market }" />
+    <PartialsTradingFormOrderSideSelect
+      v-bind="{ market }"
+      @update:formValue="updateFormValue"
+    />
 
     <PartialsTradingFormOrderInputs
       v-bind="{

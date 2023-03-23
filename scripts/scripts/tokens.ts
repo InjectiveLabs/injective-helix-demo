@@ -2,21 +2,18 @@
 import path from 'path'
 import { copy, removeSync, pathExistsSync, copySync } from 'fs-extra'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
+export function tokenMetadata(isProduction = false) {
+  const outputPathPrefix = isProduction ? '.output/public' : 'public'
+  const tokenMetadataDstDir = path.resolve(
+    process.cwd(),
+    `${outputPathPrefix}/vendor/@injectivelabs/token-metadata`
+  )
+  const tokenMetadataSrcDir = path.resolve(
+    process.cwd(),
+    'node_modules/@injectivelabs/token-metadata/dist/images'
+  )
+  const outDirPathExist = pathExistsSync(tokenMetadataDstDir)
 
-const outputPathPrefix = isWebpack && isProduction ? '.output/public' : 'public'
-const tokenMetadataDstDir = path.resolve(
-  process.cwd(),
-  `${outputPathPrefix}/vendor/@injectivelabs/token-metadata`
-)
-const tokenMetadataSrcDir = path.resolve(
-  process.cwd(),
-  'node_modules/@injectivelabs/token-metadata/dist/images'
-)
-const outDirPathExist = pathExistsSync(tokenMetadataDstDir)
-
-export function tokenMetadata() {
   try {
     if (outDirPathExist) {
       removeSync(tokenMetadataDstDir)

@@ -3,9 +3,10 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "types": [
       "@vueuse/nuxt",
-      "@intlify/nuxt3",
       "@pinia/nuxt",
       "@injectivelabs/nuxt-bugsnag"
     ]

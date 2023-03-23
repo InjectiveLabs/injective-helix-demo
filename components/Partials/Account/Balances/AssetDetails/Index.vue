@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { AccountBalance, BusEvents, Modal, BridgeBusEvents } from '@/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,

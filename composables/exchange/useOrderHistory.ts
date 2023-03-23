@@ -1,16 +1,17 @@
 import type { Ref } from 'vue'
 import {
   ZERO_IN_BASE,
-  SpotOrderSide,
   UiSpotOrderHistory,
-  DerivativeOrderSide,
   UiSpotMarketWithToken,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  OrderState,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { DerivativeOrderState, SpotOrderState } from '@injectivelabs/sdk-ts'
 import { UiMarketWithToken } from '@/types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -129,15 +130,15 @@ export function useOrderHistory(
   })
 
   const isBuy = computed(() => {
-    if (order.value.direction === SpotOrderSide.Buy) {
+    if (order.value.direction === OrderSide.Buy) {
       return true
     }
 
     switch (order.value.orderType) {
-      case SpotOrderSide.TakeBuy:
-      case SpotOrderSide.StopBuy:
-      case SpotOrderSide.Buy:
-      case SpotOrderSide.BuyPO:
+      case OrderSide.TakeBuy:
+      case OrderSide.StopBuy:
+      case OrderSide.Buy:
+      case OrderSide.BuyPO:
         return true
       default:
         return false
@@ -148,8 +149,8 @@ export function useOrderHistory(
     const derivativeOrder = order.value as UiDerivativeOrderHistory
 
     return (
-      derivativeOrder.orderType === DerivativeOrderSide.StopBuy ||
-      derivativeOrder.orderType === DerivativeOrderSide.StopSell
+      derivativeOrder.orderType === OrderSide.StopBuy ||
+      derivativeOrder.orderType === OrderSide.StopSell
     )
   })
 
@@ -157,8 +158,8 @@ export function useOrderHistory(
     const derivativeOrder = order.value as UiDerivativeOrderHistory
 
     return (
-      derivativeOrder.orderType === DerivativeOrderSide.TakeBuy ||
-      derivativeOrder.orderType === DerivativeOrderSide.TakeSell
+      derivativeOrder.orderType === OrderSide.TakeBuy ||
+      derivativeOrder.orderType === OrderSide.TakeSell
     )
   })
 
@@ -173,16 +174,16 @@ export function useOrderHistory(
         : t('trade.limit')
 
     switch (order.value.orderType) {
-      case SpotOrderSide.Buy:
-      case SpotOrderSide.Sell:
-      case SpotOrderSide.BuyPO:
-      case SpotOrderSide.SellPO:
+      case OrderSide.Buy:
+      case OrderSide.Sell:
+      case OrderSide.BuyPO:
+      case OrderSide.SellPO:
         return executionType
-      case SpotOrderSide.TakeSell:
-      case SpotOrderSide.TakeBuy:
+      case OrderSide.TakeSell:
+      case OrderSide.TakeBuy:
         return `${t('trade.takeProfit')} ${executionType}`
-      case SpotOrderSide.StopSell:
-      case SpotOrderSide.StopBuy:
+      case OrderSide.StopSell:
+      case OrderSide.StopBuy:
         return `${t('trade.stopLoss')} ${executionType}`
       default:
         return ''
@@ -190,7 +191,7 @@ export function useOrderHistory(
   })
 
   const orderStatus = computed(() => {
-    const orderState = isSpot.value ? SpotOrderState : DerivativeOrderState
+    const orderState = OrderState
 
     switch (order.value.state) {
       case orderState.Booked:

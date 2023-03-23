@@ -3,7 +3,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
-  UiSpotMarketWithToken,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
@@ -94,7 +94,7 @@ export function useSpotError({
       }
 
       return (
-        order.orderSide === formValues.value[TradeField.OrderType] &&
+        order.orderSide === formValues.value[TradeField.OrderSide] &&
         order.marketId === market.value.marketId
       )
     })
