@@ -45,7 +45,7 @@ export const getDenomsFromToken = (token: Token): string[] => {
     ? getFactoryDenomFromDenom(token.cw20.address)
     : ''
   const ibc20Denom = token.ibc ? `ibc/${token.ibc.hash}` : ''
-  const peggyDenom = token.erc20 ? `peggy/${token.erc20.address}` : ''
+  const peggyDenom = token.erc20 ? `peggy${token.erc20.address}` : ''
 
   const denoms = [
     cw20Denom,
