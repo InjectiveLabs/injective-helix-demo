@@ -1,11 +1,8 @@
-import { Network } from '@injectivelabs/networks'
+import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
 
 export const getRoutes = (network: Network, env: string) => {
-  const IS_DEVNET: Boolean = [
-    Network.Devnet,
-    Network.Devnet1,
-    Network.Local
-  ].includes(network)
+  const IS_DEVNET: Boolean = isDevnet(network)
+  const IS_TESTNET: Boolean = isTestnet(network)
   const IS_STAGING = env === 'staging'
   const IS_MAINNET =
     [
