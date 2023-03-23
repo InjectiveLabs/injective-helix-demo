@@ -4,14 +4,7 @@ export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: Boolean = isDevnet(network)
   const IS_TESTNET: Boolean = isTestnet(network)
   const IS_STAGING = env === 'staging'
-  const IS_MAINNET =
-    [
-      Network.Public,
-      Network.Staging,
-      Network.Mainnet,
-      Network.MainnetK8s,
-      Network.MainnetLB
-    ].includes(network) || env === 'mainnet'
+  const IS_MAINNET = (!IS_DEVNET && !IS_TESTNET) || env === 'mainnet'
 
   const spot = [
     'inj-usdt',
