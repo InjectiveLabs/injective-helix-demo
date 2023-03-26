@@ -43,10 +43,6 @@ export default <Config>{
   ],
   mode: 'jit',
 
-  future: {
-    removeDeprecatedGapUtilities: true
-  },
-
   theme: {
     container: {
       center: true,
@@ -193,17 +189,5 @@ export default <Config>{
     borderColor: ['hover'],
     maxHeight: ['responsive'],
     textColor: ['group-hover', 'hover']
-  },
-  // TODO: Remove
-  purge: {
-    enabled: process.env.NODE_ENV === 'production',
-    content: ['./**/*.vue'],
-    whitelist: [
-      'tooltip',
-      'tooltip-arrow',
-      'tooltip-inner',
-      'vue-tooltip-theme'
-    ],
-    whitelistPatterns: [/tooltip/]
   }
 }
