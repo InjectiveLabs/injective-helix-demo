@@ -119,8 +119,11 @@ function openDevModeModal() {
                 </main>
 
                 <ModalsInsufficientInjForGas />
+
                 <ModalsNinjaPassWinner />
-                <ModalsUserFeedback />
+
+                <!-- hide survey for now but can be resurrected and modified for future surveys -->
+                <!-- <ModalsUserFeedback /> -->
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />
