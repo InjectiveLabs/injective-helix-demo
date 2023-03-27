@@ -2,6 +2,8 @@
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
+  showLowVolumeMarkets: Boolean,
+
   search: {
     type: String,
     required: true
@@ -16,6 +18,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:activeType', state: string): void
   (e: 'update:search', state: string): void
+  (e: 'update:showLowVolumeMarkets', state: boolean): void
 }>()
 
 const filterList = [
@@ -38,12 +41,19 @@ const searchValue = computed({
     emit('update:search', value)
   }
 })
+
+const showLowVolumeMarketsValue = computed({
+  get: (): boolean => props.showLowVolumeMarkets,
+  set: (type: boolean) => {
+    emit('update:showLowVolumeMarkets', type)
+  }
+})
 </script>
 
 <template>
   <div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center flex-wrap gap-5">
+    <div class="flex items-center justify-between flex-wrap">
+      <div class="flex items-center flex-wrap gap-5 lg:mb-2 3xl:mb-0">
         <AppSelectButton
           v-for="marketType in filterList"
           :key="`market-type-${marketType}`"
@@ -80,6 +90,14 @@ const searchValue = computed({
           </template>
         </AppSelectButton>
       </div>
+
+      <AppCheckbox
+        v-model="showLowVolumeMarketsValue"
+        sm
+        class="2xl:ml-2 3xl:ml-0 lg:mb-2 3xl:mb-0"
+      >
+        {{ $t('markets.showLowVol') }}
+      </AppCheckbox>
     </div>
 
     <div class="w-full mt-4">
