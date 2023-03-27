@@ -11,25 +11,31 @@ const url = 'https://helixapp.xyz/3IGFwb9'
 const isModalOpen = computed(() => modalStore.modals[Modal.UserFeedback])
 
 onMounted(() => {
-  const DELAY_MODAL_DISPLAY_TIME = 8 * 1000
-
-  if (!appStore.userState.userFeedbackModalViewed) {
-    setTimeout(() => {
-      const disabledRoutes = [
-        'spot-spot',
-        'market-market',
-        'futures-futures',
-        'perpetual-perpetual',
-        'derivative-derivative',
-        'binary-options-binaryOption'
-      ]
-
-      if (!disabledRoutes.includes(route.name as string)) {
-        modalStore.openModal({ type: Modal.UserFeedback })
-      }
-    }, DELAY_MODAL_DISPLAY_TIME)
-  }
+  init()
 })
+
+function init() {
+  if (appStore.userState.userFeedbackModalViewed) {
+    return
+  }
+
+  const DELAY_MODAL_DISPLAY_TIME = 30 * 1000
+
+  setTimeout(() => {
+    const disabledRoutes = [
+      'spot-spot',
+      'market-market',
+      'futures-futures',
+      'perpetual-perpetual',
+      'derivative-derivative',
+      'binary-options-binaryOption'
+    ]
+
+    if (!disabledRoutes.includes(route.name as string)) {
+      modalStore.openModal({ type: Modal.UserFeedback })
+    }
+  }, DELAY_MODAL_DISPLAY_TIME)
+}
 
 function handleClose() {
   modalStore.closeModal(Modal.UserFeedback)
