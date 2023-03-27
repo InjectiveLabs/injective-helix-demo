@@ -42,9 +42,6 @@ function close() {
         <template #quoteSymbol>
           <span>{{ quoteTokenSymbol }}</span>
         </template>
-        <template #upcomingMarketSymbol>
-          <span>{{ baseTokenSymbol }}</span>
-        </template>
       </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">

@@ -1,40 +1,48 @@
-import { vite, head, hooks } from './nuxt-config'
-import { vitePlugins } from './nuxt-config/vite'
+import { i18n, head, hooks } from './nuxt-config'
+import vite, { vitePlugins } from './nuxt-config/vite'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 export default defineNuxtConfig({
   ssr: false,
   hooks,
+  i18n,
   debug: !isProduction,
-  vite: isWebpack ? undefined : vite,
   builder: isWebpack ? 'webpack' : 'vite',
+  vite: isWebpack ? undefined : vite,
   css: ['@/assets/css/tailwind.css'],
 
   app: {
     head
   },
 
-  sourcemap: {
-    client: true
-  },
-
-  imports: {
-    dirs: ['composables/**']
-  },
-
   typescript: {
     typeCheck: true
   },
 
+  imports: {
+    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
+  },
+
+  sourcemap: {
+    server: false,
+    client: true
+  },
+
   plugins: [...vitePlugins],
+
+  pinia: {
+    autoImports: ['defineStore']
+  },
 
   modules: [
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    '@nuxt/devtools',
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 
@@ -46,6 +54,7 @@ export default defineNuxtConfig({
     }
   },
 
+  // @ts-ignore
   bugsnag: process.env.VITE_BUGSNAG_KEY
     ? {
         disabled: false,

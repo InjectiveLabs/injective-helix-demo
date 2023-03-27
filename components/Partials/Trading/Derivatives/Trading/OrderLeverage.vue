@@ -76,11 +76,11 @@ const maxLeverageAllowed = computed(() => {
     ).initialMarginRatio
   )
 
-  const priceBasedOnOrderType = props.isBuy
+  const priceBasedOnOrderSide = props.isBuy
     ? priceWithMarginRatio.minus(markPrice.value).plus(price)
     : priceWithMarginRatio.plus(markPrice.value).minus(price)
 
-  return price.dividedBy(priceBasedOnOrderType)
+  return price.dividedBy(priceBasedOnOrderSide)
 })
 
 const {

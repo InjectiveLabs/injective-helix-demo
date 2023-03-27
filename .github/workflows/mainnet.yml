@@ -52,6 +52,8 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+
+      NODE_OPTIONS: '--max_old_space_size=15360'
     runs-on: ubuntu-latest
 
     steps:

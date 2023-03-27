@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { Modal, TradeExecutionType } from '@/types'
 
 const props = defineProps({
@@ -22,7 +22,7 @@ const props = defineProps({
   },
 
   orderType: {
-    type: String as PropType<DerivativeOrderSide>,
+    type: String as PropType<OrderSide>,
     default: ''
   },
 
@@ -53,21 +53,15 @@ const { t } = useLang()
 const showModal = computed(() => modalStore.modals[Modal.OrderConfirm])
 
 const orderTypeBuy = computed(() => {
-  return [DerivativeOrderSide.TakeBuy, DerivativeOrderSide.StopBuy].includes(
-    props.orderType
-  )
+  return [OrderSide.TakeBuy, OrderSide.StopBuy].includes(props.orderType)
 })
 
 const orderTypeTakeProfit = computed(() => {
-  return [DerivativeOrderSide.TakeBuy, DerivativeOrderSide.TakeSell].includes(
-    props.orderType
-  )
+  return [OrderSide.TakeBuy, OrderSide.TakeSell].includes(props.orderType)
 })
 
 const orderTypeStopLoss = computed(() => {
-  return [DerivativeOrderSide.StopBuy, DerivativeOrderSide.StopSell].includes(
-    props.orderType
-  )
+  return [OrderSide.StopBuy, OrderSide.StopSell].includes(props.orderType)
 })
 
 const tradingTypeMarket = computed(() => {

@@ -4,8 +4,9 @@ import {
   BalanceWithTokenAndPrice,
   BridgingNetwork
 } from '@injectivelabs/sdk-ui-ts'
-import { Erc20Token } from '@injectivelabs/token-metadata'
+import type { Erc20Token } from '@injectivelabs/token-metadata'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
+import { isTokenWormholeToken } from '@/app/data/bridge'
 
 /**
  * For the bridge balances, we only use
@@ -50,7 +51,10 @@ export function useBridgeBalance({
 
   const transferableBalancesWithToken = computed<BalanceWithToken[]>(() => {
     if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
-      return erc20Balances.value
+      return erc20Balances.value.filter(
+        // We need to filter out Wormhole ERC20 transfers for the Peggy Bridge
+        (erc20Balance) => !isTokenWormholeToken(erc20Balance.token)
+      )
     }
 
     const destinationIsEthereum =

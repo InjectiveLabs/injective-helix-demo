@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   connect: {
     wallet: 'Wallet',
@@ -64,8 +66,17 @@ export default {
 
   insufficientGas: {
     insufficientGas: 'Insufficient Funds for Gas',
-    insufficientGasNoteDescription:
-      'Get a small amount of free INJ from a {faucetLink} or top up your Injective Wallet on {hubLink} to ensure sufficient fee coverage for future transactions.',
+    insufficientGasNoteDescription: ({
+      interpolate,
+      named
+    }: I18nMessageFunction) =>
+      interpolate([
+        'Get a small amount of free INJ from a ',
+        named('faucetLink'),
+        ' or top up your Injective Wallet on ',
+        named('hubLink'),
+        ' to ensure sufficient fee coverage for future transactions.'
+      ]),
     communityDrivenFaucet: 'community driven faucet',
     getFreeInj: 'Get Free INJ',
     injectiveHub: 'Injective Hub',

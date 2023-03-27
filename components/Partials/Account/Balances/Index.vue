@@ -57,7 +57,7 @@ const filteredBalances = computed(() => {
   return balancesWithAggregation.value.filter((balance) => {
     const isNotSmallBalance =
       !hideSmallBalances.value ||
-      new BigNumberInBase(balance.accountTotalBalance).gte(
+      new BigNumberInBase(balance.accountTotalBalanceInUsd).gte(
         SMALL_BALANCE_THRESHOLD
       )
 

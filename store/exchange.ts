@@ -10,7 +10,7 @@ import {
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   denomClient,
   exchangeApi,

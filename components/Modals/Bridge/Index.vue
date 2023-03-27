@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   Status,
   StatusType,
@@ -34,7 +34,7 @@ const formErrors = useFormErrors()
 const formValues = useFormValues<BridgeForm>()
 
 const emit = defineEmits<{
-  (e: 'bridge:init'): void
+  (e: 'bridge:confirmation'): void
   (e: 'form:reset', state?: Token): void
 }>()
 
@@ -161,13 +161,12 @@ function handleTokenChange() {
   })
 }
 
-function handleBridgeInit() {
-  emit('bridge:init')
+function handleBridgeConfirmation() {
+  emit('bridge:confirmation')
 }
 
 function handleModalClose() {
   resetForm()
-
   modalStore.closeModal(Modal.Bridge)
 }
 
@@ -326,7 +325,7 @@ watch(destination, (value: string) => {
               :disabled="hasFormErrors || formValues[BridgeField.Amount] === ''"
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-modal-transfer-now-button"
-              @click="handleBridgeInit"
+              @click="handleBridgeConfirmation"
             >
               <span
                 v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"

@@ -1,9 +1,5 @@
-import { TradeDirection } from '@injectivelabs/ts-types'
-import {
-  PaginationOption,
-  SpotOrderSide,
-  DerivativeOrderSide
-} from '@injectivelabs/sdk-ts'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { PaginationOption } from '@injectivelabs/sdk-ts'
 import {
   ConditionalOrderSide,
   TradeExecutionType,
@@ -20,7 +16,7 @@ export type ActivityFormValue = {
 export interface FilterOptions {
   marketIds?: string[]
   direction?: TradeDirection
-  orderSide?: SpotOrderSide | DerivativeOrderSide
+  orderSide?: OrderSide
   orderTypes?: ConditionalOrderSide[]
   executionTypes?: TradeExecutionType[]
   denom?: string

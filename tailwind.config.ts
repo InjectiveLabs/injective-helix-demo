@@ -31,12 +31,17 @@ export default <Config>{
     path.join(__dirname, './plugins/**/*.{js,ts}'),
     path.join(__dirname, './app.vue')
   ],
-  safelist: ['border-4', 'border-t-blue-200', 'border-r-blue-200'],
+  safelist: [
+    'border-4',
+    'border-t-blue-200',
+    'border-r-blue-200',
+    'max-h-90%',
+    'bg-gray-900/80',
+    'text-red-500',
+    'text-orange-400',
+    'text-green-400'
+  ],
   mode: 'jit',
-
-  future: {
-    removeDeprecatedGapUtilities: true
-  },
 
   theme: {
     container: {
@@ -184,17 +189,5 @@ export default <Config>{
     borderColor: ['hover'],
     maxHeight: ['responsive'],
     textColor: ['group-hover', 'hover']
-  },
-  // TODO: Remove
-  purge: {
-    enabled: process.env.NODE_ENV === 'production',
-    content: ['./**/*.vue'],
-    whitelist: [
-      'tooltip',
-      'tooltip-arrow',
-      'tooltip-inner',
-      'vue-tooltip-theme'
-    ],
-    whitelistPatterns: [/tooltip/]
   }
 }

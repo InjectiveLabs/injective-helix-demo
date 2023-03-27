@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
-import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { SpotOrderSide } from '@injectivelabs/sdk-ts'
+import {
+  OrderSide,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   UiSpotTrade,
   UiSpotLimitOrder,
@@ -240,7 +243,7 @@ export const useSpotStore = defineStore('spot', {
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
           marketIds: filters?.marketIds || spotStore.activeMarketIds,
-          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          orderTypes: filters?.orderTypes as unknown as OrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[]
         })
 

@@ -44,7 +44,7 @@ const options = computed(() => {
       v-model="network"
       selected-class="h-20 bg-gray-1000"
       :options="options"
-      :placeholder="$t('connect.selectDerivationPath')"
+      :placeholder="$t('bridge.selectOriginNetwork')"
     >
       <template #selected-option="{ option }">
         <ModalsBridgeNetworkSelectOption

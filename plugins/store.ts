@@ -26,7 +26,7 @@ const stateToPersist = {
     }
   },
 
-  bank: {
+  account: {
     subaccountId: ''
   },
 
@@ -83,7 +83,7 @@ const persistState = (
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload).some((key) => {
+    Object.keys(mutation.payload || []).some((key) => {
       return keysToPersist.includes(key)
     })
 

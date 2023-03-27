@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
@@ -32,9 +33,7 @@ const submitStatus = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
 
-const isBuy = computed(
-  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
-)
+const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
 const amount = computed(() =>
   isBuy.value
@@ -87,9 +86,7 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  formValues[TradeField.OrderType] = isBuyState
-    ? SpotOrderSide.Buy
-    : SpotOrderSide.Sell
+  formValues[TradeField.OrderSide] = isBuyState ? OrderSide.Buy : OrderSide.Sell
   formValues[TradeField.BaseDenom] = props.market.baseDenom
   formValues[TradeField.QuoteDenom] = props.market.quoteDenom
 }

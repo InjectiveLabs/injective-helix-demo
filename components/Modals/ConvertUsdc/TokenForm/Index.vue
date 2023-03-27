@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
@@ -70,7 +71,7 @@ const isWHSolUSDTBaseDenom = computed(
   () => props.market.baseDenom === usdcTokenDenom.USDCso
 )
 
-const isBuy = computed(() => orderType.value === SpotOrderSide.Buy)
+const isBuy = computed(() => orderSide.value === OrderSide.Buy)
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
   computed(() => baseBalance.value?.availableMargin),
@@ -79,9 +80,9 @@ const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
   }
 )
 
-const { value: orderType, setValue: setOrderType } = useStringField({
-  name: TradeField.OrderType,
-  initialValue: SpotOrderSide.Sell
+const { value: orderSide, setValue: setOrderSide } = useStringField({
+  name: TradeField.OrderSide,
+  initialValue: OrderSide.Sell
 })
 
 watch(
@@ -108,8 +109,8 @@ onMounted(() => {
   }
 })
 
-function toggleOrderType() {
-  setOrderType(isBuy.value ? SpotOrderSide.Sell : SpotOrderSide.Buy)
+function toggleOrderSide() {
+  setOrderSide(isBuy.value ? OrderSide.Sell : OrderSide.Buy)
 }
 
 function handleSwap() {
@@ -124,7 +125,7 @@ function handleSwap() {
   formValues.value[TradeField.BaseAmount] = ''
   formValues.value[TradeField.QuoteAmount] = ''
 
-  toggleOrderType()
+  toggleOrderSide()
 }
 
 function updateAmount({

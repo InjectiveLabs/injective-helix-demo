@@ -6,11 +6,8 @@ import {
 } from '@amplitude/analytics-browser'
 import { BaseEvent } from '@amplitude/analytics-types'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import {
-  MarketType,
-  SpotOrderSide,
-  DerivativeOrderSide
-} from '@injectivelabs/sdk-ui-ts'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   AMPLITUDE_WALLET,
   AMPLITUDE_LOGIN_COUNT,
@@ -154,7 +151,7 @@ export class AmplitudeTracker {
     amount: string
     market: string
     marketType: MarketType
-    orderType: SpotOrderSide | DerivativeOrderSide
+    orderType: OrderSide
     postOnly?: boolean
     tradingType: TradeExecutionType
     leverage: string
@@ -192,7 +189,7 @@ export class AmplitudeTracker {
     amount,
     market,
     marketType,
-    orderType,
+    orderSide,
     postOnly,
     tradingType,
     leverage,
@@ -206,7 +203,7 @@ export class AmplitudeTracker {
     amount: string
     market: string
     marketType: MarketType
-    orderType: SpotOrderSide | DerivativeOrderSide
+    orderSide: OrderSide
     postOnly: boolean
     tradingType: TradeExecutionType
     leverage?: string
@@ -231,7 +228,7 @@ export class AmplitudeTracker {
       amount,
       market,
       marketType,
-      orderType,
+      orderSide,
       postOnly,
       tradingType,
       triggerPrice,

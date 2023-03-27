@@ -1,27 +1,15 @@
-import { Network } from '@injectivelabs/networks'
+import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
 
 export const getRoutes = (network: Network, env: string) => {
-  const IS_DEVNET: Boolean = [
-    Network.Devnet,
-    Network.Devnet1,
-    Network.Local
-  ].includes(network)
-  const IS_TESTNET: Boolean = [Network.Testnet, Network.TestnetK8s].includes(
-    network
-  )
+  const IS_DEVNET: Boolean = isDevnet(network)
+  const IS_TESTNET: Boolean = isTestnet(network)
   const IS_STAGING = env === 'staging'
-  const IS_MAINNET =
-    [
-      Network.Public,
-      Network.Staging,
-      Network.Mainnet,
-      Network.MainnetK8s,
-      Network.MainnetLB
-    ].includes(network) || env === 'mainnet'
+  const IS_MAINNET = (!IS_DEVNET && !IS_TESTNET) || env === 'mainnet'
 
   const spot = [
     'inj-usdt',
     'atom-usdt',
+    'arb-usdt',
     'chz-usdcet',
     'sol-usdcet',
     'canto-usdt',
@@ -52,7 +40,7 @@ export const getRoutes = (network: Network, env: string) => {
   ]
 
   if (IS_TESTNET) {
-    perpetuals.push('sol-usdt-perp')
+    perpetuals.push('sol-usdt-perp', 'eur-usdt-perp')
   }
 
   const binaryOptions: string[] = []
@@ -82,9 +70,9 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
-  const customStaticRoutes: string[] = ['']
+  const customStaticRoutes: string[] = ['/']
   const upcomingMarketsRoutes: string[] = []
-  const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
+  // const deprecatedMarketsRoutes = []
 
   const derivativeMarketRouteNames = [
     'perpetuals-perpetual',
@@ -122,7 +110,6 @@ export const getRoutes = (network: Network, env: string) => {
       footerEnabledRoutes,
       spotMarketRouteNames,
       upcomingMarketsRoutes,
-      deprecatedMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames
     }

@@ -1,45 +1,40 @@
 import { defineConfig, UserConfig } from 'vite'
-import notifier from 'vite-plugin-notifier'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import { NodeGlobalsPolyfillPlugin } from '@injectivelabs/node-globals-polyfill'
+import { nodePolyfills } from '@bangjelkoski/vite-plugin-node-polyfills'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
+const buildSourceMap = process.env.BUILD_SOURCEMAP !== 'false'
 
 export default defineConfig({
   define: {
+    'process.env': JSON.stringify({}),
     'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
   },
-  plugins: [tsconfigPaths(), notifier()],
+  plugins: [tsconfigPaths(), nodePolyfills({ protocolImports: true })],
 
-  resolve: {
-    preserveSymlinks: true,
-    alias: {
-      path: 'path-browserify',
-      stream: 'stream-browserify',
-      crypto: 'crypto-browserify',
-      http: 'agent-base',
-      https: 'agent-base',
-      assert: 'assert-browserify',
-      util: 'util/'
+  build: {
+    sourcemap: buildSourceMap,
+
+    rollupOptions: {
+      cache: false,
+      output: {
+        manualChunks: (_id: string) => {
+          //
+        }
+      }
+    }
+  },
+
+  server: {
+    fs: {
+      // Allow serving files from one level up to the project root
+      allow: ['..']
     }
   },
 
   optimizeDeps: {
-    force: true,
-
-    esbuildOptions: {
-      target: ['es2020'],
-      define: {
-        global: 'globalThis'
-      },
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          process: true,
-          buffer: true
-        }) as any
-      ]
-    }
+    exclude: ['fsevents'],
+    include: ['@keplr-wallet/cosmos', '@keplr-wallet/unit']
   }
 }) as UserConfig
 

@@ -1,6 +1,5 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  DerivativeOrderSide,
   UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken,
   UiOrderbookPriceLevel,
@@ -12,6 +11,7 @@ import {
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 
 export const calculateMargin = ({
   quantity,
@@ -41,9 +41,9 @@ export const calculateBinaryOptionsMargin = ({
   quantity: string
   price: string
   tensMultiplier: number
-  orderSide: DerivativeOrderSide
+  orderSide: OrderSide
 }): BigNumberInBase => {
-  if (orderSide === DerivativeOrderSide.Buy) {
+  if (orderSide === OrderSide.Buy) {
     return new BigNumberInBase(
       formatAmountToAllowableAmount(
         new BigNumberInBase(quantity).times(price).toFixed(),
@@ -82,14 +82,14 @@ export const calculateLiquidationPrice = ({
   price: string
   quantity: string
   notionalWithLeverage: string
-  orderType: DerivativeOrderSide
+  orderType: OrderSide
   market: UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
 }): BigNumberInBase => {
   if (!price || !quantity || !notionalWithLeverage) {
     return ZERO_IN_BASE
   }
 
-  const isBuy = orderType === DerivativeOrderSide.Buy
+  const isBuy = orderType === OrderSide.Buy
 
   const numerator = isBuy
     ? new BigNumberInBase(notionalWithLeverage).minus(
