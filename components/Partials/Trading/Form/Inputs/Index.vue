@@ -23,11 +23,6 @@ const props = defineProps({
   isBaseAmount: Boolean,
   orderTypeReduceOnly: Boolean,
 
-  amountStep: {
-    type: String,
-    required: true
-  },
-
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
     default: undefined
@@ -68,11 +63,6 @@ const props = defineProps({
     default: undefined
   },
 
-  priceStep: {
-    type: String,
-    required: true
-  },
-
   quoteAvailableBalance: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -94,6 +84,16 @@ const {
 
 const { tradingTypeLimit: spotTradingTypeLimit } =
   useSpotFormFormatter(formValues)
+
+const amountStep = computed(() =>
+  new BigNumberInBase(1)
+    .shiftedBy(props.market.quantityTensMultiplier)
+    .toFixed()
+)
+
+const priceStep = computed(() =>
+  new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals).toFixed()
+)
 
 const orderbookOrders = computed<UiPriceLevel[]>(() => {
   const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
@@ -188,7 +188,6 @@ function updateAmount({
         v-bind="{
           amountStep,
           fees,
-
           market,
           quoteAvailableBalance,
           quoteAmountFieldName: TradeField.QuoteAmount
