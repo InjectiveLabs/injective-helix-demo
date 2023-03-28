@@ -27,11 +27,6 @@ const props = defineProps({
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,
 
-  amountStep: {
-    type: String,
-    required: true
-  },
-
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
     default: undefined
@@ -75,11 +70,6 @@ const props = defineProps({
   position: {
     type: Object as PropType<UiPosition> | undefined,
     default: undefined
-  },
-
-  priceStep: {
-    type: String,
-    required: true
   },
 
   quoteAvailableBalance: {
@@ -163,20 +153,18 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
   <div>
     <PartialsTradingFormInputs
       v-bind="{
-        amountStep,
-        baseAvailableBalance,
-        feeRate,
         fees,
-        isBaseAmount,
         isBuy,
         isSpot,
-        lastTradedPrice,
         market,
-        maxAmountOnOrderbook,
-        maxReduceOnly,
-        orderTypeReduceOnly,
+        feeRate,
         position,
-        priceStep,
+        isBaseAmount,
+        maxReduceOnly,
+        lastTradedPrice,
+        orderTypeReduceOnly,
+        baseAvailableBalance,
+        maxAmountOnOrderbook,
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
@@ -184,16 +172,16 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
 
     <PartialsTradingFormInputError
       v-bind="{
-        availableBalanceError,
-        baseAvailableBalance,
-        quoteAvailableBalance,
-        initialMinMarginRequirementError,
         isBuy,
         isSpot,
+        maxReduceOnly,
         orderTypeReduceOnly,
-        markPriceThresholdError,
+        baseAvailableBalance,
         maxAmountOnOrderbook,
-        maxReduceOnly
+        availableBalanceError,
+        quoteAvailableBalance,
+        markPriceThresholdError,
+        initialMinMarginRequirementError
       }"
     />
 
@@ -205,9 +193,9 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
       "
       class="mt-6"
       v-bind="{
-        executionPrice,
         isBuy,
         market,
+        executionPrice,
         worstPriceWithSlippage,
         leverageFieldName: TradeField.Leverage
       }"
@@ -215,7 +203,6 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
 
     <PartialsTradingFormAdvancedSettings
       v-bind="{
-        formValues,
         isSpot,
         reduceOnlyDisabled: !showReduceOnly
       }"
