@@ -125,17 +125,16 @@ const sortedBalances = computed(() => {
   )
 
   const sortedBalances = ascending.value ? result.reverse() : result
-  const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
-  const sortedBalancesWithoutInjBalance = sortedBalances.filter(
-    ({ denom }) => denom !== INJ_DENOM
-  )
 
-  // always sort INJ on top
-  return [
-    ...(injBalance ? [injBalance] : []),
-    ...sortedBalancesWithoutInjBalance
-  ]
+  return sortedBalances
 })
+
+const injBalance = computed(() =>
+  sortedBalances.value.find(({ denom }) => denom === INJ_DENOM)
+)
+const sortedBalancesWithoutInjBalance = computed(() =>
+  sortedBalances.value.filter(({ denom }) => denom !== INJ_DENOM)
+)
 </script>
 
 <template>
@@ -153,7 +152,17 @@ const sortedBalances = computed(() => {
         v-model:ascending="ascending"
       />
 
-      <template v-for="balance in sortedBalances" :key="balance.token.denom">
+      <PartialsAccountBalancesInj
+        v-if="injBalance"
+        :balance="injBalance"
+        :hide-balances="hideBalances"
+        v-bind="$attrs"
+      />
+
+      <template
+        v-for="balance in sortedBalancesWithoutInjBalance"
+        :key="balance.token.denom"
+      >
         <PartialsAccountBalancesUsdc
           v-if="balance.type === AggregatedBalanceType.USDC"
           v-bind="$attrs"

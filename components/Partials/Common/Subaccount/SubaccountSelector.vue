@@ -36,12 +36,6 @@ const subaccount = computed({
       :options="subaccountSelectOptions"
       class="self-end"
     >
-      <template #prefix>
-        <span class="text-xs text-gray-300 uppercase">
-          {{ $t('account.account') }}
-        </span>
-      </template>
-
       <template #default="{ selected }">
         <span v-if="selected" class="text-xs text-blue-500 uppercase">
           {{ selected.display }}

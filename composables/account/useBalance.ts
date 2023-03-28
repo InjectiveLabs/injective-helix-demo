@@ -97,7 +97,9 @@ export function useBalance() {
                   .plus(subaccountTotalBalance)
                   .plus(unrealizedPnl)
               : new BigNumberInWei(subaccountTotalBalance).plus(unrealizedPnl)
-            const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
+            const accountTotalBalanceInUsd = accountTotalBalance
+              .toBase()
+              .times(usdPrice)
 
             return {
               token,
