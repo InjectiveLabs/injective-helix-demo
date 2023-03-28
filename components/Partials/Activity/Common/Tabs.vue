@@ -5,7 +5,6 @@ import { ActivityTab, ActivityView } from '@/types'
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 
 const props = defineProps({
   tab: {
