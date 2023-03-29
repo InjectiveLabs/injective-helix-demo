@@ -14,7 +14,9 @@ export const newMarketsSlug = [
   'sol-usdcet',
   'atom-usdt-perp',
   'usdc-usdcet',
-  'strd-usdt'
+  'strd-usdt',
+  'gbp-usdt-perp',
+  'jpy/usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
