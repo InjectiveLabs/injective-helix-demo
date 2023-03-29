@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import {
@@ -11,6 +12,7 @@ import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -33,16 +35,37 @@ const aggregatedAccountBalances = computed(() =>
   )
 )
 
-const accountTotalBalanceInUsd = computed(() =>
-  aggregatedAccountBalances.value.reduce(
-    (total, balance) =>
-      total.plus(
-        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
-          balance.token.decimals
-        )
-      ),
-    ZERO_IN_BASE
+const stakedAmount = computed(() => {
+  if (
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountInfo
+  ) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(
+    cosmosSdkDecToBigNumber(
+      exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
+    )
   )
+})
+
+const stakedAmountInUsd = computed(() =>
+  stakedAmount.value.times(tokenStore.injUsdPrice)
+)
+
+const accountTotalBalanceInUsd = computed(() =>
+  aggregatedAccountBalances.value
+    .reduce(
+      (total, balance) =>
+        total.plus(
+          new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+            balance.token.decimals
+          )
+        ),
+      ZERO_IN_BASE
+    )
+    .plus(stakedAmountInUsd.value)
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
