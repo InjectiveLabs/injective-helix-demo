@@ -9,6 +9,7 @@ import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -113,6 +114,13 @@ watch(
     if (isConnected) {
       fetchStatus.setLoading()
     }
+  }
+)
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    refreshSubaccountDetails()
   }
 )
 </script>

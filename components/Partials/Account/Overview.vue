@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import {
@@ -12,15 +12,11 @@ import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
 
 const props = defineProps({
   isLoading: Boolean,
-  hideBalances: Boolean,
-
-  currentSubaccountBalances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
+  hideBalances: Boolean
 })
 
 const emit = defineEmits<{
@@ -29,45 +25,47 @@ const emit = defineEmits<{
 
 const { aggregatedPortfolioBalances } = useBalance()
 
-const remainingAccountBalances = computed(() =>
+const aggregatedAccountBalances = computed(() =>
   Object.keys(aggregatedPortfolioBalances.value).reduce(
-    (balances, subaccountId) => {
-      /**
-       * For the currently selected subaccount we use the currentSubaccountBalances
-       * because we have the PnL and margin calculations there
-       */
-      if (subaccountId === accountStore.subaccountId) {
-        return balances
-      }
-
-      return [...balances, ...aggregatedPortfolioBalances.value[subaccountId]]
-    },
+    (balances, subaccountId) => [
+      ...balances,
+      ...aggregatedPortfolioBalances.value[subaccountId]
+    ],
     [] as AccountBalance[]
   )
 )
 
-const currentSubaccountTotalBalanceInUsd = computed(() =>
-  props.currentSubaccountBalances.reduce(
-    // Already converted to human readable number
-    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
-    ZERO_IN_BASE
-  )
-)
+const stakedAmount = computed(() => {
+  if (
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountInfo
+  ) {
+    return ZERO_IN_BASE
+  }
 
-const remainingAccountBalance = computed(() =>
-  remainingAccountBalances.value.reduce(
-    (total, balance) =>
-      total.plus(
-        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
-          balance.token.decimals
-        )
-      ),
-    ZERO_IN_BASE
+  return new BigNumberInBase(
+    cosmosSdkDecToBigNumber(
+      exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
+    )
   )
+})
+
+const stakedAmountInUsd = computed(() =>
+  stakedAmount.value.times(tokenStore.injUsdPrice)
 )
 
 const accountTotalBalanceInUsd = computed(() =>
-  currentSubaccountTotalBalanceInUsd.value.plus(remainingAccountBalance.value)
+  aggregatedAccountBalances.value
+    .reduce(
+      (total, balance) =>
+        total.plus(
+          new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+            balance.token.decimals
+          )
+        ),
+      ZERO_IN_BASE
+    )
+    .plus(stakedAmountInUsd.value)
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
@@ -174,11 +172,10 @@ function handleWithdrawClick() {
       </div>
     </div>
 
-    <PartialsAccountSubaccountOverview
+    <PartialsAccountSubaccountSelector
       v-if="!isLoading && accountStore.hasMultipleSubaccounts"
       v-bind="{
-        hideBalances,
-        currentSubaccountBalances
+        hideBalances
       }"
     />
   </div>

@@ -23,6 +23,7 @@ export default {
 
   marketPage: {
     assets: 'Assets',
+    assetsFrom: 'Assets From',
     asseuitsNote: '',
     balances: 'Balances',
     portfolio: 'Portfolio',

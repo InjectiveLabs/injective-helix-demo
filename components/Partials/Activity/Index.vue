@@ -185,6 +185,8 @@ watch(() => route.query, setTabFromQuery, { immediate: true })
 </script>
 
 <template>
+  <PartialsActivitySubaccounts @update:subaccount="onSubaccountChange" />
+
   <div class="pt-6 h-full-flex">
     <PartialsActivityCommonNavigation
       v-model:tab="tab"
