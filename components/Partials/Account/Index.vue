@@ -26,8 +26,7 @@ const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
-const { accountBalancesWithTokenInBases: currentSubaccountBalances } =
-  useBalance()
+const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
 onMounted(() => {
   handleViewFromRoute()

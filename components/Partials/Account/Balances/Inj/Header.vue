@@ -4,9 +4,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 defineProps({
-  hideBalances: Boolean,
-
   showStaked: Boolean,
+  hideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,

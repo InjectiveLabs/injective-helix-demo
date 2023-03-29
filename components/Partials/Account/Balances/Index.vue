@@ -8,9 +8,9 @@ import {
 } from '@/app/utils/constants'
 import {
   AccountBalance,
+  BalanceHeaderType,
   AggregatedBalanceType,
-  AccountBalanceWithAggregatedType,
-  BalanceHeaderType
+  AccountBalanceWithAggregatedType
 } from '@/types'
 import { usdcTokenDenoms } from '@/app/data/token'
 
@@ -23,7 +23,8 @@ const props = defineProps({
   }
 })
 
-const { aggregateBalanceByDenoms } = useBalance()
+const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
+  useBalance()
 
 const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
@@ -80,8 +81,15 @@ const filteredBalances = computed(() => {
   })
 })
 
+const filteredBalancesInBase = computed(
+  () =>
+    getAccountBalancesWithTokenInBases(
+      filteredBalances
+    ) as AccountBalanceWithAggregatedType[]
+)
+
 const sortedBalances = computed(() => {
-  const result = [...filteredBalances.value].sort(
+  const result = [...filteredBalancesInBase.value].sort(
     (a: AccountBalance, b: AccountBalance) => {
       switch (sortBy.value) {
         case BalanceHeaderType.Total: {
@@ -126,15 +134,31 @@ const sortedBalances = computed(() => {
 
   const sortedBalances = ascending.value ? result.reverse() : result
 
-  return sortedBalances
+  const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
+
+  const sortedBalancesWithoutInjBalance = sortedBalances.filter(
+    ({ denom }) => denom !== INJ_DENOM
+  )
+
+  // always sort INJ on top
+  return [
+    ...(injBalance ? [injBalance] : []),
+    ...sortedBalancesWithoutInjBalance
+  ]
 })
 
-const injBalance = computed(() =>
-  sortedBalances.value.find(({ denom }) => denom === INJ_DENOM)
-)
-const sortedBalancesWithoutInjBalance = computed(() =>
-  sortedBalances.value.filter(({ denom }) => denom !== INJ_DENOM)
-)
+const sortedBalancesWithInjAggregation = computed(() => {
+  return sortedBalances.value.map((balance) => {
+    if (balance.denom === INJ_DENOM) {
+      return {
+        ...balance,
+        type: AggregatedBalanceType.INJ
+      }
+    }
+
+    return balance
+  })
+})
 </script>
 
 <template>
@@ -152,23 +176,27 @@ const sortedBalancesWithoutInjBalance = computed(() =>
         v-model:ascending="ascending"
       />
 
-      <PartialsAccountBalancesInj
-        v-if="injBalance"
-        :balance="injBalance"
-        :hide-balances="hideBalances"
-        v-bind="$attrs"
-      />
-
       <template
-        v-for="balance in sortedBalancesWithoutInjBalance"
+        v-for="balance in sortedBalancesWithInjAggregation"
         :key="balance.token.denom"
       >
+        <PartialsAccountBalancesInj
+          v-if="balance.type === AggregatedBalanceType.INJ"
+          v-bind="{
+            ...$attrs,
+            balance,
+            hideBalances
+          }"
+        />
+
         <PartialsAccountBalancesUsdc
-          v-if="balance.type === AggregatedBalanceType.USDC"
-          v-bind="$attrs"
-          :aggregated-balance="balance"
-          :balances="balances"
-          :hide-balances="hideBalances"
+          v-else-if="balance.type === AggregatedBalanceType.USDC"
+          v-bind="{
+            ...$attrs,
+            balances,
+            hideBalances,
+            aggregatedBalance: balance
+          }"
         />
 
         <PartialsAccountBalancesRow

@@ -36,7 +36,6 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
   >
     <td class="pl-4 w-56">
       <slot name="tokenSymbol">
-        <!-- <PartialsAccountBalancesRowTokenSymbol v-bind="{ balance }" /> -->
         <span> &mdash; </span>
       </slot>
     </td>

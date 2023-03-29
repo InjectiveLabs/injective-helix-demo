@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import type { Token } from '@injectivelabs/token-metadata'
@@ -15,12 +14,7 @@ const accountStore = useAccountStore()
 
 const props = defineProps({
   isLoading: Boolean,
-  hideBalances: Boolean,
-
-  currentSubaccountBalances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
+  hideBalances: Boolean
 })
 
 const emit = defineEmits<{
@@ -29,33 +23,18 @@ const emit = defineEmits<{
 
 const { aggregatedPortfolioBalances } = useBalance()
 
-const remainingAccountBalances = computed(() =>
+const aggregatedAccountBalances = computed(() =>
   Object.keys(aggregatedPortfolioBalances.value).reduce(
-    (balances, subaccountId) => {
-      /**
-       * For the currently selected subaccount we use the currentSubaccountBalances
-       * because we have the PnL and margin calculations there
-       */
-      if (subaccountId === accountStore.subaccountId) {
-        return balances
-      }
-
-      return [...balances, ...aggregatedPortfolioBalances.value[subaccountId]]
-    },
+    (balances, subaccountId) => [
+      ...balances,
+      ...aggregatedPortfolioBalances.value[subaccountId]
+    ],
     [] as AccountBalance[]
   )
 )
 
-const currentSubaccountTotalBalanceInUsd = computed(() =>
-  props.currentSubaccountBalances.reduce(
-    // Already converted to human readable number
-    (total, balance) => total.plus(balance.accountTotalBalanceInUsd),
-    ZERO_IN_BASE
-  )
-)
-
-const remainingAccountBalance = computed(() =>
-  remainingAccountBalances.value.reduce(
+const accountTotalBalanceInUsd = computed(() =>
+  aggregatedAccountBalances.value.reduce(
     (total, balance) =>
       total.plus(
         new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
@@ -64,10 +43,6 @@ const remainingAccountBalance = computed(() =>
       ),
     ZERO_IN_BASE
   )
-)
-
-const accountTotalBalanceInUsd = computed(() =>
-  currentSubaccountTotalBalanceInUsd.value.plus(remainingAccountBalance.value)
 )
 
 const shouldAbbreviateTotalBalance = computed(() =>
@@ -174,15 +149,7 @@ function handleWithdrawClick() {
       </div>
     </div>
 
-    <PartialsAccountSubaccountOverview
-      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
-      v-bind="{
-        hideBalances,
-        currentSubaccountBalances
-      }"
-    />
-
-    <PartialsAccountSubAccountsSelector
+    <PartialsAccountSubaccountSelector
       v-if="!isLoading && accountStore.hasMultipleSubaccounts"
       v-bind="{
         hideBalances

@@ -18,7 +18,7 @@ const subaccountIds = computed(() =>
     v-if="accountStore.hasMultipleSubaccounts"
     class="flex space-x-4 items-center mt-4"
   >
-    <PartialsAccountSubAccountsSelectorItem
+    <PartialsAccountSubaccountSelectorItem
       v-for="(subaccountId, index) in subaccountIds"
       v-bind="{
         subaccountId,

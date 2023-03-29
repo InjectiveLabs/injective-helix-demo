@@ -211,7 +211,7 @@ function handleUpdate() {
           </div>
         </AppButton>
 
-        <PartialsAccountRefreshButton
+        <PartialsActivityRefreshButton
           :status="status"
           :view="view"
           @click="handleClearFilters"

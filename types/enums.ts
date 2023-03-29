@@ -313,6 +313,7 @@ export enum ActivityTab {
 }
 
 export enum AggregatedBalanceType {
+  INJ = 'inj',
   USDC = 'usdc'
 }
 
