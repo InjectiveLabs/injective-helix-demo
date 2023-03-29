@@ -26,7 +26,8 @@
     "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.cache/nuxt && rm -rf ./node_modules/.vite",
     "lint": "eslint --max-warnings 0 '**/*.{js,ts,vue,html}' --fix && stylelint '**/*.{css,.vue}'",
     "coverage": "yarn jest --coverage",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typecheck": "nuxi typecheck"
   },
   "lint-staged": {
     "**/*.{js,ts,vue,html}": [
@@ -39,14 +40,14 @@
     "@injectivelabs/exceptions": "1.10.0",
     "@injectivelabs/networks": "1.10.0",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
-    "@injectivelabs/sdk-ts": "1.10.2",
-    "@injectivelabs/sdk-ui-ts": "1.10.2",
-    "@injectivelabs/token-metadata": "1.10.2",
-    "@injectivelabs/token-utils": "1.10.0",
+    "@injectivelabs/sdk-ts": "1.10.10",
+    "@injectivelabs/sdk-ui-ts": "1.10.12",
+    "@injectivelabs/token-metadata": "1.10.3",
+    "@injectivelabs/token-utils": "1.10.1",
     "@injectivelabs/ts-types": "1.10.0",
     "@injectivelabs/ui-shared": "^1.10.0-alpha.0",
     "@injectivelabs/utils": "1.10.0",
-    "@injectivelabs/wallet-ts": "1.10.2",
+    "@injectivelabs/wallet-ts": "1.10.10",
     "@metamask/detect-provider": "2.0.0",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-gtag": "^1.0.4",

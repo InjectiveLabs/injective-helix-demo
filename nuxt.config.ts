@@ -18,11 +18,16 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    typeCheck: true
+    typeCheck: 'build'
   },
 
   imports: {
-    dirs: ['composables/**', 'store/**']
+    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
+  },
+
+  sourcemap: {
+    server: false,
+    client: true
   },
 
   plugins: [...vitePlugins],

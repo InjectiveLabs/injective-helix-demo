@@ -71,7 +71,7 @@ jobs:
         run: yarn clean-up
 
       - name: Generating the static pages
-        run: yarn generateNoSourceMap
+        run: yarn generate
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1

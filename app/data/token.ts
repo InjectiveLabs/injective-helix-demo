@@ -31,7 +31,8 @@ export const networkToSymbolMap = {
   [BridgingNetwork.Osmosis]: 'OSMO',
   [BridgingNetwork.Persistence]: 'XPRT',
   [BridgingNetwork.Secret]: 'SCRT',
-  [BridgingNetwork.Stride]: 'STRD'
+  [BridgingNetwork.Stride]: 'STRD',
+  [BridgingNetwork.Arbitrum]: 'ARB'
 } as NetworkToSymbolMap
 
 export const getFactoryDenomFromDenom = (address: string): string =>
