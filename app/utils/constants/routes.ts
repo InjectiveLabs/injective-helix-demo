@@ -44,8 +44,7 @@ export const getRoutes = (network: Network, env: string) => {
       'gbp-usdt-perp',
       'jpy-usdt-perp',
       'eur-usdt-perp',
-      'sol-usdt-perp',
-      'eur-usdt-perp'
+      'sol-usdt-perp'
     )
   }
 
