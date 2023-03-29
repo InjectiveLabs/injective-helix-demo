@@ -74,7 +74,7 @@ function handleClick() {
       <h3 class="flex items-center">
         <span class="text-gray-300 text-xs tracking-wide uppercase">
           {{ $t('account.account') }}
-          {{ props.index === 0 ? 'Main' : props.index }}
+          {{ props.index === 0 ? `${$t('account.main')}` : props.index }}
         </span>
         <!--
           ** I don't think we need a check mark here to indicate the selected 
