@@ -33,10 +33,8 @@ const isSelectedSubaccountId = computed(
   () => accountStore.subaccountId === props.subaccountId
 )
 
-const currentSubaccountBalances = computed(() => props.balances)
-
 const accountTotalBalanceInUsd = computed(() =>
-  currentSubaccountBalances.value.reduce(
+  props.balances.reduce(
     (total, balance) =>
       total.plus(
         new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
@@ -75,7 +73,8 @@ function handleClick() {
     <div class="space-y-3">
       <h3 class="flex items-center">
         <span class="text-gray-300 text-xs tracking-wide uppercase">
-          Subaccount {{ props.index === 0 ? 'Main' : props.index }}
+          {{ $t('account.account') }}
+          {{ props.index === 0 ? 'Main' : props.index }}
         </span>
         <!--
           ** I don't think we need a check mark here to indicate the selected 

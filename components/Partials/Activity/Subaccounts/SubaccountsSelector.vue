@@ -39,7 +39,7 @@ const subaccount = computed({
     >
       <template #default="{ selected }">
         <span v-if="selected" class="text-md text-gray-300 font-semibold">
-          {{ `Subaccount: ${selected.display}` }}
+          {{ `${$t('account.account')}: ${selected.display}` }}
         </span>
       </template>
 

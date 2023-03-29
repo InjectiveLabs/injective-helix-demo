@@ -201,9 +201,11 @@ const sortedBalancesWithInjAggregation = computed(() => {
 
         <PartialsAccountBalancesRow
           v-else
-          v-bind="$attrs"
-          :balance="balance"
-          :hide-balances="hideBalances"
+          v-bind="{
+            ...$attrs,
+            balance,
+            hideBalances
+          }"
         />
       </template>
     </table>

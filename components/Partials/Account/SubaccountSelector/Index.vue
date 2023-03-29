@@ -7,10 +7,6 @@ defineProps({
     type: Boolean
   }
 })
-
-const subaccountIds = computed(() =>
-  Object.keys(aggregatedPortfolioBalances.value)
-)
 </script>
 
 <template>
@@ -19,10 +15,12 @@ const subaccountIds = computed(() =>
     class="flex space-x-4 items-center mt-4"
   >
     <PartialsAccountSubaccountSelectorItem
-      v-for="(subaccountId, index) in subaccountIds"
+      v-for="([subaccountId, balances], index) in Object.entries(
+        aggregatedPortfolioBalances
+      )"
       v-bind="{
         subaccountId,
-        balances: aggregatedPortfolioBalances[subaccountId],
+        balances,
         index,
         hideBalances
       }"

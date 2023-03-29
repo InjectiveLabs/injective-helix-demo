@@ -49,7 +49,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
     <td>
       <div class="flex justify-end">
         <div class="text-right">
-          <p>Staked:</p>
+          <p>{{ $t('account.staked') }}:</p>
           <span class="font-mono"> {{ stakedAmountToFormat }} </span>
         </div>
       </div>
@@ -79,10 +79,11 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
           <div
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           >
-            <NuxtLink to="/fee-discounts">
-              <span class="text-blue-500 text-sm font-medium">
-                {{ 'View Fee Discounts' }}
-              </span>
+            <NuxtLink
+              to="/fee-discounts"
+              class="text-blue-500 text-sm font-medium"
+            >
+              {{ 'View Fee Discounts' }}
             </NuxtLink>
           </div>
         </slot>

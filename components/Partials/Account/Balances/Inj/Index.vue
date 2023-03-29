@@ -35,10 +35,12 @@ const hasStaked = computed(() => {
 <template>
   <template v-if="hasStaked">
     <PartialsAccountBalancesInjHeader
-      v-bind="$attrs"
-      :balance="balance"
-      :hide-balances="hideBalances"
-      :show-staked="showStaked"
+      v-bind="{
+        ...$attrs,
+        balance,
+        hideBalances,
+        showStaked
+      }"
       @drawer:toggle="showStaked = !showStaked"
     />
     <PartialsAccountBalancesInjRowStaked v-if="showStaked" />
