@@ -120,7 +120,7 @@ watch(
 watch(
   () => accountStore.subaccountId,
   () => {
-    fetchStatus.setLoading()
+    refreshSubaccountDetails()
   }
 )
 </script>
