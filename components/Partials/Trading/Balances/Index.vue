@@ -106,9 +106,12 @@ function handleDeposit() {
   <AppPanel class="w-full">
     <div>
       <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-500 flex items-center">
-          {{ $t('marketPage.assets') }}
-        </p>
+        <div class="flex items-center space-x-2">
+          <p class="text-xs text-gray-500 flex items-center">
+            {{ $t('marketPage.assetsFrom') }}
+          </p>
+          <PartialsCommonSubaccountSelector />
+        </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: 'account' }"

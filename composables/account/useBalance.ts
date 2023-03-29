@@ -192,7 +192,9 @@ export function useBalance() {
     })
   })
 
-  const accountBalancesWithTokenInBases = computed(() => {
+  const getAccountBalancesWithTokenInBases = (
+    accountBalancesWithToken: Ref<AccountBalance[]>
+  ) => {
     return accountBalancesWithToken.value.map((accountBalance) => {
       return {
         ...accountBalance,
@@ -226,7 +228,7 @@ export function useBalance() {
           .toFixed()
       } as AccountBalance
     })
-  })
+  }
 
   /**
    * A minimal representation of an AccountBalance based on the current
@@ -279,6 +281,6 @@ export function useBalance() {
     aggregateBalanceByDenoms,
     accountBalancesWithToken,
     aggregatedPortfolioBalances,
-    accountBalancesWithTokenInBases
+    getAccountBalancesWithTokenInBases
   }
 }
