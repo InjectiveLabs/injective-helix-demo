@@ -18,8 +18,16 @@ export default defineConfig({
     rollupOptions: {
       cache: false,
       output: {
-        manualChunks: (_id: string) => {
-          //
+        manualChunks: (id: string) => {
+          if (id.includes('@injectivelabs')) {
+            return 'injective'
+          }
+
+          if (id.includes('@keplr')) {
+            return 'keplr'
+          }
+
+          return 'vendor'
         }
       }
     }
