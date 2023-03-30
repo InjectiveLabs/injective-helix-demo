@@ -13,7 +13,6 @@ const subaccountSelectOptions = computed(() =>
     ? Object.keys(accountStore.subaccountBalancesMap)
         .map((value) => ({
           value,
-          // display: index === 0 ? `${t('account.main')}` : index.toString()
           display:
             getSubaccountIndex(value) === 0
               ? `${t('account.main')}`

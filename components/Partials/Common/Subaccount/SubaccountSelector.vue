@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { getSubaccountIndex } from '~~/app/utils/helpers'
+import { getSubaccountIndex } from '@/app/utils/helpers'
 
 const accountStore = useAccountStore()
 const { t } = useLang()

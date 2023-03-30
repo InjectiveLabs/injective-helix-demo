@@ -7,6 +7,7 @@ import {
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
+import { getSubaccountIndex } from '~~/app/utils/helpers'
 
 const accountStore = useAccountStore()
 
@@ -28,7 +29,7 @@ const isSelectedSubaccountId = computed(
   () => accountStore.subaccountId === props.subaccountId
 )
 
-const subaccountIdIndex = computed(() => parseInt(props.subaccountId.slice(42)))
+const subaccountIdIndex = computed(() => getSubaccountIndex(props.subaccountId))
 
 const accountTotalBalanceInUsd = computed(() =>
   props.balances.reduce(
