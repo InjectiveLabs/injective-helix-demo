@@ -52,7 +52,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
           <p class="text-gray-350 text-xs normal-case font-bold">
             {{ $t('account.staked') }}:
           </p>
-          <span class="font-mono"> {{ stakedAmountToFormat }} </span>
+          <span class="font-mono text-sm"> {{ stakedAmountToFormat }} </span>
         </div>
       </div>
     </td>
