@@ -19,15 +19,9 @@ export default defineConfig({
       cache: false,
       output: {
         manualChunks: (id: string) => {
-          if (id.includes('@injectivelabs')) {
-            return 'injective'
-          }
-
-          if (id.includes('@keplr')) {
+          if (id.includes('@keplr-wallet')) {
             return 'keplr'
           }
-
-          return 'vendor'
         }
       }
     }
@@ -35,14 +29,12 @@ export default defineConfig({
 
   server: {
     fs: {
-      // Allow serving files from one level up to the project root
       allow: ['..']
     }
   },
 
   optimizeDeps: {
-    exclude: ['fsevents'],
-    include: ['@keplr-wallet/cosmos', '@keplr-wallet/unit']
+    exclude: ['fsevents']
   }
 }) as UserConfig
 
