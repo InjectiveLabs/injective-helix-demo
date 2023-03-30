@@ -7,6 +7,7 @@ defineProps({
   hideBalances: Boolean
 })
 
+const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -154,6 +155,13 @@ function closePosition() {
     })
     .catch($onError)
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    positionStore.fetchSubaccountPositions()
+  }
+)
 </script>
 
 <template>
