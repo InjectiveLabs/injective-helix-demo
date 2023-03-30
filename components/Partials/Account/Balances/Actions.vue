@@ -79,10 +79,6 @@ const search = computed({
           />
         </div>
       </AppCheckbox>
-
-      <PartialsCommonSubaccountSelector
-        @update:subaccount="$emit('update:subaccount')"
-      />
     </div>
   </div>
 </template>
