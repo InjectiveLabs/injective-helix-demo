@@ -8,10 +8,16 @@ const emit = defineEmits<{
 
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
-    ? Object.keys(accountStore.subaccountBalancesMap).map((value, index) => ({
-        value,
-        display: index === 0 ? `${t('account.main')}` : index.toString()
-      }))
+    ? Object.keys(accountStore.subaccountBalancesMap)
+        .map((value) => ({
+          value,
+          // display: index === 0 ? `${t('account.main')}` : index.toString()
+          display:
+            parseInt(value.slice(42)) === 0
+              ? `${t('account.main')}`
+              : parseInt(value.slice(42)).toString()
+        }))
+        .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )
 
