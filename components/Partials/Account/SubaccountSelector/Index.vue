@@ -12,16 +12,17 @@ defineProps({
 <template>
   <div
     v-if="accountStore.hasMultipleSubaccounts"
-    class="flex space-x-4 items-center mt-4"
+    class="flex space-x-4 items-center mt-4 overflow-x-auto overflow-y-hidden"
   >
     <PartialsAccountSubaccountSelectorItem
-      v-for="([subaccountId, balances], index) in Object.entries(
+      v-for="[subaccountId, balances] in Object.entries(
         aggregatedPortfolioBalances
+      ).sort(([subaccountA], [subaccountB]) =>
+        subaccountA.localeCompare(subaccountB)
       )"
       v-bind="{
         subaccountId,
         balances,
-        index,
         hideBalances
       }"
       :key="`subaccount-${subaccountId}`"

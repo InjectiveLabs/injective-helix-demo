@@ -9,7 +9,6 @@ const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
-const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useToken()
@@ -39,7 +38,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
   spotStore.reset()
-  accountStore.resetToDefaultSubaccount()
 })
 
 function setUsdcConvertMarket(token: Token) {

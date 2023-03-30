@@ -7,16 +7,12 @@ import {
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
+import { getSubaccountIndex } from '@/app/utils/helpers'
 
 const accountStore = useAccountStore()
 
 const props = defineProps({
   hideBalances: Boolean,
-
-  index: {
-    type: Number,
-    required: true
-  },
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -32,6 +28,8 @@ const props = defineProps({
 const isSelectedSubaccountId = computed(
   () => accountStore.subaccountId === props.subaccountId
 )
+
+const subaccountIdIndex = computed(() => getSubaccountIndex(props.subaccountId))
 
 const accountTotalBalanceInUsd = computed(() =>
   props.balances.reduce(
@@ -74,7 +72,11 @@ function handleClick() {
       <h3 class="flex items-center">
         <span class="text-gray-300 text-xs tracking-wide uppercase">
           {{ $t('account.account') }}
-          {{ props.index === 0 ? `${$t('account.main')}` : props.index }}
+          {{
+            subaccountIdIndex === 0
+              ? `${$t('account.main')}`
+              : subaccountIdIndex
+          }}
         </span>
         <!--
           ** I don't think we need a check mark here to indicate the selected 

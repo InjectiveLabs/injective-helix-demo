@@ -6,9 +6,9 @@ definePageMeta({
 })
 
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 

@@ -43,3 +43,6 @@ export const getHubUrl = (): string => {
 
   return 'https://hub.injective.network'
 }
+
+export const getSubaccountIndex = (subaccount: string) =>
+  parseInt(subaccount.slice(42))

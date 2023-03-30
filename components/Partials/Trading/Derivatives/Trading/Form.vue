@@ -33,7 +33,6 @@ import {
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
@@ -74,6 +73,8 @@ const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 const { markPrice, lastTradedPrice } = useDerivativeLastPrice(
   computed(() => props.market)
 )
+
+const { accountBalancesWithToken } = useBalance()
 
 const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
@@ -164,13 +165,13 @@ const position = computed(() => {
 })
 
 const quoteAvailableBalance = computed(() => {
-  const balance = accountStore.balanceMap[props.market.quoteDenom] || '0'
-
-  const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
-    props.market.quoteToken.decimals
+  const quoteBalance = accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
   )
 
-  return quoteAvailableBalance
+  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
+    props.market.quoteToken.decimals
+  )
 })
 
 const feeRate = computed(() => {
