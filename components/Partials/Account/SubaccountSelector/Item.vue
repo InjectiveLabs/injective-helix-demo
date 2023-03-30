@@ -7,7 +7,7 @@ import {
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
-import { getSubaccountIndex } from '~~/app/utils/helpers'
+import { getSubaccountIndex } from '@/app/utils/helpers'
 
 const accountStore = useAccountStore()
 
