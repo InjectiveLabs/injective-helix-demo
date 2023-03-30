@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { getSubaccountIndex } from '~~/app/utils/helpers'
+
 const accountStore = useAccountStore()
 const { t } = useLang()
 
@@ -8,13 +10,15 @@ const emit = defineEmits<{
 
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
-    ? Object.keys(accountStore.subaccountBalancesMap).map((value) => ({
-        value,
-        display:
-          parseInt(value.slice(42)) === 0
-            ? `${t('account.main')}`
-            : parseInt(value.slice(42)).toString()
-      }))
+    ? Object.keys(accountStore.subaccountBalancesMap)
+        .map((value) => ({
+          value,
+          display:
+            getSubaccountIndex(value) === 0
+              ? `${t('account.main')}`
+              : getSubaccountIndex(value).toString()
+        }))
+        .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )
 

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { getSubaccountIndex } from '~~/app/utils/helpers'
+
 const accountStore = useAccountStore()
 const { t } = useLang()
 
@@ -13,9 +15,9 @@ const subaccountSelectOptions = computed(() =>
           value,
           // display: index === 0 ? `${t('account.main')}` : index.toString()
           display:
-            parseInt(value.slice(42)) === 0
+            getSubaccountIndex(value) === 0
               ? `${t('account.main')}`
-              : parseInt(value.slice(42)).toString()
+              : getSubaccountIndex(value).toString()
         }))
         .sort((a, b) => a.value.localeCompare(b.value))
     : []
