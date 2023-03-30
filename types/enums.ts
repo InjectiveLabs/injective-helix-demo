@@ -320,3 +320,8 @@ export enum AggregatedBalanceType {
 export enum NoticeBanner {
   sheduledUpgradeMarch = 'sheduled-upgrade-march'
 }
+
+export enum SubaccountBalanceStreamType {
+  AvailableBalance = 'available_balances',
+  TotalBalance = 'total_balances'
+}

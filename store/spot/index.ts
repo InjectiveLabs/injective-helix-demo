@@ -14,6 +14,10 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  cancelBankBalanceStream,
+  cancelSubaccountBalanceStream
+} from '../account/stream'
+import {
   streamTrades,
   cancelTradesStream,
   streamOrderbookUpdate,
@@ -354,6 +358,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     cancelSubaccountStream() {
+      cancelBankBalanceStream()
+      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()
