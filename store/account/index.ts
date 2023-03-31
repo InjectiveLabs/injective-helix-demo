@@ -144,7 +144,8 @@ export const useAccountStore = defineStore('account', {
       )
 
       accountStore.$patch({
-        subaccountId: walletStore.defaultSubaccountId,
+        subaccountId:
+          accountStore.subaccountId || walletStore.defaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
         positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {

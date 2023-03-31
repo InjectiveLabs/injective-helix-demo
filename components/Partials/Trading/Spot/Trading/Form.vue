@@ -3,20 +3,13 @@ import { PropType } from 'vue'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import {
-  Modal,
-  TradeForm,
-  TradeField,
-  TradeFormValue,
-  OrderAttemptStatus
-} from '@/types'
+import { Modal, TradeForm, TradeField, OrderAttemptStatus } from '@/types'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -24,9 +17,8 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const {
-  values,
-  setFieldValue,
-  errors: formErrors,
+  meta: formMeta,
+  values: formValues,
   resetForm: resetFormValues
 } = useForm<TradeForm>()
 
@@ -37,11 +29,8 @@ const props = defineProps({
   }
 })
 
-const defaultStep = '1'
 const isBaseAmount = ref(true)
 const status = ref(new Status())
-
-const formValues = computed(() => values)
 
 const {
   baseAmount,
@@ -49,37 +38,23 @@ const {
   hasBaseAmount,
   tradingTypeLimit,
   tradingTypeMarket
-} = useSpotFormFormatter(formValues)
+} = useSpotFormFormatter(computed(() => formValues))
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const amountStep = computed(() =>
-  props.market
-    ? new BigNumberInBase(1)
-        .shiftedBy(props.market.quantityTensMultiplier)
-        .toFixed()
-    : defaultStep
-)
+const { accountBalancesWithToken } = useBalance()
 
-const priceStep = computed(() =>
-  props.market
-    ? new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals).toFixed()
-    : defaultStep
-)
-
-const isBuy = computed(
-  () => formValues.value[TradeField.OrderSide] === OrderSide.Buy
-)
+const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
 const orderTypeToSubmit = computed(() => {
   switch (true) {
-    case formValues.value[TradeField.PostOnly] && isBuy.value: {
+    case formValues[TradeField.PostOnly] && isBuy.value: {
       return OrderSide.BuyPO
     }
     case isBuy.value: {
       return OrderSide.Buy
     }
-    case formValues.value[TradeField.PostOnly] && !isBuy.value: {
+    case formValues[TradeField.PostOnly] && !isBuy.value: {
       return OrderSide.SellPO
     }
     case !isBuy.value: {
@@ -92,31 +67,28 @@ const orderTypeToSubmit = computed(() => {
 })
 
 const baseAvailableBalance = computed(() => {
-  const balance = accountStore.balanceMap[props.market.baseDenom] || '0'
-
-  const baseAvailableBalance = new BigNumberInWei(balance).toBase(
-    props.market.baseToken.decimals
+  const baseBalance = accountBalancesWithToken.value.find(
+    (balance) =>
+      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
   )
 
-  return baseAvailableBalance
+  return new BigNumberInWei(baseBalance?.availableMargin || '0').toBase(
+    props.market.baseToken.decimals
+  )
 })
 
 const quoteAvailableBalance = computed(() => {
-  const balance = accountStore.balanceMap[props.market.quoteDenom] || '0'
-
-  const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
-    props.market.quoteToken.decimals
+  const quoteBalance = accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
   )
 
-  if (quoteAvailableBalance.isNaN()) {
-    return ZERO_IN_BASE
-  }
-
-  return quoteAvailableBalance
+  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
+    props.market.quoteToken.decimals
+  )
 })
 
 const feeRate = computed(() => {
-  if (formValues.value[TradeField.PostOnly] && !tradingTypeMarket.value) {
+  if (formValues[TradeField.PostOnly] && !tradingTypeMarket.value) {
     return makerFeeRate.value
   }
 
@@ -133,9 +105,9 @@ const {
   updateAmountFromBase,
   worstPriceWithSlippage
 } = useSpotPrice({
-  formValues,
   isBaseAmount,
-  market: computed(() => props.market)
+  market: computed(() => props.market),
+  formValues: computed(() => formValues)
 })
 
 const executionPrice = computed(() => {
@@ -153,7 +125,7 @@ const notionalValue = computed(() => {
     ? worstPriceWithSlippage.value
     : limitPrice.value
 
-  return price.times(formValues.value[TradeField.BaseAmount])
+  return price.times(formValues[TradeField.BaseAmount])
 })
 
 const fees = computed(() => {
@@ -176,11 +148,11 @@ const notionalWithFees = computed(() => {
 
 const { availableBalanceError, highDeviation, maxOrdersError } = useSpotError({
   isBuy,
-  formValues,
   executionPrice,
   notionalWithFees,
   quoteAvailableBalance,
-  market: computed(() => props.market)
+  market: computed(() => props.market),
+  formValues: computed(() => formValues)
 })
 
 watch(
@@ -196,7 +168,7 @@ watch(
         TRADE_FORM_PRICE_ROUNDING_MODE
       )
 
-      updateFormValue({ field: TradeField.LimitPrice, value: formattedPrice })
+      formValues[TradeField.LimitPrice] = formattedPrice
     }
   },
   { immediate: true }
@@ -209,10 +181,6 @@ watch(executionPrice, () => {
 
   updateAmount({ isBaseAmount: isBaseAmount.value })
 })
-
-function updateFormValue({ field, value }: TradeFormValue) {
-  setFieldValue(field, value)
-}
 
 function updateAmount({
   amount,
@@ -229,29 +197,26 @@ function updateAmount({
   })
 
   if (amountToUpdate) {
-    updateFormValue({
-      field: isBaseAmountUpdate
-        ? TradeField.QuoteAmount
-        : TradeField.BaseAmount,
-      value: amountToUpdate
-    })
+    const field = isBaseAmountUpdate
+      ? TradeField.QuoteAmount
+      : TradeField.BaseAmount
+
+    formValues[field] = amountToUpdate
   }
 }
 
-function setDefaultFormValues() {
-  updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
-  updateFormValue({
-    field: TradeField.LimitPrice,
-    value: lastTradedPrice.value.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_PRICE_ROUNDING_MODE
-    )
-  })
-}
-
 function resetForm() {
-  resetFormValues()
-  setDefaultFormValues()
+  resetFormValues({
+    values: {
+      ...formMeta.value.initialValues,
+      [TradeField.OrderSide]: formValues[TradeField.OrderSide],
+      [TradeField.TradingType]: formValues[TradeField.TradingType],
+      [TradeField.LimitPrice]: lastTradedPrice.value.toFixed(
+        props.market.priceDecimals,
+        TRADE_FORM_PRICE_ROUNDING_MODE
+      )
+    } as TradeForm
+  })
 }
 
 function submitLimitOrder() {
@@ -313,7 +278,7 @@ function handleRequestSubmit() {
 }
 
 function handleSubmit() {
-  switch (formValues.value[TradeField.TradingType]) {
+  switch (formValues[TradeField.TradingType]) {
     case TradeExecutionType.LimitFill:
       return submitLimitOrder()
     case TradeExecutionType.Market:
@@ -323,10 +288,9 @@ function handleSubmit() {
 
 function handleAttemptPlaceOrderTrack(errorMessage?: string) {
   const slippageTolerance = tradingTypeMarket.value
-    ? formValues.value[TradeField.SlippageTolerance]
+    ? formValues[TradeField.SlippageTolerance]
     : ''
-  const postOnly =
-    tradingTypeLimit.value && formValues.value[TradeField.PostOnly]
+  const postOnly = tradingTypeLimit.value && formValues[TradeField.PostOnly]
   const status = errorMessage
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
@@ -338,24 +302,19 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     error: errorMessage,
     market: props.market.slug,
     marketType: props.market.subType,
-    amount: formValues.value[TradeField.BaseAmount],
-    orderSide: formValues.value[TradeField.OrderSide],
-    limitPrice: formValues.value[TradeField.LimitPrice],
-    tradingType: formValues.value[TradeField.TradingType]
+    amount: formValues[TradeField.BaseAmount],
+    orderSide: formValues[TradeField.OrderSide],
+    limitPrice: formValues[TradeField.LimitPrice],
+    tradingType: formValues[TradeField.TradingType]
   })
 }
 </script>
 
 <template>
   <div v-if="lastTradedPrice" class="w-full flex flex-col gap-6">
-    <PartialsTradingFormTradeExecutionTypeButtons
-      @form:reset="setDefaultFormValues"
-    />
+    <PartialsTradingFormTradeExecutionTypeButtons @form:reset="resetForm" />
 
-    <PartialsTradingFormOrderSideSelect
-      v-bind="{ market: props.market }"
-      @update:formValue="updateFormValue"
-    />
+    <PartialsTradingFormOrderSideSelect v-bind="{ market: props.market }" />
 
     <PartialsTradingFormOrderInputs
       v-bind="{
@@ -363,8 +322,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         isBuy,
         market,
         feeRate,
-        priceStep,
-        amountStep,
         isBaseAmount,
         executionPrice,
         lastTradedPrice,
@@ -410,7 +367,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         isBuy,
         status,
         market,
-        formErrors,
         formValues,
         hasBaseAmount,
         highDeviation,

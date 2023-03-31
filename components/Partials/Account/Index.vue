@@ -8,8 +8,8 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
-const positionStore = usePositionStore()
 const accountStore = useAccountStore()
+const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useToken()
@@ -26,8 +26,7 @@ const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
-const { accountBalancesWithTokenInBases: currentSubaccountBalances } =
-  useBalance()
+const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
 onMounted(() => {
   handleViewFromRoute()
@@ -40,7 +39,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   modalStore.closeModal(Modal.AssetDetails)
   spotStore.reset()
-  accountStore.resetToDefaultSubaccount()
 })
 
 function setUsdcConvertMarket(token: Token) {
@@ -96,6 +94,11 @@ function refreshUsdTokenPrice() {
 function handleHideBalances(value: boolean) {
   hideBalances.value = value
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => positionStore.fetchSubaccountPositions()
+)
 
 useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>

@@ -24,6 +24,10 @@ import {
   ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
 import {
+  cancelBankBalanceStream,
+  cancelSubaccountBalanceStream
+} from '../account/stream'
+import {
   cancelOrder,
   batchCancelOrder,
   submitLimitOrder,
@@ -503,6 +507,8 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountStream() {
       const positionStore = usePositionStore()
 
+      cancelBankBalanceStream()
+      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrderHistoryStream()

@@ -40,7 +40,12 @@ export const getRoutes = (network: Network, env: string) => {
   ]
 
   if (IS_TESTNET) {
-    perpetuals.push('sol-usdt-perp', 'eur-usdt-perp')
+    perpetuals.push(
+      'gbp-usdt-perp',
+      'jpy-usdt-perp',
+      'eur-usdt-perp',
+      'sol-usdt-perp'
+    )
   }
 
   const binaryOptions: string[] = []

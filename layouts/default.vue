@@ -24,13 +24,7 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([
-    walletStore.init(),
-    tokenStore.fetchSupplyTokenMeta(),
-
-    // TODO: remove when we have proper support for multi subaccount management
-    accountStore.resetToDefaultSubaccount()
-  ])
+  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
     .catch($onError)
     .finally(() => {
       status.setIdle()

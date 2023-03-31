@@ -5,7 +5,7 @@ import {
   streamSubaccountBalances as grpcStreamSubaccountBalance,
   cancelSubaccountBalanceStream as grpcCancelSubaccountBalanceStream
 } from '@/app/client/streams/bank'
-import { SubaccountBalance } from '@/types'
+import { SubaccountBalance, SubaccountBalanceStreamType } from '@/types'
 
 export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
@@ -43,15 +43,29 @@ export const streamSubaccountBalance = () => {
   grpcStreamSubaccountBalance({
     accountAddress: walletStore.injectiveAddress,
     subaccountId: accountStore.subaccountId,
-    callback: ({ amount, denom }) => {
+    callback: (payload) => {
       const accountBalancesExcludingDenom = accountStore.subaccountBalancesMap[
         accountStore.subaccountId
-      ].filter((balance: SubaccountBalance) => balance.denom !== denom)
+      ].filter((balance: SubaccountBalance) => balance.denom !== payload.denom)
+      const accountBalance = accountStore.subaccountBalancesMap[
+        accountStore.subaccountId
+      ].find((balance: SubaccountBalance) => balance.denom === payload.denom)
 
       const subaccountBalancesMap = {
         [accountStore.subaccountId]: [
           ...accountBalancesExcludingDenom,
-          { denom, totalBalance: amount, availableBalance: '0' }
+          {
+            denom: payload.denom,
+            totalBalance:
+              payload.type === SubaccountBalanceStreamType.TotalBalance
+                ? payload.amount
+                : accountBalance?.totalBalance || '0',
+            availableBalance:
+              payload.subaccountId !== walletStore.defaultSubaccountId &&
+              payload.type === SubaccountBalanceStreamType.AvailableBalance
+                ? payload.amount
+                : accountBalance?.availableBalance || '0'
+          }
         ]
       }
 

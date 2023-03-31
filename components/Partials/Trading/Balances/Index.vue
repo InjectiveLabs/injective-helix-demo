@@ -82,33 +82,61 @@ const quoteTradingBalanceToFormat = computed(() => {
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
 })
 
+onMounted(() => {
+  fetchSubaccountBalances()
+})
+
 onWalletConnected(() => {
+  refreshSubaccountBalances()
+})
+
+function fetchSubaccountBalances() {
+  status.setLoading()
+
+  Promise.all([accountStore.fetchAccountPortfolio()])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function refreshSubaccountBalances() {
   status.setLoading()
 
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
-    accountStore.streamBankBalance()
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
   ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-})
+}
 
 function handleDeposit() {
   const token = isSpot ? props.market.baseToken : props.market.quoteToken
 
   useEventBus<Token>(BridgeBusEvents.Deposit).emit(token)
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    refreshSubaccountBalances()
+  }
+)
 </script>
 
 <template>
   <AppPanel class="w-full">
     <div>
       <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-500 flex items-center">
-          {{ $t('marketPage.assets') }}
-        </p>
+        <div class="flex items-center space-x-2">
+          <p class="text-xs text-gray-500 flex items-center">
+            {{ $t('marketPage.assetsFrom') }}
+          </p>
+          <PartialsCommonSubaccountSelector />
+        </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: 'account' }"
@@ -125,7 +153,11 @@ function handleDeposit() {
           "
         >
           <div>
-            <div v-if="!hasTradingAccountBalances">
+            <div
+              v-if="
+                !hasTradingAccountBalances && accountStore.isDefaultSubaccount
+              "
+            >
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noTradingBalance') }}
               </p>

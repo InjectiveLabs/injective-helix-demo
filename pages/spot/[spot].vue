@@ -9,6 +9,7 @@ definePageMeta({
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
@@ -82,6 +83,13 @@ watch(
     if (isConnected) {
       fetchStatus.setLoading()
     }
+  }
+)
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    refreshSubaccountDetails()
   }
 )
 </script>

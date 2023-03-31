@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { PositionWithPnlAndDenom } from '~~/types'
+import { PositionWithPnlAndDenom } from '@/types'
 
 export function useDerivativePosition(position: Ref<UiPosition>) {
   const derivativeStore = useDerivativeStore()

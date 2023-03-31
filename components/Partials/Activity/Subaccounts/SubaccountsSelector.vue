@@ -42,10 +42,11 @@ const subaccount = computed({
       v-model="subaccount"
       :options="subaccountSelectOptions"
       class="self-end"
+      :wrapper-class="`bg-white/10 px-4 py-2 rounded-lg`"
     >
       <template #default="{ selected }">
-        <span v-if="selected" class="text-xs text-blue-500 uppercase">
-          {{ selected.display }}
+        <span v-if="selected" class="text-md text-gray-300 font-semibold">
+          {{ `${$t('account.account')}: ${selected.display}` }}
         </span>
       </template>
 

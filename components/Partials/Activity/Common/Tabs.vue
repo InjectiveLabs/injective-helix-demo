@@ -5,7 +5,6 @@ import { ActivityTab, ActivityView } from '@/types'
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 
 const props = defineProps({
   tab: {
@@ -182,11 +181,5 @@ const tabViewList = computed(() => {
 
       <CommonSeparator v-if="index !== Object.values(tabViewList).length - 1" />
     </template>
-
-    <div v-if="accountStore.hasMultipleSubaccounts" class="ml-auto xl:flex">
-      <PartialsCommonSubaccountSelector
-        @update:subaccount="$emit('update:subaccount')"
-      />
-    </div>
   </div>
 </template>
