@@ -68,7 +68,7 @@ jobs:
         run: yarn clean-up
 
       - name: Install Dependencies
-        run: yarn install
+        run: yarn install --force
 
       - name: Generating the static pages
         run: yarn generateNoSourceMap
