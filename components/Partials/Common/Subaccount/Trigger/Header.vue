@@ -21,11 +21,9 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('trade.amount') }}</span>
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <CommonTextTooltip :tooltip="$t('trade.amount_tooltip')">
+            {{ $t('trade.amount') }}
+          </CommonTextTooltip>
         </div>
       </th>
       <th v-if="!isBinaryOptionsPage" class="text-right">

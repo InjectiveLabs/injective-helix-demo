@@ -14,11 +14,9 @@ const totalTooltip = computed(() =>
     <tr>
       <th class="h-8 text-left pl-3">
         <div class="flex items-center">
-          {{ $t('trade.time') }}
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.timestamp_tooltip')"
-          />
+          <CommonTextTooltip :tooltip="$t('trade.timestamp_tooltip')">
+            {{ $t('trade.time') }}
+          </CommonTextTooltip>
         </div>
       </th>
 
@@ -38,23 +36,23 @@ const totalTooltip = computed(() =>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('trade.amount') }}</span>
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <CommonTextTooltip :tooltip="$t('trade.amount_tooltip')">
+            {{ $t('trade.amount') }}
+          </CommonTextTooltip>
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          {{ $t('trade.fee') }}
-          <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+          <CommonTextTooltip :tooltip="$t('trade.fees_tooltip')">
+            {{ $t('trade.fee') }}
+          </CommonTextTooltip>
         </div>
       </th>
       <th class="h-8 pr-3">
         <div class="flex items-center justify-end">
-          <span>{{ $t('trade.total') }}</span>
-          <CommonInfoTooltip class="ml-2" :tooltip="totalTooltip" />
+          <CommonTextTooltip :tooltip="totalTooltip">
+            {{ $t('trade.total') }}
+          </CommonTextTooltip>
         </div>
       </th>
     </tr>

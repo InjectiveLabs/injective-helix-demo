@@ -3,11 +3,9 @@
     <tr class="h-8">
       <th class="text-left pl-3">
         <div class="flex items-center">
-          {{ $t('trade.time') }}
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.timestamp_tooltip')"
-          />
+          <CommonTextTooltip :tooltip="$t('trade.timestamp_tooltip')">
+            {{ $t('trade.time') }}
+          </CommonTextTooltip>
         </div>
       </th>
 
@@ -21,11 +19,11 @@
 
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('walletHistory.transfers.amount') }}</span>
-          <CommonInfoTooltip
-            class="ml-2"
+          <CommonTextTooltip
             :tooltip="$t('walletHistory.transfers.amountTooltip')"
-          />
+          >
+            {{ $t('walletHistory.transfers.amount') }}
+          </CommonTextTooltip>
         </div>
       </th>
 
