@@ -56,15 +56,23 @@ const ascendingValue = computed({
     </AppSortableHeaderItem>
 
     <AppHeaderItem class="justify-end">
-      <CommonTextTooltip :tooltip="$t('account.balances.inUseReservedTooltip')">
+      <CommonHeaderTooltip
+        v-bind="{
+          tooltip: $t('account.balances.inUseReservedTooltip')
+        }"
+      >
         {{ $t('account.balances.cols.inUseReserved') }}
-      </CommonTextTooltip>
+      </CommonHeaderTooltip>
     </AppHeaderItem>
 
     <AppHeaderItem class="justify-end">
-      <CommonTextTooltip :tooltip="$t('account.balances.unrealizedTooltip')">
+      <CommonHeaderTooltip
+        v-bind="{
+          tooltip: $t('account.balances.unrealizedTooltip')
+        }"
+      >
         {{ $t('account.balances.cols.unrealized') }}
-      </CommonTextTooltip>
+      </CommonHeaderTooltip>
     </AppHeaderItem>
 
     <AppSortableHeaderItem

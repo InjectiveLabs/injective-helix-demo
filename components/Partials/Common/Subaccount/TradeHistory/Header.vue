@@ -14,9 +14,13 @@ const totalTooltip = computed(() =>
     <tr>
       <th class="h-8 text-left pl-3">
         <div class="flex items-center">
-          <CommonTextTooltip :tooltip="$t('trade.timestamp_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.timestamp_tooltip')
+            }"
+          >
             {{ $t('trade.time') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
 
@@ -36,23 +40,35 @@ const totalTooltip = computed(() =>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.amount_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.amount_tooltip')
+            }"
+          >
             {{ $t('trade.amount') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.fees_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.fees_tooltip')
+            }"
+          >
             {{ $t('trade.fee') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 pr-3">
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="totalTooltip">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: totalTooltip
+            }"
+          >
             {{ $t('trade.total') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
     </tr>

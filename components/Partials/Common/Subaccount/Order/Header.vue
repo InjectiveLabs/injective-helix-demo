@@ -18,9 +18,13 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.amount_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.amount_tooltip')
+            }"
+          >
             {{ $t('trade.amount') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 text-right">

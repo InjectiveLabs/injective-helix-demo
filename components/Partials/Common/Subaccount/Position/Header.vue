@@ -17,9 +17,13 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.amount_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.amount_tooltip')
+            }"
+          >
             <span>{{ $t('trade.amount') }}</span>
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 text-right">
@@ -27,23 +31,35 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       </th>
       <th v-if="!isBinaryOptionsPage">
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.liquidation_price_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.liquidation_price_tooltip')
+            }"
+          >
             {{ $t('trade.estLiqPrice') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.unrealized_pnl_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.unrealized_pnl_tooltip')
+            }"
+          >
             {{ $t('trade.unrealized_pnl') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <CommonTextTooltip :tooltip="$t('trade.total_tooltip')">
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.total_tooltip')
+            }"
+          >
             {{ $t('trade.total') }}
-          </CommonTextTooltip>
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 text-right">
