@@ -153,7 +153,11 @@ watch(
           "
         >
           <div>
-            <div v-if="!hasTradingAccountBalances">
+            <div
+              v-if="
+                !hasTradingAccountBalances && accountStore.isDefaultSubaccount
+              "
+            >
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
