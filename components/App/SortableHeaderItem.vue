@@ -23,7 +23,6 @@ defineProps({
   >
     <template #default="{ active }">
       <div class="flex cursor-pointer items-center gap-1" :class="$attrs.class">
-        <slot />
         <div class="space-y-1">
           <BaseIcon
             name="triangle"
@@ -37,6 +36,8 @@ defineProps({
             xs
           />
         </div>
+
+        <slot />
       </div>
     </template>
   </BaseSortableHeaderItem>
