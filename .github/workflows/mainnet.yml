@@ -71,7 +71,7 @@ jobs:
         run: yarn install --force
 
       - name: Generating the static pages
-        run: yarn generate
+        run: yarn generateNoSourceMap
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
