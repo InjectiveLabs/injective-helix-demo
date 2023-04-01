@@ -60,8 +60,10 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isLowVolumeMarket =
-      showLowVolumeMarkets.value || volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+    const isLowVolumeMarket = search.value
+      ? true
+      : showLowVolumeMarkets.value ||
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
     return (
       isPartOfCategory &&
