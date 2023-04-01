@@ -1,25 +1,18 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { AccountBalance, BusEvents, Modal, USDCSymbol } from '@/types'
+import { BusEvents, Modal, USDCSymbol } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
+const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { fetchTokenUsdPrice } = useToken()
-
-const props = defineProps({
-  balances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
-  }
-})
 
 const FilterList = {
   Balances: 'balances',
@@ -32,6 +25,8 @@ const status = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
+
+const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
 onMounted(() => {
   handleViewFromRoute()
@@ -91,7 +86,7 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice(props.balances.map((b) => b.token))
+  fetchTokenUsdPrice(currentSubaccountBalances.value.map((b) => b.token))
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }
@@ -99,6 +94,11 @@ function refreshUsdTokenPrice() {
 function handleHideBalances(value: boolean) {
   hideBalances.value = value
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => positionStore.fetchSubaccountPositions()
+)
 
 useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>
@@ -115,11 +115,11 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
       </span>
 
       <PartialsAccountOverview
-        :balances="balances"
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
-        :hide-balances="hideBalances"
+        v-bind="{ hideBalances, currentSubaccountBalances }"
         @update:hide-balances="handleHideBalances"
-      />
+      >
+      </PartialsAccountOverview>
 
       <div class="h-full-flex">
         <CommonTabMenu>
@@ -154,7 +154,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
           <PartialsAccountBalances
             v-if="activeType === FilterList.Balances"
             v-bind="{
-              balances,
+              balances: currentSubaccountBalances,
               hideBalances,
               usdPriceStatus
             }"
@@ -162,7 +162,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 
           <PartialsAccountPositions
             v-if="activeType === FilterList.Positions"
-            v-bind="{ hideBalances, balances }"
+            v-bind="{ hideBalances, balances: currentSubaccountBalances }"
           />
         </AppHocLoading>
       </div>
@@ -176,7 +176,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     <ModalsAddMargin />
     <ModalsConvertUsdc
       v-if="usdcConvertMarket"
-      :balances="balances"
+      :balances="currentSubaccountBalances"
       :market="usdcConvertMarket"
     />
   </div>

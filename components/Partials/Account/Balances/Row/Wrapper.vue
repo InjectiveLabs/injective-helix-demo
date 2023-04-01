@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
+
+const accountStore = useAccountStore()
 
 const props = defineProps({
   hideActions: Boolean,
@@ -194,6 +196,7 @@ function handleWithdrawClick() {
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
           <div
+            v-if="accountStore.isDefaultSubaccount"
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
             data-cy="wallet-balance-deposit-link"
             @click="handleDepositClick"
@@ -204,6 +207,7 @@ function handleWithdrawClick() {
           </div>
 
           <div
+            v-if="accountStore.isDefaultSubaccount"
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
             data-cy="wallet-balance-withdraw-link"
             @click="handleWithdrawClick"

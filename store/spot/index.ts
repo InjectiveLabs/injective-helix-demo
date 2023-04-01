@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
-import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { SpotOrderSide } from '@injectivelabs/sdk-ts'
+import {
+  OrderSide,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   UiSpotTrade,
   UiSpotLimitOrder,
@@ -10,6 +13,10 @@ import {
   zeroSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import {
+  cancelBankBalanceStream,
+  cancelSubaccountBalanceStream
+} from '../account/stream'
 import {
   streamTrades,
   cancelTradesStream,
@@ -197,7 +204,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -224,7 +231,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -240,7 +247,7 @@ export const useSpotStore = defineStore('spot', {
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
           marketIds: filters?.marketIds || spotStore.activeMarketIds,
-          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          orderTypes: filters?.orderTypes as unknown as OrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[]
         })
 
@@ -255,14 +262,18 @@ export const useSpotStore = defineStore('spot', {
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
       const latestOrderbook = await indexerSpotApi.fetchOrderbookV2(marketId)
+      const latestOrderbookIsMostRecent =
+        latestOrderbook.sequence >= currentOrderbookSequence
 
-      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+      if (latestOrderbookIsMostRecent) {
         spotStore.orderbook = latestOrderbook
       }
 
       // handle race condition between fetch and stream
       spotStore.orderbook = {
-        sequence: currentOrderbookSequence,
+        sequence: latestOrderbookIsMostRecent
+          ? latestOrderbook.sequence
+          : currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
           currentRecords: spotStore.orderbook?.buys,
@@ -298,7 +309,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -347,6 +358,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     cancelSubaccountStream() {
+      cancelBankBalanceStream()
+      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()

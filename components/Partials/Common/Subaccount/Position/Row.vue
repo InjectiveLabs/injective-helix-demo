@@ -311,7 +311,7 @@ function closePositionAndReduceOnlyOrders() {
     </td>
 
     <td class="text-center relative pr-3">
-      <PartialsTradingFormCancelButton
+      <PartialsCommonCancelButton
         v-if="!hideBalance"
         :status="status"
         data-cy="open-position-cancel-link"
@@ -320,7 +320,7 @@ function closePositionAndReduceOnlyOrders() {
         <template #icon>
           <BaseIcon name="close" sm />
         </template>
-      </PartialsTradingFormCancelButton>
+      </PartialsCommonCancelButton>
     </td>
   </tr>
 </template>

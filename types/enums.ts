@@ -59,7 +59,8 @@ export enum Modal {
   PriceDeviation = 'price-deviation',
   Terms = 'terms',
   USDCDetected = 'usdc-detected',
-  UserFeedback = 'user-feedback'
+  UserFeedback = 'user-feedback',
+  DevMode = 'dev-mode'
 }
 
 export enum Breakpoint {
@@ -254,7 +255,7 @@ export enum TradeField {
   BaseDenom = 'Base denom',
   Leverage = 'Leverage',
   LimitPrice = 'Limit price',
-  OrderType = 'Order type',
+  OrderSide = 'Order side',
   PostOnly = 'Post-Only',
   ProportionalPercentage = 'Proportional percentage',
   QuoteAmount = 'Quote amount',
@@ -308,13 +309,19 @@ export enum ActivityTab {
   Positions = 'positions',
   Derivatives = 'derivatives',
   Spot = 'spot',
-  WalletHistory = 'walletHistory'
+  WalletHistory = 'wallet-history'
 }
 
 export enum AggregatedBalanceType {
+  INJ = 'inj',
   USDC = 'usdc'
 }
 
 export enum NoticeBanner {
   sheduledUpgradeMarch = 'sheduled-upgrade-march'
+}
+
+export enum SubaccountBalanceStreamType {
+  AvailableBalance = 'available_balances',
+  TotalBalance = 'total_balances'
 }

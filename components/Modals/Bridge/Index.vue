@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   Status,
   StatusType,
@@ -28,14 +28,13 @@ import {
 const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
-const { $onError } = useNuxtApp()
 
 const resetForm = useResetForm()
 const formErrors = useFormErrors()
 const formValues = useFormValues<BridgeForm>()
 
 const emit = defineEmits<{
-  (e: 'bridge:init'): void
+  (e: 'bridge:confirmation'): void
   (e: 'form:reset', state?: Token): void
 }>()
 
@@ -54,7 +53,7 @@ const { transferableBalancesWithToken } = useBridgeBalance({
 })
 
 const memoRequired = ref(false)
-const status = reactive(new Status(StatusType.Loading))
+const status = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
 const hasFormErrors = computed(() => Object.keys(formErrors.value).length > 0)
@@ -145,6 +144,10 @@ const { value: memo, resetField: resetMemo } = useStringField({
   })
 })
 
+onMounted(() => {
+  peggyStore.getErc20BalancesWithTokenAndPrice()
+})
+
 function handleAmountChange({ amount }: { amount: string }) {
   formValues.value[BridgeField.Amount] = amount
 }
@@ -158,25 +161,14 @@ function handleTokenChange() {
   })
 }
 
-function handleBridgeInit() {
-  emit('bridge:init')
+function handleBridgeConfirmation() {
+  emit('bridge:confirmation')
 }
 
 function handleModalClose() {
   resetForm()
-
   modalStore.closeModal(Modal.Bridge)
 }
-
-watch(isModalOpen, (modalShown: boolean) => {
-  if (modalShown) {
-    status.setLoading()
-
-    Promise.all([peggyStore.fetchErc20BalancesWithTokenAndPrice()])
-      .catch($onError)
-      .finally(() => status.setIdle())
-  }
-})
 
 watch(destination, (value: string) => {
   if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
@@ -333,7 +325,7 @@ watch(destination, (value: string) => {
               :disabled="hasFormErrors || formValues[BridgeField.Amount] === ''"
               class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-modal-transfer-now-button"
-              @click="handleBridgeInit"
+              @click="handleBridgeConfirmation"
             >
               <span
                 v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"

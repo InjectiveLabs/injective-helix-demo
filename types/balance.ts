@@ -1,4 +1,5 @@
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
+import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { AggregatedBalanceType } from '@/types/enums'
 
 export interface SubaccountBalance {
@@ -28,4 +29,8 @@ export type AccountBalance = Omit<BalanceWithTokenAndPrice, 'balance'> & {
 
 export type AccountBalanceWithAggregatedType = AccountBalance & {
   type?: AggregatedBalanceType
+}
+
+export interface PositionWithPnlAndDenom extends PositionsWithUPNL {
+  denom?: string
 }

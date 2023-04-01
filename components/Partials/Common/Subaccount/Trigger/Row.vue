@@ -201,7 +201,7 @@ function onCancelOrder(): void {
           {{ $t('common.view') }}
         </NuxtLink>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="isCancelable"
           :status="status"
           data-cy="derivative-order-cancel-link"

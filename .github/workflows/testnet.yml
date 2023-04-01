@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - testnet
-#       - mainnet
+      - mainnet
 
 jobs:
   testnet:
@@ -33,7 +33,7 @@ jobs:
       VITE_CHRONOS_API_ENDPOINT: ''
       VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_HTTP_ENDPOINT: ''
+      VITE_SENTRY_REST_ENDPOINT: ''
 
       ## Secret
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
@@ -47,6 +47,8 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
+
+      NODE_OPTIONS: '--max_old_space_size=15360'
     runs-on: ubuntu-latest
 
     steps:
@@ -57,14 +59,14 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install Dependencies
-        run: yarn install
-
       - name: Remove prev build
         run: yarn clean-up
 
+      - name: Install Dependencies
+        run: yarn install --force
+
       - name: Generating the static pages
-        run: yarn generate
+        run: yarn generateNoSourceMap
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1

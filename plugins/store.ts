@@ -26,25 +26,26 @@ const stateToPersist = {
     }
   },
 
-  bank: {
-    defaultSubaccountId: ''
+  account: {
+    subaccountId: ''
   },
 
   wallet: {
     wallet: Wallet.Metamask,
-    addresses: '',
     address: '',
+    addresses: '',
     injectiveAddress: '',
+    defaultSubaccountId: '',
     addressConfirmation: ''
   }
 } as Record<string, Record<string, any>>
 
 const actionsThatSetAppStateToBusy = [
-  'bank/deposit',
-  'bank/transfer',
   'peggy/deposit',
-  'bank/withdraw',
   'peggy/withdraw',
+  'account/deposit',
+  'account/transfer',
+  'account/withdraw',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
@@ -82,7 +83,7 @@ const persistState = (
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload).some((key) => {
+    Object.keys(mutation.payload || []).some((key) => {
       return keysToPersist.includes(key)
     })
 

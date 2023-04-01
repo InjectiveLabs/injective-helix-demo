@@ -10,7 +10,7 @@ import {
   MarketType,
   UiOrderbookPriceLevel
 } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   OrderBookPriceAndType,
@@ -43,7 +43,7 @@ const props = defineProps({
 
   type: {
     required: true,
-    type: String as PropType<DerivativeOrderSide | SpotOrderSide>
+    type: String as PropType<OrderSide>
   },
 
   userOrders: {
@@ -70,10 +70,7 @@ const existsInUserOrders = computed(() =>
   })
 )
 
-const recordTypeBuy = computed(
-  () =>
-    props.type === DerivativeOrderSide.Buy || props.type === SpotOrderSide.Buy
-)
+const recordTypeBuy = computed(() => props.type === OrderSide.Buy)
 
 const total = computed(() => new BigNumberInBase(props.record.total || 0))
 

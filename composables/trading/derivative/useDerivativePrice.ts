@@ -2,10 +2,10 @@ import type { Ref } from 'vue'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
-  DerivativeOrderSide,
-  UiDerivativeMarketWithToken,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   ONE_IN_BASE,
   TRADE_FORM_QUANTITY_ROUNDING_MODE
@@ -29,7 +29,7 @@ export function useDerivativePrice({
   const positionStore = usePositionStore()
 
   const isBuy = computed(
-    () => formValues.value[TradeField.OrderType] === DerivativeOrderSide.Buy
+    () => formValues.value[TradeField.OrderSide] === OrderSide.Buy
   )
 
   const orderbookOrders = computed(

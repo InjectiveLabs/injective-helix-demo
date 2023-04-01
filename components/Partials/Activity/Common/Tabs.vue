@@ -20,6 +20,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:view', state: string): void
+  (e: 'update:subaccount', subaccount: string): void
 }>()
 
 const view = computed({

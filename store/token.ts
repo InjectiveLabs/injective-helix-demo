@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { INJ_COIN_GECKO_ID, UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { bankApi, tokenPrice, tokenService } from '@/app/Services'
 import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { TokenUsdPriceMap } from '@/types'
@@ -46,19 +46,26 @@ export const useTokenStore = defineStore('token', {
     async fetchTokenUsdPriceMap(coinGeckoIdList: string[]) {
       const tokenStore = useTokenStore()
 
-      const tokenUsdPriceList = await Promise.all(
-        coinGeckoIdList.map(async (coinGeckoId) => ({
-          [coinGeckoId]: await tokenPrice.fetchUsdTokenPrice(coinGeckoId)
-        }))
+      if (coinGeckoIdList.length === 0) {
+        return
+      }
+
+      const coinGeckoIdsNotInStore = [
+        ...new Set(coinGeckoIdList.filter((id) => id))
+      ].filter(
+        (coinGeckoId) =>
+          !Object.keys(tokenStore.tokenUsdPriceMap).includes(coinGeckoId)
       )
 
-      const tokenUsdPriceMap = tokenUsdPriceList.reduce(
-        (prices, tokenUsdPriceMap) => Object.assign(prices, tokenUsdPriceMap),
-        {}
+      const tokenUsdPriceMap = await tokenPrice.fetchUsdTokensPrice(
+        coinGeckoIdsNotInStore
       )
 
       tokenStore.$patch({
-        tokenUsdPriceMap
+        tokenUsdPriceMap: {
+          ...tokenUsdPriceMap,
+          ...tokenStore.tokenUsdPriceMap
+        }
       })
     },
 
@@ -94,6 +101,14 @@ export const useTokenStore = defineStore('token', {
       tokenStore.$patch({
         tokens
       })
+    },
+
+    getTradeableTokensPriceMap() {
+      const tokenStore = useTokenStore()
+
+      tokenStore.fetchTokenUsdPriceMap(
+        tokenStore.tradeableTokens.map((token) => token.coinGeckoId)
+      )
     }
   }
 })

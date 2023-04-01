@@ -3,9 +3,9 @@ import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import {
   UiSpotLimitOrder,
-  UiDerivativeLimitOrder,
-  DerivativeOrderSide
+  UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
 
 const spotStore = useSpotStore()
@@ -74,12 +74,12 @@ function onCancelOrder() {
         <div class="flex items-center gap-1">
           <span
             :class="{
-              'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
-              'text-red-500': order.orderSide === DerivativeOrderSide.Sell
+              'text-green-500': order.orderSide === OrderSide.Buy,
+              'text-red-500': order.orderSide === OrderSide.Sell
             }"
           >
             {{
-              order.orderSide === DerivativeOrderSide.Buy
+              order.orderSide === OrderSide.Buy
                 ? $t('trade.buy')
                 : $t('trade.sell')
             }}
@@ -96,7 +96,7 @@ function onCancelOrder() {
           </span>
         </div>
 
-        <PartialsTradingFormCancelButton
+        <PartialsCommonCancelButton
           v-if="orderFillable"
           :status="status"
           sm

@@ -1,16 +1,13 @@
-import {
-  SpotOrderSide,
-  DerivativeOrderSide,
-  PointsMultiplier
-} from '@injectivelabs/sdk-ts'
+import { PointsMultiplier } from '@injectivelabs/sdk-ts'
 import {
   UiSpotOrderbook,
   UiDerivativeOrderbook,
   SubaccountBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
@@ -57,7 +54,7 @@ export interface TradeConfirmationModalData {
   amount: BigNumberInBase
   amountSymbol: string
   isReduceOnly?: boolean
-  orderType: SpotOrderSide | DerivativeOrderSide
+  orderType: OrderSide
   price?: BigNumberInBase
   priceSymbol?: string
   tradingType: TradeExecutionType
@@ -107,6 +104,12 @@ export interface Banner {
   key: NoticeBanner
   viewMore?: string
   viewMoreLink?: string
+}
+
+export type I18nMessageFunction = {
+  type: string
+  interpolate: Function
+  named: Function
 }
 
 export * from './enums'

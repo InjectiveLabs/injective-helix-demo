@@ -3,11 +3,13 @@
     <tr>
       <th class="h-8 text-left pl-3">
         <div class="flex items-center justify-start">
-          <span>{{ $t('trade.time') }}</span>
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.timeTooltip', { type: 'order' })"
-          />
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.timeTooltip', { type: 'order' })
+            }"
+          >
+            {{ $t('trade.time') }}
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 text-left">
@@ -24,11 +26,13 @@
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('trade.amount') }}</span>
-          <CommonInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <CommonHeaderTooltip
+            v-bind="{
+              tooltip: $t('trade.amount_tooltip')
+            }"
+          >
+            {{ $t('trade.amount') }}
+          </CommonHeaderTooltip>
         </div>
       </th>
       <th class="h-8 text-right">

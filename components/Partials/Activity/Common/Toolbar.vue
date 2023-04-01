@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
@@ -211,7 +211,7 @@ function handleUpdate() {
           </div>
         </AppButton>
 
-        <PartialsAccountRefreshButton
+        <PartialsActivityRefreshButton
           :status="status"
           :view="view"
           @click="handleClearFilters"

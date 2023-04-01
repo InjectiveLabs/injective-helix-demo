@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { TradeExecutionSide, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  OrderState,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   MarketType,
   UiDerivativeTrade,
@@ -16,10 +21,12 @@ import {
 import {
   PerpetualMarket,
   BinaryOptionsMarket,
-  DerivativeOrderSide,
-  ExpiryFuturesMarket,
-  DerivativeOrderState
+  ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
+import {
+  cancelBankBalanceStream,
+  cancelSubaccountBalanceStream
+} from '../account/stream'
 import {
   cancelOrder,
   batchCancelOrder,
@@ -286,14 +293,18 @@ export const useDerivativeStore = defineStore('derivative', {
       const latestOrderbook = await indexerDerivativesApi.fetchOrderbookV2(
         marketId
       )
+      const latestOrderbookIsMostRecent =
+        latestOrderbook.sequence >= currentOrderbookSequence
 
-      if (latestOrderbook.sequence >= currentOrderbookSequence) {
+      if (latestOrderbookIsMostRecent) {
         derivativeStore.orderbook = latestOrderbook
       }
 
       // handle race condition between fetch and stream
       derivativeStore.orderbook = {
-        sequence: currentOrderbookSequence,
+        sequence: latestOrderbookIsMostRecent
+          ? latestOrderbook.sequence
+          : currentOrderbookSequence,
         buys: combineOrderbookRecords({
           isBuy: true,
           currentRecords: latestOrderbook.buys,
@@ -329,7 +340,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -359,7 +370,7 @@ export const useDerivativeStore = defineStore('derivative', {
     ) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -376,7 +387,7 @@ export const useDerivativeStore = defineStore('derivative', {
           isConditional: filters?.isConditional,
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[]
+          orderTypes: filters?.orderTypes as unknown as OrderSide[]
         })
 
       derivativeStore.$patch({
@@ -388,7 +399,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -399,7 +410,7 @@ export const useDerivativeStore = defineStore('derivative', {
         await indexerDerivativesApi.fetchOrderHistory({
           subaccountId,
           isConditional: true,
-          state: DerivativeOrderState.Booked,
+          state: OrderState.Booked,
           marketIds: marketIds || derivativeStore.activeMarketIds,
           pagination: {
             limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -470,7 +481,7 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
       const derivativeStore = useDerivativeStore()
 
-      const { subaccountId } = useBankStore()
+      const { subaccountId } = useAccountStore()
       const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccountId) {
@@ -496,6 +507,8 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountStream() {
       const positionStore = usePositionStore()
 
+      cancelBankBalanceStream()
+      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrderHistoryStream()
