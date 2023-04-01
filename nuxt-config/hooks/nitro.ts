@@ -16,8 +16,7 @@ const {
   futuresRoutes,
   customStaticRoutes,
   binaryOptionsRoutes,
-  upcomingMarketsRoutes,
-  deprecatedMarketsRoutes
+  upcomingMarketsRoutes
 } = ROUTES
 
 const resolvePagePath = (page: string) => {
@@ -38,7 +37,6 @@ export default {
       ...nitroConfig.prerender.routes,
       ...binaryOptionsRoutes,
       ...customStaticRoutes,
-      ...deprecatedMarketsRoutes,
       ...futuresRoutes,
       ...spotRoutes,
       ...upcomingMarketsRoutes

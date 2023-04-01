@@ -11,7 +11,7 @@ export const streamSubaccountPositions = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
 
   if (!isUserWalletConnected || !subaccountId) {

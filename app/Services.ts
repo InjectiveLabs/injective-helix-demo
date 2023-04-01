@@ -33,6 +33,7 @@ import {
   IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
+import { TokenMetaUtilsFactory } from '@injectivelabs/token-metadata'
 import {
   NETWORK,
   CHAIN_ID,
@@ -117,6 +118,7 @@ export const tokenService = new TokenService({
   network: NETWORK,
   endpoints: ENDPOINTS
 })
+export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
 

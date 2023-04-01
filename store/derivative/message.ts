@@ -2,11 +2,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketType,
   ZERO_TO_STRING,
-  UiDerivativeMarketWithToken,
-  derivativeOrderTypeToGrpcOrderType
+  orderSideToOrderType,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  DerivativeOrderSide,
   MsgCancelDerivativeOrder,
   MsgCancelBinaryOptionsOrder,
   MsgCreateDerivativeLimitOrder,
@@ -19,6 +18,7 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { msgBroadcastClient } from '@/app/Services'
 import { UIDerivativeOrder } from '@/types'
@@ -26,7 +26,7 @@ import { UIDerivativeOrder } from '@/types'
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -62,7 +62,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
 
   const { markets } = useDerivativeStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -103,19 +103,19 @@ export const submitLimitOrder = async ({
   margin,
   market,
   quantity,
-  orderType,
+  orderSide,
   reduceOnly
 }: {
   reduceOnly: boolean
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  orderType: DerivativeOrderSide
+  orderSide: OrderSide
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -134,7 +134,7 @@ export const submitLimitOrder = async ({
   const message = messageType.fromJSON({
     subaccountId,
     injectiveAddress,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+    orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price,
       quoteDecimals: market.quoteToken.decimals
@@ -162,7 +162,7 @@ export const submitStopLimitOrder = async ({
   margin,
   market,
   quantity,
-  orderType,
+  orderSide,
   reduceOnly,
   triggerPrice
 }: {
@@ -171,12 +171,12 @@ export const submitStopLimitOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  orderType: DerivativeOrderSide
+  orderSide: OrderSide
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -219,7 +219,7 @@ export const submitStopLimitOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     triggerPrice: msgTriggerPrice,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -233,19 +233,19 @@ export const submitMarketOrder = async ({
   margin,
   market,
   quantity,
-  orderType,
+  orderSide,
   reduceOnly
 }: {
   reduceOnly: boolean
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  orderType: DerivativeOrderSide
+  orderSide: OrderSide
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -264,7 +264,7 @@ export const submitMarketOrder = async ({
   const message = messageType.fromJSON({
     subaccountId,
     injectiveAddress,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+    orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price,
       quoteDecimals: market.quoteToken.decimals
@@ -292,7 +292,7 @@ export const submitStopMarketOrder = async ({
   margin,
   market,
   quantity,
-  orderType,
+  orderSide,
   reduceOnly,
   triggerPrice
 }: {
@@ -301,12 +301,12 @@ export const submitStopMarketOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  orderType: DerivativeOrderSide
+  orderSide: OrderSide
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -349,7 +349,7 @@ export const submitStopMarketOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     triggerPrice: msgTriggerPrice,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
   await msgBroadcastClient.broadcastOld({

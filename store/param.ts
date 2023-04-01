@@ -5,8 +5,8 @@ import {
   INJ_DENOM
 } from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/ts-types'
-import { Pool } from '@injectivelabs/sdk-ts'
 import {
+  Pool,
   MinModuleParams as MintModuleParams,
   StakingModuleParams,
   InsuranceModuleParams,
@@ -16,7 +16,7 @@ import {
   PeggyModuleParams,
   GovModuleStateParams,
   DistributionModuleParams
-} from '@injectivelabs/sdk-ts/dist/client'
+} from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   bankApi,

@@ -4,7 +4,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
-import { Erc20Token, Token } from '@injectivelabs/token-metadata'
+import type { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   web3Broadcaster,
@@ -73,8 +73,15 @@ export const withdraw = async ({
   await appStore.queue()
 
   const amountToFixed = amount.toWei(token.decimals).toFixed(0)
+
+  /**
+   * If the bridge fee is 0 we set it to the lowest number for that denom
+   * this usually happens when we can't fetch the usd price of the token
+   */
   const actualBridgeFee = new BigNumberInWei(
-    bridgeFee.toWei(token.decimals).toFixed(0)
+    bridgeFee.isZero()
+      ? new BigNumberInBase(1).toWei(token.decimals).toFixed(0)
+      : bridgeFee.toWei(token.decimals).toFixed(0)
   ).toFixed()
 
   const actualAmount = new BigNumberInBase(amountToFixed)

@@ -3,8 +3,7 @@ import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
@@ -60,6 +59,9 @@ const env = {
   VITE_SENTRY_HTTP_ENDPOINT: isWebpack
     ? process.env.VITE_SENTRY_HTTP_ENDPOINT
     : import.meta.env.VITE_SENTRY_HTTP_ENDPOINT,
+  VITE_SENTRY_REST_ENDPOINT: isWebpack
+    ? process.env.VITE_SENTRY_REST_ENDPOINT
+    : import.meta.env.VITE_SENTRY_REST_ENDPOINT,
 
   VITE_NINJA_PASS_ENDPOINT: isWebpack
     ? process.env.VITE_NINJA_PASS_ENDPOINT
@@ -104,6 +106,7 @@ const env = {
   VITE_EXPLORER_API_ENDPOINT: string
   VITE_SENTRY_GRPC_ENDPOINT: string
   VITE_SENTRY_HTTP_ENDPOINT: string
+  VITE_SENTRY_REST_ENDPOINT: string
   VITE_NINJA_PASS_ENDPOINT: string
   VITE_COINGECKO_KEY: string
   VITE_AMPLITUDE_KEY: string
@@ -155,16 +158,18 @@ export const ETHEREUM_CHAIN_ID: EthereumChainId = env.VITE_ETHEREUM_CHAIN_ID
 
 const endpoints = getNetworkEndpoints(NETWORK)
 
+const restEndpointsNotProvided =
+  !env.VITE_SENTRY_REST_ENDPOINT && !env.VITE_SENTRY_HTTP_ENDPOINT
 const endpointsNotProvided =
   !endpoints &&
   (!env.VITE_INDEXER_API_ENDPOINT ||
     !env.VITE_SENTRY_GRPC_ENDPOINT ||
-    !env.VITE_SENTRY_HTTP_ENDPOINT)
+    !restEndpointsNotProvided)
 
 if (endpointsNotProvided) {
   throw new GeneralException(
     new Error(
-      'You either have to provide a correct VITE_NETWORK in the .env or provide VITE_EXCHANGE_API_ENDPOINT, VITE_SENTRY_GRPC_ENDPOINT and VITE_SENTRY_HTTP_ENDPOINT'
+      'You either have to provide a correct VITE_NETWORK in the .env or provide VITE_EXCHANGE_API_ENDPOINT, VITE_SENTRY_GRPC_ENDPOINT and VITE_SENTRY_REST_ENDPOINT'
     )
   )
 }
@@ -172,7 +177,10 @@ if (endpointsNotProvided) {
 export const ENDPOINTS = {
   ...endpoints,
   grpc: env.VITE_SENTRY_GRPC_ENDPOINT || endpoints.grpc,
-  http: env.VITE_SENTRY_HTTP_ENDPOINT || endpoints.rest,
+  rest:
+    env.VITE_SENTRY_REST_ENDPOINT ||
+    env.VITE_SENTRY_HTTP_ENDPOINT ||
+    endpoints.rest,
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
   chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
   explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer

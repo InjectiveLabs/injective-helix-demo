@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack' || isProduction
+const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 const props = defineProps({
   view: {

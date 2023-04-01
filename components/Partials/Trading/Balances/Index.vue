@@ -7,14 +7,14 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   BridgeBusEvents,
   UiMarketWithToken,
   WalletConnectStatus
 } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -37,15 +37,13 @@ const baseTradingBalance = computed(() => {
 
   return accountBalancesWithToken.value.find(
     (balance) =>
-      balance.denom.toLowerCase() ===
-      (props.market as UiSpotMarketWithToken).baseDenom.toLowerCase()
+      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
   )
 })
 
 const quoteTradingBalance = computed(() => {
   return accountBalancesWithToken.value.find(
-    (balance) =>
-      balance.denom.toLowerCase() === props.market.quoteDenom.toLowerCase()
+    (balance) => balance.denom === props.market.quoteDenom
   )
 })
 
@@ -84,33 +82,61 @@ const quoteTradingBalanceToFormat = computed(() => {
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
 })
 
+onMounted(() => {
+  fetchSubaccountBalances()
+})
+
 onWalletConnected(() => {
+  refreshSubaccountBalances()
+})
+
+function fetchSubaccountBalances() {
+  status.setLoading()
+
+  Promise.all([accountStore.fetchAccountPortfolio()])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function refreshSubaccountBalances() {
   status.setLoading()
 
   Promise.all([
-    bankStore.fetchAccountPortfolio(),
-    bankStore.streamBankBalance()
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
   ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-})
+}
 
 function handleDeposit() {
   const token = isSpot ? props.market.baseToken : props.market.quoteToken
 
   useEventBus<Token>(BridgeBusEvents.Deposit).emit(token)
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    refreshSubaccountBalances()
+  }
+)
 </script>
 
 <template>
   <AppPanel class="w-full">
     <div>
       <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-500 flex items-center">
-          {{ $t('marketPage.assets') }}
-        </p>
+        <div class="flex items-center space-x-2">
+          <p class="text-xs text-gray-500 flex items-center">
+            {{ $t('marketPage.assetsFrom') }}
+          </p>
+          <PartialsCommonSubaccountSelector />
+        </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: 'account' }"
@@ -127,7 +153,11 @@ function handleDeposit() {
           "
         >
           <div>
-            <div v-if="!hasTradingAccountBalances">
+            <div
+              v-if="
+                !hasTradingAccountBalances && accountStore.isDefaultSubaccount
+              "
+            >
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noTradingBalance') }}
               </p>

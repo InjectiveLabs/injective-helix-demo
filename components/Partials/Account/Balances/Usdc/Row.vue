@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { usdcTokenDenom } from '@/app/data/token'
 import { AccountBalance, BusEvents, Modal } from '@/types'
@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 const showConvertModalLink = computed(() => {
-  return props.balance.denom.toLowerCase() === usdcTokenDenom.USDC.toLowerCase()
+  return props.balance.denom === usdcTokenDenom.USDC
 })
 
 function handleConvert() {

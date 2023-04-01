@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   account: {
     accountOverview: 'Account Overview',
@@ -31,7 +33,7 @@ export default {
         availableBalance: 'Available',
         inUseReserved: 'In Use/Reserved',
         unrealized: 'Unrealized PnL',
-        value: 'Value ({symbol})'
+        value: ({ named }: I18nMessageFunction) => `Value (${named('symbol')})`
       },
       inUseReservedTooltip: 'Sum of in order amount and margin held',
       unrealizedTooltip:
@@ -79,6 +81,13 @@ export default {
     to: 'TO',
     injectiveBridge: 'Injective Bridge',
     wormhole: 'Wormhole (Ethereum)',
-    solana: 'Wormhole (Solana)'
+    solana: 'Wormhole (Solana)',
+
+    balanceBreakdownExplorer: 'Your full balance breakdown can be found on the',
+    explorer: 'explorer',
+    main: 'Main',
+    account: 'Subaccount',
+    accountBalance: 'Subaccount Balance',
+    staked: 'Staked'
   }
 }

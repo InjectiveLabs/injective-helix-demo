@@ -40,13 +40,15 @@ export class UiBridgeTransformer {
     transaction: UiSubaccountTransfer
   ): UiBridgeTransaction {
     const isDeposit = transaction.transferType === TransferType.Deposit
+    const isInternal = transaction.transferType === TransferType.Internal
 
     const sender = isDeposit
       ? transaction.srcSubaccountAddress
       : transaction.srcSubaccountId
-    const receiver = isDeposit
-      ? transaction.dstSubaccountId
-      : transaction.dstSubaccountAddress
+    const receiver =
+      isDeposit || isInternal
+        ? transaction.dstSubaccountId
+        : transaction.dstSubaccountAddress
 
     const explorerAccount = isDeposit
       ? getInjectiveAddress(receiver.slice(0, -24))

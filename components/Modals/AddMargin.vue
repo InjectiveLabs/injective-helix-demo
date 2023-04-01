@@ -9,7 +9,6 @@ import { UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, Modal } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const bankStore = useBankStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
@@ -17,6 +16,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { handleSubmit, resetForm } = useForm()
+const { accountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 const position = ref<UiPosition | undefined>(undefined)
@@ -40,11 +40,13 @@ const quoteBalance = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const quoteToken = market.value.quoteToken
+  const quoteBalance = accountBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
 
-  return new BigNumberInWei(
-    bankStore.balanceMap[quoteToken.denom] || '0'
-  ).toBase(quoteToken.decimals)
+  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
+    market.value.quoteToken.decimals
+  )
 })
 
 onMounted(() => {

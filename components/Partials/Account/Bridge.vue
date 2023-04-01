@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { injToken } from '@/app/data/token'
-import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
+import {
+  getBridgingNetworkBySymbol,
+  isTokenWormholeToken
+} from '@/app/data/bridge'
 import {
   Modal,
   BridgeForm,
@@ -12,7 +15,7 @@ import {
   TransferDirection
 } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
@@ -48,10 +51,14 @@ function handlePreFillCosmosWallet() {
   }
 }
 
-function handleBridgeInit() {
+function handleBridgeConfirmation() {
   nextTick(() => {
     modalStore.closeModal(Modal.Bridge)
     modalStore.openModal({ type: Modal.BridgeConfirm })
+
+    if (isTokenWormholeToken(formValues[BridgeField.Token])) {
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.EthereumWh
+    }
   })
 }
 
@@ -80,7 +87,7 @@ function handleTransfer(token: Token = injToken) {
   formValues[BridgeField.TransferDirection] =
     TransferDirection.bankToTradingAccount
 
-  if (!bankStore.hasEnoughInjForGas) {
+  if (!accountStore.hasEnoughInjForGas) {
     return modalStore.openModal({ type: Modal.InsufficientInjForGas })
   }
 
@@ -129,7 +136,7 @@ function handleWithdraw(token: Token = injToken) {
 
 <template>
   <div>
-    <ModalsBridge @bridge:init="handleBridgeInit" />
+    <ModalsBridge @bridge:confirmation="handleBridgeConfirmation" />
     <ModalsBridgeConfirm @form:submit="handleBridgeConfirmed" />
     <ModalsBridgeCompleted />
   </div>

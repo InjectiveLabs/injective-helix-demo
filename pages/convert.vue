@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { TradeField, TradeForm, UiSpotOrderbookWithSequence } from '@/types'
 
 const router = useRouter()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const exchangeStore = useExchangeStore()
 const { t } = useLang()
@@ -26,9 +27,7 @@ const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
     isBaseAmount
   })
 
-const isBuy = computed(
-  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
-)
+const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
 const amount = computed<string>(() =>
   isBuy.value
@@ -46,8 +45,8 @@ onWalletConnected(() => {
   fetchStatus.setLoading()
 
   Promise.all([
-    bankStore.streamBankBalance(),
-    bankStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.fetchAccountPortfolio(),
     exchangeStore.fetchFeeDiscountAccountInfo()
   ])
     .catch($onError)
@@ -84,9 +83,7 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  formValues[TradeField.OrderType] = isBuyState
-    ? SpotOrderSide.Buy
-    : SpotOrderSide.Sell
+  formValues[TradeField.OrderSide] = isBuyState ? OrderSide.Buy : OrderSide.Sell
 
   if (market.value) {
     formValues[TradeField.BaseDenom] = market.value.baseDenom

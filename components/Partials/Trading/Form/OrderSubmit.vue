@@ -11,7 +11,7 @@ import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, TradeField, TradeForm } from '@/types'
 
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -104,7 +104,7 @@ const disabled = computed(() => {
   const commonErrors =
     hasError.value ||
     !props.hasBaseAmount ||
-    !bankStore.hasEnoughInjForGas ||
+    !accountStore.hasEnoughInjForGas ||
     !walletStore.isUserWalletConnected
 
   if (commonErrors) {
@@ -166,7 +166,7 @@ function trackPlaceOrder() {
     slippageTolerance: actualSlippageTolerance,
     amount: formValues.value[TradeField.BaseAmount],
     leverage: formValues.value[TradeField.Leverage],
-    orderType: formValues.value[TradeField.OrderType],
+    orderType: formValues.value[TradeField.OrderSide],
     limitPrice: formValues.value[TradeField.LimitPrice],
     tradingType: formValues.value[TradeField.TradingType],
     triggerPrice: formValues.value[TradeField.TriggerPrice],

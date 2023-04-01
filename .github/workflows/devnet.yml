@@ -29,7 +29,7 @@ jobs:
       VITE_CHRONOS_API_ENDPOINT: ''
       VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_HTTP_ENDPOINT: ''
+      VITE_SENTRY_REST_ENDPOINT: ''
 
       ## Secret
       VITE_ALCHEMY_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
@@ -40,6 +40,7 @@ jobs:
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
 
+      NODE_OPTIONS: '--max_old_space_size=15360'
     steps:
       - name: Configure SSH
         run: |
@@ -59,10 +60,10 @@ jobs:
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
 
       - name: Install Dependencies
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force'
 
       - name: Remove prev build
         run: ssh devnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
 
       - name: Generating the static pages
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generateNoSourceMap'

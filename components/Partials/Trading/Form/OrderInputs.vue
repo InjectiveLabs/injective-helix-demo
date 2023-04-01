@@ -1,13 +1,8 @@
 <script lang="ts" setup>
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  DerivativeOrderSide,
-  MarketType,
-  SpotOrderSide,
-  UiPosition,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   MaxAmountOnOrderbook,
@@ -31,11 +26,6 @@ const props = defineProps({
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,
-
-  amountStep: {
-    type: String,
-    required: true
-  },
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
@@ -82,11 +72,6 @@ const props = defineProps({
     default: undefined
   },
 
-  priceStep: {
-    type: String,
-    required: true
-  },
-
   quoteAvailableBalance: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -129,37 +114,35 @@ function updateAmount({
   emit('update:amount', { amount, isBaseAmount })
 }
 
-function updateOrderType(isBuy: boolean) {
-  const orderTypeBuy = isSpot ? SpotOrderSide.Buy : DerivativeOrderSide.Buy
-  const orderTypeSell = isSpot ? SpotOrderSide.Sell : DerivativeOrderSide.Sell
-
-  formValues.value[TradeField.OrderType] = isBuy ? orderTypeSell : orderTypeBuy
+function updateOrderSide(isBuy: boolean) {
+  formValues.value[TradeField.OrderSide] = isBuy
+    ? OrderSide.Sell
+    : OrderSide.Buy
 }
 
 function onOrderbookNotionalClick(notionalAndType: OrderBookNotionalAndType) {
-  updateOrderType(notionalAndType.isBuy)
+  updateOrderSide(notionalAndType.isBuy)
 
   formValues.value[TradeField.TradingType] = TradeExecutionType.Market
-
   formValues.value[TradeField.QuoteAmount] = notionalAndType.total
 
   updateAmount({ isBaseAmount: false })
 }
 
-function onOrderbookSizeClick(quantityAndOrderType: OrderBookQuantityAndType) {
-  updateOrderType(quantityAndOrderType.isBuy)
+function onOrderbookSizeClick(quantityAndOrderSide: OrderBookQuantityAndType) {
+  updateOrderSide(quantityAndOrderSide.isBuy)
 
-  formValues.value[TradeField.BaseAmount] = quantityAndOrderType.quantity
+  formValues.value[TradeField.BaseAmount] = quantityAndOrderSide.quantity
 
   updateAmount({ isBaseAmount: true })
 }
 
-function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
+function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
   if (
     formValues.value[TradeField.TradingType] === TradeExecutionType.LimitFill ||
     formValues.value[TradeField.TradingType] === TradeExecutionType.StopLimit
   ) {
-    formValues.value[TradeField.LimitPrice] = priceAndOrderType.price
+    formValues.value[TradeField.LimitPrice] = priceAndOrderSide.price
 
     updateAmount({ isBaseAmount: true })
   }
@@ -170,20 +153,18 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
   <div>
     <PartialsTradingFormInputs
       v-bind="{
-        amountStep,
-        baseAvailableBalance,
-        feeRate,
         fees,
-        isBaseAmount,
         isBuy,
         isSpot,
-        lastTradedPrice,
         market,
-        maxAmountOnOrderbook,
-        maxReduceOnly,
-        orderTypeReduceOnly,
+        feeRate,
         position,
-        priceStep,
+        isBaseAmount,
+        maxReduceOnly,
+        lastTradedPrice,
+        orderTypeReduceOnly,
+        baseAvailableBalance,
+        maxAmountOnOrderbook,
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
@@ -191,16 +172,16 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
 
     <PartialsTradingFormInputError
       v-bind="{
-        availableBalanceError,
-        baseAvailableBalance,
-        quoteAvailableBalance,
-        initialMinMarginRequirementError,
         isBuy,
         isSpot,
+        maxReduceOnly,
         orderTypeReduceOnly,
-        markPriceThresholdError,
+        baseAvailableBalance,
         maxAmountOnOrderbook,
-        maxReduceOnly
+        availableBalanceError,
+        quoteAvailableBalance,
+        markPriceThresholdError,
+        initialMinMarginRequirementError
       }"
     />
 
@@ -212,9 +193,9 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
       "
       class="mt-6"
       v-bind="{
-        executionPrice,
         isBuy,
         market,
+        executionPrice,
         worstPriceWithSlippage,
         leverageFieldName: TradeField.Leverage
       }"
@@ -222,7 +203,6 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
 
     <PartialsTradingFormAdvancedSettings
       v-bind="{
-        formValues,
         isSpot,
         reduceOnlyDisabled: !showReduceOnly
       }"

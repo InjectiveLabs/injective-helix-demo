@@ -1,4 +1,9 @@
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
+import {
+  BridgingNetwork,
+  NetworkMeta,
+  tokenDenomsPerNetwork
+} from '@injectivelabs/sdk-ui-ts'
+import type { Token } from '@injectivelabs/token-metadata'
 import { TransferSide } from '@/types'
 
 export const networksMeta = [
@@ -169,5 +174,26 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
     return BridgingNetwork.EthereumWh
   }
 
+  if (['ARB'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.EthereumWh // TODO: Arbitrum
+  }
+
   return BridgingNetwork.Ethereum
+}
+
+export const isTokenWormholeToken = (token: Token) => {
+  const wormholeSymbols = tokenDenomsPerNetwork
+    .filter(
+      ({ network }: { network: BridgingNetwork }) =>
+        network === BridgingNetwork.Arbitrum ||
+        network === BridgingNetwork.EthereumWh ||
+        network === BridgingNetwork.Solana
+    )
+    .map((config) => config.symbols)
+
+  const isWormholeToken = wormholeSymbols?.find((symbol) =>
+    symbol.includes(token.symbol)
+  )
+
+  return !!isWormholeToken
 }

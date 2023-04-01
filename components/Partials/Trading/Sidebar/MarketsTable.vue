@@ -4,6 +4,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
 import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
+import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum SortableKeys {
   Market = 'market',
@@ -29,18 +30,22 @@ const activeType = ref('')
 const search = ref('')
 const ascending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
+const showLowVolumeMarkets = ref(false)
 
 const filteredMarkets = computed(() => {
   return props.markets
-    .filter(({ market }) => {
+    .filter(({ market, volumeInUsd }) => {
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
         favoriteMarkets: appStore.favoriteMarkets,
         activeType: activeType.value as MarketType
       })
+      const isLowVolumeMarket =
+        showLowVolumeMarkets.value ||
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-      return isPartOfType && isPartOfSearch
+      return isPartOfType && isPartOfSearch && isLowVolumeMarket
     })
     .filter((m) => m.summary)
 })
@@ -87,6 +92,7 @@ const sortedMarkets = computed(() => {
     <PartialsTradingSidebarMarketsFilter
       v-model:active-type="activeType"
       v-model:search="search"
+      v-model:show-low-volume-markets="showLowVolumeMarkets"
       class="mb-2"
     />
 

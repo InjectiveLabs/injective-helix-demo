@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { StreamStatusResponse } from '@injectivelabs/ts-types'
+import type { StreamStatusResponse } from '@injectivelabs/ts-types'
 import {
   oracleStream,
   derivativesMarketStream
@@ -85,13 +85,13 @@ export class StreamProvider {
       return
     }
 
-    this.streamManager.get(key)!.stream.cancel()
+    this.streamManager.get(key)!.stream.unsubscribe()
     this.streamManager.delete(key)
   }
 
   cancelAll() {
     this.streamManager.forEach((stream) => {
-      stream.stream.cancel()
+      stream.stream.unsubscribe()
     })
     this.streamManager = new Map()
   }

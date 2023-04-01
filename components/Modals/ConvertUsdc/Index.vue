@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const spotStore = useSpotStore()
-const bankStore = useBankStore()
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const { t } = useLang()
 const { success } = useNotifications()
@@ -32,9 +33,7 @@ const submitStatus = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.ConvertUsdc])
 
-const isBuy = computed(
-  () => formValues[TradeField.OrderType] === SpotOrderSide.Buy
-)
+const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
 const amount = computed(() =>
   isBuy.value
@@ -74,7 +73,7 @@ onMounted(() => {
   fetchStatus.setLoading()
 
   Promise.all([
-    bankStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolio(),
     spotStore.fetchOrderbook(props.market.marketId),
     spotStore.streamOrderbookUpdate(props.market.marketId)
   ]).finally(() => fetchStatus.setIdle())
@@ -87,9 +86,7 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  formValues[TradeField.OrderType] = isBuyState
-    ? SpotOrderSide.Buy
-    : SpotOrderSide.Sell
+  formValues[TradeField.OrderSide] = isBuyState ? OrderSide.Buy : OrderSide.Sell
   formValues[TradeField.BaseDenom] = props.market.baseDenom
   formValues[TradeField.QuoteDenom] = props.market.quoteDenom
 }
@@ -106,7 +103,7 @@ function handleFormSubmit() {
     })
     .then(() => {
       resetFormValues()
-      bankStore.fetchAccountPortfolio()
+      accountStore.fetchAccountPortfolio()
       success({ title: t('trade.convert.convert_success') })
     })
     .catch($onError)
@@ -130,10 +127,7 @@ function closeModal() {
     </template>
     <AppHocLoading :status="status" class="justify-center">
       <div class="mx-auto bg-gray-850 rounded-lg justify-center">
-        <div
-          v-if="market.baseToken.denom.toLowerCase() === usdcTokenDenom.USDC"
-          class="mb-6"
-        >
+        <div v-if="market.baseToken.denom === usdcTokenDenom.USDC" class="mb-6">
           {{ $t('account.whyConvert') }}
         </div>
 

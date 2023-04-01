@@ -1,7 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
-  DerivativeOrderSide,
   MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeMarketOrder,
   MsgIncreasePositionMargin,
@@ -9,11 +8,11 @@ import {
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import {
-  derivativeOrderTypeToGrpcOrderType,
+  UiPosition,
   MarketType,
+  orderSideToOrderType,
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithToken,
-  UiPosition
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
@@ -28,7 +27,7 @@ export const closePosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -40,9 +39,7 @@ export const closePosition = async ({
   await validate()
 
   const orderType =
-    position.direction === TradeDirection.Long
-      ? DerivativeOrderSide.Sell
-      : DerivativeOrderSide.Buy
+    position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
   const messageType =
@@ -58,7 +55,7 @@ export const closePosition = async ({
     feeRecipient: FEE_RECIPIENT,
     price: liquidationPrice.toFixed(),
     subaccountId,
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+    orderType: orderSideToOrderType(orderType),
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     })
@@ -74,7 +71,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { markets } = useDerivativeStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
@@ -100,8 +97,8 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
           : MsgCreateDerivativeMarketOrder
       const orderType =
         position.direction === TradeDirection.Long
-          ? DerivativeOrderSide.Sell
-          : DerivativeOrderSide.Buy
+          ? OrderSide.Sell
+          : OrderSide.Buy
       const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
       return {
@@ -116,7 +113,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
         price: string
         marketId: string
         quantity: string
-        orderType: DerivativeOrderSide
+        orderType: OrderSide
         messageType:
           | typeof MsgCreateBinaryOptionsMarketOrder
           | typeof MsgCreateDerivativeMarketOrder
@@ -126,7 +123,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     price: string
     marketId: string
     quantity: string
-    orderType: DerivativeOrderSide
+    orderType: OrderSide
     messageType:
       | typeof MsgCreateBinaryOptionsMarketOrder
       | typeof MsgCreateDerivativeMarketOrder
@@ -142,7 +139,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
       marketId: position.marketId,
       feeRecipient: FEE_RECIPIENT,
       subaccountId,
-      orderType: derivativeOrderTypeToGrpcOrderType(position.orderType)
+      orderType: orderSideToOrderType(position.orderType)
     })
   )
 
@@ -165,7 +162,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   const appStore = useAppStore()
   const positionStore = usePositionStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
@@ -179,9 +176,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   await validate()
 
   const orderType =
-    position.direction === TradeDirection.Long
-      ? DerivativeOrderSide.Sell
-      : DerivativeOrderSide.Buy
+    position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
   /*
@@ -195,7 +190,7 @@ export const closePositionAndReduceOnlyOrders = async ({
         })),
         derivativeOrdersToCreate: [
           {
-            orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+            orderType: orderSideToOrderType(orderType),
             feeRecipient: FEE_RECIPIENT,
             margin: '0',
             triggerPrice: '0',
@@ -224,7 +219,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     }),
-    orderType: derivativeOrderTypeToGrpcOrderType(orderType)
+    orderType: orderSideToOrderType(orderType)
   })
 
   await msgBroadcastClient.broadcastOld({
@@ -244,7 +239,7 @@ export const addMarginToPosition = async ({
 }) => {
   const appStore = useAppStore()
 
-  const { subaccountId } = useBankStore()
+  const { subaccountId } = useAccountStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
 
