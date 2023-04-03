@@ -9,6 +9,7 @@ import {
   UiMarketWithToken,
   TradeExecutionType
 } from '@/types'
+import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -66,9 +67,11 @@ const orderbookQuantity = computed(() =>
 
 const baseTokenSymbolFormatted = computed(() => {
   const symbol = props.market.baseToken.symbol.toUpperCase()
-  if (symbol.length > 6) {
-    return `${symbol.slice(0, 3)}...`
+
+  if (symbol.length > MAX_SYMBOL_LENGTH) {
+    return `${symbol.slice(0, SYMBOL_DISPLAY_LENGTH)}...`
   }
+
   return props.market.baseToken.symbol
 })
 
