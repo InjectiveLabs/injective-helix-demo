@@ -127,7 +127,7 @@ function handleWithdrawClick() {
           class="text-white font-bold text-2xl md:text-3xl"
         >
           &dollar;
-          <span class="font-mono">{{ abbreviatedTotalBalanceToString }}</span>
+          <span class="font-sans">{{ abbreviatedTotalBalanceToString }}</span>
           USD
         </span>
         <span v-else class="text-white font-bold text-2xl md:text-3xl">
@@ -136,7 +136,7 @@ function handleWithdrawClick() {
 
         <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
           &thickapprox;
-          <span class="font-mono">{{ accountTotalBalanceInBtcToString }}</span>
+          <span class="font-sans">{{ accountTotalBalanceInBtcToString }}</span>
           BTC
         </span>
         <span v-else class="text-gray-450 md:text-lg">

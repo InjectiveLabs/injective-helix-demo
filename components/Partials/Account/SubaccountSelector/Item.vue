@@ -88,7 +88,7 @@ function handleClick() {
         />
         -->
       </h3>
-      <p class="font-mono text-xl font-semibold text-white">
+      <p class="font-sans text-xl font-semibold text-white">
         $
         {{
           hideBalances
