@@ -67,7 +67,7 @@ export function useBalance() {
             const subaccountBalances =
               accountStore.subaccountBalancesMap[subaccountId]
 
-            const subaccountBalance = subaccountBalances.find(
+            const subaccountBalance = (subaccountBalances || []).find(
               (balance) => balance.denom === denom
             )
             const subaccountAvailableBalance =
@@ -121,10 +121,6 @@ export function useBalance() {
     )
   })
 
-  /**
-   * Unrealized PnL and positions margin are not
-   * included by default
-   */
   const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
       const isDefaultTradingAccount =
@@ -137,7 +133,7 @@ export function useBalance() {
       const subaccountBalances =
         accountStore.subaccountBalancesMap[accountStore.subaccountId]
 
-      const subaccountBalance = subaccountBalances.find(
+      const subaccountBalance = (subaccountBalances || []).find(
         (balance) => balance.denom === denom
       )
       const subaccountAvailableBalance =

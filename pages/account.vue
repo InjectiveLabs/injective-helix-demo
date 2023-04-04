@@ -6,9 +6,10 @@ definePageMeta({
 })
 
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -20,6 +21,7 @@ onMounted(() => {
   Promise.all([
     spotStore.init(),
     derivativeStore.init(),
+    exchangeStore.initFeeDiscounts(),
     accountStore.streamBankBalance(),
     accountStore.fetchAccountPortfolio(),
     accountStore.streamSubaccountBalance()

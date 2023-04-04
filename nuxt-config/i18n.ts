@@ -3,14 +3,12 @@ import en from '../locales/en'
 
 export default {
   i18n: {
-    localeDir: 'locales',
+    locales: ['en'],
     vueI18n: {
-      runtimeOnly: false,
-      globalInjection: true,
       locale: 'en',
       fallbackLocale: 'en',
       availableLocales: ['en'],
       messages: { en }
     }
-  } as NuxtI18nOptions
-}
+  }
+} as NuxtI18nOptions

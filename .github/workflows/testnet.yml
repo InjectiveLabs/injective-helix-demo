@@ -59,11 +59,11 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install Dependencies
-        run: yarn install
-
       - name: Remove prev build
         run: yarn clean-up
+
+      - name: Install Dependencies
+        run: yarn install --force
 
       - name: Generating the static pages
         run: yarn generateNoSourceMap

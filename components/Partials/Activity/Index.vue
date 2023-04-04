@@ -4,11 +4,10 @@ import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '@/app/utils/constants'
 import { ActivityTab, ActivityView, ActivityForm, ActivityField } from '@/types'
 
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
-const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { resetForm, setFieldValue } = useForm<ActivityForm>({
   keepValuesOnUnmount: true
@@ -65,7 +64,6 @@ onUnmounted(() => {
   activityStore.$reset()
   derivativeStore.resetSubaccount()
   spotStore.resetSubaccount()
-  accountStore.resetToDefaultSubaccount()
 })
 
 function fetchData() {

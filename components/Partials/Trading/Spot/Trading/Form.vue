@@ -10,7 +10,6 @@ import {
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 
-const accountStore = useAccountStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -43,6 +42,8 @@ const {
 
 const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
+const { accountBalancesWithToken } = useBalance()
+
 const isBuy = computed(() => formValues[TradeField.OrderSide] === OrderSide.Buy)
 
 const orderTypeToSubmit = computed(() => {
@@ -66,27 +67,24 @@ const orderTypeToSubmit = computed(() => {
 })
 
 const baseAvailableBalance = computed(() => {
-  const balance = accountStore.balanceMap[props.market.baseDenom] || '0'
-
-  const baseAvailableBalance = new BigNumberInWei(balance).toBase(
-    props.market.baseToken.decimals
+  const baseBalance = accountBalancesWithToken.value.find(
+    (balance) =>
+      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
   )
 
-  return baseAvailableBalance
+  return new BigNumberInWei(baseBalance?.availableMargin || '0').toBase(
+    props.market.baseToken.decimals
+  )
 })
 
 const quoteAvailableBalance = computed(() => {
-  const balance = accountStore.balanceMap[props.market.quoteDenom] || '0'
-
-  const quoteAvailableBalance = new BigNumberInWei(balance).toBase(
-    props.market.quoteToken.decimals
+  const quoteBalance = accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
   )
 
-  if (quoteAvailableBalance.isNaN()) {
-    return ZERO_IN_BASE
-  }
-
-  return quoteAvailableBalance
+  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
+    props.market.quoteToken.decimals
+  )
 })
 
 const feeRate = computed(() => {

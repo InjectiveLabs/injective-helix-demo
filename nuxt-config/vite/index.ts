@@ -18,8 +18,10 @@ export default defineConfig({
     rollupOptions: {
       cache: false,
       output: {
-        manualChunks: (_id: string) => {
-          //
+        manualChunks: (id: string) => {
+          if (id.includes('@keplr-wallet')) {
+            return 'keplr'
+          }
         }
       }
     }
@@ -27,14 +29,12 @@ export default defineConfig({
 
   server: {
     fs: {
-      // Allow serving files from one level up to the project root
       allow: ['..']
     }
   },
 
   optimizeDeps: {
-    exclude: ['fsevents'],
-    include: ['@keplr-wallet/cosmos', '@keplr-wallet/unit']
+    exclude: ['fsevents']
   }
 }) as UserConfig
 

@@ -71,3 +71,6 @@ export const BINANCE_DEPOSIT_ADDRESSES = [
 ]
 
 export const TRADE_MAX_SUBACCOUNT_ARRAY_SIZE = 100
+
+export const MAX_SYMBOL_LENGTH = 6
+export const SYMBOL_DISPLAY_LENGTH = 3

@@ -2,7 +2,7 @@
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~~/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
@@ -49,8 +49,10 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
     <td>
       <div class="flex justify-end">
         <div class="text-right">
-          <p>{{ $t('account.staked') }}:</p>
-          <span class="font-mono"> {{ stakedAmountToFormat }} </span>
+          <p class="text-gray-350 text-xs normal-case font-bold">
+            {{ $t('account.staked') }}:
+          </p>
+          <span class="font-mono text-sm"> {{ stakedAmountToFormat }} </span>
         </div>
       </div>
     </td>

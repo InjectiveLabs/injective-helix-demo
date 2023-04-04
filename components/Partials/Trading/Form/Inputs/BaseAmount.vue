@@ -9,6 +9,7 @@ import {
   UiMarketWithToken,
   TradeExecutionType
 } from '@/types'
+import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -63,6 +64,16 @@ const orderbookQuantity = computed(() =>
     )
   }, ZERO_IN_BASE)
 )
+
+const baseTokenSymbolFormatted = computed(() => {
+  const symbol = props.market.baseToken.symbol.toUpperCase()
+
+  if (symbol.length > MAX_SYMBOL_LENGTH) {
+    return `${symbol.slice(0, SYMBOL_DISPLAY_LENGTH)}...`
+  }
+
+  return props.market.baseToken.symbol
+})
 
 const { value: baseAmount, setValue: setBaseAmountValue } = useStringField({
   name: props.baseAmountFieldName,
@@ -145,7 +156,7 @@ function onBaseAmountBlur(baseAmount = '') {
       </template>
 
       <template #addon>
-        <span>{{ market.baseToken.symbol.toUpperCase() }}</span>
+        <span>{{ baseTokenSymbolFormatted }}</span>
       </template>
     </AppInputNumeric>
   </div>

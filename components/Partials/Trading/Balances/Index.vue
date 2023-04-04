@@ -82,24 +82,49 @@ const quoteTradingBalanceToFormat = computed(() => {
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
 })
 
+onMounted(() => {
+  fetchSubaccountBalances()
+})
+
 onWalletConnected(() => {
+  refreshSubaccountBalances()
+})
+
+function fetchSubaccountBalances() {
+  status.setLoading()
+
+  Promise.all([accountStore.fetchAccountPortfolio()])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function refreshSubaccountBalances() {
   status.setLoading()
 
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
-    accountStore.streamBankBalance()
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
   ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-})
+}
 
 function handleDeposit() {
   const token = isSpot ? props.market.baseToken : props.market.quoteToken
 
   useEventBus<Token>(BridgeBusEvents.Deposit).emit(token)
 }
+
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    refreshSubaccountBalances()
+  }
+)
 </script>
 
 <template>
@@ -128,7 +153,11 @@ function handleDeposit() {
           "
         >
           <div>
-            <div v-if="!hasTradingAccountBalances">
+            <div
+              v-if="
+                !hasTradingAccountBalances && accountStore.isDefaultSubaccount
+              "
+            >
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
