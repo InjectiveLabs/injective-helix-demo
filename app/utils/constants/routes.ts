@@ -41,6 +41,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_TESTNET) {
     perpetuals.push(
+      'xau-usdt-perp',
       'gbp-usdt-perp',
       'jpy-usdt-perp',
       'eur-usdt-perp',
