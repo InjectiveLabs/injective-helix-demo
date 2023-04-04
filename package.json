@@ -37,17 +37,17 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.9.3",
-    "@injectivelabs/exceptions": "1.10.1",
-    "@injectivelabs/networks": "1.10.1",
+    "@injectivelabs/exceptions": "1.10.2",
+    "@injectivelabs/networks": "1.10.3",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
-    "@injectivelabs/sdk-ts": "1.10.24",
-    "@injectivelabs/sdk-ui-ts": "1.10.29",
-    "@injectivelabs/token-metadata": "1.10.10",
-    "@injectivelabs/token-utils": "1.10.4",
-    "@injectivelabs/ts-types": "1.10.0",
+    "@injectivelabs/sdk-ts": "1.10.28",
+    "@injectivelabs/sdk-ui-ts": "1.10.35",
+    "@injectivelabs/token-metadata": "1.10.12",
+    "@injectivelabs/token-utils": "1.10.5",
+    "@injectivelabs/ts-types": "1.10.1",
     "@injectivelabs/ui-shared": "^1.10.1",
-    "@injectivelabs/utils": "1.10.1",
-    "@injectivelabs/wallet-ts": "1.10.26",
+    "@injectivelabs/utils": "1.10.2",
+    "@injectivelabs/wallet-ts": "1.10.31",
     "@metamask/detect-provider": "2.0.0",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-gtag": "^1.0.4",
@@ -120,6 +120,9 @@
     "vue-tsc": "1.2.0"
   },
   "resolutions": {
+    "**/libsodium": "npm:@bangjelkoski/noop",
+    "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
+    "@ethereumjs/tx": "^4.1.1",
     "rollup": "3.20.2"
   }
 }
