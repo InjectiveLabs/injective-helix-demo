@@ -41,7 +41,7 @@
     "@injectivelabs/networks": "1.10.3",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
     "@injectivelabs/sdk-ts": "1.10.29",
-    "@injectivelabs/sdk-ui-ts": "1.10.36",
+    "@injectivelabs/sdk-ui-ts": "1.10.37",
     "@injectivelabs/token-metadata": "1.10.12",
     "@injectivelabs/token-utils": "1.10.5",
     "@injectivelabs/ts-types": "1.10.1",
