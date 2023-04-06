@@ -27,9 +27,5 @@ export const walletStrategy = new WalletStrategy({
     wsRpcUrl: alchemyWsRpcEndpoint,
     rpcUrl: alchemyRpcEndpoint
   },
-  disabledWallets: [
-    Wallet.WalletConnect,
-    Wallet.Cosmostation,
-    Wallet.CosmostationEth
-  ]
+  disabledWallets: [Wallet.WalletConnect, Wallet.CosmostationEth]
 })
