@@ -49,7 +49,7 @@ function toggleUsdcBalances() {
 <template>
   <tbody>
     <template v-if="hasPeggyUsdcBalance">
-      <PartialsAccountBalancesUsdcHeader
+      <PartialsAccountBalancesAggregatedHeader
         v-bind="{
           ...$attrs,
           hideBalances,
@@ -60,7 +60,7 @@ function toggleUsdcBalances() {
       />
 
       <template v-if="showUsdcBalances">
-        <PartialsAccountBalancesUsdcRow
+        <PartialsAccountBalancesAggregatedRow
           v-for="(usdcBalance, index) in usdcBalances"
           :key="usdcBalance.token.denom"
           :class="{

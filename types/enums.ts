@@ -313,8 +313,8 @@ export enum ActivityTab {
 }
 
 export enum AggregatedBalanceType {
-  INJ = 'inj',
-  USDC = 'usdc'
+  Inj = 'inj',
+  Aggregated = 'aggregated'
 }
 
 export enum NoticeBanner {
