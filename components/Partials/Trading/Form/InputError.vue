@@ -2,13 +2,12 @@
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { MaxAmountOnOrderbook, TradeField, TradeForm } from '@/types'
+import { MaxAmountOnOrderbook } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
-const formValues = useFormValues<TradeForm>()
 const formErrors = useFormErrors()
 
-const props = defineProps({
+defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
   orderTypeReduceOnly: Boolean,
