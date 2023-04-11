@@ -98,7 +98,7 @@
     "@vue/test-utils": "^2.3.0",
     "autoprefixer": "latest",
     "dotenv-webpack": "^8.0.1",
-    "eslint": "latest",
+    "eslint": "8.37.0",
     "husky": "latest",
     "jest": "^29.4.3",
     "lint-staged": "13.2.0",

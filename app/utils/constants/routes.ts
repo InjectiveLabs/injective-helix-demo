@@ -4,7 +4,6 @@ export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: Boolean = isDevnet(network)
   const IS_TESTNET: Boolean = isTestnet(network)
   const IS_STAGING = env === 'staging'
-  const IS_MAINNET = (!IS_DEVNET && !IS_TESTNET) || env === 'mainnet'
 
   const spot = [
     'inj-usdt',
@@ -91,12 +90,12 @@ export const getRoutes = (network: Network, env: string) => {
   // Market we want to load to the app state but we don't want to show on the UI
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
-  if ((IS_MAINNET && IS_STAGING) || IS_DEVNET) {
+  if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'wmatic-usdcet')
   }
 
   if (IS_DEVNET) {
-    spot.push('proj-usdt')
+    spot.push(...usdcConversionModalMarkets, 'proj-usdt')
   }
 
   return {
