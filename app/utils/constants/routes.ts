@@ -1,8 +1,8 @@
 import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
 
 export const getRoutes = (network: Network, env: string) => {
-  const IS_DEVNET: Boolean = isDevnet(network)
-  const IS_TESTNET: Boolean = isTestnet(network)
+  const IS_DEVNET: boolean = isDevnet(network)
+  const IS_TESTNET: boolean = isTestnet(network)
   const IS_STAGING = env === 'staging'
 
   const spot = [
@@ -65,16 +65,6 @@ export const getRoutes = (network: Network, env: string) => {
     'leaderboard'
   ]
 
-  const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
-    (s) => `/spot/${s}`
-  )
-
-  const futures = [...perpetuals, ...expiryFutures]
-  const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
-  const binaryOptionsRoutes =
-    binaryOptions.map((s) => `/binary-options/${s}`) || []
-
   const customStaticRoutes: string[] = ['/']
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
@@ -97,6 +87,15 @@ export const getRoutes = (network: Network, env: string) => {
   if (IS_DEVNET) {
     spot.push(...usdcConversionModalMarkets, 'proj-usdt')
   }
+
+  const spotRoutes = spot.map((s) => `/spot/${s}`) || []
+  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
+    (s) => `/spot/${s}`
+  )
+  const futures = [...perpetuals, ...expiryFutures]
+  const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
+  const binaryOptionsRoutes =
+    binaryOptions.map((s) => `/binary-options/${s}`) || []
 
   return {
     MARKETS_SLUGS: {
