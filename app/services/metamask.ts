@@ -49,7 +49,10 @@ export const validateMetamask = async (
     )
   }
 
-  const metamaskChainId = parseInt(await walletStrategy.getChainId(), 16)
+  const metamaskChainId = parseInt(
+    await walletStrategy.getEthereumChainId(),
+    16
+  )
   const metamaskChainIdDoesntMatchTheActiveChainId = chainId !== metamaskChainId
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {

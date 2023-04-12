@@ -1,6 +1,12 @@
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { Network } from '@injectivelabs/networks'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
+import { UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -46,3 +52,17 @@ export const getHubUrl = (): string => {
 
 export const getSubaccountIndex = (subaccount: string) =>
   parseInt(subaccount.slice(42))
+
+export function getMinTickSize(isSpot: boolean, market: UiMarketWithToken) {
+  if (!isSpot) {
+    return market.minQuantityTickSize
+  }
+
+  const spotMarket = market as UiSpotMarketWithToken
+
+  return market.quoteToken && spotMarket.baseToken
+    ? new BigNumberInWei(market.minPriceTickSize)
+        .toBase(market.quoteToken.decimals - spotMarket.baseToken.decimals)
+        .toFixed()
+    : ''
+}
