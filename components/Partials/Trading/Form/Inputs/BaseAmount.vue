@@ -10,7 +10,7 @@ import {
   TradeExecutionType
 } from '@/types'
 import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
-import { getMinTickSize } from '@/app/utils/helpers'
+import { getMinQuantityTickSize } from '@/app/utils/helpers'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -81,7 +81,7 @@ const { value: baseAmount, setValue: setBaseAmountValue } = useStringField({
   rule: '',
   dynamicRule: computed(() => {
     const rules = [
-      `minBaseAmount:${getMinTickSize(props.isSpot, props.market)}`
+      `minBaseAmount:${getMinQuantityTickSize(props.isSpot, props.market)}`
     ]
 
     if (props.market.quantityTensMultiplier >= 1) {
