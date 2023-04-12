@@ -44,12 +44,14 @@ export const streamSubaccountBalance = () => {
     accountAddress: walletStore.injectiveAddress,
     subaccountId: accountStore.subaccountId,
     callback: (payload) => {
-      const accountBalancesExcludingDenom = accountStore.subaccountBalancesMap[
-        accountStore.subaccountId
-      ].filter((balance: SubaccountBalance) => balance.denom !== payload.denom)
-      const accountBalance = accountStore.subaccountBalancesMap[
-        accountStore.subaccountId
-      ].find((balance: SubaccountBalance) => balance.denom === payload.denom)
+      const subaccountBalancesMapOrBlank =
+        accountStore.subaccountBalancesMap[accountStore.subaccountId] || []
+      const accountBalancesExcludingDenom = subaccountBalancesMapOrBlank.filter(
+        (balance: SubaccountBalance) => balance.denom !== payload.denom
+      )
+      const accountBalance = subaccountBalancesMapOrBlank.find(
+        (balance: SubaccountBalance) => balance.denom === payload.denom
+      )
 
       const subaccountBalancesMap = {
         [accountStore.subaccountId]: [
