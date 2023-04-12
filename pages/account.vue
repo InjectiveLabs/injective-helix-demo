@@ -22,12 +22,17 @@ onMounted(() => {
     spotStore.init(),
     derivativeStore.init(),
     exchangeStore.initFeeDiscounts(),
-    accountStore.streamBankBalance(),
-    accountStore.fetchAccountPortfolio(),
-    accountStore.streamSubaccountBalance()
+    accountStore.fetchAccountPortfolio()
   ])
+    .then(() => {
+      Promise.all([
+        accountStore.streamBankBalance(),
+        accountStore.streamSubaccountBalance()
+      ])
+        .catch($onError)
+        .finally(() => status.setIdle())
+    })
     .catch($onError)
-    .finally(() => status.setIdle())
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)
