@@ -2,27 +2,27 @@
 # yarn lockfile v1
 
 
-"@amplitude/analytics-browser@^1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.9.3.tgz#2dfd7583d2cdb1d7f1139bef99f86ee0b5dca001"
-  integrity sha512-UVk6i8wCyu0FroOs0SGWimTS98ZiYNxKK3P5ic/FMM0A9IAkJK8eqnPOOCGVr4GvIupqhSfCEl8bzofIA4H5sQ==
+"@amplitude/analytics-browser@^1.9.4":
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.9.4.tgz#f2dc8df6953c0935ebcc0b4c52cc22ea7bdc3eb5"
+  integrity sha512-r0Jp+WGD4SEdK1BRnvL0OOkUQXOGn8K2LodXCwttcEA285pUX8U8kfSkJltN49PZSR9TWD7HehOiXvLhxNujPA==
   dependencies:
-    "@amplitude/analytics-client-common" "^0.6.2"
-    "@amplitude/analytics-core" "^0.12.1"
-    "@amplitude/analytics-types" "^0.17.1"
-    "@amplitude/plugin-page-view-tracking-browser" "^0.6.3"
-    "@amplitude/plugin-web-attribution-browser" "^0.6.3"
+    "@amplitude/analytics-client-common" "^0.6.3"
+    "@amplitude/analytics-core" "^0.13.0"
+    "@amplitude/analytics-types" "^0.18.0"
+    "@amplitude/plugin-page-view-tracking-browser" "^0.7.0"
+    "@amplitude/plugin-web-attribution-browser" "^0.6.4"
     "@amplitude/ua-parser-js" "^0.7.31"
     tslib "^2.4.1"
 
-"@amplitude/analytics-client-common@^0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-client-common/-/analytics-client-common-0.6.2.tgz#7ef68e38cac6c6d517bedb50404330166f8c945d"
-  integrity sha512-Td6CnAWizjSFxSteo2q1X19LgBTqUgAhJc7ek+vzAi+o4Xl7RaKcbq3bB5QNztA4y5hFmH0OJ93Lfen65N/3Jw==
+"@amplitude/analytics-client-common@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-client-common/-/analytics-client-common-0.6.3.tgz#c85b82c24b1a0e57f8d307524f1f66b2d18009ba"
+  integrity sha512-tpRDPbsRywlAnFOEngVn7+IBkOY9K4seZpzoRMcPTYFCUxFO95VKrBmKbB61vRgAPZnXXXYw7Q7hiFmBf3saUw==
   dependencies:
     "@amplitude/analytics-connector" "^1.4.5"
-    "@amplitude/analytics-core" "^0.12.1"
-    "@amplitude/analytics-types" "^0.17.1"
+    "@amplitude/analytics-core" "^0.13.0"
+    "@amplitude/analytics-types" "^0.18.0"
     tslib "^2.4.1"
 
 "@amplitude/analytics-connector@^1.4.5":
@@ -32,35 +32,35 @@
   dependencies:
     "@amplitude/ua-parser-js" "0.7.31"
 
-"@amplitude/analytics-core@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.12.1.tgz#41ced14804cf3bece0c269d9e17d462ce688e181"
-  integrity sha512-ATaXV6oJVsoqxYiyHTmBmgwauDwj0DjZ4HAR5jtw6bMU+OI8QTo+acnoLT/2Q9sw9gfl84fuKd8NBV7NuOsQ+Q==
+"@amplitude/analytics-core@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.13.0.tgz#dbfdd8e053b85b76319043965943eabc1d8e6e8d"
+  integrity sha512-L2fdqMHF1cSllJuiji8Bd42/4gCxcsut3Dvcbsm1cQg2yPdpqevrmfbuaSMT/8p1zfPO3OrjUhys51rHcPlFmw==
   dependencies:
-    "@amplitude/analytics-types" "^0.17.1"
+    "@amplitude/analytics-types" "^0.18.0"
     tslib "^2.4.1"
 
-"@amplitude/analytics-types@^0.17.1":
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.17.1.tgz#2bba8d5863b774309b1b58963781492bd8ffc801"
-  integrity sha512-5DrnjWbbG50v1KuRG90g05yEAd80OngxwyjG8ejMVY2/lXmPjwH3xCBrHRnXlnwpaMHKh/RGEtvM5+JAYZ39rA==
+"@amplitude/analytics-types@^0.18.0":
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.18.0.tgz#98f4460f1ce28cf5a02968c78024461bfa3aa93f"
+  integrity sha512-y4iWokq0BYBgi4B78Oi4Kjut4cQJlG4wE8vGQO9VWcEpPTwkSRKD4RkeNPPFMDo38J91ow+y9nZOV49lbwQllQ==
 
-"@amplitude/plugin-page-view-tracking-browser@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@amplitude/plugin-page-view-tracking-browser/-/plugin-page-view-tracking-browser-0.6.3.tgz#7ee1c7b890c60c6de5fa6fb217543c99f189f509"
-  integrity sha512-c7vfoNYb7JFga6NvKuf1OAcwHfaXXQm80YX2QkrjyOROd+yt8/kY6tYgaNAcD4PZD8bWkVc2UjIxRYGmmfwuEw==
+"@amplitude/plugin-page-view-tracking-browser@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/plugin-page-view-tracking-browser/-/plugin-page-view-tracking-browser-0.7.0.tgz#39653e11c6bebfd3000350e616ad97c8b03ccd14"
+  integrity sha512-K3rorUu8FJ8p8PfbTmXonTpwUrpVlssAbS1xai2P2IRLsWJ6lJa1tFEpzfRFn1DILykb7iwVPLMxaEZGMbf38Q==
   dependencies:
-    "@amplitude/analytics-client-common" "^0.6.2"
-    "@amplitude/analytics-types" "^0.17.1"
+    "@amplitude/analytics-client-common" "^0.6.3"
+    "@amplitude/analytics-types" "^0.18.0"
     tslib "^2.4.1"
 
-"@amplitude/plugin-web-attribution-browser@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@amplitude/plugin-web-attribution-browser/-/plugin-web-attribution-browser-0.6.3.tgz#bfc37a4159cd171d022795c3c887d93319c62d7a"
-  integrity sha512-csH0LOpBut3OQDUmt952Maw9+HWyy2dmDPiWXnYQemClP+ZEQ0kSTM8asNqVyPdAsEmSp0JMFIDS5tuQJeKOnQ==
+"@amplitude/plugin-web-attribution-browser@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@amplitude/plugin-web-attribution-browser/-/plugin-web-attribution-browser-0.6.4.tgz#42ebc15eb4d3dbcc8fa1816693919d734115b80c"
+  integrity sha512-pZghO6FnC5mtA5xbhyP6iZkL30oGXMQe2N6qhL8kuHcP848Xdw+U7CaJ/E4gQ0vuohplZR0fnSFXPhy3xMJiGQ==
   dependencies:
-    "@amplitude/analytics-client-common" "^0.6.2"
-    "@amplitude/analytics-types" "^0.17.1"
+    "@amplitude/analytics-client-common" "^0.6.3"
+    "@amplitude/analytics-types" "^0.18.0"
     tslib "^2.4.1"
 
 "@amplitude/ua-parser-js@0.7.31", "@amplitude/ua-parser-js@^0.7.31":
@@ -1078,15 +1078,30 @@
   resolved "https://registry.yarnpkg.com/@csstools/cascade-layer-name-parser/-/cascade-layer-name-parser-1.0.1.tgz#5957adeb71be8159e543d37a9c48e124dcd6c32e"
   integrity sha512-SAAi5DpgJJWkfTvWSaqkgyIsTawa83hMwKrktkj6ra2h+q6ZN57vOGZ6ySHq6RSo+CbP64fA3aPChPBRDDUgtw==
 
+"@csstools/cascade-layer-name-parser@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@csstools/cascade-layer-name-parser/-/cascade-layer-name-parser-1.0.2.tgz#35253f57c6c83d684fe396672486c644e6a84127"
+  integrity sha512-xm7Mgwej/wBfLoK0K5LfntmPJzoULayl1XZY9JYgQgT29JiqNw++sLnx95u5y9zCihblzkyaRYJrsRMhIBzRdg==
+
 "@csstools/css-parser-algorithms@^2.0.0", "@csstools/css-parser-algorithms@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-2.1.0.tgz#c0a605b0218790faeb5911f240964891c6031501"
   integrity sha512-KP8TicdXpUyeB1NMlbHud/1l39xvLGvqNFWMpG4qC6H1zs9SadGUHe5SO92n/659sDW9aGDvm9AMru0DZkN1Bw==
 
+"@csstools/css-parser-algorithms@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@csstools/css-parser-algorithms/-/css-parser-algorithms-2.1.1.tgz#7b62e6412a468a2d1096ed267edd1e4a7fd4a119"
+  integrity sha512-viRnRh02AgO4mwIQb2xQNJju0i+Fh9roNgmbR5xEuG7J3TGgxjnE95HnBLgsFJOJOksvcfxOUCgODcft6Y07cA==
+
 "@csstools/css-tokenizer@^2.0.0", "@csstools/css-tokenizer@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@csstools/css-tokenizer/-/css-tokenizer-2.1.0.tgz#fee4de3d444db3ce9007f3af6474af8ba3e4b930"
   integrity sha512-dtqFyoJBHUxGi9zPZdpCKP1xk8tq6KPHJ/NY4qWXiYo6IcSGwzk3L8x2XzZbbyOyBs9xQARoGveU2AsgLj6D2A==
+
+"@csstools/css-tokenizer@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@csstools/css-tokenizer/-/css-tokenizer-2.1.1.tgz#07ae11a0a06365d7ec686549db7b729bc036528e"
+  integrity sha512-GbrTj2Z8MCTUv+52GE0RbFGM527xuXZ0Xa5g0Z+YN573uveS4G0qi6WNOMyz3yrFM/jaILTTwJ0+umx81EzqfA==
 
 "@csstools/media-query-list-parser@^2.0.1":
   version "2.0.2"
@@ -1921,15 +1936,15 @@
     "@bugsnag/source-maps" "^2.3.1"
     "@nuxt/kit" "^3.0.0-rc.13"
 
-"@injectivelabs/prettier-config@latest":
-  version "1.0.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.1-alpha.0.tgz#b3e7abf4b5da50aa8b58d05d01c5b105949bed2a"
-  integrity sha512-86GWxldPJfBQUIhW0dWFWIPo/Qw703KWu5ag0AHlBRZbxi+vKSxxRXXcP5AUB9iuVcFNikdYptowdOvdk7Qh2w==
+"@injectivelabs/prettier-config@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.1.tgz#a727f4ff5bc14fd7a49183de9306b171716f0835"
+  integrity sha512-46ljXMPP+NLX64BrfSP4GyZZQz89bB59Pnsj0lSyKxOYR/zeH6CIqPVrN27BzmZ+jBXl/XLTp6kr/iCfy2CEEg==
 
-"@injectivelabs/sdk-ts@1.10.42", "@injectivelabs/sdk-ts@^1.10.42":
-  version "1.10.42"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.42.tgz#9dd921eb5f401d9e4ac1dec4ab33de34de3f0b48"
-  integrity sha512-Q0jUYNr8ZitlTeSbWOdkLs9MRPTVr+0TFKFKYiwx+Bvtcz3b0f1SEZVSXHztKvpFz7f0jML30B8JSugBxqYp0A==
+"@injectivelabs/sdk-ts@1.10.44", "@injectivelabs/sdk-ts@^1.10.44":
+  version "1.10.44"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.44.tgz#5a691395a7ca43873200d91874a11b6db3a14fe5"
+  integrity sha512-DqLlWTF28/xPlDrpJCT6icX+UBsTleYto7LrJhDKGXSVeohb80HbVrVWi40ITECwV+4B4jy2iLdSOR0N4/rvWA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.30.1"
@@ -1945,7 +1960,7 @@
     "@injectivelabs/mito-proto-ts" "1.0.3"
     "@injectivelabs/networks" "^1.10.6"
     "@injectivelabs/test-utils" "^1.10.1"
-    "@injectivelabs/token-metadata" "^1.10.22"
+    "@injectivelabs/token-metadata" "^1.10.23"
     "@injectivelabs/ts-types" "^1.10.3"
     "@injectivelabs/utils" "^1.10.4"
     "@metamask/eth-sig-util" "^4.0.0"
@@ -1968,16 +1983,16 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.10.52":
-  version "1.10.52"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.52.tgz#b3c37a49198977ae9b2814a9ac5314577d5fc465"
-  integrity sha512-V5xZzt27iZjVM+PAV99e2E3kFZI8KGJU6kBxPr0KZg4EjaYSq6naqifKXts7RD+lknQ0nLP5SxWcVYPc7NiOkg==
+"@injectivelabs/sdk-ui-ts@1.10.54":
+  version "1.10.54"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.54.tgz#41e97ed11ac49eae6d0e13c2dcab91a8974f0c6f"
+  integrity sha512-8tsenQW1p741/2wWZEmGqJ/5p6fzomAYQd6v9RYzGpL0jb99tOxZq8gkFDUQDYrQBrsPkQIEsNuSgshFBx/OLw==
   dependencies:
     "@injectivelabs/contracts" "^1.10.11"
     "@injectivelabs/exceptions" "^1.10.4"
     "@injectivelabs/networks" "^1.10.6"
-    "@injectivelabs/sdk-ts" "^1.10.42"
-    "@injectivelabs/token-metadata" "^1.10.22"
+    "@injectivelabs/sdk-ts" "^1.10.44"
+    "@injectivelabs/token-metadata" "^1.10.23"
     "@injectivelabs/token-utils" "^1.10.7"
     "@injectivelabs/ts-types" "^1.10.3"
     "@injectivelabs/utils" "^1.10.4"
@@ -2005,10 +2020,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.10.22", "@injectivelabs/token-metadata@^1.10.22":
-  version "1.10.22"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.10.22.tgz#ea6df66cb2f0be9b2f6ae698c46a0055f791d7ec"
-  integrity sha512-C05GbChYj+sFf6Jh/uVxw8wg+GY+P9uUA0yYRv8T46K2AyerlwPeFVmELGqKZt9n/0W3d4xxeKL0GvgqqIiqHw==
+"@injectivelabs/token-metadata@1.10.23", "@injectivelabs/token-metadata@^1.10.23":
+  version "1.10.23"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.10.23.tgz#6a6ba195c83b319bfd9b794d211f9415e04b8016"
+  integrity sha512-v7gdSPWS+e/G6wTm0Lsr4Djbsjnztcrjq/bOcRwL8w4HbYbvemNC3Fi+t+WOCUfKl7VLnuKiakc99IEDAlLGYQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.10.4"
     "@injectivelabs/networks" "^1.10.6"
@@ -2040,10 +2055,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@^1.10.3":
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.3.tgz#e408863835420b6db1a8af99b7fc7c2d2202a24b"
-  integrity sha512-HYz8K3S18gv0ugb3J5/ghONMFCHDYL5v9zlaiMO1hauXgmhvLxXlMn0m3uuMrFH3iuSDP0SR86UYMOeItHZV8A==
+"@injectivelabs/ui-shared@^1.10.5":
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.5.tgz#d67741ce944d2a6ac37707cbe03041e709a75a52"
+  integrity sha512-2fmj73B/akZFeuvCdkSpCwHUsn16HEWOABQojF0sg4V+7Biqy0EO+OHvSAHWiw3xcp8Gp5QUvYJ5d7trvh9dVw==
   dependencies:
     "@nuxt/kit" "3.0.0"
     "@vuepic/vue-datepicker" "^4.2.0"
@@ -2065,10 +2080,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.10.46":
-  version "1.10.46"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.46.tgz#ec27c7fe0af0f2907394fa4e054d807023aa8b58"
-  integrity sha512-HlKrvR5jPctIuBbnjZg6bAVEXeySNB3Ns/+h46S1T/AAe0gdGw/az2S2Yc9aVRSBg1vbOIA6kHB/nokurVQTkQ==
+"@injectivelabs/wallet-ts@1.10.48":
+  version "1.10.48"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.48.tgz#61cf90c263273984aba8e43aa498acad627a67a2"
+  integrity sha512-WTbdB8eCotwvr90M6IKCwYbTZidZEquCN6qsq1AgzbLNHE7nDZFETSO629R2ndpNPVQ1BooQx+4X/J0zsUnQFQ==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.30.1"
@@ -2079,7 +2094,7 @@
     "@injectivelabs/core-proto-ts" "^0.0.11"
     "@injectivelabs/exceptions" "^1.10.4"
     "@injectivelabs/networks" "^1.10.6"
-    "@injectivelabs/sdk-ts" "^1.10.42"
+    "@injectivelabs/sdk-ts" "^1.10.44"
     "@injectivelabs/ts-types" "^1.10.3"
     "@injectivelabs/utils" "^1.10.4"
     "@keplr-wallet/cosmos" "^0.11.52"
@@ -5095,14 +5110,14 @@
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-4.1.0.tgz#b6a9d83cd91575f7ee15593f6444397f68751073"
   integrity sha512-++9JOAFdcXI3lyer9UKUV4rfoQ3T1RN8yDqoCLar86s0xQct5yblxAE+yWgRnU5/0FOlVCpTZpYSBV/bGWrSrQ==
 
-"@vitest/coverage-c8@^0.29.8":
-  version "0.29.8"
-  resolved "https://registry.yarnpkg.com/@vitest/coverage-c8/-/coverage-c8-0.29.8.tgz#a61f5a2434af3f0fd7a7e4fe9c25bb6ed03ebd0a"
-  integrity sha512-y+sEMQMctWokjnSqm3FCQEYFkjLrYaznsxEZHxcx8z2aftpYg3A5tvI1S5himfdEFo7o+OeHzh40bPSWZHW4oQ==
+"@vitest/coverage-c8@^0.30.1":
+  version "0.30.1"
+  resolved "https://registry.yarnpkg.com/@vitest/coverage-c8/-/coverage-c8-0.30.1.tgz#81cd4f2674e6b2807cd116cd0632d591fd6aad2c"
+  integrity sha512-/Wa3dtSuckpdngAmiCwowaEXXgJkqPrtfvrs9HTB9QoEfNbZWPu4E4cjEn4lJZb4qcGf4fxFtUA2f9DnDNAzBA==
   dependencies:
     c8 "^7.13.0"
     picocolors "^1.0.0"
-    std-env "^3.3.1"
+    std-env "^3.3.2"
 
 "@vitest/expect@0.29.8":
   version "0.29.8"
@@ -11509,10 +11524,10 @@ link-module-alias@^1.2.0:
   dependencies:
     chalk "^2.4.1"
 
-lint-staged@13.2.0:
-  version "13.2.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.2.0.tgz#b7abaf79c91cd36d824f17b23a4ce5209206126a"
-  integrity sha512-GbyK5iWinax5Dfw5obm2g2ccUiZXNGtAS4mCbJ0Lv4rq6iEtfBSjOYdcbOtAIFtM114t0vdpViDDetjVTSd8Vw==
+lint-staged@13.2.1:
+  version "13.2.1"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.2.1.tgz#9d30a14e3e42897ef417bc98556fb757f75cae87"
+  integrity sha512-8gfzinVXoPfga5Dz/ZOn8I2GOhf81Wvs+KwbEXQn/oWZAvCVS2PivrXfVbFJc93zD16uC0neS47RXHIjXKYZQw==
   dependencies:
     chalk "5.2.0"
     cli-truncate "^3.1.0"
@@ -13374,6 +13389,16 @@ postcss-custom-properties@^13.1.4:
     "@csstools/cascade-layer-name-parser" "^1.0.0"
     "@csstools/css-parser-algorithms" "^2.0.0"
     "@csstools/css-tokenizer" "^2.0.0"
+    postcss-value-parser "^4.2.0"
+
+postcss-custom-properties@^13.1.5:
+  version "13.1.5"
+  resolved "https://registry.yarnpkg.com/postcss-custom-properties/-/postcss-custom-properties-13.1.5.tgz#75567e3b4a664f820bcc3ba8b6ae3c8d27db05d1"
+  integrity sha512-98DXk81zTGqMVkGANysMHbGIg3voH383DYo3/+c+Abzay3nao+vM/f4Jgzsakk9S7BDsEw5DiW7sFy5G4W2wLA==
+  dependencies:
+    "@csstools/cascade-layer-name-parser" "^1.0.2"
+    "@csstools/css-parser-algorithms" "^2.1.1"
+    "@csstools/css-tokenizer" "^2.1.1"
     postcss-value-parser "^4.2.0"
 
 postcss-discard-comments@^6.0.0:
@@ -16070,10 +16095,15 @@ typescript@^4.6.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
-"typescript@^4.6.4 || ^5.0.0", typescript@^5.0.3:
+"typescript@^4.6.4 || ^5.0.0":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.3.tgz#fe976f0c826a88d0a382007681cbb2da44afdedf"
   integrity sha512-xv8mOEDnigb/tN9PSMTwSEqAnUvkoXMQlicOb0IUVDBSQCgBSaAAROUZYy2IcUy5qU6XajK5jjjO7TMWqBTKZA==
+
+typescript@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.4.tgz#b217fd20119bd61a94d4011274e0ab369058da3b"
+  integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
 
 typical@^4.0.0:
   version "4.0.0"
