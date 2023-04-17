@@ -96,7 +96,7 @@ const orderDetailsComponent = defineAsyncComponent(() => {
 
       return comps[
         /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
-      ]().then((component) => resolve(component.default))
+      ]().then((component: any) => resolve(component.default))
     }
 
     // webpack
