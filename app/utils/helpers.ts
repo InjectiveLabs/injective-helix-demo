@@ -53,7 +53,10 @@ export const getHubUrl = (): string => {
 export const getSubaccountIndex = (subaccount: string) =>
   parseInt(subaccount.slice(42))
 
-export function getMinTickSize(isSpot: boolean, market: UiMarketWithToken) {
+export function getMinQuantityTickSize(
+  isSpot: boolean,
+  market: UiMarketWithToken
+) {
   if (!isSpot) {
     return market.minQuantityTickSize
   }
@@ -61,8 +64,8 @@ export function getMinTickSize(isSpot: boolean, market: UiMarketWithToken) {
   const spotMarket = market as UiSpotMarketWithToken
 
   return market.quoteToken && spotMarket.baseToken
-    ? new BigNumberInWei(market.minPriceTickSize)
-        .toBase(market.quoteToken.decimals - spotMarket.baseToken.decimals)
+    ? new BigNumberInWei(market.minQuantityTickSize)
+        .toBase(spotMarket.baseToken.decimals)
         .toFixed()
     : ''
 }
