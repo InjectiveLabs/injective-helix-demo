@@ -118,8 +118,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
         v-bind="{ hideBalances, currentSubaccountBalances }"
         @update:hide-balances="handleHideBalances"
-      >
-      </PartialsAccountOverview>
+      />
 
       <div class="h-full-flex">
         <CommonTabMenu>

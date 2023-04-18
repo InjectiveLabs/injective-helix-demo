@@ -38,7 +38,7 @@ onMounted(() => {
 
 function pollMarkets() {
   Promise.all([
-    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
+    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()
   ]).catch($onError)
