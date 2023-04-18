@@ -45,7 +45,7 @@
     "@injectivelabs/token-metadata": "1.10.25",
     "@injectivelabs/token-utils": "1.10.8",
     "@injectivelabs/ts-types": "1.10.4",
-    "@injectivelabs/ui-shared": "^1.10.6",
+    "@injectivelabs/ui-shared": "1.10.11",
     "@injectivelabs/utils": "1.10.5",
     "@injectivelabs/wallet-ts": "1.10.51",
     "@metamask/detect-provider": "2.0.0",
@@ -64,6 +64,7 @@
     "core-js": "^3.10.1",
     "date-fns": "^2.29.3",
     "deepmerge": "^4.2.2",
+    "html-to-image": "^1.11.11",
     "js-confetti": "^0.11.0",
     "nuxt": "^3.3.3",
     "vee-validate": "4.7.3",
@@ -74,7 +75,7 @@
     "@bangjelkoski/vite-plugin-node-polyfills": "^0.0.2",
     "@commitlint/cli": "17.6.1",
     "@commitlint/config-conventional": "17.6.1",
-    "@injectivelabs/eslint-config": "^1.1.2",
+    "@injectivelabs/eslint-config": "^1.1.4",
     "@injectivelabs/node-globals-polyfill": "0.1.6",
     "@injectivelabs/prettier-config": "1.0.1",
     "@injectivelabs/stylelint-config": "1.1.2",
@@ -122,7 +123,6 @@
     "**/libsodium": "npm:@bangjelkoski/noop",
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
-    "rollup": "3.20.2",
     "eslint": "8.37.0"
   }
 }

@@ -6,7 +6,7 @@ const props = defineProps({
   lg: Boolean,
   md: Boolean,
   sm: Boolean,
-  noPadding: Boolean,
+  dense: Boolean,
   isAlwaysOpen: Boolean,
   hideCloseButton: Boolean
 })
@@ -62,7 +62,10 @@ watchDebounced(
           'min-h-[320px] flex flex-col': showLoading
         }"
       >
-        <div class="flex items-center justify-between mb-6 px-6 pt-6">
+        <div
+          class="flex items-center justify-between"
+          :class="{ 'mb-6 px-6 pt-6': !dense }"
+        >
           <div class="text-sm uppercase text-gray-100 font-semibold flex-grow">
             <slot name="title" />
           </div>
@@ -85,7 +88,7 @@ watchDebounced(
         <div v-else>
           <div
             :class="{
-              'px-6': !noPadding
+              'px-6': !dense
             }"
           >
             <slot />
@@ -95,7 +98,7 @@ watchDebounced(
             <slot name="footer" />
           </div>
 
-          <div class="pb-6" />
+          <div :class="{ 'pb-6': !dense }" />
         </div>
       </div>
     </template>
