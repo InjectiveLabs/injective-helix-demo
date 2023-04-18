@@ -1,6 +1,8 @@
 import {
+  ZERO_IN_WEI,
   UNLIMITED_ALLOWANCE,
-  BalanceWithTokenWithErc20Balance
+  BalanceWithTokenWithErc20Balance,
+  BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
@@ -12,12 +14,15 @@ import {
 } from '@/app/Services'
 
 export const transfer = async ({
+  token,
   amount,
-  token
+  balanceWithTokenAndPrice
 }: {
-  amount: BigNumberInBase
   token: Token
+  amount: BigNumberInBase
+  balanceWithTokenAndPrice: BalanceWithTokenWithErc20BalanceWithPrice
 }) => {
+  const peggyStore = usePeggyStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
   const { gasPrice, fetchGasPrice, queue } = useAppStore()
@@ -36,6 +41,24 @@ export const transfer = async ({
   )
     .toWei(token.decimals)
     .toFixed()
+
+  const allowance = new BigNumberInWei(
+    balanceWithTokenAndPrice.erc20Balance.allowance
+  )
+  const allowanceSet = new BigNumberInWei(actualAmount).lt(allowance)
+
+  if (!allowanceSet) {
+    /**
+     * If the allowance is not 0 we first need to reset it to 0
+     * and then set it again to the unlimited allowance
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     */
+    if (allowance.gte(0)) {
+      await peggyStore.setTokenAllowance(balanceWithTokenAndPrice, ZERO_IN_WEI)
+    }
+
+    await peggyStore.setTokenAllowance(balanceWithTokenAndPrice)
+  }
 
   const tx = await web3Composer.getPeggyTransferTx({
     address,
@@ -108,7 +131,8 @@ export const withdraw = async ({
 }
 
 export const setTokenAllowance = async (
-  balanceWithToken: BalanceWithTokenWithErc20Balance
+  balanceWithToken: BalanceWithTokenWithErc20Balance,
+  amount = UNLIMITED_ALLOWANCE
 ) => {
   const peggyStore = usePeggyStore()
 
@@ -129,7 +153,7 @@ export const setTokenAllowance = async (
     address,
     gasPrice,
     tokenAddress,
-    amount: UNLIMITED_ALLOWANCE.toFixed()
+    amount: amount.toFixed()
   })
 
   await web3Broadcaster.sendTransaction({
@@ -146,33 +170,10 @@ export const setTokenAllowance = async (
       )
     }
   )
-  const index = peggyStore.tradeableErc20BalancesWithTokenAndPrice.findIndex(
-    (balance) => {
-      const erc20Token = balance.token as Erc20Token
 
-      return (
-        erc20Token.erc20.address.toLowerCase() === tokenAddress.toLowerCase()
-      )
-    }
-  )
-
-  if (!token || index < 0) {
+  if (!token) {
     return
   }
 
-  const tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance = [
-    ...peggyStore.tradeableErc20BalancesWithTokenAndPrice
-  ]
-  tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance[index] = {
-    ...token,
-    erc20Balance: {
-      ...token.erc20Balance,
-      allowance: UNLIMITED_ALLOWANCE.toString()
-    }
-  }
-
-  peggyStore.$patch({
-    tradeableErc20BalancesWithTokenAndPrice:
-      tradeableErc20BalancesWithTokenAndPriceWithUpdatedAllowance
-  })
+  await peggyStore.getErc20TokenBalanceAndAllowance(balanceWithToken.token)
 }

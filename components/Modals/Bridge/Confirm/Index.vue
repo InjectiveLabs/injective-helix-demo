@@ -3,7 +3,8 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
   BRIDGE_FEE_IN_USD,
-  BalanceWithTokenAndPrice
+  BalanceWithTokenAndPrice,
+  BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import type { TokenWithPrice } from '@injectivelabs/token-metadata'
 import { Modal, BridgeField, BridgeForm, BusEvents } from '@/types'
@@ -261,6 +262,8 @@ function handleDeposit() {
   peggyStore
     .transfer({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
+      balanceWithTokenAndPrice:
+        balanceWithTokenAndPrice.value as BalanceWithTokenWithErc20BalanceWithPrice,
       token: formValues.value[BridgeField.Token]
     })
     .then(() => {
