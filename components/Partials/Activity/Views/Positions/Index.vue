@@ -3,12 +3,14 @@ import { PropType } from 'vue'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { Modal } from '@/types'
 
-const derivativeStore = useDerivativeStore()
+const modalStore = useModalStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
-const { t } = useLang()
 
 const props = defineProps({
   denoms: {
@@ -31,6 +33,7 @@ const tabCountElement = document.getElementById(
   'activity-position-tab-count-default'
 )
 const actionStatus = reactive(new Status(StatusType.Idle))
+const selectedPosition = ref<UiPosition | undefined>(undefined)
 
 const markets = computed(() =>
   derivativeStore.markets
@@ -94,6 +97,11 @@ function handleClosePositions() {
       actionStatus.setIdle()
     })
 }
+
+function handleSharePosition(position: UiPosition) {
+  selectedPosition.value = position
+  modalStore.openModal({ type: Modal.SharePosition })
+}
 </script>
 
 <template>
@@ -131,7 +139,10 @@ function handleClosePositions() {
             v-for="(position, index) in filteredPositions"
             :key="`mobile-positions-${index}-${position.marketId}`"
             class="col-span-1"
-            :position="position"
+            v-bind="{
+              position
+            }"
+            @share:position="handleSharePosition"
           />
 
           <template #empty>
@@ -150,6 +161,7 @@ function handleClosePositions() {
                 v-for="(position, index) in filteredPositions"
                 :key="`positions-${index}-${position.marketId}`"
                 :position="position"
+                @share:position="handleSharePosition"
               />
             </tbody>
           </table>
@@ -163,5 +175,10 @@ function handleClosePositions() {
         </CommonTableWrapper>
       </div>
     </AppHocLoading>
+
+    <ModalsSharePosition
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+    />
   </div>
 </template>

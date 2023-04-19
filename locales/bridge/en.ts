@@ -53,11 +53,19 @@ export default {
     defaultNote:
       'Note: It should take up to 10 seconds for your transfer to appear after your transaction has been confirmed on Injective',
 
+    allowance: 'Allowance',
     setAllowance: 'Set Allowance',
+    resetAllowance: 'Reset Allowance',
     setAllowanceFor: ({ named }: I18nMessageFunction) =>
       `Set allowance for ${named('asset')}`,
     successfullySetAllowance: 'Token allowance set successfully',
     keplrConnectedForEthereum: 'Please connect with Metamask',
-    balance: 'Balance'
+    balance: 'Balance',
+    allowanceNote:
+      'Note: When using latest Metamask extension, click on the "Use Default" button when setting allowance. Otherwise you\'d need to revoke the allowance first and then set it again (paying gas fees 2 times) if you want to transfer a different amount.',
+    setAllowanceForBridging: ({ named }: I18nMessageFunction) =>
+      `Set allowance for transferring ${named(
+        'asset'
+      )} through the Injective Bridge.`
   }
 }

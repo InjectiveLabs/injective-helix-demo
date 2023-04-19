@@ -6,6 +6,14 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
+const router = useRouter()
+const modalStore = useModalStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { success, error } = useNotifications()
+
 const props = defineProps({
   hideBalances: Boolean,
 
@@ -15,13 +23,9 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
-const modalStore = useModalStore()
-const { success, error } = useNotifications()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
+const emit = defineEmits<{
+  (e: 'share:position', state: UiPosition): void
+}>()
 
 const {
   pnl,
@@ -169,33 +173,44 @@ function closePositionAndReduceOnlyOrders() {
       status.setIdle()
     })
 }
+
+function sharePosition() {
+  emit('share:position', props.position)
+}
 </script>
 
 <template>
-  <div
-    v-if="market"
-    class="border-t border-gray-600 py-4"
-    @click="handleVisitMarket"
-  >
+  <div v-if="market" class="border-t border-gray-600 py-4">
     <div class="flex justify-between items-center gap-2">
-      <div class="col-span-1 flex justify-start items-center gap-2">
-        <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
+      <div class="flex gap-2 items-center">
+        <div
+          class="flex justify-start items-center gap-2"
+          @click="handleVisitMarket"
+        >
+          <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
-        <span class="text-white font-bold tracking-wide text-sm uppercase">
-          {{ position.ticker }}
+          <span class="text-white font-bold tracking-wide text-sm uppercase">
+            {{ position.ticker }}
+          </span>
+        </div>
+
+        <span
+          class="text-sm mr-auto"
+          data-cy="open-position-trade-direction-table-data"
+          :class="{
+            'text-green-500': position.direction === TradeDirection.Long,
+            'text-red-500': position.direction === TradeDirection.Short
+          }"
+        >
+          {{ directionLocalized }}
         </span>
-      </div>
 
-      <span
-        class="text-sm mr-auto"
-        data-cy="open-position-trade-direction-table-data"
-        :class="{
-          'text-green-500': position.direction === TradeDirection.Long,
-          'text-red-500': position.direction === TradeDirection.Short
-        }"
-      >
-        {{ directionLocalized }}
-      </span>
+        <BaseIcon
+          name="share"
+          class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+          @click="sharePosition"
+        />
+      </div>
 
       <button
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex items-center justify-center"
@@ -234,7 +249,7 @@ function closePositionAndReduceOnlyOrders() {
 
         <div
           v-if="!pnl.isNaN()"
-          class="flex items-center"
+          class="flex items-center flex-wrap"
           :class="{
             'text-green-500': pnl.gte(0),
             'text-red-500': pnl.lt(0)
