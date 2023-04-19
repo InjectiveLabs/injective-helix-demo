@@ -35,15 +35,13 @@ const {
   margin,
   quantity,
   markPrice,
-  pnlToFormat,
   priceDecimals,
   percentagePnl,
   notionalValue,
   isBinaryOptions,
+  liquidationPrice,
   quantityDecimals,
-  effectiveLeverage,
-  markPriceToFormat,
-  liquidationPrice
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
@@ -196,9 +194,13 @@ function sharePosition() {
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
-          {{ markPriceToFormat }}
-        </span>
+        <AppNumber
+          v-if="!markPrice.isNaN()"
+          sm
+          :decimals="priceDecimals"
+          :number="markPrice"
+          class="text-gray-500 text-xs"
+        />
       </div>
     </td>
 
@@ -238,7 +240,7 @@ function sharePosition() {
                   'text-red-500': pnl.lt(0)
                 }"
               >
-                {{ pnlToFormat }}
+                {{ pnl.toFixed(2) }}
               </span>
               <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
             </span>

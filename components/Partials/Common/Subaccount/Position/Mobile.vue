@@ -19,13 +19,12 @@ const {
   market,
   margin,
   quantity,
-  pnlToFormat,
+  markPrice,
   priceDecimals,
   notionalValue,
+  liquidationPrice,
   quantityDecimals,
-  effectiveLeverage,
-  markPriceToFormat,
-  liquidationPrice
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const props = defineProps({
@@ -194,7 +193,15 @@ function sharePosition() {
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
         <AppNumber dense :decimals="priceDecimals" :number="price" />
-        <span class="text-gray-500 ml-1">/ {{ markPriceToFormat }}</span>
+
+        <span>
+          /
+          <AppNumber
+            class="text-gray-500 ml-1"
+            dense
+            :decimals="priceDecimals"
+            :number="markPrice"
+        /></span>
       </div>
     </div>
 
@@ -230,7 +237,7 @@ function sharePosition() {
         >
           <span>≈</span>
           <span>{{ pnl.gte(0) ? '+' : '' }}</span>
-          <span>{{ pnlToFormat }}</span>
+          <span>{{ pnl.toFixed(2) }}</span>
           <span class="text-3xs">{{ market.quoteToken.symbol }}</span>
         </div>
       </div>

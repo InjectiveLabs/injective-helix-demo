@@ -5,6 +5,7 @@ import { toJpeg } from 'html-to-image'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Modal } from '@/types'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const { width } = useWindowSize()
 
@@ -24,15 +25,25 @@ const showAmount = ref(true)
 const showLeverage = ref(true)
 const showSelectors = ref(false)
 
-const {
-  pnl,
-  market,
-  pnlToFormat,
-  percentagePnl,
-  priceToFormat,
-  effectiveLeverage,
-  markPriceToFormat
-} = useDerivativePosition(computed(() => props.position))
+const { pnl, market, price, markPrice, percentagePnl, effectiveLeverage } =
+  useDerivativePosition(computed(() => props.position))
+
+const { valueToString: markPriceToFormat } = useBigNumberFormatter(
+  computed(() => markPrice.value),
+  {
+    decimalPlaces:
+      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+    displayAbsoluteDecimalPlace: true
+  }
+)
+
+const { valueToString: priceToFormat } = useBigNumberFormatter(
+  computed(() => price.value),
+  {
+    decimalPlaces:
+      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  }
+)
 
 const modalStore = useModalStore()
 
@@ -157,7 +168,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             </span>
             <div v-if="showAmount" class="flex items-center text-xl">
               <span>(</span>
-              <span>{{ pnlToFormat }}</span>
+              <span>{{ pnl.toFixed(2) }}</span>
               <span class="ml-1">
                 {{ market.quoteToken.symbol }}
               </span>
