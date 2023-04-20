@@ -6,6 +6,14 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
+const router = useRouter()
+const modalStore = useModalStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { success, error } = useNotifications()
+
 const props = defineProps({
   hideBalances: Boolean,
 
@@ -15,13 +23,9 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
-const derivativeStore = useDerivativeStore()
-const modalStore = useModalStore()
-const positionStore = usePositionStore()
-const { success, error } = useNotifications()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
+const emit = defineEmits<{
+  (e: 'share:position', state: UiPosition): void
+}>()
 
 const {
   pnl,
@@ -30,15 +34,13 @@ const {
   margin,
   quantity,
   markPrice,
-  pnlToFormat,
   priceDecimals,
   percentagePnl,
   notionalValue,
   quantityDecimals,
   isBinaryOptions,
   liquidationPrice,
-  effectiveLeverage,
-  markPriceToFormat
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const status = reactive(new Status(StatusType.Idle))
@@ -166,6 +168,10 @@ function closePositionAndReduceOnlyOrders() {
       status.setIdle()
     })
 }
+
+function sharePosition() {
+  emit('share:position', props.position)
+}
 </script>
 
 <template>
@@ -173,10 +179,12 @@ function closePositionAndReduceOnlyOrders() {
     v-if="market"
     class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all cursor-pointer"
     :data-cy="'open-position-table-row-' + position.ticker"
-    @click="handleVisitMarket"
   >
     <td class="pl-4">
-      <div class="col-span-1 flex justify-start items-center gap-2">
+      <div
+        class="col-span-1 flex justify-start items-center gap-2"
+        @click="handleVisitMarket"
+      >
         <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
         <span
           class="text-white font-bold tracking-wide text-xs lg:text-sm uppercase"
@@ -218,24 +226,21 @@ function closePositionAndReduceOnlyOrders() {
     </td>
 
     <td>
-      <div class="col-span-1 flex flex-col text-right">
-        <span v-if="hideBalances">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-if="hideBalances">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <div v-else class="col-span-1 flex flex-col text-right">
         <AppNumber
-          v-else
           sm
           :decimals="priceDecimals"
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span
-          v-if="!markPrice.isNaN() && !hideBalances"
-          class="font-mono text-xs lg:text-sm text-gray-450"
-        >
-          {{ markPriceToFormat }}
-        </span>
-        <span v-else class="font-mono text-xs lg:text-sm text-gray-450">
-          {{ HIDDEN_BALANCE_DISPLAY }}
-        </span>
+        <AppNumber
+          v-if="!markPrice.isNaN()"
+          sm
+          :decimals="priceDecimals"
+          :number="markPrice"
+          class="text-gray-500 text-xs"
+        />
       </div>
     </td>
 
@@ -258,48 +263,45 @@ function closePositionAndReduceOnlyOrders() {
     </td>
 
     <td>
-      <div class="col-span-1 text-right">
-        <div
-          v-if="!pnl.isNaN()"
-          class="flex flex-col items-end"
-          :class="{
-            'text-green-500': pnl.gte(0),
-            'text-red-500': pnl.lt(0)
-          }"
-        >
-          <div class="flex items-center">
-            <span v-if="hideBalances" class="font-mono text-xs lg:text-sm">
-              {{ HIDDEN_BALANCE_DISPLAY }}
-            </span>
-            <span
-              v-if="!hideBalances"
-              class="font-mono text-xs lg:text-sm mr-1"
-            >
-              ≈
-            </span>
-            <span v-if="!hideBalances" class="font-mono text-xs lg:text-sm">
-              {{ pnl.gte(0) ? '+' : '' }}
-            </span>
-            <span
-              v-if="!hideBalances"
-              class="font-mono text-xs lg:text-sm"
-              data-cy="postion-entry-pnl"
-            >
-              {{ pnlToFormat }}
-            </span>
-            <span class="ml-1 font-mono text-xs lg:text-sm">
-              {{ market.quoteToken.symbol }}
+      <span v-if="hideBalances" class="font-mono text-xs lg:text-sm">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
+
+      <div v-else class="col-span-1 text-right">
+        <div v-if="!pnl.isNaN()" class="flex items-center justify-end gap-2">
+          <div
+            class="flex flex-col items-end"
+            :class="{
+              'text-green-500': pnl.gte(0),
+              'text-red-500': pnl.lt(0)
+            }"
+          >
+            <div class="flex items-center">
+              <span class="font-mono text-xs lg:text-sm mr-1"> ≈ </span>
+              <span class="font-mono text-xs lg:text-sm">
+                {{ pnl.gte(0) ? '+' : '' }}
+              </span>
+              <span
+                class="font-mono text-xs lg:text-sm"
+                data-cy="postion-entry-pnl"
+              >
+                {{ pnl.toFormat(2) }}
+              </span>
+              <span class="ml-1 font-mono text-xs lg:text-sm">
+                {{ market.quoteToken.symbol }}
+              </span>
+            </div>
+            <span class="flex mt-1 font-mono text-xs lg:text-sm">
+              <span>{{ percentagePnl.gte(0) ? '+' : '' }}</span>
+              <span>{{ percentagePnl.toFormat(2) }}%</span>
             </span>
           </div>
-          <span
-            v-if="hideBalances"
-            class="flex mt-1 font-mono text-xs lg:text-sm"
-          >
-            {{ HIDDEN_BALANCE_DISPLAY }}
-          </span>
-          <span v-else class="flex mt-1 font-mono text-xs lg:text-sm">
-            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
-          </span>
+
+          <BaseIcon
+            name="share"
+            class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+            @click="sharePosition"
+          />
         </div>
 
         <div v-else data-cy="open-position-no-pnl-table-data">

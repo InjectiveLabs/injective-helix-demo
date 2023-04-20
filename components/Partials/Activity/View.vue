@@ -14,7 +14,7 @@ const activityComponent = defineAsyncComponent(() => {
       const comps = import.meta.glob(/* @vite-ignore */ './**/*.vue')
 
       return comps[/* @vite-ignore */ `./Views/${props.view}.vue`]().then(
-        (component) => resolve(component.default)
+        (component: any) => resolve(component.default)
       )
     }
 

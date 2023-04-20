@@ -5,9 +5,11 @@ import {
   UiDerivativeMarketWithToken,
   UiPosition
 } from '@injectivelabs/sdk-ui-ts'
+import { Modal } from '@/types'
 
-const derivativeStore = useDerivativeStore()
+const modalStore = useModalStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   market: {
@@ -15,6 +17,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const selectedPosition = ref<UiPosition | undefined>(undefined)
 
 const filteredPositions = computed(() => {
   const result = positionStore.subaccountPositions.filter((position) => {
@@ -44,6 +48,11 @@ onMounted(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
 })
 
+function handleSharePosition(position: UiPosition) {
+  selectedPosition.value = position
+  modalStore.openModal({ type: Modal.SharePosition })
+}
+
 useIntervalFn(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
 }, 10 * 1000)
@@ -60,7 +69,10 @@ useIntervalFn(() => {
         v-for="(position, index) in sortedPositions"
         :key="`mobile-positions-${index}-${position.marketId}`"
         class="col-span-1"
-        :position="position"
+        v-bind="{
+          position
+        }"
+        @share:position="handleSharePosition"
       />
 
       <template #empty>
@@ -78,11 +90,19 @@ useIntervalFn(() => {
           <PartialsCommonSubaccountPositionRow
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
-            :position="position"
+            v-bind="{
+              position
+            }"
+            @share:position="handleSharePosition"
           />
         </tbody>
       </table>
       <CommonEmptyList v-else :message="$t('trade.emptyPositions')" />
     </CommonTableWrapper>
+
+    <ModalsSharePosition
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+    />
   </div>
 </template>

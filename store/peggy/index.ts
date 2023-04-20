@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui-ts'
 import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
-import type { Erc20Token } from '@injectivelabs/token-metadata'
+import type { Token, Erc20Token } from '@injectivelabs/token-metadata'
 import { web3Client } from '@/app/Services'
 import { setTokenAllowance, transfer, withdraw } from '@/store/peggy/message'
 
@@ -46,7 +46,7 @@ export const usePeggyStore = defineStore('peggy', {
           } as BalanceWithTokenWithErc20BalanceWithPrice)
       )
 
-      tokenStore.fetchTokenUsdPriceMap(
+      tokenStore.fetchTokensUsdPriceMap(
         tradeableBalancesWithTokenAndPrice.map(
           (balanceWithToken) => balanceWithToken.token.coinGeckoId
         )
@@ -104,6 +104,47 @@ export const usePeggyStore = defineStore('peggy', {
         tradeableErc20BalancesWithTokenAndPrice:
           updatedTradeableErc20BalancesWithTokenAndPrice
       })
+    },
+
+    async getErc20TokenBalanceAndAllowance(token: Token) {
+      const peggyStore = usePeggyStore()
+      const walletStore = useWalletStore()
+      const tokenStore = useTokenStore()
+
+      const { address, isUserWalletConnected } = walletStore
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      const balanceAndAllowance =
+        await web3Client.fetchTokenBalanceAndAllowance({
+          address,
+          contractAddress: token.denom
+        })
+      const balanceWithToken = {
+        token,
+        denom: token.denom,
+        balance: '0',
+        erc20Balance: balanceAndAllowance,
+        usdPrice: 0
+      } as BalanceWithTokenWithErc20BalanceWithPrice
+
+      const filteredErc20WithoutToken =
+        peggyStore.tradeableErc20BalancesWithTokenAndPrice.filter(
+          (t) => t.denom !== token.denom
+        )
+
+      peggyStore.$patch({
+        tradeableErc20BalancesWithTokenAndPrice: [
+          balanceWithToken,
+          ...filteredErc20WithoutToken
+        ]
+      })
+
+      await tokenStore.fetchTokensUsdPriceMap([
+        balanceWithToken.token.coinGeckoId
+      ])
     }
   }
 })

@@ -8,7 +8,7 @@ export function useToken() {
       .map((token) => token.coinGeckoId)
       .filter((id) => id)
 
-    return tokenStore.fetchTokenUsdPriceMap(coinGeckoIdList)
+    return tokenStore.fetchTokensUsdPriceMap(coinGeckoIdList)
   }
 
   return {

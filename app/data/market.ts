@@ -8,17 +8,14 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'wmatic-usdcet',
   'xau-usdt-perp',
   'gbp-usdt-perp',
   'jpy-usdt-perp',
   'eur-usdt-perp',
   'arb-usdt',
   'chz-usdcet',
-  'canto-usdt',
-  'sol-usdcet',
-  'atom-usdt-perp',
-  'usdc-usdcet',
-  'strd-usdt'
+  'canto-usdt'
 ]
 
 export const experimentalMarketsSlug = [
@@ -37,15 +34,29 @@ export const slugsToIncludeInCosmosCategory = [
   'canto-usdt',
   'strd-usdt',
   'inj-usdt-perp',
-  'osmo-usdt-perp'
+  'osmo-usdt-perp',
+  'atom-usdt-perp'
 ]
 
-export const slugsToExcludeFromEthereumCategory = [
-  ...slugsToIncludeInCosmosCategory,
+export const slugsToIncludeInEthereumCategory = [
+  'inj-usdt',
   'arb-usdt',
-  'btc-usdt-perp',
+  'chz-usdcet',
+  'usdt-usdcet',
+  'ape-usdt',
   'link-usdt',
-  'link-usdt-perp'
+  'weth-usdt',
+  'evmos-usdt',
+  'gf-usdt',
+  'ethbtctrend-usdt',
+  'steadyeth-usdt',
+  'steadybtc-usdt',
+  'btc-usdt-perp',
+  'inj-usdt-perp',
+  'bonk-usdt-perp',
+  'eth-usdt-perp',
+  'bnb-usdt-perp',
+  'stx-usdt-perp'
 ]
 
 export const excludedPriceDeviationSlugs = [] as string[]

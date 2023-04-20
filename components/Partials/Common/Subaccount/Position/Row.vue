@@ -24,6 +24,10 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (e: 'share:position', state: UiPosition): void
+}>()
+
 const {
   pnl,
   price,
@@ -31,15 +35,13 @@ const {
   margin,
   quantity,
   markPrice,
-  pnlToFormat,
   priceDecimals,
   percentagePnl,
   notionalValue,
   isBinaryOptions,
+  liquidationPrice,
   quantityDecimals,
-  effectiveLeverage,
-  markPriceToFormat,
-  liquidationPrice
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
@@ -127,6 +129,10 @@ function closePositionAndReduceOnlyOrders() {
       status.setIdle()
     })
 }
+
+function sharePosition() {
+  emit('share:position', props.position)
+}
 </script>
 
 <template>
@@ -188,9 +194,13 @@ function closePositionAndReduceOnlyOrders() {
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
-          {{ markPriceToFormat }}
-        </span>
+        <AppNumber
+          v-if="!markPrice.isNaN()"
+          sm
+          :decimals="priceDecimals"
+          :number="markPrice"
+          class="text-gray-500 text-xs"
+        />
       </div>
     </td>
 
@@ -218,24 +228,34 @@ function closePositionAndReduceOnlyOrders() {
         class="flex items-center justify-end font-medium text-xs font-mono"
         :class="{ 'text-green-500': pnl.gte(0), 'text-red-500': pnl.lt(0) }"
       >
-        <div class="flex items-end flex-col">
-          <span class="flex items-center">
-            <span class="mr-1">≈</span>
-            <span>{{ pnl.gte(0) ? '+' : '' }}</span>
-            <span
-              data-cy="postion-entry-pnl"
-              :class="{
-                'text-green-500': pnl.gte(0),
-                'text-red-500': pnl.lt(0)
-              }"
-            >
-              {{ pnlToFormat }}
+        <div class="flex items-center space-x-2">
+          <div class="flex items-end flex-col">
+            <span class="flex items-center">
+              <span class="mr-1">≈</span>
+              <span>{{ pnl.gte(0) ? '+' : '' }}</span>
+              <span
+                data-cy="postion-entry-pnl"
+                :class="{
+                  'text-green-500': pnl.gte(0),
+                  'text-red-500': pnl.lt(0)
+                }"
+              >
+                {{ pnl.toFixed(2) }}
+              </span>
+              <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
             </span>
-            <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
-          </span>
-          <span class="flex mt-1">
-            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
-          </span>
+            <span class="flex mt-1">
+              {{
+                (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
+              }}%
+            </span>
+          </div>
+
+          <BaseIcon
+            name="share"
+            class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+            @click="sharePosition"
+          />
         </div>
       </div>
       <span

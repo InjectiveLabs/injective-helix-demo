@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-// import { Status, StatusType } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { Modal } from '@/types'
 
 defineProps({
   hideBalances: Boolean
 })
 
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
-const { t } = useLang()
-
-// const status = reactive(new Status(StatusType.Loading))
 
 const sideOptions = [
   {
@@ -29,6 +28,7 @@ const sideOptions = [
 
 const side = ref('')
 const marketDenom = ref('')
+const selectedPosition = ref<UiPosition | undefined>(undefined)
 
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
@@ -156,6 +156,11 @@ function closePosition() {
     .catch($onError)
 }
 
+function handleSharePosition(position: UiPosition) {
+  selectedPosition.value = position
+  modalStore.openModal({ type: Modal.SharePosition })
+}
+
 watch(
   () => accountStore.subaccountId,
   () => {
@@ -180,18 +185,23 @@ watch(
       <PartialsAccountPositionsTableRow
         v-for="(position, i) in filteredPositions"
         :key="`position-${i}`"
-        :position="position"
-        :hide-balances="hideBalances"
+        v-bind="{
+          position,
+          hideBalances
+        }"
+        @share:position="handleSharePosition"
       />
     </table>
 
     <table class="w-full border-collapse table lg:hidden">
       <PartialsAccountPositionsTableRowMobile
         v-for="(position, i) in filteredPositions"
-        :key="`position-${i}`"
-        class=""
-        :position="position"
-        :hide-balances="hideBalances"
+        :key="`position-mobile-${i}`"
+        v-bind="{
+          position,
+          hideBalances
+        }"
+        @share:position="handleSharePosition"
       />
     </table>
 
@@ -205,5 +215,10 @@ watch(
         {{ $t('account.positions.empty') }}
       </span>
     </CommonEmptyList>
+
+    <ModalsSharePosition
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+    />
   </div>
 </template>

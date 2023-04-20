@@ -48,7 +48,7 @@ function handleConvert() {
         </template>
 
         <template #symbolSuffix>
-          <PartialsAccountBalancesUsdcLabel
+          <PartialsAccountBalancesAggregatedLabel
             v-bind="{
               balance
             }"

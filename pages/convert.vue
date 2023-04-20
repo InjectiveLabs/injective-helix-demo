@@ -46,6 +46,7 @@ onWalletConnected(() => {
 
   Promise.all([
     accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance(),
     accountStore.fetchAccountPortfolio(),
     exchangeStore.fetchFeeDiscountAccountInfo()
   ])
@@ -161,6 +162,10 @@ function handleFormSubmit() {
           {{ $t('trade.convert.convert') }}
         </h3>
         <PartialsConvertSlippageSelector />
+      </div>
+
+      <div class="flex justify-end items-center py-4">
+        <PartialsActivitySubaccountsSelector />
       </div>
 
       <PartialsConvertTokenForm

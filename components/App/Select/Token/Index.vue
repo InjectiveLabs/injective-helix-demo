@@ -9,7 +9,6 @@ const props = defineProps({
   hideMax: Boolean,
   disabled: Boolean,
   required: Boolean,
-  inputDisabled: Boolean,
 
   denom: {
     type: String,
@@ -158,7 +157,7 @@ export default {
             input-classes="p-0 text-xl font-bold"
             :max-decimals="maxDecimals"
             :placeholder="inputPlaceholder"
-            :disabled="disabled || !selectedToken || inputDisabled"
+            :disabled="disabled || !selectedToken"
             @update:model-value="handleAmountUpdate"
             @click.stop
           />

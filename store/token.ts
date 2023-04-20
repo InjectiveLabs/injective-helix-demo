@@ -43,7 +43,7 @@ export const useTokenStore = defineStore('token', {
     }
   },
   actions: {
-    async fetchTokenUsdPriceMap(coinGeckoIdList: string[]) {
+    async fetchTokensUsdPriceMap(coinGeckoIdList: string[]) {
       const tokenStore = useTokenStore()
 
       if (coinGeckoIdList.length === 0) {
@@ -106,7 +106,7 @@ export const useTokenStore = defineStore('token', {
     getTradeableTokensPriceMap() {
       const tokenStore = useTokenStore()
 
-      tokenStore.fetchTokenUsdPriceMap(
+      tokenStore.fetchTokensUsdPriceMap(
         tokenStore.tradeableTokens.map((token) => token.coinGeckoId)
       )
     }

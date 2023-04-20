@@ -8,9 +8,9 @@ import {
   INJ_DENOM
 } from '@injectivelabs/utils'
 import {
+  ZERO_IN_BASE,
   BalanceWithToken,
-  BalanceWithTokenWithErc20Balance,
-  BalanceWithTokenWithErc20BalanceWithPrice
+  BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BINANCE_DEPOSIT_ADDRESSES,
@@ -108,18 +108,26 @@ const balanceWithToken = computed(() => {
   } as BalanceWithToken
 })
 
-const needsAllowanceSet = computed(() => {
-  const balanceWithTokenAndAllowance =
-    peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
-      (token) => token.denom === denom.value
-    ) as BalanceWithTokenWithErc20BalanceWithPrice
+const allowance = computed(() => {
+  if (!balanceWithToken.value) {
+    return ZERO_IN_BASE
+  }
 
-  const allowance = new BigNumberInBase(
-    balanceWithTokenAndAllowance?.erc20Balance?.allowance || 0
-  )
+  const balanceWithTokenWithErc20Balance =
+    balanceWithToken.value as BalanceWithTokenWithErc20Balance
 
-  return isDeposit.value && originIsEthereum.value && allowance.lte(0)
+  return new BigNumberInWei(
+    balanceWithTokenWithErc20Balance.erc20Balance?.allowance || 0
+  ).toBase(balanceWithTokenWithErc20Balance.token.decimals)
 })
+
+const needsAllowanceSet = computed(
+  () =>
+    isDeposit.value &&
+    originIsEthereum.value &&
+    allowance.value.lt(formValues.value[BridgeField.Amount]) &&
+    new BigNumberInBase(balanceWithToken.value?.balance || '').gt(0)
+)
 
 const { value: denom } = useStringField({
   name: BridgeField.Denom,
@@ -289,7 +297,6 @@ watch(destination, (value: string) => {
             v-bind="{
               maxDecimals,
               required: true,
-              inputDisabled: needsAllowanceSet,
               amountFieldName: BridgeField.Amount,
               options: transferableBalancesWithToken
             }"
@@ -315,6 +322,7 @@ watch(destination, (value: string) => {
             <CommonAllowance
               v-if="needsAllowanceSet && balanceWithToken"
               v-bind="{
+                allowance,
                 balanceWithToken: balanceWithToken as BalanceWithTokenWithErc20Balance
               }"
             />
