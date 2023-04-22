@@ -18,7 +18,7 @@ import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
@@ -160,7 +160,7 @@ function updateLastPriceChangeColor() {
 }
 
 function handleTradeClickedTrack() {
-  amplitudeTracker.submitTradeClickedTrackEvent({
+  amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.Lander
