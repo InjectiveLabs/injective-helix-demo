@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { getDefaultPerpetualMarketRouteParams } from '@/app/utils/market'
 import { DefaultMarket, TradeClickOrigin, Modal } from '@/types'
 
@@ -19,7 +19,7 @@ function handleGetStartedClick() {
 }
 
 function handleTradeClickedTrack() {
-  amplitudeTracker.submitTradeClickedTrackEvent({
+  amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: DefaultMarket.Perpetual,
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander

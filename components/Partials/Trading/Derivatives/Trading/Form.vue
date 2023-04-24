@@ -30,7 +30,7 @@ import {
   calculateLiquidationPrice,
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -442,7 +442,7 @@ function submitLimitOrder() {
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      handleAttemptPlaceOrderTrack(e.message)
       $onError(e)
     })
     .finally(() => {
@@ -602,7 +602,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
+  amplitudeTradeTracker.submitPlaceOrderConfirmTrackEvent({
     status,
     postOnly,
     slippageTolerance,

@@ -161,8 +161,9 @@ function closeModal() {
             errors,
             isBuy,
             market,
-            executionPrice: worstPrice,
-            status: submitStatus
+            isUsdcConvert: true,
+            status: submitStatus,
+            executionPrice: worstPrice
           }"
           @form:submit="handleFormSubmit"
         />

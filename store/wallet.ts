@@ -15,7 +15,10 @@ import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { walletStrategy } from '@/app/wallet-strategy'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import {
+  amplitudeTracker,
+  amplitudeWalletTracker
+} from '@/app/providers/amplitude'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -109,13 +112,13 @@ export const useWalletStore = defineStore('wallet', {
       await accountStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
-      amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
+      amplitudeWalletTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
       amplitudeTracker.setUser({
         wallet: walletStore.wallet,
         address: walletStore.injectiveAddress,
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
-      amplitudeTracker.submitWalletConnectedTrackEvent()
+      amplitudeWalletTracker.submitWalletConnectedTrackEvent()
 
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected

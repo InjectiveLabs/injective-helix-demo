@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { amplitudeConvertTracker } from '@/app/providers/amplitude'
 
 const router = useRouter()
 const accountStore = useAccountStore()
@@ -15,10 +16,21 @@ const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isBuy: Boolean,
+  isUsdcConvert: Boolean,
+
+  fee: {
+    type: Object as PropType<BigNumberInBase>,
+    default: ZERO_IN_BASE
+  },
 
   amount: {
     type: String,
     default: ''
+  },
+
+  minimalReceived: {
+    type: Object as PropType<BigNumberInBase>,
+    default: ZERO_IN_BASE
   },
 
   executionPrice: {
@@ -48,6 +60,8 @@ const { insufficientLiquidity, highDeviation } = useSpotError({
   market: computed(() => props.market)
 })
 
+const { takerFeeRate } = useTradeFee(computed(() => props.market))
+
 const hasFormErrors = computed(
   () =>
     Object.keys(formErrors.value).filter(
@@ -75,6 +89,10 @@ function handleConnect() {
 }
 
 function submit() {
+  if (!props.isUsdcConvert) {
+    handleConvertClickTrack()
+  }
+
   emit('form:submit')
 }
 
@@ -84,6 +102,20 @@ function handleNavigation() {
   }
 
   router.push({ name: 'account' })
+}
+
+function handleConvertClickTrack() {
+  amplitudeConvertTracker.convertClickedTrackEvent({
+    isBuy: props.isBuy,
+    baseDenom: formValues.value[TradeField.BaseDenom],
+    quoteDenom: formValues.value[TradeField.QuoteDenom],
+    baseAmount: formValues.value[TradeField.BaseAmount],
+    quoteAmount: formValues.value[TradeField.QuoteAmount],
+    slippageTolerance: formValues.value[TradeField.SlippageTolerance],
+    rate: takerFeeRate.value.times(100).toFormat(2),
+    fee: props.fee.toFixed(),
+    minimumAmountReceived: props.minimalReceived.toFixed(3)
+  })
 }
 </script>
 
