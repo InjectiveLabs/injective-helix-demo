@@ -50,7 +50,6 @@
     "@injectivelabs/wallet-ts": "1.10.55",
     "@metamask/detect-provider": "2.0.0",
     "@nuxtjs/dotenv": "^1.4.1",
-    "vue-gtag": "^2.0.2-beta.0",
     "@nuxtjs/i18n": "^8.0.0-beta.10",
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sitemap": "^2.4.0",
@@ -68,6 +67,8 @@
     "js-confetti": "^0.11.0",
     "nuxt": "^3.3.3",
     "vee-validate": "4.7.3",
+    "vue-gtag": "^2.0.2-beta.0",
+    "vue-hotjar": "^1.4.0",
     "vue-jest": "^4.0.0-0"
   },
   "devDependencies": {

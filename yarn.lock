@@ -16755,6 +16755,11 @@ vue-gtag@^2.0.2-beta.0:
   resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-2.0.2-beta.0.tgz#0a46453fc0f22e345b2742c11419d230d07b695d"
   integrity sha512-LUu+vca26MtdCDlXDwNrDpJTt1/WFW/YV+za2GD80u6wTQr0X5ES5XdEZprD+AsbvujbTqGIxDv5ezmivDn98g==
 
+vue-hotjar@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/vue-hotjar/-/vue-hotjar-1.4.0.tgz#562f279f55b3ed1fdd54ba493f8077aaad2336ef"
+  integrity sha512-C/4lfjB1R3+eXiC+jSpNn3z0GWicpnADeRWpEHLdP2FSIi/AjupoIBikugHvGV334QYGUueXUyVZz6GHr+3eYQ==
+
 vue-i18n-routing@^0.12.2:
   version "0.12.2"
   resolved "https://registry.yarnpkg.com/vue-i18n-routing/-/vue-i18n-routing-0.12.2.tgz#f89d0bdc256e7e6032c36163d4b09a048082b3e9"
