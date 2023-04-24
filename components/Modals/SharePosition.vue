@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const TIMESTAMP_FORMAT = 'yyyy-mm-dd kk:mm'
+const TIMESTAMP_FORMAT = 'yyyy-MM-dd kk:mm'
 
 const canvas = ref()
 const now = ref(Date.now())
