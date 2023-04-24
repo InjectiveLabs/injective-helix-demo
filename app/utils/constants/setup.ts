@@ -73,6 +73,9 @@ const env = {
   VITE_GOOGLE_ANALYTICS_KEY: isWebpack
     ? process.env.VITE_GOOGLE_ANALYTICS_KEY
     : (import.meta.env.VITE_GOOGLE_ANALYTICS_KEY as string),
+  VITE_HOTJAR_KEY: isWebpack
+    ? process.env.VITE_HOTJAR_KEY
+    : (import.meta.env.VITE_HOTJAR_KEY as string),
   VITE_BUGSNAG_KEY: (isWebpack
     ? process.env.VITE_BUGSNAG_KEY
     : import.meta.env.VITE_BUGSNAG_KEY) as string | undefined,
@@ -110,6 +113,7 @@ const env = {
   VITE_COINGECKO_KEY: string
   VITE_AMPLITUDE_KEY: string
   VITE_GOOGLE_ANALYTICS_KEY: string
+  VITE_HOTJAR_KEY: string
   VITE_NEWSLETTER_API: string
   VITE_ALCHEMY_GOERLI_KEY: string
   VITE_BUGSNAG_KEY: string
@@ -201,6 +205,7 @@ export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
 export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
+export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 

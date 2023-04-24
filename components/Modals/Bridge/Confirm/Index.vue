@@ -14,7 +14,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeBridgeTracker } from '@/app/providers/amplitude'
 
 const accountStore = useAccountStore()
 const tokenStore = useTokenStore()
@@ -299,7 +299,7 @@ function handleTransferToBank() {
 }
 
 function handleTransferTradingAccountTrack() {
-  amplitudeTracker.transferTradingAccountTrack({
+  amplitudeBridgeTracker.transferTradingAccountTrack({
     transferDirection: formValues.value[BridgeField.TransferDirection],
     token: formValues.value[BridgeField.Token].name,
     amount: formValues.value[BridgeField.Amount]

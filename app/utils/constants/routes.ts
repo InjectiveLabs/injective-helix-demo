@@ -39,6 +39,8 @@ export const getRoutes = (network: Network, env: string) => {
   ]
 
   if (IS_TESTNET) {
+    spot.push('wbtc-usdt')
+
     perpetuals.push(
       'xau-usdt-perp',
       'gbp-usdt-perp',
