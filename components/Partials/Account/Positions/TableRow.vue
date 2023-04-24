@@ -34,15 +34,13 @@ const {
   margin,
   quantity,
   markPrice,
-  pnlToFormat,
   priceDecimals,
   percentagePnl,
   notionalValue,
   quantityDecimals,
   isBinaryOptions,
   liquidationPrice,
-  effectiveLeverage,
-  markPriceToFormat
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const status = reactive(new Status(StatusType.Idle))
@@ -228,24 +226,21 @@ function sharePosition() {
     </td>
 
     <td>
-      <div class="col-span-1 flex flex-col text-right">
-        <span v-if="hideBalances">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-if="hideBalances">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <div v-else class="col-span-1 flex flex-col text-right">
         <AppNumber
-          v-else
           sm
           :decimals="priceDecimals"
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span
-          v-if="!markPrice.isNaN() && !hideBalances"
-          class="font-mono text-xs lg:text-sm text-gray-450"
-        >
-          {{ markPriceToFormat }}
-        </span>
-        <span v-else class="font-mono text-xs lg:text-sm text-gray-450">
-          {{ HIDDEN_BALANCE_DISPLAY }}
-        </span>
+        <AppNumber
+          v-if="!markPrice.isNaN()"
+          sm
+          :decimals="priceDecimals"
+          :number="markPrice"
+          class="text-gray-500 text-xs"
+        />
       </div>
     </td>
 
@@ -268,7 +263,11 @@ function sharePosition() {
     </td>
 
     <td>
-      <div class="col-span-1 text-right">
+      <span v-if="hideBalances" class="font-mono text-xs lg:text-sm">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
+
+      <div v-else class="col-span-1 text-right">
         <div v-if="!pnl.isNaN()" class="flex items-center justify-end gap-2">
           <div
             class="flex flex-col items-end"
@@ -278,39 +277,23 @@ function sharePosition() {
             }"
           >
             <div class="flex items-center">
-              <span v-if="hideBalances" class="font-mono text-xs lg:text-sm">
-                {{ HIDDEN_BALANCE_DISPLAY }}
-              </span>
-              <span
-                v-if="!hideBalances"
-                class="font-mono text-xs lg:text-sm mr-1"
-              >
-                ≈
-              </span>
-              <span v-if="!hideBalances" class="font-mono text-xs lg:text-sm">
+              <span class="font-mono text-xs lg:text-sm mr-1"> ≈ </span>
+              <span class="font-mono text-xs lg:text-sm">
                 {{ pnl.gte(0) ? '+' : '' }}
               </span>
               <span
-                v-if="!hideBalances"
                 class="font-mono text-xs lg:text-sm"
                 data-cy="postion-entry-pnl"
               >
-                {{ pnlToFormat }}
+                {{ pnl.toFormat(2) }}
               </span>
               <span class="ml-1 font-mono text-xs lg:text-sm">
                 {{ market.quoteToken.symbol }}
               </span>
             </div>
-            <span
-              v-if="hideBalances"
-              class="flex mt-1 font-mono text-xs lg:text-sm"
-            >
-              {{ HIDDEN_BALANCE_DISPLAY }}
-            </span>
-            <span v-else class="flex mt-1 font-mono text-xs lg:text-sm">
-              {{
-                (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
-              }}%
+            <span class="flex mt-1 font-mono text-xs lg:text-sm">
+              <span>{{ percentagePnl.gte(0) ? '+' : '' }}</span>
+              <span>{{ percentagePnl.toFormat(2) }}%</span>
             </span>
           </div>
 

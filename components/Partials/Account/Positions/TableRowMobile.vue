@@ -34,7 +34,6 @@ const {
   margin,
   quantity,
   markPrice,
-  pnlToFormat,
   notionalValue,
   priceDecimals,
   percentagePnl,
@@ -264,7 +263,7 @@ function sharePosition() {
             class="font-mono text-sm"
             data-cy="postion-entry-pnl"
           >
-            {{ pnlToFormat }}
+            {{ pnl.toFormat(2) }}
           </span>
           <span class="ml-1 font-mono text-sm">
             {{ market.quoteToken.symbol }}

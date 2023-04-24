@@ -156,28 +156,6 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
       : markPrice.value.times(quantity.value)
   })
 
-  const { valueToString: markPriceToFormat } = useBigNumberFormatter(
-    computed(() => markPrice.value),
-    {
-      decimalPlaces:
-        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      displayAbsoluteDecimalPlace: true
-    }
-  )
-
-  const { valueToString: priceToFormat } = useBigNumberFormatter(
-    computed(() => price.value),
-    {
-      decimalPlaces:
-        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-    }
-  )
-
-  const { valueToString: pnlToFormat } = useBigNumberFormatter(pnl, {
-    decimalPlaces:
-      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
-
   return {
     pnl,
     price,
@@ -185,15 +163,12 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     market,
     quantity,
     markPrice,
-    pnlToFormat,
     priceDecimals,
     percentagePnl,
     notionalValue,
-    priceToFormat,
     isBinaryOptions,
     quantityDecimals,
     liquidationPrice,
-    markPriceToFormat,
     effectiveLeverage
   }
 }
