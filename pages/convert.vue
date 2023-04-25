@@ -184,10 +184,16 @@ function handleFormSubmit() {
 }
 
 function handleConvertAttemptTrack(error?: string) {
+  if (!market.value) {
+    return
+  }
+
+  const { baseToken, quoteToken } = market.value
+
   amplitudeConvertTracker.convertAttemptTrackEvent({
     isBuy: isBuy.value,
-    baseDenom: formValues[TradeField.BaseDenom],
-    quoteDenom: formValues[TradeField.QuoteDenom],
+    baseSymbol: baseToken.symbol,
+    quoteSymbol: quoteToken.symbol,
     baseAmount: formValues[TradeField.BaseAmount],
     quoteAmount: formValues[TradeField.QuoteAmount],
     slippageTolerance: formValues[TradeField.SlippageTolerance],

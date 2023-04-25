@@ -105,10 +105,12 @@ function handleNavigation() {
 }
 
 function handleConvertClickTrack() {
+  const { baseToken, quoteToken } = props.market
+
   amplitudeConvertTracker.convertClickedTrackEvent({
     isBuy: props.isBuy,
-    baseDenom: formValues.value[TradeField.BaseDenom],
-    quoteDenom: formValues.value[TradeField.QuoteDenom],
+    baseSymbol: baseToken.symbol,
+    quoteSymbol: quoteToken.symbol,
     baseAmount: formValues.value[TradeField.BaseAmount],
     quoteAmount: formValues.value[TradeField.QuoteAmount],
     slippageTolerance: formValues.value[TradeField.SlippageTolerance],
