@@ -16,6 +16,7 @@ const { $onError } = useNuxtApp()
 const { error, success } = useNotifications()
 
 const props = defineProps({
+  isAccount: Boolean,
   hideBalance: Boolean,
 
   position: {
@@ -63,6 +64,14 @@ const marketRoute = computed(() => {
   }
 
   return getMarketRoute(market.value)
+})
+
+const rowWrapperClass = computed(() => {
+  if (props.isAccount) {
+    return 'border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0  h-14 gap-2 transition-all cursor-pointer'
+  }
+
+  return 'h-[60px]'
 })
 
 function onAddMarginButtonClick() {
@@ -139,9 +148,10 @@ function sharePosition() {
   <tr
     v-if="market"
     :data-cy="'open-position-table-row-' + position.ticker"
-    class="h-[60px]"
+    :class="rowWrapperClass"
+    class="whitespace-nowrap"
   >
-    <td class="text-left cursor-pointer pl-3">
+    <td class="text-left cursor-pointer pl-3" :class="{ 'pr-4': isAccount }">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken">
           <CommonTokenIcon :token="market.baseToken" />
@@ -149,6 +159,9 @@ function sharePosition() {
         <div class="ml-2">
           <span
             class="text-white text-xs"
+            :class="{
+              'font-bold lg:text-sm uppercase tracking-wide': isAccount
+            }"
             data-cy="open-position-ticker-name-table-data"
           >
             {{ position.ticker }}
@@ -157,13 +170,14 @@ function sharePosition() {
       </NuxtLink>
     </td>
 
-    <td class="text-left pl-1text-xs">
+    <td class="text-left pl-1 text-xs" :class="{ 'pr-4': isAccount }">
       <span
         data-cy="open-position-trade-direction-table-data"
         class="text-xs"
         :class="{
           'text-green-500': position.direction === TradeDirection.Long,
-          'text-red-500': position.direction === TradeDirection.Short
+          'text-red-500': position.direction === TradeDirection.Short,
+          'lg:text-sm': isAccount
         }"
       >
         {{
@@ -174,31 +188,45 @@ function sharePosition() {
       </span>
     </td>
 
-    <td class="text-right font-mono text-white text-xs">
+    <td
+      class="text-right font-mono text-white text-xs"
+      :class="{ 'lg:text-sm pr-4': isAccount }"
+    >
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <AppNumber
         v-else
-        xs
-        :decimals="quantityDecimals"
-        :number="quantity"
+        v-bind="{
+          sm: isAccount,
+          xs: !isAccount,
+          decimals: quantityDecimals,
+          number: quantity
+        }"
         data-cy="open-position-quantity-table-data"
       />
     </td>
 
-    <td class="text-right font-mono text-white text-xs">
+    <td
+      class="text-right font-mono text-white text-xs"
+      :class="{ 'pr-4': isAccount }"
+    >
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <div v-else>
+      <div v-else class="flex flex-col text-right">
         <AppNumber
-          xs
-          :decimals="priceDecimals"
-          :number="price"
+          v-bind="{
+            number: price,
+            sm: isAccount,
+            xs: !isAccount,
+            decimals: priceDecimals
+          }"
           data-cy="open-position-price-table-data"
         />
         <AppNumber
-          v-if="!markPrice.isNaN()"
-          sm
-          :decimals="priceDecimals"
-          :number="markPrice"
+          v-bind="{
+            number: markPrice,
+            sm: isAccount,
+            xs: !isAccount,
+            decimals: priceDecimals
+          }"
           class="text-gray-500 text-xs"
         />
       </div>
@@ -207,26 +235,38 @@ function sharePosition() {
     <td
       v-if="!isBinaryOptionsPage"
       class="text-right font-mono text-white text-xs"
+      :class="{ 'lg:text-sm pr-4': isAccount }"
     >
       <span v-if="isBinaryOptions">&mdash;</span>
       <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <AppNumber
         v-else
-        xs
-        :decimals="priceDecimals"
-        :number="liquidationPrice"
+        v-bind="{
+          number: liquidationPrice,
+          sm: isAccount,
+          xs: !isAccount,
+          decimals: priceDecimals
+        }"
         data-cy="open-position-liquidation-price-table-data"
       />
     </td>
 
-    <td class="text-right">
-      <span v-if="hideBalance" class="font-mono text-white text-xs">
+    <td class="text-right" :class="{ 'pr-4': isAccount }">
+      <span
+        v-if="hideBalance"
+        class="font-mono text-white text-xs"
+        :class="{ 'lg:text-sm': isAccount }"
+      >
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <div
         v-else-if="!pnl.isNaN()"
         class="flex items-center justify-end font-medium text-xs font-mono"
-        :class="{ 'text-green-500': pnl.gte(0), 'text-red-500': pnl.lt(0) }"
+        :class="{
+          'text-green-500': pnl.gte(0),
+          'text-red-500': pnl.lt(0),
+          'lg:text-sm': isAccount
+        }"
       >
         <div class="flex items-center space-x-2">
           <div class="flex items-end flex-col">
@@ -242,7 +282,9 @@ function sharePosition() {
               >
                 {{ pnl.toFixed(2) }}
               </span>
-              <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
+              <span class="ml-1" :class="{ 'text-2xs': !isAccount }">{{
+                market.quoteToken.symbol
+              }}</span>
             </span>
             <span class="flex mt-1">
               {{
@@ -261,38 +303,57 @@ function sharePosition() {
       <span
         v-else
         class="text-white text-xs"
+        :class="{ 'lg:text-sm': isAccount }"
         data-cy="open-position-no-pnl-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
-    <td class="text-right font-mono text-white text-xs">
+    <td
+      class="text-right font-mono text-white text-xs"
+      :class="{ 'lg:text-sm pr-6': isAccount }"
+    >
       <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
+
       <AppNumber
         v-else
-        xs
-        :decimals="priceDecimals"
-        :number="notionalValue"
+        v-bind="{
+          number: notionalValue,
+          sm: isAccount,
+          xs: !isAccount,
+          decimals: priceDecimals
+        }"
         data-cy="open-position-total-table-data"
       >
         <template #addon>
-          <span class="text-2xs text-gray-500">
+          <span
+            class="text-2xs text-gray-500"
+            :class="{ 'text-xs lg:text-sm text-gray-450 uppercase': isAccount }"
+          >
             {{ market.quoteToken.symbol }}
           </span>
         </template>
       </AppNumber>
     </td>
 
-    <td class="text-right font-mono text-white text-xs">
+    <td
+      class="text-right font-mono text-white text-xs"
+      :class="{ 'lg:text-sm pr-4': isAccount }"
+    >
       <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <div v-else class="flex items-center justify-end">
         <AppNumber
-          xs
+          v-bind="{
+            number: margin,
+            sm: isAccount,
+            xs: !isAccount,
+            decimals: priceDecimals
+          }"
           data-cy="open-position-margin-table-data"
           :decimals="priceDecimals"
           :number="margin"
@@ -308,14 +369,19 @@ function sharePosition() {
       </div>
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
-      <span v-if="isBinaryOptions" class="text-white text-xs">&mdash;</span>
-      <span v-else-if="hideBalance" class="text-white text-xs">
+    <td
+      v-if="!isBinaryOptionsPage"
+      class="text-right text-white text-xs font-mono"
+      :class="{ 'lg:text-sm pr-4': isAccount }"
+    >
+      <span v-if="isBinaryOptions">&mdash;</span>
+
+      <span v-else-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span
         v-else-if="effectiveLeverage.gte(0)"
-        class="flex items-center justify-end text-white text-xs"
+        class="flex items-center justify-end"
         data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
@@ -330,7 +396,7 @@ function sharePosition() {
       </span>
     </td>
 
-    <td class="text-center relative pr-3">
+    <td class="text-center relative" :class="{ 'pl-6': isAccount }">
       <PartialsCommonCancelButton
         v-if="!hideBalance"
         :status="status"

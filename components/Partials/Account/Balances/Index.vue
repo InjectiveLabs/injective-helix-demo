@@ -214,7 +214,7 @@ const usdcAggregationTypeBalances = computed(() =>
       </template>
     </table>
 
-    <table class="w-full border-collapse sm:table lg:hidden">
+    <table class="w-full border-collapse table lg:hidden">
       <PartialsAccountBalancesMobileHeader
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"

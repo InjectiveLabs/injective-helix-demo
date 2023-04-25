@@ -8,6 +8,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
@@ -15,7 +16,6 @@ import {
 } from '@/app/utils/constants'
 import { Change, TradeClickOrigin } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import { stableCoinDenoms } from '@/app/data/token'
 
 const appStore = useAppStore()
@@ -128,7 +128,7 @@ function updateWatchList() {
 }
 
 function handleTradeClickedTrack() {
-  amplitudeTracker.submitTradeClickedTrackEvent({
+  amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage

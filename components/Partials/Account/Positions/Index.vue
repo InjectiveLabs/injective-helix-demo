@@ -105,10 +105,6 @@ const showEmpty = computed(() => {
   return hasUnavailableMarkets
 })
 
-onMounted(() => {
-  //
-})
-
 onBeforeUnmount(() => {
   derivativeStore.cancelMarketsMarkPrices()
   positionStore.cancelSubaccountPositionsStream()
@@ -170,7 +166,7 @@ watch(
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative overflow-auto">
     <PartialsAccountPositionsActions
       v-model:market-denom="marketDenom"
       v-model:side="side"
@@ -179,22 +175,23 @@ watch(
       @positions:close="handleCloseAllPositions"
     />
 
-    <table class="w-full border-collapse hidden lg:table">
-      <PartialsAccountPositionsTableHeader />
+    <table class="w-full border-collapse hidden md:table">
+      <PartialsCommonSubaccountPositionHeader is-account />
 
-      <PartialsAccountPositionsTableRow
+      <PartialsCommonSubaccountPositionRow
         v-for="(position, i) in filteredPositions"
         :key="`position-${i}`"
         v-bind="{
           position,
           hideBalances
         }"
+        is-account
         @share:position="handleSharePosition"
       />
     </table>
 
-    <table class="w-full border-collapse table lg:hidden">
-      <PartialsAccountPositionsTableRowMobile
+    <table class="w-full border-collapse table md:hidden">
+      <PartialsCommonSubaccountPositionMobile
         v-for="(position, i) in filteredPositions"
         :key="`position-mobile-${i}`"
         v-bind="{

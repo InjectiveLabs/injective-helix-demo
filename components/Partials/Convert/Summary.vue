@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ONE_IN_BASE } from '@/app/utils/constants'
-import { TradeForm, TradeField } from '@/types'
-
-const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isBuy: Boolean,
   isLoading: Boolean,
+
+  fee: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+
+  minimalReceived: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
 
   amount: {
     type: String,
@@ -37,19 +43,6 @@ const showEmpty = computed(
     new BigNumberInBase(props.amount || 0).isNaN()
 )
 
-// execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
-const fee = computed<BigNumberInBase>(() => {
-  const quantity = new BigNumberInBase(
-    formValues.value[TradeField.QuoteAmount] || 0
-  )
-
-  if (quantity.isNaN() || quantity.lte(0)) {
-    return ZERO_IN_BASE
-  }
-
-  return quantity.times(takerFeeRate.value)
-})
-
 const feeRateToFormat = computed(() =>
   takerFeeRate.value.times(100).toFormat(2)
 )
@@ -74,20 +67,6 @@ const priceForDisplay = computed(() => {
   Sell:
   quantity * execution_price * (1 - slippage_tolerance) * (1 - feeRate)
 */
-const minimalReceived = computed<BigNumberInBase>(() => {
-  const quantity = new BigNumberInBase(props.amount || 0)
-  const feeRate = new BigNumberInBase(takerFeeRate.value)
-
-  if (props.isBuy) {
-    return quantity.dividedBy(
-      props.worstPriceWithSlippage.times(ONE_IN_BASE.plus(feeRate))
-    )
-  }
-
-  return quantity.times(
-    props.worstPriceWithSlippage.times(ONE_IN_BASE.minus(feeRate))
-  )
-})
 
 const inputToken = computed<Token | undefined>(() => {
   if (props.market) {
@@ -101,10 +80,13 @@ const outputToken = computed<Token | undefined>(() => {
   }
 })
 
-const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
-  decimalPlaces: props.market?.priceDecimals || 3,
-  minimalDecimalPlaces: props.market?.priceDecimals || 3
-})
+const { valueToString: feeToFormat } = useBigNumberFormatter(
+  computed(() => props.fee),
+  {
+    decimalPlaces: props.market?.priceDecimals || 3,
+    minimalDecimalPlaces: props.market?.priceDecimals || 3
+  }
+)
 
 const { valueToFixed: priceForDisplayToFormat } = useBigNumberFormatter(
   priceForDisplay,
@@ -115,7 +97,7 @@ const { valueToFixed: priceForDisplayToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: minimalReceivedToFormat } = useBigNumberFormatter(
-  minimalReceived,
+  computed(() => props.minimalReceived),
   {
     decimalPlaces: props.market?.quantityDecimals || 3,
     minimalDecimalPlaces: props.market?.quantityDecimals || 3
