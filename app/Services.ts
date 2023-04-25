@@ -94,7 +94,8 @@ export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
   networkEndpoints: ENDPOINTS,
-  feePayerPubKey: FEE_PAYER_PUB_KEY
+  feePayerPubKey: FEE_PAYER_PUB_KEY,
+  simulateTx: true
 })
 
 export const web3Client = new Web3Client({
