@@ -3,7 +3,12 @@ import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui
 import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
 import type { Token, Erc20Token } from '@injectivelabs/token-metadata'
 import { web3Client } from '@/app/Services'
-import { setTokenAllowance, transfer, withdraw } from '@/store/peggy/message'
+import {
+  setTokenAllowance,
+  transfer,
+  resetOrSetAllowance,
+  withdraw
+} from '@/store/peggy/message'
 
 type TokenStoreState = {
   tradeableErc20BalancesWithTokenAndPrice: BalanceWithTokenWithErc20BalanceWithPrice[]
@@ -19,6 +24,7 @@ export const usePeggyStore = defineStore('peggy', {
     transfer,
     withdraw,
     setTokenAllowance,
+    resetOrSetAllowance,
 
     getErc20BalancesWithTokenAndPrice() {
       const tokenStore = useTokenStore()
