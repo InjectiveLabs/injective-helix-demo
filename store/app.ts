@@ -24,6 +24,7 @@ import {
 import {
   fetchGeoLocation,
   validateGeoLocation,
+  fetchGeolocationFromBrowser,
   detectVPNOrProxyUsageNoThrow
 } from '@/app/services/region'
 import { todayInSeconds } from '@/app/utils/time'
@@ -103,9 +104,8 @@ export const useAppStore = defineStore('app', {
   actions: {
     async init() {
       const appStore = useAppStore()
-
       await appStore.fetchGeoLocation()
-      await appStore.detectVPNOrProxyUsage()
+      await appStore.handleInitialDetectVPNOrProxyUsage()
     },
 
     updateFavoriteMarkets(marketId: string) {
@@ -131,7 +131,7 @@ export const useAppStore = defineStore('app', {
       appStore.$patch({ userState })
     },
 
-    async detectVPNOrProxyUsage() {
+    async handleInitialDetectVPNOrProxyUsage() {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
@@ -200,17 +200,21 @@ export const useAppStore = defineStore('app', {
     async validate() {
       const appStore = useAppStore()
 
+      const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
+
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
-
+        /*
+        If vpn is detected, we get the geolocation from browser api to check if it's on the restricted list
+        Else we use geoip to check if the user is in a country from the restricted list
+        */
         if (vpnOrProxyUsageDetected) {
-          throw new GeneralException(
-            new Error('Please disable VPN in order to use Helix')
-          )
-        }
+          const userCountryFromBrowser = await fetchGeolocationFromBrowser()
 
-        if (appStore.userState.geoLocation) {
-          await validateGeoLocation(appStore.userState.geoLocation)
+          if (userCountryFromBrowser) {
+            await validateGeoLocation(userCountryFromBrowser)
+          }
+        } else if (appStore.userState.geoLocation.country) {
+          await validateGeoLocation(appStore.userState.geoLocation.country)
         }
 
         appStore.$patch({
