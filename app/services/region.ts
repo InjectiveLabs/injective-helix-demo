@@ -175,7 +175,7 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
   }
 }
 
-export const getCoords = async () => {
+export const getCoordinates = async () => {
   const position = (await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   }).catch(() => {
@@ -197,8 +197,8 @@ export const getCoords = async () => {
   }
 }
 
-export const fetchGeolocationFromBrowser = async () => {
-  const position = await getCoords()
+export const fetchUserCountryFromBrowser = async () => {
+  const position = await getCoordinates()
 
   return await fetchCountryFromCoordinates(
     position.latitude,

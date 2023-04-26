@@ -24,7 +24,7 @@ import {
 import {
   fetchGeoLocation,
   validateGeoLocation,
-  fetchGeolocationFromBrowser,
+  fetchUserCountryFromBrowser,
   detectVPNOrProxyUsageNoThrow
 } from '@/app/services/region'
 import { todayInSeconds } from '@/app/utils/time'
@@ -36,6 +36,7 @@ import {
 import { UiAnnouncementTransformer } from '@/app/client/transformers/UiAnnouncementTransformer'
 import { Announcement, Attachment } from '@/app/client/types/announcements'
 import { alchemyKey } from '@/app/wallet-strategy'
+import { amplitudeWalletTracker } from '@/app/providers/amplitude'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -208,7 +209,9 @@ export const useAppStore = defineStore('app', {
         Else we use geoip to check if the user is in a country from the restricted list
         */
         if (vpnOrProxyUsageDetected) {
-          const userCountryFromBrowser = await fetchGeolocationFromBrowser()
+          const userCountryFromBrowser = await fetchUserCountryFromBrowser()
+
+          amplitudeWalletTracker.submitVPNTrackEvent(userCountryFromBrowser)
 
           if (userCountryFromBrowser) {
             await validateGeoLocation(userCountryFromBrowser)
