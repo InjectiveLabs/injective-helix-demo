@@ -74,8 +74,6 @@ function resetForm(token?: Token) {
 }
 
 function handleBridgeConfirmed() {
-  resetForm()
-
   modalStore.closeModal(Modal.BridgeConfirm)
   modalStore.openModal({ type: Modal.BridgeCompleted })
 }

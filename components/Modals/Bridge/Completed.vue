@@ -75,6 +75,14 @@ function handleModalClose() {
             </span>
           </p>
           <div class="flex items-center justify-between mt-6 gap-4">
+            <AppButton
+              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
+              data-cy="transfer-completed-modal-ok-button"
+              lg
+              @click="handleModalClose"
+            >
+              {{ $t('common.ok') }}
+            </AppButton>
             <div class="text-primary-500 cursor-pointer w-full">
               <NuxtLink
                 v-if="isOnChainTransaction"
@@ -97,15 +105,6 @@ function handleModalClose() {
                 </div>
               </NuxtLink>
             </div>
-
-            <AppButton
-              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
-              data-cy="transfer-completed-modal-ok-button"
-              lg
-              @click="handleModalClose"
-            >
-              {{ $t('common.ok') }}
-            </AppButton>
           </div>
         </div>
 
