@@ -5,6 +5,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
+import { updateMetamaskNetwork } from '@injectivelabs/wallet-ts/dist/esm/utils/wallets/metamask'
 import { ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
 import { walletStrategy } from '@/app/wallet-strategy'
 
@@ -56,32 +57,6 @@ export const validateMetamask = async (
   const metamaskChainIdDoesntMatchTheActiveChainId = chainId !== metamaskChainId
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
-    if (chainId === EthereumChainId.Kovan) {
-      throw new MetamaskException(
-        new Error('Please change your Metamask network to Kovan Test Network'),
-        {
-          code: UnspecifiedErrorCode,
-          type: ErrorType.WalletError
-        }
-      )
-    }
-
-    if (chainId === EthereumChainId.Goerli) {
-      throw new MetamaskException(
-        new Error('Please change your Metamask network to Goerli Test Network'),
-        {
-          code: UnspecifiedErrorCode,
-          type: ErrorType.WalletError
-        }
-      )
-    }
-
-    throw new MetamaskException(
-      new Error('Please change your Metamask network to Ethereum Mainnet'),
-      {
-        code: UnspecifiedErrorCode,
-        type: ErrorType.WalletError
-      }
-    )
+    return await updateMetamaskNetwork(chainId)
   }
 }
