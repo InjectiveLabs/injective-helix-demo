@@ -6,6 +6,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
@@ -39,15 +40,15 @@ import { alchemyKey } from '@/app/wallet-strategy'
 import { amplitudeWalletTracker } from '@/app/providers/amplitude'
 
 export interface UserBasedState {
-  vpnOrProxyUsageValidationTimestamp: number
-  favoriteMarkets: string[]
   geoLocation: GeoLocation
-  orderbookLayout: OrderbookLayout
+  favoriteMarkets: string[]
   tradingLayout: TradingLayout
-  ninjaPassWinnerModalViewed: boolean
-  userFeedbackModalViewed: boolean
-  skipTradeConfirmationModal: boolean
   bannersViewed: NoticeBanner[]
+  orderbookLayout: OrderbookLayout
+  userFeedbackModalViewed: boolean
+  ninjaPassWinnerModalViewed: boolean
+  skipTradeConfirmationModal: boolean
+  vpnOrProxyUsageValidationTimestamp: number
 }
 
 type AppStoreState = {
@@ -64,6 +65,9 @@ type AppStoreState = {
   userState: UserBasedState
   announcements: Announcement[]
   attachments: Attachment[]
+
+  // user's country that should not be cached in local storage
+  userCountryFromBrowser: string
 }
 
 const initialStateFactory = (): AppStoreState => ({
@@ -91,6 +95,7 @@ const initialStateFactory = (): AppStoreState => ({
     skipTradeConfirmationModal: false,
     bannersViewed: []
   },
+  userCountryFromBrowser: '',
   announcements: [],
   attachments: []
 })
@@ -198,7 +203,7 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    async validate() {
+    async validate(wallet: Wallet) {
       const appStore = useAppStore()
 
       const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
@@ -211,7 +216,9 @@ export const useAppStore = defineStore('app', {
         if (vpnOrProxyUsageDetected) {
           const userCountryFromBrowser = await fetchUserCountryFromBrowser()
 
-          amplitudeWalletTracker.submitVPNTrackEvent(userCountryFromBrowser)
+          appStore.$patch({
+            userCountryFromBrowser
+          })
 
           if (userCountryFromBrowser) {
             await validateGeoLocation(userCountryFromBrowser)
@@ -225,6 +232,12 @@ export const useAppStore = defineStore('app', {
             ...appStore.userState,
             vpnOrProxyUsageValidationTimestamp: todayInSeconds()
           }
+        })
+
+        amplitudeWalletTracker.submitWalletSelectedTrackEvent({
+          wallet,
+          userCountryFromBrowser: appStore.userCountryFromBrowser,
+          userCountryFromVpnApi: appStore.userState.geoLocation.country
         })
       }
     },

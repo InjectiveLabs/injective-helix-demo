@@ -39,7 +39,8 @@ export default <Config>{
     'bg-gray-900/80',
     'text-red-500',
     'text-orange-400',
-    'text-green-400'
+    'text-green-400',
+    'text-primary-500'
   ],
   mode: 'jit',
 
