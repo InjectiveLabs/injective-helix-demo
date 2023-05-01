@@ -175,29 +175,38 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
   }
 }
 
-export const getCoordinates = async () => {
+export const displayVPNOrProxyUsageToast = () => {
   const { info } = useNotifications()
+
+  const MORE_INFO_URL =
+    'https://helixapp.zendesk.com/hc/en-us/articles/5377904870415-Who-can-use-Helix-'
+  const TOAST_DURATION = 10 * 1000
+
+  info({
+    title: 'VPN or proxy detected',
+    description:
+      'Please make sure that you have allowed location access in your browser and system settings.',
+    timeout: TOAST_DURATION,
+    actions: [
+      {
+        key: MORE_INFO_URL,
+        label: 'Learn More',
+        callback: () => window.open(MORE_INFO_URL, '_blank')
+      }
+    ]
+  })
+}
+
+export const getCoordinatesNoThrow = async () => {
+  displayVPNOrProxyUsageToast()
 
   const position = (await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   }).catch(() => {
-    const MORE_INFO_URL =
-      'https://helixapp.zendesk.com/hc/en-us/articles/5377904870415-Who-can-use-Helix-'
-    const TOAST_DURATION = 10 * 1000
-
-    info({
-      title: 'VPN or proxy detected',
-      description:
-        'Please make sure that you have allowed location access in your browser and system settings.',
-      timeout: TOAST_DURATION,
-      actions: [
-        {
-          key: MORE_INFO_URL,
-          label: 'Learn More',
-          callback: () => window.open(MORE_INFO_URL, '_blank')
-        }
-      ]
-    })
+    return {
+      longitude: '',
+      latitude: ''
+    }
   })) as {
     coords: {
       longitude: string
@@ -212,7 +221,7 @@ export const getCoordinates = async () => {
 }
 
 export const fetchUserCountryFromBrowser = async () => {
-  const position = await getCoordinates()
+  const position = await getCoordinatesNoThrow()
 
   return await fetchCountryFromCoordinates(
     position.latitude,
