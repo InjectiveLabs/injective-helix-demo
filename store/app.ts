@@ -201,11 +201,17 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       if (GEO_IP_RESTRICTIONS_ENABLED) {
+        const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
+
+        if (vpnOrProxyUsageDetected) {
+          throw new GeneralException(
+            new Error('Please disable VPN in order to use Helix')
+          )
+        }
+
         if (appStore.userState.geoLocation) {
           await validateGeoLocation(appStore.userState.geoLocation)
         }
-
-        await detectVPNOrProxyUsageNoThrow()
 
         appStore.$patch({
           userState: {
