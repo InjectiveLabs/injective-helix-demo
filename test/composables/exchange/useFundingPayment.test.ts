@@ -1,7 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { ref } from 'vue'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { beforeAll, describe, expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { marketFactory, exchangeFactory } from '@/test/mocks'
 import { useFundingPayment } from '@/composables/exchange/useFundingPayment'
@@ -20,38 +20,32 @@ describe('useFundingPayment', () => {
     useFundingPayment(fundingPayment)
 
   describe.concurrent('time', () => {
-    describe('fail validation return empty string', () => {
-      test('if fundingPayment.timestamp is undefined', () => {
-        fundingPayment.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
+    test('returns empty string', () => {
+      fundingPayment.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
 
-        expect(time.value).toEqual('')
-      })
+      expect(time.value).toEqual('')
     })
 
-    describe('passes validation', () => {
-      test('time is formatted', () => {
-        fundingPayment.value = {
-          ...exchangeFactory.injUsdtPerpFundingPayment,
-          timestamp: 946684800000
-        }
-        derivativeStore.markets = [
-          marketFactory.injUsdtDerivativeMarketWithToken
-        ]
+    test('returns formattedValue', () => {
+      fundingPayment.value = {
+        ...exchangeFactory.injUsdtPerpFundingPayment,
+        timestamp: 946684800000
+      }
+      derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
 
-        expect(time.value).toEqual('31 Dec 18:00:00')
-      })
+      expect(time.value).toEqual('31 Dec 19:00:00')
     })
   })
 
   describe.concurrent('total', () => {
-    describe('fail validation return 0', () => {
-      test('if fundingPayment.amount is undefined', () => {
+    describe('returns ZERO_IN_BASE', () => {
+      test('fundingPayment.amount is undefined', () => {
         fundingPayment.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
 
         expect(total.value).toEqual(ZERO_IN_BASE)
       })
 
-      test('if market is undefined return 0', () => {
+      test('market is undefined', () => {
         fundingPayment.value = {
           ...exchangeFactory.injUsdtPerpFundingPayment,
           amount: '3'
@@ -62,81 +56,56 @@ describe('useFundingPayment', () => {
       })
     })
 
-    describe('passes validation', () => {
-      beforeAll(() => {
-        derivativeStore.markets = [
-          marketFactory.injUsdtDerivativeMarketWithToken
-        ]
-      })
+    test('returns total', () => {
+      derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
+      fundingPayment.value = {
+        ...exchangeFactory.injUsdtPerpFundingPayment,
+        amount: '3000000'
+      }
 
-      test('total is 3', () => {
-        fundingPayment.value = {
-          ...exchangeFactory.injUsdtPerpFundingPayment,
-          amount: '3000000'
-        }
-
-        expect(total.value.toFixed()).toEqual('3')
-      })
+      expect(total.value.toFixed()).toEqual('3')
     })
   })
 
   describe.concurrent('quantityDecimals', () => {
-    describe('fail validation return 0', () => {
-      test('if market is undefined return default decimals 4', () => {
-        derivativeStore.markets = []
-        expect(quantityDecimals.value).toEqual(4)
-      })
+    test('returns default decimals', () => {
+      derivativeStore.markets = []
+      expect(quantityDecimals.value).toEqual(4)
     })
 
-    describe('passes validation', () => {
-      test('quantity decimals is 3', () => {
-        derivativeStore.markets = [
-          marketFactory.injUsdtDerivativeMarketWithToken
-        ]
-        expect(quantityDecimals.value).toEqual(3)
-      })
+    test('returns formatted value', () => {
+      derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
+      expect(quantityDecimals.value).toEqual(3)
     })
   })
 
   describe.concurrent('priceDecimals', () => {
-    describe('fail validation return 0', () => {
-      test('if market is undefined return default decimals 4', () => {
-        derivativeStore.markets = []
+    test('returns default decimals', () => {
+      derivativeStore.markets = []
 
-        expect(priceDecimals.value).toEqual(4)
-      })
+      expect(priceDecimals.value).toEqual(4)
     })
 
-    describe('passes validation', () => {
-      test('price decimals is 3', () => {
-        derivativeStore.markets = [
-          marketFactory.injUsdtDerivativeMarketWithToken
-        ]
+    test('returns formatted value', () => {
+      derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
 
-        expect(priceDecimals.value).toEqual(3)
-      })
+      expect(priceDecimals.value).toEqual(3)
     })
   })
 
   describe.concurrent('market', () => {
-    describe('fail validation return undefined', () => {
-      test('if derivativeStore.markets is empty array return undefined', () => {
-        derivativeStore.markets = []
+    test('returns no market', () => {
+      derivativeStore.markets = []
 
-        expect(market.value).toEqual(undefined)
-      })
+      expect(market.value).toEqual(undefined)
     })
 
-    describe('passes validation', () => {
-      test('market is injUsdtPerp market', () => {
-        derivativeStore.markets = [
-          marketFactory.injUsdtDerivativeMarketWithToken
-        ]
+    test('returns correct market', () => {
+      derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
 
-        expect(market.value).toEqual(
-          marketFactory.injUsdtDerivativeMarketWithToken
-        )
-      })
+      expect(market.value).toEqual(
+        marketFactory.injUsdtDerivativeMarketWithToken
+      )
     })
   })
 })

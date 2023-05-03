@@ -27,23 +27,21 @@ describe('useTradeFee', () => {
   } = useTradeFee(market)
 
   describe.concurrent('tierLevel', () => {
-    describe('fail validation return 0', () => {
-      test('if exchangeStore.feeDiscountAccountInfo fails validation', () => {
-        expect(tierLevel.value).toEqual(0)
-      })
+    test('returns default tierLevel', () => {
+      expect(tierLevel.value).toEqual(0)
     })
 
-    describe('passes validation', () => {
+    describe('returns correct tier level', () => {
       beforeAll(() => {
         exchangeStore.feeDiscountAccountInfo =
           marketFactory.feeDiscountAccountInfo
       })
 
-      test('tierLevel is 0', () => {
+      test('is base tierLevel', () => {
         expect(tierLevel.value).toEqual(0)
       })
 
-      test('tierLevel is 1', () => {
+      test('is a higher tier level', () => {
         exchangeStore.feeDiscountAccountInfo = {
           ...marketFactory.feeDiscountAccountInfo,
           tierLevel: 1
@@ -54,184 +52,161 @@ describe('useTradeFee', () => {
   })
 
   describe.concurrent('makerFeeRateDiscount', () => {
-    describe('fail validation return 0', () => {
-      test('if exchangeStore.feeDiscountAccountInfo validation fail', () => {
+    describe('returns ZERO_IN_BASE', () => {
+      test('exchangeStore.feeDiscountAccountInfo is undefined', () => {
         expect(makerFeeRateDiscount.value).toEqual(ZERO_IN_BASE)
       })
 
-      test('if exchangeStore.feeDiscountAccountInfo.accountInfo validation fail', () => {
+      test('exchangeStore.feeDiscountAccountInfo.accountInfo is undefined', () => {
         exchangeStore.feeDiscountAccountInfo = {} as FeeDiscountAccountInfo
 
         expect(makerFeeRateDiscount.value).toEqual(ZERO_IN_BASE)
       })
     })
 
-    describe('passes validation', () => {
+    describe('returns makerFeeRateDiscount', () => {
       beforeAll(() => {
         exchangeStore.feeDiscountAccountInfo =
           marketFactory.feeDiscountAccountInfo
       })
 
-      describe('discount is 0', () => {
-        test('returns market makerFeeRateDiscount is 0', () => {
-          expect(makerFeeRateDiscount.value.toString()).toEqual(
-            marketFactory.feeDiscountAccountInfo.accountInfo?.makerDiscountRate
-          )
-        })
+      test('makerFeeRateDiscount is makerDiscountRate', () => {
+        expect(makerFeeRateDiscount.value.toString()).toEqual(
+          marketFactory.feeDiscountAccountInfo.accountInfo?.makerDiscountRate
+        )
+      })
 
-        test('returns market makerFeeRateDiscount is 0.001 ', () => {
-          exchangeStore.feeDiscountAccountInfo = {
-            ...marketFactory.feeDiscountAccountInfo,
-            accountInfo: {
-              ...marketFactory.feeDiscountAccountInfo.accountInfo,
-              makerDiscountRate: '1000000000000000'
-            } as FeeDiscountTierInfo
-          }
+      test('makerDiscountRate has a non-zero value', () => {
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo,
+          accountInfo: {
+            ...marketFactory.feeDiscountAccountInfo.accountInfo,
+            makerDiscountRate: '1000000000000000'
+          } as FeeDiscountTierInfo
+        }
 
-          expect(makerFeeRateDiscount.value.toString()).toEqual('0.001')
-        })
+        expect(makerFeeRateDiscount.value.toString()).toEqual('0.001')
       })
     })
   })
 
   describe.concurrent('takerFeeRateDiscount', () => {
-    describe('fail validation return 0', () => {
-      test('if exchangeStore.feeDiscountAccountInfo validation fail', () => {
+    describe('return 0', () => {
+      test('exchangeStore.feeDiscountAccountInfo is undefined', () => {
         expect(takerFeeRateDiscount.value).toEqual(ZERO_IN_BASE)
       })
 
-      test('if exchangeStore.feeDiscountAccountInfo.accountInfo validation fail', () => {
+      test('exchangeStore.feeDiscountAccountInfo.accountInfo is undefined', () => {
         exchangeStore.feeDiscountAccountInfo = {} as FeeDiscountAccountInfo
 
         expect(takerFeeRateDiscount.value).toEqual(ZERO_IN_BASE)
       })
     })
 
-    describe('passes validation', () => {
+    describe('returns formatted value', () => {
       beforeAll(() => {
         exchangeStore.feeDiscountAccountInfo =
           marketFactory.feeDiscountAccountInfo
       })
 
-      describe('discount is 0', () => {
-        test('returns market takerFeeRateDiscount is 0', () => {
-          expect(takerFeeRateDiscount.value.toString()).toEqual(
-            marketFactory.feeDiscountAccountInfo.accountInfo?.takerDiscountRate
-          )
-        })
+      test('takerFeeRateDiscount equals takerDiscountRate', () => {
+        expect(takerFeeRateDiscount.value.toString()).toEqual(
+          marketFactory.feeDiscountAccountInfo.accountInfo?.takerDiscountRate
+        )
+      })
 
-        test('returns market takerFeeRateDiscount is 0.001 ', () => {
-          exchangeStore.feeDiscountAccountInfo = {
-            ...marketFactory.feeDiscountAccountInfo,
-            accountInfo: {
-              ...marketFactory.feeDiscountAccountInfo.accountInfo,
-              takerDiscountRate: '1000000000000000'
-            } as FeeDiscountTierInfo
-          }
+      test('takerDiscountRate has a non-zero value', () => {
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo,
+          accountInfo: {
+            ...marketFactory.feeDiscountAccountInfo.accountInfo,
+            takerDiscountRate: '1000000000000000'
+          } as FeeDiscountTierInfo
+        }
 
-          expect(takerFeeRateDiscount.value.toString()).toEqual('0.001')
-        })
+        expect(takerFeeRateDiscount.value.toString()).toEqual('0.001')
       })
     })
   })
 
   describe.concurrent('takerFeeRate', () => {
-    describe('fail validation return 0', () => {
-      test('if market validation fail', () => {
-        expect(takerFeeRate.value).toEqual(ZERO_IN_BASE)
-      })
+    test('returns ZERO_IN_BASE', () => {
+      expect(takerFeeRate.value).toEqual(ZERO_IN_BASE)
     })
 
-    describe('passes validation', () => {
-      beforeAll(() => {
-        exchangeStore.feeDiscountAccountInfo =
-          marketFactory.feeDiscountAccountInfo
+    describe('returns takerFeeRate correctly', () => {
+      test('no discount', () => {
+        market.value = marketFactory.injUsdtSpotMarketWithToken
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo
+        }
+
+        expect(takerFeeRate.value.toString()).toEqual('0.001')
       })
 
-      describe('discount is 0', () => {
-        test('returns market takerFeeRate if discount is 0', () => {
-          market.value = {
-            ...marketFactory.injUsdtSpotMarketWithToken
-          }
+      test('returns takerFeeRate subtracting discount', () => {
+        market.value = marketFactory.injUsdtSpotMarketWithToken
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo,
+          accountInfo: {
+            ...marketFactory.feeDiscountAccountInfo.accountInfo,
+            takerDiscountRate: '1000000000000000'
+          } as FeeDiscountTierInfo
+        }
 
-          expect(takerFeeRate.value.toString()).toEqual('0.001')
-        })
-      })
-
-      describe('discount is 0.001', () => {
-        test('returns takerFeeRate subtracting discount', () => {
-          market.value = marketFactory.injUsdtSpotMarketWithToken
-          exchangeStore.feeDiscountAccountInfo = {
-            ...marketFactory.feeDiscountAccountInfo,
-            accountInfo: {
-              ...marketFactory.feeDiscountAccountInfo.accountInfo,
-              takerDiscountRate: '1000000000000000'
-            } as FeeDiscountTierInfo
-          }
-
-          expect(takerFeeRate.value.toString()).toEqual('0.000999')
-        })
+        expect(takerFeeRate.value.toString()).toEqual('0.000999')
       })
     })
   })
 
   describe.concurrent('makerFeeRate', () => {
-    describe('fail validation return 0', () => {
-      test('if market validation fail', () => {
-        test('if market validation fail', () => {
-          expect(makerFeeRate.value).toEqual(ZERO_IN_BASE)
-        })
-      })
+    test('returns ZERO_IN_BASE', () => {
+      market.value = undefined
+      expect(makerFeeRate.value).toEqual(ZERO_IN_BASE)
     })
 
-    describe('passes validation', () => {
+    describe('returns makerFeeRate correctly', () => {
       beforeAll(() => {
         exchangeStore.feeDiscountAccountInfo =
           marketFactory.feeDiscountAccountInfo
       })
 
-      describe('discount is 0', () => {
-        test('returns market takerFeeRate if discount is 0', () => {
-          market.value = {
-            ...marketFactory.injUsdtSpotMarketWithToken
-          }
+      test('no discount', () => {
+        market.value = {
+          ...marketFactory.injUsdtSpotMarketWithToken
+        }
 
-          expect(makerFeeRate.value.toString()).toEqual('-0.0001')
-        })
+        expect(makerFeeRate.value.toString()).toEqual('-0.0001')
       })
 
-      describe('discount is 0.001', () => {
-        test('returns negative makerFeeRate even if discount', () => {
-          market.value = marketFactory.injUsdtSpotMarketWithToken
-          exchangeStore.feeDiscountAccountInfo = {
-            ...marketFactory.feeDiscountAccountInfo,
-            accountInfo: {
-              ...marketFactory.feeDiscountAccountInfo.accountInfo,
-              makerDiscountRate: '1000000000000000'
-            } as FeeDiscountTierInfo
-          }
+      test('returns negative makerFeeRate even if discount', () => {
+        market.value = marketFactory.injUsdtSpotMarketWithToken
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo,
+          accountInfo: {
+            ...marketFactory.feeDiscountAccountInfo.accountInfo,
+            makerDiscountRate: '1000000000000000'
+          } as FeeDiscountTierInfo
+        }
 
-          expect(makerFeeRate.value.toString()).toEqual('-0.0001')
-        })
+        expect(makerFeeRate.value.toString()).toEqual('-0.0001')
       })
 
-      describe('discount is 0.000999', () => {
-        test('returns positive makerFeeRate subtracting discount', () => {
-          market.value = {
-            ...marketFactory.injUsdtSpotMarketWithToken,
-            makerFeeRate: '0.001'
-          }
+      test('returns positive makerFeeRate subtracting discount', () => {
+        market.value = {
+          ...marketFactory.injUsdtSpotMarketWithToken,
+          makerFeeRate: '0.001'
+        }
 
-          exchangeStore.feeDiscountAccountInfo = {
-            ...marketFactory.feeDiscountAccountInfo,
-            accountInfo: {
-              ...marketFactory.feeDiscountAccountInfo.accountInfo,
-              makerDiscountRate: '1000000000000000'
-            } as FeeDiscountTierInfo
-          }
+        exchangeStore.feeDiscountAccountInfo = {
+          ...marketFactory.feeDiscountAccountInfo,
+          accountInfo: {
+            ...marketFactory.feeDiscountAccountInfo.accountInfo,
+            makerDiscountRate: '1000000000000000'
+          } as FeeDiscountTierInfo
+        }
 
-          expect(makerFeeRate.value.toString()).toEqual('0.000999')
-        })
+        expect(makerFeeRate.value.toString()).toEqual('0.000999')
       })
     })
   })
