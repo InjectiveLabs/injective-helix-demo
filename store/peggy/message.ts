@@ -12,6 +12,7 @@ import {
   web3Broadcaster,
   web3Composer
 } from '@/app/Services'
+import { AppState } from '~/types'
 
 export const transfer = async ({
   token,
@@ -25,7 +26,8 @@ export const transfer = async ({
   const peggyStore = usePeggyStore()
   const { address, injectiveAddress, isUserWalletConnected, validate } =
     useWalletStore()
-  const { gasPrice, fetchGasPrice, queue } = useAppStore()
+  const appStore = useAppStore()
+  const { gasPrice, fetchGasPrice, queue } = appStore
 
   if (!address || !isUserWalletConnected) {
     return
@@ -45,19 +47,10 @@ export const transfer = async ({
   const allowance = new BigNumberInWei(
     balanceWithTokenAndPrice.erc20Balance.allowance
   )
-  const allowanceSet = new BigNumberInWei(actualAmount).lt(allowance)
+  const allowanceSet = new BigNumberInWei(actualAmount).lte(allowance)
 
   if (!allowanceSet) {
-    /**
-     * If the allowance is not 0 we first need to reset it to 0
-     * and then set it again to the unlimited allowance
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     */
-    if (allowance.gte(0)) {
-      await peggyStore.setTokenAllowance(balanceWithTokenAndPrice, ZERO_IN_WEI)
-    }
-
-    await peggyStore.setTokenAllowance(balanceWithTokenAndPrice)
+    await peggyStore.resetOrSetAllowance(balanceWithTokenAndPrice, allowance)
   }
 
   const tx = await web3Composer.getPeggyTransferTx({
@@ -128,6 +121,33 @@ export const withdraw = async ({
     address,
     msgs: message
   })
+}
+
+export const resetOrSetAllowance = async (
+  balanceWithToken: BalanceWithTokenWithErc20Balance,
+  allowance: BigNumberInWei
+) => {
+  const appStore = useAppStore()
+  const peggyStore = usePeggyStore()
+
+  appStore.$patch({
+    state: AppState.Idle
+  })
+
+  /**
+   * If the allowance is not 0 we first need to reset it to 0
+   * and then set it again to the unlimited allowance
+   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   */
+  if (allowance.gte(0)) {
+    await peggyStore.setTokenAllowance(balanceWithToken, ZERO_IN_WEI)
+  }
+
+  appStore.$patch({
+    state: AppState.Idle
+  })
+
+  await peggyStore.setTokenAllowance(balanceWithToken)
 }
 
 export const setTokenAllowance = async (

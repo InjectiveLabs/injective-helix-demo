@@ -21,6 +21,7 @@ const {
   quantity,
   markPrice,
   priceDecimals,
+  percentagePnl,
   notionalValue,
   liquidationPrice,
   quantityDecimals,
@@ -193,11 +194,10 @@ function sharePosition() {
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
         <AppNumber dense :decimals="priceDecimals" :number="price" />
-
+        <span class="mx-2">/</span>
         <span>
-          /
           <AppNumber
-            class="text-gray-500 ml-1"
+            class="text-gray-500"
             dense
             :decimals="priceDecimals"
             :number="markPrice"
@@ -239,6 +239,29 @@ function sharePosition() {
           <span>{{ pnl.gte(0) ? '+' : '' }}</span>
           <span>{{ pnl.toFixed(2) }}</span>
           <span class="text-3xs">{{ market.quoteToken.symbol }}</span>
+        </div>
+      </div>
+    </div>
+
+    <span class="text-gray-500 uppercase tracking-widest text-3xs">
+      {{ $t('trade.unrealized_pnl') }} %
+    </span>
+    <div class="text-right">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <div v-else class="flex justify-end items-center">
+        <span v-if="pnl.isNaN()">{{ $t('trade.not_available_n_a') }}</span>
+        <div
+          v-else
+          :class="{
+            'text-green-500': pnl.gte(0) && !pnl.isNaN(),
+            'text-red-500': pnl.lt(0) && !pnl.isNaN()
+          }"
+          class="flex items-center gap-1"
+        >
+          <span>≈</span>
+          <span>
+            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
+          </span>
         </div>
       </div>
     </div>

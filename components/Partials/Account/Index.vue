@@ -151,7 +151,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 
         <AppHocLoading :status="status">
           <PartialsAccountBalances
-            v-if="activeType === FilterList.Balances"
+            v-show="activeType === FilterList.Balances"
             v-bind="{
               balances: currentSubaccountBalances,
               hideBalances,
@@ -160,7 +160,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
           />
 
           <PartialsAccountPositions
-            v-if="activeType === FilterList.Positions"
+            v-show="activeType === FilterList.Positions"
             v-bind="{ hideBalances, balances: currentSubaccountBalances }"
           />
         </AppHocLoading>

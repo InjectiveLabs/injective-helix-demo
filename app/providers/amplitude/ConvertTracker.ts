@@ -6,8 +6,8 @@ import { AmplitudeEvent } from '@/types'
 class ConvertTracker extends BaseTracker {
   convertClickedTrackEvent({
     isBuy,
-    baseDenom,
-    quoteDenom,
+    baseSymbol,
+    quoteSymbol,
     baseAmount,
     quoteAmount,
     slippageTolerance,
@@ -16,8 +16,8 @@ class ConvertTracker extends BaseTracker {
     minimumAmountReceived
   }: {
     isBuy: boolean
-    baseDenom: string
-    quoteDenom: string
+    baseSymbol: string
+    quoteSymbol: string
     baseAmount: string
     quoteAmount: string
     slippageTolerance: string
@@ -37,8 +37,8 @@ class ConvertTracker extends BaseTracker {
 
     this.trackAmplitude(AmplitudeEvent.ConvertClicked, {
       isBuy,
-      baseDenom,
-      quoteDenom,
+      baseSymbol,
+      quoteSymbol,
       baseAmount,
       quoteAmount,
       slippageTolerance,
@@ -50,8 +50,8 @@ class ConvertTracker extends BaseTracker {
 
   convertAttemptTrackEvent({
     isBuy,
-    baseDenom,
-    quoteDenom,
+    baseSymbol,
+    quoteSymbol,
     baseAmount,
     quoteAmount,
     slippageTolerance,
@@ -61,8 +61,8 @@ class ConvertTracker extends BaseTracker {
     error
   }: {
     isBuy: boolean
-    baseDenom: string
-    quoteDenom: string
+    baseSymbol: string
+    quoteSymbol: string
     baseAmount: string
     quoteAmount: string
     slippageTolerance: string
@@ -73,8 +73,8 @@ class ConvertTracker extends BaseTracker {
   }) {
     this.trackAmplitude(AmplitudeEvent.ConvertAttempt, {
       isBuy,
-      baseDenom,
-      quoteDenom,
+      baseSymbol,
+      quoteSymbol,
       baseAmount,
       quoteAmount,
       slippageTolerance,
