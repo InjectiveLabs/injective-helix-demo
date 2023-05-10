@@ -1,1 +1,5 @@
-<template><div>Open Orders</div></template>
+<template>
+  <div>
+    <PartialsActivityViewsDerivatives />
+  </div>
+</template>

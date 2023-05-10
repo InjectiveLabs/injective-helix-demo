@@ -38,8 +38,10 @@
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex">
-        <div class="h-full-flex">
+      <CommonCard md class="h-full-flex space-y-4">
+        <div class="h-full-flex space-y-4">
+          <PartialsActivityCommonToolbarNew />
+
           <NuxtPage />
         </div>
       </CommonCard>

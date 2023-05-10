@@ -1,3 +1,3 @@
 <template>
-  <div>triggers</div>
+  <PartialsActivityViewsDerivativesTriggers />
 </template>

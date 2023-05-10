@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const spotStore = useSpotStore()
+</script>
+
 <template>
   <div>
     <div class="flex mb-4">
@@ -9,7 +13,7 @@
           }
         }"
       >
-        Open Orders
+        Open Orders ({{ spotStore.subaccountOrdersCount }})
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -39,7 +43,8 @@
 
     <div class="h-full rounded-xl overflow-y-auto">
       <CommonCard md class="h-full-flex">
-        <div class="h-full-flex">
+        <div class="h-full-flex space-y-4">
+          <PartialsActivityCommonToolbarNew />
           <NuxtPage />
         </div>
       </CommonCard>

@@ -2,7 +2,14 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 definePageMeta({
-  middleware: ['connected']
+  middleware: [
+    'connected',
+    (to) => {
+      if (to.name === 'activity') {
+        return navigateTo({ name: 'activity-positions' })
+      }
+    }
+  ]
 })
 
 const spotStore = useSpotStore()

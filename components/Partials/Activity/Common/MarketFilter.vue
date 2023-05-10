@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import type { Token } from '@injectivelabs/token-metadata'
 import { PropType } from 'vue'
-import { ActivityTab } from '@/types'
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: ''
-  },
-
-  tab: {
-    type: String as PropType<ActivityTab>,
-    required: true
   },
 
   tokens: {
@@ -45,7 +39,7 @@ const value = computed({
     v-model="value"
     :options="options"
     :placeholder="
-      tab === ActivityTab.WalletHistory
+      $route.name?.toString().startsWith('activity-wallet-history')
         ? $t('walletHistory.transfers.asset')
         : $t('account.positions.market.label')
     "
