@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import {
-  ChainCosmosErrorCode,
   ErrorType,
+  ThrownException,
   isThrownException,
-  ThrownException
+  ChainCosmosErrorCode,
+  formatNotificationDescription
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
@@ -27,7 +28,11 @@ const reportToUser = (error: ThrownException) => {
     return
   }
 
-  errorToast({ title: error.message })
+  const { tooltip, description } = formatNotificationDescription(
+    error.originalMessage
+  )
+
+  errorToast({ title: error.message, description, tooltip })
 }
 
 const reportToBugSnag = (error: ThrownException) => {
