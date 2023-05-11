@@ -1,18 +1,11 @@
 import type { Ref } from 'vue'
 import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
 import { injToken } from '@/app/data/token'
-import {
-  BridgeField,
-  BridgeForm,
-  BridgeType,
-  TransferDirection,
-  TransferSide
-} from '@/types'
-import { networksMeta, transferSideMeta } from '@/app/data/bridge'
+import { BridgeField, BridgeForm, BridgeType, TransferDirection } from '@/types'
+import { networksMeta } from '@/app/data/bridge'
 
 export const getInitialBridgeFormValues = () => ({
   [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
-  [BridgeField.TransferDirection]: TransferDirection.bankToTradingAccount,
   [BridgeField.Token]: injToken,
   [BridgeField.Denom]: injToken.denom,
   [BridgeField.Amount]: '',
@@ -31,15 +24,6 @@ export default function useBridgeState({
   const isDeposit = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
   )
-  const isTransfer = computed(
-    () => formValues.value[BridgeField.BridgeType] === BridgeType.Transfer
-  )
-
-  const isBankToTradingAccount = computed(
-    () =>
-      formValues.value[BridgeField.TransferDirection] ===
-      TransferDirection.bankToTradingAccount
-  )
 
   const origin = computed<BridgingNetwork | TransferDirection>(() => {
     switch (formValues.value[BridgeField.BridgeType]) {
@@ -48,7 +32,6 @@ export default function useBridgeState({
       case BridgeType.Withdraw:
         return BridgingNetwork.Injective
       default:
-        return formValues.value[BridgeField.TransferDirection]
     }
   })
 
@@ -59,9 +42,6 @@ export default function useBridgeState({
       case BridgeType.Withdraw:
         return formValues.value[BridgeField.BridgingNetwork]
       default:
-        return isBankToTradingAccount.value
-          ? TransferDirection.tradingAccountToBank
-          : TransferDirection.bankToTradingAccount
     }
   })
 
@@ -76,9 +56,6 @@ export default function useBridgeState({
           (meta) => meta.value === BridgingNetwork.Injective
         )
       default:
-        return isBankToTradingAccount.value
-          ? transferSideMeta[TransferSide.Bank]
-          : transferSideMeta[TransferSide.TradingAccount]
     }
   })
 
@@ -93,9 +70,6 @@ export default function useBridgeState({
           (meta) => meta.value === formValues.value[BridgeField.BridgingNetwork]
         )
       default:
-        return isBankToTradingAccount.value
-          ? transferSideMeta[TransferSide.TradingAccount]
-          : transferSideMeta[TransferSide.Bank]
     }
   })
 
@@ -148,7 +122,6 @@ export default function useBridgeState({
   return {
     isDeposit,
     isWithdraw,
-    isTransfer,
     isIbcTransfer,
     originIsEthereum,
     originNetworkMeta,
@@ -156,7 +129,6 @@ export default function useBridgeState({
     destinationIsEthereum,
     networkIsNotSupported,
     destinationIsInjective,
-    destinationNetworkMeta,
-    isBankToTradingAccount
+    destinationNetworkMeta
   }
 }

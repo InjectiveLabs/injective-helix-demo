@@ -14,7 +14,6 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { amplitudeBridgeTracker } from '@/app/providers/amplitude'
 
 const accountStore = useAccountStore()
 const tokenStore = useTokenStore()
@@ -26,7 +25,6 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 
 const formValues = useFormValues<BridgeForm>()
-const resetForm = useResetForm()
 
 const emit = defineEmits<{
   (e: 'form:submit'): void
@@ -34,13 +32,11 @@ const emit = defineEmits<{
 
 const {
   isDeposit,
-  isTransfer,
   isWithdraw,
   originNetworkMeta,
   destinationNetworkMeta,
   destinationIsEthereum,
   destinationIsInjective,
-  isBankToTradingAccount,
   networkIsNotSupported,
   originIsInjective
 } = useBridgeState({
@@ -158,12 +154,6 @@ const { valueToString: gasFeeInUsdToString } =
   useBigNumberFormatter(gasFeeInUsd)
 
 const handlerFunction = computed(() => {
-  if (isTransfer.value) {
-    return isBankToTradingAccount.value
-      ? handleTransferToTradingAccount
-      : handleTransferToBank
-  }
-
   if (isDeposit.value) {
     return handleDeposit
   }
@@ -177,14 +167,10 @@ const handlerFunction = computed(() => {
 })
 
 function handleModalClose() {
-  resetForm()
-
   modalStore.closeModal(Modal.BridgeConfirm)
 }
 
 function handleConfirmation() {
-  handleTransferTradingAccountTrack()
-
   handlerFunction.value()
 }
 
@@ -201,26 +187,6 @@ function handleWithdrawToInjective() {
     })
     .then(() => {
       success({ title: t('bridge.withdrawToInjectiveAddressSuccess') })
-
-      emit('form:submit')
-      emitFundingRefresh()
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
-function handleTransferToTradingAccount() {
-  status.setLoading()
-
-  accountStore
-    .deposit({
-      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
-      token: formValues.value[BridgeField.Token]
-    })
-    .then(() => {
-      success({ title: t('bridge.depositToTradingAccountSuccess') })
 
       emit('form:submit')
       emitFundingRefresh()
@@ -277,34 +243,6 @@ function handleDeposit() {
       status.setIdle()
     })
 }
-
-function handleTransferToBank() {
-  status.setLoading()
-
-  accountStore
-    .withdraw({
-      amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
-      token: formValues.value[BridgeField.Token]
-    })
-    .then(() => {
-      success({ title: t('bridge.withdrawFromTradingAccountSuccess') })
-
-      emit('form:submit')
-      emitFundingRefresh()
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
-function handleTransferTradingAccountTrack() {
-  amplitudeBridgeTracker.transferTradingAccountTrack({
-    transferDirection: formValues.value[BridgeField.TransferDirection],
-    token: formValues.value[BridgeField.Token].name,
-    amount: formValues.value[BridgeField.Amount]
-  })
-}
 </script>
 
 <template>
@@ -321,9 +259,6 @@ function handleTransferTradingAccountTrack() {
         </span>
         <span v-else-if="isWithdraw">
           {{ $t('bridge.withdrawFromInjective') }}
-        </span>
-        <span v-else>
-          {{ $t('bridge.transferFromToTradingAccount') }}
         </span>
       </h3>
     </template>
