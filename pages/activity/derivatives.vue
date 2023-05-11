@@ -49,6 +49,16 @@ const tabs = [
           >
             ({{ derivativeStore.subaccountOrders.length }})
           </span>
+
+          <span
+            v-if="
+              $route.name !== ActivityPage.DerivativeTriggers &&
+              tab.value === ActivityPage.DerivativeTriggers
+            "
+            class="ml-1"
+          >
+            ({{ derivativeStore.subaccountConditionalOrdersCount }})
+          </span>
         </PartialsActivityCommonLinkTab>
       </template>
     </div>

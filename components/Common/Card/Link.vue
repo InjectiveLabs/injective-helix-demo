@@ -56,7 +56,7 @@ defineProps({
 a.router-link-active {
   @apply border-blue-500 rounded-b-md opacity-100 rounded-none;
 }
-a.router-link-active .link-count-number {
+.router-link-active .link-count-number {
   @apply bg-blue-500 text-blue-900;
 }
 </style>

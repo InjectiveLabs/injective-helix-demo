@@ -27,7 +27,7 @@ defineProps({
 </template>
 
 <style scoped>
-a.router-link-exact-active {
+.router-link-exact-active {
   @apply text-blue-500 hover:text-blue-600 font-bold opacity-100;
 }
 </style>

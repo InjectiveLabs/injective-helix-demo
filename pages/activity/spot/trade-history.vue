@@ -92,9 +92,7 @@ function fetchData() {
 
 watch(
   () => route.fullPath,
-  () => {
-    fetchData()
-  },
+  () => fetchData,
   { immediate: true }
 )
 </script>
