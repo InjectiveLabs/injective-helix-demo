@@ -2437,7 +2437,7 @@
     eslint-plugin-prettier latest
     eslint-plugin-vue "9.11.0"
 
-"@injectivelabs/exceptions@^1.10.13-beta.3":
+"@injectivelabs/exceptions@^1.10.13-beta.3", "@injectivelabs/exceptions@next":
   version "1.10.13-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.10.13-beta.3.tgz#baa2e3aa2cc765b26209b05e40892d1177642ead"
   integrity sha512-XkzJtpq0CqnyrI+P0tMr0VaOqN3lJomE+FhqemxsOP8Ko0OlTbX5tVOC8mhTphrW90+iUWyjGr4Ks8mvNoGAZw==
@@ -2485,7 +2485,7 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/networks@^1.10.13-beta.3":
+"@injectivelabs/networks@^1.10.13-beta.3", "@injectivelabs/networks@next":
   version "1.10.13-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.10.13-beta.3.tgz#d7dddab259b64d946b016f04ccda3c21393d0e6d"
   integrity sha512-XzIs07hQtVsfX2kMvxwglo+PgCBU1t419f5qsTlp9LY0CTcFWMwInKs3GOElsH12n4336KJ3CMGyewE4qim5HQ==
@@ -2516,10 +2516,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.1.tgz#a727f4ff5bc14fd7a49183de9306b171716f0835"
   integrity sha512-46ljXMPP+NLX64BrfSP4GyZZQz89bB59Pnsj0lSyKxOYR/zeH6CIqPVrN27BzmZ+jBXl/XLTp6kr/iCfy2CEEg==
 
-"@injectivelabs/sdk-ts@^1.10.73-beta.6":
-  version "1.10.73-beta.6"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.73-beta.6.tgz#a230d9cef47901efbeaeaa465640e0961046aa94"
-  integrity sha512-9EJ5UxfBrfd7E55HFODrnvNxfHNUyrQxcdPDP1MgixqPfU9AxiMI5YE+FIGgVyaEF+b52NfqaEoVTqdL0OnNYg==
+"@injectivelabs/sdk-ts@^1.10.73-beta.7", "@injectivelabs/sdk-ts@next":
+  version "1.10.73-beta.7"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.73-beta.7.tgz#44fc7629de62d03ac07ca3cd8584d8bdc37583be"
+  integrity sha512-anoCmWl67c1iH+HWjqAxV6OsZXXzhjiP5AktBpVWwqd0ss51BHM7cksLDTTeAoZkkR6k30QZcEwETMQX+HQn3Q==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.30.1"
@@ -2535,7 +2535,7 @@
     "@injectivelabs/mito-proto-ts" "1.0.9"
     "@injectivelabs/networks" "^1.10.13-beta.3"
     "@injectivelabs/test-utils" "^1.10.13-beta.3"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.4"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.5"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.3"
     "@metamask/eth-sig-util" "^4.0.0"
@@ -2558,16 +2558,16 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@^1.10.83-beta.7":
-  version "1.10.83-beta.7"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.7.tgz#3f618698135a07c9522e6f97c22dd8957db7939a"
-  integrity sha512-WvfrhONR8cA8ymOh5V7B1nJn5tzFXdpA4hqsDFzfSY7NmWtOspvNKDqzfXA6LDZ71Cz/ntPI1f+eo9j0GP2//w==
+"@injectivelabs/sdk-ui-ts@next":
+  version "1.10.83-beta.8"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.8.tgz#8231e96ce0c34a2b236ee14e5d6c9599fe29b77c"
+  integrity sha512-lbZWL29NWf6ZM5eLfVaOMXWpaOdWruIRnufkKagi3d1fdckOwjvTQVPxHLB4PVT1OgL0zLPYdW7yXAxU9Sardg==
   dependencies:
     "@injectivelabs/contracts" "^1.10.23-beta.3"
     "@injectivelabs/exceptions" "^1.10.13-beta.3"
     "@injectivelabs/networks" "^1.10.13-beta.3"
-    "@injectivelabs/sdk-ts" "^1.10.73-beta.6"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.4"
+    "@injectivelabs/sdk-ts" "^1.10.73-beta.7"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.5"
     "@injectivelabs/token-utils" "^1.10.23-beta.3"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.3"
@@ -2595,10 +2595,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@^1.11.0-beta.4":
-  version "1.11.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.4.tgz#de8fd5d77d89f609841fb4a1484773147e7c41b6"
-  integrity sha512-/p9O5jlH2AT9ynqfmJkv5ZJxqt/n78Am6M5vyDR5FqlhcEzQvB081NseKfyhICU+e0TfYW4UiluLbCRzEp4m2Q==
+"@injectivelabs/token-metadata@^1.11.0-beta.5", "@injectivelabs/token-metadata@next":
+  version "1.11.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.5.tgz#573ba343a1cc0a2424828d05903da6255d9e29e2"
+  integrity sha512-B6av17HIloUuszqNvc8GFLwEEvBafypAl9Jz0nGbBaR/rhknl+cWwxZc0pYbeOOwH/o14OreZOOo3SyPPwimRA==
   dependencies:
     "@injectivelabs/exceptions" "^1.10.13-beta.3"
     "@injectivelabs/networks" "^1.10.13-beta.3"
@@ -2612,7 +2612,7 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-utils@^1.10.23-beta.3":
+"@injectivelabs/token-utils@^1.10.23-beta.3", "@injectivelabs/token-utils@next":
   version "1.10.23-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.10.23-beta.3.tgz#47d45bc03ed35c73c830b71a86bd77d27e21ed1c"
   integrity sha512-sncJIUrusXomXMjhd3qjkxJJ8zpuiS5UDehJMTLznuwwZFSlfgWQ+gGgnR0hK+NPgLjhrhEeQ/dUMxdxd9siDA==
@@ -2622,7 +2622,7 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^1.10.13-beta.3":
+"@injectivelabs/ts-types@^1.10.13-beta.3", "@injectivelabs/ts-types@next":
   version "1.10.13-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.10.13-beta.3.tgz#c498fc999a34e403aaa326b9e2d51b489c3895d0"
   integrity sha512-vlY5SlIB3cu84URNiKMOIbyvjy9I/LvZrUVV1lSag1X6YXy1mnU4F1cLZujA9kFOMvoiuEyCUFNShinu2t38lw==
@@ -2640,7 +2640,7 @@
     floating-vue "2.0.0-beta.20"
     vee-validate "4.7.3"
 
-"@injectivelabs/utils@^1.10.13-beta.3":
+"@injectivelabs/utils@^1.10.13-beta.3", "@injectivelabs/utils@next":
   version "1.10.13-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.10.13-beta.3.tgz#ff08b2ec58540561375b372fadb1bb31370caed4"
   integrity sha512-/lQxjJ7QEFsct4d0oDkk2xipWAtf589JE8bD909Hlzfb4e+b2d0koLU8eDW54wvodaFQY+s1MBkPCHZfU4jhIg==
@@ -2655,10 +2655,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@^1.10.83-beta.6":
-  version "1.10.83-beta.6"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.6.tgz#142cce424ea57b2077fef19ef053d19e804f5164"
-  integrity sha512-/J1nW2fY80EjmAR4je7W89NrHSeeLhMr4Tt3eRitqNU9huXO6QgXVH98O1TcL3LZaxKCk8JAPB/4wN7FrOWn6w==
+"@injectivelabs/wallet-ts@next":
+  version "1.10.83-beta.7"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.7.tgz#5f2775788b8dfb9ee288af0453b5681b82ada81b"
+  integrity sha512-aln2W56T/knxDjd8RveqS8gk0HlC9ibct5p3R3jveYDjGCCzX9Kirb6BHUh1TD9CtCKMIITEIE8m4Fud0IIjVA==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.30.1"
@@ -2668,7 +2668,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.10.13-beta.3"
     "@injectivelabs/networks" "^1.10.13-beta.3"
-    "@injectivelabs/sdk-ts" "^1.10.73-beta.6"
+    "@injectivelabs/sdk-ts" "^1.10.73-beta.7"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.3"
     "@keplr-wallet/cosmos" "^0.11.58"
@@ -3660,31 +3660,7 @@
     unimport "^3.0.6"
     untyped "^1.3.2"
 
-"@nuxt/kit@^3.0.0", "@nuxt/kit@^3.0.0-rc.13", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.2.0", "@nuxt/kit@^3.3.1":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.3.2.tgz#e3cd19c0f5cd0f124fff6f659a5f25002f808946"
-  integrity sha512-mHucMYuN/nVJp0p+L6ezzEls8Y1PerAXCJi01lS3Z5ozz+l2OusEfes8EBxWcy3x0C5465ignXCujQs3/LAvnQ==
-  dependencies:
-    "@nuxt/schema" "3.3.2"
-    c12 "^1.2.0"
-    consola "^2.15.3"
-    defu "^6.1.2"
-    globby "^13.1.3"
-    hash-sum "^2.0.0"
-    ignore "^5.2.4"
-    jiti "^1.18.2"
-    knitwork "^1.0.0"
-    lodash.template "^4.5.0"
-    mlly "^1.2.0"
-    pathe "^1.1.0"
-    pkg-types "^1.0.2"
-    scule "^1.0.0"
-    semver "^7.3.8"
-    unctx "^2.1.2"
-    unimport "^3.0.4"
-    untyped "^1.2.2"
-
-"@nuxt/kit@^3.4.1":
+"@nuxt/kit@^3.0.0", "@nuxt/kit@^3.4.1":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.4.2.tgz#a7ae05f154c43560f18dd56c49df1b23a2c2553b"
   integrity sha512-bFUpkyG2ZF6RYqiW+tXnWssccHQQqMF4kZJJLP/0eKXf+Fkt/Is0R7IY768jy8ylnyqeMBbmpg4Zv5gSZjfZQw==
@@ -3707,6 +3683,30 @@
     unctx "^2.3.0"
     unimport "^3.0.6"
     untyped "^1.3.2"
+
+"@nuxt/kit@^3.0.0-rc.13", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.2.0", "@nuxt/kit@^3.3.1":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.3.2.tgz#e3cd19c0f5cd0f124fff6f659a5f25002f808946"
+  integrity sha512-mHucMYuN/nVJp0p+L6ezzEls8Y1PerAXCJi01lS3Z5ozz+l2OusEfes8EBxWcy3x0C5465ignXCujQs3/LAvnQ==
+  dependencies:
+    "@nuxt/schema" "3.3.2"
+    c12 "^1.2.0"
+    consola "^2.15.3"
+    defu "^6.1.2"
+    globby "^13.1.3"
+    hash-sum "^2.0.0"
+    ignore "^5.2.4"
+    jiti "^1.18.2"
+    knitwork "^1.0.0"
+    lodash.template "^4.5.0"
+    mlly "^1.2.0"
+    pathe "^1.1.0"
+    pkg-types "^1.0.2"
+    scule "^1.0.0"
+    semver "^7.3.8"
+    unctx "^2.1.2"
+    unimport "^3.0.4"
+    untyped "^1.2.2"
 
 "@nuxt/postcss8@^1.1.3":
   version "1.1.3"
@@ -4056,13 +4056,20 @@
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
 
-"@pinia/nuxt@^0.4.7":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.4.8.tgz#ab6a6758f19da05e998dcda47be341a735c36f92"
-  integrity sha512-E0HKmW+6Ec5HYzomZl86xil2rGPRAqKG1d+slVVLBHC7PFZOM0VIw/1XFO9hwo+EiCuDEXZDReZwTqO7KQsMgQ==
+"@pinia/nuxt@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.4.9.tgz#de80f854cf10388523767f6080ce1cc6ea5b67e0"
+  integrity sha512-ojzUMHKrQ7ZFjhWqMYKYetcqHSfgtIhjc6Hxw4alfQaGTlFdj38Vpz8Ol36YvmNdSjLFTNWYAgxEWCvg6HcSSg==
   dependencies:
     "@nuxt/kit" "^3.0.0"
-    pinia ">=2.0.34"
+    pinia ">=2.0.35"
+
+"@pinia/testing@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@pinia/testing/-/testing-0.0.16.tgz#c58e3e18800a6a496680fb3f477f7318b9b513c8"
+  integrity sha512-oa5kO82hzWekqMq1HTnS/b+ZM+ZKEcEApuuCTelvKK79jTxg7P026Qw8/2RbVn5eUGAvRWQu4ubObrshVqCRjQ==
+  dependencies:
+    vue-demi "*"
 
 "@pkgr/utils@^2.3.1":
   version "2.3.1"
@@ -15512,10 +15519,10 @@ pify@^6.1.0:
   resolved "https://registry.yarnpkg.com/pify/-/pify-6.1.0.tgz#db9f2ebfba65f0bc144db65ae84d1a486ab72909"
   integrity sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==
 
-pinia@>=2.0.34:
-  version "2.0.34"
-  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.0.34.tgz#6c0c84f06b631c30c030633fa64e525c609105a9"
-  integrity sha512-cgOoGUiyqX0SSgX8XelK9+Ri4XA2/YyNtgjogwfzIx1g7iZTaZPxm7/bZYMCLU2qHRiHhxG7SuQO0eBacFNc2Q==
+pinia@>=2.0.35:
+  version "2.0.35"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.0.35.tgz#aa2597038bb55ea14ad689f83065d2814ebb8c10"
+  integrity sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==
   dependencies:
     "@vue/devtools-api" "^6.5.0"
     vue-demi "*"
@@ -18998,10 +19005,25 @@ unload@^2.4.1:
   resolved "https://registry.yarnpkg.com/unload/-/unload-2.4.1.tgz#b0c5b7fb44e17fcbf50dcb8fb53929c59dd226a5"
   integrity sha512-IViSAm8Z3sRBYA+9wc0fLQmU9Nrxb16rcDmIiR6Y9LJSZzI7QY5QsDhqPpKOjAn0O9/kfK1TfNEMMAGPTIraPw==
 
+<<<<<<< HEAD
 unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
   integrity sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==
+=======
+unplugin-auto-import@^0.15.3:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/unplugin-auto-import/-/unplugin-auto-import-0.15.3.tgz#abf5f1bf42f8c181e9dd1067bd5645aad727df6e"
+  integrity sha512-RLT8SqbPn4bT7yBshZId0uPSofKWnwr66RyDaxWaFb/+f7OTDOWAsVNz+hOQLBWSjvbekr2xZY9ccS8TDHJbCQ==
+  dependencies:
+    "@antfu/utils" "^0.7.2"
+    "@rollup/pluginutils" "^5.0.2"
+    local-pkg "^0.4.3"
+    magic-string "^0.30.0"
+    minimatch "^9.0.0"
+    unimport "^3.0.6"
+    unplugin "^1.3.1"
+>>>>>>> dev
 
 unplugin@^1.0.0, unplugin@^1.0.1, unplugin@^1.1.0, unplugin@^1.3.1:
   version "1.3.1"
