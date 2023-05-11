@@ -8,6 +8,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'pepe-usdt-perp',
   'wmatic-usdcet',
   'xau-usdt-perp',
   'gbp-usdt-perp',
