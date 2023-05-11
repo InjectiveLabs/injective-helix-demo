@@ -92,8 +92,7 @@ export enum TransferDirection {
 
 export enum BridgeType {
   Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
-  Transfer = 'Transfer'
+  Withdraw = 'Withdraw'
 }
 
 export enum TradeTypes {
@@ -250,8 +249,7 @@ export enum BridgeField {
   Denom = 'Denom',
   Destination = 'Destination',
   Memo = 'Memo',
-  Token = 'Token',
-  TransferDirection = 'Transfer Direction'
+  Token = 'Token'
 }
 
 export enum TradeField {
