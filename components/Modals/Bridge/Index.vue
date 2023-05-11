@@ -56,6 +56,7 @@ const memoRequired = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Bridge])
+// const isModalOpen = computed(() => true)
 const hasFormErrors = computed(() => Object.keys(formErrors.value).length > 0)
 
 const shouldConnectMetamask = computed(
