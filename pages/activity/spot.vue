@@ -33,7 +33,7 @@ const tabs = [
         }"
       >
         <span>{{ tab.label }}</span>
-        <span :id="tab.value"></span>
+        <span :id="tab.value" />
 
         <span
           v-if="
