@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityForm } from '~/types'
 
@@ -7,13 +6,6 @@ const spotStore = useSpotStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
-
-// const props = defineProps({
-//   status: {
-//     type: Object as PropType<Status>,
-//     default: () => new Status()
-//   }
-// })
 
 const actionStatus = reactive(new Status(StatusType.Idle))
 const formValues = useFormValues<ActivityForm>()

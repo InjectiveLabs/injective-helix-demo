@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { ActivityPage } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
@@ -11,7 +12,7 @@ const emit = defineEmits<{
 }>()
 
 const showRefreshBtn = computed(() => {
-  if (route.name?.toString() === 'activity-derivatives-order-history') {
+  if (route.name?.toString() === ActivityPage.DerivativeOrderHistory) {
     const latestVisibleOrders = derivativeStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -23,7 +24,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (route.name?.toString() === 'activity-derivatives-trade-history') {
+  if (route.name?.toString() === ActivityPage.DerivativeTradeHistory) {
     const latestVisibleTrades = derivativeStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {
@@ -35,7 +36,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleTrades[0].executedAt)
   }
 
-  if (route.name?.toString() === 'activity-spot-order-history') {
+  if (route.name?.toString() === ActivityPage.SpotOrderHistory) {
     const latestVisibleOrders = spotStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -47,7 +48,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (route.name?.toString() === 'activity-spot-trade-history') {
+  if (route.name?.toString() === ActivityPage.SpotTradeHistory) {
     const latestVisibleTrades = spotStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {

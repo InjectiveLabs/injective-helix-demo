@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityField } from '@/types'
 
@@ -7,18 +6,6 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
-
-// const props = defineProps({
-//   denoms: {
-//     type: Array as PropType<string[]>,
-//     default: () => []
-//   },
-
-//   status: {
-//     type: Object as PropType<Status>,
-//     default: () => new Status()
-//   }
-// })
 
 const actionStatus = reactive(new Status(StatusType.Idle))
 

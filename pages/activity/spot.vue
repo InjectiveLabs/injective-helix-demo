@@ -3,51 +3,49 @@ const spotStore = useSpotStore()
 </script>
 
 <template>
-  <div>
-    <div class="flex mb-4">
-      <PartialsActivityCommonLinkTab
-        is-index
-        v-bind="{
-          to: {
-            name: 'activity-spot'
-          }
-        }"
-      >
-        Open Orders ({{ spotStore.subaccountOrdersCount }})
-      </PartialsActivityCommonLinkTab>
+  <div class="flex space-x-4 mb-4">
+    <PartialsActivityCommonLinkTab
+      is-index
+      v-bind="{
+        to: {
+          name: 'activity-spot'
+        }
+      }"
+    >
+      {{ $t('activity.openOrders') }} ({{ spotStore.subaccountOrdersCount }})
+    </PartialsActivityCommonLinkTab>
 
-      <CommonSeparator />
+    <CommonSeparator />
 
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-spot-order-history'
-          }
-        }"
-      >
-        Order History
-      </PartialsActivityCommonLinkTab>
+    <PartialsActivityCommonLinkTab
+      v-bind="{
+        to: {
+          name: 'activity-spot-order-history'
+        }
+      }"
+    >
+      {{ $t('activity.orderHistory') }}
+    </PartialsActivityCommonLinkTab>
 
-      <CommonSeparator />
+    <CommonSeparator />
 
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-spot-trade-history'
-          }
-        }"
-      >
-        Trade History
-      </PartialsActivityCommonLinkTab>
-    </div>
+    <PartialsActivityCommonLinkTab
+      v-bind="{
+        to: {
+          name: 'activity-spot-trade-history'
+        }
+      }"
+    >
+      {{ $t('activity.tradeHistory') }}
+    </PartialsActivityCommonLinkTab>
+  </div>
 
-    <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex">
-        <div class="h-full-flex space-y-4">
-          <PartialsActivityCommonToolbarNew />
-          <NuxtPage />
-        </div>
-      </CommonCard>
-    </div>
+  <div class="h-full rounded-xl overflow-y-auto">
+    <CommonCard md class="h-full-flex">
+      <div class="h-full-flex space-y-4">
+        <PartialsActivityCommonToolbarNew />
+        <NuxtPage />
+      </div>
+    </CommonCard>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex mb-4">
+    <div class="flex space-x-4 mb-4">
       <PartialsActivityCommonLinkTab
         is-index
         v-bind="{
@@ -9,7 +9,7 @@
           }
         }"
       >
-        Transfers
+        {{ $t('walletHistory.transfers.transfers') }}
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -21,7 +21,7 @@
           }
         }"
       >
-        Deposits
+        {{ $t('walletHistory.deposits') }}
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -33,7 +33,7 @@
           }
         }"
       >
-        Withdrawals
+        {{ $t('walletHistory.withdrawals') }}
       </PartialsActivityCommonLinkTab>
     </div>
 

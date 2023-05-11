@@ -13,7 +13,9 @@ const derivativeStore = useDerivativeStore()
           }
         }"
       >
-        Open Orders ({{ derivativeStore.subaccountOrdersCount }})
+        {{ $t('activity.openOrders') }} ({{
+          derivativeStore.subaccountOrdersCount
+        }})
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -25,7 +27,9 @@ const derivativeStore = useDerivativeStore()
           }
         }"
       >
-        Triggers ({{ derivativeStore.subaccountConditionalOrdersCount }})
+        {{ $t('activity.triggers') }} ({{
+          derivativeStore.subaccountConditionalOrdersCount
+        }})
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -37,7 +41,7 @@ const derivativeStore = useDerivativeStore()
           }
         }"
       >
-        Order History
+        {{ $t('activity.orderHistory') }}
       </PartialsActivityCommonLinkTab>
 
       <CommonSeparator />
@@ -49,7 +53,7 @@ const derivativeStore = useDerivativeStore()
           }
         }"
       >
-        Trade History
+        {{ $t('activity.tradeHistory') }}
       </PartialsActivityCommonLinkTab>
     </div>
 

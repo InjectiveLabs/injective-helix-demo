@@ -1,15 +1,6 @@
 <script lang="ts" setup>
-// import { PropType } from 'vue'
-// import { Status } from '@injectivelabs/utils'
 import { BridgeTransactionState } from '@injectivelabs/sdk-ui-ts'
 import { ActivityForm } from '@/types'
-
-// const props = defineProps({
-//   status: {
-//     type: Object as PropType<Status>,
-//     default: () => new Status()
-//   }
-// })
 
 const bridgeStore = useBridgeStore()
 

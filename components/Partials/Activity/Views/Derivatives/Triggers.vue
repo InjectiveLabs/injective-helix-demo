@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderTypes,
@@ -11,13 +10,6 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
-
-// const props = defineProps({
-//   status: {
-//     type: Object as PropType<Status>,
-//     default: () => new Status()
-//   }
-// })
 
 const formValues = useFormValues<ActivityForm>()
 
