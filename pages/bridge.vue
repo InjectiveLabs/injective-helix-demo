@@ -53,8 +53,7 @@ const status = reactive(new Status(StatusType.Idle))
 </script>
 
 <template>
-  <div class="grid place-items-center min-h-full">
-    {{ formValues }}
+  <div class="grid place-items-center h-full">
     <div class="max-w-90% w-[448px]">
       <div>
         <div class="flex justify-start mb-6">

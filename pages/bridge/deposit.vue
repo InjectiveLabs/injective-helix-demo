@@ -114,12 +114,10 @@ const needsAllowanceSet = computed(
 
 function handleBridgeConfirmed() {
   modalStore.closeModal(Modal.BridgeConfirm)
-  modalStore.openModal({ type: Modal.BridgeCompleted })
 }
 
 function handleBridgeConfirmation() {
   nextTick(() => {
-    modalStore.closeModal(Modal.Bridge)
     modalStore.openModal({ type: Modal.BridgeConfirm })
 
     if (isTokenWormholeToken(formValues.value[BridgeField.Token])) {

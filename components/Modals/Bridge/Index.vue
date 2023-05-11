@@ -17,13 +17,7 @@ import {
   INJ_GAS_BUFFER_FOR_BRIDGE,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
-  Modal,
-  BridgeForm,
-  BridgeType,
-  BridgeField,
-  TransferDirection
-} from '@/types'
+import { Modal, BridgeForm, BridgeType, BridgeField } from '@/types'
 
 const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
@@ -87,10 +81,7 @@ const balanceWithToken = computed(() => {
     return balanceWithToken
   }
 
-  const noGasBufferNeededForTransfer =
-    walletStore.isWalletExemptFromGasFee ||
-    formValues.value[BridgeField.TransferDirection] ===
-      TransferDirection.tradingAccountToBank
+  const noGasBufferNeededForTransfer = walletStore.isWalletExemptFromGasFee
 
   if (noGasBufferNeededForTransfer) {
     return balanceWithToken
@@ -211,22 +202,12 @@ watch(destination, (value: string) => {
         <span v-else>
           {{ $t('bridge.transferFromToTradingAccount') }}
         </span>
-
-        <CommonInfoTooltip
-          v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
-          class="ml-2"
-          :tooltip="$t('bridge.transferTitleTooltip')"
-        />
       </h3>
     </template>
 
     <div v-if="walletStore.isUserWalletConnected">
       <div class="mb-4">
-        <ModalsBridgeTransferDirectionSwitch
-          v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
-        />
-
-        <ModalsBridgeNetworkSelect v-else>
+        <ModalsBridgeNetworkSelect>
           <template #title>
             <span
               v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"
