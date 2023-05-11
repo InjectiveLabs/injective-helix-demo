@@ -14,6 +14,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const activityStore = useActivityStore()
@@ -34,6 +35,7 @@ onUnmounted(() => {
 
 function fetchData() {
   status.setLoading()
+  appStore.cancelAllStreams()
 
   Promise.all([
     activityStore.streamDerivativeSubaccountOrderHistory(),

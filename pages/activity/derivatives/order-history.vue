@@ -4,18 +4,22 @@ import { ActivityForm, BusEvents, PaginationState } from '@/types'
 import {
   executionOrderTypeToOrderExecutionTypes,
   executionOrderTypeToOrderTypes
-} from '~/app/client/utils/activity'
+} from '@/app/client/utils/activity'
 
 const route = useRoute()
+const formValues = useFormValues<ActivityForm>()
 const derivativeStore = useDerivativeStore()
+
 const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
   usePagination({
     totalCount: toRef(derivativeStore, 'subaccountOrderHistoryCount')
   })
-const formValues = useFormValues<ActivityForm>()
-useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
 
 const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+})
 
 function handleLimitChangeEvent(limit: number) {
   updateRouteQuery({

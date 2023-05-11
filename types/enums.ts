@@ -309,13 +309,6 @@ export enum ActivityView {
   WalletWithdrawals = 'WalletHistory/Withdrawals'
 }
 
-export enum ActivityTab {
-  Positions = 'positions',
-  Derivatives = 'derivatives',
-  Spot = 'spot',
-  WalletHistory = 'wallet-history'
-}
-
 export enum AggregatedBalanceType {
   Inj = 'inj',
   Aggregated = 'aggregated'
@@ -349,4 +342,11 @@ export enum ActivityPage {
   WalletHistoryTransfers = 'activity-wallet-history',
   WalletHistoryDeposits = 'activity-wallet-history-deposits',
   WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
+}
+
+export enum ActivityTab {
+  Spot = 'activity-spot',
+  Positions = 'activity-positions',
+  Derivatives = 'activity-derivatives',
+  WalletHistory = 'activity-wallet-history'
 }

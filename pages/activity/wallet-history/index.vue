@@ -5,14 +5,18 @@ import { ActivityForm, BusEvents, PaginationState } from '@/types'
 const route = useRoute()
 const bridgeStore = useBridgeStore()
 
-const status = reactive(new Status(StatusType.Loading))
+const formValues = useFormValues<ActivityForm>()
+
 const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
   usePagination({
     totalCount: toRef(bridgeStore, 'subaccountTransferBridgeTransactionsCount')
   })
-const formValues = useFormValues<ActivityForm>()
 
-useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+})
 
 function fetchData() {
   status.setLoading()

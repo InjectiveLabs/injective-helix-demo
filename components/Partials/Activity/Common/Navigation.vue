@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { ActivityTab } from '@/types'
 
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
 const spotStore = useSpotStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+
+const { t } = useI18n()
 
 defineProps({
   status: {
@@ -12,58 +15,47 @@ defineProps({
     default: () => new Status(StatusType.Idle)
   }
 })
+
+const tabs = computed(() => [
+  {
+    label: t('activity.positions'),
+    to: { name: ActivityTab.Positions },
+    count: positionStore.subaccountPositionsCount
+  },
+  {
+    label: t('activity.derivativeOrders'),
+    to: { name: ActivityTab.Derivatives },
+    count: derivativeStore.subaccountOrdersCount
+  },
+  {
+    label: t('activity.spotOrders'),
+    to: { name: ActivityTab.Spot },
+    count: spotStore.subaccountOrdersCount
+  },
+  {
+    label: t('activity.walletHistory'),
+    to: { name: ActivityTab.WalletHistory }
+  }
+])
 </script>
 
 <template>
   <div class="overflow-x-auto hide-scrollbar flex-none">
     <div class="flex lg:grid grid-cols-4 gap-4">
       <CommonCardLink
-        v-bind="{
-          to: { name: 'activity-positions' },
-          showLoading: status.isLoading()
-        }"
+        v-for="tab in tabs"
+        v-bind="{ to: tab.to, showLoading: status.isLoading() }"
+        :key="`tab-${tab.label}`"
       >
-        <template #icon>
-          {{ positionStore.subaccountPositionsCount }}
+        <span>{{ tab.label }}</span>
+
+        <template v-if="tab.count" #icon>
+          {{ tab.count }}
         </template>
 
-        <span> {{ $t('activity.positions') }}</span>
-      </CommonCardLink>
-
-      <CommonCardLink
-        v-bind="{
-          to: { name: 'activity-derivatives' },
-          showLoading: status.isLoading()
-        }"
-      >
-        <template #icon>
-          {{ derivativeStore.subaccountOrdersCount }}
-        </template>
-
-        <span>{{ $t('activity.derivativeOrders') }}</span>
-      </CommonCardLink>
-
-      <CommonCardLink
-        v-bind="{
-          to: { name: 'activity-spot' },
-          showLoading: status.isLoading()
-        }"
-      >
-        <template #icon>
-          <span>{{ spotStore.subaccountOrdersCount }}</span>
-        </template>
-        <span>{{ $t('activity.spotOrders') }}</span>
-      </CommonCardLink>
-
-      <CommonCardLink
-        v-bind="{
-          to: { name: 'activity-wallet-history' }
-        }"
-      >
-        <template #icon>
+        <template v-else #icon>
           <BaseIcon name="wallet" class="w-3 md:w-3.5 h-auto" />
         </template>
-        {{ $t('activity.walletHistory') }}
       </CommonCardLink>
     </div>
   </div>

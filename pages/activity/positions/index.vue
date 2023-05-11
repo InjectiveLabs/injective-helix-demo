@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { Token } from '@injectivelabs/token-metadata'
-import { ActivityForm, ActivityField, UiMarketWithToken } from '@/types'
-import {} from '@/app/client/utils/activity'
+import {
+  ActivityTab,
+  ActivityForm,
+  ActivityField,
+  UiMarketWithToken
+} from '@/types'
 import { getDenomsFromToken } from '@/app/data/token'
 
 const route = useRoute()
@@ -10,8 +14,8 @@ const derivativeStore = useDerivativeStore()
 const formValues = useFormValues<ActivityForm>()
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  ['activity-spot', 'activity-wallet-history'].some((page) =>
-    route.name?.toString().startsWith(page)
+  [ActivityTab.Spot, ActivityTab.WalletHistory].some((page) =>
+    (route.name as string).startsWith(page)
   )
     ? spotStore.markets
     : derivativeStore.markets

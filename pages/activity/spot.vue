@@ -1,43 +1,51 @@
 <script setup lang="ts">
+import { ActivityPage } from '@/types'
+
 const spotStore = useSpotStore()
+const { t } = useI18n()
+
+const tabs = [
+  {
+    label: t('activity.openOrders'),
+    value: ActivityPage.SpotOpenOrders
+  },
+  {
+    label: t('activity.orderHistory'),
+    value: ActivityPage.SpotOrderHistory
+  },
+  {
+    label: t('activity.tradeHistory'),
+    value: ActivityPage.SpotTradeHistory
+  }
+]
 </script>
 
 <template>
   <div class="flex space-x-4 mb-4">
-    <PartialsActivityCommonLinkTab
-      is-index
-      v-bind="{
-        to: {
-          name: 'activity-spot'
-        }
-      }"
-    >
-      {{ $t('activity.openOrders') }} ({{ spotStore.subaccountOrdersCount }})
-    </PartialsActivityCommonLinkTab>
+    <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
+      <CommonSeparator v-if="index !== 0" />
 
-    <CommonSeparator />
+      <PartialsActivityCommonLinkTab
+        v-bind="{
+          to: {
+            name: tab.value
+          }
+        }"
+      >
+        <span>{{ tab.label }}</span>
+        <span :id="tab.value"></span>
 
-    <PartialsActivityCommonLinkTab
-      v-bind="{
-        to: {
-          name: 'activity-spot-order-history'
-        }
-      }"
-    >
-      {{ $t('activity.orderHistory') }}
-    </PartialsActivityCommonLinkTab>
-
-    <CommonSeparator />
-
-    <PartialsActivityCommonLinkTab
-      v-bind="{
-        to: {
-          name: 'activity-spot-trade-history'
-        }
-      }"
-    >
-      {{ $t('activity.tradeHistory') }}
-    </PartialsActivityCommonLinkTab>
+        <span
+          v-if="
+            $route.name !== ActivityPage.SpotOpenOrders &&
+            tab.value === ActivityPage.SpotOpenOrders
+          "
+          class="ml-1"
+        >
+          ({{ spotStore.subaccountOrders.length }})
+        </span>
+      </PartialsActivityCommonLinkTab>
+    </template>
   </div>
 
   <div class="h-full rounded-xl overflow-y-auto">

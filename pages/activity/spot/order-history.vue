@@ -3,25 +3,28 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderExecutionTypes,
   executionOrderTypeToOrderTypes
-} from '~/app/client/utils/activity'
+} from '@/app/client/utils/activity'
 import {
   ActivityField,
   ActivityForm,
   BusEvents,
   PaginationState
-} from '~/types'
+} from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const formValues = useFormValues<ActivityForm>()
+
 const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
   usePagination({
     totalCount: toRef(spotStore, 'subaccountOrderHistoryCount')
   })
-const formValues = useFormValues<ActivityForm>()
-
-useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
 
 const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+})
 
 function handleLimitChangeEvent(limit: number) {
   updateRouteQuery({
