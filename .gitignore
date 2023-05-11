@@ -104,3 +104,6 @@ sw.*
 /public/vendor
 
 tsconfig.tsbuildinfo
+
+# testing
+auto-imports.d.ts
