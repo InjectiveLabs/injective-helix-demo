@@ -1,18 +1,18 @@
-<script lang="ts" setup>
-import { PropType } from 'vue'
+<script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { PropType } from 'vue'
 import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
+import {
+  AccountBalance,
+  AccountBalanceWithAggregatedType,
+  AggregatedBalanceType,
+  BalanceHeaderType
+} from '@/types'
+import { usdcTokenDenoms } from '@/app/data/token'
 import {
   QUOTE_DENOMS_GECKO_IDS,
   SMALL_BALANCE_THRESHOLD
 } from '@/app/utils/constants'
-import {
-  AccountBalance,
-  BalanceHeaderType,
-  AggregatedBalanceType,
-  AccountBalanceWithAggregatedType
-} from '@/types'
-import { usdcTokenDenoms } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -25,7 +25,6 @@ const props = defineProps({
 
 const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
   useBalance()
-
 const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)

@@ -16,6 +16,7 @@ export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
   -UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
+export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
