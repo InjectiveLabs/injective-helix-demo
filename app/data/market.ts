@@ -60,6 +60,18 @@ export const slugsToIncludeInEthereumCategory = [
   'stx-usdt-perp'
 ]
 
+export const dmmSlugsToIncludeInLowVolume = [
+  'inj-usdt',
+  'atom-usdt',
+  'weth-usdt',
+  'sol-usdc',
+  'atom-usdt-perp',
+  'btc-usdt-perp',
+  'eth-usdt-perp',
+  'inj-usdt-perp',
+  'bnb-usdt-perp'
+]
+
 export const excludedPriceDeviationSlugs = [] as string[]
 
 export const upcomingMarkets = [
