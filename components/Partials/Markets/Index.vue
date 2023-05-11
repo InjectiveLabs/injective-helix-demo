@@ -64,22 +64,18 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    let isLowVolumeMarket
-
-    if (search.value || dmmSlugsToIncludeInLowVolume.includes(market.slug)) {
-      isLowVolumeMarket = true
-    } else {
-      isLowVolumeMarket =
-        showLowVolumeMarkets.value ||
+    const isDmmMarket = dmmSlugsToIncludeInLowVolume.includes(market.slug)
+    const isLowVolumeMarket = search.value
+      ? true
+      : showLowVolumeMarkets.value ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
-    }
 
     return (
       isPartOfCategory &&
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      isLowVolumeMarket
+      (isLowVolumeMarket || isDmmMarket)
     )
   })
 })
