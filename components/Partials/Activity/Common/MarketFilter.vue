@@ -9,11 +9,6 @@ const props = defineProps({
     default: ''
   },
 
-  tab: {
-    type: String as PropType<ActivityTab>,
-    required: true
-  },
-
   tokens: {
     type: Array as PropType<Token[]>,
     required: true
@@ -45,7 +40,7 @@ const value = computed({
     v-model="value"
     :options="options"
     :placeholder="
-      tab === ActivityTab.WalletHistory
+      $route.name?.toString().startsWith(ActivityTab.WalletHistory)
         ? $t('walletHistory.transfers.asset')
         : $t('account.positions.market.label')
     "
