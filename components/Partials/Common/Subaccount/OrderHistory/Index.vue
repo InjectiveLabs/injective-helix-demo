@@ -28,9 +28,6 @@ const sortedOrderHistories = computed(() =>
 
 <template>
   <div class="h-full">
-    <pre>
-      {{ sortedOrderHistories.length }}
-    </pre>
     <CommonTableWrapper>
       <table v-if="sortedOrderHistories.length > 0" class="table">
         <PartialsCommonSubaccountOrderHistoryHeader />

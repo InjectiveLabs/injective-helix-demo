@@ -104,15 +104,11 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
       <div class="h-full-flex">
         <CommonTabMenu>
           <CommonTabMenuLinkItem v-bind="{ to: { name: 'account' } }" is-index>
-            <p>
-              {{ $t('account.tabs.balances') }}
-            </p>
+            {{ $t('account.tabs.balances') }}
           </CommonTabMenuLinkItem>
 
           <CommonTabMenuLinkItem v-bind="{ to: { name: 'account-positions' } }">
-            <p>
-              {{ $t('account.tabs.positions') }}
-            </p>
+            {{ $t('account.tabs.positions') }}
           </CommonTabMenuLinkItem>
         </CommonTabMenu>
 

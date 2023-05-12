@@ -139,10 +139,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
         }
         case OrderState.Canceled:
         case OrderState.Filled: {
-          const subaccountOrders = [...spotStore.subaccountOrders]
-            .filter((o) => {
-              return o.orderHash !== order.orderHash
-            })
+          const subaccountOrders = spotStore.subaccountOrders
+            .filter((o) => o.orderHash !== order.orderHash)
             .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({

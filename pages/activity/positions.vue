@@ -1,47 +1,56 @@
 <script setup lang="ts">
+import { ActivityPage } from '@/types'
+
 const positionStore = usePositionStore()
+const { t } = useI18n()
+
+const tabs = [
+  {
+    label: t('activity.openPositions'),
+    value: ActivityPage.OpenPositions
+  },
+  {
+    label: t('activity.fundingPayments'),
+    value: ActivityPage.FundingPayments
+  }
+]
 </script>
 
 <template>
-  <div>
-    <div class="flex mb-4 gap-4">
+  <div class="flex mb-4 gap-4">
+    <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
+      <CommonSeparator v-if="index !== 0" />
+
       <PartialsActivityCommonLinkTab
-        is-index
         v-bind="{
           to: {
-            name: 'activity-positions'
+            name: tab.value
           }
         }"
       >
-        <span>
-          {{ $t('activity.openPositions') }}
-        </span>
-        <span id="activity-position-tab-count-default">
+        <span>{{ tab.label }}</span>
+        <span :id="tab.value" />
+
+        <span
+          v-if="
+            $route.name !== ActivityPage.OpenPositions &&
+            tab.value === ActivityPage.OpenPositions
+          "
+          class="ml-1"
+        >
           ({{ positionStore.subaccountPositionsCount }})
         </span>
       </PartialsActivityCommonLinkTab>
+    </template>
+  </div>
 
-      <CommonSeparator />
+  <div class="h-full rounded-xl overflow-y-auto">
+    <CommonCard md class="h-full-flex space-y-4">
+      <PartialsActivityCommonToolbarNew />
 
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-positions-funding-payments'
-          }
-        }"
-      >
-        {{ $t('activity.fundingPayments') }}
-      </PartialsActivityCommonLinkTab>
-    </div>
-
-    <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex space-y-4">
-        <PartialsActivityCommonToolbarNew />
-
-        <div class="h-full-flex">
-          <NuxtPage />
-        </div>
-      </CommonCard>
-    </div>
+      <div class="h-full-flex">
+        <NuxtPage />
+      </div>
+    </CommonCard>
   </div>
 </template>

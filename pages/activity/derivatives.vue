@@ -1,56 +1,66 @@
 <script setup lang="ts">
+import { ActivityPage } from '@/types'
+
 const derivativeStore = useDerivativeStore()
+const { t } = useI18n()
+
+const tabs = [
+  {
+    label: t('activity.openOrders'),
+    value: ActivityPage.DerivativeOpenOrders
+  },
+  {
+    label: t('activity.triggers'),
+    value: ActivityPage.DerivativeTriggers
+  },
+  {
+    label: t('activity.orderHistory'),
+    value: ActivityPage.DerivativeOrderHistory
+  },
+  {
+    label: t('activity.tradeHistory'),
+    value: ActivityPage.DerivativeTradeHistory
+  }
+]
 </script>
 
 <template>
   <div>
     <div class="flex space-x-4 flex-wrap mb-4">
-      <PartialsActivityCommonLinkTab
-        is-index
-        v-bind="{
-          to: {
-            name: 'activity-derivatives'
-          }
-        }"
-      >
-        Open Orders ({{ derivativeStore.subaccountOrdersCount }})
-      </PartialsActivityCommonLinkTab>
+      <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
+        <CommonSeparator v-if="index !== 0" />
 
-      <CommonSeparator />
+        <PartialsActivityCommonLinkTab
+          v-bind="{
+            to: {
+              name: tab.value
+            }
+          }"
+        >
+          <span>{{ tab.label }}</span>
+          <span :id="tab.value" />
 
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-derivatives-triggers'
-          }
-        }"
-      >
-        Triggers ({{ derivativeStore.subaccountConditionalOrdersCount }})
-      </PartialsActivityCommonLinkTab>
+          <span
+            v-if="
+              $route.name !== ActivityPage.DerivativeOpenOrders &&
+              tab.value === ActivityPage.DerivativeOpenOrders
+            "
+            class="ml-1"
+          >
+            ({{ derivativeStore.subaccountOrders.length }})
+          </span>
 
-      <CommonSeparator />
-
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-derivatives-order-history'
-          }
-        }"
-      >
-        Order History
-      </PartialsActivityCommonLinkTab>
-
-      <CommonSeparator />
-
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-derivatives-trade-history'
-          }
-        }"
-      >
-        Trade History
-      </PartialsActivityCommonLinkTab>
+          <span
+            v-if="
+              $route.name !== ActivityPage.DerivativeTriggers &&
+              tab.value === ActivityPage.DerivativeTriggers
+            "
+            class="ml-1"
+          >
+            ({{ derivativeStore.subaccountConditionalOrdersCount }})
+          </span>
+        </PartialsActivityCommonLinkTab>
+      </template>
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">

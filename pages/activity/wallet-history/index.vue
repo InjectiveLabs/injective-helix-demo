@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, BusEvents } from '@/types'
+import { ActivityForm, BusEvents, PaginationState } from '@/types'
 
 const route = useRoute()
 const bridgeStore = useBridgeStore()
 
-const status = reactive(new Status(StatusType.Loading))
-const { limit, page, skip, updateRouteQuery } = usePagination({
-  totalCount: toRef(bridgeStore, 'subaccountTransferBridgeTransactionsCount')
-})
 const formValues = useFormValues<ActivityForm>()
 
-useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
+  usePagination({
+    totalCount: toRef(bridgeStore, 'subaccountTransferBridgeTransactionsCount')
+  })
+
+const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+})
 
 function fetchData() {
   status.setLoading()
@@ -24,6 +29,17 @@ function fetchData() {
       },
       filters: {
         denom: formValues.value.Denom
+      }
+    })
+    .then(() => {
+      const state = getPaginationState()
+
+      if (state === PaginationState.InvalidQuery) {
+        updateRouteQuery({ page: undefined })
+      }
+
+      if (state === PaginationState.QueryMoreThanTotalPage) {
+        handlePageChangeEvent(totalPages.value)
       }
     })
     .finally(() => {

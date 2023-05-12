@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { ActivityPage } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
@@ -10,8 +11,10 @@ const emit = defineEmits<{
   (e: 'click'): void
 }>()
 
+const routeName = route.name as string
+
 const showRefreshBtn = computed(() => {
-  if (route.name?.toString() === 'activity-derivatives-order-history') {
+  if (routeName === ActivityPage.DerivativeOrderHistory) {
     const latestVisibleOrders = derivativeStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -23,7 +26,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (route.name?.toString() === 'activity-derivatives-trade-history') {
+  if (routeName === ActivityPage.DerivativeTradeHistory) {
     const latestVisibleTrades = derivativeStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {
@@ -35,7 +38,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleTrades[0].executedAt)
   }
 
-  if (route.name?.toString() === 'activity-spot-order-history') {
+  if (routeName === ActivityPage.SpotOrderHistory) {
     const latestVisibleOrders = spotStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -47,7 +50,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (route.name?.toString() === 'activity-spot-trade-history') {
+  if (routeName === ActivityPage.SpotTradeHistory) {
     const latestVisibleTrades = spotStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {
@@ -74,8 +77,8 @@ function handleRefresh() {
     @click="handleRefresh"
   >
     {{
-      route.name?.toString() === 'activity-derivatives-trade-history' ||
-      route.name?.toString() === 'activity-spot-trade-history'
+      routeName === ActivityPage.DerivativeTradeHistory ||
+      routeName === ActivityPage.SpotTradeHistory
         ? $t('activity.fetchTrades')
         : $t('activity.fetchOrders')
     }}

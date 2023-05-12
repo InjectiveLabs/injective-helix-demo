@@ -2,35 +2,21 @@
 import { PropType } from 'vue'
 import { RouteLocationNamedRaw } from 'vue-router'
 
-const route = useRoute()
-
-const props = defineProps({
-  isIndex: Boolean,
-
+defineProps({
   to: {
     type: Object as PropType<RouteLocationNamedRaw>,
     required: true
-  }
-})
-
-const active = computed(() => {
-  if (props.isIndex) {
-    return props.to.name === route.name?.toString()
-  } else {
-    return route.name?.toString().startsWith(props.to.name as string)
   }
 })
 </script>
 
 <template>
   <NuxtLink
-    :to="to"
-    class="text-xs xs:text-sm leading-5 tracking-wide cursor-pointer uppercase"
-    :class="[
-      active
-        ? 'text-blue-500 hover:text-blue-600 font-bold'
-        : 'text-gray-500 hover:text-blue-500'
-    ]"
+    v-bind="{
+      to
+    }"
+    class="text-xs xs:text-sm leading-5 tracking-wide cursor-pointer uppercase opacity-50"
+    exact-active-class=""
   >
     <div class="flex items-center gap-1">
       <span class="whitespace-nowrap">
@@ -39,3 +25,9 @@ const active = computed(() => {
     </div>
   </NuxtLink>
 </template>
+
+<style scoped>
+.router-link-exact-active {
+  @apply text-blue-500 hover:text-blue-600 font-bold opacity-100;
+}
+</style>

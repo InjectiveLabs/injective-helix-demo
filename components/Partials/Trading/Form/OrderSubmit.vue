@@ -7,7 +7,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
-import { amplitudeTradeTracker } from '~/app/providers/amplitude'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, TradeField, TradeForm } from '@/types'
 

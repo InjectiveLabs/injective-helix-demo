@@ -3,19 +3,28 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderExecutionTypes,
   executionOrderTypeToOrderTypes
-} from '~/app/client/utils/activity'
-import { ActivityField, ActivityForm, BusEvents } from '~/types'
+} from '@/app/client/utils/activity'
+import {
+  ActivityField,
+  ActivityForm,
+  BusEvents,
+  PaginationState
+} from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const { limit, page, skip, updateRouteQuery } = usePagination({
-  totalCount: toRef(spotStore, 'subaccountOrderHistoryCount')
-})
 const formValues = useFormValues<ActivityForm>()
 
-useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
+  usePagination({
+    totalCount: toRef(spotStore, 'subaccountOrderHistoryCount')
+  })
 
 const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
+})
 
 function handleLimitChangeEvent(limit: number) {
   updateRouteQuery({
@@ -71,9 +80,21 @@ function fetchData() {
         marketIds
       }
     })
-  ]).finally(() => {
-    status.setIdle()
-  })
+  ])
+    .then(() => {
+      const state = getPaginationState()
+
+      if (state === PaginationState.InvalidQuery) {
+        updateRouteQuery({ page: undefined })
+      }
+
+      if (state === PaginationState.QueryMoreThanTotalPage) {
+        handlePageChangeEvent(totalPages.value)
+      }
+    })
+    .finally(() => {
+      status.setIdle()
+    })
 }
 
 watch(

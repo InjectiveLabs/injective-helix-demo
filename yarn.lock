@@ -2400,15 +2400,15 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@injectivelabs/contracts@^1.10.23-beta.3":
-  version "1.10.23-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.10.23-beta.3.tgz#387115c4656bfd26fbac59d5f3bafedb24a46719"
-  integrity sha512-oQMrPPLKY6P6BAcnDBmv8bMTws0IHGSHomuEqo2+2Yp1JRlElsOxeam8dDUyMJDzarHYmRQhCxRRYgQ9QVqrOg==
+"@injectivelabs/contracts@^1.10.23-beta.6":
+  version "1.10.23-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.10.23-beta.6.tgz#6f3d6199ceb311e2484f6005e1d06c5debe6fd25"
+  integrity sha512-gN+53XRn22s0zXpQe0QGk9bY60vb8zF2ExZ6kd6NoGVxZI4RC5/EJY7O5E4BSV1BWqhPE9zVoGZ1ufRHv+hyxg==
   dependencies:
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
-    "@injectivelabs/networks" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
+    "@injectivelabs/networks" "^1.10.13-beta.6"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     ethers "^5.7.2"
     link-module-alias "^1.2.0"
     shx "^0.3.3"
@@ -2437,10 +2437,10 @@
     eslint-plugin-prettier latest
     eslint-plugin-vue "9.11.0"
 
-"@injectivelabs/exceptions@^1.10.13-beta.3":
-  version "1.10.13-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.10.13-beta.3.tgz#baa2e3aa2cc765b26209b05e40892d1177642ead"
-  integrity sha512-XkzJtpq0CqnyrI+P0tMr0VaOqN3lJomE+FhqemxsOP8Ko0OlTbX5tVOC8mhTphrW90+iUWyjGr4Ks8mvNoGAZw==
+"@injectivelabs/exceptions@^1.10.13-beta.6":
+  version "1.10.13-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.10.13-beta.6.tgz#2a7e061d2befe2b9eeafe346df5e7c245ad73734"
+  integrity sha512-9AEwty1fykI+jPmxHOSRYPht2c1lc09XainFYJV3GIAHdgfYIzujdJTI+ySdfjB8LS/f6WV8Z35v6yjH5pw3yg==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
@@ -2485,14 +2485,14 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/networks@^1.10.13-beta.3":
-  version "1.10.13-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.10.13-beta.3.tgz#d7dddab259b64d946b016f04ccda3c21393d0e6d"
-  integrity sha512-XzIs07hQtVsfX2kMvxwglo+PgCBU1t419f5qsTlp9LY0CTcFWMwInKs3GOElsH12n4336KJ3CMGyewE4qim5HQ==
+"@injectivelabs/networks@^1.10.13-beta.6":
+  version "1.10.13-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.10.13-beta.6.tgz#ea88f9cd0b5b8fd24d5348f2b877c9044f02508a"
+  integrity sha512-G/OsDupiMBgx9FiM9Gj730qFq0dQUKSJU4ejQhRtz7Dia8T0OfPAzHyVy7e9T1/m4lhGsAq0V0nh6AdLWxVdbQ==
   dependencies:
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2516,10 +2516,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.1.tgz#a727f4ff5bc14fd7a49183de9306b171716f0835"
   integrity sha512-46ljXMPP+NLX64BrfSP4GyZZQz89bB59Pnsj0lSyKxOYR/zeH6CIqPVrN27BzmZ+jBXl/XLTp6kr/iCfy2CEEg==
 
-"@injectivelabs/sdk-ts@^1.10.73-beta.6":
-  version "1.10.73-beta.6"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.73-beta.6.tgz#a230d9cef47901efbeaeaa465640e0961046aa94"
-  integrity sha512-9EJ5UxfBrfd7E55HFODrnvNxfHNUyrQxcdPDP1MgixqPfU9AxiMI5YE+FIGgVyaEF+b52NfqaEoVTqdL0OnNYg==
+"@injectivelabs/sdk-ts@^1.10.73-beta.10":
+  version "1.10.73-beta.10"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.10.73-beta.10.tgz#2e41c5893905ca39f9525d5a7f6f1bc1a8593830"
+  integrity sha512-Wq+cViPlw5jFQyfRQI2xkVmrj3f1QFOuJRqK8Qeowb+jxE1KX3Tta3ogqWN5gGPcTAINLLQ/76rYRWPoUceQtQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.30.1"
@@ -2527,17 +2527,17 @@
     "@cosmjs/stargate" "^0.30.1"
     "@ethersproject/bytes" "^5.7.0"
     "@injectivelabs/core-proto-ts" "^0.0.14"
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
     "@injectivelabs/indexer-proto-ts" "1.10.8-rc.4"
     "@injectivelabs/mito-proto-ts" "1.0.9"
-    "@injectivelabs/networks" "^1.10.13-beta.3"
+    "@injectivelabs/networks" "^1.10.13-beta.6"
     "@injectivelabs/test-utils" "^1.10.13-beta.3"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.4"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.8"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     "@metamask/eth-sig-util" "^4.0.0"
     axios "^0.27.2"
     bech32 "^2.0.0"
@@ -2558,19 +2558,19 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@^1.10.83-beta.7":
-  version "1.10.83-beta.7"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.7.tgz#3f618698135a07c9522e6f97c22dd8957db7939a"
-  integrity sha512-WvfrhONR8cA8ymOh5V7B1nJn5tzFXdpA4hqsDFzfSY7NmWtOspvNKDqzfXA6LDZ71Cz/ntPI1f+eo9j0GP2//w==
+"@injectivelabs/sdk-ui-ts@^1.10.83-beta.11":
+  version "1.10.83-beta.11"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.11.tgz#ccb02c80fbdb5b3899d3b657fb56384d4bbc673a"
+  integrity sha512-c06pmCXSSEwjui3O4F9LUvGv2LBtYnXmU+evgyB177HRSyjgM2qOLIU5JnwJETdggDgisDjy8vXVKDsUuOpmhQ==
   dependencies:
-    "@injectivelabs/contracts" "^1.10.23-beta.3"
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
-    "@injectivelabs/networks" "^1.10.13-beta.3"
-    "@injectivelabs/sdk-ts" "^1.10.73-beta.6"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.4"
-    "@injectivelabs/token-utils" "^1.10.23-beta.3"
+    "@injectivelabs/contracts" "^1.10.23-beta.6"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
+    "@injectivelabs/networks" "^1.10.13-beta.6"
+    "@injectivelabs/sdk-ts" "^1.10.73-beta.10"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.8"
+    "@injectivelabs/token-utils" "^1.10.23-beta.6"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     alchemy-sdk "^2.6.3"
     copyfiles "^2.4.1"
     link-module-alias "^1.2.0"
@@ -2595,15 +2595,15 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@^1.11.0-beta.4":
-  version "1.11.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.4.tgz#de8fd5d77d89f609841fb4a1484773147e7c41b6"
-  integrity sha512-/p9O5jlH2AT9ynqfmJkv5ZJxqt/n78Am6M5vyDR5FqlhcEzQvB081NseKfyhICU+e0TfYW4UiluLbCRzEp4m2Q==
+"@injectivelabs/token-metadata@^1.11.0-beta.8":
+  version "1.11.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.8.tgz#ec353f9294854d863093d97882e87ac963714645"
+  integrity sha512-MdpFE9zQuczhbCjPqSLme4MIXLUJTo7N83CJzOmeHJCCytgA9x0EJ78jVBxOKBoeKvkIkONh+scCyUFky3Plmg==
   dependencies:
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
-    "@injectivelabs/networks" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
+    "@injectivelabs/networks" "^1.10.13-beta.6"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
     jsonschema "^1.4.0"
@@ -2612,17 +2612,17 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-utils@^1.10.23-beta.3":
-  version "1.10.23-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.10.23-beta.3.tgz#47d45bc03ed35c73c830b71a86bd77d27e21ed1c"
-  integrity sha512-sncJIUrusXomXMjhd3qjkxJJ8zpuiS5UDehJMTLznuwwZFSlfgWQ+gGgnR0hK+NPgLjhrhEeQ/dUMxdxd9siDA==
+"@injectivelabs/token-utils@^1.10.23-beta.6":
+  version "1.10.23-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.10.23-beta.6.tgz#b02fc2850f0e03f8f61e36ece21a078b3f995ab1"
+  integrity sha512-Ka9QfB0b5B38OsZfcycd7LsKXG6wlfQivMqEtyenLFpwbcCDwqgJJnxZCgDvI1vR1cQX/l8t8ioWdATcjI711A==
   dependencies:
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^1.10.13-beta.3":
+"@injectivelabs/ts-types@^1.10.13-beta.3", "@injectivelabs/ts-types@next":
   version "1.10.13-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.10.13-beta.3.tgz#c498fc999a34e403aaa326b9e2d51b489c3895d0"
   integrity sha512-vlY5SlIB3cu84URNiKMOIbyvjy9I/LvZrUVV1lSag1X6YXy1mnU4F1cLZujA9kFOMvoiuEyCUFNShinu2t38lw==
@@ -2630,22 +2630,22 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.14.tgz#78cd3f4dcd170a5bd4dfe0e3bfb122ceea3be799"
-  integrity sha512-KPk5YIhH1vsVKbKfXZYkn69Zm7PXzqApuiGV286ZqJTeyoJPC5aYlsNUXhuwG+lsSQ/49PzGItIEykDXrEYj8A==
+"@injectivelabs/ui-shared@1.10.23":
+  version "1.10.23"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.23.tgz#c877514d5ad20f164689c35e9514f50ed22f1b5f"
+  integrity sha512-/kjM6Ax2pZh+ncfqEwbSkBVrAV56pIXr9WB+GARqRQLR2gDmZPohn5j9sUXwXamDjmxsx+NZiehXez3uRjD1ag==
   dependencies:
-    "@nuxt/kit" "3.4.1"
+    "@nuxt/kit" "3.3.3"
     "@vuepic/vue-datepicker" "^4.4.0"
     floating-vue "2.0.0-beta.20"
     vee-validate "4.7.3"
 
-"@injectivelabs/utils@^1.10.13-beta.3":
-  version "1.10.13-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.10.13-beta.3.tgz#ff08b2ec58540561375b372fadb1bb31370caed4"
-  integrity sha512-/lQxjJ7QEFsct4d0oDkk2xipWAtf589JE8bD909Hlzfb4e+b2d0koLU8eDW54wvodaFQY+s1MBkPCHZfU4jhIg==
+"@injectivelabs/utils@^1.10.13-beta.6":
+  version "1.10.13-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.10.13-beta.6.tgz#a8cfd763bac5fd3dde089e80a6dad580075e14ba"
+  integrity sha512-rYeLhiZTeh/e4fQ9hLKaFHhItpup03RxA/fPYPjcyV6ibUYbtGEV7MVru7pjIvZO9HD2QLjGKrkKJJGmWhxZ1g==
   dependencies:
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
@@ -2655,10 +2655,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@^1.10.83-beta.6":
-  version "1.10.83-beta.6"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.6.tgz#142cce424ea57b2077fef19ef053d19e804f5164"
-  integrity sha512-/J1nW2fY80EjmAR4je7W89NrHSeeLhMr4Tt3eRitqNU9huXO6QgXVH98O1TcL3LZaxKCk8JAPB/4wN7FrOWn6w==
+"@injectivelabs/wallet-ts@^1.10.83-beta.10":
+  version "1.10.83-beta.10"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.10.tgz#af176f3b7ede85a2e1ec6720301471e2c562a956"
+  integrity sha512-E2FCQ0f7VaANn0iJUNDGTaLheMrV8J6By1F82z2f1burdAHBfWHoHqJjrwFaXbunFt9shPTrPWM1xc4AffxLvA==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.30.1"
@@ -2666,11 +2666,11 @@
     "@cosmostation/extension-client" "^0.1.15"
     "@ethereumjs/common" "^3.1.1"
     "@ethereumjs/tx" "^4.1.1"
-    "@injectivelabs/exceptions" "^1.10.13-beta.3"
-    "@injectivelabs/networks" "^1.10.13-beta.3"
-    "@injectivelabs/sdk-ts" "^1.10.73-beta.6"
+    "@injectivelabs/exceptions" "^1.10.13-beta.6"
+    "@injectivelabs/networks" "^1.10.13-beta.6"
+    "@injectivelabs/sdk-ts" "^1.10.73-beta.10"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
-    "@injectivelabs/utils" "^1.10.13-beta.3"
+    "@injectivelabs/utils" "^1.10.13-beta.6"
     "@keplr-wallet/cosmos" "^0.11.58"
     "@keplr-wallet/types" "^0.11.58"
     "@ledgerhq/hw-app-eth" "6.32.2"
@@ -3150,36 +3150,36 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@keplr-wallet/common@0.11.61":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.61.tgz#aa099eff940c97aa742efcc5e61d097e13fcd819"
-  integrity sha512-/n4hJQhcV1DVUXRZeWPYd92DIeSzxMH+XXJIBwMj1Omzt+NBOOfhwf/h+buW7uiaYogA0/SB/C91h2kYAWjn6Q==
+"@keplr-wallet/common@0.11.62":
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.62.tgz#4cb2620be3f69ffcfca44b1fa6bcb8bc9173f965"
+  integrity sha512-PhXLoX+qBz9WR2/LKLf5kj1Q4pb3N5vam99lUqBiZPYf5mdtnKIvZzSO92dBMJOfMS5iRbX4Tjp6m8XhbBVeuQ==
   dependencies:
-    "@keplr-wallet/crypto" "0.11.61"
+    "@keplr-wallet/crypto" "0.11.62"
     buffer "^6.0.3"
     delay "^4.4.0"
 
 "@keplr-wallet/cosmos@^0.11.58":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/cosmos/-/cosmos-0.11.61.tgz#586060eab14a0d24cbae2fe54d69f706550f4945"
-  integrity sha512-AMF4g9NnaVpsafPv7UNxZu6cOQ5IgRiVfIjNgUcwSPNUtaHgtq0MqPx21MPoLENVcFh9DPw1g3pZKsOR7SxcVQ==
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/cosmos/-/cosmos-0.11.62.tgz#f4d2fae6c5c9a7aef9c74bcb0f2279aa3bb25a83"
+  integrity sha512-nmaj85W7dR4ZwDZt8MGI+RDYgLKmguJLykZ2sJFnqZoff3N4g+AQzlr1xKAL8CXFocmAjdXJ9ozFL88HL6NK6w==
   dependencies:
     "@ethersproject/address" "^5.6.0"
-    "@keplr-wallet/common" "0.11.61"
-    "@keplr-wallet/crypto" "0.11.61"
-    "@keplr-wallet/proto-types" "0.11.61"
-    "@keplr-wallet/types" "0.11.61"
-    "@keplr-wallet/unit" "0.11.61"
+    "@keplr-wallet/common" "0.11.62"
+    "@keplr-wallet/crypto" "0.11.62"
+    "@keplr-wallet/proto-types" "0.11.62"
+    "@keplr-wallet/types" "0.11.62"
+    "@keplr-wallet/unit" "0.11.62"
     axios "^0.27.2"
     bech32 "^1.1.4"
     buffer "^6.0.3"
     long "^4.0.0"
     protobufjs "^6.11.2"
 
-"@keplr-wallet/crypto@0.11.61":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.61.tgz#6a3fd69aadc47affbee8f44a18945c6770dd3873"
-  integrity sha512-vYgupLxf6cgHEq1dKucKHSuAE07PzeataSxj13eX8ALTm6zupmPXagyjws2+yK0JU5wXI49bZ6Z9y2HCw5cf5A==
+"@keplr-wallet/crypto@0.11.62":
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.62.tgz#f4c6c5cdaac442e501469e589abb0fc6f01486bc"
+  integrity sha512-wRjSyf/rReGo1TEqtRkBGVS6j/DGQH9fJLAP+wbcGiq21wbn0PRlE5MPgJ8YeLa7u9iQAZEC6PlXZsDVtc7EIg==
   dependencies:
     "@ethersproject/keccak256" "^5.5.0"
     bip32 "^2.0.6"
@@ -3190,28 +3190,28 @@
     elliptic "^6.5.3"
     sha.js "^2.4.11"
 
-"@keplr-wallet/proto-types@0.11.61":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/proto-types/-/proto-types-0.11.61.tgz#ae00637f2f4ce1587e5af692e111b0318f2c405e"
-  integrity sha512-vWsFhEApX+rDMlOw+nY+eLr/WV4wDPg99esuCv/ZGvNhlui+OVbE1D4nUN4PWVWjUi9FocNHZa0BRG01IKWS2w==
+"@keplr-wallet/proto-types@0.11.62":
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/proto-types/-/proto-types-0.11.62.tgz#65299c52c9796a21fc127727693ee851ebd6d75a"
+  integrity sha512-FAhO3AcGM25cjReGODewS+KortnlkYJg9xoS6+Z3cJBD9fWo18Nbi/YUrQfuRw4xIe/B1gXgXw/kOALweFHM9w==
   dependencies:
     long "^4.0.0"
     protobufjs "^6.11.2"
 
-"@keplr-wallet/types@0.11.61", "@keplr-wallet/types@^0.11.58":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.11.61.tgz#3a13e3dc532de576724dec8993b80646d0812b98"
-  integrity sha512-V0OqwYmLIJoLj4ETn+vMzx1TxMSYNthGd92W0pBZ5TxUIGCWqAeVA4L2ReQWlJ0cWUJHEt+gUTV5ST/2R3uQwA==
+"@keplr-wallet/types@0.11.62", "@keplr-wallet/types@^0.11.58":
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.11.62.tgz#8b120ed0798dc49441051c8f2f05dae82fac2efb"
+  integrity sha512-u8K0jYqWFwZdPoHlgTx28F1QqSlYDIT2GoDJYfr0B3apq98WNBIAMbNwQhDtqvuBoM1yLlCmhEN+YEtygHj6XA==
   dependencies:
     axios "^0.27.2"
     long "^4.0.0"
 
-"@keplr-wallet/unit@0.11.61":
-  version "0.11.61"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/unit/-/unit-0.11.61.tgz#c8d7067f9334a1b1dbecd6fed97546f1dced9abb"
-  integrity sha512-DN5cmodTpfctmyAj8OMau5yj97yrr0zVGERhy5VEAAUdv+4qTT7gDAPlDeGtJeCLkjm9XGNgDlohz3sS5oFujA==
+"@keplr-wallet/unit@0.11.62":
+  version "0.11.62"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/unit/-/unit-0.11.62.tgz#2928d78a6ef21180e11fab38363ed550cd47eeb1"
+  integrity sha512-SIvqEhMN6Ecti2Fbgx44SwOkp+/Aa+vUQPy8jG+3UFH7ocHIbr0KKYh8voboBGGNx5dAjWMKCz12r6tmZqskNA==
   dependencies:
-    "@keplr-wallet/types" "0.11.61"
+    "@keplr-wallet/types" "0.11.62"
     big-integer "^1.6.48"
     utility-types "^3.10.0"
 
@@ -3636,55 +3636,7 @@
     unimport "^3.0.4"
     untyped "^1.3.2"
 
-"@nuxt/kit@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.4.1.tgz#18608db1ec28c9cf216c41d86535882cf8e838ec"
-  integrity sha512-VeH26umZW6Rf4F1QX9nTIuTBp6HeL/MgmKY3+FgQiLD07afgFTLUJZohVE5xU7hb66zCnYvwKxa3JpjXFJZrhQ==
-  dependencies:
-    "@nuxt/schema" "3.4.1"
-    c12 "^1.2.0"
-    consola "^3.0.1"
-    defu "^6.1.2"
-    globby "^13.1.4"
-    hash-sum "^2.0.0"
-    ignore "^5.2.4"
-    jiti "^1.18.2"
-    knitwork "^1.0.0"
-    lodash.template "^4.5.0"
-    mlly "^1.2.0"
-    pathe "^1.1.0"
-    pkg-types "^1.0.2"
-    scule "^1.0.0"
-    semver "^7.4.0"
-    unctx "^2.2.0"
-    unimport "^3.0.6"
-    untyped "^1.3.2"
-
-"@nuxt/kit@^3.0.0", "@nuxt/kit@^3.0.0-rc.13", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.2.0", "@nuxt/kit@^3.3.1":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.3.2.tgz#e3cd19c0f5cd0f124fff6f659a5f25002f808946"
-  integrity sha512-mHucMYuN/nVJp0p+L6ezzEls8Y1PerAXCJi01lS3Z5ozz+l2OusEfes8EBxWcy3x0C5465ignXCujQs3/LAvnQ==
-  dependencies:
-    "@nuxt/schema" "3.3.2"
-    c12 "^1.2.0"
-    consola "^2.15.3"
-    defu "^6.1.2"
-    globby "^13.1.3"
-    hash-sum "^2.0.0"
-    ignore "^5.2.4"
-    jiti "^1.18.2"
-    knitwork "^1.0.0"
-    lodash.template "^4.5.0"
-    mlly "^1.2.0"
-    pathe "^1.1.0"
-    pkg-types "^1.0.2"
-    scule "^1.0.0"
-    semver "^7.3.8"
-    unctx "^2.1.2"
-    unimport "^3.0.4"
-    untyped "^1.2.2"
-
-"@nuxt/kit@^3.4.1":
+"@nuxt/kit@^3.0.0", "@nuxt/kit@^3.4.1":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.4.2.tgz#a7ae05f154c43560f18dd56c49df1b23a2c2553b"
   integrity sha512-bFUpkyG2ZF6RYqiW+tXnWssccHQQqMF4kZJJLP/0eKXf+Fkt/Is0R7IY768jy8ylnyqeMBbmpg4Zv5gSZjfZQw==
@@ -3707,6 +3659,30 @@
     unctx "^2.3.0"
     unimport "^3.0.6"
     untyped "^1.3.2"
+
+"@nuxt/kit@^3.0.0-rc.13", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.2.0", "@nuxt/kit@^3.3.1":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.3.2.tgz#e3cd19c0f5cd0f124fff6f659a5f25002f808946"
+  integrity sha512-mHucMYuN/nVJp0p+L6ezzEls8Y1PerAXCJi01lS3Z5ozz+l2OusEfes8EBxWcy3x0C5465ignXCujQs3/LAvnQ==
+  dependencies:
+    "@nuxt/schema" "3.3.2"
+    c12 "^1.2.0"
+    consola "^2.15.3"
+    defu "^6.1.2"
+    globby "^13.1.3"
+    hash-sum "^2.0.0"
+    ignore "^5.2.4"
+    jiti "^1.18.2"
+    knitwork "^1.0.0"
+    lodash.template "^4.5.0"
+    mlly "^1.2.0"
+    pathe "^1.1.0"
+    pkg-types "^1.0.2"
+    scule "^1.0.0"
+    semver "^7.3.8"
+    unctx "^2.1.2"
+    unimport "^3.0.4"
+    untyped "^1.2.2"
 
 "@nuxt/postcss8@^1.1.3":
   version "1.1.3"
@@ -3758,25 +3734,6 @@
     std-env "^3.3.2"
     ufo "^1.1.1"
     unimport "^3.0.4"
-    untyped "^1.3.2"
-
-"@nuxt/schema@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@nuxt/schema/-/schema-3.4.1.tgz#83d83015090cac780239dca95ff831cdb9f49e9b"
-  integrity sha512-xhPh9JfVKXRQVfdUT6BKieDTCljBjbIGgGCQnxplVi4FUTWRKUXR7MFwsobr5D9AJpeE0mg5/kRRh5gUX37vAQ==
-  dependencies:
-    c12 "^1.2.0"
-    create-require "^1.1.1"
-    defu "^6.1.2"
-    hookable "^5.5.3"
-    jiti "^1.18.2"
-    pathe "^1.1.0"
-    pkg-types "^1.0.2"
-    postcss-import-resolver "^2.0.0"
-    scule "^1.0.0"
-    std-env "^3.3.2"
-    ufo "^1.1.1"
-    unimport "^3.0.6"
     untyped "^1.3.2"
 
 "@nuxt/schema@3.4.2":
@@ -4056,13 +4013,20 @@
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
 
-"@pinia/nuxt@^0.4.7":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.4.8.tgz#ab6a6758f19da05e998dcda47be341a735c36f92"
-  integrity sha512-E0HKmW+6Ec5HYzomZl86xil2rGPRAqKG1d+slVVLBHC7PFZOM0VIw/1XFO9hwo+EiCuDEXZDReZwTqO7KQsMgQ==
+"@pinia/nuxt@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.4.9.tgz#de80f854cf10388523767f6080ce1cc6ea5b67e0"
+  integrity sha512-ojzUMHKrQ7ZFjhWqMYKYetcqHSfgtIhjc6Hxw4alfQaGTlFdj38Vpz8Ol36YvmNdSjLFTNWYAgxEWCvg6HcSSg==
   dependencies:
     "@nuxt/kit" "^3.0.0"
-    pinia ">=2.0.34"
+    pinia ">=2.0.35"
+
+"@pinia/testing@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@pinia/testing/-/testing-0.0.16.tgz#c58e3e18800a6a496680fb3f477f7318b9b513c8"
+  integrity sha512-oa5kO82hzWekqMq1HTnS/b+ZM+ZKEcEApuuCTelvKK79jTxg7P026Qw8/2RbVn5eUGAvRWQu4ubObrshVqCRjQ==
+  dependencies:
+    vue-demi "*"
 
 "@pkgr/utils@^2.3.1":
   version "2.3.1"
@@ -6826,9 +6790,9 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.11.0, ajv@^8.8.0:
     uri-js "^4.2.2"
 
 alchemy-sdk@^2.6.3:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/alchemy-sdk/-/alchemy-sdk-2.8.2.tgz#51e307aee0d8c09ccce37067a766e7c8b8bf0ae9"
-  integrity sha512-hAjlvfpHRsahcnpe/AEIr1+hg4Dyfsm36heNHWvbhNGuPZCngpnlIaWAszJi01uKpK6FofMTHO8lSd7tGsLl4Q==
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/alchemy-sdk/-/alchemy-sdk-2.8.3.tgz#5f644b43ae69a504e832909c310e0ed4d0977366"
+  integrity sha512-JyJt62udg4kCBCQtG64q4cE74pFuH73+FEWVDrA5VfffmVBmCMYK8kJQyfyacqVZrjO0LzpULt3C7ELc+saRyQ==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
@@ -8541,11 +8505,6 @@ consola@^2.10.1, consola@^2.13.0, consola@^2.15.0, consola@^2.15.3, consola@^2.6
   version "2.15.3"
   resolved "https://registry.yarnpkg.com/consola/-/consola-2.15.3.tgz#2e11f98d6a4be71ff72e0bdf07bd23e12cb61550"
   integrity sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==
-
-consola@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/consola/-/consola-3.0.2.tgz#50ab836abe9507c2c9c7f0b4b9863380a0789a32"
-  integrity sha512-o/Wau2FmZKiQgyp3c3IULgN6J5yc0lwYMnoyiZdEpdGxKGBtt2ACbkulBZ6BUsHy1HlSJqoP4YOyPIJLgRJyKQ==
 
 consola@^3.1.0:
   version "3.1.0"
@@ -10770,9 +10729,9 @@ floating-vue@2.0.0-beta.20:
     vue-resize "^2.0.0-alpha.1"
 
 flow-parser@0.*:
-  version "0.205.1"
-  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.205.1.tgz#337464aaf027b00b2514610386cf21a5f7c94137"
-  integrity sha512-+RF/e1Et6ZX2I/UG7SGAz3Z8+ulj9xKYLu5AD7Wi8H2llzncU8ZpdKfLR50pPvj4g2a/FbZWkXYL7qHc+zXJNA==
+  version "0.206.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.206.0.tgz#f4f794f8026535278393308e01ea72f31000bfef"
+  integrity sha512-HVzoK3r6Vsg+lKvlIZzaWNBVai+FXTX1wdYhz/wVlH13tb/gOdLXmlTqy6odmTBhT5UoWUbq0k8263Qhr9d88w==
 
 flow-parser@^0.185.0:
   version "0.185.2"
@@ -15512,10 +15471,10 @@ pify@^6.1.0:
   resolved "https://registry.yarnpkg.com/pify/-/pify-6.1.0.tgz#db9f2ebfba65f0bc144db65ae84d1a486ab72909"
   integrity sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==
 
-pinia@>=2.0.34:
-  version "2.0.34"
-  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.0.34.tgz#6c0c84f06b631c30c030633fa64e525c609105a9"
-  integrity sha512-cgOoGUiyqX0SSgX8XelK9+Ri4XA2/YyNtgjogwfzIx1g7iZTaZPxm7/bZYMCLU2qHRiHhxG7SuQO0eBacFNc2Q==
+pinia@>=2.0.35:
+  version "2.0.35"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.0.35.tgz#aa2597038bb55ea14ad689f83065d2814ebb8c10"
+  integrity sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==
   dependencies:
     "@vue/devtools-api" "^6.5.0"
     vue-demi "*"
@@ -17229,13 +17188,6 @@ semver@^7.3.5, semver@^7.5.0:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.4.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.4.0.tgz#8481c92feffc531ab1e012a8ffc15bdd3a0f4318"
-  integrity sha512-RgOxM8Mw+7Zus0+zcLEUn8+JfoLpj/huFTItQy2hsM4khuC1HYRDp0cU482Ewn/Fcy6bCjufD8vAj7voC66KQw==
-  dependencies:
-    lru-cache "^6.0.0"
-
 send@0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/send/-/send-0.18.0.tgz#670167cc654b05f5aa4a767f9113bb371bc706be"
@@ -18848,16 +18800,6 @@ unctx@^2.1.2:
     magic-string "^0.27.0"
     unplugin "^1.0.1"
 
-unctx@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/unctx/-/unctx-2.2.0.tgz#454f1a61c9c6bff24d42db3a817d3273eb1be736"
-  integrity sha512-th8S0zg9m35lirV7FYI6AYMKHfmLoEGC87yjuS4MGLS/OZ3Pv1Qx+HyXtnlwteL2YL47xN1ADDKoFWYw3VZoEA==
-  dependencies:
-    acorn "^8.8.2"
-    estree-walker "^3.0.3"
-    magic-string "^0.30.0"
-    unplugin "^1.3.1"
-
 unctx@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/unctx/-/unctx-2.3.0.tgz#abb1eaf1f5417d9562b3c43a90aba259a869c96d"
@@ -19002,6 +18944,19 @@ unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
   integrity sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==
+
+unplugin-auto-import@^0.15.3:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/unplugin-auto-import/-/unplugin-auto-import-0.15.3.tgz#abf5f1bf42f8c181e9dd1067bd5645aad727df6e"
+  integrity sha512-RLT8SqbPn4bT7yBshZId0uPSofKWnwr66RyDaxWaFb/+f7OTDOWAsVNz+hOQLBWSjvbekr2xZY9ccS8TDHJbCQ==
+  dependencies:
+    "@antfu/utils" "^0.7.2"
+    "@rollup/pluginutils" "^5.0.2"
+    local-pkg "^0.4.3"
+    magic-string "^0.30.0"
+    minimatch "^9.0.0"
+    unimport "^3.0.6"
+    unplugin "^1.3.1"
 
 unplugin@^1.0.0, unplugin@^1.0.1, unplugin@^1.1.0, unplugin@^1.3.1:
   version "1.3.1"

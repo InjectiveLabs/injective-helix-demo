@@ -1,33 +1,21 @@
 <script lang="ts" setup>
-// import { PropType } from 'vue'
 import type { Token } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
-// import { Status, StatusType } from '@injectivelabs/utils'
 import {
   BusEvents,
   ActivityField,
   ConditionalOrderType,
   ActivityForm,
   ActivityPage,
-  UiMarketWithToken
+  UiMarketWithToken,
+  ActivityTab
 } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
+const resetForm = useResetForm<ActivityForm>()
 const { t } = useLang()
-
-// const props = defineProps({
-//   status: {
-//     type: Object as PropType<Status>,
-//     default: () => new Status(StatusType.Idle)
-//   }
-// })
-
-// const emit = defineEmits<{
-//   (e: 'update:filter'): void
-//   (e: 'reset:filter'): void
-// }>()
 
 const { value: denom } = useStringField({
   name: ActivityField.Denom,
@@ -36,7 +24,8 @@ const { value: denom } = useStringField({
 })
 const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
 const { value: type } = useStringField({ name: ActivityField.Type, rule: '' })
-const resetForm = useResetForm<ActivityForm>()
+
+const routeName = route.name as string
 
 const hasActiveFilters = computed(
   () => !!denom.value || !!side.value || !!type.value
@@ -44,8 +33,8 @@ const hasActiveFilters = computed(
 
 const isSpot = computed(
   () =>
-    route.name?.toString().startsWith('activity-spot') ||
-    route.name?.toString().startsWith('activity-wallet-history')
+    routeName.startsWith(ActivityTab.Spot) ||
+    routeName.startsWith(ActivityTab.WalletHistory)
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
@@ -79,7 +68,7 @@ const showTypeField = computed(() => {
 })
 
 const sideOptions = computed(() => {
-  if (route.name?.toString().startsWith('activity-positions')) {
+  if (routeName.startsWith(ActivityTab.Positions)) {
     return [
       {
         display: t('trade.long'),
@@ -116,7 +105,7 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (route.name?.toString().startsWith('activity-spot')) {
+  if (routeName.startsWith(ActivityTab.Spot)) {
     return result
   }
 
@@ -139,13 +128,13 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (route.name?.toString().includes(ActivityPage.DerivativeTriggers)) {
+  if (routeName.includes(ActivityPage.DerivativeTriggers)) {
     return derivativeTypes
   }
 
   if (
-    route.name?.toString().includes(ActivityPage.DerivativeOrderHistory) ||
-    route.name?.toString().includes(ActivityPage.DerivativeTradeHistory)
+    routeName.includes(ActivityPage.DerivativeOrderHistory) ||
+    routeName.includes(ActivityPage.DerivativeTradeHistory)
   ) {
     result = [...result, ...derivativeTypes]
   }
@@ -186,10 +175,8 @@ function handleUpdate() {
 
       <AppSelectField
         v-if="
-          !$route.name?.toString().includes('activity-wallet-history') &&
-          !$route.name
-            ?.toString()
-            .includes('activity-positions-funding-payments')
+          !routeName.includes(ActivityTab.WalletHistory) &&
+          !routeName.includes(ActivityPage.FundingPayments)
         "
         v-model="side"
         class="col-span-2 sm:col-span-1"

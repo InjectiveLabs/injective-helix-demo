@@ -1,40 +1,40 @@
+<script setup lang="ts">
+import { ActivityPage } from '@/types'
+
+const { t } = useI18n()
+
+const tabs = [
+  {
+    label: t('walletHistory.transfers.transfers'),
+    value: ActivityPage.WalletHistoryTransfers
+  },
+  {
+    label: t('walletHistory.deposits'),
+    value: ActivityPage.WalletHistoryDeposits
+  },
+  {
+    label: t('walletHistory.withdrawals'),
+    value: ActivityPage.WalletHistoryWithdrawals
+  }
+]
+</script>
+
 <template>
   <div>
-    <div class="flex mb-4">
-      <PartialsActivityCommonLinkTab
-        is-index
-        v-bind="{
-          to: {
-            name: 'activity-wallet-history'
-          }
-        }"
-      >
-        Transfers
-      </PartialsActivityCommonLinkTab>
+    <div class="flex space-x-4 mb-4">
+      <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
+        <CommonSeparator v-if="index !== 0" />
 
-      <CommonSeparator />
-
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-wallet-history-deposits'
-          }
-        }"
-      >
-        Deposits
-      </PartialsActivityCommonLinkTab>
-
-      <CommonSeparator />
-
-      <PartialsActivityCommonLinkTab
-        v-bind="{
-          to: {
-            name: 'activity-wallet-history-withdrawals'
-          }
-        }"
-      >
-        Withdrawals
-      </PartialsActivityCommonLinkTab>
+        <PartialsActivityCommonLinkTab
+          v-bind="{
+            to: {
+              name: tab.value
+            }
+          }"
+        >
+          <span>{{ tab.label }}</span>
+        </PartialsActivityCommonLinkTab>
+      </template>
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">

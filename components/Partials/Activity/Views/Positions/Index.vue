@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, ActivityField, Modal } from '@/types'
+import { ActivityForm, ActivityField, Modal, ActivityPage } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -117,6 +117,10 @@ function handleSharePosition(position: UiPosition) {
             {{ $t('trade.closeAllPositions') }}
           </span>
         </AppButton>
+      </Teleport>
+
+      <Teleport :to="`#${ActivityPage.OpenPositions}`">
+        <span class="ml-1">({{ filteredPositions.length }})</span>
       </Teleport>
     </ClientOnly>
 

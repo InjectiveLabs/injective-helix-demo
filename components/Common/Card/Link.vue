@@ -2,24 +2,13 @@
 import { PropType } from 'vue'
 import { RouteLocationNamedRaw } from 'vue-router'
 
-const props = defineProps({
+defineProps({
   lg: Boolean,
   showLoading: Boolean,
-  isIndex: Boolean,
 
   to: {
     type: Object as PropType<RouteLocationNamedRaw>,
     required: true
-  }
-})
-
-const route = useRoute()
-
-const active = computed(() => {
-  if (props.isIndex) {
-    return props.to.name === route.name?.toString()
-  } else {
-    return route.name?.toString().startsWith(props.to.name as string)
   }
 })
 </script>
@@ -27,11 +16,8 @@ const active = computed(() => {
 <template>
   <NuxtLink
     :to="to"
-    class="group w-full border-t-4 cursor-pointer shadow-card text-gray-100 bg-gray-900"
+    class="group w-full border-t-4 cursor-pointer shadow-card text-gray-100 bg-gray-900 border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-blue-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100"
     :class="{
-      'border-blue-500 rounded-b-md': active,
-      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-blue-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100':
-        !active,
       'px-4 py-5': lg,
       'p-3 lg:px-4 lg:py-5': !lg
     }"
@@ -54,14 +40,8 @@ const active = computed(() => {
 
         <div
           v-else
-          class="rounded-full mr-4 flex items-center justify-center"
-          :class="[
-            lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
-            {
-              'bg-blue-500 text-blue-900': active,
-              'bg-gray-600 group-hover:bg-blue-850': !active
-            }
-          ]"
+          class="rounded-full mr-4 flex items-center justify-center bg-gray-600 group-hover:bg-blue-850 link-count-number"
+          :class="[lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6']"
         >
           <slot name="icon" />
         </div>
@@ -71,3 +51,12 @@ const active = computed(() => {
     </div>
   </NuxtLink>
 </template>
+
+<style scoped>
+a.router-link-active {
+  @apply border-blue-500 rounded-b-md opacity-100 rounded-none;
+}
+.router-link-active .link-count-number {
+  @apply bg-blue-500 text-blue-900;
+}
+</style>
