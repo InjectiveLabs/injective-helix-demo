@@ -1,10 +1,16 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
 import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { Modal } from '@/types'
+import { AccountBalance, Modal } from '@/types'
 
 defineProps({
-  hideBalances: Boolean
+  hideBalances: Boolean,
+
+  balances: {
+    type: Array as PropType<AccountBalance[]>,
+    required: true
+  }
 })
 
 const modalStore = useModalStore()

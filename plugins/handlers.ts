@@ -4,6 +4,7 @@ import {
   ThrownException,
   isThrownException,
   ChainCosmosErrorCode,
+  TransactionException,
   formatNotificationDescription
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
@@ -26,6 +27,12 @@ const reportToUser = (error: ThrownException) => {
     error.code === StatusCodes.REQUEST_TOO_LONG
   ) {
     return
+  }
+
+  if (!(error instanceof TransactionException)) {
+    return errorToast({
+      title: error.message || 'Something happened'
+    })
   }
 
   const { tooltip, description } = formatNotificationDescription(

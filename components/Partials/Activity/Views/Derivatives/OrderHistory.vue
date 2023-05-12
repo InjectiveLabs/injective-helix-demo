@@ -47,7 +47,7 @@ const orders = computed(() => derivativeStore.subaccountOrderHistory)
           <tbody>
             <PartialsCommonSubaccountOrderHistoryRow
               v-for="(order, index) in orders"
-              :key="`order-${index}`"
+              :key="`order-${index}-${order.orderHash}`"
               :order="order"
             />
           </tbody>
