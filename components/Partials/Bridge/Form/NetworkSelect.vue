@@ -5,13 +5,12 @@ import { BridgeField, BridgeForm } from '@/types'
 
 const formValues = useFormValues<BridgeForm>()
 
-const { isWithdraw } = useBridgeState({
-  formValues
-})
+const { isWithdraw } = useBridgeState(formValues)
 
 const { value: network } = useStringField({
   name: BridgeField.BridgingNetwork
 })
+
 /**
  * We remove injective option from options when depositing
  **/
@@ -47,7 +46,7 @@ const options = computed(() => {
       :placeholder="$t('bridge.selectOriginNetwork')"
     >
       <template #selected-option="{ option }">
-        <ModalsBridgeNetworkSelectOption
+        <PartialsBridgeFormNetworkSelectOption
           v-if="option"
           selected
           :option="option"
@@ -55,7 +54,12 @@ const options = computed(() => {
       </template>
 
       <template #option="{ option, active }">
-        <ModalsBridgeNetworkSelectOption :option="option" :active="active" />
+        <PartialsBridgeFormNetworkSelectOption
+          v-bind="{
+            option,
+            active
+          }"
+        />
       </template>
     </AppSelectField>
   </div>

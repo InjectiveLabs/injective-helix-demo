@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { injToken } from '~/app/data/token'
-import { BridgeField, BridgeForm, BridgeType } from '~/types'
+import { injToken } from '@/app/data/token'
+import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 
 definePageMeta({
-  middleware: [
-    'connected',
-    (to) => {
-      if (to.name === 'bridge') {
-        return navigateTo({ name: 'bridge-deposit' })
-      }
-    }
-  ]
+  middleware: ['connected']
 })
 
+const walletStore = useWalletStore()
+const modalStore = useModalStore()
 const peggyStore = usePeggyStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const { values: formValues } = useForm<BridgeForm>({
   initialValues: {
@@ -31,9 +28,11 @@ const { values: formValues } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
+const { isDeposit } = useBridgeState(computed(() => formValues))
 
 onMounted(() => {
   fetchData()
+  handlePreFillCosmosWallet()
 })
 
 function fetchData() {
@@ -49,48 +48,68 @@ function fetchData() {
     })
 }
 
-const status = reactive(new Status(StatusType.Idle))
+function handlePreFillCosmosWallet() {
+  if (walletStore.isCosmosWallet) {
+    formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+  }
+}
+
+function handleBridgeConfirmed() {
+  modalStore.closeModal(Modal.BridgeConfirm)
+}
 </script>
 
 <template>
   <div class="grid place-items-center h-full">
-    <div class="max-w-90% w-[448px]">
+    <div class="max-w-xl w-[320px] sm:w-[440px] lg:w-[640px]">
       <div>
-        <div class="flex justify-start mb-6">
-          <NuxtLink
+        <div class="flex justify-start mb-6 gap-2">
+          <AppSelectButton
+            v-model="formValues[BridgeField.BridgeType]"
+            :value="BridgeType.Deposit"
             class="text-xs uppercase tracking-wide cursor-pointer"
-            active-class="text-blue-500"
-            :to="{ name: 'bridge-deposit' }"
+            :class="[
+              formValues[BridgeField.BridgeType] === BridgeType.Deposit
+                ? 'text-blue-500'
+                : 'text-gray-500'
+            ]"
           >
-            {{ $t('account.deposit') }}
-          </NuxtLink>
-
+            <span>
+              {{ $t('account.deposit') }}
+            </span>
+          </AppSelectButton>
           <CommonSeparator />
-
-          <NuxtLink
+          <AppSelectButton
+            v-model="formValues[BridgeField.BridgeType]"
+            :value="BridgeType.Withdraw"
             class="text-xs uppercase tracking-wide cursor-pointer"
-            active-class="text-blue-500"
-            :to="{ name: 'bridge-withdraw' }"
+            :class="[
+              formValues[BridgeField.BridgeType] === BridgeType.Withdraw
+                ? 'text-blue-500'
+                : 'text-gray-500'
+            ]"
           >
-            {{ $t('account.withdraw') }}
-          </NuxtLink>
+            <span>
+              {{ $t('account.withdraw') }}
+            </span>
+          </AppSelectButton>
         </div>
       </div>
       <div class="p-6 bg-gray-850 rounded-lg">
         <AppHocLoading v-bind="{ status }">
-          <ModalsBridgeNetworkSelect>
+          <PartialsBridgeFormNetworkSelect>
             <template #title>
-              <span
-                v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit"
-              >
+              <span v-if="isDeposit">
                 {{ $t('bridge.selectOriginNetwork') }}
               </span>
               <span v-else>
                 {{ $t('bridge.selectDestinationNetwork') }}
               </span>
             </template>
-          </ModalsBridgeNetworkSelect>
-          <NuxtPage />
+          </PartialsBridgeFormNetworkSelect>
+          <PartialsBridge />
+          <ModalsBridgeConfirm @form:submit="handleBridgeConfirmed" />
+          <ModalsBridgeCompleted />
         </AppHocLoading>
       </div>
     </div>

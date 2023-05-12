@@ -85,11 +85,6 @@ export enum TransferSide {
   TradingAccount = 'TradingAccount'
 }
 
-export enum TransferDirection {
-  bankToTradingAccount = 'bank-to-trading-account',
-  tradingAccountToBank = 'trading-account-to-bank'
-}
-
 export enum BridgeType {
   Deposit = 'Deposit',
   Withdraw = 'Withdraw'
