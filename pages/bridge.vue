@@ -8,9 +8,9 @@ definePageMeta({
   middleware: ['connected']
 })
 
+const route = useRoute()
 const walletStore = useWalletStore()
 const modalStore = useModalStore()
-const peggyStore = usePeggyStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
@@ -28,29 +28,46 @@ const { values: formValues } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
-const { isDeposit } = useBridgeState(computed(() => formValues))
+const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
+  computed(() => formValues)
+)
 
 onMounted(() => {
-  fetchData()
-  handlePreFillCosmosWallet()
-})
-
-function fetchData() {
   status.setLoading()
 
-  Promise.all([
-    accountStore.fetchAccountPortfolio(),
-    peggyStore.getErc20BalancesWithTokenAndPrice()
-  ])
+  Promise.all([accountStore.fetchAccountPortfolio()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-}
+
+  handlePreFillCosmosWallet()
+  handlePreFillFromQuery()
+})
 
 function handlePreFillCosmosWallet() {
   if (walletStore.isCosmosWallet) {
     formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+  }
+}
+
+function handlePreFillFromQuery() {
+  if (!route.query) {
+    return
+  }
+
+  const { denom, type } = route.query as
+    | {
+        denom: string
+        type: BridgeType
+      }
+    | Record<string, undefined>
+
+  formValues[BridgeField.BridgeType] = type || BridgeType.Deposit
+
+  // Only allow peggy denoms pre-selection for now
+  if (denom && denom.startsWith('peggy')) {
+    formValues[BridgeField.Denom] = denom
   }
 }
 
@@ -93,6 +110,21 @@ function handleBridgeConfirmed() {
               {{ $t('account.withdraw') }}
             </span>
           </AppSelectButton>
+          <CommonSeparator />
+          <AppSelectButton
+            v-model="formValues[BridgeField.BridgeType]"
+            :value="BridgeType.Transfer"
+            class="text-xs uppercase tracking-wide cursor-pointer"
+            :class="[
+              formValues[BridgeField.BridgeType] === BridgeType.Transfer
+                ? 'text-blue-500'
+                : 'text-gray-500'
+            ]"
+          >
+            <span>
+              {{ $t('account.transfer') }}
+            </span>
+          </AppSelectButton>
         </div>
       </div>
       <div class="p-6 bg-gray-850 rounded-lg">
@@ -102,8 +134,11 @@ function handleBridgeConfirmed() {
               <span v-if="isDeposit">
                 {{ $t('bridge.selectOriginNetwork') }}
               </span>
-              <span v-else>
+              <span v-if="isWithdraw">
                 {{ $t('bridge.selectDestinationNetwork') }}
+              </span>
+              <span v-if="isTransfer">
+                {{ $t('bridge.transferOnChain') }}
               </span>
             </template>
           </PartialsBridgeFormNetworkSelect>

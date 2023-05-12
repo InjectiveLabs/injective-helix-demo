@@ -34,5 +34,9 @@ function handleBridgeConfirmation() {
     <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Withdraw">
       {{ $t('bridge.withdrawNow') }}
     </span>
+
+    <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer">
+      {{ $t('bridge.transferNow') }}
+    </span>
   </AppButton>
 </template>

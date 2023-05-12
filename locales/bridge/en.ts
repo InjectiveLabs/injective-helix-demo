@@ -14,6 +14,7 @@ export default {
     depositToInjective: 'Deposit to Injective',
     selectOriginNetwork: 'Select origin network',
     selectDestinationNetwork: 'Select destination network',
+    transferOnChain: 'Transfer on Injective',
     ibc: 'IBC',
     wormhole: 'Wormhole',
     transfersNote: ({ named }: I18nMessageFunction) =>

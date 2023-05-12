@@ -5,7 +5,7 @@ import { BridgeField, BridgeForm } from '@/types'
 
 const formValues = useFormValues<BridgeForm>()
 
-const { isWithdraw } = useBridgeState(formValues)
+const { isTransfer } = useBridgeState(formValues)
 
 const { value: network } = useStringField({
   name: BridgeField.BridgingNetwork
@@ -15,12 +15,22 @@ const { value: network } = useStringField({
  * We remove injective option from options when depositing
  **/
 const options = computed(() => {
+  if (isTransfer.value) {
+    return networksMeta
+      .filter((option) => {
+        return option.value === BridgingNetwork.Injective
+      })
+      .map((option) => {
+        return {
+          display: option.text,
+          value: option.value,
+          icon: option.icon
+        }
+      })
+  }
+
   return networksMeta
     .filter((option) => {
-      if (isWithdraw.value) {
-        return true
-      }
-
       return option.value !== BridgingNetwork.Injective
     })
     .map((option) => {

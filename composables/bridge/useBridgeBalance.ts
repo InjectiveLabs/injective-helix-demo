@@ -76,6 +76,10 @@ export function useBridgeBalance(formValues: Ref<Partial<BridgeForm>>) {
       return bankBalancesWithToken.value
     }
 
+    if (formValues.value[BridgeField.BridgeType] === BridgeType.Transfer) {
+      return bankBalancesWithToken.value
+    }
+
     return []
   })
 

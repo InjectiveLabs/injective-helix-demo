@@ -5,7 +5,6 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType } from '@/types'
 
 const peggyStore = usePeggyStore()
@@ -57,7 +56,9 @@ const needsAllowanceSet = computed(() => {
 
 onMounted(() => {
   peggyStore.getErc20BalancesWithTokenAndPrice()
-  peggyStore.getErc20TokenBalanceAndAllowance(injToken)
+  peggyStore.getErc20DenomBalanceAndAllowance(
+    formValues.value[BridgeField.Denom]
+  )
 })
 </script>
 

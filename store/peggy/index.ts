@@ -156,6 +156,26 @@ export const usePeggyStore = defineStore('peggy', {
       await tokenStore.fetchTokensUsdPriceMap([
         balanceWithToken.token.coinGeckoId
       ])
+    },
+
+    async getErc20DenomBalanceAndAllowance(denom: string) {
+      const peggyStore = usePeggyStore()
+      const walletStore = useWalletStore()
+      const tokenStore = useTokenStore()
+
+      const { address, isUserWalletConnected } = walletStore
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      const token = tokenStore.tokens.find((token) => token.denom === denom)
+
+      if (!token) {
+        return
+      }
+
+      await peggyStore.getErc20TokenBalanceAndAllowance(token)
     }
   }
 })

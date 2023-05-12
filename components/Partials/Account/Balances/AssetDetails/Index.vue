@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import type { Token } from '@injectivelabs/token-metadata'
-import { AccountBalance, BusEvents, Modal, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeType, BusEvents, Modal } from '@/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const router = useRouter()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 
@@ -104,9 +104,10 @@ function handleDepositClick() {
     return
   }
 
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
-    accountBalance.value.token
-  )
+  router.push({
+    name: 'bridge',
+    query: { type: BridgeType.Deposit, denom: accountBalance.value.token.denom }
+  })
 
   handleClose()
 }
@@ -116,9 +117,13 @@ function handleWithdrawClick() {
     return
   }
 
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
-    accountBalance.value.token
-  )
+  router.push({
+    name: 'bridge',
+    query: {
+      type: BridgeType.Withdraw,
+      denom: accountBalance.value.token.denom
+    }
+  })
 
   handleClose()
 }

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeType } from '@/types'
 
+const router = useRouter()
 const accountStore = useAccountStore()
 
 const props = defineProps({
@@ -76,15 +76,17 @@ const {
 )
 
 function handleDepositClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
-    props.balance.token
-  )
+  router.push({
+    name: 'bridge',
+    query: { type: BridgeType.Deposit, denom: props.balance.token.denom }
+  })
 }
 
 function handleWithdrawClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
-    props.balance.token
-  )
+  router.push({
+    name: 'bridge',
+    query: { type: BridgeType.Withdraw, denom: props.balance.token.denom }
+  })
 }
 </script>
 
