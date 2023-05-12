@@ -2,14 +2,14 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import type { Token } from '@injectivelabs/token-metadata'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeType } from '@/types'
 
+const router = useRouter()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
@@ -107,11 +107,11 @@ function toggleHideBalances() {
 }
 
 function handleDepositClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit()
+  router.push({ name: 'bridge', query: { type: BridgeType.Deposit } })
 }
 
 function handleWithdrawClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit()
+  router.push({ name: 'bridge', query: { type: BridgeType.Withdraw } })
 }
 </script>
 

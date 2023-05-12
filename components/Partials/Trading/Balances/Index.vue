@@ -7,13 +7,9 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import {
-  BridgeBusEvents,
-  UiMarketWithToken,
-  WalletConnectStatus
-} from '@/types'
+import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
+const router = useRouter()
 const accountStore = useAccountStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
@@ -116,7 +112,10 @@ function refreshSubaccountBalances() {
 function handleDeposit() {
   const token = isSpot ? props.market.baseToken : props.market.quoteToken
 
-  useEventBus<Token>(BridgeBusEvents.Deposit).emit(token)
+  router.push({
+    name: 'bridge',
+    query: { type: BridgeType.Deposit, denom: token.denom }
+  })
 }
 
 watch(

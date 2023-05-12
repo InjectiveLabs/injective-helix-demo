@@ -100,6 +100,11 @@ function handleTokenSelectorOnClick(show: boolean) {
         >
           <PartialsBridgeFormButton />
         </PartialsBridgeWithdraw>
+        <PartialsBridgeTransfer
+          v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
+        >
+          <PartialsBridgeFormButton />
+        </PartialsBridgeTransfer>
       </template>
     </div>
   </div>

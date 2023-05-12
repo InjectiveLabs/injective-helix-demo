@@ -10,6 +10,9 @@ export default function useBridgeState(formValues: Ref<Partial<BridgeForm>>) {
   const isDeposit = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
   )
+  const isTransfer = computed(
+    () => formValues.value[BridgeField.BridgeType] === BridgeType.Transfer
+  )
 
   const origin = computed<BridgingNetwork>(() => {
     return formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
@@ -94,6 +97,7 @@ export default function useBridgeState(formValues: Ref<Partial<BridgeForm>>) {
   return {
     isDeposit,
     isWithdraw,
+    isTransfer,
     isIbcTransfer,
     originIsEthereum,
     originNetworkMeta,

@@ -87,7 +87,8 @@ export enum TransferSide {
 
 export enum BridgeType {
   Deposit = 'Deposit',
-  Withdraw = 'Withdraw'
+  Withdraw = 'Withdraw',
+  Transfer = 'Transfer'
 }
 
 export enum TradeTypes {
@@ -219,13 +220,6 @@ export enum BusEvents {
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected',
   ActivityFilterUpdate = 'activity-filter-update'
-}
-
-export enum BridgeBusEvents {
-  Transfer = 'transfer',
-  TransferToBank = 'transfer-to-bank',
-  Deposit = 'deposit',
-  Withdraw = 'withdraw'
 }
 
 export enum ActivityField {

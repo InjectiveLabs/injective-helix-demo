@@ -32,11 +32,11 @@ const emit = defineEmits<{
 const {
   isDeposit,
   isWithdraw,
+  isTransfer,
   originIsInjective,
   originNetworkMeta,
-  destinationNetworkMeta,
   destinationIsEthereum,
-  destinationIsInjective
+  destinationNetworkMeta
 } = useBridgeState(formValues)
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
@@ -154,7 +154,7 @@ const handlerFunction = computed(() => {
     return handleDeposit
   }
 
-  if (isWithdraw.value && destinationIsInjective.value) {
+  if (isTransfer.value) {
     return handleWithdrawToInjective
   }
 
@@ -253,14 +253,19 @@ function handleDeposit() {
         <span v-if="isDeposit">
           {{ $t('bridge.depositToInjective') }}
         </span>
-        <span v-else-if="isWithdraw">
+        <span v-if="isWithdraw">
           {{ $t('bridge.withdrawFromInjective') }}
+        </span>
+        <span v-if="isTransfer">
+          {{ $t('bridge.transferOnChain') }}
         </span>
       </h3>
     </template>
 
-    <div>
-      <h3 class="text-xl font-medium mt-6">
+    <div class="pt-4">
+      <h3
+        class="text-xs font-semibold uppercase tracking-wider text-center text-gray-300"
+      >
         {{ $t('bridge.confirmTransaction') }}
       </h3>
 
