@@ -127,7 +127,6 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     <PartialsAccountBalancesAssetDetails
       v-if="modalStore.modals[Modal.AssetDetails]"
     />
-    <PartialsAccountBridge />
 
     <ModalsAddMargin />
     <ModalsConvertUsdc

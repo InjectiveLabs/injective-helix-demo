@@ -1,23 +1,9 @@
 import type { Ref } from 'vue'
 import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
-import { injToken } from '@/app/data/token'
-import { BridgeField, BridgeForm, BridgeType, TransferDirection } from '@/types'
+import { BridgeField, BridgeForm, BridgeType } from '@/types'
 import { networksMeta } from '@/app/data/bridge'
 
-export const getInitialBridgeFormValues = () => ({
-  [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
-  [BridgeField.Token]: injToken,
-  [BridgeField.Denom]: injToken.denom,
-  [BridgeField.Amount]: '',
-  [BridgeField.Memo]: '',
-  [BridgeField.Destination]: ''
-})
-
-export default function useBridgeState({
-  formValues
-}: {
-  formValues: Ref<Partial<BridgeForm>>
-}) {
+export default function useBridgeState(formValues: Ref<Partial<BridgeForm>>) {
   const isWithdraw = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw
   )
@@ -25,52 +11,38 @@ export default function useBridgeState({
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
   )
 
-  const origin = computed<BridgingNetwork | TransferDirection>(() => {
-    switch (formValues.value[BridgeField.BridgeType]) {
-      case BridgeType.Deposit:
-        return formValues.value[BridgeField.BridgingNetwork]
-      case BridgeType.Withdraw:
-        return BridgingNetwork.Injective
-      default:
-    }
+  const origin = computed<BridgingNetwork>(() => {
+    return formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
+      ? formValues.value[BridgeField.BridgingNetwork]
+      : BridgingNetwork.Injective
   })
 
-  const destination = computed<BridgingNetwork | TransferDirection>(() => {
-    switch (formValues.value[BridgeField.BridgeType]) {
-      case BridgeType.Deposit:
-        return BridgingNetwork.Injective
-      case BridgeType.Withdraw:
-        return formValues.value[BridgeField.BridgingNetwork]
-      default:
-    }
+  const destination = computed<BridgingNetwork>(() => {
+    return formValues.value[BridgeField.BridgeType] === BridgeType.Deposit
+      ? BridgingNetwork.Injective
+      : formValues.value[BridgeField.BridgingNetwork]
   })
 
   const originNetworkMeta = computed(() => {
-    switch (formValues.value[BridgeField.BridgeType]) {
-      case BridgeType.Deposit:
-        return networksMeta.find(
-          (meta) => meta.value === formValues.value[BridgeField.BridgingNetwork]
-        )
-      case BridgeType.Withdraw:
-        return networksMeta.find(
-          (meta) => meta.value === BridgingNetwork.Injective
-        )
-      default:
+    if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
+      return networksMeta.find(
+        (meta) => meta.value === formValues.value[BridgeField.BridgingNetwork]
+      )
     }
+
+    return networksMeta.find((meta) => meta.value === BridgingNetwork.Injective)
   })
 
   const destinationNetworkMeta = computed(() => {
-    switch (formValues.value[BridgeField.BridgeType]) {
-      case BridgeType.Deposit:
-        return networksMeta.find(
-          (meta) => meta.value === BridgingNetwork.Injective
-        )
-      case BridgeType.Withdraw:
-        return networksMeta.find(
-          (meta) => meta.value === formValues.value[BridgeField.BridgingNetwork]
-        )
-      default:
+    if (formValues.value[BridgeField.BridgeType] === BridgeType.Deposit) {
+      return networksMeta.find(
+        (meta) => meta.value === BridgingNetwork.Injective
+      )
     }
+
+    return networksMeta.find(
+      (meta) => meta.value === formValues.value[BridgeField.BridgingNetwork]
+    )
   })
 
   const destinationIsEthereum = computed(() => {
@@ -102,7 +74,7 @@ export default function useBridgeState({
     )
   })
 
-  const networkIsNotSupported = computed(() => {
+  const networkIsSupported = computed(() => {
     const notSupportedNetworks = [
       ...KeplrNetworks,
       BridgingNetwork.Terra,
@@ -110,12 +82,12 @@ export default function useBridgeState({
       BridgingNetwork.Moonbeam,
       BridgingNetwork.Crescent,
       BridgingNetwork.Solana,
-      BridgingNetwork.EthereumWh
+      BridgingNetwork.EthereumWh,
+      BridgingNetwork.Arbitrum
     ]
 
-    return (
-      notSupportedNetworks.includes(origin.value as BridgingNetwork) ||
-      notSupportedNetworks.includes(destination.value as BridgingNetwork)
+    return !notSupportedNetworks.some(
+      (network) => network === origin.value || network === destination.value
     )
   })
 
@@ -127,7 +99,7 @@ export default function useBridgeState({
     originNetworkMeta,
     originIsInjective,
     destinationIsEthereum,
-    networkIsNotSupported,
+    networkIsSupported,
     destinationIsInjective,
     destinationNetworkMeta
   }

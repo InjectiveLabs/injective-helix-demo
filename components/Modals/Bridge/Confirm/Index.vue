@@ -19,7 +19,6 @@ const accountStore = useAccountStore()
 const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -33,15 +32,12 @@ const emit = defineEmits<{
 const {
   isDeposit,
   isWithdraw,
+  originIsInjective,
   originNetworkMeta,
   destinationNetworkMeta,
   destinationIsEthereum,
-  destinationIsInjective,
-  networkIsNotSupported,
-  originIsInjective
-} = useBridgeState({
-  formValues
-})
+  destinationIsInjective
+} = useBridgeState(formValues)
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
@@ -264,204 +260,180 @@ function handleDeposit() {
     </template>
 
     <div>
-      <div v-if="walletStore.isUserWalletConnected">
-        <div v-if="!networkIsNotSupported">
-          <h3 class="text-xl font-medium mt-6">
-            {{ $t('bridge.confirmTransaction') }}
-          </h3>
+      <h3 class="text-xl font-medium mt-6">
+        {{ $t('bridge.confirmTransaction') }}
+      </h3>
 
-          <div v-if="formValues[BridgeField.Token]" class="text-center my-8">
-            <CommonTokenIcon
-              v-if="formValues[BridgeField.Token].logo"
-              :token="formValues[BridgeField.Token]"
-              xl
-              class="mx-auto"
-            />
-            <BaseIcon
-              v-else
-              name="category-alt"
-              class="text-gray-200 rounded-full w-10 h-10 mx-auto"
-            />
-            <p
-              class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4"
-              data-cy="transfer-confirm-modal-value-text-content"
-            >
-              {{ amountToString }}
-              {{ formValues[BridgeField.Token].symbol }}
-            </p>
-            <p
-              v-if="amountInUsd.gt(0)"
-              class="text-gray-500 text-sm tracking-0.4 mt-2"
-              data-cy="transfer-confirm-modal-value-usd-text-content"
-            >
-              ${{ amountInUsdToString }}
-            </p>
-          </div>
-
-          <div
-            v-if="originNetworkMeta && destinationNetworkMeta"
-            class="flex justify-between items-center mt-6"
-          >
-            <ModalsBridgeNetworkCard
-              class="w-1/2"
-              data-cy="transfer-confirm-modal-from-text-content"
-              :hide-icon="
-                originNetworkMeta.value === destinationNetworkMeta.value
-              "
-              :network-meta="originNetworkMeta"
-            />
-
-            <div
-              class="bg-blue-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
-            >
-              <BaseIcon
-                name="arrow"
-                class="text-gray-1000 w-4 h-4 rotate-180"
-              />
-            </div>
-
-            <ModalsBridgeNetworkCard
-              class="w-1/2"
-              data-cy="transfer-confirm-modal-to-text-content"
-              :hide-icon="
-                originNetworkMeta.value === destinationNetworkMeta.value
-              "
-              :network-meta="destinationNetworkMeta"
-            />
-          </div>
-
-          <div v-if="originIsInjective" class="mt-6">
-            <!-- Amount -->
-            <ModalsBridgeConfirmRow class="mb-4">
-              <template #title>
-                {{ $t('bridge.amount') }}
-              </template>
-
-              <template #amount>
-                <span data-cy="transfer-confirm-modal-amount-text-content">
-                  {{ amountToString }}
-                  {{ formValues[BridgeField.Token].symbol }}
-                </span>
-              </template>
-
-              <template #amountInUsd>
-                <span data-cy="transfer-confirm-modal-amount-usd-text-content">
-                  ${{ amountInUsdToString }}
-                </span>
-              </template>
-            </ModalsBridgeConfirmRow>
-
-            <!-- Bridge Fee -->
-            <ModalsBridgeConfirmRow v-if="destinationIsEthereum" class="mb-4">
-              <template #title>
-                {{ $t('bridge.bridgeFee') }}
-              </template>
-
-              <template #amount>
-                <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
-                  {{ ethBridgeFeeToString }}
-                  {{ formValues[BridgeField.Token].symbol }}
-                </span>
-              </template>
-
-              <template #amountInUsd>
-                <span
-                  data-cy="transfer-confirm-modal-bridge-fee-usd-text-content"
-                >
-                  ${{ ethBridgeFeeInUsdToString }}
-                </span>
-              </template>
-            </ModalsBridgeConfirmRow>
-          </div>
-
-          <div v-if="originIsInjective">
-            <ModalsBridgeConfirmRow class="mb-4" bold>
-              <template #title>
-                {{ $t('bridge.transferAmount') }}
-              </template>
-
-              <template #amount>
-                <span
-                  data-cy="transfer-confirm-modal-transfer-amount-text-content"
-                >
-                  {{ transferAmountToString }}
-                  {{ formValues[BridgeField.Token].symbol }}
-                </span>
-              </template>
-
-              <template #amountInUsd>
-                <span
-                  data-cy="transfer-confirm-modal-transfer-amount-usd-text-content"
-                >
-                  ${{ transferAmountInUsdToString }}
-                </span>
-              </template>
-            </ModalsBridgeConfirmRow>
-
-            <!-- Fee Delegation for all wallets not active -->
-            <ModalsBridgeConfirmRow v-if="false" bold class="mb-6">
-              <template #title>
-                {{ $t('bridge.gasFee') }}
-              </template>
-
-              <template #amount>
-                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
-                  {{ gasFeeToString }} {{ injToken.symbol }}
-                </span>
-              </template>
-
-              <template #amountInUsd>
-                <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
-                  ${{ gasFeeInUsdToString }}
-                </span>
-              </template>
-            </ModalsBridgeConfirmRow>
-
-            <!-- Fee Delegation for all wallets active -->
-            <ModalsBridgeConfirmRow v-else bold class="mb-6">
-              <template #title>
-                {{ $t('bridge.gasFee') }}
-              </template>
-
-              <template #amount>
-                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
-                  {{ $t('common.waived') }}
-                </span>
-              </template>
-            </ModalsBridgeConfirmRow>
-          </div>
-
-          <div class="text-center mt-6">
-            <AppButton
-              lg
-              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
-              :disabled="isConfirmationDisabled"
-              :status="status"
-              data-cy="transfer-confirm-modal-confirm-button"
-              @click="handleConfirmation"
-            >
-              <span
-                v-if="originIsInjective && !accountStore.hasEnoughInjForGas"
-              >
-                {{ $t('bridge.insufficientINJForGas') }}
-              </span>
-              <span v-if="transferAmount.lte(0)">
-                {{ $t('bridge.insufficientAmount') }}
-              </span>
-              <span v-else>
-                {{ $t('bridge.confirm') }}
-              </span>
-            </AppButton>
-          </div>
-        </div>
-        <ModalsBridgeNotSupportedBridgeTypeNote
+      <div v-if="formValues[BridgeField.Token]" class="text-center my-8">
+        <CommonTokenIcon
+          v-if="formValues[BridgeField.Token].logo"
+          :token="formValues[BridgeField.Token]"
+          xl
+          class="mx-auto"
+        />
+        <BaseIcon
           v-else
-          v-bind="{
-            selectedNetwork: formValues[BridgeField.BridgingNetwork]
-          }"
+          name="category-alt"
+          class="text-gray-200 rounded-full w-10 h-10 mx-auto"
+        />
+        <p
+          class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4"
+          data-cy="transfer-confirm-modal-value-text-content"
+        >
+          {{ amountToString }}
+          {{ formValues[BridgeField.Token].symbol }}
+        </p>
+        <p
+          v-if="amountInUsd.gt(0)"
+          class="text-gray-500 text-sm tracking-0.4 mt-2"
+          data-cy="transfer-confirm-modal-value-usd-text-content"
+        >
+          ${{ amountInUsdToString }}
+        </p>
+      </div>
+
+      <div
+        v-if="originNetworkMeta && destinationNetworkMeta"
+        class="flex justify-between items-center mt-6"
+      >
+        <PartialsBridgeFormNetworkCard
+          class="w-1/2"
+          data-cy="transfer-confirm-modal-from-text-content"
+          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :network-meta="originNetworkMeta"
+        />
+
+        <div
+          class="bg-blue-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
+        >
+          <BaseIcon name="arrow" class="text-gray-1000 w-4 h-4 rotate-180" />
+        </div>
+
+        <PartialsBridgeFormNetworkCard
+          class="w-1/2"
+          data-cy="transfer-confirm-modal-to-text-content"
+          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :network-meta="destinationNetworkMeta"
         />
       </div>
-      <CommonUserNotConnectedNote v-else />
+
+      <div v-if="originIsInjective" class="mt-6">
+        <!-- Amount -->
+        <ModalsBridgeConfirmRow class="mb-4">
+          <template #title>
+            {{ $t('bridge.amount') }}
+          </template>
+
+          <template #amount>
+            <span data-cy="transfer-confirm-modal-amount-text-content">
+              {{ amountToString }}
+              {{ formValues[BridgeField.Token].symbol }}
+            </span>
+          </template>
+
+          <template #amountInUsd>
+            <span data-cy="transfer-confirm-modal-amount-usd-text-content">
+              ${{ amountInUsdToString }}
+            </span>
+          </template>
+        </ModalsBridgeConfirmRow>
+
+        <!-- Bridge Fee -->
+        <ModalsBridgeConfirmRow v-if="destinationIsEthereum" class="mb-4">
+          <template #title>
+            {{ $t('bridge.bridgeFee') }}
+          </template>
+
+          <template #amount>
+            <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
+              {{ ethBridgeFeeToString }}
+              {{ formValues[BridgeField.Token].symbol }}
+            </span>
+          </template>
+
+          <template #amountInUsd>
+            <span data-cy="transfer-confirm-modal-bridge-fee-usd-text-content">
+              ${{ ethBridgeFeeInUsdToString }}
+            </span>
+          </template>
+        </ModalsBridgeConfirmRow>
+      </div>
+
+      <div v-if="originIsInjective">
+        <ModalsBridgeConfirmRow class="mb-4" bold>
+          <template #title>
+            {{ $t('bridge.transferAmount') }}
+          </template>
+
+          <template #amount>
+            <span data-cy="transfer-confirm-modal-transfer-amount-text-content">
+              {{ transferAmountToString }}
+              {{ formValues[BridgeField.Token].symbol }}
+            </span>
+          </template>
+
+          <template #amountInUsd>
+            <span
+              data-cy="transfer-confirm-modal-transfer-amount-usd-text-content"
+            >
+              ${{ transferAmountInUsdToString }}
+            </span>
+          </template>
+        </ModalsBridgeConfirmRow>
+
+        <!-- Fee Delegation for all wallets not active -->
+        <ModalsBridgeConfirmRow v-if="false" bold class="mb-6">
+          <template #title>
+            {{ $t('bridge.gasFee') }}
+          </template>
+
+          <template #amount>
+            <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+              {{ gasFeeToString }} {{ injToken.symbol }}
+            </span>
+          </template>
+
+          <template #amountInUsd>
+            <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
+              ${{ gasFeeInUsdToString }}
+            </span>
+          </template>
+        </ModalsBridgeConfirmRow>
+
+        <!-- Fee Delegation for all wallets active -->
+        <ModalsBridgeConfirmRow v-else bold class="mb-6">
+          <template #title>
+            {{ $t('bridge.gasFee') }}
+          </template>
+
+          <template #amount>
+            <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+              {{ $t('common.waived') }}
+            </span>
+          </template>
+        </ModalsBridgeConfirmRow>
+      </div>
+
+      <div class="text-center mt-6">
+        <AppButton
+          lg
+          class="w-full font-semibold rounded bg-blue-500 text-blue-900"
+          :disabled="isConfirmationDisabled"
+          :status="status"
+          data-cy="transfer-confirm-modal-confirm-button"
+          @click="handleConfirmation"
+        >
+          <span v-if="originIsInjective && !accountStore.hasEnoughInjForGas">
+            {{ $t('bridge.insufficientINJForGas') }}
+          </span>
+          <span v-if="transferAmount.lte(0)">
+            {{ $t('bridge.insufficientAmount') }}
+          </span>
+          <span v-else>
+            {{ $t('bridge.confirm') }}
+          </span>
+        </AppButton>
+      </div>
     </div>
   </AppModal>
 </template>

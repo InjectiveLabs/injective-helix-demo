@@ -38,6 +38,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:denom', state: string): void
+  (e: 'update:show', show: boolean): void
   (
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
@@ -105,6 +106,10 @@ function handleAmountUpdate(amount: string) {
 function handleMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
+
+function handleUpdateShow(show: boolean) {
+  emit('update:show', show)
+}
 </script>
 
 <script lang="ts">
@@ -146,6 +151,7 @@ export default {
       placement="bottom"
       auto-boundary-max-size
       popper-class="dropdown"
+      @update:show="handleUpdateShow"
     >
       <div class="px-4">
         <div class="flex justify-between">

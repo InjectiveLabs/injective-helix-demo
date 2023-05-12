@@ -80,13 +80,18 @@ export const usePeggyStore = defineStore('peggy', {
       }
 
       const erc20TokenBalancesAreFetched =
-        peggyStore.tradeableErc20BalancesWithTokenAndPrice.some(
+        peggyStore.tradeableErc20BalancesWithTokenAndPrice.filter(
           (token) =>
             new BigNumberInBase(token.erc20Balance.balance).gt(0) ||
             new BigNumberInBase(token.erc20Balance.allowance).gt(0)
         )
 
-      if (erc20TokenBalancesAreFetched) {
+      /**
+       * We fetch the price of the first token
+       * we show at the deposit form (INJ)
+       * so we have to compare > 1
+       */
+      if (erc20TokenBalancesAreFetched.length > 1) {
         return
       }
 
