@@ -10,6 +10,7 @@ export default {
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
+    transferOnChain: 'Transfer to address',
     trade: 'Trade',
     filters: 'Filters',
     filterByAsset: 'Filter by asset',
