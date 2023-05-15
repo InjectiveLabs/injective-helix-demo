@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TokenType } from '@injectivelabs/token-metadata'
 import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
+import { getDenomAndTypeFromQuery } from '@/app/data/bridge'
 
 definePageMeta({
   middleware: ['connected']
@@ -56,18 +58,27 @@ function handlePreFillFromQuery() {
     return
   }
 
-  const { denom, type } = route.query as
-    | {
-        denom: string
-        type: BridgeType
-      }
-    | Record<string, undefined>
+  const { denom, bridgeType, tokenType } = getDenomAndTypeFromQuery(route.query)
 
-  formValues[BridgeField.BridgeType] = type || BridgeType.Deposit
+  formValues[BridgeField.BridgeType] = bridgeType
 
-  // Only allow peggy denoms pre-selection for now
-  if (denom && denom.startsWith('peggy')) {
-    formValues[BridgeField.Denom] = denom
+  switch (true) {
+    case tokenType === TokenType.Erc20 && denom.startsWith('peggy'):
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
+      formValues[BridgeField.Denom] = denom
+      break
+    case tokenType === TokenType.Ibc:
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+      break
+    case tokenType === TokenType.Cw20 || tokenType === TokenType.TokenFactory:
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.EthereumWh
+      break
+    case tokenType === TokenType.Spl:
+      formValues[BridgeField.BridgingNetwork] = TokenType.Spl
+      break
+    default:
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
+      formValues[BridgeField.Denom] = denom
   }
 }
 
@@ -122,7 +133,7 @@ function handleBridgeConfirmed() {
             ]"
           >
             <span>
-              {{ $t('account.transfer') }}
+              {{ $t('account.transferOnChain') }}
             </span>
           </AppSelectButton>
         </div>

@@ -12,8 +12,7 @@ const hubUrl = `${getHubUrl()}/bridge`
 const formValues = useFormValues<BridgeForm>()
 const resetForm = useResetForm()
 
-const { isDeposit, isWithdraw, destinationIsInjective } =
-  useBridgeState(formValues)
+const { isDeposit, isTransfer, isWithdraw } = useBridgeState(formValues)
 
 const explorerUrl = computed(
   () => `${getExplorerUrl(NETWORK)}/account/${walletStore.injectiveAddress}/`
@@ -22,7 +21,7 @@ const explorerUrl = computed(
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeCompleted])
 
 const isOnChainTransaction = computed(
-  () => isWithdraw.value && destinationIsInjective.value
+  () => isWithdraw.value || isTransfer.value
 )
 
 function handleModalClose() {
@@ -45,6 +44,9 @@ function handleModalClose() {
           {{ $t('bridge.depositToInjective') }}
         </span>
         <span v-if="isWithdraw">
+          {{ $t('bridge.withdrawFromInjective') }}
+        </span>
+        <span v-if="isTransfer">
           {{ $t('bridge.withdrawFromInjective') }}
         </span>
       </h3>
