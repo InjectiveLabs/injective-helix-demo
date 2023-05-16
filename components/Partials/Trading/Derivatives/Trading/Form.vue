@@ -92,21 +92,16 @@ const orderTypeToSubmit = computed(() => {
   }
 
   switch (true) {
-    case formValues[TradeField.PostOnly] && isBuy.value: {
+    case formValues[TradeField.PostOnly] && isBuy.value:
       return OrderSide.BuyPO
-    }
-    case isBuy.value: {
+    case isBuy.value:
       return OrderSide.Buy
-    }
-    case formValues[TradeField.PostOnly] && !isBuy.value: {
+    case formValues[TradeField.PostOnly] && !isBuy.value:
       return OrderSide.SellPO
-    }
-    case !isBuy.value: {
+    case !isBuy.value:
       return OrderSide.Sell
-    }
-    default: {
+    default:
       return OrderSide.Buy
-    }
   }
 })
 
@@ -214,6 +209,7 @@ const notionalWithLeverage = computed(() => {
         price,
         orderSide: formValues[TradeField.OrderSide],
         quantity: formValues[TradeField.BaseAmount],
+        quoteTokenDecimals: props.market.quoteToken.decimals,
         tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
     )
@@ -223,6 +219,7 @@ const notionalWithLeverage = computed(() => {
     calculateMargin({
       price,
       quantity: formValues[TradeField.BaseAmount],
+      quoteTokenDecimals: props.market.quoteToken.decimals,
       tensMultiplier: props.market.quantityTensMultiplier,
       leverage: formValues[TradeField.Leverage]
     }).toFixed()
@@ -248,6 +245,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
         price: worstPriceWithSlippage.value.toFixed(),
         orderSide: formValues[TradeField.OrderSide],
         quantity: formValues[TradeField.BaseAmount],
+        quoteTokenDecimals: props.market.quoteToken.decimals,
         tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
     )
@@ -258,6 +256,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
       price: worstPriceWithSlippage.value.toFixed(),
       leverage: formValues[TradeField.Leverage],
       quantity: formValues[TradeField.BaseAmount],
+      quoteTokenDecimals: props.market.quoteToken.decimals,
       tensMultiplier: props.market.quantityTensMultiplier
     }).toFixed()
   )

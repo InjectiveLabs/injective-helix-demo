@@ -17,18 +17,24 @@ export const calculateMargin = ({
   quantity,
   price,
   tensMultiplier,
+  quoteTokenDecimals,
   leverage
 }: {
   quantity: string
   price: string
   tensMultiplier: number
+  quoteTokenDecimals: number
   leverage: string
 }): BigNumberInBase => {
+  const margin = new BigNumberInBase(quantity).times(price).dividedBy(leverage)
+  const marginInWei = margin.toWei(quoteTokenDecimals)
+  const allowableMargin = formatAmountToAllowableAmount(
+    marginInWei.toFixed(),
+    tensMultiplier
+  )
+
   return new BigNumberInBase(
-    formatAmountToAllowableAmount(
-      new BigNumberInBase(quantity).times(price).dividedBy(leverage).toFixed(),
-      tensMultiplier
-    )
+    new BigNumberInWei(allowableMargin).toBase(quoteTokenDecimals).toFixed()
   )
 }
 
@@ -36,29 +42,27 @@ export const calculateBinaryOptionsMargin = ({
   quantity,
   price,
   orderSide,
-  tensMultiplier
+  tensMultiplier,
+  quoteTokenDecimals
 }: {
   quantity: string
   price: string
   tensMultiplier: number
+  quoteTokenDecimals: number
   orderSide: OrderSide
 }): BigNumberInBase => {
-  if (orderSide === OrderSide.Buy) {
-    return new BigNumberInBase(
-      formatAmountToAllowableAmount(
-        new BigNumberInBase(quantity).times(price).toFixed(),
-        tensMultiplier
-      )
-    )
-  }
+  const margin =
+    orderSide === OrderSide.Buy
+      ? new BigNumberInBase(quantity).times(price)
+      : new BigNumberInBase(quantity).times(new BigNumberInBase(1).minus(price))
+  const marginInWei = margin.toWei(quoteTokenDecimals)
+  const allowableMargin = formatAmountToAllowableAmount(
+    marginInWei.toFixed(),
+    tensMultiplier
+  )
 
   return new BigNumberInBase(
-    formatAmountToAllowableAmount(
-      new BigNumberInBase(quantity)
-        .times(new BigNumberInBase(1).minus(price))
-        .toFixed(),
-      tensMultiplier
-    )
+    new BigNumberInWei(allowableMargin).toBase(quoteTokenDecimals).toFixed()
   )
 }
 
