@@ -29,3 +29,9 @@ declare module '@nuxt/types' {
     $attrs: Record<string, any>
   }
 }
+
+declare module '#app' {
+  interface NuxtApp {
+    $onError: (e: ThrownException) => void
+  }
+}

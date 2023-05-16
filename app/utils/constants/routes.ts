@@ -87,6 +87,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'wmatic-usdcet')
+    perpetuals.push('1000pepe-usdt-perp')
   }
 
   if (IS_DEVNET) {
