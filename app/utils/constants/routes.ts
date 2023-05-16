@@ -30,8 +30,9 @@ export const getRoutes = (network: Network, env: string) => {
   const perpetuals = [
     'btc-usdt-perp',
     'inj-usdt-perp',
-    'bonk-usdt-perp',
     'eth-usdt-perp',
+    '1000pepe-usdt-perp',
+    'bonk-usdt-perp',
     'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
@@ -87,7 +88,6 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'wmatic-usdcet')
-    perpetuals.push('1000pepe-usdt-perp')
   }
 
   if (IS_DEVNET) {
