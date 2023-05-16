@@ -129,6 +129,8 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     />
 
     <ModalsAddMargin />
+    <ModalsCreateSubaccount />
+    <ModalsSubaccountTransfer />
     <ModalsConvertUsdc
       v-if="usdcConvertMarket"
       :balances="currentSubaccountBalances"

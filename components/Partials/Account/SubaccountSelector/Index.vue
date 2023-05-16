@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Modal } from '~/types'
+
 const accountStore = useAccountStore()
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -7,6 +9,12 @@ defineProps({
     type: Boolean
   }
 })
+
+const modalStore = useModalStore()
+
+function handleCreateSubaccount() {
+  modalStore.openModal({ type: Modal.CreateSubaccount })
+}
 </script>
 
 <template>
@@ -26,6 +34,11 @@ defineProps({
         hideBalances
       }"
       :key="`subaccount-${subaccountId}`"
+    />
+
+    <AssetPlusSign
+      class="w-8 h-8 text-blue-500 cursor-pointer"
+      @click="handleCreateSubaccount"
     />
   </div>
 </template>
