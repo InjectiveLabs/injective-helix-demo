@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const isSpot = props.market.type === MarketType.Spot
-const interval = '120'
+const interval = '1D'
 
 const status = reactive(new Status(StatusType.Loading))
 
