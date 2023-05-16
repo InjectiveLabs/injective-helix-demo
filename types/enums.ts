@@ -57,6 +57,8 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
   MarketDeprecated = 'market-deprecated',
+  CreateSubaccount = 'create-subaccount',
+  SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
