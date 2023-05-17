@@ -71,31 +71,7 @@ export const getRoutes = (network: Network, env: string) => {
     'leaderboard'
   ]
 
-  const customStaticRoutes: string[] = [
-    '/',
-    '/bridge',
-    '/convert',
-    '/activity',
-    '/account',
-    '/fee-discounts',
-    '/markets',
-    '/trade-and-earn',
-    '/leaderboard',
-    '/maintenance',
-    '/account/positions',
-    '/activity/positions',
-    '/activity/positions/funding-payments',
-    '/activity/derivatives',
-    '/activity/derivatives/order-history',
-    '/activity/derivatives/trade-history',
-    '/activity/derivatives/triggers',
-    '/activity/spot',
-    '/activity/spot/order-history',
-    '/activity/spot/trade-history',
-    '/activity/wallet-history',
-    '/activity/wallet-history/deposits',
-    '/activity/wallet-history/withdrawals'
-  ]
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 
