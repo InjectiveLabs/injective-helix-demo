@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const router = useRoute()
+
 const { t } = useLang()
 
 const aboutUsList = [
@@ -36,7 +38,7 @@ const learnList = [
       <div class="sm:col-span-1 xs:col-span-2 3md:col-span-3 lg:col-span-5">
         <div
           class="flex items-center cursor-pointer md:mb-6"
-          @click="$router.push({ name: 'index' })"
+          @click="router.push({ name: 'index' })"
         >
           <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
           <AssetLogoText class="h-6 md:h-8" />

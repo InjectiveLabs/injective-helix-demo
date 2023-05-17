@@ -2,7 +2,9 @@
 import { ActivityPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
-const { t } = useI18n()
+const route = useRoute()
+
+const { t } = useLang()
 
 const tabs = [
   {
@@ -42,7 +44,7 @@ const tabs = [
 
           <span
             v-if="
-              $route.name !== ActivityPage.DerivativeOpenOrders &&
+              route.name !== ActivityPage.DerivativeOpenOrders &&
               tab.value === ActivityPage.DerivativeOpenOrders
             "
             class="ml-1"
@@ -52,7 +54,7 @@ const tabs = [
 
           <span
             v-if="
-              $route.name !== ActivityPage.DerivativeTriggers &&
+              route.name !== ActivityPage.DerivativeTriggers &&
               tab.value === ActivityPage.DerivativeTriggers
             "
             class="ml-1"

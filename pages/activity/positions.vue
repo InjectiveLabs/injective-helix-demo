@@ -2,7 +2,9 @@
 import { ActivityPage } from '@/types'
 
 const positionStore = usePositionStore()
-const { t } = useI18n()
+const route = useRoute()
+
+const { t } = useLang()
 
 const tabs = [
   {
@@ -33,7 +35,7 @@ const tabs = [
 
         <span
           v-if="
-            $route.name !== ActivityPage.OpenPositions &&
+            route.name !== ActivityPage.OpenPositions &&
             tab.value === ActivityPage.OpenPositions
           "
           class="ml-1"
