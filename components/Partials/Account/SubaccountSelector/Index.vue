@@ -29,8 +29,8 @@ function handleCreateSubaccount() {
         subaccountA.localeCompare(subaccountB)
       )"
       v-bind="{
-        subaccountId,
         balances,
+        subaccountId,
         hideBalances
       }"
       :key="`subaccount-${subaccountId}`"

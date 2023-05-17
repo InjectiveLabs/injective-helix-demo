@@ -243,6 +243,14 @@ export enum BridgeField {
   Token = 'Token'
 }
 
+export enum SubaccountTransferField {
+  Amount = 'Amount',
+  SrcSubaccountId = 'SrcSubaccountId',
+  DstSubaccountId = 'DstSubaccountId',
+  Denom = 'Denom',
+  Token = 'Token'
+}
+
 export enum TradeField {
   BaseAmount = 'Base amount',
   BaseDenom = 'Base denom',

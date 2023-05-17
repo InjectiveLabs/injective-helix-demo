@@ -69,6 +69,11 @@ export default {
     setAllowanceForBridging: ({ named }: I18nMessageFunction) =>
       `Set allowance for transferring ${named(
         'asset'
-      )} through the Injective Bridge.`
+      )} through the Injective Bridge.`,
+
+    mainSubaccount: 'Main Subaccount',
+    subaccountId: ({ named }: I18nMessageFunction) =>
+      `Subaccount ${named('subaccountId')}`,
+    transferToSubaccountSuccess: 'Subaccount transfer successful'
   }
 }

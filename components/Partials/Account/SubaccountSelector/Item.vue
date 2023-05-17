@@ -62,7 +62,7 @@ function handleClick() {
 
 <template>
   <div
-    class="rounded-2xl px-4 py-2 flex min-w-2xs cursor-pointer hover:bg-white/10"
+    class="rounded-2xl px-4 py-2 flex min-w-3xs cursor-pointer hover:bg-white/10"
     :class="{
       'bg-white/10': isSelectedSubaccountId
     }"

@@ -7,10 +7,11 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeType } from '@/types'
+import { AccountBalance, BridgeType, Modal } from '@/types'
 
 const router = useRouter()
 const tokenStore = useTokenStore()
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 
@@ -113,6 +114,10 @@ function handleDepositClick() {
 function handleWithdrawClick() {
   router.push({ name: 'bridge', query: { type: BridgeType.Withdraw } })
 }
+
+function handleTransferClick() {
+  modalStore.openModal({ type: Modal.SubaccountTransfer })
+}
 </script>
 
 <template>
@@ -171,6 +176,12 @@ function handleWithdrawClick() {
         <AppButton class="border border-blue-500" @click="handleWithdrawClick">
           <span class="text-blue-500 font-semibold">
             {{ $t('account.withdraw') }}
+          </span>
+        </AppButton>
+
+        <AppButton class="border border-blue-500" @click="handleTransferClick">
+          <span class="text-blue-500 font-semibold">
+            {{ $t('account.transfer') }}
           </span>
         </AppButton>
       </div>
