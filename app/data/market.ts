@@ -65,6 +65,8 @@ export const dmmSlugsToIncludeInLowVolume = [
   'atom-usdt',
   'weth-usdt',
   'sol-usdc',
+  'sol-usdcet',
+  'usdt-usdcet',
   '1000pepe-usdt-perp',
   'atom-usdt-perp',
   'btc-usdt-perp',
