@@ -49,8 +49,8 @@ function onReady() {
       ref="trading-view-wrap"
       class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"
     >
-      <client-only>
-        <PartialsTradingView
+      <ClientOnly>
+        <PartialsTradingMarketChartTradingView
           v-show="status.isNotLoading()"
           ref="trading-view"
           :interval="interval"
@@ -58,7 +58,7 @@ function onReady() {
           :datafeed-endpoint="datafeedEndpoint"
           @ready="onReady"
         />
-      </client-only>
+      </ClientOnly>
     </div>
   </div>
 </template>
