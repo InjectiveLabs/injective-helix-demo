@@ -2,7 +2,7 @@
 import { PropType } from 'vue'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { BridgeField, TradeField } from '@/types'
+import { BridgeField, SubaccountTransferField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -26,7 +26,9 @@ const props = defineProps({
   },
 
   amountFieldName: {
-    type: String as PropType<TradeField | BridgeField>,
+    type: String as PropType<
+      TradeField | BridgeField | SubaccountTransferField
+    >,
     default: TradeField.BaseAmount
   },
 

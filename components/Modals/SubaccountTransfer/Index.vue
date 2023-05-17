@@ -1,0 +1,164 @@
+<script lang="ts" setup>
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
+import { injToken } from '@/app/data/token'
+
+const modalStore = useModalStore()
+const accountStore = useAccountStore()
+const walletStore = useWalletStore()
+const { t } = useLang()
+const { success } = useNotifications()
+const { $onError } = useNuxtApp()
+
+const { values: formValues, resetForm: resetSubaccountTransferForm } =
+  useForm<SubaccountTransferForm>({
+    initialValues: {
+      [SubaccountTransferField.SrcSubaccountId]:
+        walletStore.defaultSubaccountId,
+      [SubaccountTransferField.DstSubaccountId]: '',
+      [SubaccountTransferField.Token]: injToken,
+      [SubaccountTransferField.Denom]: injToken.denom,
+      [SubaccountTransferField.Amount]: ''
+    },
+    keepValuesOnUnmount: true
+  })
+
+const status = reactive(new Status())
+
+const { supplyWithBalance } = useSubaccountTransferBalance(
+  computed(() => formValues)
+)
+
+function handleSubaccountTransfer() {
+  return formValues[SubaccountTransferField.SrcSubaccountId] ===
+    walletStore.defaultSubaccountId
+    ? handleDefaultSubaccountTransfer()
+    : handleNonDefaultSubaccountTransfer()
+}
+
+function handleNonDefaultSubaccountTransfer() {
+  status.setLoading()
+
+  accountStore
+    .externalTransfer({
+      amount: new BigNumberInBase(formValues[SubaccountTransferField.Amount]),
+      denom: formValues[SubaccountTransferField.Denom],
+      srcSubaccountId: formValues[SubaccountTransferField.SrcSubaccountId],
+      dstSubaccountId: formValues[SubaccountTransferField.DstSubaccountId],
+      token: formValues[SubaccountTransferField.Token]
+    })
+    .then(() => {
+      success({ title: t('bridge.transferToSubaccountSuccess') })
+      resetForm()
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function handleDefaultSubaccountTransfer() {
+  status.setLoading()
+
+  accountStore
+    .deposit({
+      amount: new BigNumberInBase(formValues[SubaccountTransferField.Amount]),
+      subaccountId: formValues[SubaccountTransferField.DstSubaccountId],
+      token: formValues[SubaccountTransferField.Token]
+    })
+    .then(() => {
+      success({ title: t('bridge.transferToSubaccountSuccess') })
+      resetForm()
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function handleTokenChange() {
+  nextTick(() => {
+    const token = supplyWithBalance.value.find(
+      (token) => token.denom === formValues[SubaccountTransferField.Denom]
+    )
+
+    if (token) {
+      formValues[SubaccountTransferField.Amount] = ''
+      formValues[SubaccountTransferField.Token] = token
+    }
+  })
+}
+
+function handleAmountChange({ amount }: { amount: string }) {
+  formValues[SubaccountTransferField.Amount] = amount
+}
+
+function handleSubaccountIdChange() {
+  nextTick(() => {
+    formValues[SubaccountTransferField.Amount] = ''
+    formValues[SubaccountTransferField.Token] = injToken
+    formValues[SubaccountTransferField.Denom] = injToken.denom
+  })
+}
+
+function resetForm() {
+  const srcSubaccountId = formValues[SubaccountTransferField.SrcSubaccountId]
+  const dstSubaccountId = formValues[SubaccountTransferField.DstSubaccountId]
+
+  resetSubaccountTransferForm()
+
+  formValues[SubaccountTransferField.SrcSubaccountId] = srcSubaccountId
+  formValues[SubaccountTransferField.DstSubaccountId] = dstSubaccountId
+}
+
+function closeModal() {
+  modalStore.closeModal(Modal.SubaccountTransfer)
+}
+</script>
+
+<template>
+  <AppModal
+    :show="modalStore.modals[Modal.SubaccountTransfer]"
+    md
+    :ignore="['.v-popper__inner']"
+    @modal:closed="closeModal"
+  >
+    <template #title>
+      <h3>
+        {{ $t('account.subaccountTransfer') }}
+      </h3>
+    </template>
+
+    <div>
+      <div class="mt-6">
+        <div>
+          <ModalsSubaccountTransferSelect
+            @update:subaccount-id="handleSubaccountIdChange"
+          />
+          <div class="mt-6">
+            <AppSelectToken
+              v-model:denom="formValues[SubaccountTransferField.Denom]"
+              v-bind="{
+                required: true,
+                amountFieldName: SubaccountTransferField.Amount,
+                options: supplyWithBalance
+              }"
+              @update:max="handleAmountChange"
+              @update:denom="handleTokenChange"
+            />
+          </div>
+        </div>
+        <AppButton
+          lg
+          class="w-full text-blue-900 bg-blue-500 mt-6"
+          :status="status"
+          @click="handleSubaccountTransfer"
+        >
+          <span class="font-semibold">
+            {{ $t('account.transfer') }}
+          </span>
+        </AppButton>
+      </div>
+    </div>
+  </AppModal>
+</template>
