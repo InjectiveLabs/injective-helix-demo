@@ -30,10 +30,21 @@ const { supplyWithBalance } = useSubaccountTransferBalance(
 )
 
 function handleSubaccountTransfer() {
-  return formValues[SubaccountTransferField.SrcSubaccountId] ===
+  if (
+    formValues[SubaccountTransferField.SrcSubaccountId] ===
     walletStore.defaultSubaccountId
-    ? handleDefaultSubaccountTransfer()
-    : handleNonDefaultSubaccountTransfer()
+  ) {
+    return handleDefaultSubaccountTransfer()
+  }
+
+  if (
+    formValues[SubaccountTransferField.DstSubaccountId] ===
+    walletStore.defaultSubaccountId
+  ) {
+    return handleDefaultSubaccountWithdraw()
+  }
+
+  return handleNonDefaultSubaccountTransfer()
 }
 
 function handleNonDefaultSubaccountTransfer() {
@@ -62,6 +73,25 @@ function handleDefaultSubaccountTransfer() {
 
   accountStore
     .deposit({
+      amount: new BigNumberInBase(formValues[SubaccountTransferField.Amount]),
+      subaccountId: formValues[SubaccountTransferField.DstSubaccountId],
+      token: formValues[SubaccountTransferField.Token]
+    })
+    .then(() => {
+      success({ title: t('bridge.transferToSubaccountSuccess') })
+      resetForm()
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function handleDefaultSubaccountWithdraw() {
+  status.setLoading()
+
+  accountStore
+    .withdraw({
       amount: new BigNumberInBase(formValues[SubaccountTransferField.Amount]),
       subaccountId: formValues[SubaccountTransferField.DstSubaccountId],
       token: formValues[SubaccountTransferField.Token]

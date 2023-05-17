@@ -53,10 +53,12 @@ export const deposit = async ({
 
 export const withdraw = async ({
   amount,
-  token
+  token,
+  subaccountId
 }: {
   amount: BigNumberInBase
   token: Token
+  subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
   const { queue } = useAppStore()
@@ -72,7 +74,7 @@ export const withdraw = async ({
 
   const message = MsgWithdraw.fromJSON({
     injectiveAddress,
-    subaccountId: accountStore.subaccountId,
+    subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
