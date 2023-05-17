@@ -72,5 +72,9 @@ export const colors = {
     700: '#08865C',
     800: '#065B3F',
     900: '#032B1E'
+  },
+
+  primary: {
+    500: '#00F2FE'
   }
 }
