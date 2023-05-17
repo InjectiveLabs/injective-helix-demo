@@ -7,7 +7,7 @@ const spotStore = useSpotStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 
-const { t } = useI18n()
+const { t } = useLang()
 
 defineProps({
   status: {

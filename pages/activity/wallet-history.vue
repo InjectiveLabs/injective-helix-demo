@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ActivityPage } from '@/types'
 
-const { t } = useI18n()
+const { t } = useLang()
 
 const tabs = [
   {

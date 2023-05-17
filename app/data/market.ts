@@ -22,6 +22,7 @@ export const newMarketsSlug = [
 export const experimentalMarketsSlug = [
   'ape-usdt',
   'gf-usdt',
+  '1000pepe-usdt-perp',
   'eth-usdt-19sep22',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
@@ -65,6 +66,8 @@ export const dmmSlugsToIncludeInLowVolume = [
   'atom-usdt',
   'weth-usdt',
   'sol-usdc',
+  'sol-usdcet',
+  'usdt-usdcet',
   '1000pepe-usdt-perp',
   'atom-usdt-perp',
   'btc-usdt-perp',

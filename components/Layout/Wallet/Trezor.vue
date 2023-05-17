@@ -99,7 +99,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         searchable
         :options="
-          walletStore.addresses.map((address) => ({
+          walletStore.addresses.map((address: string) => ({
             display: address,
             value: address
           }))
