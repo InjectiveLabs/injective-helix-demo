@@ -13,6 +13,7 @@ import {
   web3Composer
 } from '@/app/Services'
 import { AppState } from '~/types'
+import { allowanceResetSymbols } from '~/app/data/token'
 
 export const transfer = async ({
   token,
@@ -139,7 +140,10 @@ export const resetOrSetAllowance = async (
    * and then set it again to the unlimited allowance
    * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
    */
-  if (allowance.gte(0)) {
+  if (
+    allowance.gte(0) &&
+    allowanceResetSymbols.includes(balanceWithToken.token.symbol)
+  ) {
     await peggyStore.setTokenAllowance(balanceWithToken, ZERO_IN_WEI)
   }
 

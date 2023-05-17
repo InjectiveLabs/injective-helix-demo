@@ -8,6 +8,7 @@ import {
   BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
 import { BridgeForm, BridgeField } from '@/types'
+import { allowanceResetSymbols } from '~/app/data/token'
 
 const peggyStore = usePeggyStore()
 const formValues = useFormValues<BridgeForm>()
@@ -47,10 +48,11 @@ const hasEnoughAllowanceSet = computed(
 )
 
 const hasNonUnlimitedAllowanceSet = computed(
-  () =>
-    props.allowance.gt(0) &&
-    props.allowance.lt(UNLIMITED_ALLOWANCE) &&
-    props.balanceWithToken
+  () => props.allowance.gt(0) && props.allowance.lt(UNLIMITED_ALLOWANCE)
+)
+
+const needsAllowanceReset = computed(() =>
+  allowanceResetSymbols.includes(props.balanceWithToken.token.symbol)
 )
 
 function handleClickOnSetAllowance() {
@@ -134,7 +136,10 @@ function handleSetAllowance() {
       v-if="allowance.isZero() || hasNonUnlimitedAllowanceSet"
       class="mt-3 text-xs text-gray-400"
     >
-      {{ $t('bridge.allowanceNote') }}
+      <span v-if="needsAllowanceReset">{{
+        $t('bridge.allowanceNoteReset')
+      }}</span>
+      <span v-else>{{ $t('bridge.allowanceNote') }}</span>
     </p>
   </div>
 </template>

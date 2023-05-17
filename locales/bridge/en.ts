@@ -63,6 +63,8 @@ export default {
     keplrConnectedForEthereum: 'Please connect with Metamask',
     balance: 'Balance',
     allowanceNote:
+      'Note: When using latest Metamask extension, click on the "Use Default" button when setting allowance. Otherwise you\'d need to set your allowance again (paying gas fees one more time) if you want to transfer a different amount.',
+    allowanceNoteReset:
       'Note: When using latest Metamask extension, click on the "Use Default" button when setting allowance. Otherwise you\'d need to revoke the allowance first and then set it again (paying gas fees 2 times) if you want to transfer a different amount.',
     setAllowanceForBridging: ({ named }: I18nMessageFunction) =>
       `Set allowance for transferring ${named(
