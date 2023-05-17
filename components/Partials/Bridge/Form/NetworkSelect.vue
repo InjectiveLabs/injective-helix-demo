@@ -12,7 +12,8 @@ const { value: network } = useStringField({
 })
 
 /**
- * We remove injective option from options when depositing
+ * We only need Injective as a network when we do on
+ * chain transfer to another address
  **/
 const options = computed(() => {
   if (isTransfer.value) {
