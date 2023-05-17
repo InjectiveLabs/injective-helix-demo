@@ -7,7 +7,7 @@ import {
   BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
 import { BridgeForm, BridgeField } from '@/types'
-import { allowanceResetSymbols } from '~/app/data/token'
+import { allowanceResetSymbols } from '@/app/data/token'
 
 const peggyStore = usePeggyStore()
 const formValues = useFormValues<BridgeForm>()

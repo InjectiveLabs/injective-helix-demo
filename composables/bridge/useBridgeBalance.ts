@@ -8,7 +8,7 @@ import type { Erc20Token } from '@injectivelabs/token-metadata'
 import { INJ_DENOM, BigNumberInWei } from '@injectivelabs/utils'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
 import { isTokenWormholeToken } from '@/app/data/bridge'
-import { INJ_GAS_BUFFER_FOR_BRIDGE } from '~/app/utils/constants'
+import { INJ_GAS_BUFFER_FOR_BRIDGE } from '@/app/utils/constants'
 
 /**
  * For the bridge balances, we only use

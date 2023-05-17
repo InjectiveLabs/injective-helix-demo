@@ -12,8 +12,8 @@ import {
   web3Broadcaster,
   web3Composer
 } from '@/app/Services'
-import { AppState } from '~/types'
-import { allowanceResetSymbols } from '~/app/data/token'
+import { AppState } from '@/types'
+import { allowanceResetSymbols } from '@/app/data/token'
 
 export const transfer = async ({
   token,

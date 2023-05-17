@@ -1,7 +1,7 @@
 import { identify as amplitudeIdentify } from '@amplitude/analytics-browser'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import BaseAmplitudeTracker from '~/app/providers/amplitude/BaseTracker'
+import BaseAmplitudeTracker from '@/app/providers/amplitude/BaseTracker'
 import {
   AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT,
   AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT

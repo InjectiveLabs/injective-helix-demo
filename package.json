@@ -45,7 +45,7 @@
     "@injectivelabs/token-metadata": "^1.11.0-beta.11",
     "@injectivelabs/token-utils": "^1.10.23-beta.6",
     "@injectivelabs/ts-types": "next",
-    "@injectivelabs/ui-shared": "1.10.25",
+    "@injectivelabs/ui-shared": "1.10.29",
     "@injectivelabs/utils": "^1.10.13-beta.6",
     "@injectivelabs/wallet-ts": "^1.10.83-beta.13",
     "@metamask/detect-provider": "2.0.0",

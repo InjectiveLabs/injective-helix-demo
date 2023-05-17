@@ -7,7 +7,6 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-const router = useRouter()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 
@@ -97,35 +96,6 @@ function handleClosed() {
 function handleClose() {
   modalStore.closeModal(Modal.AssetDetails)
   accountBalance.value = undefined
-}
-
-function handleDepositClick() {
-  if (!accountBalance.value) {
-    return
-  }
-
-  router.push({
-    name: 'bridge',
-    query: { type: BridgeType.Deposit, denom: accountBalance.value.token.denom }
-  })
-
-  handleClose()
-}
-
-function handleWithdrawClick() {
-  if (!accountBalance.value) {
-    return
-  }
-
-  router.push({
-    name: 'bridge',
-    query: {
-      type: BridgeType.Withdraw,
-      denom: accountBalance.value.token.denom
-    }
-  })
-
-  handleClose()
 }
 </script>
 
@@ -246,23 +216,43 @@ function handleWithdrawClick() {
           </div>
 
           <div class="mt-auto flex justify-between gap-4">
-            <button
-              class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-blue-500 border-transparent border"
-              @click="handleDepositClick"
+            <NuxtLink
+              class="w-full"
+              :to="{
+                name: 'bridge',
+                query: {
+                  type: BridgeType.Deposit,
+                  denom: accountBalance.token.denom
+                }
+              }"
             >
-              <span class="text-sm font-medium">
-                {{ $t('account.deposit') }}
-              </span>
-            </button>
+              <button
+                class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-blue-500 border-transparent border"
+              >
+                <span class="text-sm font-medium">
+                  {{ $t('account.deposit') }}
+                </span>
+              </button>
+            </NuxtLink>
 
-            <button
-              class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-transparent border-blue-500 border"
-              @click="handleWithdrawClick"
+            <NuxtLink
+              class="w-full"
+              :to="{
+                name: 'bridge',
+                query: {
+                  type: BridgeType.Withdraw,
+                  denom: accountBalance.token.denom
+                }
+              }"
             >
-              <span class="text-sm font-medium text-blue-500">
-                {{ $t('account.withdraw') }}
-              </span>
-            </button>
+              <button
+                class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-transparent border-blue-500 border"
+              >
+                <span class="text-sm font-medium text-blue-500">
+                  {{ $t('account.withdraw') }}
+                </span>
+              </button>
+            </NuxtLink>
           </div>
         </div>
       </div>

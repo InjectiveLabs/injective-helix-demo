@@ -9,7 +9,6 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeType, Modal } from '@/types'
 
-const router = useRouter()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -107,14 +106,6 @@ function toggleHideBalances() {
   emit('update:hide-balances', !props.hideBalances)
 }
 
-function handleDepositClick() {
-  router.push({ name: 'bridge', query: { type: BridgeType.Deposit } })
-}
-
-function handleWithdrawClick() {
-  router.push({ name: 'bridge', query: { type: BridgeType.Withdraw } })
-}
-
 function handleTransferClick() {
   modalStore.openModal({ type: Modal.SubaccountTransfer })
 }
@@ -167,17 +158,23 @@ function handleTransferClick() {
         v-if="!isLoading && accountStore.isDefaultSubaccount"
         class="flex items-center justify-between md:justify-end sm:gap-4"
       >
-        <AppButton class="bg-blue-500" @click="handleDepositClick">
-          <span class="text-blue-900 font-semibold">
-            {{ $t('account.deposit') }}
-          </span>
-        </AppButton>
+        <NuxtLink :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }">
+          <AppButton class="bg-blue-500">
+            <span class="text-blue-900 font-semibold">
+              {{ $t('account.deposit') }}
+            </span>
+          </AppButton>
+        </NuxtLink>
 
-        <AppButton class="border border-blue-500" @click="handleWithdrawClick">
-          <span class="text-blue-500 font-semibold">
-            {{ $t('account.withdraw') }}
-          </span>
-        </AppButton>
+        <NuxtLink
+          :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
+        >
+          <AppButton class="border border-blue-500">
+            <span class="text-blue-500 font-semibold">
+              {{ $t('account.withdraw') }}
+            </span>
+          </AppButton>
+        </NuxtLink>
 
         <AppButton class="border border-blue-500" @click="handleTransferClick">
           <span class="text-blue-500 font-semibold">

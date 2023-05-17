@@ -1,5 +1,5 @@
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
-import { SubaccountTransferField, SubaccountTransferForm } from '~/types'
+import { SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
 export function useSubaccountTransferBalance(
   formValues: Ref<Partial<SubaccountTransferForm>>

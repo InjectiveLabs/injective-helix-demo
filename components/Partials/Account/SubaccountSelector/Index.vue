@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Modal } from '~/types'
+import { Modal } from '@/types'
 
 const accountStore = useAccountStore()
 const { aggregatedPortfolioBalances } = useBalance()
@@ -36,8 +36,9 @@ function handleCreateSubaccount() {
       :key="`subaccount-${subaccountId}`"
     />
 
-    <AssetPlusSign
-      class="w-8 h-8 text-blue-500 cursor-pointer"
+    <BaseIcon
+      name="circle-plus"
+      class="w-8 h-8 text-blue-500 cursor-pointer hover:text-opacity-80"
       @click="handleCreateSubaccount"
     />
   </div>

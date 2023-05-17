@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { getSubaccountId } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from '@/types'
-import { getSubaccountIndex } from '~/app/utils/helpers'
+import { getSubaccountIndex } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
