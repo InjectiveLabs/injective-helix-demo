@@ -146,7 +146,7 @@ const notionalWithFees = computed(() => {
     : notionalValue.value.minus(fees.value)
 })
 
-const { availableBalanceError, highDeviation, maxOrdersError } = useSpotError({
+const { availableBalanceError, highDeviation } = useSpotError({
   isBuy,
   executionPrice,
   notionalWithFees,
@@ -371,7 +371,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         hasBaseAmount,
         highDeviation,
         executionPrice,
-        maxOrdersError,
         availableBalanceError
       }"
       @submit:request="handleRequestSubmit"
