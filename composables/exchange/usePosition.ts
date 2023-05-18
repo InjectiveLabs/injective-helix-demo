@@ -37,7 +37,7 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     return new BigNumberInBase(position.value.quantity)
   })
 
-  const markPrice = computed(() => {
+  const markPriceNotScaled = computed(() => {
     if (!market.value) {
       return ZERO_IN_BASE
     }
@@ -51,6 +51,31 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
 
     return new BigNumberInWei(position.value.markPrice).toBase(
       market.value.quoteToken.decimals
+    )
+  })
+
+  const markPrice = computed(() => {
+    if (!market.value) {
+      return markPriceNotScaled.value
+    }
+
+    if (!market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    if (!market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    if (market.value.quoteToken.decimals === market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    const oracleScalePriceDiff =
+      market.value.oracleScaleFactor - market.value.quoteToken.decimals
+
+    return new BigNumberInBase(markPriceNotScaled.value).times(
+      new BigNumberInBase(10).pow(oracleScalePriceDiff)
     )
   })
 

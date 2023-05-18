@@ -5,7 +5,7 @@ import { toJpeg } from 'html-to-image'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Modal } from '@/types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const { width } = useWindowSize()
 
@@ -24,6 +24,7 @@ const showPrice = ref(true)
 const showAmount = ref(true)
 const showLeverage = ref(true)
 const showSelectors = ref(false)
+const imageIndex = ref(randomImageIndex())
 
 const { pnl, market, price, markPrice, percentagePnl, effectiveLeverage } =
   useDerivativePosition(computed(() => props.position))
@@ -32,7 +33,7 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces:
-      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      market.value?.quoteToken.decimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
     displayAbsoluteDecimalPlace: true
   }
 )
@@ -51,6 +52,10 @@ const isModalOpen = computed(
   () => modalStore.modals[Modal.SharePosition] && !!market.value
 )
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
+
+function randomImageIndex() {
+  return Math.ceil(Math.random() * 3)
+}
 
 function closeModal() {
   modalStore.closeModal(Modal.SharePosition)
@@ -75,6 +80,7 @@ watch(
   () => isModalOpen.value,
   () => {
     showSelectors.value = true
+    imageIndex.value = randomImageIndex()
   },
   {
     immediate: true
@@ -104,7 +110,9 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
     <section v-if="market" ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
         class="p-6 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
-        :style="{ backgroundImage: `url('/images/pnl-bg.webp')` }"
+        :style="{
+          backgroundImage: `url('/images/pnl-bg-${imageIndex}.webp')`
+        }"
       >
         <div class="flex justify-between items-start">
           <div class="flex items-center justify-start">

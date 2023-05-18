@@ -1,25 +1,20 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ActivityView } from '@/types'
+import { ActivityPage } from '@/types'
 
+const route = useRoute()
+const spotStore = useSpotStore()
 const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
-const spotStore = useSpotStore()
-
-const props = defineProps({
-  view: {
-    type: String as PropType<ActivityView>,
-    required: true
-  }
-})
 
 const emit = defineEmits<{
   (e: 'click'): void
 }>()
 
+const routeName = route.name as string
+
 const showRefreshBtn = computed(() => {
-  if (props.view === ActivityView.DerivativeOrderHistory) {
+  if (routeName === ActivityPage.DerivativeOrderHistory) {
     const latestVisibleOrders = derivativeStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -31,7 +26,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (props.view === ActivityView.DerivativeTradeHistory) {
+  if (routeName === ActivityPage.DerivativeTradeHistory) {
     const latestVisibleTrades = derivativeStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {
@@ -43,7 +38,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleTrades[0].executedAt)
   }
 
-  if (props.view === ActivityView.SpotOrderHistory) {
+  if (routeName === ActivityPage.SpotOrderHistory) {
     const latestVisibleOrders = spotStore.subaccountOrderHistory
 
     if (latestVisibleOrders.length === 0) {
@@ -55,7 +50,7 @@ const showRefreshBtn = computed(() => {
     ).gt(latestVisibleOrders[0].updatedAt)
   }
 
-  if (props.view === ActivityView.SpotTradeHistory) {
+  if (routeName === ActivityPage.SpotTradeHistory) {
     const latestVisibleTrades = spotStore.subaccountTrades
 
     if (latestVisibleTrades.length === 0) {
@@ -82,10 +77,8 @@ function handleRefresh() {
     @click="handleRefresh"
   >
     {{
-      [
-        ActivityView.DerivativeTradeHistory,
-        ActivityView.SpotTradeHistory
-      ].includes(view)
+      routeName === ActivityPage.DerivativeTradeHistory ||
+      routeName === ActivityPage.SpotTradeHistory
         ? $t('activity.fetchTrades')
         : $t('activity.fetchOrders')
     }}

@@ -1,4 +1,4 @@
-import { i18n, head, hooks } from './nuxt-config'
+import { head, hooks } from './nuxt-config'
 import vite, { vitePlugins } from './nuxt-config/vite'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -7,7 +7,6 @@ const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 export default defineNuxtConfig({
   ssr: false,
   hooks,
-  i18n,
   debug: !isProduction,
   builder: isWebpack ? 'webpack' : 'vite',
   vite: isWebpack ? undefined : vite,
@@ -18,7 +17,7 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    typeCheck: 'build'
+    typeCheck: true
   },
 
   imports: {
@@ -39,7 +38,6 @@ export default defineNuxtConfig({
   modules: [
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxt/devtools',

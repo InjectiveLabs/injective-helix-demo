@@ -22,9 +22,19 @@ class WalletTracker extends BaseTracker {
     })
   }
 
-  submitWalletSelectedTrackEvent(wallet: Wallet) {
+  submitWalletSelectedTrackEvent({
+    wallet,
+    userCountryFromVpnApi,
+    userCountryFromBrowser
+  }: {
+    wallet: Wallet
+    userCountryFromVpnApi: string
+    userCountryFromBrowser?: string
+  }) {
     this.trackAmplitude(AmplitudeEvent.WalletSelected, {
-      wallet
+      wallet,
+      userCountryFromBrowser,
+      userCountryFromVpnApi
     })
   }
 }

@@ -25,11 +25,6 @@ const props = defineProps({
     required: true
   },
 
-  // minimumReceivedAmount: {
-  //   type: Object as PropType<BigNumberInBase>,
-  //   default: ZERO_IN_BASE
-  // },
-
   notionalValue: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -86,32 +81,6 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
       </template>
 
       <div class="mt-4">
-        <!-- TODO: remove this if product gives the go ahead since is always - for perp markets-->
-        <!-- <CommonTextInfo
-          v-if="tradingTypeMarket"
-          :title="$t('trade.amount')"
-          class="mt-2"
-        >
-          <template #context>
-            <CommonInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.min_received_amount')"
-            />
-          </template>
-          <span
-            v-if="minimumReceivedAmount.gt(0)"
-            data-cy="trading-page-details-execution-price-text-content"
-            class="font-mono flex items-start break-all"
-          >
-            <slot v-if="false" name="marketMinimumReceivedAmount" />
-            <span v-else class="ml-1"> &mdash; </span>
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="ml-1"> &mdash; </span>
-        </CommonTextInfo> -->
-
         <CommonTextInfo
           v-if="tradingTypeMarket"
           :title="$t('trade.averagePrice')"

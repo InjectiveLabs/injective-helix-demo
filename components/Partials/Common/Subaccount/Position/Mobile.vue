@@ -198,9 +198,11 @@ function sharePosition() {
         <span>
           <AppNumber
             class="text-gray-500"
-            dense
-            :decimals="priceDecimals"
-            :number="markPrice"
+            v-bind="{
+              dense: true,
+              decimals: market.priceDecimals,
+              number: markPrice
+            }"
         /></span>
       </div>
     </div>

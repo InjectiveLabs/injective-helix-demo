@@ -223,7 +223,8 @@ export enum BusEvents {
   PostOnlyToggled = 'post-only-toggled',
   ShowLedgerConnect = 'show-ledger-connect',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  WalletConnected = 'wallet-connected'
+  WalletConnected = 'wallet-connected',
+  ActivityFilterUpdate = 'activity-filter-update'
 }
 
 export enum BridgeBusEvents {
@@ -308,13 +309,6 @@ export enum ActivityView {
   WalletWithdrawals = 'WalletHistory/Withdrawals'
 }
 
-export enum ActivityTab {
-  Positions = 'positions',
-  Derivatives = 'derivatives',
-  Spot = 'spot',
-  WalletHistory = 'wallet-history'
-}
-
 export enum AggregatedBalanceType {
   Inj = 'inj',
   Aggregated = 'aggregated'
@@ -327,4 +321,32 @@ export enum NoticeBanner {
 export enum SubaccountBalanceStreamType {
   AvailableBalance = 'available_balances',
   TotalBalance = 'total_balances'
+}
+
+export enum PaginationState {
+  InvalidQuery = 'invalid-query',
+  QueryPageExist = 'query-page-exist',
+  QueryMoreThanTotalPage = 'query-more-than-total-page'
+}
+
+export enum ActivityPage {
+  OpenPositions = 'activity-positions',
+  FundingPayments = 'activity-positions-funding-payments',
+  DerivativeOpenOrders = 'activity-derivatives',
+  DerivativeTriggers = 'activity-derivatives-triggers',
+  DerivativeOrderHistory = 'activity-derivatives-order-history',
+  DerivativeTradeHistory = 'activity-derivatives-trade-history',
+  SpotOpenOrders = 'activity-spot',
+  SpotOrderHistory = 'activity-spot-order-history',
+  SpotTradeHistory = 'activity-spot-trade-history',
+  WalletHistoryTransfers = 'activity-wallet-history',
+  WalletHistoryDeposits = 'activity-wallet-history-deposits',
+  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
+}
+
+export enum ActivityTab {
+  Spot = 'activity-spot',
+  Positions = 'activity-positions',
+  Derivatives = 'activity-derivatives',
+  WalletHistory = 'activity-wallet-history'
 }

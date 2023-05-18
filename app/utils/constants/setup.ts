@@ -37,6 +37,9 @@ const env = {
   VITE_PROXY_DETECTION_API_KEY: isWebpack
     ? process.env.VITE_PROXY_DETECTION_API_KEY
     : import.meta.env.VITE_PROXY_DETECTION_API_KEY,
+  VITE_GOOGLE_MAPS_KEY: isWebpack
+    ? process.env.VITE_GOOGLE_MAPS_KEY
+    : import.meta.env.VITE_GOOGLE_MAPS_KEY,
   VITE_BANNER_NOTICE_ENABLED: (isWebpack
     ? process.env.VITE_BANNER_NOTICE_ENABLED
     : import.meta.env.VITE_BANNER_NOTICE_ENABLED) as string | undefined,
@@ -104,6 +107,7 @@ const env = {
   VITE_DEBUG_CALCULATION: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
   VITE_PROXY_DETECTION_API_KEY: string
+  VITE_GOOGLE_MAPS_KEY: string
   VITE_MAINTENANCE_ENABLED: string
   VITE_BANNER_NOTICE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
@@ -209,9 +213,6 @@ export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
 export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
-export const VITE_PROXY_DETECTION_API_KEY =
-  env.VITE_PROXY_DETECTION_API_KEY || ''
-export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
 export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
@@ -225,6 +226,11 @@ export const COIN_GECKO_OPTIONS = {
 
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
+export const VITE_PROXY_DETECTION_API_KEY =
+  env.VITE_PROXY_DETECTION_API_KEY || ''
+
+export const VITE_GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
+export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 

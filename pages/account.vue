@@ -6,11 +6,9 @@ definePageMeta({
 })
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -19,8 +17,6 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    spotStore.init(),
-    derivativeStore.init(),
     exchangeStore.initFeeDiscounts(),
     accountStore.fetchAccountPortfolio()
   ])
