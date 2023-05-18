@@ -9,6 +9,20 @@ export function useSubaccountTransferBalance(
   const accountStore = useAccountStore()
 
   const subaccountBalance = computed(() => {
+    const isDefaultSubaccount =
+      formValues.value[SubaccountTransferField.SrcSubaccountId] ===
+      walletStore.defaultSubaccountId
+
+    if (isDefaultSubaccount) {
+      return accountStore.bankBalances.map((bankBalance) => {
+        return {
+          denom: bankBalance.denom,
+          availableBalance: bankBalance.amount,
+          totalBalance: '0'
+        }
+      })
+    }
+
     return (
       accountStore.subaccountBalancesMap[
         formValues.value[SubaccountTransferField.SrcSubaccountId]
@@ -22,27 +36,11 @@ export function useSubaccountTransferBalance(
         const token = tokenStore.tradeableTokens.find(
           (token) => token.denom === balance.denom
         )
-        const isDefaultSubaccount =
-          formValues.value[SubaccountTransferField.SrcSubaccountId] ===
-          walletStore.defaultSubaccountId
-
-        if (!isDefaultSubaccount) {
-          return {
-            token,
-            denom: balance.denom,
-            balance: balance.availableBalance,
-            usdPrice: 0
-          }
-        }
-
-        const bankBalance = accountStore.bankBalances.find(
-          (bankBalance) => bankBalance.denom === balance.denom
-        )?.amount
 
         return {
           token,
           denom: balance.denom,
-          balance: bankBalance || '0',
+          balance: balance.availableBalance,
           usdPrice: 0
         }
       })
