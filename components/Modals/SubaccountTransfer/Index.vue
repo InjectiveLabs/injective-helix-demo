@@ -2,6 +2,7 @@
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 import { injToken } from '@/app/data/token'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -28,6 +29,18 @@ const status = reactive(new Status())
 const { supplyWithBalance } = useSubaccountTransferBalance(
   computed(() => formValues)
 )
+
+const maxDecimals = computed(() => {
+  const defaultDecimalsLessThanTokenDecimals =
+    UI_DEFAULT_DISPLAY_DECIMALS <
+    formValues[SubaccountTransferField.Token].decimals
+
+  if (defaultDecimalsLessThanTokenDecimals) {
+    return UI_DEFAULT_DISPLAY_DECIMALS
+  }
+
+  return formValues[SubaccountTransferField.Token].decimals
+})
 
 function handleSubaccountTransfer() {
   if (
@@ -93,7 +106,7 @@ function handleDefaultSubaccountWithdraw() {
   accountStore
     .withdraw({
       amount: new BigNumberInBase(formValues[SubaccountTransferField.Amount]),
-      subaccountId: formValues[SubaccountTransferField.DstSubaccountId],
+      subaccountId: formValues[SubaccountTransferField.SrcSubaccountId],
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
@@ -169,13 +182,16 @@ function closeModal() {
             <AppSelectToken
               v-model:denom="formValues[SubaccountTransferField.Denom]"
               v-bind="{
+                maxDecimals,
                 required: true,
                 amountFieldName: SubaccountTransferField.Amount,
                 options: supplyWithBalance
               }"
               @update:max="handleAmountChange"
               @update:denom="handleTokenChange"
-            />
+            >
+              <span> {{ $t('bridge.amount') }} </span>
+            </AppSelectToken>
           </div>
         </div>
         <AppButton

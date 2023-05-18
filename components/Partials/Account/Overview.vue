@@ -185,7 +185,7 @@ function handleTransferClick() {
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
+      v-if="!isLoading"
       v-bind="{
         hideBalances
       }"
