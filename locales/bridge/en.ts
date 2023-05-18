@@ -74,6 +74,8 @@ export default {
     mainSubaccount: 'Main Subaccount',
     subaccountId: ({ named }: I18nMessageFunction) =>
       `Subaccount ${named('subaccountId')}`,
-    transferToSubaccountSuccess: 'Subaccount transfer successful'
+    transferToSubaccountSuccess: 'Subaccount transfer successful',
+    noAssetToTransfer:
+      "You don't have any assets to transfer from this subaccount."
   }
 }

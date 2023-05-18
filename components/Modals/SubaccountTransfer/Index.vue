@@ -178,7 +178,7 @@ function closeModal() {
           <ModalsSubaccountTransferSelect
             @update:subaccount-id="handleSubaccountIdChange"
           />
-          <div class="mt-6">
+          <div v-if="supplyWithBalance.length > 0" class="mt-6">
             <AppSelectToken
               v-model:denom="formValues[SubaccountTransferField.Denom]"
               v-bind="{
@@ -192,6 +192,9 @@ function closeModal() {
             >
               <span> {{ $t('bridge.amount') }} </span>
             </AppSelectToken>
+          </div>
+          <div v-else class="mt-6 text-center text-gray-300 text-sm">
+            {{ t('bridge.noAssetToTransfer') }}
           </div>
         </div>
         <AppButton
