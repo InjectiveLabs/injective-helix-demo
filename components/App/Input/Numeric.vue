@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { DECIMAL_DIVIDER } from '@/app/utils/constants'
 
 const slots = useSlots()
 
@@ -12,6 +13,11 @@ const props = defineProps({
   errors: {
     type: Array as PropType<string[]>,
     default: () => []
+  },
+
+  placeholder: {
+    type: String,
+    default: ''
   },
 
   inputClasses: {
@@ -75,6 +81,10 @@ const classes = computed(() => {
   return result.join(' ')
 })
 
+const formattedPlaceholder = computed(() =>
+  props.placeholder.split('.').join(DECIMAL_DIVIDER)
+)
+
 function handleBlur(e?: Event) {
   const { value } = e?.target as HTMLInputElement
 
@@ -114,6 +124,7 @@ export default {
           <BaseNumericInput
             v-bind="$attrs"
             :class="inputClass"
+            :placeholder="formattedPlaceholder"
             class="input"
             @blur="handleBlur"
           />

@@ -86,13 +86,13 @@ const lastTradedPriceChange = computed(() =>
     : derivativeLastTradedPriceChange.value
 )
 
-const { valueToFixed: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
-const { valueToFixed: markPriceToFormat } = useBigNumberFormatter(
+const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals

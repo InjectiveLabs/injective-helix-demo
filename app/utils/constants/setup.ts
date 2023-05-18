@@ -1,5 +1,6 @@
 import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import { BigNumber } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
 
@@ -237,3 +238,14 @@ export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
 
 export { ROUTES, MARKETS_SLUGS }
+
+export const DECIMAL_DIVIDER = (0.1).toLocaleString().replace(/\d/g, '')
+const THOUSAND_DIVIDER = DECIMAL_DIVIDER === ',' ? '.' : ','
+
+BigNumber.config({
+  FORMAT: {
+    decimalSeparator: DECIMAL_DIVIDER,
+    groupSeparator: THOUSAND_DIVIDER,
+    groupSize: 3
+  }
+})
