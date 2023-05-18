@@ -44,6 +44,7 @@ export const getRoutes = (network: Network, env: string) => {
 
     perpetuals.push(
       'pepe-usdt-perp',
+      '1mpepe-usdt-perp',
       'xau-usdt-perp',
       'gbp-usdt-perp',
       'jpy-usdt-perp',

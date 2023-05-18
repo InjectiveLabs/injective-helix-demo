@@ -4,7 +4,6 @@ import {
   ThrownException,
   isThrownException,
   ChainCosmosErrorCode,
-  TransactionException,
   formatNotificationDescription
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
@@ -29,9 +28,11 @@ const reportToUser = (error: ThrownException) => {
     return
   }
 
-  if (!(error instanceof TransactionException)) {
+  const errorMessage = error.message || 'Something happened'
+
+  if (errorMessage === error.originalMessage) {
     return errorToast({
-      title: error.message || 'Something happened'
+      title: errorMessage
     })
   }
 

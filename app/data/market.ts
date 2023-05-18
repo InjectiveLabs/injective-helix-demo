@@ -9,6 +9,7 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   '1000pepe-usdt-perp',
+  '1mpepe-usdt-perp',
   'wmatic-usdcet',
   'xau-usdt-perp',
   'gbp-usdt-perp',
@@ -23,6 +24,7 @@ export const experimentalMarketsSlug = [
   'ape-usdt',
   'gf-usdt',
   '1000pepe-usdt-perp',
+  '1mpepe-usdt-perp',
   'eth-usdt-19sep22',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
@@ -68,6 +70,7 @@ export const dmmSlugsToIncludeInLowVolume = [
   'sol-usdc',
   'sol-usdcet',
   'usdt-usdcet',
+  '1mpepe-usdt-perp',
   '1000pepe-usdt-perp',
   'atom-usdt-perp',
   'btc-usdt-perp',

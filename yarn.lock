@@ -1810,10 +1810,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ts@^1.11.0-beta.1":
-  version "1.11.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.11.0-beta.1.tgz#48d1ab0250dcc51dc2d36527b69806eb9a3206bc"
-  integrity sha512-QCQwHmYnJoPMy+O1tnhEydHkGxrrSR7wTEeYqdx4kwHJibU0EX/reg9c3kG6qlQ+WZRE+2UMHLUcwUA0YK/0eg==
+"@injectivelabs/sdk-ts@^1.11.0-beta.2":
+  version "1.11.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.11.0-beta.2.tgz#5e243b9960c406e979384d9ad04a7baf9c76bb34"
+  integrity sha512-Tm6jHkkxUIRTHDiTtY6g0sjUwfavdi6GedUChHtscvf4oNoCFJWA2Gex65jo7gdvwrm80YpTWm6cO3uePF0w/g==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.30.1"
@@ -1830,7 +1830,7 @@
     "@injectivelabs/mito-proto-ts" "1.0.9"
     "@injectivelabs/networks" "^1.10.13-beta.8"
     "@injectivelabs/test-utils" "^1.10.13-beta.3"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.15"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.16"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.8"
     "@metamask/eth-sig-util" "^4.0.0"
@@ -1854,15 +1854,15 @@
     snakecase-keys "^5.4.1"
 
 "@injectivelabs/sdk-ui-ts@^1.10.83-beta.15":
-  version "1.10.83-beta.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.21.tgz#68b916ce169b7455364143af57b0f1a8499b4141"
-  integrity sha512-t42WHRD8yNKo+8K3fDrurMna7g+Bz0882dZX8AGfGsfu7YWiMKfaxNvmMkwAxnjtP6UCgU5G++JEMOgvBIs9vg==
+  version "1.10.83-beta.22"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.10.83-beta.22.tgz#95227a34907dd8c2cba3ace408b7f1024cf76d97"
+  integrity sha512-/T3lNarVW/hbbY1w+3ly2T+kwGUo1xLAcsVTubO2P/SYSYOsxGHW7cXasGGTLbAAa7SvicsnOvxOWxEM7tzmaQ==
   dependencies:
     "@injectivelabs/contracts" "^1.10.23-beta.8"
     "@injectivelabs/exceptions" "^1.10.13-beta.8"
     "@injectivelabs/networks" "^1.10.13-beta.8"
-    "@injectivelabs/sdk-ts" "^1.11.0-beta.1"
-    "@injectivelabs/token-metadata" "^1.11.0-beta.15"
+    "@injectivelabs/sdk-ts" "^1.11.0-beta.2"
+    "@injectivelabs/token-metadata" "^1.11.0-beta.16"
     "@injectivelabs/token-utils" "^1.10.23-beta.8"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.8"
@@ -1890,10 +1890,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@^1.11.0-beta.11", "@injectivelabs/token-metadata@^1.11.0-beta.15":
-  version "1.11.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.15.tgz#9ce4adb2b4be0ce70193823ca5b0988f3c7098c0"
-  integrity sha512-LFT0vS26hplm1qddURpka76wBPSIKYmazRqpQMhuLFGnFvjzpATcuaZ2r75hLJjfC/4sOspbtIEThVmXUuEzXw==
+"@injectivelabs/token-metadata@^1.11.0-beta.11", "@injectivelabs/token-metadata@^1.11.0-beta.15", "@injectivelabs/token-metadata@^1.11.0-beta.16":
+  version "1.11.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.11.0-beta.16.tgz#01c375e3396812733f15caa5b11976c592cdf1bc"
+  integrity sha512-/fH+zPBnfm/f+f7KFUOrB4lu5hgqFX6d/7UUhzEeG26sa6cKrygMbz5ESmbY4iGl5zswQ6E0MBJzmmGW8TAUpQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.10.13-beta.8"
     "@injectivelabs/networks" "^1.10.13-beta.8"
@@ -1951,9 +1951,9 @@
     store2 "^2.12.0"
 
 "@injectivelabs/wallet-ts@^1.10.83-beta.13":
-  version "1.10.83-beta.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.19.tgz#77cfed012ac5577fdeb6b0783bd4ed805a934e9a"
-  integrity sha512-PpWmYJxNO1tUO4qxOslT8zUtZFQzn98FtSRlK3QGrRBHcGrqP2jZlDNt2A5tstsAAdueidkZS0lyJu4Wfffylg==
+  version "1.10.83-beta.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.10.83-beta.20.tgz#a50780f6902c993f7e21960aa84b3f065f54d229"
+  integrity sha512-FVkPim88R3esNuxr5emAH2Q6IkPt9l2oOciHm7lkAsU/c2Szeso+J5uoLyo9SZBCSoAmcVp6xBIRUQRPj2LU0g==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.30.1"
@@ -1963,7 +1963,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.10.13-beta.8"
     "@injectivelabs/networks" "^1.10.13-beta.8"
-    "@injectivelabs/sdk-ts" "^1.11.0-beta.1"
+    "@injectivelabs/sdk-ts" "^1.11.0-beta.2"
     "@injectivelabs/ts-types" "^1.10.13-beta.3"
     "@injectivelabs/utils" "^1.10.13-beta.8"
     "@keplr-wallet/cosmos" "^0.11.58"
@@ -4622,9 +4622,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*", "@types/node@>=13.7.0":
-  version "20.1.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.1.7.tgz#ce10c802f7731909d0a44ac9888e8b3a9125eb62"
-  integrity sha512-WCuw/o4GSwDGMoonES8rcvwsig77dGCMbZDrZr2x4ZZiNW4P/gcoZXe/0twgtobcTkmg9TuKflxYL/DuwDyJzg==
+  version "20.2.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.0.tgz#e33da33171ac4eba79b9cfe30b68a4f1561e74ec"
+  integrity sha512-3iD2jaCCziTx04uudpJKwe39QxXgSUnpxXSvRQjRvHPxFQfmfP4NXIm/NURVeNlTCc+ru4WqjYGTmpXrW9uMlw==
 
 "@types/node@10.12.18":
   version "10.12.18"
@@ -5317,10 +5317,10 @@
     "@walletconnect/window-metadata" "1.0.0"
     detect-browser "5.2.0"
 
-"@walletconnect/core@2.7.4":
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.7.4.tgz#1471215ca8cc08ae4719ca1bb6d45dd1b49dea3a"
-  integrity sha512-nDJJZALZJI8l8JvjwZE4UmUzDzQBnTTJlQa/rc5MoGYtir0hfsQEl3sPkPcXbkkW5q+cHiynXsDcgM4740fmNQ==
+"@walletconnect/core@2.7.5":
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.7.5.tgz#d3cb48b0cbd27739f64b9ad0a02b138360b2502c"
+  integrity sha512-nI5RTGZAOcheCcrVUWHLO4iEnyDrDa8HnuNRm9jbYf7ESLdmunShQ+jStnb0pmjEJ8uI/oIEahQwzTN8iLIjpA==
   dependencies:
     "@walletconnect/heartbeat" "1.2.1"
     "@walletconnect/jsonrpc-provider" "^1.0.12"
@@ -5332,8 +5332,8 @@
     "@walletconnect/relay-auth" "^1.0.4"
     "@walletconnect/safe-json" "^1.0.2"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.4"
-    "@walletconnect/utils" "2.7.4"
+    "@walletconnect/types" "2.7.5"
+    "@walletconnect/utils" "2.7.5"
     events "^3.3.0"
     lodash.isequal "4.5.0"
     uint8arrays "^3.1.0"
@@ -5465,18 +5465,18 @@
     tslib "1.14.1"
 
 "@walletconnect/sign-client@^2.4.5":
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.7.4.tgz#e07db5856f9e45945080a169bbd9cb6849576bac"
-  integrity sha512-hZoCB51GB4u32yxzYnxp8dpzXgo6E7ZWUVOgnihmoMPjgJahPtvB/Ip9jYxI3fuV+ZPQYNlxQgEvR9X+2fLz+g==
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.7.5.tgz#909f49ebebbc7136e1ad7ca59afe682788f666d0"
+  integrity sha512-99oc0g4eR4hllrB0m4N74EsnNKDrl0L5HdLDGBHQIYnl+/FUjn652QCTOjPzqiUlxvQCo0wrIugb/tgtIGPTfg==
   dependencies:
-    "@walletconnect/core" "2.7.4"
+    "@walletconnect/core" "2.7.5"
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.1"
     "@walletconnect/jsonrpc-utils" "^1.0.7"
     "@walletconnect/logger" "^2.0.1"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.4"
-    "@walletconnect/utils" "2.7.4"
+    "@walletconnect/types" "2.7.5"
+    "@walletconnect/utils" "2.7.5"
     events "^3.3.0"
 
 "@walletconnect/time@^1.0.2":
@@ -5486,10 +5486,10 @@
   dependencies:
     tslib "1.14.1"
 
-"@walletconnect/types@2.7.4":
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.7.4.tgz#958864e7ef497206a24db0ca629a478ca8e1cc08"
-  integrity sha512-Nagfz8DqLxf0UlVd7xopgBX60EJp1xUEq7J30ALlTbWqEhCHuLK/qPk5vGdJ9Q6+ZDpTW9ShLq1DNf+5nVpVDQ==
+"@walletconnect/types@2.7.5":
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.7.5.tgz#6c06f5c522e81bf5914e9a8eadf14c69d242bbc3"
+  integrity sha512-uEsMXtVbhT5+E/g3loyfNBrjEsPeUaPZkFeVsOErWhxg25CL+MrrWUKerV6tC/ACbFVR5KgKS+uioMath/cV7A==
   dependencies:
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.1"
@@ -5503,10 +5503,10 @@
   resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.8.0.tgz#3f5e85b2d6b149337f727ab8a71b8471d8d9a195"
   integrity sha512-Cn+3I0V0vT9ghMuzh1KzZvCkiAxTq+1TR2eSqw5E5AVWfmCtECFkVZBP6uUJZ8YjwLqXheI+rnjqPy7sVM4Fyg==
 
-"@walletconnect/utils@2.7.4", "@walletconnect/utils@^2.4.5":
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.7.4.tgz#314a164aabb7551dae4ac58e63312c9ae6369e1e"
-  integrity sha512-2WEeKB9h/FQvyNmIBYwLtjdLm3Oo55EwtJoxkC00SA7xjf8jYxZ8q2y4P/CJP8oO5ruxBK5Ft0smKvPHXsE58Q==
+"@walletconnect/utils@2.7.5", "@walletconnect/utils@^2.4.5":
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.7.5.tgz#016915e49ec92c6fe778780600c246947fb996d2"
+  integrity sha512-uSf71P3kFMC+S4RidQYFIWXglVvYTCLK7AaO9PrUDLO9ocRnBk6hNmOhYSA5jSP6OLf1vYm4ADHbzkeOb4u6aQ==
   dependencies:
     "@stablelib/chacha20poly1305" "1.0.1"
     "@stablelib/hkdf" "1.0.1"
@@ -5517,7 +5517,7 @@
     "@walletconnect/relay-api" "^1.0.9"
     "@walletconnect/safe-json" "^1.0.2"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.4"
+    "@walletconnect/types" "2.7.5"
     "@walletconnect/window-getters" "^1.0.1"
     "@walletconnect/window-metadata" "^1.0.1"
     detect-browser "5.3.0"
@@ -15967,10 +15967,15 @@ tslib@1.14.1, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@2.5.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.4.0, tslib@^2.4.1, tslib@^2.5.0:
+tslib@2.5.0, tslib@^2.0.1, tslib@^2.4.1, tslib@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.0.tgz#42bfed86f5787aeb41d031866c8f402429e0fddf"
   integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
+
+tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.4.0:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.1.tgz#f2ad78c367857d54e49a0ef9def68737e1a67b21"
+  integrity sha512-KaI6gPil5m9vF7DKaoXxx1ia9fxS4qG5YveErRRVknPDXXriu5M8h48YRjB6h5ZUOKuAKlSJYb0GaDe8I39fRw==
 
 tsscmp@1.0.6:
   version "1.0.6"

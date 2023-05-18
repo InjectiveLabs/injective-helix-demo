@@ -96,15 +96,11 @@ export function useDerivativeLastPrice(
     }
 
     const oracleScalePriceDiff =
-      derivativeMarket.quoteToken.decimals - derivativeMarket.oracleScaleFactor
+      derivativeMarket.oracleScaleFactor - derivativeMarket.quoteToken.decimals
 
-    return oracleScalePriceDiff > 0
-      ? new BigNumberInBase(markPriceNotScaled)
-          .times(new BigNumberInBase(10).pow(oracleScalePriceDiff))
-          .toFixed()
-      : new BigNumberInBase(markPriceNotScaled)
-          .div(new BigNumberInBase(10).pow(oracleScalePriceDiff))
-          .toFixed()
+    return new BigNumberInBase(markPriceNotScaled)
+      .times(new BigNumberInBase(10).pow(oracleScalePriceDiff))
+      .toFixed()
   })
 
   const markPrice = computed(() => {
