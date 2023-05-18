@@ -139,18 +139,12 @@ function handleTransferClick() {
           &thickapprox; {{ HIDDEN_BALANCE_DISPLAY }} BTC
         </span>
 
-        <div @click="toggleHideBalances">
-          <BaseIcon
-            v-if="hideBalances"
-            name="hide"
-            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-          />
-
-          <BaseIcon
-            v-else
-            name="show"
-            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-          />
+        <div
+          class="text-gray-450 hover:text-white cursor-pointer"
+          @click="toggleHideBalances"
+        >
+          <BaseIcon v-if="hideBalances" name="hide" class="w-4 h-4" />
+          <BaseIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
 
