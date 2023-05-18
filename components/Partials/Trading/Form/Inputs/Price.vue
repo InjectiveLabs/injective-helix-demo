@@ -157,6 +157,8 @@ const { value: price, setValue: setPriceField } = useStringField({
     if (
       props.tradingTypeLimit &&
       props.lastTradedPrice.gt(0) &&
+      lowestSell.value.gt(0) &&
+      highestBuy.value.gt(0) &&
       middlePrice.value.gt(0) &&
       new BigNumberInBase(formValues.value[TradeField.LimitPrice]).gt(0)
     ) {
