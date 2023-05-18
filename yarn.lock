@@ -1882,10 +1882,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.10.32":
-  version "1.10.32"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.32.tgz#cc19845cfab0464231f5026c463ca172de41236c"
-  integrity sha512-6BeyIzPkKOo75O9gLxg5QGvzViaqo9mA2u9Fmi/KcbKLS2m+sSdhVgACmylNkQstAITzU3+ia4p6EcEITgCn6Q==
+"@injectivelabs/ui-shared@1.10.33":
+  version "1.10.33"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.10.33.tgz#3cf0204cd00541b7f5e57f1e71e7dcc51d97f091"
+  integrity sha512-MZXTlFry8GfhpgnrFbIdT19ep1mSYsDOreZztVGxHsN/rYzxNLWJtCa/YXHS1ORiBdc+WL5EKKec8QK8bDNO2A==
   dependencies:
     "@nuxt/kit" "3.3.3"
     "@vuepic/vue-datepicker" "^4.4.0"

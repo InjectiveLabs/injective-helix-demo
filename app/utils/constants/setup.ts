@@ -234,13 +234,13 @@ export const VITE_GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
 export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
-
-const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
-
-export { ROUTES, MARKETS_SLUGS }
-
-export const DECIMAL_DIVIDER = (0.1).toLocaleString().replace(/\d/g, '')
-const THOUSAND_DIVIDER = DECIMAL_DIVIDER === ',' ? '.' : ','
+export const USER_LOCALE =
+  new Intl.NumberFormat().resolvedOptions().locale || 'en-US'
+export const IS_COMMA_DECIMAL =
+  (0.1).toLocaleString().replace(/\d/g, '') === ',' ||
+  ['en-GB'].includes(USER_LOCALE)
+export const DECIMAL_DIVIDER = IS_COMMA_DECIMAL ? ',' : '.'
+export const THOUSAND_DIVIDER = IS_COMMA_DECIMAL ? '.' : ','
 
 BigNumber.config({
   FORMAT: {
@@ -249,3 +249,7 @@ BigNumber.config({
     groupSize: 3
   }
 })
+
+const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
+
+export { ROUTES, MARKETS_SLUGS }
