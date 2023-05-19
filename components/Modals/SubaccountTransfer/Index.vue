@@ -23,6 +23,13 @@ const { values: formValues, resetForm: resetSubaccountTransferForm } =
     },
     keepValuesOnUnmount: true
   })
+const formErrors = useFormErrors()
+
+const hasFormErrors = computed(
+  () =>
+    Object.keys(formErrors.value).length > 0 ||
+    formValues[SubaccountTransferField.Amount] === ''
+)
 
 const status = reactive(new Status())
 
@@ -201,6 +208,7 @@ function closeModal() {
           lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
           :status="status"
+          :disabled="hasFormErrors"
           @click="handleSubaccountTransfer"
         >
           <span class="font-semibold">
