@@ -30,7 +30,7 @@ const formattedNumberWithDecimals = computed(() =>
 const classes = computed(() => {
   const result = ['flex', 'items-end', 'justify-center']
 
-  const formattedNumber = formattedNumberWithDecimals.value.number.toFixed(
+  const formattedNumber = formattedNumberWithDecimals.value.number.toFormat(
     formattedNumberWithDecimals.value.decimals
   )
 
@@ -56,7 +56,7 @@ const classes = computed(() => {
   >
     <template #addon>
       <span class="text-sm text-gray-450 ml-1">
-        <slot></slot>
+        <slot />
       </span>
     </template>
   </AppNumber>
