@@ -2,12 +2,12 @@
 import { PropType } from 'vue'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  ZERO_IN_BASE,
   ZERO_IN_WEI,
   UNLIMITED_ALLOWANCE,
   BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
 import { BridgeForm, BridgeField } from '@/types'
+import { allowanceResetSymbols } from '@/app/data/token'
 
 const peggyStore = usePeggyStore()
 const formValues = useFormValues<BridgeForm>()
@@ -29,28 +29,12 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Idle))
 
-const amount = computed(() => {
-  if (!props.balanceWithToken) {
-    return ZERO_IN_BASE
-  }
-
-  const balanceWithTokenWithErc20Balance =
-    props.balanceWithToken as BalanceWithTokenWithErc20Balance
-
-  return new BigNumberInBase(formValues.value[BridgeField.Amount] || 0).toWei(
-    balanceWithTokenWithErc20Balance.token.decimals
-  )
-})
-
-const hasEnoughAllowanceSet = computed(
-  () => props.allowance.gt(0) && amount.value.lte(props.allowance)
+const hasNonUnlimitedAllowanceSet = computed(
+  () => props.allowance.gt(0) && props.allowance.lt(UNLIMITED_ALLOWANCE)
 )
 
-const hasNonUnlimitedAllowanceSet = computed(
-  () =>
-    props.allowance.gt(0) &&
-    props.allowance.lt(UNLIMITED_ALLOWANCE) &&
-    props.balanceWithToken
+const needsAllowanceReset = computed(() =>
+  allowanceResetSymbols.includes(props.balanceWithToken.token.symbol)
 )
 
 function handleClickOnSetAllowance() {
@@ -123,18 +107,17 @@ function handleSetAllowance() {
       data-cy="allowance-modal-set-button"
       @click="handleClickOnSetAllowance"
     >
-      <span v-if="!hasEnoughAllowanceSet && hasNonUnlimitedAllowanceSet">{{
-        $t('bridge.resetAllowance')
-      }}</span>
-
-      <span v-else>{{ $t('bridge.setAllowance') }}</span>
+      <span>{{ $t('bridge.setAllowance') }}</span>
     </AppButton>
 
     <p
       v-if="allowance.isZero() || hasNonUnlimitedAllowanceSet"
       class="mt-3 text-xs text-gray-400"
     >
-      {{ $t('bridge.allowanceNote') }}
+      <span v-if="needsAllowanceReset">{{
+        $t('bridge.allowanceNoteReset')
+      }}</span>
+      <span v-else>{{ $t('bridge.allowanceNote') }}</span>
     </p>
   </div>
 </template>
