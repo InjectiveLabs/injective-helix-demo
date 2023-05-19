@@ -7,12 +7,7 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import {
-  BridgeBusEvents,
-  UiMarketWithToken,
-  WalletConnectStatus
-} from '@/types'
+import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
 const accountStore = useAccountStore()
 const walletStore = useWalletStore()
@@ -113,12 +108,6 @@ function refreshSubaccountBalances() {
     })
 }
 
-function handleDeposit() {
-  const token = isSpot ? props.market.baseToken : props.market.quoteToken
-
-  useEventBus<Token>(BridgeBusEvents.Deposit).emit(token)
-}
-
 watch(
   () => accountStore.subaccountId,
   () => {
@@ -162,14 +151,25 @@ watch(
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
 
-              <AppButton
-                class="w-full rounded bg-blue-500 text-blue-900 mt-4"
-                @click="handleDeposit"
+              <NuxtLink
+                :to="{
+                  name: 'bridge',
+                  query: {
+                    type: BridgeType.Deposit,
+                    denom: isSpot
+                      ? props.market.baseToken.denom
+                      : props.market.quoteToken.denom
+                  }
+                }"
               >
-                <span>
-                  {{ $t('common.deposit') }}
-                </span>
-              </AppButton>
+                <AppButton
+                  class="w-full rounded bg-blue-500 text-blue-900 mt-4"
+                >
+                  <span>
+                    {{ $t('common.deposit') }}
+                  </span>
+                </AppButton>
+              </NuxtLink>
             </div>
 
             <div v-else>

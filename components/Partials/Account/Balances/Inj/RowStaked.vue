@@ -82,7 +82,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           >
             <NuxtLink
-              to="/fee-discounts"
+              :to="{ name: 'fee-discounts' }"
               class="text-blue-500 text-sm font-medium"
             >
               {{ 'View Fee Discounts' }}

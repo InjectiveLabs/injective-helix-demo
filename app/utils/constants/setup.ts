@@ -1,4 +1,9 @@
-import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
+import {
+  Network,
+  isDevnet,
+  isTestnet,
+  getNetworkEndpoints
+} from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { BigNumber } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -131,15 +136,8 @@ const env = {
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
-export const IS_DEVNET: Boolean = [
-  Network.Devnet,
-  Network.Devnet1,
-  Network.Local
-].includes(NETWORK)
-export const IS_TESTNET: Boolean = [
-  Network.Testnet,
-  Network.TestnetK8s
-].includes(NETWORK)
+export const IS_DEVNET: Boolean = isDevnet(NETWORK)
+export const IS_TESTNET: Boolean = isTestnet(NETWORK)
 export const IS_STAGING = env.VITE_ENV === 'staging'
 export const IS_MAINNET =
   [

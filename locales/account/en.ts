@@ -10,6 +10,7 @@ export default {
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
+    transferOnChain: 'Transfer to address',
     trade: 'Trade',
     filters: 'Filters',
     filterByAsset: 'Filter by asset',
@@ -88,6 +89,17 @@ export default {
     main: 'Main',
     account: 'Subaccount',
     accountBalance: 'Subaccount Balance',
-    staked: 'Staked'
+    staked: 'Staked',
+
+    createSubaccount: 'Create Subaccount',
+    subaccountCreation: 'Subaccount Creation',
+    createSubaccountNote: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'This is a secondary account linked to your main account for separate management and trading of digital assets. ',
+        named('split'),
+        'To activate it, you first need to transfer funds. Learn more about subaccounts in our',
+        named('faq')
+      ]),
+    subaccountTransfer: 'Subaccount Transfer'
   }
 }

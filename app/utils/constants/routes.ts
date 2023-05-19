@@ -71,7 +71,7 @@ export const getRoutes = (network: Network, env: string) => {
     'leaderboard'
   ]
 
-  const customStaticRoutes: string[] = ['/']
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 

@@ -1,6 +1,6 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
-import { ConfettiPlugin } from '~/plugins/confetti'
+import { ConfettiPlugin } from '@/plugins/confetti'
 import { WindowPlugin } from '@/plugins/window'
 
 /**

@@ -1,9 +1,5 @@
-import type { Token } from '@injectivelabs/token-metadata'
-import { BridgeField } from '@/types'
+import { BridgeField, SubaccountTransferField } from '@/types'
 
 export type BridgeForm = Record<BridgeField, any>
 
-export type BridgeFormValue = {
-  field: BridgeField
-  value: string | Token
-}
+export type SubaccountTransferForm = Record<SubaccountTransferField, any>
