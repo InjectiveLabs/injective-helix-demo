@@ -9,7 +9,7 @@ const walletStore = useWalletStore()
 
 const hubUrl = `${getHubUrl()}/bridge`
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 const resetForm = useResetForm()
 
 const { isDeposit, isTransfer, isWithdraw } = useBridgeState(formValues)

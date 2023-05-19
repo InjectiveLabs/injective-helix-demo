@@ -134,7 +134,7 @@ function handleTokenChange() {
 
     if (token) {
       formValues[SubaccountTransferField.Amount] = ''
-      formValues[SubaccountTransferField.Token] = token
+      formValues[SubaccountTransferField.Token] = token.token
     }
   })
 }

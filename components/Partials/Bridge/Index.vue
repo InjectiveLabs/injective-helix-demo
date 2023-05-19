@@ -5,7 +5,7 @@ import { BridgeField, BridgeType, BridgeForm } from '@/types'
 const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const { originIsEthereum, networkIsSupported } = useBridgeState(formValues)
 const { balanceWithToken, supplyWithBalance } = useBridgeBalance(formValues)

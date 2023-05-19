@@ -3,7 +3,7 @@ import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
 import { BridgeField, BridgeForm, BridgeType } from '@/types'
 import { networksMeta } from '@/app/data/bridge'
 
-export default function useBridgeState(formValues: Ref<Partial<BridgeForm>>) {
+export default function useBridgeState(formValues: Ref<BridgeForm>) {
   const isWithdraw = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw
   )

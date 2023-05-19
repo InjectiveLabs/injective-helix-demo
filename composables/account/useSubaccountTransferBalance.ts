@@ -2,7 +2,7 @@ import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
 export function useSubaccountTransferBalance(
-  formValues: Ref<Partial<SubaccountTransferForm>>
+  formValues: Ref<SubaccountTransferForm>
 ) {
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()

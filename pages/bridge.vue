@@ -74,7 +74,7 @@ function handlePreFillFromQuery() {
       formValues[BridgeField.BridgingNetwork] = BridgingNetwork.EthereumWh
       break
     case tokenType === TokenType.Spl:
-      formValues[BridgeField.BridgingNetwork] = TokenType.Spl
+      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Solana
       break
     default:
       formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum

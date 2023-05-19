@@ -14,7 +14,7 @@ import { INJ_GAS_BUFFER_FOR_BRIDGE } from '@/app/utils/constants'
  * For the bridge balances, we only use
  * the tradeable tokens that we have on the DEX
  */
-export function useBridgeBalance(formValues: Ref<Partial<BridgeForm>>) {
+export function useBridgeBalance(formValues: Ref<BridgeForm>) {
   const walletStore = useWalletStore()
   const tokenStore = useTokenStore()
   const peggyStore = usePeggyStore()

@@ -23,7 +23,7 @@ const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const emit = defineEmits<{
   (e: 'form:submit'): void
@@ -176,7 +176,7 @@ function handleWithdrawToInjective() {
   accountStore
     .transfer({
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
-      denom: formValues.value[BridgeField.Token].denom,
+      denom: formValues.value[BridgeField.Denom],
       destination: formValues.value[BridgeField.Destination],
       memo: formValues.value[BridgeField.Memo],
       token: formValues.value[BridgeField.Token]

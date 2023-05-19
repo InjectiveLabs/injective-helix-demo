@@ -235,8 +235,8 @@ export enum ActivityField {
 
 export enum BridgeField {
   Amount = 'Amount',
-  BridgeType = 'Bridge Type',
-  BridgingNetwork = 'Bridging Network',
+  BridgeType = 'BridgeType',
+  BridgingNetwork = 'BridgingNetwork',
   Denom = 'Denom',
   Destination = 'Destination',
   Memo = 'Memo',

@@ -9,7 +9,7 @@ import { BridgeField, BridgeForm, BridgeType } from '@/types'
 
 const peggyStore = usePeggyStore()
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const { balanceWithToken } = useBridgeBalance(formValues)
 

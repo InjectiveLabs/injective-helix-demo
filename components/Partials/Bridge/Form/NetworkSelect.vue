@@ -3,7 +3,7 @@ import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '@/app/data/bridge'
 import { BridgeField, BridgeForm } from '@/types'
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const { isTransfer } = useBridgeState(formValues)
 

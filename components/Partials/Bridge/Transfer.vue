@@ -3,7 +3,7 @@ import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { BINANCE_DEPOSIT_ADDRESSES } from '@/app/utils/constants'
 import { BridgeForm, BridgeField } from '@/types'
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const memoRequired = ref(false)
 
