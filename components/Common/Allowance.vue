@@ -88,9 +88,7 @@ function handleSetAllowance() {
     <p class="mb-3 text-xs text-gray-300">
       <span>{{
         $t('bridge.setAllowanceForBridging', {
-          asset: formValues[BridgeField.Token]
-            ? formValues[BridgeField.Token].symbol
-            : ''
+          asset: formValues[BridgeField.Token]?.symbol || ''
         })
       }}</span>
 
