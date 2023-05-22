@@ -2,10 +2,7 @@
 import { PropType } from 'vue'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
-import {
-  DECIMAL_DIVIDER,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const slots = useSlots()
 
@@ -66,7 +63,7 @@ const { valueToString: formattedNumberToString } = useBigNumberFormatter(
 
 const formattedNumber = computed(() => {
   if (props.number.eq(0)) {
-    return [`0${DECIMAL_DIVIDER}00`]
+    return ['0.00']
   }
 
   if (props.noGrouping) {
