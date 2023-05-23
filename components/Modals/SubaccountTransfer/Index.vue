@@ -85,6 +85,7 @@ function handleNonDefaultSubaccountTransfer() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
@@ -104,6 +105,7 @@ function handleDefaultSubaccountTransfer() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
@@ -123,6 +125,7 @@ function handleDefaultSubaccountWithdraw() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
