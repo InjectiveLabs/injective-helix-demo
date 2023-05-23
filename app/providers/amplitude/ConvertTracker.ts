@@ -1,5 +1,5 @@
 import { identify as amplitudeIdentify } from '@amplitude/analytics-browser'
-import BaseTracker from '~/app/providers/amplitude/BaseTracker'
+import BaseTracker from '@/app/providers/amplitude/BaseTracker'
 import { AMPLITUDE_CONVERT_ATTEMPT_COUNT } from '@/app/utils/vendor'
 import { AmplitudeEvent } from '@/types'
 

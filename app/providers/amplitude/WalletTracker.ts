@@ -1,6 +1,6 @@
 import { identify as amplitudeIdentify } from '@amplitude/analytics-browser'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import BaseTracker from '~/app/providers/amplitude/BaseTracker'
+import BaseTracker from '@/app/providers/amplitude/BaseTracker'
 import { AMPLITUDE_LOGIN_COUNT } from '@/app/utils/vendor'
 import { AmplitudeEvent } from '@/types'
 
