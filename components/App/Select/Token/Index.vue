@@ -2,14 +2,13 @@
 import { PropType } from 'vue'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { BridgeField, TradeField } from '@/types'
+import { BridgeField, SubaccountTransferField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
 const props = defineProps({
   hideMax: Boolean,
   disabled: Boolean,
   required: Boolean,
-  inputDisabled: Boolean,
 
   denom: {
     type: String,
@@ -27,7 +26,9 @@ const props = defineProps({
   },
 
   amountFieldName: {
-    type: String as PropType<TradeField | BridgeField>,
+    type: String as PropType<
+      TradeField | BridgeField | SubaccountTransferField
+    >,
     default: TradeField.BaseAmount
   },
 
@@ -39,6 +40,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:denom', state: string): void
+  (e: 'update:show', show: boolean): void
   (
     e: 'update:amount',
     { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
@@ -106,6 +108,10 @@ function handleAmountUpdate(amount: string) {
 function handleMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
+
+function handleUpdateShow(show: boolean) {
+  emit('update:show', show)
+}
 </script>
 
 <script lang="ts">
@@ -147,6 +153,7 @@ export default {
       placement="bottom"
       auto-boundary-max-size
       popper-class="dropdown"
+      @update:show="handleUpdateShow"
     >
       <div class="px-4">
         <div class="flex justify-between">
@@ -158,7 +165,7 @@ export default {
             input-classes="p-0 text-xl font-bold"
             :max-decimals="maxDecimals"
             :placeholder="inputPlaceholder"
-            :disabled="disabled || !selectedToken || inputDisabled"
+            :disabled="disabled || !selectedToken"
             @update:model-value="handleAmountUpdate"
             @click.stop
           />

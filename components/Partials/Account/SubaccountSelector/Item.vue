@@ -62,7 +62,7 @@ function handleClick() {
 
 <template>
   <div
-    class="rounded-2xl px-4 py-2 flex min-w-2xs cursor-pointer hover:bg-white/10"
+    class="rounded-2xl px-4 py-2 flex min-w-3xs cursor-pointer hover:bg-white/10"
     :class="{
       'bg-white/10': isSelectedSubaccountId
     }"
@@ -78,17 +78,8 @@ function handleClick() {
               : subaccountIdIndex
           }}
         </span>
-        <!--
-          ** I don't think we need a check mark here to indicate the selected 
-          ** subaccount as that is already done with the background of the card
-        <BaseIcon
-          v-if="isSelectedSubaccountId"
-          name="check"
-          class="w-3 h-3 ml-2 text-gray-100"
-        />
-        -->
       </h3>
-      <p class="font-mono text-xl font-semibold text-white">
+      <p class="font-sans text-lg font-semibold text-white">
         $
         {{
           hideBalances

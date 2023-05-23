@@ -13,7 +13,11 @@ import {
   marketIsPartOfType,
   marketIsPartOfSearch
 } from '@/app/utils/market'
-import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
+import {
+  deprecatedMarkets,
+  dmmSlugsToIncludeInLowVolume,
+  upcomingMarkets
+} from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum MarketHeaderType {
@@ -60,15 +64,18 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isLowVolumeMarket =
-      showLowVolumeMarkets.value || volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+    const isDmmMarket = dmmSlugsToIncludeInLowVolume.includes(market.slug)
+    const isLowVolumeMarket = search.value
+      ? true
+      : showLowVolumeMarkets.value ||
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
     return (
       isPartOfCategory &&
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      isLowVolumeMarket
+      (isLowVolumeMarket || isDmmMarket)
     )
   })
 })

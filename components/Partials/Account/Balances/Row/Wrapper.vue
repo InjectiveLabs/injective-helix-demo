@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeType } from '@/types'
 
 const accountStore = useAccountStore()
 
@@ -74,18 +73,6 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
-
-function handleDepositClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit(
-    props.balance.token
-  )
-}
-
-function handleWithdrawClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit(
-    props.balance.token
-  )
-}
 </script>
 
 <template>
@@ -195,27 +182,45 @@ function handleWithdrawClick() {
         <slot name="action">
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
-          <div
-            v-if="accountStore.isDefaultSubaccount"
-            class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-            data-cy="wallet-balance-deposit-link"
-            @click="handleDepositClick"
+          <NuxtLink
+            :to="{
+              name: 'bridge',
+              query: {
+                type: BridgeType.Deposit,
+                denom: balance.token.denom
+              }
+            }"
           >
-            <span class="text-blue-500 text-sm font-medium">
-              {{ $t('account.deposit') }}
-            </span>
-          </div>
+            <div
+              v-if="accountStore.isDefaultSubaccount"
+              class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+              data-cy="wallet-balance-deposit-link"
+            >
+              <span class="text-blue-500 text-sm font-medium">
+                {{ $t('account.deposit') }}
+              </span>
+            </div>
+          </NuxtLink>
 
-          <div
-            v-if="accountStore.isDefaultSubaccount"
-            class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-            data-cy="wallet-balance-withdraw-link"
-            @click="handleWithdrawClick"
+          <NuxtLink
+            :to="{
+              name: 'bridge',
+              query: {
+                type: BridgeType.Withdraw,
+                denom: balance.token.denom
+              }
+            }"
           >
-            <span class="text-blue-500 text-sm font-medium">
-              {{ $t('account.withdraw') }}
-            </span>
-          </div>
+            <div
+              v-if="accountStore.isDefaultSubaccount"
+              class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+              data-cy="wallet-balance-withdraw-link"
+            >
+              <span class="text-blue-500 text-sm font-medium">
+                {{ $t('account.withdraw') }}
+              </span>
+            </div>
+          </NuxtLink>
         </slot>
       </div>
     </td>

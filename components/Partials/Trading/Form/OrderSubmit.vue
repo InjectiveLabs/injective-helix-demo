@@ -6,8 +6,7 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, TradeField, TradeForm } from '@/types'
 
@@ -143,14 +142,6 @@ function handleSubmit() {
     return error({ title: t('trade.error_in_form') })
   }
 
-  if (props.maxOrdersError) {
-    return error({
-      title: t('trade.you_can_only_have_max_orders', {
-        number: UI_DEFAULT_MAX_NUMBER_OF_ORDERS
-      })
-    })
-  }
-
   emit('submit:request')
 }
 
@@ -159,7 +150,7 @@ function trackPlaceOrder() {
     ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
-  amplitudeTracker.submitClickPlaceOrderTrackEvent({
+  amplitudeTradeTracker.submitPlaceOrderAttemptTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
     reduceOnly: props.orderTypeReduceOnly,
@@ -183,7 +174,8 @@ function handleConnect() {
   <div>
     <PartialsTradingFormOrderError
       v-bind="{
-        highDeviation
+        highDeviation,
+        maxOrdersError
       }"
     />
 

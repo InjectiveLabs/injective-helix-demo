@@ -63,7 +63,7 @@ jobs:
         run: yarn clean-up
 
       - name: Install Dependencies
-        run: yarn install --force
+        run: yarn install --force --ignore-engines
 
       - name: Generating the static pages
         run: yarn generateNoSourceMap

@@ -27,7 +27,6 @@ jobs:
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
-      VITE_HELIX_APP_REDIRECTION: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
@@ -43,6 +42,7 @@ jobs:
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
+      VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
@@ -69,7 +69,7 @@ jobs:
         run: yarn clean-up
 
       - name: Install Dependencies
-        run: yarn install --force
+        run: yarn install --force --ignore-engines
 
       - name: Generating the static pages
         run: yarn generateNoSourceMap

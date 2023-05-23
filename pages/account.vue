@@ -6,11 +6,8 @@ definePageMeta({
 })
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
-const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -18,16 +15,16 @@ const status = reactive(new Status(StatusType.Loading))
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([
-    spotStore.init(),
-    derivativeStore.init(),
-    exchangeStore.initFeeDiscounts(),
-    accountStore.streamBankBalance(),
-    accountStore.fetchAccountPortfolio(),
-    accountStore.streamSubaccountBalance()
-  ])
+  Promise.all([accountStore.fetchAccountPortfolio()])
+    .then(() => {
+      Promise.all([
+        accountStore.streamBankBalance(),
+        accountStore.streamSubaccountBalance()
+      ])
+        .catch($onError)
+        .finally(() => status.setIdle())
+    })
     .catch($onError)
-    .finally(() => status.setIdle())
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)

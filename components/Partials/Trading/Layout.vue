@@ -12,6 +12,7 @@ import {
   UiMarketSummary
 } from '@/types'
 
+const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -122,7 +123,7 @@ watch(
 </script>
 
 <template>
-  <AppHocLoading :key="$route.fullPath" :status="status" class="h-full">
+  <AppHocLoading :key="route.fullPath" :status="status" class="h-full">
     <div v-if="market && summary" class="min-h-lg h-full-flex">
       <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats

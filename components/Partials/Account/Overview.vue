@@ -2,15 +2,15 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import type { Token } from '@injectivelabs/token-metadata'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeType, Modal } from '@/types'
 
 const tokenStore = useTokenStore()
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 
@@ -106,12 +106,8 @@ function toggleHideBalances() {
   emit('update:hide-balances', !props.hideBalances)
 }
 
-function handleDepositClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Deposit).emit()
-}
-
-function handleWithdrawClick() {
-  useEventBus<Token | undefined>(BridgeBusEvents.Withdraw).emit()
+function handleTransferClick() {
+  modalStore.openModal({ type: Modal.SubaccountTransfer })
 }
 </script>
 
@@ -127,7 +123,7 @@ function handleWithdrawClick() {
           class="text-white font-bold text-2xl md:text-3xl"
         >
           &dollar;
-          <span class="font-mono">{{ abbreviatedTotalBalanceToString }}</span>
+          <span class="font-sans">{{ abbreviatedTotalBalanceToString }}</span>
           USD
         </span>
         <span v-else class="text-white font-bold text-2xl md:text-3xl">
@@ -136,25 +132,19 @@ function handleWithdrawClick() {
 
         <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
           &thickapprox;
-          <span class="font-mono">{{ accountTotalBalanceInBtcToString }}</span>
+          <span class="font-sans">{{ accountTotalBalanceInBtcToString }}</span>
           BTC
         </span>
         <span v-else class="text-gray-450 md:text-lg">
           &thickapprox; {{ HIDDEN_BALANCE_DISPLAY }} BTC
         </span>
 
-        <div @click="toggleHideBalances">
-          <BaseIcon
-            v-if="hideBalances"
-            name="hide"
-            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-          />
-
-          <BaseIcon
-            v-else
-            name="show"
-            class="w-4 h-4 text-gray-450 hover:text-white cursor-pointer"
-          />
+        <div
+          class="text-gray-450 hover:text-white cursor-pointer"
+          @click="toggleHideBalances"
+        >
+          <BaseIcon v-if="hideBalances" name="hide" class="w-4 h-4" />
+          <BaseIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
 
@@ -162,22 +152,34 @@ function handleWithdrawClick() {
         v-if="!isLoading && accountStore.isDefaultSubaccount"
         class="flex items-center justify-between md:justify-end sm:gap-4"
       >
-        <AppButton class="bg-blue-500" @click="handleDepositClick">
-          <span class="text-blue-900 font-semibold">
-            {{ $t('account.deposit') }}
-          </span>
-        </AppButton>
+        <NuxtLink :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }">
+          <AppButton class="bg-blue-500">
+            <span class="text-blue-900 font-semibold">
+              {{ $t('account.deposit') }}
+            </span>
+          </AppButton>
+        </NuxtLink>
 
-        <AppButton class="border border-blue-500" @click="handleWithdrawClick">
+        <NuxtLink
+          :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
+        >
+          <AppButton class="border border-blue-500">
+            <span class="text-blue-500 font-semibold">
+              {{ $t('account.withdraw') }}
+            </span>
+          </AppButton>
+        </NuxtLink>
+
+        <AppButton class="border border-blue-500" @click="handleTransferClick">
           <span class="text-blue-500 font-semibold">
-            {{ $t('account.withdraw') }}
+            {{ $t('account.transfer') }}
           </span>
         </AppButton>
       </div>
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading && accountStore.hasMultipleSubaccounts"
+      v-if="!isLoading"
       v-bind="{
         hideBalances
       }"

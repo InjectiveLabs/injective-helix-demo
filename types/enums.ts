@@ -38,29 +38,32 @@ export enum Icon {
 }
 
 export enum Modal {
-  AddMarginToPosition = 'add-margin-to-position',
-  AssetDetails = 'asset-details',
-  Bridge = 'bridge',
-  BridgeCompleted = 'bridge-completed',
-  BridgeConfirm = 'bridge-confirm',
-  Connect = 'connect',
-  ConvertUsdc = 'convert-usdc',
-  DelegateToValidator = 'delegate-to-validator',
-  GasFeeRebate = 'gas-fee-rebate',
-  InsufficientInjForGas = 'insufficient-inj-for-gas',
-  MarketBeta = 'market-beta',
-  MarketDeprecated = 'market-deprecated',
-  MarketExpired = 'market-expired',
-  MarketNew = 'market-new',
-  MarketRewardFactors = 'market-reward-factors',
-  MobileTradeDetails = 'mobile-trade-details',
-  NinjaPassWinner = 'ninja-pass-winner',
-  OrderConfirm = 'order-confirm',
-  PriceDeviation = 'price-deviation',
   Terms = 'terms',
+  Bridge = 'bridge',
+  Connect = 'connect',
+  DevMode = 'dev-mode',
+  MarketNew = 'market-new',
+  MarketBeta = 'market-beta',
+  ConvertUsdc = 'convert-usdc',
+  AssetDetails = 'asset-details',
+  OrderConfirm = 'order-confirm',
   USDCDetected = 'usdc-detected',
   UserFeedback = 'user-feedback',
-  DevMode = 'dev-mode'
+  GasFeeRebate = 'gas-fee-rebate',
+  BridgeConfirm = 'bridge-confirm',
+  SharePosition = 'share-position',
+  MarketExpired = 'market-expired',
+  PriceDeviation = 'price-deviation',
+  BridgeCompleted = 'bridge-completed',
+  NinjaPassWinner = 'ninja-pass-winner',
+  MarketDeprecated = 'market-deprecated',
+  CreateSubaccount = 'create-subaccount',
+  SubaccountTransfer = 'subaccount-transfer',
+  MobileTradeDetails = 'mobile-trade-details',
+  DelegateToValidator = 'delegate-to-validator',
+  MarketRewardFactors = 'market-reward-factors',
+  AddMarginToPosition = 'add-margin-to-position',
+  InsufficientInjForGas = 'insufficient-inj-for-gas'
 }
 
 export enum Breakpoint {
@@ -82,11 +85,6 @@ export enum AppState {
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'
-}
-
-export enum TransferDirection {
-  bankToTradingAccount = 'bank-to-trading-account',
-  tradingAccountToBank = 'trading-account-to-bank'
 }
 
 export enum BridgeType {
@@ -163,10 +161,12 @@ export enum AmplitudeEvent {
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
+  ConvertClicked = 'Convert Clicked',
+  ConvertAttempt = 'Convert Attempt',
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
-  ClickPlaceOrder = 'Place Order Attempt',
-  AttemptPlaceOrder = 'Place Order Confirm'
+  PlaceOrderAttempt = 'Place Order Attempt',
+  PlaceOrderConfirm = 'Place Order Confirm'
 }
 
 export enum SurveyTitle {
@@ -220,14 +220,8 @@ export enum BusEvents {
   PostOnlyToggled = 'post-only-toggled',
   ShowLedgerConnect = 'show-ledger-connect',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  WalletConnected = 'wallet-connected'
-}
-
-export enum BridgeBusEvents {
-  Transfer = 'transfer',
-  TransferToBank = 'transfer-to-bank',
-  Deposit = 'deposit',
-  Withdraw = 'withdraw'
+  WalletConnected = 'wallet-connected',
+  ActivityFilterUpdate = 'activity-filter-update'
 }
 
 export enum ActivityField {
@@ -241,13 +235,20 @@ export enum ActivityField {
 
 export enum BridgeField {
   Amount = 'Amount',
-  BridgeType = 'Bridge Type',
-  BridgingNetwork = 'Bridging Network',
+  BridgeType = 'BridgeType',
+  BridgingNetwork = 'BridgingNetwork',
   Denom = 'Denom',
   Destination = 'Destination',
   Memo = 'Memo',
-  Token = 'Token',
-  TransferDirection = 'Transfer Direction'
+  Token = 'Token'
+}
+
+export enum SubaccountTransferField {
+  Amount = 'Amount',
+  SrcSubaccountId = 'SrcSubaccountId',
+  DstSubaccountId = 'DstSubaccountId',
+  Denom = 'Denom',
+  Token = 'Token'
 }
 
 export enum TradeField {
@@ -305,16 +306,9 @@ export enum ActivityView {
   WalletWithdrawals = 'WalletHistory/Withdrawals'
 }
 
-export enum ActivityTab {
-  Positions = 'positions',
-  Derivatives = 'derivatives',
-  Spot = 'spot',
-  WalletHistory = 'wallet-history'
-}
-
 export enum AggregatedBalanceType {
-  INJ = 'inj',
-  USDC = 'usdc'
+  Inj = 'inj',
+  Aggregated = 'aggregated'
 }
 
 export enum NoticeBanner {
@@ -324,4 +318,32 @@ export enum NoticeBanner {
 export enum SubaccountBalanceStreamType {
   AvailableBalance = 'available_balances',
   TotalBalance = 'total_balances'
+}
+
+export enum PaginationState {
+  InvalidQuery = 'invalid-query',
+  QueryPageExist = 'query-page-exist',
+  QueryMoreThanTotalPage = 'query-more-than-total-page'
+}
+
+export enum ActivityPage {
+  OpenPositions = 'activity-positions',
+  FundingPayments = 'activity-positions-funding-payments',
+  DerivativeOpenOrders = 'activity-derivatives',
+  DerivativeTriggers = 'activity-derivatives-triggers',
+  DerivativeOrderHistory = 'activity-derivatives-order-history',
+  DerivativeTradeHistory = 'activity-derivatives-trade-history',
+  SpotOpenOrders = 'activity-spot',
+  SpotOrderHistory = 'activity-spot-order-history',
+  SpotTradeHistory = 'activity-spot-trade-history',
+  WalletHistoryTransfers = 'activity-wallet-history',
+  WalletHistoryDeposits = 'activity-wallet-history-deposits',
+  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
+}
+
+export enum ActivityTab {
+  Spot = 'activity-spot',
+  Positions = 'activity-positions',
+  Derivatives = 'activity-derivatives',
+  WalletHistory = 'activity-wallet-history'
 }

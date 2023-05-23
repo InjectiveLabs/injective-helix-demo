@@ -39,7 +39,7 @@ const marketsWithSummariesLoaded = computed(
 function getQuoteTokenPrice() {
   Promise.all([
     appStore.pollMarkets(),
-    tokenStore.fetchTokenUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
+    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
   ]).catch($onError)
 }
 

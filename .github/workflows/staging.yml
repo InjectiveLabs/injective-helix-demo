@@ -18,7 +18,7 @@ jobs:
       VITE_ENV: staging
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
-      SOURCE_DIR: dist
+      SOURCE_DIR: .output/public
       DEST_DIR: www
 
       ## Github Actions
@@ -68,7 +68,7 @@ jobs:
         run: yarn clean-up
 
       - name: Install Dependencies
-        run: yarn install --force
+        run: yarn install --force --ignore-engines
 
       - name: Generating the static pages
         run: yarn generateNoSourceMap

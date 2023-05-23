@@ -1,4 +1,9 @@
-import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
+import {
+  Network,
+  isDevnet,
+  isTestnet,
+  getNetworkEndpoints
+} from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
@@ -34,9 +39,12 @@ const env = {
   VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
     ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
     : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_HELIX_APP_REDIRECTION: isWebpack
-    ? process.env.VITE_HELIX_APP_REDIRECTION
-    : import.meta.env.VITE_HELIX_APP_REDIRECTION,
+  VITE_PROXY_DETECTION_API_KEY: isWebpack
+    ? process.env.VITE_PROXY_DETECTION_API_KEY
+    : import.meta.env.VITE_PROXY_DETECTION_API_KEY,
+  VITE_GOOGLE_MAPS_KEY: isWebpack
+    ? process.env.VITE_GOOGLE_MAPS_KEY
+    : import.meta.env.VITE_GOOGLE_MAPS_KEY,
   VITE_BANNER_NOTICE_ENABLED: (isWebpack
     ? process.env.VITE_BANNER_NOTICE_ENABLED
     : import.meta.env.VITE_BANNER_NOTICE_ENABLED) as string | undefined,
@@ -73,6 +81,12 @@ const env = {
   VITE_AMPLITUDE_KEY: isWebpack
     ? process.env.VITE_AMPLITUDE_KEY
     : (import.meta.env.VITE_AMPLITUDE_KEY as string),
+  VITE_GOOGLE_ANALYTICS_KEY: isWebpack
+    ? process.env.VITE_GOOGLE_ANALYTICS_KEY
+    : (import.meta.env.VITE_GOOGLE_ANALYTICS_KEY as string),
+  VITE_HOTJAR_KEY: isWebpack
+    ? process.env.VITE_HOTJAR_KEY
+    : (import.meta.env.VITE_HOTJAR_KEY as string),
   VITE_BUGSNAG_KEY: (isWebpack
     ? process.env.VITE_BUGSNAG_KEY
     : import.meta.env.VITE_BUGSNAG_KEY) as string | undefined,
@@ -97,8 +111,9 @@ const env = {
   VITE_FEE_PAYER_PUB_KEY: string
   VITE_DEBUG_CALCULATION: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
+  VITE_PROXY_DETECTION_API_KEY: string
+  VITE_GOOGLE_MAPS_KEY: string
   VITE_MAINTENANCE_ENABLED: string
-  VITE_HELIX_APP_REDIRECTION: string
   VITE_BANNER_NOTICE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
@@ -110,6 +125,8 @@ const env = {
   VITE_NINJA_PASS_ENDPOINT: string
   VITE_COINGECKO_KEY: string
   VITE_AMPLITUDE_KEY: string
+  VITE_GOOGLE_ANALYTICS_KEY: string
+  VITE_HOTJAR_KEY: string
   VITE_NEWSLETTER_API: string
   VITE_ALCHEMY_GOERLI_KEY: string
   VITE_BUGSNAG_KEY: string
@@ -118,15 +135,8 @@ const env = {
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
-export const IS_DEVNET: Boolean = [
-  Network.Devnet,
-  Network.Devnet1,
-  Network.Local
-].includes(NETWORK)
-export const IS_TESTNET: Boolean = [
-  Network.Testnet,
-  Network.TestnetK8s
-].includes(NETWORK)
+export const IS_DEVNET: Boolean = isDevnet(NETWORK)
+export const IS_TESTNET: Boolean = isTestnet(NETWORK)
 export const IS_STAGING = env.VITE_ENV === 'staging'
 export const IS_MAINNET =
   [
@@ -200,6 +210,8 @@ export const VITE_NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
 export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
+export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
+export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 
@@ -212,9 +224,13 @@ export const COIN_GECKO_OPTIONS = {
 
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
+export const VITE_PROXY_DETECTION_API_KEY =
+  env.VITE_PROXY_DETECTION_API_KEY || ''
+
+export const VITE_GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
+export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
-export const HELIX_APP_REDIRECTION = env.VITE_HELIX_APP_REDIRECTION === 'true'
 
 const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
 

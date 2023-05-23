@@ -1,113 +1,31 @@
 <script lang="ts" setup>
-const props = defineProps({
-  disabled: Boolean,
-  modelValue: Boolean,
-
-  tooltip: {
-    type: String,
-    default: ''
-  },
-
+defineProps({
   dataCy: {
     type: String,
     default: 'unknown-id'
   }
 })
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', state: boolean): void
-}>()
-
-const uid = window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
-
-const checked = computed({
-  get: (): boolean => props.modelValue,
-  set: (value: boolean) => {
-    emit('update:modelValue', value)
-  }
-})
 </script>
 
 <template>
-  <div class="flex items-center justify-start">
-    <div class="checkbox-wrapper mr-2">
-      <input
-        :id="uid"
-        v-model="checked"
-        :disabled="disabled"
-        class="checkbox"
-        type="checkbox"
-      />
-      <label
-        :for="uid"
-        :data-cy="dataCy"
-        class="top-0 left-0 flex items-center justify-center absolute"
-        :class="{
-          'cursor-pointer': !disabled
-        }"
-      >
-        <BaseIcon name="check" class="w-2 h-2 text-gray-750 checkmark" />
-        <BaseIcon name="minus" class="w-2 h-2 text-gray-500 minus" />
-      </label>
-    </div>
-    <label
-      :for="uid"
-      class="select-none text-xs whitespace-nowrap"
-      :class="{
-        'text-gray-500': disabled,
-        'text-white cursor-pointer': !disabled
-      }"
-    >
+  <BaseCheckbox v-bind="$attrs">
+    <template #checkbox="{ isChecked, disabled }">
+      <div class="grid place-items-center">
+        <div class="relative w-4 h-4">
+          <div
+            class="absolute inset-0 border border-white"
+            :class="{ 'bg-gray-500': disabled }"
+          >
+            <div
+              v-if="isChecked"
+              class="absolute left-1/2 top-0 bottom-0 right-0 border-transparent border-[1.5px] rotate-45 scale-75 border-r-white border-b-white -translate-x-[0.2rem] -translate-y-0.5"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
+    <span class="text-xs" :data-cy="dataCy">
       <slot />
-    </label>
-  </div>
+    </span>
+  </BaseCheckbox>
 </template>
-
-<style scoped>
-.checkbox-wrapper {
-  --checkbox-width: 16px;
-  --checkbox-height: 16px;
-  position: relative;
-  width: var(--checkbox-width);
-  height: var(--checkbox-height);
-}
-
-.checkbox-wrapper input[type='checkbox'] {
-  visibility: hidden;
-  width: var(--checkbox-width);
-  height: var(--checkbox-height);
-}
-
-.checkbox-wrapper input[type='checkbox'] + label {
-  width: var(--checkbox-width);
-  height: var(--checkbox-height);
-  border: 1px solid white;
-  background-color: transparent;
-}
-
-.checkbox-wrapper input[type='checkbox'] + label .checkmark,
-.checkbox-wrapper input[type='checkbox'] + label .minus {
-  display: none;
-}
-
-.checkbox-wrapper input[type='checkbox']:checked + label {
-  background-color: #fff;
-}
-
-.checkbox-wrapper input[type='checkbox']:checked + label .checkmark {
-  display: block;
-}
-
-.checkbox-wrapper input[type='checkbox']:disabled + label {
-  border-color: #727376;
-  background-color: transparent;
-}
-
-.checkbox-wrapper input[type='checkbox']:disabled + label .checkmark {
-  display: none;
-}
-
-.checkbox-wrapper input[type='checkbox']:disabled + label .minus {
-  display: block;
-}
-</style>

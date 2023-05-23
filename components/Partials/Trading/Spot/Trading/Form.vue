@@ -4,7 +4,7 @@ import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal, TradeForm, TradeField, OrderAttemptStatus } from '@/types'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
@@ -146,7 +146,7 @@ const notionalWithFees = computed(() => {
     : notionalValue.value.minus(fees.value)
 })
 
-const { availableBalanceError, highDeviation, maxOrdersError } = useSpotError({
+const { availableBalanceError, highDeviation } = useSpotError({
   isBuy,
   executionPrice,
   notionalWithFees,
@@ -235,7 +235,7 @@ function submitLimitOrder() {
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      handleAttemptPlaceOrderTrack(e.message)
       $onError(e)
     })
     .finally(() => {
@@ -295,7 +295,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
+  amplitudeTradeTracker.submitPlaceOrderConfirmTrackEvent({
     status,
     postOnly,
     slippageTolerance,
@@ -371,7 +371,6 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         hasBaseAmount,
         highDeviation,
         executionPrice,
-        maxOrdersError,
         availableBalanceError
       }"
       @submit:request="handleRequestSubmit"

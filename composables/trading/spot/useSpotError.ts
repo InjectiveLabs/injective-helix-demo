@@ -5,11 +5,8 @@ import {
   UiPriceLevel,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  DEFAULT_PRICE_WARNING_DEVIATION,
-  UI_DEFAULT_MAX_NUMBER_OF_ORDERS
-} from '@/app/utils/constants'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
+import { DEFAULT_PRICE_WARNING_DEVIATION } from '@/app/utils/constants'
+import { TradeField, TradeForm } from '@/types'
 
 export function useSpotError({
   isBuy,
@@ -27,10 +24,6 @@ export function useSpotError({
   quoteAvailableBalance?: Ref<BigNumberInBase>
 }) {
   const spotStore = useSpotStore()
-
-  const tradingTypeMarket = computed(
-    () => formValues.value[TradeField.TradingType] === TradeExecutionType.Market
-  )
 
   const orderbookOrders = computed(
     () => (isBuy.value ? spotStore.sells : spotStore.buys) as UiPriceLevel[]
@@ -87,27 +80,6 @@ export function useSpotError({
     return isBuy.value && quoteAvailableBalance.value.lt(notionalWithFees.value)
   })
 
-  const subaccountOrders = computed(() =>
-    spotStore.subaccountOrders.filter((order) => {
-      if (!market.value) {
-        return false
-      }
-
-      return (
-        order.orderSide === formValues.value[TradeField.OrderSide] &&
-        order.marketId === market.value.marketId
-      )
-    })
-  )
-
-  const maxOrdersError = computed(() => {
-    return (
-      !tradingTypeMarket.value &&
-      subaccountOrders.value &&
-      subaccountOrders.value.length >= UI_DEFAULT_MAX_NUMBER_OF_ORDERS
-    )
-  })
-
   const insufficientLiquidity = computed<boolean>(() => {
     const quantity = new BigNumberInBase(
       formValues.value[TradeField.BaseAmount] || 0
@@ -132,7 +104,6 @@ export function useSpotError({
 
   return {
     highDeviation,
-    maxOrdersError,
     insufficientLiquidity,
     availableBalanceError
   }

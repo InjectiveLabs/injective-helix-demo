@@ -32,7 +32,7 @@ export default function ({
     autosize: true,
     interval: interval as ResolutionString,
     container: containerId,
-    timeframe: '1W',
+    timeframe: '1M',
     toolbar_bg: colors.gray[950],
     height: 100,
     width: 100,
