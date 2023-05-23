@@ -21,7 +21,7 @@ import {
   deprecatedMarkets,
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
-  slugsToExcludeFromEthereumCategory
+  slugsToIncludeInEthereumCategory
 } from '@/app/data/market'
 
 export const getMarketRoute = (
@@ -116,19 +116,20 @@ export const marketIsPartOfCategory = (
     return true
   }
 
+  const marketHasIbcDenom =
+    market.baseToken.denom.startsWith('ibc') ||
+    market.quoteDenom.startsWith('ibc')
+
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
-      market.baseToken.denom.startsWith('ibc') ||
-      market.quoteDenom.startsWith('ibc') ||
-      slugsToIncludeInCosmosCategory.includes(market.slug)
+      marketHasIbcDenom || slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
-      !market.baseToken.denom.startsWith('ibc') &&
-      !market.quoteDenom.startsWith('ibc') &&
-      !slugsToExcludeFromEthereumCategory.includes(market.slug)
+      !marketHasIbcDenom &&
+      slugsToIncludeInEthereumCategory.includes(market.slug)
     )
   }
 

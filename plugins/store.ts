@@ -41,7 +41,7 @@ const stateToPersist = {
 } as Record<string, Record<string, any>>
 
 const actionsThatSetAppStateToBusy = [
-  'peggy/deposit',
+  'peggy/transfer',
   'peggy/withdraw',
   'account/deposit',
   'account/transfer',

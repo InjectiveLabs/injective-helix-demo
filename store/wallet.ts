@@ -15,7 +15,10 @@ import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { walletStrategy } from '@/app/wallet-strategy'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import {
+  amplitudeTracker,
+  amplitudeWalletTracker
+} from '@/app/providers/amplitude'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -109,13 +112,12 @@ export const useWalletStore = defineStore('wallet', {
       await accountStore.fetchAccountPortfolio()
       await exchangeStore.initFeeDiscounts()
 
-      amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
       amplitudeTracker.setUser({
         wallet: walletStore.wallet,
         address: walletStore.injectiveAddress,
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
-      amplitudeTracker.submitWalletConnectedTrackEvent()
+      amplitudeWalletTracker.submitWalletConnectedTrackEvent()
 
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
@@ -154,7 +156,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(walletStore.wallet)
       await walletStore.connectWallet(walletStore.wallet)
 
       const addresses = [address]
@@ -175,7 +177,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(walletStore.wallet)
       await walletStore.connectWallet(walletStore.wallet)
 
       const addresses = [address]
@@ -196,7 +198,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Metamask)
       await walletStore.connectWallet(Wallet.Metamask)
 
       const addresses = await getAddresses()
@@ -218,7 +220,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.WalletConnect)
       await walletStore.connectWallet(Wallet.WalletConnect)
 
       const addresses = await getAddresses()
@@ -240,7 +242,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Keplr)
       await walletStore.connectWallet(Wallet.Keplr)
 
       const injectiveAddresses = await getAddresses()
@@ -264,7 +266,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Leap)
       await walletStore.connectWallet(Wallet.Leap)
 
       const injectiveAddresses = await getAddresses()
@@ -286,7 +288,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Cosmostation)
       await walletStore.connectWallet(Wallet.Cosmostation)
 
       const injectiveAddresses = await getAddresses()
@@ -308,7 +310,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Torus)
       await walletStore.connectWallet(Wallet.Torus)
 
       const addresses = await getAddresses()
@@ -330,7 +332,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate()
+      await appStore.validate(Wallet.Metamask)
       await walletStore.connectWallet(Wallet.Metamask)
 
       const addressConfirmation = await confirm(injectiveAddress)

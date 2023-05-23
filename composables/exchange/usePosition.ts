@@ -37,7 +37,7 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     return new BigNumberInBase(position.value.quantity)
   })
 
-  const markPrice = computed(() => {
+  const markPriceNotScaled = computed(() => {
     if (!market.value) {
       return ZERO_IN_BASE
     }
@@ -52,6 +52,35 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     return new BigNumberInWei(position.value.markPrice).toBase(
       market.value.quoteToken.decimals
     )
+  })
+
+  const markPrice = computed(() => {
+    if (!market.value) {
+      return markPriceNotScaled.value
+    }
+
+    if (!market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    if (!market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    if (market.value.quoteToken.decimals === market.value.oracleScaleFactor) {
+      return markPriceNotScaled.value
+    }
+
+    const oracleScalePriceDiff =
+      market.value.quoteToken.decimals - market.value.oracleScaleFactor
+
+    return oracleScalePriceDiff > 0
+      ? new BigNumberInBase(markPriceNotScaled.value).times(
+          new BigNumberInBase(10).pow(oracleScalePriceDiff)
+        )
+      : new BigNumberInBase(markPriceNotScaled.value).div(
+          new BigNumberInBase(10).pow(oracleScalePriceDiff)
+        )
   })
 
   const isBinaryOptions = computed(() => {
@@ -156,20 +185,6 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
       : markPrice.value.times(quantity.value)
   })
 
-  const { valueToString: markPriceToFormat } = useBigNumberFormatter(
-    computed(() => markPrice.value),
-    {
-      decimalPlaces:
-        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      displayAbsoluteDecimalPlace: true
-    }
-  )
-
-  const { valueToString: pnlToFormat } = useBigNumberFormatter(pnl, {
-    decimalPlaces:
-      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
-
   return {
     pnl,
     price,
@@ -177,14 +192,12 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     market,
     quantity,
     markPrice,
-    pnlToFormat,
     priceDecimals,
     percentagePnl,
     notionalValue,
     isBinaryOptions,
     quantityDecimals,
     liquidationPrice,
-    markPriceToFormat,
     effectiveLeverage
   }
 }

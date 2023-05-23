@@ -34,13 +34,12 @@ const learnList = [
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
       <div class="sm:col-span-1 xs:col-span-2 3md:col-span-3 lg:col-span-5">
-        <div
-          class="flex items-center cursor-pointer md:mb-6"
-          @click="$router.push({ name: 'index' })"
-        >
-          <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
-          <AssetLogoText class="h-6 md:h-8" />
-        </div>
+        <NuxtLink :to="{ name: 'index' }">
+          <div class="flex items-center cursor-pointer md:mb-6">
+            <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
+            <AssetLogoText class="h-6 md:h-8" />
+          </div>
+        </NuxtLink>
 
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.

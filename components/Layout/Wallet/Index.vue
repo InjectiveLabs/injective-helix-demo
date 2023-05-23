@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { amplitudeGenericTracker } from '@/app/providers/amplitude'
 import {
   Modal,
   BusEvents,
@@ -39,7 +39,7 @@ function handleLedgerConnect() {
 }
 
 function handleWalletConnect() {
-  amplitudeTracker.trackEvent(AmplitudeEvent.ConnectClicked)
+  amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal({ type: Modal.Terms })
@@ -114,8 +114,8 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
-      <LayoutWalletConnectWalletCosmostation v-if="false" />
       <LayoutWalletConnectWalletLeap />
+      <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />
       <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
       <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />

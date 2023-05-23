@@ -3,8 +3,14 @@ import {
   NetworkMeta,
   tokenDenomsPerNetwork
 } from '@injectivelabs/sdk-ui-ts'
-import type { Token } from '@injectivelabs/token-metadata'
-import { TransferSide } from '@/types'
+import {
+  TokenType,
+  type Token,
+  getTokenTypeFromDenom
+} from '@injectivelabs/token-metadata'
+import { LocationQuery } from 'vue-router'
+import { INJ_DENOM } from '@injectivelabs/utils'
+import { BridgeType, TransferSide } from '@/types'
 
 export const networksMeta = [
   {
@@ -196,4 +202,57 @@ export const isTokenWormholeToken = (token: Token) => {
   )
 
   return !!isWormholeToken
+}
+
+export const getDenomAndTypeFromQuery = (
+  query: LocationQuery
+): { denom: string; tokenType: TokenType; bridgeType: BridgeType } => {
+  const actualQuery = query as
+    | {
+        denom: string
+        type: BridgeType
+      }
+    | Record<string, undefined>
+
+  if (!actualQuery.denom && !actualQuery.type) {
+    return {
+      denom: INJ_DENOM,
+      tokenType: TokenType.Native,
+      bridgeType: BridgeType.Deposit
+    }
+  }
+
+  if (!actualQuery.denom && actualQuery.type) {
+    return {
+      denom: INJ_DENOM,
+      tokenType: TokenType.Native,
+      bridgeType: Object.values(BridgeType).includes(actualQuery.type)
+        ? actualQuery.type
+        : BridgeType.Deposit
+    }
+  }
+
+  if (actualQuery.denom && !actualQuery.type) {
+    return {
+      denom: actualQuery.denom,
+      bridgeType: BridgeType.Deposit,
+      tokenType: getTokenTypeFromDenom(actualQuery.denom)
+    }
+  }
+
+  if (actualQuery.denom && actualQuery.type) {
+    return {
+      denom: actualQuery.denom,
+      tokenType: getTokenTypeFromDenom(actualQuery.denom),
+      bridgeType: Object.values(BridgeType).includes(actualQuery.type)
+        ? actualQuery.type
+        : BridgeType.Deposit
+    }
+  }
+
+  return {
+    denom: INJ_DENOM,
+    tokenType: TokenType.Native,
+    bridgeType: BridgeType.Deposit
+  }
 }

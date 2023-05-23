@@ -6,6 +6,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
@@ -24,6 +25,7 @@ import {
 import {
   fetchGeoLocation,
   validateGeoLocation,
+  fetchUserCountryFromBrowser,
   detectVPNOrProxyUsageNoThrow
 } from '@/app/services/region'
 import { todayInSeconds } from '@/app/utils/time'
@@ -35,17 +37,18 @@ import {
 import { UiAnnouncementTransformer } from '@/app/client/transformers/UiAnnouncementTransformer'
 import { Announcement, Attachment } from '@/app/client/types/announcements'
 import { alchemyKey } from '@/app/wallet-strategy'
+import { amplitudeWalletTracker } from '@/app/providers/amplitude'
 
 export interface UserBasedState {
-  vpnOrProxyUsageValidationTimestamp: number
-  favoriteMarkets: string[]
   geoLocation: GeoLocation
-  orderbookLayout: OrderbookLayout
+  favoriteMarkets: string[]
   tradingLayout: TradingLayout
-  ninjaPassWinnerModalViewed: boolean
-  userFeedbackModalViewed: boolean
-  skipTradeConfirmationModal: boolean
   bannersViewed: NoticeBanner[]
+  orderbookLayout: OrderbookLayout
+  userFeedbackModalViewed: boolean
+  ninjaPassWinnerModalViewed: boolean
+  skipTradeConfirmationModal: boolean
+  vpnOrProxyUsageValidationTimestamp: number
 }
 
 type AppStoreState = {
@@ -62,6 +65,9 @@ type AppStoreState = {
   userState: UserBasedState
   announcements: Announcement[]
   attachments: Attachment[]
+
+  // user's country that should not be cached in local storage
+  userCountryFromBrowser: string
 }
 
 const initialStateFactory = (): AppStoreState => ({
@@ -89,6 +95,7 @@ const initialStateFactory = (): AppStoreState => ({
     skipTradeConfirmationModal: false,
     bannersViewed: []
   },
+  userCountryFromBrowser: '',
   announcements: [],
   attachments: []
 })
@@ -103,9 +110,8 @@ export const useAppStore = defineStore('app', {
   actions: {
     async init() {
       const appStore = useAppStore()
-
       await appStore.fetchGeoLocation()
-      await appStore.detectVPNOrProxyUsage()
+      await appStore.handleInitialDetectVPNOrProxyUsage()
     },
 
     updateFavoriteMarkets(marketId: string) {
@@ -131,7 +137,7 @@ export const useAppStore = defineStore('app', {
       appStore.$patch({ userState })
     },
 
-    async detectVPNOrProxyUsage() {
+    async handleInitialDetectVPNOrProxyUsage() {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
@@ -197,21 +203,41 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    async validate() {
+    async validate(wallet: Wallet) {
       const appStore = useAppStore()
 
-      if (GEO_IP_RESTRICTIONS_ENABLED) {
-        if (appStore.userState.geoLocation) {
-          await validateGeoLocation(appStore.userState.geoLocation)
-        }
+      const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
 
-        await detectVPNOrProxyUsageNoThrow()
+      if (GEO_IP_RESTRICTIONS_ENABLED) {
+        /*
+        If vpn is detected, we get the geolocation from browser api to check if it's on the restricted list
+        Else we use geoip to check if the user is in a country from the restricted list
+        */
+        if (vpnOrProxyUsageDetected) {
+          const userCountryFromBrowser = await fetchUserCountryFromBrowser()
+
+          appStore.$patch({
+            userCountryFromBrowser
+          })
+
+          if (userCountryFromBrowser) {
+            await validateGeoLocation(userCountryFromBrowser)
+          }
+        } else if (appStore.userState.geoLocation.country) {
+          await validateGeoLocation(appStore.userState.geoLocation.country)
+        }
 
         appStore.$patch({
           userState: {
             ...appStore.userState,
             vpnOrProxyUsageValidationTimestamp: todayInSeconds()
           }
+        })
+
+        amplitudeWalletTracker.submitWalletSelectedTrackEvent({
+          wallet,
+          userCountryFromBrowser: appStore.userCountryFromBrowser,
+          userCountryFromVpnApi: appStore.userState.geoLocation.country
         })
       }
     },

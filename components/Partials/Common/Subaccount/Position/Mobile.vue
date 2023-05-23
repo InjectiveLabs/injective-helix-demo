@@ -19,13 +19,13 @@ const {
   market,
   margin,
   quantity,
-  pnlToFormat,
+  markPrice,
   priceDecimals,
+  percentagePnl,
   notionalValue,
+  liquidationPrice,
   quantityDecimals,
-  effectiveLeverage,
-  markPriceToFormat,
-  liquidationPrice
+  effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
 const props = defineProps({
@@ -36,6 +36,10 @@ const props = defineProps({
     type: Object as PropType<UiPosition>
   }
 })
+
+const emit = defineEmits<{
+  (e: 'share:position', state: UiPosition): void
+}>()
 
 const status = reactive(new Status())
 
@@ -116,6 +120,10 @@ function closePositionAndReduceOnlyOrders() {
       status.setIdle()
     })
 }
+
+function sharePosition() {
+  emit('share:position', props.position)
+}
 </script>
 
 <template>
@@ -150,20 +158,25 @@ function closePositionAndReduceOnlyOrders() {
         <div v-if="!hideBalance && effectiveLeverage.gte(0)" class="font-mono">
           <span>{{ effectiveLeverage.toFormat(2) }}x</span>
         </div>
+
+        <BaseIcon
+          name="share"
+          class="text-gray-500 hover:text-gray-400 w-3 h-3 min-w-3"
+          @click="sharePosition"
+        />
       </div>
 
-      <AppButton
+      <PartialsCommonCancelButton
         v-if="!hideBalance"
         class="cursor-pointer rounded"
         :status="status"
+        sm
         @click="handleClosePositionClick"
       >
-        <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-500 text-red-500"
-        >
-          <BaseIcon name="close" class="h-3 w-3" />
-        </div>
-      </AppButton>
+        <template #icon>
+          <BaseIcon name="close" sm />
+        </template>
+      </PartialsCommonCancelButton>
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
@@ -181,7 +194,16 @@ function closePositionAndReduceOnlyOrders() {
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
         <AppNumber dense :decimals="priceDecimals" :number="price" />
-        <span class="text-gray-500 ml-1">/ {{ markPriceToFormat }}</span>
+        <span class="mx-2">/</span>
+        <span>
+          <AppNumber
+            class="text-gray-500"
+            v-bind="{
+              dense: true,
+              decimals: market.priceDecimals,
+              number: markPrice
+            }"
+        /></span>
       </div>
     </div>
 
@@ -217,8 +239,31 @@ function closePositionAndReduceOnlyOrders() {
         >
           <span>≈</span>
           <span>{{ pnl.gte(0) ? '+' : '' }}</span>
-          <span>{{ pnlToFormat }}</span>
+          <span>{{ pnl.toFixed(2) }}</span>
           <span class="text-3xs">{{ market.quoteToken.symbol }}</span>
+        </div>
+      </div>
+    </div>
+
+    <span class="text-gray-500 uppercase tracking-widest text-3xs">
+      {{ $t('trade.unrealized_pnl') }} %
+    </span>
+    <div class="text-right">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <div v-else class="flex justify-end items-center">
+        <span v-if="pnl.isNaN()">{{ $t('trade.not_available_n_a') }}</span>
+        <div
+          v-else
+          :class="{
+            'text-green-500': pnl.gte(0) && !pnl.isNaN(),
+            'text-red-500': pnl.lt(0) && !pnl.isNaN()
+          }"
+          class="flex items-center gap-1"
+        >
+          <span>≈</span>
+          <span>
+            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
+          </span>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { usePositionWithDenom } from '../exchange/usePosition'
 import { AccountBalance } from '@/types'
 
@@ -85,12 +86,18 @@ export function useBalance() {
             )
 
             const positionWithPnlAndDenom =
-              positionsForSubaccountWithDenom.find(
+              positionsForSubaccountWithDenom.filter(
                 (position) => position.denom === denom
               )
-            const unrealizedPnl = new BigNumberInWei(
-              positionWithPnlAndDenom?.unrealizedPnl || '0'
-            ).plus(positionWithPnlAndDenom?.position?.margin || '0')
+            const unrealizedPnl = positionWithPnlAndDenom.reduce(
+              (total, position) =>
+                total.plus(
+                  new BigNumberInWei(position?.unrealizedPnl || '0').plus(
+                    position?.position?.margin || '0'
+                  )
+                ),
+              ZERO_IN_BASE
+            )
 
             const accountTotalBalance = isDefaultTradingAccount
               ? new BigNumberInWei(bankBalance)
@@ -156,12 +163,18 @@ export function useBalance() {
         )
         .map(usePositionWithDenom)
         .filter((position) => position.denom)
-      const positionWithPnlAndDenom = positionsForSubaccountWithDenom.find(
+      const positionWithPnlAndDenom = positionsForSubaccountWithDenom.filter(
         (position) => position.denom === denom
       )
-      const unrealizedPnl = new BigNumberInWei(
-        positionWithPnlAndDenom?.unrealizedPnl || '0'
-      ).plus(positionWithPnlAndDenom?.position?.margin || '0')
+      const unrealizedPnl = positionWithPnlAndDenom.reduce(
+        (total, position) =>
+          total.plus(
+            new BigNumberInWei(position?.unrealizedPnl || '0').plus(
+              position?.position?.margin || '0'
+            )
+          ),
+        ZERO_IN_BASE
+      )
 
       const accountTotalBalance = isDefaultTradingAccount
         ? new BigNumberInWei(bankBalance)

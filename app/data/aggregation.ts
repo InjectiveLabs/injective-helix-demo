@@ -307,5 +307,11 @@ export const customAggregations = {
     minTick: getDecimalPlaceFromValue('0.0000000001'),
     default: getDecimalPlaceFromValue('0.000000001'),
     maxTick: getDecimalPlaceFromValue('0.000001')
+  },
+
+  '1000PEPE/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.0000001'),
+    default: getDecimalPlaceFromValue('0.000001'),
+    maxTick: getDecimalPlaceFromValue('0.001')
   }
 } as Record<string, CustomAggregation>

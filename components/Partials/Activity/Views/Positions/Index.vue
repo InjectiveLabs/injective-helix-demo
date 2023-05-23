@@ -3,12 +3,14 @@ import { PropType } from 'vue'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { ActivityForm, ActivityField, Modal, ActivityPage } from '@/types'
 
-const derivativeStore = useDerivativeStore()
+const modalStore = useModalStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
-const { t } = useLang()
 
 const props = defineProps({
   denoms: {
@@ -27,10 +29,10 @@ const props = defineProps({
   }
 })
 
-const tabCountElement = document.getElementById(
-  'activity-position-tab-count-default'
-)
+const formValues = useFormValues<ActivityForm>()
+
 const actionStatus = reactive(new Status(StatusType.Idle))
+const selectedPosition = ref<UiPosition | undefined>(undefined)
 
 const markets = computed(() =>
   derivativeStore.markets
@@ -44,16 +46,15 @@ const markets = computed(() =>
 
 const filteredPositions = computed(() =>
   positionStore.subaccountPositions.filter((position) => {
-    const positionMatchesSide = !props.side || props.side === position.direction
+    const positionMatchesSide =
+      !formValues.value[ActivityField.Side] ||
+      formValues.value[ActivityField.Side] === position.direction
     const positionMatchesMarket =
       markets.value.length === 0 || markets.value.includes(position.marketId)
 
     return positionMatchesSide && positionMatchesMarket
   })
 )
-
-onMounted(() => tabCountElement?.classList.add('hidden'))
-onUnmounted(() => tabCountElement?.classList.remove('hidden'))
 
 function closePosition(position: UiPosition) {
   const market = derivativeStore.markets.find(
@@ -94,74 +95,84 @@ function handleClosePositions() {
       actionStatus.setIdle()
     })
 }
+
+function handleSharePosition(position: UiPosition) {
+  selectedPosition.value = position
+  modalStore.openModal({ type: Modal.SharePosition })
+}
 </script>
 
 <template>
   <div>
-    <Teleport to="#activity-position-tab-count">
-      <span>({{ filteredPositions.length }})</span>
-    </Teleport>
-
-    <Teleport to="#activity-toolbar-action">
-      <AppButton
-        v-if="filteredPositions.length > 0"
-        class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-        :status="actionStatus"
-        data-cy="activity-cancel-all-button"
-        @click="handleClosePositions"
-      >
-        <span class="whitespace-nowrap">
-          {{ $t('trade.closeAllPositions') }}
-        </span>
-      </AppButton>
-    </Teleport>
-
-    <AppHocLoading
-      class="h-full"
-      :status="status"
-      :loader-class="status.isLoading() ? 'relative' : ''"
-    >
-      <div class="w-full h-full">
-        <!-- mobile table -->
-        <CommonTableBody
-          :show-empty="filteredPositions.length === 0"
-          class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+    <ClientOnly>
+      <Teleport to="#activity-toolbar-action">
+        <AppButton
+          v-if="filteredPositions.length > 0"
+          class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
+          :status="actionStatus"
+          data-cy="activity-cancel-all-button"
+          @click="handleClosePositions"
         >
-          <PartialsCommonSubaccountPositionMobile
-            v-for="(position, index) in filteredPositions"
-            :key="`mobile-positions-${index}-${position.marketId}`"
-            class="col-span-1"
-            :position="position"
-          />
+          <span class="whitespace-nowrap">
+            {{ $t('trade.closeAllPositions') }}
+          </span>
+        </AppButton>
+      </Teleport>
 
-          <template #empty>
-            <CommonEmptyList
-              :message="$t('trade.emptyPositions')"
-              class="pb-4 grow bg-gray-900"
-            />
-          </template>
-        </CommonTableBody>
+      <Teleport :to="`#${ActivityPage.OpenPositions}`">
+        <span class="ml-1">({{ filteredPositions.length }})</span>
+      </Teleport>
+    </ClientOnly>
 
-        <CommonTableWrapper break-md class="hidden sm:block">
-          <table v-if="filteredPositions.length > 0" class="table">
-            <PartialsCommonSubaccountPositionHeader />
-            <tbody>
-              <PartialsCommonSubaccountPositionRow
-                v-for="(position, index) in filteredPositions"
-                :key="`positions-${index}-${position.marketId}`"
-                :position="position"
-              />
-            </tbody>
-          </table>
+    <div class="w-full h-full">
+      <!-- mobile table -->
+      <CommonTableBody
+        :show-empty="filteredPositions.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <PartialsCommonSubaccountPositionMobile
+          v-for="(position, index) in filteredPositions"
+          :key="`mobile-positions-${index}-${position.marketId}`"
+          class="col-span-1"
+          v-bind="{
+            position
+          }"
+          @share:position="handleSharePosition"
+        />
 
+        <template #empty>
           <CommonEmptyList
-            v-else
-            data-cy="universal-table-nothing-found"
             :message="$t('trade.emptyPositions')"
-            class="pb-4 grow"
+            class="pb-4 grow bg-gray-900"
           />
-        </CommonTableWrapper>
-      </div>
-    </AppHocLoading>
+        </template>
+      </CommonTableBody>
+
+      <CommonTableWrapper break-md class="hidden sm:block">
+        <table v-if="filteredPositions.length > 0" class="table">
+          <PartialsCommonSubaccountPositionHeader />
+          <tbody>
+            <PartialsCommonSubaccountPositionRow
+              v-for="(position, index) in filteredPositions"
+              :key="`positions-${index}-${position.marketId}`"
+              :position="position"
+              @share:position="handleSharePosition"
+            />
+          </tbody>
+        </table>
+
+        <CommonEmptyList
+          v-else
+          data-cy="universal-table-nothing-found"
+          :message="$t('trade.emptyPositions')"
+          class="pb-4 grow"
+        />
+      </CommonTableWrapper>
+    </div>
+
+    <ModalsSharePosition
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+    />
   </div>
 </template>

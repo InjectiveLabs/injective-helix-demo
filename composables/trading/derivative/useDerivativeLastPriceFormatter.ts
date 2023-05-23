@@ -2,6 +2,7 @@ import { Ref } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
+  UiDerivativeMarketWithToken,
   UiDerivativeTrade,
   ZERO_IN_BASE,
   ZERO_TO_STRING
@@ -78,7 +79,32 @@ export function useDerivativeLastPrice(
       return ZERO_TO_STRING
     }
 
-    return derivateStore.marketMarkPriceMap[market.value.marketId]?.price
+    const markPriceNotScaled =
+      derivateStore.marketMarkPriceMap[market.value.marketId]?.price || '0'
+
+    const derivativeMarket = market.value as UiDerivativeMarketWithToken
+
+    if (!derivativeMarket.oracleScaleFactor) {
+      return markPriceNotScaled
+    }
+
+    if (
+      derivativeMarket.quoteToken.decimals ===
+      derivativeMarket.oracleScaleFactor
+    ) {
+      return markPriceNotScaled
+    }
+
+    const oracleScalePriceDiff =
+      derivativeMarket.quoteToken.decimals - derivativeMarket.oracleScaleFactor
+
+    return oracleScalePriceDiff > 0
+      ? new BigNumberInBase(markPriceNotScaled)
+          .times(new BigNumberInBase(10).pow(oracleScalePriceDiff))
+          .toFixed()
+      : new BigNumberInBase(markPriceNotScaled)
+          .div(new BigNumberInBase(10).pow(oracleScalePriceDiff))
+          .toFixed()
   })
 
   const markPrice = computed(() => {

@@ -81,17 +81,32 @@ const lowestSell = computed(() => {
 const middlePrice = computed(() =>
   highestBuy.value.plus(lowestSell.value).dividedBy(2)
 )
-const acceptableMax = computed(() =>
-  middlePrice.value.times(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
-)
+
+const acceptableMax = computed(() => {
+  const bandDifferenceFactor = DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
+
+  if (highestBuy.value.times(bandDifferenceFactor).lte(lowestSell.value)) {
+    return highestBuy.value.times(bandDifferenceFactor)
+  }
+
+  return middlePrice.value.times(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+})
 
 const cappedAcceptableMin = computed(() => {
-  const acceptableMin = middlePrice.value.times(
-    new BigNumberInBase(1).minus(DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100))
-  )
-
+  const bandMaxDifferenceFactor = DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
+  const bandMinDifferenceFactor = DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100)
   const minTickPrice = new BigNumberInBase(
     new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals)
+  )
+
+  if (highestBuy.value.times(bandMaxDifferenceFactor).lte(lowestSell.value)) {
+    const acceptableMin = highestBuy.value.times(bandMinDifferenceFactor)
+
+    return acceptableMin.gt(0) ? acceptableMin : minTickPrice
+  }
+
+  const acceptableMin = middlePrice.value.times(
+    new BigNumberInBase(1).minus(bandMinDifferenceFactor)
   )
 
   return acceptableMin.gt(0) ? acceptableMin : minTickPrice

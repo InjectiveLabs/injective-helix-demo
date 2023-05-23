@@ -287,6 +287,7 @@ export default {
       'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
     takeProfit: 'Take-Profit',
     stopLoss: 'Stop-Loss',
+    generated: 'Generated',
     confirmOrderModal: {
       descriptionLimit: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([

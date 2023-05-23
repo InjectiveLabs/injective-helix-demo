@@ -37,6 +37,7 @@ jobs:
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_DEVNET_GOOGLE_ANALYTICS_KEY }}
+      VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
 
@@ -60,7 +61,7 @@ jobs:
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
 
       - name: Install Dependencies
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force'
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines'
 
       - name: Remove prev build
         run: ssh devnet 'cd "'$SOURCE_DIR'" && yarn clean-up'

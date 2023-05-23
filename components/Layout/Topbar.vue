@@ -5,6 +5,7 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const ninjaPassStore = useNinjaPassStore()
 const confetti = useConfetti()
+const router = useRouter()
 
 const props = defineProps({
   isSidebarOpen: Boolean
@@ -67,7 +68,7 @@ function handleShowNinjaPassModal() {
   >
     <div
       class="cursor-pointer pl-6 lg:pr-6 lg:border-r flex items-center"
-      @click="$router.push({ name: 'index' })"
+      @click="router.push({ name: 'index' })"
     >
       <AssetLogo class="w-auto h-6 lg:h-[30px]" alt="Helix" />
     </div>
