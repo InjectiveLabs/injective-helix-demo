@@ -50,6 +50,7 @@ export const slugsToIncludeInEthereumCategory = [
   'weth-usdt',
   'evmos-usdt',
   'gf-usdt',
+  'wmatic-usdt',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
   'steadybtc-usdt',
