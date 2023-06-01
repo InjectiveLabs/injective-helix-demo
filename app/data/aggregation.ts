@@ -313,5 +313,11 @@ export const customAggregations = {
     minTick: getDecimalPlaceFromValue('0.0000001'),
     default: getDecimalPlaceFromValue('0.000001'),
     maxTick: getDecimalPlaceFromValue('0.001')
+  },
+
+  'WMATIC/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>
