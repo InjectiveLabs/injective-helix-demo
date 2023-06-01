@@ -33,6 +33,10 @@ onUnmounted(() => {
   spotStore.resetSubaccount()
 })
 
+/**
+ * Streaming is setup on page load for activities
+ * that support it (positions, orders, triggers)
+ */
 function fetchData() {
   status.setLoading()
   appStore.cancelAllStreams()
@@ -57,7 +61,13 @@ function fetchData() {
     })
 }
 
-watch(() => accountStore.subaccountId, fetchData, { immediate: true })
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    fetchData()
+  },
+  { immediate: true }
+)
 watch(() => route.name, resetForm)
 </script>
 
