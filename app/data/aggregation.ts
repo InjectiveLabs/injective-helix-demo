@@ -317,7 +317,7 @@ export const customAggregations = {
 
   'WMATIC/USDT': {
     minTick: getDecimalPlaceFromValue('0.0001'),
-    default: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>

@@ -1847,24 +1847,7 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.12.0-beta.3":
-  version "1.12.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.12.0-beta.3.tgz#abf85941ac2a2bb851e5930e87195d24785dac02"
-  integrity sha512-xc3JJEqRVzq1VrpKfce1B4ye4GModeefWRexwUULBHj+V/ZVWQWOfVC1+wlAUpsHc5uD95dQwzggpENfe3LyQw==
-  dependencies:
-    "@injectivelabs/exceptions" "^1.12.0-beta.2"
-    "@injectivelabs/networks" "^1.12.0-beta.2"
-    "@injectivelabs/ts-types" "^1.12.0-beta.2"
-    "@injectivelabs/utils" "^1.12.0-beta.2"
-    "@types/lodash.values" "^4.3.6"
-    copyfiles "^2.4.1"
-    jsonschema "^1.4.0"
-    link-module-alias "^1.2.0"
-    lodash "^4.17.21"
-    lodash.values "^4.3.0"
-    shx "^0.3.2"
-
-"@injectivelabs/token-metadata@^1.12.0-beta.4":
+"@injectivelabs/token-metadata@1.12.0-beta.4", "@injectivelabs/token-metadata@^1.12.0-beta.4":
   version "1.12.0-beta.4"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.12.0-beta.4.tgz#6093b2e99370be38d55fb49c0190047645594f5e"
   integrity sha512-+U//qN1/UwQSiU436BguTxlv2Bl0nEEAgeMYdKG6IfTD6PR1PFLnFFNfdcaY8HgFglAVQwf7xpzeiFfkESNiAQ==
