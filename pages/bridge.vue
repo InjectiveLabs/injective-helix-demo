@@ -18,7 +18,7 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { values: formValues } = useForm<BridgeForm>({
+const { values: formValues, resetForm } = useForm<BridgeForm>({
   initialValues: {
     [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
     [BridgeField.BridgeType]: BridgeType.Deposit,
@@ -85,6 +85,14 @@ function handlePreFillFromQuery() {
 function handleBridgeConfirmed() {
   modalStore.closeModal(Modal.BridgeConfirm)
 }
+
+watch(
+  () => formValues.BridgeType,
+  (value) => {
+    resetForm()
+    formValues.BridgeType = value
+  }
+)
 </script>
 
 <template>
