@@ -163,4 +163,28 @@ function validateLeverage(value: string) {
 .leverage-input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.range-wrap .range::-moz-range-thumb {
+  @apply bg-[#A1A1A3];
+}
+
+.range-wrap .range:active::-moz-range-thumb {
+  @apply bg-[#A1A1A3];
+}
+
+.range-wrap .range::-webkit-slider-thumb {
+  @apply bg-[#A1A1A3];
+}
+
+.range-wrap .range[disabled]::-webkit-slider-thumb {
+  @apply bg-[#A1A1A3];
+}
+
+.range-wrap .range:active::-webkit-slider-thumb {
+  @apply bg-[#A1A1A3];
+}
+
+.range-wrap .range::-ms-thumb {
+  @apply bg-[#A1A1A3];
+}
 </style>
