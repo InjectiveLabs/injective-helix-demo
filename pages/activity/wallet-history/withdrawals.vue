@@ -39,7 +39,13 @@ function fetchData() {
   })
 }
 
-watch(() => route.fullPath, fetchData, { immediate: true })
+watch(
+  () => route.fullPath,
+  () => {
+    fetchData()
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
