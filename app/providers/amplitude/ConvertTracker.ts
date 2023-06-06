@@ -25,7 +25,7 @@ class ConvertTracker extends BaseTracker {
     fee: string
     minimumAmountReceived: string
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {
