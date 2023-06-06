@@ -2,11 +2,11 @@ import { identify as amplitudeIdentify } from '@amplitude/analytics-browser'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import BaseTracker from '@/app/providers/amplitude/BaseTracker'
 import { AMPLITUDE_LOGIN_COUNT } from '@/app/utils/vendor'
-import { AmplitudeEvent } from '@/types'
+import { AmplitudeEvent, AmplitudeTrackerUser } from '@/types'
 
 class WalletTracker extends BaseTracker {
-  submitWalletConnectedTrackEvent() {
-    const { user } = this
+  submitWalletConnectedTrackEvent(user: AmplitudeTrackerUser) {
+    this.setUser(user)
     const identify = this.getIdentify()
 
     if (!user || !identify) {
