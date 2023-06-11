@@ -12,7 +12,8 @@ import { injToken } from '@/app/data/token'
 import {
   INJ_GAS_FEE,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_MINIMAL_AMOUNT
 } from '@/app/utils/constants'
 
 const accountStore = useAccountStore()
@@ -96,22 +97,30 @@ const ethBridgeFee = computed(() => {
     return ZERO_IN_BASE
   }
 
+  if (usdPrice.value.isZero()) {
+    return ZERO_IN_BASE
+  }
+
   return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
 })
 
-const { valueToString: ethBridgeFeeToString } = useBigNumberFormatter(
-  ethBridgeFee,
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
+const ethBridgeFeeToString = computed(() =>
+  ethBridgeFee.value.isZero()
+    ? `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+    : ethBridgeFee.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
 )
 
 const ethBridgeFeeInUsd = computed(() =>
-  ethBridgeFee.value.multipliedBy(new BigNumberInBase(usdPrice.value))
+  usdPrice.value
+    ? ethBridgeFee.value.multipliedBy(new BigNumberInBase(usdPrice.value))
+    : ZERO_IN_BASE
 )
 
-const { valueToString: ethBridgeFeeInUsdToString } =
-  useBigNumberFormatter(ethBridgeFeeInUsd)
+const ethBridgeFeeInUsdToString = computed(() =>
+  ethBridgeFeeInUsd.value.isZero()
+    ? `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+    : ethBridgeFeeInUsd.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+)
 
 const transferAmount = computed(() => {
   if (destinationIsEthereum.value) {
