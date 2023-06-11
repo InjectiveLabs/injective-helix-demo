@@ -89,18 +89,17 @@ export const withdraw = async ({
   await validate()
   await appStore.queue()
 
-  const amountToFixed = amount.toWei(token.decimals).toFixed(0)
-
   /**
    * If the bridge fee is 0 we set it to the lowest number for that denom
    * this usually happens when we can't fetch the usd price of the token
    */
   const actualBridgeFee = new BigNumberInWei(
     bridgeFee.isZero()
-      ? new BigNumberInBase(1).toWei(token.decimals).toFixed(0)
+      ? new BigNumberInWei(1)
       : bridgeFee.toWei(token.decimals).toFixed(0)
-  ).toFixed()
+  )
 
+  const amountToFixed = amount.toWei(token.decimals).toFixed(0)
   const actualAmount = new BigNumberInBase(amountToFixed)
     .minus(actualBridgeFee)
     .toFixed(0)
@@ -114,7 +113,7 @@ export const withdraw = async ({
     },
     bridgeFee: {
       denom: token.denom,
-      amount: actualBridgeFee
+      amount: actualBridgeFee.toFixed()
     }
   })
 
