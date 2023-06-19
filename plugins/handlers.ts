@@ -4,8 +4,7 @@ import {
   ThrownException,
   isThrownException,
   ChainCosmosErrorCode,
-  TransactionException,
-  formatNotificationDescription
+  TransactionException
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
@@ -35,11 +34,7 @@ const reportToUser = (error: ThrownException) => {
     })
   }
 
-  const { tooltip, description } = formatNotificationDescription(
-    error.originalMessage
-  )
-
-  errorToast({ title: error.message, description, tooltip })
+  errorToast({ title: error.message, context: error.originalMessage })
 }
 
 const reportToBugSnag = (error: ThrownException) => {
