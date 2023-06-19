@@ -44,7 +44,7 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
     })
   )
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: messages
   })
@@ -73,7 +73,7 @@ export const cancelOrder = async (
     orderHash: order.orderHash
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -120,7 +120,7 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -169,7 +169,7 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -223,7 +223,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -277,7 +277,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })

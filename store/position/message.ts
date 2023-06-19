@@ -61,7 +61,7 @@ export const closePosition = async ({
     })
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -143,7 +143,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     })
   )
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: messages
   })
@@ -222,7 +222,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
@@ -261,7 +261,7 @@ export const addMarginToPosition = async ({
     })
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })

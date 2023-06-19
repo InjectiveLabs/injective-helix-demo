@@ -43,7 +43,7 @@ export const deposit = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: message,
     address
   })
@@ -84,7 +84,7 @@ export const withdraw = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: message,
     address
   })
@@ -121,7 +121,7 @@ export const transfer = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: message,
     memo,
     address
@@ -163,7 +163,7 @@ export const externalTransfer = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: message,
     memo,
     address
