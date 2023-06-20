@@ -69,7 +69,9 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
         BridgingNetwork.Ethereum
       ) {
         return bankBalancesWithToken.value.filter(
-          (balance) => (balance.token as Erc20Token).erc20?.address
+          (balance) =>
+            (balance.token as Erc20Token).erc20?.address &&
+            (balance.denom.startsWith('peggy') || balance.denom === INJ_DENOM)
         )
       }
 
