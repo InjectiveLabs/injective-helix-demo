@@ -7,8 +7,7 @@ const walletStore = useWalletStore()
 
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
-const { originIsEthereum, networkIsSupported, isWithdraw } =
-  useBridgeState(formValues)
+const { originIsEthereum, networkIsSupported } = useBridgeState(formValues)
 const { balanceWithToken, supplyWithBalance } = useBridgeBalance(formValues)
 
 const shouldConnectMetamask = computed(
@@ -25,14 +24,6 @@ const maxDecimals = computed(() => {
 
   return formValues.value[BridgeField.Token].decimals
 })
-
-const supplyWithBalanceFiltered = computed(() =>
-  supplyWithBalance.value.filter((balance) =>
-    isWithdraw.value
-      ? ['peggy', 'inj'].some((denom) => balance.denom.startsWith(denom))
-      : supplyWithBalance
-  )
-)
 
 const { value: denom } = useStringField({
   name: BridgeField.Denom,
@@ -69,7 +60,7 @@ function handleTokenSelectorOnClick(show: boolean) {
           maxDecimals,
           required: true,
           amountFieldName: BridgeField.Amount,
-          options: supplyWithBalanceFiltered
+          options: supplyWithBalance
         }"
         @update:denom="handleTokenChange"
         @update:max="handleAmountChange"
