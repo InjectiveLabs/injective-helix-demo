@@ -63,7 +63,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToFixed: changeToFormat, valueToBigNumber: change } =
+const { valueToString: changeToFormat, valueToBigNumber: change } =
   useBigNumberFormatter(
     computed(() => {
       if (!props.summary || !props.summary.change) {

@@ -39,7 +39,8 @@ export default {
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
-    available: 'Available'
+    available: 'Available',
+    new: 'New'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',

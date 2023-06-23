@@ -1,7 +1,7 @@
 import { identify as amplitudeIdentify } from '@amplitude/analytics-browser'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import BaseAmplitudeTracker from '~/app/providers/amplitude/BaseTracker'
+import BaseAmplitudeTracker from '@/app/providers/amplitude/BaseTracker'
 import {
   AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT,
   AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT
@@ -23,7 +23,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     marketType: MarketType
     origin: TradeClickOrigin
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {
@@ -64,7 +64,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     limitPrice: string
     slippageTolerance: string
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {
@@ -118,7 +118,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     status: OrderAttemptStatus
     error?: string
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {

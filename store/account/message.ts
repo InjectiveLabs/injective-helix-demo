@@ -2,18 +2,22 @@ import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  denomAmountToChainDenomAmountToFixed
+  denomAmountToChainDenomAmountToFixed,
+  MsgExternalTransfer
 } from '@injectivelabs/sdk-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcastClient } from '@/app/Services'
+import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({
   amount,
-  token
+  token,
+  subaccountId
 }: {
   amount: BigNumberInBase
   token: Token
+  subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
   const { queue } = useAppStore()
@@ -29,7 +33,7 @@ export const deposit = async ({
 
   const message = MsgDeposit.fromJSON({
     injectiveAddress,
-    subaccountId: accountStore.subaccountId,
+    subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
@@ -43,14 +47,18 @@ export const deposit = async ({
     msgs: message,
     address
   })
+
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }
 
 export const withdraw = async ({
   amount,
-  token
+  token,
+  subaccountId
 }: {
   amount: BigNumberInBase
   token: Token
+  subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
   const { queue } = useAppStore()
@@ -66,7 +74,7 @@ export const withdraw = async ({
 
   const message = MsgWithdraw.fromJSON({
     injectiveAddress,
-    subaccountId: accountStore.subaccountId,
+    subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
@@ -118,4 +126,48 @@ export const transfer = async ({
     memo,
     address
   })
+}
+
+export const externalTransfer = async ({
+  amount,
+  denom,
+  memo,
+  srcSubaccountId,
+  dstSubaccountId,
+  token
+}: {
+  amount: BigNumberInBase
+  denom: string
+  memo?: string
+  srcSubaccountId: string
+  dstSubaccountId: string
+  token: Token
+}) => {
+  const accountStore = useAccountStore()
+  const { address, injectiveAddress, isUserWalletConnected, validate } =
+    useWalletStore()
+
+  if (!address || !isUserWalletConnected) {
+    return
+  }
+
+  await validate()
+
+  const message = MsgExternalTransfer.fromJSON({
+    srcSubaccountId,
+    dstSubaccountId,
+    injectiveAddress,
+    amount: {
+      denom,
+      amount: amount.toWei(token.decimals).toFixed()
+    }
+  })
+
+  await msgBroadcastClient.broadcastOld({
+    msgs: message,
+    memo,
+    address
+  })
+
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }

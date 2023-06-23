@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
@@ -49,10 +49,14 @@ const baseBalance = computed(() =>
   )
 )
 
+const baseAvailableBalance = computed(() =>
+  new BigNumberInWei(baseBalance.value?.availableMargin || 0).toFixed()
+)
+
 const baseBalanceToBase = computed(() =>
-  new BigNumberInBase(baseBalance.value?.availableMargin || 0).toWei(
-    baseBalance.value?.token.decimals
-  )
+  new BigNumberInWei(baseBalance.value?.availableMargin || 0)
+    .toBase(baseBalance.value?.token.decimals)
+    .toFixed()
 )
 
 const quoteBalance = computed(() =>
@@ -61,10 +65,8 @@ const quoteBalance = computed(() =>
   )
 )
 
-const quoteBalanceToBase = computed(() =>
-  new BigNumberInBase(quoteBalance.value?.availableMargin || 0).toWei(
-    quoteBalance.value?.token.decimals
-  )
+const quoteAvailableBalance = computed(() =>
+  new BigNumberInWei(quoteBalance.value?.availableMargin || 0).toFixed()
 )
 
 const isWHSolUSDTBaseDenom = computed(
@@ -74,7 +76,7 @@ const isWHSolUSDTBaseDenom = computed(
 const isBuy = computed(() => orderSide.value === OrderSide.Buy)
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.availableMargin),
+  baseBalanceToBase,
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -195,7 +197,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: baseBalance.token,
                 denom: baseBalance.denom,
-                balance: baseBalanceToBase.toFixed()
+                balance: baseAvailableBalance
               }
             ]
           }"
@@ -254,7 +256,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: quoteBalance.token,
                 denom: quoteBalance.denom,
-                balance: quoteBalanceToBase.toFixed()
+                balance: quoteAvailableBalance
               }
             ]
           }"

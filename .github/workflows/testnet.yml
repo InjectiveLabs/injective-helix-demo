@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - testnet
-      - mainnet
+      - master
 
 jobs:
   testnet:
@@ -26,7 +26,7 @@ jobs:
 
       ## Flags
       VITE_MAINTENANCE_ENABLED: false
-      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''

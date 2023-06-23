@@ -39,7 +39,13 @@ function fetchData() {
   })
 }
 
-watch(() => route.query, fetchData, { immediate: true })
+watch(
+  () => route.query,
+  () => {
+    fetchData()
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

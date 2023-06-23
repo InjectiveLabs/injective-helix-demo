@@ -8,7 +8,6 @@ definePageMeta({
 const appStore = useAppStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
-const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -16,10 +15,7 @@ const status = reactive(new Status(StatusType.Loading))
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([
-    exchangeStore.initFeeDiscounts(),
-    accountStore.fetchAccountPortfolio()
-  ])
+  Promise.all([accountStore.fetchAccountPortfolio()])
     .then(() => {
       Promise.all([
         accountStore.streamBankBalance(),

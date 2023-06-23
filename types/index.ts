@@ -8,6 +8,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
@@ -110,6 +111,12 @@ export type I18nMessageFunction = {
   type: string
   interpolate: Function
   named: Function
+}
+
+export interface AmplitudeTrackerUser {
+  wallet: Wallet
+  address: string
+  tierLevel: number
 }
 
 export * from './enums'

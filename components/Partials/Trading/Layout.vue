@@ -229,6 +229,4 @@ watch(
       <ModalsMarketBeta v-if="marketIsBeta" />
     </div>
   </AppHocLoading>
-
-  <PartialsAccountBridge />
 </template>
