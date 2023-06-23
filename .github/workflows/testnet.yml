@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - testnet
-      - mainnet
+      - master
 
 jobs:
   testnet:
