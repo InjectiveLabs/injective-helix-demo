@@ -10,6 +10,7 @@ export const getRoutes = (network: Network, env: string) => {
     'atom-usdt',
     'arb-usdt',
     'chz-usdcet',
+    'wmatic-usdt',
     'sol-usdcet',
     'canto-usdt',
     'usdt-usdcet',
@@ -70,7 +71,7 @@ export const getRoutes = (network: Network, env: string) => {
     'leaderboard'
   ]
 
-  const customStaticRoutes: string[] = ['/']
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 
@@ -86,7 +87,7 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'wmatic-usdcet')
+    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
   }
 
   if (IS_DEVNET) {

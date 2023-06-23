@@ -57,6 +57,8 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
   MarketDeprecated = 'market-deprecated',
+  CreateSubaccount = 'create-subaccount',
+  SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
@@ -83,11 +85,6 @@ export enum AppState {
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'
-}
-
-export enum TransferDirection {
-  bankToTradingAccount = 'bank-to-trading-account',
-  tradingAccountToBank = 'trading-account-to-bank'
 }
 
 export enum BridgeType {
@@ -227,13 +224,6 @@ export enum BusEvents {
   ActivityFilterUpdate = 'activity-filter-update'
 }
 
-export enum BridgeBusEvents {
-  Transfer = 'transfer',
-  TransferToBank = 'transfer-to-bank',
-  Deposit = 'deposit',
-  Withdraw = 'withdraw'
-}
-
 export enum ActivityField {
   Symbol = 'Symbol',
   Denom = 'Denom',
@@ -245,13 +235,20 @@ export enum ActivityField {
 
 export enum BridgeField {
   Amount = 'Amount',
-  BridgeType = 'Bridge Type',
-  BridgingNetwork = 'Bridging Network',
+  BridgeType = 'BridgeType',
+  BridgingNetwork = 'BridgingNetwork',
   Denom = 'Denom',
   Destination = 'Destination',
   Memo = 'Memo',
-  Token = 'Token',
-  TransferDirection = 'Transfer Direction'
+  Token = 'Token'
+}
+
+export enum SubaccountTransferField {
+  Amount = 'Amount',
+  SrcSubaccountId = 'SrcSubaccountId',
+  DstSubaccountId = 'DstSubaccountId',
+  Denom = 'Denom',
+  Token = 'Token'
 }
 
 export enum TradeField {

@@ -10,7 +10,12 @@ import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
 } from '@/store/account/stream'
-import { deposit, transfer, withdraw } from '@/store/account/message'
+import {
+  deposit,
+  transfer,
+  withdraw,
+  externalTransfer
+} from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
@@ -79,6 +84,7 @@ export const useAccountStore = defineStore('account', {
     deposit,
     transfer,
     withdraw,
+    externalTransfer,
     streamBankBalance,
     streamSubaccountBalance,
 

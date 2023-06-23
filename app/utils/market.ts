@@ -194,9 +194,9 @@ export const marketIsPartOfSearch = (
   }
 
   return (
-    market.quoteToken.symbol.toLowerCase().startsWith(query) ||
-    market.baseToken.symbol.toLowerCase().startsWith(query) ||
-    market.ticker.toLowerCase().startsWith(query)
+    market.quoteToken.symbol.toLowerCase().includes(query) ||
+    market.baseToken.symbol.toLowerCase().includes(query) ||
+    market.ticker.toLowerCase().includes(query)
   )
 }
 

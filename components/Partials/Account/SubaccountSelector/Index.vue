@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const accountStore = useAccountStore()
+import { Modal } from '@/types'
+
 const { aggregatedPortfolioBalances } = useBalance()
 
 defineProps({
@@ -7,11 +8,16 @@ defineProps({
     type: Boolean
   }
 })
+
+const modalStore = useModalStore()
+
+function handleCreateSubaccount() {
+  modalStore.openModal({ type: Modal.CreateSubaccount })
+}
 </script>
 
 <template>
   <div
-    v-if="accountStore.hasMultipleSubaccounts"
     class="flex space-x-4 items-center mt-4 overflow-x-auto overflow-y-hidden"
   >
     <PartialsAccountSubaccountSelectorItem
@@ -21,11 +27,19 @@ defineProps({
         subaccountA.localeCompare(subaccountB)
       )"
       v-bind="{
-        subaccountId,
         balances,
+        subaccountId,
         hideBalances
       }"
       :key="`subaccount-${subaccountId}`"
     />
+
+    <div>
+      <BaseIcon
+        name="circle-plus"
+        class="w-8 h-8 text-blue-500 cursor-pointer hover:text-opacity-80"
+        @click="handleCreateSubaccount"
+      />
+    </div>
   </div>
 </template>
