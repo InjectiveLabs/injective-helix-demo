@@ -1,4 +1,3 @@
-import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
 import {
   TokenPrice,
@@ -87,8 +86,6 @@ export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexer)
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
 )
-export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
-
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
