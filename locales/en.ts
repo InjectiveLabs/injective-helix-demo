@@ -329,12 +329,10 @@ export default {
     termsAndCondition: 'Terms and Conditions',
     disclaimer_note: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
-        'By connecting a wallet, you agree to the Injective Labs ',
+        'By connecting to a wallet, you agree and acknowledge the Injective Labs ',
         named('terms'),
-        ' have read the ',
+        'and have read the ',
         named('policy'),
-        ' and acknowledge that you have read and understand the Injective ',
-        named('disclaimer'),
         '.'
       ])
   },
