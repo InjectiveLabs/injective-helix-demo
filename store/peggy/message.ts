@@ -117,7 +117,7 @@ export const withdraw = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     address,
     msgs: message
   })
