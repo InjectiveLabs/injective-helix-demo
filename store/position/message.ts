@@ -14,7 +14,7 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { FEE_RECIPIENT } from '@/app/utils/constants'
+import { FEE_PAYER_PUB_KEY, FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { msgBroadcastClient } from '@/app/Services'
 
@@ -61,10 +61,15 @@ export const closePosition = async ({
     })
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
-  })
+  FEE_PAYER_PUB_KEY
+    ? await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
+    : await msgBroadcastClient.broadcastOld({
+        address,
+        msgs: message
+      })
 }
 
 export const closeAllPosition = async (positions: UiPosition[]) => {
@@ -143,10 +148,15 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     })
   )
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: messages
-  })
+  FEE_PAYER_PUB_KEY
+    ? await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: messages
+      })
+    : await msgBroadcastClient.broadcastOld({
+        address,
+        msgs: messages
+      })
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -222,10 +232,15 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
-  })
+  FEE_PAYER_PUB_KEY
+    ? await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
+    : await msgBroadcastClient.broadcastOld({
+        address,
+        msgs: message
+      })
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -261,8 +276,13 @@ export const addMarginToPosition = async ({
     })
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
-  })
+  FEE_PAYER_PUB_KEY
+    ? await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
+    : await msgBroadcastClient.broadcastOld({
+        address,
+        msgs: message
+      })
 }
