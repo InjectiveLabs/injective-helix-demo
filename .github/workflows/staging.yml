@@ -14,7 +14,7 @@ jobs:
       ## Public
       VITE_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       VITE_BASE_URL: https://staging.injective.exchange
-      VITE_NETWORK: staging
+      VITE_NETWORK: mainnet
       VITE_ENV: staging
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
