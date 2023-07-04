@@ -86,6 +86,7 @@ export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexer)
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
 )
+
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
