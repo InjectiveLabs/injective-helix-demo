@@ -9,6 +9,7 @@ import { INJ_DENOM, BigNumberInWei } from '@injectivelabs/utils'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
 import { isTokenWormholeToken } from '@/app/data/bridge'
 import { INJ_GAS_BUFFER_FOR_BRIDGE } from '@/app/utils/constants'
+import { injToken } from '@/app/data/token'
 
 /**
  * For the bridge balances, we only use
@@ -21,7 +22,7 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
   const accountStore = useAccountStore()
 
   const bankBalancesWithToken = computed(() => {
-    return accountStore.bankBalances
+    const bankBalances = accountStore.bankBalances
       .map((bankBalance) => {
         const token = tokenStore.tradeableTokens.find(
           (token) => token.denom === bankBalance.denom
@@ -37,6 +38,17 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
       .filter(
         (balanceWithToken) => balanceWithToken.token
       ) as BalanceWithTokenAndPrice[]
+
+    const hasInjBalance = bankBalances.find(
+      (balance) => balance.denom === INJ_DENOM
+    )
+
+    return hasInjBalance
+      ? bankBalances
+      : [
+          { token: injToken, denom: INJ_DENOM, balance: '0', usdPrice: 0 },
+          ...bankBalances
+        ]
   })
 
   const erc20BalancesWithToken = computed(() =>
