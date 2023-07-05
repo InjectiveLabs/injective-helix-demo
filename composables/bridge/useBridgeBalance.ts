@@ -8,7 +8,10 @@ import type { Erc20Token } from '@injectivelabs/token-metadata'
 import { INJ_DENOM, BigNumberInWei } from '@injectivelabs/utils'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
 import { isTokenWormholeToken } from '@/app/data/bridge'
-import { INJ_GAS_BUFFER_FOR_BRIDGE } from '@/app/utils/constants'
+import {
+  FEE_PAYER_PUB_KEY,
+  INJ_GAS_BUFFER_FOR_BRIDGE
+} from '@/app/utils/constants'
 import { injToken } from '@/app/data/token'
 
 /**
@@ -16,7 +19,6 @@ import { injToken } from '@/app/data/token'
  * the tradeable tokens that we have on the DEX
  */
 export function useBridgeBalance(formValues: Ref<BridgeForm>) {
-  const walletStore = useWalletStore()
   const tokenStore = useTokenStore()
   const peggyStore = usePeggyStore()
   const accountStore = useAccountStore()
@@ -114,7 +116,7 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
       return balanceWithToken
     }
 
-    const noGasBufferNeededForTransfer = walletStore.isWalletExemptFromGasFee
+    const noGasBufferNeededForTransfer = !!FEE_PAYER_PUB_KEY
 
     if (noGasBufferNeededForTransfer) {
       return balanceWithToken
