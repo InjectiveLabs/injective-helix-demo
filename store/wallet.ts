@@ -20,7 +20,6 @@ import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
-import { IS_DEVNET } from '@/app/utils/constants'
 import { BusEvents, WalletConnectStatus } from '@/types'
 
 type WalletStoreState = {
@@ -66,15 +65,6 @@ export const useWalletStore = defineStore('wallet', {
 
     isCosmosWallet: (state) => {
       return isCosmosWallet(state.wallet)
-    },
-
-    /**
-     * Fee delegation doesn't
-     * work for cosmos wallets and its disabled
-     * on devnet
-     */
-    isWalletExemptFromGasFee: (state) => {
-      return !isCosmosWallet(state.wallet) && !IS_DEVNET
     }
   },
   actions: {

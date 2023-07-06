@@ -14,6 +14,7 @@ import {
 } from '@/app/Services'
 import { AppState } from '@/types'
 import { allowanceResetSymbols } from '@/app/data/token'
+import { FEE_PAYER_PUB_KEY } from '~/app/utils/constants'
 
 export const transfer = async ({
   token,
@@ -117,10 +118,15 @@ export const withdraw = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
-    address,
-    msgs: message
-  })
+  FEE_PAYER_PUB_KEY
+    ? await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
+    : await msgBroadcastClient.broadcastOld({
+        address,
+        msgs: message
+      })
 }
 
 export const resetOrSetAllowance = async (

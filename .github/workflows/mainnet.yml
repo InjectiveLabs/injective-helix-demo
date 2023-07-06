@@ -36,6 +36,7 @@ jobs:
       VITE_SENTRY_REST_ENDPOINT: ''
 
       ## Secret
+      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
       VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}

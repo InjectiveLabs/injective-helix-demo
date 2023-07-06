@@ -84,7 +84,7 @@ const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
       return ZERO_IN_BASE
     }
 
-    const currentUnixTime = Date.now() / 1000
+    const currentUnixTime = Math.floor(Date.now() / 1000)
     const divisor = new BigNumberInBase(currentUnixTime).mod(3600).times(24)
 
     if (divisor.lte(0)) {

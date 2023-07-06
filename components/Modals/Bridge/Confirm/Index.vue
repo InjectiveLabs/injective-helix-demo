@@ -440,7 +440,7 @@ function handleDeposit() {
           <span v-if="originIsInjective && !accountStore.hasEnoughInjForGas">
             {{ $t('bridge.insufficientINJForGas') }}
           </span>
-          <span v-if="transferAmount.lte(0)">
+          <span v-else-if="transferAmount.lte(0)">
             {{ $t('bridge.insufficientAmount') }}
           </span>
           <span v-else>
