@@ -144,6 +144,10 @@ watch(
             key="market-trading-panel"
             class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
           >
+            <CommonCard no-padding>
+              <PartialsTradingBalances :market="market" />
+            </CommonCard>
+
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
                 :class="{
