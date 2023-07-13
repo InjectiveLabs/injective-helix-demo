@@ -5,12 +5,6 @@ import {
   getEthereumAddress,
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
-import {
-  ErrorType,
-  UnspecifiedErrorCode,
-  ChainCosmosErrorCode,
-  CosmosWalletException
-} from '@injectivelabs/exceptions'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
@@ -20,7 +14,6 @@ import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
-import { IS_DEVNET } from '@/app/utils/constants'
 import { BusEvents, WalletConnectStatus } from '@/types'
 
 type WalletStoreState = {
@@ -66,15 +59,6 @@ export const useWalletStore = defineStore('wallet', {
 
     isCosmosWallet: (state) => {
       return isCosmosWallet(state.wallet)
-    },
-
-    /**
-     * Fee delegation doesn't
-     * work for cosmos wallets and its disabled
-     * on devnet
-     */
-    isWalletExemptFromGasFee: (state) => {
-      return !isCosmosWallet(state.wallet) && !IS_DEVNET
     }
   },
   actions: {
@@ -361,7 +345,6 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { hasEnoughInjForGas } = useAccountStore()
       const { ethereumChainId, chainId } = useAppStore()
       const { wallet, injectiveAddress, address } = useWalletStore()
 
@@ -375,17 +358,6 @@ export const useWalletStore = defineStore('wallet', {
           chainId: chainId as unknown as CosmosChainId,
           wallet
         })
-
-        if (!hasEnoughInjForGas) {
-          throw new CosmosWalletException(
-            new Error('Insufficient INJ to pay for gas/transaction fees.'),
-            {
-              code: UnspecifiedErrorCode,
-              type: ErrorType.WalletError,
-              contextCode: ChainCosmosErrorCode.ErrInsufficientFee
-            }
-          )
-        }
       }
     },
 

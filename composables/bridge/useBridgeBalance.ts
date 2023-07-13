@@ -5,23 +5,22 @@ import {
   BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import type { Erc20Token } from '@injectivelabs/token-metadata'
-import { INJ_DENOM, BigNumberInWei } from '@injectivelabs/utils'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { BridgeForm, BridgeType, BridgeField } from '@/types'
 import { isTokenWormholeToken } from '@/app/data/bridge'
-import { INJ_GAS_BUFFER_FOR_BRIDGE } from '@/app/utils/constants'
+import { injToken } from '@/app/data/token'
 
 /**
  * For the bridge balances, we only use
  * the tradeable tokens that we have on the DEX
  */
 export function useBridgeBalance(formValues: Ref<BridgeForm>) {
-  const walletStore = useWalletStore()
   const tokenStore = useTokenStore()
   const peggyStore = usePeggyStore()
   const accountStore = useAccountStore()
 
   const bankBalancesWithToken = computed(() => {
-    return accountStore.bankBalances
+    const bankBalances = accountStore.bankBalances
       .map((bankBalance) => {
         const token = tokenStore.tradeableTokens.find(
           (token) => token.denom === bankBalance.denom
@@ -37,6 +36,17 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
       .filter(
         (balanceWithToken) => balanceWithToken.token
       ) as BalanceWithTokenAndPrice[]
+
+    const hasInjBalance = bankBalances.find(
+      (balance) => balance.denom === INJ_DENOM
+    )
+
+    return hasInjBalance
+      ? bankBalances
+      : [
+          { token: injToken, denom: INJ_DENOM, balance: '0', usdPrice: 0 },
+          ...bankBalances
+        ]
   })
 
   const erc20BalancesWithToken = computed(() =>
@@ -102,23 +112,7 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
       return balanceWithToken
     }
 
-    const noGasBufferNeededForTransfer = walletStore.isWalletExemptFromGasFee
-
-    if (noGasBufferNeededForTransfer) {
-      return balanceWithToken
-    }
-
-    const transferableBalance = new BigNumberInWei(balanceWithToken.balance)
-      .toBase()
-      .minus(INJ_GAS_BUFFER_FOR_BRIDGE)
-    const transferableBalanceCapped = new BigNumberInWei(
-      transferableBalance.gt(0) ? transferableBalance : 0
-    )
-
-    return {
-      ...balanceWithToken,
-      balance: transferableBalanceCapped.toFixed()
-    } as BalanceWithToken
+    return balanceWithToken
   })
 
   return {

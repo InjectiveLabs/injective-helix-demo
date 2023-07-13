@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
-import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
 import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
-import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -64,20 +62,6 @@ export const useAccountStore = defineStore('account', {
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
       return Object.keys(state.subaccountBalancesMap).length > 1
-    },
-
-    hasEnoughInjForGas: (state) => {
-      const walletStore = useWalletStore()
-
-      const injBalance =
-        state.bankBalances.find(({ denom }) => denom === INJ_DENOM)?.amount ||
-        '0'
-
-      const hasEnoughInjForGas = new BigNumberInWei(injBalance)
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
-
-      return walletStore.isWalletExemptFromGasFee || hasEnoughInjForGas
     }
   },
   actions: {

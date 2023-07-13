@@ -3,12 +3,10 @@ import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
+import { AccountBalance, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
@@ -100,10 +98,6 @@ watch(
 )
 
 onMounted(() => {
-  if (!accountStore.hasEnoughInjForGas) {
-    modalStore.openModal({ type: Modal.InsufficientInjForGas })
-  }
-
   if ([usdcTokenDenom.USDC].includes(baseBalance.value?.denom || '')) {
     handleMaxBaseAmountChange({
       amount: maxBalanceToFixed.value

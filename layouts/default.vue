@@ -112,8 +112,6 @@ function openDevModeModal() {
                   <LayoutFooter v-if="showFooter" />
                 </main>
 
-                <ModalsInsufficientInjForGas />
-
                 <ModalsNinjaPassWinner />
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->

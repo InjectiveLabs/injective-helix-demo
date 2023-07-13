@@ -10,7 +10,6 @@ import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, TradeField, TradeForm } from '@/types'
 
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -101,10 +100,7 @@ const tradingTypeMarket = isSpot
 
 const disabled = computed(() => {
   const commonErrors =
-    hasError.value ||
-    !props.hasBaseAmount ||
-    !accountStore.hasEnoughInjForGas ||
-    !walletStore.isUserWalletConnected
+    hasError.value || !props.hasBaseAmount || !walletStore.isUserWalletConnected
 
   if (commonErrors) {
     return true

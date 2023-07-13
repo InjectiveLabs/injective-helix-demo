@@ -7,7 +7,6 @@ import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { amplitudeConvertTracker } from '@/app/providers/amplitude'
 
 const router = useRouter()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
@@ -71,10 +70,7 @@ const hasFormErrors = computed(
 
 const isSubmitDisabled = computed<boolean>(() => {
   return (
-    hasFormErrors.value ||
-    props.amount === '' ||
-    !accountStore.hasEnoughInjForGas ||
-    insufficientLiquidity.value
+    hasFormErrors.value || props.amount === '' || insufficientLiquidity.value
   )
 })
 
@@ -141,10 +137,7 @@ function handleConvertClickTrack() {
       @click="submit"
     >
       <div class="max-auto w-full">
-        <span v-if="!accountStore.hasEnoughInjForGas">
-          {{ $t('insufficientGas.insufficientGas') }}
-        </span>
-        <span v-else-if="insufficientLiquidity">
+        <span v-if="insufficientLiquidity">
           {{ $t('trade.convert.insufficient_liquidity') }}
         </span>
         <span v-else>{{ $t('trade.convert.convert') }}</span>
