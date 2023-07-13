@@ -15,7 +15,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { msgBroadcastClient } from '@/app/Services'
-import { FEE_PAYER_PUB_KEY, FEE_RECIPIENT } from '@/app/utils/constants'
+import { FEE_RECIPIENT } from '@/app/utils/constants'
 
 export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   const appStore = useAppStore()
@@ -44,15 +44,10 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
     })
   )
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: messages
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: messages
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: messages
+  })
 }
 
 export const cancelOrder = async (
@@ -78,15 +73,10 @@ export const cancelOrder = async (
     orderHash: order.orderHash
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
 
 export const submitLimitOrder = async ({
@@ -130,15 +120,10 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
 
 export const submitMarketOrder = async ({
@@ -184,15 +169,10 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
 
 export const submitStopLimitOrder = async ({
@@ -243,15 +223,10 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
 
 export const submitStopMarketOrder = async ({
@@ -302,13 +277,8 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }

@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
-import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
 import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
-import { FEE_PAYER_PUB_KEY, INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -64,19 +62,6 @@ export const useAccountStore = defineStore('account', {
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
       return Object.keys(state.subaccountBalancesMap).length > 1
-    },
-
-    /** TODO: Remove when we enable cosmos fee delegation */
-    hasEnoughInjForGas: (state) => {
-      const injBalance =
-        state.bankBalances.find(({ denom }) => denom === INJ_DENOM)?.amount ||
-        '0'
-
-      const hasEnoughInjForGas = new BigNumberInWei(injBalance)
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
-
-      return !!FEE_PAYER_PUB_KEY || hasEnoughInjForGas
     }
   },
   actions: {

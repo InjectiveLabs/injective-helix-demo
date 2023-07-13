@@ -6,13 +6,11 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { Modal, TradeField, TradeForm } from '@/types'
+import { TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 
 const formValues = useFormValues<TradeForm>()
@@ -109,10 +107,6 @@ const { value: orderType, setValue: setOrderSide } = useStringField({
 })
 
 onMounted(() => {
-  if (!accountStore.hasEnoughInjForGas) {
-    modalStore.openModal({ type: Modal.InsufficientInjForGas })
-  }
-
   setMarketFromQuery()
 })
 

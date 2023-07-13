@@ -62,8 +62,7 @@ export enum Modal {
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
-  AddMarginToPosition = 'add-margin-to-position',
-  InsufficientInjForGas = 'insufficient-inj-for-gas'
+  AddMarginToPosition = 'add-margin-to-position'
 }
 
 export enum Breakpoint {

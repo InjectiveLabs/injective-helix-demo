@@ -5,12 +5,6 @@ import {
   getEthereumAddress,
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
-import {
-  ErrorType,
-  UnspecifiedErrorCode,
-  ChainCosmosErrorCode,
-  CosmosWalletException
-} from '@injectivelabs/exceptions'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
@@ -351,7 +345,6 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { hasEnoughInjForGas } = useAccountStore()
       const { ethereumChainId, chainId } = useAppStore()
       const { wallet, injectiveAddress, address } = useWalletStore()
 
@@ -365,17 +358,6 @@ export const useWalletStore = defineStore('wallet', {
           chainId: chainId as unknown as CosmosChainId,
           wallet
         })
-
-        if (!hasEnoughInjForGas) {
-          throw new CosmosWalletException(
-            new Error('Insufficient INJ to pay for gas/transaction fees.'),
-            {
-              code: UnspecifiedErrorCode,
-              type: ErrorType.WalletError,
-              contextCode: ChainCosmosErrorCode.ErrInsufficientFee
-            }
-          )
-        }
       }
     },
 

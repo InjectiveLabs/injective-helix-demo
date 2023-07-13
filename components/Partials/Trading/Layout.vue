@@ -16,7 +16,6 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -145,19 +144,6 @@ watch(
             key="market-trading-panel"
             class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
           >
-            <CommonCard no-padding>
-              <div
-                v-if="
-                  fetchStatus.isIdle() &&
-                  walletStore.isUserWalletConnected &&
-                  !accountStore.hasEnoughInjForGas
-                "
-                class="bg-gray-1000 rounded-lg mb-1 p-6"
-              >
-                <CommonInsufficientGasInner />
-              </div>
-              <PartialsTradingBalances v-else :market="market" />
-            </CommonCard>
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
                 :class="{

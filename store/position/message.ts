@@ -14,7 +14,7 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { FEE_PAYER_PUB_KEY, FEE_RECIPIENT } from '@/app/utils/constants'
+import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { msgBroadcastClient } from '@/app/Services'
 
@@ -61,15 +61,10 @@ export const closePosition = async ({
     })
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
 
 export const closeAllPosition = async (positions: UiPosition[]) => {
@@ -148,15 +143,10 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     })
   )
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: messages
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: messages
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: messages
+  })
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -189,30 +179,6 @@ export const closePositionAndReduceOnlyOrders = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
-  /*
-      const message = MsgBatchUpdateOrders.fromJSON({
-        injectiveAddress,
-        subaccountId: subaccountId,
-        derivativeOrdersToCancel: reduceOnlyOrders.map((order) => ({
-          orderHash: order.orderHash,
-          marketId: order.marketId,
-          subaccountId: order.subaccountId
-        })),
-        derivativeOrdersToCreate: [
-          {
-            orderType: orderSideToOrderType(orderType),
-            feeRecipient: FEE_RECIPIENT,
-            margin: '0',
-            triggerPrice: '0',
-            marketId: actualMarket.marketId,
-            price: liquidationPrice.toFixed(),
-            quantity: derivativeQuantityToChainQuantityToFixed({
-              value: position.quantity
-            })
-          }
-        ]
-      }) */
-
   const messageType =
     actualMarket.subType === MarketType.BinaryOptions
       ? MsgCreateBinaryOptionsMarketOrder
@@ -232,15 +198,10 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -276,13 +237,8 @@ export const addMarginToPosition = async ({
     })
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
-    : await msgBroadcastClient.broadcastOld({
-        address,
-        msgs: message
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    address,
+    msgs: message
+  })
 }
