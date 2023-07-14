@@ -4,5 +4,7 @@
     <PartialsInstitutionalTrustedBy class="mb-20 lg:mb-32" />
     <PartialsInstitutionalBenefits class="mb-20 lg:mb-32" />
     <PartialsInstitutionalLearnMore />
+
+    <ModalsInstitutionalForm />
   </div>
 </template>

@@ -58,6 +58,7 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
+  InstitutionalForm = 'institutionalForm',
   SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
@@ -346,4 +347,12 @@ export enum ActivityTab {
   Positions = 'activity-positions',
   Derivatives = 'activity-derivatives',
   WalletHistory = 'activity-wallet-history'
+}
+
+export enum InstitutionalFormField {
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Company = 'company',
+  Telegram = 'telegram'
 }
