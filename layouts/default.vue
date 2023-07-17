@@ -39,7 +39,7 @@ onMounted(() => {
     tokenStore.fetchSupplyTokenMeta()
   ])
 
-  openDevModeModal()
+  handleDevMode()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
@@ -61,12 +61,18 @@ function onCloseSideBar() {
   }
 }
 
-function openDevModeModal() {
+function handleDevMode() {
   const devModeExistsInQuery =
     route.query.devMode && route.query.devMode === 'true'
 
-  if (devModeExistsInQuery && !walletStore.isUserWalletConnected) {
-    modalStore.openModal({ type: Modal.DevMode })
+  if (devModeExistsInQuery) {
+    appStore.$patch({
+      devMode: true
+    })
+
+    if (!walletStore.isUserWalletConnected) {
+      modalStore.openModal({ type: Modal.DevMode })
+    }
   }
 }
 </script>

@@ -9,6 +9,7 @@ import {
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE
 } from '@/app/utils/constants'
 
+const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -154,12 +155,13 @@ const { value: price, setValue: setPriceField } = useStringField({
       rules.push(`integer:${TradeField.TriggerPrice}}`)
     }
 
-    if (
+    const priceCanHaveHighDeviation =
       props.tradingTypeLimit &&
       props.lastTradedPrice.gt(0) &&
       middlePrice.value.gt(0) &&
       new BigNumberInBase(formValues.value[TradeField.LimitPrice]).gt(0)
-    ) {
+
+    if (priceCanHaveHighDeviation && !appStore.devMode) {
       rules.push(
         `priceHighDeviationFromMidOrderbookPrice:${cappedAcceptableMin.value.toFixed()},${acceptableMax.value.toFixed()}`
       )
