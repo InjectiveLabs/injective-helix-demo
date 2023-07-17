@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  BTC_COIN_GECKO_ID
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeType, Modal } from '@/types'
 
@@ -50,9 +51,15 @@ const stakedAmount = computed(() => {
   )
 })
 
-const stakedAmountInUsd = computed(() =>
-  stakedAmount.value.times(tokenStore.injUsdPrice)
-)
+const stakedAmountInUsd = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  if (!injUsdPrice) {
+    return ZERO_IN_BASE
+  }
+
+  return stakedAmount.value.times(injUsdPrice)
+})
 
 const accountTotalBalanceInUsd = computed(() =>
   aggregatedAccountBalances.value
@@ -73,13 +80,13 @@ const shouldAbbreviateTotalBalance = computed(() =>
 )
 
 const accountTotalBalanceInBtc = computed(() => {
-  if (!tokenStore.btcUsdPrice) {
+  const btcUsdPrice = tokenStore.tokenUsdPrice(BTC_COIN_GECKO_ID)
+
+  if (!btcUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return accountTotalBalanceInUsd.value.dividedBy(
-    new BigNumberInBase(tokenStore.btcUsdPrice)
-  )
+  return accountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
 })
 
 const accountTotalBalanceInBtcToString = computed(() => {

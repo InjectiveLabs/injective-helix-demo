@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import type { Token } from '@injectivelabs/token-metadata'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  INJ_COIN_GECKO_ID,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, Modal, USDCSymbol } from '@/types'
+import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -11,7 +15,6 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { fetchTokenUsdPrice } = useToken()
 
 const hideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
@@ -43,7 +46,6 @@ function setUsdcConvertMarket(token: Token) {
 
 function initBalances() {
   Promise.all([
-    tokenStore.fetchBitcoinUsdPrice(),
     spotStore.fetchUsdcConversionMarkets(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions()
@@ -67,7 +69,14 @@ function refreshBalances() {
 }
 
 function refreshUsdTokenPrice() {
-  fetchTokenUsdPrice(currentSubaccountBalances.value.map((b) => b.token))
+  const coinGeckoIdsList = [
+    INJ_COIN_GECKO_ID,
+    BTC_COIN_GECKO_ID,
+    ...currentSubaccountBalances.value.map((b) => b.token.coinGeckoId)
+  ]
+
+  tokenStore
+    .fetchTokensUsdPriceMap(coinGeckoIdsList)
     .catch($onError)
     .finally(() => usdPriceStatus.setIdle())
 }

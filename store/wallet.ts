@@ -20,6 +20,7 @@ type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
   address: string
   injectiveAddress: string
+  defaultSubaccountId: string
   addressConfirmation: string
   addresses: string[]
   metamaskInstalled: boolean
@@ -30,6 +31,7 @@ const initialStateFactory = (): WalletStoreState => ({
   address: '',
   addresses: [],
   injectiveAddress: '',
+  defaultSubaccountId: '',
   addressConfirmation: '',
   wallet: Wallet.Metamask,
   metamaskInstalled: false,
@@ -47,14 +49,6 @@ export const useWalletStore = defineStore('wallet', {
       return (
         hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
       )
-    },
-
-    defaultSubaccountId: (state) => {
-      if (!state.injectiveAddress) {
-        return ''
-      }
-
-      return getDefaultSubaccountId(state.injectiveAddress)
     },
 
     isCosmosWallet: (state) => {
@@ -168,7 +162,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -190,7 +185,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -212,7 +208,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -236,7 +233,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -258,7 +256,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -280,7 +279,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -302,7 +302,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -322,7 +323,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses: [address],
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -385,13 +387,19 @@ export const useWalletStore = defineStore('wallet', {
     reset() {
       const walletStore = useWalletStore()
 
-      const { address, addresses, injectiveAddress, addressConfirmation } =
-        initialStateFactory()
+      const {
+        address,
+        addresses,
+        injectiveAddress,
+        defaultSubaccountId,
+        addressConfirmation
+      } = initialStateFactory()
 
       walletStore.$patch({
         address,
         addresses,
         injectiveAddress,
+        defaultSubaccountId,
         addressConfirmation
       })
     }

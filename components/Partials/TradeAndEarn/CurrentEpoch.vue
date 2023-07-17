@@ -6,7 +6,7 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -113,9 +113,15 @@ const injMaxCampaignRewards = computed(() => {
   return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
 })
 
+const injUsdPrice = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
+})
+
 const injMaxCampaignRewardsInUsd = computed(() =>
   injMaxCampaignRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+    new BigNumberInBase(injUsdPrice.value)
   )
 )
 
@@ -149,9 +155,7 @@ const estimatedRewards = computed(() => {
 })
 
 const estimatedRewardsInUsd = computed(() =>
-  estimatedRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
-  )
+  estimatedRewards.value.multipliedBy(new BigNumberInBase(injUsdPrice.value))
 )
 
 onMounted(() => {
