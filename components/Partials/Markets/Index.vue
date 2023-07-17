@@ -15,7 +15,7 @@ import {
 } from '@/app/utils/market'
 import {
   deprecatedMarkets,
-  dmmSlugsToIncludeInLowVolume,
+  olpSlugsToIncludeInLowVolume,
   upcomingMarkets
 } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
@@ -64,7 +64,7 @@ const filteredMarkets = computed(() => {
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isDmmMarket = dmmSlugsToIncludeInLowVolume.includes(market.slug)
+    const isOlpmarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
     const isLowVolumeMarket = search.value
       ? true
       : showLowVolumeMarkets.value ||
@@ -75,7 +75,7 @@ const filteredMarkets = computed(() => {
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      (isLowVolumeMarket || isDmmMarket)
+      (isLowVolumeMarket || isOlpmarket)
     )
   })
 })
