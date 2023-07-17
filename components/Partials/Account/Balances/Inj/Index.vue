@@ -30,6 +30,12 @@ const hasStaked = computed(() => {
     )
   ).gt(0)
 })
+
+onMounted(() => {
+  if (hasStaked.value) {
+    showStaked.value = true
+  }
+})
 </script>
 
 <template>
