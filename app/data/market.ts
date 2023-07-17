@@ -62,7 +62,7 @@ export const slugsToIncludeInEthereumCategory = [
   'stx-usdt-perp'
 ]
 
-export const dmmSlugsToIncludeInLowVolume = [
+export const olpSlugsToIncludeInLowVolume = [
   'inj-usdt',
   'atom-usdt',
   'weth-usdt',
