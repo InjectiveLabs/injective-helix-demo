@@ -142,16 +142,16 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </NuxtLink>
 
           <a
-            href="https://dmm.injective.network"
+            href="https://trading.injective.network/program/liquidity"
             target="_blank"
             class="p-4 block group bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white flex items-center">
-              <span>{{ $t('navigation.dmmProgram') }}</span>
+              <span>{{ $t('navigation.openLiquidityProgram') }}</span>
               <BaseIcon name="external-link" arrow class="w-auto h-3 ml-2" />
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.dmmProgramDescription') }}
+              {{ $t('navigation.openLiquidityProgramDescription') }}
             </p>
           </a>
         </template>
