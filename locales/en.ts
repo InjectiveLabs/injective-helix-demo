@@ -271,7 +271,10 @@ export default {
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
     leaderboard: 'Leaderboard',
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
-      `Connected to ${named('address')}. Click to close connection.`
+      `Connected to ${named('address')}. Click to close connection.`,
+
+    tradingBots: 'Trading Bots',
+    tradingBotsDescription: 'Automate your trading'
   },
 
   fee_discounts: {

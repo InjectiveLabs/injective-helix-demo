@@ -63,6 +63,23 @@ function handleToggleRewardsMenu() {
             $t('navigation.perpetual')
           }}</span>
         </LayoutNavItem>
+
+        <LayoutNavItem :to="{ name: 'convert' }">
+          <span class="font-normal tracking-wide">{{
+            $t('navigation.convert')
+          }}</span>
+        </LayoutNavItem>
+
+        <LayoutNavItem
+          :to="{
+            name: 'spot-grid-trading-bots-market',
+            params: { market: 'inj-usdt' }
+          }"
+        >
+          <span class="font-normal tracking-wide">{{
+            $t('navigation.tradingBots')
+          }}</span>
+        </LayoutNavItem>
       </template>
     </AppAccordion>
 
