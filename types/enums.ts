@@ -366,3 +366,10 @@ export enum InstitutionalFormField {
   Company = 'company',
   Telegram = 'telegram'
 }
+
+export enum SpotGridTradingField {
+  Grids = 'grids',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
+  InvestmentAmount = 'investmentAmount'
+}
