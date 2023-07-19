@@ -10,6 +10,7 @@ const props = defineProps({
   lg: Boolean,
   xl: Boolean,
   disabled: Boolean,
+  darkSpinner: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -106,7 +107,7 @@ export default {
       v-if="status && status.isLoading()"
       class="flex items-center justify-center"
     >
-      <AppSpinner sm white />
+      <AppSpinner sm v-bind="{ white: !darkSpinner }" />
     </span>
   </button>
 </template>

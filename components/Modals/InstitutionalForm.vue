@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
+import { submitInstitutionalForm } from '@/app/services/institutional'
 
 const modalStore = useModalStore()
-const { handleSubmit } = useForm<InstitutionalForm>()
+const { handleSubmit, resetForm, errors } = useForm<InstitutionalForm>()
+const { success, error } = useNotifications()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const classes = 'border border-white p-4 rounded-md bg-transparent'
 
@@ -38,14 +43,28 @@ function closeModal() {
   modalStore.closeModal(Modal.InstitutionalForm)
 }
 
-const onSubmit = handleSubmit(
-  () => {
-    // console.log('Success')
-  },
-  () => {
-    // console.log('Error')
-  }
-)
+const onSubmit = handleSubmit((formValues) => {
+  status.setLoading()
+
+  submitInstitutionalForm(formValues)
+    .then(() => {
+      success({
+        title: 'Success',
+        description: 'Form submitted Successfuly.'
+      })
+
+      resetForm()
+    })
+
+    .catch(() => {
+      error({ title: 'Error', description: 'Something happened...' })
+    })
+
+    .finally(() => {
+      modalStore.closeModal(Modal.InstitutionalForm)
+      status.setIdle()
+    })
+})
 </script>
 
 <template>
@@ -55,8 +74,12 @@ const onSubmit = handleSubmit(
     @modal:closed="closeModal"
   >
     <div>
-      <h3 class="text-4xl">Get In Touch</h3>
-      <p>Complete the form and we will be in touch shortly.</p>
+      <h3 class="text-4xl">
+        {{ $t('institutional.modalTitle') }}
+      </h3>
+      <p>
+        {{ $t('institutional.modalDescription') }}
+      </p>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
         <input
@@ -64,31 +87,38 @@ const onSubmit = handleSubmit(
           :class="classes"
           placeholder="First Name*"
         />
+
         <input
           v-model="lastNameValue"
           :class="classes"
           placeholder="Last Name*"
         />
+
         <input
           v-model="emailValue"
           :class="classes"
           placeholder="Email*"
           type="email"
         />
+
         <input v-model="companyValue" :class="classes" placeholder="Company*" />
+
         <input
           v-model="telegramValue"
           :class="classes"
           placeholder="Telegram"
         />
       </div>
+
       <div class="mt-10">
-        <button
+        <AppButton
+          dark-spinner
           class="bg-white text-black py-2 px-4 rounded-md font-semibold"
+          v-bind="{ status, disabled: Object.keys(errors).length > 0 }"
           @click="onSubmit"
         >
-          Submit
-        </button>
+          {{ $t('common.submit') }}
+        </AppButton>
       </div>
     </div>
   </AppModal>

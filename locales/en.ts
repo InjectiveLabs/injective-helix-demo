@@ -7,6 +7,7 @@ import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
+import institutional from './institutional/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -20,6 +21,7 @@ export default {
   ...wallet,
   ...trade,
   ...leaderboard,
+  ...institutional,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -28,6 +30,7 @@ export default {
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
+    submit: 'Submit',
     search: 'Search',
     cancel: 'Cancel',
     waived: 'Waived',
