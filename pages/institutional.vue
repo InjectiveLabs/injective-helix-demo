@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'institutional'
+})
+</script>
+
 <template>
   <div class="max-w-7xl mx-auto px-4 md:px-8 pb-40">
     <PartialsInstitutionalHero />
