@@ -47,6 +47,16 @@ onMounted(() => {
   handlePreFillFromQuery()
 })
 
+onWalletConnected(() => {
+  status.setLoading()
+
+  Promise.all([accountStore.fetchAccountPortfolio()])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+
 function handlePreFillCosmosWallet() {
   if (walletStore.isCosmosWallet) {
     formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
