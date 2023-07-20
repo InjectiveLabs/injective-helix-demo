@@ -47,8 +47,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'submit:request'): void
-  (e: 'form:submit'): void
+  'submit:request': []
+  'form:submit': []
 }>()
 
 const isSpot = props.market.type === MarketType.Spot

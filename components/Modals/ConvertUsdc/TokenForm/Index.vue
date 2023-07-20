@@ -30,11 +30,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:isBaseAmount', state: boolean): void
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
-  ): void
+  'update:isBaseAmount': [state: boolean]
+  'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
 
 const animationCount = ref(0)

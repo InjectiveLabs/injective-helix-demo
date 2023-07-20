@@ -25,7 +25,7 @@ const props = defineProps({
 const search = ref('')
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: string): void
+  'update:modelValue': [state: string]
 }>()
 
 const filteredOptions = computed(() => {

@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:aggregation', latestAggregation: string): void
+  'update:aggregation': [latestAggregation: string]
 }>()
 
 const aggregation = computed({

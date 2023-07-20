@@ -7,7 +7,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'change', state: any): void
+  change: [state: any]
 }>()
 
 function setValue(value: any) {

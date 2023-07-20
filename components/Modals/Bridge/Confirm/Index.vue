@@ -24,7 +24,7 @@ const { $onError } = useNuxtApp()
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const emit = defineEmits<{
-  (e: 'form:submit'): void
+  'form:submit': []
 }>()
 
 const {

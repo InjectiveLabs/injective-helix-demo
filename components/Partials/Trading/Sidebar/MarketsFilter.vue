@@ -16,9 +16,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:activeType', state: string): void
-  (e: 'update:search', state: string): void
-  (e: 'update:showLowVolumeMarkets', state: boolean): void
+  'update:search': [state: string]
+  'update:activeType': [state: string]
+  'update:showLowVolumeMarkets': [state: boolean]
 }>()
 
 const filterList = [

@@ -17,7 +17,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'marketsList:toggle'): void
+  'marketsList:toggle': []
 }>()
 
 function handleTokenClick() {

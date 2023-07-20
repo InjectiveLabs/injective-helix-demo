@@ -26,7 +26,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'blur', value: string): void
+  blur: [value: string]
 }>()
 
 const wrapperClass = computed(() => {

@@ -33,7 +33,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'loaded', state: UiMarketWithToken): void
+  loaded: [state: UiMarketWithToken]
 }>()
 
 const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''

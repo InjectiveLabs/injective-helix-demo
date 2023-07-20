@@ -4,7 +4,7 @@ import { TradeExecutionType, TradeField } from '@/types'
 const { t } = useLang()
 const route = useRoute()
 const emit = defineEmits<{
-  (e: 'form:reset'): void
+  'form:reset': []
 }>()
 
 const filterList = [TradeExecutionType.LimitFill, TradeExecutionType.Market]
