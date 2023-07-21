@@ -37,7 +37,11 @@ const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
 onMounted(() => {
   status.setLoading()
 
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -47,10 +51,18 @@ onMounted(() => {
   handlePreFillFromQuery()
 })
 
+onUnmounted(() => {
+  accountStore.$reset()
+})
+
 onWalletConnected(() => {
   status.setLoading()
 
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
