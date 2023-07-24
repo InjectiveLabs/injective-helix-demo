@@ -49,7 +49,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'form:submit'): void
+  'form:submit': []
 }>()
 
 const { insufficientLiquidity, highDeviation } = useSpotError({

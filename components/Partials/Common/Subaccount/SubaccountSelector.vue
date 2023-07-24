@@ -5,7 +5,7 @@ const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
-  (e: 'update:subaccount', subaccount: string): void
+  'update:subaccount': [subaccount: string]
 }>()
 
 const subaccountSelectOptions = computed(() =>

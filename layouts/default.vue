@@ -34,9 +34,8 @@ onMounted(() => {
   Promise.all([
     appStore.init(),
     spotStore.init(),
-    derivativeStore.init(),
-    exchangeStore.initFeeDiscounts(),
-    tokenStore.fetchSupplyTokenMeta()
+    derivativeStore.initIfNotInit(),
+    exchangeStore.initFeeDiscounts()
   ])
 
   handleDevMode()

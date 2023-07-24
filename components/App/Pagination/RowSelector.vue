@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: number): void
+  'update:modelValue': [state: number]
 }>()
 
 const selectedOption = computed(() =>

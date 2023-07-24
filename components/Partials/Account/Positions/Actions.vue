@@ -27,9 +27,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:market-denom', state: string): void
-  (e: 'update:side', state: string): void
-  (e: 'positions:close'): void
+  'update:market-denom': [state: string]
+  'update:side': [state: string]
+  'positions:close': []
 }>()
 
 const showFilters = ref(true)

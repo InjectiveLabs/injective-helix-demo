@@ -43,7 +43,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'order:confirmed'): void
+  'order:confirmed': []
 }>()
 
 const appStore = useAppStore()

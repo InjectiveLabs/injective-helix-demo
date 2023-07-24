@@ -6,7 +6,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'dropdown:toggle', state: boolean): void
+  'dropdown:toggle': [state: boolean]
 }>()
 
 function handleMouseEnter() {

@@ -3,7 +3,7 @@ import { DEFAULT_PRICE_WARNING_DEVIATION } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const emit = defineEmits<{
-  (e: 'order:confirmed'): void
+  'order:confirmed': []
 }>()
 
 const modalStore = useModalStore()

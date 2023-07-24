@@ -33,8 +33,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:filter'): void
-  (e: 'reset:filter'): void
+  'update:filter': []
+  'reset:filter': []
 }>()
 
 const { value: denom } = useStringField({ name: ActivityField.Denom, rule: '' })

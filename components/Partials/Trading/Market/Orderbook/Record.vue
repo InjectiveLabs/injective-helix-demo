@@ -26,19 +26,9 @@ const props = defineProps({
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
   position: {
     required: true,
     type: Number
-  },
-
-  record: {
-    required: true,
-    type: Object as PropType<UiOrderbookPriceLevel>
   },
 
   type: {
@@ -48,12 +38,22 @@ const props = defineProps({
 
   userOrders: {
     required: true,
-    type: Array as PropType<Array<string>>
+    type: Array as PropType<string[]>
+  },
+
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
+  },
+
+  record: {
+    required: true,
+    type: Object as PropType<UiOrderbookPriceLevel>
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:active-position', position: number | null): void
+  'update:active-position': [position?: number]
 }>()
 
 const isSpot = props.market.type === MarketType.Spot
@@ -161,7 +161,7 @@ function handleMouseEnter() {
 }
 
 function handleMouseLeave() {
-  emit('update:active-position', null)
+  emit('update:active-position')
 }
 
 defineExpose({

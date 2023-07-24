@@ -12,8 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'sidebar:closed'): void
-  (e: 'sidebar:opened'): void
+  'sidebar:closed': []
+  'sidebar:opened': []
 }>()
 
 const isUserConnectedProcessCompleted = ref(false)

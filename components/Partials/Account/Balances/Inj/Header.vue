@@ -19,7 +19,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'drawer:toggle'): void
+  'drawer:toggle': []
 }>()
 
 function handleDrawerToggle() {

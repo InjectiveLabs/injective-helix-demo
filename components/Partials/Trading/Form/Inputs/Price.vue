@@ -48,7 +48,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:amount', { isBaseAmount }: { isBaseAmount: boolean }): void
+  'update:amount': [{ isBaseAmount: boolean }]
 }>()
 
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))

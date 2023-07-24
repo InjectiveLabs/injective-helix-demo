@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:hide-balances', state: boolean): void
+  'update:hide-balances': [state: boolean]
 }>()
 
 const { aggregatedPortfolioBalances } = useBalance()

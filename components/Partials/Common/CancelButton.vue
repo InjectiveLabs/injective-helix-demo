@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  click: []
 }>()
 
 function handleClick() {
