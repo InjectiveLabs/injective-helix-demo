@@ -18,7 +18,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  click: []
 }>()
 
 const classes = computed(() => {

@@ -37,7 +37,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:filterByCurrentMarket', state: boolean): void
+  'update:filterByCurrentMarket': [state: boolean]
 }>()
 
 const actionStatus = reactive(new Status(StatusType.Idle))

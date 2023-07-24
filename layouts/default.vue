@@ -34,12 +34,11 @@ onMounted(() => {
   Promise.all([
     appStore.init(),
     spotStore.init(),
-    derivativeStore.init(),
-    exchangeStore.initFeeDiscounts(),
-    tokenStore.fetchSupplyTokenMeta()
+    derivativeStore.initIfNotInit(),
+    exchangeStore.initFeeDiscounts()
   ])
 
-  openDevModeModal()
+  handleDevMode()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
@@ -61,12 +60,18 @@ function onCloseSideBar() {
   }
 }
 
-function openDevModeModal() {
+function handleDevMode() {
   const devModeExistsInQuery =
     route.query.devMode && route.query.devMode === 'true'
 
-  if (devModeExistsInQuery && !walletStore.isUserWalletConnected) {
-    modalStore.openModal({ type: Modal.DevMode })
+  if (devModeExistsInQuery) {
+    appStore.$patch({
+      devMode: true
+    })
+
+    if (!walletStore.isUserWalletConnected) {
+      modalStore.openModal({ type: Modal.DevMode })
+    }
   }
 }
 </script>
@@ -111,8 +116,6 @@ function openDevModeModal() {
                   </div>
                   <LayoutFooter v-if="showFooter" />
                 </main>
-
-                <ModalsInsufficientInjForGas />
 
                 <ModalsNinjaPassWinner />
 

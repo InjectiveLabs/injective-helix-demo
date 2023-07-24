@@ -4,11 +4,11 @@ import {
   Web3Client,
   Web3Composer,
   TokenService,
+  DenomClientAsync,
   UiBridgeTransformer,
   peggyGraphQlEndpointForNetwork
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  DenomClient,
   ApolloConsumer,
   ChainGrpcGovApi,
   ChainGrpcBankApi,
@@ -119,12 +119,15 @@ export const tokenService = new TokenService({
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
-export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
+export const denomClient = new DenomClientAsync(NETWORK, {
+  endpoints: ENDPOINTS,
+  alchemyRpcUrl: alchemyRpcEndpoint
+})
 
 // UI Services
 export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v11-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
+  `inj-dex-v12-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
 )

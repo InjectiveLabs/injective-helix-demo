@@ -29,7 +29,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:filterByCurrentMarket', state: boolean): void
+  'update:filterByCurrentMarket': [state: boolean]
 }>()
 
 const activeType = ref(FilterList.OpenOrders)

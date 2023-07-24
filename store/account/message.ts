@@ -9,7 +9,6 @@ import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcastClient } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
-import { FEE_PAYER_PUB_KEY } from '~/app/utils/constants'
 
 export const deposit = async ({
   amount,
@@ -44,15 +43,10 @@ export const deposit = async ({
     }
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs: message,
-        address
-      })
-    : await msgBroadcastClient.broadcastOld({
-        msgs: message,
-        address
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: message,
+    address
+  })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }
@@ -90,15 +84,10 @@ export const withdraw = async ({
     }
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs: message,
-        address
-      })
-    : await msgBroadcastClient.broadcastOld({
-        msgs: message,
-        address
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: message,
+    address
+  })
 }
 
 export const transfer = async ({
@@ -132,17 +121,11 @@ export const transfer = async ({
     }
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs: message,
-        memo,
-        address
-      })
-    : await msgBroadcastClient.broadcastOld({
-        msgs: message,
-        memo,
-        address
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: message,
+    memo,
+    address
+  })
 }
 
 export const externalTransfer = async ({
@@ -180,17 +163,11 @@ export const externalTransfer = async ({
     }
   })
 
-  FEE_PAYER_PUB_KEY
-    ? await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs: message,
-        memo,
-        address
-      })
-    : await msgBroadcastClient.broadcastOld({
-        msgs: message,
-        memo,
-        address
-      })
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: message,
+    memo,
+    address
+  })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }

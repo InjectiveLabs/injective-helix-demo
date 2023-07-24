@@ -31,6 +31,7 @@ export const getRoutes = (network: Network, env: string) => {
   const perpetuals = [
     'btc-usdt-perp',
     'inj-usdt-perp',
+    'xrp-usdt-perp',
     'eth-usdt-perp',
     'bonk-usdt-perp',
     'osmo-usdt-perp',

@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click', state: string): void
+  click: [state: string]
 }>()
 
 function handleTypeClick() {

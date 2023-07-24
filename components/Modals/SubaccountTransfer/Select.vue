@@ -8,7 +8,7 @@ const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
-  (e: 'update:subaccountId'): void
+  'update:subaccountId': []
 }>()
 
 const { value: srcSubaccountId } = useStringField({

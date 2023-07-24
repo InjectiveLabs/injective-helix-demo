@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'modal:closed'): void
+  'modal:closed': []
 }>()
 
 const classes = computed(() => {

@@ -2,7 +2,7 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { PropType } from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   CampaignRewardPool,
   cosmosSdkDecToBigNumber
@@ -32,6 +32,12 @@ const props = defineProps({
 })
 
 const hubUrl = `${getHubUrl()}/staking`
+
+const injUsdPrice = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
+})
 
 const stakedAmount = computed(() => {
   if (!exchangeStore.feeDiscountAccountInfo) {
@@ -99,11 +105,11 @@ const injMaxPendingCampaignRewards = computed(() => {
   return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
 })
 
-const injMaxPendingCampaignRewardsInUsd = computed(() => {
-  return injMaxPendingCampaignRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+const injMaxPendingCampaignRewardsInUsd = computed(() =>
+  injMaxPendingCampaignRewards.value.multipliedBy(
+    new BigNumberInBase(injUsdPrice.value)
   )
-})
+)
 
 const pendingTradeRewardPoints = computed(() => {
   if (exchangeStore.pendingTradeRewardsPoints.length === 0) {
@@ -177,7 +183,7 @@ const pendingEstimatedRewardsCapped = computed(() => {
 
 const pendingEstimatedRewardsCappedInUsd = computed(() =>
   pendingEstimatedRewardsCapped.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+    new BigNumberInBase(injUsdPrice.value)
   )
 )
 </script>

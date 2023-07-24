@@ -1,21 +1,16 @@
 import { defineStore } from 'pinia'
-import { INJ_COIN_GECKO_ID, UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
+import { UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import { bankApi, tokenPrice, tokenService } from '@/app/Services'
-import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
   tokens: Token[]
-  btcUsdPrice: number
-  injUsdPrice: number
   tokenUsdPriceMap: TokenUsdPriceMap
 }
 
 const initialStateFactory = (): TokenStoreState => ({
   tokens: [],
-  btcUsdPrice: 0,
-  injUsdPrice: 0,
   tokenUsdPriceMap: {}
 })
 
@@ -66,22 +61,6 @@ export const useTokenStore = defineStore('token', {
           ...tokenUsdPriceMap,
           ...tokenStore.tokenUsdPriceMap
         }
-      })
-    },
-
-    async fetchInjUsdPrice() {
-      const tokenStore = useTokenStore()
-
-      tokenStore.$patch({
-        injUsdPrice: await tokenPrice.fetchUsdTokenPrice(INJ_COIN_GECKO_ID)
-      })
-    },
-
-    async fetchBitcoinUsdPrice() {
-      const tokenStore = useTokenStore()
-
-      tokenStore.$patch({
-        btcUsdPrice: await tokenPrice.fetchUsdTokenPrice(BTC_COIN_GECKO_ID)
       })
     },
 

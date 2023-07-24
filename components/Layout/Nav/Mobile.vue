@@ -74,11 +74,11 @@ function handleToggleRewardsMenu() {
 
           <a
             class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center px-6 py-2"
-            href="https://dmm.injective.network"
+            href="https://trading.injective.network/program/liquidity"
             target="_blank"
           >
             <span class="font-normal tracking-wide">
-              {{ $t('navigation.dmmProgram') }}
+              {{ $t('navigation.openLiquidityProgram') }}
             </span>
           </a>
         </div>

@@ -39,13 +39,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:denom', state: string): void
-  (e: 'update:show', show: boolean): void
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
-  ): void
-  (e: 'update:max', { amount }: { amount: string }): void
+  'update:denom': [state: string]
+  'update:show': [state: boolean]
+  'update:max': [{ amount: string }]
+  'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
 
 const selectedToken = computed(() =>

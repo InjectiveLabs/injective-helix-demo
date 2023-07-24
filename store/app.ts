@@ -61,6 +61,9 @@ type AppStoreState = {
   // Loading States
   state: AppState
 
+  // Dev Mode
+  devMode: boolean
+
   // User settings
   userState: UserBasedState
   announcements: Announcement[]
@@ -79,6 +82,9 @@ const initialStateFactory = (): AppStoreState => ({
 
   // Loading States
   state: AppState.Idle,
+
+  // Dev Mode
+  devMode: false,
 
   // User settings
   userState: {

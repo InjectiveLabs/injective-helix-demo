@@ -30,7 +30,6 @@ export default {
     confirm: 'Confirm',
     waived: 'Waived',
     gasFee: 'Gas fee',
-    insufficientINJForGas: 'Insufficient INJ For Gas',
     insufficientAmount: 'Insufficient Amount',
     trackTransaction: 'Track Transaction',
     transactionConfirmed: 'Transaction Confirmed',

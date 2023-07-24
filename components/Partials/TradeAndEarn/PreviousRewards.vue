@@ -5,7 +5,7 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
@@ -44,7 +44,9 @@ const pendingTradeRewardsPoints = computed(() => {
 })
 
 const injUsdPrice = computed(() => {
-  return tokenStore.injUsdPrice
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
 })
 
 const vestingDurationInSeconds = computed(() => {

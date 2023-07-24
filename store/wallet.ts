@@ -5,12 +5,6 @@ import {
   getEthereumAddress,
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
-import {
-  ErrorType,
-  UnspecifiedErrorCode,
-  ChainCosmosErrorCode,
-  CosmosWalletException
-} from '@injectivelabs/exceptions'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
@@ -26,6 +20,7 @@ type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
   address: string
   injectiveAddress: string
+  defaultSubaccountId: string
   addressConfirmation: string
   addresses: string[]
   metamaskInstalled: boolean
@@ -36,6 +31,7 @@ const initialStateFactory = (): WalletStoreState => ({
   address: '',
   addresses: [],
   injectiveAddress: '',
+  defaultSubaccountId: '',
   addressConfirmation: '',
   wallet: Wallet.Metamask,
   metamaskInstalled: false,
@@ -53,14 +49,6 @@ export const useWalletStore = defineStore('wallet', {
       return (
         hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
       )
-    },
-
-    defaultSubaccountId: (state) => {
-      if (!state.injectiveAddress) {
-        return ''
-      }
-
-      return getDefaultSubaccountId(state.injectiveAddress)
     },
 
     isCosmosWallet: (state) => {
@@ -174,7 +162,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -196,7 +185,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -218,7 +208,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -242,7 +233,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -264,7 +256,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -286,7 +279,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress,
         addressConfirmation,
         address: ethereumAddress,
-        addresses: injectiveAddresses
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -308,7 +302,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -328,7 +323,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses: [address],
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
@@ -351,7 +347,6 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { hasEnoughInjForGas } = useAccountStore()
       const { ethereumChainId, chainId } = useAppStore()
       const { wallet, injectiveAddress, address } = useWalletStore()
 
@@ -365,17 +360,6 @@ export const useWalletStore = defineStore('wallet', {
           chainId: chainId as unknown as CosmosChainId,
           wallet
         })
-
-        if (!hasEnoughInjForGas) {
-          throw new CosmosWalletException(
-            new Error('Insufficient INJ to pay for gas/transaction fees.'),
-            {
-              code: UnspecifiedErrorCode,
-              type: ErrorType.WalletError,
-              contextCode: ChainCosmosErrorCode.ErrInsufficientFee
-            }
-          )
-        }
       }
     },
 
@@ -403,13 +387,19 @@ export const useWalletStore = defineStore('wallet', {
     reset() {
       const walletStore = useWalletStore()
 
-      const { address, addresses, injectiveAddress, addressConfirmation } =
-        initialStateFactory()
+      const {
+        address,
+        addresses,
+        injectiveAddress,
+        defaultSubaccountId,
+        addressConfirmation
+      } = initialStateFactory()
 
       walletStore.$patch({
         address,
         addresses,
         injectiveAddress,
+        defaultSubaccountId,
         addressConfirmation
       })
     }

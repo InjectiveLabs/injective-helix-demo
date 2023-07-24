@@ -8,7 +8,7 @@ const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  click: []
 }>()
 
 const routeName = route.name as string
