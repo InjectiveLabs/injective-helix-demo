@@ -27,7 +27,7 @@ const tabs = [
 </script>
 
 <template>
-  <div class="flex space-x-4 mb-4">
+  <div class="flex space-x-4 mb-4 flex-wrap">
     <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
       <CommonSeparator v-if="index !== 0" />
 
