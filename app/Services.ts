@@ -12,6 +12,7 @@ import {
   ApolloConsumer,
   ChainGrpcGovApi,
   ChainGrpcBankApi,
+  ChainGrpcWasmApi,
   ChainGrpcMintApi,
   ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
@@ -45,6 +46,7 @@ import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
+export const wasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)

@@ -25,7 +25,7 @@ const { value: denom } = useStringField({
 const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
 const { value: type } = useStringField({ name: ActivityField.Type, rule: '' })
 
-const routeName = route.name as string
+const routeName = computed(() => route.name as string)
 
 const hasActiveFilters = computed(
   () => !!denom.value || !!side.value || !!type.value
@@ -33,8 +33,8 @@ const hasActiveFilters = computed(
 
 const isSpot = computed(
   () =>
-    routeName.startsWith(ActivityTab.Spot) ||
-    routeName.startsWith(ActivityTab.WalletHistory)
+    routeName.value.startsWith(ActivityTab.Spot) ||
+    routeName.value.startsWith(ActivityTab.WalletHistory)
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
@@ -68,7 +68,7 @@ const showTypeField = computed(() => {
 })
 
 const sideOptions = computed(() => {
-  if (routeName.startsWith(ActivityTab.Positions)) {
+  if (routeName.value.startsWith(ActivityTab.Positions)) {
     return [
       {
         display: t('trade.long'),
@@ -105,7 +105,7 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (routeName.startsWith(ActivityTab.Spot)) {
+  if (routeName.value.startsWith(ActivityTab.Spot)) {
     return result
   }
 
@@ -128,13 +128,13 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (routeName.includes(ActivityPage.DerivativeTriggers)) {
+  if (routeName.value.includes(ActivityPage.DerivativeTriggers)) {
     return derivativeTypes
   }
 
   if (
-    routeName.includes(ActivityPage.DerivativeOrderHistory) ||
-    routeName.includes(ActivityPage.DerivativeTradeHistory)
+    routeName.value.includes(ActivityPage.DerivativeOrderHistory) ||
+    routeName.value.includes(ActivityPage.DerivativeTradeHistory)
   ) {
     result = [...result, ...derivativeTypes]
   }
@@ -156,6 +156,7 @@ function handleUpdate() {
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
       <PartialsActivityCommonMarketFilter
+        v-if="!routeName.includes(ActivityPage.SwapHistory)"
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tokens="tokens"
@@ -176,7 +177,8 @@ function handleUpdate() {
       <AppSelectField
         v-if="
           !routeName.includes(ActivityTab.WalletHistory) &&
-          !routeName.includes(ActivityPage.FundingPayments)
+          !routeName.includes(ActivityPage.FundingPayments) &&
+          !routeName.includes(ActivityPage.SwapHistory)
         "
         v-model="side"
         class="col-span-2 sm:col-span-1"

@@ -1,23 +1,36 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { BridgeField, SubaccountTransferField, TradeField } from '@/types'
+import {
+  BalanceWithToken,
+  BalanceWithTokenAndPrice
+} from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  Modal,
+  TradeField,
+  BridgeField,
+  SwapFormField,
+  SubaccountTransferField
+} from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
+
+const modalStore = useModalStore()
 
 const props = defineProps({
   hideMax: Boolean,
   disabled: Boolean,
   required: Boolean,
+  showUsd: Boolean,
+  shouldCheckBalance: Boolean,
 
   denom: {
     type: String,
     default: ''
   },
 
-  options: {
-    type: Array as PropType<BalanceWithToken[]>,
-    default: () => []
+  debounce: {
+    type: Number,
+    default: 0
   },
 
   maxDecimals: {
@@ -25,16 +38,21 @@ const props = defineProps({
     default: 6
   },
 
+  additionalRules: {
+    type: Object,
+    default: undefined
+  },
+
   amountFieldName: {
     type: String as PropType<
-      TradeField | BridgeField | SubaccountTransferField
+      TradeField | BridgeField | SubaccountTransferField | SwapFormField
     >,
     default: TradeField.BaseAmount
   },
 
-  additionalRules: {
-    type: Object,
-    default: undefined
+  options: {
+    type: Array as PropType<BalanceWithToken[] | BalanceWithTokenAndPrice[]>,
+    default: () => []
   }
 })
 
@@ -45,9 +63,12 @@ const emit = defineEmits<{
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
 
+const isModalActive = ref(false)
+
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
 )
+
 const selectedTokenBalance = computed(() =>
   selectedToken.value
     ? new BigNumberInWei(selectedToken.value.balance).toBase(
@@ -76,11 +97,17 @@ const {
   name: props.amountFieldName,
   rule: '',
   dynamicRule: computed(() => {
-    if (!props.required) {
-      return ''
+    const rules = []
+
+    if (props.required) {
+      rules.push('required')
     }
 
-    return `insufficientBalance:${maxBalanceToFixed.value}|required`
+    if (props.required || props.shouldCheckBalance) {
+      rules.push(`insufficientBalance:${maxBalanceToFixed.value}`)
+    }
+
+    return rules.join('|')
   })
 })
 
@@ -92,6 +119,28 @@ const denomValue = computed({
     }
   }
 })
+
+const estimatedTotalInUsd = computed(() => {
+  const token = selectedToken.value as BalanceWithTokenAndPrice | undefined
+
+  if (!amount.value || !selectedToken.value || !token?.usdPrice) {
+    return '0.00'
+  }
+
+  return new BigNumberInBase(token?.usdPrice)
+    .multipliedBy(amount.value)
+    .toFormat(props.maxDecimals, BigNumberInBase.ROUND_DOWN)
+})
+
+function openTokenSelectorModal() {
+  if (props.options.length <= 1) {
+    return
+  }
+
+  isModalActive.value = true
+
+  modalStore.openModal({ type: Modal.SelectToken })
+}
 
 function handleAmountUpdate(amount: string) {
   setAmountValue(amount)
@@ -106,9 +155,13 @@ function handleMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
-function handleUpdateShow(show: boolean) {
-  emit('update:show', show)
-}
+const updateAmountDebounce = useDebounceFn((value) => {
+  /**
+   *Use debounce since AppNumericInput emits two update events
+   *And we only need the last one
+   **/
+  handleAmountUpdate(value)
+}, props.debounce)
 </script>
 
 <script lang="ts">
@@ -121,7 +174,7 @@ export default {
   <div
     class="bg-gray-1000 rounded-xl py-4"
     :class="{
-      'border-red-500 border': amountErrors.length > 0
+      'border-red-500 border': amountErrors.length > 0 && required
     }"
   >
     <div
@@ -132,70 +185,95 @@ export default {
       <div v-if="selectedToken" class="text-right flex items-center gap-2">
         <span
           v-if="valueToBigNumber.gt(0) && !hideMax"
-          class="cursor-pointer text-blue-500 hover:text-opacity-80"
+          class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
           @click="handleMax"
         >
-          {{ $t('trade.max') }}:
+          {{ $t('trade.max') }}
         </span>
-        <p>{{ maxBalanceToString }} {{ selectedToken.token.symbol }}</p>
+        <p class="text-xs text-blue-500">
+          <span v-if="hideMax">
+            {{ $t('trade.balance', { balance: maxBalanceToString }) }}
+          </span>
+          <span v-else>
+            {{ maxBalanceToString }}
+          </span>
+        </p>
       </div>
     </div>
 
-    <BaseDropdown
-      class="w-full"
-      :disabled="disabled || options.length <= 1"
-      :distance="amountErrors.length > 0 ? 44 : 24"
-      :flip="false"
-      :auto-size="true"
-      placement="bottom"
-      auto-boundary-max-size
-      popper-class="dropdown"
-      @update:show="handleUpdateShow"
-    >
-      <div class="px-4">
-        <div class="flex justify-between">
-          <AppInputNumeric
-            v-model="amount"
-            sm
-            no-padding
-            transparent-bg
-            input-classes="p-0 text-xl font-bold"
-            :max-decimals="maxDecimals"
-            :placeholder="inputPlaceholder"
-            :disabled="disabled || !selectedToken"
-            @update:model-value="handleAmountUpdate"
-            @click.stop
-          />
+    <div class="px-4">
+      <div class="flex justify-between">
+        <AppInputNumeric
+          v-model="amount"
+          sm
+          no-padding
+          transparent-bg
+          input-classes="p-0 text-xl font-bold"
+          :max-decimals="maxDecimals"
+          :placeholder="inputPlaceholder"
+          :disabled="disabled || !selectedToken"
+          @update:model-value="updateAmountDebounce"
+          @click.stop
+        />
 
-          <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2">
+          <div
+            class="flex items-center gap-2 p-1.5"
+            :class="{
+              'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
+                options.length > 1
+            }"
+            @click="openTokenSelectorModal"
+          >
             <AppSelectTokenItem
               v-if="selectedToken"
-              :token="selectedToken.token"
+              :class="{ 'cursor-default': disabled || options.length === 1 }"
+              v-bind="{
+                token: selectedToken.token
+              }"
             />
+
+            <div v-else class="whitespace-nowrap">
+              {{ $t('trade.swap.tokenSelector.selectToken') }}
+            </div>
+
             <BaseIcon
-              v-if="!disabled && options.length > 1"
+              v-if="options.length > 1 || !selectedToken"
               name="caret-down-slim"
               sm
             />
           </div>
+
+          <ModalsTokenSelector
+            v-bind="{
+              balances: options,
+              isModalActive
+            }"
+            v-model="denomValue"
+            v-model:isModalActive="isModalActive"
+          />
         </div>
       </div>
-
-      <template #content="{ close }">
-        <AppSelectTokenList
-          v-model="denomValue"
-          :close="close"
-          :balances="options"
-        />
-      </template>
-    </BaseDropdown>
+    </div>
 
     <div class="flex items-center justify-between gap-2 px-4">
-      <div class="flex flex-wrap items-center gap-1 text-sm whitespace-nowrap">
-        <span v-if="amountErrors.length > 0" class="text-red-500 capitalize">
-          {{ amountErrors[0] }}
-        </span>
-      </div>
+      <slot name="error" v-bind="{ amountErrors }">
+        <div
+          class="flex flex-wrap items-center gap-1 text-sm whitespace-nowrap"
+        >
+          <span v-if="amountErrors.length > 0" class="text-red-500 capitalize">
+            {{ amountErrors[0] }}
+          </span>
+        </div>
+      </slot>
+
+      <p
+        v-if="showUsd && selectedToken"
+        class="text-right text-sm text-gray-500 truncate"
+      >
+        <span v-if="amount">${{ estimatedTotalInUsd }} </span>
+        <span v-else>$0.00</span>
+      </p>
     </div>
   </div>
 </template>

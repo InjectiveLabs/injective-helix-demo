@@ -18,6 +18,10 @@ const tabs = [
   {
     label: t('activity.tradeHistory'),
     value: ActivityPage.SpotTradeHistory
+  },
+  {
+    label: t('activity.swapHistory'),
+    value: ActivityPage.SwapHistory
   }
 ]
 </script>

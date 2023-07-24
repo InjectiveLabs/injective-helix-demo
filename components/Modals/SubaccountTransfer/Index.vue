@@ -210,7 +210,7 @@ function closeModal() {
         <AppButton
           lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
-          :status="status"
+          :is-loading="status.isLoading()"
           :disabled="hasFormErrors"
           @click="handleSubaccountTransfer"
         >

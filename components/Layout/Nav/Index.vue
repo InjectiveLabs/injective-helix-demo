@@ -74,6 +74,19 @@ function handleRewardsDropdownShownChange(value: boolean) {
 
         <template #content>
           <NuxtLink
+            :to="{ name: 'swap' }"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
+            data-cy="header-swap-link"
+          >
+            <p class="font-semibold text-base text-white">
+              {{ $t('navigation.swap') }}
+            </p>
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.swapDescription') }}
+            </p>
+          </NuxtLink>
+
+          <NuxtLink
             :to="defaultSpotMarketRoute"
             class="p-4 block rounded-t group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-trade-link"
@@ -98,19 +111,6 @@ function handleRewardsDropdownShownChange(value: boolean) {
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.perpetualDescription') }}
-            </p>
-          </NuxtLink>
-
-          <NuxtLink
-            :to="{ name: 'convert' }"
-            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
-            data-cy="header-convert-link"
-          >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.convert') }}
-            </p>
-            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.convertDescription') }}
             </p>
           </NuxtLink>
         </template>

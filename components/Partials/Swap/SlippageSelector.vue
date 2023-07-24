@@ -2,7 +2,7 @@
 import { Dropdown, Tooltip } from 'floating-vue'
 import { onClickOutside } from '@vueuse/core'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeField } from '@/types'
+import { SwapFormField } from '@/types'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
 
 const popperRef = ref(null)
@@ -24,7 +24,7 @@ const {
   errors: slippageToleranceErrors,
   setValue: setSlippageToleranceValue
 } = useStringField({
-  name: TradeField.SlippageTolerance,
+  name: SwapFormField.Slippage,
   initialValue: '0.5',
   rule: 'slippage'
 })
@@ -84,11 +84,11 @@ function checkForInvalidSlippageValue() {
       <template #popper>
         <div ref="popperRef" class="p-4 bg-gray-800 text-white">
           <h3 class="text-xs font-bold uppercase tracking-widest">
-            {{ $t('trade.convert.advancedSettings') }}
+            {{ $t('trade.swap.advancedSettings') }}
           </h3>
           <div class="my-4 flex items-center gap-2">
-            <span class="text-xs">{{ $t('trade.convert.tolerance') }}</span>
-            <CommonInfoTooltip sm :tooltip="$t('trade.convert.tooltip')" />
+            <span class="text-xs">{{ $t('trade.swap.tolerance') }}</span>
+            <CommonInfoTooltip sm :tooltip="$t('trade.swap.tooltip')" />
           </div>
 
           <div class="flex items-center gap-2 max-xs:flex-wrap">

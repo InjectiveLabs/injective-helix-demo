@@ -33,6 +33,12 @@ function handleToggleRewardsMenu() {
       </template>
 
       <template #content>
+        <LayoutNavItem :to="{ name: 'swap' }">
+          <span class="font-normal tracking-wide">{{
+            $t('navigation.swap')
+          }}</span>
+        </LayoutNavItem>
+
         <LayoutNavItem :to="defaultSpotMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.spot')
@@ -42,12 +48,6 @@ function handleToggleRewardsMenu() {
         <LayoutNavItem :to="defaultPerpetualMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.perpetual')
-          }}</span>
-        </LayoutNavItem>
-
-        <LayoutNavItem :to="{ name: 'convert' }">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.convert')
           }}</span>
         </LayoutNavItem>
       </template>

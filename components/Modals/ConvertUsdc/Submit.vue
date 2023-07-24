@@ -4,7 +4,6 @@ import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { amplitudeConvertTracker } from '@/app/providers/amplitude'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -15,7 +14,6 @@ const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
   isBuy: Boolean,
-  isUsdcConvert: Boolean,
 
   fee: {
     type: Object as PropType<BigNumberInBase>,
@@ -59,8 +57,6 @@ const { insufficientLiquidity, highDeviation } = useSpotError({
   market: computed(() => props.market)
 })
 
-const { takerFeeRate } = useTradeFee(computed(() => props.market))
-
 const hasFormErrors = computed(
   () =>
     Object.keys(formErrors.value).filter(
@@ -85,10 +81,6 @@ function handleConnect() {
 }
 
 function submit() {
-  if (!props.isUsdcConvert) {
-    handleConvertClickTrack()
-  }
-
   emit('form:submit')
 }
 
@@ -98,22 +90,6 @@ function handleNavigation() {
   }
 
   router.push({ name: 'account' })
-}
-
-function handleConvertClickTrack() {
-  const { baseToken, quoteToken } = props.market
-
-  amplitudeConvertTracker.convertClickedTrackEvent({
-    isBuy: props.isBuy,
-    baseSymbol: baseToken.symbol,
-    quoteSymbol: quoteToken.symbol,
-    baseAmount: formValues.value[TradeField.BaseAmount],
-    quoteAmount: formValues.value[TradeField.QuoteAmount],
-    slippageTolerance: formValues.value[TradeField.SlippageTolerance],
-    rate: takerFeeRate.value.times(100).toFormat(2),
-    fee: props.fee.toFixed(),
-    minimumAmountReceived: props.minimalReceived.toFixed(3)
-  })
 }
 </script>
 
@@ -125,7 +101,7 @@ function handleConvertClickTrack() {
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="handleConnect"
     >
-      {{ $t('trade.convert.connect_wallet') }}
+      {{ $t('trade.swap.connect_wallet') }}
     </AppButton>
 
     <AppButton
@@ -133,14 +109,14 @@ function handleConvertClickTrack() {
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       lg
       :disabled="isSubmitDisabled"
-      :status="status"
+      :is-loading="status.isLoading()"
       @click="submit"
     >
       <div class="max-auto w-full">
         <span v-if="insufficientLiquidity">
-          {{ $t('trade.convert.insufficient_liquidity') }}
+          {{ $t('trade.swap.insufficient_liquidity') }}
         </span>
-        <span v-else>{{ $t('trade.convert.convert') }}</span>
+        <span v-else>{{ $t('trade.swap.convert') }}</span>
       </div>
     </AppButton>
 
@@ -151,13 +127,13 @@ function handleConvertClickTrack() {
     <p v-if="hasInsufficientBalance" class="text-red-500 text-sm mt-4">
       <span class="mr-1">
         {{
-          $t('trade.convert.insufficient_balance_verbose', {
+          $t('trade.swap.insufficient_balance_verbose', {
             symbol: isBuy ? market?.quoteToken.symbol : market?.baseToken.symbol
           })
         }}
       </span>
       <span class="text-blue-600" @click="handleNavigation">
-        {{ $t('trade.convert.goToAccount') }}
+        {{ $t('trade.swap.goToAccount') }}
       </span>
     </p>
   </div>
