@@ -109,6 +109,15 @@ function getMarketBySlugOrMarketId() {
     ? spotStore.markets
     : derivativeStore.markets
 
+  // eslint-disable-next-line no-console
+  console.log({
+    markets,
+    spotM: spotStore.markets,
+    derivativeM: derivativeStore.markets,
+    queryMarketId,
+    slug
+  })
+
   return markets.find(
     (m) =>
       m.slug.toLowerCase() === slug.toLowerCase() ||

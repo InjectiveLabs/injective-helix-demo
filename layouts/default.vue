@@ -33,7 +33,7 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
-    spotStore.init(),
+    spotStore.initIfNotInit(),
     derivativeStore.initIfNotInit(),
     exchangeStore.initFeeDiscounts()
   ])
