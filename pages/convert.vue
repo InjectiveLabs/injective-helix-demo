@@ -65,7 +65,10 @@ const fee = computed<BigNumberInBase>(() => {
 })
 
 onMounted(() => {
-  Promise.all([spotStore.init(), exchangeStore.fetchTradingRewardsCampaign()])
+  Promise.all([
+    spotStore.initIfNotInit(),
+    exchangeStore.fetchTradingRewardsCampaign()
+  ])
     .catch($onError)
     .finally(() => status.setIdle())
 })

@@ -76,6 +76,7 @@ type DerivativeStoreState = {
   recentlyExpiredMarkets: UiExpiryFuturesMarketWithToken[]
   binaryOptionsMarkets: UiBinaryOptionsMarketWithToken[]
   markets: UiDerivativeMarketWithToken[]
+  marketIdsFromQuery: string[]
   marketsSummary: UiDerivativeMarketSummary[]
   marketMarkPriceMap: MarketMarkPriceMap
   trades: UiDerivativeTrade[]
@@ -96,6 +97,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   recentlyExpiredMarkets: [],
   binaryOptionsMarkets: [],
   markets: [],
+  marketIdsFromQuery: [],
   marketsSummary: [],
   marketMarkPriceMap: {},
   orderbook: undefined,
@@ -118,7 +120,11 @@ export const useDerivativeStore = defineStore('derivative', {
 
     activeMarketIds: (state) =>
       state.markets
-        .filter(({ slug }) => MARKETS_SLUGS.futures.includes(slug))
+        .filter(
+          ({ slug, marketId }) =>
+            MARKETS_SLUGS.futures.includes(slug) ||
+            state.marketIdsFromQuery.includes(marketId)
+        )
         .map((m) => m.marketId),
 
     tradeableDenoms: (state) =>
@@ -161,14 +167,6 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async init() {
       const derivativeStore = useDerivativeStore()
-
-      const marketsAlreadyFetched = derivativeStore.markets.length
-
-      if (marketsAlreadyFetched) {
-        await derivativeStore.fetchMarketsSummary()
-
-        return
-      }
 
       const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
@@ -215,7 +213,10 @@ export const useDerivativeStore = defineStore('derivative', {
       // Only include markets that we pre-defined to generate static routes for
       const uiPerpetualMarketsWithToken = uiPerpetualMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.futures.includes(market.slug)
+          return (
+            MARKETS_SLUGS.futures.includes(market.slug) ||
+            derivativeStore.marketIdsFromQuery.includes(market.marketId)
+          )
         })
         .sort((a, b) => {
           return (
@@ -225,7 +226,10 @@ export const useDerivativeStore = defineStore('derivative', {
         })
       const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.expiryFutures.includes(market.slug)
+          return (
+            MARKETS_SLUGS.expiryFutures.includes(market.slug) ||
+            derivativeStore.marketIdsFromQuery.includes(market.marketId)
+          )
         })
         .sort((a, b) => {
           return (
@@ -235,7 +239,10 @@ export const useDerivativeStore = defineStore('derivative', {
         })
       const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.binaryOptions.includes(market.slug)
+          return (
+            MARKETS_SLUGS.binaryOptions.includes(market.slug) ||
+            derivativeStore.marketIdsFromQuery.includes(market.marketId)
+          )
         })
         .sort((a, b) => {
           return (
@@ -257,6 +264,28 @@ export const useDerivativeStore = defineStore('derivative', {
       })
 
       await derivativeStore.fetchMarketsSummary()
+    },
+
+    async initIfNotInit() {
+      const derivativeStore = useDerivativeStore()
+
+      const marketsAlreadyFetched = derivativeStore.markets.length
+
+      if (marketsAlreadyFetched) {
+        await derivativeStore.fetchMarketsSummary()
+      } else {
+        await derivativeStore.init()
+      }
+    },
+
+    async initFromTradingPage(marketIdsFromQuery: string[] = []) {
+      const derivativeStore = useDerivativeStore()
+
+      derivativeStore.$patch({
+        marketIdsFromQuery
+      })
+
+      await derivativeStore.init()
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {
