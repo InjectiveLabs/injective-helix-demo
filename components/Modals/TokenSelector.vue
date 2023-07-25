@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
-
-const modalStore = useModalStore()
-
 const props = defineProps({
   isModalActive: Boolean
 })
@@ -11,13 +7,9 @@ const emit = defineEmits<{
   (e: 'update:isModalActive', state: boolean): void
 }>()
 
-const showModal = computed<boolean>(
-  () => modalStore.modals[Modal.SelectToken] && props.isModalActive
-)
+const showModal = computed<boolean>(() => props.isModalActive)
 
 function closeModal() {
-  modalStore.closeModal(Modal.SelectToken)
-
   emit('update:isModalActive', false)
 }
 </script>

@@ -47,6 +47,7 @@ onMounted(() => {
   formValues.value[SwapFormField.InputDenom] = route?.sourceDenom || ''
   formValues.value[SwapFormField.OutputDenom] = route?.targetDenom || ''
 })
+
 function handleInputDenomChange() {
   formValues.value[SwapFormField.OutputDenom] = selectorOutputDenom.value
 

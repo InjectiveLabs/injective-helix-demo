@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
 import { NETWORK } from '@/app/utils/constants'
-import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/swap'
+import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { confettiOptions } from '@/app/utils/vendor'
 
 const modalStore = useModalStore()
