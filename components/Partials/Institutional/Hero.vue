@@ -13,18 +13,17 @@ function handleOpenModal() {
   >
     <div class="flex flex-col items-start justify-center space-y-8">
       <div class="font-bold text-5xl">
-        <h2>Institutional DeFi. Transparent. Efficient.</h2>
+        <h2>{{ $t('institutional.heroTitle') }}</h2>
       </div>
       <p class="text-xl">
-        Trade unlimited cross-chain crypto assets and perpetual markets with
-        market leading rebates
+        {{ $t('institutional.heroSubtitle') }}
       </p>
       <div>
         <button
           class="bg-white text-black py-2 px-4 rounded-md font-semibold"
           @click="handleOpenModal"
         >
-          Get in touch
+          {{ $t('institutional.getInTouch') }}
         </button>
       </div>
     </div>

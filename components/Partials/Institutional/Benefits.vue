@@ -1,33 +1,33 @@
 <script setup lang="ts">
 const benefits = [
   {
-    title: 'Permisioned Markets',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'permisionedMarketsTitle',
+    body: 'permisionedMarketsBody',
     icon: 'permisioned_markets.svg'
   },
   {
-    title: 'Multi-asset support',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'multiAssetSupportTitle',
+    body: 'multiAssetSupportBody',
     icon: 'multi_asset.svg'
   },
   {
-    title: 'On-chain Transparency',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'onChainTransparencyTitle',
+    body: 'onChainTransparencyBody',
     icon: 'onchain_transparency.svg'
   },
   {
-    title: 'Fully compliant',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'robustSecurityTitle',
+    body: 'robustSecurityBody',
     icon: 'fully_compliant.svg'
   },
   {
-    title: 'Instant settlement',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'instantSettlementTitle',
+    body: 'instantSettlementBody',
     icon: 'instant_settlement.svg'
   },
   {
-    title: 'Bespoke infrastructure',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue mollis diam, sed faucibus ante aliquet volutpat. Nunc ornare sodales mattis.',
+    title: 'superiorInfrastructureTitle',
+    body: 'superiorInfrastructureBody',
     icon: 'bespoke_infrastructure.svg'
   }
 ]
@@ -56,8 +56,10 @@ const benefits = [
         </div>
 
         <div>
-          <h3 class="text-2xl font-medium py-4">{{ item.title }}</h3>
-          <p>{{ item.body }}</p>
+          <h3 class="text-2xl font-medium py-4">
+            {{ $t(`institutional.${item.title}`) }}
+          </h3>
+          <p>{{ $t(`institutional.${item.body}`) }}</p>
         </div>
       </div>
     </div>

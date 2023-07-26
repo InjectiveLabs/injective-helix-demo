@@ -34,11 +34,6 @@ const { value: companyValue } = useStringField({
   initialValue: ''
 })
 
-const { value: telegramValue } = useStringField({
-  name: InstitutionalFormField.Telegram,
-  rule: ''
-})
-
 function closeModal() {
   modalStore.closeModal(Modal.InstitutionalForm)
 }
@@ -46,7 +41,15 @@ function closeModal() {
 const onSubmit = handleSubmit((formValues) => {
   status.setLoading()
 
-  submitInstitutionalForm(formValues)
+  const { company, email, firstName, lastName, telegram } = formValues
+
+  submitInstitutionalForm({
+    email,
+    firstName,
+    lastName,
+    telegram,
+    business: company
+  })
     .then(() => {
       success({
         title: 'Success',
@@ -102,12 +105,6 @@ const onSubmit = handleSubmit((formValues) => {
         />
 
         <input v-model="companyValue" :class="classes" placeholder="Company*" />
-
-        <input
-          v-model="telegramValue"
-          :class="classes"
-          placeholder="Telegram"
-        />
       </div>
 
       <div class="mt-10">
