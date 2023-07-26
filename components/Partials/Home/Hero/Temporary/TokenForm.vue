@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { SwapForm, SwapFormField } from '@/types'
-import { TokenSymbols } from '@/app/data/token'
 
 const swapStore = useSwapStore()
+const tokenStore = useTokenStore()
+const spotStore = useSpotStore()
 const formValues = useFormValues<SwapForm>()
-const { query } = useRoute()
+
 const { accountBalancesWithToken } = useBalance()
 
-defineProps({
-  disabled: Boolean
+const props = defineProps({
+  disabled: Boolean,
+  hasUserInteraction: Boolean
 })
 
 const emit = defineEmits<{
@@ -16,19 +18,22 @@ const emit = defineEmits<{
   'reset:queryError': []
   'update:inputQuantity': []
   'update:outputQuantity': []
+  'update:hasUserInteraction': [state: boolean]
 }>()
 
 const animationCount = ref(0)
 
 const { value: inputDenom } = useStringField({
   name: SwapFormField.InputDenom,
-  initialValue: swapStore?.routes[0]?.sourceDenom
+  initialValue: ''
 })
 
 const { value: outputDenom } = useStringField({
   name: SwapFormField.OutputDenom,
-  initialValue: swapStore.routes[0]?.targetDenom
+  initialValue: ''
 })
+
+const { inputToken, outputToken } = useSwap(formValues)
 
 const {
   inputDenomOptions,
@@ -41,56 +46,56 @@ const {
   balances: accountBalancesWithToken
 })
 
-const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
-  useSwap(formValues)
-
-onMounted(() => {
-  const injToken = orderedRouteTokensAndDecimals.value.find(
-    ({ token }) => token.symbol === TokenSymbols.INJ
-  )?.token
-  const usdtToken = orderedRouteTokensAndDecimals.value.find(
-    ({ token }) => token.symbol === TokenSymbols.USDT
-  )?.token
-
-  const [route] = swapStore.routes
-
-  formValues.value[SwapFormField.InputDenom] =
-    usdtToken?.denom || route?.sourceDenom || ''
-  formValues.value[SwapFormField.OutputDenom] =
-    injToken?.denom || route?.targetDenom || ''
-
-  if (Object.keys(query).length !== 0) {
-    handleQuery()
+const isUserInteraction = computed({
+  get: (): boolean => props.hasUserInteraction,
+  set: (hasUserInteraction: boolean) => {
+    emit('update:hasUserInteraction', hasUserInteraction)
   }
 })
 
-function handleQuery() {
-  const { to, from, toAmount, fromAmount } = query
+onMounted(() => {
+  const [route] = swapStore.routes
 
-  if (to && from) {
-    formValues.value[SwapFormField.InputDenom] = from as string
-    formValues.value[SwapFormField.OutputDenom] = to as string
-  }
+  const injToken = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'inj'
+  )?.baseToken
+  const peggyUsdToken = spotStore.markets.find(
+    ({ quoteToken }) => quoteToken.symbol.toLowerCase() === 'usdt'
+  )?.quoteToken
 
-  if (fromAmount) {
-    formValues.value[SwapFormField.InputAmount] = fromAmount as string
+  formValues.value[SwapFormField.InputDenom] =
+    peggyUsdToken?.denom || route?.sourceDenom
+  formValues.value[SwapFormField.OutputDenom] =
+    injToken?.denom || route?.targetDenom || ''
 
-    getOutputQuantity()
-  } else if (toAmount) {
-    formValues.value[SwapFormField.OutputAmount] = toAmount as string
+  formValues.value[SwapFormField.InputAmount] = String(
+    tokenStore.tokenUsdPriceMap[injToken?.coinGeckoId || '']
+  )
+  formValues.value[SwapFormField.OutputAmount] = '1'
+})
 
-    getInputQuantity()
-  }
-}
-
-function handleInputDenomChange() {
+function handleInputDenomChange(denom: string) {
+  formValues.value[SwapFormField.InputDenom] = denom
   formValues.value[SwapFormField.OutputDenom] = selectorOutputDenom.value
 
-  emit('reset:form')
+  if (isUserInteraction.value) {
+    emit('update:hasUserInteraction', isUserInteraction.value)
+    emit('reset:form')
+  }
 }
 
-function handleOutputDenomChange() {
+function handleOutputDenomChange(denom: string) {
+  formValues.value[SwapFormField.OutputDenom] = denom
   formValues.value[SwapFormField.InputDenom] = selectorInputDenom.value
+
+  if (!isUserInteraction.value) {
+    formValues.value[SwapFormField.InputAmount] = String(
+      outputToken.value?.usdPrice || ''
+    )
+
+    return
+  }
+
   emit('reset:form')
 }
 
@@ -113,15 +118,17 @@ function handleSwap() {
      * Since they will want to retain that value when swapping
      * Then, we query swap SC for the opposing input field's value
      **/
-    if (swapStore.isInputEntered) {
-      formValues.value[SwapFormField.OutputAmount] = inputAmount || ''
-
-      getInputQuantity()
-    } else {
+    if (!swapStore.isInputEntered || isUserInteraction.value) {
       formValues.value[SwapFormField.InputAmount] = outputAmount || ''
 
       getOutputQuantity()
+    } else {
+      formValues.value[SwapFormField.OutputAmount] = inputAmount || ''
+
+      getInputQuantity()
     }
+
+    emit('update:hasUserInteraction', true)
   }, 50)
 }
 
@@ -132,6 +139,7 @@ async function getOutputQuantity() {
 
   emit('reset:queryError')
   emit('update:outputQuantity')
+  emit('update:hasUserInteraction', true)
 }
 
 async function getInputQuantity() {
@@ -141,12 +149,7 @@ async function getInputQuantity() {
 
   emit('reset:queryError')
   emit('update:inputQuantity')
-}
-
-function handleMaxUpdate({ amount }: { amount: string }) {
-  formValues.value[SwapFormField.InputAmount] = amount
-
-  getOutputQuantity()
+  emit('update:hasUserInteraction', true)
 }
 </script>
 
@@ -154,9 +157,11 @@ function handleMaxUpdate({ amount }: { amount: string }) {
   <div class="flex flex-col">
     <Transition name="fade-down" mode="out-in">
       <div :key="animationCount">
-        <AppSelectToken
-          v-model:denom="inputDenom"
+        <PartialsHomeHeroTemporarySelectToken
+          v-model:is-user-interaction="isUserInteraction"
           v-bind="{
+            disabled,
+            denom: inputDenom,
             debounce: 600,
             showUsd: true,
             options: inputDenomOptions,
@@ -167,33 +172,28 @@ function handleMaxUpdate({ amount }: { amount: string }) {
           }"
           @update:denom="handleInputDenomChange"
           @update:amount="getOutputQuantity"
-          @update:max="handleMaxUpdate"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
-
-          <template #error>
-            <div
-              class="flex flex-wrap items-center gap-1 text-sm whitespace-nowrap"
-            ></div>
-          </template>
-        </AppSelectToken>
+        </PartialsHomeHeroTemporarySelectToken>
       </div>
     </Transition>
 
     <div class="my-4">
       <BaseIcon
         name="arrow"
-        class="mx-auto min-w-6 w-6 h-6 transform -rotate-90"
+        class="mx-auto min-w-6 w-6 h-6 transform -rotate-90 text-black"
         @click="handleSwap"
       />
     </div>
 
     <Transition name="fade-up" mode="out-in">
       <div :key="animationCount">
-        <AppSelectToken
-          v-model:denom="outputDenom"
+        <PartialsHomeHeroTemporarySelectToken
+          v-model:is-user-interaction="isUserInteraction"
           v-bind="{
-            showUsd: true,
+            disabled,
+            denom: outputDenom,
+            showUsd: false,
             debounce: 600,
             options: outputDenomOptions,
             maxDecimals: outputToken?.quantityDecimals || 0,
@@ -206,13 +206,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
           <span>
             {{ $t('trade.swap.youReceive') }}
           </span>
-
-          <template #error>
-            <div
-              class="flex flex-wrap items-center gap-1 text-sm whitespace-nowrap"
-            ></div>
-          </template>
-        </AppSelectToken>
+        </PartialsHomeHeroTemporarySelectToken>
       </div>
     </Transition>
   </div>

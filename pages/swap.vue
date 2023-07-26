@@ -237,8 +237,6 @@ function resetQueryError() {
 
         <PartialsSwapTokenForm
           v-bind="{
-            minimumOutput,
-            showLoading: status.isLoading(),
             disabled: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
           @update:outputQuantity="getOutputQuantity"

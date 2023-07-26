@@ -67,9 +67,15 @@ function handleRewardsDropdownShownChange(value: boolean) {
         @dropdown:toggle="handleTradeDropdownShownChange"
       >
         <template #default>
-          <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
-            {{ $t('navigation.trade') }}
-          </LayoutNavItemDummy>
+          <div class="relative">
+            <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
+              {{ $t('navigation.trade') }}
+            </LayoutNavItemDummy>
+
+            <div
+              class="bg-blue-500 rounded-full w-2 h-2 absolute right-3.5 top-2.5 hidden lg:block"
+            />
+          </div>
         </template>
 
         <template #content>
@@ -78,9 +84,18 @@ function handleRewardsDropdownShownChange(value: boolean) {
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-swap-link"
           >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.swap') }}
-            </p>
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.swap') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.swapDescription') }}
             </p>
