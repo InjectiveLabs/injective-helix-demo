@@ -1,7 +1,7 @@
 import { HttpClient } from '@injectivelabs/utils'
 import { VITE_SHEETDB_BEARER_TOKEN } from '../utils/constants'
 
-const sheetDbID = 'fwfkb2v469gav'
+const SHEETDB_ID = 'fwfkb2v469gav'
 
 const httpClient = new HttpClient('https://sheetdb.io/api/v1/')
 
@@ -16,7 +16,7 @@ export const submitInstitutionalForm = async (formData: {
   business: string
   telegram: string
 }) => {
-  const { data } = (await httpClient.post(sheetDbID, formData)) as {
+  const { data } = (await httpClient.post(SHEETDB_ID, formData)) as {
     data: { created: number }
   }
 

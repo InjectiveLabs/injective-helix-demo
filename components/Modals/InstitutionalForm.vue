@@ -77,7 +77,7 @@ const onSubmit = handleSubmit((formValues) => {
     @modal:closed="closeModal"
   >
     <div>
-      <h3 class="text-4xl">
+      <h3 class="text-4xl pb-4">
         {{ $t('institutional.modalTitle') }}
       </h3>
       <p>
