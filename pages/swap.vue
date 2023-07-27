@@ -151,17 +151,10 @@ function resetFormValues() {
   formValues[SwapFormField.OutputDenom] = outputDenom || ''
 }
 
-async function getOutputQuantity() {
+function getOutputQuantity() {
   fetchStatus.setLoading()
 
-  const { valid } = await validate()
-
-  if (
-    !valid ||
-    !inputToken.value ||
-    !outputToken.value ||
-    !hasInputAmount.value
-  ) {
+  if (!inputToken.value || !outputToken.value || !hasInputAmount.value) {
     return fetchStatus.setIdle()
   }
 
@@ -181,17 +174,10 @@ async function getOutputQuantity() {
     .finally(() => fetchStatus.setIdle())
 }
 
-async function getInputQuantity() {
+function getInputQuantity() {
   fetchStatus.setLoading()
 
-  const { valid } = await validate()
-
-  if (
-    !valid ||
-    !inputToken.value ||
-    !outputToken.value ||
-    !hasOutputAmount.value
-  ) {
+  if (!inputToken.value || !outputToken.value || !hasOutputAmount.value) {
     return fetchStatus.setIdle()
   }
 
@@ -245,6 +231,7 @@ function resetQueryError() {
           <h3 class="font-bold text-lg">
             {{ $t('trade.swap.swap') }}
           </h3>
+
           <PartialsSwapSlippageSelector />
         </div>
 

@@ -74,7 +74,11 @@ const selectedTokenBalance = computed(() => {
 })
 
 const insufficientBalance = computed(() => {
-  if (new BigNumberInBase(maximumInput.value).lte(selectedTokenBalance.value)) {
+  const amount = swapStore.isInputEntered
+    ? formValues.value[SwapFormField.InputAmount]
+    : maximumInput.value
+
+  if (new BigNumberInBase(amount || 0).lte(selectedTokenBalance.value)) {
     return
   }
 

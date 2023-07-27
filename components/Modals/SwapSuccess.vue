@@ -58,7 +58,7 @@ watch(showModal, (showModalState: boolean) => {
   <AppModal :show="showModal" sm @modal:closed="close">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative">
-        <AppFlexibleConfetti
+        <AppCustomConfetti
           class="absolute inset-0 h-48 -mt-9 w-full"
           v-bind="{ confettiOptions }"
         />

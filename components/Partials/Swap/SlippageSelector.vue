@@ -98,6 +98,7 @@ function checkForInvalidSlippageValue() {
                 :key="`slippage-selector-item-${slippage}`"
                 v-model="slippageTolerance"
                 :value="slippage"
+                @click="toggleSlippageDropdown"
               >
                 <template #default="{ active }">
                   <AppButton

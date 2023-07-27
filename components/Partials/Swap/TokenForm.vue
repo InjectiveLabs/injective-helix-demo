@@ -122,7 +122,6 @@ function handleMaxUpdate({ amount }: { amount: string }) {
         <AppSelectToken
           v-model:denom="inputDenom"
           v-bind="{
-            disabled,
             debounce: 600,
             showUsd: true,
             options: inputDenomOptions,
@@ -159,7 +158,6 @@ function handleMaxUpdate({ amount }: { amount: string }) {
         <AppSelectToken
           v-model:denom="outputDenom"
           v-bind="{
-            disabled,
             showUsd: true,
             debounce: 600,
             options: outputDenomOptions,
