@@ -7,7 +7,7 @@ export const AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT = 'Attempt Place Order Count'
 export const AMPLITUDE_TRANSFERS_MADE_COUNT = 'Transfers Made Count'
 export const AMPLITUDE_ERROR = 'Error'
 export const AMPLITUDE_SUCCESS = 'Success'
-export const AMPLITUDE_SUCCESSFUL_SWAP_COUNT = 'is-success'
+export const AMPLITUDE_SUCCESSFUL_SWAP_COUNT = 'swaps-count'
 
 export const confettiOptions = {
   angle: 90,
