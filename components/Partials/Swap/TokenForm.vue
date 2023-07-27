@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { SwapForm, SwapFormField } from '@/types'
+import { TokenSymbols } from '@/app/data/token'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
@@ -39,13 +40,23 @@ const {
   balances: accountBalancesWithToken
 })
 
-const { inputToken, outputToken } = useSwap(formValues)
+const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
+  useSwap(formValues)
 
 onMounted(() => {
+  const injToken = orderedRouteTokensAndDecimals.value.find(
+    ({ token }) => token.symbol === TokenSymbols.INJ
+  )?.token
+  const usdtToken = orderedRouteTokensAndDecimals.value.find(
+    ({ token }) => token.symbol === TokenSymbols.USDT
+  )?.token
+
   const [route] = swapStore.routes
 
-  formValues.value[SwapFormField.InputDenom] = route?.sourceDenom || ''
-  formValues.value[SwapFormField.OutputDenom] = route?.targetDenom || ''
+  formValues.value[SwapFormField.InputDenom] =
+    usdtToken?.denom || route?.sourceDenom || ''
+  formValues.value[SwapFormField.OutputDenom] =
+    injToken?.denom || route?.targetDenom || ''
 })
 
 function handleInputDenomChange() {

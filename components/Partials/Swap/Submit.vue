@@ -34,15 +34,16 @@ const countdownInterval = ref(undefined as NodeJS.Timeout | undefined)
 
 const { inputToken, invalidInput, maximumInput } = useSwap(formValues)
 
-const hasAmounts = computed(
-  () =>
+const hasAmounts = computed(() => {
+  return (
     new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || '').gt(
       0
     ) &&
     new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || '').gt(
       0
     )
-)
+  )
+})
 
 const handlerFunction = computed(() =>
   rateExpired.value ? getResultQuantity : submit

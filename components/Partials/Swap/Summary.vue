@@ -2,6 +2,7 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField } from '@/types'
+import { tokenToDecimalsOverrideMap } from '@/app/data/token'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
@@ -18,8 +19,8 @@ const {
   orderedRouteTokensAndDecimals
 } = useSwap(formValues)
 
-const showEmpty = computed(
-  () =>
+const showEmpty = computed(() => {
+  return (
     new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0).lte(
       0
     ) ||
@@ -27,14 +28,13 @@ const showEmpty = computed(
       0
     ) ||
     props.isLoading
-)
+  )
+})
 
 const priceForDisplayToFormat = computed(() => {
-  const WETH_SYMBOL = 'wETH'
   const decimals =
-    inputToken.value?.token.symbol === WETH_SYMBOL
-      ? 5
-      : inputToken.value?.quantityDecimals
+    tokenToDecimalsOverrideMap[inputToken.value?.token.symbol || ''] ||
+    inputToken.value?.quantityDecimals
 
   return new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 1)
     .dividedBy(formValues.value[SwapFormField.OutputAmount] || 1)

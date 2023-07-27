@@ -17,6 +17,8 @@ const derivativeStore = useDerivativeStore()
 const resetForm = useResetForm<ActivityForm>()
 const { t } = useLang()
 
+const routeName = computed(() => route.name as string)
+
 const { value: denom } = useStringField({
   name: ActivityField.Denom,
   rule: ''
@@ -30,8 +32,8 @@ const hasActiveFilters = computed(
 
 const isSpot = computed(
   () =>
-    (route.name as string).startsWith(ActivityTab.Spot) ||
-    (route.name as string).startsWith(ActivityTab.WalletHistory)
+    routeName.value.startsWith(ActivityTab.Spot) ||
+    routeName.value.startsWith(ActivityTab.WalletHistory)
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
@@ -64,8 +66,15 @@ const showTypeField = computed(() => {
   ].includes(route.name as ActivityPage)
 })
 
+const showSideField = computed(
+  () =>
+    !routeName.value.includes(ActivityTab.WalletHistory) &&
+    !routeName.value.includes(ActivityPage.FundingPayments) &&
+    !routeName.value.includes(ActivityPage.SwapHistory)
+)
+
 const sideOptions = computed(() => {
-  if ((route.name as string).startsWith(ActivityTab.Positions)) {
+  if (routeName.value.startsWith(ActivityTab.Positions)) {
     return [
       {
         display: t('trade.long'),
@@ -102,7 +111,7 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if ((route.name as string).startsWith(ActivityTab.Spot)) {
+  if (routeName.value.startsWith(ActivityTab.Spot)) {
     return result
   }
 
@@ -125,13 +134,13 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if ((route.name as string).includes(ActivityPage.DerivativeTriggers)) {
+  if (routeName.value.includes(ActivityPage.DerivativeTriggers)) {
     return derivativeTypes
   }
 
   if (
-    (route.name as string).includes(ActivityPage.DerivativeOrderHistory) ||
-    (route.name as string).includes(ActivityPage.DerivativeTradeHistory)
+    routeName.value.includes(ActivityPage.DerivativeOrderHistory) ||
+    routeName.value.includes(ActivityPage.DerivativeTradeHistory)
   ) {
     result = [...result, ...derivativeTypes]
   }
@@ -153,7 +162,7 @@ function handleUpdate() {
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
       <PartialsActivityCommonMarketFilter
-        v-if="!(route.name as string).includes(ActivityPage.SwapHistory)"
+        v-if="!routeName.includes(ActivityPage.SwapHistory)"
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tokens="tokens"
@@ -172,11 +181,7 @@ function handleUpdate() {
       />
 
       <AppSelectField
-        v-if="
-          !(route.name as string).includes(ActivityTab.WalletHistory) &&
-          !(route.name as string).includes(ActivityPage.FundingPayments) &&
-          !(route.name as string).includes(ActivityPage.SwapHistory)
-        "
+        v-if="showSideField"
         v-model="side"
         class="col-span-2 sm:col-span-1"
         :options="sideOptions"
