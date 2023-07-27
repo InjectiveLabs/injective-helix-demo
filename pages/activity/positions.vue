@@ -48,7 +48,7 @@ const tabs = [
 
   <div class="h-full rounded-xl overflow-y-auto">
     <CommonCard md class="h-full-flex space-y-4">
-      <PartialsActivityCommonToolbarNew />
+      <PartialsActivityCommonToolbar />
 
       <div class="h-full-flex">
         <NuxtPage />

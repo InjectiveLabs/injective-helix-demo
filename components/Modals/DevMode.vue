@@ -65,7 +65,7 @@ function close() {
             lg
             class="text-blue-900 bg-blue-500"
             :disabled="errors.length > 0"
-            :status="status"
+            :is-loading="status.isLoading()"
             @click="connect"
           >
             {{ $t('devMode.connect') }}

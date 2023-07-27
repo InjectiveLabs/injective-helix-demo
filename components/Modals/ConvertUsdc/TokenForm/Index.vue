@@ -196,7 +196,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           @update:max="handleMaxBaseAmountChange"
         >
           <span>
-            {{ $t(`trade.convert.${isBuy ? 'youReceive' : 'youPay'}`) }}
+            {{ $t(`trade.swap.${isBuy ? 'youReceive' : 'youPay'}`) }}
           </span>
         </AppSelectToken>
       </div>
@@ -255,7 +255,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           @update:max="handleMaxQuoteAmountChange"
         >
           <span>
-            {{ $t(`trade.convert.${isBuy ? 'youPay' : 'youReceive'}`) }}
+            {{ $t(`trade.swap.${isBuy ? 'youPay' : 'youReceive'}`) }}
           </span>
         </AppSelectToken>
       </div>

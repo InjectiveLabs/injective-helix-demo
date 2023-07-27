@@ -180,6 +180,10 @@ export default <Config>{
 
       backgroundImage: {
         hero: 'url(/svg/helix-hero-bg.svg)'
+      },
+
+      boxShadow: {
+        light: '0 0 100px 0 rgba(0, 0, 0, 0.1)' // adjust the alpha as per your requirement
       }
     }
   },

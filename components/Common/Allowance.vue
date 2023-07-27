@@ -100,7 +100,7 @@ function handleSetAllowance() {
 
     <AppButton
       lg
-      :status="status"
+      :is-loading="status.isLoading()"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       data-cy="allowance-modal-set-button"
       @click="handleClickOnSetAllowance"

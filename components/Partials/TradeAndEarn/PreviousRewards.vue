@@ -9,9 +9,10 @@ import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
+  USDT_DECIMALS,
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  USDT_DECIMALS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
@@ -91,7 +92,7 @@ const pendingRewardsCountdown = computed(() => {
   return format(
     (pendingRewardsStartTimestamp.value + vestingDurationInSeconds.value) *
       1000,
-    'dd MMM HH:mm:ss'
+    DATE_TIME_DISPLAY
   )
 })
 

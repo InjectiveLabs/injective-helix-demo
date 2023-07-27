@@ -182,7 +182,7 @@ const handleFormSubmit = handleSubmit(() => {
                 <AppButton
                   lg
                   class="w-full bg-blue-500 text-blue-900"
-                  :status="status"
+                  :is-loading="status.isLoading()"
                   :disabled="amountErrors.length > 0"
                   data-cy="add-margin-modal-execute-button"
                   @click="handleFormSubmit"

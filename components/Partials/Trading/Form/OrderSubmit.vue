@@ -187,7 +187,7 @@ function handleConnect() {
     <AppButton
       v-else
       lg
-      :status="status"
+      :is-loading="status.isLoading()"
       :disabled="disabled"
       :class="{
         'hover:text-green-900 bg-green-500 text-green-800':
