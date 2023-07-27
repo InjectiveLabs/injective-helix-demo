@@ -35,6 +35,11 @@ class SwapTracker extends BaseTracker {
       }
 
       identify.add(AMPLITUDE_SUCCESSFUL_SWAP_COUNT, 1)
+
+      if (!error) {
+        identify.add(AMPLITUDE_SUCCESSFUL_SWAP_COUNT, 1)
+      }
+
       amplitudeIdentify(identify)
     }
 

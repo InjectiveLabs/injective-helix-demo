@@ -119,10 +119,6 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      if (!err) {
-        resetFormValues()
-      }
-
       amplitudeSwapTracker.swap({
         error: err,
         fee: totalFee.value,
@@ -134,6 +130,10 @@ async function submit() {
         minimumOutput: minimumOutput.value,
         slippageTolerance: formValues[SwapFormField.Slippage]
       })
+
+      if (!err) {
+        resetFormValues()
+      }
 
       submitStatus.setIdle()
     })
@@ -237,8 +237,6 @@ function resetQueryError() {
 
         <PartialsSwapTokenForm
           v-bind="{
-            minimumOutput,
-            showLoading: status.isLoading(),
             disabled: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
           @update:outputQuantity="getOutputQuantity"

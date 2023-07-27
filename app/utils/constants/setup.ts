@@ -4,6 +4,7 @@ import {
   isTestnet,
   getNetworkEndpoints
 } from '@injectivelabs/networks'
+import { CW20_SWAP_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
@@ -102,9 +103,7 @@ const env = {
     : import.meta.env.VITE_ALCHEMY_KEY,
   VITE_FEE_RECIPIENT: isWebpack
     ? (process.env.VITE_FEE_RECIPIENT as string)
-    : (import.meta.env.VITE_FEE_RECIPIENT as string),
-  VITE_SWAP_CONTRACT_ADDRESS: import.meta.env
-    .VITE_SWAP_CONTRACT_ADDRESS as string
+    : (import.meta.env.VITE_FEE_RECIPIENT as string)
 } as {
   VITE_ENV: string
   VITE_BASE_URL: string
@@ -134,7 +133,6 @@ const env = {
   VITE_BUGSNAG_KEY: string
   VITE_ALCHEMY_KEY: string
   VITE_FEE_RECIPIENT: string
-  VITE_SWAP_CONTRACT_ADDRESS: string
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
@@ -217,7 +215,8 @@ export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
 export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
-export const SWAP_CONTRACT_ADDRESS = env.VITE_SWAP_CONTRACT_ADDRESS || ''
+
+export const SWAP_CONTRACT_ADDRESS = CW20_SWAP_CONTRACT_BY_NETWORK[NETWORK]
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,
@@ -233,6 +232,7 @@ export const VITE_PROXY_DETECTION_API_KEY =
 
 export const VITE_GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
 export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
+
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 

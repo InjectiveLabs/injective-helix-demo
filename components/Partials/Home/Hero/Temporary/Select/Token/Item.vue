@@ -5,18 +5,12 @@ import type { Token } from '@injectivelabs/token-metadata'
 const props = defineProps({
   sm: Boolean,
   xl: Boolean,
-  showBalance: Boolean,
   showTokenName: Boolean,
   lgTokenIcon: Boolean,
 
   token: {
     type: Object as PropType<Token>,
     required: true
-  },
-
-  balance: {
-    type: String,
-    default: ''
   }
 })
 
@@ -36,10 +30,6 @@ const classes = computed(() => {
   return 'text-base'
 })
 
-const { valueToString: balanceToString } = useBigNumberFormatter(
-  computed(() => props.balance)
-)
-
 function handleClick() {
   emit('click', props.token.denom)
 }
@@ -47,20 +37,23 @@ function handleClick() {
 
 <template>
   <div class="flex items-center justify-between" @click="handleClick">
-    <div class="flex items-center gap-2">
-      <CommonTokenIcon v-bind="{ token: token, lg: lgTokenIcon }" />
+    <Transition name="fade-down" mode="out-in">
+      <div class="flex items-center gap-2">
+        <CommonTokenIcon v-bind="{ token: token, lg: lgTokenIcon }" />
 
-      <div class="flex flex-col max-w-2xs truncate" :class="classes">
-        <span class="font-semibold text-xl">
-          {{ token.symbol }}
-        </span>
+        <div
+          class="flex flex-col max-w-2xs truncate text-gray-600 font-semibold"
+          :class="classes"
+        >
+          <span>
+            {{ token.symbol }}
+          </span>
 
-        <span v-if="showTokenName" class="text-gray-450">
-          {{ token.name }}
-        </span>
+          <span v-if="showTokenName">
+            {{ token.name }}
+          </span>
+        </div>
       </div>
-    </div>
-
-    <div v-if="showBalance">{{ balanceToString }}</div>
+    </Transition>
   </div>
 </template>
