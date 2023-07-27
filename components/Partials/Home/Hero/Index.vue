@@ -6,10 +6,12 @@
       >
         <PartialsHomeHeroCta class="col-span-12 lg:col-span-6 3xl:col-span-6" />
         <div class="col-span-6 3xl:col-span-6 hidden lg:block lg:mt-6">
-          <PartialsHomeCommonMarkets
+          <!-- perhaps we resurrect markets in the future -->
+          <!-- <PartialsHomeCommonMarkets
             is-hero
             class="max-w-lg ml-auto 3xl:mr-10"
-          />
+          /> -->
+          <PartialsHomeHeroTemporarySwap class="max-w-lg ml-auto 3xl:mr-10" />
         </div>
         <div class="col-span-3 flex gap-2 w-max items-center mt-6 md:mt-0">
           <span class="text-gray-775 text-sm md:text-base">

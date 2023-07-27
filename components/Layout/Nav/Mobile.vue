@@ -27,12 +27,31 @@ function handleToggleRewardsMenu() {
       @panel:toggle="handleToggleTradeMenu"
     >
       <template #title>
-        <div class="text-sm font-semibold">
-          {{ $t('navigation.trade') }}
+        <div class="flex gap-0.5">
+          <div class="text-sm font-semibold">
+            {{ $t('navigation.trade') }}
+          </div>
+          <div class="bg-blue-500 rounded-full w-2 h-2 block lg:hidden" />
         </div>
       </template>
 
       <template #content>
+        <LayoutNavItem :to="{ name: 'swap' }">
+          <div class="flex items-center gap-2 font-normal tracking-wide">
+            <p>
+              {{ $t('navigation.swap') }}
+            </p>
+
+            <div
+              class="h-4 flex items-center rounded-[4px] px-1 py-1 bg-blue-500"
+            >
+              <span class="text-gray-100 uppercase text-[8px]">
+                {{ $t('navigation.new') }}
+              </span>
+            </div>
+          </div>
+        </LayoutNavItem>
+
         <LayoutNavItem :to="defaultSpotMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.spot')
@@ -42,12 +61,6 @@ function handleToggleRewardsMenu() {
         <LayoutNavItem :to="defaultPerpetualMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.perpetual')
-          }}</span>
-        </LayoutNavItem>
-
-        <LayoutNavItem :to="{ name: 'convert' }">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.convert')
           }}</span>
         </LayoutNavItem>
       </template>

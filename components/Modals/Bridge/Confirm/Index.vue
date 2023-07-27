@@ -392,7 +392,7 @@ function handleDeposit() {
           lg
           class="w-full font-semibold rounded bg-blue-500 text-blue-900"
           :disabled="isConfirmationDisabled"
-          :status="status"
+          :is-loading="status.isLoading()"
           data-cy="transfer-confirm-modal-confirm-button"
           @click="handleConfirmation"
         >

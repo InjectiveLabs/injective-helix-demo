@@ -1,4 +1,11 @@
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { Coin } from '@injectivelabs/sdk-ts'
+import { type Token } from '@injectivelabs/token-metadata'
 
 BigNumber.config({
   FORMAT: {
@@ -69,4 +76,44 @@ export function formatPercent({
   const suffix = '%'
 
   return `${prefix}${String(numberInBigNumber.toFixed(precision))}${suffix}`
+}
+
+export const toBalanceInToken = ({
+  value,
+  decimalPlaces,
+  fixedDecimals,
+  roundingMode
+}: {
+  value: string | number
+  decimalPlaces: number
+  fixedDecimals?: number
+  roundingMode?: BigNumber.RoundingMode
+}): string => {
+  const balanceInToken = new BigNumberInWei(value).toBase(decimalPlaces)
+
+  if (fixedDecimals) {
+    return balanceInToken.toFixed(fixedDecimals, roundingMode)
+  }
+
+  return balanceInToken.toFixed()
+}
+
+export const convertCoinToBalancesWithToken = (
+  coin: Coin
+): BalanceWithToken | undefined => {
+  const tokenStore = useTokenStore()
+
+  const meta = tokenStore.tokens.find(
+    (token: Token) => token.denom === coin.denom
+  )
+
+  if (!meta) {
+    return
+  }
+
+  return {
+    token: meta,
+    denom: coin.denom,
+    balance: coin.amount
+  }
 }

@@ -47,6 +47,7 @@ const actionsThatSetAppStateToBusy = [
   'account/transfer',
   'account/withdraw',
   'spot/cancelOrder',
+  'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'derivative/cancelOrder',
@@ -63,6 +64,7 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
+  'swap/submitAtomicOrderExactOutput',
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders'
 ]

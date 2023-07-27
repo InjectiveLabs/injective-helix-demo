@@ -15,6 +15,7 @@ export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
   -UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
+export const MAX_QUOTE_DECIMALS = 3
 export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
@@ -34,6 +35,8 @@ export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
 export const MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE = 500
 export const MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE = 1638313200 // 01 Dec 2020 00:00
 export const OLP_TIME_STAMP_FORMAT = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
+
+export const DATE_TIME_DISPLAY = 'dd MMM HH:mm:ss'
 
 export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
 

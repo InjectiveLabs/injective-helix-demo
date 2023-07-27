@@ -18,12 +18,16 @@ const tabs = [
   {
     label: t('activity.tradeHistory'),
     value: ActivityPage.SpotTradeHistory
+  },
+  {
+    label: t('activity.swapHistory'),
+    value: ActivityPage.SwapHistory
   }
 ]
 </script>
 
 <template>
-  <div class="flex space-x-4 mb-4">
+  <div class="flex space-x-4 mb-4 flex-wrap">
     <template v-for="(tab, index) in tabs" :key="`subtab-${tab.label}`">
       <CommonSeparator v-if="index !== 0" />
 
@@ -53,7 +57,7 @@ const tabs = [
   <div class="h-full rounded-xl overflow-y-auto">
     <CommonCard md class="h-full-flex">
       <div class="h-full-flex space-y-4">
-        <PartialsActivityCommonToolbarNew />
+        <PartialsActivityCommonToolbar />
         <NuxtPage />
       </div>
     </CommonCard>

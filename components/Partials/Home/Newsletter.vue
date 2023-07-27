@@ -50,7 +50,7 @@ const subscribe = handleSubmit((values) => {
           xl
           class="bg-blue-500 text-blue-900"
           :disabled="errors.length > 0"
-          :status="status"
+          :is-loading="status.isLoading()"
           @click="subscribe"
         >
           <span class="text-sm">

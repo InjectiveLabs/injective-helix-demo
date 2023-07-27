@@ -8,6 +8,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -89,7 +90,7 @@ export function useTrade(
       return ''
     }
 
-    return format(trade.value.executedAt, 'dd MMM HH:mm:ss')
+    return format(trade.value.executedAt, DATE_TIME_DISPLAY)
   })
 
   const fee = computed(() => {

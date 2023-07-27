@@ -104,7 +104,7 @@ function handleFormSubmit() {
     .then(() => {
       resetFormValues()
       accountStore.fetchAccountPortfolio()
-      success({ title: t('trade.convert.convert_success') })
+      success({ title: t('trade.swap.swapSuccessfully') })
     })
     .catch($onError)
     .finally(() => {
@@ -153,7 +153,7 @@ function closeModal() {
           }"
         />
 
-        <PartialsConvertSubmit
+        <ModalsConvertUsdcSubmit
           v-if="market"
           class="mt-6"
           v-bind="{
