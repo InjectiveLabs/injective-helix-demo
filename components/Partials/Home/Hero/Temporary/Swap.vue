@@ -164,31 +164,33 @@ function handleNavigation() {
 </script>
 
 <template>
-  <AppHocLoading :show-loading="status.isLoading()">
-    <div class="bg-white rounded-lg w-full self-center shadow-light">
-      <div class="overflow-auto p-6">
-        <PartialsHomeHeroTemporaryTokenForm
-          v-model:has-user-interaction="hasUserInteraction"
-          v-bind="{
-            disabled: status.isLoading()
-          }"
-          @update:outputQuantity="getOutputQuantity"
-          @update:inputQuantity="getInputQuantity"
-          @reset:queryError="resetQueryError"
-          @reset:form="resetFormValues"
-        />
+  <Transition name="fade">
+    <div v-if="status.isIdle()" class="h-full max-w-md">
+      <div class="bg-white rounded-lg self-center shadow-light">
+        <div class="overflow-auto p-6">
+          <PartialsHomeHeroTemporaryTokenForm
+            v-model:has-user-interaction="hasUserInteraction"
+            v-bind="{
+              disabled: status.isLoading()
+            }"
+            @update:outputQuantity="getOutputQuantity"
+            @update:inputQuantity="getInputQuantity"
+            @reset:queryError="resetQueryError"
+            @reset:form="resetFormValues"
+          />
 
-        <AppButton
-          class="w-full bg-blue-500 font-semibold mt-4 text-white"
-          lg
-          @click="handleNavigation"
-        >
-          Get
-          <span class="uppercase">
-            {{ outputToken?.token.symbol || 'INJ' }}
-          </span>
-        </AppButton>
+          <AppButton
+            class="w-full bg-blue-500 font-semibold mt-4 text-white"
+            lg
+            @click="handleNavigation"
+          >
+            Get
+            <span class="uppercase">
+              {{ outputToken?.token.symbol || 'INJ' }}
+            </span>
+          </AppButton>
+        </div>
       </div>
     </div>
-  </AppHocLoading>
+  </Transition>
 </template>

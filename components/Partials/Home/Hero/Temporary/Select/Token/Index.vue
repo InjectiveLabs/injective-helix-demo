@@ -73,7 +73,15 @@ const alternatingDenoms = computed(() => {
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'weth'
   )?.baseToken.denom
 
-  return [injDenom, atomDenom, wethDenom]
+  const wmaticDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'wmatic'
+  )?.baseToken.denom
+
+  const sommDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'somm'
+  )?.baseToken.denom
+
+  return [injDenom, atomDenom, wethDenom, wmaticDenom, sommDenom]
 })
 
 const currentDenom = computed(
@@ -189,6 +197,7 @@ export default {
       placement="bottom"
       auto-boundary-max-size
       popper-class="tempDropdown"
+      @click="updateIsUserInteraction"
     >
       <div class="px-4">
         <div class="flex justify-between">
