@@ -200,22 +200,24 @@ export default {
       @click="updateIsUserInteraction"
     >
       <div class="px-4">
-        <div class="flex justify-between">
-          <Transition name="fade-down" mode="out-in">
-            <AppInputNumeric
-              :key="animateFromAmount"
-              v-model="amount"
-              sm
-              no-padding
-              transparent-bg
-              input-classes="p-0 text-xl font-bold text-gray-600"
-              :max-decimals="maxDecimals"
-              :placeholder="inputPlaceholder"
-              :disabled="disabled || !selectedToken"
-              @update:model-value="updateAmountDebounce"
-              @click.stop="updateIsUserInteraction"
-            />
-          </Transition>
+        <div class="flex justify-between relative">
+          <div @click.stop="updateIsUserInteraction">
+            <Transition name="fade-down" mode="out-in">
+              <AppInputNumeric
+                :key="animateFromAmount"
+                v-model="amount"
+                sm
+                no-padding
+                transparent-bg
+                input-classes="p-0 text-xl font-bold text-gray-600"
+                :max-decimals="maxDecimals"
+                :placeholder="inputPlaceholder"
+                :disabled="disabled || !selectedToken"
+                @update:model-value="updateAmountDebounce"
+                @click.stop="updateIsUserInteraction"
+              />
+            </Transition>
+          </div>
 
           <div class="flex items-center gap-2">
             <Transition name="fade-down" mode="out-in">
