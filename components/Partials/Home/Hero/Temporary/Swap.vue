@@ -37,30 +37,13 @@ onMounted(async () => {
   /** W
    * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
    **/
-  const injToken = await denomClient.getDenomToken('inj')
-  const atomToken = await denomClient.getDenomToken(
-    'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9'
-  )
-  const wethToken = await denomClient.getDenomToken(
-    'peggy0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-  )
-  const wmaticToken = await denomClient.getDenomToken(
-    'factory/inj14ejqjyq8um4p3xfqj74yld5waqljf88f9eneuk/inj1dxv423h8ygzgxmxnvrf33ws3k94aedfdevxd8h'
-  )
-  const sommToken = await denomClient.getDenomToken(
-    'ibc/34346A60A95EB030D62D6F5BDD4B745BE18E8A693372A8A347D5D53DBBB1328B'
-  )
+  const symbolsTokensToPreload = ['INJ', 'ATOM', 'WETH', 'WMATIC', 'SOMM']
+  const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
   Promise.all([
     tokenStore.fetchTokensUsdPriceMap([
       ...QUOTE_DENOMS_GECKO_IDS,
-      ...[
-        injToken?.coinGeckoId || '',
-        atomToken?.coinGeckoId || '',
-        wethToken?.coinGeckoId || '',
-        wmaticToken?.coinGeckoId || '',
-        sommToken?.coinGeckoId || ''
-      ]
+      ...tokens.map((token) => token?.coinGeckoId || '')
     ])
   ])
     .catch($onError)
