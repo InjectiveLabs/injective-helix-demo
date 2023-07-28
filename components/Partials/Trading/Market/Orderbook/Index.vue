@@ -649,9 +649,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <CommonInfoTooltip
+        <AppTooltip
           v-if="!isSpot"
-          :tooltip="$t('trade.mark_price_tooltip_verbose')"
+          :content="$t('trade.mark_price_tooltip_verbose')"
           data-cy="orderbook-mark-price-text-content"
         >
           <span
@@ -659,7 +659,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           >
             {{ markPriceToFormat }}
           </span>
-        </CommonInfoTooltip>
+        </AppTooltip>
       </div>
     </div>
 

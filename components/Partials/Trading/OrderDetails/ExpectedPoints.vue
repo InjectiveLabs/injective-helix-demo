@@ -115,10 +115,7 @@ const expectedPtsToFormat = computed(() => {
     class="mt-2"
   >
     <template #context>
-      <CommonInfoTooltip
-        class="ml-2"
-        :tooltip="$t('trade.expected_points_note')"
-      />
+      <AppTooltip class="ml-2" :content="$t('trade.expected_points_note')" />
     </template>
 
     <span class="font-mono flex items-start break-all">

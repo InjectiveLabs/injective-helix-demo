@@ -1,46 +1,15 @@
-<script lang="ts" setup>
-import { Menu } from 'floating-vue'
-
-defineProps({
-  shown: Boolean
-})
-
-const emit = defineEmits<{
-  'dropdown:toggle': [state: boolean]
-}>()
-
-function handleMouseEnter() {
-  emit('dropdown:toggle', true)
-}
-
-function handleMouseLeave() {
-  emit('dropdown:toggle', false)
-}
-
-function handleUpdate(value: boolean) {
-  emit('dropdown:toggle', value)
-}
-</script>
-
 <template>
-  <Menu
-    v-bind="$attrs"
+  <BaseHoverMenu
     placement="top"
     popper-class="v-popper__navigation"
     :delay="200"
-    :distance="8"
-    :shown="shown"
-    :triggers="['click', 'hover', 'focus']"
-    @update:shown="handleUpdate"
   >
-    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-      <slot />
-    </div>
+    <slot />
 
-    <template #popper>
+    <template #content>
       <slot name="content" />
     </template>
-  </Menu>
+  </BaseHoverMenu>
 </template>
 
 <style>

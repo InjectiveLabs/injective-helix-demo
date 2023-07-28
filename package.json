@@ -67,7 +67,6 @@
     "js-confetti": "^0.11.0",
     "lottie-web": "^5.12.2",
     "nuxt": "3.5.0",
-    "vee-validate": "4.7.3",
     "vue-gtag": "^2.0.2-beta.0",
     "vue-hotjar": "^1.4.0",
     "vue-jest": "^4.0.0-0"
