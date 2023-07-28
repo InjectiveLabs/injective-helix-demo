@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   vite,
   hooks,
   ssr: false,
+  spaLoadingTemplate: false,
   builder: 'vite',
   debug: !isProduction,
   css: ['@/assets/css/tailwind.css'],
@@ -40,6 +41,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxt/devtools',
+    '@nuxtjs/i18n',
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 

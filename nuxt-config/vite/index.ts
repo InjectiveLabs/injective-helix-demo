@@ -1,4 +1,5 @@
-import { defineConfig, UserConfig } from 'vite'
+import { defineConfig } from 'vite'
+import { ViteConfig } from 'nuxt/schema'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from '@bangjelkoski/vite-plugin-node-polyfills'
 
@@ -35,6 +36,6 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['fsevents']
   }
-}) as UserConfig
+}) as ViteConfig
 
 export const vitePlugins = [{ src: './nuxt-config/buffer.ts', ssr: false }]
