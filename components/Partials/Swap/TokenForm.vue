@@ -3,6 +3,7 @@ import { SwapForm, SwapFormField } from '@/types'
 import { TokenSymbols } from '@/app/data/token'
 
 const swapStore = useSwapStore()
+const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
 const { query } = useRoute()
 const { accountBalancesWithToken } = useBalance()
@@ -162,6 +163,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
             options: inputDenomOptions,
             maxDecimals: inputToken?.quantityDecimals || 0,
             hideMax: false,
+            hideBalance: !walletStore.isUserWalletConnected,
             shouldCheckBalance: true,
             amountFieldName: SwapFormField.InputAmount
           }"
@@ -198,6 +200,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
             options: outputDenomOptions,
             maxDecimals: outputToken?.quantityDecimals || 0,
             hideMax: true,
+            hideBalance: !walletStore.isUserWalletConnected,
             amountFieldName: SwapFormField.OutputAmount
           }"
           @update:denom="handleOutputDenomChange"

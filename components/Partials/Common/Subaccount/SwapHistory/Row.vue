@@ -77,20 +77,20 @@ const {
     </td>
 
     <td>
-      <div class="flex items-center gap-1 justify-start">
+      <div class="flex items-center gap-1 justify-start text-xs">
         <PartialsSwapRoute v-bind="{ routeSymbols }" />
       </div>
     </td>
 
-    <td class="h-12 text-right font-mono">
-      <div class="flex flex-col items-start">
+    <td class="h-12 text-right">
+      <div class="flex flex-col items-start text-xs">
         <div v-for="(fee, index) in formattedFees" :key="`${fee}-${index}`">
           {{ fee }}
         </div>
       </div>
     </td>
 
-    <td class="h-12 text-right font-mono pr-3">
+    <td class="h-12 text-right pr-3 text-xs">
       <NuxtLink lg class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-center">
           <BaseIcon name="external-link" class="w-3 h-3" />

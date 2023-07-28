@@ -11,13 +11,17 @@ import {
   SwapFormField,
   SubaccountTransferField
 } from '@/types'
-import { ONE_IN_BASE } from '@/app/utils/constants'
+import {
+  ONE_IN_BASE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   hideMax: Boolean,
+  showUsd: Boolean,
   disabled: Boolean,
   required: Boolean,
-  showUsd: Boolean,
+  hideBalance: Boolean,
   shouldCheckBalance: Boolean,
 
   denom: {
@@ -124,9 +128,25 @@ const estimatedTotalInUsd = computed(() => {
     return '0.00'
   }
 
-  return new BigNumberInBase(token?.usdPrice)
-    .multipliedBy(amount.value)
-    .toFormat(props.maxDecimals, BigNumberInBase.ROUND_DOWN)
+  const usdValue = new BigNumberInBase(amount.value || 0).multipliedBy(
+    new BigNumberInBase(token.usdPrice || 0)
+  )
+
+  const SMALL_USD_PRICE = 0.9
+  const DECIMALS_FOR_SMALL_USD_PRICE = 4
+  const maxDecimalPlaces =
+    new BigNumberInBase(token.usdPrice).lt(SMALL_USD_PRICE) &&
+    usdValue.lt(1) &&
+    usdValue.gt(0)
+      ? DECIMALS_FOR_SMALL_USD_PRICE
+      : props.maxDecimals
+
+  const decimalPlaces = Math.max(
+    UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+    maxDecimalPlaces
+  )
+
+  return usdValue.toFormat(decimalPlaces, BigNumberInBase.ROUND_DOWN)
 })
 
 function openTokenSelectorModal() {
@@ -185,12 +205,9 @@ export default {
         >
           {{ $t('trade.max') }}
         </span>
-        <p class="text-xs text-blue-500">
-          <span v-if="hideMax">
+        <p v-if="!hideBalance" class="text-xs text-blue-500">
+          <span>
             {{ $t('trade.balance', { balance: maxBalanceToString }) }}
-          </span>
-          <span v-else>
-            {{ maxBalanceToString }}
           </span>
         </p>
       </div>
@@ -266,8 +283,10 @@ export default {
         v-if="showUsd && selectedToken"
         class="text-right text-sm text-gray-500 truncate"
       >
-        <span v-if="amount">${{ estimatedTotalInUsd }} </span>
-        <span v-else>$0.00</span>
+        <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">
+          <span v-if="Number(amount) > 0">${{ estimatedTotalInUsd }} </span>
+          <span v-else>$0.00</span>
+        </slot>
       </p>
     </div>
   </div>
