@@ -2,14 +2,13 @@ import { head, hooks } from './nuxt-config'
 import vite, { vitePlugins } from './nuxt-config/vite'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 
 export default defineNuxtConfig({
-  ssr: false,
+  vite,
   hooks,
+  ssr: false,
+  builder: 'vite',
   debug: !isProduction,
-  builder: isWebpack ? 'webpack' : 'vite',
-  vite: isWebpack ? undefined : vite,
   css: ['@/assets/css/tailwind.css'],
 
   app: {
@@ -43,14 +42,6 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
-
-  webpack: {
-    terser: {
-      terserOptions: {
-        keep_classnames: true
-      }
-    }
-  },
 
   // @ts-ignore
   bugsnag: process.env.VITE_BUGSNAG_KEY
