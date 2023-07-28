@@ -78,7 +78,7 @@ const {
 
     <td>
       <div class="flex items-center gap-1 justify-start text-xs">
-        <PartialsSwapRoute v-bind="{ routeSymbols }" />
+        <PartialsSwapRoute v-bind="{ sm: true, routeSymbols }" />
       </div>
     </td>
 
