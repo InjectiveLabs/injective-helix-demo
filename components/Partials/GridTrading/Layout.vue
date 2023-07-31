@@ -2,8 +2,8 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
-  getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultGridSpotMarketRouteParams
 } from '@/app/utils/market'
 import {
   Modal,
@@ -11,6 +11,7 @@ import {
   UiMarketWithToken,
   UiMarketSummary
 } from '@/types'
+import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
 
 const route = useRoute()
 const router = useRouter()
@@ -56,12 +57,16 @@ onMounted(() => {
         modalStore.openModal({ type: Modal.MarketBeta })
       }
 
+      const gridMarket = spotGridMarketsWithSubaccount.find(
+        (market) => market.slug.toLowerCase() === slug.toLowerCase()
+      )
+
       const marketBySlug = getMarketBySlug()
 
-      if (!marketBySlug) {
+      if (!marketBySlug || !gridMarket) {
         const defaultRoute = props.isSpot
-          ? getDefaultSpotMarketRouteParams()
-          : getDefaultPerpetualMarketRouteParams()
+          ? getDefaultGridSpotMarketRouteParams()
+          : getDefaultPerpetualMarketRouteParams() // Change this when we have futures grid trading
 
         router.push(defaultRoute)
       } else {

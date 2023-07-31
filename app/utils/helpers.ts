@@ -69,3 +69,15 @@ export function getMinQuantityTickSize(
         .toFixed()
     : ''
 }
+
+export function addSubacountIdToEthAddress(
+  ethAddress: string,
+  marketHex: string
+) {
+  return `${ethAddress}--${'0'.repeat(66 - marketHex.length)}--${marketHex}`
+}
+
+export function getMarketHexFromSubaccount(subaccount: string) {
+  const marketHex = subaccount.slice(42).replace(/^0+/, '')
+  return marketHex
+}

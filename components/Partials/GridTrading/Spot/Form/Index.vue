@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { SpotGridTradingForm } from '@/types'
+// import { SpotGridTradingForm } from '@/types'
 
 defineProps({
   market: {
@@ -10,22 +10,25 @@ defineProps({
   }
 })
 
-const { errors: formErrors } = useForm<SpotGridTradingForm>()
+const walletStore = useWalletStore()
+
+// const { errors: formErrors } = useForm<SpotGridTradingForm>()
 </script>
 
 <template>
-  <pre>
-    {{ formErrors }}
-  </pre>
-  <div class="space-y-2">
-    <PartialsGridTradingSpotFormLowerUpperPrice />
+  <div v-if="!walletStore.isUserWalletConnected">Connect</div>
 
-    <PartialsGridTradingSpotFormGrids />
+  <AppHocLoading v-else b-bind="{status}">
+    <div class="space-y-2">
+      <PartialsGridTradingSpotFormLowerUpperPrice />
 
-    <PartialsGridTradingSpotFormProfitPerGrid />
+      <PartialsGridTradingSpotFormGrids />
 
-    <PartialsGridTradingSpotFormInvestmentAmount v-bind="{ market }" />
+      <PartialsGridTradingSpotFormProfitPerGrid />
 
-    <PartialsGridTradingSpotFormCreate />
-  </div>
+      <!-- <PartialsGridTradingSpotFormInvestmentAmount v-bind="{ market }" /> -->
+
+      <PartialsGridTradingSpotFormCreate />
+    </div>
+  </AppHocLoading>
 </template>
