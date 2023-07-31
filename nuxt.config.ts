@@ -7,7 +7,6 @@ export default defineNuxtConfig({
   vite,
   hooks,
   ssr: false,
-  spaLoadingTemplate: false,
   builder: 'vite',
   debug: !isProduction,
   css: ['@/assets/css/tailwind.css'],
