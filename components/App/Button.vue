@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { PropType } from 'vue'
+import { Status } from '@injectivelabs/utils'
+
 const attrs = useAttrs()
 
 const props = defineProps({
@@ -7,7 +10,12 @@ const props = defineProps({
   lg: Boolean,
   xl: Boolean,
   disabled: Boolean,
-  isLoading: Boolean
+  isLoading: Boolean,
+
+  status: {
+    type: Object as PropType<Status | undefined>,
+    default: undefined
+  }
 })
 
 const emit = defineEmits<{
@@ -61,7 +69,7 @@ const hasBackground = computed(() => {
 })
 
 function handleClick() {
-  if (props.isLoading) {
+  if (props.isLoading || props.status?.isLoading()) {
     return
   }
 
@@ -94,8 +102,11 @@ export default {
     class="font-bold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
-    <slot v-if="!isLoading" />
-    <span v-else class="flex items-center justify-center">
+    <slot v-if="(status && status.isNotLoading()) || !isLoading" />
+    <span
+      v-if="(status && status.isLoading()) || isLoading"
+      class="flex items-center justify-center"
+    >
       <AppSpinner sm white />
     </span>
   </button>

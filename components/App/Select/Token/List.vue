@@ -88,7 +88,7 @@ function handleClick(denom: string) {
         showBalance: true
       }"
       :key="balance.denom"
-      class="px-2 py-3 hover:bg-blue-500 cursor-pointer rounded text-white hover:text-black"
+      class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
       @click="handleClick"
     />
   </div>

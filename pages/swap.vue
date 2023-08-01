@@ -7,13 +7,14 @@ import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import { mapErrorToMessage } from '@/app/client/utils/swap'
+import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 
 const { $onError } = useNuxtApp()
@@ -48,7 +49,20 @@ const hasOutputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.OutputAmount]).gt(0)
 )
 
+const hideErrorToast = computed(() =>
+  Object.values(errorMap).includes(queryError.value)
+)
+
 onMounted(() => {
+  /**
+   * Set subaccount id to default until the swap SC has support for multiple subaccounts
+   **/
+  if (walletStore.isUserWalletConnected) {
+    accountStore.$patch({
+      subaccountId: walletStore.defaultSubaccountId
+    })
+  }
+
   const spotBaseCoinGeckoIds = spotStore.markets.map(
     ({ baseToken }) => baseToken.coinGeckoId
   )
@@ -169,7 +183,9 @@ function getOutputQuantity() {
     })
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
-      $onError(e)
+      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+        $onError(e)
+      }
     })
     .finally(() => fetchStatus.setIdle())
 }
@@ -193,7 +209,9 @@ function getInputQuantity() {
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
 
-      $onError(e)
+      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+        $onError(e)
+      }
     })
     .finally(() => fetchStatus.setIdle())
 }
