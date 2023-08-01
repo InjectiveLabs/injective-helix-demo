@@ -4,14 +4,14 @@ import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
 const modalStore = useModalStore()
+const { success, error } = useNotifications()
+const { t } = useLang()
 const {
   resetForm,
   errors,
   validate,
   values: formValues
 } = useForm<InstitutionalForm>()
-const { success, error } = useNotifications()
-const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 

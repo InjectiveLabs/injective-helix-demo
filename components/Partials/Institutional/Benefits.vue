@@ -49,7 +49,7 @@ const benefits = [
       >
         <div>
           <img
-            :src="`images/benefits/${item.icon}`"
+            :src="`/images/benefits/${item.icon}`"
             alt=""
             class="bg-gray-800 p-3 rounded-full group-hover:invert transition-all duration-300"
           />
