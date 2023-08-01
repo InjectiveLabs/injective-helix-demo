@@ -19,7 +19,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits<{ (e: 'ready'): void }>()
+const emit = defineEmits<{ ready: [] }>()
 
 const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]

@@ -8,6 +8,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'xrp-usdt-perp',
   'wmatic-usdt',
   '1000pepe-usdt-perp',
   'xau-usdt-perp',
@@ -62,8 +63,9 @@ export const slugsToIncludeInEthereumCategory = [
   'stx-usdt-perp'
 ]
 
-export const dmmSlugsToIncludeInLowVolume = [
+export const olpSlugsToIncludeInLowVolume = [
   'inj-usdt',
+  'xrp-usdt-perp',
   'atom-usdt',
   'weth-usdt',
   'sol-usdc',

@@ -67,12 +67,40 @@ function handleRewardsDropdownShownChange(value: boolean) {
         @dropdown:toggle="handleTradeDropdownShownChange"
       >
         <template #default>
-          <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
-            {{ $t('navigation.trade') }}
-          </LayoutNavItemDummy>
+          <div class="relative">
+            <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
+              {{ $t('navigation.trade') }}
+            </LayoutNavItemDummy>
+
+            <div
+              class="bg-blue-500 rounded-full w-2 h-2 absolute right-3.5 top-2.5 hidden lg:block"
+            />
+          </div>
         </template>
 
         <template #content>
+          <NuxtLink
+            :to="{ name: 'swap' }"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
+            data-cy="header-swap-link"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.swap') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.swapDescription') }}
+            </p>
+          </NuxtLink>
+
           <NuxtLink
             :to="defaultSpotMarketRoute"
             class="p-4 block rounded-t group hover:bg-gray-700 relative z-50 bg-gray-850"
@@ -98,19 +126,6 @@ function handleRewardsDropdownShownChange(value: boolean) {
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.perpetualDescription') }}
-            </p>
-          </NuxtLink>
-
-          <NuxtLink
-            :to="{ name: 'convert' }"
-            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
-            data-cy="header-convert-link"
-          >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.convert') }}
-            </p>
-            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.convertDescription') }}
             </p>
           </NuxtLink>
         </template>
@@ -142,16 +157,16 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </NuxtLink>
 
           <a
-            href="https://dmm.injective.network"
+            href="https://trading.injective.network/program/liquidity"
             target="_blank"
             class="p-4 block group bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white flex items-center">
-              <span>{{ $t('navigation.dmmProgram') }}</span>
+              <span>{{ $t('navigation.openLiquidityProgram') }}</span>
               <BaseIcon name="external-link" arrow class="w-auto h-3 ml-2" />
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.dmmProgramDescription') }}
+              {{ $t('navigation.openLiquidityProgramDescription') }}
             </p>
           </a>
         </template>

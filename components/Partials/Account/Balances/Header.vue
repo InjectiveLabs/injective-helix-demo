@@ -12,8 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:sort-by', state: string): void
-  (e: 'update:ascending', state: boolean): void
+  'update:sort-by': [state: string]
+  'update:ascending': [state: boolean]
 }>()
 
 const sortByValue = computed({

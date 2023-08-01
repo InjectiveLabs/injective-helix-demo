@@ -37,7 +37,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:filterByCurrentMarket', state: boolean): void
+  'update:filterByCurrentMarket': [state: boolean]
 }>()
 
 const actionStatus = reactive(new Status(StatusType.Idle))
@@ -242,7 +242,7 @@ function handleCloseAllPositionsClick() {
           "
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           xs
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           @click="handleCancelAllClick"
         >
@@ -255,7 +255,7 @@ function handleCloseAllPositionsClick() {
             filteredPositions.length > 0
           "
           xs
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
           @click="handleCloseAllPositionsClick"

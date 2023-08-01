@@ -4,14 +4,15 @@ import {
   Web3Client,
   Web3Composer,
   TokenService,
+  DenomClientAsync,
   UiBridgeTransformer,
   peggyGraphQlEndpointForNetwork
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  DenomClient,
   ApolloConsumer,
   ChainGrpcGovApi,
   ChainGrpcBankApi,
+  ChainGrpcWasmApi,
   ChainGrpcMintApi,
   ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
@@ -45,6 +46,7 @@ import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
+export const wasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
@@ -119,12 +121,15 @@ export const tokenService = new TokenService({
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
-export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
+export const denomClient = new DenomClientAsync(NETWORK, {
+  endpoints: ENDPOINTS,
+  alchemyRpcUrl: alchemyRpcEndpoint
+})
 
 // UI Services
 export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v11-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
+  `inj-dex-v12-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
 )

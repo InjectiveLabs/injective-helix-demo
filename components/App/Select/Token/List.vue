@@ -6,11 +6,6 @@ import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 const props = defineProps({
   showBalance: Boolean,
 
-  close: {
-    type: Function,
-    required: true
-  },
-
   balances: {
     type: Array as PropType<BalanceWithToken[]>,
     default: () => []
@@ -25,7 +20,8 @@ const props = defineProps({
 const search = ref('')
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: string): void
+  'update:modelValue': [state: string]
+  close: []
 }>()
 
 const filteredOptions = computed(() => {
@@ -36,7 +32,13 @@ const filteredOptions = computed(() => {
       return true
     }
 
-    return balance.token.symbol.toLowerCase().startsWith(formattedSearch)
+    const { name } = balance.token
+    const shouldIncludeSupply =
+      name.toLowerCase().includes(formattedSearch) ||
+      balance.token.denom.toLowerCase().includes(formattedSearch) ||
+      balance.token.symbol.toLowerCase().includes(formattedSearch)
+
+    return shouldIncludeSupply
   })
 })
 
@@ -65,7 +67,7 @@ const sortedBalancesWithBalancesToBase = computed(() => {
 function handleClick(denom: string) {
   emit('update:modelValue', denom)
 
-  props.close()
+  emit('close')
 }
 </script>
 
@@ -79,12 +81,14 @@ function handleClick(denom: string) {
       v-for="balance in sortedBalancesWithBalancesToBase"
       v-bind="{
         sm: true,
+        lgTokenIcon: true,
+        showTokenName: true,
         token: balance.token,
         balance: balance.balance,
         showBalance: true
       }"
       :key="balance.denom"
-      class="px-2 py-3 hover:bg-blue-500 cursor-pointer rounded text-white hover:text-black"
+      class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
       @click="handleClick"
     />
   </div>

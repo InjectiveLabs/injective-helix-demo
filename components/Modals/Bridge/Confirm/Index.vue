@@ -6,11 +6,8 @@ import {
   BalanceWithTokenAndPrice,
   BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
-import type { TokenWithPrice } from '@injectivelabs/token-metadata'
 import { Modal, BridgeField, BridgeForm, BusEvents } from '@/types'
-import { injToken } from '@/app/data/token'
 import {
-  INJ_GAS_FEE,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_MINIMAL_AMOUNT
@@ -27,7 +24,7 @@ const { $onError } = useNuxtApp()
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const emit = defineEmits<{
-  (e: 'form:submit'): void
+  'form:submit': []
 }>()
 
 const {
@@ -42,17 +39,9 @@ const {
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
-const gasFee = new BigNumberInBase(INJ_GAS_FEE)
-const gasFeeToString = gasFee.toFormat()
-
 const status = reactive(new Status())
 
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeConfirm])
-
-const injTokenWithPrice = computed<TokenWithPrice>(() => ({
-  ...injToken,
-  usdPrice: tokenStore.injUsdPrice
-}))
 
 const balanceWithTokenAndPrice = computed(() => {
   return peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
@@ -138,10 +127,7 @@ const { valueToString: transferAmountToString } = useBigNumberFormatter(
 )
 
 const isConfirmationDisabled = computed(() => {
-  return (
-    transferAmount.value.lte(0) ||
-    (originIsInjective && !accountStore.hasEnoughInjForGas)
-  )
+  return transferAmount.value.lte(0)
 })
 
 const transferAmountInUsd = computed(() =>
@@ -150,13 +136,6 @@ const transferAmountInUsd = computed(() =>
 
 const { valueToString: transferAmountInUsdToString } =
   useBigNumberFormatter(transferAmountInUsd)
-
-const gasFeeInUsd = computed(() =>
-  gasFee.multipliedBy(new BigNumberInBase(injTokenWithPrice.value.usdPrice))
-)
-
-const { valueToString: gasFeeInUsdToString } =
-  useBigNumberFormatter(gasFeeInUsd)
 
 const handlerFunction = computed(() => {
   if (isDeposit.value) {
@@ -395,27 +374,7 @@ function handleDeposit() {
           </template>
         </ModalsBridgeConfirmRow>
 
-        <!-- Fee Delegation for all wallets not active -->
-        <ModalsBridgeConfirmRow v-if="false" bold class="mb-6">
-          <template #title>
-            {{ $t('bridge.gasFee') }}
-          </template>
-
-          <template #amount>
-            <span data-cy="transfer-confirm-modal-gas-fee-text-content">
-              {{ gasFeeToString }} {{ injToken.symbol }}
-            </span>
-          </template>
-
-          <template #amountInUsd>
-            <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
-              ${{ gasFeeInUsdToString }}
-            </span>
-          </template>
-        </ModalsBridgeConfirmRow>
-
-        <!-- Fee Delegation for all wallets active -->
-        <ModalsBridgeConfirmRow v-else bold class="mb-6">
+        <ModalsBridgeConfirmRow bold class="mb-6">
           <template #title>
             {{ $t('bridge.gasFee') }}
           </template>
@@ -433,14 +392,11 @@ function handleDeposit() {
           lg
           class="w-full font-semibold rounded bg-blue-500 text-blue-900"
           :disabled="isConfirmationDisabled"
-          :status="status"
+          :is-loading="status.isLoading()"
           data-cy="transfer-confirm-modal-confirm-button"
           @click="handleConfirmation"
         >
-          <span v-if="originIsInjective && !accountStore.hasEnoughInjForGas">
-            {{ $t('bridge.insufficientINJForGas') }}
-          </span>
-          <span v-else-if="transferAmount.lte(0)">
+          <span v-if="transferAmount.lte(0)">
             {{ $t('bridge.insufficientAmount') }}
           </span>
           <span v-else>

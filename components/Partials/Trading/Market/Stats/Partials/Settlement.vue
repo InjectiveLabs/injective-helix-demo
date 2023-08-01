@@ -5,7 +5,7 @@ import {
   UiDerivativeMarketWithToken,
   UiBinaryOptionsMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { DMM_TIME_STAMP_FORMAT } from '@/app/utils/constants'
+import { OLP_TIME_STAMP_FORMAT } from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -17,7 +17,7 @@ const props = defineProps({
 const expiredAt = computed(() =>
   format(
     (props.market as UiBinaryOptionsMarketWithToken).settlementTimestamp * 1000,
-    DMM_TIME_STAMP_FORMAT
+    OLP_TIME_STAMP_FORMAT
   )
 )
 </script>

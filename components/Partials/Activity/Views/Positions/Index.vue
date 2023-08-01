@@ -110,7 +110,7 @@ function handleSharePosition(position: UiPosition) {
         <AppButton
           v-if="filteredPositions.length > 0"
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="activity-cancel-all-button"
           @click="handleClosePositions"
         >

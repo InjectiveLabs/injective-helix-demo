@@ -237,8 +237,8 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    convert: 'Convert',
-    convertDescription: 'Trade through a simple & intuitive interface',
+    swap: 'Swap',
+    swapDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
@@ -252,10 +252,11 @@ export default {
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
       'Earn crypto commission by inviting friends to trade on Helix',
-    dmmProgram: 'DMM Program',
-    dmmProgramDescription:
-      'Provide liquidity and mine INJ as our dedicated market makers',
+    openLiquidityProgram: 'Open Liquidity Program',
+    openLiquidityProgramDescription:
+      'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
     spot: 'Spot',
+    new: 'New',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',

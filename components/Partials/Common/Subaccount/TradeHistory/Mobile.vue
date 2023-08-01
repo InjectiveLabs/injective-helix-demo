@@ -14,7 +14,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'showTradeDetails', state: UiTrade): void
+  showTradeDetails: [state: UiTrade]
 }>()
 
 const {

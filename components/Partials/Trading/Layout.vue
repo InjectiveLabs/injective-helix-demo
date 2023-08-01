@@ -16,12 +16,11 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
-const { params } = useRoute()
+const { params, query } = useRoute()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
@@ -34,10 +33,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'loaded', state: UiMarketWithToken): void
+  loaded: [state: UiMarketWithToken]
 }>()
 
 const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''
+const queryMarketId = (query.marketId as string) || ''
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
@@ -45,46 +45,6 @@ const fetchStatus = reactive(new Status(StatusType.Loading))
 const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
-
-onMounted(() => {
-  Promise.all([
-    exchangeStore.fetchTradingRewardsCampaign(),
-    exchangeStore.fetchFeeDiscountAccountInfo(),
-    ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
-  ])
-    .then(() => {
-      if (betaMarketSlugs.includes(slug)) {
-        modalStore.openModal({ type: Modal.MarketBeta })
-      }
-
-      const marketBySlug = getMarketBySlug()
-
-      if (!marketBySlug) {
-        const defaultRoute = props.isSpot
-          ? getDefaultSpotMarketRouteParams()
-          : getDefaultPerpetualMarketRouteParams()
-
-        router.push(defaultRoute)
-      } else {
-        market.value = marketBySlug
-
-        emit('loaded', marketBySlug as UiMarketWithToken)
-      }
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-      fetchStatus.setIdle()
-    })
-})
-
-onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
-
-onWalletConnected(() => {
-  if (market.value) {
-    emit('loaded', market.value)
-  }
-})
 
 const summary = computed(() => {
   const marketSummaries: UiMarketSummary[] = props.isSpot
@@ -96,12 +56,64 @@ const summary = computed(() => {
   )
 })
 
-function getMarketBySlug() {
+onMounted(() => {
+  init()
+})
+
+onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
+
+onWalletConnected(() => {
+  if (market.value) {
+    emit('loaded', market.value)
+  }
+})
+
+function init() {
+  Promise.all([
+    exchangeStore.fetchTradingRewardsCampaign(),
+    exchangeStore.fetchFeeDiscountAccountInfo(),
+    ...[
+      props.isSpot
+        ? spotStore.initFromTradingPage([queryMarketId])
+        : derivativeStore.initFromTradingPage([queryMarketId])
+    ]
+  ])
+    .then(() => {
+      if (betaMarketSlugs.includes(slug)) {
+        modalStore.openModal({ type: Modal.MarketBeta })
+      }
+
+      const marketBySlugOrMarketId = getMarketBySlugOrMarketId()
+
+      if (!marketBySlugOrMarketId) {
+        const defaultRoute = props.isSpot
+          ? getDefaultSpotMarketRouteParams()
+          : getDefaultPerpetualMarketRouteParams()
+
+        router.push(defaultRoute)
+      } else {
+        market.value = marketBySlugOrMarketId
+
+        emit('loaded', marketBySlugOrMarketId as UiMarketWithToken)
+      }
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+      fetchStatus.setIdle()
+    })
+}
+
+function getMarketBySlugOrMarketId() {
   const markets: UiMarketWithToken[] = props.isSpot
     ? spotStore.markets
     : derivativeStore.markets
 
-  return markets.find((m) => m.slug.toLowerCase() === slug.toLowerCase())
+  return markets.find(
+    (m) =>
+      m.slug.toLowerCase() === slug.toLowerCase() ||
+      m.marketId === queryMarketId
+  )
 }
 
 function close() {
@@ -146,18 +158,9 @@ watch(
             class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
           >
             <CommonCard no-padding>
-              <div
-                v-if="
-                  fetchStatus.isIdle() &&
-                  walletStore.isUserWalletConnected &&
-                  !accountStore.hasEnoughInjForGas
-                "
-                class="bg-gray-1000 rounded-lg mb-1 p-6"
-              >
-                <CommonInsufficientGasInner />
-              </div>
-              <PartialsTradingBalances v-else :market="market" />
+              <PartialsTradingBalances :market="market" />
             </CommonCard>
+
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
                 :class="{

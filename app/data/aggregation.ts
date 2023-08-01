@@ -303,6 +303,12 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.1')
   },
 
+  'XRP/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
   'BONK/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000000001'),
     default: getDecimalPlaceFromValue('0.000000001'),

@@ -11,15 +11,16 @@ const props = defineProps({
   xl: Boolean,
   disabled: Boolean,
   darkSpinner: Boolean,
+  isLoading: Boolean,
 
   status: {
-    type: Object as PropType<Status>,
-    default: () => new Status()
+    type: Object as PropType<Status | undefined>,
+    default: undefined
   }
 })
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  click: []
 }>()
 
 const classes = computed(() => {
@@ -69,7 +70,7 @@ const hasBackground = computed(() => {
 })
 
 function handleClick() {
-  if (props.status.isLoading()) {
+  if (props.isLoading || props.status?.isLoading()) {
     return
   }
 
@@ -102,9 +103,9 @@ export default {
     class="font-bold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
-    <slot v-if="status && status.isNotLoading()" />
+    <slot v-if="(status && status.isNotLoading()) || !isLoading" />
     <span
-      v-if="status && status.isLoading()"
+      v-if="(status && status.isLoading()) || isLoading"
       class="flex items-center justify-center"
     >
       <AppSpinner sm v-bind="{ white: !darkSpinner }" />

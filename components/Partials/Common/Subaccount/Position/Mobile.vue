@@ -38,7 +38,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'share:position', state: UiPosition): void
+  'share:position': [state: UiPosition]
 }>()
 
 const status = reactive(new Status())

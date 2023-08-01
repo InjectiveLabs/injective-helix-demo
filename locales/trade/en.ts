@@ -55,6 +55,7 @@ export default {
     emptyOrders: 'No orders found',
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
+    emptySwaps: 'No swaps found',
     emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
@@ -231,43 +232,6 @@ export default {
     entryMark: 'Entry / Mark',
     estLiqPrice: 'EST Liq Price',
     balance: ({ named }: I18nMessageFunction) => `Balance: ${named('balance')}`,
-    convert: {
-      connect_wallet: 'Connect Wallet',
-      insufficient_balance: 'Insufficient Balance',
-      insufficient_balance_verbose: ({ named }: I18nMessageFunction) =>
-        `Insufficient ${named(
-          'symbol'
-        )} balance for this conversion. Please top up your trading account.`,
-      insufficient_liquidity: 'Insufficient Liquidity',
-      convert_success: 'Converted Successfully',
-      convert_failed: 'Conversion Failed',
-      convert: 'Convert',
-      convert_now: 'Convert Now',
-      to: 'To',
-      from: 'From',
-      rate: 'Rate',
-      fee: 'Fee',
-      current_rate: 'Current',
-      advancedSettings: 'Advanced Settings',
-      tolerance: 'Slippage Tolerance',
-      tooltip:
-        'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
-      slippage_tolerance: 'Slippage Tolerance',
-      slippage_auto: 'Auto',
-      goToAccount: 'Go to Account',
-      go_to_hub: 'Injective Hub',
-      estimated_slippage: 'Estimated Slippage',
-      minimum_received: 'Minimum Received',
-      fetching_price: 'Fetching price',
-      reset_to_default_pair: ({ named }: I18nMessageFunction) =>
-        `Invalid pair ${named('pair')}, resetting to USDT/INJ`,
-      invalid_token_symbol_warning: ({ named }: I18nMessageFunction) =>
-        `Invalid token ${named('symbol')}, defaulting to ${named(
-          'defaultSymbol'
-        )}.`,
-      youPay: 'You pay',
-      youReceive: 'You receive'
-    },
     slippageWarnings: {
       exceed: 'Slippage can not be higher than 50%.',
       tooLow:
@@ -356,6 +320,58 @@ export default {
     usdcLegacyBalanceDetected: 'Different version of USDC detected',
     haveLegacyUSDC:
       'You have USD Coin (Injective bridge) in your balance. This market only supports the USD Coin (Wormhole from Ethereum). Please go to the Accounts page to convert your USDC.',
-    viewUSDC: 'View USDC on Accounts '
+    viewUSDC: 'View USDC on Accounts ',
+    swap: {
+      to: 'To',
+      fee: 'Fee',
+      fees: 'Fees',
+      swap: 'Swap',
+      from: 'From',
+      rate: 'Rate',
+      route: 'Route',
+      youPay: 'You pay',
+      convert: 'Convert',
+      outgoing: 'Outgoing',
+      incoming: 'Incoming',
+      youReceive: 'You receive',
+      backToSwap: 'Back to Swap',
+      enterAmount: 'Enter amount',
+      goToAccount: 'Go to Account',
+      maximumInput: 'Maximum Input',
+      tolerance: 'Slippage Tolerance',
+      minimumOutput: 'Minimum output',
+      connect_wallet: 'Connect Wallet',
+      fetching_price: 'Fetching price',
+      expectedOutput: 'Expected output',
+      viewTransaction: 'View Transaction',
+      advancedSettings: 'Advanced Settings',
+      currentlyOffline: 'Currently offline',
+      somethingWentWrong: 'Something went wrong.',
+      insufficient_balance: 'Insufficient Balance',
+      rateExpired: 'Rate expired. Click to Update',
+      swapAmountTooLow: 'The swap amount is too low',
+      swapSuccessfully: 'Swap executed successfully!',
+      swappedSuccessfully: 'Swapped successfully!',
+      insufficient_liquidity: 'Insufficient Liquidity',
+      pleaseTryAgain: 'Please reload page to try again.',
+      pleaseTopUp: 'Please top up your trading account.',
+      tooltip:
+        'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
+      tokenSelector: {
+        selectToken: 'Select Token',
+        selectAToken: 'Select a token',
+        searchBy: 'Search by name or symbol'
+      },
+      swapTime: ({ named }: I18nMessageFunction) =>
+        `Swap (${named('swapTimeRemaining')}s)`,
+      insufficient_balance_verbose: ({ named }: I18nMessageFunction) =>
+        `Insufficient ${named(
+          'symbol'
+        )} balance for this conversion. Please top up your trading account.`,
+      youHaveSwapped: ({ named }: I18nMessageFunction) =>
+        `You have swapped ${named('inputAmount')} ${named(
+          'inputTokenSymbol'
+        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
+    }
   }
 }

@@ -45,7 +45,7 @@ function openModal() {
 <template>
   <div v-if="hasUsdcPeggyBalance" class="cursor-pointer" @click="openModal">
     <span class="text-blue-500 font-semibold">{{
-      $t('trade.convert.convert')
+      $t('trade.swap.convert')
     }}</span>
   </div>
 

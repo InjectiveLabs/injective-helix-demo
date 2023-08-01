@@ -28,7 +28,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: string): void
+  'update:modelValue': [state: string]
 }>()
 
 const uuid = Math.random()

@@ -45,6 +45,8 @@ export enum Modal {
   MarketNew = 'market-new',
   MarketBeta = 'market-beta',
   ConvertUsdc = 'convert-usdc',
+  SwapSuccess = 'swap-success',
+  SelectToken = 'select-token',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   USDCDetected = 'usdc-detected',
@@ -63,8 +65,7 @@ export enum Modal {
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
-  AddMarginToPosition = 'add-margin-to-position',
-  InsufficientInjForGas = 'insufficient-inj-for-gas'
+  AddMarginToPosition = 'add-margin-to-position'
 }
 
 export enum Breakpoint {
@@ -157,13 +158,16 @@ export enum AveragePriceOptions {
 }
 
 export enum AmplitudeEvent {
+  Swap = 'Swap',
   Login = 'Login',
   Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
+  ConvertUSDCAttempt = 'Convert USDC Attempt',
+  ConvertUSDCClicked = 'Convert USDC Clicked',
+  SwapAttempt = 'Swap Attempt',
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  ConvertClicked = 'Convert Clicked',
-  ConvertAttempt = 'Convert Attempt',
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
   PlaceOrderAttempt = 'Place Order Attempt',
@@ -337,6 +341,7 @@ export enum ActivityPage {
   SpotOpenOrders = 'activity-spot',
   SpotOrderHistory = 'activity-spot-order-history',
   SpotTradeHistory = 'activity-spot-trade-history',
+  SwapHistory = 'activity-spot-swap-history',
   WalletHistoryTransfers = 'activity-wallet-history',
   WalletHistoryDeposits = 'activity-wallet-history-deposits',
   WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'

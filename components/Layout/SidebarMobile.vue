@@ -8,7 +8,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'sidebar:closed'): void
+  'sidebar:closed': []
 }>()
 
 function handleSidebarClose() {
