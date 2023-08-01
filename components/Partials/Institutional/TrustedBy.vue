@@ -3,7 +3,7 @@ const trustedBy = [
   'jump.svg',
   'cumberland.svg',
   'bh_digital.svg',
-  'galaxy.png',
+  'galaxy.svg',
   'trm.svg'
 ]
 </script>

@@ -15,7 +15,7 @@ function handleOpenModal() {
       <div class="font-bold text-5xl">
         <h2>{{ $t('institutional.heroTitle') }}</h2>
       </div>
-      <p class="text-xl">
+      <p class="text-xl max-w-lg">
         {{ $t('institutional.heroSubtitle') }}
       </p>
       <div>
