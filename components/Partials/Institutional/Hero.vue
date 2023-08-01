@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
+
 const modalStore = useModalStore()
 
 function handleOpenModal() {

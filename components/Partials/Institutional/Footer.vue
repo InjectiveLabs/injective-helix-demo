@@ -25,10 +25,10 @@ const socialLinks = [
               href="https://injectivelabs.org/terms-and-conditions"
               target="_blank"
             >
-              Terms And Conditions
+              {{ $t('institutional.termsAndConditions') }}
             </a>
             <a href="https://injectivelabs.org/privacy-policy" target="_blank">
-              Privacy Policy
+              {{ $t('institutional.privacyPolicy') }}
             </a>
           </div>
 

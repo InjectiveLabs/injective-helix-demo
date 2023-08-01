@@ -6,6 +6,7 @@ import { submitInstitutionalForm } from '@/app/services/institutional'
 const modalStore = useModalStore()
 const { handleSubmit, resetForm, errors } = useForm<InstitutionalForm>()
 const { success, error } = useNotifications()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -34,6 +35,10 @@ const { value: companyValue } = useStringField({
   initialValue: ''
 })
 
+watch(isModalOpen, () => {
+  resetForm()
+})
+
 function closeModal() {
   modalStore.closeModal(Modal.InstitutionalForm)
 }
@@ -52,17 +57,16 @@ const onSubmit = handleSubmit((formValues) => {
   })
     .then(() => {
       success({
-        title: 'Success',
-        description: 'Form submitted Successfuly.'
+        title: t('common.success'),
+        description: t('institutional.formSubmittedSuccesfuly')
       })
-
-      resetForm()
     })
-
     .catch(() => {
-      error({ title: 'Error', description: 'Something happened...' })
+      error({
+        title: t('common.error'),
+        description: t('common.somethingHappened')
+      })
     })
-
     .finally(() => {
       modalStore.closeModal(Modal.InstitutionalForm)
       status.setIdle()

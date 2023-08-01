@@ -6,6 +6,10 @@ export default {
     modalTitle: 'Get In Touch',
     modalDescription: 'Connect directly with the Helix Institutional team.',
     getInTouch: 'Get in touch',
+    learnMore: 'Ready to learn More?',
+    talkToUs: 'Talk to us.',
+    trustedByTheBest: 'Trusted by the best',
+    formSubmittedSuccesfuly: 'Form submitted Successfuly.',
     permisionedMarketsTitle: 'Permisioned Markets',
     permisionedMarketsBody:
       'Helix uniquely provides a gateway to institutional grade permissioned markets, enabling you to seamlessly interact with professionally vetted counterparties.',
@@ -27,6 +31,8 @@ export default {
     superiorInfrastructureTitle: 'Superior Infrastructure',
     superiorInfrastructureBody:
       'Leverage Helix’s custom infrastructure designed to fit the needs of the most sophisticated financial institutions and traders.',
-    allRightsReserved: 'Injective Labs. All Rights Reserved.'
+    allRightsReserved: 'Injective Labs. All Rights Reserved.',
+    termsAndConditions: 'Terms And Conditions',
+    privacyPolicy: 'Privacy Policy'
   }
 }

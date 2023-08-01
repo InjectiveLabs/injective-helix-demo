@@ -43,7 +43,10 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
-    new: 'New'
+    new: 'New',
+    success: 'Success',
+    error: 'Error',
+    somethingHappened: 'Something Happened...'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',

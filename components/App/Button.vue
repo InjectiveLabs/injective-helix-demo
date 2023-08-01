@@ -10,8 +10,8 @@ const props = defineProps({
   lg: Boolean,
   xl: Boolean,
   disabled: Boolean,
-  darkSpinner: Boolean,
   isLoading: Boolean,
+  darkSpinner: Boolean,
 
   status: {
     type: Object as PropType<Status | undefined>,
@@ -103,11 +103,8 @@ export default {
     class="font-bold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
-    <slot v-if="(status && status.isNotLoading()) || !isLoading" />
-    <span
-      v-if="(status && status.isLoading()) || isLoading"
-      class="flex items-center justify-center"
-    >
+    <slot v-if="(status && status.isNotLoading()) || isLoading" />
+    <span v-else class="flex items-center justify-center">
       <AppSpinner sm v-bind="{ white: !darkSpinner }" />
     </span>
   </button>
