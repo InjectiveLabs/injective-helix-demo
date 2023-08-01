@@ -10,6 +10,9 @@ export default {
     talkToUs: 'Talk to us.',
     trustedByTheBest: 'Trusted by the best',
     formSubmittedSuccesfuly: 'Form submitted Successfuly.',
+    benefits: 'Benefits',
+    whyFinancialInstitutionsChooseHelix:
+      'Why financial institutions choose Helix',
     permisionedMarketsTitle: 'Permisioned Markets',
     permisionedMarketsBody:
       'Helix uniquely provides a gateway to institutional grade permissioned markets, enabling you to seamlessly interact with professionally vetted counterparties.',

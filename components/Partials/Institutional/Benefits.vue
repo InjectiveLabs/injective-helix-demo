@@ -35,10 +35,10 @@ const benefits = [
 
 <template>
   <div>
-    <p class="text-xl mb-4">Benefits</p>
+    <p class="text-xl mb-4">{{ $t('institutional.benefits') }}</p>
 
     <h2 class="text-4xl max-w-md mb-8">
-      Why financial institutions choose Helix
+      {{ $t('institutional.whyFinancialInstitutionsChooseHelix') }}
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

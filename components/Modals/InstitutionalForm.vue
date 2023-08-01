@@ -4,7 +4,12 @@ import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
 const modalStore = useModalStore()
-const { handleSubmit, resetForm, errors } = useForm<InstitutionalForm>()
+const {
+  resetForm,
+  errors,
+  validate,
+  values: formValues
+} = useForm<InstitutionalForm>()
 const { success, error } = useNotifications()
 const { t } = useLang()
 
@@ -43,7 +48,13 @@ function closeModal() {
   modalStore.closeModal(Modal.InstitutionalForm)
 }
 
-const onSubmit = handleSubmit((formValues) => {
+async function onSubmit() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
   status.setLoading()
 
   const { company, email, firstName, lastName, telegram } = formValues
@@ -71,7 +82,7 @@ const onSubmit = handleSubmit((formValues) => {
       modalStore.closeModal(Modal.InstitutionalForm)
       status.setIdle()
     })
-})
+}
 </script>
 
 <template>
