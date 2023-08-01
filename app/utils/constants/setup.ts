@@ -103,7 +103,10 @@ const env = {
     : import.meta.env.VITE_ALCHEMY_KEY,
   VITE_FEE_RECIPIENT: isWebpack
     ? (process.env.VITE_FEE_RECIPIENT as string)
-    : (import.meta.env.VITE_FEE_RECIPIENT as string)
+    : (import.meta.env.VITE_FEE_RECIPIENT as string),
+  VITE_SHEETDB_BEARER_TOKEN: isWebpack
+    ? process.env.VITE_SHEETDB_BEARER_TOKEN
+    : import.meta.env.VITE_SHEETDB_BEARER_TOKEN
 } as {
   VITE_ENV: string
   VITE_BASE_URL: string
@@ -133,6 +136,7 @@ const env = {
   VITE_BUGSNAG_KEY: string
   VITE_ALCHEMY_KEY: string
   VITE_FEE_RECIPIENT: string
+  VITE_SHEETDB_BEARER_TOKEN: string
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
@@ -215,6 +219,7 @@ export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
 export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
+export const VITE_SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
 export const SWAP_CONTRACT_ADDRESS = CW20_SWAP_CONTRACT_BY_NETWORK[NETWORK]
 

@@ -13,9 +13,6 @@ const formValues = useFormValues<SwapForm>()
 const props = defineProps({
   hideMax: Boolean,
   disabled: Boolean,
-  required: Boolean,
-  showUsd: Boolean,
-  shouldCheckBalance: Boolean,
   isUserInteraction: Boolean,
 
   denom: {

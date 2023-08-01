@@ -1,5 +1,6 @@
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { type Token } from '@injectivelabs/token-metadata'
 import {
@@ -70,6 +71,10 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
         decimalPlaces: token?.decimals || 18,
         fixedDecimals: MAX_QUOTE_DECIMALS
       })
+
+      if (new BigNumberInBase(amountInToken).lt(0.001)) {
+        return `<0.001 ${token?.symbol}`
+      }
 
       return `${amountInToken} ${token?.symbol}`
     })
