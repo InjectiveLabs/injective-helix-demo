@@ -59,6 +59,7 @@
     "@vee-validate/rules": "4.7.3",
     "@vueuse/components": "^10.1.0",
     "@vueuse/nuxt": "^10.1.0",
+    "apexcharts": "^3.41.1",
     "canvas-confetti": "^1.6.0",
     "core-js": "^3.10.1",
     "date-fns": "^2.29.3",
