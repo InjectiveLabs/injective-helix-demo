@@ -103,7 +103,7 @@ export default {
     class="font-bold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
-    <slot v-if="(status && status.isNotLoading()) || isLoading" />
+    <slot v-if="(!status || status.isNotLoading()) && !isLoading" />
     <span v-else class="flex items-center justify-center">
       <AppSpinner sm v-bind="{ white: !darkSpinner }" />
     </span>
