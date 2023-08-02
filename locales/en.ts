@@ -177,6 +177,12 @@ export default {
       `Stake total of ${named('total')} INJ to receive the full amount`
   },
 
+  futuresMarketRestricted: {
+    title: 'Unavailable Market',
+    description: 'This market is not available in your region.',
+    cta: 'Return to homepage'
+  },
+
   marketBeta: {
     title: 'Acknowledge the risk of trading on the market',
     'I Understand': 'I Understand',

@@ -7,18 +7,18 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 
-// definePageMeta({
-//   middleware: [
-//     () => {
-//       const appStore = useAppStore()
+definePageMeta({
+  middleware: [
+    () => {
+      const appStore = useAppStore()
+      const modalStore = useModalStore()
 
-//       // disable US users from accessing futures market page
-//       if (['US'].includes(appStore.userState.geoLocation.country)) {
-//         return navigateTo('/')
-//       }
-//     }
-//   ]
-// })
+      if (['US'].includes(appStore.userState.geoLocation.country)) {
+        modalStore.openModal({ type: Modal.FuturesMarketRestricted })
+      }
+    }
+  ]
+})
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -156,6 +156,7 @@ watch(
 
     <template #modals>
       <div>
+        <ModalsFuturesRestricted />
         <ModalsAddMargin />
         <ModalsMarketExpired
           v-if="market && marketIsExpired"
