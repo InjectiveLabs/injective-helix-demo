@@ -7,18 +7,18 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 
-definePageMeta({
-  middleware: [
-    () => {
-      const appStore = useAppStore()
+// definePageMeta({
+//   middleware: [
+//     () => {
+//       const appStore = useAppStore()
 
-      // disable US users from accessing futures market page
-      if (['US'].includes(appStore.userState.geoLocation.country)) {
-        return navigateTo('/')
-      }
-    }
-  ]
-})
+//       // disable US users from accessing futures market page
+//       if (['US'].includes(appStore.userState.geoLocation.country)) {
+//         return navigateTo('/')
+//       }
+//     }
+//   ]
+// })
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
