@@ -261,7 +261,7 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.1')
   },
 
-  'STINJ/INJ': {
+  'stINJ/INJ': {
     minTick: getDecimalPlaceFromValue('0.0001'),
     default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.1')

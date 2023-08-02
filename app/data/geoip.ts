@@ -21,7 +21,6 @@ export const restrictedCountries = [
   'CG',
   'DZ',
   'KP',
-  'US',
   'VE',
   'BD',
   'ML',
