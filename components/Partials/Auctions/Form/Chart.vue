@@ -1,9 +1,47 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
+import { PropType } from 'nuxt/dist/app/compat/capi'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 
-const amount = ref(8.42)
+const props = defineProps({
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  bid: {
+    type: String,
+    default: '0'
+  }
+})
+
+const spotStore = useSpotStore()
+
+const amount = ref(8.4)
 const target = ref(null)
 const chart = ref<null | ApexCharts>(null)
+
+const orderbookBuysFormatted = computed(() =>
+  (spotStore.orderbook?.buys || []).map((order) => ({
+    price: new BigNumberInBase(order.price)
+      .times(
+        new BigNumber(10).exponentiatedBy(
+          props.market.baseToken.decimals - props.market.quoteToken.decimals
+        )
+      )
+      .toFixed(2),
+    quantity: new BigNumberInWei(order.quantity)
+      .toBase(props.market.baseToken.decimals)
+      .toFixed(2)
+  }))
+)
+
+const currentBid = computed(() => 8.5)
 
 const options = computed<ApexOptions>(() => ({
   series: [
@@ -49,7 +87,7 @@ const options = computed<ApexOptions>(() => ({
 
   grid: {
     show: false,
-    padding: { left: 0, right: 0, bottom: 0, top: 0 }
+    padding: { left: 40, right: 40, bottom: 0, top: 0 }
   },
 
   xaxis: {
@@ -67,7 +105,7 @@ const options = computed<ApexOptions>(() => ({
   tooltip: {
     // enabled: false
     x: {
-      formatter: (val) => Number(val).toFixed(2)
+      formatter: (val) => val.toFixed(2)
     }
   }
 
@@ -120,9 +158,31 @@ onUnmounted(() => {
 })
 
 watch(
-  [amount, target],
+  [amount, target, orderbookBuysFormatted],
   () => {
     if (chart.value) {
+      chart.value.updateOptions({
+        xaxis: {
+          categories: orderbookBuysFormatted.value.map((buy) =>
+            Number(buy.price)
+          ),
+          min: Math.min(
+            ...orderbookBuysFormatted.value.map((buy) => Number(buy.price))
+          ),
+          max: Math.max(
+            ...orderbookBuysFormatted.value.map((buy) => Number(buy.price))
+          ),
+          type: 'numeric'
+        }
+      })
+
+      // orderbook update
+      chart.value.updateSeries([
+        {
+          name: 'Amount',
+          data: orderbookBuysFormatted.value.map((buy) => Number(buy.quantity))
+        }
+      ])
       chart.value.clearAnnotations()
 
       // Price Anotations
@@ -141,13 +201,14 @@ watch(
           },
           text: amount.value,
           orientation: 'landscape',
-          offsetY: 55,
-          borderRadius: 15
+          offsetY: 60,
+          borderRadius: 15,
+          id: 'yourBid'
         }
       })
 
       chart.value.addXaxisAnnotation({
-        x: 5.22,
+        x: currentBid.value,
         strokeDashArray: 2,
         borderColor: '#ffffff',
         label: {
@@ -159,10 +220,11 @@ watch(
             fontSize: '1rem'
           },
           offsetY: 30,
-          text: 5.22,
+          text: currentBid.value,
           orientation: 'landscape',
           borderRadius: 15
-        }
+        },
+        id: 'currentBid'
       })
 
       // Text Anotations
@@ -182,12 +244,13 @@ watch(
           text: 'Your Bid',
           orientation: 'landscape',
           offsetY: 0,
-          borderRadius: 10
+          borderRadius: 10,
+          id: 'yourBidText'
         }
       })
 
       chart.value.addXaxisAnnotation({
-        x: 5.22,
+        x: currentBid.value,
         strokeDashArray: 2,
         borderColor: '#ffffff33',
         label: {
@@ -200,7 +263,8 @@ watch(
           },
           text: 'Current Bid',
           orientation: 'landscape',
-          borderRadius: 10
+          borderRadius: 10,
+          id: 'currentBidText'
         }
       })
     }
@@ -210,6 +274,14 @@ watch(
 </script>
 
 <template>
-  <!-- <input v-model.number="amount" type="range" min="3" max="10" /> -->
-  <div id="auction-chart" ref="target"></div>
+  <div class="-ml-11 -mr-10">
+    <!-- <input
+      v-model.number="amount"
+      type="range"
+      :min="Math.min(...orderbookBuysFormatted.map((buy) => Number(buy.price)))"
+      :max="Math.max(...orderbookBuysFormatted.map((buy) => Number(buy.price)))"
+      step="0.01"
+    /> -->
+    <div id="auction-chart" ref="target"></div>
+  </div>
 </template>
