@@ -8,6 +8,14 @@ defineProps({
   }
 })
 const walletStore = useWalletStore()
+watch(
+  () => walletStore.isUserWalletConnected,
+  (isConnected) => {
+    if (!isConnected) {
+      navigateTo('/auctions/talis/?showAuctions=true')
+    }
+  }
+)
 </script>
 
 <template>
@@ -16,6 +24,6 @@ const walletStore = useWalletStore()
       v-if="walletStore.isUserWalletConnected"
       v-bind="{ market }"
     />
-    <div v-else class="text-center">Please Connect Wallet Connect Wallet</div>
+    <div v-else class="text-center">Please Connect Wallet</div>
   </div>
 </template>

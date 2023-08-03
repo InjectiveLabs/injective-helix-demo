@@ -54,6 +54,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
       <LayoutNavItem :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </LayoutNavItem>
+
       <LayoutNavItem
         :to="{ name: 'markets' }"
         class="block"
@@ -171,6 +172,14 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </a>
         </template>
       </LayoutNavHoverMenu>
+
+      <LayoutNavItem
+        v-if="$route.query.showAuctions === 'true'"
+        to="/auctions?showAuctions=true"
+        class="block"
+      >
+        Auctions
+      </LayoutNavItem>
 
       <!-- <LayoutNavItem
         class="block"

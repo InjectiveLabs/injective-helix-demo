@@ -45,10 +45,10 @@ const orderbookBuysFormatted = computed(() =>
         .toBase(props.market.baseToken.decimals)
         .toFixed(2)
     }))
-    .filter((order) => Number(order.price) > 1)
+    .filter((order) => Number(order.price) >= 1)
 )
 
-const currentBid = computed(() => 7.8)
+const currentBid = computed<Number | null>(() => null) // TODO
 
 const options = computed<ApexOptions>(() => ({
   series: [
@@ -116,44 +116,6 @@ const options = computed<ApexOptions>(() => ({
       formatter: (val) => val.toFixed(2)
     }
   }
-
-  // annotations: {
-  //   xaxis: [
-  //     {
-  //       x: 5,
-  //       strokeDashArray: 2,
-  //       borderColor: '#775DD0',
-  //       label: {
-  //         borderColor: '#775DD0',
-  //         style: {
-  //           color: '#fff',
-  //           background: '#775DD0',
-  //           padding: { bottom: 5, left: 5, right: 5, top: 5 }
-  //         },
-  //         text: 'Current Bid',
-  //         orientation: 'landscape',
-  //         borderRadius: 10
-  //       }
-  //     },
-  //     {
-  //       x: amount.value,
-  //       strokeDashArray: 2,
-  //       borderColor: '#338811',
-  //       label: {
-  //         borderColor: '#775DD0',
-  //         style: {
-  //           color: '#fff',
-  //           background: '#338811',
-  //           padding: { bottom: 5, left: 5, right: 5, top: 5 }
-  //         },
-  //         text: 'Your Bid',
-  //         orientation: 'landscape',
-  //         offsetY: 40,
-  //         borderRadius: 10
-  //       }
-  //     }
-  //   ]
-  // }
 }))
 
 onMounted(() => {
@@ -184,7 +146,6 @@ watch(
         }
       })
 
-      // orderbook update
       chart.value.updateSeries([
         {
           name: 'Amount',
@@ -192,9 +153,8 @@ watch(
           group: 'amount'
         }
       ])
-      chart.value.clearAnnotations()
 
-      // Price Anotations
+      chart.value.clearAnnotations()
 
       if (amount.value) {
         chart.value.addXaxisAnnotation({
@@ -238,46 +198,46 @@ watch(
         })
       }
 
-      chart.value.addXaxisAnnotation({
-        x: currentBid.value,
-        strokeDashArray: 2,
-        borderColor: '#ffffff',
-        label: {
+      if (currentBid.value) {
+        chart.value.addXaxisAnnotation({
+          x: currentBid.value,
+          strokeDashArray: 2,
           borderColor: '#ffffff',
-          style: {
-            color: '#000000',
-            background: '#ffffff',
-            padding: { bottom: 5, left: 10, right: 10, top: 5 },
-            fontSize: '1rem'
+          label: {
+            borderColor: '#ffffff',
+            style: {
+              color: '#000000',
+              background: '#ffffff',
+              padding: { bottom: 5, left: 10, right: 10, top: 5 },
+              fontSize: '1rem'
+            },
+            offsetY: 30,
+            text: currentBid.value,
+            orientation: 'landscape',
+            borderRadius: 15
           },
-          offsetY: 30,
-          text: currentBid.value,
-          orientation: 'landscape',
-          borderRadius: 15
-        },
-        id: 'currentBid'
-      })
+          id: 'currentBid'
+        })
 
-      // Text Anotations
-
-      chart.value.addXaxisAnnotation({
-        x: currentBid.value,
-        strokeDashArray: 2,
-        borderColor: '#ffffff33',
-        label: {
-          borderColor: 'transparent',
-          style: {
-            color: '#ffffff',
-            background: 'transparent',
-            fontSize: '0.9rem',
-            padding: { bottom: 5, left: 5, right: 5, top: 5 }
-          },
-          text: 'Current Bid',
-          orientation: 'landscape',
-          borderRadius: 10,
-          id: 'currentBidText'
-        }
-      })
+        chart.value.addXaxisAnnotation({
+          x: currentBid.value,
+          strokeDashArray: 2,
+          borderColor: '#ffffff33',
+          label: {
+            borderColor: 'transparent',
+            style: {
+              color: '#ffffff',
+              background: 'transparent',
+              fontSize: '0.9rem',
+              padding: { bottom: 5, left: 5, right: 5, top: 5 }
+            },
+            text: 'Current Bid',
+            orientation: 'landscape',
+            borderRadius: 10,
+            id: 'currentBidText'
+          }
+        })
+      }
     }
   },
   { immediate: true }
@@ -286,13 +246,6 @@ watch(
 
 <template>
   <div class="-ml-11 -mr-10">
-    <!-- <input
-      v-model.number="amount"
-      type="range"
-      :min="Math.min(...orderbookBuysFormatted.map((buy) => Number(buy.price)))"
-      :max="Math.max(...orderbookBuysFormatted.map((buy) => Number(buy.price)))"
-      step="0.01"
-    /> -->
     <div id="auction-chart" ref="target"></div>
   </div>
 </template>

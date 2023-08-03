@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { parseISO, intervalToDuration } from 'date-fns'
 
+definePageMeta({
+  middleware: [
+    (to) => {
+      if (!(to.query.showAuctions === 'true')) {
+        return navigateTo('/')
+      }
+    }
+  ]
+})
+
 const nowDate = ref(Date.now())
-const eventDate = parseISO('2023-08-03')
+const eventDate = parseISO('2023-08-15')
 
 const timeFormatted = computed(() => {
   const { days, hours, minutes, seconds } = intervalToDuration({
@@ -28,7 +38,7 @@ useIntervalFn(() => {
       </p>
 
       <NuxtLink
-        to="/auctions/talis"
+        to="/auctions/talis?showAuctions=true"
         class="grid grid-cols-1 md:grid-cols-2 bg-gray-900 rounded-2xl overflow-hidden w-full max-w-lg group"
       >
         <div class="bg-white p-4 grid place-items-center overflow-hidden">
@@ -38,6 +48,37 @@ useIntervalFn(() => {
             class="group-hover:scale-110 transition-transform duration-300"
           />
         </div>
+
+        <div>
+          <div class="flex justify-end p-6 pb-0">
+            <p
+              class="bg-green-500 text-black py-0.5 px-1 font-bold text-xs rounded"
+            >
+              LIVE
+            </p>
+          </div>
+          <div class="p-4 space-y-2">
+            <h2 class="font-bold text-xl">TALIS</h2>
+            <h4 class="text-xs uppercase text-gray-500">Tokens Offered</h4>
+            <p class="text-xl">100,000 TALIS</p>
+            <h4 class="text-xs uppercase text-gray-500">Starting Bid Price</h4>
+            <p class="text-xl">1.00 USDT</p>
+          </div>
+        </div>
+      </NuxtLink>
+
+      <NuxtLink
+        to="/auctions/talis-upcoming?showAuctions=true"
+        class="grid grid-cols-1 md:grid-cols-2 bg-gray-900 rounded-2xl overflow-hidden w-full max-w-lg group"
+      >
+        <div class="bg-white p-4 grid place-items-center overflow-hidden">
+          <img
+            src="/images/talis-logo.svg"
+            alt=""
+            class="group-hover:scale-110 transition-transform duration-300"
+          />
+        </div>
+
         <div>
           <div class="flex justify-end p-6 pb-0">
             <p
@@ -49,7 +90,7 @@ useIntervalFn(() => {
           <div class="p-4 space-y-2">
             <h2 class="font-bold text-xl">TALIS</h2>
             <h4 class="text-xs uppercase text-gray-500">Tokens Offered</h4>
-            <p class="text-xl">123,123 TALIS</p>
+            <p class="text-xl">100,000 TALIS</p>
             <h4 class="text-xs uppercase text-gray-500">Starting Bid Price</h4>
             <p class="text-xl">1.00 USDT</p>
           </div>

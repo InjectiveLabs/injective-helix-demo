@@ -20,9 +20,9 @@
         />
         <h3 class="text-4xl font-bold">TALIS</h3>
         <p
-          class="font-bold text-sm bg-green-500 py-0.5 px-2 rounded-md text-black"
+          class="font-bold text-sm bg-orange-500 py-0.5 px-2 rounded-md text-black"
         >
-          LIVE
+          UPCOMING
         </p>
       </div>
 
@@ -37,8 +37,8 @@
           <p>100,000 Talis</p>
         </div>
         <div>
-          <h3 class="text-gray-400 uppercase font-semibold">Auction Closes</h3>
-          <p>Jul 15, 2023 10:00 UTC</p>
+          <h3 class="text-gray-400 uppercase font-semibold">Auction Opens</h3>
+          <p>Jul 10, 2023 10:00 UTC</p>
         </div>
       </div>
     </div>
