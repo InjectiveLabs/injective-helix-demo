@@ -15,22 +15,17 @@
       <span
         class="bg-blue-800 text-blue-500 px-2 py-0.5 rounded-md font-semibold text-sm"
       >
-        WEBSITE
+        Website
       </span>
       <span
         class="bg-blue-800 text-blue-500 px-2 py-0.5 rounded-md font-semibold text-sm"
       >
-        WEBSITE
+        Twitter
       </span>
       <span
         class="bg-blue-800 text-blue-500 px-2 py-0.5 rounded-md font-semibold text-sm"
       >
-        WEBSITE
-      </span>
-      <span
-        class="bg-blue-800 text-blue-500 px-2 py-0.5 rounded-md font-semibold text-sm"
-      >
-        WEBSITE
+        Discord
       </span>
     </div>
 
@@ -48,21 +43,14 @@
         class="flex justify-between items-center py-4 border-y border-y-gray-600"
       >
         <p>Starting bid price</p>
-        <p>1.00 $</p>
+        <p>1.00 USDT</p>
       </div>
 
       <div
         class="flex justify-between items-center py-4 border-y border-y-gray-600"
       >
-        <p>Auction starts</p>
+        <p>Auction Time</p>
         <p>Aug 5, 2023 10:00 UTC</p>
-      </div>
-
-      <div
-        class="flex justify-between items-center py-4 border-y border-y-gray-600"
-      >
-        <p>Auction ends</p>
-        <p>Aug 6, 2023 10:00 UTC</p>
       </div>
     </div>
   </div>

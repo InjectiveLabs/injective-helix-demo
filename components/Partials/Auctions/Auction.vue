@@ -39,7 +39,7 @@ defineProps({
             v-else
             class="bg-green-500 text-black py-0.5 px-1 font-bold text-xs rounded"
           >
-            LIVE
+            Live
           </p>
         </div>
         <div class="p-4 space-y-2">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 
@@ -48,7 +48,38 @@ const orderbookBuysFormatted = computed(() =>
     .filter((order) => Number(order.price) >= 1)
 )
 
-const currentBid = computed<Number | null>(() => null) // TODO
+const currentBid = computed(() => {
+  if (!spotStore.orderbook) {
+    return 1
+  }
+
+  const TALIS_TOTAL_AMOUNT = 100000
+  const TALIS_TOTAL_AMOINT_IN_WEI = new BigNumberInBase(TALIS_TOTAL_AMOUNT)
+    .toWei(props.market.baseToken.decimals)
+    .toNumber()
+
+  let quantity = 0
+  let currentBid = 1
+
+  const orderbookSortedFromHighestBid = [...spotStore.orderbook.buys].sort(
+    (a, b) => new BigNumberInBase(b.price).minus(a.price).toNumber()
+  )
+
+  for (const order of orderbookSortedFromHighestBid) {
+    quantity += Number(order.quantity)
+
+    if (quantity >= TALIS_TOTAL_AMOINT_IN_WEI) {
+      currentBid = new BigNumberInWei(order.price)
+        .toBase(
+          props.market.baseToken.decimals - props.market.quoteToken.decimals
+        )
+        .toNumber()
+      break
+    }
+  }
+
+  return quantity < TALIS_TOTAL_AMOINT_IN_WEI ? 1 : currentBid
+})
 
 const options = computed<ApexOptions>(() => ({
   series: [
@@ -74,7 +105,6 @@ const options = computed<ApexOptions>(() => ({
   fill: {
     type: 'gradient',
     gradient: {
-      // shadeIntensity: 1,
       opacityFrom: 0.6,
       opacityTo: 0.3,
       stops: [0, 100]
@@ -102,7 +132,8 @@ const options = computed<ApexOptions>(() => ({
     categories: [1, 3, 5, 6, 7, 8, 9, 10, 12],
     min: 1,
     max: 12,
-    type: 'numeric'
+    type: 'numeric',
+    decimalsInFloat: 2
   },
 
   yaxis: {
@@ -111,8 +142,10 @@ const options = computed<ApexOptions>(() => ({
     }
   },
   tooltip: {
-    // enabled: false
     x: {
+      formatter: (val) => val.toFixed(2)
+    },
+    y: {
       formatter: (val) => val.toFixed(2)
     }
   }
@@ -128,7 +161,7 @@ onUnmounted(() => {
 })
 
 watch(
-  [amount, target, orderbookBuysFormatted],
+  [amount, currentBid, target, orderbookBuysFormatted],
   () => {
     if (chart.value) {
       chart.value.updateOptions({
@@ -187,7 +220,6 @@ watch(
               color: '#F3A400',
               background: 'transparent',
               fontSize: '0.9rem'
-              // padding: { bottom: 5, left: 5, right: 5, top: 5 }
             },
             text: 'Your Bid',
             orientation: 'landscape',
@@ -212,7 +244,7 @@ watch(
               fontSize: '1rem'
             },
             offsetY: 30,
-            text: currentBid.value,
+            text: currentBid.value.toFixed(2),
             orientation: 'landscape',
             borderRadius: 15
           },

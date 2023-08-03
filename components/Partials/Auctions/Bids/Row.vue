@@ -48,7 +48,7 @@ const { valueToString: totalAmountToString } = useBigNumberFormatter(
 </script>
 
 <template>
-  <tr class="font-mono border-t border-gray-700">
+  <tr class="border-t border-gray-700">
     <td class="py-4">
       <span class="text-green-500">{{ priceToString }}</span>
     </td>
