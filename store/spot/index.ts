@@ -147,6 +147,7 @@ export const useSpotStore = defineStore('spot', {
       const spotStore = useSpotStore()
 
       const markets = await indexerSpotApi.fetchMarkets()
+
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets
       )

@@ -14,6 +14,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { UiMarketWithToken } from '@/types'
 import {
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -164,7 +165,7 @@ export function useOrderHistory(
   })
 
   const timestamp = computed(() =>
-    format(order.value.updatedAt, 'dd MMM HH:mm:ss')
+    format(order.value.updatedAt, DATE_TIME_DISPLAY)
   )
 
   const type = computed(() => {

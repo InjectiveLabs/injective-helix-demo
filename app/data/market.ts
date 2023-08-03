@@ -8,6 +8,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'stinj-inj',
   'xrp-usdt-perp',
   'wmatic-usdt',
   '1000pepe-usdt-perp',
@@ -33,6 +34,7 @@ export const experimentalMarketsSlug = [
 export const slugsToIncludeInCosmosCategory = [
   'inj-usdt',
   'cre-usdt',
+  'stinj-inj',
   'somm-usdt',
   'canto-usdt',
   'strd-usdt',
@@ -48,6 +50,7 @@ export const slugsToIncludeInEthereumCategory = [
   'usdt-usdcet',
   'ape-usdt',
   'link-usdt',
+  'stinj-inj',
   'weth-usdt',
   'evmos-usdt',
   'gf-usdt',
@@ -123,3 +126,7 @@ export const marketPromotions = [
     end: 1671836400000
   }
 ] as MarketPromotion[]
+
+export const AUCTION_MARKET_IDS = [
+  '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
+]

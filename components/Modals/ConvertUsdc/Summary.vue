@@ -60,15 +60,15 @@ const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
     <div v-if="isLoading" class="flex items-center justify-end gap-2">
       <AppSpinner sm />
       <span class="text-xs text-gray-500">{{
-        $t('trade.convert.fetching_price')
+        $t('trade.swap.fetching_price')
       }}</span>
     </div>
 
     <div class="space-y-3 mt-2">
-      <PartialsConvertSummaryRow :title="`${$t('account.fee')}`">
+      <PartialsSwapSummaryRow :title="`${$t('account.fee')}`">
         <span v-if="showEmpty">&mdash;</span>
         <span v-else>≈ {{ feeToFormat }} {{ market?.quoteToken.symbol }} </span>
-      </PartialsConvertSummaryRow>
+      </PartialsSwapSummaryRow>
     </div>
   </div>
 </template>

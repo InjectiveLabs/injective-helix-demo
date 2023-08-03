@@ -121,7 +121,7 @@ function handleCancelAllClick() {
           "
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           xs
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           @click="handleCancelAllClick"
         >

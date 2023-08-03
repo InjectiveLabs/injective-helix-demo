@@ -43,8 +43,11 @@ export enum Modal {
   Connect = 'connect',
   DevMode = 'dev-mode',
   MarketNew = 'market-new',
+  BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
   ConvertUsdc = 'convert-usdc',
+  SwapSuccess = 'swap-success',
+  SelectToken = 'select-token',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   USDCDetected = 'usdc-detected',
@@ -58,11 +61,13 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
+  InstitutionalForm = 'institutionalForm',
   SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
-  AddMarginToPosition = 'add-margin-to-position'
+  AddMarginToPosition = 'add-margin-to-position',
+  FuturesMarketRestricted = 'futures-market-restricted'
 }
 
 export enum Breakpoint {
@@ -155,13 +160,16 @@ export enum AveragePriceOptions {
 }
 
 export enum AmplitudeEvent {
+  Swap = 'Swap',
   Login = 'Login',
   Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
+  ConvertUSDCAttempt = 'Convert USDC Attempt',
+  ConvertUSDCClicked = 'Convert USDC Clicked',
+  SwapAttempt = 'Swap Attempt',
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  ConvertClicked = 'Convert Clicked',
-  ConvertAttempt = 'Convert Attempt',
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
   PlaceOrderAttempt = 'Place Order Attempt',
@@ -335,6 +343,7 @@ export enum ActivityPage {
   SpotOpenOrders = 'activity-spot',
   SpotOrderHistory = 'activity-spot-order-history',
   SpotTradeHistory = 'activity-spot-trade-history',
+  SwapHistory = 'activity-spot-swap-history',
   WalletHistoryTransfers = 'activity-wallet-history',
   WalletHistoryDeposits = 'activity-wallet-history-deposits',
   WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
@@ -345,4 +354,18 @@ export enum ActivityTab {
   Positions = 'activity-positions',
   Derivatives = 'activity-derivatives',
   WalletHistory = 'activity-wallet-history'
+}
+
+export enum AuctionTradingField {
+  BidPrice = 'bidPrice',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
+}
+
+export enum InstitutionalFormField {
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Company = 'company',
+  Telegram = 'telegram'
 }

@@ -43,6 +43,7 @@ export const getRoutes = (network: Network, env: string) => {
   if (IS_TESTNET) {
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')
+    spot.push('demo-usdt')
 
     perpetuals.push(
       '1mpepe-usdt-perp',
@@ -89,7 +90,7 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    spot.push(...usdcConversionModalMarkets, 'stinj-inj', 'ldo-usdcet')
   }
 
   if (IS_DEVNET) {

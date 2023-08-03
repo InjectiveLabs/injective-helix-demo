@@ -68,7 +68,10 @@ watch(
   },
   { immediate: true }
 )
-watch(() => route.name, resetForm)
+watch(
+  () => route.name,
+  () => resetForm({})
+)
 </script>
 
 <template>

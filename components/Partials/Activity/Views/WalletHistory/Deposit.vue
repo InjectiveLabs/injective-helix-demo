@@ -7,6 +7,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  DATE_TIME_DISPLAY,
   BIG_NUMBER_ROUND_HALF_UP_MODE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -81,7 +82,7 @@ const time = computed(() => {
     return ''
   }
 
-  return format(props.transaction.timestamp, 'dd MMM HH:mm:ss')
+  return format(props.transaction.timestamp, DATE_TIME_DISPLAY)
 })
 </script>
 

@@ -34,7 +34,7 @@
   opacity: 1;
 }
 
-.fade-down-enter {
+.fade-down-enter-from {
   opacity: 0;
   transform: translate3d(0, 100%, 0);
 }
@@ -44,7 +44,7 @@
   transform: translate3d(0, 100%, 0);
 }
 
-.fade-up-enter {
+.fade-up-enter-from {
   opacity: 0;
   transform: translate3d(0, -100%, 0);
 }

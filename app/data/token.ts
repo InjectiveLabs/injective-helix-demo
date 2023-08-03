@@ -35,6 +35,16 @@ export const networkToSymbolMap = {
   [BridgingNetwork.Arbitrum]: 'ARB'
 } as NetworkToSymbolMap
 
+export const TokenSymbols = {
+  WETH: 'wETH',
+  USDT: 'USDT',
+  INJ: 'INJ'
+}
+
+export const tokenToDecimalsOverrideMap = {
+  [TokenSymbols.WETH]: 5
+}
+
 export const getFactoryDenomFromDenom = (address: string): string =>
   `factory/${adapterContract}/${address}`
 

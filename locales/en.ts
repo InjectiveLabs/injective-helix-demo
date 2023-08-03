@@ -7,6 +7,7 @@ import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
+import institutional from './institutional/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -20,6 +21,7 @@ export default {
   ...wallet,
   ...trade,
   ...leaderboard,
+  ...institutional,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -28,6 +30,7 @@ export default {
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
+    submit: 'Submit',
     search: 'Search',
     cancel: 'Cancel',
     waived: 'Waived',
@@ -40,7 +43,10 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
-    new: 'New'
+    new: 'New',
+    success: 'Success',
+    error: 'Error',
+    somethingHappened: 'Something Happened...'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -171,6 +177,12 @@ export default {
       `Stake total of ${named('total')} INJ to receive the full amount`
   },
 
+  futuresMarketRestricted: {
+    title: 'Unavailable Market',
+    description: 'This market is not available in your region.',
+    cta: 'Return to homepage'
+  },
+
   marketBeta: {
     title: 'Acknowledge the risk of trading on the market',
     'I Understand': 'I Understand',
@@ -234,8 +246,8 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    convert: 'Convert',
-    convertDescription: 'Trade through a simple & intuitive interface',
+    swap: 'Swap',
+    swapDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
@@ -253,6 +265,7 @@ export default {
     openLiquidityProgramDescription:
       'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
     spot: 'Spot',
+    new: 'New',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
