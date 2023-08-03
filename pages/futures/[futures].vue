@@ -7,6 +7,19 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 
+definePageMeta({
+  middleware: [
+    () => {
+      const appStore = useAppStore()
+      const modalStore = useModalStore()
+
+      if (['US'].includes(appStore.userState.geoLocation.country)) {
+        modalStore.openModal({ type: Modal.FuturesMarketRestricted })
+      }
+    }
+  ]
+})
+
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
@@ -143,6 +156,7 @@ watch(
 
     <template #modals>
       <div>
+        <ModalsFuturesRestricted />
         <ModalsAddMargin />
         <ModalsMarketExpired
           v-if="market && marketIsExpired"

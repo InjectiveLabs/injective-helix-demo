@@ -61,11 +61,13 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
+  InstitutionalForm = 'institutionalForm',
   SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
-  AddMarginToPosition = 'add-margin-to-position'
+  AddMarginToPosition = 'add-margin-to-position',
+  FuturesMarketRestricted = 'futures-market-restricted'
 }
 
 export enum Breakpoint {
@@ -358,4 +360,12 @@ export enum GridSpotTradingField {
   BidPrice = 'bidPrice',
   BaseAmount = 'baseAmount',
   QuoteAmount = 'quoteAmount'
+}
+
+export enum InstitutionalFormField {
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Company = 'company',
+  Telegram = 'telegram'
 }

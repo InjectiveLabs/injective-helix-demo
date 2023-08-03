@@ -7,6 +7,7 @@ import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
+import institutional from './institutional/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -20,6 +21,7 @@ export default {
   ...wallet,
   ...trade,
   ...leaderboard,
+  ...institutional,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -28,6 +30,7 @@ export default {
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
+    submit: 'Submit',
     search: 'Search',
     cancel: 'Cancel',
     waived: 'Waived',
@@ -40,7 +43,10 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
-    new: 'New'
+    new: 'New',
+    success: 'Success',
+    error: 'Error',
+    somethingHappened: 'Something Happened...'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -169,6 +175,12 @@ export default {
       )} INJ or the equivalent amount of INJ staked, whichever is higher`,
     stake_total_to_receive_full_amount: ({ named }: I18nMessageFunction) =>
       `Stake total of ${named('total')} INJ to receive the full amount`
+  },
+
+  futuresMarketRestricted: {
+    title: 'Unavailable Market',
+    description: 'This market is not available in your region.',
+    cta: 'Return to homepage'
   },
 
   marketBeta: {
