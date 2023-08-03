@@ -16,6 +16,6 @@ const walletStore = useWalletStore()
       v-if="walletStore.isUserWalletConnected"
       v-bind="{ market }"
     />
-    <div v-else>Connect Wallet</div>
+    <div v-else class="text-center">Please Connect Wallet Connect Wallet</div>
   </div>
 </template>

@@ -1854,10 +1854,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.12.0-beta.25":
-  version "1.12.0-beta.25"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-1.12.0-beta.25.tgz#4a826c4dd82064ee071b24f503dc02b86f849393"
-  integrity sha512-kn4novIuMK5oCwmeYFrd9eRkRs0ehXmIHA+/Ja41GUufh0QqRAR2dD2YRDb3yvh6Hd8EGnAAxcSS1gSkXIb8GA==
+"@injectivelabs/token-metadata@1.12.0-beta.33":
+  version "1.12.0-beta.33"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.12.0-beta.33.tgz#3ee7bc76358e0f075333bca9481d642ac94b9c8d"
+  integrity sha512-F33s2vnfyTGIWm7mxRdKmVxjunn2EaLaMUlH6xuNPOYXZdVkEmla2ANG9AsqsMsjLllWMTRqBaYxS7DbJ50Nmg==
   dependencies:
     "@injectivelabs/exceptions" "^1.12.0-beta.10"
     "@injectivelabs/networks" "^1.12.0-beta.14"

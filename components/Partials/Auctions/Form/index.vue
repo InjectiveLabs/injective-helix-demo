@@ -11,11 +11,7 @@ const props = defineProps({
 })
 
 const modalStore = useModalStore()
-const {
-  errors: formErrors,
-  validate,
-  values: formValues
-} = useForm<GridSpotTradingForm>()
+const { validate, values: formValues } = useForm<GridSpotTradingForm>()
 
 const { accountBalancesWithToken } = useBalance()
 
@@ -85,10 +81,6 @@ async function handleBid() {
           <span class="text-gray-500 ml-1">USDT</span>
         </p>
       </div>
-    </div>
-
-    <div>
-      <p v-for="error in Object.values(formErrors)" :key="error">{{ error }}</p>
     </div>
 
     <div>
