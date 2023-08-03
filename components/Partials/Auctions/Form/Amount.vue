@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { GridSpotTradingField, GridSpotTradingForm } from '@/types'
+import { AuctionTradingField, AuctionTradingForm } from '@/types'
 
 const props = defineProps({
   market: {
@@ -14,14 +14,14 @@ const props = defineProps({
   }
 })
 
-const formValues = useFormValues<GridSpotTradingForm>()
+const formValues = useFormValues<AuctionTradingForm>()
 
 const { value: baseAmountValue } = useStringField({
-  name: GridSpotTradingField.BaseAmount,
+  name: AuctionTradingField.BaseAmount,
   initialValue: ''
 })
 const { value: quoteAmountValue } = useStringField({
-  name: GridSpotTradingField.QuoteAmount,
+  name: AuctionTradingField.QuoteAmount,
   initialValue: '',
   dynamicRule: computed(() => `between:1,${props.availableUsd.toFixed()}`)
 })

@@ -2,7 +2,7 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { GridSpotTradingField, GridSpotTradingForm } from '~/types'
+import { AuctionTradingField, AuctionTradingForm } from '~/types'
 
 defineProps({
   market: {
@@ -11,10 +11,10 @@ defineProps({
   }
 })
 
-const formValues = useFormValues<GridSpotTradingForm>()
+const formValues = useFormValues<AuctionTradingForm>()
 
 const { value: bidPriceValue } = useStringField({
-  name: GridSpotTradingField.BidPrice,
+  name: AuctionTradingField.BidPrice,
   initialValue: '',
   dynamicRule: computed(() => `minValue:1`)
 })

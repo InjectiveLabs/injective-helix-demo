@@ -7,7 +7,7 @@ import {
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { GridSpotTradingForm, Modal } from '@/types'
+import { AuctionTradingForm, Modal } from '@/types'
 
 const props = defineProps({
   market: {
@@ -18,7 +18,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const formValues = useFormValues<GridSpotTradingForm>()
+const formValues = useFormValues<AuctionTradingForm>()
 const { success, error } = useNotifications()
 const { $onError } = useNuxtApp()
 

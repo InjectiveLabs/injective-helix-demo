@@ -356,7 +356,7 @@ export enum ActivityTab {
   WalletHistory = 'activity-wallet-history'
 }
 
-export enum GridSpotTradingField {
+export enum AuctionTradingField {
   BidPrice = 'bidPrice',
   BaseAmount = 'baseAmount',
   QuoteAmount = 'quoteAmount'

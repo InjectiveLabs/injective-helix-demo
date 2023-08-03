@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { GridSpotTradingForm, Modal } from '@/types'
+import { AuctionTradingForm, Modal } from '@/types'
 
 const props = defineProps({
   market: {
@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const modalStore = useModalStore()
-const { validate, values: formValues } = useForm<GridSpotTradingForm>()
+const { validate, values: formValues } = useForm<AuctionTradingForm>()
 
 const { accountBalancesWithToken } = useBalance()
 
