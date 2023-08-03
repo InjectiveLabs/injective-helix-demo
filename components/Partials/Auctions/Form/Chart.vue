@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 
@@ -22,32 +18,44 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 
-const amount = ref(8.4)
 const target = ref(null)
 const chart = ref<null | ApexCharts>(null)
 
-const orderbookBuysFormatted = computed(() =>
-  (spotStore.orderbook?.buys || []).map((order) => ({
-    price: new BigNumberInBase(order.price)
-      .times(
-        new BigNumber(10).exponentiatedBy(
-          props.market.baseToken.decimals - props.market.quoteToken.decimals
-        )
+const amount = computed(() => {
+  if (spotStore.subaccountOrders.length > 0) {
+    return new BigNumberInWei(spotStore.subaccountOrders[0].price)
+      .toBase(
+        props.market.quoteToken.decimals - props.market.baseToken.decimals
       )
-      .toFixed(2),
-    quantity: new BigNumberInWei(order.quantity)
-      .toBase(props.market.baseToken.decimals)
       .toFixed(2)
-  }))
+  }
+
+  return null
+})
+
+const orderbookBuysFormatted = computed(() =>
+  (spotStore.orderbook?.buys || [])
+    .map((order) => ({
+      price: new BigNumberInWei(order.price)
+        .toBase(
+          props.market.quoteToken.decimals - props.market.baseToken.decimals
+        )
+        .toFixed(2),
+      quantity: new BigNumberInWei(order.quantity)
+        .toBase(props.market.baseToken.decimals)
+        .toFixed(2)
+    }))
+    .filter((order) => Number(order.price) > 1)
 )
 
-const currentBid = computed(() => 8.5)
+const currentBid = computed(() => 7.8)
 
 const options = computed<ApexOptions>(() => ({
   series: [
     {
       name: 'Amount',
-      data: [10, 41, 35, 51, 49, 62, 69, 91, 148].reverse()
+      data: [10, 41, 35, 51, 49, 62, 69, 91, 148].reverse(),
+      group: 'amount'
     }
   ],
 
@@ -67,7 +75,7 @@ const options = computed<ApexOptions>(() => ({
     type: 'gradient',
     gradient: {
       // shadeIntensity: 1,
-      opacityFrom: 0.8,
+      opacityFrom: 0.6,
       opacityTo: 0.3,
       stops: [0, 100]
     }
@@ -180,32 +188,55 @@ watch(
       chart.value.updateSeries([
         {
           name: 'Amount',
-          data: orderbookBuysFormatted.value.map((buy) => Number(buy.quantity))
+          data: orderbookBuysFormatted.value.map((buy) => Number(buy.quantity)),
+          group: 'amount'
         }
       ])
       chart.value.clearAnnotations()
 
       // Price Anotations
 
-      chart.value.addXaxisAnnotation({
-        x: amount.value,
-        strokeDashArray: 2,
-        borderColor: '#F3A400',
-        label: {
+      if (amount.value) {
+        chart.value.addXaxisAnnotation({
+          x: amount.value,
+          strokeDashArray: 2,
           borderColor: '#F3A400',
-          style: {
-            color: '#fff',
-            background: '#F3A400',
-            padding: { bottom: 5, left: 10, right: 10, top: 5 },
-            fontSize: '1rem'
-          },
-          text: amount.value,
-          orientation: 'landscape',
-          offsetY: 60,
-          borderRadius: 15,
-          id: 'yourBid'
-        }
-      })
+          label: {
+            borderColor: '#F3A400',
+            style: {
+              color: '#fff',
+              background: '#F3A400',
+              padding: { bottom: 5, left: 10, right: 10, top: 5 },
+              fontSize: '1rem'
+            },
+            text: amount.value,
+            orientation: 'landscape',
+            offsetY: 60,
+            borderRadius: 15,
+            id: 'yourBid'
+          }
+        })
+
+        chart.value.addXaxisAnnotation({
+          x: amount.value,
+          strokeDashArray: 2,
+          borderColor: '#F3A400',
+          label: {
+            borderColor: 'transparent',
+            style: {
+              color: '#F3A400',
+              background: 'transparent',
+              fontSize: '0.9rem'
+              // padding: { bottom: 5, left: 5, right: 5, top: 5 }
+            },
+            text: 'Your Bid',
+            orientation: 'landscape',
+            offsetY: 0,
+            borderRadius: 10,
+            id: 'yourBidText'
+          }
+        })
+      }
 
       chart.value.addXaxisAnnotation({
         x: currentBid.value,
@@ -228,26 +259,6 @@ watch(
       })
 
       // Text Anotations
-
-      chart.value.addXaxisAnnotation({
-        x: amount.value,
-        strokeDashArray: 2,
-        borderColor: '#F3A400',
-        label: {
-          borderColor: 'transparent',
-          style: {
-            color: '#F3A400',
-            background: 'transparent',
-            fontSize: '0.9rem'
-            // padding: { bottom: 5, left: 5, right: 5, top: 5 }
-          },
-          text: 'Your Bid',
-          orientation: 'landscape',
-          offsetY: 0,
-          borderRadius: 10,
-          id: 'yourBidText'
-        }
-      })
 
       chart.value.addXaxisAnnotation({
         x: currentBid.value,

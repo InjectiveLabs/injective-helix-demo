@@ -1,5 +1,11 @@
 import { defineNuxtPlugin } from '#app'
-import { email, min, max, between } from '@vee-validate/rules'
+import {
+  email,
+  min,
+  max,
+  between,
+  min_value as minValue
+} from '@vee-validate/rules'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
@@ -25,6 +31,7 @@ export const defineGlobalRules = () => {
   defineRule('between', between)
   defineRule('min', min)
   defineRule('max', max)
+  defineRule('minValue', minValue)
 
   defineRule(
     'required',

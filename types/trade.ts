@@ -9,7 +9,7 @@ import {
   UiSpotTrade
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeField } from '@/types'
+import { GridSpotTradingField, TradeField } from '@/types'
 
 export type TradeForm = Record<TradeField, any>
 
@@ -89,3 +89,5 @@ export type MarketMarkPrice = {
 }
 
 export type MarketMarkPriceMap = Record<string, MarketMarkPrice>
+
+export type GridSpotTradingForm = Record<GridSpotTradingField, string>

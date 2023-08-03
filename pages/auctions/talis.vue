@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-// const TALIS_MARKET_ID =
-//   '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
-// const TALIS_SLUG = 'unknown-usdt'
-
 const TALIS_MARKET_ID =
-  '0x491ee4fae7956dd72b6a97805046ffef65892e1d3254c559c18056a519b2ca15'
+  '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
 
+const route = useRoute()
 const spotStore = useSpotStore()
+const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -16,6 +16,16 @@ const status = reactive(new Status(StatusType.Loading))
 const market = computed(() =>
   spotStore.markets.find((m) => m.marketId === TALIS_MARKET_ID)
 )
+
+onWalletConnected(() => {
+  spotStore.cancelSubaccountStream()
+
+  accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+  spotStore.fetchSubaccountOrders([market.value?.marketId || ''])
+  spotStore.fetchSubaccountOrderHistory()
+  spotStore.streamSubaccountOrders(market.value?.marketId || '')
+  spotStore.streamSubaccountOrderHistory(market.value?.marketId || '')
+})
 
 onMounted(() => {
   status.setLoading()
@@ -27,10 +37,22 @@ onMounted(() => {
         spotStore.fetchOrderbook(TALIS_MARKET_ID),
         spotStore.streamOrderbookUpdate(TALIS_MARKET_ID)
       ]).then(() => {
+        if (walletStore.isUserWalletConnected) {
+          accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+          spotStore.fetchSubaccountOrders([market.value?.marketId || ''])
+          spotStore.fetchSubaccountOrderHistory()
+          spotStore.streamSubaccountOrders(market.value?.marketId || '')
+          spotStore.streamSubaccountOrderHistory(market.value?.marketId || '')
+        }
         status.setIdle()
       })
     })
     .catch($onError)
+})
+
+onUnmounted(() => {
+  spotStore.cancelOrderbookUpdateStream()
+  spotStore.cancelSubaccountStream()
 })
 </script>
 
@@ -56,11 +78,20 @@ onMounted(() => {
 
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
         <div class="bg-gray-800 rounded-2xl p-8">
-          <NuxtPage />
+          <NuxtPage v-bind="{ market }" />
         </div>
 
-        <div class="bg-gray-800 rounded-2xl p-8">
-          <PartialsAuctionsForm v-bind="{ market }" />
+        <div>
+          <div class="bg-gray-800 rounded-2xl p-8">
+            <PartialsAuctionsForm v-bind="{ market }" />
+          </div>
+        </div>
+
+        <div
+          v-if="route.name === 'auctions-talis'"
+          class="bg-gray-800 rounded-2xl p-8"
+        >
+          <PartialsAuctionsBids v-bind="{ market }" />
         </div>
       </div>
     </AppHocLoading>

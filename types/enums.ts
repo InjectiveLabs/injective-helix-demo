@@ -43,6 +43,7 @@ export enum Modal {
   Connect = 'connect',
   DevMode = 'dev-mode',
   MarketNew = 'market-new',
+  BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
   ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
@@ -351,4 +352,10 @@ export enum ActivityTab {
   Positions = 'activity-positions',
   Derivatives = 'activity-derivatives',
   WalletHistory = 'activity-wallet-history'
+}
+
+export enum GridSpotTradingField {
+  BidPrice = 'bidPrice',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
 }
