@@ -123,3 +123,7 @@ export const marketPromotions = [
     end: 1671836400000
   }
 ] as MarketPromotion[]
+
+export const AUCTION_MARKET_IDS = [
+  '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
+]
