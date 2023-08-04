@@ -74,8 +74,10 @@ function loadSubaccountDetails() {
         </NuxtLink>
 
         <NuxtLink
-          v-if="walletStore.isUserWalletConnected"
-          class="text-gray-500"
+          v-if="
+            walletStore.isUserWalletConnected &&
+            $route.query.isUpcoming === 'false'
+          "
           :to="`/auctions/${
             market.slug
           }/bids/?showAuctions=true&isUpcoming=${!!isUpcoming}`"

@@ -125,7 +125,9 @@ function handleBid() {
 
       <div v-else>
         <p class="pb-6">
-          A new bid price will be placed at
+          A new bid to purchase
+          <span class="font-semibold">{{ formValues.baseAmount }}</span> DEMO
+          will be placed at price
           <span class="font-semibold">{{ formValues.quoteAmount }} USDT</span>.
         </p>
         <AppButton
