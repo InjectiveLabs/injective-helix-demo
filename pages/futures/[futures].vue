@@ -14,11 +14,6 @@ definePageMeta({
       const modalStore = useModalStore()
 
       if (['US'].includes(appStore.userState.geoLocation.country)) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `blocking futures market with ${appStore.userState.geoLocation.country}`
-        )
-
         modalStore.openModal({ type: Modal.FuturesMarketRestricted })
       }
     }
