@@ -64,11 +64,11 @@ function handleToggleRewardsMenu() {
           }}</span>
         </LayoutNavItem>
 
-        <LayoutNavItem :to="{ name: 'convert' }">
+        <!-- <LayoutNavItem :to="{ name: 'convert' }">
           <span class="font-normal tracking-wide">{{
             $t('navigation.convert')
           }}</span>
-        </LayoutNavItem>
+        </LayoutNavItem> -->
 
         <LayoutNavItem
           :to="{

@@ -51,7 +51,7 @@ export const getHubUrl = (): string => {
 }
 
 export const getSubaccountIndex = (subaccount: string) =>
-  parseInt(subaccount.slice(42))
+  parseInt(subaccount.slice(42), 16)
 
 export function getMinQuantityTickSize(
   isSpot: boolean,
@@ -74,7 +74,7 @@ export function addSubacountIdToEthAddress(
   ethAddress: string,
   marketHex: string
 ) {
-  return `${ethAddress}--${'0'.repeat(66 - marketHex.length)}--${marketHex}`
+  return `${ethAddress}${'0'.repeat(66 - 42 - marketHex.length)}${marketHex}`
 }
 
 export function getMarketHexFromSubaccount(subaccount: string) {

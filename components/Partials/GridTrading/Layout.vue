@@ -26,6 +26,7 @@ const { $onError } = useNuxtApp()
 
 const props = defineProps({
   isSpot: Boolean,
+  isGrid: Boolean,
 
   hardcodedSlug: {
     type: String,
@@ -134,7 +135,8 @@ watch(
           v-bind="{
             summary,
             market: market,
-            expanded: showMarketList
+            expanded: showMarketList,
+            isGrid: props.isGrid
           }"
           @marketsList:toggle="toggleMarketList"
         />
@@ -216,6 +218,9 @@ watch(
           v-show="showMarketList"
           key="market-selection"
           :market="market"
+          v-bind="{
+            isGrid
+          }"
           @close="close"
         />
       </div>

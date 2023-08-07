@@ -12,6 +12,8 @@ import {
 const appStore = useAppStore()
 
 const props = defineProps({
+  isGrid: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -28,7 +30,9 @@ const props = defineProps({
   }
 })
 
-const marketRoute = getMarketRoute(props.market) || { name: 'markets' }
+const marketRoute = props.isGrid
+  ? { to: 'spot-grid-trading-bots', params: { market: props.market.slug } }
+  : getMarketRoute(props.market) || { name: 'markets' }
 
 const isFavorite = computed(() => {
   return appStore.favoriteMarkets.includes(props.market.marketId)

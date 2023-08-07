@@ -95,7 +95,7 @@ watch(
 </script>
 
 <template>
-  <PartialsGridTradingLayout is-spot @loaded="onLoad">
+  <PartialsGridTradingLayout is-spot is-grid @loaded="onLoad">
     <template #trading-form>
       <PartialsGridTradingSpotForm v-if="market" :market="market" />
     </template>

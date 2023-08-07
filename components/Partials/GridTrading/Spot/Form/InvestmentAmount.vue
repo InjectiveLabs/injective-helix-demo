@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { getDefaultSubaccountId } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotGridTradingField } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -13,14 +12,12 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
-
-const { aggregatedPortfolioBalances } = useBalance()
+const { accountBalancesWithToken } = useBalance()
 
 const quoteDenombalance = computed(() =>
-  aggregatedPortfolioBalances.value[
-    getDefaultSubaccountId(walletStore.injectiveAddress)
-  ].find((balance) => balance.denom === props.market.quoteDenom)
+  accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
+  )
 )
 
 const quoteDenomAmount = computed(() =>
@@ -36,7 +33,10 @@ const { valueToString } = useBigNumberFormatter(quoteDenomAmount, {
 const { value: investmentAmountValue } = useStringField({
   name: SpotGridTradingField.InvestmentAmount,
   dynamicRule: computed(
-    () => `between:0.000001,${quoteDenomAmount.value.toFixed()}`
+    () =>
+      `between:${new BigNumber(1).exponentiatedBy(
+        -(quoteDenombalance.value?.token?.decimals || 6)
+      )},${quoteDenomAmount.value.toFixed()}`
   )
 })
 </script>

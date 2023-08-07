@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { getSubaccountIndex } from '@/app/utils/helpers'
+import {
+  addSubacountIdToEthAddress,
+  getSubaccountIndex
+} from '@/app/utils/helpers'
+import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
 
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 
@@ -11,13 +16,30 @@ const emit = defineEmits<{
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap)
-        .map((value) => ({
-          value,
-          display:
-            getSubaccountIndex(value) === 0
-              ? `${t('account.main')}`
-              : getSubaccountIndex(value).toString()
-        }))
+        .map((value) => {
+          const isSpotGridSubaccount = spotGridMarketsWithSubaccount.find(
+            (spotGrid) =>
+              addSubacountIdToEthAddress(
+                walletStore.address,
+                spotGrid.subaccountId
+              ) === value
+          )
+
+          let display
+
+          if (getSubaccountIndex(value) === 0) {
+            display = `${t('account.main')}`
+          } else if (isSpotGridSubaccount) {
+            display = `SGT ${isSpotGridSubaccount.slug}`
+          } else {
+            display = getSubaccountIndex(value).toString()
+          }
+
+          return {
+            value,
+            display
+          }
+        })
         .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )
