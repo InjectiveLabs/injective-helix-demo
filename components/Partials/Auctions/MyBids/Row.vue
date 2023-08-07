@@ -29,6 +29,16 @@ const createdAt = computed(() =>
   format(props.order.createdAt, 'dd MMM HH:mm:ss')
 )
 
+const { valueToString: priceToString } = useBigNumberFormatter(price, {
+  decimalPlaces: 2
+})
+const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
+  decimalPlaces: 2
+})
+const { valueToString: totalToString } = useBigNumberFormatter(total, {
+  decimalPlaces: 2
+})
+
 function handleCancelOrder() {
   const order = spotStore.subaccountOrders.find(
     (order) => order.orderHash === props.order.orderHash
@@ -43,12 +53,12 @@ function handleCancelOrder() {
   <tr class="text-sm border-t border-gray-700">
     <td class="py-4 pr-2 font-semibold">{{ createdAt }}</td>
     <td class="px-2">
-      <span class="font-semibold mr-1">{{ price.toFixed(2) }}</span>
+      <span class="font-semibold mr-1">{{ priceToString }}</span>
       <span class="text-gray-500 font-semibold">USDT</span>
     </td>
-    <td class="text-right px-2">{{ quantity.toFixed(2) }}</td>
+    <td class="text-right px-2">{{ quantityToString }}</td>
     <td class="text-right px-2">
-      <span class="mr-1">{{ total.toFixed(2) }}</span>
+      <span class="mr-1">{{ totalToString }}</span>
       <span class="text-gray-500">USDT</span>
     </td>
     <td

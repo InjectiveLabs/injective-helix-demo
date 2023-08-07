@@ -13,13 +13,17 @@ const market = computed(() => auctionStore.markets[0])
         the community to participate in projects on Injective.
       </p>
 
-      <div v-if="auctionStore.markets.length > 0">
+      <div v-if="auctionStore.markets.length > 0" class="max-md:w-full">
         <!-- We only have two auctions for now as a mockup demo -->
         <PartialsAuctionsAuction v-bind="{ market }" />
         <PartialsAuctionsAuction
           v-bind="{ market, isUpcoming: true }"
           class="mt-6"
         />
+      </div>
+
+      <div>
+        <PartialsAuctionsUpcomingTime class="text-center" />
       </div>
     </div>
   </div>

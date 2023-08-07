@@ -43,33 +43,25 @@ function closeModal() {
 function handleCancelAndBid() {
   status.setLoading()
 
-  const action =
-    spotStore.subaccountOrders.length === 1
-      ? spotStore.cancelOrder(spotStore.subaccountOrders[0])
-      : spotStore.batchCancelOrder(spotStore.subaccountOrders)
-
-  action
-    .then(() => {
-      spotStore
-        .submitLimitOrder({
-          market: props.market,
-          price: new BigNumberInBase(formValues.value.bidPrice || 0),
-          quantity: new BigNumberInBase(formValues.value.baseAmount || 0),
-          orderSide: OrderSide.Buy
-        })
-        .then(() => {
-          success({ title: 'Success', description: 'Bid created!' })
-        })
-        .finally(() => {
-          status.setIdle()
-          closeModal()
-        })
+  spotStore
+    .submitLimitOrder({
+      market: props.market,
+      price: new BigNumberInBase(formValues.value.bidPrice || 0),
+      quantity: new BigNumberInBase(formValues.value.baseAmount || 0),
+      orderSide: OrderSide.Buy
     })
+    .then(() => {
+      success({ title: 'Success', description: 'Bid created!' })
+    })
+
     .catch((e) => {
-      status.setIdle()
       closeModal()
       error({ title: 'Error', description: 'Something happened...' })
       $onError(e)
+    })
+    .finally(() => {
+      status.setIdle()
+      closeModal()
     })
 }
 

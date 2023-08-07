@@ -82,7 +82,7 @@ function loadSubaccountDetails() {
             market.slug
           }/bids/?showAuctions=true&isUpcoming=${!!isUpcoming}`"
         >
-          My Bid
+          My Bids
         </NuxtLink>
       </div>
 
