@@ -223,7 +223,7 @@ watch(
             },
             text: 'Your Bid',
             orientation: 'landscape',
-            offsetY: 0,
+            offsetY: 85,
             borderRadius: 10,
             id: 'yourBidText'
           }
