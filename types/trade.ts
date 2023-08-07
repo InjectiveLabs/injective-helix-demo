@@ -96,3 +96,12 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.UpperPrice]: string
   [SpotGridTradingField.InvestmentAmount]: string
 }
+
+export type SpotGridMarket = {
+  slug: string
+  contractAddress: string
+}
+
+export type SpotGridMarketWithSubaccount = SpotGridMarket & {
+  subaccountId: string
+}

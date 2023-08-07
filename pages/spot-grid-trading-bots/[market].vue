@@ -7,6 +7,7 @@ definePageMeta({
   middleware: ['markets']
 })
 
+const gridStore = useGridStore()
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
@@ -31,6 +32,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
 
   market.value = pageMarket as UiSpotMarketWithToken
   refreshSubaccountDetails()
+  gridStore.$patch({ marketSlug: pageMarket.slug })
 }
 
 function refreshSubaccountDetails() {

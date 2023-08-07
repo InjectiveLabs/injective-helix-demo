@@ -37,8 +37,8 @@ function handleTokenClick() {
       class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
     >
       <template v-if="isGrid">
-        <div class="max-lg:w-full text-center">
-          <p class="font-semibold text-center max-lg:pt-4 px-4">Spot Grid</p>
+        <div class="text-center hidden lg:block">
+          <p class="font-semibold text-center px-4">Spot Grid</p>
         </div>
 
         <div class="w-px h-8 border-r hidden lg:block" />

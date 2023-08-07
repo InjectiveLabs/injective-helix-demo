@@ -1,12 +1,6 @@
 import { IS_DEVNET, IS_TESTNET } from './setup'
 import { stringToHex } from '@/app/utils/converters'
-
-type SpotGridMarket = {
-  slug: string
-  contractAddress: string
-}
-
-type SpotGridMarketWithSubaccount = SpotGridMarket & { subaccountId: string }
+import { SpotGridMarket, SpotGridMarketWithSubaccount } from '@/types'
 
 const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
@@ -19,6 +13,10 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'inj-usdt',
     contractAddress: 'inj18hsyd0xgv3cqadpzpa35a66l5346j386an3sju'
+  },
+  {
+    slug: 'weth-usdt',
+    contractAddress: 'inj1lktt38e7w03lm548qgs543ggjnuaf4hwqdnc7d'
   }
 ]
 

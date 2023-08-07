@@ -13,7 +13,7 @@ defineProps({
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const { errors: formErrors, validate } = useForm<SpotGridTradingForm>()
+const { validate } = useForm<SpotGridTradingForm>()
 
 async function handleCreateStrategy() {
   const { valid } = await validate()
@@ -26,7 +26,7 @@ async function handleCreateStrategy() {
 </script>
 
 <template>
-  <div>
+  <div class="min-w-0">
     <div
       v-if="!walletStore.isUserWalletConnected && !walletStore.injectiveAddress"
     >
@@ -35,11 +35,6 @@ async function handleCreateStrategy() {
 
     <div v-else>
       <div class="space-y-2">
-        <div class="overflow-x-auto w-[300px]">
-          <pre>
-          {{ formErrors }}
-          </pre>
-        </div>
         <PartialsGridTradingSpotFormLowerUpperPrice />
 
         <PartialsGridTradingSpotFormGrids />

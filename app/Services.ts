@@ -14,6 +14,7 @@ import {
   ChainGrpcBankApi,
   ChainGrpcWasmApi,
   ChainGrpcMintApi,
+  ChainGrpcAuthZApi,
   ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
   IndexerGrpcSpotApi,
@@ -21,6 +22,7 @@ import {
   ChainGrpcExchangeApi,
   IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
+  IndexerGrpcTradingApi,
   IndexerGrpcExplorerApi,
   IndexerRestExplorerApi,
   ChainGrpcDistributionApi,
@@ -61,6 +63,9 @@ export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
+  ENDPOINTS.indexer
+)
+export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
 

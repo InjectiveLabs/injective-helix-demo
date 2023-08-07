@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
+const gridStore = useGridStore()
 const modalStore = useModalStore()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -9,6 +10,14 @@ const isAuthorized = ref(false)
 
 function closeModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
+}
+
+function handleCheckAuthz() {
+  gridStore.fetchGrants()
+}
+
+function handleGrant() {
+  gridStore.grantAuthorization()
 }
 </script>
 <template>
@@ -21,6 +30,9 @@ function closeModal() {
         A few clicks before the strategy is created
       </p>
     </template>
+
+    <button @click="handleCheckAuthz">Check Auth</button>
+    <button @click="handleGrant">Handle Grant</button>
 
     <AppHocLoading v-bind="{ status }">
       <div v-if="!isAuthorized" class="max-w-md">

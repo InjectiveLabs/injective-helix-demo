@@ -367,9 +367,17 @@ export enum InstitutionalFormField {
   Telegram = 'telegram'
 }
 
+<<<<<<< HEAD
 export enum SpotGridTradingField {
   Grids = 'grids',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   InvestmentAmount = 'investmentAmount'
+=======
+export enum SpotGridMessages {
+  MsgCreateSpotLimitOrder = '/injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = '/injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
+  MsgWithdraw = '/injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
+>>>>>>> 0438c640 (feat: gst initialize apis)
 }
