@@ -201,10 +201,15 @@ export const useAppStore = defineStore('app', {
     async fetchGeoLocation() {
       const appStore = useAppStore()
 
+      const geoLocation = await fetchGeoLocation()
+
+      // eslint-disable-next-line no-console
+      console.log('fetched GeoLocation', { geoLocation })
+
       appStore.$patch({
         userState: {
           ...appStore.userState,
-          geoLocation: await fetchGeoLocation()
+          geoLocation
         }
       })
     },
