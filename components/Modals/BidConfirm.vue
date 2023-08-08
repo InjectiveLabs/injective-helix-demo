@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { AuctionTradingForm, Modal } from '@/types'
@@ -24,45 +19,13 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const amount = computed(() => {
-  if (spotStore.subaccountOrders.length > 0) {
-    return new BigNumberInWei(spotStore.subaccountOrders[0].price)
-      .toBase(
-        props.market.quoteToken.decimals - props.market.baseToken.decimals
-      )
-      .toFixed(2)
-  }
-
-  return null
-})
+const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+  computed(() => formValues.value.quoteAmount),
+  { decimalPlaces: 2 }
+)
 
 function closeModal() {
   modalStore.closeModal(Modal.BidConfirm)
-}
-
-function handleCancelAndBid() {
-  status.setLoading()
-
-  spotStore
-    .submitLimitOrder({
-      market: props.market,
-      price: new BigNumberInBase(formValues.value.bidPrice || 0),
-      quantity: new BigNumberInBase(formValues.value.baseAmount || 0),
-      orderSide: OrderSide.Buy
-    })
-    .then(() => {
-      success({ title: 'Success', description: 'Bid created!' })
-    })
-
-    .catch((e) => {
-      closeModal()
-      error({ title: 'Error', description: 'Something happened...' })
-      $onError(e)
-    })
-    .finally(() => {
-      status.setIdle()
-      closeModal()
-    })
 }
 
 function handleBid() {
@@ -100,27 +63,12 @@ function handleBid() {
     </template>
 
     <AppHocLoading v-bind="{ status }">
-      <div v-if="spotStore.subaccountOrders.length > 0">
-        <p class="pb-6">
-          The previous bid price at
-          <span class="font-semibold">{{ amount }} USDT</span> will be cancelled
-          and a new bid price will be placed at
-          <span class="font-semibold">{{ formValues.quoteAmount }} USDT</span>.
-        </p>
-        <AppButton
-          class="w-full bg-blue-400 text-white rounded-md font-semibold"
-          @click="handleCancelAndBid"
-        >
-          Confirm
-        </AppButton>
-      </div>
-
-      <div v-else>
+      <div>
         <p class="pb-6">
           A new bid to purchase
           <span class="font-semibold">{{ formValues.baseAmount }}</span> DEMO
           will be placed at price
-          <span class="font-semibold">{{ formValues.quoteAmount }} USDT</span>.
+          <span class="font-semibold">{{ quoteAmountToString }} USDT</span>.
         </p>
         <AppButton
           class="w-full bg-blue-400 text-white rounded-md font-semibold"
