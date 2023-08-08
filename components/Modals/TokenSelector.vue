@@ -1,19 +1,23 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
+const props = defineProps({
+  modal: {
+    required: false,
+    default: Modal.TokenSelector,
+    type: String as PropType<Modal>
+  }
+})
+
 const modalStore = useModalStore()
 
 function closeModal() {
-  modalStore.closeModal(Modal.TokenSelector)
+  modalStore.closeModal(props.modal)
 }
 </script>
 
 <template>
-  <AppModal
-    :show="modalStore.modals[Modal.TokenSelector]"
-    sm
-    @modal:closed="closeModal"
-  >
+  <AppModal :show="modalStore.modals[modal]" sm @modal:closed="closeModal">
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
         {{ $t('trade.swap.tokenSelector.selectAToken') }}
