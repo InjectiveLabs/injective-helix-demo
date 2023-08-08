@@ -125,7 +125,7 @@ const options = computed<ApexOptions>(() => ({
   },
 
   stroke: {
-    curve: 'smooth',
+    curve: 'stepline',
     width: 2
   },
 
@@ -197,43 +197,23 @@ watch(
 
       if (isBlured.value) return
 
-      if (amount.value) {
+      if (currentBid.value) {
         chart.value.addXaxisAnnotation({
-          x: amount.value,
+          x: currentBid.value,
           strokeDashArray: 2,
-          borderColor: '#F3A400',
-          label: {
-            borderColor: '#F3A400',
-            style: {
-              color: '#fff',
-              background: '#F3A400',
-              padding: { bottom: 5, left: 10, right: 10, top: 5 },
-              fontSize: '1rem'
-            },
-            text: amount.value,
-            orientation: 'landscape',
-            offsetY: 60,
-            borderRadius: 15,
-            id: 'yourBid'
-          }
-        })
-
-        chart.value.addXaxisAnnotation({
-          x: amount.value,
-          strokeDashArray: 2,
-          borderColor: '#F3A400',
+          borderColor: 'transparent',
           label: {
             borderColor: 'transparent',
             style: {
-              color: '#F3A400',
+              color: '#ffffff',
               background: 'transparent',
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              padding: { bottom: 5, left: 5, right: 5, top: 5 }
             },
-            text: 'Your Bid',
+            text: 'Current Bid',
             orientation: 'landscape',
-            offsetY: 85,
             borderRadius: 10,
-            id: 'yourBidText'
+            id: 'currentBidText'
           }
         })
       }
@@ -258,23 +238,48 @@ watch(
           },
           id: 'currentBid'
         })
+      }
 
+      if (amount.value) {
         chart.value.addXaxisAnnotation({
-          x: currentBid.value,
+          x: amount.value,
           strokeDashArray: 2,
-          borderColor: '#ffffff33',
+          offsetY: 44,
+          borderColor: '#F3A400',
+          label: {
+            borderColor: '#F3A400',
+            style: {
+              color: '#fff',
+              background: '#F3A400',
+              padding: { bottom: 5, left: 10, right: 10, top: 5 },
+              fontSize: '1rem'
+            },
+            text: amount.value,
+            orientation: 'landscape',
+            offsetY: 60,
+            borderRadius: 15,
+            id: 'yourBid'
+          }
+        })
+      }
+
+      if (amount.value) {
+        chart.value.addXaxisAnnotation({
+          x: amount.value,
+          strokeDashArray: 2,
+          borderColor: 'transparent',
           label: {
             borderColor: 'transparent',
             style: {
-              color: '#ffffff',
+              color: '#F3A400',
               background: 'transparent',
-              fontSize: '0.9rem',
-              padding: { bottom: 5, left: 5, right: 5, top: 5 }
+              fontSize: '0.9rem'
             },
-            text: 'Current Bid',
+            text: 'Your Bid',
             orientation: 'landscape',
+            offsetY: 85,
             borderRadius: 10,
-            id: 'currentBidText'
+            id: 'yourBidText'
           }
         })
       }
