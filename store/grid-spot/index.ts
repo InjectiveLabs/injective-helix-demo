@@ -1,12 +1,13 @@
 import {
-  MsgExecuteContractCompat,
-  MsgGrant,
-  ExecArgCreateSpotGridStrategy
+  // MsgExecuteContractCompat,
+  MsgGrant
+  // ExecArgCreateSpotGridStrategy
 } from '@injectivelabs/sdk-ts'
+import { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
 import {
   chainGrpcAuthZApi,
-  msgBroadcastClient,
-  indexerGrpcTradingApi
+  msgBroadcastClient
+  // indexerGrpcTradingApi
 } from '@/app/Services'
 import { addSubacountIdToEthAddress } from '@/app/utils/helpers'
 import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
@@ -14,9 +15,13 @@ import { SpotGridMessages } from '@/types'
 
 type GridSpotStore = {
   marketSlug: string
+  strategies: TradingStrategy[]
 }
 
-const initialStateFactory = (): GridSpotStore => ({ marketSlug: '' })
+const initialStateFactory = (): GridSpotStore => ({
+  marketSlug: '',
+  strategies: []
+})
 
 export const useGridStore = defineStore('grid-spot', {
   state: () => initialStateFactory(),
@@ -29,7 +34,7 @@ export const useGridStore = defineStore('grid-spot', {
         return
       }
 
-      await chainGrpcAuthZApi.fetchGrants({
+      const response = await chainGrpcAuthZApi.fetchGrants({
         params: {
           grantee: gridStore.smartContractAddressForGridMarket,
           granter: walletStore.injectiveAddress
@@ -38,7 +43,7 @@ export const useGridStore = defineStore('grid-spot', {
 
       // console.log(response)
 
-      // return response
+      return response
     },
 
     async grantAuthorization() {
@@ -50,9 +55,9 @@ export const useGridStore = defineStore('grid-spot', {
       }
 
       const messageTypes = [
+        SpotGridMessages.MsgWithdraw,
         SpotGridMessages.MsgBatchUpdateOrders,
-        SpotGridMessages.MsgCreateSpotLimitOrder,
-        SpotGridMessages.MsgWithdraw
+        SpotGridMessages.MsgCreateSpotLimitOrder
       ]
 
       const msgs = messageTypes.map((messageType) =>
@@ -67,41 +72,39 @@ export const useGridStore = defineStore('grid-spot', {
         address,
         msgs
       })
-    },
-
-    async createStrategy() {
-      const gridStore = useGridStore()
-
-      const { injectiveAddress, address } = useWalletStore()
-
-      if (!injectiveAddress) {
-        return
-      }
-
-      const message = MsgExecuteContractCompat.fromJSON({
-        contractAddress: gridStore.smartContractAddressForGridMarket,
-        sender: injectiveAddress,
-        execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
-          subaccountId: gridStore.subaccountIdForGridMarket,
-          levels: 10,
-          lowerBound: '10',
-          upperBound: '10'
-        })
-      })
-
-      await msgBroadcastClient.broadcastWithFeeDelegation({
-        address,
-        msgs: message
-      })
 
       // console.log(response)
     },
-    async fetchStrategies() {
-      const gridStore = useGridStore()
 
-      await indexerGrpcTradingApi.fetchGridStrategies({
-        subaccountId: gridStore.subaccountIdForGridMarket
-      })
+    async createStrategy() {
+      // const gridStore = useGridStore()
+      // const { injectiveAddress, address } = useWalletStore()
+      // if (!injectiveAddress) {
+      //   return
+      // }
+      // const message = MsgExecuteContractCompat.fromJSON({
+      //   contractAddress: gridStore.smartContractAddressForGridMarket,
+      //   sender: injectiveAddress,
+      //   execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      //     subaccountId: gridStore.subaccountIdForGridMarket,
+      //     levels: 10,
+      //     lowerBound: '10',
+      //     upperBound: '10'
+      //   })
+      // })
+      // const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+      //   address,
+      //   msgs: message
+      // })
+      // console.log(response)
+    },
+
+    async fetchStrategies() {
+      // const gridStore = useGridStore()
+      // const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
+      //   subaccountId: gridStore.subaccountIdForGridMarket,
+      //   accountAddress: 'inj1zwzq3jrj7qltg9fhn73jsqhhtx7fwxz5e0swnx'
+      // })
       // console.log(strategies)
     }
   },

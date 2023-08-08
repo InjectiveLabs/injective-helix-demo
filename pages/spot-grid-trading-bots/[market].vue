@@ -31,7 +31,9 @@ function onLoad(pageMarket: UiMarketWithToken) {
   ]).catch($onError)
 
   market.value = pageMarket as UiSpotMarketWithToken
+
   refreshSubaccountDetails()
+
   gridStore.$patch({ marketSlug: pageMarket.slug })
 }
 
@@ -83,7 +85,7 @@ watch(
   () => walletStore.isUserWalletConnected,
   (isConnected: Boolean) => {
     if (isConnected) {
-      fetchStatus.setLoading()
+      // fetchStatus.setLoading()
     }
   }
 )

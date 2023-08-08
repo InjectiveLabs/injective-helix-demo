@@ -42,7 +42,6 @@ function handleTokenClick() {
         </div>
 
         <div class="w-px h-8 border-r hidden lg:block" />
-        <CommonPlaceOrderDelete />
       </template>
 
       <div

@@ -381,3 +381,8 @@ export enum SpotGridMessages {
   MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
 >>>>>>> 0438c640 (feat: gst initialize apis)
 }
+
+export enum GridStrategyTabs {
+  Running = 'running',
+  History = 'history'
+}
