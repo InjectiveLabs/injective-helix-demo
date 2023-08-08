@@ -30,6 +30,12 @@ const props = defineProps({
     default: ''
   },
 
+  modal: {
+    required: false,
+    default: Modal.TokenSelector,
+    type: String as PropType<Modal>
+  },
+
   debounce: {
     type: Number,
     default: 0
@@ -155,7 +161,7 @@ function openTokenSelectorModal() {
     return
   }
 
-  modalStore.openModal({ type: Modal.TokenSelector })
+  modalStore.openModal({ type: props.modal })
   emit('update:modal')
 }
 
@@ -261,7 +267,8 @@ export default {
           <ModalsTokenSelector
             v-model="denomValue"
             v-bind="{
-              balances: options
+              balances: options,
+              modal
             }"
           />
         </div>

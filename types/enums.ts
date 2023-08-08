@@ -58,14 +58,17 @@ export enum Modal {
   PriceDeviation = 'price-deviation',
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
+  TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
   InstitutionalForm = 'institutionalForm',
+  TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
+
   FuturesMarketRestricted = 'futures-market-restricted'
 }
 

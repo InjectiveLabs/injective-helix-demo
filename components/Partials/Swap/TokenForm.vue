@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SwapForm, SwapFormField } from '@/types'
+import { Modal, SwapForm, SwapFormField } from '@/types'
 import { TokenSymbols } from '@/app/data/token'
 
 const swapStore = useSwapStore()
@@ -163,6 +163,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
             options: inputDenomOptions,
             maxDecimals: inputToken?.quantityDecimals || 0,
             hideMax: false,
+            modal: Modal.TokenSelectorFrom,
             hideBalance: !walletStore.isUserWalletConnected,
             shouldCheckBalance: true,
             amountFieldName: SwapFormField.InputAmount
@@ -200,6 +201,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
             options: outputDenomOptions,
             maxDecimals: outputToken?.quantityDecimals || 0,
             hideMax: true,
+            modal: Modal.TokenSelectorTo,
             hideBalance: !walletStore.isUserWalletConnected,
             amountFieldName: SwapFormField.OutputAmount
           }"
