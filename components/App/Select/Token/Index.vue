@@ -6,11 +6,11 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  Modal,
   TradeField,
   BridgeField,
   SwapFormField,
-  SubaccountTransferField,
-  Modal
+  SubaccountTransferField
 } from '@/types'
 import {
   ONE_IN_BASE,
