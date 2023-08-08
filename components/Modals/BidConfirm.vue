@@ -20,7 +20,7 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Idle))
 
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
-  computed(() => formValues.value.quoteAmount),
+  computed(() => formValues.value.bidPrice),
   { decimalPlaces: 2 }
 )
 
