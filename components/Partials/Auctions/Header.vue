@@ -39,11 +39,11 @@
       <div class="flex gap-8">
         <div>
           <h3 class="text-gray-400 uppercase font-semibold">Tokens Offered</h3>
-          <p>100,000 Talis</p>
+          <p>100,000 TALIS</p>
         </div>
         <div>
           <h3 class="text-gray-400 uppercase font-semibold">Auction Time</h3>
-          <p>Jul 15, 2023 10:00 UTC</p>
+          <p>Aug 15, 2023 10:00 UTC</p>
         </div>
       </div>
     </div>

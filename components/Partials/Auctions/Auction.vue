@@ -17,7 +17,7 @@ defineProps({
       :to="`/auctions/${
         market.slug
       }?showAuctions=true&isUpcoming=${!!isUpcoming}`"
-      class="grid grid-cols-1 md:grid-cols-2 bg-gray-900 rounded-2xl overflow-hidden w-full max-w-xl group"
+      class="grid grid-cols-1 md:grid-cols-2 bg-gray-900 rounded-2xl overflow-hidden w-full group"
     >
       <div class="bg-white p-4 grid place-items-center overflow-hidden">
         <img
@@ -49,8 +49,6 @@ defineProps({
           <h4 class="text-xs uppercase text-gray-500">Starting Bid Price</h4>
           <p class="text-xl">1.00 USDT</p>
         </div>
-
-        <PartialsAuctionsUpcomingTime v-if="isUpcoming" is-slim />
       </div>
     </NuxtLink>
   </div>

@@ -11,7 +11,11 @@ const props = defineProps({
 })
 
 const modalStore = useModalStore()
-const { validate, values: formValues } = useForm<AuctionTradingForm>()
+const {
+  validate,
+  values: formValues,
+  errors: formErrors
+} = useForm<AuctionTradingForm>()
 
 const { accountBalancesWithToken } = useBalance()
 
@@ -53,8 +57,8 @@ async function handleBid() {
 
 <template>
   <div>
-    <h3 class="text-2xl font-semibold">Place Bid now</h3>
-    <p class="text-gray-400">Price & Bid size</p>
+    <h3 class="text-2xl font-semibold">Place Bid</h3>
+    <p class="text-gray-400">Price and Bid size</p>
 
     <PartialsAuctionsFormChart v-bind="{ market }" />
 
@@ -85,7 +89,9 @@ async function handleBid() {
 
     <div>
       <button
+        :disabled="Object.values(formErrors).length > 0"
         class="w-full bg-blue-400 text-white p-4 rounded-md font-semibold"
+        :class="{ 'bg-gray-500': Object.values(formErrors).length > 0 }"
         @click="handleBid"
       >
         Place Bid

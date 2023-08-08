@@ -17,9 +17,15 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
+const route = useRoute()
+const walletStore = useWalletStore()
 
 const target = ref(null)
 const chart = ref<null | ApexCharts>(null)
+
+const isBlured = computed(
+  () => !walletStore.isUserWalletConnected || route.query.isUpcoming === 'true'
+)
 
 const amount = computed(() => {
   if (spotStore.subaccountOrders.length > 0) {
@@ -85,7 +91,7 @@ const options = computed<ApexOptions>(() => ({
   series: [
     {
       name: 'Amount',
-      data: [10, 41, 35, 51, 49, 62, 69, 91, 148].reverse(),
+      data: [],
       group: 'amount'
     }
   ],
@@ -105,12 +111,12 @@ const options = computed<ApexOptions>(() => ({
   fill: {
     type: 'gradient',
     gradient: {
-      opacityFrom: 0.6,
-      opacityTo: 0.3,
+      opacityFrom: 0.8,
+      opacityTo: 0.6,
       stops: [0, 100]
     }
   },
-  colors: ['#F3A400'],
+  colors: ['#0EE29B'],
 
   theme: { mode: 'dark' },
 
@@ -189,6 +195,8 @@ watch(
 
       chart.value.clearAnnotations()
 
+      if (isBlured.value) return
+
       if (amount.value) {
         chart.value.addXaxisAnnotation({
           x: amount.value,
@@ -223,7 +231,7 @@ watch(
             },
             text: 'Your Bid',
             orientation: 'landscape',
-            offsetY: 0,
+            offsetY: 85,
             borderRadius: 10,
             id: 'yourBidText'
           }
