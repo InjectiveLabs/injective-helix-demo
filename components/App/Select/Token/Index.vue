@@ -9,7 +9,8 @@ import {
   TradeField,
   BridgeField,
   SwapFormField,
-  SubaccountTransferField
+  SubaccountTransferField,
+  Modal
 } from '@/types'
 import {
   ONE_IN_BASE,
@@ -57,14 +58,14 @@ const props = defineProps({
   }
 })
 
+const modalStore = useModalStore()
+
 const emit = defineEmits<{
-  'update:denom': [state: string]
-  'update:show': [state: boolean]
+  'update:modal': []
   'update:max': [{ amount: string }]
+  'update:denom': [state: string]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
-
-const isModalActive = ref(false)
 
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
@@ -154,7 +155,8 @@ function openTokenSelectorModal() {
     return
   }
 
-  isModalActive.value = true
+  modalStore.openModal({ type: Modal.TokenSelector })
+  emit('update:modal')
 }
 
 function handleAmountUpdate(amount: string) {
@@ -257,12 +259,10 @@ export default {
           </div>
 
           <ModalsTokenSelector
-            v-bind="{
-              balances: options,
-              isModalActive
-            }"
             v-model="denomValue"
-            v-model:isModalActive="isModalActive"
+            v-bind="{
+              balances: options
+            }"
           />
         </div>
       </div>

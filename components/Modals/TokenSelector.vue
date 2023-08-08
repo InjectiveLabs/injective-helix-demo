@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-defineProps({
-  isModalActive: Boolean
-})
+import { Modal } from '@/types'
 
-const emit = defineEmits<{
-  (e: 'update:isModalActive', state: boolean): void
-}>()
+const modalStore = useModalStore()
 
 function closeModal() {
-  emit('update:isModalActive', false)
+  modalStore.closeModal(Modal.TokenSelector)
 }
 </script>
 
 <template>
-  <AppModal :show="isModalActive" sm @modal:closed="closeModal">
+  <AppModal
+    :show="modalStore.modals[Modal.TokenSelector]"
+    sm
+    @modal:closed="closeModal"
+  >
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
         {{ $t('trade.swap.tokenSelector.selectAToken') }}
