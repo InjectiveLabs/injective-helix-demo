@@ -55,8 +55,8 @@ const sells = computed(() => {
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
-const buyHoverPosition = ref<number | null>(null)
-const sellHoverPosition = ref<number | null>(null)
+const buyHoverPosition = ref<number | undefined>(undefined)
+const sellHoverPosition = ref<number | undefined>(undefined)
 
 const popper = ref<Instance | undefined>(undefined)
 const orderbookSummaryRef = ref<HTMLElement | undefined>(undefined)
@@ -486,10 +486,10 @@ function onScrollBuys() {
   }
 }
 
-function handleSellOrderHover(position: number | null) {
+function handleSellOrderHover(position?: number) {
   sellHoverPosition.value = position
 
-  if (position !== null) {
+  if (position !== undefined) {
     /* TODO: see if this works for finding dynamically assigned refs */
     if (sellRecordListRef.value && sellRecordListRef.value[position]) {
       const hoverElement = sellRecordListRef.value[position].element
@@ -517,10 +517,10 @@ function handleSellOrderHover(position: number | null) {
   }
 }
 
-function handleBuyOrderHover(position: number | null) {
+function handleBuyOrderHover(position?: number) {
   buyHoverPosition.value = position
 
-  if (position !== null) {
+  if (position !== undefined) {
     if (buyRecordListRef.value && buyRecordListRef.value[position]) {
       const hoverElement = buyRecordListRef.value[position].element
 
@@ -586,7 +586,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
-              active: sellHoverPosition !== null && index >= sellHoverPosition
+              active: sellHoverPosition && index >= sellHoverPosition
             }"
             v-bind="{
               market,
@@ -690,7 +690,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
-              active: buyHoverPosition !== null && index <= buyHoverPosition
+              active: buyHoverPosition && index <= buyHoverPosition
             }"
             v-bind="{
               aggregation,
