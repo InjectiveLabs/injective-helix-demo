@@ -29,7 +29,12 @@ const isBlured = computed(
 
 const amount = computed(() => {
   if (spotStore.subaccountOrders.length > 0) {
-    return new BigNumberInWei(spotStore.subaccountOrders[0].price)
+    const subaccountOrdersSorted = [...spotStore.subaccountOrders].sort(
+      (a, b) => {
+        return Number(a.price) - Number(b.price)
+      }
+    )
+    return new BigNumberInWei(subaccountOrdersSorted[0].price)
       .toBase(
         props.market.quoteToken.decimals - props.market.baseToken.decimals
       )

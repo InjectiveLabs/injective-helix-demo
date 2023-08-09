@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AuctionTradingForm, Modal } from '@/types'
 
-const props = defineProps({
+defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -11,39 +10,7 @@ const props = defineProps({
 })
 
 const modalStore = useModalStore()
-const {
-  validate,
-  values: formValues,
-  errors: formErrors
-} = useForm<AuctionTradingForm>()
-
-const { accountBalancesWithToken } = useBalance()
-
-const availableUsd = computed(() => {
-  const quoteBalance = accountBalancesWithToken.value.find(
-    (balance) => balance.denom === props.market.quoteDenom
-  )
-  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
-    props.market.quoteToken.decimals
-  )
-})
-
-const totalUsd = computed(() =>
-  new BigNumberInBase(formValues.baseAmount || 0).times(
-    formValues.bidPrice || 0
-  )
-)
-
-const { valueToString: availableUsdToString } = useBigNumberFormatter(
-  availableUsd,
-  {
-    decimalPlaces: 2
-  }
-)
-
-const { valueToString: totalUsdToString } = useBigNumberFormatter(totalUsd, {
-  decimalPlaces: 2
-})
+const { validate, errors: formErrors } = useForm<AuctionTradingForm>()
 
 async function handleBid() {
   const { valid } = await validate()
@@ -64,28 +31,11 @@ async function handleBid() {
 
     <PartialsAuctionsFormBidPrice v-bind="{ market }" />
 
-    <PartialsAuctionsFormAmount v-bind="{ market, availableUsd }" />
+    <PartialsAuctionsFormAmount v-bind="{ market }" />
 
-    <div class="py-4">
-      <div class="flex justify-between items-center">
-        <p>Available</p>
+    <PartialsAuctionsFormAvailableAmount v-bind="{ market }" />
 
-        <p>
-          <span>{{ availableUsdToString }}</span>
-          <span class="text-gray-500 ml-1">USDT</span>
-        </p>
-      </div>
-
-      <div class="flex justify-between items-center">
-        <p>Total</p>
-
-        <p>
-          <span v-if="totalUsd.eq(0)">-</span>
-          <span v-else>{{ totalUsdToString }}</span>
-          <span class="text-gray-500 ml-1">USDT</span>
-        </p>
-      </div>
-    </div>
+    <PartialsAuctionsFormErrors v-bind="{ market }" />
 
     <div>
       <button
