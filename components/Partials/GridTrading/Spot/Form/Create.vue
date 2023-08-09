@@ -17,6 +17,4 @@ defineEmits<{
       <span>Create</span>
     </AppButton>
   </div>
-
-  <ModalsCreateGridSpotStrategy />
 </template>

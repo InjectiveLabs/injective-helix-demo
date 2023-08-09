@@ -64,6 +64,7 @@ export enum Modal {
   InstitutionalForm = 'institutionalForm',
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
+  CheckSpotGridAuth = 'check-spot-grid-auth',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',

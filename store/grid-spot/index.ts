@@ -1,26 +1,35 @@
 import {
-  // MsgExecuteContractCompat,
-  MsgGrant
-  // ExecArgCreateSpotGridStrategy
+  ExecArgCreateSpotGridStrategy,
+  MsgExecuteContractCompat,
+  MsgGrant,
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
 import {
   chainGrpcAuthZApi,
-  msgBroadcastClient
-  // indexerGrpcTradingApi
+  msgBroadcastClient,
+  indexerGrpcTradingApi
 } from '@/app/Services'
 import { addSubacountIdToEthAddress } from '@/app/utils/helpers'
 import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
 import { SpotGridMessages } from '@/types'
 
+const messageTypes = [
+  SpotGridMessages.MsgWithdraw,
+  SpotGridMessages.MsgBatchUpdateOrders,
+  SpotGridMessages.MsgCreateSpotMarketOrder
+]
+
 type GridSpotStore = {
   marketSlug: string
   strategies: TradingStrategy[]
+  isAuthorized: boolean
 }
 
 const initialStateFactory = (): GridSpotStore => ({
   marketSlug: '',
-  strategies: []
+  strategies: [],
+  isAuthorized: false
 })
 
 export const useGridStore = defineStore('grid-spot', {
@@ -34,16 +43,22 @@ export const useGridStore = defineStore('grid-spot', {
         return
       }
 
-      const response = await chainGrpcAuthZApi.fetchGrants({
+      const { grants } = await chainGrpcAuthZApi.fetchGrants({
         params: {
           grantee: gridStore.smartContractAddressForGridMarket,
           granter: walletStore.injectiveAddress
         }
       })
 
-      // console.log(response)
+      if (!grants) {
+        gridStore.$patch({ isAuthorized: false })
+      }
 
-      return response
+      const isAuthorized = messageTypes.every((m) =>
+        grants.map((g) => g.authorization).some((g) => g.endsWith(m))
+      )
+
+      gridStore.$patch({ isAuthorized })
     },
 
     async grantAuthorization() {
@@ -54,12 +69,6 @@ export const useGridStore = defineStore('grid-spot', {
         return
       }
 
-      const messageTypes = [
-        SpotGridMessages.MsgWithdraw,
-        SpotGridMessages.MsgBatchUpdateOrders,
-        SpotGridMessages.MsgCreateSpotLimitOrder
-      ]
-
       const msgs = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
           messageType,
@@ -68,44 +77,56 @@ export const useGridStore = defineStore('grid-spot', {
         })
       )
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
         address,
         msgs
       })
 
       // console.log(response)
+      return response
     },
 
     async createStrategy() {
-      // const gridStore = useGridStore()
-      // const { injectiveAddress, address } = useWalletStore()
-      // if (!injectiveAddress) {
-      //   return
-      // }
-      // const message = MsgExecuteContractCompat.fromJSON({
-      //   contractAddress: gridStore.smartContractAddressForGridMarket,
-      //   sender: injectiveAddress,
-      //   execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
-      //     subaccountId: gridStore.subaccountIdForGridMarket,
-      //     levels: 10,
-      //     lowerBound: '10',
-      //     upperBound: '10'
-      //   })
-      // })
-      // const response = await msgBroadcastClient.broadcastWithFeeDelegation({
-      //   address,
-      //   msgs: message
-      // })
+      const gridStore = useGridStore()
+      const { injectiveAddress, address } = useWalletStore()
+
+      if (!injectiveAddress) {
+        return
+      }
+      const message = MsgExecuteContractCompat.fromJSON({
+        contractAddress: gridStore.smartContractAddressForGridMarket,
+        sender: injectiveAddress,
+        execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+          subaccountId: gridStore.subaccountIdForGridMarket,
+          levels: 10,
+          lowerBound: '0.0000000000069',
+          upperBound: '0.0000000000099'
+        }),
+        funds: {
+          denom: 'peggy0x87aB3B4C8661e07D6372361211B96ed4Dc36B1B5',
+          amount: spotQuantityToChainQuantityToFixed({
+            value: 0.1,
+            baseDecimals: 6
+          })
+        }
+      })
+
+      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
       // console.log(response)
+      return response
     },
 
     async fetchStrategies() {
-      // const gridStore = useGridStore()
-      // const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-      //   subaccountId: gridStore.subaccountIdForGridMarket,
-      //   accountAddress: 'inj1zwzq3jrj7qltg9fhn73jsqhhtx7fwxz5e0swnx'
-      // })
+      const gridStore = useGridStore()
+      const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
+        subaccountId: gridStore.subaccountIdForGridMarket,
+        accountAddress: 'inj1zwzq3jrj7qltg9fhn73jsqhhtx7fwxz5e0swnx'
+      })
       // console.log(strategies)
+      return strategies
     }
   },
   getters: {

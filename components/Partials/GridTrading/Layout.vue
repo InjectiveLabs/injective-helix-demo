@@ -227,5 +227,8 @@ watch(
       <slot name="modals" />
       <ModalsMarketBeta v-if="marketIsBeta" />
     </div>
+
+    <ModalsCheckSpotGridAuth />
+    <ModalsCreateGridSpotStrategy />
   </AppHocLoading>
 </template>

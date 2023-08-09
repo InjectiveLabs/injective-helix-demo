@@ -10,6 +10,7 @@ defineProps({
     required: true
   }
 })
+
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
@@ -21,7 +22,7 @@ async function handleCreateStrategy() {
     return
   }
 
-  modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+  modalStore.openModal({ type: Modal.CheckSpotGridAuth })
 }
 </script>
 

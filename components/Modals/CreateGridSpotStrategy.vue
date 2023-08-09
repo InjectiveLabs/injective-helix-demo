@@ -1,23 +1,33 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
+// import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const gridStore = useGridStore()
 const modalStore = useModalStore()
+// const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 
-const status = reactive(new Status(StatusType.Idle))
-const isAuthorized = ref(false)
+const aggreedToTerms = ref(false)
 
 function closeModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
 }
 
-function handleCheckAuthz() {
-  gridStore.fetchGrants()
-}
-
-function handleGrant() {
-  gridStore.grantAuthorization()
+function handleCreateStrategy() {
+  gridStore
+    .createStrategy()
+    .then(() => {
+      success({
+        title: 'Success',
+        description: 'Grid Strategy Created Succesfully'
+      })
+    })
+    .catch(() => {
+      // console.dir(e)
+    })
+    .finally(() => {
+      modalStore.closeModal(Modal.CreateSpotGridStrategy)
+    })
 }
 </script>
 <template>
@@ -27,50 +37,66 @@ function handleGrant() {
   >
     <template #title>
       <p class="[text-transform:none] text-lg font-bold p-2">
-        A few clicks before the strategy is created
+        Grid Order Confirmation
       </p>
     </template>
 
-    <button @click="handleCheckAuthz">Check Auth</button>
-    <button @click="handleGrant">Handle Grant</button>
+    <div class="max-w-sm">
+      <p>
+        Please read the below information carefully before you confirm to
+        proceed.
+      </p>
 
-    <AppHocLoading v-bind="{ status }">
-      <div v-if="!isAuthorized" class="max-w-md">
-        <p class="mb-6">
-          There are 2 transactions required to create and enable Spot Grid
-          Trading.
-        </p>
-        <div class="flex items-start">
-          <div class="p-4">
-            <div
-              class="w-8 h-8 rounded-full bg-blue-400 text-white grid place-items-center"
-            >
-              1
-            </div>
-          </div>
-          <div>
-            <p>Let Helix sends you request for transactions</p>
-            <p class="text-gray-400">Please confirm on your wallet...</p>
-          </div>
+      <div class="mt-6 space-y-1">
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Trade Amount</p>
+          <p class="font-semibold">500.00 USDT</p>
         </div>
 
-        <div class="flex items-center">
-          <div class="p-4">
-            <div
-              class="w-8 h-8 rounded-full bg-gray-700 text-white grid place-items-center"
-            >
-              2
-            </div>
-          </div>
-          <div>
-            <p>Create your grid trading strategy</p>
-          </div>
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Market</p>
+          <p class="font-semibold">INJ/USDT</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Grid Mode</p>
+          <p class="font-semibold">Arithmetic</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Price Range</p>
+          <p class="font-semibold">500.00 USDT</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Grid Number</p>
+          <p class="font-semibold">500.00 USDT</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">Profit/Grid</p>
+          <p class="font-semibold">500.00 USDT</p>
         </div>
       </div>
 
-      <div v-else>
-        <p>Authorized</p>
+      <div class="flex my-6">
+        <div class="mt-1 mx-2">
+          <AppCheckbox v-model="aggreedToTerms" />
+        </div>
+        <div>
+          <p>
+            I have read and agreed to the Risk Disclaimer and understand that
+            the parameter selection and investment decision will in all cases be
+            made solely by the client.
+          </p>
+        </div>
       </div>
-    </AppHocLoading>
+
+      <div>
+        <AppButton
+          :disabled="!aggreedToTerms"
+          class="bg-blue-500 disabled:bg-gray-500 w-full"
+          @click="handleCreateStrategy"
+        >
+          Confirm
+        </AppButton>
+      </div>
+    </div>
   </AppModal>
 </template>
