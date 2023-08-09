@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AuctionTradingField, AuctionTradingForm } from '@/types'
 
 const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
-  },
-  availableUsd: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
   }
 })
 
 const formValues = useFormValues<AuctionTradingForm>()
+const { accountBalancesWithToken } = useBalance()
+
+const availableUsd = computed(() => {
+  const quoteBalance = accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
+  )
+  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
+    props.market.quoteToken.decimals
+  )
+})
 
 const { value: baseAmountValue } = useStringField({
   name: AuctionTradingField.BaseAmount,
@@ -23,7 +29,7 @@ const { value: baseAmountValue } = useStringField({
 const { value: quoteAmountValue } = useStringField({
   name: AuctionTradingField.QuoteAmount,
   initialValue: '',
-  dynamicRule: computed(() => `between:1,${props.availableUsd.toFixed()}`)
+  dynamicRule: computed(() => `between:1,${availableUsd.value.toFixed()}`)
 })
 
 function handleBaseAmountUpdate(value: string) {
