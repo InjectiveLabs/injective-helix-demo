@@ -48,15 +48,16 @@ const env = {
   VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_GOOGLE_ANALYTICS_KEY: import.meta.env
     .VITE_GOOGLE_ANALYTICS_KEY as string,
+  VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_BUGSNAG_KEY: import.meta.env.VITE_BUGSNAG_KEY as string | undefined,
-
-  VITE_NEWSLETTER_API: import.meta.env.VITE_NEWSLETTER_API,
-  VITE_ALCHEMY_GOERLI_KEY: import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
   VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY,
-  VITE_FEE_RECIPIENT: import.meta.env.VITE_FEE_RECIPIENT as string,
+  VITE_ALCHEMY_GOERLI_KEY: import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
   VITE_SHEETDB_BEARER_TOKEN: import.meta.env.VITE_SHEETDB_BEARER_TOKEN as
     | string
-    | undefined
+    | undefined,
+
+  VITE_NEWSLETTER_API: import.meta.env.VITE_NEWSLETTER_API,
+  VITE_FEE_RECIPIENT: import.meta.env.VITE_FEE_RECIPIENT as string
 } as {
   VITE_ENV: string
   VITE_BASE_URL: string
@@ -64,10 +65,10 @@ const env = {
   VITE_CHAIN_ID: ChainId
   VITE_FEE_PAYER_PUB_KEY: string
   VITE_DEBUG_CALCULATION: string
+  VITE_MAINTENANCE_ENABLED: string
   VITE_GEO_IP_RESTRICTIONS_ENABLED: string
   VITE_PROXY_DETECTION_API_KEY: string
   VITE_GOOGLE_MAPS_KEY: string
-  VITE_MAINTENANCE_ENABLED: string
   VITE_BANNER_NOTICE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
@@ -78,15 +79,15 @@ const env = {
   VITE_SENTRY_REST_ENDPOINT: string
   VITE_NINJA_PASS_ENDPOINT: string
   VITE_COINGECKO_KEY: string
-  VITE_HOTJAR_KEY: string
   VITE_AMPLITUDE_KEY: string
   VITE_GOOGLE_ANALYTICS_KEY: string
-  VITE_NEWSLETTER_API: string
-  VITE_ALCHEMY_GOERLI_KEY: string
+  VITE_HOTJAR_KEY: string
   VITE_BUGSNAG_KEY: string
   VITE_ALCHEMY_KEY: string
-  VITE_FEE_RECIPIENT: string
+  VITE_ALCHEMY_GOERLI_KEY: string
   VITE_SHEETDB_BEARER_TOKEN: string
+  VITE_NEWSLETTER_API: string
+  VITE_FEE_RECIPIENT: string
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
