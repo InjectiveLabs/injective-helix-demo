@@ -158,9 +158,8 @@ export const setTokenAllowance = async (
   amount = UNLIMITED_ALLOWANCE
 ) => {
   const peggyStore = usePeggyStore()
-
-  const { address, validate } = useWalletStore()
-  const { gasPrice, fetchGasPrice, queue } = useAppStore()
+  const walletStore = useWalletStore()
+  const appStore = useAppStore()
 
   const tokenAddress = balanceWithToken.token.erc20?.address
 
@@ -168,20 +167,20 @@ export const setTokenAllowance = async (
     return
   }
 
-  await queue()
-  await fetchGasPrice()
-  await validate()
+  await appStore.queue()
+  await appStore.fetchGasPrice()
+  await walletStore.validate()
 
   const tx = await web3Composer.getSetTokenAllowanceTx({
-    address,
-    gasPrice,
     tokenAddress,
+    address: walletStore.address,
+    gasPrice: appStore.gasPrice,
     amount: amount.toFixed()
   })
 
   await web3Broadcaster.sendTransaction({
     tx,
-    address
+    address: walletStore.address
   })
 
   const token = peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(

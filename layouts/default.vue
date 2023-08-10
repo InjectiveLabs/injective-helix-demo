@@ -10,7 +10,6 @@ const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -40,11 +39,7 @@ onMounted(() => {
     authzStore.fetchGrants()
   ])
 
-  Promise.all([authzStore.fetchGrants()]).then(() => {
-    if (appStore.isAuthzManagementActive) {
-      accountStore.fetchGrantersOrGranteesAccountPortfolio()
-    }
-  })
+  Promise.all([authzStore.fetchGrants()]).then(() => {})
 
   onDevMode()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)

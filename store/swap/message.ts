@@ -20,21 +20,18 @@ export const submitAtomicOrder = async ({
   minimumOutput: string
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  const {
-    address,
-    validate,
-    isUserWalletConnected,
-    injectiveAddress,
-    defaultSubaccountId
-  } = useWalletStore()
-
-  if (!isUserWalletConnected || !defaultSubaccountId || !minimumOutput) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !walletStore.defaultSubaccountId ||
+    !minimumOutput
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const activeInputAmount = formValues[SwapFormField.InputAmount]
 
@@ -48,7 +45,7 @@ export const submitAtomicOrder = async ({
 
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
-    sender: injectiveAddress,
+    sender: walletStore.injectiveAddress,
     funds: {
       denom: inputToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
@@ -60,8 +57,8 @@ export const submitAtomicOrder = async ({
   })
 
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
+    msgs: message,
+    address: walletStore.address
   })
 
   return txHash
@@ -79,21 +76,18 @@ export const submitAtomicOrderExactOutput = async ({
   maximumInput: string
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  const {
-    address,
-    validate,
-    injectiveAddress,
-    defaultSubaccountId,
-    isUserWalletConnected
-  } = useWalletStore()
-
-  if (!isUserWalletConnected || !defaultSubaccountId || !maximumInput) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !walletStore.defaultSubaccountId ||
+    !maximumInput
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
 
@@ -107,7 +101,7 @@ export const submitAtomicOrderExactOutput = async ({
 
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
-    sender: injectiveAddress,
+    sender: walletStore.injectiveAddress,
     funds: {
       denom: inputToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
@@ -119,8 +113,8 @@ export const submitAtomicOrderExactOutput = async ({
   })
 
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
+    msgs: message,
+    address: walletStore.address
   })
 
   return txHash

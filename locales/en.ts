@@ -359,6 +359,6 @@ export default {
   proMode: {
     proMode: 'Pro Mode',
     subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authz management'
+    authzManagement: 'Enable read-only authz management'
   }
 }

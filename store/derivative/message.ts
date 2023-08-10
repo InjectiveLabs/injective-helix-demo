@@ -25,63 +25,67 @@ import { UIDerivativeOrder } from '@/types'
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { markets } = useDerivativeStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
-  const market = markets.find((m) => m.marketId === order.marketId)
+  const market = derivativeStore.markets.find(
+    (m) => m.marketId === order.marketId
+  )
+
+  if (!market) {
+    return
+  }
+
   const messageType =
     market && market.subType === MarketType.BinaryOptions
       ? MsgCancelBinaryOptionsOrder
       : MsgCancelDerivativeOrder
 
   const message = messageType.fromJSON({
-    injectiveAddress,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: order.marketId,
     orderHash: order.orderHash,
     subaccountId: order.subaccountId
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+  const walletStore = useWalletStore()
 
-  const { markets } = useDerivativeStore()
-
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messages = orders.map((order: UIDerivativeOrder) => {
-    const market = markets.find((m) => m.marketId === order.marketId)
+    const market = derivativeStore.markets.find(
+      (m) => m.marketId === order.marketId
+    )
     const messageType =
       market && market.subType === MarketType.BinaryOptions
         ? MsgBatchCancelBinaryOptionsOrders
         : MsgBatchCancelDerivativeOrders
 
     return messageType.fromJSON({
-      injectiveAddress,
+      injectiveAddress: walletStore.injectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -93,7 +97,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: messages
   })
 }
@@ -114,17 +118,19 @@ export const submitLimitOrder = async ({
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messageType =
     market.subType === MarketType.BinaryOptions
@@ -132,8 +138,8 @@ export const submitLimitOrder = async ({
       : MsgCreateDerivativeLimitOrder
 
   const message = messageType.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price,
@@ -152,7 +158,7 @@ export const submitLimitOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -175,17 +181,19 @@ export const submitStopLimitOrder = async ({
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messageType =
     market.subType === MarketType.BinaryOptions
@@ -211,8 +219,8 @@ export const submitStopLimitOrder = async ({
       })
 
   const message = messageType.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     price: msgPrice,
     margin: msgMargin,
     quantity: msgQuantity,
@@ -223,7 +231,7 @@ export const submitStopLimitOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -244,17 +252,19 @@ export const submitMarketOrder = async ({
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messageType =
     market && market.subType === MarketType.BinaryOptions
@@ -262,8 +272,8 @@ export const submitMarketOrder = async ({
       : MsgCreateDerivativeMarketOrder
 
   const message = messageType.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price,
@@ -282,7 +292,7 @@ export const submitMarketOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -305,17 +315,19 @@ export const submitStopMarketOrder = async ({
   market: UiDerivativeMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messageType =
     market.subType === MarketType.BinaryOptions
@@ -341,8 +353,8 @@ export const submitStopMarketOrder = async ({
       })
 
   const message = messageType.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     price: msgPrice,
     margin: msgMargin,
     quantity: msgQuantity,
@@ -353,7 +365,7 @@ export const submitStopMarketOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }

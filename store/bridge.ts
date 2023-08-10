@@ -50,7 +50,7 @@ export const useBridgeStore = defineStore('bridge', {
   state: (): BridgeStoreState => initialStateFactory(),
   getters: {
     withdrawalTransactions: (state: BridgeStoreState) => {
-      const { injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
       const ibcWithdrawalTransactions =
         state.ibcTransferBridgeTransactions.filter((transaction) =>
@@ -58,7 +58,7 @@ export const useBridgeStore = defineStore('bridge', {
         )
       const injectiveWithdrawalTransactions =
         state.injectiveTransferBridgeTransactions.filter(
-          (transaction) => transaction.sender === injectiveAddress
+          (transaction) => transaction.sender === walletStore.injectiveAddress
         )
 
       return [
@@ -69,7 +69,7 @@ export const useBridgeStore = defineStore('bridge', {
     },
 
     depositTransactions: (state: BridgeStoreState) => {
-      const { injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
       const ibcDepositsTransactions =
         state.ibcTransferBridgeTransactions.filter((transaction) =>
@@ -78,7 +78,7 @@ export const useBridgeStore = defineStore('bridge', {
 
       const injectiveDepositTransactions =
         state.injectiveTransferBridgeTransactions.filter(
-          (transaction) => transaction.receiver === injectiveAddress
+          (transaction) => transaction.receiver === walletStore.injectiveAddress
         )
 
       return [
@@ -91,14 +91,14 @@ export const useBridgeStore = defineStore('bridge', {
   actions: {
     async fetchInjectiveTransactions() {
       const bridgeStore = useBridgeStore()
-      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!injectiveAddress || !isUserWalletConnected) {
+      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
         return
       }
 
       const { txs } = await indexerExplorerApi.fetchAccountTx({
-        address: injectiveAddress,
+        address: walletStore.injectiveAddress,
         limit: -1,
         type: 'cosmos.bank.v1beta1.MsgSend'
       })
@@ -122,10 +122,10 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
       const bridgeStore = useBridgeStore()
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -133,7 +133,7 @@ export const useBridgeStore = defineStore('bridge', {
 
       const { transfers, pagination } =
         await indexerAccountApi.fetchSubaccountHistory({
-          subaccountId,
+          subaccountId: accountStore.subaccountId,
           denom: filters?.denom,
           pagination: options?.pagination
         })
@@ -157,15 +157,15 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchIBCTransferTransactions() {
       const bridgeStore = useBridgeStore()
-      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!injectiveAddress || !isUserWalletConnected) {
+      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
         return
       }
 
       const transactions = await indexerExplorerApi.fetchIBCTransferTxs({
-        sender: injectiveAddress,
-        receiver: injectiveAddress
+        sender: walletStore.injectiveAddress,
+        receiver: walletStore.injectiveAddress
       })
 
       const uiBridgeTransactions = await Promise.all(
@@ -187,16 +187,15 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchPeggyDepositTransactions() {
       const bridgeStore = useBridgeStore()
-      const { address, injectiveAddress, isUserWalletConnected } =
-        useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
       }
 
       const transactions = await indexerExplorerApi.fetchPeggyDepositTxs({
-        sender: address,
-        receiver: injectiveAddress
+        sender: walletStore.address,
+        receiver: walletStore.injectiveAddress
       })
 
       const uiBridgeTransactions = await Promise.all(
@@ -218,16 +217,15 @@ export const useBridgeStore = defineStore('bridge', {
 
     async fetchPeggyWithdrawalTransactions() {
       const bridgeStore = useBridgeStore()
-      const { address, injectiveAddress, isUserWalletConnected } =
-        useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.address || !walletStore.isUserWalletConnected) {
         return
       }
 
       const transactions = await indexerExplorerApi.fetchPeggyWithdrawalTxs({
-        sender: injectiveAddress,
-        receiver: address
+        sender: walletStore.injectiveAddress,
+        receiver: walletStore.address
       })
 
       const uiBridgeTransactions = await Promise.all(

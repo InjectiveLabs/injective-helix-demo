@@ -26,17 +26,19 @@ export const closePosition = async ({
   position: UiPosition
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const orderType =
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
@@ -49,12 +51,12 @@ export const closePosition = async ({
 
   const message = messageType.fromJSON({
     margin: '0',
-    injectiveAddress,
+    injectiveAddress: walletStore.injectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: liquidationPrice.toFixed(),
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     orderType: orderSideToOrderType(orderType),
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
@@ -62,7 +64,7 @@ export const closePosition = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -70,22 +72,26 @@ export const closePosition = async ({
 export const closeAllPosition = async (positions: UiPosition[]) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
+  const derivativeStore = useDerivativeStore()
 
-  const { subaccountId } = useAccountStore()
-  const { markets } = useDerivativeStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || positions.length === 0) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    positions.length === 0
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const formattedPositions = positions
     .map((position) => {
-      const market = markets.find((m) => m.marketId === position.marketId)
+      const market = derivativeStore.markets.find(
+        (m) => m.marketId === position.marketId
+      )
 
       if (!market) {
         return undefined
@@ -131,20 +137,20 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
 
   const messages = formattedPositions.map((position) =>
     position.messageType.fromJSON({
-      injectiveAddress,
+      injectiveAddress: walletStore.injectiveAddress,
       margin: '0',
       triggerPrice: '0',
       price: position.price,
       quantity: position.quantity,
       marketId: position.marketId,
       feeRecipient: FEE_RECIPIENT,
-      subaccountId,
+      subaccountId: accountStore.subaccountId,
       orderType: orderSideToOrderType(position.orderType)
     })
   )
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: messages
   })
 
@@ -161,19 +167,21 @@ export const closePositionAndReduceOnlyOrders = async ({
 }) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
-
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
   const actualMarket = market as UiDerivativeMarketWithToken
 
-  if (!isUserWalletConnected || !subaccountId || !actualMarket) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !actualMarket
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const orderType =
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
@@ -186,12 +194,12 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   const message = messageType.fromJSON({
     margin: '0',
-    injectiveAddress,
+    injectiveAddress: walletStore.injectiveAddress,
     triggerPrice: '0',
     feeRecipient: FEE_RECIPIENT,
     marketId: actualMarket.marketId,
     price: liquidationPrice.toFixed(),
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     }),
@@ -199,7 +207,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 
@@ -214,23 +222,25 @@ export const addMarginToPosition = async ({
   amount: BigNumberInBase
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const message = MsgIncreasePositionMargin.fromJSON({
-    injectiveAddress,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: market.marketId,
-    srcSubaccountId: subaccountId,
-    dstSubaccountId: subaccountId,
+    srcSubaccountId: accountStore.subaccountId,
+    dstSubaccountId: accountStore.subaccountId,
     amount: derivativeMarginToChainMarginToFixed({
       value: amount,
       quoteDecimals: market.quoteToken.decimals
@@ -238,7 +248,7 @@ export const addMarginToPosition = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }

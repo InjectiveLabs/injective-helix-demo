@@ -44,10 +44,10 @@ export const usePositionStore = defineStore('position', {
     ) {
       const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -55,7 +55,7 @@ export const usePositionStore = defineStore('position', {
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
-          subaccountId,
+          subaccountId: accountStore.subaccountId,
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           direction: filters?.direction
         })
@@ -69,27 +69,26 @@ export const usePositionStore = defineStore('position', {
     // Fetching multiple market orderbooks for unrealized PnL calculation within
     async fetchMarketsOrderbook() {
       const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { markets } = useDerivativeStore()
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
-      if (markets.length === 0) {
+      if (derivativeStore.markets.length === 0) {
         return
       }
 
       const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooksV2(
-        markets.map((market) => market.marketId)
+        derivativeStore.markets.map((market) => market.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
         (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
-            [markets[index].marketId]: orderbook
+            [derivativeStore.markets[index].marketId]: orderbook
           }
         },
         {} as OrderBookMap
@@ -103,28 +102,25 @@ export const usePositionStore = defineStore('position', {
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
       const positionStore = usePositionStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      const { subaccountPositions } = positionStore
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
-      if (subaccountPositions.length === 0) {
+      if (positionStore.subaccountPositions.length === 0) {
         return
       }
 
       const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooksV2(
-        subaccountPositions.map((position) => position.marketId)
+        positionStore.subaccountPositions.map((position) => position.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
         (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
-            [subaccountPositions[index].marketId]: orderbook
+            [positionStore.subaccountPositions[index].marketId]: orderbook
           }
         },
         {} as OrderBookMap

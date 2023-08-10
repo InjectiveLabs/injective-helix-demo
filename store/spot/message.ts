@@ -19,21 +19,19 @@ import { FEE_RECIPIENT } from '@/app/utils/constants'
 
 export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const messages = orders.map((order) =>
     MsgBatchCancelSpotOrders.fromJSON({
-      injectiveAddress,
+      injectiveAddress: walletStore.injectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -45,7 +43,7 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   )
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: messages
   })
 }
@@ -54,27 +52,25 @@ export const cancelOrder = async (
   order: UiSpotLimitOrder | UiSpotOrderHistory
 ) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const message = MsgCancelSpotOrder.fromJSON({
-    injectiveAddress,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: order.marketId,
     subaccountId: order.subaccountId,
     orderHash: order.orderHash
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -91,21 +87,23 @@ export const submitLimitOrder = async ({
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -121,7 +119,7 @@ export const submitLimitOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -138,23 +136,25 @@ export const submitMarketOrder = async ({
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const orderType = isBuy ? OrderSide.Buy : OrderSide.Sell
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -170,7 +170,7 @@ export const submitMarketOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -189,21 +189,23 @@ export const submitStopLimitOrder = async ({
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -224,7 +226,7 @@ export const submitStopLimitOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }
@@ -243,21 +245,23 @@ export const submitStopMarketOrder = async ({
   market: UiSpotMarketWithToken
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
-  const { subaccountId } = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId || !market) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !market
+  ) {
     return
   }
 
   await appStore.queue()
-  await validate()
+  await walletStore.validate()
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
-    subaccountId,
-    injectiveAddress,
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: walletStore.injectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -278,7 +282,7 @@ export const submitStopMarketOrder = async ({
   })
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
+    address: walletStore.address,
     msgs: message
   })
 }

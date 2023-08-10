@@ -384,22 +384,22 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const { ethereumChainId, chainId } = useAppStore()
-      const { wallet, injectiveAddress, address } = useWalletStore()
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
 
-      if (wallet === Wallet.Metamask) {
-        await validateMetamask(address, ethereumChainId)
+      if (walletStore.wallet === Wallet.Metamask) {
+        await validateMetamask(walletStore.address, appStore.ethereumChainId)
       }
 
-      if (wallet === Wallet.TrustWallet) {
-        await validateTrustWallet(address, ethereumChainId)
+      if (walletStore.wallet === Wallet.TrustWallet) {
+        await validateTrustWallet(walletStore.address, appStore.ethereumChainId)
       }
 
-      if (isCosmosWallet(wallet)) {
+      if (isCosmosWallet(walletStore.wallet)) {
         await validateCosmosWallet({
-          address: injectiveAddress,
-          chainId: chainId as unknown as CosmosChainId,
-          wallet
+          address: walletStore.injectiveAddress,
+          chainId: appStore.chainId as unknown as CosmosChainId,
+          wallet: walletStore.wallet
         })
       }
     },

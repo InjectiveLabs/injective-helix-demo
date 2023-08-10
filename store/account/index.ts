@@ -15,7 +15,6 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
-import { GrantDirection } from '@/types/authZ'
 
 type AccountStoreState = {
   // currently selected subaccountId
@@ -25,24 +24,13 @@ type AccountStoreState = {
   bankBalances: Coin[]
   positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
-
-  // Portfolio from the authz granters/grantees of the currently connected addresses
-  authzState: {
-    address: string
-    type: GrantDirection
-    bankBalances: Coin[]
-    positionsWithUpnl: PositionsWithUPNL[]
-    subaccountBalancesMap: Record<string, SubaccountBalance[]>
-  }[]
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
   positionsWithUpnl: [],
-  subaccountBalancesMap: {},
-
-  authzState: []
+  subaccountBalancesMap: {}
 })
 
 export const useAccountStore = defineStore('account', {
@@ -160,21 +148,6 @@ export const useAccountStore = defineStore('account', {
           ...nonDefaultSubaccounts
         }
       })
-    },
-
-    async fetchGrantersOrGranteesAccountPortfolio() {
-      const authzStore = useAuthZStore()
-      const walletStore = useWalletStore()
-
-      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
-        return
-      }
-
-      if (authzStore.grantersOrGrantees.length === 0) {
-        return
-      }
-
-      await Promise.resolve()
     },
 
     reset() {
