@@ -47,6 +47,10 @@ function loadSubaccountDetails() {
     spotStore.streamSubaccountOrderHistory(market.value.marketId)
   }
 }
+
+useIntervalFn(() => {
+  loadSubaccountDetails()
+}, 5000)
 </script>
 
 <template>
