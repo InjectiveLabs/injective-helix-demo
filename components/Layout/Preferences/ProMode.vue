@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const appStore = useAppStore()
 const authZStore = useAuthZStore()
+const accountStore = useAccountStore()
 
 function toggleSubaccountManagement() {
   appStore.setUserState({
@@ -20,6 +21,10 @@ function toggleAuthZManagement() {
       authZManagement: !appStore.userState.proMode.authZManagement
     }
   })
+
+  if (appStore.isAuthzManagementActive) {
+    accountStore.fetchGrantersOrGranteesAccountPortfolio()
+  }
 }
 </script>
 

@@ -6,10 +6,11 @@ import { BusEvents, Modal } from '@/types'
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
+const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -36,10 +37,16 @@ onMounted(() => {
     spotStore.initIfNotInit(),
     derivativeStore.initIfNotInit(),
     exchangeStore.initFeeDiscounts(),
-    authZStore.fetchGrants()
+    authzStore.fetchGrants()
   ])
 
-  handleDevMode()
+  Promise.all([authzStore.fetchGrants()]).then(() => {
+    if (appStore.isAuthzManagementActive) {
+      accountStore.fetchGrantersOrGranteesAccountPortfolio()
+    }
+  })
+
+  onDevMode()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
@@ -57,7 +64,7 @@ function onCloseSideBar() {
   }
 }
 
-function handleDevMode() {
+function onDevMode() {
   const devModeExistsInQuery =
     route.query.devMode && route.query.devMode === 'true'
 

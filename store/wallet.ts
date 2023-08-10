@@ -99,9 +99,6 @@ export const useWalletStore = defineStore('wallet', {
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
 
-      // We can fetch these in the background, we don't need to block the main app
-      accountStore.fetchGrantersAccountPortfolio()
-
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
       })

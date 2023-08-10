@@ -93,7 +93,7 @@ export const useAccountStore = defineStore('account', {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
         return
       }
 
@@ -162,11 +162,12 @@ export const useAccountStore = defineStore('account', {
       })
     },
 
-    async fetchGrantersAccountPortfolio() {
+    async fetchGrantersOrGranteesAccountPortfolio() {
       const authzStore = useAuthZStore()
+      const walletStore = useWalletStore()
 
-      if (authzStore.grantersOrGrantees.length === 0) {
-        await authzStore.fetchGrants()
+      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
+        return
       }
 
       if (authzStore.grantersOrGrantees.length === 0) {
