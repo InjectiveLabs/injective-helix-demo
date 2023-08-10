@@ -5,7 +5,8 @@ import {
   MsgCreateDerivativeMarketOrder,
   MsgIncreasePositionMargin,
   derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed
+  derivativeQuantityToChainQuantityToFixed,
+  msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
 import {
   UiPosition,
@@ -63,9 +64,11 @@ export const closePosition = async ({
     })
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -149,9 +152,11 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     })
   )
 
+  const actualMessages = msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: messages
+    msgs: actualMessages
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -206,9 +211,11 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -247,8 +254,10 @@ export const addMarginToPosition = async ({
     })
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }

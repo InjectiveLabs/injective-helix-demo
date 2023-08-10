@@ -2,7 +2,8 @@ import {
   ExecArgSwapMinOutput,
   ExecArgSwapExactOutput,
   MsgExecuteContractCompat,
-  spotQuantityToChainQuantityToFixed
+  spotQuantityToChainQuantityToFixed,
+  msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
 import { msgBroadcastClient } from '@/app/Services'
@@ -56,8 +57,10 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 
@@ -112,8 +115,10 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 

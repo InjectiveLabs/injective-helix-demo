@@ -2,8 +2,9 @@ import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  denomAmountToChainDenomAmountToFixed,
-  MsgExternalTransfer
+  msgsOrMsgExecMsgs,
+  MsgExternalTransfer,
+  denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -42,8 +43,10 @@ export const deposit = async ({
     }
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 
@@ -82,8 +85,10 @@ export const withdraw = async ({
     }
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 
@@ -123,9 +128,11 @@ export const transfer = async ({
     }
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     memo,
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 
@@ -168,9 +175,11 @@ export const externalTransfer = async ({
     }
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     memo,
-    msgs: message,
+    msgs: actualMessage,
     address: walletStore.address
   })
 

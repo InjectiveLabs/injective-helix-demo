@@ -6,6 +6,7 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  msgsOrMsgExecMsgs,
   MsgCancelDerivativeOrder,
   MsgCancelBinaryOptionsOrder,
   MsgCreateDerivativeLimitOrder,
@@ -56,9 +57,11 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     subaccountId: order.subaccountId
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -96,9 +99,11 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     })
   })
 
+  const actualMessages = msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: messages
+    msgs: actualMessages
   })
 }
 
@@ -157,9 +162,11 @@ export const submitLimitOrder = async ({
     feeRecipient: FEE_RECIPIENT
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -230,9 +237,11 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -291,9 +300,11 @@ export const submitMarketOrder = async ({
     feeRecipient: FEE_RECIPIENT
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -364,8 +375,10 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }

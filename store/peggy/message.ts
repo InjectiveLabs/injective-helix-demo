@@ -5,7 +5,11 @@ import {
   BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
+import {
+  getEthereumAddress,
+  MsgSendToEth,
+  msgsOrMsgExecMsgs
+} from '@injectivelabs/sdk-ts'
 import type { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
@@ -25,20 +29,18 @@ export const transfer = async ({
   balanceWithTokenAndPrice: BalanceWithTokenWithErc20BalanceWithPrice
 }) => {
   const peggyStore = usePeggyStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const walletStore = useWalletStore()
   const appStore = useAppStore()
-  const { gasPrice, fetchGasPrice, queue } = appStore
 
-  if (!address || !isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
-  await fetchGasPrice()
-  await validate()
-  await queue()
+  await appStore.fetchGasPrice()
+  await walletStore.validate()
+  await appStore.queue()
 
-  const ethDestinationAddress = getEthereumAddress(injectiveAddress)
+  const ethDestinationAddress = getEthereumAddress(walletStore.injectiveAddress)
   const actualAmount = new BigNumberInBase(
     amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
   )
@@ -55,8 +57,8 @@ export const transfer = async ({
   }
 
   const tx = await web3Composer.getPeggyTransferTx({
-    address,
-    gasPrice,
+    address: walletStore.address,
+    gasPrice: appStore.gasPrice,
     denom: token.denom,
     amount: actualAmount,
     destinationAddress: ethDestinationAddress
@@ -64,7 +66,7 @@ export const transfer = async ({
 
   await web3Broadcaster.sendTransaction({
     tx,
-    address
+    address: walletStore.address
   })
 }
 
@@ -78,15 +80,13 @@ export const withdraw = async ({
   token: Token
 }) => {
   const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
-
-  if (!address || !isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
-  await validate()
+  await walletStore.validate()
   await appStore.queue()
 
   /**
@@ -105,8 +105,8 @@ export const withdraw = async ({
     .toFixed(0)
 
   const message = MsgSendToEth.fromJSON({
-    address,
-    injectiveAddress,
+    address: walletStore.address,
+    injectiveAddress: walletStore.injectiveAddress,
     amount: {
       denom: token.denom,
       amount: actualAmount
@@ -117,9 +117,11 @@ export const withdraw = async ({
     }
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address,
-    msgs: message
+    address: walletStore.address,
+    msgs: actualMessage
   })
 }
 

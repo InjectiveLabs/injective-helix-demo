@@ -10,7 +10,8 @@ import {
   MsgCreateSpotLimitOrder,
   MsgCreateSpotMarketOrder,
   spotPriceToChainPriceToFixed,
-  spotQuantityToChainQuantityToFixed
+  spotQuantityToChainQuantityToFixed,
+  msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -42,9 +43,11 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
     })
   )
 
+  const actualMessages = msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: messages
+    msgs: actualMessages
   })
 }
 
@@ -69,9 +72,11 @@ export const cancelOrder = async (
     orderHash: order.orderHash
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -118,9 +123,11 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -169,9 +176,11 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -225,9 +234,11 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
 
@@ -281,8 +292,10 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+
   await msgBroadcastClient.broadcastWithFeeDelegation({
     address: walletStore.address,
-    msgs: message
+    msgs: actualMessage
   })
 }
