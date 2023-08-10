@@ -30,6 +30,7 @@ const { values: formValues, resetForm } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
+
 const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
   computed(() => formValues)
 )

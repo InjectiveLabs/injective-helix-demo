@@ -24,13 +24,11 @@ const emit = defineEmits<{
 const animationCount = ref(0)
 
 const { value: inputDenom } = useStringField({
-  name: SwapFormField.InputDenom,
-  initialValue: ''
+  name: SwapFormField.InputDenom
 })
 
 const { value: outputDenom } = useStringField({
-  name: SwapFormField.OutputDenom,
-  initialValue: ''
+  name: SwapFormField.OutputDenom
 })
 
 const { inputToken, outputToken } = useSwap(formValues)

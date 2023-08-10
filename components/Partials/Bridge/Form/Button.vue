@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { BridgeField, BridgeType, Modal } from '@/types'
+import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-const formValues = useFormValues()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 const formErrors = useFormErrors()
+const validateForm = useValidateForm()
 
 const hasFormErrors = computed(
   () =>
@@ -12,7 +13,13 @@ const hasFormErrors = computed(
     formValues.value[BridgeField.Amount] === ''
 )
 
-function handleBridgeConfirmation() {
+async function handleBridgeConfirmation() {
+  const { valid } = await validateForm()
+
+  if (!valid) {
+    return
+  }
+
   nextTick(() => {
     modalStore.openModal({ type: Modal.BridgeConfirm })
   })

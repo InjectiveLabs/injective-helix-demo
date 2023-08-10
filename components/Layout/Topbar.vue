@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { formatWalletAddress } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useModalStore()
+const authzStore = useAuthZStore()
 const walletStore = useWalletStore()
 const ninjaPassStore = useNinjaPassStore()
 const confetti = useConfetti()
@@ -55,18 +56,6 @@ function showNinjaPassModal() {
 
   confetti.showConfetti()
 }
-
-function resetAuthZ() {
-  if (walletStore.isAuthzWalletConnected) {
-    walletStore.resetAuthZ()
-    /**
-     * -- TODO --
-     * For now, we reload the page to refetch everything on the
-     * page but we should add watchers for better UX
-     */
-    location.reload()
-  }
-}
 </script>
 
 <template>
@@ -116,25 +105,13 @@ function resetAuthZ() {
           {{ $t('navigation.account') }}
         </LayoutNavItem>
 
-        <LayoutNavItemDummy
-          v-if="walletStore.isAuthzWalletConnected"
-          class="hidden lg:flex px-0 w-12 items-center justify-center"
-          @click="resetAuthZ"
-        >
-          <AppTooltip
-            :content="
-              $t('navigation.connectedUsingAuthZ', {
-                address: formatWalletAddress(walletStore.authZ.injectiveAddress)
-              })
-            "
-          >
-            <BaseIcon
-              name="spy"
-              class="text-white w-4 h-4 hover:text-red-500"
-            />
-          </AppTooltip>
-        </LayoutNavItemDummy>
-
+        <LayoutAuthZ
+          v-if="
+            authzStore.hasGranterOrGranteeGrants &&
+            appStore.isAuthzManagementActive
+          "
+          class="hidden lg:flex"
+        />
         <LayoutWallet />
 
         <LayoutNavItemDummy

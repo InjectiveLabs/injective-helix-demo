@@ -122,15 +122,13 @@ export const usePeggyStore = defineStore('peggy', {
       const walletStore = useWalletStore()
       const tokenStore = useTokenStore()
 
-      const { address, isUserWalletConnected } = walletStore
-
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const balanceAndAllowance =
         await web3Client.fetchTokenBalanceAndAllowance({
-          address,
+          address: walletStore.authZOrAddress,
           contractAddress: token.denom
         })
       const balanceWithToken = {
@@ -163,9 +161,7 @@ export const usePeggyStore = defineStore('peggy', {
       const walletStore = useWalletStore()
       const tokenStore = useTokenStore()
 
-      const { address, isUserWalletConnected } = walletStore
-
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
