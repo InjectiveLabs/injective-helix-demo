@@ -48,7 +48,6 @@ const env = {
   VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_GOOGLE_ANALYTICS_KEY: import.meta.env
     .VITE_GOOGLE_ANALYTICS_KEY as string,
-  VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_BUGSNAG_KEY: import.meta.env.VITE_BUGSNAG_KEY as string | undefined,
   VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY,
   VITE_ALCHEMY_GOERLI_KEY: import.meta.env.VITE_ALCHEMY_GOERLI_KEY,

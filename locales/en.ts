@@ -354,5 +354,10 @@ export default {
     connectWithAddress: 'Connect with address',
     connect: 'Connect',
     enterInjectiveAddress: 'Enter your injective address'
+  },
+
+  proMode: {
+    proMode: 'Pro Mode',
+    proModeNote: 'Enable access to advanced trading features.'
   }
 }

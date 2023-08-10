@@ -9,8 +9,9 @@ import {
 } from '@injectivelabs/utils'
 import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
-const accountStore = useAccountStore()
+const appStore = useAppStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
@@ -122,9 +123,11 @@ watch(
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <p class="text-xs text-gray-500 flex items-center">
-            {{ $t('marketPage.assetsFrom') }}
+            {{
+              $t(`marketPage.${appStore.isProMode ? 'assetsFrom' : 'assets'}`)
+            }}
           </p>
-          <PartialsCommonSubaccountSelector />
+          <PartialsCommonSubaccountSelector v-if="appStore.isProMode" />
         </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"

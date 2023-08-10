@@ -10,6 +10,7 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeType, Modal } from '@/types'
 
+const appStore = useAppStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -178,7 +179,11 @@ function handleTransferClick() {
           </AppButton>
         </NuxtLink>
 
-        <AppButton class="border border-blue-500" @click="handleTransferClick">
+        <AppButton
+          v-if="appStore.isProMode"
+          class="border border-blue-500"
+          @click="handleTransferClick"
+        >
           <span class="text-blue-500 font-semibold">
             {{ $t('account.transfer') }}
           </span>
@@ -187,7 +192,7 @@ function handleTransferClick() {
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading"
+      v-if="!isLoading && appStore.isProMode"
       v-bind="{
         hideBalances
       }"

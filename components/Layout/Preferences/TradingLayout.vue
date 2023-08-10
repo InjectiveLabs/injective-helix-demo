@@ -13,7 +13,7 @@ function handleChangeTradingLayout(tradingLayout: TradingLayout) {
 
 <template>
   <div
-    class="flex-col p-4 gap-3 pointer-events-none hidden lg:flex lg:pointer-events-auto text-white"
+    class="flex-col p-4 gap-3 pointer-events-none hidden lg:flex lg:pointer-events-auto text-gray-100 text-xs"
   >
     <span class="font-semibold">
       {{ $t('trade.tradingLayout') }}

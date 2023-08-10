@@ -106,6 +106,7 @@ function handleShowNinjaPassModal() {
         </LayoutNavItem>
 
         <LayoutWallet />
+        <LayoutPreferences v-if="isUserWalletConnected" />
       </div>
     </div>
     <button
