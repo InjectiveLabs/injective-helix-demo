@@ -1965,10 +1965,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.12.17":
-  version "1.12.17"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.17.tgz#09c3ffb90975aebeae15fccd9a4a4182108191dd"
-  integrity sha512-qFQHxCsVsxWfTBkNwnD+iiJBWm34pLrY0JzktFcGEQ42bYUZ3O0onqEZF6dPCijJo/gNkdrtuVVVCdZGNvXAjQ==
+"@injectivelabs/ui-shared@1.12.18":
+  version "1.12.18"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.18.tgz#51498d5adb47b9703b8e38cf2d17a88dc3d539de"
+  integrity sha512-7M3S/GJZ+SQq5/4wQowOO7BF0EnBCsvat3X8c6DsCn+Mo4bG8BFsOitLJZ2L5KXX9A/uCq5awvtiosx+n66TFg==
   dependencies:
     "@nuxt/kit" "3.5.3"
     "@vuepic/vue-datepicker" "^5.4.0"

@@ -269,7 +269,9 @@ export default {
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
-    leaderboard: 'Leaderboard'
+    leaderboard: 'Leaderboard',
+    connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
+      `Connected to ${named('address')}. Click to close connection.`
   },
 
   fee_discounts: {
@@ -301,7 +303,8 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: ({ named }: I18nMessageFunction) =>
-      `In past ${named('days')} days`
+      `In past ${named('days')} days`,
+    tierAuthZ: 'Tier (AuthZ)'
   },
 
   pagination: {
@@ -360,5 +363,10 @@ export default {
     proMode: 'Pro Mode',
     subaccountManagement: 'Enable subaccount management',
     authzManagement: 'Enable read-only authz management'
+  },
+
+  authZ: {
+    granters: 'Granters',
+    grantees: 'Grantees'
   }
 }

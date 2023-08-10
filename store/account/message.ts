@@ -107,7 +107,7 @@ export const transfer = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
 
-  if (!walletStore.address || !walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
@@ -151,7 +151,7 @@ export const externalTransfer = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
 
-  if (!walletStore.address || !walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 

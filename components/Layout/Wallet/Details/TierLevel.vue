@@ -2,6 +2,7 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
 
+const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 
 const accountInfo = computed(() => {
@@ -58,7 +59,13 @@ const makerFeeDiscount = computed(() => {
 <template>
   <div class="flex items-center justify-between text-xs">
     <span class="font-semibold">
-      {{ $t('fee_discounts.tier') }}
+      {{
+        $t(
+          `fee_discounts.${
+            walletStore.isAuthzWalletConnected ? 'tierAuthZ' : 'tier'
+          }`
+        )
+      }}
     </span>
 
     <NuxtLink

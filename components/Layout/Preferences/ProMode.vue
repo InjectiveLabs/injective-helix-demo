@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const appStore = useAppStore()
 const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 
 function toggleSubaccountManagement() {
   appStore.setUserState({
@@ -13,13 +14,26 @@ function toggleSubaccountManagement() {
 }
 
 function toggleAuthZManagement() {
+  const authZManagement = !appStore.userState.proMode.authZManagement
+
   appStore.setUserState({
     ...appStore.userState,
     proMode: {
       ...appStore.userState.proMode,
-      authZManagement: !appStore.userState.proMode.authZManagement
+      authZManagement
     }
   })
+
+  if (!authZManagement) {
+    walletStore.resetAuthZ()
+
+    /**
+     * -- TODO --
+     * For now, we reload the page to refetch everything on the
+     * page but we should add watchers for better UX
+     */
+    location.reload()
+  }
 }
 </script>
 
@@ -40,7 +54,7 @@ function toggleAuthZManagement() {
       </span>
     </AppCheckbox>
     <AppCheckbox
-      v-if="authZStore.hasGranteeGrants"
+      v-if="authZStore.hasGranterOrGranteeGrants"
       :model-value="appStore.userState.proMode.authZManagement"
       @input="toggleAuthZManagement"
     >

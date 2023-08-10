@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { formatWalletAddress } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -18,8 +19,6 @@ const emit = defineEmits<{
 
 const isUserConnectedProcessCompleted = ref(false)
 
-const isUserWalletConnected = computed(() => walletStore.isUserWalletConnected)
-
 const hasNinjaPassCodes = computed(() => {
   if (!ninjaPassStore.codes) {
     return false
@@ -29,7 +28,7 @@ const hasNinjaPassCodes = computed(() => {
 })
 
 watch(
-  () => isUserWalletConnected,
+  () => walletStore.isUserWalletConnected,
   (newIsUserWalletConnected) => {
     if (!newIsUserWalletConnected) {
       isUserConnectedProcessCompleted.value = false
@@ -38,12 +37,12 @@ watch(
 )
 
 onMounted(() => {
-  if (isUserWalletConnected) {
+  if (walletStore.isUserWalletConnected) {
     isUserConnectedProcessCompleted.value = true
   }
 })
 
-function handleSidebarToggle() {
+function toggleSidebar() {
   if (props.isSidebarOpen) {
     return emit('sidebar:closed')
   }
@@ -51,10 +50,22 @@ function handleSidebarToggle() {
   emit('sidebar:opened')
 }
 
-function handleShowNinjaPassModal() {
+function showNinjaPassModal() {
   modalStore.openModal({ type: Modal.NinjaPassWinner })
 
   confetti.showConfetti()
+}
+
+function resetAuthZ() {
+  if (walletStore.isAuthzWalletConnected) {
+    walletStore.resetAuthZ()
+    /**
+     * -- TODO --
+     * For now, we reload the page to refetch everything on the
+     * page but we should add watchers for better UX
+     */
+    location.reload()
+  }
 }
 </script>
 
@@ -80,15 +91,15 @@ function handleShowNinjaPassModal() {
       </div>
       <div class="flex items-center">
         <LayoutNavItemDummy
-          v-if="isUserWalletConnected && hasNinjaPassCodes"
+          v-if="walletStore.isUserWalletConnected && hasNinjaPassCodes"
           class="flex px-0 w-10 items-center justify-center"
-          @click="handleShowNinjaPassModal"
+          @click="showNinjaPassModal"
         >
           <BaseIcon name="gift" class="text-white w-4 h-4" />
         </LayoutNavItemDummy>
 
         <LayoutNavItem
-          v-if="isUserWalletConnected"
+          v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-activity-link"
           :to="{ name: 'activity' }"
@@ -97,7 +108,7 @@ function handleShowNinjaPassModal() {
         </LayoutNavItem>
 
         <LayoutNavItem
-          v-if="isUserWalletConnected"
+          v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-account-link"
           :to="{ name: 'account' }"
@@ -105,13 +116,39 @@ function handleShowNinjaPassModal() {
           {{ $t('navigation.account') }}
         </LayoutNavItem>
 
+        <LayoutNavItemDummy
+          v-if="walletStore.isAuthzWalletConnected"
+          class="hidden lg:flex px-0 w-12 items-center justify-center"
+          @click="resetAuthZ"
+        >
+          <AppTooltip
+            :content="
+              $t('navigation.connectedUsingAuthZ', {
+                address: formatWalletAddress(walletStore.authZ.injectiveAddress)
+              })
+            "
+          >
+            <BaseIcon
+              name="spy"
+              class="text-white w-4 h-4 hover:text-red-500"
+            />
+          </AppTooltip>
+        </LayoutNavItemDummy>
+
         <LayoutWallet />
-        <LayoutPreferences v-if="isUserWalletConnected" />
+
+        <LayoutNavItemDummy
+          v-if="walletStore"
+          class="hidden lg:flex px-0 w-10 items-center justify-center"
+          @click="() => {}"
+        >
+          <LayoutPreferences v-if="walletStore.isUserWalletConnected" />
+        </LayoutNavItemDummy>
       </div>
     </div>
     <button
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
-      @click.stop="handleSidebarToggle"
+      @click.stop="toggleSidebar"
     >
       <BaseIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
       <BaseIcon v-else name="menu" class="w-6 h-6" />

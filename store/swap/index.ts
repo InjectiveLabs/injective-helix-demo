@@ -161,7 +161,7 @@ export const useSwapStore = defineStore('swap', {
       const { pagination, swapHistory } =
         await indexerSpotApi.fetchAtomicSwapHistory({
           pagination: { skip, limit },
-          address: walletStore.injectiveAddress,
+          address: walletStore.authZOrInjectiveAddress,
           contractAddress: SWAP_CONTRACT_ADDRESS
         })
 

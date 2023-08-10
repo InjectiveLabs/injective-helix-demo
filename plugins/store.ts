@@ -40,7 +40,14 @@ const stateToPersist = {
     addresses: '',
     injectiveAddress: '',
     defaultSubaccountId: '',
-    addressConfirmation: ''
+    addressConfirmation: '',
+
+    authZ: {
+      address: '',
+      direction: '',
+      injectiveAddress: '',
+      defaultSubaccountId: ''
+    }
   }
 } as Record<string, Record<string, any>>
 

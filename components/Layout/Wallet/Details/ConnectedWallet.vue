@@ -3,6 +3,7 @@ import { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
 
+const appStore = useAppStore()
 const walletStore = useWalletStore()
 const { copy } = useClipboard()
 const { t } = useLang()
@@ -87,6 +88,12 @@ function copyInjectiveAddress() {
           </div>
         </div>
         <LayoutWalletDetailsTierLevel />
+        <LayoutWalletDetailsAuthZ
+          v-if="
+            appStore.isAuthzManagementActive &&
+            !walletStore.isAuthzWalletConnected
+          "
+        />
       </div>
     </transition>
   </div>

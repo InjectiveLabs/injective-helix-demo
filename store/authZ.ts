@@ -23,7 +23,11 @@ export const useAuthZStore = defineStore('authZ', {
       return state.granterGrants.length > 0
     },
 
-    grantersOrGrantees: (state: AuthZStoreState) => {
+    hasGranterOrGranteeGrants: (state: AuthZStoreState) => {
+      return state.granterGrants.length > 0 || state.granteeGrants.length > 0
+    },
+
+    grantersOrGranteesAddresses: (state: AuthZStoreState) => {
       return [
         ...new Set([
           ...state.granteeGrants.map((grant) => grant.granter),
@@ -37,7 +41,7 @@ export const useAuthZStore = defineStore('authZ', {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 

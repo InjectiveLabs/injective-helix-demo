@@ -35,7 +35,7 @@ onBeforeUnmount(() => {
         <div class="w-full mx-auto xl:w-4/5">
           <div class="mt-6">
             <h3 class="text-xl font-bold text-gray-200">
-              {{ $t('fee_discounts.page_title') }}
+              {{ $t(`fee_discounts.page_title`) }}
             </h3>
             <div class="mt-6">
               <p class="text-sm font-normal mb-2">

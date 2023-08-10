@@ -10,7 +10,7 @@ const formattedInjectiveAddress = computed(() =>
   formatWalletAddress(walletStore.injectiveAddress)
 )
 
-function handleDisconnect() {
+function disconnect() {
   walletStore.logout()
 
   if (ROUTES.walletConnectedRequiredRouteNames.includes(route.name as string)) {
@@ -46,7 +46,7 @@ function handleDisconnect() {
                 </span>
                 <span
                   class="text-blue-500 hover:text-opacity-80 cursor-pointer text-xs font-medium"
-                  @click="handleDisconnect"
+                  @click="disconnect"
                 >
                   {{ $t('navigation.disconnect') }}
                 </span>

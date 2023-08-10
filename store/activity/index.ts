@@ -48,17 +48,13 @@ export const useActivityStore = defineStore('activity', {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (
-        !walletStore.isUserWalletConnected ||
-        !walletStore.injectiveAddress ||
-        !accountStore.subaccountId
-      ) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
       activityStore.$patch({
         tradingRewardsHistory: await indexerAccountApi.fetchRewards({
-          address: walletStore.injectiveAddress,
+          address: walletStore.authZOrInjectiveAddress,
           epoch: -1
         })
       })

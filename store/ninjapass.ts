@@ -21,15 +21,14 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
       const ninjaPassStore = useNinjaPassStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
-      const codes =
-        (await fetchNinjaPassCodes(walletStore.injectiveAddress)) || []
+      const codes = await fetchNinjaPassCodes(walletStore.injectiveAddress)
 
       ninjaPassStore.$patch({
-        codes
+        codes: codes || []
       })
     }
   }

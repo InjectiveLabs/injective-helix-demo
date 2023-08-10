@@ -17,10 +17,7 @@ import {
 import { SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
-  // currently selected subaccountId
   subaccountId: string
-
-  // Portfolio from the currently connected address
   bankBalances: Coin[]
   positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
@@ -52,17 +49,17 @@ export const useAccountStore = defineStore('account', {
     defaultSubaccountBalances: (state: AccountStoreState) => {
       const walletStore = useWalletStore()
 
-      if (!walletStore.defaultSubaccountId) {
+      if (!walletStore.authZOrDefaultSubaccountId) {
         return []
       }
 
-      return state.subaccountBalancesMap[walletStore.defaultSubaccountId]
+      return state.subaccountBalancesMap[walletStore.authZOrDefaultSubaccountId]
     },
 
     isDefaultSubaccount: (state: AccountStoreState) => {
       const walletStore = useWalletStore()
 
-      return walletStore.defaultSubaccountId === state.subaccountId
+      return walletStore.authZOrDefaultSubaccountId === state.subaccountId
     },
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
@@ -81,19 +78,19 @@ export const useAccountStore = defineStore('account', {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress || !walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
-          walletStore.injectiveAddress
+          walletStore.authZOrInjectiveAddress
         )
 
       const defaultAccountBalances = (
         accountPortfolio.subaccountsList || []
       ).reduce((accountBalances, balance) => {
-        if (balance.subaccountId === walletStore.defaultSubaccountId) {
+        if (balance.subaccountId === walletStore.authZOrDefaultSubaccountId) {
           return [
             ...accountBalances,
             {
@@ -110,7 +107,8 @@ export const useAccountStore = defineStore('account', {
       const nonDefaultSubaccounts = accountPortfolio.subaccountsList.reduce(
         (accountBalances, subaccountBalance) => {
           if (
-            subaccountBalance.subaccountId === walletStore.defaultSubaccountId
+            subaccountBalance.subaccountId ===
+            walletStore.authZOrDefaultSubaccountId
           ) {
             return accountBalances
           }
@@ -140,11 +138,11 @@ export const useAccountStore = defineStore('account', {
 
       accountStore.$patch({
         subaccountId:
-          accountStore.subaccountId || walletStore.defaultSubaccountId,
+          accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
         positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {
-          [walletStore.defaultSubaccountId]: defaultAccountBalances,
+          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
         }
       })
