@@ -45,6 +45,7 @@ const env = {
 
   VITE_COINGECKO_KEY: import.meta.env.VITE_COINGECKO_KEY as string,
   VITE_AMPLITUDE_KEY: import.meta.env.VITE_AMPLITUDE_KEY as string,
+  VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_GOOGLE_ANALYTICS_KEY: import.meta.env
     .VITE_GOOGLE_ANALYTICS_KEY as string,
   VITE_BUGSNAG_KEY: import.meta.env.VITE_BUGSNAG_KEY as string | undefined,
@@ -77,6 +78,7 @@ const env = {
   VITE_SENTRY_REST_ENDPOINT: string
   VITE_NINJA_PASS_ENDPOINT: string
   VITE_COINGECKO_KEY: string
+  VITE_HOTJAR_KEY: string
   VITE_AMPLITUDE_KEY: string
   VITE_GOOGLE_ANALYTICS_KEY: string
   VITE_NEWSLETTER_API: string
@@ -152,21 +154,21 @@ export const ENDPOINTS = {
 export const BASE_URL = env.VITE_BASE_URL || ''
 
 // override env with values
-export const VITE_NINJA_PASS_ENDPOINT: string =
+export const NINJA_PASS_ENDPOINT: string =
   env.VITE_NINJA_PASS_ENDPOINT || 'https://api.ninjapass.injective.dev'
 export const FEE_PAYER_PUB_KEY = (env.VITE_FEE_PAYER_PUB_KEY || '') as string
 
-export const VITE_BANNER_NOTICE_ENABLED =
-  env.VITE_BANNER_NOTICE_ENABLED === 'true'
+export const BANNER_NOTICE_ENABLED = env.VITE_BANNER_NOTICE_ENABLED === 'true'
 
-export const VITE_NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
+export const NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
 export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
+export const HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
-export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
+export const GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
-export const VITE_SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
+export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
 export const SWAP_CONTRACT_ADDRESS = CW20_SWAP_CONTRACT_BY_NETWORK[NETWORK]
 
@@ -179,11 +181,10 @@ export const COIN_GECKO_OPTIONS = {
 
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
-export const VITE_PROXY_DETECTION_API_KEY =
-  env.VITE_PROXY_DETECTION_API_KEY || ''
+export const PROXY_DETECTION_API_KEY = env.VITE_PROXY_DETECTION_API_KEY || ''
 
-export const VITE_GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
-export const PROXY_DETECTION_ENABLED = !!VITE_PROXY_DETECTION_API_KEY
+export const GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
+export const PROXY_DETECTION_ENABLED = !!PROXY_DETECTION_API_KEY
 
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'

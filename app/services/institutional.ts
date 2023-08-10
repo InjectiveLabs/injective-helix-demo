@@ -1,12 +1,12 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { VITE_SHEETDB_BEARER_TOKEN } from '../utils/constants'
+import { SHEETDB_BEARER_TOKEN } from '../utils/constants'
 
 const SHEETDB_ID = 'fwfkb2v469gav'
 
 const httpClient = new HttpClient('https://sheetdb.io/api/v1/')
 
 httpClient.setConfig({
-  headers: { Authorization: `Bearer ${VITE_SHEETDB_BEARER_TOKEN}` }
+  headers: { Authorization: `Bearer ${SHEETDB_BEARER_TOKEN}` }
 })
 
 export const submitInstitutionalForm = async (formData: {
