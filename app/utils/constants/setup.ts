@@ -9,104 +9,53 @@ import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
 
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
-
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 
 const env = {
-  VITE_ENV: isWebpack ? process.env.VITE_ENV : import.meta.env.VITE_ENV,
-  VITE_BASE_URL: isWebpack
-    ? process.env.VITE_BASE_URL
-    : import.meta.env.VITE_BASE_URL,
-  VITE_NETWORK: isWebpack
-    ? process.env.VITE_NETWORK
-    : import.meta.env.VITE_NETWORK,
-  VITE_CHAIN_ID: isWebpack
-    ? process.env.VITE_CHAIN_ID
-    : import.meta.env.VITE_CHAIN_ID,
-  VITE_FEE_PAYER_PUB_KEY: isWebpack
-    ? process.env.VITE_FEE_PAYER_PUB_KEY
-    : import.meta.env.VITE_FEE_PAYER_PUB_KEY,
+  VITE_ENV: import.meta.env.VITE_ENV,
+  VITE_BASE_URL: import.meta.env.VITE_BASE_URL,
+  VITE_NETWORK: import.meta.env.VITE_NETWORK,
+  VITE_CHAIN_ID: import.meta.env.VITE_CHAIN_ID,
+  VITE_FEE_PAYER_PUB_KEY: import.meta.env.VITE_FEE_PAYER_PUB_KEY,
 
   /** Debugging */
-  VITE_DEBUG_CALCULATION: isWebpack
-    ? process.env.VITE_DEBUG_CALCULATION
-    : import.meta.env.VITE_DEBUG_CALCULATION,
+  VITE_DEBUG_CALCULATION: import.meta.env.VITE_DEBUG_CALCULATION,
 
-  VITE_MAINTENANCE_ENABLED: (isWebpack
-    ? process.env.VITE_MAINTENANCE_ENABLED
-    : import.meta.env.VITE_MAINTENANCE_ENABLED) as string | undefined,
-  VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
-    ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
-    : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_PROXY_DETECTION_API_KEY: isWebpack
-    ? process.env.VITE_PROXY_DETECTION_API_KEY
-    : import.meta.env.VITE_PROXY_DETECTION_API_KEY,
-  VITE_GOOGLE_MAPS_KEY: isWebpack
-    ? process.env.VITE_GOOGLE_MAPS_KEY
-    : import.meta.env.VITE_GOOGLE_MAPS_KEY,
-  VITE_BANNER_NOTICE_ENABLED: (isWebpack
-    ? process.env.VITE_BANNER_NOTICE_ENABLED
-    : import.meta.env.VITE_BANNER_NOTICE_ENABLED) as string | undefined,
+  VITE_MAINTENANCE_ENABLED: import.meta.env.VITE_MAINTENANCE_ENABLED as
+    | string
+    | undefined,
+  VITE_GEO_IP_RESTRICTIONS_ENABLED: import.meta.env
+    .VITE_GEO_IP_RESTRICTIONS_ENABLED,
+  VITE_PROXY_DETECTION_API_KEY: import.meta.env.VITE_PROXY_DETECTION_API_KEY,
+  VITE_GOOGLE_MAPS_KEY: import.meta.env.VITE_GOOGLE_MAPS_KEY,
+  VITE_BANNER_NOTICE_ENABLED: import.meta.env.VITE_BANNER_NOTICE_ENABLED as
+    | string
+    | undefined,
 
-  VITE_ETHEREUM_CHAIN_ID: isWebpack
-    ? process.env.VITE_ETHEREUM_CHAIN_ID
-    : import.meta.env.VITE_ETHEREUM_CHAIN_ID,
-  VITE_INDEXER_API_ENDPOINT: isWebpack
-    ? process.env.VITE_INDEXER_API_ENDPOINT
-    : import.meta.env.VITE_INDEXER_API_ENDPOINT,
-  VITE_CHRONOS_API_ENDPOINT: isWebpack
-    ? process.env.VITE_CHRONOS_API_ENDPOINT
-    : import.meta.env.VITE_CHRONOS_API_ENDPOINT,
-  VITE_EXPLORER_API_ENDPOINT: isWebpack
-    ? process.env.VITE_EXPLORER_API_ENDPOINT
-    : import.meta.env.VITE_EXPLORER_API_ENDPOINT,
-  VITE_SENTRY_GRPC_ENDPOINT: isWebpack
-    ? process.env.VITE_SENTRY_GRPC_ENDPOINT
-    : import.meta.env.VITE_SENTRY_GRPC_ENDPOINT,
-  VITE_SENTRY_HTTP_ENDPOINT: isWebpack
-    ? process.env.VITE_SENTRY_HTTP_ENDPOINT
-    : import.meta.env.VITE_SENTRY_HTTP_ENDPOINT,
-  VITE_SENTRY_REST_ENDPOINT: isWebpack
-    ? process.env.VITE_SENTRY_REST_ENDPOINT
-    : import.meta.env.VITE_SENTRY_REST_ENDPOINT,
+  VITE_ETHEREUM_CHAIN_ID: import.meta.env.VITE_ETHEREUM_CHAIN_ID,
+  VITE_INDEXER_API_ENDPOINT: import.meta.env.VITE_INDEXER_API_ENDPOINT,
+  VITE_CHRONOS_API_ENDPOINT: import.meta.env.VITE_CHRONOS_API_ENDPOINT,
+  VITE_EXPLORER_API_ENDPOINT: import.meta.env.VITE_EXPLORER_API_ENDPOINT,
+  VITE_SENTRY_GRPC_ENDPOINT: import.meta.env.VITE_SENTRY_GRPC_ENDPOINT,
+  VITE_SENTRY_HTTP_ENDPOINT: import.meta.env.VITE_SENTRY_HTTP_ENDPOINT,
+  VITE_SENTRY_REST_ENDPOINT: import.meta.env.VITE_SENTRY_REST_ENDPOINT,
 
-  VITE_NINJA_PASS_ENDPOINT: isWebpack
-    ? process.env.VITE_NINJA_PASS_ENDPOINT
-    : (import.meta.env.VITE_NINJA_PASS_ENDPOINT as string),
+  VITE_NINJA_PASS_ENDPOINT: import.meta.env.VITE_NINJA_PASS_ENDPOINT as string,
 
-  VITE_COINGECKO_KEY: isWebpack
-    ? process.env.VITE_COINGECKO_KEY
-    : (import.meta.env.VITE_COINGECKO_KEY as string),
-  VITE_AMPLITUDE_KEY: isWebpack
-    ? process.env.VITE_AMPLITUDE_KEY
-    : (import.meta.env.VITE_AMPLITUDE_KEY as string),
-  VITE_GOOGLE_ANALYTICS_KEY: isWebpack
-    ? process.env.VITE_GOOGLE_ANALYTICS_KEY
-    : (import.meta.env.VITE_GOOGLE_ANALYTICS_KEY as string),
-  VITE_HOTJAR_KEY: isWebpack
-    ? process.env.VITE_HOTJAR_KEY
-    : (import.meta.env.VITE_HOTJAR_KEY as string),
-  VITE_BUGSNAG_KEY: (isWebpack
-    ? process.env.VITE_BUGSNAG_KEY
-    : import.meta.env.VITE_BUGSNAG_KEY) as string | undefined,
+  VITE_COINGECKO_KEY: import.meta.env.VITE_COINGECKO_KEY as string,
+  VITE_AMPLITUDE_KEY: import.meta.env.VITE_AMPLITUDE_KEY as string,
+  VITE_GOOGLE_ANALYTICS_KEY: import.meta.env
+    .VITE_GOOGLE_ANALYTICS_KEY as string,
+  VITE_BUGSNAG_KEY: import.meta.env.VITE_BUGSNAG_KEY as string | undefined,
 
-  VITE_NEWSLETTER_API: isWebpack
-    ? process.env.VITE_NEWSLETTER_API
-    : import.meta.env.VITE_NEWSLETTER_API,
-  VITE_ALCHEMY_GOERLI_KEY: isWebpack
-    ? process.env.VITE_ALCHEMY_GOERLI_KEY
-    : import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
-  VITE_ALCHEMY_KEY: isWebpack
-    ? process.env.VITE_ALCHEMY_KEY
-    : import.meta.env.VITE_ALCHEMY_KEY,
-  VITE_FEE_RECIPIENT: isWebpack
-    ? (process.env.VITE_FEE_RECIPIENT as string)
-    : (import.meta.env.VITE_FEE_RECIPIENT as string),
-  VITE_SHEETDB_BEARER_TOKEN: isWebpack
-    ? process.env.VITE_SHEETDB_BEARER_TOKEN
-    : import.meta.env.VITE_SHEETDB_BEARER_TOKEN
+  VITE_NEWSLETTER_API: import.meta.env.VITE_NEWSLETTER_API,
+  VITE_ALCHEMY_GOERLI_KEY: import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
+  VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY,
+  VITE_FEE_RECIPIENT: import.meta.env.VITE_FEE_RECIPIENT as string,
+  VITE_SHEETDB_BEARER_TOKEN: import.meta.env.VITE_SHEETDB_BEARER_TOKEN as
+    | string
+    | undefined
 } as {
   VITE_ENV: string
   VITE_BASE_URL: string
@@ -130,7 +79,6 @@ const env = {
   VITE_COINGECKO_KEY: string
   VITE_AMPLITUDE_KEY: string
   VITE_GOOGLE_ANALYTICS_KEY: string
-  VITE_HOTJAR_KEY: string
   VITE_NEWSLETTER_API: string
   VITE_ALCHEMY_GOERLI_KEY: string
   VITE_BUGSNAG_KEY: string
@@ -216,7 +164,6 @@ export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
 export const VITE_GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
-export const VITE_HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const VITE_SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''

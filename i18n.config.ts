@@ -1,5 +1,3 @@
-import { createI18n } from 'vue-i18n'
-import { defineNuxtPlugin } from '#imports'
 import en from '@/locales/en'
 import zh from '@/locales/zh'
 import { localStorage } from '@/app/Services'
@@ -10,13 +8,11 @@ const locale =
     ? storageApp.app.locale.locale
     : 'en'
 
-const i18n = createI18n({
-  legacy: false,
+export default {
   globalInjection: true,
+  legacy: false,
   locale,
+  fallbackLocale: 'en',
+  availableLocales: ['en', 'zh'],
   messages: { en, zh }
-})
-
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(i18n)
-})
+}

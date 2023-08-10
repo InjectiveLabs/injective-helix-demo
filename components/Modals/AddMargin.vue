@@ -124,9 +124,9 @@ const handleFormSubmit = handleSubmit(() => {
               <p class="uppercase text-xs font-semibold text-gray-200">
                 {{ $t('trade.availableMargin') }}
               </p>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-200"
-                :tooltip="$t('trade.availableMarginTooltip')"
+                :content="$t('trade.availableMarginTooltip')"
               />
             </div>
             <div class="mt-4 text-center">
