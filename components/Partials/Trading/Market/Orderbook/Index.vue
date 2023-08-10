@@ -548,12 +548,18 @@ function handleBuyOrderHover(position?: number) {
 }
 
 function hidePopperOnScroll(state: UseScrollReturn) {
-  if (orderbookSummaryRef.value) {
-    if (state.isScrolling.value) {
-      orderbookSummaryRef.value.removeAttribute('data-show')
-    } else {
-      orderbookSummaryRef.value.setAttribute('data-show', '')
-    }
+  if (
+    !buyHoverPosition.value ||
+    !sellHoverPosition.value ||
+    !orderbookSummaryRef.value
+  ) {
+    return
+  }
+
+  if (state.isScrolling.value) {
+    orderbookSummaryRef.value.removeAttribute('data-show')
+  } else {
+    orderbookSummaryRef.value.setAttribute('data-show', '')
   }
 }
 </script>
