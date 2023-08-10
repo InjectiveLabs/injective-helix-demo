@@ -13,18 +13,16 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  status.setLoading()
-
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .then(() => {
-      Promise.all([
-        accountStore.streamBankBalance(),
-        accountStore.streamSubaccountBalance()
-      ])
-        .catch($onError)
-        .finally(() => status.setIdle())
+      //
     })
     .catch($onError)
+    .finally(() => status.setIdle())
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)

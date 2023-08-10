@@ -180,7 +180,7 @@ function handleTransferClick() {
         </NuxtLink>
 
         <AppButton
-          v-if="appStore.isProMode"
+          v-if="appStore.isSubaccountManagementActive"
           class="border border-blue-500"
           @click="handleTransferClick"
         >
@@ -192,7 +192,7 @@ function handleTransferClick() {
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading && appStore.isProMode"
+      v-if="!isLoading && appStore.isSubaccountManagementActive"
       v-bind="{
         hideBalances
       }"

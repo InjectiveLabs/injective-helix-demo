@@ -8,6 +8,8 @@ const appStore = useAppStore()
       {{ $t('activity.activity') }}
     </h1>
 
-    <PartialsActivitySubaccountsSelector v-if="appStore.isProMode" />
+    <PartialsActivitySubaccountsSelector
+      v-if="appStore.isSubaccountManagementActive"
+    />
   </div>
 </template>

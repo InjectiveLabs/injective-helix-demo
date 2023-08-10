@@ -1,10 +1,24 @@
 <script lang="ts" setup>
 const appStore = useAppStore()
+const authZStore = useAuthZStore()
 
-function toggleProMode() {
+function toggleSubaccountManagement() {
   appStore.setUserState({
     ...appStore.userState,
-    proMode: !appStore.userState.proMode
+    proMode: {
+      ...appStore.userState.proMode,
+      subaccountManagement: !appStore.userState.proMode.subaccountManagement
+    }
+  })
+}
+
+function toggleAuthZManagement() {
+  appStore.setUserState({
+    ...appStore.userState,
+    proMode: {
+      ...appStore.userState.proMode,
+      authZManagement: !appStore.userState.proMode.authZManagement
+    }
   })
 }
 </script>
@@ -18,11 +32,20 @@ function toggleProMode() {
     </span>
 
     <AppCheckbox
-      :model-value="appStore.userState.proMode"
-      @input="toggleProMode"
+      :model-value="appStore.userState.proMode.subaccountManagement"
+      @input="toggleSubaccountManagement"
     >
       <span class="text-gray-300">
-        {{ $t('proMode.proModeNote') }}
+        {{ $t('proMode.subaccountManagement') }}
+      </span>
+    </AppCheckbox>
+    <AppCheckbox
+      v-if="authZStore.hasGranteeGrants"
+      :model-value="appStore.userState.proMode.authZManagement"
+      @input="toggleAuthZManagement"
+    >
+      <span class="text-gray-300">
+        {{ $t('proMode.authzManagement') }}
       </span>
     </AppCheckbox>
   </div>

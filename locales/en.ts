@@ -358,6 +358,7 @@ export default {
 
   proMode: {
     proMode: 'Pro Mode',
-    proModeNote: 'Enable access to advanced trading features.'
+    subaccountManagement: 'Enable subaccount management',
+    authzManagement: 'Enable authz management'
   }
 }

@@ -15,20 +15,34 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
+import { GrantDirection } from '@/types/authZ'
 
 type AccountStoreState = {
-  // currently selected subaccountId, set at the default one until we have multi-subaccount support
+  // currently selected subaccountId
   subaccountId: string
+
+  // Portfolio from the currently connected address
   bankBalances: Coin[]
   positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
+
+  // Portfolio from the authz granters/grantees of the currently connected addresses
+  authzState: {
+    address: string
+    type: GrantDirection
+    bankBalances: Coin[]
+    positionsWithUpnl: PositionsWithUPNL[]
+    subaccountBalancesMap: Record<string, SubaccountBalance[]>
+  }[]
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
   positionsWithUpnl: [],
-  subaccountBalancesMap: {}
+  subaccountBalancesMap: {},
+
+  authzState: []
 })
 
 export const useAccountStore = defineStore('account', {
@@ -39,9 +53,12 @@ export const useAccountStore = defineStore('account', {
         return {}
       }
 
-      return state.bankBalances.reduce((list, balance) => {
-        return { ...list, [balance.denom]: balance.amount }
-      }, {} as Record<string, string>)
+      return state.bankBalances.reduce(
+        (list, balance) => {
+          return { ...list, [balance.denom]: balance.amount }
+        },
+        {} as Record<string, string>
+      )
     },
 
     defaultSubaccountBalances: (state: AccountStoreState) => {
@@ -145,24 +162,24 @@ export const useAccountStore = defineStore('account', {
       })
     },
 
+    async fetchGrantersAccountPortfolio() {
+      const authzStore = useAuthZStore()
+
+      if (authzStore.grantersOrGrantees.length === 0) {
+        await authzStore.fetchGrants()
+      }
+
+      if (authzStore.grantersOrGrantees.length === 0) {
+        return
+      }
+
+      await Promise.resolve()
+    },
+
     reset() {
       cancelBankBalanceStream()
       cancelSubaccountBalanceStream()
       useAccountStore().$reset()
-    },
-
-    /**
-     * Reset to the default subaccount
-     * as we don't allow using others page
-     * except the activity/account page for now
-     */
-    resetToDefaultSubaccount() {
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
-
-      accountStore.$patch({
-        subaccountId: walletStore.defaultSubaccountId
-      })
     }
   }
 })

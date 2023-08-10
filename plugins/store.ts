@@ -23,7 +23,10 @@ const stateToPersist = {
       ninjaPassWinnerModalViewed: false,
       userFeedbackModalViewed: false,
       bannersViewed: [],
-      proMode: false
+      proMode: {
+        authZManagement: false,
+        subaccountManagement: false
+      }
     }
   },
 
@@ -48,6 +51,7 @@ const actionsThatSetAppStateToBusy = [
   'account/transfer',
   'account/withdraw',
   'spot/cancelOrder',
+  'account/externalTransfer',
   'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
