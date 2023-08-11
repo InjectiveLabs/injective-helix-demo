@@ -44,10 +44,8 @@ export const useGridStore = defineStore('grid-spot', {
       }
 
       const { grants } = await chainGrpcAuthZApi.fetchGrants({
-        params: {
-          grantee: gridStore.smartContractAddressForGridMarket,
-          granter: walletStore.injectiveAddress
-        }
+        grantee: gridStore.smartContractAddressForGridMarket,
+        granter: walletStore.injectiveAddress
       })
 
       if (!grants) {
