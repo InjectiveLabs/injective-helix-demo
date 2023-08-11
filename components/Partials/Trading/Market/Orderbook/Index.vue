@@ -335,7 +335,7 @@ const buysWithDepth = computed(() => {
 })
 
 const buyOrdersSummary = computed<UiOrderbookSummary | undefined>(() => {
-  if (buysWithDepth.value.length === 0 || buyHoverPosition.value === null) {
+  if (buysWithDepth.value.length === 0 || !buyHoverPosition.value) {
     return
   }
 
@@ -398,7 +398,7 @@ const sellsWithDepth = computed(() => {
 })
 
 const sellOrdersSummary = computed(() => {
-  if (sellsWithDepth.value.length === 0 || sellHoverPosition.value === null) {
+  if (sellsWithDepth.value.length === 0 || !sellHoverPosition.value) {
     return
   }
 
@@ -429,11 +429,11 @@ const sellOrdersSummary = computed(() => {
 })
 
 const orderBookSummary = computed(() => {
-  if (buyHoverPosition.value !== null) {
+  if (buyHoverPosition.value) {
     return buyOrdersSummary.value
   }
 
-  if (sellHoverPosition.value !== null) {
+  if (sellHoverPosition.value) {
     return sellOrdersSummary.value
   }
 
