@@ -716,7 +716,6 @@ function hidePopperOnScroll(state: UseScrollReturn) {
 
   <!-- orderbook summary popup -->
   <div ref="orderbookSummaryRef" class="orderbook-summary">
-    <pre>{{ orderBookSummary }}</pre>
     <PartialsTradingMarketOrderbookSummaryPopup
       v-if="orderBookSummary"
       :market="market"
