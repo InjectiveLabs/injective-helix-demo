@@ -86,7 +86,9 @@ function copyInjectiveAddress() {
             />
           </div>
         </div>
-        <LayoutWalletDetailsTierLevel />
+        <LayoutWalletDetailsTierLevel
+          v-if="!walletStore.isAuthzWalletConnected"
+        />
       </div>
     </transition>
   </div>

@@ -32,7 +32,7 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
 
   const messages = orders.map((order) =>
     MsgBatchCancelSpotOrders.fromJSON({
-      injectiveAddress: walletStore.injectiveAddress,
+      injectiveAddress: walletStore.authZOrInjectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -43,11 +43,13 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
     })
   )
 
-  const actualMessages = msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
+  const actualMessages = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+    : messages
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessages
+    msgs: actualMessages,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -66,17 +68,19 @@ export const cancelOrder = async (
   await walletStore.validate()
 
   const message = MsgCancelSpotOrder.fromJSON({
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     subaccountId: order.subaccountId,
     orderHash: order.orderHash
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -108,7 +112,7 @@ export const submitLimitOrder = async ({
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -123,11 +127,13 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -161,7 +167,7 @@ export const submitMarketOrder = async ({
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -176,11 +182,13 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -214,7 +222,7 @@ export const submitStopLimitOrder = async ({
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -234,11 +242,13 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -272,7 +282,7 @@ export const submitStopMarketOrder = async ({
 
   const message = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -292,10 +302,12 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }

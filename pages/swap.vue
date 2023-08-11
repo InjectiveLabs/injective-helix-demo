@@ -17,7 +17,7 @@ definePageMeta({
      **/
     if (walletStore.isUserWalletConnected) {
       accountStore.$patch({
-        subaccountId: walletStore.defaultSubaccountId
+        subaccountId: walletStore.authZOrDefaultSubaccountId
       })
     }
   }

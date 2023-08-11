@@ -136,9 +136,13 @@ export const useAccountStore = defineStore('account', {
         {} as Record<string, SubaccountBalance[]>
       )
 
+      const subaccountId =
+        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+
       accountStore.$patch({
-        subaccountId:
-          accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId,
+        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
+          ? subaccountId
+          : walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
         positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {

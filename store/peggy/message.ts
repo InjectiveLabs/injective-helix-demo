@@ -105,8 +105,8 @@ export const withdraw = async ({
     .toFixed(0)
 
   const message = MsgSendToEth.fromJSON({
-    address: walletStore.address,
-    injectiveAddress: walletStore.injectiveAddress,
+    address: walletStore.authZOrAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     amount: {
       denom: token.denom,
       amount: actualAmount
@@ -117,11 +117,13 @@ export const withdraw = async ({
     }
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 

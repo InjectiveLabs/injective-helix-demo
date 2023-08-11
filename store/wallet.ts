@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId
 } from '@injectivelabs/sdk-ts'
 import { CosmosChainId } from '@injectivelabs/ts-types'
+import { GeneralException } from '@injectivelabs/exceptions'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { walletStrategy } from '@/app/wallet-strategy'
@@ -129,7 +130,7 @@ export const useWalletStore = defineStore('wallet', {
 
     connectAuthZ(
       injectiveAddress: string,
-      direction: GrantDirection = GrantDirection.Grantee
+      direction: GrantDirection = GrantDirection.Granter
     ) {
       const walletStore = useWalletStore()
 
@@ -455,6 +456,17 @@ export const useWalletStore = defineStore('wallet', {
 
       if (walletStore.wallet === Wallet.TrustWallet) {
         await validateTrustWallet(walletStore.address, appStore.ethereumChainId)
+      }
+
+      if (
+        isEthWallet(walletStore.wallet) &&
+        walletStore.isAuthzWalletConnected
+      ) {
+        throw new GeneralException(
+          new Error(
+            'Ethereum native wallets currently do not support AuthZ transactions'
+          )
+        )
       }
 
       if (isCosmosWallet(walletStore.wallet)) {

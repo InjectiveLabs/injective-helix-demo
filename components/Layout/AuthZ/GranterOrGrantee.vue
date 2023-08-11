@@ -20,7 +20,7 @@ const isCurrentlySelected = computed(
  * page but we should add watchers for better UX
  */
 function reload() {
-  location.reload()
+  window.location.reload()
 }
 
 function resetAuthZ() {
@@ -51,17 +51,14 @@ function connectToGrantee() {
     <span v-if="isCurrentlySelected">
       <BaseIcon
         name="close"
-        class="text-gray-400 hover:text-blue-500 h-4 w-4"
+        class="text-gray-200 hover:text-blue-500 h-3 w-3"
         @click="resetAuthZ"
       />
     </span>
     <span v-else>
       <BaseIcon
-        name="swap"
-        class="text-gray-400 hover:text-blue-500 h-4 w-4"
-        :class="{
-          'text-gray-400': !isCurrentlySelected
-        }"
+        name="spy"
+        class="text-gray-200 hover:text-blue-500 h-3 w-3"
         @click="connectToGrantee"
       />
     </span>

@@ -57,11 +57,13 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    address: walletStore.address
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   return txHash
@@ -115,11 +117,13 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    address: walletStore.address
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   return txHash

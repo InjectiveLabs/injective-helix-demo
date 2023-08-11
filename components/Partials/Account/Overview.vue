@@ -13,6 +13,7 @@ import { AccountBalance, BridgeType, Modal } from '@/types'
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 
@@ -180,7 +181,10 @@ function handleTransferClick() {
         </NuxtLink>
 
         <AppButton
-          v-if="appStore.isSubaccountManagementActive"
+          v-if="
+            appStore.isSubaccountManagementActive &&
+            !walletStore.isAuthzWalletConnected
+          "
           class="border border-blue-500"
           @click="handleTransferClick"
         >

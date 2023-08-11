@@ -52,7 +52,7 @@ export const closePosition = async ({
 
   const message = messageType.fromJSON({
     margin: '0',
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
     feeRecipient: FEE_RECIPIENT,
@@ -64,11 +64,13 @@ export const closePosition = async ({
     })
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }
 
@@ -140,7 +142,7 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
 
   const messages = formattedPositions.map((position) =>
     position.messageType.fromJSON({
-      injectiveAddress: walletStore.injectiveAddress,
+      injectiveAddress: walletStore.authZOrInjectiveAddress,
       margin: '0',
       triggerPrice: '0',
       price: position.price,
@@ -152,11 +154,13 @@ export const closeAllPosition = async (positions: UiPosition[]) => {
     })
   )
 
-  const actualMessages = msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
+  const actualMessages = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+    : messages
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessages
+    msgs: actualMessages,
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -199,7 +203,7 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   const message = messageType.fromJSON({
     margin: '0',
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
     feeRecipient: FEE_RECIPIENT,
     marketId: actualMarket.marketId,
@@ -211,11 +215,13 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -244,7 +250,7 @@ export const addMarginToPosition = async ({
   await walletStore.validate()
 
   const message = MsgIncreasePositionMargin.fromJSON({
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     srcSubaccountId: accountStore.subaccountId,
     dstSubaccountId: accountStore.subaccountId,
@@ -254,10 +260,12 @@ export const addMarginToPosition = async ({
     })
   })
 
-  const actualMessage = msgsOrMsgExecMsgs(message, walletStore.authZ.address)
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
-    address: walletStore.address,
-    msgs: actualMessage
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 }

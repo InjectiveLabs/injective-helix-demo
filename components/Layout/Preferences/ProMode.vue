@@ -32,7 +32,7 @@ function toggleAuthZManagement() {
      * For now, we reload the page to refetch everything on the
      * page but we should add watchers for better UX
      */
-    location.reload()
+    window.location.reload()
   }
 }
 </script>
