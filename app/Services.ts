@@ -133,5 +133,5 @@ export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v12-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
+  `inj-dex-v13-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
 )
