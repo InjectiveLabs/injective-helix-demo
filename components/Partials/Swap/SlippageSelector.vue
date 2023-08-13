@@ -1,22 +1,17 @@
 <script lang="ts" setup>
-import { Dropdown, Tooltip } from 'floating-vue'
-import { onClickOutside } from '@vueuse/core'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SwapFormField } from '@/types'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
 
-const popperRef = ref(null)
-const dropdownRef = ref(null)
-const hasError = ref(false)
-const isOpen = ref(false)
+const dropdownRef = ref<null | { shown: boolean }>(null)
 const slippageList = ['0.1', '0.5', '1.0']
 
-const appIconColorClass = computed<string>(() => {
-  if (slippageError.value) {
-    return 'text-orange-500'
+const isOpen = computed(() => {
+  if (!dropdownRef.value) {
+    return false
   }
 
-  return isOpen.value ? 'text-blue-500' : 'text-gray-500'
+  return dropdownRef.value?.shown
 })
 
 const {
@@ -29,21 +24,13 @@ const {
   rule: 'slippage'
 })
 
-const slippageError = computed(() => slippageToleranceErrors.value[0])
-
-onClickOutside(
-  popperRef,
-  () => {
-    isOpen.value = false
-  },
-  {
-    ignore: [dropdownRef]
+const slippageError = computed(() => {
+  if (slippageToleranceErrors.value.length === 0) {
+    return undefined
   }
-)
 
-function toggleSlippageDropdown() {
-  isOpen.value = !isOpen.value
-}
+  return slippageToleranceErrors.value[0]
+})
 
 function checkForInvalidSlippageValue() {
   const slippageValue = new BigNumberInBase(slippageTolerance.value || 0)
@@ -59,36 +46,41 @@ function checkForInvalidSlippageValue() {
 </script>
 
 <template>
-  <Tooltip
-    popper-class="tooltip"
+  <AppTooltip
     :triggers="[]"
     :disabled="isOpen"
-    :shown="!isOpen && slippageError !== undefined"
+    :shown="!isOpen && !!slippageError"
   >
-    <Dropdown
+    <BaseDropdown
       ref="dropdownRef"
       popper-class="slippage"
       placement="bottom-end"
-      :distance="6"
-      :triggers="[]"
-      :shown="isOpen"
-      :auto-hide="false"
     >
-      <BaseIcon
-        name="gear"
-        class="h-5 w-5 hover:text-blue-500"
-        :class="appIconColorClass"
-        @click="toggleSlippageDropdown"
-      />
+      <template #default>
+        <div>
+          <BaseIcon
+            name="gear"
+            class="h-5 w-5"
+            :class="[
+              slippageError
+                ? 'text-orange-500 hover:opacity-80'
+                : {
+                    'text-blue-500 hover:opacity-80': isOpen,
+                    'text-gray-500 hover:text-blue-500': !isOpen
+                  }
+            ]"
+          />
+        </div>
+      </template>
 
-      <template #popper>
-        <div ref="popperRef" class="p-4 bg-gray-800 text-white">
+      <template #content>
+        <div class="p-4 bg-gray-800 text-white">
           <h3 class="text-xs font-bold uppercase tracking-widest">
             {{ $t('trade.swap.advancedSettings') }}
           </h3>
           <div class="my-4 flex items-center gap-2">
             <span class="text-xs">{{ $t('trade.swap.tolerance') }}</span>
-            <CommonInfoTooltip sm :tooltip="$t('trade.swap.tooltip')" />
+            <AppTooltip :content="$t('trade.swap.tooltip')" />
           </div>
 
           <div class="flex items-center gap-2 max-xs:flex-wrap">
@@ -98,7 +90,6 @@ function checkForInvalidSlippageValue() {
                 :key="`slippage-selector-item-${slippage}`"
                 v-model="slippageTolerance"
                 :value="slippage"
-                @click="toggleSlippageDropdown"
               >
                 <template #default="{ active }">
                   <AppButton
@@ -123,11 +114,10 @@ function checkForInvalidSlippageValue() {
               v-model="slippageTolerance"
               class="ml-auto"
               input-classes="text-right"
-              :error="hasError"
               sm
               @blur="checkForInvalidSlippageValue"
             >
-              <template v-if="slippageError !== undefined" #prefix>
+              <template v-if="slippageError" #prefix>
                 <BaseIcon name="warn" class="min-w-4 text-orange-500 h-4 w-4" />
               </template>
 
@@ -142,12 +132,12 @@ function checkForInvalidSlippageValue() {
           </p>
         </div>
       </template>
-    </Dropdown>
+    </BaseDropdown>
 
-    <template #popper>
+    <template #content>
       {{ slippageError }}
     </template>
-  </Tooltip>
+  </AppTooltip>
 </template>
 
 <style>

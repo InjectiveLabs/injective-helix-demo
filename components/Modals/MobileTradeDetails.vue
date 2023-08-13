@@ -51,10 +51,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.time') }}
         </span>
-        <CommonInfoTooltip
-          class="ml-2"
-          :tooltip="$t('trade.timestamp_tooltip')"
-        />
+        <AppTooltip class="ml-2" :content="$t('trade.timestamp_tooltip')" />
       </div>
       <span class="text-right font-mono tracking-wide">
         {{ time }}
@@ -110,7 +107,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.amount') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.amount_tooltip')" />
       </div>
       <span v-if="quantity" class="text-right">
         <AppNumber
@@ -127,7 +124,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.fee') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="fee" class="text-right">
         <AppNumber use-number-decimals :number="fee">
@@ -143,7 +140,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.total') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="total" class="text-right">
         <AppNumber

@@ -73,9 +73,9 @@ const search = computed({
         <div class="flex items-center justify-start">
           <span>{{ $t('account.hideSmallBalances') }}</span>
 
-          <CommonInfoTooltip
+          <AppTooltip
             class="ml-2"
-            :tooltip="$t('account.hideSmallBalancesTooltip')"
+            :content="$t('account.hideSmallBalancesTooltip')"
           />
         </div>
       </AppCheckbox>

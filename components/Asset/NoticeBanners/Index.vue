@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VITE_BANNER_NOTICE_ENABLED } from '@/app/utils/constants/setup'
+import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants/setup'
 import { NoticeBanner, Banner } from '@/types'
 
 const appStore = useAppStore()
@@ -19,7 +19,7 @@ const filteredBanners = computed(() =>
 </script>
 
 <template>
-  <div v-if="VITE_BANNER_NOTICE_ENABLED">
+  <div v-if="BANNER_NOTICE_ENABLED">
     <AssetNoticeBannersBanner
       v-for="banner in filteredBanners"
       :key="`banner-${banner.key}`"

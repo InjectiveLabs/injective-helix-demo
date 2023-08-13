@@ -60,9 +60,9 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         <p class="flex justify-between text-sm">
           <CommonTextInfo :title="$t('trade.total')" lg>
             <template v-if="tradingTypeMarket" #context>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('trade.market_total_tooltip')"
+                :content="$t('trade.market_total_tooltip')"
               />
             </template>
 
@@ -105,9 +105,9 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
           class="mt-2"
         >
           <template #context>
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2"
-              :tooltip="$t('trade.liquidation_price_tooltip')"
+              :content="$t('trade.liquidation_price_tooltip')"
             />
           </template>
           <span
@@ -129,10 +129,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
           class="mt-2"
         >
           <template #context>
-            <CommonInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.margin_tooltip')"
-            />
+            <AppTooltip class="ml-2" :content="$t('trade.margin_tooltip')" />
           </template>
           <span
             v-if="notionalValue.gt(0)"

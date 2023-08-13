@@ -34,9 +34,9 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
         <p class="flex justify-between text-sm">
           <CommonTextInfo :title="$t('trade.total')" lg>
             <template v-if="tradingTypeMarket" #context>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('trade.market_total_tooltip')"
+                :content="$t('trade.market_total_tooltip')"
               />
             </template>
 
@@ -61,9 +61,9 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
           :title="$t('trade.amount')"
         >
           <template #context>
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2"
-              :tooltip="$t('trade.min_received_amount')"
+              :content="$t('trade.min_received_amount')"
             />
           </template>
 
