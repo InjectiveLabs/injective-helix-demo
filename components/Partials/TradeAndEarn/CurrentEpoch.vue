@@ -200,9 +200,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('max_campaign_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('max_campaign_rewards_tooltip')"
+                :content="$t('max_campaign_rewards_tooltip')"
               />
             </div>
           </template>
@@ -229,9 +229,9 @@ onMounted(() => {
               class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+                :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
             </div>
           </template>
@@ -261,9 +261,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-xs text-gray-450">
               {{ $t('est_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('est_rewards_tooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                   })

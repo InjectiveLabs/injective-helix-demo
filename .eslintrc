@@ -7,5 +7,15 @@
   "ignorePatterns": [
     "coverage/**",
     "node_modules/*.js"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.html"
+      ],
+      "rules": {
+        "vue/comment-directive": "off"
+      }
+    }
   ]
 }

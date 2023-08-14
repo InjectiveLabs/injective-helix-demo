@@ -259,9 +259,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.pending_max_campaign_rewards_tooltip')
                 "
               />
@@ -290,9 +290,9 @@ onMounted(() => {
               class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+                :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
             </div>
           </template>
@@ -332,9 +332,9 @@ onMounted(() => {
               target="_blank"
             >
               {{ $t('stake_more') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.stake_total_to_receive_full_amount', {
                     total: pendingEstimatedRewards.toFormat(2)
                   })
@@ -346,9 +346,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450">
               {{ $t('tradeAndEarn.est_rewards_stake') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.est_rewards_stake_tooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                   })

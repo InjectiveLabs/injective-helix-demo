@@ -66,7 +66,6 @@ const sortedBalancesWithBalancesToBase = computed(() => {
 
 function handleClick(denom: string) {
   emit('update:modelValue', denom)
-
   emit('close')
 }
 </script>

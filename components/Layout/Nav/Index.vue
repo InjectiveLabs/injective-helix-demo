@@ -12,9 +12,6 @@ const walletStore = useWalletStore()
 const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
-const tradeDropdownShown = ref(false)
-const rewardsDropdownShown = ref(false)
-
 function handleSpotTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: DefaultMarket.Spot,
@@ -29,22 +26,6 @@ function handlePerpetualTradeClickedTrack() {
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
-}
-
-function handleTradeDropdownShownChange(value: boolean) {
-  tradeDropdownShown.value = value
-
-  if (value) {
-    rewardsDropdownShown.value = false
-  }
-}
-
-function handleRewardsDropdownShownChange(value: boolean) {
-  rewardsDropdownShown.value = value
-
-  if (value) {
-    tradeDropdownShown.value = false
-  }
 }
 </script>
 
@@ -63,10 +44,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
         {{ $t('trade.markets') }}
       </LayoutNavItem>
 
-      <LayoutNavHoverMenu
-        :shown="tradeDropdownShown"
-        @dropdown:toggle="handleTradeDropdownShownChange"
-      >
+      <LayoutNavHoverMenu>
         <template #default>
           <div class="relative">
             <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
@@ -134,10 +112,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
 
       <LayoutNavMobile />
 
-      <LayoutNavHoverMenu
-        :shown="rewardsDropdownShown"
-        @dropdown:toggle="handleRewardsDropdownShownChange"
-      >
+      <LayoutNavHoverMenu>
         <template #default>
           <LayoutNavItemDummy id="rewards-dropdown" class="hidden lg:block">
             {{ $t('navigation.rewards') }}
