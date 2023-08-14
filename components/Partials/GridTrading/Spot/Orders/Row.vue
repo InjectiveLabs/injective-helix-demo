@@ -1,27 +1,71 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
+import type { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { format } from 'date-fns'
 
-defineProps({
+const props = defineProps({
   strategy: {
     type: Object as PropType<TradingStrategy>,
     required: true
   }
 })
 
-const tokenStore = useTokenStore()
+const gridStore = useGridStore()
 
-const token = computed(() => tokenStore.tokens.find((t) => t.denom === 'inj'))
+const upperBounds = computed(() => {
+  if (!gridStore.market) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInWei(props.strategy.upperBound).toBase(
+    gridStore.market.quoteToken.decimals - gridStore.market.baseToken.decimals
+  )
+})
+
+const lowerBounds = computed(() => {
+  if (!gridStore.market) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInWei(props.strategy.lowerBound).toBase(
+    gridStore.market.quoteToken.decimals - gridStore.market.baseToken.decimals
+  )
+})
+
+const baseQuantity = computed(() =>
+  new BigNumberInWei(props.strategy.baseQuantity).toBase(
+    gridStore.market?.baseToken.decimals || 16
+  )
+)
+
+const createdAt = computed(() =>
+  format(new Date(Number(props.strategy.createdAt)), 'HH:mm:ss dd/LL/yyyy')
+)
+
+const pnl = computed(() => `2`)
 </script>
 <template>
-  <div class="grid grid-cols-5">
-    <div class="p-4">15 Aug 2023</div>
-    <div class="p-4">20</div>
-    <div class="flex items-center p-4">
-      <CommonTokenIcon v-bind="{ token }" />
-      <span class="uppercase ml-2">Inj-Usdt</span>
+  <div
+    class="grid grid-cols-6 items-center text-right text-xs hover:bg-gray-700 p-4"
+  >
+    <div class="flex space-x-2 items-center">
+      <div class="text-left">
+        <CommonTokenIcon
+          v-if="gridStore.market?.baseToken"
+          v-bind="{ token: gridStore.market?.baseToken }"
+        />
+      </div>
+      <div>
+        {{ gridStore.market?.ticker }}
+      </div>
     </div>
-    <div class="p-4">30</div>
-    <div class="p-4">Running</div>
+
+    <div>{{ upperBounds }} {{ gridStore.market?.quoteToken.symbol }}</div>
+    <div>{{ lowerBounds }} {{ gridStore.market?.quoteToken.symbol }}</div>
+    <div>{{ createdAt }}</div>
+    <div>{{ baseQuantity }}</div>
+    <div>{{ pnl }}</div>
   </div>
 </template>

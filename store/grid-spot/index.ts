@@ -1,10 +1,13 @@
 import {
   ExecArgCreateSpotGridStrategy,
+  ExecArgRemoveGridStrategy,
   MsgExecuteContractCompat,
   MsgGrant,
+  spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   chainGrpcAuthZApi,
   msgBroadcastClient,
@@ -39,7 +42,10 @@ export const useGridStore = defineStore('grid-spot', {
       const walletStore = useWalletStore()
       const gridStore = useGridStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (
+        !walletStore.injectiveAddress ||
+        !gridStore.smartContractAddressForGridMarket
+      ) {
         return
       }
 
@@ -80,31 +86,74 @@ export const useGridStore = defineStore('grid-spot', {
         msgs
       })
 
-      // console.log(response)
       return response
     },
 
-    async createStrategy() {
+    async createStrategy({
+      amount,
+      levels,
+      lowerBound,
+      upperBound
+    }: {
+      levels: number
+      lowerBound: string
+      upperBound: string
+      amount: string
+    }) {
       const gridStore = useGridStore()
       const { injectiveAddress, address } = useWalletStore()
 
-      if (!injectiveAddress) {
+      if (!injectiveAddress || !gridStore.market) {
         return
       }
+
+      // console.log({
+      //   baseDecimals: gridStore.market.baseToken.decimals,
+      //   quoteDecimals: gridStore.market.quoteToken.decimals
+      // })
+
+      // console.log({
+      //   lowerBound: spotPriceToChainPriceToFixed({
+      //     value: lowerBound,
+      //     baseDecimals: gridStore.market.baseToken.decimals,
+      //     quoteDecimals: gridStore.market.quoteToken.decimals
+      //   }),
+      //   upperBound: spotPriceToChainPriceToFixed({
+      //     value: upperBound,
+      //     baseDecimals: gridStore.market.baseToken.decimals,
+      //     quoteDecimals: gridStore.market.quoteToken.decimals
+      //   }),
+      //   levels,
+      //   denom: gridStore.market.quoteDenom,
+      //   amount: spotQuantityToChainQuantityToFixed({
+      //     value: amount,
+      //     baseDecimals: gridStore.market.quoteToken.decimals
+      //   })
+      // })
+
       const message = MsgExecuteContractCompat.fromJSON({
         contractAddress: gridStore.smartContractAddressForGridMarket,
         sender: injectiveAddress,
         execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
           subaccountId: gridStore.subaccountIdForGridMarket,
-          levels: 10,
-          lowerBound: '0.0000000000069',
-          upperBound: '0.0000000000099'
+          levels,
+          lowerBound: spotPriceToChainPriceToFixed({
+            value: lowerBound,
+            baseDecimals: gridStore.market.baseToken.decimals,
+            quoteDecimals: gridStore.market.quoteToken.decimals
+          }),
+          slippage: '0.2',
+          upperBound: spotPriceToChainPriceToFixed({
+            value: upperBound,
+            baseDecimals: gridStore.market.baseToken.decimals,
+            quoteDecimals: gridStore.market.quoteToken.decimals
+          })
         }),
         funds: {
-          denom: 'peggy0x87aB3B4C8661e07D6372361211B96ed4Dc36B1B5',
+          denom: gridStore.market.quoteDenom,
           amount: spotQuantityToChainQuantityToFixed({
-            value: 0.1,
-            baseDecimals: 6
+            value: amount,
+            baseDecimals: gridStore.market.quoteToken.decimals
           })
         }
       })
@@ -117,14 +166,50 @@ export const useGridStore = defineStore('grid-spot', {
       return response
     },
 
+    async removeStrategy() {
+      const gridStore = useGridStore()
+      const { injectiveAddress, address } = useWalletStore()
+
+      if (!injectiveAddress) {
+        return
+      }
+      // console.log('this ran')
+
+      const message = MsgExecuteContractCompat.fromJSON({
+        contractAddress: gridStore.smartContractAddressForGridMarket,
+        sender: injectiveAddress,
+        execArgs: ExecArgRemoveGridStrategy.fromJSON({
+          subaccountId: gridStore.subaccountIdForGridMarket
+        })
+      })
+
+      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+        address,
+        msgs: message
+      })
+
+      // console.log(response)
+
+      return response
+    },
+
     async fetchStrategies() {
       const gridStore = useGridStore()
+      const walletStore = useWalletStore()
+
+      if (
+        !walletStore.injectiveAddress ||
+        !gridStore.subaccountIdForGridMarket
+      ) {
+        return
+      }
+
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         subaccountId: gridStore.subaccountIdForGridMarket,
-        accountAddress: 'inj1zwzq3jrj7qltg9fhn73jsqhhtx7fwxz5e0swnx'
+        accountAddress: walletStore.injectiveAddress
       })
-      // console.log(strategies)
-      return strategies
+
+      gridStore.$patch({ strategies })
     }
   },
   getters: {
@@ -153,6 +238,19 @@ export const useGridStore = defineStore('grid-spot', {
       }
 
       return spotGridMarket.contractAddress
-    }
+    },
+    market: (state) => {
+      const spotStore = useSpotStore()
+
+      const market: UiSpotMarketWithToken | undefined = spotStore.markets.find(
+        (market) => market.slug === state.marketSlug
+      )
+
+      return market
+    },
+    runningStrategies: (state) =>
+      state.strategies.filter((strategy) => strategy.state === 'active'),
+    removedStrategies: (state) =>
+      state.strategies.filter((strategy) => strategy.state === 'removed')
   }
 })

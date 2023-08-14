@@ -11,6 +11,7 @@ defineProps({
   }
 })
 
+const gridStore = useGridStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
@@ -22,7 +23,11 @@ async function handleCreateStrategy() {
     return
   }
 
-  modalStore.openModal({ type: Modal.CheckSpotGridAuth })
+  if (gridStore.isAuthorized) {
+    modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+  } else {
+    modalStore.openModal({ type: Modal.CheckSpotGridAuth })
+  }
 }
 </script>
 
@@ -47,6 +52,12 @@ async function handleCreateStrategy() {
         <PartialsGridTradingSpotFormCreate
           @handle-create="handleCreateStrategy"
         />
+
+        <button @click="gridStore.removeStrategy">cancel strategy</button>
+        <button @click="gridStore.fetchStrategies">fetch strategy</button>
+
+        <ModalsCheckSpotGridAuth />
+        <ModalsCreateGridSpotStrategy />
       </div>
     </div>
   </div>

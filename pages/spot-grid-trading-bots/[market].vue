@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
+import {
+  // ActivityFetchOptions
+  UiMarketWithToken
+} from '@/types'
 
 definePageMeta({
   middleware: ['markets']
@@ -9,7 +12,7 @@ definePageMeta({
 
 const gridStore = useGridStore()
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+// const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
@@ -32,9 +35,9 @@ function onLoad(pageMarket: UiMarketWithToken) {
 
   market.value = pageMarket as UiSpotMarketWithToken
 
-  refreshSubaccountDetails()
-
   gridStore.$patch({ marketSlug: pageMarket.slug })
+
+  refreshSubaccountDetails()
 }
 
 function refreshSubaccountDetails() {
@@ -42,53 +45,68 @@ function refreshSubaccountDetails() {
     return
   }
 
-  spotStore.cancelSubaccountStream()
-
-  const fetchOptions = filterByCurrentMarket.value
-    ? {
-        filters: {
-          marketIds: [market.value.marketId]
-        }
-      }
-    : undefined
-  const marketId = filterByCurrentMarket.value
-    ? market.value.marketId
-    : undefined
-
-  fetchSubaccountOrderDetails(fetchOptions)
-  streamSubaccountOrderDetails(marketId)
-}
-
-function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
+  // console.log('fetching strategies and grants')
   fetchStatus.setLoading()
 
-  const marketIds = fetchOptions?.filters?.marketIds
-
-  Promise.all([
-    spotStore.fetchSubaccountOrders(marketIds),
-    spotStore.fetchSubaccountOrderHistory(fetchOptions),
-    spotStore.fetchSubaccountTrades(fetchOptions)
-  ])
+  Promise.all([gridStore.fetchStrategies(), gridStore.fetchGrants()])
     .catch($onError)
-    .finally(() => fetchStatus.setIdle())
+    .finally(() => {
+      fetchStatus.setIdle()
+    })
 }
 
-function streamSubaccountOrderDetails(marketId?: string) {
-  Promise.all([
-    spotStore.streamSubaccountTrades(marketId),
-    spotStore.streamSubaccountOrders(marketId),
-    spotStore.streamSubaccountOrderHistory(marketId)
-  ])
-}
+// function refreshSubaccountDetails() {
+//   if (!market.value) {
+//     return
+//   }
 
-watch(
-  () => walletStore.isUserWalletConnected,
-  (isConnected: Boolean) => {
-    if (isConnected) {
-      // fetchStatus.setLoading()
-    }
-  }
-)
+//   spotStore.cancelSubaccountStream()
+
+//   const fetchOptions = filterByCurrentMarket.value
+//     ? {
+//         filters: {
+//           marketIds: [market.value.marketId]
+//         }
+//       }
+//     : undefined
+//   const marketId = filterByCurrentMarket.value
+//     ? market.value.marketId
+//     : undefined
+
+//   fetchSubaccountOrderDetails(fetchOptions)
+//   streamSubaccountOrderDetails(marketId)
+// }
+
+// function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
+//   fetchStatus.setLoading()
+
+//   const marketIds = fetchOptions?.filters?.marketIds
+
+//   Promise.all([
+//     spotStore.fetchSubaccountOrders(marketIds),
+//     spotStore.fetchSubaccountOrderHistory(fetchOptions),
+//     spotStore.fetchSubaccountTrades(fetchOptions)
+//   ])
+//     .catch($onError)
+//     .finally(() => fetchStatus.setIdle())
+// }
+
+// function streamSubaccountOrderDetails(marketId?: string) {
+//   Promise.all([
+//     spotStore.streamSubaccountTrades(marketId),
+//     spotStore.streamSubaccountOrders(marketId),
+//     spotStore.streamSubaccountOrderHistory(marketId)
+//   ])
+// }
+
+// watch(
+//   () => walletStore.isUserWalletConnected,
+//   (isConnected: Boolean) => {
+//     if (isConnected) {
+//       // fetchStatus.setLoading()
+//     }
+//   }
+// )
 
 watch(
   () => accountStore.subaccountId,
@@ -110,7 +128,6 @@ watch(
         v-model:filterByCurrentMarket="filterByCurrentMarket"
         :market="market"
         :status="fetchStatus"
-        @update:filter-by-current-market="refreshSubaccountDetails"
       />
     </template>
   </PartialsGridTradingLayout>

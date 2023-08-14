@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
+import { PropType } from 'nuxt/dist/app/compat/capi'
+
+defineProps({
+  status: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Loading)
+  }
+})
 const route = useRoute()
 // const gridStore = useGridStore()
 
@@ -34,7 +43,9 @@ const route = useRoute()
     </div>
     <CommonCardTableWrap class="flex-1">
       <CommonCard class="h-full flex-auto">
-        <NuxtPage />
+        <AppHocLoading v-bind="{ status }">
+          <NuxtPage />
+        </AppHocLoading>
       </CommonCard>
     </CommonCardTableWrap>
   </div>

@@ -1,13 +1,22 @@
 <script setup lang="ts">
 // import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Modal, SpotGridTradingForm } from '@/types'
 
 const gridStore = useGridStore()
 const modalStore = useModalStore()
 // const { $onError } = useNuxtApp()
+const formValues = useFormValues<SpotGridTradingForm>()
 const { success } = useNotifications()
 
 const aggreedToTerms = ref(false)
+
+const profitPerGrid = computed(() =>
+  new BigNumberInBase(formValues.value.upperPrice || 0)
+    .minus(formValues.value.lowerPrice || 0)
+    .dividedBy(formValues.value.grids || 1)
+    .toFixed(2)
+)
 
 function closeModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
@@ -15,14 +24,19 @@ function closeModal() {
 
 function handleCreateStrategy() {
   gridStore
-    .createStrategy()
+    .createStrategy({
+      amount: formValues.value.investmentAmount!,
+      levels: Number(formValues.value.grids!),
+      lowerBound: formValues.value.lowerPrice!,
+      upperBound: formValues.value.upperPrice!
+    })
     .then(() => {
       success({
         title: 'Success',
         description: 'Grid Strategy Created Succesfully'
       })
     })
-    .catch(() => {
+    .catch((_e) => {
       // console.dir(e)
     })
     .finally(() => {
@@ -50,12 +64,12 @@ function handleCreateStrategy() {
       <div class="mt-6 space-y-1">
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Trade Amount</p>
-          <p class="font-semibold">500.00 USDT</p>
+          <p class="font-semibold">{{ formValues.investmentAmount }} USDT</p>
         </div>
 
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Market</p>
-          <p class="font-semibold">INJ/USDT</p>
+          <p class="font-semibold">{{ gridStore.market?.ticker }}</p>
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Grid Mode</p>
@@ -63,15 +77,17 @@ function handleCreateStrategy() {
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Price Range</p>
-          <p class="font-semibold">500.00 USDT</p>
+          <p class="font-semibold">
+            {{ formValues.lowerPrice }} - {{ formValues.upperPrice }} USDT
+          </p>
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Grid Number</p>
-          <p class="font-semibold">500.00 USDT</p>
+          <p class="font-semibold">{{ formValues.grids }}</p>
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">Profit/Grid</p>
-          <p class="font-semibold">500.00 USDT</p>
+          <p class="font-semibold">{{ profitPerGrid }} USDT</p>
         </div>
       </div>
 

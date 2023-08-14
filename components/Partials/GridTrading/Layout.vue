@@ -34,7 +34,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'loaded', state: UiMarketWithToken): void
+  loaded: [state: UiMarketWithToken]
 }>()
 
 const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''
@@ -227,8 +227,5 @@ watch(
       <slot name="modals" />
       <ModalsMarketBeta v-if="marketIsBeta" />
     </div>
-
-    <ModalsCheckSpotGridAuth />
-    <ModalsCreateGridSpotStrategy />
   </AppHocLoading>
 </template>
