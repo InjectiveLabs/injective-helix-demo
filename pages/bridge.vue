@@ -41,9 +41,6 @@ onMounted(() => {
     accountStore.streamBankBalance(),
     accountStore.streamSubaccountBalance()
   ])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 

@@ -28,7 +28,7 @@ const isTradingRoute = computed(() =>
       </template>
 
       <template #content>
-        <div class="">
+        <div>
           <LayoutPreferencesProMode />
           <LayoutPreferencesTradingLayout v-if="isTradingRoute" />
         </div>
