@@ -5,8 +5,6 @@ import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
-
 const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
@@ -91,18 +89,11 @@ const orderDetailsComponentPath = computed(() => {
 
 const orderDetailsComponent = defineAsyncComponent(() => {
   return new Promise((resolve, _reject) => {
-    if (!isWebpack) {
-      const comps = import.meta.glob(/* @vite-ignore */ './../**/*.vue')
+    const comps = import.meta.glob(/* @vite-ignore */ './../**/*.vue')
 
-      return comps[
-        /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
-      ]().then((component: any) => resolve(component.default))
-    }
-
-    // webpack
-    import(/* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`).then(
-      (component) => resolve(component)
-    )
+    return comps[
+      /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
+    ]().then((component: any) => resolve(component.default))
   })
 })
 

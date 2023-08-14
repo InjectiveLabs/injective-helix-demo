@@ -201,10 +201,12 @@ export const useAppStore = defineStore('app', {
     async fetchGeoLocation() {
       const appStore = useAppStore()
 
+      const geoLocation = await fetchGeoLocation()
+
       appStore.$patch({
         userState: {
           ...appStore.userState,
-          geoLocation: await fetchGeoLocation()
+          geoLocation
         }
       })
     },

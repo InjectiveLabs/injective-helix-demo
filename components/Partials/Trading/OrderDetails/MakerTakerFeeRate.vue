@@ -43,7 +43,7 @@ const takerFeeRateToFormat = computed(() => {
     class="mt-2"
   >
     <template #context>
-      <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.taker_rate_note')" />
+      <AppTooltip class="ml-2" :content="$t('trade.taker_rate_note')" />
     </template>
     <span
       class="font-mono flex items-center"
@@ -61,7 +61,7 @@ const takerFeeRateToFormat = computed(() => {
     class="mt-2"
   >
     <template #context>
-      <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.maker_rate_note')" />
+      <AppTooltip class="ml-2" :content="$t('trade.maker_rate_note')" />
     </template>
     <span
       class="font-mono flex items-center"
@@ -75,10 +75,7 @@ const takerFeeRateToFormat = computed(() => {
 
   <CommonTextInfo v-else :title="$t('trade.maker_taker_rate')" class="mt-2">
     <template #context>
-      <CommonInfoTooltip
-        class="ml-2"
-        :tooltip="$t('trade.maker_taker_rate_note')"
-      />
+      <AppTooltip class="ml-2" :content="$t('trade.maker_taker_rate_note')" />
     </template>
     <span
       class="font-mono flex items-center"

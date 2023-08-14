@@ -52,7 +52,8 @@ export default {
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
 
     leap: 'Leap',
-    cosmostation: 'Cosmostation'
+    cosmostation: 'Cosmostation',
+    trustWallet: 'Trust Wallet'
   },
 
   memo: {

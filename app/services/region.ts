@@ -5,10 +5,10 @@ import {
 } from '@injectivelabs/exceptions'
 import { restrictedCountries } from '@/app/data/geoip'
 import {
-  VITE_GOOGLE_MAPS_KEY,
+  GOOGLE_MAPS_KEY,
   PROXY_DETECTION_ENABLED,
   GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_PROXY_DETECTION_API_KEY
+  PROXY_DETECTION_API_KEY
 } from '@/app/utils/constants'
 import { GeoLocation } from '@/types'
 
@@ -91,7 +91,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
 
   try {
     const response = (await httpClient.get(`api/${ipAddress}`, {
-      key: VITE_PROXY_DETECTION_API_KEY
+      key: PROXY_DETECTION_API_KEY
     })) as {
       data: {
         security: {
@@ -236,7 +236,7 @@ export const fetchCountryFromCoordinates = async (
   const googleMapsHttpClient = new HttpClient(
     'https://maps.googleapis.com/maps/api/geocode/'
   )
-  const GOOGLE_MAPS_SUFFIX = `json?latlng=${latitude},${longitude}&sensor=false&key=${VITE_GOOGLE_MAPS_KEY}`
+  const GOOGLE_MAPS_SUFFIX = `json?latlng=${latitude},${longitude}&sensor=false&key=${GOOGLE_MAPS_KEY}`
 
   try {
     const response = (await googleMapsHttpClient.get(GOOGLE_MAPS_SUFFIX)) as {

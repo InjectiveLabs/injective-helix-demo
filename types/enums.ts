@@ -47,7 +47,6 @@ export enum Modal {
   MarketBeta = 'market-beta',
   ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
-  SelectToken = 'select-token',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   USDCDetected = 'usdc-detected',
@@ -56,17 +55,21 @@ export enum Modal {
   BridgeConfirm = 'bridge-confirm',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
+  TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
+  TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
   InstitutionalForm = 'institutionalForm',
+  TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
+
   FuturesMarketRestricted = 'futures-market-restricted'
 }
 
