@@ -11,16 +11,7 @@ import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
 definePageMeta({
-  middleware: () => {
-    /**
-     * Set subaccount id to default until the swap SC has support for multiple subaccounts
-     **/
-    if (walletStore.isUserWalletConnected) {
-      accountStore.$patch({
-        subaccountId: walletStore.authZOrDefaultSubaccountId
-      })
-    }
-  }
+  middleware: ['swap']
 })
 
 const swapStore = useSwapStore()
