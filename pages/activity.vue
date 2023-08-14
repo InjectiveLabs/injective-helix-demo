@@ -70,7 +70,7 @@ watch(
 )
 watch(
   () => route.name,
-  () => resetForm({})
+  () => resetForm()
 )
 </script>
 

@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
-  getDefaultSubaccountId,
   getEthereumAddress,
-  getInjectiveAddress
+  getInjectiveAddress,
+  getDefaultSubaccountId
 } from '@injectivelabs/sdk-ts'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
@@ -15,6 +15,10 @@ import {
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
 import { BusEvents, WalletConnectStatus } from '@/types'
+import {
+  validateTrustWallet,
+  isTrustWalletInstalled
+} from '@/app/services/trust-wallet'
 
 type WalletStoreState = {
   walletConnectStatus: WalletConnectStatus
@@ -24,6 +28,7 @@ type WalletStoreState = {
   addressConfirmation: string
   addresses: string[]
   metamaskInstalled: boolean
+  trustWalletInstalled: boolean
   wallet: Wallet
 }
 
@@ -35,6 +40,7 @@ const initialStateFactory = (): WalletStoreState => ({
   addressConfirmation: '',
   wallet: Wallet.Metamask,
   metamaskInstalled: false,
+  trustWalletInstalled: false,
   walletConnectStatus: WalletConnectStatus.idle
 })
 
@@ -103,6 +109,14 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         metamaskInstalled: await isMetamaskInstalled()
+      })
+    },
+
+    async isTrustWalletInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        trustWalletInstalled: await isTrustWalletInstalled()
       })
     },
 
@@ -175,6 +189,29 @@ export const useWalletStore = defineStore('wallet', {
 
       await appStore.validate(Wallet.Metamask)
       await walletStore.connectWallet(Wallet.Metamask)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectTrustWallet() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.validate(Wallet.TrustWallet)
+      await walletStore.connectWallet(Wallet.TrustWallet)
 
       const addresses = await getAddresses()
       const [address] = addresses
@@ -352,6 +389,10 @@ export const useWalletStore = defineStore('wallet', {
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)
+      }
+
+      if (wallet === Wallet.TrustWallet) {
+        await validateTrustWallet(address, ethereumChainId)
       }
 
       if (isCosmosWallet(wallet)) {

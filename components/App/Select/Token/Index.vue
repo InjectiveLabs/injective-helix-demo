@@ -6,6 +6,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  Modal,
   TradeField,
   BridgeField,
   SwapFormField,
@@ -27,6 +28,12 @@ const props = defineProps({
   denom: {
     type: String,
     default: ''
+  },
+
+  modal: {
+    required: false,
+    default: Modal.TokenSelector,
+    type: String as PropType<Modal>
   },
 
   debounce: {
@@ -57,14 +64,14 @@ const props = defineProps({
   }
 })
 
+const modalStore = useModalStore()
+
 const emit = defineEmits<{
-  'update:denom': [state: string]
-  'update:show': [state: boolean]
+  'update:modal': []
   'update:max': [{ amount: string }]
+  'update:denom': [state: string]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
-
-const isModalActive = ref(false)
 
 const selectedToken = computed(() =>
   props.options.find(({ denom }) => denom === props.denom)
@@ -154,7 +161,8 @@ function openTokenSelectorModal() {
     return
   }
 
-  isModalActive.value = true
+  modalStore.openModal({ type: props.modal })
+  emit('update:modal')
 }
 
 function handleAmountUpdate(amount: string) {
@@ -257,12 +265,11 @@ export default {
           </div>
 
           <ModalsTokenSelector
+            v-model="denomValue"
             v-bind="{
               balances: options,
-              isModalActive
+              modal
             }"
-            v-model="denomValue"
-            v-model:isModalActive="isModalActive"
           />
         </div>
       </div>

@@ -27,9 +27,10 @@ const showLoading = computed<boolean>(
 onMounted(() => {
   useEventBus<string>(BusEvents.ShowLedgerConnect).on(handleLedgerConnect)
 
-  Promise.all([walletStore.isMetamaskInstalled()]).finally(() =>
-    status.setIdle()
-  )
+  Promise.all([
+    walletStore.isMetamaskInstalled(),
+    walletStore.isTrustWalletInstalled()
+  ]).finally(() => status.setIdle())
 })
 
 function handleLedgerConnect() {
@@ -119,6 +120,9 @@ watch(isModalOpen, (newShowModalState) => {
       <LayoutWalletConnectWalletTorus />
       <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
       <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
+      <!--
+      <LayoutWalletConnectWalletTrustWallet />
+      -->
     </ul>
   </AppModal>
   <ModalsTerms />

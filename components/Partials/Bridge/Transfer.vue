@@ -63,12 +63,12 @@ watch(destination, (value: string) => {
       </div>
       <div class="my-4 w-full">
         <div class="flex items-center justify-between text-gray-200">
-          <CommonInfoTooltip :tooltip="$t('memo.memoTooltip')">
+          <AppTooltip :content="$t('memo.memoTooltip')">
             <span class="text-xs flex items-center">
               {{ $t('memo.memo') }}
               <BaseIcon name="circle-info" class="text-gray-500 w-3 h-3 ml-2" />
             </span>
-          </CommonInfoTooltip>
+          </AppTooltip>
 
           <AppCheckbox v-model="memoRequired" @input="resetMemo">
             {{ $t('common.required') }}
