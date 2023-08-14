@@ -22,7 +22,11 @@ const stateToPersist = {
       tradingLayout: TradingLayout.Left,
       ninjaPassWinnerModalViewed: false,
       userFeedbackModalViewed: false,
-      bannersViewed: []
+      bannersViewed: [],
+      proMode: {
+        authZManagement: false,
+        subaccountManagement: false
+      }
     }
   },
 
@@ -36,7 +40,14 @@ const stateToPersist = {
     addresses: '',
     injectiveAddress: '',
     defaultSubaccountId: '',
-    addressConfirmation: ''
+    addressConfirmation: '',
+
+    authZ: {
+      address: '',
+      direction: '',
+      injectiveAddress: '',
+      defaultSubaccountId: ''
+    }
   }
 } as Record<string, Record<string, any>>
 
@@ -47,6 +58,7 @@ const actionsThatSetAppStateToBusy = [
   'account/transfer',
   'account/withdraw',
   'spot/cancelOrder',
+  'account/externalTransfer',
   'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',

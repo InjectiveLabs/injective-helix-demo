@@ -99,7 +99,6 @@ const {
   setValue: setAmountValue
 } = useStringField({
   name: props.amountFieldName,
-  initialValue: '',
   rule: ''
 })
 

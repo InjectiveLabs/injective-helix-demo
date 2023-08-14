@@ -7,7 +7,6 @@ import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const { t } = useLang()
 const { success } = useNotifications()
@@ -73,7 +72,6 @@ onMounted(() => {
   fetchStatus.setLoading()
 
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
     spotStore.fetchOrderbook(props.market.marketId),
     spotStore.streamOrderbookUpdate(props.market.marketId)
   ]).finally(() => fetchStatus.setIdle())
@@ -103,7 +101,6 @@ function handleFormSubmit() {
     })
     .then(() => {
       resetFormValues()
-      accountStore.fetchAccountPortfolio()
       success({ title: t('trade.swap.swapSuccessfully') })
     })
     .catch($onError)

@@ -10,9 +10,8 @@ const { t } = useLang()
 const actionStatus = reactive(new Status(StatusType.Idle))
 
 const { value: denom } = useStringField({
-  name: ActivityField.Denom,
   rule: '',
-  initialValue: ''
+  name: ActivityField.Denom
 })
 const { value: side } = useStringField({ name: ActivityField.Side, rule: '' })
 

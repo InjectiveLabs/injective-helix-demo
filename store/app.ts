@@ -49,6 +49,10 @@ export interface UserBasedState {
   ninjaPassWinnerModalViewed: boolean
   skipTradeConfirmationModal: boolean
   vpnOrProxyUsageValidationTimestamp: number
+  proMode: {
+    authZManagement: boolean
+    subaccountManagement: boolean
+  }
 }
 
 type AppStoreState = {
@@ -99,7 +103,11 @@ const initialStateFactory = (): AppStoreState => ({
     ninjaPassWinnerModalViewed: false,
     userFeedbackModalViewed: false,
     skipTradeConfirmationModal: false,
-    bannersViewed: []
+    bannersViewed: [],
+    proMode: {
+      subaccountManagement: false,
+      authZManagement: false
+    }
   },
   userCountryFromBrowser: '',
   announcements: [],
@@ -111,11 +119,20 @@ export const useAppStore = defineStore('app', {
   getters: {
     favoriteMarkets: (state: AppStoreState) => {
       return state.userState.favoriteMarkets
+    },
+
+    isSubaccountManagementActive: (state: AppStoreState) => {
+      return state.userState?.proMode?.subaccountManagement
+    },
+
+    isAuthzManagementActive: (state: AppStoreState) => {
+      return state.userState?.proMode?.authZManagement
     }
   },
   actions: {
     async init() {
       const appStore = useAppStore()
+
       await appStore.fetchGeoLocation()
       await appStore.handleInitialDetectVPNOrProxyUsage()
     },

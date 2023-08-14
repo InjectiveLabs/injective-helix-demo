@@ -102,16 +102,16 @@ export const streamTrades = (marketId: string) => {
 
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamsSubaccountOrderHistory({
     marketId,
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -166,16 +166,16 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
 export const streamSubaccountTrades = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamsSubaccountTrades({
     marketId,
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return
@@ -238,16 +238,16 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
 export const streamSubaccountOrders = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamsSubaccountOrders({
     marketId,
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return

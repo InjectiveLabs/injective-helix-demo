@@ -24,7 +24,7 @@ defineProps({
         </div>
       </div>
     </template>
-    <span class="text-xs" :data-cy="dataCy">
+    <span class="text-xs select-none" :data-cy="dataCy">
       <slot />
     </span>
   </BaseCheckbox>

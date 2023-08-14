@@ -16,7 +16,7 @@ const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
-const status = reactive(new Status(StatusType.Idle))
+const status = reactive(new Status(StatusType.Loading))
 
 const { values: formValues, resetForm } = useForm<BridgeForm>({
   initialValues: {
@@ -30,22 +30,19 @@ const { values: formValues, resetForm } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
+
 const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
   computed(() => formValues)
 )
 
 onMounted(() => {
-  status.setLoading()
-
   Promise.all([
     accountStore.fetchAccountPortfolio(),
     accountStore.streamBankBalance(),
     accountStore.streamSubaccountBalance()
   ])
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+    .finally(() => status.setIdle())
 
   handlePreFillCosmosWallet()
   handlePreFillFromQuery()
@@ -53,20 +50,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   accountStore.$reset()
-})
-
-onWalletConnected(() => {
-  status.setLoading()
-
-  Promise.all([
-    accountStore.fetchAccountPortfolio(),
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance()
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
 })
 
 function handlePreFillCosmosWallet() {
