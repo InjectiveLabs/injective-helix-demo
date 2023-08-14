@@ -4,7 +4,7 @@ import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 const walletStore = useWalletStore()
 const modalStore = useModalStore()
 
-const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
+const formValues = useFormValues<BridgeForm>()
 const formErrors = useFormErrors()
 const validateForm = useValidateForm()
 
