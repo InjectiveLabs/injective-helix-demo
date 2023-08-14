@@ -10,17 +10,16 @@ export const cancelSubaccountPositionsStream =
 export const streamSubaccountPositions = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountPositions({
-    subaccountId,
     marketId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ position }) => {
       if (position) {
         const positionQuantity = new BigNumberInBase(position.quantity)

@@ -10,6 +10,19 @@ import {
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
+definePageMeta({
+  middleware: () => {
+    /**
+     * Set subaccount id to default until the swap SC has support for multiple subaccounts
+     **/
+    if (walletStore.isUserWalletConnected) {
+      accountStore.$patch({
+        subaccountId: walletStore.authZOrDefaultSubaccountId
+      })
+    }
+  }
+})
+
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -54,19 +67,21 @@ const hideErrorToast = computed(() =>
 )
 
 onMounted(() => {
-  /**
-   * Set subaccount id to default until the swap SC has support for multiple subaccounts
-   **/
-  if (walletStore.isUserWalletConnected) {
-    accountStore.$patch({
-      subaccountId: walletStore.defaultSubaccountId
-    })
-  }
+  initRoutes()
+})
 
-  const spotBaseCoinGeckoIds = spotStore.markets.map(
-    ({ baseToken }) => baseToken.coinGeckoId
-  )
+onWalletConnected(() => {
+  fetchStatus.setLoading()
 
+  Promise.all([
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
+    .catch($onError)
+    .finally(() => fetchStatus.setIdle())
+})
+
+function initRoutes() {
   Promise.all([
     spotStore.init(),
     swapStore.fetchRoutes(),
@@ -75,24 +90,12 @@ onMounted(() => {
     .then(async () => {
       await tokenStore.fetchTokensUsdPriceMap([
         ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotBaseCoinGeckoIds
+        ...spotStore.markets.map(({ baseToken }) => baseToken.coinGeckoId)
       ])
     })
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
-})
-
-onWalletConnected(() => {
-  fetchStatus.setLoading()
-
-  Promise.all([
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance(),
-    accountStore.fetchAccountPortfolio()
-  ])
-    .catch($onError)
-    .finally(() => fetchStatus.setIdle())
-})
+}
 
 async function submit() {
   const { valid } = await validate()

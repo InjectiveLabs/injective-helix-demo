@@ -14,12 +14,12 @@ export const streamBankBalance = () => {
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  if (!walletStore.injectiveAddress) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
   grpcStreamBankBalances({
-    accountAddress: walletStore.injectiveAddress,
+    accountAddress: walletStore.authZOrInjectiveAddress,
     callback: ({ amount, denom }) => {
       const bankBalancesExcludingDenom = accountStore.bankBalances.filter(
         (balance: Coin) => balance.denom !== denom
@@ -36,12 +36,12 @@ export const streamSubaccountBalance = () => {
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  if (!accountStore.subaccountId) {
+  if (!walletStore.isUserWalletConnected && !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountBalance({
-    accountAddress: walletStore.injectiveAddress,
+    accountAddress: walletStore.authZOrInjectiveAddress,
     subaccountId: accountStore.subaccountId,
     callback: (payload) => {
       const subaccountBalancesMapOrBlank =
@@ -63,7 +63,7 @@ export const streamSubaccountBalance = () => {
                 ? payload.amount
                 : accountBalance?.totalBalance || '0',
             availableBalance:
-              payload.subaccountId !== walletStore.defaultSubaccountId &&
+              payload.subaccountId !== walletStore.authZOrDefaultSubaccountId &&
               payload.type === SubaccountBalanceStreamType.AvailableBalance
                 ? payload.amount
                 : accountBalance?.availableBalance || '0'

@@ -126,14 +126,16 @@ export const useExchangeStore = defineStore('exchange', {
 
     async fetchFeeDiscountAccountInfo() {
       const exchangeStore = useExchangeStore()
-      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const feeDiscountAccountInfo =
-        await exchangeApi.fetchFeeDiscountAccountInfo(injectiveAddress)
+        await exchangeApi.fetchFeeDiscountAccountInfo(
+          walletStore.authZOrInjectiveAddress
+        )
 
       if (feeDiscountAccountInfo) {
         exchangeStore.$patch({
@@ -180,24 +182,24 @@ export const useExchangeStore = defineStore('exchange', {
     async fetchTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
 
-      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       exchangeStore.$patch({
         tradeRewardsPoints: await exchangeApi.fetchTradeRewardPoints([
-          injectiveAddress
+          walletStore.authZOrInjectiveAddress
         ])
       })
     },
 
     async fetchPendingTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
-      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
@@ -217,7 +219,7 @@ export const useExchangeStore = defineStore('exchange', {
       const rewards = await Promise.all(
         pendingRewardsList.map(async (pendingReward) => {
           const rewards = await exchangeApi.fetchPendingTradeRewardPoints(
-            [injectiveAddress],
+            [walletStore.authZOrInjectiveAddress],
             pendingReward.startTimestamp
           )
 

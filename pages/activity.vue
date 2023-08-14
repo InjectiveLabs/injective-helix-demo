@@ -42,6 +42,7 @@ function fetchData() {
   appStore.cancelAllStreams()
 
   Promise.all([
+    accountStore.fetchAccountPortfolio(),
     activityStore.streamDerivativeSubaccountOrderHistory(),
     activityStore.streamDerivativeSubaccountTrades(),
     activityStore.streamSpotSubaccountOrderHistory(),

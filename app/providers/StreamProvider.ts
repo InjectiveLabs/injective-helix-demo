@@ -28,6 +28,11 @@ type StreamFn =
 
 type Stream = ReturnType<StreamFn>
 
+const GRPC_ERROR_CODES = {
+  UNKNOWN: 2,
+  DEADLINE_EXCEEDED: 4
+}
+
 const MAX_RECONNECTION = 10
 
 /**
@@ -58,17 +63,12 @@ export class StreamProvider {
     const argsWithCallbacks = {
       ...args,
       onEndCallback: (status?: StreamStatusResponse): any => {
-        if (this.getReconnectCount(key) <= MAX_RECONNECTION) {
-          setTimeout(() => {
-            this.reconnect(key)
-            this.incrementReconnectCount(key)
-          }, 1000)
-        } else {
-          console.error(status)
-        }
+        this.reconnectOnTimeout(key, status)
       },
-      onStatusCallback: (_status: StreamStatusResponse): any => {
-        //
+      onStatusCallback: (status: StreamStatusResponse): any => {
+        if (Object.values(GRPC_ERROR_CODES).includes(status.code)) {
+          this.reconnectOnTimeout(key, status)
+        }
       }
     }
     const stream = fn(argsWithCallbacks)
@@ -121,6 +121,17 @@ export class StreamProvider {
 
   private incrementReconnectCount(key: string) {
     return (this.reconnectCount[key] = (this.reconnectCount[key] || 0) + 1)
+  }
+
+  private reconnectOnTimeout(key: StreamType, status?: StreamStatusResponse) {
+    if (this.getReconnectCount(key) <= MAX_RECONNECTION) {
+      setTimeout(() => {
+        this.reconnect(key)
+        this.incrementReconnectCount(key)
+      }, 1000)
+    } else if (status) {
+      console.error(JSON.stringify({ status }))
+    }
   }
 }
 

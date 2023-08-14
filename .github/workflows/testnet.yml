@@ -14,7 +14,7 @@ jobs:
       ## Public
       VITE_NAME: 'TESTNET - Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnetK8s
+      VITE_NETWORK: testnet
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
       VITE_ETHEREUM_CHAIN_ID: 5

@@ -70,7 +70,7 @@ function handleModalClose() {
         >
           {{ $t('common.ok') }}
         </AppButton>
-        <div class="text-primary-500 cursor-pointer w-full">
+        <div class="text-blue-500 cursor-pointer w-full">
           <NuxtLink
             v-if="isOnChainTransaction"
             :to="explorerUrl"

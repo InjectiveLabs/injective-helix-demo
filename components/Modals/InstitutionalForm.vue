@@ -21,23 +21,19 @@ const isModalOpen = computed(() => modalStore.modals[Modal.InstitutionalForm])
 
 const { value: firstNameValue } = useStringField({
   name: InstitutionalFormField.FirstName,
-  initialValue: '',
   rule: 'required'
 })
 
 const { value: lastNameValue } = useStringField({
-  name: InstitutionalFormField.LastName,
-  initialValue: ''
+  name: InstitutionalFormField.LastName
 })
 
 const { value: emailValue } = useStringField({
-  name: InstitutionalFormField.Email,
-  initialValue: ''
+  name: InstitutionalFormField.Email
 })
 
 const { value: companyValue } = useStringField({
-  name: InstitutionalFormField.Company,
-  initialValue: ''
+  name: InstitutionalFormField.Company
 })
 
 watch(isModalOpen, () => {
