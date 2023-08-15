@@ -150,6 +150,7 @@ export const marketIsQuotePair = (
 
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
+  const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
 
   if (activeQuote === MarketQuoteType.USDT) {
@@ -158,6 +159,10 @@ export const marketIsQuotePair = (
 
   if (activeQuote === MarketQuoteType.USDC) {
     return marketQuoteSymbol.includes(usdcSymbolLowercased)
+  }
+
+  if (activeQuote === MarketQuoteType.INJ) {
+    return marketQuoteSymbol.includes(injSymbolLowecased)
   }
 
   return true

@@ -130,7 +130,8 @@ export enum MarketCategoryType {
 export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
-  USDC = 'usdc'
+  USDC = 'usdc',
+  INJ = 'inj'
   // UST = 'ust'
 }
 
