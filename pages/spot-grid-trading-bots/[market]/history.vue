@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const gridStore = useGridStore()
-const walletStore = useWalletStore()
 
 const removedStrategies = computed(() =>
   gridStore.strategies.filter(
@@ -27,19 +26,12 @@ const removedStrategies = computed(() =>
       <div class="font-normal text-xs">PnL</div>
     </div>
 
-    <div
-      v-if="walletStore.isUserWalletConnected"
-      class="bg-black rounded-xl overflow-hidden"
-    >
-      <PartialsGridTradingSpotOrdersRow
+    <div class="bg-black rounded-xl overflow-hidden">
+      <PartialsGridTradingSpotStrategiesHistoryRow
         v-for="strategy in removedStrategies"
         v-bind="{ strategy }"
         :key="`strategy-removed-${strategy.createdAt}`"
       />
-    </div>
-
-    <div v-else>
-      <h1>Connect Wallet</h1>
     </div>
   </div>
 </template>

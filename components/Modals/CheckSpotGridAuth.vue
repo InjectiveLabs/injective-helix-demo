@@ -55,14 +55,17 @@ function closeModal() {
   >
     <template #title>
       <p class="[text-transform:none] text-lg font-bold p-2">
-        A few clicks before the strategy is created
+        {{ $t('sgt.aFewClicksBeforeTheStrategyIsCreated') }}
       </p>
     </template>
 
     <div class="max-w-md">
       <p class="mb-6">
-        There are 2 transactions required to create and enable Spot Grid
-        Trading.
+        {{
+          $t(
+            'sgt.thereAre2TransactionsRequiredToCreateAndEnableSpotGridTrading'
+          )
+        }}
       </p>
       <div class="flex items-start">
         <div class="p-4">
@@ -73,8 +76,8 @@ function closeModal() {
           </div>
         </div>
         <div>
-          <p>Let Helix sends you request for transactions</p>
-          <p class="text-gray-400">Please confirm on your wallet...</p>
+          <p>{{ $t('sgt.letHelixSendsYouRequestForTransactions') }}</p>
+          <p class="text-gray-400">{{ $t('sgt.pleaseConfirmOnYourWallet') }}</p>
         </div>
       </div>
 
@@ -87,7 +90,7 @@ function closeModal() {
           </div>
         </div>
         <div>
-          <p>Create your grid trading strategy</p>
+          <p>{{ $t('sgt.createYourGridTradingStrategy') }}</p>
         </div>
       </div>
     </div>

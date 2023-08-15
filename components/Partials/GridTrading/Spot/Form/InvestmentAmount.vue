@@ -44,9 +44,13 @@ const { value: investmentAmountValue } = useStringField({
 <template>
   <div class="pt-4">
     <div class="flex justify-between items-center">
-      <p class="text-xs font-semibold text-gray-200 mb-2">Investment Amount</p>
+      <p class="text-xs font-semibold text-gray-200 mb-2">
+        {{ $t('sgt.investmentAmount') }}
+      </p>
       <p class="text-xs font-semibold text-gray-500 mb-2">
-        Available {{ valueToString }} USDT
+        {{ $t('sgt.available') }}
+        {{ valueToString }}
+        {{ market.quoteToken.symbol }}
       </p>
     </div>
 

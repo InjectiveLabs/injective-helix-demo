@@ -37,6 +37,7 @@
     "@injectivelabs/exceptions": "1.12.0-beta.14",
     "@injectivelabs/networks": "1.12.0-beta.18",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
+<<<<<<< HEAD
     "@injectivelabs/sdk-ts": "1.12.0-beta.76",
     "@injectivelabs/sdk-ui-ts": "1.12.0-beta.83",
     "@injectivelabs/token-metadata": "1.12.0-beta.38",
@@ -58,6 +59,16 @@
     "@injectivelabs/ui-shared": "1.12.1",
     "@injectivelabs/utils": "1.12.0-beta.15",
     "@injectivelabs/wallet-ts": "1.12.0-beta.68",
+=======
+    "@injectivelabs/sdk-ts": "1.12.0-beta.75",
+    "@injectivelabs/sdk-ui-ts": "1.12.0-beta.82",
+    "@injectivelabs/token-metadata": "1.12.0-beta.37",
+    "@injectivelabs/token-utils": "1.12.0-beta.16",
+    "@injectivelabs/ts-types": "1.12.0-beta.2",
+    "@injectivelabs/ui-shared": "1.12.17",
+    "@injectivelabs/utils": "1.12.0-beta.16",
+    "@injectivelabs/wallet-ts": "1.12.0-beta.82",
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@metamask/detect-provider": "2.0.0",
 >>>>>>> 0438c640 (feat: gst initialize apis)
     "@nuxtjs/dotenv": "^1.4.1",

@@ -8,6 +8,7 @@ import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
 import institutional from './institutional/en'
+import sgt from './spot-grid/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -22,6 +23,7 @@ export default {
   ...trade,
   ...leaderboard,
   ...institutional,
+  ...sgt,
   common: {
     ok: 'OK',
     back: 'Back',

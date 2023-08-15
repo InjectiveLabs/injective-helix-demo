@@ -12,18 +12,13 @@ definePageMeta({
 
 const gridStore = useGridStore()
 const spotStore = useSpotStore()
-// const walletStore = useWalletStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>(undefined)
 const fetchStatus = reactive(new Status(StatusType.Loading))
-
-onWalletConnected(() => {
-  filterByCurrentMarket.value = false
-  refreshSubaccountDetails()
-})
 
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
@@ -44,8 +39,6 @@ function refreshSubaccountDetails() {
   if (!market.value) {
     return
   }
-
-  // console.log('fetching strategies and grants')
   fetchStatus.setLoading()
 
   Promise.all([gridStore.fetchStrategies(), gridStore.fetchGrants()])
@@ -55,63 +48,19 @@ function refreshSubaccountDetails() {
     })
 }
 
-// function refreshSubaccountDetails() {
-//   if (!market.value) {
-//     return
-//   }
-
-//   spotStore.cancelSubaccountStream()
-
-//   const fetchOptions = filterByCurrentMarket.value
-//     ? {
-//         filters: {
-//           marketIds: [market.value.marketId]
-//         }
-//       }
-//     : undefined
-//   const marketId = filterByCurrentMarket.value
-//     ? market.value.marketId
-//     : undefined
-
-//   fetchSubaccountOrderDetails(fetchOptions)
-//   streamSubaccountOrderDetails(marketId)
-// }
-
-// function fetchSubaccountOrderDetails(fetchOptions?: ActivityFetchOptions) {
-//   fetchStatus.setLoading()
-
-//   const marketIds = fetchOptions?.filters?.marketIds
-
-//   Promise.all([
-//     spotStore.fetchSubaccountOrders(marketIds),
-//     spotStore.fetchSubaccountOrderHistory(fetchOptions),
-//     spotStore.fetchSubaccountTrades(fetchOptions)
-//   ])
-//     .catch($onError)
-//     .finally(() => fetchStatus.setIdle())
-// }
-
-// function streamSubaccountOrderDetails(marketId?: string) {
-//   Promise.all([
-//     spotStore.streamSubaccountTrades(marketId),
-//     spotStore.streamSubaccountOrders(marketId),
-//     spotStore.streamSubaccountOrderHistory(marketId)
-//   ])
-// }
-
-// watch(
-//   () => walletStore.isUserWalletConnected,
-//   (isConnected: Boolean) => {
-//     if (isConnected) {
-//       // fetchStatus.setLoading()
-//     }
-//   }
-// )
+onWalletConnected(() => {
+  accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+  accountStore.fetchAccountPortfolio()
+  accountStore.streamBankBalance()
+  accountStore.streamSubaccountBalance()
+})
 
 watch(
   () => accountStore.subaccountId,
   () => {
-    refreshSubaccountDetails()
+    if (accountStore.subaccountId !== walletStore.defaultSubaccountId) {
+      accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+    }
   }
 )
 </script>
@@ -123,7 +72,7 @@ watch(
     </template>
 
     <template #orders>
-      <PartialsGridTradingSpotOrders
+      <PartialsGridTradingSpotStrategies
         v-if="market"
         v-model:filterByCurrentMarket="filterByCurrentMarket"
         :market="market"

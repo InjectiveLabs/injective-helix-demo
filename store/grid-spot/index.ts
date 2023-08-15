@@ -16,6 +16,7 @@ import {
 import { addSubacountIdToEthAddress } from '@/app/utils/helpers'
 import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
 import { SpotGridMessages } from '@/types'
+import { backupPromiseCall } from 'app/utils/async'
 
 const messageTypes = [
   SpotGridMessages.MsgWithdraw,
@@ -107,30 +108,6 @@ export const useGridStore = defineStore('grid-spot', {
         return
       }
 
-      // console.log({
-      //   baseDecimals: gridStore.market.baseToken.decimals,
-      //   quoteDecimals: gridStore.market.quoteToken.decimals
-      // })
-
-      // console.log({
-      //   lowerBound: spotPriceToChainPriceToFixed({
-      //     value: lowerBound,
-      //     baseDecimals: gridStore.market.baseToken.decimals,
-      //     quoteDecimals: gridStore.market.quoteToken.decimals
-      //   }),
-      //   upperBound: spotPriceToChainPriceToFixed({
-      //     value: upperBound,
-      //     baseDecimals: gridStore.market.baseToken.decimals,
-      //     quoteDecimals: gridStore.market.quoteToken.decimals
-      //   }),
-      //   levels,
-      //   denom: gridStore.market.quoteDenom,
-      //   amount: spotQuantityToChainQuantityToFixed({
-      //     value: amount,
-      //     baseDecimals: gridStore.market.quoteToken.decimals
-      //   })
-      // })
-
       const message = MsgExecuteContractCompat.fromJSON({
         contractAddress: gridStore.smartContractAddressForGridMarket,
         sender: injectiveAddress,
@@ -150,7 +127,7 @@ export const useGridStore = defineStore('grid-spot', {
           })
         }),
         funds: {
-          denom: gridStore.market.quoteDenom,
+          denom: gridStore.market.quoteToken.denom,
           amount: spotQuantityToChainQuantityToFixed({
             value: amount,
             baseDecimals: gridStore.market.quoteToken.decimals
@@ -158,12 +135,12 @@ export const useGridStore = defineStore('grid-spot', {
         }
       })
 
-      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastWithFeeDelegation({
         address,
         msgs: message
       })
-      // console.log(response)
-      return response
+
+      backupPromiseCall(() => gridStore.fetchStrategies())
     },
 
     async removeStrategy() {
@@ -173,7 +150,6 @@ export const useGridStore = defineStore('grid-spot', {
       if (!injectiveAddress) {
         return
       }
-      // console.log('this ran')
 
       const message = MsgExecuteContractCompat.fromJSON({
         contractAddress: gridStore.smartContractAddressForGridMarket,
@@ -183,14 +159,12 @@ export const useGridStore = defineStore('grid-spot', {
         })
       })
 
-      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastWithFeeDelegation({
         address,
         msgs: message
       })
 
-      // console.log(response)
-
-      return response
+      backupPromiseCall(() => gridStore.fetchStrategies())
     },
 
     async fetchStrategies() {

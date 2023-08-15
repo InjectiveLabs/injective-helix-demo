@@ -13,8 +13,8 @@ const activeStrategies = computed(() =>
 
 <template>
   <div class="overflow-x-auto h-full grid grid-rows-[auto_1fr]">
-    <div class="grid grid-cols-5 uppercase">
-      <div class="font-normal text-xs p-4">Time</div>
+    <div class="grid grid-cols-6 uppercase text-right">
+      <div class="font-normal text-xs p-4 text-left">Time</div>
 
       <div class="font-normal text-xs p-4">Market</div>
 
@@ -23,18 +23,16 @@ const activeStrategies = computed(() =>
       <div class="font-normal text-xs p-4">Duration</div>
 
       <div class="font-normal text-xs p-4">Grid Status</div>
+
+      <div class="font-normal text-xs p-4">PnL</div>
     </div>
 
     <div v-if="walletStore.isUserWalletConnected" class="bg-black rounded-xl">
-      <PartialsGridTradingSpotOrdersRow
+      <PartialsGridTradingSpotStrategiesRow
         v-for="strategy in activeStrategies"
         v-bind="{ strategy }"
         :key="`strategy-${strategy.createdAt}`"
       />
-    </div>
-
-    <div v-else>
-      <h1>Connect Wallet</h1>
     </div>
   </div>
 </template>

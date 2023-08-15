@@ -9,11 +9,7 @@ defineProps({
   }
 })
 const route = useRoute()
-// const gridStore = useGridStore()
-
-// async function handleFetchStrategies() {
-//   await gridStore.fetchStrategies()
-// }
+const walletStore = useWalletStore()
 </script>
 
 <template>
@@ -26,7 +22,7 @@ const route = useRoute()
         }"
         exact-active-class="text-blue-500"
       >
-        Running
+        {{ $t('sgt.running') }}
       </NuxtLink>
 
       <div class="border mx-4" />
@@ -38,12 +34,16 @@ const route = useRoute()
         }"
         exact-active-class="text-blue-500 font-bold"
       >
-        History
+        {{ $t('sgt.history') }}
       </NuxtLink>
     </div>
     <CommonCardTableWrap class="flex-1">
       <CommonCard class="h-full flex-auto">
-        <AppHocLoading v-bind="{ status }">
+        <div v-if="!walletStore.isUserWalletConnected">
+          <CommonUserNotConnectedNote cta />
+        </div>
+
+        <AppHocLoading v-else v-bind="{ status }">
           <NuxtPage />
         </AppHocLoading>
       </CommonCard>

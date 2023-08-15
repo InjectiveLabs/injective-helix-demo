@@ -1725,6 +1725,7 @@
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@injectivelabs/contracts@^1.12.0-beta.18":
   version "1.12.0-beta.18"
   resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.12.0-beta.18.tgz#f8706bbf8b71da60828205f73e0deb56ef7b6581"
@@ -1745,6 +1746,17 @@
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+"@injectivelabs/contracts@^1.12.0-beta.17":
+  version "1.12.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.12.0-beta.17.tgz#3733d175559eaf85aeb744f2d90710adc23b8542"
+  integrity sha512-4ainPUn9VKCpsY5fHT2aUV0fjIKh7qwgHfsVpCPFa2nSKOXFsR0vZCvJ0fD1xoUDEqAaoTQNMVbsCMIGAO2NEw==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/networks" "^1.12.0-beta.17"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     ethers "^5.7.2"
     link-module-alias "^1.2.0"
     shx "^0.3.3"
@@ -1812,6 +1824,17 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
+"@injectivelabs/exceptions@^1.12.0-beta.13":
+  version "1.12.0-beta.13"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.12.0-beta.13.tgz#f92dc38f3cc2c12e638a1ac1b2a6fb4c0b94d08f"
+  integrity sha512-Easw6/3J4UBLC78mUA+/TRJiawL98PRUy9TvyQBDL6JC7GyXSK8GTZegROmCpoqI9i0t1yEZTClAQiWMkNu4cQ==
+  dependencies:
+    "@injectivelabs/grpc-web" "^0.0.1"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    http-status-codes "^2.2.0"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/grpc-web-node-http-transport@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/grpc-web-node-http-transport/-/grpc-web-node-http-transport-0.0.2.tgz#87c9bbd4db1f70cf18d6a55b54b2cf17d3cf30c0"
@@ -1830,16 +1853,22 @@
     browser-headers "^0.4.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
 "@injectivelabs/indexer-proto-ts@1.11.8":
   version "1.11.8"
   resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.11.8.tgz#fb1850d9aaa305eb895a8fa8ea56c11e31d90569"
   integrity sha512-fToWhxF42CBHMw/PXuUZMdkb+Y/MOTTIbCMyhUst+3tTNITLbEdamWZ3vg5+h5fiEfPEqIM4WgFtZCri3NKnHA==
+<<<<<<< HEAD
 =======
 "@injectivelabs/indexer-proto-ts@1.11.6":
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.11.6.tgz#cf5f9ee629230dfbba630a3429d1ea021162b118"
   integrity sha512-ikw1PCqon51goCsEhzvevgKbMgSNYs9iuzi08lIfeF9kh7mZ8o9yQe4ihd+faf0FjdMwRSHw2LGeuKqbLTTyMg==
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     google-protobuf "^3.14.0"
@@ -1864,6 +1893,7 @@
     rxjs "^7.4.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@injectivelabs/networks@1.12.0-beta.18", "@injectivelabs/networks@^1.12.0-beta.18":
   version "1.12.0-beta.18"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.12.0-beta.18.tgz#6567800cf9d49938ac4684d55cf4796ff0675ccb"
@@ -1879,9 +1909,28 @@
   integrity sha512-hp5RO8CsOGkG9XHq3M27djGhUy1GL+pesBw9pfKup2W5ki3A7alAWgJnzfFAVKcHxILkeJf2Hzr0EObL0qDAiA==
   dependencies:
     "@injectivelabs/exceptions" "^1.12.0-beta.11"
+=======
+"@injectivelabs/networks@1.12.0-beta.16":
+  version "1.12.0-beta.16"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-1.12.0-beta.16.tgz#feb5462505620e17087788359c1dc8d36742bcef"
+  integrity sha512-ewlQcU/Gj0KefkHstvzQj/fMQJXGMcxRn5BaBVf1wjbzJ16HO2bcLG99p1HAM0i5K2OBCE2rkovGO4Ux/oky8g==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.12"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
 >>>>>>> 0438c640 (feat: gst initialize apis)
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/networks@^1.12.0-beta.17":
+  version "1.12.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.12.0-beta.17.tgz#8bf3ef00b209dd7837a0620b87089337d1720399"
+  integrity sha512-dw9ZnIM31gtORf1qBHz0NvqpJp2rk1LMRat9O0/Zt7o1uBddYXY8M4Bxggsd8dbqSGTUzbrIntcMh+02T/p4Yg==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -1906,6 +1955,7 @@
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@injectivelabs/sdk-ts@1.12.0-beta.76", "@injectivelabs/sdk-ts@^1.12.0-beta.76":
   version "1.12.0-beta.76"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.12.0-beta.76.tgz#1c26ef4208af31f2f4d7758080438a7ce2f4941b"
@@ -1916,6 +1966,12 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.12.0-beta.65.tgz#dbd089e81e6357eb53ac4a3ea34cd9e5949cbd5a"
   integrity sha512-1jkFXkQMeRUW6oVgEoQabFw9Jh3PCsbU8V1ImbdbKSvkElARWgEK2g0gK8JVedjXBzj4knB7NQL6idn32y1mOQ==
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+"@injectivelabs/sdk-ts@1.12.0-beta.75", "@injectivelabs/sdk-ts@^1.12.0-beta.75":
+  version "1.12.0-beta.75"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.12.0-beta.75.tgz#bdef39135222ea04bdd83e7b584e3b6eb0d3ae01"
+  integrity sha512-p8kwVUmo0Z3LOm5WIQZ15+LLaBFrepuE+0ThpMBGcacKfv0TO+6qQTEJtzfRsG7Ov56HQIPwbr+bfTXVhbUN4A==
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.30.1"
@@ -1925,12 +1981,17 @@
     "@injectivelabs/core-proto-ts" "^0.0.18"
     "@injectivelabs/dmm-proto-ts" "1.0.16"
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@injectivelabs/exceptions" "^1.12.0-beta.14"
+=======
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
     "@injectivelabs/indexer-proto-ts" "1.11.8"
     "@injectivelabs/mito-proto-ts" "1.0.32"
+<<<<<<< HEAD
     "@injectivelabs/networks" "^1.12.0-beta.18"
     "@injectivelabs/test-utils" "^1.12.0-beta.1"
     "@injectivelabs/token-metadata" "^1.12.0-beta.38"
@@ -1949,6 +2010,13 @@
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+    "@injectivelabs/networks" "^1.12.0-beta.17"
+    "@injectivelabs/test-utils" "^1.12.0-beta.1"
+    "@injectivelabs/token-metadata" "^1.12.0-beta.37"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@metamask/eth-sig-util" "^4.0.0"
     axios "^0.27.2"
     bech32 "^2.0.0"
@@ -1969,6 +2037,7 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 "@injectivelabs/sdk-ui-ts@1.12.0-beta.83":
   version "1.12.0-beta.83"
@@ -1998,6 +2067,21 @@
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+"@injectivelabs/sdk-ui-ts@1.12.0-beta.82":
+  version "1.12.0-beta.82"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.12.0-beta.82.tgz#428a41bd01265e4e4979fe2b0363c89cd2ebc1aa"
+  integrity sha512-vub3fx5RFSAr8VZtYtYYWXdX+uf3QNDKC5wYGa13ULFkhxheQDblA7KwW2xPaFaUCvGVGNcpOmfaV2oVolCrxQ==
+  dependencies:
+    "@injectivelabs/contracts" "^1.12.0-beta.17"
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/networks" "^1.12.0-beta.17"
+    "@injectivelabs/sdk-ts" "^1.12.0-beta.75"
+    "@injectivelabs/token-metadata" "^1.12.0-beta.37"
+    "@injectivelabs/token-utils" "^1.12.0-beta.17"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     alchemy-sdk "^2.6.3"
     copyfiles "^2.4.1"
     link-module-alias "^1.2.0"
@@ -2022,6 +2106,7 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 "@injectivelabs/token-metadata@1.12.0-beta.38", "@injectivelabs/token-metadata@^1.12.0-beta.38":
   version "1.12.0-beta.38"
@@ -2057,6 +2142,17 @@
     "@injectivelabs/networks" "^1.12.0-beta.15"
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
+=======
+"@injectivelabs/token-metadata@1.12.0-beta.37", "@injectivelabs/token-metadata@^1.12.0-beta.37":
+  version "1.12.0-beta.37"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.12.0-beta.37.tgz#cfddea2e2b793b894a0ccd511e1e44297c426e84"
+  integrity sha512-v9Yh17XNdFfckhA9ZyYwb8KXbMekFZYmD3NLEgTnsIwPhULwq9U6IXxZofXGCSTY6u0MyzjKmI0IwWgG+uld4g==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/networks" "^1.12.0-beta.17"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
     jsonschema "^1.4.0"
@@ -2065,10 +2161,17 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
+<<<<<<< HEAD
 "@injectivelabs/token-utils@1.12.0-beta.15", "@injectivelabs/token-utils@^1.12.0-beta.15":
   version "1.12.0-beta.15"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.12.0-beta.15.tgz#90cb90d160adf06610d19900c7a06a4808bb98aa"
   integrity sha512-v6BybTQy/l2DUkWXPsRkTesvgrmmfOAzSnyyietu+5Z0kmc+MeK1yqa2oEVS/jZTt0QsS9PLciwIepE73zp1aQ==
+=======
+"@injectivelabs/token-utils@1.12.0-beta.16":
+  version "1.12.0-beta.16"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-utils/-/token-utils-1.12.0-beta.16.tgz#114a7f882e720ab1e67b540c1341f44faf20b677"
+  integrity sha512-FL5tKZM+RMBcTcxoxA5+HAsz5y3HSWvuRt1kG2+jJxa8PSVGxKGjUM2+MvsIHCf/gAeHSEw5SyhXpESsK+BqyQ==
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
   dependencies:
     "@injectivelabs/exceptions" "^1.12.0-beta.11"
     "@injectivelabs/utils" "^1.12.0-beta.15"
@@ -2076,10 +2179,27 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
+<<<<<<< HEAD
 "@injectivelabs/ts-types@1.12.0-beta.3", "@injectivelabs/ts-types@^1.12.0-beta.3":
   version "1.12.0-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.12.0-beta.3.tgz#cfaecad99c6da01b1cfdea1b4774c8cd7ea75be0"
   integrity sha512-ODxeLBxXujGij+wHtI/wMKzJFmNKEz/sAPSfe3eLYipTG2sCYLcYWBXfYoIiMMTFTPVT83/SETLHTWoTUUSOjA==
+=======
+"@injectivelabs/token-utils@^1.12.0-beta.17":
+  version "1.12.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.12.0-beta.17.tgz#6108352d9b180daf7610b552bfe7d3b1f31954c4"
+  integrity sha512-Y545yLv5OQBoNM2OIeUlcSjduUBpeGiKPl+p3N/UWP9sfVWreyqACCbLvxXIRBaHX3LGxmDrG6zfE82COBlx+Q==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/ts-types@1.12.0-beta.2", "@injectivelabs/ts-types@^1.12.0-beta.2":
+  version "1.12.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.12.0-beta.2.tgz#47ec71be88bfca19602f9bb2bc6276942ac12e50"
+  integrity sha512-PEkveSTe9M3bDYSu2SeJ0eOQ6uUU2AaGtSm44eGWmr4/BJmGTM/MUEpI1TzfXOksA8d/7Rozind8NXvRxm/z3A==
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"
@@ -2120,6 +2240,7 @@
     store2 "^2.12.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@injectivelabs/wallet-ts@1.12.0-beta.83":
   version "1.12.0-beta.83"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.12.0-beta.83.tgz#dcacacbc958b22627f53f397a21f0ebb76879e07"
@@ -2130,6 +2251,27 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.12.0-beta.68.tgz#5bec8f8e8a97fcc0fc1adff485770ce40afc3f86"
   integrity sha512-F8Sy4NmZ6f5bt3XMjMEWOct91Elo2otzmlLicVX6Coe10DOzzpLo290c4dk6Yoo5pgiMLJVKYBKHAyyBn75D8g==
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+"@injectivelabs/utils@^1.12.0-beta.17":
+  version "1.12.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.12.0-beta.17.tgz#d1c93bbe62af5c67d490f014b08aea4db0210ca1"
+  integrity sha512-0wiasDLhd7djGJGLViYW8Vrpx3xjwj37mmupKQ+GEIgHXA1LiKVAK55ODpETD2uXDpjkY02knQNkktdvoKJt8w==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    axios "^0.21.1"
+    bignumber.js "^9.0.1"
+    http-status-codes "^2.2.0"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+    snakecase-keys "^5.1.2"
+    store2 "^2.12.0"
+
+"@injectivelabs/wallet-ts@1.12.0-beta.82":
+  version "1.12.0-beta.82"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.12.0-beta.82.tgz#d99b79ed49678a6d7637054070373bb897291951"
+  integrity sha512-QSQIAF78TauIrz1Ks3yr2BKPlEXthu7It4/jlT6932GULNXcBzFDPy/DVyhjBTRPq+06kIubHIdax5yBo0Ui2w==
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.30.1"
@@ -2137,6 +2279,7 @@
     "@cosmostation/extension-client" "^0.1.15"
     "@ethereumjs/common" "^3.1.1"
     "@ethereumjs/tx" "^4.1.1"
+<<<<<<< HEAD
 <<<<<<< HEAD
     "@injectivelabs/exceptions" "^1.12.0-beta.14"
     "@injectivelabs/networks" "^1.12.0-beta.18"
@@ -2150,6 +2293,13 @@
     "@injectivelabs/ts-types" "^1.12.0-beta.2"
     "@injectivelabs/utils" "^1.12.0-beta.15"
 >>>>>>> 0438c640 (feat: gst initialize apis)
+=======
+    "@injectivelabs/exceptions" "^1.12.0-beta.13"
+    "@injectivelabs/networks" "^1.12.0-beta.17"
+    "@injectivelabs/sdk-ts" "^1.12.0-beta.75"
+    "@injectivelabs/ts-types" "^1.12.0-beta.2"
+    "@injectivelabs/utils" "^1.12.0-beta.17"
+>>>>>>> 4fa04577 (feat: i18n and clean-up)
     "@keplr-wallet/cosmos" "^0.11.58"
     "@keplr-wallet/types" "^0.11.58"
     "@ledgerhq/hw-app-eth" "6.33.2"

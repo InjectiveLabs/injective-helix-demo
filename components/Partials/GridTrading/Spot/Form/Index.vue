@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { Modal, SpotGridTradingForm } from '@/types'
-// import { SpotGridTradingForm } from '@/types'
+import { SpotGridTradingForm } from '@/types'
 
 defineProps({
   market: {
@@ -10,37 +9,15 @@ defineProps({
     required: true
   }
 })
-
-const gridStore = useGridStore()
-const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-const { validate } = useForm<SpotGridTradingForm>()
-
-async function handleCreateStrategy() {
-  const { valid } = await validate()
-  if (!valid) {
-    return
-  }
-
-  if (gridStore.isAuthorized) {
-    modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
-  } else {
-    modalStore.openModal({ type: Modal.CheckSpotGridAuth })
-  }
-}
+useForm<SpotGridTradingForm>()
 </script>
 
 <template>
   <div class="min-w-0">
-    <div
-      v-if="!walletStore.isUserWalletConnected && !walletStore.injectiveAddress"
-    >
-      Connect
-    </div>
-
-    <div v-else>
-      <div class="space-y-2">
+    <div>
+      <div class="space-y-4">
         <PartialsGridTradingSpotFormLowerUpperPrice />
 
         <PartialsGridTradingSpotFormGrids />
@@ -49,12 +26,19 @@ async function handleCreateStrategy() {
 
         <PartialsGridTradingSpotFormInvestmentAmount v-bind="{ market }" />
 
-        <PartialsGridTradingSpotFormCreate
-          @handle-create="handleCreateStrategy"
-        />
+        <div
+          v-if="
+            !walletStore.isUserWalletConnected && !walletStore.injectiveAddress
+          "
+        >
+          <CommonUserNotConnectedNote cta />
+        </div>
 
-        <button @click="gridStore.removeStrategy">cancel strategy</button>
-        <button @click="gridStore.fetchStrategies">fetch strategy</button>
+        <template v-else>
+          <PartialsGridTradingSpotFormErrors />
+
+          <PartialsGridTradingSpotFormCreate />
+        </template>
 
         <ModalsCheckSpotGridAuth />
         <ModalsCreateGridSpotStrategy />

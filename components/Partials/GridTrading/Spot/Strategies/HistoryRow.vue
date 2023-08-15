@@ -44,11 +44,11 @@ const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'HH:mm:ss dd/LL/yyyy')
 )
 
-const pnl = computed(() => `2`)
+const pnl = computed(() => `-`)
 </script>
 <template>
   <div
-    class="grid grid-cols-6 items-center text-right text-xs hover:bg-gray-700 p-4"
+    class="grid grid-cols-6 items-center text-right text-xs hover:bg-gray-700 p-4 even:bg-gray-950"
   >
     <div class="flex space-x-2 items-center">
       <div class="text-left">

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-// import { Status, StatusType } from '@injectivelabs/utils'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SpotGridTradingForm } from '@/types'
 
 const gridStore = useGridStore()
 const modalStore = useModalStore()
-// const { $onError } = useNuxtApp()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { success } = useNotifications()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
-const aggreedToTerms = ref(false)
+const status = reactive(new Status(StatusType.Idle))
+const isAggreedToTerms = ref(false)
 
 const profitPerGrid = computed(() =>
   new BigNumberInBase(formValues.value.upperPrice || 0)
@@ -18,11 +19,15 @@ const profitPerGrid = computed(() =>
     .toFixed(2)
 )
 
+const symbol = computed(() => gridStore.market?.quoteToken.symbol)
+
 function closeModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
 }
 
 function handleCreateStrategy() {
+  status.setLoading()
+
   gridStore
     .createStrategy({
       amount: formValues.value.investmentAmount!,
@@ -32,15 +37,14 @@ function handleCreateStrategy() {
     })
     .then(() => {
       success({
-        title: 'Success',
-        description: 'Grid Strategy Created Succesfully'
+        title: t('sgt.success'),
+        description: t('sgt.gridStrategyCreatedSuccesfully')
       })
     })
-    .catch((_e) => {
-      // console.dir(e)
-    })
+    .catch($onError)
     .finally(() => {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
+      status.setIdle()
     })
 }
 </script>
@@ -51,66 +55,71 @@ function handleCreateStrategy() {
   >
     <template #title>
       <p class="[text-transform:none] text-lg font-bold p-2">
-        Grid Order Confirmation
+        {{ $t('sgt.gridOrderConfirmation') }}
       </p>
     </template>
 
     <div class="max-w-sm">
       <p>
-        Please read the below information carefully before you confirm to
-        proceed.
+        {{
+          $t(
+            'sgt.pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed'
+          )
+        }}
       </p>
 
       <div class="mt-6 space-y-1">
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Trade Amount</p>
-          <p class="font-semibold">{{ formValues.investmentAmount }} USDT</p>
+          <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
+          <p class="font-semibold">
+            {{ formValues.investmentAmount }} {{ symbol }}
+          </p>
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Market</p>
+          <p class="text-gray-500">{{ $t('sgt.market') }}</p>
           <p class="font-semibold">{{ gridStore.market?.ticker }}</p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Grid Mode</p>
-          <p class="font-semibold">Arithmetic</p>
+          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
+          <p class="font-semibold">{{ $t('sgt.arithmetic') }}</p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Price Range</p>
+          <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
-            {{ formValues.lowerPrice }} - {{ formValues.upperPrice }} USDT
+            {{ formValues.lowerPrice }} - {{ formValues.upperPrice }}
+            {{ symbol }}
           </p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Grid Number</p>
+          <p class="text-gray-500">{{ $t('sgt.gridNumber') }}</p>
           <p class="font-semibold">{{ formValues.grids }}</p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">Profit/Grid</p>
-          <p class="font-semibold">{{ profitPerGrid }} USDT</p>
+          <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
+          <p class="font-semibold">{{ profitPerGrid }} {{ symbol }}</p>
         </div>
       </div>
 
       <div class="flex my-6">
         <div class="mt-1 mx-2">
-          <AppCheckbox v-model="aggreedToTerms" />
+          <AppCheckbox v-model="isAggreedToTerms" />
         </div>
         <div>
           <p>
-            I have read and agreed to the Risk Disclaimer and understand that
-            the parameter selection and investment decision will in all cases be
-            made solely by the client.
+            {{ $t('sgt.termsAndConditions') }}
           </p>
         </div>
       </div>
 
       <div>
         <AppButton
-          :disabled="!aggreedToTerms"
+          v-bind="{ status }"
+          :disabled="!isAggreedToTerms"
           class="bg-blue-500 disabled:bg-gray-500 w-full"
           @click="handleCreateStrategy"
         >
-          Confirm
+          {{ $t('sgt.confirm') }}
         </AppButton>
       </div>
     </div>

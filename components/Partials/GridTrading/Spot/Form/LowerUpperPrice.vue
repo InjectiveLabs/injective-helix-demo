@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { SpotGridTradingField } from '@/types'
 
+const gridStore = useGridStore()
+
 const { value: lowerPriceValue } = useStringField({
   name: SpotGridTradingField.LowerPrice,
   rule: 'required',
@@ -19,22 +21,30 @@ const { value: upperPriceValue } = useStringField({
     <div>
       <AppInputNumeric v-model="lowerPriceValue">
         <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">Lower Price</p>
+          <p class="text-xs font-semibold text-gray-200 mb-2">
+            {{ $t('sgt.lowerPrice') }}
+          </p>
         </template>
 
         <template #addon>
-          <span>USDT</span>
+          <span v-if="gridStore.market">
+            {{ gridStore.market.quoteToken.symbol }}
+          </span>
         </template>
       </AppInputNumeric>
     </div>
     <div>
       <AppInputNumeric v-model="upperPriceValue">
         <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">Upper Price</p>
+          <p class="text-xs font-semibold text-gray-200 mb-2">
+            {{ $t('sgt.upperPrice') }}
+          </p>
         </template>
 
         <template #addon>
-          <span>USDT</span>
+          <span v-if="gridStore.market">
+            {{ gridStore.market.quoteToken.symbol }}
+          </span>
         </template>
       </AppInputNumeric>
     </div>
