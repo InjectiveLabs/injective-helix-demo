@@ -43,7 +43,7 @@ const walletStore = useWalletStore()
           <CommonUserNotConnectedNote cta />
         </div>
 
-        <AppHocLoading v-else v-bind="{ status }">
+        <AppHocLoading v-else v-bind="{ status }" class="h-full">
           <NuxtPage />
         </AppHocLoading>
       </CommonCard>

@@ -4,6 +4,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { SpotGridTradingForm } from '@/types'
 
 const gridStore = useGridStore()
+const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 
 const profitPerGrid = computed(() => {
@@ -11,14 +12,23 @@ const profitPerGrid = computed(() => {
     !formValues.value.lowerPrice ||
     !formValues.value.upperPrice ||
     !formValues.value.grids ||
+    !formValues.value.investmentAmount ||
+    !gridStore.market ||
     Number(formValues.value.grids) === 0
   ) {
     return ZERO_IN_BASE
   }
 
+  // We get wrong values in testnet
+  const quotePriceInUsd = new BigNumberInBase(
+    tokenStore.tokenUsdPriceMap[gridStore.market?.baseToken.coinGeckoId]
+  )
+
   return new BigNumberInBase(
     Number(formValues.value.upperPrice) - Number(formValues.value.lowerPrice)
-  ).dividedBy(formValues.value.grids)
+  )
+    .dividedBy(formValues.value.grids)
+    .dividedBy(quotePriceInUsd.dividedBy(formValues.value.investmentAmount))
 })
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

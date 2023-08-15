@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm } from '@/types'
 
 const gridStore = useGridStore()
 const modalStore = useModalStore()
+const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -12,14 +14,36 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 const isAggreedToTerms = ref(false)
 
-const profitPerGrid = computed(() =>
-  new BigNumberInBase(formValues.value.upperPrice || 0)
-    .minus(formValues.value.lowerPrice || 0)
-    .dividedBy(formValues.value.grids || 1)
-    .toFixed(2)
-)
+const profitPerGrid = computed(() => {
+  if (
+    !formValues.value.lowerPrice ||
+    !formValues.value.upperPrice ||
+    !formValues.value.grids ||
+    !formValues.value.investmentAmount ||
+    !gridStore.market ||
+    Number(formValues.value.grids) === 0
+  ) {
+    return ZERO_IN_BASE
+  }
+
+  // We get wrong values in testnet
+  const quotePriceInUsd = new BigNumberInBase(
+    tokenStore.tokenUsdPriceMap[gridStore.market?.baseToken.coinGeckoId]
+  )
+
+  return new BigNumberInBase(
+    Number(formValues.value.upperPrice) - Number(formValues.value.lowerPrice)
+  )
+    .dividedBy(formValues.value.grids)
+    .dividedBy(quotePriceInUsd.dividedBy(formValues.value.investmentAmount))
+})
 
 const symbol = computed(() => gridStore.market?.quoteToken.symbol)
+
+const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+  profitPerGrid,
+  { decimals: 2 }
+)
 
 function closeModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
@@ -97,7 +121,7 @@ function handleCreateStrategy() {
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
-          <p class="font-semibold">{{ profitPerGrid }} {{ symbol }}</p>
+          <p class="font-semibold">{{ profitPerGridToString }} {{ symbol }}</p>
         </div>
       </div>
 
