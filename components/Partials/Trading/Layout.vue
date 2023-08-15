@@ -116,7 +116,7 @@ function getMarketBySlugOrMarketId() {
   )
 }
 
-function close() {
+function closeMarketList() {
   showMarketList.value = false
 }
 
@@ -224,7 +224,7 @@ watch(
           v-show="showMarketList"
           key="market-selection"
           :market="market"
-          @close="close"
+          @close="closeMarketList"
         />
       </div>
 
