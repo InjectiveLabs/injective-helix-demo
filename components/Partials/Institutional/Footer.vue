@@ -21,13 +21,10 @@ const socialLinks = [
 
         <div class="flex flex-col sm:flex-row items-center gap-8">
           <div class="space-x-4">
-            <a
-              href="https://injectivelabs.org/terms-and-conditions"
-              target="_blank"
-            >
-              {{ $t('institutional.termsAndConditions') }}
-            </a>
-            <a href="https://injectivelabs.org/privacy-policy" target="_blank">
+            <NuxtLink target="_blank" :to="{ name: 'terms' }">
+              {{ $t('terms.termsAndCondition') }}
+            </NuxtLink>
+            <a href="https://injectivelabs.org/privacy" target="_blank">
               {{ $t('institutional.privacyPolicy') }}
             </a>
           </div>

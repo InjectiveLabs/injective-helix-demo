@@ -12,11 +12,11 @@ const aboutUsList = [
   },
   {
     text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy-policy'
+    link: 'https://injectivelabs.org/privacy'
   },
   {
     text: t('footer.termsAndConditions'),
-    link: 'https://injectivelabs.org/terms-and-conditions'
+    link: 'terms'
   }
 ]
 

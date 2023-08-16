@@ -5,6 +5,7 @@ import { TokenType } from '@injectivelabs/token-metadata'
 import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 import { getDenomAndTypeFromQuery } from '@/app/data/bridge'
+import { denomClient } from 'app/Services'
 
 definePageMeta({
   middleware: ['connected']
@@ -84,6 +85,12 @@ function handlePreFillFromQuery() {
     default:
       formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
       formValues[BridgeField.Denom] = denom
+  }
+
+  const token = denomClient.getDenomTokenStatic(denom)
+
+  if (token) {
+    formValues[BridgeField.Token] = token
   }
 }
 
