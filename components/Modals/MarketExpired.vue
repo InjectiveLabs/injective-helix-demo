@@ -17,15 +17,23 @@ const isModalOpen = computed(
   () => modalStore.modals[Modal.MarketExpired] && props.market
 )
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.MarketExpired)
-
   router.push({ name: 'markets' })
+}
+
+function onModalClose() {
+  closeModal()
 }
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm hide-close-button @modal:closed="close">
+  <AppModal
+    :show="isModalOpen"
+    sm
+    hide-close-button
+    @modal:closed="onModalClose"
+  >
     <template #title>
       <h3 class="text-base">
         {{ $t('marketExpired.title') }}

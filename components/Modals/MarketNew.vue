@@ -15,15 +15,18 @@ const bridgeUrl = computed(
 )
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketNew])
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.MarketNew)
-
   router.push({ name: 'index' })
+}
+
+function onModalClose() {
+  closeModal()
 }
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="close">
+  <AppModal :show="isModalOpen" sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketNew.title') }}

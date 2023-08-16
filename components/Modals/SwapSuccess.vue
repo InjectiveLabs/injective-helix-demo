@@ -30,8 +30,12 @@ const explorerUrl = computed(() => {
   return `${getExplorerUrl(NETWORK)}/transaction/${props.txHash}`
 })
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.SwapSuccess)
+}
+
+function onModalClose() {
+  closeModal()
 }
 
 watch(showModal, (showModalState: boolean) => {
@@ -55,7 +59,7 @@ watch(showModal, (showModalState: boolean) => {
 </script>
 
 <template>
-  <AppModal :show="showModal" sm @modal:closed="close">
+  <AppModal :show="showModal" sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative">
         <AppCustomConfetti
@@ -97,7 +101,7 @@ watch(showModal, (showModalState: boolean) => {
         <AppButton
           class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
           md
-          @click="close"
+          @click="closeModal"
         >
           {{ $t('trade.swap.backToSwap') }}
         </AppButton>
