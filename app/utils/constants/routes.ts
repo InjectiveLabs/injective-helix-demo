@@ -39,7 +39,8 @@ export const getRoutes = (network: Network, env: string) => {
     'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
-    'atom-usdt-perp'
+    'atom-usdt-perp',
+    'sei-usdt-perp'
   ]
 
   if (IS_TESTNET) {
@@ -54,8 +55,7 @@ export const getRoutes = (network: Network, env: string) => {
       'eur-usdt-perp',
       'sol-usdt-perp',
       'btc-usdt-perp-pyth',
-      'arb-usdt-perp',
-      'sei-usdt-perp'
+      'arb-usdt-perp'
     )
   }
 
