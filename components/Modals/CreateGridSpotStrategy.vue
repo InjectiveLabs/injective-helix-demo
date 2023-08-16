@@ -3,7 +3,7 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm } from '@/types'
 
-const gridStore = useGridStore()
+const gridStrategyStore = useGridStrategyStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()
@@ -12,7 +12,7 @@ const { $onError } = useNuxtApp()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
-const isAggreedToTerms = ref(false)
+const hasAgreedToTerms = ref(false)
 
 const profitPerGrid = computed(() => {
   if (
@@ -20,7 +20,7 @@ const profitPerGrid = computed(() => {
     !formValues.value.upperPrice ||
     !formValues.value.grids ||
     !formValues.value.investmentAmount ||
-    !gridStore.market ||
+    !gridStrategyStore.spotMarket ||
     Number(formValues.value.grids) === 0
   ) {
     return ZERO_IN_BASE
@@ -28,7 +28,9 @@ const profitPerGrid = computed(() => {
 
   // We get wrong values in testnet
   const quotePriceInUsd = new BigNumberInBase(
-    tokenStore.tokenUsdPriceMap[gridStore.market?.baseToken.coinGeckoId]
+    tokenStore.tokenUsdPriceMap[
+      gridStrategyStore.spotMarket.baseToken.coinGeckoId
+    ]
   )
 
   return new BigNumberInBase(
@@ -38,11 +40,11 @@ const profitPerGrid = computed(() => {
     .dividedBy(quotePriceInUsd.dividedBy(formValues.value.investmentAmount))
 })
 
-const symbol = computed(() => gridStore.market?.quoteToken.symbol)
+const symbol = computed(() => gridStrategyStore.spotMarket?.quoteToken.symbol)
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   profitPerGrid,
-  { decimals: 2 }
+  { decimalPlaces: 2 }
 )
 
 function closeModal() {
@@ -52,7 +54,7 @@ function closeModal() {
 function handleCreateStrategy() {
   status.setLoading()
 
-  gridStore
+  gridStrategyStore
     .createStrategy({
       amount: formValues.value.investmentAmount!,
       levels: Number(formValues.value.grids!),
@@ -62,7 +64,7 @@ function handleCreateStrategy() {
     .then(() => {
       success({
         title: t('sgt.success'),
-        description: t('sgt.gridStrategyCreatedSuccesfully')
+        description: t('sgt.gridStrategyCreatedSuccessfully')
       })
     })
     .catch($onError)
@@ -102,7 +104,9 @@ function handleCreateStrategy() {
 
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.market') }}</p>
-          <p class="font-semibold">{{ gridStore.market?.ticker }}</p>
+          <p class="font-semibold">
+            {{ gridStrategyStore.spotMarket?.ticker }}
+          </p>
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
@@ -127,7 +131,7 @@ function handleCreateStrategy() {
 
       <div class="flex my-6">
         <div class="mt-1 mx-2">
-          <AppCheckbox v-model="isAggreedToTerms" />
+          <AppCheckbox v-model="hasAgreedToTerms" />
         </div>
         <div>
           <p>
@@ -139,7 +143,7 @@ function handleCreateStrategy() {
       <div>
         <AppButton
           v-bind="{ status }"
-          :disabled="!isAggreedToTerms"
+          :disabled="!hasAgreedToTerms"
           class="bg-blue-500 disabled:bg-gray-500 w-full"
           @click="handleCreateStrategy"
         >

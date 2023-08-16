@@ -14,15 +14,15 @@ const props = defineProps({
 
 const { accountBalancesWithToken } = useBalance()
 
-const quoteDenombalance = computed(() =>
+const quoteDenomBalance = computed(() =>
   accountBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
 
 const quoteDenomAmount = computed(() =>
-  new BigNumberInWei(quoteDenombalance.value?.bankBalance || 0).toBase(
-    quoteDenombalance.value?.token.decimals
+  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
+    quoteDenomBalance.value?.token.decimals
   )
 )
 
@@ -34,8 +34,8 @@ const { value: investmentAmountValue } = useStringField({
   name: SpotGridTradingField.InvestmentAmount,
   dynamicRule: computed(
     () =>
-      `between:${new BigNumber(1).exponentiatedBy(
-        -(quoteDenombalance.value?.token?.decimals || 6)
+      `between:${new BigNumber(1).pow(
+        -(quoteDenomBalance.value?.token?.decimals || 6)
       )},${quoteDenomAmount.value.toFixed()}`
   )
 })

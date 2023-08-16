@@ -1,83 +1,61 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  // ActivityFetchOptions
-  UiMarketWithToken
-} from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 definePageMeta({
-  middleware: ['markets']
+  middleware: ['markets', 'grid-strategy']
 })
 
-const gridStore = useGridStore()
+const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
-const market = ref<UiSpotMarketWithToken | undefined>(undefined)
-const fetchStatus = reactive(new Status(StatusType.Loading))
+const status = reactive(new Status(StatusType.Loading))
+
+const market = computed(() => gridStrategyStore.spotMarket)
 
 function onLoad(pageMarket: UiMarketWithToken) {
-  filterByCurrentMarket.value = false
-
   Promise.all([
     spotStore.streamTrades(pageMarket.marketId),
     spotStore.streamOrderbookUpdate(pageMarket.marketId)
   ]).catch($onError)
 
-  market.value = pageMarket as UiSpotMarketWithToken
+  gridStrategyStore.$patch({
+    spotMarket: pageMarket as UiSpotMarketWithToken
+  })
 
-  gridStore.$patch({ marketSlug: pageMarket.slug })
-
-  refreshSubaccountDetails()
-}
-
-function refreshSubaccountDetails() {
-  if (!market.value) {
-    return
-  }
-  fetchStatus.setLoading()
-
-  Promise.all([gridStore.fetchStrategies(), gridStore.fetchGrants()])
+  Promise.all([authZStore.fetchGrants(), gridStrategyStore.fetchStrategies()])
     .catch($onError)
     .finally(() => {
-      fetchStatus.setIdle()
+      status.setIdle()
     })
 }
 
 onWalletConnected(() => {
-  accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
-  accountStore.fetchAccountPortfolio()
   accountStore.streamBankBalance()
   accountStore.streamSubaccountBalance()
 })
-
-watch(
-  () => accountStore.subaccountId,
-  () => {
-    if (accountStore.subaccountId !== walletStore.defaultSubaccountId) {
-      accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
-    }
-  }
-)
 </script>
 
 <template>
-  <PartialsGridTradingLayout is-spot is-grid @loaded="onLoad">
+  <PartialsTradingLayout is-spot is-grid @loaded="onLoad">
     <template #trading-form>
-      <PartialsGridTradingSpotForm v-if="market" :market="market" />
+      <PartialsGridStrategySpotForm v-if="market" :market="market" />
     </template>
 
     <template #orders>
-      <PartialsGridTradingSpotStrategies
+      <PartialsGridStrategySpotStrategies
         v-if="market"
         v-model:filterByCurrentMarket="filterByCurrentMarket"
-        :market="market"
-        :status="fetchStatus"
+        v-bind="{
+          market,
+          status
+        }"
       />
     </template>
-  </PartialsGridTradingLayout>
+  </PartialsTradingLayout>
 </template>

@@ -31,12 +31,15 @@ const props = defineProps({
 })
 
 const marketRoute = props.isGrid
-  ? { to: 'spot-grid-trading-bots', params: { market: props.market.slug } }
+  ? {
+      to: 'trading-bots-grid-spot-market',
+      params: { market: props.market.slug }
+    }
   : getMarketRoute(props.market) || { name: 'markets' }
 
-const isFavorite = computed(() => {
-  return appStore.favoriteMarkets.includes(props.market.marketId)
-})
+const isFavorite = computed(() =>
+  appStore.favoriteMarkets.includes(props.market.marketId)
+)
 
 const formatterOptions = computed(() => {
   return stableCoinDenoms.includes(props.market.quoteToken.symbol)

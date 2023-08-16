@@ -122,7 +122,7 @@ function handlePerpetualTradeClickedTrack() {
 
           <BaseNuxtLink
             :to="{
-              name: 'spot-grid-trading-bots-market',
+              name: 'trading-bots-grid-spot-market',
               params: { market: 'inj-usdt' }
             }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"

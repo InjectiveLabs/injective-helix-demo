@@ -8,10 +8,10 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 import {
-  addSubacountIdToEthAddress,
-  getSubaccountIndex
+  getMarketIdFromSubaccountId,
+  getSubaccountIndex,
+  isSgtSubaccountId
 } from '@/app/utils/helpers'
-import { spotGridMarketsWithSubaccount } from 'app/utils/constants/grid-spot-trading'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -27,7 +27,6 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 
@@ -52,23 +51,15 @@ const shouldAbbreviateTotalBalance = computed(() =>
 )
 
 const subaccountFormatted = computed(() => {
-  const isSpotGridSubaccount = spotGridMarketsWithSubaccount.find(
-    (spotGrid) =>
-      addSubacountIdToEthAddress(walletStore.address, spotGrid.subaccountId) ===
-      props.subaccountId
-  )
-
-  let display
-
   if (getSubaccountIndex(props.subaccountId) === 0) {
-    display = `${t('account.main')}`
-  } else if (isSpotGridSubaccount) {
-    display = `SGT ${isSpotGridSubaccount.slug}`
-  } else {
-    display = getSubaccountIndex(props.subaccountId).toString()
+    return `${t('account.main')}`
   }
 
-  return display
+  if (isSgtSubaccountId(props.subaccountId)) {
+    return `SGT ${getMarketIdFromSubaccountId(props.subaccountId)}`
+  }
+
+  return getSubaccountIndex(props.subaccountId).toString()
 })
 
 const { valueToString: abbreviatedTotalBalanceToString } =

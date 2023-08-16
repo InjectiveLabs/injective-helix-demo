@@ -3,7 +3,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultGridSpotMarketRouteParams
 } from '@/app/utils/market'
 import {
   Modal,
@@ -11,6 +12,7 @@ import {
   UiMarketWithToken,
   UiMarketSummary
 } from '@/types'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,6 +27,7 @@ const { $onError } = useNuxtApp()
 
 const props = defineProps({
   isSpot: Boolean,
+  isGrid: Boolean,
 
   hardcodedSlug: {
     type: String,
@@ -81,6 +84,16 @@ function init() {
     .then(() => {
       if (betaMarketSlugs.includes(slug)) {
         modalStore.openModal({ type: Modal.MarketBeta })
+      }
+
+      if (props.isGrid && props.isSpot) {
+        const gridMarket = spotGridMarkets.find(
+          (market) => market.slug.toLowerCase() === slug.toLowerCase()
+        )
+
+        if (!gridMarket) {
+          router.push(getDefaultGridSpotMarketRouteParams())
+        }
       }
 
       const marketBySlugOrMarketId = getMarketBySlugOrMarketId()
@@ -140,6 +153,7 @@ watch(
       <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats
           v-bind="{
+            isGrid,
             summary,
             market: market,
             expanded: showMarketList
@@ -157,7 +171,7 @@ watch(
             key="market-trading-panel"
             class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
           >
-            <CommonCard no-padding>
+            <CommonCard v-if="!isGrid" no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
 
@@ -203,7 +217,7 @@ watch(
 
               <div class="w-full lg:hidden mt-2">
                 <slot name="trading-panel" />
-                <PartialsTradingBalances :market="market" />
+                <PartialsTradingBalances v-if="!isGrid" :market="market" />
                 <CommonCard class="mt-1">
                   <div class="px-6 pt-2">
                     <slot name="trading-form" />
@@ -223,13 +237,16 @@ watch(
         <PartialsTradingSidebar
           v-show="showMarketList"
           key="market-selection"
-          :market="market"
+          v-bind="{
+            isGrid,
+            market
+          }"
           @close="closeMarketList"
         />
       </div>
 
       <slot name="modals" />
-      <ModalsMarketBeta v-if="marketIsBeta" />
+      <ModalsMarketBeta v-if="marketIsBeta && !isGrid" />
     </div>
   </AppHocLoading>
 </template>

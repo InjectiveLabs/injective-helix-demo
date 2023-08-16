@@ -29,7 +29,7 @@ export default {
       'Let Helix sends you request for transactions',
     pleaseConfirmOnYourWallet: 'Please confirm on your wallet...',
     createYourGridTradingStrategy: 'Create your grid trading strategy',
-    gridStrategyCreatedSuccesfully: 'Grid Strategy Created Succesfully!',
+    gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridOrderConfirmation: 'Grid Order Confirmation',
     pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed:
       'Please read the below information carefully before you confirm to proceed.',

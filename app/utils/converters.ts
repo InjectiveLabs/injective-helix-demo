@@ -10,10 +10,6 @@ export function stringToHex(str: string) {
   return hex
 }
 
-// const inputString = 'Hello, World!'
-// const encodedString = stringToHex(inputString)
-// console.log(encodedString)
-
 export function hexToString(hex: string) {
   let str = ''
 
@@ -26,7 +22,3 @@ export function hexToString(hex: string) {
 
   return decodeURIComponent(str)
 }
-
-// const encodedString = '48656c6c6f2c20576f726c6421'
-// const decodedString = hexToString(encodedString)
-// console.log(decodedString)

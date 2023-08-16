@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const gridStore = useGridStore()
+const gridStrategyStore = useGridStrategyStore()
 
 const activeStrategies = computed(() =>
-  gridStore.strategies.filter(
+  gridStrategyStore.strategies.filter(
     (strategy) =>
       strategy.state === 'active' &&
-      strategy.marketId === gridStore.market?.marketId
+      strategy.marketId === gridStrategyStore.spotMarket?.marketId
   )
 )
 </script>
@@ -27,7 +27,7 @@ const activeStrategies = computed(() =>
     </div>
 
     <div class="bg-black rounded-xl overflow-hidden h-full">
-      <PartialsGridTradingSpotStrategiesHistoryRow
+      <PartialsGridStrategySpotStrategiesHistoryRow
         v-for="strategy in activeStrategies"
         v-bind="{ strategy }"
         :key="`strategy-removed-${strategy.createdAt}`"

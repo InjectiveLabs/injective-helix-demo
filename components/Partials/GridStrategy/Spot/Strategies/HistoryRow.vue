@@ -5,6 +5,8 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
 
+const gridStrategyStore = useGridStrategyStore()
+
 const props = defineProps({
   strategy: {
     type: Object as PropType<TradingStrategy>,
@@ -12,31 +14,31 @@ const props = defineProps({
   }
 })
 
-const gridStore = useGridStore()
+const market = computed(() => gridStrategyStore.spotMarket)
 
 const upperBounds = computed(() => {
-  if (!gridStore.market) {
+  if (!market.value) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInWei(props.strategy.upperBound).toBase(
-    gridStore.market.quoteToken.decimals - gridStore.market.baseToken.decimals
+    market.value.quoteToken.decimals - market.value.baseToken.decimals
   )
 })
 
 const lowerBounds = computed(() => {
-  if (!gridStore.market) {
+  if (!market.value) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInWei(props.strategy.lowerBound).toBase(
-    gridStore.market.quoteToken.decimals - gridStore.market.baseToken.decimals
+    market.value.quoteToken.decimals - market.value.baseToken.decimals
   )
 })
 
 const baseQuantity = computed(() =>
   new BigNumberInWei(props.strategy.baseQuantity).toBase(
-    gridStore.market?.baseToken.decimals || 16
+    market.value?.baseToken.decimals || 16
   )
 )
 
@@ -53,17 +55,17 @@ const pnl = computed(() => `-`)
     <div class="flex space-x-2 items-center">
       <div class="text-left">
         <CommonTokenIcon
-          v-if="gridStore.market?.baseToken"
-          v-bind="{ token: gridStore.market?.baseToken }"
+          v-if="market?.baseToken"
+          v-bind="{ token: market?.baseToken }"
         />
       </div>
       <div>
-        {{ gridStore.market?.ticker }}
+        {{ market?.ticker }}
       </div>
     </div>
 
-    <div>{{ upperBounds }} {{ gridStore.market?.quoteToken.symbol }}</div>
-    <div>{{ lowerBounds }} {{ gridStore.market?.quoteToken.symbol }}</div>
+    <div>{{ upperBounds }} {{ market?.quoteToken.symbol }}</div>
+    <div>{{ lowerBounds }} {{ market?.quoteToken.symbol }}</div>
     <div>{{ createdAt }}</div>
     <div>{{ baseQuantity }}</div>
     <div>{{ pnl }}</div>

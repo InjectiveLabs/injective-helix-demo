@@ -72,7 +72,7 @@ function handleToggleRewardsMenu() {
 
         <LayoutNavItem
           :to="{
-            name: 'spot-grid-trading-bots-market',
+            name: 'trading-bots-grid-spot-market',
             params: { market: 'inj-usdt' }
           }"
         >

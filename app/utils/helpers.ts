@@ -6,6 +6,7 @@ import {
 import { Network } from '@injectivelabs/networks'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
+import { hexToString, stringToHex } from './converters'
 import { UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
@@ -70,14 +71,27 @@ export function getMinQuantityTickSize(
     : ''
 }
 
-export function addSubacountIdToEthAddress(
+export const addressAndMarketSlugToSubaccountId = (
   ethAddress: string,
-  marketHex: string
-) {
+  slug: string
+) => {
+  const marketHex = stringToHex(slug)
+
   return `${ethAddress}${'0'.repeat(66 - 42 - marketHex.length)}${marketHex}`
 }
 
-export function getMarketHexFromSubaccount(subaccount: string) {
-  const marketHex = subaccount.slice(42).replace(/^0+/, '')
-  return marketHex
+export const isSgtSubaccountId = (subaccountId: string) => {
+  const MAX_ALLOWED_INDEX = 1000 /** TODO */
+  const subaccountIdPrefix = subaccountId.slice(42).replace(/^0+/, '')
+  const subaccountIdIndex = parseInt(subaccountIdPrefix, 10)
+
+  return subaccountIdIndex > MAX_ALLOWED_INDEX
+}
+
+export const getMarketIdFromSubaccountId = (subaccountId: string) => {
+  if (isSgtSubaccountId(subaccountId)) {
+    return ''
+  }
+
+  return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
 }

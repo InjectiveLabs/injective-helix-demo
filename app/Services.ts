@@ -32,8 +32,7 @@ import {
   IndexerRestMarketChronosApi,
   IndexerGrpcAccountPortfolioApi,
   IndexerRestLeaderboardChronosApi,
-  IndexerRestDerivativesChronosApi,
-  ChainGrpcAuthZApi
+  IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import { TokenMetaUtilsFactory } from '@injectivelabs/token-metadata'

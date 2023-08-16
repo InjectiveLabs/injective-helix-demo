@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
+import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 
-const gridStore = useGridStore()
+const authZStore = useAuthZStore()
+const gridStrategyStore = useGridStrategyStore()
 const modalStore = useModalStore()
 const validate = useValidateForm()
 const { t } = useLang()
@@ -11,7 +13,9 @@ const { success } = useNotifications()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const hasActiveStrategy = computed(() => gridStore.runningStrategies.length > 0)
+const hasActiveStrategy = computed(
+  () => gridStrategyStore.activeStrategies.length > 0
+)
 
 function onClick() {
   if (hasActiveStrategy.value) {
@@ -23,11 +27,18 @@ function onClick() {
 
 async function onCreateStrategy() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
 
-  if (gridStore.isAuthorized) {
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants
+      .map((g) => g.authorization)
+      .some((g) => g.endsWith(m))
+  )
+
+  if (isAuthorized) {
     modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
   } else {
     modalStore.openModal({ type: Modal.CheckSpotGridAuth })
@@ -37,7 +48,7 @@ async function onCreateStrategy() {
 function onRemoveStrategy() {
   status.setLoading()
 
-  gridStore
+  gridStrategyStore
     .removeStrategy()
     .then(() => {
       success({

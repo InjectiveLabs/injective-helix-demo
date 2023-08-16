@@ -1,6 +1,11 @@
-import { IS_DEVNET, IS_TESTNET } from './setup'
-import { stringToHex } from '@/app/utils/converters'
-import { SpotGridMarket, SpotGridMarketWithSubaccount } from '@/types'
+import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants/setup'
+import { SpotGridMarket, SpotGridMessages } from '@/types'
+
+export const gridStrategyAuthorizationMessageTypes = [
+  SpotGridMessages.MsgWithdraw,
+  SpotGridMessages.MsgBatchUpdateOrders,
+  SpotGridMessages.MsgCreateSpotMarketOrder
+]
 
 const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
@@ -22,9 +27,3 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
 
 export const spotGridMarkets: SpotGridMarket[] =
   IS_TESTNET || IS_DEVNET ? testnetSpotGridMarkets : mainnetSpotGridMarkets
-
-export const spotGridMarketsWithSubaccount: SpotGridMarketWithSubaccount[] =
-  spotGridMarkets.map((market) => ({
-    ...market,
-    subaccountId: stringToHex(market.slug)
-  }))

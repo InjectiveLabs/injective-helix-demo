@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
-import { authZApi } from 'app/Services'
+import { MsgGrant } from '@injectivelabs/sdk-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
+import { authZApi, msgBroadcastClient } from '@/app/Services'
 import { GrantAuthorization } from '@/types/authZ'
 
 type AuthZStoreState = {
@@ -56,6 +58,41 @@ export const useAuthZStore = defineStore('authZ', {
         granterGrants: granterGrants as GrantAuthorization[],
         granteeGrants: granteeGrants as GrantAuthorization[]
       })
+    },
+
+    async grantAuthorization({
+      grantee,
+      messageTypes
+    }: {
+      grantee: string
+      messageTypes: string[]
+    }) {
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      if (!walletStore.isAuthzWalletConnected) {
+        throw new GeneralException(
+          new Error('AuthZ not supported for this action')
+        )
+      }
+
+      const msgs = messageTypes.map((messageType) =>
+        MsgGrant.fromJSON({
+          messageType,
+          grantee,
+          granter: walletStore.injectiveAddress
+        })
+      )
+
+      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+        msgs,
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      return response
     }
   }
 })

@@ -33,20 +33,18 @@ function handleTokenClick() {
     class="h-full px-4"
     data-cy="trading-page-market-info-component"
   >
-    <div
-      class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
-    >
-      <template v-if="isGrid">
-        <div class="text-center hidden lg:block">
-          <p class="font-semibold text-center px-4">Spot Grid</p>
-        </div>
-
-        <div class="w-px h-8 border-r hidden lg:block" />
-      </template>
-
+    <div class="flex items-center flex-wrap lg:flex-nowrap gap-4 h-full">
       <div
         class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
       >
+        <template v-if="isGrid">
+          <div class="text-center hidden lg:block">
+            <p class="font-semibold text-center px-4">Spot Grid</p>
+          </div>
+
+          <div class="w-px h-8 border-r hidden lg:block" />
+        </template>
+
         <div class="flex items-center gap-4" @click="handleTokenClick">
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SpotGridTradingField } from '@/types'
 
-const gridStore = useGridStore()
+const gridStrategyStore = useGridStrategyStore()
 
 const { value: lowerPriceValue } = useStringField({
   name: SpotGridTradingField.LowerPrice,
@@ -27,8 +27,8 @@ const { value: upperPriceValue } = useStringField({
         </template>
 
         <template #addon>
-          <span v-if="gridStore.market">
-            {{ gridStore.market.quoteToken.symbol }}
+          <span v-if="gridStrategyStore.spotMarket">
+            {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
           </span>
         </template>
       </AppInputNumeric>
@@ -42,8 +42,8 @@ const { value: upperPriceValue } = useStringField({
         </template>
 
         <template #addon>
-          <span v-if="gridStore.market">
-            {{ gridStore.market.quoteToken.symbol }}
+          <span v-if="gridStrategyStore.spotMarket">
+            {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
           </span>
         </template>
       </AppInputNumeric>

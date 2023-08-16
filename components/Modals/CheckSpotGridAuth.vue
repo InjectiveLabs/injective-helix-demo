@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
+import {
+  spotGridMarkets,
+  gridStrategyAuthorizationMessageTypes
+} from '@/app/data/grid-strategy'
 
-const gridStore = useGridStore()
+const authZStore = useAuthZStore()
+const gridStrategyStore = useGridStrategyStore()
 const modalStore = useModalStore()
 const { $onError } = useNuxtApp()
 
@@ -20,21 +25,35 @@ watch(
 function handleCheckAuth() {
   status.setLoading()
 
-  gridStore.fetchGrants().then(() => {
-    if (gridStore.isAuthorized) {
-      modalStore.closeModal(Modal.CheckSpotGridAuth)
-      modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
-    } else {
-      handleAuthorization()
-    }
-  })
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants
+      .map((g) => g.authorization)
+      .some((g) => g.endsWith(m))
+  )
+
+  if (isAuthorized) {
+    modalStore.closeModal(Modal.CheckSpotGridAuth)
+    modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+  } else {
+    handleAuthorization()
+  }
 }
 
 function handleAuthorization() {
-  gridStore
-    .grantAuthorization()
+  const gridMarket = spotGridMarkets.find(
+    (market) => market.slug === gridStrategyStore.spotMarket!.slug
+  )
+
+  if (!gridMarket) {
+    return
+  }
+
+  authZStore
+    .grantAuthorization({
+      grantee: gridMarket.contractAddress,
+      messageTypes: gridStrategyAuthorizationMessageTypes
+    })
     .then(() => {
-      gridStore.$patch({ isAuthorized: true })
       modalStore.closeModal(Modal.CheckSpotGridAuth)
       modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
     })

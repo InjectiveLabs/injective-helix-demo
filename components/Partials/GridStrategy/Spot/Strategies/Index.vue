@@ -2,40 +2,41 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 
+const route = useRoute()
+const walletStore = useWalletStore()
+
 defineProps({
   status: {
     type: Object as PropType<Status>,
     default: new Status(StatusType.Loading)
   }
 })
-const route = useRoute()
-const walletStore = useWalletStore()
 </script>
 
 <template>
   <div class="flex flex-col h-full">
     <div class="p-4 flex text-gray-500 uppercase text-xs font-semibold">
-      <NuxtLink
+      <BaseNuxtLink
         :to="{
-          name: 'spot-grid-trading-bots-market',
+          name: 'trading-bots-grid-spot-market',
           params: { market: route.params.market }
         }"
         exact-active-class="text-blue-500"
       >
         {{ $t('sgt.running') }}
-      </NuxtLink>
+      </BaseNuxtLink>
 
       <div class="border mx-4" />
 
-      <NuxtLink
+      <BaseNuxtLink
         :to="{
-          name: 'spot-grid-trading-bots-market-history',
+          name: 'trading-bots-grid-spot-market-history',
           params: { market: route.params.market }
         }"
         exact-active-class="text-blue-500 font-bold"
       >
         {{ $t('sgt.history') }}
-      </NuxtLink>
+      </BaseNuxtLink>
     </div>
     <CommonCardTableWrap class="flex-1">
       <CommonCard class="h-full flex-auto">

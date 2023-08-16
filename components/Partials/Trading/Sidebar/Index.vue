@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-import { spotGridMarketsWithSubaccount } from '@/app/utils/constants/grid-spot-trading'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
@@ -37,9 +37,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() => {
 
   return props.isGrid
     ? markets.filter((m) =>
-        spotGridMarketsWithSubaccount.find(
-          (market) => market.slug === m.market.slug
-        )
+        spotGridMarkets.find((market) => market.slug === m.market.slug)
       )
     : markets
 })

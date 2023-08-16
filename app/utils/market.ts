@@ -110,7 +110,7 @@ export const getDefaultSpotMarketRouteParams = () => {
 
 export const getDefaultGridSpotMarketRouteParams = () => {
   return {
-    name: 'spot-grid-trading-bots-market',
+    name: 'trading-bots-grid-spot-market',
     params: {
       market: DefaultMarket.Spot
     }
