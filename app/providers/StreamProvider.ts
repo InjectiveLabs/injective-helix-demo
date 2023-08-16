@@ -62,12 +62,12 @@ export class StreamProvider {
 
     const argsWithCallbacks = {
       ...args,
-      onEndCallback: (status?: StreamStatusResponse): any => {
+      onEndCallback: (status: StreamStatusResponse): any => {
         this.reconnectOnTimeout(key, status)
       },
       onStatusCallback: (status: StreamStatusResponse): any => {
         if (Object.values(GRPC_ERROR_CODES).includes(status.code)) {
-          this.reconnectOnTimeout(key, status)
+          this.reconnect(key)
         }
       }
     }
