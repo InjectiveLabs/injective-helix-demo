@@ -72,32 +72,22 @@ const subscribe = handleSubmit((values) => {
           class="text-xs text-gray-450"
         >
           <template #termsAndCondition>
-            <a
-              class="underline hover:text-blue-500"
-              href="https://injectivelabs.org/terms-and-conditions"
+            <NuxtLink
               target="_blank"
+              class="underline hover:text-opacity-80"
+              :to="{ name: 'terms' }"
             >
-              {{ $t('newsletter.termsAndCondition') }}
-            </a>
+              {{ $t('terms.termsAndCondition') }}
+            </NuxtLink>
           </template>
 
           <template #privacyPolicy>
             <a
               class="underline hover:text-blue-500"
-              href="https://injectivelabs.org/privacy-policy"
+              href="https://injectivelabs.org/privacy"
               target="_blank"
             >
               {{ $t('newsletter.privacyPolicy') }}
-            </a>
-          </template>
-
-          <template #disclaimer>
-            <a
-              class="underline hover:text-blue-500"
-              href="https://injective.com/disclaimer/"
-              target="_blank"
-            >
-              {{ $t('newsletter.disclaimer') }}
             </a>
           </template>
         </i18n-t>

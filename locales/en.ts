@@ -179,7 +179,7 @@ export default {
 
   futuresMarketRestricted: {
     title: 'Unavailable Market',
-    description: 'This market is not available in your region.',
+    description: 'Perpetual markets are not available in your region.',
     cta: 'Return to homepage'
   },
 
@@ -343,7 +343,7 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimer_note: ({ interpolate, named }: I18nMessageFunction) =>
+    disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
         'By connecting to a wallet, you agree and acknowledge the Injective Labs ',
         named('terms'),
