@@ -41,7 +41,8 @@ export const slugsToIncludeInCosmosCategory = [
   'strd-usdt',
   'inj-usdt-perp',
   'osmo-usdt-perp',
-  'atom-usdt-perp'
+  'atom-usdt-perp',
+  'sei-usdt-perp'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
