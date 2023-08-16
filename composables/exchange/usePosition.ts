@@ -168,7 +168,9 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
       return ZERO_IN_BASE
     }
 
-    const effectiveLeverage = new BigNumberInBase(q)
+    const effectiveLeverage = new BigNumberInBase(
+      notionalValue.value.dividedBy(margin.value.plus(pnl.value))
+    )
 
     return effectiveLeverage.gt(0) ? effectiveLeverage : new BigNumberInBase(0)
   })
