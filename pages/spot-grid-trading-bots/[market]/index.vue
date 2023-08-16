@@ -28,9 +28,6 @@ const activeStrategies = computed(() =>
 
     <div class="bg-black rounded-xl overflow-hidden h-full">
       <PartialsGridTradingSpotStrategiesHistoryRow
-        :strategy="gridStore.strategies[0]"
-      />
-      <PartialsGridTradingSpotStrategiesHistoryRow
         v-for="strategy in activeStrategies"
         v-bind="{ strategy }"
         :key="`strategy-removed-${strategy.createdAt}`"
