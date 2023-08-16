@@ -39,8 +39,7 @@ export const getRoutes = (network: Network, env: string) => {
     'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
-    'atom-usdt-perp',
-    'sei-usdt-perp'
+    'atom-usdt-perp'
   ]
 
   if (IS_TESTNET) {
@@ -93,6 +92,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    perpetuals.push('sei-usdt-perp')
   }
 
   if (IS_DEVNET) {
