@@ -478,7 +478,7 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async logout() {
+    async disconnect() {
       const accountStore = useAccountStore()
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()

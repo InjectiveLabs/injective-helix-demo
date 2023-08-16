@@ -11,7 +11,7 @@ const formattedInjectiveAddress = computed(() =>
 )
 
 function disconnect() {
-  walletStore.logout()
+  walletStore.disconnect()
 
   if (ROUTES.walletConnectedRequiredRouteNames.includes(route.name as string)) {
     router.push({ name: 'index' })

@@ -66,7 +66,7 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = ['activity', 'account']
+  const walletConnectedRequiredRouteNames = ['activity', 'account', 'bridge']
 
   // Layout routes
   const footerEnabledRoutes = [

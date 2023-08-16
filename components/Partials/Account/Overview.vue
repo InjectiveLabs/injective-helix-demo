@@ -158,7 +158,7 @@ function handleTransferClick() {
       </div>
 
       <div class="flex items-center justify-between md:justify-end sm:gap-4">
-        <NuxtLink
+        <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
           :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }"
         >
@@ -167,9 +167,9 @@ function handleTransferClick() {
               {{ $t('account.deposit') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
-        <NuxtLink
+        <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
           :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
         >
@@ -178,7 +178,7 @@ function handleTransferClick() {
               {{ $t('account.withdraw') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
         <AppButton
           v-if="

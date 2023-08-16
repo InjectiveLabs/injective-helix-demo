@@ -160,7 +160,7 @@ watch(
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
 
-              <NuxtLink
+              <BaseNuxtLink
                 :to="{
                   name: 'bridge',
                   query: {
@@ -178,7 +178,7 @@ watch(
                     {{ $t('common.deposit') }}
                   </span>
                 </AppButton>
-              </NuxtLink>
+              </BaseNuxtLink>
             </div>
 
             <div v-else>

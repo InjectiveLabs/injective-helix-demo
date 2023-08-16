@@ -182,7 +182,7 @@ const {
         <slot name="action">
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
-          <NuxtLink
+          <BaseNuxtLink
             :to="{
               name: 'bridge',
               query: {
@@ -200,9 +200,9 @@ const {
                 {{ $t('account.deposit') }}
               </span>
             </div>
-          </NuxtLink>
+          </BaseNuxtLink>
 
-          <NuxtLink
+          <BaseNuxtLink
             :to="{
               name: 'bridge',
               query: {
@@ -220,7 +220,7 @@ const {
                 {{ $t('account.withdraw') }}
               </span>
             </div>
-          </NuxtLink>
+          </BaseNuxtLink>
         </slot>
       </div>
     </td>
