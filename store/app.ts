@@ -184,7 +184,7 @@ export const useAppStore = defineStore('app', {
       const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
 
       if (vpnOrProxyUsageDetected) {
-        await walletStore.logout()
+        await walletStore.disconnect()
       } else {
         appStore.$patch({
           userState: {
