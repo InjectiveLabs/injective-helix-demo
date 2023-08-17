@@ -33,7 +33,7 @@ function handleModalClose() {
 
 <template>
   <AppModal
-    :show="isModalOpen"
+    :is-open="isModalOpen"
     sm
     data-cy="transfer-completed-modal"
     @modal:closed="handleModalClose"

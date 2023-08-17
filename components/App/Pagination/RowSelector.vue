@@ -33,7 +33,7 @@ function handleUpdateLimit(limit: any) {
 
 <template>
   <BaseDropdown class="inline-block" placement="top-end">
-    <template #default="{ isVisible }">
+    <template #default="{ isOpen }">
       <div
         class="flex items-center gap-2 rounded"
         :classes="selectedClass || 'border border-gray-400 py-2 px-3'"
@@ -47,7 +47,7 @@ function handleUpdateLimit(limit: any) {
             name="chevron-down"
             class="h-4 w-4 min-w-4 rotate-180"
             :class="{
-              'ease-in-out duration-300 rotate-0': isVisible
+              'ease-in-out duration-300 rotate-0': isOpen
             }"
           />
         </div>

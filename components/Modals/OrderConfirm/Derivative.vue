@@ -50,7 +50,7 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 const { t } = useLang()
 
-const showModal = computed(() => modalStore.modals[Modal.OrderConfirm])
+const isModalOpen = computed(() => modalStore.modals[Modal.OrderConfirm])
 
 const orderTypeBuy = computed(() => {
   return [OrderSide.TakeBuy, OrderSide.StopBuy].includes(props.orderType)
@@ -117,7 +117,7 @@ function handleSkipTradeConfirmationModal() {
 
 <template>
   <AppModal
-    :show="showModal"
+    :is-open="isModalOpen"
     :sm="!!tradingType"
     data-cy="price-deviation-modal"
     @modal:closed="onModalClose"

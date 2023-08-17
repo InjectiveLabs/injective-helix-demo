@@ -87,7 +87,7 @@ watch(isModalOpen, (newShowModalState) => {
   </AppButton>
 
   <AppModal
-    :show="isModalOpen"
+    :is-open="isModalOpen"
     :show-loading="showLoading"
     :ignore="['.v-popper__popper']"
     md

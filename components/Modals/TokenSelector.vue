@@ -17,7 +17,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="modalStore.modals[modal]" sm @modal:closed="closeModal">
+  <AppModal :is-open="modalStore.modals[modal]" sm @modal:closed="closeModal">
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
         {{ $t('trade.swap.tokenSelector.selectAToken') }}

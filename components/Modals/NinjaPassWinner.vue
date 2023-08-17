@@ -51,7 +51,12 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm hide-close-button @modal:closed="closeModal">
+  <AppModal
+    :is-open="isModalOpen"
+    sm
+    hide-close-button
+    @modal:closed="closeModal"
+  >
     <template #title>
       <h3 class="normal-case">
         {{ $t('ninjaPass.congratulations') }}

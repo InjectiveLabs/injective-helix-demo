@@ -87,15 +87,17 @@ const orderDetailsComponentPath = computed(() => {
   return isSpot ? spotPath : derivativePath
 })
 
-const orderDetailsComponent = defineAsyncComponent(() => {
-  return new Promise((resolve, _reject) => {
-    const comps = import.meta.glob(/* @vite-ignore */ './../**/*.vue')
+const orderDetailsComponent = defineAsyncComponent<Record<string, unknown>>(
+  () => {
+    return new Promise((resolve, _reject) => {
+      const comps = import.meta.glob(/* @vite-ignore */ './../**/*.vue')
 
-    return comps[
-      /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
-    ]().then((component: any) => resolve(component.default))
-  })
-})
+      return comps[
+        /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
+      ]().then((component: any) => resolve(component.default))
+    })
+  }
+)
 
 const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
   computed(() => props.executionPrice),

@@ -21,7 +21,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('Acknowledge Terms') }}

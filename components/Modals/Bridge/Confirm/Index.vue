@@ -231,7 +231,7 @@ function handleDeposit() {
 
 <template>
   <AppModal
-    :show="isModalOpen"
+    :is-open="isModalOpen"
     sm
     data-cy="transfer-confirm-modal"
     @modal:closed="handleModalClose"

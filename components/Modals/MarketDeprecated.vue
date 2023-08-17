@@ -37,7 +37,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketDeprecated.title') }}

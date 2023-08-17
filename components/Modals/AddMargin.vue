@@ -109,7 +109,7 @@ const handleFormSubmit = handleSubmit(() => {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="handleModalClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="handleModalClose">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
