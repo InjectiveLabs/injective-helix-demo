@@ -76,7 +76,7 @@ function handleCreateStrategy() {
 </script>
 <template>
   <AppModal
-    ::is-open="modalStore.modals[Modal.CreateSpotGridStrategy]"
+    :is-open="modalStore.modals[Modal.CreateSpotGridStrategy]"
     @modal:closed="closeModal"
   >
     <template #title>

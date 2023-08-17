@@ -117,10 +117,8 @@ function handleSkipTradeConfirmationModal() {
 
 <template>
   <AppModal
-    v-bind="{
-      isVisible: isModalOpen,
-      sm: !!tradingType
-    }"
+    :is-open="isModalOpen"
+    sm
     data-cy="price-deviation-modal"
     @modal:closed="onModalClose"
   >

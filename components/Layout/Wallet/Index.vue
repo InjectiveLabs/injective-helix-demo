@@ -87,11 +87,9 @@ watch(isModalOpen, (newShowModalState) => {
   </AppButton>
 
   <AppModal
-    v-bind="{
-      isLoading,
-      isVisible: isModalOpen,
-      ignore: ['.v-popper__popper']
-    }"
+    :is-open="isModalOpen"
+    :is-loading="isLoading"
+    :ignore="['.v-popper__popper']"
     md
     @modal:closed="handleModalClose"
   >

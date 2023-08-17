@@ -87,7 +87,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         return
       }
 
-      if (!walletStore.isAuthzWalletConnected) {
+      if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(
           new Error('AuthZ not supported for this action')
         )
@@ -152,7 +152,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         return
       }
 
-      if (!walletStore.isAuthzWalletConnected) {
+      if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(
           new Error('AuthZ not supported for this action')
         )

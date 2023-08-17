@@ -73,7 +73,7 @@ export const useAuthZStore = defineStore('authZ', {
         return
       }
 
-      if (!walletStore.isAuthzWalletConnected) {
+      if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(
           new Error('AuthZ not supported for this action')
         )
