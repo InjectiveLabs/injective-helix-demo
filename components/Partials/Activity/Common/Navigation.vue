@@ -44,7 +44,7 @@ const tabs = computed(() => [
     <div class="flex lg:grid grid-cols-4 gap-4">
       <CommonCardLink
         v-for="tab in tabs"
-        v-bind="{ to: tab.to, showLoading: status.isLoading() }"
+        v-bind="{ to: tab.to, isLoading: status.isLoading() }"
         :key="`tab-${tab.label}`"
       >
         <span>{{ tab.label }}</span>

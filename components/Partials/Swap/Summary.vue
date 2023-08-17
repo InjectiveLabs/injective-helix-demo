@@ -19,7 +19,7 @@ const {
   orderedRouteTokensAndDecimals
 } = useSwap(formValues)
 
-const showEmpty = computed(() => {
+const isEmptyForm = computed(() => {
   return (
     new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0).lte(
       0
@@ -67,7 +67,7 @@ defineExpose({
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.rate')">
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmptyForm">&mdash;</span>
         <div
           v-else-if="orderedRouteTokensAndDecimals && inputToken && outputToken"
         >
@@ -81,7 +81,7 @@ defineExpose({
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.fees')">
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmptyForm">&mdash;</span>
 
         <PartialsSwapFees v-else />
       </PartialsSwapSummaryRow>
@@ -90,19 +90,19 @@ defineExpose({
         v-if="swapStore.isInputEntered"
         :title="$t('trade.swap.minimumOutput')"
       >
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmptyForm">&mdash;</span>
         <span v-else>
           {{ minimumOutput }} {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow v-else :title="$t('trade.swap.maximumInput')">
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmptyForm">&mdash;</span>
         <span v-else> {{ maximumInput }} {{ inputToken?.token.symbol }} </span>
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmptyForm">&mdash;</span>
         <span v-else>
           {{ formValues[SwapFormField.OutputAmount] }}
           {{ outputToken?.token.symbol }}
