@@ -28,18 +28,26 @@ function onLoad(pageMarket: UiMarketWithToken) {
     spotMarket: pageMarket as UiSpotMarketWithToken
   })
 
-  Promise.all([authZStore.fetchGrants(), gridStrategyStore.fetchStrategies()])
+  fetchData()
+}
+
+onWalletConnected(() => {
+  fetchData()
+})
+
+function fetchData() {
+  Promise.all([
+    authZStore.fetchGrants(),
+    gridStrategyStore.fetchStrategies(),
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 }
-
-onWalletConnected(() => {
-  accountStore.fetchAccountPortfolio()
-  accountStore.streamBankBalance()
-  accountStore.streamSubaccountBalance()
-})
 </script>
 
 <template>
