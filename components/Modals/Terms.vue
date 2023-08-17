@@ -8,7 +8,7 @@ const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
 function handleConfirm() {
   closeModal()
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleCancel() {
@@ -21,7 +21,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('Acknowledge Terms') }}

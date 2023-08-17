@@ -83,7 +83,7 @@ function init() {
   ])
     .then(() => {
       if (betaMarketSlugs.includes(slug)) {
-        modalStore.openModal({ type: Modal.MarketBeta })
+        modalStore.openModal(Modal.MarketBeta)
       }
 
       if (props.isGrid && props.isSpot) {

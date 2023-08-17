@@ -28,7 +28,7 @@ async function handleBridgeConfirmation() {
   }
 
   nextTick(() => {
-    modalStore.openModal({ type: Modal.BridgeConfirm })
+    modalStore.openModal(Modal.BridgeConfirm)
   })
 }
 </script>

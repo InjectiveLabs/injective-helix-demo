@@ -33,7 +33,7 @@ export const useModalStore = defineStore('modal', {
         return
       }
 
-      modalStore.openModal({ type: modalStore.persistModal as Modal })
+      modalStore.openModal(modalStore.persistModal as Modal)
 
       modalStore.$patch({
         persistModal: undefined
@@ -54,17 +54,17 @@ export const useModalStore = defineStore('modal', {
       }
     },
 
-    openModal(modal: { type: Modal; preventScroll?: boolean }) {
-      if (modalExists(modal.type)) {
+    openModal(modal: Modal, options?: { preventScroll?: boolean }) {
+      if (modalExists(modal)) {
         const modalStore = useModalStore()
 
-        if (modal.preventScroll) {
+        if (options?.preventScroll) {
           document.body.style.overflowY = 'hidden'
         }
 
         modalStore.$patch({
-          modals: { ...modalStore.modals, [modal.type]: true },
-          preventScroll: modal.preventScroll
+          modals: { ...modalStore.modals, [modal]: true },
+          preventScroll: options?.preventScroll
         })
       }
     },

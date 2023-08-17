@@ -171,7 +171,7 @@ function closeModal() {
 
 <template>
   <AppModal
-    :show="modalStore.modals[Modal.SubaccountTransfer]"
+    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
     md
     :ignore="['.v-popper__inner']"
     @modal:closed="closeModal"

@@ -116,7 +116,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('account.convertUsdc') }}

@@ -40,7 +40,7 @@ function onModalClose() {
 <template>
   <AppModal
     v-if="trade && market"
-    :show="isModalOpen"
+    :is-open="isModalOpen"
     sm
     @modal:closed="onModalClose"
   >

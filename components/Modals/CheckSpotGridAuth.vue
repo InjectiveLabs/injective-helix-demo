@@ -33,7 +33,7 @@ function handleCheckAuth() {
 
   if (isAuthorized) {
     modalStore.closeModal(Modal.CheckSpotGridAuth)
-    modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+    modalStore.openModal(Modal.CreateSpotGridStrategy)
   } else {
     handleAuthorization()
   }
@@ -55,7 +55,7 @@ function handleAuthorization() {
     })
     .then(() => {
       modalStore.closeModal(Modal.CheckSpotGridAuth)
-      modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+      modalStore.openModal(Modal.CreateSpotGridStrategy)
     })
     .catch((e) => {
       modalStore.closeModal(Modal.CheckSpotGridAuth)
@@ -69,7 +69,7 @@ function closeModal() {
 </script>
 <template>
   <AppModal
-    :show="modalStore.modals[Modal.CheckSpotGridAuth]"
+    :is-open="modalStore.modals[Modal.CheckSpotGridAuth]"
     @modal:closed="closeModal"
   >
     <template #title>

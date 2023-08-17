@@ -554,9 +554,7 @@ function resetForm() {
 
 function handleRequestSubmit() {
   if (highDeviation.value) {
-    return modalStore.openModal({
-      type: Modal.PriceDeviation
-    })
+    return modalStore.openModal(Modal.PriceDeviation)
   }
 
   if (
@@ -574,9 +572,7 @@ function handleRequestSubmit() {
     return
   }
 
-  return modalStore.openModal({
-    type: Modal.OrderConfirm
-  })
+  return modalStore.openModal(Modal.OrderConfirm)
 }
 
 function handleSubmit() {

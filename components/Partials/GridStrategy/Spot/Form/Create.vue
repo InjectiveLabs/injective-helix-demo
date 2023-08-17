@@ -39,9 +39,9 @@ async function onCreateStrategy() {
   )
 
   if (isAuthorized) {
-    modalStore.openModal({ type: Modal.CreateSpotGridStrategy })
+    modalStore.openModal(Modal.CreateSpotGridStrategy)
   } else {
-    modalStore.openModal({ type: Modal.CheckSpotGridAuth })
+    modalStore.openModal(Modal.CheckSpotGridAuth)
   }
 }
 

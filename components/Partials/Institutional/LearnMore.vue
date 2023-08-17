@@ -4,7 +4,7 @@ import { Modal } from '@/types'
 const modalStore = useModalStore()
 
 function handleOpenModal() {
-  modalStore.openModal({ type: Modal.InstitutionalForm })
+  modalStore.openModal(Modal.InstitutionalForm)
 }
 </script>
 

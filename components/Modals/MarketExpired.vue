@@ -29,7 +29,7 @@ function onModalClose() {
 
 <template>
   <AppModal
-    :show="isModalOpen"
+    :is-open="isModalOpen"
     sm
     hide-close-button
     @modal:closed="onModalClose"

@@ -20,7 +20,7 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-const showLoading = computed<boolean>(
+const isLoading = computed<boolean>(
   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
 )
 
@@ -36,16 +36,16 @@ onMounted(() => {
 function handleLedgerConnect() {
   walletModalType.value = WalletModalType.Ledger
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleWalletConnect() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
-    modalStore.openModal({ type: Modal.Terms })
+    modalStore.openModal(Modal.Terms)
   } else {
-    modalStore.openModal({ type: Modal.Connect })
+    modalStore.openModal(Modal.Connect)
   }
 }
 
@@ -87,9 +87,11 @@ watch(isModalOpen, (newShowModalState) => {
   </AppButton>
 
   <AppModal
-    :show="isModalOpen"
-    :show-loading="showLoading"
-    :ignore="['.v-popper__popper']"
+    v-bind="{
+      isLoading,
+      isVisible: isModalOpen,
+      ignore: ['.v-popper__popper']
+    }"
     md
     @modal:closed="handleModalClose"
   >

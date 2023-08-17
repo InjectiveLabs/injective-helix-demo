@@ -18,7 +18,7 @@ definePageMeta({
         GEO_IP_RESTRICTIONS_ENABLED &&
         ['US'].includes(appStore.userState.geoLocation.country)
       ) {
-        modalStore.openModal({ type: Modal.FuturesMarketRestricted })
+        modalStore.openModal(Modal.FuturesMarketRestricted)
       }
     }
   ]
@@ -74,7 +74,7 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
     Date.now() / 1000
 
   if (marketIsExpired) {
-    modalStore.openModal({ type: Modal.MarketExpired })
+    modalStore.openModal(Modal.MarketExpired)
   }
 }
 

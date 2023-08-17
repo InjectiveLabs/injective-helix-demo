@@ -69,7 +69,7 @@ function onDevMode() {
     })
 
     if (!walletStore.isUserWalletConnected) {
-      modalStore.openModal({ type: Modal.DevMode })
+      modalStore.openModal(Modal.DevMode)
     }
   }
 }

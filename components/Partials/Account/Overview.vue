@@ -116,7 +116,7 @@ function toggleHideBalances() {
 }
 
 function handleTransferClick() {
-  modalStore.openModal({ type: Modal.SubaccountTransfer })
+  modalStore.openModal(Modal.SubaccountTransfer)
 }
 </script>
 
