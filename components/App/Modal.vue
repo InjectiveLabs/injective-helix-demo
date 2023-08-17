@@ -56,10 +56,10 @@ watchDebounced(
     v-bind="$attrs"
     @close="handleClose"
   >
-    <template #default="{ close, showLoading }">
+    <template #default="{ close, isLoading }">
       <div
         :class="{
-          'min-h-[320px] flex flex-col': showLoading
+          'min-h-[320px] flex flex-col': isLoading
         }"
       >
         <div
@@ -80,7 +80,7 @@ watchDebounced(
         </div>
 
         <div
-          v-if="showLoading"
+          v-if="isLoading"
           class="grow flex items-center justify-center -mt-6"
         >
           <AppSpinner lg />

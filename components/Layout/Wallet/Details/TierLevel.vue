@@ -75,7 +75,7 @@ const makerFeeDiscount = computed(() => {
             : $t('navigation.noTierLevel')
         }}
       </span>
-      <BaseIcon name="external-link-arrow" xs />
+      <BaseIcon name="external-link-arrow" is-xs />
     </NuxtLink>
   </div>
 </template>

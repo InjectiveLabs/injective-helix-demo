@@ -37,10 +37,10 @@ function connect() {
 
     <template #addon>
       <div class="grid grid-cols-4 gap-4 text-white">
-        <BaseIcon name="social/google" md />
-        <BaseIcon name="social/facebook" md />
-        <BaseIcon name="social/twitter" md />
-        <BaseIcon name="social/discord" md />
+        <BaseIcon name="social/google" is-md />
+        <BaseIcon name="social/facebook" is-md />
+        <BaseIcon name="social/twitter" is-md />
+        <BaseIcon name="social/discord" is-md />
       </div>
     </template>
   </LayoutWalletConnectWrapper>

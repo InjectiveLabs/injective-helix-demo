@@ -210,7 +210,7 @@ function handleTradeClickedTrack() {
             <BaseIcon
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               name="arrow"
-              class="transform w-3 h-3 mr-1 mt-1"
+              class="w-3 h-3 mr-1 mt-1"
               :class="{
                 'text-green-700 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease

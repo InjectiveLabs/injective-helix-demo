@@ -131,7 +131,6 @@ function handleDstSubaccountIdUpdate() {
       >
         <BaseIcon
           name="arrow"
-          swap
           class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         />
       </div>

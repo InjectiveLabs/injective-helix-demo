@@ -12,11 +12,11 @@
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
         >
-          <template #close="{ close }">
+          <template #close="{ closeNotification }">
             <BaseIcon
               name="close-bold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
-              @click="close"
+              @click="closeNotification"
             />
           </template>
         </BaseNotification>

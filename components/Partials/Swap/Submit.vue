@@ -208,7 +208,7 @@ watch(
 
             <BaseIcon
               name="rotate"
-              class="h-3 w-3 cursor-pointer transform scale-x-[-1] rotate-45"
+              class="h-3 w-3 cursor-pointer scale-x-[-1] rotate-45"
               @click="getResultQuantity"
             />
           </span>

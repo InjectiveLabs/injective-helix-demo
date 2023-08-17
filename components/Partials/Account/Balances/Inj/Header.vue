@@ -43,7 +43,7 @@ function handleDrawerToggle() {
         <template #symbolSuffix>
           <BaseIcon
             name="caret-down"
-            class="h-6 w-6 transition duration-300 hover:text-blue-500 transform"
+            class="h-6 w-6 transition duration-300 hover:text-blue-500"
             :class="{
               'rotate-180': showStaked
             }"
