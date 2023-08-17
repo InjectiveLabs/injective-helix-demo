@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { BalanceHeaderType } from '@/types'
 
 const props = defineProps({
-  ascending: Boolean,
+  isAscending: Boolean,
 
   sortBy: {
     type: String as PropType<BalanceHeaderType>,
@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:sort-by': [state: string]
-  'update:ascending': [state: boolean]
+  'update:isAscending': [state: boolean]
 }>()
 
 const sortByValue = computed({
@@ -23,10 +23,10 @@ const sortByValue = computed({
   }
 })
 
-const ascendingValue = computed({
-  get: (): boolean => props.ascending,
+const isAscendingValue = computed({
+  get: (): boolean => props.isAscending,
   set: (type: boolean) => {
-    emit('update:ascending', type)
+    emit('update:isAscending', type)
   }
 })
 </script>
@@ -35,7 +35,7 @@ const ascendingValue = computed({
   <tr class="h-14">
     <AppSortableHeaderItem
       v-model:sort-by="sortByValue"
-      v-model:ascending="ascendingValue"
+      v-model:isAscending="isAscendingValue"
       :value="BalanceHeaderType.Asset"
     >
       <span class="text-gray-350 text-xs normal-case">
@@ -46,7 +46,7 @@ const ascendingValue = computed({
     <th class="flex items-center justify-end gap-2 h-14">
       <AppSortableHeaderItem
         v-model:sort-by="sortByValue"
-        v-model:ascending="ascendingValue"
+        v-model:isAscending="isAscendingValue"
         class="justify-end"
         :value="BalanceHeaderType.Total"
       >
@@ -59,7 +59,7 @@ const ascendingValue = computed({
 
       <AppSortableHeaderItem
         v-model:sort-by="sortByValue"
-        v-model:ascending="ascendingValue"
+        v-model:isAscending="isAscendingValue"
         class="justify-end"
         :value="BalanceHeaderType.Value"
       >

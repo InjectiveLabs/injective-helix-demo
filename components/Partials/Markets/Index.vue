@@ -42,7 +42,7 @@ const activeQuote = ref(MarketQuoteType.All)
 const activeType = ref('')
 const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
-const ascending = ref(false)
+const isAscending = ref(false)
 const showLowVolumeMarkets = ref(false)
 
 const recentlyExpiredMarkets = computed(
@@ -123,7 +123,7 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return ascending.value ? markets.reverse() : markets
+  return isAscending.value ? markets.reverse() : markets
 })
 
 onMounted(() => {
@@ -137,7 +137,7 @@ function handleSort(value: string) {
 }
 
 function handleAscending(value: boolean) {
-  ascending.value = value
+  isAscending.value = value
 }
 
 function prefillFromQueryParams() {
@@ -204,9 +204,9 @@ function prefillFromQueryParams() {
           class="select-none"
           :value="MarketHeaderType.Market"
           :sort-by="sortBy"
-          :ascending="ascending"
+          :is-ascending="isAscending"
           @update:sort-by="handleSort"
-          @update:ascending="handleAscending"
+          @update:isAscending="handleAscending"
         >
           <span class="text-gray-200 text-2xs font-normal">
             {{ $t('trade.market') }}
@@ -217,9 +217,9 @@ function prefillFromQueryParams() {
           class="justify-end col-span-2 select-none"
           :value="MarketHeaderType.Change"
           :sort-by="sortBy"
-          :ascending="ascending"
+          :is-ascending="isAscending"
           @update:sort-by="handleSort"
-          @update:ascending="handleAscending"
+          @update:isAscending="handleAscending"
         >
           <template #prefix>
             <span class="text-gray-200 text-xs mr-1">
@@ -238,9 +238,9 @@ function prefillFromQueryParams() {
           class="col-span-3 select-none"
           :value="MarketHeaderType.Market"
           :sort-by="sortBy"
-          :ascending="ascending"
+          :is-ascending="isAscending"
           @update:sort-by="handleSort"
-          @update:ascending="handleAscending"
+          @update:isAscending="handleAscending"
         >
           <span
             class="text-gray-200 text-2xs font-normal"
@@ -260,9 +260,9 @@ function prefillFromQueryParams() {
           class="col-span-2 flex justify-end items-center select-none"
           :value="MarketHeaderType.Change"
           :sort-by="sortBy"
-          :ascending="ascending"
+          :is-ascending="isAscending"
           @update:sort-by="handleSort"
-          @update:ascending="handleAscending"
+          @update:isAscending="handleAscending"
         >
           <span
             class="text-gray-200 text-2xs font-normal"
@@ -276,9 +276,9 @@ function prefillFromQueryParams() {
           class="col-span-3 flex justify-end items-center select-none"
           :value="MarketHeaderType.Volume"
           :sort-by="sortBy"
-          :ascending="ascending"
+          :is-ascending="isAscending"
           @update:sort-by="handleSort"
-          @update:ascending="handleAscending"
+          @update:isAscending="handleAscending"
         >
           <span
             class="text-gray-200 text-2xs font-normal"
