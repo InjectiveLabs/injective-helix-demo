@@ -36,6 +36,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
 }
 
 onWalletConnected(() => {
+  accountStore.fetchAccountPortfolio()
   accountStore.streamBankBalance()
   accountStore.streamSubaccountBalance()
 })
