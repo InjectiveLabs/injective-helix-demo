@@ -60,11 +60,11 @@ const showLowVolumeMarketsValue = computed({
           v-model="activeTypeValue"
           :value="marketType"
         >
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <span
               class="tracking-widest text-xs uppercase cursor-pointer select-none border-none p-0"
               :class="[
-                active
+                isActive
                   ? 'font-bold text-gray-200'
                   : 'text-gray-500 hover:text-gray-200'
               ]"

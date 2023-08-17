@@ -224,7 +224,7 @@ export default {
               />
             </Transition>
 
-            <BaseIcon class="text-gray-600" name="caret-down-slim" sm />
+            <BaseIcon class="text-gray-600" name="caret-down-slim" is-sm />
           </div>
         </div>
       </div>

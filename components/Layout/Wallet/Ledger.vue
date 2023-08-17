@@ -95,7 +95,7 @@ const connect = handleSubmit(() => {
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <BaseIcon name="arrow" class="transform rotate-180 w-4 h-4" />
+      <BaseIcon name="arrow" class="rotate-180 w-4 h-4" />
     </div>
 
     <div class="border-b border-gray-600 mt-4 mb-4" />

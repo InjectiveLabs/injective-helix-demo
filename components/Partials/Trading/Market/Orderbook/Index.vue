@@ -45,13 +45,8 @@ const subaccountOrders = computed<
   isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
 
-const buys = computed(() => {
-  return isSpot ? spotStore.buys : derivativeStore.buys
-})
-
-const sells = computed(() => {
-  return isSpot ? spotStore.sells : derivativeStore.sells
-})
+const buys = computed(() => (isSpot ? spotStore.buys : derivativeStore.buys))
+const sells = computed(() => (isSpot ? spotStore.sells : derivativeStore.sells))
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)

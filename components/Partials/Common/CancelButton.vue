@@ -48,7 +48,7 @@ function handleClick() {
       }"
     >
       <slot name="icon">
-        <BaseIcon name="bin" sm />
+        <BaseIcon name="bin" is-sm />
       </slot>
     </div>
   </div>

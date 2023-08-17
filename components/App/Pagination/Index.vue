@@ -26,12 +26,14 @@ defineProps({
 
 <template>
   <BasePaginationWrapper
-    v-bind="$attrs"
     class="flex flex-wrap items-center justify-between text-sm w-full"
-    :disabled="disabled"
-    :page="page"
-    :limit="limit"
-    :total-count="totalCount"
+    v-bind="{
+      page,
+      limit,
+      totalCount,
+      isDisabled: disabled,
+      ...$attrs
+    }"
   >
     <template #summary="{ from, to }">
       <span>
@@ -45,9 +47,9 @@ defineProps({
       #default="{
         hasPrevPage,
         hasNextPage,
-        handleClickEvent,
-        handleNextEvent,
-        handlePrevEvent,
+        onClickEvent,
+        onNextEvent,
+        onPrevEvent,
         pagesToDisplay
       }"
     >
@@ -59,7 +61,7 @@ defineProps({
           :class="
             hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
           "
-          @click="handlePrevEvent"
+          @click="onPrevEvent"
         >
           <BaseIcon name="caret-thin" class="h-auto w-3" />
         </span>
@@ -71,13 +73,13 @@ defineProps({
             :model-value="page"
             :value="displayPage"
             class="cursor-pointer"
-            @update:model-value="handleClickEvent"
+            @update:model-value="onClickEvent"
           >
-            <template #default="{ active }">
+            <template #default="{ isActive }">
               <span
                 class="px-2 py-1 hover:bg-blue-500 hover:bg-opacity-80 hover:text-blue-800"
                 :class="{
-                  'bg-blue-500 text-blue-800': active
+                  'bg-blue-500 text-blue-800': isActive
                 }"
               >
                 {{ displayPage }}
@@ -91,14 +93,14 @@ defineProps({
           :class="
             hasNextPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
           "
-          @click="handleNextEvent"
+          @click="onNextEvent"
         >
           <BaseIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
         </span>
       </div>
     </template>
 
-    <template #row-select="{ rowOptions, handleUpdateLimit }">
+    <template #row-select="{ rowOptions, onUpdateLimit }">
       <div class="flex items-center gap-2">
         <slot name="rows-prefix" />
 
@@ -107,7 +109,7 @@ defineProps({
           :limit="limit"
           :options="rowOptions"
           :selected-class="rowClass"
-          @update:model-value="handleUpdateLimit"
+          @update:model-value="onUpdateLimit"
         />
       </div>
     </template>

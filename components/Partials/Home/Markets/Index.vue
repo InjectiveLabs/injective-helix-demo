@@ -18,10 +18,10 @@ const activeType = ref(MarketFilterType.Volume)
           v-model="activeType"
           :value="filterType"
         >
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <span
               class="text-xl text-gray-775 hover:opacity-100"
-              :class="[active ? 'opacity-100' : ' opacity-30']"
+              :class="[isActive ? 'opacity-100' : ' opacity-30']"
             >
               <span v-if="filterType === MarketFilterType.Volume">
                 {{ $t('home.trending') }}
