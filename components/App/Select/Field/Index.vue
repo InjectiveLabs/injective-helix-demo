@@ -72,12 +72,12 @@ function handleClear() {
     auto-boundary-max-size
     popper-class="dropdown"
   >
-    <template #default="{ isVisible }">
+    <template #default="{ isOpen }">
       <div
         class="flex items-center justify-between px-4 h-10 box-border bg-gray-1000 border rounded-lg cursor-pointer text-sm"
         :class="[
           selectedClass,
-          isVisible ? 'border-blue-500' : 'border-transparent'
+          isOpen ? 'border-blue-500' : 'border-transparent'
         ]"
       >
         <slot name="selected-option" :option="selectedItem">
@@ -102,8 +102,8 @@ function handleClear() {
             name="caret-down-thick"
             class="ease-in-out duration-300 min-w-3 w-3 h-3"
             :class="{
-              'text-gray-500': !isVisible,
-              'text-blue-500 rotate-180': isVisible
+              'text-gray-500': !isOpen,
+              'text-blue-500 rotate-180': isOpen
             }"
           />
         </div>

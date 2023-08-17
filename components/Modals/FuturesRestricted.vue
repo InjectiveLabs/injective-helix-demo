@@ -13,7 +13,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm hide-close-button is-always-open>
+  <AppModal :is-open="isModalOpen" sm hide-close-button is-always-open>
     <template #title>
       <h3 class="text-center">
         {{ $t('futuresMarketRestricted.title') }}

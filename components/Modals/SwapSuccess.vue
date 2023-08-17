@@ -20,7 +20,9 @@ const props = defineProps({
 const status: Status = reactive(new Status(StatusType.Idle))
 const swapInfo = ref(undefined as Record<string, string> | undefined)
 
-const showModal = computed<boolean>(() => modalStore.modals[Modal.SwapSuccess])
+const isModalOpen = computed<boolean>(
+  () => modalStore.modals[Modal.SwapSuccess]
+)
 
 const explorerUrl = computed(() => {
   if (!props.txHash) {
@@ -38,8 +40,8 @@ function onModalClose() {
   closeModal()
 }
 
-watch(showModal, (showModalState: boolean) => {
-  if (!showModalState) {
+watch(isModalOpen, (isModalOpen: boolean) => {
+  if (!isModalOpen) {
     return
   }
 
@@ -59,7 +61,7 @@ watch(showModal, (showModalState: boolean) => {
 </script>
 
 <template>
-  <AppModal :show="showModal" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative">
         <AppCustomConfetti

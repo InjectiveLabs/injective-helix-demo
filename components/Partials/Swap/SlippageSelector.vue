@@ -3,7 +3,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { SwapFormField } from '@/types'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
 
-const dropdownRef = ref<null | { isVisible: boolean }>(null)
+const dropdownRef = ref<null | { isOpen: boolean }>(null)
 const slippageList = ['0.1', '0.5', '1.0']
 
 const isOpen = computed(() => {
@@ -11,7 +11,7 @@ const isOpen = computed(() => {
     return false
   }
 
-  return dropdownRef.value?.isVisible
+  return dropdownRef.value?.isOpen
 })
 
 const {

@@ -11,7 +11,7 @@ function handleClose() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="handleClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="handleClose">
     <template #title>
       <h3>
         {{ $t('trade.usdcLegacyBalanceDetected') }}

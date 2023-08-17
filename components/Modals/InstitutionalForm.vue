@@ -84,7 +84,7 @@ async function onSubmit() {
 <template>
   <AppModal
     class="w-full"
-    v-bind="{ show: isModalOpen }"
+    v-bind="{ isOpen: isModalOpen }"
     @modal:closed="closeModal"
   >
     <div>
