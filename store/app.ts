@@ -38,6 +38,7 @@ import { UiAnnouncementTransformer } from '@/app/client/transformers/UiAnnouncem
 import { Announcement, Attachment } from '@/app/client/types/announcements'
 import { alchemyKey } from '@/app/wallet-strategy'
 import { amplitudeWalletTracker } from '@/app/providers/amplitude'
+import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 
 export interface UserBasedState {
   geoLocation: GeoLocation
@@ -264,6 +265,20 @@ export const useAppStore = defineStore('app', {
           userCountryFromBrowser: appStore.userCountryFromBrowser,
           userCountryFromVpnApi: appStore.userState.geoLocation.country
         })
+      }
+    },
+
+    validateGeoIpBasedOnAction() {
+      const appStore = useAppStore()
+
+      if (
+        isCountryRestrictedForPerpetualMarkets(
+          appStore.userState.geoLocation.country
+        )
+      ) {
+        throw new GeneralException(
+          new Error('This action is not allowed in your country')
+        )
       }
     },
 

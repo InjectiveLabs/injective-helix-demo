@@ -18,7 +18,7 @@ export const errorMessages = {
         ? `Your input value of ${params._value_} cant be higher than ${params.max}`
         : `This field should be between ${params.min} and ${params.max}`
     }`
-} as Record<string, (field?: string, params?: Record<string, any>) => string>
+} as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
   defineRule('email', email)
