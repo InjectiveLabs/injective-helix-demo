@@ -102,7 +102,7 @@ useIntervalFn(() => appStore.pollMarkets(), 5 * 1000)
 </script>
 
 <template>
-  <AppHocLoading :show-loading="markets.length === 0">
+  <AppHocLoading :is-loading="markets.length === 0">
     <div class="bg-white rounded-lg w-full self-center">
       <div class="overflow-auto">
         <PartialsHomeCommonMarketsHeader class="pt-6 pb-2" :is-hero="isHero" />

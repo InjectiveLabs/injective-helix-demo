@@ -20,7 +20,7 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-const showLoading = computed<boolean>(
+const isLoading = computed<boolean>(
   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
 )
 
@@ -88,7 +88,7 @@ watch(isModalOpen, (newShowModalState) => {
 
   <AppModal
     :is-open="isModalOpen"
-    :show-loading="showLoading"
+    :is-loading="isLoading"
     :ignore="['.v-popper__popper']"
     md
     @modal:closed="handleModalClose"

@@ -268,8 +268,7 @@ function resetQueryError() {
           class="mx-4 mt-4 mb-6"
           v-bind="{
             minimumOutput,
-            showLoading: status.isLoading(),
-            isLoading: fetchStatus.isLoading()
+            isLoading: status.isLoading() || fetchStatus.isLoading()
           }"
         />
         <div v-else class="flex flex-col items-center text-gray-700 my-8">
