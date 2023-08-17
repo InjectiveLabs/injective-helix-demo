@@ -118,7 +118,7 @@ function handleSkipTradeConfirmationModal() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
+    :sm="!!tradingType"
     data-cy="price-deviation-modal"
     @modal:closed="onModalClose"
   >
