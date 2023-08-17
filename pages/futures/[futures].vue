@@ -5,8 +5,8 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
+import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 
 definePageMeta({
   middleware: [
@@ -15,8 +15,9 @@ definePageMeta({
       const modalStore = useModalStore()
 
       if (
-        GEO_IP_RESTRICTIONS_ENABLED &&
-        ['US'].includes(appStore.userState.geoLocation.country)
+        isCountryRestrictedForPerpetualMarkets(
+          appStore.userState.geoLocation.country
+        )
       ) {
         modalStore.openModal(Modal.FuturesMarketRestricted)
       }

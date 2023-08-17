@@ -87,7 +87,7 @@ export const validateIpAddressForVPNOld = async (ipAddress: string) => {
 }
 
 export const validateIpAddressForVPN = async (ipAddress: string) => {
-  const httpClient = new HttpClient('https://vpnapi.io/')
+  const httpClient = new HttpClient('https://vpnapi.io/', { timeout: 1000 })
 
   try {
     const response = (await httpClient.get(`api/${ipAddress}`, {
