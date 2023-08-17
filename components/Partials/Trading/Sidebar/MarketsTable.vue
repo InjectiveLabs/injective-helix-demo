@@ -28,7 +28,7 @@ const props = defineProps({
 
 const activeType = ref('')
 const search = ref('')
-const ascending = ref(false)
+const isAscending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
 const showLowVolumeMarkets = ref(false)
 
@@ -83,7 +83,7 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return ascending.value ? markets.reverse() : markets
+  return isAscending.value ? markets.reverse() : markets
 })
 </script>
 
@@ -100,7 +100,7 @@ const sortedMarkets = computed(() => {
       <div class="flex items-center flex-1 text-2xs">
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
-          v-model:ascending="ascending"
+          v-model:isAscending="isAscending"
           :value="SortableKeys.Market"
         >
           <span class="text-gray-200 font-normal order-last whitespace-nowrap">
@@ -110,7 +110,7 @@ const sortedMarkets = computed(() => {
 
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
-          v-model:ascending="ascending"
+          v-model:isAscending="isAscending"
           data-cy="markets-volume_24h-table-header"
           :value="SortableKeys.Volume"
           icon-class="order-last"
@@ -129,7 +129,7 @@ const sortedMarkets = computed(() => {
         </span>
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
-          v-model:ascending="ascending"
+          v-model:isAscending="isAscending"
           data-cy="markets-volume_24h-table-header"
           :value="SortableKeys.Change"
           icon-class="order-last"
