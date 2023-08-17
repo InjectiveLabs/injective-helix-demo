@@ -31,8 +31,22 @@ function onLoad(pageMarket: UiMarketWithToken) {
   fetchData()
 }
 
-onWalletConnected(() => {
+onMounted(() => {
   fetchData()
+})
+
+onWalletConnected(() => {
+  status.setLoading()
+
+  Promise.all([
+    gridStrategyStore.fetchStrategies(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 function fetchData() {
