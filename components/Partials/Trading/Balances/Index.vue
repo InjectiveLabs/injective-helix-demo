@@ -145,7 +145,7 @@ watch(
       </div>
       <div v-if="walletStore.isUserWalletConnected" class="mt-4 relative">
         <AppHocLoading
-          :show-loading="
+          :is-loading="
             status.isLoading() ||
             walletStore.walletConnectStatus === WalletConnectStatus.connecting
           "
