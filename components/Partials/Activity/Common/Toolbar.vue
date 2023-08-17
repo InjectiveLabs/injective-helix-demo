@@ -202,7 +202,7 @@ function handleUpdate() {
           @click="handleClearFilters"
         >
           <div class="items-center flex gap-1">
-            <BaseIcon name="close" md />
+            <BaseIcon name="close" is-md />
             <span>{{ $t('filters.clearAll') }}</span>
           </div>
         </AppButton>

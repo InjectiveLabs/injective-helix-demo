@@ -75,10 +75,10 @@ function handleCancelAllClick() {
               :value="filterType"
               class="text-center"
             >
-              <template #default="{ active }">
+              <template #default="{ isActive }">
                 <span
                   class="uppercase text-xs font-semibold"
-                  :class="[active ? 'text-blue-500' : 'text-gray-500']"
+                  :class="[isActive ? 'text-blue-500' : 'text-gray-500']"
                 >
                   <span v-if="filterType === FilterList.OpenOrders">
                     {{ $t('trade.open_orders') }}

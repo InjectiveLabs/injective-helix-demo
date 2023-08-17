@@ -260,7 +260,7 @@ export default {
             <BaseIcon
               v-if="options.length > 1 || !selectedToken"
               name="caret-down-slim"
-              sm
+              is-sm
             />
           </div>
 

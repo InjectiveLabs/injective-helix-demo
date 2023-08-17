@@ -27,7 +27,7 @@ const isIbcTransfer = computed(() =>
   <div class="mt-4" data-cy="ibc-transfer-modal-note-text-content">
     <div class="flex justify-start items-center">
       <p class="text-xs text-orange-500 ml-2 flex items-center gap-2">
-        <BaseIcon name="circle-info" md />
+        <BaseIcon name="circle-info" is-md />
         <span v-if="isWormholeTransfer">
           {{ $t('bridge.transfersNote', { network: $t('bridge.wormhole') }) }}
         </span>

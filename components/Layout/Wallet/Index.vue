@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED, IS_STAGING } from '@/app/utils/constants'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { amplitudeGenericTracker } from '@/app/providers/amplitude'
 import {
   Modal,
@@ -115,12 +115,12 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrustWallet />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />
-      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
-      <LayoutWalletConnectWalletTrustWallet v-if="IS_STAGING" />
     </ul>
   </AppModal>
   <ModalsTerms />

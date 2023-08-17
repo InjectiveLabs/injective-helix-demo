@@ -364,7 +364,7 @@ function sharePosition() {
           class="cursor-pointer flex items-center justify-center rounded-full bg-opacity-10 hover:bg-opacity-30 hover:text-blue-500 text-gray-500 min-w-4 w-4 h-4 border border-gray-500 hover:border-blue-500 ml-1"
           @click.stop="onAddMarginButtonClick"
         >
-          <BaseIcon name="plus" xs />
+          <BaseIcon name="plus" is-xs />
         </div>
       </div>
     </td>
@@ -404,7 +404,7 @@ function sharePosition() {
         @click="handleClosePosition"
       >
         <template #icon>
-          <BaseIcon name="close" sm />
+          <BaseIcon name="close" is-sm />
         </template>
       </PartialsCommonCancelButton>
     </td>

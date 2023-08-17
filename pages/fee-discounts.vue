@@ -22,10 +22,6 @@ onMounted(() => {
       status.setIdle()
     })
 })
-
-onBeforeUnmount(() => {
-  exchangeStore.reset()
-})
 </script>
 
 <template>

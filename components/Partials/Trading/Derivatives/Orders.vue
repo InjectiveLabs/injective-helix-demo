@@ -185,10 +185,10 @@ function handleCloseAllPositionsClick() {
             :key="`derivative-orders-type-${filterType}`"
           >
             <AppSelectButton v-model="activeType" :value="filterType">
-              <template #default="{ active }">
+              <template #default="{ isActive }">
                 <span
                   class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
-                  :class="[active ? 'text-blue-500' : 'text-gray-500']"
+                  :class="[isActive ? 'text-blue-500' : 'text-gray-500']"
                 >
                   <span v-if="filterType === FilterList.OpenPositions">
                     {{ $t('activity.openPositions') }}

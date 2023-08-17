@@ -14,9 +14,9 @@ defineProps({
 
 <template>
   <BaseSelectorItem :model-value="modelValue" :value="value" v-bind="$attrs">
-    <template #default="{ active }">
+    <template #default="{ isActive }">
       <div class="cursor-pointer">
-        <slot :active="active" />
+        <slot :is-active="isActive" />
       </div>
     </template>
   </BaseSelectorItem>

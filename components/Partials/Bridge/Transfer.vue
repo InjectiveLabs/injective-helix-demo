@@ -45,7 +45,7 @@ watch(destination, (value: string) => {
       <div class="mt-6">
         <AppInput
           v-model="destination"
-          clear-on-paste
+          is-cleared-on-paste
           :label="$t('bridge.injAddress')"
           placeholder="inj"
           wrapper-classes="py-2 px-1"

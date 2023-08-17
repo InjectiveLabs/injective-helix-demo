@@ -146,8 +146,8 @@ function fillRouteQueryParams(params: Record<string, string>) {
         v-model="activeFilterType"
         :value="filterType"
       >
-        <template #default="{ active }">
-          <CommonTabMenuItem :active="active">
+        <template #default="{ isActive }">
+          <CommonTabMenuItem :is-active="isActive">
             <span
               v-if="filterType === FilterList[MarketType.Favorite]"
               class="flex items-center"
