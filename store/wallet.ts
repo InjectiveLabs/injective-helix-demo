@@ -218,7 +218,8 @@ export const useWalletStore = defineStore('wallet', {
         address,
         addresses,
         injectiveAddress,
-        addressConfirmation
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
 
       await walletStore.onConnect()
