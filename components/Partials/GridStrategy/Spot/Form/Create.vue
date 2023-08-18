@@ -78,5 +78,10 @@ function onRemoveStrategy() {
       <span v-if="hasActiveStrategy">{{ $t('sgt.removeStrategy') }}</span>
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
+
+    <p v-if="hasActiveStrategy" class="text-red-500 text-xs font-semibold mt-4">
+      Note: you first need to remove the active strategy before creating a new
+      one, since currently only 1 active strategy is allowed
+    </p>
   </div>
 </template>

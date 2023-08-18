@@ -83,6 +83,50 @@ export const defineGlobalRules = () => {
 
     return true
   })
+
+  defineRule('betweenSgt', (value: string, [min, max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
+    const maxInBigNumber = new BigNumberInBase(max)
+
+    const isBetween =
+      valueInBigNumber.lte(maxInBigNumber) &&
+      valueInBigNumber.gte(minInBigNumber)
+
+    if (!isBetween) {
+      return `Value must be between: ${min} and ${max}`
+    }
+
+    return true
+  })
+
+  defineRule('requiredSgt', (value: string) => {
+    if (!value) {
+      return 'Field is required'
+    }
+
+    return true
+  })
+
+  defineRule('minValueSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Minimum amount should be ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('insufficientSgt', (value: string, [max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.gt(max)) {
+      return `Insufficient Amount`
+    }
+
+    return true
+  })
 }
 
 export default defineNuxtPlugin(() => {

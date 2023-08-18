@@ -66,7 +66,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async createStrategy({
-      amount,
+      quoteAmount,
+      baseAmount,
       levels,
       lowerBound,
       upperBound
@@ -74,7 +75,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       levels: number
       lowerBound: string
       upperBound: string
-      amount: string
+      quoteAmount: string
+      baseAmount?: string
     }) {
       const gridStrategyStore = useGridStrategyStore()
       const walletStore = useWalletStore()
@@ -105,6 +107,32 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         walletStore.address,
         gridMarket.slug
       )
+
+      const funds = baseAmount
+        ? [
+            {
+              denom: gridStrategyStore.spotMarket.baseToken.denom,
+              amount: spotQuantityToChainQuantityToFixed({
+                value: baseAmount,
+                baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals
+              })
+            },
+            {
+              denom: gridStrategyStore.spotMarket.quoteToken.denom,
+              amount: spotQuantityToChainQuantityToFixed({
+                value: quoteAmount,
+                baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+              })
+            }
+          ]
+        : {
+            denom: gridStrategyStore.spotMarket.quoteToken.denom,
+            amount: spotQuantityToChainQuantityToFixed({
+              value: quoteAmount,
+              baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+            })
+          }
+
       const message = MsgExecuteContractCompat.fromJSON({
         contractAddress: gridMarket.contractAddress,
         sender: walletStore.injectiveAddress,
@@ -123,13 +151,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
           })
         }),
-        funds: {
-          denom: gridStrategyStore.spotMarket.quoteToken.denom,
-          amount: spotQuantityToChainQuantityToFixed({
-            value: amount,
-            baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-          })
-        }
+
+        funds
       })
 
       await msgBroadcastClient.broadcastWithFeeDelegation({

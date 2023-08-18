@@ -33,7 +33,7 @@ useForm<SpotGridTradingForm>()
         </div>
 
         <template v-else>
-          <PartialsGridStrategySpotFormErrors />
+          <!-- <PartialsGridStrategySpotFormErrors /> -->
           <PartialsGridStrategySpotFormCreate />
         </template>
 

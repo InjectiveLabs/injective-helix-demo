@@ -3,17 +3,19 @@ import { SpotGridTradingField } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 
-const { value: lowerPriceValue } = useStringField({
-  name: SpotGridTradingField.LowerPrice,
-  rule: 'required',
-  dynamicRule: computed(() => ``)
-})
+const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.LowerPrice,
+    rule: 'requiredSgt',
+    dynamicRule: computed(() => ``)
+  })
 
-const { value: upperPriceValue } = useStringField({
-  name: SpotGridTradingField.UpperPrice,
-  rule: 'required',
-  dynamicRule: computed(() => `minValue:${lowerPriceValue.value}`)
-})
+const { value: upperPriceValue, errorMessage: upperErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.UpperPrice,
+    rule: 'requiredSgt',
+    dynamicRule: computed(() => `minValueSgt:${lowerPriceValue.value}`)
+  })
 </script>
 
 <template>
@@ -32,7 +34,12 @@ const { value: upperPriceValue } = useStringField({
           </span>
         </template>
       </AppInputNumeric>
+
+      <div class="text-red-500 text-xs font-semibold mt-2">
+        {{ lowerErrorMessage }}
+      </div>
     </div>
+
     <div>
       <AppInputNumeric v-model="upperPriceValue">
         <template #context>
@@ -47,6 +54,10 @@ const { value: upperPriceValue } = useStringField({
           </span>
         </template>
       </AppInputNumeric>
+
+      <div class="text-red-500 text-xs font-semibold mt-2">
+        {{ upperErrorMessage }}
+      </div>
     </div>
   </div>
 </template>

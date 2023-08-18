@@ -95,6 +95,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.LowerPrice]: string
   [SpotGridTradingField.UpperPrice]: string
   [SpotGridTradingField.InvestmentAmount]: string
+  [SpotGridTradingField.BaseInvestmentAmount]: string
 }
 
 export type SpotGridMarket = {

@@ -372,7 +372,8 @@ export enum SpotGridTradingField {
   Grids = 'grids',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
-  InvestmentAmount = 'investmentAmount'
+  InvestmentAmount = 'investmentAmount',
+  BaseInvestmentAmount = 'baseInvestmentAmount'
 }
 
 export enum SpotGridMessages {
@@ -385,4 +386,9 @@ export enum SpotGridMessages {
 export enum GridStrategyTabs {
   Running = 'running',
   History = 'history'
+}
+
+export enum InvestmentTypeGst {
+  Quote = 'quote',
+  BaseAndQuote = 'baseAndQuote'
 }

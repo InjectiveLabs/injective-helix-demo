@@ -40,7 +40,12 @@ const profitPerGrid = computed(() => {
     .dividedBy(quotePriceInUsd.dividedBy(formValues.value.investmentAmount))
 })
 
-const symbol = computed(() => gridStrategyStore.spotMarket?.quoteToken.symbol)
+const quoteSymbol = computed(
+  () => gridStrategyStore.spotMarket?.quoteToken.symbol
+)
+const baseSymbol = computed(
+  () => gridStrategyStore.spotMarket?.baseToken.symbol
+)
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   profitPerGrid,
@@ -56,10 +61,11 @@ function handleCreateStrategy() {
 
   gridStrategyStore
     .createStrategy({
-      amount: formValues.value.investmentAmount!,
       levels: Number(formValues.value.grids!),
+      quoteAmount: formValues.value.investmentAmount!,
       lowerBound: formValues.value.lowerPrice!,
-      upperBound: formValues.value.upperPrice!
+      upperBound: formValues.value.upperPrice!,
+      baseAmount: formValues.value.baseInvestmentAmount
     })
     .then(() => {
       success({
@@ -98,7 +104,16 @@ function handleCreateStrategy() {
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
           <p class="font-semibold">
-            {{ formValues.investmentAmount }} {{ symbol }}
+            {{ formValues.investmentAmount }} {{ quoteSymbol }}
+          </p>
+        </div>
+
+        <div
+          v-if="formValues.baseInvestmentAmount"
+          class="flex justify-end items-center"
+        >
+          <p class="font-semibold">
+            {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
           </p>
         </div>
 
@@ -116,7 +131,7 @@ function handleCreateStrategy() {
           <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
             {{ formValues.lowerPrice }} - {{ formValues.upperPrice }}
-            {{ symbol }}
+            {{ quoteSymbol }}
           </p>
         </div>
         <div class="flex justify-between items-center">
@@ -125,7 +140,9 @@ function handleCreateStrategy() {
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
-          <p class="font-semibold">{{ profitPerGridToString }} {{ symbol }}</p>
+          <p class="font-semibold">
+            {{ profitPerGridToString }} {{ quoteSymbol }}
+          </p>
         </div>
       </div>
 

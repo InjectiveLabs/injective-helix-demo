@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { GST_MINIMUM_GRIDS, GST_MAXIMUM_GRIDS } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
 
-const { value: gridsValue } = useStringField({
+const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
-  rule: 'required|between:2,100',
+  rule: `requiredSgt|betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`,
   dynamicRule: computed(() => ``)
 })
 </script>
@@ -14,9 +15,13 @@ const { value: gridsValue } = useStringField({
       <p class="text-xs font-semibold text-gray-200 mb-2">
         {{ $t('sgt.grids') }}
       </p>
-      <p class="text-xs font-semibold text-gray-500 mb-2">2-100</p>
+      <p class="text-xs font-semibold text-gray-500 mb-2">
+        {{ GST_MINIMUM_GRIDS }}-{{ GST_MAXIMUM_GRIDS }}
+      </p>
     </div>
 
     <AppInputNumeric v-model="gridsValue" class="text-right" />
+
+    <p class="text-red-500 text-xs font-semibold pt-2">{{ errorMessage }}</p>
   </div>
 </template>
