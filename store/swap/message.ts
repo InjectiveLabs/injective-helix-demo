@@ -32,6 +32,7 @@ export const submitAtomicOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeInputAmount = formValues[SwapFormField.InputAmount]
@@ -92,6 +93,7 @@ export const submitAtomicOrderExactOutput = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]

@@ -35,6 +35,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 
@@ -79,6 +80,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 
@@ -141,6 +143,7 @@ export const submitLimitOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 
@@ -209,6 +212,7 @@ export const submitStopLimitOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 
@@ -285,6 +289,7 @@ export const submitMarketOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 
@@ -353,6 +358,7 @@ export const submitStopMarketOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnAction()
   await walletStore.validate()
 

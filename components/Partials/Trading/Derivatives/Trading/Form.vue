@@ -560,7 +560,7 @@ function handleRequestSubmit() {
   }
 
   if (
-    appStore.userState.skipTradeConfirmationModal ||
+    appStore.userState.preferences.skipTradeConfirmationModal ||
     tradingTypeMarket.value ||
     tradingTypeLimit.value
   ) {

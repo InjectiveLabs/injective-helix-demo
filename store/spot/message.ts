@@ -28,6 +28,7 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const messages = orders.map((order) =>
@@ -65,6 +66,7 @@ export const cancelOrder = async (
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgCancelSpotOrder.fromJSON({
@@ -108,6 +110,7 @@ export const submitLimitOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
@@ -161,6 +164,7 @@ export const submitMarketOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const orderType = isBuy ? OrderSide.Buy : OrderSide.Sell
@@ -218,6 +222,7 @@ export const submitStopLimitOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgCreateSpotLimitOrder.fromJSON({
@@ -278,6 +283,7 @@ export const submitStopMarketOrder = async ({
   }
 
   await appStore.queue()
+  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgCreateSpotMarketOrder.fromJSON({

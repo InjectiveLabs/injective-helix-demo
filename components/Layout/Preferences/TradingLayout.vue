@@ -6,7 +6,10 @@ const appStore = useAppStore()
 function handleChangeTradingLayout(tradingLayout: TradingLayout) {
   appStore.setUserState({
     ...appStore.userState,
-    tradingLayout
+    preferences: {
+      ...appStore.userState.preferences,
+      tradingLayout
+    }
   })
 }
 </script>
@@ -21,7 +24,7 @@ function handleChangeTradingLayout(tradingLayout: TradingLayout) {
 
     <AppRadioGroup
       class="flex gap-8 items-start"
-      :value="appStore.userState.tradingLayout"
+      :value="appStore.userState.preferences.tradingLayout"
       @change="handleChangeTradingLayout"
     >
       <template #options="{ value, setValue }">
