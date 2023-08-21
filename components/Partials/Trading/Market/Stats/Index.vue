@@ -32,9 +32,7 @@ function handleTokenClick() {
     class="h-full px-4"
     data-cy="trading-page-market-info-component"
   >
-    <div
-      class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
-    >
+    <div class="flex items-center flex-wrap lg:flex-nowrap gap-4 h-full">
       <div
         class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
       >

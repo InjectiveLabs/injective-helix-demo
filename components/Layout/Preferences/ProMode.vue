@@ -7,19 +7,19 @@ function toggleSubaccountManagement() {
   appStore.setUserState({
     ...appStore.userState,
     proMode: {
-      ...appStore.userState.proMode,
-      subaccountManagement: !appStore.userState.proMode.subaccountManagement
+      ...appStore.userState.preferences,
+      subaccountManagement: !appStore.userState.preferences.subaccountManagement
     }
   })
 }
 
 function toggleAuthZManagement() {
-  const authZManagement = !appStore.userState.proMode.authZManagement
+  const authZManagement = !appStore.userState.preferences.authZManagement
 
   appStore.setUserState({
     ...appStore.userState,
-    proMode: {
-      ...appStore.userState.proMode,
+    preferences: {
+      ...appStore.userState.preferences,
       authZManagement
     }
   })
@@ -46,7 +46,7 @@ function toggleAuthZManagement() {
     </span>
 
     <AppCheckbox
-      :model-value="appStore.userState.proMode.subaccountManagement"
+      :model-value="appStore.userState.preferences.subaccountManagement"
       @input="toggleSubaccountManagement"
     >
       <span class="text-gray-300">
@@ -55,7 +55,7 @@ function toggleAuthZManagement() {
     </AppCheckbox>
     <AppCheckbox
       v-if="authZStore.hasGranterOrGranteeGrants"
-      :model-value="appStore.userState.proMode.authZManagement"
+      :model-value="appStore.userState.preferences.authZManagement"
       @input="toggleAuthZManagement"
     >
       <span class="text-gray-300">

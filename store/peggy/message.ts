@@ -36,9 +36,9 @@ export const transfer = async ({
     return
   }
 
+  await appStore.queue()
   await appStore.fetchGasPrice()
   await walletStore.validate()
-  await appStore.queue()
 
   const ethDestinationAddress = getEthereumAddress(walletStore.injectiveAddress)
   const actualAmount = new BigNumberInBase(
@@ -86,8 +86,8 @@ export const withdraw = async ({
     return
   }
 
-  await walletStore.validate()
   await appStore.queue()
+  await walletStore.validate()
 
   /**
    * If the bridge fee is 0 we set it to the lowest number for that denom

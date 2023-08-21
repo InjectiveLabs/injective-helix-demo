@@ -94,6 +94,13 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   }
 )
 
+const userOrderbookLayout = computed(
+  () => appStore.userState.preferences.orderbookLayout
+)
+const userTradingLayout = computed(
+  () => appStore.userState.preferences.tradingLayout
+)
+
 const buyUserOrderPrices = computed(() =>
   subaccountOrders.value.reduce((records, { orderSide, price }) => {
     return orderSide === OrderSide.Buy ? [...records, price] : records
@@ -436,8 +443,7 @@ const orderBookSummary = computed(() => {
 })
 
 const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => ({
-  placement:
-    appStore.userState.tradingLayout === TradingLayout.Right ? 'left' : 'right'
+  placement: userTradingLayout.value === TradingLayout.Right ? 'left' : 'right'
 }))
 
 watch(
@@ -562,15 +568,13 @@ function hidePopperOnScroll(state: UseScrollReturn) {
 <template>
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full px-2">
     <div
-      v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Buys"
+      v-if="userOrderbookLayout !== OrderbookLayout.Buys"
       ref="sellOrdersContainerRef"
       v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
-        'orderbook-half-h':
-          appStore.userState.orderbookLayout !== OrderbookLayout.Sells,
-        'orderbook-full-h':
-          appStore.userState.orderbookLayout === OrderbookLayout.Sells
+        'orderbook-half-h': userOrderbookLayout !== OrderbookLayout.Sells,
+        'orderbook-full-h': userOrderbookLayout === OrderbookLayout.Sells
       }"
     >
       <div class="flex h-full w-full">
@@ -665,15 +669,13 @@ function hidePopperOnScroll(state: UseScrollReturn) {
     </div>
 
     <div
-      v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Sells"
+      v-if="userOrderbookLayout !== OrderbookLayout.Sells"
       ref="buyOrdersContainerRef"
       v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
-        'orderbook-half-h':
-          appStore.userState.orderbookLayout !== OrderbookLayout.Buys,
-        'orderbook-full-h':
-          appStore.userState.orderbookLayout === OrderbookLayout.Buys
+        'orderbook-half-h': userOrderbookLayout !== OrderbookLayout.Buys,
+        'orderbook-full-h': userOrderbookLayout === OrderbookLayout.Buys
       }"
     >
       <div class="flex h-full w-full">

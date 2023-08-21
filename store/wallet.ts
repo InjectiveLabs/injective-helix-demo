@@ -204,10 +204,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectLedger(address: string) {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(walletStore.wallet)
       await walletStore.connectWallet(walletStore.wallet)
 
       const addresses = [address]
@@ -226,10 +224,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectTrezor(address: string) {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(walletStore.wallet)
       await walletStore.connectWallet(walletStore.wallet)
 
       const addresses = [address]
@@ -248,10 +244,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectMetamask() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Metamask)
       await walletStore.connectWallet(Wallet.Metamask)
 
       const addresses = await getAddresses()
@@ -271,10 +265,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectTrustWallet() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.TrustWallet)
       await walletStore.connectWallet(Wallet.TrustWallet)
 
       const addresses = await getAddresses()
@@ -294,10 +286,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectWalletConnect() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.WalletConnect)
       await walletStore.connectWallet(Wallet.WalletConnect)
 
       const addresses = await getAddresses()
@@ -317,10 +307,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectKeplr() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Keplr)
       await walletStore.connectWallet(Wallet.Keplr)
 
       const injectiveAddresses = await getAddresses()
@@ -342,10 +330,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectLeap() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Leap)
       await walletStore.connectWallet(Wallet.Leap)
 
       const injectiveAddresses = await getAddresses()
@@ -365,10 +351,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectCosmostation() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Cosmostation)
       await walletStore.connectWallet(Wallet.Cosmostation)
 
       const injectiveAddresses = await getAddresses()
@@ -388,10 +372,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectTorus() {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Torus)
       await walletStore.connectWallet(Wallet.Torus)
 
       const addresses = await getAddresses()
@@ -411,10 +393,8 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connectAddress(injectiveAddress: string) {
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      await appStore.validate(Wallet.Metamask)
       await walletStore.connectWallet(Wallet.Metamask)
 
       const addressConfirmation = await confirm(injectiveAddress)
