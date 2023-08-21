@@ -37,7 +37,6 @@ export const transfer = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.fetchGasPrice()
   await walletStore.validate()
 
@@ -88,7 +87,6 @@ export const withdraw = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   /**
@@ -174,7 +172,6 @@ export const setTokenAllowance = async (
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.fetchGasPrice()
   await walletStore.validate()
 

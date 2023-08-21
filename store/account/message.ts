@@ -29,7 +29,6 @@ export const deposit = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgDeposit.fromJSON({
@@ -74,7 +73,6 @@ export const withdraw = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgWithdraw.fromJSON({
@@ -123,7 +121,6 @@ export const transfer = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgSend.fromJSON({
@@ -172,7 +169,6 @@ export const externalTransfer = async ({
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgExternalTransfer.fromJSON({

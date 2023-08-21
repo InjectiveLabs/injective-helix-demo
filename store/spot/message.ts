@@ -28,7 +28,6 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const messages = orders.map((order) =>
@@ -66,7 +65,6 @@ export const cancelOrder = async (
   }
 
   await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const message = MsgCancelSpotOrder.fromJSON({
