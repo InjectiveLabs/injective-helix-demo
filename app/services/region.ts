@@ -24,7 +24,8 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
     return {
       country: '',
       continent: '',
-      browserCountry: ''
+      browserCountry: '',
+      vpnCheckTimestamp: 0
     }
   }
 }
