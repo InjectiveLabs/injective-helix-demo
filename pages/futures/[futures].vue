@@ -16,7 +16,8 @@ definePageMeta({
 
       if (
         isCountryRestrictedForPerpetualMarkets(
-          appStore.userState.geoLocation.country
+          appStore.userState.geoLocation.browserCountry ||
+            appStore.userState.geoLocation.country
         )
       ) {
         modalStore.openModal({ type: Modal.FuturesMarketRestricted })
