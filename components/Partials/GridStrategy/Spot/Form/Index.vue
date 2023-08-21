@@ -24,18 +24,14 @@ useForm<SpotGridTradingForm>()
         <PartialsGridStrategySpotFormProfitPerGrid />
         <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
 
-        <div
+        <CommonUserNotConnectedNote
           v-if="
             !walletStore.isUserWalletConnected && !walletStore.injectiveAddress
           "
-        >
-          <CommonUserNotConnectedNote cta />
-        </div>
+          cta
+        />
 
-        <template v-else>
-          <!-- <PartialsGridStrategySpotFormErrors /> -->
-          <PartialsGridStrategySpotFormCreate />
-        </template>
+        <PartialsGridStrategySpotFormCreate v-else />
 
         <ModalsCheckSpotGridAuth />
         <ModalsCreateGridSpotStrategy />

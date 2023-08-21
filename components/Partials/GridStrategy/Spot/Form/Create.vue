@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
-import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
+import {
+  gridStrategyAuthorizationMessageTypes,
+  spotGridMarkets
+} from '@/app/data/grid-strategy'
 
 const authZStore = useAuthZStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -32,10 +35,15 @@ async function onCreateStrategy() {
     return
   }
 
+  const gridMarket = spotGridMarkets.find(
+    (m) => m.slug === gridStrategyStore.spotMarket?.slug
+  )
+
   const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
-    authZStore.granterGrants
-      .map((g) => g.authorization)
-      .some((g) => g.endsWith(m))
+    authZStore.granterGrants.some(
+      (g) =>
+        g.authorization.endsWith(m) && g.grantee === gridMarket?.contractAddress
+    )
   )
 
   if (isAuthorized) {

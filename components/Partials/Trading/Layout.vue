@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { breakpointsTailwind } from '@vueuse/core'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
   getDefaultSpotMarketRouteParams,
@@ -14,7 +15,6 @@ import {
 } from '@/types'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 
-const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -24,6 +24,7 @@ const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { params, query } = useRoute()
 const { $onError } = useNuxtApp()
+const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
 
 const props = defineProps({
   isSpot: Boolean,
@@ -148,7 +149,7 @@ watch(
 </script>
 
 <template>
-  <AppHocLoading :key="route.fullPath" :status="status" class="h-full">
+  <AppHocLoading :status="status" class="h-full">
     <div v-if="market && summary" class="min-h-lg h-full-flex">
       <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats
@@ -168,8 +169,9 @@ watch(
           data-cy="trading-side-component"
         >
           <div
+            v-if="isDesktop"
             key="market-trading-panel"
-            class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
+            class="flex-col flex-wrap h-full w-full flex space-y-1"
           >
             <CommonCard v-if="!isGrid" no-padding>
               <PartialsTradingBalances :market="market" />
@@ -208,14 +210,14 @@ watch(
                     }"
                   >
                     <PartialsTradingMarketChart
+                      v-if="isDesktop"
                       :market="market"
-                      class="hidden lg:block"
                     />
                   </div>
                 </div>
               </CommonCard>
 
-              <div class="w-full lg:hidden mt-2">
+              <div v-if="!isDesktop" class="w-full mt-2">
                 <slot name="trading-panel" />
                 <PartialsTradingBalances v-if="!isGrid" :market="market" />
                 <CommonCard class="mt-1">
