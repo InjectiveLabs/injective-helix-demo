@@ -28,7 +28,10 @@ const ninjaPassUrl = computed(() => {
 watch(
   () => ninjaPassCode,
   (code) => {
-    if (code && !appStore.userState.ninjaPassWinnerModalViewed) {
+    if (
+      code &&
+      !appStore.userState.modalsViewed.includes(Modal.NinjaPassWinner)
+    ) {
       modalStore.openModal({ type: Modal.NinjaPassWinner })
 
       confetti.showConfetti()
@@ -45,7 +48,7 @@ function closeModal() {
 
   appStore.setUserState({
     ...appStore.userState,
-    ninjaPassWinnerModalViewed: true
+    modalsViewed: [...appStore.userState.modalsViewed, Modal.NinjaPassWinner]
   })
 }
 </script>

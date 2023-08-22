@@ -12,20 +12,21 @@ import { AppState, OrderbookLayout, TradingLayout } from '@/types'
 const stateToPersist = {
   app: {
     userState: {
-      vpnOrProxyUsageValidationTimestamp: 0,
       favoriteMarkets: [],
+      bannersViewed: [],
+      modalsViewed: [],
       geoLocation: {
         continent: '',
-        country: ''
+        country: '',
+        browserLocation: '',
+        vpnCheckTimestamp: 0
       },
-      orderbookLayout: OrderbookLayout.Default,
-      tradingLayout: TradingLayout.Left,
-      ninjaPassWinnerModalViewed: false,
-      userFeedbackModalViewed: false,
-      bannersViewed: [],
-      proMode: {
-        authZManagement: false,
-        subaccountManagement: false
+      preferences: {
+        skipTradeConfirmationModal: false,
+        orderbookLayout: OrderbookLayout.Default,
+        tradingLayout: TradingLayout.Left,
+        subaccountManagement: false,
+        authZManagement: false
       }
     }
   },
