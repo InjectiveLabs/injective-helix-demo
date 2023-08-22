@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 
 definePageMeta({
-  middleware: ['markets']
+  middleware: ['markets', 'grid-strategy']
 })
 
 const spotStore = useSpotStore()

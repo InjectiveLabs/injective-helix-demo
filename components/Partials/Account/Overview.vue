@@ -185,6 +185,7 @@ function handleTransferClick() {
             appStore.isSubaccountManagementActive &&
             !walletStore.isAuthzWalletConnected
           "
+          :disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
           @click="handleTransferClick"
         >

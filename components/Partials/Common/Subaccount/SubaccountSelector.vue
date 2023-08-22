@@ -5,6 +5,7 @@ import {
   getMarketIdFromSubaccountId
 } from '@/app/utils/helpers'
 
+const route = useRoute()
 const accountStore = useAccountStore()
 const { t } = useLang()
 
@@ -12,9 +13,16 @@ const emit = defineEmits<{
   'update:subaccount': [subaccount: string]
 }>()
 
+const isSpotOrFuturesRoute = computed(() =>
+  ['spot', 'futures'].some((r) => (route.name as string).startsWith(r))
+)
+
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap)
+        .filter((subaccountId) =>
+          isSpotOrFuturesRoute.value ? !isSgtSubaccountId(subaccountId) : true
+        )
         .map((value) => {
           if (getSubaccountIndex(value) === 0) {
             return { display: `${t('account.main')}`, value }

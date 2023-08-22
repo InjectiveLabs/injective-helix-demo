@@ -10,6 +10,7 @@ import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 
 definePageMeta({
   middleware: [
+    'grid-strategy',
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
