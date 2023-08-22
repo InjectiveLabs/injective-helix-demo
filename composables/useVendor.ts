@@ -1,17 +1,19 @@
 import { useI18n as useLang } from 'vue-i18n'
 import {
-  useField,
   useForm,
+  useField,
+  useResetForm,
   useFormErrors,
   useFormValues,
-  useResetForm
+  useValidateForm
 } from 'vee-validate'
 
 export {
+  useForm,
   useLang,
   useField,
-  useForm,
+  useResetForm,
   useFormErrors,
   useFormValues,
-  useResetForm
+  useValidateForm
 }

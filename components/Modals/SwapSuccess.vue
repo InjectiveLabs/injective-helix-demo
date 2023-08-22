@@ -20,7 +20,9 @@ const props = defineProps({
 const status: Status = reactive(new Status(StatusType.Idle))
 const swapInfo = ref(undefined as Record<string, string> | undefined)
 
-const showModal = computed<boolean>(() => modalStore.modals[Modal.SwapSuccess])
+const isModalOpen = computed<boolean>(
+  () => modalStore.modals[Modal.SwapSuccess]
+)
 
 const explorerUrl = computed(() => {
   if (!props.txHash) {
@@ -30,12 +32,16 @@ const explorerUrl = computed(() => {
   return `${getExplorerUrl(NETWORK)}/transaction/${props.txHash}`
 })
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.SwapSuccess)
 }
 
-watch(showModal, (showModalState: boolean) => {
-  if (!showModalState) {
+function onModalClose() {
+  closeModal()
+}
+
+watch(isModalOpen, (isModalOpen: boolean) => {
+  if (!isModalOpen) {
     return
   }
 
@@ -55,7 +61,7 @@ watch(showModal, (showModalState: boolean) => {
 </script>
 
 <template>
-  <AppModal :show="showModal" sm @modal:closed="close">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative">
         <AppCustomConfetti
@@ -97,7 +103,7 @@ watch(showModal, (showModalState: boolean) => {
         <AppButton
           class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
           md
-          @click="close"
+          @click="closeModal"
         >
           {{ $t('trade.swap.backToSwap') }}
         </AppButton>

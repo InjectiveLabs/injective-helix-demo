@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  ascending: Boolean,
+  isAscending: Boolean,
 
   value: {
     type: String,
@@ -16,24 +16,28 @@ defineProps({
 
 <template>
   <BaseSortableHeaderItem
-    :ascending="ascending"
+    :is-ascending="isAscending"
     :sort-by="sortBy"
     :value="value"
     v-bind="$attrs"
   >
-    <template #default="{ active }">
+    <template #default="{ isActive }">
       <div class="flex cursor-pointer items-center gap-1" :class="$attrs.class">
         <div class="space-y-1">
           <BaseIcon
             name="triangle"
-            xs
+            is-xs
             class="transition-all rotate-180"
-            :class="[active && ascending ? 'text-gray-200' : 'text-gray-600']"
+            :class="[
+              isActive && isAscending ? 'text-gray-200' : 'text-gray-600'
+            ]"
           />
           <BaseIcon
             name="triangle"
-            :class="[active && !ascending ? 'text-gray-200' : 'text-gray-600']"
-            xs
+            :class="[
+              isActive && !isAscending ? 'text-gray-200' : 'text-gray-600'
+            ]"
+            is-xs
           />
         </div>
 

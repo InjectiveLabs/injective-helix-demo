@@ -10,8 +10,10 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeType, Modal } from '@/types'
 
+const appStore = useAppStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 
@@ -156,7 +158,7 @@ function handleTransferClick() {
       </div>
 
       <div class="flex items-center justify-between md:justify-end sm:gap-4">
-        <NuxtLink
+        <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
           :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }"
         >
@@ -165,9 +167,9 @@ function handleTransferClick() {
               {{ $t('account.deposit') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
-        <NuxtLink
+        <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
           :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
         >
@@ -176,9 +178,16 @@ function handleTransferClick() {
               {{ $t('account.withdraw') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
-        <AppButton class="border border-blue-500" @click="handleTransferClick">
+        <AppButton
+          v-if="
+            appStore.isSubaccountManagementActive &&
+            !walletStore.isAuthzWalletConnected
+          "
+          class="border border-blue-500"
+          @click="handleTransferClick"
+        >
           <span class="text-blue-500 font-semibold">
             {{ $t('account.transfer') }}
           </span>
@@ -187,7 +196,7 @@ function handleTransferClick() {
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading"
+      v-if="!isLoading && appStore.isSubaccountManagementActive"
       v-bind="{
         hideBalances
       }"

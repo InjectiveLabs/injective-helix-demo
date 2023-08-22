@@ -54,7 +54,7 @@ useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
   >
     <AppHocLoading
       loader-class="relative"
-      :show-loading="marketsWithSummaryAndVolumeInUsd.length === 0"
+      :is-loading="marketsWithSummaryAndVolumeInUsd.length === 0"
     >
       <PartialsTradingSidebarMarketsTable
         :market="market"

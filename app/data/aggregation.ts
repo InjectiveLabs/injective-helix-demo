@@ -321,6 +321,12 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.000001')
   },
 
+  'SEI/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
   '1000PEPE/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000001'),
     default: getDecimalPlaceFromValue('0.000001'),

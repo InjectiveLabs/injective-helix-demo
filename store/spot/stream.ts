@@ -98,16 +98,15 @@ export const streamTrades = (marketId: string) => {
 
 export const streamSubaccountOrders = (marketId?: string) => {
   const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountOrders({
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -157,16 +156,15 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountOrderHistory({
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {
@@ -218,17 +216,16 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
 export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
-  const { subaccountId } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccountId) {
+  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountTrade({
     marketId,
-    subaccountId,
+    subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return

@@ -40,10 +40,10 @@ function resetForm() {
       :value="tradeType"
       @update:modelValue="resetForm"
     >
-      <template #default="{ active }">
+      <template #default="{ isActive }">
         <span
           class="text-xs uppercase tracking-wide cursor-pointer"
-          :class="[active ? 'text-blue-500' : 'text-gray-500']"
+          :class="[isActive ? 'text-blue-500' : 'text-gray-500']"
         >
           <span v-if="tradeType === TradeExecutionType.LimitFill">
             {{ $t('trade.limit') }}

@@ -15,7 +15,7 @@ onMounted(() => {
 })
 
 function init() {
-  if (appStore.userState.userFeedbackModalViewed) {
+  if (appStore.userState.modalsViewed.includes(Modal.UserFeedback)) {
     return
   }
 
@@ -44,7 +44,7 @@ function handleClose() {
 function updateUserFeedbackModalViewed() {
   appStore.setUserState({
     ...appStore.userState,
-    userFeedbackModalViewed: true
+    modalsViewed: [...appStore.userState.modalsViewed, Modal.UserFeedback]
   })
 
   handleClose()
@@ -68,7 +68,7 @@ function handleRejectSurveyClickEvent() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="handleClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="handleClose">
     <div class="flex flex-col -mt-5 justify-center items-center">
       <div class="flex items-center justify-center cursor-pointer mb-6">
         <AssetLogo class="h-7 w-10 mr-2" alt="Helix" />

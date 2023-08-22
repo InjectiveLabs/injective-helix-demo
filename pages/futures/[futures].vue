@@ -6,6 +6,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
+import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 
 definePageMeta({
   middleware: [
@@ -13,7 +14,12 @@ definePageMeta({
       const appStore = useAppStore()
       const modalStore = useModalStore()
 
-      if (['US'].includes(appStore.userState.geoLocation.country)) {
+      if (
+        isCountryRestrictedForPerpetualMarkets(
+          appStore.userState.geoLocation.browserCountry ||
+            appStore.userState.geoLocation.country
+        )
+      ) {
         modalStore.openModal({ type: Modal.FuturesMarketRestricted })
       }
     }

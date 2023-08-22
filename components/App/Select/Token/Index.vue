@@ -253,14 +253,14 @@ export default {
               }"
             />
 
-            <div v-else class="whitespace-nowrap">
+            <div v-else-if="options.length > 0" class="whitespace-nowrap">
               {{ $t('trade.swap.tokenSelector.selectToken') }}
             </div>
 
             <BaseIcon
               v-if="options.length > 1 || !selectedToken"
               name="caret-down-slim"
-              sm
+              is-sm
             />
           </div>
 

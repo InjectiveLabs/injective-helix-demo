@@ -38,7 +38,8 @@ export const getRoutes = (network: Network, env: string) => {
     'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
-    'atom-usdt-perp'
+    'atom-usdt-perp',
+    'sei-usdt-perp'
   ]
 
   if (IS_TESTNET) {
@@ -65,7 +66,7 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = ['activity', 'account']
+  const walletConnectedRequiredRouteNames = ['activity', 'account', 'bridge']
 
   // Layout routes
   const footerEnabledRoutes = [

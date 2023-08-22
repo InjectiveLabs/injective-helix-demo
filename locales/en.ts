@@ -179,7 +179,7 @@ export default {
 
   futuresMarketRestricted: {
     title: 'Unavailable Market',
-    description: 'This market is not available in your region.',
+    description: 'Perpetual markets are not available in your region.',
     cta: 'Return to homepage'
   },
 
@@ -269,7 +269,9 @@ export default {
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
-    leaderboard: 'Leaderboard'
+    leaderboard: 'Leaderboard',
+    connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
+      `Connected to ${named('address')}. Click to close connection.`
   },
 
   fee_discounts: {
@@ -301,7 +303,8 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: ({ named }: I18nMessageFunction) =>
-      `In past ${named('days')} days`
+      `In past ${named('days')} days`,
+    tierAuthZ: 'Tier (AuthZ)'
   },
 
   pagination: {
@@ -340,7 +343,7 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimer_note: ({ interpolate, named }: I18nMessageFunction) =>
+    disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
         'By connecting to a wallet, you agree and acknowledge the Injective Labs ',
         named('terms'),
@@ -354,5 +357,16 @@ export default {
     connectWithAddress: 'Connect with address',
     connect: 'Connect',
     enterInjectiveAddress: 'Enter your injective address'
+  },
+
+  proMode: {
+    proMode: 'Pro Mode',
+    subaccountManagement: 'Enable subaccount management',
+    authzManagement: 'Enable authZ management'
+  },
+
+  authZ: {
+    granters: 'Granters',
+    grantees: 'Grantees'
   }
 }

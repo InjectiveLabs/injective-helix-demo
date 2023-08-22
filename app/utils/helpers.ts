@@ -69,3 +69,22 @@ export function getMinQuantityTickSize(
         .toFixed()
     : ''
 }
+
+export function getMinPriceTickSize(
+  isSpot: boolean,
+  market: UiMarketWithToken
+) {
+  if (!isSpot) {
+    return new BigNumberInWei(market.minPriceTickSize)
+      .toBase(market.quoteToken.decimals)
+      .toFixed()
+  }
+
+  const spotMarket = market as UiSpotMarketWithToken
+
+  return spotMarket.baseToken
+    ? new BigNumberInWei(market.minPriceTickSize)
+        .toBase(spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals)
+        .toFixed()
+    : ''
+}

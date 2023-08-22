@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { BridgeField, BridgeType, Modal } from '@/types'
+import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 
+const walletStore = useWalletStore()
 const modalStore = useModalStore()
 
-const formValues = useFormValues()
+const formValues = useFormValues<BridgeForm>()
 const formErrors = useFormErrors()
+const validateForm = useValidateForm()
 
 const hasFormErrors = computed(
   () =>
@@ -12,7 +14,19 @@ const hasFormErrors = computed(
     formValues.value[BridgeField.Amount] === ''
 )
 
-function handleBridgeConfirmation() {
+const isDepositAndIsAuthZConnected = computed(
+  () =>
+    formValues.value[BridgeField.BridgeType] === BridgeType.Deposit &&
+    walletStore.isAuthzWalletConnected
+)
+
+async function handleBridgeConfirmation() {
+  const { valid } = await validateForm()
+
+  if (!valid) {
+    return
+  }
+
   nextTick(() => {
     modalStore.openModal({ type: Modal.BridgeConfirm })
   })
@@ -22,13 +36,16 @@ function handleBridgeConfirmation() {
 <template>
   <AppButton
     lg
-    :disabled="hasFormErrors"
+    :disabled="hasFormErrors || isDepositAndIsAuthZConnected"
     class="w-full font-semibold rounded bg-blue-500 text-blue-900"
     data-cy="transfer-modal-transfer-now-button"
     @click="handleBridgeConfirmation"
   >
     <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit">
-      {{ $t('bridge.depositNow') }}
+      <span v-if="walletStore.isAuthzWalletConnected">{{
+        $t('bridge.authZNotSupported')
+      }}</span>
+      <span v-else>{{ $t('bridge.depositNow') }}</span>
     </span>
 
     <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Withdraw">

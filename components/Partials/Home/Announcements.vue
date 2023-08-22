@@ -7,23 +7,23 @@ import {
 } from '@/app/client/types/announcements'
 
 const { $onError } = useNuxtApp()
-const appStore = useAppStore()
+const announcementStore = useAnnouncementStore()
 
 const status = reactive(new Status(StatusType.Loading))
 
 const attachmentsWithAnnouncements = computed(() => {
   const defaultAnnouncementsSize = 3
 
-  if (appStore.announcements.length === 0) {
+  if (announcementStore.announcements.length === 0) {
     return []
   }
 
-  const filteredAttachments = appStore.attachments.filter(
+  const filteredAttachments = announcementStore.attachments.filter(
     (attachment: Attachment) => attachment
   )
 
-  const formattedAttachmentsWithAnnouncements = appStore.announcements.map(
-    (announcement: Announcement) => {
+  const formattedAttachmentsWithAnnouncements =
+    announcementStore.announcements.map((announcement: Announcement) => {
       const matchingAttachment = filteredAttachments.find(
         (attachment: Attachment) => {
           return attachment.announcementId === announcement.announcementId
@@ -38,8 +38,7 @@ const attachmentsWithAnnouncements = computed(() => {
         ...announcement,
         ...matchingAttachment
       }
-    }
-  )
+    })
 
   return formattedAttachmentsWithAnnouncements.slice(
     0,
@@ -48,7 +47,7 @@ const attachmentsWithAnnouncements = computed(() => {
 })
 
 onMounted(() => {
-  Promise.all([appStore.fetchAnnouncements()])
+  Promise.all([announcementStore.fetchAnnouncements()])
     .catch($onError)
     .finally(() => status.setIdle())
 })

@@ -114,7 +114,7 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
             [Change.Increase, Change.Decrease].includes(percentageChangeStatus)
           "
           name="arrow"
-          class="transform w-3 h-3 mr-1"
+          class="w-3 h-3 mr-1"
           :class="{
             'text-green-500 rotate-90':
               percentageChangeStatus === Change.Increase,

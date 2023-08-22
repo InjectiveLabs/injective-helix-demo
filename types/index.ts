@@ -28,6 +28,8 @@ export interface Constructable<T> {
 export interface GeoLocation {
   continent: string
   country: string
+  browserCountry: string
+  vpnCheckTimestamp: number
 }
 
 export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd

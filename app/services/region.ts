@@ -19,11 +19,13 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
       data: GeoLocation
     }
 
-    return data
+    return { ...data, browserCountry: '' }
   } catch (error: any) {
     return {
       country: '',
-      continent: ''
+      continent: '',
+      browserCountry: '',
+      vpnCheckTimestamp: 0
     }
   }
 }
@@ -87,7 +89,7 @@ export const validateIpAddressForVPNOld = async (ipAddress: string) => {
 }
 
 export const validateIpAddressForVPN = async (ipAddress: string) => {
-  const httpClient = new HttpClient('https://vpnapi.io/')
+  const httpClient = new HttpClient('https://vpnapi.io/', { timeout: 1000 })
 
   try {
     const response = (await httpClient.get(`api/${ipAddress}`, {
@@ -198,8 +200,6 @@ export const displayVPNOrProxyUsageToast = () => {
 }
 
 export const getCoordinatesNoThrow = async () => {
-  displayVPNOrProxyUsageToast()
-
   const position = (await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   }).catch(() => {
@@ -223,13 +223,13 @@ export const getCoordinatesNoThrow = async () => {
 export const fetchUserCountryFromBrowser = async () => {
   const position = await getCoordinatesNoThrow()
 
-  return await fetchCountryFromCoordinates(
+  return await fetchCountryFromCoordinatesNoThrow(
     position.latitude,
     position.longitude
   )
 }
 
-export const fetchCountryFromCoordinates = async (
+export const fetchCountryFromCoordinatesNoThrow = async (
   latitude: string,
   longitude: string
 ) => {
@@ -255,8 +255,6 @@ export const fetchCountryFromCoordinates = async (
 
     return country?.short_name || ''
   } catch (e: unknown) {
-    throw new HttpRequestException(new Error((e as any).message), {
-      contextModule: 'region'
-    })
+    return ''
   }
 }

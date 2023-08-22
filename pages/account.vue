@@ -13,18 +13,16 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  status.setLoading()
-
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .then(() => {
-      Promise.all([
-        accountStore.streamBankBalance(),
-        accountStore.streamSubaccountBalance()
-      ])
-        .catch($onError)
-        .finally(() => status.setIdle())
+      //
     })
     .catch($onError)
+    .finally(() => status.setIdle())
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)
@@ -34,7 +32,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
   <AppHocLoading
     class="h-full"
     :status="status"
-    :show-loading="!walletStore.isUserWalletConnected"
+    :is-loading="!walletStore.isUserWalletConnected"
   >
     <div class="container">
       <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">

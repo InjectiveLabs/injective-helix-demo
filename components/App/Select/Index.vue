@@ -40,20 +40,20 @@ function handleSelect(option: BaseDropdownOption) {
     placement="bottom-end"
     :flip="false"
   >
-    <template #default="{ shown }">
+    <template #default="{ isOpen }">
       <div class="flex items-center gap-2" :class="wrapperClass">
         <slot name="prefix" />
 
         <slot :selected="selectedOption" />
 
-        <slot name="icon" :shown="shown">
+        <slot name="icon" :is-open="isOpen">
           <BaseIcon
             name="chevron-down"
             class="h-3 w-3 min-w-3 fill-current"
             :class="{
-              'ease-in-out duration-300': shown,
-              'rotate-180': shown,
-              'rotate-0': !shown
+              'ease-in-out duration-300': isOpen,
+              'rotate-180': isOpen,
+              'rotate-0': !isOpen
             }"
           />
         </slot>

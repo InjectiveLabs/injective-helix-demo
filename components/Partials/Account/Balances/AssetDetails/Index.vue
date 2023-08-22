@@ -216,7 +216,7 @@ function handleClose() {
           </div>
 
           <div class="mt-auto flex justify-between gap-4">
-            <NuxtLink
+            <BaseNuxtLink
               class="w-full"
               :to="{
                 name: 'bridge',
@@ -233,9 +233,9 @@ function handleClose() {
                   {{ $t('account.deposit') }}
                 </span>
               </button>
-            </NuxtLink>
+            </BaseNuxtLink>
 
-            <NuxtLink
+            <BaseNuxtLink
               class="w-full"
               :to="{
                 name: 'bridge',
@@ -252,7 +252,7 @@ function handleClose() {
                   {{ $t('account.withdraw') }}
                 </span>
               </button>
-            </NuxtLink>
+            </BaseNuxtLink>
           </div>
         </div>
       </div>
