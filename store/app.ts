@@ -12,6 +12,7 @@ import {
 } from '@/app/utils/constants'
 import { Locale, english } from '@/locales'
 import {
+  Modal,
   AppState,
   GeoLocation,
   NoticeBanner,
@@ -34,8 +35,7 @@ import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 export interface UserBasedState {
   favoriteMarkets: string[]
   bannersViewed: NoticeBanner[]
-  userFeedbackModalViewed: boolean
-  ninjaPassWinnerModalViewed: boolean
+  modalsViewed: Modal[]
 
   geoLocation: GeoLocation
   preferences: {
@@ -79,6 +79,8 @@ const initialStateFactory = (): AppStoreState => ({
 
   // User settings
   userState: {
+    modalsViewed: [],
+    bannersViewed: [],
     favoriteMarkets: [],
     geoLocation: {
       continent: '',
@@ -86,10 +88,6 @@ const initialStateFactory = (): AppStoreState => ({
       browserCountry: '',
       vpnCheckTimestamp: 0
     },
-    ninjaPassWinnerModalViewed: false,
-    userFeedbackModalViewed: false,
-    bannersViewed: [],
-
     preferences: {
       skipTradeConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,

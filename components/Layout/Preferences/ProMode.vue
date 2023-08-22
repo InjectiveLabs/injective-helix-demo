@@ -6,7 +6,7 @@ const walletStore = useWalletStore()
 function toggleSubaccountManagement() {
   appStore.setUserState({
     ...appStore.userState,
-    proMode: {
+    preferences: {
       ...appStore.userState.preferences,
       subaccountManagement: !appStore.userState.preferences.subaccountManagement
     }
