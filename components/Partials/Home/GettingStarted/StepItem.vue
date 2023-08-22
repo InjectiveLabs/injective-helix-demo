@@ -24,16 +24,16 @@ defineProps({
     v-bind="$attrs"
     class="flex-grow"
   >
-    <template #default="{ active }">
+    <template #default="{ isActive }">
       <div
         class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px]"
         :class="{
-          'opacity-50': !active
+          'opacity-50': !isActive
         }"
       >
         <div
           class="w-8 h-8 ml-6 rounded-full flex items-center justify-center"
-          :class="[active ? 'bg-blue-500' : 'bg-gray-600 opacity-50']"
+          :class="[isActive ? 'bg-blue-500' : 'bg-gray-600 opacity-50']"
         >
           <span class="font-semibold text-white">{{ step }}</span>
         </div>

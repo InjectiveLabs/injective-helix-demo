@@ -10,17 +10,15 @@ const memoRequired = ref(false)
 const { isTransfer } = useBridgeState(formValues)
 
 const { value: destination, errors: destinationErrors } = useStringField({
-  name: BridgeField.Destination,
   rule: '',
+  name: BridgeField.Destination,
   dynamicRule: computed(() => (isTransfer.value ? 'required|injAddress' : ''))
 })
 
 const { value: memo, resetField: resetMemo } = useStringField({
-  name: BridgeField.Memo,
   rule: '',
-  dynamicRule: computed(() => {
-    return memoRequired.value ? 'required' : ''
-  })
+  name: BridgeField.Memo,
+  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
 })
 
 onMounted(() => {
@@ -47,7 +45,7 @@ watch(destination, (value: string) => {
       <div class="mt-6">
         <AppInput
           v-model="destination"
-          clear-on-paste
+          is-cleared-on-paste
           :label="$t('bridge.injAddress')"
           placeholder="inj"
           wrapper-classes="py-2 px-1"

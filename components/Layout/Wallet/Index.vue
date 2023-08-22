@@ -20,7 +20,7 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-const showLoading = computed<boolean>(
+const isLoading = computed<boolean>(
   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
 )
 
@@ -87,8 +87,8 @@ watch(isModalOpen, (newShowModalState) => {
   </AppButton>
 
   <AppModal
-    :show="isModalOpen"
-    :show-loading="showLoading"
+    :is-open="isModalOpen"
+    :is-loading="isLoading"
     :ignore="['.v-popper__popper']"
     md
     @modal:closed="handleModalClose"
@@ -115,14 +115,12 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrustWallet />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />
-      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
-      <!--
-      <LayoutWalletConnectWalletTrustWallet />
-      -->
     </ul>
   </AppModal>
   <ModalsTerms />

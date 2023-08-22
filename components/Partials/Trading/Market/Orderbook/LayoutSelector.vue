@@ -10,7 +10,7 @@ const FilterList = [
 ]
 
 const orderbookLayoutType = computed({
-  get: (): OrderbookLayout => appStore.userState.orderbookLayout,
+  get: (): OrderbookLayout => appStore.userState.preferences.orderbookLayout,
   set: (orderbookLayout: OrderbookLayout) => {
     appStore.setUserState({
       ...appStore.userState,
@@ -28,10 +28,10 @@ const orderbookLayoutType = computed({
       v-model="orderbookLayoutType"
       :value="layoutType"
     >
-      <template #default="{ active }">
+      <template #default="{ isActive }">
         <span
           class="w-6 h-6 flex justify-center items-center"
-          :class="[active ? 'opacity-100' : 'opacity-30 hover:opacity-100']"
+          :class="[isActive ? 'opacity-100' : 'opacity-30 hover:opacity-100']"
         >
           <img
             v-if="layoutType === OrderbookLayout.Default"

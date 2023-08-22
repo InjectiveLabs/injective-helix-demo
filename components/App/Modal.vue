@@ -31,17 +31,21 @@ const classes = computed(() => {
   return result.join(' ')
 })
 
-function handleClose() {
+function closeModal() {
   if (!props.isAlwaysOpen) {
     emit('modal:closed')
   }
+}
+
+function onModalClose() {
+  closeModal()
 }
 
 watchDebounced(
   width,
   (newWidth, oldWidth) => {
     if (oldWidth && newWidth >= 640) {
-      handleClose()
+      closeModal()
     }
   },
   { debounce: 200, immediate: true }
@@ -54,12 +58,12 @@ watchDebounced(
     :class="classes"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
     v-bind="$attrs"
-    @close="handleClose"
+    @modal:closed="onModalClose"
   >
-    <template #default="{ close, showLoading }">
+    <template #default="{ close, isLoading }">
       <div
         :class="{
-          'min-h-[320px] flex flex-col': showLoading
+          'min-h-[320px] flex flex-col': isLoading
         }"
       >
         <div
@@ -80,7 +84,7 @@ watchDebounced(
         </div>
 
         <div
-          v-if="showLoading"
+          v-if="isLoading"
           class="grow flex items-center justify-center -mt-6"
         >
           <AppSpinner lg />

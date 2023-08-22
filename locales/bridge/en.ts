@@ -75,6 +75,7 @@ export default {
       `Subaccount ${named('subaccountId')}`,
     transferToSubaccountSuccess: 'Subaccount transfer successful',
     noAssetToTransfer:
-      "You don't have any assets to transfer from this subaccount."
+      "You don't have any assets to transfer from this subaccount.",
+    authZNotSupported: 'AuthZ not supported'
   }
 }

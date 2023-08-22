@@ -29,35 +29,38 @@ export function useSwapTokenSelector({
   const swapStore = useSwapStore()
 
   const tradableTokenMaps = computed(() =>
-    swapStore.routes.reduce((tokens, route: Route) => {
-      const inputTokenWithBalance = getBalanceWithToken(
-        route.sourceDenom,
-        balances.value
-      )
+    swapStore.routes.reduce(
+      (tokens, route: Route) => {
+        const inputTokenWithBalance = getBalanceWithToken(
+          route.sourceDenom,
+          balances.value
+        )
 
-      const outputTokenWithBalance = getBalanceWithToken(
-        route.targetDenom,
-        balances.value
-      )
+        const outputTokenWithBalance = getBalanceWithToken(
+          route.targetDenom,
+          balances.value
+        )
 
-      if (!inputTokenWithBalance || !outputTokenWithBalance) {
-        return tokens
-      }
+        if (!inputTokenWithBalance || !outputTokenWithBalance) {
+          return tokens
+        }
 
-      const inputTokens = tokens[route.targetDenom]
-        ? [...tokens[route.targetDenom], inputTokenWithBalance]
-        : [inputTokenWithBalance]
+        const inputTokens = tokens[route.targetDenom]
+          ? [...tokens[route.targetDenom], inputTokenWithBalance]
+          : [inputTokenWithBalance]
 
-      const outputTokens = tokens[route.sourceDenom]
-        ? [...tokens[route.sourceDenom], outputTokenWithBalance]
-        : [outputTokenWithBalance]
+        const outputTokens = tokens[route.sourceDenom]
+          ? [...tokens[route.sourceDenom], outputTokenWithBalance]
+          : [outputTokenWithBalance]
 
-      return {
-        ...tokens,
-        [route.targetDenom]: inputTokens,
-        [route.sourceDenom]: outputTokens
-      }
-    }, {} as Record<string, BalanceWithTokenAndPrice[]>)
+        return {
+          ...tokens,
+          [route.targetDenom]: inputTokens,
+          [route.sourceDenom]: outputTokens
+        }
+      },
+      {} as Record<string, BalanceWithTokenAndPrice[]>
+    )
   )
 
   const inputDenomOptions = computed(
@@ -92,7 +95,7 @@ export function useSwapTokenSelector({
    * So we either keep the currently selected input denom or update to a default one
    **/
   const selectorInputDenom = computed(() => {
-    const selectedInputDenom = tradableTokenMaps.value[outputDenom.value].find(
+    const selectedInputDenom = tradableTokenMaps.value[outputDenom.value]?.find(
       (token: BalanceWithTokenAndPrice) => token.denom === inputDenom.value
     )?.denom
     const defaultInputDenom =

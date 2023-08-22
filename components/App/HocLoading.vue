@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 defineProps({
   noPadding: Boolean,
-  showLoading: Boolean,
+  isLoading: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -22,7 +22,7 @@ defineProps({
   <div>
     <Suspense>
       <div
-        v-if="status.isLoading() || showLoading"
+        v-if="status.isLoading() || isLoading"
         class="h-full"
         :class="{
           'py-4': !noPadding

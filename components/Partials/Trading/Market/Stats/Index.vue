@@ -32,9 +32,7 @@ function handleTokenClick() {
     class="h-full px-4"
     data-cy="trading-page-market-info-component"
   >
-    <div
-      class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
-    >
+    <div class="flex items-center flex-wrap lg:flex-nowrap gap-4 h-full">
       <div
         class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
       >
@@ -83,28 +81,6 @@ function handleTokenClick() {
         :summary="summary"
         class="w-full lg:w-auto pb-4 lg:pb-0"
       />
-
-      <div class="ml-auto hidden lg:block">
-        <BaseHoverMenu
-          popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-750 shadow-dropdown z-40"
-        >
-          <template #default>
-            <button
-              id="layout-preferences-button"
-              class="w-6 h-6 cursor-pointer group flex justify-center items-center"
-            >
-              <BaseIcon
-                name="sliders"
-                class="text-gray-450 group-hover:text-white w-4 h-4"
-              />
-            </button>
-          </template>
-
-          <template #content>
-            <PartialsTradingMarketLayoutPreferences />
-          </template>
-        </BaseHoverMenu>
-      </div>
     </div>
   </CommonCard>
 </template>

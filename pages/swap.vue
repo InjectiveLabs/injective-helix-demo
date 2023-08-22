@@ -10,6 +10,10 @@ import {
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
+definePageMeta({
+  middleware: ['swap']
+})
+
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -54,19 +58,21 @@ const hideErrorToast = computed(() =>
 )
 
 onMounted(() => {
-  /**
-   * Set subaccount id to default until the swap SC has support for multiple subaccounts
-   **/
-  if (walletStore.isUserWalletConnected) {
-    accountStore.$patch({
-      subaccountId: walletStore.defaultSubaccountId
-    })
-  }
+  initRoutes()
+})
 
-  const spotBaseCoinGeckoIds = spotStore.markets.map(
-    ({ baseToken }) => baseToken.coinGeckoId
-  )
+onWalletConnected(() => {
+  fetchStatus.setLoading()
 
+  Promise.all([
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
+    .catch($onError)
+    .finally(() => fetchStatus.setIdle())
+})
+
+function initRoutes() {
   Promise.all([
     spotStore.init(),
     swapStore.fetchRoutes(),
@@ -75,24 +81,12 @@ onMounted(() => {
     .then(async () => {
       await tokenStore.fetchTokensUsdPriceMap([
         ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotBaseCoinGeckoIds
+        ...spotStore.markets.map(({ baseToken }) => baseToken.coinGeckoId)
       ])
     })
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
-})
-
-onWalletConnected(() => {
-  fetchStatus.setLoading()
-
-  Promise.all([
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance(),
-    accountStore.fetchAccountPortfolio()
-  ])
-    .catch($onError)
-    .finally(() => fetchStatus.setIdle())
-})
+}
 
 async function submit() {
   const { valid } = await validate()
@@ -274,8 +268,7 @@ function resetQueryError() {
           class="mx-4 mt-4 mb-6"
           v-bind="{
             minimumOutput,
-            showLoading: status.isLoading(),
-            isLoading: fetchStatus.isLoading()
+            isLoading: status.isLoading() || fetchStatus.isLoading()
           }"
         />
         <div v-else class="flex flex-col items-center text-gray-700 my-8">

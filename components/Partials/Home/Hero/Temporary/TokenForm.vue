@@ -24,13 +24,11 @@ const emit = defineEmits<{
 const animationCount = ref(0)
 
 const { value: inputDenom } = useStringField({
-  name: SwapFormField.InputDenom,
-  initialValue: ''
+  name: SwapFormField.InputDenom
 })
 
 const { value: outputDenom } = useStringField({
-  name: SwapFormField.OutputDenom,
-  initialValue: ''
+  name: SwapFormField.OutputDenom
 })
 
 const { inputToken, outputToken } = useSwap(formValues)
@@ -181,7 +179,7 @@ async function getInputQuantity() {
     <div class="my-4">
       <BaseIcon
         name="arrow"
-        class="mx-auto min-w-6 w-6 h-6 transform -rotate-90 text-black"
+        class="mx-auto min-w-6 w-6 h-6 -rotate-90 text-black"
         @click="handleSwap"
       />
     </div>

@@ -28,16 +28,25 @@ const { fee, time, price, total, market, quantity, tradeExecutionType } =
     computed(() => props.isSpot)
   )
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.MobileTradeDetails)
+}
+
+function onModalClose() {
+  closeModal()
 }
 </script>
 
 <template>
-  <AppModal v-if="trade && market" :show="isModalOpen" sm @modal:closed="close">
+  <AppModal
+    v-if="trade && market"
+    :is-open="isModalOpen"
+    sm
+    @modal:closed="onModalClose"
+  >
     <template #title>
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3 cursor-pointer" @click="close">
+        <div class="flex items-center gap-3 cursor-pointer" @click="closeModal">
           <BaseIcon name="arrow" class="w-6 h-auto" />
           <span class="font-bold text-lg">
             {{ $t('trade.tradeHistoryDetails') }}

@@ -10,7 +10,7 @@ function handleOpenModal() {
 
 <template>
   <div
-    class="bg-[url('images/learn_more_bg.png')] bg-center bg-cover py-10 md:py-20"
+    class="bg-[url('/images/learn_more_bg.png')] bg-center bg-cover py-10 md:py-20"
   >
     <div class="text-center flex flex-col items-center space-y-6">
       <img src="/svg/message_cloud.svg" alt="" />

@@ -67,9 +67,9 @@ onMounted(() => {
     <CommonAllowance
       v-if="needsAllowanceSet && balanceWithToken"
       v-bind="{
-          allowance,
-          balanceWithToken: balanceWithToken as BalanceWithTokenWithErc20Balance
-        }"
+        allowance,
+        balanceWithToken: balanceWithToken as BalanceWithTokenWithErc20Balance
+      }"
     />
 
     <div v-else>

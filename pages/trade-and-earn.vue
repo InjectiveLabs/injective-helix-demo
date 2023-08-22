@@ -26,10 +26,6 @@ onWalletConnected(() => {
     })
     .catch($onError)
 })
-
-onBeforeUnmount(() => {
-  exchangeStore.reset()
-})
 </script>
 
 <template>

@@ -9,6 +9,7 @@ import {
 } from '@/app/data/aggregation'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
+import { getMinPriceTickSize } from '@/app/utils/helpers'
 
 const FilterList = {
   Orderbook: 'Orderbook',
@@ -74,8 +75,10 @@ watchDebounced(
 
 function onInit() {
   if (props.market && props.market.minQuantityTickSize) {
+    const formattedPriceTickSize = getMinPriceTickSize(isSpot, props.market)
+
     const minTickSize =
-      getDecimalPlaceFromValue(props.market.minQuantityTickSize.toString()) ||
+      getDecimalPlaceFromValue(formattedPriceTickSize) ||
       UI_DEFAULT_AGGREGATION_DECIMALS_STRING
 
     minTick.value = minTickSize
@@ -107,11 +110,11 @@ function onInit() {
           v-model="activeType"
           :value="displayType"
         >
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <span
               class="text-xs leading-4 tracking-widest cursor-pointer uppercase"
               :class="[
-                active
+                isActive
                   ? 'text-gray-200 hover:text-gray-100 uppercase'
                   : 'text-gray-500 hover:text-gray-200'
               ]"

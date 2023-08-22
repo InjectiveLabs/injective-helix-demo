@@ -115,7 +115,7 @@ export default {
             v-bind="$attrs"
             :class="inputClass"
             class="input"
-            @blur="handleBlur"
+            @input:blurred="handleBlur"
           />
 
           <div v-if="slots.max" class="mr-3">

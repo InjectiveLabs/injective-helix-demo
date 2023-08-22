@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const trustedBy = [
-  'jump.svg',
-  'cumberland.svg',
-  'bh_digital.svg',
-  'galaxy.svg',
-  'trm.svg'
+  'trustedby/Pyth Logotype_Light.svg',
+  'trustedby/wormhole_logo.svg',
+  'trustedby/imc_logo.svg',
+  'trustedby/anti_capital_logo.png',
+  'home-main.svg'
 ]
 </script>
 
@@ -17,7 +17,7 @@ const trustedBy = [
       <img
         v-for="item in trustedBy"
         :key="item"
-        :src="`/images/trustedby/${item}`"
+        :src="`/images/${item}`"
         :alt="item"
         class="lg:w-full h-full object-contain"
       />

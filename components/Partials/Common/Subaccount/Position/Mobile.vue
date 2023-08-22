@@ -174,7 +174,7 @@ function sharePosition() {
         @click="handleClosePositionClick"
       >
         <template #icon>
-          <BaseIcon name="close" sm />
+          <BaseIcon name="close" is-sm />
         </template>
       </PartialsCommonCancelButton>
     </div>
