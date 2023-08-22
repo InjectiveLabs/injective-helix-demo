@@ -45,7 +45,11 @@ function handleTokenClick() {
           <div class="w-px h-8 border-r hidden lg:block" />
         </template>
 
-        <div class="flex items-center gap-4" @click="handleTokenClick">
+        <div
+          v-if="!isGrid"
+          class="flex items-center gap-4"
+          @click="handleTokenClick"
+        >
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
           <div class="leading-none select-none cursor-pointer">
@@ -72,7 +76,7 @@ function handleTokenClick() {
           <PartialsCommonMarketAirdrop :market="market" />
         </div>
 
-        <div class="w-px h-8 border-r hidden lg:block" />
+        <div v-if="!isGrid" class="w-px h-8 border-r hidden lg:block" />
 
         <PartialsTradingMarketStatsPartialsLastTradedPriceAndChange
           v-if="summary"
