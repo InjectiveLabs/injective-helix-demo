@@ -3,9 +3,9 @@ import {
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
-  spotQuantityToChainQuantityToFixed
+  spotQuantityToChainQuantityToFixed,
+  TradingStrategy
 } from '@injectivelabs/sdk-ts'
-import { TradingStrategy } from '@injectivelabs/indexer-proto-ts/esm/injective_trading_rpc'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { spotGridMarkets } from '@/app/data/grid-strategy'

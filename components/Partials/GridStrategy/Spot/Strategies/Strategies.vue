@@ -38,6 +38,7 @@ defineProps({
         {{ $t('sgt.history') }}
       </BaseNuxtLink>
     </div>
+
     <CommonCardTableWrap class="flex-1">
       <CommonCard class="h-full flex-auto">
         <div v-if="!walletStore.isUserWalletConnected">
@@ -45,7 +46,9 @@ defineProps({
         </div>
 
         <AppHocLoading v-else v-bind="{ status }" class="h-full">
-          <NuxtPage />
+          <div class="overflow-x-auto">
+            <NuxtPage />
+          </div>
         </AppHocLoading>
       </CommonCard>
     </CommonCardTableWrap>
