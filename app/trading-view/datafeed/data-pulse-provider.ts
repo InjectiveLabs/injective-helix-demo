@@ -113,11 +113,11 @@ export const periodLengthSeconds = (
   let daysCount = 0
 
   if (resolution === 'D' || resolution === '1D') {
-    daysCount = requiredPeriodsCount
+    daysCount = requiredPeriodsCount + 0.5
   } else if (resolution === 'M' || resolution === '1M') {
-    daysCount = 31 * requiredPeriodsCount
+    daysCount = 31 * requiredPeriodsCount + 0.5
   } else if (resolution === 'W' || resolution === '1W') {
-    daysCount = 7 * requiredPeriodsCount
+    daysCount = 7 * requiredPeriodsCount + 0.5
   } else {
     daysCount = (requiredPeriodsCount * parseInt(resolution)) / (24 * 60)
   }
