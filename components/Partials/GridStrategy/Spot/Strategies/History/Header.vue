@@ -7,6 +7,6 @@
     <div class="text-right">Investment</div>
     <div class="text-right">PnL</div>
     <div class="text-right">Duration</div>
-    <div>View Order Details</div>
+    <div class="text-center">View Order Details</div>
   </div>
 </template>

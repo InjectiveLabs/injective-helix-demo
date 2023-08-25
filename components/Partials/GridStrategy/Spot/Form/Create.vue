@@ -10,23 +10,12 @@ const authZStore = useAuthZStore()
 const gridStrategyStore = useGridStrategyStore()
 const modalStore = useModalStore()
 const validate = useValidateForm()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
-const { success } = useNotifications()
 
 const status = reactive(new Status(StatusType.Idle))
 
 const hasActiveStrategy = computed(
   () => gridStrategyStore.activeStrategies.length > 0
 )
-
-function onClick() {
-  if (hasActiveStrategy.value) {
-    onRemoveStrategy()
-  } else {
-    onCreateStrategy()
-  }
-}
 
 async function onCreateStrategy() {
   const { valid } = await validate()
@@ -52,23 +41,6 @@ async function onCreateStrategy() {
     modalStore.openModal(Modal.CheckSpotGridAuth)
   }
 }
-
-function onRemoveStrategy() {
-  status.setLoading()
-
-  gridStrategyStore
-    .removeStrategy()
-    .then(() => {
-      success({
-        title: t('sgt.success'),
-        description: t('sgt.strategyRemoved')
-      })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -76,20 +48,18 @@ function onRemoveStrategy() {
     <AppButton
       :status="status"
       lg
-      :class="{
-        'hover:text-green-900 bg-green-500 text-green-800': !hasActiveStrategy,
-        'hover:bg-red-600 bg-red-500 text-white': hasActiveStrategy
-      }"
-      class="w-full font-sembold shadow-none"
-      @click="onClick"
+      class="w-full font-sembold shadow-none hover:text-green-900 bg-green-500 text-green-800"
+      :disabled="hasActiveStrategy"
+      @click="onCreateStrategy"
     >
-      <span v-if="hasActiveStrategy">{{ $t('sgt.removeStrategy') }}</span>
+      <span v-if="hasActiveStrategy">{{ $t('sgt.inProgress') }}</span>
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
     <p v-if="hasActiveStrategy" class="text-red-500 text-xs font-semibold mt-4">
-      Note: you first need to remove the active strategy before creating a new
-      one, since currently only 1 active strategy is allowed
+      Your strategy is on the move! Find all the details under the chart at the
+      bottom right corner. If you're on a smaller screen, a quick scroll down
+      might be needed to see everything.
     </p>
   </div>
 </template>

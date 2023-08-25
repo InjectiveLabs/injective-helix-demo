@@ -15,6 +15,7 @@ export default {
     priceRange: 'Price Range',
     gridNumber: 'Grid Number',
     profitGrid: 'Profit/grid',
+    inProgress: 'In Progress',
     profitPerGrid: 'Profit/grid (fees deducted)',
     connectWallet: 'Connect wallet to start grid trading',
     removeStrategy: 'Remove Strategy',

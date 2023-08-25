@@ -20,8 +20,8 @@ export default defineNuxtRouteMiddleware((to) => {
 
   if (
     accountStore.isSgtSubaccount &&
-    activityRouteNames.some((route) => route.startsWith(toName)) &&
-    toName === 'activity'
+    (activityRouteNames.some((route) => route.startsWith(toName)) ||
+      toName === 'activity')
   ) {
     return navigateTo({ name: 'activity-spot' })
   }

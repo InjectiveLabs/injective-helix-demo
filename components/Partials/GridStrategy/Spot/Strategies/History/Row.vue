@@ -4,8 +4,10 @@ import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
-const tokenStore = useTokenStore()
+const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const props = defineProps({
@@ -46,11 +48,15 @@ const investment = computed(() => {
 
   const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
-    .times(tokenStore.tokenUsdPriceMap[market.value?.baseToken.coinGeckoId])
+    .times(
+      new BigNumberInWei(props.strategy.executionPrice).toBase(
+        market.value.quoteToken.decimals
+      )
+    )
 
-  const quoteAmountInUsd = new BigNumberInWei(props.strategy.quoteQuantity || 0)
-    .toBase(market.value?.quoteToken.decimals)
-    .times(tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId])
+  const quoteAmountInUsd = new BigNumberInWei(
+    props.strategy.quoteQuantity || 0
+  ).toBase(market.value?.quoteToken.decimals)
 
   return baseAmountInUsd.plus(quoteAmountInUsd)
 })
@@ -87,6 +93,10 @@ const pnl = computed(() => {
     )
 })
 
+const percentagePnl = computed(() =>
+  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
+)
+
 const duration = computed(() =>
   formatDistance(
     Number(props.strategy.createdAt),
@@ -112,6 +122,15 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
   investment,
   { decimalPlaces: 2 }
 )
+
+function onDetailsPage() {
+  accountStore.$patch({
+    subaccountId: addressAndMarketSlugToSubaccountId(
+      walletStore.address,
+      gridStrategyStore.spotMarket?.slug || 'inj-usdt'
+    )
+  })
+}
 </script>
 
 <template>
@@ -130,6 +149,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
             v-bind="{ token: market?.baseToken }"
           />
         </div>
+
         <div>
           {{ market?.ticker }}
         </div>
@@ -144,16 +164,30 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
       <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
-    <div class="text-right break-words font-semibold">
-      $ {{ investmentToString }}
+    <div class="flex items-center justify-end font-semibold">
+      <div class="break-words overflow-hidden">$ {{ investmentToString }}</div>
     </div>
+
     <div
-      class="text-right break-words font-semibold"
+      class="flex items-center justify-end font-semibold"
       :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
     >
-      $ {{ pnltoString }}
+      <div class="break-words overflow-hidden">
+        <div>$ {{ pnltoString }}</div>
+        <div>{{ percentagePnl }} %</div>
+      </div>
     </div>
-    <div class="text-right">{{ duration }}</div>
-    <div class="text-center">---</div>
+
+    <div class="flex items-center justify-end">{{ duration }}</div>
+
+    <div class="flex items-center justify-center">
+      <NuxtLink
+        class="underline hover:text-blue-500"
+        :to="{ name: 'activity-spot' }"
+        @click="onDetailsPage"
+      >
+        Details
+      </NuxtLink>
+    </div>
   </div>
 </template>

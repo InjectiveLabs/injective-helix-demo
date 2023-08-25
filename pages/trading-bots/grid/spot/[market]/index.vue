@@ -11,16 +11,18 @@ const activeStrategies = computed(() =>
 </script>
 
 <template>
-  <div class="min-w-[1100px]">
-    <PartialsGridStrategySpotStrategiesHistoryHeader />
-  </div>
+  <div>
+    <div class="min-w-[1100px]">
+      <PartialsGridStrategySpotStrategiesHistoryHeader />
+    </div>
 
-  <div class="min-w-[1100px] overflow-y-auto max-h-[300px] noScrollbar">
-    <PartialsGridStrategySpotStrategiesHistoryRow
-      v-for="strategy in activeStrategies"
-      :key="`strategy-${strategy.createdAt}`"
-      v-bind="{ strategy }"
-    />
+    <div class="min-w-[1100px] overflow-y-auto noScrollbar">
+      <PartialsGridStrategySpotStrategiesRunningRow
+        v-for="strategy in activeStrategies"
+        :key="`strategy-${strategy.createdAt}`"
+        v-bind="{ strategy }"
+      />
+    </div>
   </div>
 </template>
 

@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-full overflow-y-auto min-h-[400px]">
     <div class="p-4 flex text-gray-500 uppercase text-xs font-semibold">
       <BaseNuxtLink
         :to="{
@@ -46,7 +46,7 @@ defineProps({
         </div>
 
         <AppHocLoading v-else v-bind="{ status }" class="h-full">
-          <div class="overflow-x-auto">
+          <div class="overflow-auto h-full">
             <NuxtPage />
           </div>
         </AppHocLoading>

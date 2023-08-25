@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-
-const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
-const gridStrategyStore = useGridStrategyStore()
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   strategy: {
@@ -15,6 +12,17 @@ const props = defineProps({
     required: true
   }
 })
+
+const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
+const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
+const { success } = useNotifications()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const market = computed(() => gridStrategyStore.spotMarket)
 
@@ -56,8 +64,20 @@ const investment = computed(() => {
   return baseAmountInUsd.plus(quoteAmountInUsd)
 })
 
+const subaccountBalances = computed(
+  () =>
+    accountStore.subaccountBalancesMap[
+      addressAndMarketSlugToSubaccountId(
+        walletStore.address,
+        market.value?.slug || ''
+      )
+    ]
+)
+
 const pnl = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
+  if (!market.value || !subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
 
   const creationQuoteQuantity = new BigNumberInWei(
     props.strategy.quoteQuantity || 0
@@ -72,20 +92,24 @@ const pnl = computed(() => {
   ).toBase(market.value?.quoteToken.decimals)
 
   const currentQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteDeposit
+    subaccountBalances.value.find(
+      (balance) => balance.denom === market.value?.quoteDenom
+    )?.totalBalance || 0
   ).toBase(market.value?.quoteToken.decimals)
 
   const currentBaseQuantity = new BigNumberInWei(
-    props.strategy.baseDeposit
+    subaccountBalances.value.find(
+      (balance) => balance.denom === market.value?.baseDenom
+    )?.totalBalance || 0
   ).toBase(market.value?.baseToken.decimals)
 
   const orderbookBuy = new BigNumberInWei(
-    spotStore.orderbook?.buys[0].price || 0
-  ).toBase(market.value.baseToken.decimals - market.value.quoteToken.decimals)
+    spotStore.orderbook?.buys[0]?.price || 0
+  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
 
   const orderbookSell = new BigNumberInWei(
-    spotStore.orderbook?.sells[0].price || 0
-  ).toBase(market.value.baseToken.decimals - market.value.quoteToken.decimals)
+    spotStore.orderbook?.sells[0]?.price || 0
+  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
 
   const currentMidPrice = orderbookSell
     .minus(orderbookBuy)
@@ -98,6 +122,10 @@ const pnl = computed(() => {
       creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
     )
 })
+
+const percentagePnl = computed(() =>
+  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
+)
 
 const duration = computed(() =>
   formatDistance(
@@ -124,6 +152,23 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
   investment,
   { decimalPlaces: 2 }
 )
+
+function onRemoveStrategy() {
+  status.setLoading()
+
+  gridStrategyStore
+    .removeStrategy()
+    .then(() => {
+      success({
+        title: t('sgt.success'),
+        description: t('sgt.strategyRemoved')
+      })
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -142,6 +187,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
             v-bind="{ token: market?.baseToken }"
           />
         </div>
+
         <div>
           {{ market?.ticker }}
         </div>
@@ -156,16 +202,27 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
       <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
-    <div class="text-right break-words font-semibold">
-      $ {{ investmentToString }}
+    <div class="flex items-center justify-end break-words font-semibold">
+      <div>$ {{ investmentToString }}</div>
     </div>
+
     <div
-      class="text-right break-words font-semibold"
+      class="flex items-center justify-end break-words font-semibold"
       :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
     >
-      $ {{ pnltoString }}
+      <div>
+        <div>$ {{ pnltoString }}</div>
+        <div>{{ percentagePnl }} %</div>
+      </div>
     </div>
-    <div class="text-right">{{ duration }}</div>
-    <div class="text-center">---</div>
+
+    <div class="flex items-center justify-end">{{ duration }}</div>
+
+    <div class="flex items-center justify-center">
+      <PartialsCommonCancelButton
+        v-bind="{ status }"
+        @click="onRemoveStrategy"
+      />
+    </div>
   </div>
 </template>
