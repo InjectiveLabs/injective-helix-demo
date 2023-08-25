@@ -14,7 +14,6 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -55,11 +54,15 @@ const investment = computed(() => {
 
   const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
-    .times(tokenStore.tokenUsdPriceMap[market.value?.baseToken.coinGeckoId])
+    .times(
+      new BigNumberInWei(props.strategy.executionPrice).toBase(
+        market.value?.quoteToken.decimals
+      )
+    )
 
-  const quoteAmountInUsd = new BigNumberInWei(props.strategy.quoteQuantity || 0)
-    .toBase(market.value?.quoteToken.decimals)
-    .times(tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId])
+  const quoteAmountInUsd = new BigNumberInWei(
+    props.strategy.quoteQuantity || 0
+  ).toBase(market.value?.quoteToken.decimals)
 
   return baseAmountInUsd.plus(quoteAmountInUsd)
 })
