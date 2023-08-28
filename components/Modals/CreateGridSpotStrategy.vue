@@ -3,9 +3,9 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm } from '@/types'
 
-const gridStrategyStore = useGridStrategyStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
+const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()

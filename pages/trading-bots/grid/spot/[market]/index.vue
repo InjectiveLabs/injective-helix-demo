@@ -13,7 +13,7 @@ const activeStrategies = computed(() =>
 <template>
   <div>
     <div class="min-w-[1100px]">
-      <PartialsGridStrategySpotStrategiesHistoryHeader />
+      <PartialsGridStrategySpotStrategiesRunningHeader />
     </div>
 
     <div class="min-w-[1100px] overflow-y-auto noScrollbar">

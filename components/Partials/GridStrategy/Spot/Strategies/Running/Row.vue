@@ -5,6 +5,7 @@ import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
   strategy: {
@@ -166,6 +167,9 @@ function onRemoveStrategy() {
         title: t('sgt.success'),
         description: t('sgt.strategyRemoved')
       })
+
+      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => gridStrategyStore.fetchStrategies())
     })
     .catch($onError)
     .finally(() => {

@@ -35,21 +35,9 @@ onMounted(() => {
   fetchData()
 })
 
-onWalletConnected(() => {
+function fetchData() {
   status.setLoading()
 
-  Promise.all([
-    gridStrategyStore.fetchStrategies(),
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance()
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-})
-
-function fetchData() {
   Promise.all([
     authZStore.fetchGrants(),
     gridStrategyStore.fetchStrategies(),

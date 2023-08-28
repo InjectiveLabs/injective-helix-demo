@@ -42,8 +42,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   },
   actions: {
     async fetchStrategies() {
-      const gridStrategyStore = useGridStrategyStore()
       const walletStore = useWalletStore()
+      const gridStrategyStore = useGridStrategyStore()
 
       if (!walletStore.isUserWalletConnected) {
         return
@@ -78,8 +78,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       quoteAmount: string
       baseAmount?: string
     }) {
-      const gridStrategyStore = useGridStrategyStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
+      const gridStrategyStore = useGridStrategyStore()
 
       if (!walletStore.injectiveAddress) {
         return
@@ -161,11 +162,13 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       })
 
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
     },
 
     async removeStrategy() {
-      const gridStrategyStore = useGridStrategyStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
+      const gridStrategyStore = useGridStrategyStore()
 
       if (!walletStore.isUserWalletConnected) {
         return
@@ -207,6 +210,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       })
 
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
     }
   }
 })
