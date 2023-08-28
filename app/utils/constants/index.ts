@@ -38,7 +38,7 @@ export const OLP_TIME_STAMP_FORMAT = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
 
 export const DATE_TIME_DISPLAY = 'dd MMM HH:mm:ss'
 
-export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
+export const VPN_PROXY_VALIDATION_PERIOD = 7 /* 7 days */
 
 export const ETH_COIN_GECKO_ID = 'ethereum'
 export const USDT_COIN_GECKO_ID = 'tether'

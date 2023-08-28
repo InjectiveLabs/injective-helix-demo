@@ -59,7 +59,7 @@ const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
 )
 
 function updateWatchList() {
-  appStore.updateFavoriteMarkets(props.market.marketId)
+  appStore.toggleFavoriteMarket(props.market.marketId)
 }
 </script>
 

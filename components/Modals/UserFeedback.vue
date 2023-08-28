@@ -15,7 +15,7 @@ onMounted(() => {
 })
 
 function init() {
-  if (appStore.userState.userFeedbackModalViewed) {
+  if (appStore.userState.modalsViewed.includes(Modal.UserFeedback)) {
     return
   }
 
@@ -44,7 +44,7 @@ function handleClose() {
 function updateUserFeedbackModalViewed() {
   appStore.setUserState({
     ...appStore.userState,
-    userFeedbackModalViewed: true
+    modalsViewed: [...appStore.userState.modalsViewed, Modal.UserFeedback]
   })
 
   handleClose()

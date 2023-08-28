@@ -60,6 +60,10 @@ const summary = computed(() => {
   )
 })
 
+const userTradingLayout = computed(
+  () => appStore.userState.preferences.tradingLayout
+)
+
 onMounted(() => {
   init()
 })
@@ -192,7 +196,7 @@ watch(
         <div
           class="col-span-6 lg:col-span-9 4xl:col-span-9 max-h-screen-excluding-header-and-market-info"
           :class="{
-            '-order-1': appStore.userState.tradingLayout === TradingLayout.Right
+            '-order-1': userTradingLayout === TradingLayout.Right
           }"
         >
           <div class="h-full-flex">
@@ -205,8 +209,7 @@ watch(
                   <div
                     class="col-span-6 lg:col-span-8 4xl:col-span-9"
                     :class="{
-                      '-order-1':
-                        appStore.userState.tradingLayout === TradingLayout.Right
+                      '-order-1': userTradingLayout === TradingLayout.Right
                     }"
                   >
                     <PartialsTradingMarketChart

@@ -114,7 +114,7 @@ function showNinjaPassModal() {
         <LayoutWallet />
 
         <LayoutNavItemDummy
-          v-if="walletStore"
+          v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex px-0 w-10 items-center justify-center"
           @click="() => {}"
         >
