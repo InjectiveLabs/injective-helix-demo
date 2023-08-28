@@ -19,7 +19,7 @@ const trustedBy = [
         :key="item"
         :src="`/images/${item}`"
         :alt="item"
-        class="p-6 max-md:h-24 mx-auto object-contain"
+        class="p-6 max-lg:w-[90%] mx-auto object-contain"
       />
     </div>
   </div>
