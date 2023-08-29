@@ -13,7 +13,7 @@ export default {
     benefits: 'Benefits',
     whyFinancialInstitutionsChooseHelix:
       'Why financial institutions choose Helix',
-    permisionedMarketsTitle: 'Permisioned Markets',
+    permisionedMarketsTitle: 'Permissioned Markets',
     permisionedMarketsBody:
       'Helix uniquely provides a gateway to institutional grade permissioned markets, enabling you to seamlessly interact with professionally vetted counterparties.',
     multiAssetSupportTitle: 'Multi-asset Support',
