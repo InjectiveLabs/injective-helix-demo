@@ -6,6 +6,7 @@ import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { backupPromiseCall } from '@/app/utils/async'
+import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 
 const props = defineProps({
   strategy: {
@@ -23,6 +24,7 @@ const { $onError } = useNuxtApp()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
+const now = ref(Date.now())
 
 const market = computed(() => gridStrategyStore.spotMarket)
 
@@ -132,10 +134,7 @@ const percentagePnl = computed(() =>
 )
 
 const duration = computed(() =>
-  formatDistance(
-    Number(props.strategy.createdAt),
-    Number(props.strategy.updatedAt)
-  )
+  formatDistance(Number(props.strategy.createdAt), now.value)
 )
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
@@ -174,6 +173,12 @@ function onRemoveStrategy() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+
+      amplitudeGridStrategyTracker.removeStrategy({
+        duration: duration.value,
+        market: gridStrategyStore.spotMarket?.slug || '',
+        totalProfit: pnltoString.value
+      })
     })
 }
 
@@ -185,6 +190,10 @@ function onDetailsPage() {
     )
   })
 }
+
+useIntervalFn(() => {
+  now.value = Date.now()
+}, 1000 * 60)
 </script>
 
 <template>

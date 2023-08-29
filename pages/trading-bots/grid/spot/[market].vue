@@ -2,13 +2,15 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy']
 })
 
-const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
@@ -28,22 +30,26 @@ function onLoad(pageMarket: UiMarketWithToken) {
     spotMarket: pageMarket as UiSpotMarketWithToken
   })
 
-  fetchData()
+  fetchData(
+    walletStore.isUserWalletConnected
+      ? addressAndMarketSlugToSubaccountId(walletStore.address, pageMarket.slug)
+      : undefined
+  )
 }
 
 onMounted(() => {
   fetchData()
 })
 
-function fetchData() {
+function fetchData(subaccountId?: string) {
   status.setLoading()
 
   Promise.all([
     authZStore.fetchGrants(),
+    accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     accountStore.fetchAccountPortfolio(),
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance()
+    accountStore.streamSubaccountBalance(subaccountId)
   ])
     .catch($onError)
     .finally(() => {

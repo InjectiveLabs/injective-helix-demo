@@ -118,6 +118,36 @@ export const defineGlobalRules = () => {
     return true
   })
 
+  defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lte(min)) {
+      return `Value should be greater than ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('lessThanSgt', (value: string, [max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.gte(max)) {
+      return `Value should be less than ${max}`
+    }
+
+    return true
+  })
+
+  defineRule('minInvestmentSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Minimum USDT investment required to run this grid strategy is ${min}`
+    }
+
+    return true
+  })
+
   defineRule('insufficientSgt', (value: string, [max]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
 

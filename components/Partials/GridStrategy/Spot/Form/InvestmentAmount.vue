@@ -22,8 +22,6 @@ const props = defineProps({
 const { accountBalancesWithToken } = useBalance()
 const formValues = useFormValues<SpotGridTradingForm>()
 
-const selectedInvestmentType = ref(InvestmentTypeGst.Quote)
-
 const quoteDenomBalance = computed(() =>
   accountBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
@@ -79,33 +77,54 @@ const { valueToString: baseAmountToString } = useBigNumberFormatter(
   }
 )
 
+const { value: selectedInvestmentType } = useStringField({
+  name: SpotGridTradingField.InvestmentType,
+  initialValue: InvestmentTypeGst.Quote
+})
+
 const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
   useStringField({
     name: SpotGridTradingField.InvestmentAmount,
     rule: 'requiredSgt',
     dynamicRule: computed(
       () =>
-        `minValueSgt:${
+        `minInvestmentSgt:${
           minQuoteAmount.value
         }|insufficientSgt:${quoteDenomAmount.value.toFixed()}`
     )
   })
 
-const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.BaseInvestmentAmount,
-    rule: '',
-    dynamicRule: computed(
-      () => `minValueSgt:1|insufficientSgt:${baseDenomAmount.value.toFixed()}`
-    )
-  })
+const {
+  value: baseInvestmentAmountValue,
+  errorMessage: baseErrorMessage,
+  resetField: baseResetField
+} = useStringField({
+  name: SpotGridTradingField.BaseInvestmentAmount,
+  rule: '',
+  dynamicRule: computed(
+    () =>
+      `${
+        selectedInvestmentType.value === InvestmentTypeGst.BaseAndQuote
+          ? 'requiredSgt|'
+          : ''
+      }minValueSgt:1|insufficientSgt:${baseDenomAmount.value.toFixed()}`
+  )
+})
+
+function onInvestmentTypeUpdate() {
+  baseResetField({ value: '' })
+}
 </script>
 
 <template>
   <div>
     <div class="flex justify-between items-center py-4">
-      <h3 class="text-lg font-semibold">Investment</h3>
-
+      <div class="flex items-center space-x-2">
+        <h3 class="text-lg font-semibold">Investment</h3>
+        <AppTooltip
+          :content="`Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.`"
+        />
+      </div>
       <AppSelect
         v-model="selectedInvestmentType"
         no-min-w
@@ -113,15 +132,16 @@ const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
           options,
           wrapperClass: 'bg-gray-800 rounded-md py-2 px-4'
         }"
+        @update:model-value="onInvestmentTypeUpdate"
       >
         <template #default="{ selected }">
-          <div class="select-none">
+          <div class="select-none font-semibold">
             {{ selected?.display }}
           </div>
         </template>
 
         <template #option="{ option }">
-          <div class="ml-auto">
+          <div class="ml-auto font-semibold">
             {{ option?.display }}
           </div>
         </template>

@@ -177,7 +177,9 @@ export enum AmplitudeEvent {
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
   PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm'
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy'
 }
 
 export enum SurveyTitle {
@@ -373,7 +375,8 @@ export enum SpotGridTradingField {
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   InvestmentAmount = 'investmentAmount',
-  BaseInvestmentAmount = 'baseInvestmentAmount'
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  InvestmentType = 'InvestmentType'
 }
 
 export enum SpotGridMessages {

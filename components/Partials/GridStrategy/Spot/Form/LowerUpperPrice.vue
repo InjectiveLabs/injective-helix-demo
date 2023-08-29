@@ -1,20 +1,32 @@
 <script setup lang="ts">
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { SpotGridTradingField } from '@/types'
 
+const props = defineProps({
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  }
+})
+
 const gridStrategyStore = useGridStrategyStore()
+
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
 
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
     rule: 'requiredSgt',
-    dynamicRule: computed(() => ``)
+    dynamicRule: computed(() => `lessThanSgt:${spotLastTradedPrice.value}`)
   })
 
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: SpotGridTradingField.UpperPrice,
     rule: 'requiredSgt',
-    dynamicRule: computed(() => `minValueSgt:${lowerPriceValue.value}`)
+    dynamicRule: computed(() => `greaterThanSgt:${spotLastTradedPrice.value}`)
   })
 </script>
 

@@ -32,7 +32,7 @@ const { valueToString: profitPerGridToString } = useBigNumberFormatter(
 
 <template>
   <div class="flex justify-between items-center border-b py-4 text-gray-500">
-    <p>{{ $t('sgt.profitPerGrid') }}</p>
+    <p>{{ $t('sgt.profitGrid') }}</p>
     <p>{{ profitPerGridToString }} %</p>
   </div>
 </template>

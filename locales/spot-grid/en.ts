@@ -1,7 +1,7 @@
 export default {
   sgt: {
     grids: 'Grids',
-    create: 'Create',
+    create: 'Create Strategy',
     market: 'Market',
     running: 'Running',
     confirm: 'Confirm',
@@ -16,7 +16,6 @@ export default {
     gridNumber: 'Grid Number',
     profitGrid: 'Profit/grid',
     inProgress: 'In Progress',
-    profitPerGrid: 'Profit/grid (fees deducted)',
     connectWallet: 'Connect wallet to start grid trading',
     removeStrategy: 'Remove Strategy',
     strategyRemoved: 'Strategy Removed!',

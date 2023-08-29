@@ -2,9 +2,9 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm } from '@/types'
+import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 
 const modalStore = useModalStore()
-const tokenStore = useTokenStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { success } = useNotifications()
@@ -19,25 +19,17 @@ const profitPerGrid = computed(() => {
     !formValues.value.lowerPrice ||
     !formValues.value.upperPrice ||
     !formValues.value.grids ||
-    !formValues.value.investmentAmount ||
     !gridStrategyStore.spotMarket ||
     Number(formValues.value.grids) === 0
   ) {
     return ZERO_IN_BASE
   }
 
-  // We get wrong values in testnet
-  const quotePriceInUsd = new BigNumberInBase(
-    tokenStore.tokenUsdPriceMap[
-      gridStrategyStore.spotMarket.baseToken.coinGeckoId
-    ]
-  )
-
-  return new BigNumberInBase(
-    Number(formValues.value.upperPrice) - Number(formValues.value.lowerPrice)
-  )
+  const priceDifference = new BigNumberInBase(formValues.value.upperPrice)
+    .minus(formValues.value.lowerPrice)
     .dividedBy(formValues.value.grids)
-    .dividedBy(quotePriceInUsd.dividedBy(formValues.value.investmentAmount))
+
+  return priceDifference.dividedBy(formValues.value.lowerPrice).times(100)
 })
 
 const quoteSymbol = computed(
@@ -77,6 +69,16 @@ function handleCreateStrategy() {
     .finally(() => {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
       status.setIdle()
+
+      amplitudeGridStrategyTracker.createStrategy({
+        amountQuote: formValues.value.investmentAmount!,
+        gridsNumber: formValues.value.grids!,
+        lowerPrice: formValues.value.lowerPrice!,
+        upperPrice: formValues.value.upperPrice!,
+        amountDenom: formValues.value.baseInvestmentAmount,
+        market: gridStrategyStore.spotMarket?.slug || '',
+        marketPrice: '-'
+      })
     })
 }
 </script>
@@ -146,9 +148,7 @@ function handleCreateStrategy() {
         </div>
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
-          <p class="font-semibold">
-            {{ profitPerGridToString }} {{ quoteSymbol }}
-          </p>
+          <p class="font-semibold">{{ profitPerGridToString }} %</p>
         </div>
       </div>
 

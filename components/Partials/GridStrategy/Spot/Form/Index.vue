@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { SpotGridTradingForm } from '@/types'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const walletStore = useWalletStore()
 
@@ -12,14 +16,26 @@ defineProps({
   }
 })
 
-useForm<SpotGridTradingForm>()
+const { setFieldValue } = useForm<SpotGridTradingForm>()
+
+function onFormValuesUpdate(
+  investmentAmount: string,
+  baseInvestmentAmount: string
+) {
+  setFieldValue(SpotGridTradingField.InvestmentAmount, investmentAmount)
+  setFieldValue(SpotGridTradingField.BaseInvestmentAmount, baseInvestmentAmount)
+  setFieldValue(
+    SpotGridTradingField.InvestmentType,
+    InvestmentTypeGst.BaseAndQuote
+  )
+}
 </script>
 
 <template>
   <div class="min-w-0">
     <div>
       <div class="space-y-4">
-        <PartialsGridStrategySpotFormLowerUpperPrice />
+        <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
         <PartialsGridStrategySpotFormGrids />
         <PartialsGridStrategySpotFormProfitPerGrid />
         <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
@@ -31,7 +47,10 @@ useForm<SpotGridTradingForm>()
           cta
         />
 
-        <PartialsGridStrategySpotFormCreate v-else />
+        <PartialsGridStrategySpotFormCreate
+          v-else
+          @form-values:update="onFormValuesUpdate"
+        />
 
         <ModalsCheckSpotGridAuth />
         <ModalsCreateGridSpotStrategy />

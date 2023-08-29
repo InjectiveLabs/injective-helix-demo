@@ -32,7 +32,7 @@ export const streamBankBalance = () => {
   })
 }
 
-export const streamSubaccountBalance = () => {
+export const streamSubaccountBalance = (subaccountId?: string) => {
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
@@ -42,7 +42,7 @@ export const streamSubaccountBalance = () => {
 
   grpcStreamSubaccountBalance({
     accountAddress: walletStore.authZOrInjectiveAddress,
-    subaccountId: accountStore.subaccountId,
+    subaccountId: subaccountId || accountStore.subaccountId,
     callback: (payload) => {
       const subaccountBalancesMapOrBlank =
         accountStore.subaccountBalancesMap[accountStore.subaccountId] || []
