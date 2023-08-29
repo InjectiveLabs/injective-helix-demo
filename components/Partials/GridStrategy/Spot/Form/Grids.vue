@@ -20,7 +20,11 @@ const { value: gridsValue, errorMessage } = useStringField({
       </p>
     </div>
 
-    <AppInputNumeric v-model="gridsValue" class="text-right" />
+    <AppInputNumeric
+      v-model="gridsValue"
+      :max-decimals="0"
+      class="text-right"
+    />
 
     <p class="text-red-500 text-xs font-semibold pt-2">{{ errorMessage }}</p>
   </div>

@@ -12,7 +12,7 @@ const removedStrategies = computed(() =>
 
 <template>
   <div>
-    <div class="min-w-[1100px]">
+    <div v-if="removedStrategies.length > 0" class="min-w-[1100px]">
       <PartialsGridStrategySpotStrategiesHistoryHeader />
     </div>
 
@@ -23,6 +23,11 @@ const removedStrategies = computed(() =>
         v-bind="{ strategy }"
       />
     </div>
+
+    <CommonEmptyList
+      v-if="removedStrategies.length === 0"
+      :message="'No Strategies Found'"
+    />
   </div>
 </template>
 

@@ -46,7 +46,7 @@ const lowerBound = computed(() => {
 const investment = computed(() => {
   if (!market.value) return ZERO_IN_BASE
 
-  const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
+  const baseAmountInQuote = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
     .times(
       new BigNumberInWei(props.strategy.executionPrice).toBase(
@@ -54,11 +54,11 @@ const investment = computed(() => {
       )
     )
 
-  const quoteAmountInUsd = new BigNumberInWei(
+  const quoteAmount = new BigNumberInWei(
     props.strategy.quoteQuantity || 0
   ).toBase(market.value?.quoteToken.decimals)
 
-  return baseAmountInUsd.plus(quoteAmountInUsd)
+  return baseAmountInQuote.plus(quoteAmount)
 })
 
 const pnl = computed(() => {

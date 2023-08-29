@@ -12,7 +12,7 @@ const activeStrategies = computed(() =>
 
 <template>
   <div>
-    <div class="min-w-[1100px]">
+    <div v-if="activeStrategies.length > 0" class="min-w-[1100px]">
       <PartialsGridStrategySpotStrategiesRunningHeader />
     </div>
 
@@ -23,6 +23,11 @@ const activeStrategies = computed(() =>
         v-bind="{ strategy }"
       />
     </div>
+
+    <CommonEmptyList
+      v-if="activeStrategies.length === 0"
+      :message="'No Strategies Found'"
+    />
   </div>
 </template>
 
