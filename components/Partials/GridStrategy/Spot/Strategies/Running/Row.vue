@@ -176,11 +176,20 @@ function onRemoveStrategy() {
       status.setIdle()
     })
 }
+
+function onDetailsPage() {
+  accountStore.$patch({
+    subaccountId: addressAndMarketSlugToSubaccountId(
+      walletStore.address,
+      gridStrategyStore.spotMarket?.slug || 'inj-usdt'
+    )
+  })
+}
 </script>
 
 <template>
   <div
-    class="grid grid-cols-8 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
+    class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
       <span>{{ createdAt }}</span>
@@ -202,15 +211,18 @@ function onRemoveStrategy() {
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
-    </div>
-
-    <div class="flex items-center justify-end">
       <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
+    <div class="flex items-center justify-end">
+      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+    </div>
+
     <div class="flex items-center justify-end break-words font-semibold">
-      <div>$ {{ investmentToString }}</div>
+      <div>
+        {{ investmentToString }}
+        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+      </div>
     </div>
 
     <div
@@ -218,12 +230,25 @@ function onRemoveStrategy() {
       :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
     >
       <div>
-        <div>$ {{ pnltoString }}</div>
+        <div>
+          {{ pnltoString }}
+          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        </div>
         <div>{{ percentagePnl }} %</div>
       </div>
     </div>
 
     <div class="flex items-center justify-end">{{ duration }}</div>
+
+    <div class="flex items-center justify-center">
+      <NuxtLink
+        class="underline hover:text-blue-500"
+        :to="{ name: 'activity-spot' }"
+        @click="onDetailsPage"
+      >
+        Details
+      </NuxtLink>
+    </div>
 
     <div class="flex items-center justify-center">
       <PartialsCommonCancelButton

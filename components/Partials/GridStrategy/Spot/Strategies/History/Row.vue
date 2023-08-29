@@ -165,7 +165,10 @@ function onDetailsPage() {
     </div>
 
     <div class="flex items-center justify-end font-semibold">
-      <div class="break-words overflow-hidden">$ {{ investmentToString }}</div>
+      <div class="break-words overflow-hidden">
+        {{ investmentToString }}
+        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+      </div>
     </div>
 
     <div
@@ -173,7 +176,10 @@ function onDetailsPage() {
       :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
     >
       <div class="break-words overflow-hidden">
-        <div>$ {{ pnltoString }}</div>
+        <div>
+          {{ pnltoString }}
+          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        </div>
         <div>{{ percentagePnl }} %</div>
       </div>
     </div>

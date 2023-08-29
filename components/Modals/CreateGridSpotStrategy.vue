@@ -93,11 +93,17 @@ function handleCreateStrategy() {
 
     <div class="max-w-sm">
       <p>
-        {{
-          $t(
-            'sgt.pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed'
-          )
-        }}
+        <span class="font-bold">
+          {{ formValues.investmentAmount }} {{ quoteSymbol }}
+        </span>
+        <template v-if="formValues.baseInvestmentAmount">
+          and
+          <span class="font-bold">
+            {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
+          </span>
+        </template>
+        will be transferred from your main subaccount to your SGT INJ-USDT sub
+        account.
       </p>
 
       <div class="mt-6 space-y-1">
