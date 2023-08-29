@@ -145,7 +145,6 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
             quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
           }),
-          slippage: '0.2',
           upperBound: spotPriceToChainPriceToFixed({
             value: upperBound,
             baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
