@@ -5,7 +5,7 @@ import { UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy', 'dev-mode']
+  middleware: ['markets', 'grid-strategy']
 })
 
 const spotStore = useSpotStore()

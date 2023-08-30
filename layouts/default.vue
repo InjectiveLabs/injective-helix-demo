@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents, Modal } from '@/types'
+import { BusEvents } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
-const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
@@ -41,7 +40,6 @@ onMounted(() => {
 
   Promise.all([authzStore.fetchGrants()]).then(() => {})
 
-  onDevMode()
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
@@ -56,21 +54,6 @@ function onCloseSideBar() {
     isOpenSidebar.value = false
 
     container.value?.classList.remove('overflow-y-hidden')
-  }
-}
-
-function onDevMode() {
-  const devModeExistsInQuery =
-    route.query.devMode && route.query.devMode === 'true'
-
-  if (devModeExistsInQuery) {
-    appStore.$patch({
-      devMode: true
-    })
-
-    if (!walletStore.isUserWalletConnected) {
-      modalStore.openModal(Modal.DevMode)
-    }
   }
 }
 </script>
