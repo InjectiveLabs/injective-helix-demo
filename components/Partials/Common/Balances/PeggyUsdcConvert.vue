@@ -38,7 +38,7 @@ onMounted(() => {
 })
 
 function openModal() {
-  modalStore.openModal({ type: Modal.USDCDetected })
+  modalStore.openModal(Modal.USDCDetected)
 }
 </script>
 

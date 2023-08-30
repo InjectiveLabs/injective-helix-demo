@@ -269,9 +269,7 @@ function submitMarketOrder() {
 
 function handleRequestSubmit() {
   if (highDeviation.value) {
-    return modalStore.openModal({
-      type: Modal.PriceDeviation
-    })
+    return modalStore.openModal(Modal.PriceDeviation)
   }
 
   return handleSubmit()

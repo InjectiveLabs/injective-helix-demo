@@ -121,7 +121,7 @@ function getResultQuantity() {
 }
 
 function handleConnect() {
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 watch(

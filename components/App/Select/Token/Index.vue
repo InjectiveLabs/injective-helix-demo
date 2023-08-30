@@ -161,7 +161,7 @@ function openTokenSelectorModal() {
     return
   }
 
-  modalStore.openModal({ type: props.modal })
+  modalStore.openModal(props.modal)
   emit('update:modal')
 }
 

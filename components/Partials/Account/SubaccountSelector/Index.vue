@@ -13,7 +13,7 @@ const modalStore = useModalStore()
 const { aggregatedPortfolioBalances } = useBalance()
 
 function handleCreateSubaccount() {
-  modalStore.openModal({ type: Modal.CreateSubaccount })
+  modalStore.openModal(Modal.CreateSubaccount)
 }
 </script>
 

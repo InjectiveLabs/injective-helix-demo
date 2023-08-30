@@ -65,11 +65,12 @@ export enum Modal {
   InstitutionalForm = 'institutionalForm',
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
+  CheckSpotGridAuth = 'check-spot-grid-auth',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
-
+  CreateSpotGridStrategy = 'create-spot-grid-strategy',
   FuturesMarketRestricted = 'futures-market-restricted'
 }
 
@@ -177,7 +178,9 @@ export enum AmplitudeEvent {
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
   PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm'
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy'
 }
 
 export enum SurveyTitle {
@@ -372,4 +375,30 @@ export enum InstitutionalFormField {
   Email = 'email',
   Company = 'company',
   Telegram = 'telegram'
+}
+
+export enum SpotGridTradingField {
+  Grids = 'grids',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
+  InvestmentAmount = 'investmentAmount',
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  InvestmentType = 'InvestmentType'
+}
+
+export enum SpotGridMessages {
+  MsgCreateSpotLimitOrder = '/injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = '/injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
+  MsgWithdraw = '/injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
+}
+
+export enum GridStrategyTabs {
+  Running = 'running',
+  History = 'history'
+}
+
+export enum InvestmentTypeGst {
+  Quote = 'quote',
+  BaseAndQuote = 'baseAndQuote'
 }

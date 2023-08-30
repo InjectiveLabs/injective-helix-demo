@@ -15,6 +15,7 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
+import { isSgtSubaccountId } from 'app/utils/helpers'
 
 type AccountStoreState = {
   subaccountId: string
@@ -64,7 +65,9 @@ export const useAccountStore = defineStore('account', {
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
       return Object.keys(state.subaccountBalancesMap).length > 1
-    }
+    },
+
+    isSgtSubaccount: (state) => isSgtSubaccountId(state.subaccountId)
   },
   actions: {
     deposit,

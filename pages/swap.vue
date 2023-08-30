@@ -119,7 +119,7 @@ async function submit() {
 
       await nextTick()
 
-      modalStore.openModal({ type: Modal.SwapSuccess })
+      modalStore.openModal(Modal.SwapSuccess)
     })
     .catch((error: ThrownException) => {
       err = error

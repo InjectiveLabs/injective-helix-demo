@@ -29,7 +29,7 @@ const showConvertModalLink = computed(() => {
 function handleConvert() {
   useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
 
-  modalStore.openModal({ type: Modal.ConvertUsdc })
+  modalStore.openModal(Modal.ConvertUsdc)
 }
 </script>
 

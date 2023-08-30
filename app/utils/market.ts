@@ -108,6 +108,15 @@ export const getDefaultSpotMarketRouteParams = () => {
   }
 }
 
+export const getDefaultGridSpotMarketRouteParams = () => {
+  return {
+    name: 'trading-bots-grid-spot-market',
+    params: {
+      market: DefaultMarket.Spot
+    }
+  }
+}
+
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken

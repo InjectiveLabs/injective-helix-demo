@@ -32,7 +32,7 @@ watch(
       code &&
       !appStore.userState.modalsViewed.includes(Modal.NinjaPassWinner)
     ) {
-      modalStore.openModal({ type: Modal.NinjaPassWinner })
+      modalStore.openModal(Modal.NinjaPassWinner)
 
       confetti.showConfetti()
     }
