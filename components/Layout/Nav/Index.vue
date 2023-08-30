@@ -121,9 +121,13 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink> -->
 
           <BaseNuxtLink
+            v-if="$route.query.devMode === 'true'"
             :to="{
               name: 'trading-bots-grid-spot-market',
-              params: { market: 'inj-usdt' }
+              params: { market: 'inj-usdt' },
+              query: {
+                devMode: 'true'
+              }
             }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="grid-spot-trading-link"
