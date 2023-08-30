@@ -95,17 +95,43 @@ function handleCreateStrategy() {
 
     <div class="max-w-sm">
       <p>
-        <span class="font-bold">
-          {{ formValues.investmentAmount }} {{ quoteSymbol }}
-        </span>
-        <template v-if="formValues.baseInvestmentAmount">
-          and
-          <span class="font-bold">
-            {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
-          </span>
-        </template>
-        will be transferred from your main subaccount to your SGT INJ-USDT sub
-        account.
+        <i18n-t
+          v-if="!formValues.baseInvestmentAmount"
+          tag="p"
+          keypath="sgt.createStrategyModalQuote"
+        >
+          <template #quoteAmount>
+            <span class="font-semibold">
+              {{ formValues.investmentAmount }} {{ quoteSymbol }}
+            </span>
+          </template>
+
+          <template #marketSlug>
+            <span class="uppercase">
+              {{ gridStrategyStore.spotMarket?.slug }}
+            </span>
+          </template>
+        </i18n-t>
+
+        <i18n-t v-else tag="p" keypath="sgt.createStrategyModalBaseAndQuote">
+          <template #quoteAmount>
+            <span class="font-semibold">
+              {{ formValues.investmentAmount }} {{ quoteSymbol }}
+            </span>
+          </template>
+
+          <template #baseAmount>
+            <span class="font-semibold">
+              {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
+            </span>
+          </template>
+
+          <template #marketSlug>
+            <span class="uppercase">
+              {{ gridStrategyStore.spotMarket?.slug }}
+            </span>
+          </template>
+        </i18n-t>
       </p>
 
       <div class="mt-6 space-y-1">

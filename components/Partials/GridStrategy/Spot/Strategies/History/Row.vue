@@ -157,11 +157,11 @@ function onDetailsPage() {
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end font-semibold">

@@ -1,19 +1,17 @@
 <template>
   <div class="grid grid-cols-9 text-xs p-4 gap-2">
-    <div>Time</div>
-    <div>Market</div>
-    <div class="text-right">Lower Bound</div>
-    <div class="text-right">Upper Bound</div>
+    <div>{{ $t('sgt.time') }}</div>
+    <div>{{ $t('sgt.market') }}</div>
+    <div class="text-right">{{ $t('sgt.lowerBound') }}</div>
+    <div class="text-right">{{ $t('sgt.upperBound') }}</div>
     <div class="text-right">
-      <CommonHeaderTooltip
-        :tooltip="'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.'"
-      >
-        <span class="text-white">Investment</span>
+      <CommonHeaderTooltip :tooltip="$t('sgt.amountsMayBeLessTooltip')">
+        <span class="text-white">{{ $t('sgt.investment') }}</span>
       </CommonHeaderTooltip>
     </div>
-    <div class="text-right">Total Profit</div>
-    <div class="text-right">Duration</div>
-    <div class="text-center">Order Details</div>
-    <div class="text-center">Remove Strategy</div>
+    <div class="text-right">{{ $t('sgt.totalProfit') }}</div>
+    <div class="text-right">{{ $t('sgt.duration') }}</div>
+    <div class="text-center">{{ $t('sgt.orderDetails') }}</div>
+    <div class="text-center">{{ $t('sgt.removeStrategy') }}</div>
   </div>
 </template>

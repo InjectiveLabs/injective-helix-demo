@@ -118,16 +118,22 @@ watch(formValues.value, () => {
 <template>
   <div class="pt-4">
     <div v-if="isCalculatedValuesShown" class="mb-4 text-green-500 text-sm">
-      <p>Minimize one time strategy balancing fees by investing:</p>
+      <p>{{ $t('sgt.minimizeOneTimeFees') }}</p>
 
       <div class="flex justify-between items-center">
         <div class="font-semibold pt-2">
-          <p>{{ baseAmountToString }} INJ</p>
-          <p>{{ quoteAmountToString }} USDT</p>
+          <p>
+            {{ baseAmountToString }}
+            {{ gridStrategyStore.spotMarket?.baseToken.symbol }}
+          </p>
+          <p>
+            {{ quoteAmountToString }}
+            {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+          </p>
         </div>
 
         <div>
-          <AppButton @click="onSetValues">Set Values</AppButton>
+          <AppButton @click="onSetValues">{{ $t('sgt.setValues') }}</AppButton>
         </div>
       </div>
     </div>
@@ -151,9 +157,7 @@ watch(formValues.value, () => {
       v-if="hasActiveStrategy"
       class="text-green-500 text-xs font-semibold mt-4"
     >
-      Your strategy is on the move! Find all the details under the chart at the
-      bottom right corner. If you're on a smaller screen, a quick scroll down
-      might be needed to see everything.
+      {{ $t('sgt.yourStrategyIsOnTheMove') }}
     </p>
   </div>
 </template>
