@@ -1,16 +1,5 @@
 <script setup lang="ts">
-import { IS_MAINNET } from '~/app/utils/constants'
-
-definePageMeta({
-  layout: 'institutional',
-  middleware: [
-    () => {
-      if (IS_MAINNET) {
-        return navigateTo('/')
-      }
-    }
-  ]
-})
+definePageMeta({ layout: 'institutional' })
 </script>
 
 <template>

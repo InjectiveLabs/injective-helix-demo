@@ -12,14 +12,14 @@ const trustedBy = [
   <div>
     <p class="mb-4 text-xl">{{ $t('institutional.trustedByTheBest') }}</p>
     <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 justify-items-center gap-20"
+      class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 items-center"
     >
       <img
         v-for="item in trustedBy"
         :key="item"
         :src="`/images/${item}`"
         :alt="item"
-        class="lg:w-full h-full object-contain"
+        class="p-6 max-lg:w-[90%] mx-auto object-contain"
       />
     </div>
   </div>
