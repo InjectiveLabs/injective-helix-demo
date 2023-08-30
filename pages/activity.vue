@@ -5,7 +5,7 @@ import { ActivityForm } from '@/types'
 definePageMeta({
   middleware: [
     'connected',
-    'grid-strategy',
+    'grid-strategy-subaccount',
     (to) => {
       if (to.name === 'activity') {
         return navigateTo({ name: 'activity-positions' })

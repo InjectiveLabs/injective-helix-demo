@@ -3,6 +3,7 @@ import {
   getDefaultPerpetualMarketRouteParams,
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
+import { IS_MAINNET } from '@/app/utils/constants'
 
 const appStore = useAppStore()
 
@@ -73,7 +74,7 @@ function handleToggleRewardsMenu() {
         </LayoutNavItem> -->
 
         <LayoutNavItem
-          v-if="appStore.devMode"
+          v-if="appStore.devMode && !IS_MAINNET"
           :to="{
             name: 'trading-bots-grid-spot-market',
             params: { market: 'inj-usdt' }

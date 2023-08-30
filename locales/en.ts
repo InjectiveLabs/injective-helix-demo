@@ -270,7 +270,7 @@ export default {
     new: 'New',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
-    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
+    perpetualDescription: 'Trade perpetual contracts settled in USDT',
     leaderboard: 'Leaderboard',
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,

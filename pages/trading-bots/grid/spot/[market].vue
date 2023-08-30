@@ -3,9 +3,18 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { IS_MAINNET } from '@/app/utils/constants'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy']
+  middleware: [
+    'markets',
+    'grid-strategy-subaccount',
+    () => {
+      if (IS_MAINNET) {
+        return navigateTo({ name: 'index' })
+      }
+    }
+  ]
 })
 
 const spotStore = useSpotStore()

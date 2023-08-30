@@ -8,15 +8,15 @@ export default defineNuxtRouteMiddleware((to) => {
   const toName = to.name as string
   const isDevMode = to.query.devMode === 'true'
 
-  if (isDevMode) {
-    if (!walletStore.isUserWalletConnected) {
-      modalStore.openModal(Modal.DevMode)
-    }
-
-    appStore.$patch({ devMode: true })
+  if (isDevMode && !walletStore.isUserWalletConnected) {
+    modalStore.openModal(Modal.DevMode)
   }
 
   if (!isDevMode && toName.startsWith('trading-bots')) {
     return navigateTo('/')
+  }
+
+  if (appStore.devMode === undefined) {
+    appStore.$patch({ devMode: isDevMode })
   }
 })
