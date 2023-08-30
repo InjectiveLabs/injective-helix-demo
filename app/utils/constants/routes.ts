@@ -42,6 +42,10 @@ export const getRoutes = (network: Network, env: string) => {
     'sei-usdt-perp'
   ]
 
+  if (IS_DEVNET) {
+    spot.push('wbtc-inj')
+  }
+
   if (IS_TESTNET) {
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')

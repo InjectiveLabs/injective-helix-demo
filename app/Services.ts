@@ -14,6 +14,7 @@ import {
   ChainGrpcBankApi,
   ChainGrpcWasmApi,
   ChainGrpcMintApi,
+  ChainGrpcAuthZApi,
   ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
   IndexerGrpcSpotApi,
@@ -21,6 +22,7 @@ import {
   ChainGrpcExchangeApi,
   IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
+  IndexerGrpcTradingApi,
   IndexerGrpcExplorerApi,
   IndexerRestExplorerApi,
   ChainGrpcDistributionApi,
@@ -30,8 +32,7 @@ import {
   IndexerRestMarketChronosApi,
   IndexerGrpcAccountPortfolioApi,
   IndexerRestLeaderboardChronosApi,
-  IndexerRestDerivativesChronosApi,
-  ChainGrpcAuthZApi
+  IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import { TokenMetaUtilsFactory } from '@injectivelabs/token-metadata'
@@ -61,6 +62,9 @@ export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
+  ENDPOINTS.indexer
+)
+export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
 

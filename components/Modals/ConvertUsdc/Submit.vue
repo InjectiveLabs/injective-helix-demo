@@ -77,7 +77,7 @@ const hasInsufficientBalance = computed(() =>
 )
 
 function handleConnect() {
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function submit() {

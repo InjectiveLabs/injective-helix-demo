@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { breakpointsTailwind } from '@vueuse/core'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultGridSpotMarketRouteParams
 } from '@/app/utils/market'
 import {
   Modal,
@@ -11,8 +13,8 @@ import {
   UiMarketWithToken,
   UiMarketSummary
 } from '@/types'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
-const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -22,9 +24,11 @@ const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { params, query } = useRoute()
 const { $onError } = useNuxtApp()
+const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
 
 const props = defineProps({
   isSpot: Boolean,
+  isGrid: Boolean,
 
   hardcodedSlug: {
     type: String,
@@ -84,7 +88,17 @@ function init() {
   ])
     .then(() => {
       if (betaMarketSlugs.includes(slug)) {
-        modalStore.openModal({ type: Modal.MarketBeta })
+        modalStore.openModal(Modal.MarketBeta)
+      }
+
+      if (props.isGrid && props.isSpot) {
+        const gridMarket = spotGridMarkets.find(
+          (market) => market.slug.toLowerCase() === slug.toLowerCase()
+        )
+
+        if (!gridMarket) {
+          router.push(getDefaultGridSpotMarketRouteParams())
+        }
       }
 
       const marketBySlugOrMarketId = getMarketBySlugOrMarketId()
@@ -139,11 +153,12 @@ watch(
 </script>
 
 <template>
-  <AppHocLoading :key="route.fullPath" :status="status" class="h-full">
+  <AppHocLoading :status="status" class="h-full">
     <div v-if="market && summary" class="min-h-lg h-full-flex">
       <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats
           v-bind="{
+            isGrid,
             summary,
             market: market,
             expanded: showMarketList
@@ -158,10 +173,11 @@ watch(
           data-cy="trading-side-component"
         >
           <div
+            v-if="isDesktop"
             key="market-trading-panel"
-            class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
+            class="flex-col flex-wrap h-full w-full flex space-y-1"
           >
-            <CommonCard no-padding>
+            <CommonCard v-if="!isGrid" no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
 
@@ -197,16 +213,16 @@ watch(
                     }"
                   >
                     <PartialsTradingMarketChart
+                      v-if="isDesktop"
                       :market="market"
-                      class="hidden lg:block"
                     />
                   </div>
                 </div>
               </CommonCard>
 
-              <div class="w-full lg:hidden mt-2">
+              <div v-if="!isDesktop" class="w-full mt-2">
                 <slot name="trading-panel" />
-                <PartialsTradingBalances :market="market" />
+                <PartialsTradingBalances v-if="!isGrid" :market="market" />
                 <CommonCard class="mt-1">
                   <div class="px-6 pt-2">
                     <slot name="trading-form" />
@@ -226,13 +242,16 @@ watch(
         <PartialsTradingSidebar
           v-show="showMarketList"
           key="market-selection"
-          :market="market"
+          v-bind="{
+            isGrid,
+            market
+          }"
           @close="closeMarketList"
         />
       </div>
 
       <slot name="modals" />
-      <ModalsMarketBeta v-if="marketIsBeta" />
+      <ModalsMarketBeta v-if="marketIsBeta && !isGrid" />
     </div>
   </AppHocLoading>
 </template>

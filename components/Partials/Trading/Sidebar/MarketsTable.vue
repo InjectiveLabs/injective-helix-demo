@@ -15,6 +15,8 @@ enum SortableKeys {
 const appStore = useAppStore()
 
 const props = defineProps({
+  isGrid: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -152,7 +154,8 @@ const sortedMarkets = computed(() => {
           market: marketSummary.market,
           summary: marketSummary.summary,
           volumeInUsd: marketSummary.volumeInUsd,
-          isCurrentMarket: market.marketId === marketSummary.market.marketId
+          isCurrentMarket: market.marketId === marketSummary.market.marketId,
+          isGrid
         }"
         :key="`market-row-${index}-${marketSummary.market.marketId}`"
       />

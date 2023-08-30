@@ -3,34 +3,44 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
 
-defineProps({
+const props = defineProps({
+  isGrid: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
   }
 })
 
-const marketsWithSummaryAndVolumeInUsd = computed(() =>
-  [...derivativeStore.marketsWithSummary, ...spotStore.marketsWithSummary].map(
-    ({ market, summary }) => {
-      const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
-      )
+const marketsWithSummaryAndVolumeInUsd = computed(() => {
+  const markets = [
+    ...derivativeStore.marketsWithSummary,
+    ...spotStore.marketsWithSummary
+  ].map(({ market, summary }) => {
+    const quoteTokenUsdPrice = new BigNumberInBase(
+      tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
+    )
 
-      return {
-        market,
-        summary,
-        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
-      }
+    return {
+      market,
+      summary,
+      volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
     }
-  )
-)
+  })
+
+  return props.isGrid
+    ? markets.filter((m) =>
+        spotGridMarkets.find((market) => market.slug === m.market.slug)
+      )
+    : markets
+})
 
 onMounted(() => {
   pollMarkets()
@@ -59,6 +69,7 @@ useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
       <PartialsTradingSidebarMarketsTable
         :market="market"
         :markets="marketsWithSummaryAndVolumeInUsd"
+        :is-grid="isGrid"
       />
     </AppHocLoading>
   </CommonCard>

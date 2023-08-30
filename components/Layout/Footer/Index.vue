@@ -3,6 +3,10 @@ const { t } = useLang()
 
 const aboutUsList = [
   {
+    text: t('footer.institutional'),
+    link: 'institutional'
+  },
+  {
     text: t('footer.feeDiscounts'),
     link: 'fee-discounts'
   },

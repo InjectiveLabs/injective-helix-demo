@@ -22,9 +22,9 @@ function onLoad(pageMarket: UiMarketWithToken) {
   market.value = pageMarket as UiDerivativeMarketWithToken
 
   if (marketIsNew) {
-    modalStore.openModal({ type: Modal.MarketNew })
+    modalStore.openModal(Modal.MarketNew)
   } else if (deprecatedMarket) {
-    modalStore.openModal({ type: Modal.MarketDeprecated })
+    modalStore.openModal(Modal.MarketDeprecated)
   }
 }
 </script>

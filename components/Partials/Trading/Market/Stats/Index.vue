@@ -4,6 +4,7 @@ import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
 defineProps({
   expanded: Boolean,
+  isGrid: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -36,7 +37,19 @@ function handleTokenClick() {
       <div
         class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
       >
-        <div class="flex items-center gap-4" @click="handleTokenClick">
+        <template v-if="isGrid">
+          <div class="text-center hidden lg:block">
+            <p class="font-semibold text-center px-4">Spot Grid</p>
+          </div>
+
+          <div class="w-px h-8 border-r hidden lg:block" />
+        </template>
+
+        <div
+          v-if="!isGrid"
+          class="flex items-center gap-4"
+          @click="handleTokenClick"
+        >
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
           <div class="leading-none select-none cursor-pointer">
@@ -63,7 +76,7 @@ function handleTokenClick() {
           <PartialsCommonMarketAirdrop :market="market" />
         </div>
 
-        <div class="w-px h-8 border-r hidden lg:block" />
+        <div v-if="!isGrid" class="w-px h-8 border-r hidden lg:block" />
 
         <PartialsTradingMarketStatsPartialsLastTradedPriceAndChange
           v-if="summary"

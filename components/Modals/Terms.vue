@@ -8,7 +8,7 @@ const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
 function handleConfirm() {
   closeModal()
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleCancel() {

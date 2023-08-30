@@ -36,16 +36,16 @@ onMounted(() => {
 function handleLedgerConnect() {
   walletModalType.value = WalletModalType.Ledger
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleWalletConnect() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
-    modalStore.openModal({ type: Modal.Terms })
+    modalStore.openModal(Modal.Terms)
   } else {
-    modalStore.openModal({ type: Modal.Connect })
+    modalStore.openModal(Modal.Connect)
   }
 }
 

@@ -40,7 +40,7 @@ export class HistoryProvider {
             noData: false
           } as any
 
-          if (response.s === 'no_data') {
+          if (response.s === 'no_data' || response.t.length === 0) {
             meta.noData = true
             meta.nextTime = response.nextTime
           } else {

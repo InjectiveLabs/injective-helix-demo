@@ -56,7 +56,7 @@ const hasReduceOnlyOrders = computed(
 function handleAddMargin() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
 
-  modalStore.openModal({ type: Modal.AddMarginToPosition })
+  modalStore.openModal(Modal.AddMarginToPosition)
 }
 
 function handleClosePositionClick() {

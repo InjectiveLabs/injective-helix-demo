@@ -1,4 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
+import { getTimezone } from './helpers'
 
 export class ChronosApiProvider {
   private client: HttpClient
@@ -22,6 +23,10 @@ export class ChronosApiProvider {
     const { data } = await (this.isSpot
       ? this.getSpotSymbol(symbol)
       : this.getDerivativesSymbol(symbol))
+
+    delete data.has_no_volume
+    data.visible_plots_set = 'ohlcv'
+    data.timezone = getTimezone()
 
     return data
   }

@@ -48,8 +48,7 @@ function handleOpenAssetDetailsModal() {
     props.balance
   )
 
-  modalStore.openModal({
-    type: Modal.AssetDetails,
+  modalStore.openModal(Modal.AssetDetails, {
     preventScroll: true
   })
 }

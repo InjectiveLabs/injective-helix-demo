@@ -52,8 +52,7 @@ function toggleSidebar() {
 }
 
 function showNinjaPassModal() {
-  modalStore.openModal({ type: Modal.NinjaPassWinner })
-
+  modalStore.openModal(Modal.NinjaPassWinner)
   confetti.showConfetti()
 }
 </script>
