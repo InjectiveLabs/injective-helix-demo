@@ -7,6 +7,7 @@ import {
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
 
+const appStore = useAppStore()
 const walletStore = useWalletStore()
 
 const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
@@ -121,13 +122,10 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink> -->
 
           <BaseNuxtLink
-            v-if="$route.query.devMode === 'true'"
+            v-if="appStore.devMode"
             :to="{
               name: 'trading-bots-grid-spot-market',
-              params: { market: 'inj-usdt' },
-              query: {
-                devMode: 'true'
-              }
+              params: { market: 'inj-usdt' }
             }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="grid-spot-trading-link"

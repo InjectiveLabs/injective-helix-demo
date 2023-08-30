@@ -1,5 +1,11 @@
 export default defineNuxtRouteMiddleware((to) => {
-  if (to.query.devMode !== 'true') {
+  const appStore = useAppStore()
+
+  if (to.query.devMode === 'true') {
+    appStore.$patch({ devMode: true })
+  }
+
+  if (!appStore.devMode) {
     return navigateTo('/')
   }
 })

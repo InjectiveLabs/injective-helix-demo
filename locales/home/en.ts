@@ -70,6 +70,7 @@ export default {
     support: 'Support',
     faq: 'FAQ',
     submitRequest: 'Submit A Request',
+    institutional: 'Institutional',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
     community: 'Community',

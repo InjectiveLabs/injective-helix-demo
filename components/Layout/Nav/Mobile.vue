@@ -4,6 +4,8 @@ import {
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
 
+const appStore = useAppStore()
+
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
 
@@ -71,6 +73,7 @@ function handleToggleRewardsMenu() {
         </LayoutNavItem> -->
 
         <LayoutNavItem
+          v-if="appStore.devMode"
           :to="{
             name: 'trading-bots-grid-spot-market',
             params: { market: 'inj-usdt' }
