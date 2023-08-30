@@ -162,7 +162,7 @@ function trackPlaceOrder() {
 }
 
 function handleConnect() {
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 </script>
 

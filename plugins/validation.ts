@@ -1,5 +1,11 @@
 import { defineNuxtPlugin } from '#app'
-import { email, min, max, between } from '@vee-validate/rules'
+import {
+  email,
+  min,
+  max,
+  between,
+  min_value as minValue
+} from '@vee-validate/rules'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
@@ -25,6 +31,7 @@ export const defineGlobalRules = () => {
   defineRule('between', between)
   defineRule('min', min)
   defineRule('max', max)
+  defineRule('minValue', minValue)
 
   defineRule(
     'required',
@@ -72,6 +79,80 @@ export const defineGlobalRules = () => {
 
     if (valueInBigNumber.lte(0)) {
       return errorMessages.integer(fieldName)
+    }
+
+    return true
+  })
+
+  defineRule('betweenSgt', (value: string, [min, max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
+    const maxInBigNumber = new BigNumberInBase(max)
+
+    const isBetween =
+      valueInBigNumber.lte(maxInBigNumber) &&
+      valueInBigNumber.gte(minInBigNumber)
+
+    if (!isBetween) {
+      return `Value must be between: ${min} and ${max}`
+    }
+
+    return true
+  })
+
+  defineRule('requiredSgt', (value: string) => {
+    if (!value) {
+      return 'Field is required'
+    }
+
+    return true
+  })
+
+  defineRule('minValueSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Minimum amount should be ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lte(min)) {
+      return `Value should be greater than ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('lessThanSgt', (value: string, [max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.gte(max)) {
+      return `Value should be less than ${max}`
+    }
+
+    return true
+  })
+
+  defineRule('minInvestmentSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Minimum USDT investment required to run this grid strategy is ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('insufficientSgt', (value: string, [max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.gt(max)) {
+      return `Insufficient Amount`
     }
 
     return true

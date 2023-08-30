@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { getSubaccountIndex } from '@/app/utils/helpers'
+import {
+  isSgtSubaccountId,
+  getSubaccountIndex,
+  getMarketIdFromSubaccountId
+} from '@/app/utils/helpers'
 
 const accountStore = useAccountStore()
 const { t } = useLang()
@@ -11,13 +15,23 @@ const emit = defineEmits<{
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap)
-        .map((value) => ({
-          value,
-          display:
-            getSubaccountIndex(value) === 0
-              ? `${t('account.main')}`
-              : getSubaccountIndex(value).toString()
-        }))
+        .map((value) => {
+          if (getSubaccountIndex(value) === 0) {
+            return { display: `${t('account.main')}`, value }
+          }
+
+          if (isSgtSubaccountId(value)) {
+            return {
+              value,
+              display: `SGT ${getMarketIdFromSubaccountId(value)}`
+            }
+          }
+
+          return {
+            value,
+            display: getSubaccountIndex(value).toString()
+          }
+        })
         .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )
@@ -46,7 +60,8 @@ const subaccount = computed({
     >
       <template #default="{ selected }">
         <span v-if="selected" class="text-md text-gray-300 font-semibold">
-          {{ `${$t('account.account')}: ${selected.display}` }}
+          {{ $t('account.account') }}:
+          <span class="uppercase">{{ selected.display }}</span>
         </span>
       </template>
 

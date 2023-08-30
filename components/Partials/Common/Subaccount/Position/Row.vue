@@ -77,7 +77,7 @@ const rowWrapperClass = computed(() => {
 function onAddMarginButtonClick() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
 
-  modalStore.openModal({ type: Modal.AddMarginToPosition })
+  modalStore.openModal(Modal.AddMarginToPosition)
 }
 
 function handleClosePosition() {

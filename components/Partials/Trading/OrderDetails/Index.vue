@@ -147,12 +147,12 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
       <component
         :is="orderDetailsComponent"
         v-bind="{
-          executionPrice,
           isBuy,
-          liquidationPrice,
           market,
-          minimumReceivedAmount,
           notionalValue,
+          executionPrice,
+          liquidationPrice,
+          minimumReceivedAmount,
           orderTypeReduceOnly
         }"
       >

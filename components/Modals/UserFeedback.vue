@@ -32,7 +32,7 @@ function init() {
     ]
 
     if (!disabledRoutes.includes(route.name as string)) {
-      modalStore.openModal({ type: Modal.UserFeedback })
+      modalStore.openModal(Modal.UserFeedback)
     }
   }, DELAY_MODAL_DISPLAY_TIME)
 }

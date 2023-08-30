@@ -10,6 +10,7 @@ import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 
 definePageMeta({
   middleware: [
+    'grid-strategy-subaccount',
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
@@ -20,7 +21,7 @@ definePageMeta({
             appStore.userState.geoLocation.country
         )
       ) {
-        modalStore.openModal({ type: Modal.FuturesMarketRestricted })
+        modalStore.openModal(Modal.FuturesMarketRestricted)
       }
     }
   ]
@@ -76,7 +77,7 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
     Date.now() / 1000
 
   if (marketIsExpired) {
-    modalStore.openModal({ type: Modal.MarketExpired })
+    modalStore.openModal(Modal.MarketExpired)
   }
 }
 

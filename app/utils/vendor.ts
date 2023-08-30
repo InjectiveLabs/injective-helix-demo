@@ -8,6 +8,7 @@ export const AMPLITUDE_TRANSFERS_MADE_COUNT = 'Transfers Made Count'
 export const AMPLITUDE_ERROR = 'Error'
 export const AMPLITUDE_SUCCESS = 'Success'
 export const AMPLITUDE_SUCCESSFUL_SWAP_COUNT = 'swaps-count'
+export const AMPLITUDE_CREATE_STRATEGY_COUNT = 'create-strategy'
 
 export const confettiOptions = {
   angle: 90,

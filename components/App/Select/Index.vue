@@ -3,6 +3,8 @@ import { PropType } from 'vue'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 
 const props = defineProps({
+  noMinW: Boolean,
+
   options: {
     type: Array as PropType<BaseDropdownOption[]>,
     required: true
@@ -36,7 +38,7 @@ function handleSelect(option: BaseDropdownOption) {
 
 <template>
   <BaseDropdown
-    popper-class="selector min-w-40"
+    :popper-class="`selector ${!noMinW && 'min-w-40'}`"
     placement="bottom-end"
     :flip="false"
   >

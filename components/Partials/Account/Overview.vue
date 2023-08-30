@@ -116,7 +116,7 @@ function toggleHideBalances() {
 }
 
 function handleTransferClick() {
-  modalStore.openModal({ type: Modal.SubaccountTransfer })
+  modalStore.openModal(Modal.SubaccountTransfer)
 }
 </script>
 
@@ -185,6 +185,7 @@ function handleTransferClick() {
             appStore.isSubaccountManagementActive &&
             !walletStore.isAuthzWalletConnected
           "
+          :disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
           @click="handleTransferClick"
         >

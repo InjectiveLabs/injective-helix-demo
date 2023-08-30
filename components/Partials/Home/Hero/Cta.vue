@@ -14,7 +14,7 @@ function handleGetStartedClick() {
   if (walletStore.isUserWalletConnected) {
     router.push(getDefaultPerpetualMarketRouteParams())
   } else {
-    modalStore.openModal({ type: Modal.Connect })
+    modalStore.openModal(Modal.Connect)
   }
 }
 

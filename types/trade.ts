@@ -9,7 +9,7 @@ import {
   UiSpotTrade
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeField } from '@/types'
+import { InvestmentTypeGst, SpotGridTradingField, TradeField } from '@/types'
 
 export type TradeForm = Record<TradeField, any>
 
@@ -89,3 +89,18 @@ export type MarketMarkPrice = {
 }
 
 export type MarketMarkPriceMap = Record<string, MarketMarkPrice>
+
+export type SpotGridTradingForm = {
+  [SpotGridTradingField.Grids]: string
+  [SpotGridTradingField.LowerPrice]: string
+  [SpotGridTradingField.UpperPrice]: string
+  [SpotGridTradingField.InvestmentAmount]: string
+  [SpotGridTradingField.BaseInvestmentAmount]: string
+  [SpotGridTradingField.BaseInvestmentAmount]: string
+  [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
+}
+
+export type SpotGridMarket = {
+  slug: string
+  contractAddress: string
+}

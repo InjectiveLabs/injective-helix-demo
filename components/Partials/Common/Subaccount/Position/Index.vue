@@ -50,7 +50,7 @@ onMounted(() => {
 
 function handleSharePosition(position: UiPosition) {
   selectedPosition.value = position
-  modalStore.openModal({ type: Modal.SharePosition })
+  modalStore.openModal(Modal.SharePosition)
 }
 
 useIntervalFn(() => {

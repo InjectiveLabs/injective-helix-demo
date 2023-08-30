@@ -2,7 +2,8 @@ import {
   Network,
   isDevnet,
   isTestnet,
-  getNetworkEndpoints
+  getNetworkEndpoints,
+  isMainnet
 } from '@injectivelabs/networks'
 import { CW20_SWAP_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
@@ -93,14 +94,7 @@ export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
 export const IS_DEVNET: Boolean = isDevnet(NETWORK)
 export const IS_TESTNET: Boolean = isTestnet(NETWORK)
 export const IS_STAGING = env.VITE_ENV === 'staging'
-export const IS_MAINNET =
-  [
-    Network.Public,
-    Network.Staging,
-    Network.Mainnet,
-    Network.MainnetK8s,
-    Network.MainnetLB
-  ].includes(NETWORK) || env.VITE_ENV === 'mainnet'
+export const IS_MAINNET = isMainnet(NETWORK) || env.VITE_ENV === 'mainnet'
 
 export const CHAIN_ID: ChainId = (
   env.VITE_CHAIN_ID
