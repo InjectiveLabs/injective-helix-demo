@@ -18,7 +18,7 @@ async function handleBid() {
     return
   }
 
-  modalStore.openModal({ type: Modal.BidConfirm })
+  modalStore.openModal(Modal.BidConfirm)
 }
 </script>
 
