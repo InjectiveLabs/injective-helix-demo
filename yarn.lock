@@ -5061,16 +5061,6 @@
     hookable "^5.5.3"
     unhead "1.3.4"
 
-"@vee-validate/i18n@4.7.3":
-  version "4.7.3"
-  resolved "https://registry.npmjs.org/@vee-validate/i18n/-/i18n-4.7.3.tgz#7b3a187ed83712fc48ce0f7b61f6cf4e0f38aa9e"
-  integrity sha512-Zgddr5azPiLrLFISJBmEL9l4PJoFAzfootWii5wxoVbTt3NnwcA/DobK8fLtfOeUtvh6aNwQgAAt548fe4MpKg==
-
-"@vee-validate/rules@4.7.3":
-  version "4.7.3"
-  resolved "https://registry.npmjs.org/@vee-validate/rules/-/rules-4.7.3.tgz#890ca1d3d7c30891914e20eac70c6c253dfec100"
-  integrity sha512-lC/nYA1U7XiE/ncikyzKOqsTAa1OJGza1757zahqoPD0s/66vIR3uBBDeBUNeCOrBoq9Ga20wOVEuiBIGvOZww==
-
 "@vercel/nft@^0.22.6":
   version "0.22.6"
   resolved "https://registry.npmjs.org/@vercel/nft/-/nft-0.22.6.tgz#edb30d300bb809c0945ea4c7b87e56f634885541"
