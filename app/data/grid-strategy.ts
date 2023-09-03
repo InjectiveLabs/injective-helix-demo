@@ -10,7 +10,7 @@ export const gridStrategyAuthorizationMessageTypes = [
 const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'inj-usdt',
-    contractAddress: 'inj18hsyd0xgv3cqadpzpa35a66l5346j386an3sju'
+    contractAddress: 'inj1x4kr29dlf9u4r7ya6mr2jvs0pc9sfhnlhlr9np'
   }
 ]
 
