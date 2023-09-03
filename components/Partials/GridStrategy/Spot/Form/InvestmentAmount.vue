@@ -48,11 +48,11 @@ const baseDenomAmount = computed(() =>
 
 const options = computed(() => [
   {
-    display: quoteDenomBalance.value?.token.symbol || '',
+    display: props.market.quoteToken.symbol,
     value: InvestmentTypeGst.Quote
   },
   {
-    display: `${baseDenomBalance.value?.token.symbol} + ${quoteDenomBalance.value?.token.symbol}`,
+    display: `${props.market.quoteToken.symbol} + ${props.market.quoteToken.symbol}`,
     value: InvestmentTypeGst.BaseAndQuote
   }
 ])
