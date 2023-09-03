@@ -58,7 +58,7 @@ type AppStoreState = {
   state: AppState
 
   // Dev Mode
-  devMode: boolean
+  devMode: boolean | undefined
 
   // User settings
   userState: UserBasedState
@@ -75,7 +75,7 @@ const initialStateFactory = (): AppStoreState => ({
   state: AppState.Idle,
 
   // Dev Mode
-  devMode: false,
+  devMode: undefined,
 
   // User settings
   userState: {

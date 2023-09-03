@@ -3,6 +3,9 @@ import {
   getDefaultPerpetualMarketRouteParams,
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
+import { IS_MAINNET } from '@/app/utils/constants'
+
+const appStore = useAppStore()
 
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
@@ -61,6 +64,24 @@ function handleToggleRewardsMenu() {
         <LayoutNavItem :to="defaultPerpetualMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.perpetual')
+          }}</span>
+        </LayoutNavItem>
+
+        <!-- <LayoutNavItem :to="{ name: 'convert' }">
+          <span class="font-normal tracking-wide">{{
+            $t('navigation.convert')
+          }}</span>
+        </LayoutNavItem> -->
+
+        <LayoutNavItem
+          v-if="appStore.devMode && !IS_MAINNET"
+          :to="{
+            name: 'trading-bots-grid-spot-market',
+            params: { market: 'inj-usdt' }
+          }"
+        >
+          <span class="font-normal tracking-wide">{{
+            $t('navigation.tradingBots')
           }}</span>
         </LayoutNavItem>
       </template>

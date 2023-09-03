@@ -4,7 +4,7 @@ import { Modal } from '@/types'
 const modalStore = useModalStore()
 
 function handleOpenSubaccountTransferModal() {
-  modalStore.openModal({ type: Modal.SubaccountTransfer })
+  modalStore.openModal(Modal.SubaccountTransfer)
   modalStore.closeModal(Modal.CreateSubaccount)
 }
 

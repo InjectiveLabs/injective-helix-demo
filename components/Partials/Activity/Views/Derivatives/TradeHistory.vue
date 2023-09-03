@@ -21,7 +21,7 @@ const trades = computed(() => derivativeStore.subaccountTrades)
 function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
   tradeDetails.value = value as UiDerivativeTrade
 
-  modalStore.openModal({ type: Modal.MobileTradeDetails })
+  modalStore.openModal(Modal.MobileTradeDetails)
 }
 </script>
 

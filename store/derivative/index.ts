@@ -180,6 +180,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const marketsWithToken = await tokenService.toDerivativeMarketsWithToken(
         markets
       )
+
       const recentlyExpiredMarketsWithToken =
         await tokenService.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
 
