@@ -7,8 +7,9 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
-const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
+const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const route = useRoute()
 const { $onError } = useNuxtApp()
@@ -192,11 +193,12 @@ function onCancelOrder() {
         </NuxtLink>
 
         <PartialsCommonCancelButton
-          v-if="orderFillable"
+          v-if="orderFillable && !accountStore.isSgtSubaccount"
           :status="status"
           data-cy="order-cancel-link"
           @click="onCancelOrder"
         />
+        <span v-else-if="accountStore.isSgtSubaccount" />
         <span v-else class="inline-block">&mdash;</span>
       </div>
     </td>

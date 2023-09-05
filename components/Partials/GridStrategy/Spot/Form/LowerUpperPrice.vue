@@ -33,7 +33,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <AppInputNumeric v-model="lowerPriceValue">
+      <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
         <template #context>
           <p class="text-xs font-semibold text-gray-200 mb-2">
             {{ $t('sgt.lowerPrice') }}
@@ -53,7 +53,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
     </div>
 
     <div>
-      <AppInputNumeric v-model="upperPriceValue">
+      <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
         <template #context>
           <p class="text-xs font-semibold text-gray-200 mb-2">
             {{ $t('sgt.upperPrice') }}

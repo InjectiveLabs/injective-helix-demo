@@ -16,6 +16,8 @@ defineProps({
   }
 })
 
+const gridStrategyStore = useGridStrategyStore()
+
 const { setFieldValue } = useForm<SpotGridTradingForm>()
 
 function onFormValuesUpdate(
@@ -35,6 +37,9 @@ function onFormValuesUpdate(
   <div class="min-w-0">
     <div>
       <div class="space-y-4">
+        <PartialsGridStrategySpotFormHeader
+          v-if="gridStrategyStore.activeStrategies.length > 0"
+        />
         <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
         <PartialsGridStrategySpotFormGrids />
         <PartialsGridStrategySpotFormProfitPerGrid />
@@ -47,10 +52,15 @@ function onFormValuesUpdate(
           cta
         />
 
-        <PartialsGridStrategySpotFormCreate
-          v-else
-          @form-values:update="onFormValuesUpdate"
-        />
+        <template v-else>
+          <PartialsGridStrategySpotFormCreate
+            v-if="gridStrategyStore.activeStrategies.length === 0"
+            v-bind="{ market }"
+            @investment-type:set="onFormValuesUpdate"
+          />
+
+          <PartialsGridStrategySpotFormEndBot v-else />
+        </template>
 
         <ModalsCheckSpotGridAuth />
         <ModalsCreateGridSpotStrategy />

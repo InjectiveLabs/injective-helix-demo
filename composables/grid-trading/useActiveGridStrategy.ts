@@ -1,0 +1,226 @@
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { format, formatDistance, intervalToDuration } from 'date-fns'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { backupPromiseCall } from '@/app/utils/async'
+import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
+
+function useActiveGridStrategy() {
+  const router = useRouter()
+  const spotStore = useSpotStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const gridStrategyStore = useGridStrategyStore()
+  const { success } = useNotifications()
+  const { $onError } = useNuxtApp()
+  const { t } = useLang()
+
+  const status = reactive(new Status(StatusType.Idle))
+  const now = ref(Date.now())
+
+  const market = computed(() => gridStrategyStore.spotMarket)
+
+  const strategy = computed(() => gridStrategyStore.activeStrategies[0])
+
+  const createdAt = computed(() =>
+    format(new Date(Number(strategy.value.createdAt)), 'dd MMM HH:mm:ss')
+  )
+
+  const upperBound = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(strategy.value.upperBound).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  })
+
+  const lowerBound = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(strategy.value.lowerBound).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  })
+
+  const investment = computed(() => {
+    if (!market.value) return ZERO_IN_BASE
+
+    const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
+      .toBase(market.value?.baseToken.decimals)
+      .times(
+        new BigNumberInWei(strategy.value.executionPrice).toBase(
+          market.value?.quoteToken.decimals
+        )
+      )
+
+    const quoteAmountInUsd = new BigNumberInWei(
+      strategy.value.quoteQuantity || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    return baseAmountInUsd.plus(quoteAmountInUsd)
+  })
+
+  const subaccountBalances = computed(
+    () =>
+      accountStore.subaccountBalancesMap[
+        addressAndMarketSlugToSubaccountId(
+          walletStore.address,
+          market.value?.slug || ''
+        )
+      ]
+  )
+
+  const pnl = computed(() => {
+    if (!market.value || !subaccountBalances.value) {
+      return ZERO_IN_BASE
+    }
+
+    const creationQuoteQuantity = new BigNumberInWei(
+      strategy.value.quoteQuantity || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    const creationBaseQuantity = new BigNumberInWei(
+      strategy.value.baseQuantity
+    ).toBase(market.value?.baseToken.decimals)
+
+    const creationMidPrice = new BigNumberInWei(
+      strategy.value.executionPrice
+    ).toBase(market.value?.quoteToken.decimals)
+
+    const currentQuoteQuantity = new BigNumberInWei(
+      subaccountBalances.value.find(
+        (balance) => balance.denom === market.value?.quoteDenom
+      )?.totalBalance || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    const currentBaseQuantity = new BigNumberInWei(
+      subaccountBalances.value.find(
+        (balance) => balance.denom === market.value?.baseDenom
+      )?.totalBalance || 0
+    ).toBase(market.value?.baseToken.decimals)
+
+    const orderbookBuy = new BigNumberInWei(
+      spotStore.orderbook?.buys[0]?.price || 0
+    ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
+
+    const orderbookSell = new BigNumberInWei(
+      spotStore.orderbook?.sells[0]?.price || 0
+    ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
+
+    const currentMidPrice = orderbookSell
+      .minus(orderbookBuy)
+      .dividedBy(2)
+      .plus(orderbookSell)
+
+    return currentQuoteQuantity
+      .plus(currentBaseQuantity.times(currentMidPrice))
+      .minus(
+        creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
+      )
+  })
+
+  const percentagePnl = computed(() =>
+    pnl.value.dividedBy(investment.value).times(100).toFixed(2)
+  )
+
+  const duration = computed(() =>
+    formatDistance(Number(strategy.value.createdAt), now.value)
+  )
+
+  const durationFormatted = computed(() => {
+    const { days, hours, minutes } = intervalToDuration({
+      start: new Date(Number(strategy.value.createdAt)),
+      end: new Date(now.value)
+    })
+
+    return `${days}D ${hours}H ${minutes}M`
+  })
+
+  const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+    upperBound,
+    { decimalPlaces: 2 }
+  )
+
+  const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+    lowerBound,
+    { decimalPlaces: 2 }
+  )
+
+  const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+    decimalPlaces: 2
+  })
+
+  const { valueToString: investmentToString } = useBigNumberFormatter(
+    investment,
+    { decimalPlaces: 2 }
+  )
+
+  function onRemoveStrategy() {
+    status.setLoading()
+
+    gridStrategyStore
+      .removeStrategy()
+      .then(() => {
+        success({
+          title: t('sgt.success'),
+          description: t('sgt.strategyRemoved')
+        })
+
+        backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+        backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+      })
+      .catch($onError)
+      .finally(() => {
+        status.setIdle()
+
+        amplitudeGridStrategyTracker.removeStrategy({
+          duration: duration.value,
+          market: gridStrategyStore.spotMarket?.slug || '',
+          totalProfit: pnltoString.value
+        })
+      })
+  }
+
+  function onDetailsPage() {
+    router.push({ name: 'activity-spot' })
+
+    accountStore.$patch({
+      subaccountId: addressAndMarketSlugToSubaccountId(
+        walletStore.address,
+        gridStrategyStore.spotMarket?.slug || 'inj-usdt'
+      )
+    })
+  }
+
+  useIntervalFn(() => {
+    now.value = Date.now()
+  }, 1000 * 60)
+
+  return {
+    pnl,
+    market,
+    status,
+    duration,
+    createdAt,
+    investment,
+    upperBound,
+    lowerBound,
+    pnltoString,
+    percentagePnl,
+    onDetailsPage,
+    onRemoveStrategy,
+    durationFormatted,
+    investmentToString,
+    upperBoundtoString,
+    lowerBoundtoString
+  }
+}
+
+const useSharedGridActiveStrategy = createSharedComposable(
+  useActiveGridStrategy
+)
+export default useSharedGridActiveStrategy

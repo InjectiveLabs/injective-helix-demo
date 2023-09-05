@@ -23,7 +23,7 @@ export default {
     arithmetic: 'Arithmetic',
     priceRange: 'Price Range',
     gridNumber: 'Grid Number',
-    profitGrid: 'Profit/grid',
+    profitGrid: 'Grid Interval',
     inProgress: 'In Progress',
     totalProfit: 'Total Profit',
     tradeAmount: 'Trade Amount',
@@ -61,6 +61,8 @@ export default {
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridOrderConfirmation: 'Grid Order Confirmation',
+    gridIntervalTooltip:
+      'Specifies the constant price gaps between grid levels within your set upper and lower price range.',
     minimizeOneTimeFees:
       'Minimize one time strategy balancing fees by investing:',
     pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed:
@@ -69,6 +71,8 @@ export default {
       'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
     amountsMayBeLessTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
-    yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`
+    yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
+    investmentTooltip:
+      "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy."
   }
 }
