@@ -19,8 +19,8 @@ const props = defineProps({
   }
 })
 
-const { accountBalancesWithToken } = useBalance()
 const formValues = useFormValues<SpotGridTradingForm>()
+const { accountBalancesWithToken } = useBalance()
 
 const quoteDenomBalance = computed(() =>
   accountBalancesWithToken.value.find(
@@ -123,6 +123,7 @@ function onInvestmentTypeUpdate() {
         <h3 class="text-lg font-semibold">Investment</h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
+
       <AppSelect
         v-if="baseDenomAmount.gt(0)"
         v-model="selectedInvestmentType"
