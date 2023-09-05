@@ -29,11 +29,12 @@ jobs:
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
       ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
-      VITE_CHRONOS_API_ENDPOINT: ''
-      VITE_EXPLORER_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_REST_ENDPOINT: ''
+      VITE_INDEXER_API_ENDPOINT: 'https://testnet.sentry.exchange.grpc-web.injective.network'
+      VITE_CHRONOS_API_ENDPOINT: 'https://testnet.sentry.exchange.grpc-web.injective.network'
+      VITE_EXPLORER_API_ENDPOINT: 'https://testnet.sentry.explorer.grpc-web.injective.network'
+      VITE_SENTRY_GRPC_ENDPOINT: 'https://testnet.sentry.chain.grpc-web.injective.network'
+      VITE_SENTRY_REST_ENDPOINT: 'https://testnet.sentry.tm.injective.network'
+      VITE_SENTRY_HTTP_ENDPOINT: 'https://testnet.sentry.tm.injective.network'
 
       ## Secret
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
