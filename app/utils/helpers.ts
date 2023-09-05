@@ -3,7 +3,7 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { Network } from '@injectivelabs/networks'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 import { hexToString, stringToHex } from './converters'
@@ -41,12 +41,12 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
 }
 
 export const getHubUrl = (): string => {
-  if ([Network.Devnet, Network.Local].includes(NETWORK)) {
+  if (isDevnet(NETWORK)) {
     return 'https://devnet.hub.injective.dev'
   }
 
-  if ([Network.Testnet, Network.TestnetK8s].includes(NETWORK)) {
-    return 'https://hub.injective.dev'
+  if (isTestnet(NETWORK)) {
+    return 'https://testnet.hub.injective.dev'
   }
 
   return 'https://hub.injective.network'
