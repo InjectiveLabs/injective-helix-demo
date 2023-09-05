@@ -1,11 +1,4 @@
 import { defineNuxtPlugin } from '#app'
-import {
-  email,
-  min,
-  max,
-  between,
-  min_value as minValue
-} from '@vee-validate/rules'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
@@ -15,23 +8,46 @@ import { defineTradeRules } from '@/app/client/utils/validation/trade'
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
 export const errorMessages = {
+  email: () => 'This field should be a valid email',
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
-  integer: (fieldName: string) => `${fieldName} must be > 0`,
-  between: (_field: string, params: Record<string, any>) =>
-    `${
-      params.max <= params.min
-        ? `Your input value of ${params._value_} cant be higher than ${params.max}`
-        : `This field should be between ${params.min} and ${params.max}`
-    }`
+  integer: (fieldName: string) => `${fieldName} must be > 0`
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
-  defineRule('email', email)
-  defineRule('between', between)
-  defineRule('min', min)
-  defineRule('max', max)
-  defineRule('minValue', minValue)
+  defineRule('email', (value: string) => {
+    const validEmailPattern =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    if (!validEmailPattern.test(String(value))) {
+      return errorMessages.email()
+    }
+
+    return true
+  })
+
+  defineRule('between', (value: string, [min, max]: string[]) => {
+    const valueIsOutOfBounds =
+      Number(min) > Number(value) || Number(max) < Number(value)
+
+    if (valueIsOutOfBounds) {
+      return `${
+        max <= min
+          ? `Your input value of ${value} cannot be higher than ${max}`
+          : `This field should be between ${min} and ${max}`
+      }`
+    }
+
+    return true
+  })
+
+  defineRule('minValue', (value: string, [min]: string[]) => {
+    if (Number(value) < Number(min)) {
+      return `This field should be greater than ${min}`
+    }
+
+    return true
+  })
 
   defineRule(
     'required',
