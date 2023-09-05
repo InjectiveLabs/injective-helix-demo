@@ -47,8 +47,10 @@ function onFormValuesUpdate(
 
         <template v-else>
           <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
-          <PartialsGridStrategySpotFormGrids />
-          <PartialsGridStrategySpotFormProfitPerGrid />
+          <div>
+            <PartialsGridStrategySpotFormGrids />
+            <PartialsGridStrategySpotFormProfitPerGrid />
+          </div>
           <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
         </template>
 

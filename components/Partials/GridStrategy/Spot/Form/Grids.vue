@@ -10,21 +10,16 @@ const { value: gridsValue, errorMessage } = useStringField({
 </script>
 
 <template>
-  <div>
-    <div class="flex justify-between items-center">
-      <p class="text-xs font-semibold text-gray-200 mb-2">
-        {{ $t('sgt.grids') }}
-      </p>
-      <p class="text-xs font-semibold text-gray-500 mb-2">
-        {{ GST_MINIMUM_GRIDS }}-{{ GST_MAXIMUM_GRIDS }}
-      </p>
-    </div>
+  <div class="pb-1">
+    <p class="pb-3 font-bold text-xs tracking-wide">
+      2. {{ $t('sgt.numberOfGrids') }}
+    </p>
 
     <AppInputNumeric
       v-model="gridsValue"
       :max-decimals="0"
+      :placeholder="`${GST_MINIMUM_GRIDS} - ${GST_MAXIMUM_GRIDS}`"
       class="text-right"
-      placeholder="0"
     />
 
     <p class="text-red-500 text-xs font-semibold pt-2">{{ errorMessage }}</p>

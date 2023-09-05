@@ -159,7 +159,7 @@ function onInvestmentTypeSet() {
 </script>
 
 <template>
-  <div class="pt-4">
+  <div>
     <AppButton
       :status="status"
       lg

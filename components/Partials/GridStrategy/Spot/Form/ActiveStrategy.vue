@@ -1,90 +1,85 @@
 <script setup lang="ts">
-const { upperBoundtoString, lowerBoundtoString, market, investmentToString } =
-  useActiveGridStrategy()
+const {
+  pnl,
+  market,
+  createdAt,
+  pnltoString,
+  percentagePnl,
+  durationFormatted,
+  upperBoundtoString,
+  lowerBoundtoString,
+  creationBaseQuantity,
+  creationQuoteQuantity,
+  creationExecutionPriceToString
+} = useActiveGridStrategy()
 </script>
 
 <template>
-  <PartialsGridStrategySpotFormHeader />
-
-  <p class="text-sm font-semibold text-gray-200">1. Price</p>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <AppInputNumeric
-        :value="lowerBoundtoString"
-        placeholder="0.00"
-        class="text-right"
-      >
-        <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">
-            {{ $t('sgt.lowerPrice') }}
-          </p>
-        </template>
-
-        <template #addon>
-          <span v-if="market">
-            {{ market.quoteToken.symbol }}
-          </span>
-        </template>
-      </AppInputNumeric>
+  <div class="divide-y-0">
+    <div class="flex items-center justify-between mb-2">
+      <p class="font-bold text-lg">Grid Details</p>
+      <div class="flex items-center">
+        <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
+        <p>Running</p>
+      </div>
     </div>
 
-    <div>
-      <AppInputNumeric
-        :value="upperBoundtoString"
-        placeholder="0.00"
-        readonly
-        class="text-right"
-      >
-        <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">
-            {{ $t('sgt.upperPrice') }}
-          </p>
-        </template>
-
-        <template #addon>
-          <span v-if="market">
-            {{ market.quoteToken.symbol }}
-          </span>
-        </template>
-      </AppInputNumeric>
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-gray-400 text-sm">Time Created</p>
+      <p class="text-sm">{{ createdAt }}</p>
     </div>
-  </div>
 
-  <div>
-    <AppInputNumeric value="10" placeholder="0.00" readonly class="text-right">
-      <template #context>
-        <p class="text-sm font-semibold text-gray-200 mb-4">
-          2. Number Of Grids
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-gray-400 text-sm">Duration</p>
+      <p class="text-sm">{{ durationFormatted }}</p>
+    </div>
+
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm">Price Range</p>
+      <div class="text-right text-sm">
+        <p>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</p>
+        <p>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>Initial Entry Price</span>
+        <AppTooltip
+          :content="'The initial entry price is the price at which the smart contract places the first order, setting the baseline for rebalancing your INJ and USDT portfolio to kickstart the strategy.'"
+        />
+      </p>
+      <p class="text-sm">
+        {{ creationExecutionPriceToString }} {{ market?.quoteToken.symbol }}
+      </p>
+    </div>
+
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm flex space-x-2">
+        <span>Investment</span>
+        <AppTooltip
+          :content="'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.'"
+        />
+      </p>
+      <div class="text-right text-sm">
+        <p>
+          {{ creationBaseQuantity.toFixed(2) }} {{ market?.baseToken.symbol }}
         </p>
-      </template>
-    </AppInputNumeric>
-  </div>
-
-  <div class="flex justify-between items-center border-b pb-4 text-gray-500">
-    <div class="flex items-center space-x-2">
-      <p>{{ $t('sgt.profitGrid') }}</p>
-      <AppTooltip :content="$t('sgt.gridIntervalTooltip')" />
-    </div>
-  </div>
-
-  <div class="mb-4">
-    <div class="flex items-center space-x-2 pb-4">
-      <span class="text-sm font-semibold text-gray-200">3. Investment</span>
-      <AppTooltip :content="$t('sgt.investmentTooltip')" />
+        <p>
+          {{ creationQuoteQuantity.toFixed(2) }} {{ market?.quoteToken.symbol }}
+        </p>
+      </div>
     </div>
 
-    <div>
-      <AppInputNumeric
-        :value="investmentToString"
-        placeholder="0.00"
-        class="text-right"
+    <div class="flex items-center justify-between">
+      <p class="text-gray-400 text-sm">Total Profit</p>
+      <div
+        class="text-right font-bold text-sm"
+        :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
       >
-        <template #addon>
-          <span v-if="market">
-            {{ market.quoteToken.symbol }}
-          </span>
-        </template>
-      </AppInputNumeric>
+        <p>{{ pnltoString }} {{ market?.quoteToken.symbol }}</p>
+        <p>{{ percentagePnl }} %</p>
+      </div>
     </div>
   </div>
 </template>

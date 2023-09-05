@@ -74,6 +74,24 @@ function useActiveGridStrategy() {
       ]
   )
 
+  const creationExecutionPrice = computed(() =>
+    new BigNumberInWei(strategy.value.executionPrice).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+
+  const creationQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.quoteQuantity || 0).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+
+  const creationBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.baseQuantity).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
   const pnl = computed(() => {
     if (!market.value || !subaccountBalances.value) {
       return ZERO_IN_BASE
@@ -159,6 +177,9 @@ function useActiveGridStrategy() {
     { decimalPlaces: 2 }
   )
 
+  const { valueToString: creationExecutionPriceToString } =
+    useBigNumberFormatter(creationExecutionPrice, { decimalPlaces: 2 })
+
   function onRemoveStrategy() {
     status.setLoading()
 
@@ -216,7 +237,11 @@ function useActiveGridStrategy() {
     durationFormatted,
     investmentToString,
     upperBoundtoString,
-    lowerBoundtoString
+    lowerBoundtoString,
+    creationBaseQuantity,
+    creationQuoteQuantity,
+    creationExecutionPrice,
+    creationExecutionPriceToString
   }
 }
 

@@ -120,7 +120,7 @@ function onInvestmentTypeUpdate() {
   <div>
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
-        <h3 class="text-lg font-semibold">Investment</h3>
+        <h3 class="text-xs font-bold">3. Investment</h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
 
@@ -130,27 +130,27 @@ function onInvestmentTypeUpdate() {
         no-min-w
         v-bind="{
           options,
-          wrapperClass: 'bg-gray-800 rounded-md py-2 px-4'
+          wrapperClass: 'bg-gray-800 rounded-md py-2 px-2'
         }"
         @update:model-value="onInvestmentTypeUpdate"
       >
         <template #default>
           <div
             v-if="formValues.InvestmentType === InvestmentTypeGst.Quote"
-            class="ml-auto font-semibold flex space-x-2 items-center"
+            class="ml-auto font-semibold text-xs flex space-x-2 items-center"
           >
-            <CommonTokenIcon sm :token="market.quoteToken" />
+            <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
             <span>{{ market.quoteToken.symbol }}</span>
           </div>
 
           <div
             v-if="formValues.InvestmentType === InvestmentTypeGst.BaseAndQuote"
-            class="ml-auto font-semibold flex space-x-2 items-center"
+            class="ml-auto font-semibold text-xs flex space-x-2 items-center"
           >
-            <CommonTokenIcon sm :token="market.baseToken" />
+            <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
             <span>{{ market.baseToken.symbol }}</span>
             <span>+</span>
-            <CommonTokenIcon sm :token="market.quoteToken" />
+            <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
             <span>{{ market.quoteToken.symbol }}</span>
           </div>
         </template>
@@ -158,38 +158,27 @@ function onInvestmentTypeUpdate() {
         <template #option="{ option }">
           <div
             v-if="option.value === InvestmentTypeGst.Quote"
-            class="ml-auto font-semibold flex space-x-2 items-center"
+            class="ml-auto font-semibold text-xs flex space-x-2 items-center"
           >
-            <CommonTokenIcon sm :token="market.quoteToken" />
+            <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
             <span>{{ option?.display }}</span>
           </div>
 
           <div
             v-if="option.value === InvestmentTypeGst.BaseAndQuote"
-            class="ml-auto font-semibold flex space-x-2 items-center"
+            class="ml-auto font-semibold text-xs flex space-x-2 items-center"
           >
-            <CommonTokenIcon sm :token="market.baseToken" />
+            <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
             <span>{{ market.baseToken.symbol }}</span>
             <span>+</span>
-            <CommonTokenIcon sm :token="market.quoteToken" />
+            <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
             <span>{{ market.quoteToken.symbol }}</span>
           </div>
         </template>
       </AppSelect>
     </div>
 
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <p class="text-xs font-semibold text-gray-200 mb-2">
-          {{ $t('sgt.investmentAmount') }}
-        </p>
-        <p class="text-xs font-semibold text-gray-500 mb-2">
-          {{ $t('sgt.available') }}
-          {{ quoteAmountToString }}
-          {{ market.quoteToken.symbol }}
-        </p>
-      </div>
-
+    <div class="mb-2">
       <AppInputNumeric
         v-model="investmentAmountValue"
         class="text-right"
@@ -197,6 +186,14 @@ function onInvestmentTypeUpdate() {
       >
         <template #addon>
           {{ market.quoteToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ quoteAmountToString }}
+            {{ market.quoteToken.symbol }}
+          </p>
         </template>
       </AppInputNumeric>
 
@@ -206,20 +203,17 @@ function onInvestmentTypeUpdate() {
     </div>
 
     <div v-if="selectedInvestmentType === InvestmentTypeGst.BaseAndQuote">
-      <div class="flex justify-between items-center">
-        <p class="text-xs font-semibold text-gray-200 mb-2">
-          {{ $t('sgt.investmentAmount') }}
-        </p>
-        <p class="text-xs font-semibold text-gray-500 mb-2">
-          {{ $t('sgt.available') }}
-          {{ baseAmountToString }}
-          {{ market.baseToken.symbol }}
-        </p>
-      </div>
-
       <AppInputNumeric v-model="baseInvestmentAmountValue" class="text-right">
         <template #addon>
           {{ market.baseToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ baseAmountToString }}
+            {{ market.baseToken.symbol }}
+          </p>
         </template>
       </AppInputNumeric>
 

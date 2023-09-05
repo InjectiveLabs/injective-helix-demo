@@ -6,7 +6,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
   <div class="grid grid-cols-1 gap-4">
     <AppButton
       lg
-      class="w-full font-sembold shadow-none select-none bg-green-500 text-white"
+      class="w-full font-sembold shadow-none select-none bg-blue-500 text-black"
       @click="onDetailsPage"
     >
       View Orders
@@ -15,7 +15,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
     <AppButton
       v-bind="{ status }"
       lg
-      class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
+      class="w-full font-sembold shadow-none select-none text-blue-500 border-blue-500"
       @click="onRemoveStrategy"
     >
       End Bot

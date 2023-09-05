@@ -31,44 +31,50 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 </script>
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
-        <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">
-            {{ $t('sgt.lowerPrice') }}
-          </p>
-        </template>
+  <div>
+    <p class="font-bold text-xs tracking-wide pb-4">
+      1. {{ $t('sgt.priceRange') }}
+    </p>
 
-        <template #addon>
-          <span v-if="gridStrategyStore.spotMarket">
-            {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
-          </span>
-        </template>
-      </AppInputNumeric>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
+          <template #context>
+            <p class="text-xs font-light text-gray-200 mb-2">
+              {{ $t('sgt.lowerPrice') }}
+            </p>
+          </template>
 
-      <div class="text-red-500 text-xs font-semibold mt-2">
-        {{ lowerErrorMessage }}
+          <template #addon>
+            <span v-if="gridStrategyStore.spotMarket">
+              {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
+            </span>
+          </template>
+        </AppInputNumeric>
+
+        <div class="text-red-500 text-xs font-semibold mt-2">
+          {{ lowerErrorMessage }}
+        </div>
       </div>
-    </div>
 
-    <div>
-      <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
-        <template #context>
-          <p class="text-xs font-semibold text-gray-200 mb-2">
-            {{ $t('sgt.upperPrice') }}
-          </p>
-        </template>
+      <div>
+        <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
+          <template #context>
+            <p class="text-xs font-light text-gray-200 mb-2">
+              {{ $t('sgt.upperPrice') }}
+            </p>
+          </template>
 
-        <template #addon>
-          <span v-if="gridStrategyStore.spotMarket">
-            {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
-          </span>
-        </template>
-      </AppInputNumeric>
+          <template #addon>
+            <span v-if="gridStrategyStore.spotMarket">
+              {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
+            </span>
+          </template>
+        </AppInputNumeric>
 
-      <div class="text-red-500 text-xs font-semibold mt-2">
-        {{ upperErrorMessage }}
+        <div class="text-red-500 text-xs font-semibold mt-2">
+          {{ upperErrorMessage }}
+        </div>
       </div>
     </div>
   </div>
