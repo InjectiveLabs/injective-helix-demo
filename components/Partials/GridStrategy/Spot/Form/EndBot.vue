@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
+const { removeStrategy, status, detailsPageChange } = useActiveGridStrategy()
 </script>
 
 <template>
@@ -7,7 +7,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
     <AppButton
       lg
       class="w-full font-sembold shadow-none select-none bg-blue-500 text-black"
-      @click="onDetailsPage"
+      @click="detailsPageChange"
     >
       {{ $t('sgt.viewOrders') }}
     </AppButton>
@@ -16,7 +16,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
       v-bind="{ status }"
       lg
       class="w-full font-sembold shadow-none select-none text-blue-500 border-blue-500"
-      @click="onRemoveStrategy"
+      @click="removeStrategy"
     >
       {{ $t('sgt.endBot') }}
     </AppButton>

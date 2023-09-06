@@ -8,12 +8,13 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   quoteAmount: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
 
-  investmentAmount: {
+  margin: {
     type: String,
     required: true
   }
@@ -36,18 +37,18 @@ const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   { decimalPlaces: 2 }
 )
 
-function closeModal() {
+function onModalClose() {
   modalStore.closeModal(Modal.SgtBalancedFees)
 }
 
 function onCreateStrategy() {
   emit('strategy:create')
-  closeModal()
+  onModalClose()
 }
 
 function onChangeInvestmentType() {
   emit('investment-type:set')
-  closeModal()
+  onModalClose()
 }
 </script>
 
@@ -55,7 +56,7 @@ function onChangeInvestmentType() {
   <AppModal
     :is-open="modalStore.modals[Modal.SgtBalancedFees]"
     sm
-    @modal:closed="closeModal"
+    @modal:closed="onModalClose"
   >
     <template #title>
       <h3>{{ $t('sgt.includeDenom') }}</h3>
@@ -68,7 +69,7 @@ function onChangeInvestmentType() {
 
       <div class="flex items-center justify-between mt-4">
         <p class="text-gray-500">{{ $t('sgt.totalInvestmentAmount') }}</p>
-        <p>{{ investmentAmount }} USD</p>
+        <p>{{ margin }} USD</p>
       </div>
 
       <div class="flex justify-between">

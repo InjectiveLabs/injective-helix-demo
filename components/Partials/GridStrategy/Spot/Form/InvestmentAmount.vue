@@ -100,12 +100,12 @@ const {
   )
 })
 
-function onSetQuoteAndBaseType() {
+function setQuoteAndBaseType() {
   selectedInvestmentType.value = InvestmentTypeGst.BaseAndQuote
   baseResetField({ value: '' })
 }
 
-function onSetQuoteType() {
+function setQuoteType() {
   selectedInvestmentType.value = InvestmentTypeGst.Quote
   baseResetField({ value: '' })
 }
@@ -115,7 +115,9 @@ function onSetQuoteType() {
   <div>
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
-        <h3 class="font-bold text-sm tracking-wide">3. Investment</h3>
+        <h3 class="font-bold text-sm tracking-wide">
+          3. {{ $t('sgt.investment') }}
+        </h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
 
@@ -156,7 +158,7 @@ function onSetQuoteType() {
           <div class="bg-gray-800 text-white" @click="close">
             <div
               class="font-semibold text-xs flex justify-end space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="onSetQuoteType"
+              @click="setQuoteType"
             >
               <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
               <span>{{ market.quoteToken.symbol }}</span>
@@ -164,7 +166,7 @@ function onSetQuoteType() {
 
             <div
               class="font-semibold text-xs flex space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="onSetQuoteAndBaseType"
+              @click="setQuoteAndBaseType"
             >
               <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
               <span>{{ market.baseToken.symbol }}</span>

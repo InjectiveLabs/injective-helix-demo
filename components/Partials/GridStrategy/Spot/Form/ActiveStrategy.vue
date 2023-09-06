@@ -20,7 +20,7 @@ const {
       <p class="font-bold text-lg">{{ $t('sgt.gridDetails') }}</p>
       <div class="flex items-center">
         <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
-        <p>Running</p>
+        <p>{{ $t('sgt.running') }}</p>
       </div>
     </div>
 
@@ -44,10 +44,8 @@ const {
 
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm flex items-center space-x-2">
-        <span>Initial Entry Price</span>
-        <AppTooltip
-          :content="'The initial entry price is the price at which the smart contract places the first order, setting the baseline for rebalancing your INJ and USDT portfolio to kickstart the strategy.'"
-        />
+        <span>{{ $t('sgt.initialEntryPrice') }}</span>
+        <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </p>
       <p class="text-sm">
         {{ creationExecutionPriceToString }} {{ market?.quoteToken.symbol }}
@@ -57,9 +55,7 @@ const {
     <div class="flex justify-between mb-2">
       <p class="text-gray-400 text-sm flex space-x-2">
         <span>{{ $t('sgt.investment') }}</span>
-        <AppTooltip
-          :content="'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.'"
-        />
+        <AppTooltip :content="$t('sgt.investmentAmountTooltip')" />
       </p>
       <div class="text-right text-sm">
         <p>

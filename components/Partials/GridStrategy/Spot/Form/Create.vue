@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { InvestmentTypeGst, Modal, SpotGridTradingForm } from '@/types'
@@ -187,9 +187,9 @@ function onInvestmentTypeSet() {
 
   <ModalsSgtBalancedFees
     v-bind="{
+      margin: formValues.investmentAmount!,
       baseAmount: calculatedAmount.baseAmount,
-      quoteAmount: calculatedAmount.quoteAmount,
-      investmentAmount: formValues.investmentAmount!
+      quoteAmount: calculatedAmount.quoteAmount
     }"
     @investment-type:set="onInvestmentTypeSet"
     @strategy:create="onCreateStrategy"

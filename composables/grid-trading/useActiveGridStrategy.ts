@@ -180,7 +180,7 @@ function useActiveGridStrategy() {
   const { valueToString: creationExecutionPriceToString } =
     useBigNumberFormatter(creationExecutionPrice, { decimalPlaces: 2 })
 
-  function onRemoveStrategy() {
+  function removeStrategy() {
     status.setLoading()
 
     gridStrategyStore
@@ -206,7 +206,7 @@ function useActiveGridStrategy() {
       })
   }
 
-  function onDetailsPage() {
+  function detailsPageChange() {
     router.push({ name: 'activity-spot' })
 
     accountStore.$patch({
@@ -232,8 +232,8 @@ function useActiveGridStrategy() {
     lowerBound,
     pnltoString,
     percentagePnl,
-    onDetailsPage,
-    onRemoveStrategy,
+    removeStrategy,
+    detailsPageChange,
     durationFormatted,
     investmentToString,
     upperBoundtoString,
