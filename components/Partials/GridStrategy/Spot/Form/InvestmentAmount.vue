@@ -121,7 +121,7 @@ function onSetQuoteType() {
 
       <BaseDropdown v-if="baseDenomAmount.gt(0)">
         <template #default="{ isOpen }">
-          <Button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
+          <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
             <div
               v-if="formValues.InvestmentType === InvestmentTypeGst.Quote"
               class="ml-auto font-semibold text-xs flex space-x-2 items-center"
@@ -149,7 +149,7 @@ function onSetQuoteType() {
             >
               <BaseIcon class="w-3 h-3" name="chevron-down" />
             </div>
-          </Button>
+          </button>
         </template>
 
         <template #content="{ close }">
