@@ -9,7 +9,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
       class="w-full font-sembold shadow-none select-none bg-blue-500 text-black"
       @click="onDetailsPage"
     >
-      View Orders
+      {{ $t('sgt.viewOrders') }}
     </AppButton>
 
     <AppButton
@@ -18,7 +18,7 @@ const { onRemoveStrategy, status, onDetailsPage } = useActiveGridStrategy()
       class="w-full font-sembold shadow-none select-none text-blue-500 border-blue-500"
       @click="onRemoveStrategy"
     >
-      End Bot
+      {{ $t('sgt.endBot') }}
     </AppButton>
   </div>
 </template>

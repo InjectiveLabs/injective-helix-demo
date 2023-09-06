@@ -14,6 +14,7 @@ export default {
     upperPrice: 'Upper',
     duration: 'Duration',
     gridMode: 'Grid Mode',
+    endBot: 'End Bot',
     available: 'Available',
     setValues: 'Set Values',
     investment: 'Investment',
@@ -23,11 +24,19 @@ export default {
     arithmetic: 'Arithmetic',
     priceRange: 'Price Range',
     gridNumber: 'Grid Number',
+    viewOrders: 'View Orders',
+    includeDenom: 'Include [INJ] in your initial investment',
     profitGrid: 'Grid Interval',
     inProgress: 'In Progress',
     totalProfit: 'Total Profit',
     tradeAmount: 'Trade Amount',
+    gridDetails: 'Grid Details',
+    keepQuote: 'Keep USDT Only',
+    changeToQuoteAndBase: 'Change to USDT + INJ',
     numberOfGrids: 'Number Of Grids',
+    totalInvestmentCurrency: 'Total Investment Currency',
+    totalInvestmentAmount: 'Total Investment Amount',
+    timeCreated: 'Time Created',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([
         named('quoteAmount'),
@@ -62,6 +71,8 @@ export default {
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridOrderConfirmation: 'Grid Order Confirmation',
+    balancedFeesMessage:
+      'You will be saving balancing fees if you invest in both INJ and USDT. This is due to we will have to convert some of the USDT to INJ to start the strategy. Learn more here.',
     gridIntervalTooltip:
       'Specifies the constant price gaps between grid levels within your set upper and lower price range.',
     minimizeOneTimeFees:

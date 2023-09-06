@@ -17,7 +17,7 @@ const {
 <template>
   <div class="divide-y-0">
     <div class="flex items-center justify-between mb-2">
-      <p class="font-bold text-lg">Grid Details</p>
+      <p class="font-bold text-lg">{{ $t('sgt.gridDetails') }}</p>
       <div class="flex items-center">
         <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
         <p>Running</p>
@@ -25,17 +25,17 @@ const {
     </div>
 
     <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm">Time Created</p>
+      <p class="text-gray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
       <p class="text-sm">{{ createdAt }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm">Duration</p>
+      <p class="text-gray-400 text-sm">{{ $t('sgt.duration') }}</p>
       <p class="text-sm">{{ durationFormatted }}</p>
     </div>
 
     <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm">Price Range</p>
+      <p class="text-gray-400 text-sm">{{ $t('sgt.priceRange') }}</p>
       <div class="text-right text-sm">
         <p>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</p>
         <p>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</p>
@@ -56,7 +56,7 @@ const {
 
     <div class="flex justify-between mb-2">
       <p class="text-gray-400 text-sm flex space-x-2">
-        <span>Investment</span>
+        <span>{{ $t('sgt.investment') }}</span>
         <AppTooltip
           :content="'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.'"
         />
@@ -72,7 +72,7 @@ const {
     </div>
 
     <div class="flex items-center justify-between">
-      <p class="text-gray-400 text-sm">Total Profit</p>
+      <p class="text-gray-400 text-sm">{{ $t('sgt.totalProfit') }}</p>
       <div
         class="text-right font-bold text-sm"
         :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"

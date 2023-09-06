@@ -58,23 +58,21 @@ function onChangeInvestmentType() {
     @modal:closed="closeModal"
   >
     <template #title>
-      <h3>Include [INJ] in your initial investment</h3>
+      <h3>{{ $t('sgt.includeDenom') }}</h3>
     </template>
 
     <div>
       <p>
-        You will be saving balancing fees if you invest in both INJ and USDT.
-        This is due to we will have to convert some of the USDT to INJ to start
-        the strategy. Learn more here.
+        {{ $t('sgt.balancedFeesMessage') }}
       </p>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-gray-500">Total Investment Amount</p>
+        <p class="text-gray-500">{{ $t('sgt.totalInvestmentAmount') }}</p>
         <p>{{ investmentAmount }} USD</p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-gray-500">Total Investment Currency</p>
+        <p class="text-gray-500">{{ $t('sgt.totalInvestmentCurrency') }}</p>
 
         <div class="text-gray-500 text-right">
           <p>{{ quoteAmountToString }} USD</p>
@@ -88,7 +86,7 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
-          Change to USDT + INJ
+          {{ $t('sgt.changeToQuoteAndBase') }}
         </AppButton>
 
         <AppButton
@@ -96,7 +94,7 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
-          Keep USDT Only
+          {{ $t('sgt.keepQuote') }}
         </AppButton>
       </div>
     </div>
