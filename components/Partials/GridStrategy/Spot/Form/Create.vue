@@ -155,6 +155,8 @@ function onInvestmentTypeSet() {
     calculatedAmount.value.quoteAmount.toFixed(2),
     calculatedAmount.value.baseAmount.toFixed(2)
   )
+
+  onCreateStrategy()
 }
 </script>
 
