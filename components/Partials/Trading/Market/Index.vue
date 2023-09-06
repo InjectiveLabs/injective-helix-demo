@@ -8,10 +8,7 @@ import {
   customAggregations,
   getDecimalPlaceFromValue
 } from '@/app/data/aggregation'
-import {
-  HIDE_ORDERBOOK,
-  UI_DEFAULT_AGGREGATION_DECIMALS_STRING
-} from '@/app/utils/constants'
+import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 import { getMinPriceTickSize } from '@/app/utils/helpers'
 
@@ -173,7 +170,6 @@ function onInit() {
           <div v-if="activeType === FilterList.Orderbook">
             <PartialsTradingMarketOrderbookHeader :market="market" />
             <PartialsTradingMarketOrderbook
-              v-if="!HIDE_ORDERBOOK"
               :aggregation="Number(aggregation)"
               :market="market"
             />
