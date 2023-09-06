@@ -71,7 +71,7 @@ const {
       </div>
     </div>
 
-    <div class="flex items-center justify-between">
+    <div class="flex justify-between">
       <p class="text-gray-400 text-sm">{{ $t('sgt.totalProfit') }}</p>
       <div
         class="text-right font-bold text-sm"

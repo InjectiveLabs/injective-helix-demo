@@ -32,7 +32,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
 <template>
   <div>
-    <p class="font-bold text-xs tracking-wide pb-4">
+    <p class="font-bold text-sm tracking-wide pb-4">
       1. {{ $t('sgt.priceRange') }}
     </p>
 

@@ -11,7 +11,7 @@ const { value: gridsValue, errorMessage } = useStringField({
 
 <template>
   <div class="pb-1">
-    <p class="pb-3 font-bold text-xs tracking-wide">
+    <p class="pb-3 font-bold text-sm tracking-wide">
       2. {{ $t('sgt.numberOfGrids') }}
     </p>
 

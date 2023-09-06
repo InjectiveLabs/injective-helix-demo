@@ -115,7 +115,7 @@ function onSetQuoteType() {
   <div>
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
-        <h3 class="text-xs font-bold">3. Investment</h3>
+        <h3 class="font-bold text-sm tracking-wide">3. Investment</h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
 
