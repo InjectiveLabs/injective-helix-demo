@@ -4,7 +4,10 @@ export default {
   sgt: {
     pnl: 'PnL',
     time: 'Time',
+    next: 'Next',
+    skip: 'Skip',
     grids: 'Grids',
+    close: 'Close',
     market: 'Market',
     endBot: 'End Bot',
     running: 'Running',
@@ -90,6 +93,29 @@ export default {
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
     investmentTooltip:
-      "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy."
+      "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
+    bannerTitle: 'Get Started on Spot Grid Trading.',
+    spotGridTradingBot: 'Spot grid trading bot ',
+    automatesBuyingAndSelling: 'automates buying and selling on spot trading.',
+    splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate([named('first'), named('second')]),
+    setUpABot: 'Set up a bot',
+    runABot: 'Run a bot',
+    endABot: 'End a bot',
+    step1text1:
+      ' determines the price at which the bot will place buy and sell orders.',
+    step1text2: ' in the price range, defining the profit per grid.',
+    step1text3:
+      ' is the amount of capital that the bot will use to run the strategy',
+    step2text1:
+      'When the price falls, the bot buys and sets a higher sell point.',
+    step2text2: 'When the price rises, it sells and sets a lower buy point.',
+    step2text3: ' to check how the bot is placing them for you.',
+    step2text4: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate(['Check the ', named('faq'), ' for more info.']),
+    step3text1: 'All open orders will be canceled.',
+    step3text2: 'Your money will be transferred. back to your main account.',
+    step3text3:
+      "Review the performance of your past strategies in the 'Grid Trading History' tab."
   }
 }

@@ -42,6 +42,7 @@ export enum Modal {
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',

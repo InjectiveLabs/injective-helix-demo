@@ -12,7 +12,9 @@ export default function useActiveGridStrategy(
   const accountStore = useAccountStore()
 
   const investment = computed(() => {
-    if (!market.value) return ZERO_IN_BASE
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
 
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
       .toBase(market.value?.baseToken.decimals)

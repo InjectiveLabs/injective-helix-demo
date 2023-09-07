@@ -83,5 +83,9 @@ function fetchData(subaccountId?: string) {
         }"
       />
     </template>
+
+    <template #modals>
+      <ModalsSgtBanner />
+    </template>
   </PartialsTradingLayout>
 </template>
