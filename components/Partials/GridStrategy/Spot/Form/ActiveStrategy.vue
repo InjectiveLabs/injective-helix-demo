@@ -4,6 +4,7 @@ import {
   durationFormatter,
   getSgtContractAddressFromSlug
 } from '@/app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const gridStrategyStore = useGridStrategyStore()
 
@@ -38,32 +39,32 @@ const durationFormatted = computed(() =>
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: creationExecutionPriceToString } = useBigNumberFormatter(
   creationExecutionPrice,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
 const { valueToString: creationBaseQuantityToString } = useBigNumberFormatter(
   creationBaseQuantity,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: creationQuoteQuantitytoString } = useBigNumberFormatter(
   creationQuoteQuantity,
   {
-    decimalPlaces: 2
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 

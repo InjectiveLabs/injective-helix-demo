@@ -11,7 +11,10 @@ import {
   gridStrategyAuthorizationMessageTypes,
   spotGridMarkets
 } from '@/app/data/grid-strategy'
-import { GST_MIN_TRADING_SIZE } from 'app/utils/constants'
+import {
+  GST_MIN_TRADING_SIZE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -152,8 +155,8 @@ function onCreateStrategy() {
 function onInvestmentTypeSet() {
   emit(
     'investment-type:set',
-    calculatedAmount.value.quoteAmount.toFixed(2),
-    calculatedAmount.value.baseAmount.toFixed(2)
+    calculatedAmount.value.quoteAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+    calculatedAmount.value.baseAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   )
 
   onCreateStrategy()
