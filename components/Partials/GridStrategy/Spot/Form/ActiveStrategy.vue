@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+import { format } from 'date-fns'
+import {
+  durationFormatter,
+  getSgtContractAddressFromSlug
+} from '@/app/utils/helpers'
+
 const gridStrategyStore = useGridStrategyStore()
 
-const activeStrategy = useActiveGridStrategy(
-  () => gridStrategyStore.spotMarket!,
+const now = ref(Date.now())
+
+const market = computed(() => gridStrategyStore.spotMarket!)
+const activeStrategy = computed(
   () =>
     gridStrategyStore.activeStrategies.find(
       (strategy) =>
@@ -12,22 +19,57 @@ const activeStrategy = useActiveGridStrategy(
     )!
 )
 
+const { percentagePnl, pnl } = useActiveGridStrategy(market, activeStrategy)
 const {
-  pnl,
-  market,
-  percentagePnl,
   creationBaseQuantity,
-  creationQuoteQuantity
-} = activeStrategy
+  creationExecutionPrice,
+  creationQuoteQuantity,
+  lowerBound,
+  upperBound
+} = useActiveGridStrategyTransformer(market, activeStrategy)
 
-const {
-  pnltoString,
-  durationFormatted,
-  upperBoundtoString,
-  createdAtFormatted,
-  lowerBoundtoString,
-  creationExecutionPriceToString
-} = useActiveGridStrategyFormatter(activeStrategy)
+const createdAtFormatted = computed(() =>
+  format(new Date(Number(activeStrategy.value.createdAt)), 'dd MMM HH:mm:ss')
+)
+
+const durationFormatted = computed(() =>
+  durationFormatter(activeStrategy.value.createdAt, now.value)
+)
+
+const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+  upperBound,
+  { decimalPlaces: 2 }
+)
+
+const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+  lowerBound,
+  { decimalPlaces: 2 }
+)
+
+const { valueToString: creationExecutionPriceToString } = useBigNumberFormatter(
+  creationExecutionPrice,
+  { decimalPlaces: 2 }
+)
+
+const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+  decimalPlaces: 2
+})
+
+const { valueToString: creationBaseQuantityToString } = useBigNumberFormatter(
+  creationBaseQuantity,
+  { decimalPlaces: 2 }
+)
+
+const { valueToString: creationQuoteQuantitytoString } = useBigNumberFormatter(
+  creationQuoteQuantity,
+  {
+    decimalPlaces: 2
+  }
+)
+
+useIntervalFn(() => {
+  now.value = Date.now()
+}, 1000 * 60)
 </script>
 
 <template>
@@ -74,11 +116,9 @@ const {
         <AppTooltip :content="$t('sgt.investmentAmountTooltip')" />
       </p>
       <div class="text-right text-sm">
+        <p>{{ creationBaseQuantityToString }} {{ market?.baseToken.symbol }}</p>
         <p>
-          {{ creationBaseQuantity.toFixed(2) }} {{ market?.baseToken.symbol }}
-        </p>
-        <p>
-          {{ creationQuoteQuantity.toFixed(2) }} {{ market?.quoteToken.symbol }}
+          {{ creationQuoteQuantitytoString }} {{ market?.quoteToken.symbol }}
         </p>
       </div>
     </div>

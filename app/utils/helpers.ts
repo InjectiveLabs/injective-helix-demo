@@ -5,6 +5,7 @@ import {
 } from '@injectivelabs/utils'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { intervalToDuration } from 'date-fns'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 import { hexToString, stringToHex } from './converters'
 import { UiMarketWithToken } from '@/types'
@@ -123,4 +124,16 @@ export function getMinPriceTickSize(
         .toBase(spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals)
         .toFixed()
     : ''
+}
+
+export const durationFormatter = (
+  from: number | string,
+  to: number | string
+) => {
+  const { days, hours, minutes } = intervalToDuration({
+    start: new Date(Number(from)),
+    end: new Date(Number(to))
+  })
+
+  return `${days}D ${hours}H ${minutes}M`
 }
