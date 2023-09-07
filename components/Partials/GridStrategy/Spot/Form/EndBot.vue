@@ -1,5 +1,17 @@
 <script setup lang="ts">
-const { removeStrategy, status, detailsPageChange } = useActiveGridStrategy()
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+
+const gridStrategyStore = useGridStrategyStore()
+
+const { removeStrategy, status, detailsPageChange } = useActiveGridStrategy(
+  () => gridStrategyStore.spotMarket!,
+  () =>
+    gridStrategyStore.activeStrategies.find(
+      (strategy) =>
+        strategy.contractAddress ===
+        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug || '')
+    )!
+)
 </script>
 
 <template>

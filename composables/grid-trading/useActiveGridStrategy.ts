@@ -1,11 +1,15 @@
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { format, formatDistance, intervalToDuration } from 'date-fns'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { formatDistance } from 'date-fns'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 
-function useActiveGridStrategy() {
+export default function useActiveGridStrategy(
+  spotMarket: MaybeRefOrGetter<UiSpotMarketWithToken>,
+  activeStrategy: MaybeRefOrGetter<TradingStrategy>
+) {
   const router = useRouter()
   const spotStore = useSpotStore()
   const walletStore = useWalletStore()
@@ -18,13 +22,11 @@ function useActiveGridStrategy() {
   const status = reactive(new Status(StatusType.Idle))
   const now = ref(Date.now())
 
-  const market = computed(() => gridStrategyStore.spotMarket)
+  const market = computed(() => toValue(spotMarket))
 
-  const strategy = computed(() => gridStrategyStore.activeStrategies[0])
+  const strategy = computed(() => toValue(activeStrategy))
 
-  const createdAt = computed(() =>
-    format(new Date(Number(strategy.value.createdAt)), 'dd MMM HH:mm:ss')
-  )
+  const createdAt = computed(() => strategy.value.createdAt)
 
   const upperBound = computed(() => {
     if (!market.value) {
@@ -149,37 +151,6 @@ function useActiveGridStrategy() {
     formatDistance(Number(strategy.value.createdAt), now.value)
   )
 
-  const durationFormatted = computed(() => {
-    const { days, hours, minutes } = intervalToDuration({
-      start: new Date(Number(strategy.value.createdAt)),
-      end: new Date(now.value)
-    })
-
-    return `${days}D ${hours}H ${minutes}M`
-  })
-
-  const { valueToString: upperBoundtoString } = useBigNumberFormatter(
-    upperBound,
-    { decimalPlaces: 2 }
-  )
-
-  const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
-    lowerBound,
-    { decimalPlaces: 2 }
-  )
-
-  const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
-    decimalPlaces: 2
-  })
-
-  const { valueToString: investmentToString } = useBigNumberFormatter(
-    investment,
-    { decimalPlaces: 2 }
-  )
-
-  const { valueToString: creationExecutionPriceToString } =
-    useBigNumberFormatter(creationExecutionPrice, { decimalPlaces: 2 })
-
   function removeStrategy() {
     status.setLoading()
 
@@ -201,7 +172,7 @@ function useActiveGridStrategy() {
         amplitudeGridStrategyTracker.removeStrategy({
           duration: duration.value,
           market: gridStrategyStore.spotMarket?.slug || '',
-          totalProfit: pnltoString.value
+          totalProfit: pnl.value.toString()
         })
       })
   }
@@ -222,6 +193,7 @@ function useActiveGridStrategy() {
   }, 1000 * 60)
 
   return {
+    now,
     pnl,
     market,
     status,
@@ -230,22 +202,13 @@ function useActiveGridStrategy() {
     investment,
     upperBound,
     lowerBound,
-    pnltoString,
     percentagePnl,
     removeStrategy,
     detailsPageChange,
-    durationFormatted,
-    investmentToString,
-    upperBoundtoString,
-    lowerBoundtoString,
     creationBaseQuantity,
     creationQuoteQuantity,
-    creationExecutionPrice,
-    creationExecutionPriceToString
+    creationExecutionPrice
   }
 }
 
-const useSharedGridActiveStrategy = createSharedComposable(
-  useActiveGridStrategy
-)
-export default useSharedGridActiveStrategy
+export type UseActiveGridStrategyType = ReturnType<typeof useActiveGridStrategy>

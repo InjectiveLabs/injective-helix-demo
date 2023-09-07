@@ -1,17 +1,33 @@
 <script setup lang="ts">
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+const gridStrategyStore = useGridStrategyStore()
+
+const activeStrategy = useActiveGridStrategy(
+  () => gridStrategyStore.spotMarket!,
+  () =>
+    gridStrategyStore.activeStrategies.find(
+      (strategy) =>
+        strategy.contractAddress ===
+        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug || '')
+    )!
+)
+
 const {
   pnl,
   market,
-  createdAt,
-  pnltoString,
   percentagePnl,
+  creationBaseQuantity,
+  creationQuoteQuantity
+} = activeStrategy
+
+const {
+  pnltoString,
   durationFormatted,
   upperBoundtoString,
+  createdAtFormatted,
   lowerBoundtoString,
-  creationBaseQuantity,
-  creationQuoteQuantity,
   creationExecutionPriceToString
-} = useActiveGridStrategy()
+} = useActiveGridStrategyFormatter(activeStrategy)
 </script>
 
 <template>
@@ -26,7 +42,7 @@ const {
 
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
-      <p class="text-sm">{{ createdAt }}</p>
+      <p class="text-sm">{{ createdAtFormatted }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2">
@@ -53,7 +69,7 @@ const {
     </div>
 
     <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm flex space-x-2">
+      <p class="text-gray-400 text-sm flex items-center self-start space-x-2">
         <span>{{ $t('sgt.investment') }}</span>
         <AppTooltip :content="$t('sgt.investmentAmountTooltip')" />
       </p>

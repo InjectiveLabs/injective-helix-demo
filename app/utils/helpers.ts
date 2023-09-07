@@ -103,6 +103,9 @@ export const getMarketIdFromSubaccountId = (subaccountId: string) => {
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
 }
 
+export const getSgtContractAddressFromSlug = (slug: string) =>
+  spotGridMarkets.find((sgt) => sgt.slug === slug)?.contractAddress
+
 export function getMinPriceTickSize(
   isSpot: boolean,
   market: UiMarketWithToken
