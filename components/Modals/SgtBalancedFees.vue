@@ -2,6 +2,7 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { Modal } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   baseAmount: {
@@ -29,12 +30,12 @@ const modalStore = useModalStore()
 
 const { valueToString: baseAmountToString } = useBigNumberFormatter(
   computed(() => props.baseAmount),
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   computed(() => props.quoteAmount),
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onModalClose() {
@@ -63,9 +64,14 @@ function onChangeInvestmentType() {
     </template>
 
     <div>
-      <p>
-        {{ $t('sgt.balancedFeesMessage') }}
-      </p>
+      <div>
+        <div>
+          {{ $t('sgt.balancedFeesMessage') }}
+        </div>
+        <NuxtLink to="/" class="hover:text-blue-500 underline">
+          {{ $t('sgt.learnMoreHere') }}
+        </NuxtLink>
+      </div>
 
       <div class="flex items-center justify-between mt-4">
         <p class="text-gray-500">{{ $t('sgt.totalInvestmentAmount') }}</p>

@@ -37,6 +37,7 @@ export default {
     next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     numberOfGrids: 'Number Of Grids',
+    learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
     strategyRemoved: 'Strategy Removed!',
     investmentAmount: 'Investment Amount',
@@ -80,7 +81,7 @@ export default {
     initialEntryTooltip:
       'The initial entry price is the price at which the smart contract places the first order, setting the baseline for rebalancing your INJ and USDT portfolio to kickstart the strategy.',
     balancedFeesMessage:
-      'You will be saving balancing fees if you invest in both INJ and USDT. This is due to we will have to convert some of the USDT to INJ to start the strategy. Learn more here.',
+      'You will be saving balancing fees if you invest in both INJ and USDT. This is because we have to convert some of the USDT to INJ to start the strategy.',
     gridIntervalTooltip:
       'Specifies the constant price gaps between grid levels within your set upper and lower price range.',
     minimizeOneTimeFees:

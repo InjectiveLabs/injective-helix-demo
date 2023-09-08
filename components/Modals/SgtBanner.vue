@@ -16,6 +16,7 @@ function onCloseModal() {
 function nextStep() {
   if (step.value === STEPS) {
     onCloseModal()
+
     return
   }
 
