@@ -19,8 +19,8 @@ const props = defineProps({
   }
 })
 
-const { accountBalancesWithToken } = useBalance()
 const formValues = useFormValues<SpotGridTradingForm>()
+const { accountBalancesWithToken } = useBalance()
 
 const quoteDenomBalance = computed(() =>
   accountBalancesWithToken.value.find(
@@ -45,17 +45,6 @@ const baseDenomAmount = computed(() =>
     baseDenomBalance.value?.token.decimals
   )
 )
-
-const options = computed(() => [
-  {
-    display: props.market.quoteToken.symbol,
-    value: InvestmentTypeGst.Quote
-  },
-  {
-    display: `${props.market.quoteToken.symbol} + ${props.market.quoteToken.symbol}`,
-    value: InvestmentTypeGst.BaseAndQuote
-  }
-])
 
 const minQuoteAmount = computed(() =>
   new BigNumberInBase(formValues.value.grids || 1)
@@ -111,7 +100,13 @@ const {
   )
 })
 
-function onInvestmentTypeUpdate() {
+function setQuoteAndBaseType() {
+  selectedInvestmentType.value = InvestmentTypeGst.BaseAndQuote
+  baseResetField({ value: '' })
+}
+
+function setQuoteType() {
+  selectedInvestmentType.value = InvestmentTypeGst.Quote
   baseResetField({ value: '' })
 }
 </script>
@@ -120,49 +115,86 @@ function onInvestmentTypeUpdate() {
   <div>
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
-        <h3 class="text-lg font-semibold">Investment</h3>
-        <AppTooltip
-          :content="`Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.`"
-        />
+        <h3 class="font-bold text-sm tracking-wide">
+          3. {{ $t('sgt.investment') }}
+        </h3>
+        <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
-      <AppSelect
-        v-model="selectedInvestmentType"
-        no-min-w
-        v-bind="{
-          options,
-          wrapperClass: 'bg-gray-800 rounded-md py-2 px-4'
-        }"
-        @update:model-value="onInvestmentTypeUpdate"
-      >
-        <template #default="{ selected }">
-          <div class="select-none font-semibold">
-            {{ selected?.display }}
-          </div>
+
+      <BaseDropdown v-if="baseDenomAmount.gt(0)">
+        <template #default="{ isOpen }">
+          <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
+            <div
+              v-if="formValues.InvestmentType === InvestmentTypeGst.Quote"
+              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
+            >
+              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+              <span>{{ market.quoteToken.symbol }}</span>
+            </div>
+
+            <div
+              v-if="
+                formValues.InvestmentType === InvestmentTypeGst.BaseAndQuote
+              "
+              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
+            >
+              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
+              <span>{{ market.baseToken.symbol }}</span>
+              <span>+</span>
+              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+              <span>{{ market.quoteToken.symbol }}</span>
+            </div>
+
+            <div
+              class="ml-2 transition-all duration-300"
+              :class="{ 'rotate-180': isOpen }"
+            >
+              <BaseIcon class="w-3 h-3" name="chevron-down" />
+            </div>
+          </button>
         </template>
 
-        <template #option="{ option }">
-          <div class="ml-auto font-semibold">
-            {{ option?.display }}
+        <template #content="{ close }">
+          <div class="bg-gray-800 text-white" @click="close">
+            <div
+              class="font-semibold text-xs flex justify-end space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
+              @click="setQuoteType"
+            >
+              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+              <span>{{ market.quoteToken.symbol }}</span>
+            </div>
+
+            <div
+              class="font-semibold text-xs flex space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
+              @click="setQuoteAndBaseType"
+            >
+              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
+              <span>{{ market.baseToken.symbol }}</span>
+              <span>+</span>
+              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+              <span>{{ market.quoteToken.symbol }}</span>
+            </div>
           </div>
         </template>
-      </AppSelect>
+      </BaseDropdown>
     </div>
 
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <p class="text-xs font-semibold text-gray-200 mb-2">
-          {{ $t('sgt.investmentAmount') }}
-        </p>
-        <p class="text-xs font-semibold text-gray-500 mb-2">
-          {{ $t('sgt.available') }}
-          {{ quoteAmountToString }}
-          {{ market.quoteToken.symbol }}
-        </p>
-      </div>
-
-      <AppInputNumeric v-model="investmentAmountValue" class="text-right">
+    <div class="mb-2">
+      <AppInputNumeric
+        v-model="investmentAmountValue"
+        class="text-right"
+        :placeholder="`≥ ${minQuoteAmount}`"
+      >
         <template #addon>
           {{ market.quoteToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ quoteAmountToString }}
+            {{ market.quoteToken.symbol }}
+          </p>
         </template>
       </AppInputNumeric>
 
@@ -172,20 +204,17 @@ function onInvestmentTypeUpdate() {
     </div>
 
     <div v-if="selectedInvestmentType === InvestmentTypeGst.BaseAndQuote">
-      <div class="flex justify-between items-center">
-        <p class="text-xs font-semibold text-gray-200 mb-2">
-          {{ $t('sgt.investmentAmount') }}
-        </p>
-        <p class="text-xs font-semibold text-gray-500 mb-2">
-          {{ $t('sgt.available') }}
-          {{ baseAmountToString }}
-          {{ market.baseToken.symbol }}
-        </p>
-      </div>
-
       <AppInputNumeric v-model="baseInvestmentAmountValue" class="text-right">
         <template #addon>
           {{ market.baseToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ baseAmountToString }}
+            {{ market.baseToken.symbol }}
+          </p>
         </template>
       </AppInputNumeric>
 

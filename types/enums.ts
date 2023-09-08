@@ -42,6 +42,7 @@ export enum Modal {
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
@@ -57,6 +58,7 @@ export enum Modal {
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
+  SgtBalancedFees = 'sgtBalancedFees',
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
@@ -71,6 +73,7 @@ export enum Modal {
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
+
   FuturesMarketRestricted = 'futures-market-restricted'
 }
 
