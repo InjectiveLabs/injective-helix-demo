@@ -1,14 +1,33 @@
 <script setup lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Modal, SpotGridTradingForm } from '@/types'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { InvestmentTypeGst, Modal, SpotGridTradingForm } from '@/types'
 import {
   gridStrategyAuthorizationMessageTypes,
   spotGridMarkets
 } from '@/app/data/grid-strategy'
+import {
+  GST_MIN_TRADING_SIZE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+
+const props = defineProps({
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  }
+})
 
 const emit = defineEmits<{
-  'formValues:update': [investmentAmount: string, baseInvestmentAmount: string]
+  'investment-type:set': [
+    investmentAmount: string,
+    baseInvestmentAmount: string
+  ]
 }>()
 
 const authZStore = useAuthZStore()
@@ -18,14 +37,38 @@ const formValues = useFormValues<SpotGridTradingForm>()
 const validate = useValidateForm()
 
 const status = reactive(new Status(StatusType.Idle))
-const isCalculatedValuesFlag = ref(true)
+
+const { lastTradedPrice: currentPrice } = useSpotLastPrice(
+  computed(() => gridStrategyStore.spotMarket!)
+)
+const { accountBalancesWithToken } = useBalance()
 
 const hasActiveStrategy = computed(
   () => gridStrategyStore.activeStrategies.length > 0
 )
 
-const { lastTradedPrice: currentPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket!)
+const quoteDenomBalance = computed(() =>
+  accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
+  )
+)
+
+const quoteDenomAmount = computed(() =>
+  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
+    quoteDenomBalance.value?.token.decimals
+  )
+)
+
+const baseDenomBalance = computed(() =>
+  accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.baseDenom
+  )
+)
+
+const baseDenomAmount = computed(() =>
+  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
+    baseDenomBalance.value?.token.decimals
+  )
 )
 
 const calculatedAmount = computed(() => {
@@ -58,33 +101,39 @@ const calculatedAmount = computed(() => {
   return { baseAmount, quoteAmount }
 })
 
-const isCalculatedValuesShown = computed(
-  () =>
-    !!isCalculatedValuesFlag.value &&
-    !!formValues.value.investmentAmount &&
-    !!formValues.value.lowerPrice &&
-    !!formValues.value.upperPrice
-)
-
-const { valueToString: baseAmountToString, valueToFixed: baseAmountToFixed } =
-  useBigNumberFormatter(
-    computed(() => calculatedAmount.value.baseAmount),
-    { decimalPlaces: 2 }
-  )
-
-const { valueToString: quoteAmountToString, valueToFixed: quoteAmountToFixed } =
-  useBigNumberFormatter(
-    computed(() => calculatedAmount.value.quoteAmount),
-    { decimalPlaces: 2 }
-  )
-
-async function onCreateStrategy() {
+async function onCheckBalanceFees() {
   const { valid } = await validate()
 
   if (!valid) {
     return
   }
 
+  if (formValues.value.InvestmentType === InvestmentTypeGst.BaseAndQuote) {
+    onCreateStrategy()
+
+    return
+  }
+
+  const minAmount = new BigNumberInBase(formValues.value.grids || 1).times(
+    GST_MIN_TRADING_SIZE
+  )
+
+  const isBaseLtBalance = baseDenomAmount.value.lt(
+    calculatedAmount.value.baseAmount
+  )
+  const isQuoteLtBalance = quoteDenomAmount.value.lt(
+    calculatedAmount.value.quoteAmount
+  )
+  const isBaseGtMinAmount = minAmount.lt(calculatedAmount.value.baseAmount)
+
+  if (isBaseLtBalance || isQuoteLtBalance || !isBaseGtMinAmount) {
+    onCreateStrategy()
+  } else {
+    modalStore.openModal(Modal.SgtBalancedFees)
+  }
+}
+
+function onCreateStrategy() {
   const gridMarket = spotGridMarkets.find(
     (m) => m.slug === gridStrategyStore.spotMarket?.slug
   )
@@ -103,41 +152,19 @@ async function onCreateStrategy() {
   }
 }
 
-function onSetValues() {
-  emit('formValues:update', quoteAmountToFixed.value, baseAmountToFixed.value)
-  nextTick(() => {
-    isCalculatedValuesFlag.value = false
-  })
-}
+function onInvestmentTypeSet() {
+  emit(
+    'investment-type:set',
+    calculatedAmount.value.quoteAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+    calculatedAmount.value.baseAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  )
 
-watch(formValues.value, () => {
-  isCalculatedValuesFlag.value = true
-})
+  onCreateStrategy()
+}
 </script>
 
 <template>
-  <div class="pt-4">
-    <div v-if="isCalculatedValuesShown" class="mb-4 text-green-500 text-sm">
-      <p>{{ $t('sgt.minimizeOneTimeFees') }}</p>
-
-      <div class="flex justify-between items-center">
-        <div class="font-semibold pt-2">
-          <p>
-            {{ baseAmountToString }}
-            {{ gridStrategyStore.spotMarket?.baseToken.symbol }}
-          </p>
-          <p>
-            {{ quoteAmountToString }}
-            {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
-          </p>
-        </div>
-
-        <div>
-          <AppButton @click="onSetValues">{{ $t('sgt.setValues') }}</AppButton>
-        </div>
-      </div>
-    </div>
-
+  <div>
     <AppButton
       :status="status"
       lg
@@ -145,9 +172,9 @@ watch(formValues.value, () => {
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
-          : 'bg-green-500 hover:text-green-900 text-green-800'
+          : 'bg-blue-500 text-white'
       ]"
-      @click="onCreateStrategy"
+      @click="onCheckBalanceFees"
     >
       <span v-if="hasActiveStrategy">{{ $t('sgt.inProgress') }}</span>
       <span v-else>{{ $t('sgt.create') }}</span>
@@ -160,4 +187,14 @@ watch(formValues.value, () => {
       {{ $t('sgt.yourStrategyIsOnTheMove') }}
     </p>
   </div>
+
+  <ModalsSgtBalancedFees
+    v-bind="{
+      margin: formValues.investmentAmount!,
+      baseAmount: calculatedAmount.baseAmount,
+      quoteAmount: calculatedAmount.quoteAmount
+    }"
+    @investment-type:set="onInvestmentTypeSet"
+    @strategy:create="onCreateStrategy"
+  />
 </template>

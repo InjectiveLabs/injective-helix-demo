@@ -132,9 +132,18 @@ function handlePerpetualTradeClickedTrack() {
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="grid-spot-trading-link"
           >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.tradingBots') }}
-            </p>
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.tradingBots') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.tradingBotsDescription') }}
             </p>

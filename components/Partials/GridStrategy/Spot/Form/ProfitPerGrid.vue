@@ -31,8 +31,12 @@ const { valueToString: profitPerGridToString } = useBigNumberFormatter(
 </script>
 
 <template>
-  <div class="flex justify-between items-center border-b py-4 text-gray-500">
-    <p>{{ $t('sgt.profitGrid') }}</p>
+  <div class="flex justify-between items-center border-b pb-2 text-gray-500">
+    <div class="flex items-center space-x-2 text-xs">
+      <p>{{ $t('sgt.profitGrid') }}</p>
+      <AppTooltip :content="$t('sgt.gridIntervalTooltip')" />
+    </div>
+
     <p>{{ profitPerGridToString }} %</p>
   </div>
 </template>
