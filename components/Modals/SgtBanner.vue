@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Modal } from '@/types/enums'
+import { Modal } from '@/types'
 
-const appStore = useAppStore()
 const modalStore = useModalStore()
+
+const STEPS = 3
 
 const el = ref<HTMLDivElement>()
 const step = ref(1)
@@ -12,18 +13,12 @@ function onCloseModal() {
   step.value = 1
 }
 
-onMounted(() => {
-  if (!appStore.userState.modalsViewed.includes(Modal.SgtBanner)) {
-    modalStore.openModal(Modal.SgtBanner)
-
-    appStore.setUserState({
-      ...appStore.userState,
-      modalsViewed: [...appStore.userState.modalsViewed, Modal.SgtBanner]
-    })
-  }
-})
-
 function nextStep() {
+  if (step.value === STEPS) {
+    onCloseModal()
+    return
+  }
+
   step.value++
   el.value && el.value.scrollTo({ top: 0 })
 }
@@ -68,21 +63,21 @@ function nextStep() {
                         <span class="font-bold">
                           {{ $t('sgt.priceRange') }}
                         </span>
-                        {{ $t('sgt.step1text1') }}
+                        {{ $t('sgt.step1.priceRange') }}
                       </p>
 
                       <p>
                         <span class="font-bold">
                           {{ $t('sgt.numberOfGrids') }}
                         </span>
-                        {{ $t('sgt.step1text2') }}
+                        {{ $t('sgt.step1.grids') }}
                       </p>
 
                       <p>
                         <span class="font-bold">{{
                           $t('sgt.investment')
                         }}</span>
-                        {{ $t('sgt.step1text3') }}
+                        {{ $t('sgt.step1.investment') }}
                       </p>
                     </div>
                   </template>
@@ -104,22 +99,22 @@ function nextStep() {
                   <template #content>
                     <div class="space-y-4">
                       <p>
-                        {{ $t('sgt.step2text1') }}
+                        {{ $t('sgt.step2.priceFalls') }}
                       </p>
 
                       <p>
-                        {{ $t('sgt.step2text2') }}
+                        {{ $t('sgt.step2.priceRises') }}
                       </p>
 
                       <p>
                         <span class="font-bold">
                           {{ $t('sgt.viewOrders') }}
                         </span>
-                        {{ $t('sgt.step2text3') }}
+                        {{ $t('sgt.step2.viewOrders') }}
                       </p>
 
                       <p>
-                        <i18n-t keypath="sgt.step2text4">
+                        <i18n-t keypath="sgt.step2.faq">
                           <template #faq>
                             <NuxtLink to="/" class="font-bold">FAQ</NuxtLink>
                           </template>
@@ -144,14 +139,14 @@ function nextStep() {
                 <BaseAccordion v-model="step" v-bind="{ value: 3 }">
                   <template #content>
                     <div class="space-y-4">
-                      <p>{{ $t('sgt.step3text1') }}</p>
+                      <p>{{ $t('sgt.step3.openOrdersCancelled') }}</p>
 
                       <p>
-                        {{ $t('sgt.step3text2') }}
+                        {{ $t('sgt.step3.moneyTransferred') }}
                       </p>
 
                       <p>
-                        {{ $t('sgt.step3text3') }}
+                        {{ $t('sgt.step3.review') }}
                       </p>
                     </div>
                   </template>
@@ -161,7 +156,7 @@ function nextStep() {
           </div>
         </div>
 
-        <div>
+        <div class="flex items-center">
           <img
             src="/images/sgt-step1.webp"
             alt="step-1"
@@ -186,16 +181,10 @@ function nextStep() {
       <div>
         <div class="flex justify-center space-x-2 mt-2 lg:mt-10">
           <div
+            v-for="index in STEPS"
+            :key="index"
             class="w-2 h-2 rounded-full"
-            :class="[step >= 1 ? 'bg-blue-500' : 'bg-gray-400']"
-          />
-          <div
-            class="w-2 h-2 rounded-full"
-            :class="[step >= 2 ? 'bg-blue-500' : 'bg-gray-400']"
-          />
-          <div
-            class="w-2 h-2 rounded-full"
-            :class="[step >= 3 ? 'bg-blue-500' : 'bg-gray-400']"
+            :class="[step >= index ? 'bg-blue-500' : 'bg-gray-400']"
           />
         </div>
 
@@ -211,21 +200,15 @@ function nextStep() {
           </AppButton>
 
           <AppButton
-            v-if="step < 3"
             lg
             class="w-full font-sembold shadow-none select-none bg-blue-500 text-white"
             @click="nextStep"
           >
-            {{ $t('sgt.next') }} ({{ step }}/3)
-          </AppButton>
+            <span v-if="step < STEPS">
+              {{ $t('sgt.next', { step, steps: STEPS }) }}
+            </span>
 
-          <AppButton
-            v-else
-            lg
-            class="w-full font-sembold shadow-none select-none bg-blue-500 text-white"
-            @click="onCloseModal"
-          >
-            {{ $t('sgt.close') }}
+            <span v-else>{{ $t('sgt.close') }}</span>
           </AppButton>
         </div>
       </div>

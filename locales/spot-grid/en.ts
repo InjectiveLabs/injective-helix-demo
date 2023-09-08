@@ -4,7 +4,6 @@ export default {
   sgt: {
     pnl: 'PnL',
     time: 'Time',
-    next: 'Next',
     skip: 'Skip',
     grids: 'Grids',
     close: 'Close',
@@ -35,6 +34,7 @@ export default {
     gridDetails: 'Grid Details',
     keepQuote: 'Keep USDT Only',
     timeCreated: 'Time Created',
+    next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     numberOfGrids: 'Number Of Grids',
     removeStrategy: 'Remove Strategy',
@@ -102,20 +102,30 @@ export default {
     setUpABot: 'Set up a bot',
     runABot: 'Run a bot',
     endABot: 'End a bot',
-    step1text1:
-      ' determines the price at which the bot will place buy and sell orders.',
-    step1text2: ' in the price range, defining the profit per grid.',
-    step1text3:
-      ' is the amount of capital that the bot will use to run the strategy',
-    step2text1:
-      'When the price falls, the bot buys and sets a higher sell point.',
-    step2text2: 'When the price rises, it sells and sets a lower buy point.',
-    step2text3: ' to check how the bot is placing them for you.',
-    step2text4: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate(['Check the ', named('faq'), ' for more info.']),
-    step3text1: 'All open orders will be canceled.',
-    step3text2: 'Your money will be transferred. back to your main account.',
-    step3text3:
-      "Review the performance of your past strategies in the 'Grid Trading History' tab."
+
+    step1: {
+      priceRange:
+        ' determines the price at which the bot will place buy and sell orders.',
+      grids: ' in the price range, defining the profit per grid.',
+      investment:
+        ' is the amount of capital that the bot will use to run the strategy'
+    },
+
+    step2: {
+      priceFalls:
+        'When the price falls, the bot buys and sets a higher sell point.',
+      priceRises: 'When the price rises, it sells and sets a lower buy point.',
+      viewOrders: ' to check how the bot is placing them for you.',
+      faq: ({ named, interpolate }: I18nMessageFunction) =>
+        interpolate(['Check the ', named('faq'), ' for more info.'])
+    },
+
+    step3: {
+      openOrdersCancelled: 'All open orders will be canceled.',
+      moneyTransferred:
+        'Your money will be transferred. back to your main account.',
+      review:
+        "Review the performance of your past strategies in the 'Grid Trading History' tab."
+    }
   }
 }

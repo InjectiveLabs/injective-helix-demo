@@ -22,7 +22,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     <PartialsGridStrategySpotCommonDetails v-slot="{ detailsPageChange }">
       <AppButton
         lg
-        class="w-full font-sembold shadow-none select-none bg-blue-500 text-black"
+        class="w-full font-sembold shadow-none select-none bg-blue-500 text-white"
         @click="detailsPageChange"
       >
         {{ $t('sgt.viewOrders') }}

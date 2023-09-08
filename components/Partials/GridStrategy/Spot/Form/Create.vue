@@ -172,7 +172,7 @@ function onInvestmentTypeSet() {
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
-          : 'bg-green-500 hover:text-green-900 text-green-800'
+          : 'bg-blue-500 text-white'
       ]"
       @click="onCheckBalanceFees"
     >
