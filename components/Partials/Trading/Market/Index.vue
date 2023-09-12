@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { breakpointsTailwind } from '@vueuse/core'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -20,7 +21,7 @@ const FilterList = {
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { width } = useWindowSize()
+const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
 
 const props = defineProps({
   market: {
@@ -65,10 +66,9 @@ onMounted(() => {
 })
 
 watchDebounced(
-  width,
-  (newWidth) => {
-    activeType.value =
-      newWidth < 1024 ? FilterList.Charts : FilterList.Orderbook
+  isDesktop,
+  (isDesktop) => {
+    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
   },
   { debounce: 100, immediate: true }
 )
@@ -153,6 +153,7 @@ function onInit() {
           :max-tick="maxTick"
         />
       </div>
+
       <AppHocLoading class="h-full" :status="status">
         <div
           class="rounded-lg h-full"

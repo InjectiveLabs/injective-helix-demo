@@ -3,6 +3,7 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm } from '@/types'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -41,7 +42,7 @@ const baseSymbol = computed(
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   profitPerGrid,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function closeModal() {

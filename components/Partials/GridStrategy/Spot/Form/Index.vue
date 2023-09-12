@@ -16,7 +16,13 @@ defineProps({
   }
 })
 
+const gridStrategyStore = useGridStrategyStore()
+
 const { setFieldValue } = useForm<SpotGridTradingForm>()
+
+const hasActiveStrategy = computed(
+  () => gridStrategyStore.activeStrategies.length > 0
+)
 
 function onFormValuesUpdate(
   investmentAmount: string,
@@ -35,10 +41,18 @@ function onFormValuesUpdate(
   <div class="min-w-0">
     <div>
       <div class="space-y-4">
-        <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
-        <PartialsGridStrategySpotFormGrids />
-        <PartialsGridStrategySpotFormProfitPerGrid />
-        <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
+        <PartialsGridStrategySpotFormActiveStrategy
+          v-if="hasActiveStrategy && walletStore.isUserWalletConnected"
+        />
+
+        <template v-else>
+          <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
+          <div>
+            <PartialsGridStrategySpotFormGrids />
+            <PartialsGridStrategySpotFormProfitPerGrid />
+          </div>
+          <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
+        </template>
 
         <CommonUserNotConnectedNote
           v-if="
@@ -47,10 +61,15 @@ function onFormValuesUpdate(
           cta
         />
 
-        <PartialsGridStrategySpotFormCreate
-          v-else
-          @form-values:update="onFormValuesUpdate"
-        />
+        <template v-else>
+          <PartialsGridStrategySpotFormCreate
+            v-if="!hasActiveStrategy"
+            v-bind="{ market }"
+            @investment-type:set="onFormValuesUpdate"
+          />
+
+          <PartialsGridStrategySpotFormEndBot v-else />
+        </template>
 
         <ModalsCheckSpotGridAuth />
         <ModalsCreateGridSpotStrategy />

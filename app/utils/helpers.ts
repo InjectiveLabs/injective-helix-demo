@@ -3,8 +3,9 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { Network } from '@injectivelabs/networks'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { intervalToDuration } from 'date-fns'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 import { hexToString, stringToHex } from './converters'
 import { UiMarketWithToken } from '@/types'
@@ -41,12 +42,12 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
 }
 
 export const getHubUrl = (): string => {
-  if ([Network.Devnet, Network.Local].includes(NETWORK)) {
+  if (isDevnet(NETWORK)) {
     return 'https://devnet.hub.injective.dev'
   }
 
-  if ([Network.Testnet, Network.TestnetK8s].includes(NETWORK)) {
-    return 'https://hub.injective.dev'
+  if (isTestnet(NETWORK)) {
+    return 'https://testnet.hub.injective.dev'
   }
 
   return 'https://hub.injective.network'
@@ -103,6 +104,9 @@ export const getMarketIdFromSubaccountId = (subaccountId: string) => {
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
 }
 
+export const getSgtContractAddressFromSlug = (slug: string = '') =>
+  spotGridMarkets.find((sgt) => sgt.slug === slug)?.contractAddress
+
 export function getMinPriceTickSize(
   isSpot: boolean,
   market: UiMarketWithToken
@@ -120,4 +124,16 @@ export function getMinPriceTickSize(
         .toBase(spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals)
         .toFixed()
     : ''
+}
+
+export const durationFormatter = (
+  from: number | string,
+  to: number | string
+) => {
+  const { days, hours, minutes } = intervalToDuration({
+    start: new Date(Number(from)),
+    end: new Date(Number(to))
+  })
+
+  return `${days}D ${hours}H ${minutes}M`
 }

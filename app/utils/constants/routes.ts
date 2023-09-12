@@ -42,6 +42,8 @@ export const getRoutes = (network: Network, env: string) => {
     'sei-usdt-perp'
   ]
 
+  const gridTradingSpot = ['inj-usdt']
+
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
   }
@@ -112,12 +114,17 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
+  const gridTradingSpotRoutes = gridTradingSpot.map(
+    (s) => `/trading-bots/grid/spot/${s}`
+  )
+
   return {
     MARKETS_SLUGS: {
       spot,
       futures,
       binaryOptions,
       expiryFutures,
+      gridTradingSpot,
       usdcConversionModalMarkets,
       spotMarketRedirectsSlugsPairs
     },
@@ -128,6 +135,7 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
+      gridTradingSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames

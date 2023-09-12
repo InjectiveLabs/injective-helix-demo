@@ -1,30 +1,23 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiMarketWithToken } from '@/types'
+import { Modal, UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { IS_MAINNET } from '@/app/utils/constants'
 
 definePageMeta({
-  middleware: [
-    'markets',
-    'grid-strategy-subaccount',
-    () => {
-      if (IS_MAINNET) {
-        return navigateTo({ name: 'index' })
-      }
-    }
-  ]
+  middleware: ['markets', 'grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
+const isWelcomeBannerViewed = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() => gridStrategyStore.spotMarket)
@@ -46,10 +39,6 @@ function onLoad(pageMarket: UiMarketWithToken) {
   )
 }
 
-onMounted(() => {
-  fetchData()
-})
-
 function fetchData(subaccountId?: string) {
   status.setLoading()
 
@@ -63,6 +52,14 @@ function fetchData(subaccountId?: string) {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+
+      if (
+        gridStrategyStore.strategies.length === 0 &&
+        !isWelcomeBannerViewed.value
+      ) {
+        modalStore.openModal(Modal.SgtBanner)
+        isWelcomeBannerViewed.value = true
+      }
     })
 }
 </script>
@@ -82,6 +79,10 @@ function fetchData(subaccountId?: string) {
           status
         }"
       />
+    </template>
+
+    <template #modals>
+      <ModalsSgtBanner />
     </template>
   </PartialsTradingLayout>
 </template>

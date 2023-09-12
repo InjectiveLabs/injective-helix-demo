@@ -16,7 +16,8 @@ const {
   futuresRoutes,
   customStaticRoutes,
   binaryOptionsRoutes,
-  upcomingMarketsRoutes
+  upcomingMarketsRoutes,
+  gridTradingSpotRoutes
 } = ROUTES
 
 const resolvePagePath = (page: string) => {
@@ -39,7 +40,8 @@ export default {
       ...customStaticRoutes,
       ...futuresRoutes,
       ...spotRoutes,
-      ...upcomingMarketsRoutes
+      ...upcomingMarketsRoutes,
+      ...gridTradingSpotRoutes
     ]
   },
 
