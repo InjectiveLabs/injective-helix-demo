@@ -100,5 +100,3 @@ export default function useActiveGridStrategy(
     percentagePnl
   }
 }
-
-export type UseActiveGridStrategyType = ReturnType<typeof useActiveGridStrategy>

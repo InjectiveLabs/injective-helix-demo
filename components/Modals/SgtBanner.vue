@@ -20,7 +20,7 @@ function nextStep() {
     return
   }
 
-  step.value++
+  step.value += 1
   el.value && el.value.scrollTo({ top: 0 })
 }
 </script>
