@@ -6,7 +6,12 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { InvestmentTypeGst, Modal, SpotGridTradingForm } from '@/types'
+import {
+  InvestmentTypeGst,
+  Modal,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 import {
   gridStrategyAuthorizationMessageTypes,
   spotGridMarkets
@@ -108,7 +113,10 @@ async function onCheckBalanceFees() {
     return
   }
 
-  if (formValues.value.InvestmentType === InvestmentTypeGst.BaseAndQuote) {
+  if (
+    formValues.value[SpotGridTradingField.InvestmentType] ===
+    InvestmentTypeGst.BaseAndQuote
+  ) {
     onCreateStrategy()
 
     return

@@ -21,12 +21,15 @@ const activeStrategy = computed(
 )
 
 const { percentagePnl, pnl } = useActiveGridStrategy(market, activeStrategy)
+
 const {
-  creationBaseQuantity,
-  creationExecutionPrice,
-  creationQuoteQuantity,
+  stopLoss,
   lowerBound,
-  upperBound
+  upperBound,
+  takeProfit,
+  creationBaseQuantity,
+  creationQuoteQuantity,
+  creationExecutionPrice
 } = useActiveGridStrategyTransformer(market, activeStrategy)
 
 const createdAtFormatted = computed(() =>
@@ -68,6 +71,15 @@ const { valueToString: creationQuoteQuantitytoString } = useBigNumberFormatter(
   }
 )
 
+const { valueToString: stopLossToString } = useBigNumberFormatter(stopLoss, {
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+})
+
+const { valueToString: takeProfitToString } = useBigNumberFormatter(
+  takeProfit,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
 useIntervalFn(() => {
   now.value = Date.now()
 }, 1000 * 60)
@@ -99,6 +111,16 @@ useIntervalFn(() => {
         <p>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</p>
         <p>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</p>
       </div>
+    </div>
+
+    <div v-if="takeProfit.gt(0)" class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm">{{ $t('sgt.takeProfit') }}</p>
+      <p>{{ takeProfitToString }} {{ market?.quoteToken.symbol }}</p>
+    </div>
+
+    <div v-if="stopLoss.gt(0)" class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm">{{ $t('sgt.stopLoss') }}</p>
+      <p>{{ stopLossToString }} {{ market?.quoteToken.symbol }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2">

@@ -52,6 +52,7 @@ function onFormValuesUpdate(
             <PartialsGridStrategySpotFormProfitPerGrid />
           </div>
           <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
+          <PartialsGridStrategySpotFormAdvancedSettings />
         </template>
 
         <CommonUserNotConnectedNote
