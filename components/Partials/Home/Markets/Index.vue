@@ -20,7 +20,7 @@ const activeType = ref(MarketFilterType.Volume)
         >
           <template #default="{ active }">
             <span
-              class="text-xl text-gray-775 hover:opacity-100"
+              class="text-xl text-gray-300 hover:opacity-100"
               :class="[active ? 'opacity-100' : ' opacity-30']"
             >
               <span v-if="filterType === MarketFilterType.Volume">

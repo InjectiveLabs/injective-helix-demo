@@ -5,7 +5,6 @@ import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
 const derivativeStore = useDerivativeStore()
-const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
 
@@ -17,19 +16,17 @@ defineProps({
 })
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
-  [...derivativeStore.marketsWithSummary, ...spotStore.marketsWithSummary].map(
-    ({ market, summary }) => {
-      const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
-      )
+  [...derivativeStore.marketsWithSummary].map(({ market, summary }) => {
+    const quoteTokenUsdPrice = new BigNumberInBase(
+      tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
+    )
 
-      return {
-        market,
-        summary,
-        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
-      }
+    return {
+      market,
+      summary,
+      volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
     }
-  )
+  })
 )
 
 onMounted(() => {
@@ -39,8 +36,7 @@ onMounted(() => {
 function pollMarkets() {
   Promise.all([
     tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
-    derivativeStore.fetchMarketsSummary(),
-    spotStore.fetchMarketsSummary()
+    derivativeStore.fetchMarketsSummary()
   ]).catch($onError)
 }
 

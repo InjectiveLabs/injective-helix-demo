@@ -21,12 +21,7 @@ const emit = defineEmits<{
   (e: 'update:showLowVolumeMarkets', state: boolean): void
 }>()
 
-const filterList = [
-  MarketType.Favorite,
-  '',
-  MarketType.Spot,
-  MarketType.Derivative
-]
+const filterList = [MarketType.Favorite, '']
 
 const activeTypeValue = computed({
   get: (): string => props.activeType,

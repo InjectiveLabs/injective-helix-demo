@@ -3,7 +3,6 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
@@ -11,7 +10,6 @@ const { $onError } = useNuxtApp()
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
-    ...spotStore.marketsWithSummary,
     ...derivativeStore.marketsWithSummary,
     ...exchangeStore.upcomingMarketsWithSummary,
     ...exchangeStore.deprecatedMarketsWithSummary
@@ -30,10 +28,8 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
 
 onMounted(() => getQuoteTokenPrice())
 
-const marketsWithSummariesLoaded = computed(
-  () =>
-    spotStore.marketsWithSummary.some(({ summary }) => summary) &&
-    derivativeStore.marketsWithSummary.some(({ summary }) => summary)
+const marketsWithSummariesLoaded = computed(() =>
+  derivativeStore.marketsWithSummary.some(({ summary }) => summary)
 )
 
 function getQuoteTokenPrice() {

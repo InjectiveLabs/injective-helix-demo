@@ -36,19 +36,15 @@ const learnList = [
       <div class="sm:col-span-1 xs:col-span-2 3md:col-span-3 lg:col-span-5">
         <NuxtLink :to="{ name: 'index' }">
           <div class="flex items-center cursor-pointer md:mb-6">
-            <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
-            <AssetLogoText class="h-6 md:h-8" />
+            <!-- <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
+            <AssetLogoText class="h-6 md:h-8" /> -->
+            <img src="/svg/Truflation_logo_2023.svg" alt="" />
           </div>
         </NuxtLink>
 
         <span class="text-gray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
+          &copy; {{ new Date().getFullYear() }} Truflation.
         </span>
-        <div
-          class="hidden text-sm opacity-75 lg:block mt-6 italic max-w-[450px]"
-        >
-          {{ $t('footer.helixProvides') }}
-        </div>
       </div>
 
       <div class="3md:col-span-2">

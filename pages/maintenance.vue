@@ -8,7 +8,7 @@ definePageMeta({
   <main class="flex flex-col h-screen w-full">
     <div class="container flex flex-col h-full p-4 sm:p-20">
       <div class="flex items-center justify-center mx-auto">
-        <AssetLogo class="h-10 w-10 mr-2" alt="Helix" />
+        <AssetLogo class="h-10 w-10 mr-2" alt="Truflation" />
         <AssetLogoText class="h-8 text-white" />
       </div>
 

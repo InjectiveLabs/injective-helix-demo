@@ -9,7 +9,6 @@ import {
 import { deprecatedMarkets, newMarketsSlug } from '@/app/data/market'
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
 
@@ -29,14 +28,12 @@ const props = defineProps({
 
 const markets = computed(() => [
   ...derivativeStore.markets,
-  ...spotStore.markets,
   ...exchangeStore.upcomingMarkets
 ])
 
 const marketsWithSummary = computed<UiMarketAndSummary[]>(() => [
   ...derivativeStore.marketsWithSummary,
-  ...exchangeStore.upcomingMarketsWithSummary,
-  ...spotStore.marketsWithSummary
+  ...exchangeStore.upcomingMarketsWithSummary
 ])
 
 const newMarketsList = computed(() => {
@@ -103,7 +100,9 @@ useIntervalFn(() => appStore.pollMarkets(), 5 * 1000)
 
 <template>
   <AppHocLoading :show-loading="markets.length === 0">
-    <div class="bg-white rounded-lg w-full self-center">
+    <div
+      class="bg-gray-900 border-blue-500/20 border p-2 text-gray-300 rounded-lg w-full self-center"
+    >
       <div class="overflow-auto">
         <PartialsHomeCommonMarketsHeader class="pt-6 pb-2" :is-hero="isHero" />
 

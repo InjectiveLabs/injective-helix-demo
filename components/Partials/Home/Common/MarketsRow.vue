@@ -44,7 +44,7 @@ const useDefaultLastTradedPriceColor = ref(true)
 
 const lastTradedPriceTextColorClass = computed(() => {
   if (useDefaultLastTradedPriceColor) {
-    return 'text-gray-700'
+    return 'text-gray-300'
   }
 
   return {
@@ -185,7 +185,7 @@ function handleTradeClickedTrack() {
                 class="w-4 h-4 md:w-6 md:h-6 mr-3"
               />
 
-              <div class="text-left text-gray-700 text-sm whitespace-nowrap">
+              <div class="text-left text-gray-300 text-sm whitespace-nowrap">
                 <div class="flex leading-4 font-bold">
                   {{ market.ticker }}
                 </div>
@@ -204,7 +204,7 @@ function handleTradeClickedTrack() {
         :class="{ 'col-span-2': !isHero, 'col-span-3': isHero }"
       >
         <span
-          class="w-full text-gray-900 font-medium text-sm font-mono text-right"
+          class="w-full text-gray-300 font-medium text-sm font-mono text-right"
         >
           <div class="flex align-center justify-end">
             <BaseIcon

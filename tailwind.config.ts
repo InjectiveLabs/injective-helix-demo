@@ -180,6 +180,27 @@ export default <Config>{
 
       backgroundImage: {
         hero: 'url(/svg/helix-hero-bg.svg)'
+      },
+
+      colors: {
+        brand: {
+          light: '#E2E7EA',
+          tertiary: '#8AAAD9',
+          horizon: '#3E88FF',
+          oceanic: '#1248A6',
+          stone: '#313847',
+          blackout: '#131818'
+        },
+        gray: {
+          900: '#131818',
+          1000: '#121212'
+        },
+
+        blue: {
+          400: '#8AAAD9',
+          500: '#3E88FF',
+          700: '#1248A6'
+        }
       }
     }
   },

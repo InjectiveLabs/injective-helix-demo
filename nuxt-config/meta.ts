@@ -1,16 +1,16 @@
 export const metaTags = {
   title: process.env.VITE_NAME
     ? process.env.VITE_NAME
-    : 'Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
+    : 'Truflation | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
   description:
-    'Trade on Helix - the premier decentralized spot and derivatives exchange with low fees and gas free execution',
+    'Trade on Truflation - the premier decentralized spot and derivatives exchange with low fees and gas free execution',
   keywords:
     'injective protocol, dapp, decentralized app, cryptocurrency, cryptocurrency exchange, exchange, ethereum, erc20, futures, perpetuals, futures protocol, cosmos, spot trading, derivatives, injective, ibc, cross-chain',
   author: 'InjectiveLabs',
-  url: 'https://helixapp.com',
-  shortName: 'Helix',
-  twitterHandle: '@InjectiveLabs',
-  ogImage: `${process.env.VITE_BASE_URL}/images/og-helix.jpeg`
+  url: 'https://truflation.com',
+  shortName: 'Truflation',
+  twitterHandle: '@Truflation',
+  ogImage: `${process.env.VITE_BASE_URL}/svg/Truflation_logo_2023.svg`
 }
 
 export const nuxtMetaTags = [

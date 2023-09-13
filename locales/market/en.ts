@@ -32,7 +32,7 @@ export default {
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote: 'Use Injective Bridge to transfer assets to Injective.',
     noTradingAccountBalance:
-      'Transfer to your Injective Trading Account to start trading on Helix.',
+      'Transfer to your Injective Trading Account to start trading on Truflation.',
     startTrading: 'Start Trading!',
     availableBalance: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,

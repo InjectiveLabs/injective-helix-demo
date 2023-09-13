@@ -30,8 +30,7 @@ function handleTradeClickedTrack() {
 <template>
   <div>
     <div
-      :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
-      class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
+      class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center bg-[url('/svg/shape.svg')]"
     >
       <div
         class="w-full mx-auto max-w-xs sm:max-w-md md:max-w-full xl:w-4/5 flex flex-col md:block items-center"
@@ -53,7 +52,5 @@ function handleTradeClickedTrack() {
         </div>
       </div>
     </div>
-
-    <PartialsHomeNewsletter />
   </div>
 </template>

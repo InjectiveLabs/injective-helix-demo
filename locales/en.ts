@@ -51,7 +51,7 @@ export default {
     'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'View status',
   maintenance_body:
-    'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
+    'We are constantly improving Truflation. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
@@ -207,7 +207,7 @@ export default {
   marketDeprecated: {
     title: 'No longer tradable',
     description: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([named('ticker'), ' is no longer tradable on Helix.']),
+      interpolate([named('ticker'), ' is no longer tradable on Truflation.']),
     subDescriptionOne: ({ named }: I18nMessageFunction) =>
       `If you would like to continue trading ${named(
         'ticker'
@@ -249,9 +249,9 @@ export default {
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
       'Earn crypto commission by inviting friends to trade on Helix',
-    dmmProgram: 'DMM Program',
+    dmmProgram: 'Open Liquidity Program',
     dmmProgramDescription:
-      'Provide liquidity and mine INJ as our dedicated market makers',
+      'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
     spot: 'Spot',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
@@ -317,11 +317,11 @@ export default {
     acknowledge_1:
       'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
     acknowledge_2:
-      'You will not in the future access this site or use helixapp.com while located in the United States of America or a Restricted Territory.',
+      'You will not in the future access this site while located in the United States of America or a Restricted Territory.',
     acknowledge_3:
       'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
     acknowledge_4:
-      'You are lawfully permitted to access this site and trade on helixapp.com under the laws of the jurisdiction in which you reside and are located.',
+      'You are lawfully permitted to access this site and trade under the laws of the jurisdiction in which you reside and are located.',
     acknowledge_5:
       'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
     disclaimer: 'Disclaimer',

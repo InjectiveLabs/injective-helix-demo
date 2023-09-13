@@ -40,9 +40,7 @@ const emit = defineEmits<{
 
 const FilterList = {
   [MarketType.Favorite]: MarketType.Favorite,
-  All: '',
-  [MarketType.Spot]: MarketType.Spot,
-  [MarketType.Derivative]: MarketType.Derivative
+  All: ''
 }
 const marketCategoryTypes = Object.entries(MarketCategoryType).map(
   ([key, value]) => ({

@@ -17,8 +17,8 @@ export default {
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
     builtOn: 'Built on',
-    startTradingNote: 'Start Trading on Helix Now',
-    whyTradeOnHelix: 'Why Trade on Helix',
+    startTradingNote: 'Start Trading on Truflation Now',
+    whyTradeOnTruflation: 'Why Trade on Truflation',
     decentralizedWithAdvancedTypeOrders:
       'Decentralized exchange with advanced order types',
     enjoySpotTrading:
@@ -45,7 +45,7 @@ export default {
   },
 
   newsletter: {
-    title: 'Subscribe to Helix newsletter',
+    title: 'Subscribe to Truflation newsletter',
     emailAddress: 'Email address',
     subscribe: 'Subscribe',
     disclaimer: 'Disclaimer',

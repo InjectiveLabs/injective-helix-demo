@@ -3,7 +3,6 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityTab } from '@/types'
 
-const spotStore = useSpotStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 
@@ -28,11 +27,6 @@ const tabs = computed(() => [
     count: derivativeStore.subaccountOrdersCount
   },
   {
-    label: t('activity.spotOrders'),
-    to: { name: ActivityTab.Spot },
-    count: spotStore.subaccountOrdersCount
-  },
-  {
     label: t('activity.walletHistory'),
     to: { name: ActivityTab.WalletHistory }
   }
@@ -41,7 +35,7 @@ const tabs = computed(() => [
 
 <template>
   <div class="overflow-x-auto hide-scrollbar flex-none">
-    <div class="flex lg:grid grid-cols-4 gap-4">
+    <div class="flex lg:grid grid-cols-3 gap-4">
       <CommonCardLink
         v-for="tab in tabs"
         v-bind="{ to: tab.to, showLoading: status.isLoading() }"

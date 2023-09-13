@@ -116,7 +116,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
       >
         <div class="flex justify-between items-start">
           <div class="flex items-center justify-start">
-            <AssetLogo class="w-auto h-6" alt="Helix" />
+            <AssetLogo class="w-auto h-6" alt="truflation" />
             <AssetLogoText class="block ml-2 h-6 text-white" />
           </div>
 
