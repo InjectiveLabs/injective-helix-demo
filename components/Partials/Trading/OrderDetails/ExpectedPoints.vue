@@ -75,7 +75,7 @@ const takerExpectedPts = computed(() => {
   }
 
   const boostedMultiplier = cosmosSdkDecToBigNumber(
-    marketTakerMakerExpectedPts.value?.takerPointsMultiplier
+    marketTakerMakerExpectedPts.value.takerPointsMultiplier
   )
 
   return new BigNumberInBase(props.fees).times(boostedMultiplier)
