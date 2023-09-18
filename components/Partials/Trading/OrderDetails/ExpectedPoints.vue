@@ -54,10 +54,9 @@ const makerExpectedPts = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const makerPointsMultiplier =
-    marketTakerMakerExpectedPts.value.makerPointsMultiplier || 1
-
-  const boostedMultiplier = cosmosSdkDecToBigNumber(makerPointsMultiplier)
+  const boostedMultiplier = cosmosSdkDecToBigNumber(
+    marketTakerMakerExpectedPts.value.makerPointsMultiplier
+  )
 
   return new BigNumberInBase(props.fees).times(boostedMultiplier)
 })
@@ -75,10 +74,9 @@ const takerExpectedPts = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const takerPointsMultiplier =
-    marketTakerMakerExpectedPts.value.takerPointsMultiplier || 1
-
-  const boostedMultiplier = cosmosSdkDecToBigNumber(takerPointsMultiplier)
+  const boostedMultiplier = cosmosSdkDecToBigNumber(
+    marketTakerMakerExpectedPts.value?.takerPointsMultiplier
+  )
 
   return new BigNumberInBase(props.fees).times(boostedMultiplier)
 })

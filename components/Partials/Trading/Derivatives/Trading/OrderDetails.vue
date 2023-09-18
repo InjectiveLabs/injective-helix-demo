@@ -147,6 +147,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         <slot name="makerTakerFeeRate" />
         <slot name="feeRate" />
         <slot name="feeRebate" />
+        <slot name="expectedPts" />
       </div>
     </AppDrawer>
   </div>
