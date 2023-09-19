@@ -26,7 +26,8 @@ export const getRoutes = (network: Network, env: string) => {
     'somm-usdt',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
-    'steadybtc-usdt'
+    'steadybtc-usdt',
+    'neok-usdt'
   ]
 
   const perpetuals = [
@@ -98,7 +99,7 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'orai-usdt')
   }
 
   if (IS_DEVNET) {
