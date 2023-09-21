@@ -28,8 +28,11 @@ const ninjaPassUrl = computed(() => {
 watch(
   () => ninjaPassCode,
   (code) => {
-    if (code && !appStore.userState.ninjaPassWinnerModalViewed) {
-      modalStore.openModal({ type: Modal.NinjaPassWinner })
+    if (
+      code &&
+      !appStore.userState.modalsViewed.includes(Modal.NinjaPassWinner)
+    ) {
+      modalStore.openModal(Modal.NinjaPassWinner)
 
       confetti.showConfetti()
     }
@@ -45,13 +48,18 @@ function closeModal() {
 
   appStore.setUserState({
     ...appStore.userState,
-    ninjaPassWinnerModalViewed: true
+    modalsViewed: [...appStore.userState.modalsViewed, Modal.NinjaPassWinner]
   })
 }
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm hide-close-button @modal:closed="closeModal">
+  <AppModal
+    :is-open="isModalOpen"
+    sm
+    hide-close-button
+    @modal:closed="closeModal"
+  >
     <template #title>
       <h3 class="normal-case">
         {{ $t('ninjaPass.congratulations') }}

@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   HIDDEN_BALANCE_DISPLAY,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  BTC_COIN_GECKO_ID
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeType, Modal } from '@/types'
 
+const appStore = useAppStore()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 
@@ -20,7 +23,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:hide-balances', state: boolean): void
+  'update:hide-balances': [state: boolean]
 }>()
 
 const { aggregatedPortfolioBalances } = useBalance()
@@ -50,9 +53,15 @@ const stakedAmount = computed(() => {
   )
 })
 
-const stakedAmountInUsd = computed(() =>
-  stakedAmount.value.times(tokenStore.injUsdPrice)
-)
+const stakedAmountInUsd = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  if (!injUsdPrice) {
+    return ZERO_IN_BASE
+  }
+
+  return stakedAmount.value.times(injUsdPrice)
+})
 
 const accountTotalBalanceInUsd = computed(() =>
   aggregatedAccountBalances.value
@@ -73,13 +82,13 @@ const shouldAbbreviateTotalBalance = computed(() =>
 )
 
 const accountTotalBalanceInBtc = computed(() => {
-  if (!tokenStore.btcUsdPrice) {
+  const btcUsdPrice = tokenStore.tokenUsdPrice(BTC_COIN_GECKO_ID)
+
+  if (!btcUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return accountTotalBalanceInUsd.value.dividedBy(
-    new BigNumberInBase(tokenStore.btcUsdPrice)
-  )
+  return accountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
 })
 
 const accountTotalBalanceInBtcToString = computed(() => {
@@ -107,7 +116,7 @@ function toggleHideBalances() {
 }
 
 function handleTransferClick() {
-  modalStore.openModal({ type: Modal.SubaccountTransfer })
+  modalStore.openModal(Modal.SubaccountTransfer)
 }
 </script>
 
@@ -148,19 +157,20 @@ function handleTransferClick() {
         </div>
       </div>
 
-      <div
-        v-if="!isLoading && accountStore.isDefaultSubaccount"
-        class="flex items-center justify-between md:justify-end sm:gap-4"
-      >
-        <NuxtLink :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }">
+      <div class="flex items-center justify-between md:justify-end sm:gap-4">
+        <BaseNuxtLink
+          v-if="!isLoading && accountStore.isDefaultSubaccount"
+          :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }"
+        >
           <AppButton class="bg-blue-500">
             <span class="text-blue-900 font-semibold">
               {{ $t('account.deposit') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
-        <NuxtLink
+        <BaseNuxtLink
+          v-if="!isLoading && accountStore.isDefaultSubaccount"
           :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
         >
           <AppButton class="border border-blue-500">
@@ -168,9 +178,17 @@ function handleTransferClick() {
               {{ $t('account.withdraw') }}
             </span>
           </AppButton>
-        </NuxtLink>
+        </BaseNuxtLink>
 
-        <AppButton class="border border-blue-500" @click="handleTransferClick">
+        <AppButton
+          v-if="
+            appStore.isSubaccountManagementActive &&
+            !walletStore.isAuthzWalletConnected
+          "
+          :disabled="accountStore.isSgtSubaccount"
+          class="border border-blue-500"
+          @click="handleTransferClick"
+        >
           <span class="text-blue-500 font-semibold">
             {{ $t('account.transfer') }}
           </span>
@@ -179,7 +197,7 @@ function handleTransferClick() {
     </div>
 
     <PartialsAccountSubaccountSelector
-      v-if="!isLoading"
+      v-if="!isLoading && appStore.isSubaccountManagementActive"
       v-bind="{
         hideBalances
       }"

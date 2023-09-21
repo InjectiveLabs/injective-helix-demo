@@ -2,7 +2,7 @@
 defineProps({
   lg: Boolean,
   active: Boolean,
-  showLoading: Boolean
+  isLoading: Boolean
 })
 </script>
 
@@ -31,7 +31,7 @@ defineProps({
           'justify-between': lg
         }"
       >
-        <AppSpinner v-if="showLoading" />
+        <AppSpinner v-if="isLoading" />
 
         <div
           v-else

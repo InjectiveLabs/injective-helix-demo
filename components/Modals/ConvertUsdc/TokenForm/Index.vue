@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { AccountBalance, Modal, TradeField, TradeForm } from '@/types'
+import { AccountBalance, TradeField, TradeForm } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
-const accountStore = useAccountStore()
-const modalStore = useModalStore()
 const formValues = useFormValues<TradeForm>()
 
 const props = defineProps({
@@ -32,11 +30,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:isBaseAmount', state: boolean): void
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount: string; isBaseAmount: boolean }
-  ): void
+  'update:isBaseAmount': [state: boolean]
+  'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
 
 const animationCount = ref(0)
@@ -49,10 +44,14 @@ const baseBalance = computed(() =>
   )
 )
 
+const baseAvailableBalance = computed(() =>
+  new BigNumberInWei(baseBalance.value?.availableMargin || 0).toFixed()
+)
+
 const baseBalanceToBase = computed(() =>
-  new BigNumberInBase(baseBalance.value?.availableMargin || 0).toWei(
-    baseBalance.value?.token.decimals
-  )
+  new BigNumberInWei(baseBalance.value?.availableMargin || 0)
+    .toBase(baseBalance.value?.token.decimals)
+    .toFixed()
 )
 
 const quoteBalance = computed(() =>
@@ -61,10 +60,8 @@ const quoteBalance = computed(() =>
   )
 )
 
-const quoteBalanceToBase = computed(() =>
-  new BigNumberInBase(quoteBalance.value?.availableMargin || 0).toWei(
-    quoteBalance.value?.token.decimals
-  )
+const quoteAvailableBalance = computed(() =>
+  new BigNumberInWei(quoteBalance.value?.availableMargin || 0).toFixed()
 )
 
 const isWHSolUSDTBaseDenom = computed(
@@ -74,7 +71,7 @@ const isWHSolUSDTBaseDenom = computed(
 const isBuy = computed(() => orderSide.value === OrderSide.Buy)
 
 const { valueToFixed: maxBalanceToFixed } = useBigNumberFormatter(
-  computed(() => baseBalance.value?.availableMargin),
+  baseBalanceToBase,
   {
     decimalPlaces: props.market?.quantityDecimals
   }
@@ -98,10 +95,6 @@ watch(
 )
 
 onMounted(() => {
-  if (!accountStore.hasEnoughInjForGas) {
-    modalStore.openModal({ type: Modal.InsufficientInjForGas })
-  }
-
   if ([usdcTokenDenom.USDC].includes(baseBalance.value?.denom || '')) {
     handleMaxBaseAmountChange({
       amount: maxBalanceToFixed.value
@@ -195,7 +188,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: baseBalance.token,
                 denom: baseBalance.denom,
-                balance: baseBalanceToBase.toFixed()
+                balance: baseAvailableBalance
               }
             ]
           }"
@@ -203,7 +196,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           @update:max="handleMaxBaseAmountChange"
         >
           <span>
-            {{ $t(`trade.convert.${isBuy ? 'youReceive' : 'youPay'}`) }}
+            {{ $t(`trade.swap.${isBuy ? 'youReceive' : 'youPay'}`) }}
           </span>
         </AppSelectToken>
       </div>
@@ -254,7 +247,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
               {
                 token: quoteBalance.token,
                 denom: quoteBalance.denom,
-                balance: quoteBalanceToBase.toFixed()
+                balance: quoteAvailableBalance
               }
             ]
           }"
@@ -262,7 +255,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
           @update:max="handleMaxQuoteAmountChange"
         >
           <span>
-            {{ $t(`trade.convert.${isBuy ? 'youPay' : 'youReceive'}`) }}
+            {{ $t(`trade.swap.${isBuy ? 'youPay' : 'youReceive'}`) }}
           </span>
         </AppSelectToken>
       </div>

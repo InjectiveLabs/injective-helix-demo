@@ -38,7 +38,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'share:position', state: UiPosition): void
+  'share:position': [state: UiPosition]
 }>()
 
 const status = reactive(new Status())
@@ -56,7 +56,7 @@ const hasReduceOnlyOrders = computed(
 function handleAddMargin() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
 
-  modalStore.openModal({ type: Modal.AddMarginToPosition })
+  modalStore.openModal(Modal.AddMarginToPosition)
 }
 
 function handleClosePositionClick() {
@@ -174,7 +174,7 @@ function sharePosition() {
         @click="handleClosePositionClick"
       >
         <template #icon>
-          <BaseIcon name="close" sm />
+          <BaseIcon name="close" is-sm />
         </template>
       </PartialsCommonCancelButton>
     </div>

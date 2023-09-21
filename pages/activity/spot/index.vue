@@ -3,6 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityForm, ActivityPage } from '@/types'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -54,9 +55,9 @@ function handleCancelOrders() {
     <ClientOnly>
       <Teleport to="#activity-toolbar-action">
         <AppButton
-          v-if="filteredOrders.length > 0"
+          v-if="filteredOrders.length > 0 && !accountStore.isSgtSubaccount"
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="activity-cancel-all-button"
           @click="handleCancelOrders"
         >

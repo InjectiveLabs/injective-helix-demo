@@ -1,5 +1,3 @@
-import { I18nMessageFunction } from '@/types'
-
 export default {
   connect: {
     wallet: 'Wallet',
@@ -54,7 +52,8 @@ export default {
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
 
     leap: 'Leap',
-    cosmostation: 'Cosmostation'
+    cosmostation: 'Cosmostation',
+    trustWallet: 'Trust Wallet'
   },
 
   memo: {
@@ -62,24 +61,5 @@ export default {
     memoTooltip:
       'Please check if the destination address requires a memo. If memo is required, incorrect input will result in loss of your funds.',
     memoPlaceholder: 'Your memo'
-  },
-
-  insufficientGas: {
-    insufficientGas: 'Insufficient Funds for Gas',
-    insufficientGasNoteDescription: ({
-      interpolate,
-      named
-    }: I18nMessageFunction) =>
-      interpolate([
-        'Get a small amount of free INJ from a ',
-        named('faucetLink'),
-        ' or top up your Injective Wallet on ',
-        named('hubLink'),
-        ' to ensure sufficient fee coverage for future transactions.'
-      ]),
-    communityDrivenFaucet: 'community driven faucet',
-    getFreeInj: 'Get Free INJ',
-    injectiveHub: 'Injective Hub',
-    tradingFormNote: 'Insufficient INJ to pay for gas/transaction fees.'
   }
 }

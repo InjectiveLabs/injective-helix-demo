@@ -66,7 +66,7 @@ export function useDerivativeError({
     )
   })
 
-  const highDeviation = computed<boolean>(() => {
+  const highDeviation = computed(() => {
     const isConditional = [
       TradeExecutionType.StopLimit,
       TradeExecutionType.StopMarket

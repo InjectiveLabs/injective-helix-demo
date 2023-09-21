@@ -5,10 +5,10 @@ import {
 } from '@injectivelabs/exceptions'
 import { restrictedCountries } from '@/app/data/geoip'
 import {
-  VITE_GOOGLE_MAPS_KEY,
+  GOOGLE_MAPS_KEY,
   PROXY_DETECTION_ENABLED,
   GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_PROXY_DETECTION_API_KEY
+  PROXY_DETECTION_API_KEY
 } from '@/app/utils/constants'
 import { GeoLocation } from '@/types'
 
@@ -19,11 +19,13 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
       data: GeoLocation
     }
 
-    return data
+    return { ...data, browserCountry: '' }
   } catch (error: any) {
     return {
       country: '',
-      continent: ''
+      continent: '',
+      browserCountry: '',
+      vpnCheckTimestamp: 0
     }
   }
 }
@@ -87,11 +89,11 @@ export const validateIpAddressForVPNOld = async (ipAddress: string) => {
 }
 
 export const validateIpAddressForVPN = async (ipAddress: string) => {
-  const httpClient = new HttpClient('https://vpnapi.io/')
+  const httpClient = new HttpClient('https://vpnapi.io/', { timeout: 1000 })
 
   try {
     const response = (await httpClient.get(`api/${ipAddress}`, {
-      key: VITE_PROXY_DETECTION_API_KEY
+      key: PROXY_DETECTION_API_KEY
     })) as {
       data: {
         security: {
@@ -198,8 +200,6 @@ export const displayVPNOrProxyUsageToast = () => {
 }
 
 export const getCoordinatesNoThrow = async () => {
-  displayVPNOrProxyUsageToast()
-
   const position = (await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   }).catch(() => {
@@ -223,20 +223,20 @@ export const getCoordinatesNoThrow = async () => {
 export const fetchUserCountryFromBrowser = async () => {
   const position = await getCoordinatesNoThrow()
 
-  return await fetchCountryFromCoordinates(
+  return await fetchCountryFromCoordinatesNoThrow(
     position.latitude,
     position.longitude
   )
 }
 
-export const fetchCountryFromCoordinates = async (
+export const fetchCountryFromCoordinatesNoThrow = async (
   latitude: string,
   longitude: string
 ) => {
   const googleMapsHttpClient = new HttpClient(
     'https://maps.googleapis.com/maps/api/geocode/'
   )
-  const GOOGLE_MAPS_SUFFIX = `json?latlng=${latitude},${longitude}&sensor=false&key=${VITE_GOOGLE_MAPS_KEY}`
+  const GOOGLE_MAPS_SUFFIX = `json?latlng=${latitude},${longitude}&sensor=false&key=${GOOGLE_MAPS_KEY}`
 
   try {
     const response = (await googleMapsHttpClient.get(GOOGLE_MAPS_SUFFIX)) as {
@@ -255,8 +255,6 @@ export const fetchCountryFromCoordinates = async (
 
     return country?.short_name || ''
   } catch (e: unknown) {
-    throw new HttpRequestException(new Error((e as any).message), {
-      contextModule: 'region'
-    })
+    return ''
   }
 }

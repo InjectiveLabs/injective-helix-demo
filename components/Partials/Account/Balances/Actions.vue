@@ -10,10 +10,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:search', state: string): void
-  (e: 'update:show-margin-currency-only', state: boolean): void
-  (e: 'update:hide-small-balances', state: boolean): void
-  (e: 'update:subaccount', state: string): void
+  'update:search': [state: string]
+  'update:subaccount': [state: string]
+  'update:hide-small-balances': [state: boolean]
+  'update:show-margin-currency-only': [state: boolean]
 }>()
 
 const hideSmallBalancesCheck = computed({
@@ -73,9 +73,9 @@ const search = computed({
         <div class="flex items-center justify-start">
           <span>{{ $t('account.hideSmallBalances') }}</span>
 
-          <CommonInfoTooltip
+          <AppTooltip
             class="ml-2"
-            :tooltip="$t('account.hideSmallBalancesTooltip')"
+            :content="$t('account.hideSmallBalancesTooltip')"
           />
         </div>
       </AppCheckbox>

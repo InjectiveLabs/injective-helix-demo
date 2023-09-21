@@ -23,7 +23,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     marketType: MarketType
     origin: TradeClickOrigin
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {
@@ -64,7 +64,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     limitPrice: string
     slippageTolerance: string
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {
@@ -118,7 +118,7 @@ class TradeTracker extends BaseAmplitudeTracker {
     status: OrderAttemptStatus
     error?: string
   }) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (!user || !identify) {

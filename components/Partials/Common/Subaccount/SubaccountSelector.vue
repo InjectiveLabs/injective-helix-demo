@@ -1,23 +1,45 @@
 <script lang="ts" setup>
-import { getSubaccountIndex } from '@/app/utils/helpers'
+import {
+  isSgtSubaccountId,
+  getSubaccountIndex,
+  getMarketIdFromSubaccountId
+} from '@/app/utils/helpers'
 
+const route = useRoute()
 const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
-  (e: 'update:subaccount', subaccount: string): void
+  'update:subaccount': [subaccount: string]
 }>()
+
+const isSpotOrFuturesRoute = computed(() =>
+  ['spot', 'futures'].some((r) => (route.name as string).startsWith(r))
+)
 
 const subaccountSelectOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(accountStore.subaccountBalancesMap)
-        .map((value) => ({
-          value,
-          display:
-            getSubaccountIndex(value) === 0
-              ? `${t('account.main')}`
-              : getSubaccountIndex(value).toString()
-        }))
+        .filter((subaccountId) =>
+          isSpotOrFuturesRoute.value ? !isSgtSubaccountId(subaccountId) : true
+        )
+        .map((value) => {
+          if (getSubaccountIndex(value) === 0) {
+            return { display: `${t('account.main')}`, value }
+          }
+
+          if (isSgtSubaccountId(value)) {
+            return {
+              value,
+              display: `SGT ${getMarketIdFromSubaccountId(value)}`
+            }
+          }
+
+          return {
+            value,
+            display: getSubaccountIndex(value).toString()
+          }
+        })
         .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )

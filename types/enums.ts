@@ -42,9 +42,12 @@ export enum Modal {
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
+  BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
   ConvertUsdc = 'convert-usdc',
+  SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   USDCDetected = 'usdc-detected',
@@ -53,17 +56,25 @@ export enum Modal {
   BridgeConfirm = 'bridge-confirm',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
+  TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
+  SgtBalancedFees = 'sgtBalancedFees',
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
+  TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
   CreateSubaccount = 'create-subaccount',
+  InstitutionalForm = 'institutionalForm',
+  TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
+  CheckSpotGridAuth = 'check-spot-grid-auth',
   MobileTradeDetails = 'mobile-trade-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
-  InsufficientInjForGas = 'insufficient-inj-for-gas'
+  CreateSpotGridStrategy = 'create-spot-grid-strategy',
+
+  FuturesMarketRestricted = 'futures-market-restricted'
 }
 
 export enum Breakpoint {
@@ -124,7 +135,8 @@ export enum MarketCategoryType {
 export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
-  USDC = 'usdc'
+  USDC = 'usdc',
+  INJ = 'inj'
   // UST = 'ust'
 }
 
@@ -156,17 +168,22 @@ export enum AveragePriceOptions {
 }
 
 export enum AmplitudeEvent {
+  Swap = 'Swap',
   Login = 'Login',
   Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
+  ConvertUSDCAttempt = 'Convert USDC Attempt',
+  ConvertUSDCClicked = 'Convert USDC Clicked',
+  SwapAttempt = 'Swap Attempt',
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
-  ConvertClicked = 'Convert Clicked',
-  ConvertAttempt = 'Convert Attempt',
   SurveyAccepted = 'Survey - Accepted',
   SurveyRejected = 'Survey - Rejected',
   PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm'
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy'
 }
 
 export enum SurveyTitle {
@@ -336,6 +353,7 @@ export enum ActivityPage {
   SpotOpenOrders = 'activity-spot',
   SpotOrderHistory = 'activity-spot-order-history',
   SpotTradeHistory = 'activity-spot-trade-history',
+  SwapHistory = 'activity-spot-swap-history',
   WalletHistoryTransfers = 'activity-wallet-history',
   WalletHistoryDeposits = 'activity-wallet-history-deposits',
   WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
@@ -346,4 +364,44 @@ export enum ActivityTab {
   Positions = 'activity-positions',
   Derivatives = 'activity-derivatives',
   WalletHistory = 'activity-wallet-history'
+}
+
+export enum AuctionTradingField {
+  BidPrice = 'bidPrice',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
+}
+
+export enum InstitutionalFormField {
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Company = 'company',
+  Telegram = 'telegram'
+}
+
+export enum SpotGridTradingField {
+  Grids = 'grids',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
+  InvestmentAmount = 'investmentAmount',
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  InvestmentType = 'InvestmentType'
+}
+
+export enum SpotGridMessages {
+  MsgCreateSpotLimitOrder = '/injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = '/injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
+  MsgWithdraw = '/injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
+}
+
+export enum GridStrategyTabs {
+  Running = 'running',
+  History = 'history'
+}
+
+export enum InvestmentTypeGst {
+  Quote = 'quote',
+  BaseAndQuote = 'baseAndQuote'
 }

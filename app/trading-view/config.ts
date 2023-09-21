@@ -1,5 +1,6 @@
 import './datafeed/polyfills'
 import { Datafeed } from './datafeed/index'
+import { getTimezone } from './datafeed/helpers'
 import { colors } from '@/nuxt-config/tailwind'
 import { BASE_URL } from '@/app/utils/constants'
 import {
@@ -21,9 +22,7 @@ export default function ({
   interval: string
   datafeedEndpoint: string
 }): ChartingLibraryWidgetOptions {
-  const timezone = window.Intl
-    ? window.Intl.DateTimeFormat().resolvedOptions().timeZone
-    : 'Etc/UTC'
+  const timezone = getTimezone()
 
   return {
     symbol,
@@ -69,7 +68,7 @@ export default function ({
       'save_chart_properties_to_local_storage',
       'use_localstorage_for_settings'
     ],
-    client_id: 'injective.exchange',
+    client_id: 'injective.helix',
     loading_screen: {
       backgroundColor: colors.gray[950],
       foregroundColor: colors.gray[400]
@@ -157,20 +156,24 @@ export default function ({
       'volume.volume.color.1': colors.green[500]
     },
     time_frames: [
-      { text: '1D', resolution: '5' as ResolutionString, description: '1 Day' },
+      {
+        text: '1D',
+        resolution: '5' as ResolutionString,
+        description: '1 Day'
+      },
       {
         text: '1W',
-        resolution: '15' as ResolutionString,
+        resolution: '120' as ResolutionString,
         description: '1 Week'
       },
       {
         text: '1M',
-        resolution: '60' as ResolutionString,
+        resolution: '360' as ResolutionString,
         description: '1 Month'
       },
       {
         text: '3M',
-        resolution: 'D' as ResolutionString,
+        resolution: '1D' as ResolutionString,
         description: '3 Month'
       }
     ],

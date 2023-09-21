@@ -2,7 +2,7 @@
 import { WalletModalType } from '@/types'
 
 const emit = defineEmits<{
-  (e: 'click', type: WalletModalType): void
+  click: [type: WalletModalType]
 }>()
 
 function showTrezorModal() {

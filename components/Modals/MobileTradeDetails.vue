@@ -28,16 +28,25 @@ const { fee, time, price, total, market, quantity, tradeExecutionType } =
     computed(() => props.isSpot)
   )
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.MobileTradeDetails)
+}
+
+function onModalClose() {
+  closeModal()
 }
 </script>
 
 <template>
-  <AppModal v-if="trade && market" :show="isModalOpen" sm @modal:closed="close">
+  <AppModal
+    v-if="trade && market"
+    :is-open="isModalOpen"
+    sm
+    @modal:closed="onModalClose"
+  >
     <template #title>
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3 cursor-pointer" @click="close">
+        <div class="flex items-center gap-3 cursor-pointer" @click="closeModal">
           <BaseIcon name="arrow" class="w-6 h-auto" />
           <span class="font-bold text-lg">
             {{ $t('trade.tradeHistoryDetails') }}
@@ -51,10 +60,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.time') }}
         </span>
-        <CommonInfoTooltip
-          class="ml-2"
-          :tooltip="$t('trade.timestamp_tooltip')"
-        />
+        <AppTooltip class="ml-2" :content="$t('trade.timestamp_tooltip')" />
       </div>
       <span class="text-right font-mono tracking-wide">
         {{ time }}
@@ -110,7 +116,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.amount') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.amount_tooltip')" />
       </div>
       <span v-if="quantity" class="text-right">
         <AppNumber
@@ -127,7 +133,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.fee') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="fee" class="text-right">
         <AppNumber use-number-decimals :number="fee">
@@ -143,7 +149,7 @@ function close() {
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.total') }}
         </span>
-        <CommonInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
       </div>
       <span v-if="total" class="text-right">
         <AppNumber

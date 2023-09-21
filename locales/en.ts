@@ -7,6 +7,8 @@ import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
+import institutional from './institutional/en'
+import sgt from './spot-grid/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -20,6 +22,8 @@ export default {
   ...wallet,
   ...trade,
   ...leaderboard,
+  ...institutional,
+  ...sgt,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -28,6 +32,7 @@ export default {
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
+    submit: 'Submit',
     search: 'Search',
     cancel: 'Cancel',
     waived: 'Waived',
@@ -40,7 +45,10 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
-    new: 'New'
+    new: 'New',
+    success: 'Success',
+    error: 'Error',
+    somethingHappened: 'Something Happened...'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -171,6 +179,12 @@ export default {
       `Stake total of ${named('total')} INJ to receive the full amount`
   },
 
+  futuresMarketRestricted: {
+    title: 'Unavailable Market',
+    description: 'Perpetual markets are not available in your region.',
+    cta: 'Return to homepage'
+  },
+
   marketBeta: {
     title: 'Acknowledge the risk of trading on the market',
     'I Understand': 'I Understand',
@@ -234,8 +248,8 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    convert: 'Convert',
-    convertDescription: 'Trade through a simple & intuitive interface',
+    swap: 'Swap',
+    swapDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
@@ -249,14 +263,20 @@ export default {
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
       'Earn crypto commission by inviting friends to trade on Helix',
-    dmmProgram: 'DMM Program',
-    dmmProgramDescription:
-      'Provide liquidity and mine INJ as our dedicated market makers',
+    openLiquidityProgram: 'Open Liquidity Program',
+    openLiquidityProgramDescription:
+      'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
     spot: 'Spot',
+    new: 'New',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
-    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
-    leaderboard: 'Leaderboard'
+    perpetualDescription: 'Trade perpetual contracts settled in USDT',
+    leaderboard: 'Leaderboard',
+    connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
+      `Connected to ${named('address')}. Click to close connection.`,
+
+    tradingBots: 'Trading Bots',
+    tradingBotsDescription: 'Automate your trading'
   },
 
   fee_discounts: {
@@ -288,7 +308,8 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: ({ named }: I18nMessageFunction) =>
-      `In past ${named('days')} days`
+      `In past ${named('days')} days`,
+    tierAuthZ: 'Tier (AuthZ)'
   },
 
   pagination: {
@@ -327,14 +348,12 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimer_note: ({ interpolate, named }: I18nMessageFunction) =>
+    disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
-        'By connecting a wallet, you agree to the Injective Labs ',
+        'By connecting to a wallet, you agree and acknowledge the Injective Labs ',
         named('terms'),
-        ' have read the ',
+        'and have read the ',
         named('policy'),
-        ' and acknowledge that you have read and understand the Injective ',
-        named('disclaimer'),
         '.'
       ])
   },
@@ -343,5 +362,16 @@ export default {
     connectWithAddress: 'Connect with address',
     connect: 'Connect',
     enterInjectiveAddress: 'Enter your injective address'
+  },
+
+  proMode: {
+    proMode: 'Pro Mode',
+    subaccountManagement: 'Enable subaccount management',
+    authzManagement: 'Enable authZ management'
+  },
+
+  authZ: {
+    granters: 'Granters',
+    grantees: 'Grantees'
   }
 }

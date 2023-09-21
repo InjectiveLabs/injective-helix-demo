@@ -9,8 +9,9 @@ import {
 } from '@injectivelabs/utils'
 import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
-const accountStore = useAccountStore()
+const appStore = useAppStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
@@ -65,37 +66,34 @@ const hasTradingAccountBalances = computed(() => {
   )
 })
 
-const baseTradingBalanceToFormat = computed(() => {
-  return new BigNumberInWei(baseTradingBalance.value?.availableMargin || '0')
+const baseTradingBalanceToFormat = computed(() =>
+  new BigNumberInWei(baseTradingBalance.value?.availableMargin || '0')
     .toBase(props.market.baseToken.decimals)
     .toFormat(props.market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-})
+)
 
-const quoteTradingBalanceToFormat = computed(() => {
-  return new BigNumberInWei(quoteTradingBalance.value?.availableMargin || '0')
+const quoteTradingBalanceToFormat = computed(() =>
+  new BigNumberInWei(quoteTradingBalance.value?.availableMargin || '0')
     .toBase(props.market.quoteToken.decimals)
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-})
+)
 
 onMounted(() => {
-  fetchSubaccountBalances()
-})
-
-onWalletConnected(() => {
-  refreshSubaccountBalances()
-})
-
-function fetchSubaccountBalances() {
-  status.setLoading()
-
   Promise.all([accountStore.fetchAccountPortfolio()])
+    .then(() => {
+      setSubaccountStreams()
+    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-}
+})
 
-function refreshSubaccountBalances() {
+onWalletConnected(() => {
+  setSubaccountStreams()
+})
+
+function setSubaccountStreams() {
   status.setLoading()
 
   Promise.all([
@@ -111,7 +109,8 @@ function refreshSubaccountBalances() {
 watch(
   () => accountStore.subaccountId,
   () => {
-    refreshSubaccountBalances()
+    // We need to re-fetch the portfolio API in case something changed
+    setSubaccountStreams()
   }
 )
 </script>
@@ -122,9 +121,19 @@ watch(
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <p class="text-xs text-gray-500 flex items-center">
-            {{ $t('marketPage.assetsFrom') }}
+            {{
+              $t(
+                `marketPage.${
+                  appStore.isSubaccountManagementActive
+                    ? 'assetsFrom'
+                    : 'assets'
+                }`
+              )
+            }}
           </p>
-          <PartialsCommonSubaccountSelector />
+          <PartialsCommonSubaccountSelector
+            v-if="appStore.isSubaccountManagementActive"
+          />
         </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
@@ -136,7 +145,7 @@ watch(
       </div>
       <div v-if="walletStore.isUserWalletConnected" class="mt-4 relative">
         <AppHocLoading
-          :show-loading="
+          :is-loading="
             status.isLoading() ||
             walletStore.walletConnectStatus === WalletConnectStatus.connecting
           "
@@ -151,7 +160,7 @@ watch(
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
 
-              <NuxtLink
+              <BaseNuxtLink
                 :to="{
                   name: 'bridge',
                   query: {
@@ -169,7 +178,7 @@ watch(
                     {{ $t('common.deposit') }}
                   </span>
                 </AppButton>
-              </NuxtLink>
+              </BaseNuxtLink>
             </div>
 
             <div v-else>

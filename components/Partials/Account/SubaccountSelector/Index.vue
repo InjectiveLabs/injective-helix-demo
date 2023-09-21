@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-const { aggregatedPortfolioBalances } = useBalance()
-
 defineProps({
   hideBalances: {
     type: Boolean
   }
 })
 
+const walletStore = useWalletStore()
 const modalStore = useModalStore()
 
+const { aggregatedPortfolioBalances } = useBalance()
+
 function handleCreateSubaccount() {
-  modalStore.openModal({ type: Modal.CreateSubaccount })
+  modalStore.openModal(Modal.CreateSubaccount)
 }
 </script>
 
@@ -34,7 +35,7 @@ function handleCreateSubaccount() {
       :key="`subaccount-${subaccountId}`"
     />
 
-    <div>
+    <div v-if="!walletStore.isAuthzWalletConnected">
       <BaseIcon
         name="circle-plus"
         class="w-8 h-8 text-blue-500 cursor-pointer hover:text-opacity-80"

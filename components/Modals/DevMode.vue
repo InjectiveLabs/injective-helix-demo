@@ -18,6 +18,15 @@ const { value: injectiveAddress, errors } = useStringField({
 
 const isModalOpen = computed(() => modalStore.modals[Modal.DevMode])
 
+function closeModal() {
+  resetForm()
+  modalStore.closeModal(Modal.DevMode)
+}
+
+function onModalClose() {
+  closeModal()
+}
+
 function connect() {
   status.setLoading()
 
@@ -31,20 +40,15 @@ function connect() {
       $onError(e)
     })
     .finally(() => {
-      close()
       status.setIdle()
+
+      closeModal()
     })
-}
-
-function close() {
-  resetForm()
-
-  modalStore.closeModal(Modal.DevMode)
 }
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="close">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('devMode.connectWithAddress') }}
@@ -65,7 +69,7 @@ function close() {
             lg
             class="text-blue-900 bg-blue-500"
             :disabled="errors.length > 0"
-            :status="status"
+            :is-loading="status.isLoading()"
             @click="connect"
           >
             {{ $t('devMode.connect') }}

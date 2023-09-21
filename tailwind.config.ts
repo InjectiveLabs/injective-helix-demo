@@ -1,4 +1,3 @@
-import path from 'path'
 import { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { colors } from './nuxt-config/tailwind'
@@ -24,13 +23,7 @@ const extraSizings = {
 
 export default <Config>{
   presets: [require('@injectivelabs/ui-shared/lib/tailwind-preset.cjs')],
-  content: [
-    path.join(__dirname, './components/**/*.{js,vue,ts}'),
-    path.join(__dirname, './layouts/**/*.vue'),
-    path.join(__dirname, './pages/**/*.vue'),
-    path.join(__dirname, './plugins/**/*.{js,ts}'),
-    path.join(__dirname, './app.vue')
-  ],
+  content: ['./components/**/*.vue', './pages/**/*.vue', './layouts/*.vue'],
   safelist: [
     'border-4',
     'border-t-blue-200',
@@ -180,6 +173,10 @@ export default <Config>{
 
       backgroundImage: {
         hero: 'url(/svg/helix-hero-bg.svg)'
+      },
+
+      boxShadow: {
+        light: '0 0 100px 0 rgba(0, 0, 0, 0.1)' // adjust the alpha as per your requirement
       }
     }
   },

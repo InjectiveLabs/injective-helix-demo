@@ -3,18 +3,19 @@ import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityTab } from '@/types'
 
-const spotStore = useSpotStore()
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
-
-const { t } = useLang()
-
 defineProps({
   status: {
     type: Object as PropType<Status>,
     default: () => new Status(StatusType.Idle)
   }
 })
+
+const spotStore = useSpotStore()
+const accountStore = useAccountStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+
+const { t } = useLang()
 
 const tabs = computed(() => [
   {
@@ -37,14 +38,24 @@ const tabs = computed(() => [
     to: { name: ActivityTab.WalletHistory }
   }
 ])
+
+const tabsFiltered = computed(() =>
+  accountStore.isSgtSubaccount
+    ? tabs.value.filter(
+        (tab) =>
+          tab.label !== t('activity.positions') &&
+          tab.label !== t('activity.derivativeOrders')
+      )
+    : tabs.value
+)
 </script>
 
 <template>
   <div class="overflow-x-auto hide-scrollbar flex-none">
     <div class="flex lg:grid grid-cols-4 gap-4">
       <CommonCardLink
-        v-for="tab in tabs"
-        v-bind="{ to: tab.to, showLoading: status.isLoading() }"
+        v-for="tab in tabsFiltered"
+        v-bind="{ to: tab.to, isLoading: status.isLoading() }"
         :key="`tab-${tab.label}`"
       >
         <span>{{ tab.label }}</span>

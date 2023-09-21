@@ -10,17 +10,15 @@ const memoRequired = ref(false)
 const { isTransfer } = useBridgeState(formValues)
 
 const { value: destination, errors: destinationErrors } = useStringField({
-  name: BridgeField.Destination,
   rule: '',
+  name: BridgeField.Destination,
   dynamicRule: computed(() => (isTransfer.value ? 'required|injAddress' : ''))
 })
 
 const { value: memo, resetField: resetMemo } = useStringField({
-  name: BridgeField.Memo,
   rule: '',
-  dynamicRule: computed(() => {
-    return memoRequired.value ? 'required' : ''
-  })
+  name: BridgeField.Memo,
+  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
 })
 
 onMounted(() => {
@@ -47,7 +45,7 @@ watch(destination, (value: string) => {
       <div class="mt-6">
         <AppInput
           v-model="destination"
-          clear-on-paste
+          is-cleared-on-paste
           :label="$t('bridge.injAddress')"
           placeholder="inj"
           wrapper-classes="py-2 px-1"
@@ -63,12 +61,12 @@ watch(destination, (value: string) => {
       </div>
       <div class="my-4 w-full">
         <div class="flex items-center justify-between text-gray-200">
-          <CommonInfoTooltip :tooltip="$t('memo.memoTooltip')">
+          <AppTooltip :content="$t('memo.memoTooltip')">
             <span class="text-xs flex items-center">
               {{ $t('memo.memo') }}
               <BaseIcon name="circle-info" class="text-gray-500 w-3 h-3 ml-2" />
             </span>
-          </CommonInfoTooltip>
+          </AppTooltip>
 
           <AppCheckbox v-model="memoRequired" @input="resetMemo">
             {{ $t('common.required') }}

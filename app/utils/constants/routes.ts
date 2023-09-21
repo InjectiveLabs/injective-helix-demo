@@ -8,8 +8,10 @@ export const getRoutes = (network: Network, env: string) => {
   const spot = [
     'inj-usdt',
     'atom-usdt',
+    'stinj-inj',
     'arb-usdt',
     'chz-usdcet',
+    'wmatic-usdt',
     'sol-usdcet',
     'canto-usdt',
     'usdt-usdcet',
@@ -24,26 +26,37 @@ export const getRoutes = (network: Network, env: string) => {
     'somm-usdt',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
-    'steadybtc-usdt'
+    'steadybtc-usdt',
+    'neok-usdt',
+    'orai-usdt'
   ]
 
   const perpetuals = [
     'btc-usdt-perp',
     'inj-usdt-perp',
+    'xrp-usdt-perp',
     'eth-usdt-perp',
-    '1000pepe-usdt-perp',
     'bonk-usdt-perp',
     'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
-    'atom-usdt-perp'
+    'atom-usdt-perp',
+    'sei-usdt-perp'
   ]
+
+  const gridTradingSpot = ['inj-usdt']
+
+  if (IS_DEVNET) {
+    spot.push('wbtc-inj')
+  }
 
   if (IS_TESTNET) {
     spot.push('wbtc-usdt')
+    spot.push('usdc-usdt')
+    spot.push('demo-usdt')
 
     perpetuals.push(
-      'pepe-usdt-perp',
+      '1mpepe-usdt-perp',
       'xau-usdt-perp',
       'gbp-usdt-perp',
       'jpy-usdt-perp',
@@ -61,7 +74,7 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = ['activity', 'account']
+  const walletConnectedRequiredRouteNames = ['activity', 'account', 'bridge']
 
   // Layout routes
   const footerEnabledRoutes = [
@@ -87,7 +100,7 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'wmatic-usdcet')
+    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
   }
 
   if (IS_DEVNET) {
@@ -103,12 +116,17 @@ export const getRoutes = (network: Network, env: string) => {
   const binaryOptionsRoutes =
     binaryOptions.map((s) => `/binary-options/${s}`) || []
 
+  const gridTradingSpotRoutes = gridTradingSpot.map(
+    (s) => `/trading-bots/grid/spot/${s}`
+  )
+
   return {
     MARKETS_SLUGS: {
       spot,
       futures,
       binaryOptions,
       expiryFutures,
+      gridTradingSpot,
       usdcConversionModalMarkets,
       spotMarketRedirectsSlugsPairs
     },
@@ -119,6 +137,7 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
+      gridTradingSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames

@@ -5,6 +5,7 @@ import { ActivityForm } from '@/types'
 definePageMeta({
   middleware: [
     'connected',
+    'grid-strategy-subaccount',
     (to) => {
       if (to.name === 'activity') {
         return navigateTo({ name: 'activity-positions' })
@@ -33,11 +34,16 @@ onUnmounted(() => {
   spotStore.resetSubaccount()
 })
 
+/**
+ * Streaming is setup on page load for activities
+ * that support it (positions, orders, triggers)
+ */
 function fetchData() {
   status.setLoading()
   appStore.cancelAllStreams()
 
   Promise.all([
+    accountStore.fetchAccountPortfolio(),
     activityStore.streamDerivativeSubaccountOrderHistory(),
     activityStore.streamDerivativeSubaccountTrades(),
     activityStore.streamSpotSubaccountOrderHistory(),
@@ -57,8 +63,17 @@ function fetchData() {
     })
 }
 
-watch(() => accountStore.subaccountId, fetchData, { immediate: true })
-watch(() => route.name, resetForm)
+watch(
+  () => accountStore.subaccountId,
+  () => {
+    fetchData()
+  },
+  { immediate: true }
+)
+watch(
+  () => route.name,
+  () => resetForm()
+)
 </script>
 
 <template>

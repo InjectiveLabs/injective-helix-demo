@@ -5,8 +5,6 @@ import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
-
 const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
@@ -89,22 +87,17 @@ const orderDetailsComponentPath = computed(() => {
   return isSpot ? spotPath : derivativePath
 })
 
-const orderDetailsComponent = defineAsyncComponent(() => {
-  return new Promise((resolve, _reject) => {
-    if (!isWebpack) {
+const orderDetailsComponent = defineAsyncComponent<Record<string, unknown>>(
+  () => {
+    return new Promise((resolve, _reject) => {
       const comps = import.meta.glob(/* @vite-ignore */ './../**/*.vue')
 
       return comps[
         /* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`
       ]().then((component: any) => resolve(component.default))
-    }
-
-    // webpack
-    import(/* @vite-ignore */ `../${orderDetailsComponentPath.value}.vue`).then(
-      (component) => resolve(component)
-    )
-  })
-})
+    })
+  }
+)
 
 const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
   computed(() => props.executionPrice),
@@ -154,12 +147,12 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
       <component
         :is="orderDetailsComponent"
         v-bind="{
-          executionPrice,
           isBuy,
-          liquidationPrice,
           market,
-          minimumReceivedAmount,
           notionalValue,
+          executionPrice,
+          liquidationPrice,
+          minimumReceivedAmount,
           orderTypeReduceOnly
         }"
       >

@@ -12,6 +12,8 @@ import {
 const appStore = useAppStore()
 
 const props = defineProps({
+  isGrid: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -28,11 +30,16 @@ const props = defineProps({
   }
 })
 
-const marketRoute = getMarketRoute(props.market) || { name: 'markets' }
+const marketRoute = props.isGrid
+  ? {
+      to: 'trading-bots-grid-spot-market',
+      params: { market: props.market.slug }
+    }
+  : getMarketRoute(props.market) || { name: 'markets' }
 
-const isFavorite = computed(() => {
-  return appStore.favoriteMarkets.includes(props.market.marketId)
-})
+const isFavorite = computed(() =>
+  appStore.favoriteMarkets.includes(props.market.marketId)
+)
 
 const formatterOptions = computed(() => {
   return stableCoinDenoms.includes(props.market.quoteToken.symbol)
@@ -52,7 +59,7 @@ const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
 )
 
 function updateWatchList() {
-  appStore.updateFavoriteMarkets(props.market.marketId)
+  appStore.toggleFavoriteMarket(props.market.marketId)
 }
 </script>
 

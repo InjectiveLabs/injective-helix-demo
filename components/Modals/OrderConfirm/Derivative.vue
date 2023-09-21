@@ -43,14 +43,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'order:confirmed'): void
+  'order:confirmed': []
 }>()
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
 const { t } = useLang()
 
-const showModal = computed(() => modalStore.modals[Modal.OrderConfirm])
+const isModalOpen = computed(() => modalStore.modals[Modal.OrderConfirm])
 
 const orderTypeBuy = computed(() => {
   return [OrderSide.TakeBuy, OrderSide.StopBuy].includes(props.orderType)
@@ -94,13 +94,17 @@ const { valueToString: triggerPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-function confirm() {
-  emit('order:confirmed')
-  close()
+function closeModal() {
+  modalStore.closeModal(Modal.OrderConfirm)
 }
 
-function close() {
-  modalStore.closeModal(Modal.OrderConfirm)
+function onModalClose() {
+  closeModal()
+}
+
+function confirm() {
+  emit('order:confirmed')
+  closeModal()
 }
 
 function handleSkipTradeConfirmationModal() {
@@ -113,10 +117,10 @@ function handleSkipTradeConfirmationModal() {
 
 <template>
   <AppModal
-    :show="showModal"
+    :is-open="isModalOpen"
     :sm="!!tradingType"
     data-cy="price-deviation-modal"
-    @modal:closed="close"
+    @modal:closed="onModalClose"
   >
     <template #title>
       <h3 class="flex items-center justify-start gap-2">
@@ -233,7 +237,7 @@ function handleSkipTradeConfirmationModal() {
         <AppButton
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           data-cy="confirm-order-modal-confirm-button"
-          @click="close"
+          @click="closeModal"
         >
           {{ $t('common.cancel') }}
         </AppButton>

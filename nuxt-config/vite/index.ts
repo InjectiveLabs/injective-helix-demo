@@ -1,8 +1,8 @@
-import { defineConfig, UserConfig } from 'vite'
+import { defineConfig } from 'vite'
+import { ViteConfig } from 'nuxt/schema'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from '@bangjelkoski/vite-plugin-node-polyfills'
 
-const isWebpack = process.env.BUILDER_TYPE === 'webpack'
 const buildSourceMap = process.env.BUILD_SOURCEMAP !== 'false'
 
 export default defineConfig({
@@ -36,8 +36,6 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['fsevents']
   }
-}) as UserConfig
+}) as ViteConfig
 
-export const vitePlugins = isWebpack
-  ? []
-  : [{ src: './nuxt-config/buffer.ts', ssr: false }]
+export const vitePlugins = [{ src: './nuxt-config/buffer.ts', ssr: false }]

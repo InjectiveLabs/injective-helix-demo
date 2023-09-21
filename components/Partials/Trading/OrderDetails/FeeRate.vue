@@ -82,9 +82,9 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
   >
     <template v-if="!tradeTypeMarket" #context>
       <div class="flex items-center gap-2 ml-2">
-        <CommonInfoTooltip
+        <AppTooltip
           class="ml-2"
-          :tooltip="
+          :content="
             marketHasNegativeMakerFee
               ? $t('trade.fee_order_details_note_negative_margin')
               : $t('trade.fee_order_details_note', {
@@ -93,10 +93,10 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
           "
         />
 
-        <CommonInfoTooltip
+        <AppTooltip
           v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
           class="text-blue-500"
-          :tooltip="
+          :content="
             $t('trade.fees_tooltip_discount', {
               maker: makerFeeRateDiscount.times(100).toFixed(),
               taker: takerFeeRateDiscount.times(100).toFixed()
@@ -104,25 +104,25 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
           "
         >
           <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
-        </CommonInfoTooltip>
+        </AppTooltip>
       </div>
     </template>
 
     <template v-else #context>
       <div class="flex items-center gap-2 ml-2">
-        <CommonInfoTooltip :tooltip="$t('trade.fees_tooltip')" />
+        <AppTooltip :content="$t('trade.fees_tooltip')" />
 
-        <CommonInfoTooltip
+        <AppTooltip
           v-if="takerFeeRateDiscount.gt(0)"
           class="text-blue-500"
-          :tooltip="
+          :content="
             $t('trade.taker_fees_tooltip_discount', {
               taker: takerFeeRateDiscount.times(100).toFixed()
             })
           "
         >
           <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
-        </CommonInfoTooltip>
+        </AppTooltip>
       </div>
     </template>
 

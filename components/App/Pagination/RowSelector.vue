@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', state: number): void
+  'update:modelValue': [state: number]
 }>()
 
 const selectedOption = computed(() =>
@@ -33,7 +33,7 @@ function handleUpdateLimit(limit: any) {
 
 <template>
   <BaseDropdown class="inline-block" placement="top-end">
-    <template #default="{ shown }">
+    <template #default="{ isOpen }">
       <div
         class="flex items-center gap-2 rounded"
         :classes="selectedClass || 'border border-gray-400 py-2 px-3'"
@@ -47,7 +47,7 @@ function handleUpdateLimit(limit: any) {
             name="chevron-down"
             class="h-4 w-4 min-w-4 rotate-180"
             :class="{
-              'ease-in-out duration-300 rotate-0': shown
+              'ease-in-out duration-300 rotate-0': isOpen
             }"
           />
         </div>
@@ -64,15 +64,15 @@ function handleUpdateLimit(limit: any) {
           @update:modelValue="handleUpdateLimit"
           @click="close"
         >
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <div
               class="group flex cursor-pointer items-center justify-between rounded hover:bg-blue-500 p-2 gap-2 text-sm"
             >
               <span
                 class="font-semibold group-hover:text-black text-sm"
                 :class="{
-                  'text-white': !active,
-                  'text-blue-500': active
+                  'text-white': !isActive,
+                  'text-blue-500': isActive
                 }"
               >
                 {{ item }}

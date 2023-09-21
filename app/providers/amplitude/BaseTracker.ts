@@ -1,9 +1,9 @@
 import { track, Identify, setUserId } from '@amplitude/analytics-browser'
 import { BaseEvent } from '@amplitude/analytics-types'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { AMPLITUDE_WALLET, AMPLITUDE_VIP_TIER_LEVEL } from '@/app/utils/vendor'
 import { AMPLITUDE_KEY } from '@/app/utils/constants'
 import { localStorage } from '@/app/Services'
+import { AmplitudeTrackerUser } from '@/types'
 
 type TrackAmplitudeFn = <T extends string | BaseEvent>(
   args: T,
@@ -19,41 +19,24 @@ export const trackAmplitude: TrackAmplitudeFn = <T extends string | BaseEvent>(
   }
 }
 
-interface AmplitudeTrackerUser {
-  tierLevel: number
-  address: string
-  wallet: Wallet
-}
-
 export default class BaseAmplitudeTracker {
-  protected user?: AmplitudeTrackerUser
-
-  constructor(user?: AmplitudeTrackerUser) {
-    this.user = user || this.getUserLocalStorage()
-  }
-
   setUser(user: AmplitudeTrackerUser) {
-    this.user = user
     setUserId(user.address)
     this.setUserLocalStorage(user)
   }
 
   protected getUser(): AmplitudeTrackerUser | undefined {
-    return this.user
+    return localStorage.get('amplitudeUser') as unknown as
+      | AmplitudeTrackerUser
+      | undefined
   }
 
   protected setUserLocalStorage(user: AmplitudeTrackerUser) {
     localStorage.set('amplitudeUser', user)
   }
 
-  protected getUserLocalStorage(): AmplitudeTrackerUser | undefined {
-    return localStorage.get('amplitudeUser') as unknown as
-      | AmplitudeTrackerUser
-      | undefined
-  }
-
   protected getIdentify(): Identify {
-    const { user } = this
+    const user = this.getUser()
     const identify = new Identify()
 
     if (!user) {
@@ -75,5 +58,3 @@ export default class BaseAmplitudeTracker {
     }
   }
 }
-
-export const amplitudeTracker = new BaseAmplitudeTracker()

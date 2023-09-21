@@ -5,13 +5,14 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
+  USDT_DECIMALS,
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  USDT_DECIMALS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
@@ -44,7 +45,9 @@ const pendingTradeRewardsPoints = computed(() => {
 })
 
 const injUsdPrice = computed(() => {
-  return tokenStore.injUsdPrice
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
 })
 
 const vestingDurationInSeconds = computed(() => {
@@ -89,7 +92,7 @@ const pendingRewardsCountdown = computed(() => {
   return format(
     (pendingRewardsStartTimestamp.value + vestingDurationInSeconds.value) *
       1000,
-    'dd MMM HH:mm:ss'
+    DATE_TIME_DISPLAY
   )
 })
 
@@ -256,9 +259,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.pending_max_campaign_rewards_tooltip')
                 "
               />
@@ -287,9 +290,9 @@ onMounted(() => {
               class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+                :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
             </div>
           </template>
@@ -329,9 +332,9 @@ onMounted(() => {
               target="_blank"
             >
               {{ $t('stake_more') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.stake_total_to_receive_full_amount', {
                     total: pendingEstimatedRewards.toFormat(2)
                   })
@@ -343,9 +346,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450">
               {{ $t('tradeAndEarn.est_rewards_stake') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('tradeAndEarn.est_rewards_stake_tooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                   })

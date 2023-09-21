@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents, Modal } from '@/types'
+import { BusEvents } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
+const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
-const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -33,18 +32,15 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
-    spotStore.init(),
-    derivativeStore.init(),
+    spotStore.initIfNotInit(),
+    derivativeStore.initIfNotInit(),
     exchangeStore.initFeeDiscounts(),
-    tokenStore.fetchSupplyTokenMeta()
+    authzStore.fetchGrants()
   ])
 
-  openDevModeModal()
-  useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
-})
+  Promise.all([authzStore.fetchGrants()]).then(() => {})
 
-onWalletConnected(() => {
-  Promise.all([accountStore.fetchAccountPortfolio()]).catch($onError)
+  useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
 })
 
 function onOpenSideBar() {
@@ -58,15 +54,6 @@ function onCloseSideBar() {
     isOpenSidebar.value = false
 
     container.value?.classList.remove('overflow-y-hidden')
-  }
-}
-
-function openDevModeModal() {
-  const devModeExistsInQuery =
-    route.query.devMode && route.query.devMode === 'true'
-
-  if (devModeExistsInQuery && !walletStore.isUserWalletConnected) {
-    modalStore.openModal({ type: Modal.DevMode })
   }
 }
 </script>
@@ -86,7 +73,7 @@ function openDevModeModal() {
               }"
               @sidebar:closed="onCloseSideBar"
             />
-            <client-only>
+            <ClientOnly>
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
@@ -112,8 +99,6 @@ function openDevModeModal() {
                   <LayoutFooter v-if="showFooter" />
                 </main>
 
-                <ModalsInsufficientInjForGas />
-
                 <ModalsNinjaPassWinner />
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
@@ -122,7 +107,7 @@ function openDevModeModal() {
                 <AppConfetti />
                 <div id="modals" />
               </div>
-            </client-only>
+            </ClientOnly>
           </div>
         </AppHocLoading>
       </div>
@@ -135,11 +120,11 @@ function openDevModeModal() {
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
         >
-          <template #close="{ close }">
+          <template #close="{ closeNotification }">
             <BaseIcon
               name="close-bold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
-              @click="close"
+              @click="closeNotification"
             />
           </template>
         </BaseNotification>

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { getSubaccountId } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from '@/types'
-import { getSubaccountIndex } from '@/app/utils/helpers'
+import { getSubaccountIndex, isSgtSubaccountId } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
-  (e: 'update:subaccountId'): void
+  'update:subaccountId': []
 }>()
 
 const { value: srcSubaccountId } = useStringField({
@@ -20,16 +20,20 @@ const { value: dstSubaccountId, setValue: setDstSubaccountIdValue } =
     name: SubaccountTransferField.DstSubaccountId
   })
 
-const newSubaccountIdIndex = computed(
-  () => Object.keys(accountStore.subaccountBalancesMap).length
+const subaccountsWithoutSgt = computed(() =>
+  Object.keys(accountStore.subaccountBalancesMap).filter(
+    (subaccountId) => !isSgtSubaccountId(subaccountId)
+  )
 )
+
+const newSubaccountIdIndex = computed(() => subaccountsWithoutSgt.value.length)
 
 const newSubaccountId = computed(() =>
   getSubaccountId(walletStore.injectiveAddress, newSubaccountIdIndex.value)
 )
 
 const sourceOptions = computed(() => {
-  return Object.keys(accountStore.subaccountBalancesMap)
+  return subaccountsWithoutSgt.value
     .sort((a, b) => a.localeCompare(b))
     .map((subaccountId) => {
       const subaccountIdIndex = getSubaccountIndex(subaccountId)
@@ -45,7 +49,7 @@ const sourceOptions = computed(() => {
 })
 
 const destinationOptions = computed(() => {
-  const existingSubaccountIds = Object.keys(accountStore.subaccountBalancesMap)
+  const existingSubaccountIds = subaccountsWithoutSgt.value
     .sort((a, b) => a.localeCompare(b))
     .filter((subaccountId) => subaccountId !== srcSubaccountId.value)
     .map((subaccountId) => {
@@ -131,7 +135,6 @@ function handleDstSubaccountIdUpdate() {
       >
         <BaseIcon
           name="arrow"
-          swap
           class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         />
       </div>

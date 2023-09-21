@@ -12,17 +12,22 @@ import { AppState, OrderbookLayout, TradingLayout } from '@/types'
 const stateToPersist = {
   app: {
     userState: {
-      vpnOrProxyUsageValidationTimestamp: 0,
       favoriteMarkets: [],
+      bannersViewed: [],
+      modalsViewed: [],
       geoLocation: {
         continent: '',
-        country: ''
+        country: '',
+        browserLocation: '',
+        vpnCheckTimestamp: 0
       },
-      orderbookLayout: OrderbookLayout.Default,
-      tradingLayout: TradingLayout.Left,
-      ninjaPassWinnerModalViewed: false,
-      userFeedbackModalViewed: false,
-      bannersViewed: []
+      preferences: {
+        skipTradeConfirmationModal: false,
+        orderbookLayout: OrderbookLayout.Default,
+        tradingLayout: TradingLayout.Left,
+        subaccountManagement: false,
+        authZManagement: false
+      }
     }
   },
 
@@ -36,7 +41,14 @@ const stateToPersist = {
     addresses: '',
     injectiveAddress: '',
     defaultSubaccountId: '',
-    addressConfirmation: ''
+    addressConfirmation: '',
+
+    authZ: {
+      address: '',
+      direction: '',
+      injectiveAddress: '',
+      defaultSubaccountId: ''
+    }
   }
 } as Record<string, Record<string, any>>
 
@@ -47,6 +59,8 @@ const actionsThatSetAppStateToBusy = [
   'account/transfer',
   'account/withdraw',
   'spot/cancelOrder',
+  'account/externalTransfer',
+  'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'derivative/cancelOrder',
@@ -63,6 +77,7 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
+  'swap/submitAtomicOrderExactOutput',
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders'
 ]

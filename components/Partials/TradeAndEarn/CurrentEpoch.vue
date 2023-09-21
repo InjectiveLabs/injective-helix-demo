@@ -6,12 +6,13 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
+  USDT_DECIMALS,
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  USDT_DECIMALS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
@@ -89,7 +90,7 @@ const currentEpochStartTimestamp = computed(() => {
 const epochCountdown = computed(() =>
   format(
     (currentEpochStartTimestamp.value + campaignDurationInSeconds.value) * 1000,
-    'dd MMM HH:mm:ss'
+    DATE_TIME_DISPLAY
   )
 )
 
@@ -113,9 +114,15 @@ const injMaxCampaignRewards = computed(() => {
   return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
 })
 
+const injUsdPrice = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
+})
+
 const injMaxCampaignRewardsInUsd = computed(() =>
   injMaxCampaignRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+    new BigNumberInBase(injUsdPrice.value)
   )
 )
 
@@ -149,9 +156,7 @@ const estimatedRewards = computed(() => {
 })
 
 const estimatedRewardsInUsd = computed(() =>
-  estimatedRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
-  )
+  estimatedRewards.value.multipliedBy(new BigNumberInBase(injUsdPrice.value))
 )
 
 onMounted(() => {
@@ -195,9 +200,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('max_campaign_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('max_campaign_rewards_tooltip')"
+                :content="$t('max_campaign_rewards_tooltip')"
               />
             </div>
           </template>
@@ -224,9 +229,9 @@ onMounted(() => {
               class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+                :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
             </div>
           </template>
@@ -256,9 +261,9 @@ onMounted(() => {
           <template #title>
             <div class="flex items-center justify-center text-xs text-gray-450">
               {{ $t('est_rewards') }}
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-450"
-                :tooltip="
+                :content="
                   $t('est_rewards_tooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                   })

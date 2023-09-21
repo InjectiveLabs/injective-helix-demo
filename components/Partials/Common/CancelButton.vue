@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  click: []
 }>()
 
 function handleClick() {
@@ -48,7 +48,7 @@ function handleClick() {
       }"
     >
       <slot name="icon">
-        <BaseIcon name="bin" sm />
+        <BaseIcon name="bin" is-sm />
       </slot>
     </div>
   </div>

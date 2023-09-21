@@ -108,6 +108,15 @@ export const getDefaultSpotMarketRouteParams = () => {
   }
 }
 
+export const getDefaultGridSpotMarketRouteParams = () => {
+  return {
+    name: 'trading-bots-grid-spot-market',
+    params: {
+      market: DefaultMarket.Spot
+    }
+  }
+}
+
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -150,6 +159,7 @@ export const marketIsQuotePair = (
 
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
+  const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
 
   if (activeQuote === MarketQuoteType.USDT) {
@@ -158,6 +168,10 @@ export const marketIsQuotePair = (
 
   if (activeQuote === MarketQuoteType.USDC) {
     return marketQuoteSymbol.includes(usdcSymbolLowercased)
+  }
+
+  if (activeQuote === MarketQuoteType.INJ) {
+    return marketQuoteSymbol.includes(injSymbolLowecased)
   }
 
   return true
@@ -194,9 +208,9 @@ export const marketIsPartOfSearch = (
   }
 
   return (
-    market.quoteToken.symbol.toLowerCase().startsWith(query) ||
-    market.baseToken.symbol.toLowerCase().startsWith(query) ||
-    market.ticker.toLowerCase().startsWith(query)
+    market.quoteToken.symbol.toLowerCase().includes(query) ||
+    market.baseToken.symbol.toLowerCase().includes(query) ||
+    market.ticker.toLowerCase().includes(query)
   )
 }
 

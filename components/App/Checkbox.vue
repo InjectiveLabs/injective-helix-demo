@@ -9,12 +9,12 @@ defineProps({
 
 <template>
   <BaseCheckbox v-bind="$attrs">
-    <template #checkbox="{ isChecked, disabled }">
+    <template #checkbox="{ isChecked, isDisabled }">
       <div class="grid place-items-center">
         <div class="relative w-4 h-4">
           <div
             class="absolute inset-0 border border-white"
-            :class="{ 'bg-gray-500': disabled }"
+            :class="{ 'bg-gray-500': isDisabled }"
           >
             <div
               v-if="isChecked"
@@ -24,7 +24,7 @@ defineProps({
         </div>
       </div>
     </template>
-    <span class="text-xs" :data-cy="dataCy">
+    <span class="text-xs select-none" :data-cy="dataCy">
       <slot />
     </span>
   </BaseCheckbox>

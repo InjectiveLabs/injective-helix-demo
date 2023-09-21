@@ -3,14 +3,11 @@ import {
   ErrorType,
   ThrownException,
   isThrownException,
-  ChainCosmosErrorCode,
-  TransactionException,
-  formatNotificationDescription
+  TransactionException
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
 import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
-import { Modal } from '@/types/enums'
 
 /**
  * As we conditionally include the nuxt-bugsnag module
@@ -35,11 +32,7 @@ const reportToUser = (error: ThrownException) => {
     })
   }
 
-  const { tooltip, description } = formatNotificationDescription(
-    error.originalMessage
-  )
-
-  errorToast({ title: error.message, description, tooltip })
+  errorToast({ title: error.message, context: error.originalMessage })
 }
 
 const reportToBugSnag = (error: ThrownException) => {
@@ -86,21 +79,6 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
   }
 }
 
-const handleInsufficientGas = (error: ThrownException) => {
-  const accountStore = useAccountStore()
-  const modalStore = useModalStore()
-
-  if (accountStore.hasEnoughInjForGas) {
-    return
-  }
-
-  if (error.contextCode !== ChainCosmosErrorCode.ErrInsufficientFee) {
-    return
-  }
-
-  modalStore.openModal({ type: Modal.InsufficientInjForGas })
-}
-
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.config.errorHandler = (error, context) => {
     console.warn(error, context, (error as any).stack)
@@ -132,8 +110,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
 
     console.warn(error.toObject())
-
-    handleInsufficientGas(error)
   }
 
   return {

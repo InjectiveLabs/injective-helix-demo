@@ -72,15 +72,11 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     }
 
     const oracleScalePriceDiff =
-      market.value.quoteToken.decimals - market.value.oracleScaleFactor
+      market.value.oracleScaleFactor - market.value.quoteToken.decimals
 
-    return oracleScalePriceDiff > 0
-      ? new BigNumberInBase(markPriceNotScaled.value).times(
-          new BigNumberInBase(10).pow(oracleScalePriceDiff)
-        )
-      : new BigNumberInBase(markPriceNotScaled.value).div(
-          new BigNumberInBase(10).pow(oracleScalePriceDiff)
-        )
+    return new BigNumberInBase(markPriceNotScaled.value).times(
+      new BigNumberInBase(10).pow(oracleScalePriceDiff)
+    )
   })
 
   const isBinaryOptions = computed(() => {

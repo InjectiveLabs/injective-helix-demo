@@ -10,7 +10,6 @@ import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, TradeField, TradeForm } from '@/types'
 
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -48,8 +47,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'submit:request'): void
-  (e: 'form:submit'): void
+  'submit:request': []
+  'form:submit': []
 }>()
 
 const isSpot = props.market.type === MarketType.Spot
@@ -101,10 +100,7 @@ const tradingTypeMarket = isSpot
 
 const disabled = computed(() => {
   const commonErrors =
-    hasError.value ||
-    !props.hasBaseAmount ||
-    !accountStore.hasEnoughInjForGas ||
-    !walletStore.isUserWalletConnected
+    hasError.value || !props.hasBaseAmount || !walletStore.isUserWalletConnected
 
   if (commonErrors) {
     return true
@@ -166,7 +162,7 @@ function trackPlaceOrder() {
 }
 
 function handleConnect() {
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 </script>
 
@@ -191,7 +187,7 @@ function handleConnect() {
     <AppButton
       v-else
       lg
-      :status="status"
+      :is-loading="status.isLoading()"
       :disabled="disabled"
       :class="{
         'hover:text-green-900 bg-green-500 text-green-800':

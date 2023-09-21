@@ -90,8 +90,8 @@ function fetchLeaderboard() {
           v-model="activeTab"
           :value="filterType"
         >
-          <template #default="{ active }">
-            <CommonTabMenuItem :active="active">
+          <template #default="{ isActive }">
+            <CommonTabMenuItem :is-active="isActive">
               <span v-if="filterType === FilterList.Overall">
                 {{ $t('leaderboard.tabs.overall') }}
               </span>

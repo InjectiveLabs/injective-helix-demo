@@ -35,15 +35,15 @@ function handleSelectOrderSide() {
       :value="orderSideItem"
       @update:modelValue="handleSelectOrderSide"
     >
-      <template #default="{ active }">
+      <template #default="{ isActive }">
         <span
           class="uppercase rounded text-xs tracking-wide border px-5 h-9 flex"
           :class="{
-            'text-gray-300 border-transparent': !active,
+            'text-gray-300 border-transparent': !isActive,
             'text-green-500 border-green-500':
-              active && orderSide === OrderSide.Buy,
+              isActive && orderSide === OrderSide.Buy,
             'text-red-500 border-red-500':
-              active && orderSide === OrderSide.Sell
+              isActive && orderSide === OrderSide.Sell
           }"
         >
           <span v-if="orderSideItem === OrderSide.Buy" class="m-auto">

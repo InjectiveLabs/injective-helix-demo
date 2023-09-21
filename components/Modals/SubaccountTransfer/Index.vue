@@ -85,6 +85,7 @@ function handleNonDefaultSubaccountTransfer() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
@@ -104,6 +105,7 @@ function handleDefaultSubaccountTransfer() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
@@ -123,6 +125,7 @@ function handleDefaultSubaccountWithdraw() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      closeModal()
     })
 }
 
@@ -168,7 +171,7 @@ function closeModal() {
 
 <template>
   <AppModal
-    :show="modalStore.modals[Modal.SubaccountTransfer]"
+    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
     md
     :ignore="['.v-popper__inner']"
     @modal:closed="closeModal"
@@ -207,7 +210,7 @@ function closeModal() {
         <AppButton
           lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
-          :status="status"
+          :is-loading="status.isLoading()"
           :disabled="hasFormErrors"
           @click="handleSubaccountTransfer"
         >

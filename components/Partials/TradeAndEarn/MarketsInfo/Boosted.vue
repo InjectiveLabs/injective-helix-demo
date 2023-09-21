@@ -5,6 +5,7 @@ import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
+const exchangeStore = useExchangeStore()
 
 const {
   spotBoostedMarketIdList,
@@ -59,7 +60,10 @@ const derivativeBoostedMarkets = computed(() => {
     .filter(
       (derivative) =>
         !derivativeMarketIds.includes(derivative.marketId) &&
-        !disqualifiedMarketIds.includes(derivative.marketId)
+        !disqualifiedMarketIds.includes(derivative.marketId) &&
+        exchangeStore.tradingRewardsCampaign?.tradingRewardCampaignInfo?.quoteDenomsList.includes(
+          derivative.quoteDenom
+        )
     )
     .map((m) => ({ ticker: m.ticker, slug: m.slug }))
     .reduce((records, market) => {
@@ -117,7 +121,10 @@ const spotBoostedMarkets = computed(() => {
     .filter(
       (spotMarket) =>
         !spotMarketIds.includes(spotMarket.marketId) &&
-        !disqualifiedMarketIds.includes(spotMarket.marketId)
+        !disqualifiedMarketIds.includes(spotMarket.marketId) &&
+        exchangeStore.tradingRewardsCampaign?.tradingRewardCampaignInfo?.quoteDenomsList.includes(
+          spotMarket.quoteDenom
+        )
     )
     .map((m) => ({ ticker: m.ticker, slug: m.slug }))
     .reduce((records, market) => {
@@ -199,9 +206,9 @@ const spotBoostedMarkets = computed(() => {
     <template #title>
       <div class="flex items-center justify-center text-gray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
-        <CommonInfoTooltip
+        <AppTooltip
           class="ml-2 text-gray-450"
-          :tooltip="$t('trade.boosted_markets_tooltip')"
+          :content="$t('trade.boosted_markets_tooltip')"
         />
       </div>
     </template>

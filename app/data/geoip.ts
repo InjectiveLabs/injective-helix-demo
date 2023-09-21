@@ -1,3 +1,5 @@
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
+
 export const restrictedCountries = [
   'CI',
   'JO',
@@ -21,10 +23,17 @@ export const restrictedCountries = [
   'CG',
   'DZ',
   'KP',
-  'US',
   'VE',
   'BD',
   'ML',
   'NP',
   'RU'
 ] as string[]
+
+export const restrictedPerpetualMarketsCountries = ['US']
+
+export const isCountryRestricted = (country: string) =>
+  GEO_IP_RESTRICTIONS_ENABLED && restrictedCountries.includes(country)
+export const isCountryRestrictedForPerpetualMarkets = (country: string) =>
+  GEO_IP_RESTRICTIONS_ENABLED &&
+  restrictedPerpetualMarketsCountries.includes(country)
