@@ -17,10 +17,10 @@ const activeType = ref(FilterList.Boosted)
         :key="`market-information-type-${filterType}`"
       >
         <AppSelectButton v-model="activeType" :value="filterType">
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <span
               class="text-sm"
-              :class="[active ? 'text-blue-500' : 'text-gray-500']"
+              :class="[isActive ? 'text-blue-500' : 'text-gray-500']"
             >
               <span v-if="filterType === FilterList.Boosted">
                 {{ t('trade.boosted_markets') }}

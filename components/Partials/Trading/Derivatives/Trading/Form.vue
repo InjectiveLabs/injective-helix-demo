@@ -554,13 +554,11 @@ function resetForm() {
 
 function handleRequestSubmit() {
   if (highDeviation.value) {
-    return modalStore.openModal({
-      type: Modal.PriceDeviation
-    })
+    return modalStore.openModal(Modal.PriceDeviation)
   }
 
   if (
-    appStore.userState.skipTradeConfirmationModal ||
+    appStore.userState.preferences.skipTradeConfirmationModal ||
     tradingTypeMarket.value ||
     tradingTypeLimit.value
   ) {
@@ -574,9 +572,7 @@ function handleRequestSubmit() {
     return
   }
 
-  return modalStore.openModal({
-    type: Modal.OrderConfirm
-  })
+  return modalStore.openModal(Modal.OrderConfirm)
 }
 
 function handleSubmit() {

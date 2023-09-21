@@ -6,14 +6,13 @@ import {
   getDefaultPerpetualMarketRouteParams,
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
+import { IS_MAINNET } from '@/app/utils/constants'
 
+const appStore = useAppStore()
 const walletStore = useWalletStore()
 
 const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
-
-const tradeDropdownShown = ref(false)
-const rewardsDropdownShown = ref(false)
 
 function handleSpotTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
@@ -30,22 +29,6 @@ function handlePerpetualTradeClickedTrack() {
     origin: TradeClickOrigin.TopMenu
   })
 }
-
-function handleTradeDropdownShownChange(value: boolean) {
-  tradeDropdownShown.value = value
-
-  if (value) {
-    rewardsDropdownShown.value = false
-  }
-}
-
-function handleRewardsDropdownShownChange(value: boolean) {
-  rewardsDropdownShown.value = value
-
-  if (value) {
-    tradeDropdownShown.value = false
-  }
-}
 </script>
 
 <template>
@@ -54,6 +37,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
       <LayoutNavItem :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </LayoutNavItem>
+
       <LayoutNavItem
         :to="{ name: 'markets' }"
         class="block"
@@ -62,17 +46,42 @@ function handleRewardsDropdownShownChange(value: boolean) {
         {{ $t('trade.markets') }}
       </LayoutNavItem>
 
-      <LayoutNavHoverMenu
-        :shown="tradeDropdownShown"
-        @dropdown:toggle="handleTradeDropdownShownChange"
-      >
+      <LayoutNavHoverMenu>
         <template #default>
-          <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
-            {{ $t('navigation.trade') }}
-          </LayoutNavItemDummy>
+          <div class="relative">
+            <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
+              {{ $t('navigation.trade') }}
+            </LayoutNavItemDummy>
+
+            <div
+              class="bg-blue-500 rounded-full w-2 h-2 absolute right-3.5 top-2.5 hidden lg:block"
+            />
+          </div>
         </template>
 
         <template #content>
+          <NuxtLink
+            :to="{ name: 'swap' }"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
+            data-cy="header-swap-link"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.swap') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.swapDescription') }}
+            </p>
+          </NuxtLink>
+
           <NuxtLink
             :to="defaultSpotMarketRoute"
             class="p-4 block rounded-t group hover:bg-gray-700 relative z-50 bg-gray-850"
@@ -101,7 +110,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
             </p>
           </NuxtLink>
 
-          <NuxtLink
+          <!-- <NuxtLink
             :to="{ name: 'convert' }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-convert-link"
@@ -112,16 +121,39 @@ function handleRewardsDropdownShownChange(value: boolean) {
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.convertDescription') }}
             </p>
-          </NuxtLink>
+          </NuxtLink> -->
+
+          <BaseNuxtLink
+            v-if="appStore.devMode && !IS_MAINNET"
+            :to="{
+              name: 'trading-bots-grid-spot-market',
+              params: { market: 'inj-usdt' }
+            }"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
+            data-cy="grid-spot-trading-link"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.tradingBots') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.tradingBotsDescription') }}
+            </p>
+          </BaseNuxtLink>
         </template>
       </LayoutNavHoverMenu>
 
       <LayoutNavMobile />
 
-      <LayoutNavHoverMenu
-        :shown="rewardsDropdownShown"
-        @dropdown:toggle="handleRewardsDropdownShownChange"
-      >
+      <LayoutNavHoverMenu>
         <template #default>
           <LayoutNavItemDummy id="rewards-dropdown" class="hidden lg:block">
             {{ $t('navigation.rewards') }}
@@ -142,20 +174,28 @@ function handleRewardsDropdownShownChange(value: boolean) {
           </NuxtLink>
 
           <a
-            href="https://dmm.injective.network"
+            href="https://trading.injective.network/program/liquidity"
             target="_blank"
             class="p-4 block group bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white flex items-center">
-              <span>{{ $t('navigation.dmmProgram') }}</span>
+              <span>{{ $t('navigation.openLiquidityProgram') }}</span>
               <BaseIcon name="external-link" arrow class="w-auto h-3 ml-2" />
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.dmmProgramDescription') }}
+              {{ $t('navigation.openLiquidityProgramDescription') }}
             </p>
           </a>
         </template>
       </LayoutNavHoverMenu>
+
+      <LayoutNavItem
+        v-if="$route.query.showAuctions === 'true'"
+        to="/auctions?showAuctions=true"
+        class="block"
+      >
+        Auctions
+      </LayoutNavItem>
 
       <!-- <LayoutNavItem
         class="block"

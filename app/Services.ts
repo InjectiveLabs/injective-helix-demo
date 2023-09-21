@@ -1,19 +1,20 @@
-import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
 import {
   TokenPrice,
   Web3Client,
   Web3Composer,
   TokenService,
+  DenomClientAsync,
   UiBridgeTransformer,
   peggyGraphQlEndpointForNetwork
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  DenomClient,
   ApolloConsumer,
   ChainGrpcGovApi,
   ChainGrpcBankApi,
+  ChainGrpcWasmApi,
   ChainGrpcMintApi,
+  ChainGrpcAuthZApi,
   ChainGrpcPeggyApi,
   ChainGrpcOracleApi,
   IndexerGrpcSpotApi,
@@ -21,6 +22,7 @@ import {
   ChainGrpcExchangeApi,
   IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
+  IndexerGrpcTradingApi,
   IndexerGrpcExplorerApi,
   IndexerRestExplorerApi,
   ChainGrpcDistributionApi,
@@ -46,6 +48,7 @@ import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
+export const wasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
@@ -54,10 +57,14 @@ export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.grpc)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
 export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
 export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
+export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
+  ENDPOINTS.indexer
+)
+export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
 
@@ -87,7 +94,6 @@ export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexer)
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
 )
-export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcaster({
@@ -121,12 +127,15 @@ export const tokenService = new TokenService({
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
-export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
+export const denomClient = new DenomClientAsync(NETWORK, {
+  endpoints: ENDPOINTS,
+  alchemyRpcUrl: alchemyRpcEndpoint
+})
 
 // UI Services
 export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v11-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
+  `inj-helix-v1-${NETWORK}`
 )

@@ -20,31 +20,32 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-const showLoading = computed<boolean>(
+const isLoading = computed<boolean>(
   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
 )
 
 onMounted(() => {
   useEventBus<string>(BusEvents.ShowLedgerConnect).on(handleLedgerConnect)
 
-  Promise.all([walletStore.isMetamaskInstalled()]).finally(() =>
-    status.setIdle()
-  )
+  Promise.all([
+    walletStore.isMetamaskInstalled(),
+    walletStore.isTrustWalletInstalled()
+  ]).finally(() => status.setIdle())
 })
 
 function handleLedgerConnect() {
   walletModalType.value = WalletModalType.Ledger
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleWalletConnect() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
-    modalStore.openModal({ type: Modal.Terms })
+    modalStore.openModal(Modal.Terms)
   } else {
-    modalStore.openModal({ type: Modal.Connect })
+    modalStore.openModal(Modal.Connect)
   }
 }
 
@@ -86,8 +87,8 @@ watch(isModalOpen, (newShowModalState) => {
   </AppButton>
 
   <AppModal
-    :show="isModalOpen"
-    :show-loading="showLoading"
+    :is-open="isModalOpen"
+    :is-loading="isLoading"
     :ignore="['.v-popper__popper']"
     md
     @modal:closed="handleModalClose"
@@ -114,11 +115,12 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletTrustWallet />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />
-      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
     </ul>
   </AppModal>
   <ModalsTerms />

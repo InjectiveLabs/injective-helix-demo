@@ -58,7 +58,7 @@ const makerFeeDiscount = computed(() => {
 <template>
   <div class="flex items-center justify-between text-xs">
     <span class="font-semibold">
-      {{ $t('fee_discounts.tier') }}
+      {{ $t(`fee_discounts.tier`) }}
     </span>
 
     <NuxtLink
@@ -75,7 +75,7 @@ const makerFeeDiscount = computed(() => {
             : $t('navigation.noTierLevel')
         }}
       </span>
-      <BaseIcon name="external-link-arrow" xs />
+      <BaseIcon name="external-link-arrow" is-xs />
     </NuxtLink>
   </div>
 </template>

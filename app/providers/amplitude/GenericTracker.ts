@@ -4,7 +4,7 @@ import { AmplitudeEvent } from '@/types'
 
 class GenericTracker extends BaseTracker {
   trackEvent(event: AmplitudeEvent, eventProperties?: Record<string, any>) {
-    const { user } = this
+    const user = this.getUser()
     const identify = this.getIdentify()
 
     if (user || identify) {

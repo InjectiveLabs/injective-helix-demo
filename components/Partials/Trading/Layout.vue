@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { breakpointsTailwind } from '@vueuse/core'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultGridSpotMarketRouteParams
 } from '@/app/utils/market'
 import {
   Modal,
@@ -11,21 +13,22 @@ import {
   UiMarketWithToken,
   UiMarketSummary
 } from '@/types'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
-const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
-const { params } = useRoute()
+const { params, query } = useRoute()
 const { $onError } = useNuxtApp()
+const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
 
 const props = defineProps({
   isSpot: Boolean,
+  isGrid: Boolean,
 
   hardcodedSlug: {
     type: String,
@@ -34,10 +37,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'loaded', state: UiMarketWithToken): void
+  loaded: [state: UiMarketWithToken]
 }>()
 
 const slug = props.hardcodedSlug || (Object.values(params)[0] as string) || ''
+const queryMarketId = (query.marketId as string) || ''
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
@@ -45,46 +49,6 @@ const fetchStatus = reactive(new Status(StatusType.Loading))
 const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
-
-onMounted(() => {
-  Promise.all([
-    exchangeStore.fetchTradingRewardsCampaign(),
-    exchangeStore.fetchFeeDiscountAccountInfo(),
-    ...[props.isSpot ? spotStore.init() : derivativeStore.init()]
-  ])
-    .then(() => {
-      if (betaMarketSlugs.includes(slug)) {
-        modalStore.openModal({ type: Modal.MarketBeta })
-      }
-
-      const marketBySlug = getMarketBySlug()
-
-      if (!marketBySlug) {
-        const defaultRoute = props.isSpot
-          ? getDefaultSpotMarketRouteParams()
-          : getDefaultPerpetualMarketRouteParams()
-
-        router.push(defaultRoute)
-      } else {
-        market.value = marketBySlug
-
-        emit('loaded', marketBySlug as UiMarketWithToken)
-      }
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-      fetchStatus.setIdle()
-    })
-})
-
-onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
-
-onWalletConnected(() => {
-  if (market.value) {
-    emit('loaded', market.value)
-  }
-})
 
 const summary = computed(() => {
   const marketSummaries: UiMarketSummary[] = props.isSpot
@@ -96,15 +60,81 @@ const summary = computed(() => {
   )
 })
 
-function getMarketBySlug() {
+const userTradingLayout = computed(
+  () => appStore.userState.preferences.tradingLayout
+)
+
+onMounted(() => {
+  init()
+})
+
+onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
+
+onWalletConnected(() => {
+  if (market.value) {
+    emit('loaded', market.value)
+  }
+})
+
+function init() {
+  Promise.all([
+    exchangeStore.fetchTradingRewardsCampaign(),
+    exchangeStore.fetchFeeDiscountAccountInfo(),
+    ...[
+      props.isSpot
+        ? spotStore.initFromTradingPage([queryMarketId])
+        : derivativeStore.initFromTradingPage([queryMarketId])
+    ]
+  ])
+    .then(() => {
+      if (betaMarketSlugs.includes(slug)) {
+        modalStore.openModal(Modal.MarketBeta)
+      }
+
+      if (props.isGrid && props.isSpot) {
+        const gridMarket = spotGridMarkets.find(
+          (market) => market.slug.toLowerCase() === slug.toLowerCase()
+        )
+
+        if (!gridMarket) {
+          router.push(getDefaultGridSpotMarketRouteParams())
+        }
+      }
+
+      const marketBySlugOrMarketId = getMarketBySlugOrMarketId()
+
+      if (!marketBySlugOrMarketId) {
+        const defaultRoute = props.isSpot
+          ? getDefaultSpotMarketRouteParams()
+          : getDefaultPerpetualMarketRouteParams()
+
+        router.push(defaultRoute)
+      } else {
+        market.value = marketBySlugOrMarketId
+
+        emit('loaded', marketBySlugOrMarketId as UiMarketWithToken)
+      }
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+      fetchStatus.setIdle()
+    })
+}
+
+function getMarketBySlugOrMarketId() {
   const markets: UiMarketWithToken[] = props.isSpot
     ? spotStore.markets
     : derivativeStore.markets
 
-  return markets.find((m) => m.slug.toLowerCase() === slug.toLowerCase())
+  return markets.find(
+    (m) =>
+      m.slug.toLowerCase() === slug.toLowerCase() ||
+      m.marketId === queryMarketId
+  )
 }
 
-function close() {
+function closeMarketList() {
   showMarketList.value = false
 }
 
@@ -123,11 +153,12 @@ watch(
 </script>
 
 <template>
-  <AppHocLoading :key="route.fullPath" :status="status" class="h-full">
+  <AppHocLoading :status="status" class="h-full">
     <div v-if="market && summary" class="min-h-lg h-full-flex">
       <div class="w-full px-1 h-market-info flex-none">
         <PartialsTradingMarketStats
           v-bind="{
+            isGrid,
             summary,
             market: market,
             expanded: showMarketList
@@ -142,22 +173,14 @@ watch(
           data-cy="trading-side-component"
         >
           <div
+            v-if="isDesktop"
             key="market-trading-panel"
-            class="flex-col flex-wrap h-full w-full hidden lg:flex space-y-1"
+            class="flex-col flex-wrap h-full w-full flex space-y-1"
           >
-            <CommonCard no-padding>
-              <div
-                v-if="
-                  fetchStatus.isIdle() &&
-                  walletStore.isUserWalletConnected &&
-                  !accountStore.hasEnoughInjForGas
-                "
-                class="bg-gray-1000 rounded-lg mb-1 p-6"
-              >
-                <CommonInsufficientGasInner />
-              </div>
-              <PartialsTradingBalances v-else :market="market" />
+            <CommonCard v-if="!isGrid" no-padding>
+              <PartialsTradingBalances :market="market" />
             </CommonCard>
+
             <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
               <div
                 :class="{
@@ -173,7 +196,7 @@ watch(
         <div
           class="col-span-6 lg:col-span-9 4xl:col-span-9 max-h-screen-excluding-header-and-market-info"
           :class="{
-            '-order-1': appStore.userState.tradingLayout === TradingLayout.Right
+            '-order-1': userTradingLayout === TradingLayout.Right
           }"
         >
           <div class="h-full-flex">
@@ -186,21 +209,20 @@ watch(
                   <div
                     class="col-span-6 lg:col-span-8 4xl:col-span-9"
                     :class="{
-                      '-order-1':
-                        appStore.userState.tradingLayout === TradingLayout.Right
+                      '-order-1': userTradingLayout === TradingLayout.Right
                     }"
                   >
                     <PartialsTradingMarketChart
+                      v-if="isDesktop"
                       :market="market"
-                      class="hidden lg:block"
                     />
                   </div>
                 </div>
               </CommonCard>
 
-              <div class="w-full lg:hidden mt-2">
+              <div v-if="!isDesktop" class="w-full mt-2">
                 <slot name="trading-panel" />
-                <PartialsTradingBalances :market="market" />
+                <PartialsTradingBalances v-if="!isGrid" :market="market" />
                 <CommonCard class="mt-1">
                   <div class="px-6 pt-2">
                     <slot name="trading-form" />
@@ -220,15 +242,16 @@ watch(
         <PartialsTradingSidebar
           v-show="showMarketList"
           key="market-selection"
-          :market="market"
-          @close="close"
+          v-bind="{
+            isGrid,
+            market
+          }"
+          @close="closeMarketList"
         />
       </div>
 
       <slot name="modals" />
-      <ModalsMarketBeta v-if="marketIsBeta" />
+      <ModalsMarketBeta v-if="marketIsBeta && !isGrid" />
     </div>
   </AppHocLoading>
-
-  <PartialsAccountBridge />
 </template>

@@ -51,10 +51,7 @@ const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
     class="mt-2"
   >
     <template #context>
-      <CommonInfoTooltip
-        class="ml-2"
-        :tooltip="$t('trade.est_fee_rebate_note')"
-      />
+      <AppTooltip class="ml-2" :content="$t('trade.est_fee_rebate_note')" />
     </template>
     <span
       v-if="feeRebates.gt(0)"

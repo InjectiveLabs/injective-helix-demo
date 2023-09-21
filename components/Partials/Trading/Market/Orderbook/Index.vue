@@ -45,18 +45,13 @@ const subaccountOrders = computed<
   isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
 
-const buys = computed(() => {
-  return isSpot ? spotStore.buys : derivativeStore.buys
-})
-
-const sells = computed(() => {
-  return isSpot ? spotStore.sells : derivativeStore.sells
-})
+const buys = computed(() => (isSpot ? spotStore.buys : derivativeStore.buys))
+const sells = computed(() => (isSpot ? spotStore.sells : derivativeStore.sells))
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
-const buyHoverPosition = ref<number | null>(null)
-const sellHoverPosition = ref<number | null>(null)
+const buyHoverPosition = ref<number | undefined>(undefined)
+const sellHoverPosition = ref<number | undefined>(undefined)
 
 const popper = ref<Instance | undefined>(undefined)
 const orderbookSummaryRef = ref<HTMLElement | undefined>(undefined)
@@ -97,6 +92,13 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   {
     decimalPlaces: props.market.priceDecimals
   }
+)
+
+const userOrderbookLayout = computed(
+  () => appStore.userState.preferences.orderbookLayout
+)
+const userTradingLayout = computed(
+  () => appStore.userState.preferences.tradingLayout
 )
 
 const buyUserOrderPrices = computed(() =>
@@ -335,7 +337,7 @@ const buysWithDepth = computed(() => {
 })
 
 const buyOrdersSummary = computed<UiOrderbookSummary | undefined>(() => {
-  if (buysWithDepth.value.length === 0 || buyHoverPosition.value === null) {
+  if (buysWithDepth.value.length === 0 || !buyHoverPosition.value) {
     return
   }
 
@@ -398,7 +400,7 @@ const sellsWithDepth = computed(() => {
 })
 
 const sellOrdersSummary = computed(() => {
-  if (sellsWithDepth.value.length === 0 || sellHoverPosition.value === null) {
+  if (sellsWithDepth.value.length === 0 || !sellHoverPosition.value) {
     return
   }
 
@@ -429,11 +431,11 @@ const sellOrdersSummary = computed(() => {
 })
 
 const orderBookSummary = computed(() => {
-  if (buyHoverPosition.value !== null) {
+  if (buyHoverPosition.value) {
     return buyOrdersSummary.value
   }
 
-  if (sellHoverPosition.value !== null) {
+  if (sellHoverPosition.value) {
     return sellOrdersSummary.value
   }
 
@@ -441,8 +443,7 @@ const orderBookSummary = computed(() => {
 })
 
 const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => ({
-  placement:
-    appStore.userState.tradingLayout === TradingLayout.Right ? 'left' : 'right'
+  placement: userTradingLayout.value === TradingLayout.Right ? 'left' : 'right'
 }))
 
 watch(
@@ -486,10 +487,10 @@ function onScrollBuys() {
   }
 }
 
-function handleSellOrderHover(position: number | null) {
+function handleSellOrderHover(position?: number) {
   sellHoverPosition.value = position
 
-  if (position !== null) {
+  if (position !== undefined) {
     /* TODO: see if this works for finding dynamically assigned refs */
     if (sellRecordListRef.value && sellRecordListRef.value[position]) {
       const hoverElement = sellRecordListRef.value[position].element
@@ -517,10 +518,10 @@ function handleSellOrderHover(position: number | null) {
   }
 }
 
-function handleBuyOrderHover(position: number | null) {
+function handleBuyOrderHover(position?: number) {
   buyHoverPosition.value = position
 
-  if (position !== null) {
+  if (position !== undefined) {
     if (buyRecordListRef.value && buyRecordListRef.value[position]) {
       const hoverElement = buyRecordListRef.value[position].element
 
@@ -548,12 +549,18 @@ function handleBuyOrderHover(position: number | null) {
 }
 
 function hidePopperOnScroll(state: UseScrollReturn) {
-  if (orderbookSummaryRef.value) {
-    if (state.isScrolling.value) {
-      orderbookSummaryRef.value.removeAttribute('data-show')
-    } else {
-      orderbookSummaryRef.value.setAttribute('data-show', '')
-    }
+  if (
+    !buyHoverPosition.value ||
+    !sellHoverPosition.value ||
+    !orderbookSummaryRef.value
+  ) {
+    return
+  }
+
+  if (state.isScrolling.value) {
+    orderbookSummaryRef.value.removeAttribute('data-show')
+  } else {
+    orderbookSummaryRef.value.setAttribute('data-show', '')
   }
 }
 </script>
@@ -561,15 +568,13 @@ function hidePopperOnScroll(state: UseScrollReturn) {
 <template>
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full px-2">
     <div
-      v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Buys"
+      v-if="userOrderbookLayout !== OrderbookLayout.Buys"
       ref="sellOrdersContainerRef"
       v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
-        'orderbook-half-h':
-          appStore.userState.orderbookLayout !== OrderbookLayout.Sells,
-        'orderbook-full-h':
-          appStore.userState.orderbookLayout === OrderbookLayout.Sells
+        'orderbook-half-h': userOrderbookLayout !== OrderbookLayout.Sells,
+        'orderbook-full-h': userOrderbookLayout === OrderbookLayout.Sells
       }"
     >
       <div class="flex h-full w-full">
@@ -586,7 +591,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
-              active: sellHoverPosition !== null && index >= sellHoverPosition
+              active: sellHoverPosition && index >= sellHoverPosition
             }"
             v-bind="{
               market,
@@ -649,9 +654,9 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <CommonInfoTooltip
+        <AppTooltip
           v-if="!isSpot"
-          :tooltip="$t('trade.mark_price_tooltip_verbose')"
+          :content="$t('trade.mark_price_tooltip_verbose')"
           data-cy="orderbook-mark-price-text-content"
         >
           <span
@@ -659,20 +664,18 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           >
             {{ markPriceToFormat }}
           </span>
-        </CommonInfoTooltip>
+        </AppTooltip>
       </div>
     </div>
 
     <div
-      v-if="appStore.userState.orderbookLayout !== OrderbookLayout.Sells"
+      v-if="userOrderbookLayout !== OrderbookLayout.Sells"
       ref="buyOrdersContainerRef"
       v-scroll="hidePopperOnScroll"
       class="overflow-y-scroll overflow-x-hidden w-full"
       :class="{
-        'orderbook-half-h':
-          appStore.userState.orderbookLayout !== OrderbookLayout.Buys,
-        'orderbook-full-h':
-          appStore.userState.orderbookLayout === OrderbookLayout.Buys
+        'orderbook-half-h': userOrderbookLayout !== OrderbookLayout.Buys,
+        'orderbook-full-h': userOrderbookLayout === OrderbookLayout.Buys
       }"
     >
       <div class="flex h-full w-full">
@@ -690,7 +693,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
-              active: buyHoverPosition !== null && index <= buyHoverPosition
+              active: buyHoverPosition && index <= buyHoverPosition
             }"
             v-bind="{
               aggregation,

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useModalStore()
+const authzStore = useAuthZStore()
 const walletStore = useWalletStore()
 const ninjaPassStore = useNinjaPassStore()
 const confetti = useConfetti()
@@ -12,13 +14,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'sidebar:closed'): void
-  (e: 'sidebar:opened'): void
+  'sidebar:closed': []
+  'sidebar:opened': []
 }>()
 
 const isUserConnectedProcessCompleted = ref(false)
-
-const isUserWalletConnected = computed(() => walletStore.isUserWalletConnected)
 
 const hasNinjaPassCodes = computed(() => {
   if (!ninjaPassStore.codes) {
@@ -29,7 +29,7 @@ const hasNinjaPassCodes = computed(() => {
 })
 
 watch(
-  () => isUserWalletConnected,
+  () => walletStore.isUserWalletConnected,
   (newIsUserWalletConnected) => {
     if (!newIsUserWalletConnected) {
       isUserConnectedProcessCompleted.value = false
@@ -38,12 +38,12 @@ watch(
 )
 
 onMounted(() => {
-  if (isUserWalletConnected) {
+  if (walletStore.isUserWalletConnected) {
     isUserConnectedProcessCompleted.value = true
   }
 })
 
-function handleSidebarToggle() {
+function toggleSidebar() {
   if (props.isSidebarOpen) {
     return emit('sidebar:closed')
   }
@@ -51,9 +51,8 @@ function handleSidebarToggle() {
   emit('sidebar:opened')
 }
 
-function handleShowNinjaPassModal() {
-  modalStore.openModal({ type: Modal.NinjaPassWinner })
-
+function showNinjaPassModal() {
+  modalStore.openModal(Modal.NinjaPassWinner)
   confetti.showConfetti()
 }
 </script>
@@ -80,15 +79,15 @@ function handleShowNinjaPassModal() {
       </div>
       <div class="flex items-center">
         <LayoutNavItemDummy
-          v-if="isUserWalletConnected && hasNinjaPassCodes"
+          v-if="walletStore.isUserWalletConnected && hasNinjaPassCodes"
           class="flex px-0 w-10 items-center justify-center"
-          @click="handleShowNinjaPassModal"
+          @click="showNinjaPassModal"
         >
           <BaseIcon name="gift" class="text-white w-4 h-4" />
         </LayoutNavItemDummy>
 
         <LayoutNavItem
-          v-if="isUserWalletConnected"
+          v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-activity-link"
           :to="{ name: 'activity' }"
@@ -97,7 +96,7 @@ function handleShowNinjaPassModal() {
         </LayoutNavItem>
 
         <LayoutNavItem
-          v-if="isUserWalletConnected"
+          v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-account-link"
           :to="{ name: 'account' }"
@@ -105,12 +104,27 @@ function handleShowNinjaPassModal() {
           {{ $t('navigation.account') }}
         </LayoutNavItem>
 
+        <LayoutAuthZ
+          v-if="
+            authzStore.hasGranterOrGranteeGrants &&
+            appStore.isAuthzManagementActive
+          "
+          class="hidden lg:flex"
+        />
         <LayoutWallet />
+
+        <LayoutNavItemDummy
+          v-if="walletStore.isUserWalletConnected"
+          class="hidden lg:flex px-0 w-10 items-center justify-center"
+          @click="() => {}"
+        >
+          <LayoutPreferences v-if="walletStore.isUserWalletConnected" />
+        </LayoutNavItemDummy>
       </div>
     </div>
     <button
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
-      @click.stop="handleSidebarToggle"
+      @click.stop="toggleSidebar"
     >
       <BaseIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
       <BaseIcon v-else name="menu" class="w-6 h-6" />

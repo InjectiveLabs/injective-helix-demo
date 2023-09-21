@@ -2,8 +2,9 @@ import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  denomAmountToChainDenomAmountToFixed,
-  MsgExternalTransfer
+  msgsOrMsgExecMsgs,
+  MsgExternalTransfer,
+  denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -20,19 +21,18 @@ export const deposit = async ({
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
-  const { queue } = useAppStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  if (!accountStore.subaccountId || !isUserWalletConnected) {
+  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
     return
   }
 
-  await queue()
-  await validate()
+  await appStore.queue()
+  await walletStore.validate()
 
   const message = MsgDeposit.fromJSON({
-    injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
@@ -43,9 +43,13 @@ export const deposit = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
-    msgs: message,
-    address
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
@@ -61,19 +65,18 @@ export const withdraw = async ({
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
-  const { queue } = useAppStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  if (!accountStore.subaccountId || !isUserWalletConnected) {
+  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
     return
   }
 
-  await queue()
-  await validate()
+  await appStore.queue()
+  await walletStore.validate()
 
   const message = MsgWithdraw.fromJSON({
-    injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
@@ -84,10 +87,16 @@ export const withdraw = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
-    msgs: message,
-    address
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
+
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }
 
 export const transfer = async ({
@@ -103,17 +112,19 @@ export const transfer = async ({
   destination: string
   token: Token
 }) => {
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const accountStore = useAccountStore()
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  if (!address || !isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
-  await validate()
+  await appStore.queue()
+  await walletStore.validate()
 
   const message = MsgSend.fromJSON({
-    srcInjectiveAddress: injectiveAddress,
+    srcInjectiveAddress: walletStore.authZOrInjectiveAddress,
     dstInjectiveAddress: destination,
     amount: {
       denom,
@@ -121,11 +132,17 @@ export const transfer = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
-    msgs: message,
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     memo,
-    address
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
+
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
 }
 
 export const externalTransfer = async ({
@@ -144,29 +161,34 @@ export const externalTransfer = async ({
   token: Token
 }) => {
   const accountStore = useAccountStore()
-  const { address, injectiveAddress, isUserWalletConnected, validate } =
-    useWalletStore()
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
 
-  if (!address || !isUserWalletConnected) {
+  if (!walletStore.isUserWalletConnected) {
     return
   }
 
-  await validate()
+  await appStore.queue()
+  await walletStore.validate()
 
   const message = MsgExternalTransfer.fromJSON({
     srcSubaccountId,
     dstSubaccountId,
-    injectiveAddress,
+    injectiveAddress: walletStore.authZOrInjectiveAddress,
     amount: {
       denom,
       amount: amount.toWei(token.decimals).toFixed()
     }
   })
 
-  await msgBroadcastClient.broadcastOld({
-    msgs: message,
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    : message
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
     memo,
-    address
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
   })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolio())

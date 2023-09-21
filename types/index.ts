@@ -8,6 +8,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import type { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
@@ -27,6 +28,8 @@ export interface Constructable<T> {
 export interface GeoLocation {
   continent: string
   country: string
+  browserCountry: string
+  vpnCheckTimestamp: number
 }
 
 export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
@@ -112,9 +115,17 @@ export type I18nMessageFunction = {
   named: Function
 }
 
+export interface AmplitudeTrackerUser {
+  wallet: Wallet
+  address: string
+  tierLevel: number
+}
+
+export * from './swap'
 export * from './enums'
 export * from './trade'
 export * from './bridge'
 export * from './states'
 export * from './balance'
 export * from './activity'
+export * from './institutional'

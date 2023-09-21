@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
+import { breakpointsTailwind } from '@vueuse/core'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -9,6 +10,7 @@ import {
 } from '@/app/data/aggregation'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
+import { getMinPriceTickSize } from '@/app/utils/helpers'
 
 const FilterList = {
   Orderbook: 'Orderbook',
@@ -19,7 +21,7 @@ const FilterList = {
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { width } = useWindowSize()
+const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
 
 const props = defineProps({
   market: {
@@ -64,18 +66,19 @@ onMounted(() => {
 })
 
 watchDebounced(
-  width,
-  (newWidth) => {
-    activeType.value =
-      newWidth < 1024 ? FilterList.Charts : FilterList.Orderbook
+  isDesktop,
+  (isDesktop) => {
+    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
   },
   { debounce: 100, immediate: true }
 )
 
 function onInit() {
   if (props.market && props.market.minQuantityTickSize) {
+    const formattedPriceTickSize = getMinPriceTickSize(isSpot, props.market)
+
     const minTickSize =
-      getDecimalPlaceFromValue(props.market.minQuantityTickSize.toString()) ||
+      getDecimalPlaceFromValue(formattedPriceTickSize) ||
       UI_DEFAULT_AGGREGATION_DECIMALS_STRING
 
     minTick.value = minTickSize
@@ -107,11 +110,11 @@ function onInit() {
           v-model="activeType"
           :value="displayType"
         >
-          <template #default="{ active }">
+          <template #default="{ isActive }">
             <span
               class="text-xs leading-4 tracking-widest cursor-pointer uppercase"
               :class="[
-                active
+                isActive
                   ? 'text-gray-200 hover:text-gray-100 uppercase'
                   : 'text-gray-500 hover:text-gray-200'
               ]"
@@ -150,6 +153,7 @@ function onInit() {
           :max-tick="maxTick"
         />
       </div>
+
       <AppHocLoading class="h-full" :status="status">
         <div
           class="rounded-lg h-full"

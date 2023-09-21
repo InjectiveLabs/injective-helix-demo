@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  HIDDEN_BALANCE_DISPLAY,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
+const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
+
+defineProps({
+  hideBalances: Boolean
+})
 
 const stakedAmount = computed(() => {
   if (
@@ -21,8 +29,25 @@ const stakedAmount = computed(() => {
   )
 })
 
+const stakedAmountInUsd = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  if (!injUsdPrice) {
+    return ZERO_IN_BASE
+  }
+
+  return stakedAmount.value.times(injUsdPrice)
+})
+
 const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
   stakedAmount,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
+  stakedAmountInUsd,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -52,7 +77,19 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
           <p class="text-gray-350 text-xs normal-case font-bold">
             {{ $t('account.staked') }}:
           </p>
-          <span class="font-mono text-sm"> {{ stakedAmountToFormat }} </span>
+
+          <span v-if="hideBalances" class="font-mono text-sm text-right">
+            {{ HIDDEN_BALANCE_DISPLAY }} INJ
+          </span>
+
+          <span
+            v-else-if="stakedAmount.gt(0)"
+            class="font-mono text-sm text-right"
+          >
+            {{ stakedAmountToFormat }} INJ
+          </span>
+
+          <span v-else> &mdash; </span>
         </div>
       </div>
     </td>
@@ -71,7 +108,20 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
 
     <td>
       <div class="flex justify-end">
-        <span> &mdash; </span>
+        <div class="flex justify-end">
+          <span v-if="hideBalances" class="font-mono text-sm text-right">
+            {{ HIDDEN_BALANCE_DISPLAY }} USD
+          </span>
+
+          <span
+            v-else-if="stakedAmountInUsd.gt(0)"
+            class="font-mono text-sm text-right"
+          >
+            {{ stakedAmountInUsdToFormat }} USD
+          </span>
+
+          <span v-else> &mdash; </span>
+        </div>
       </div>
     </td>
 

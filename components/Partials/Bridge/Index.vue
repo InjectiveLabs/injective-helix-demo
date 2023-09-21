@@ -43,8 +43,8 @@ function handleTokenChange() {
   })
 }
 
-function handleTokenSelectorOnClick(show: boolean) {
-  if (show && originIsEthereum.value) {
+function handleTokenSelectorOnClick() {
+  if (originIsEthereum.value) {
     peggyStore.updateErc20BalancesWithTokenAndPrice()
   }
 }
@@ -64,7 +64,7 @@ function handleTokenSelectorOnClick(show: boolean) {
         }"
         @update:denom="handleTokenChange"
         @update:max="handleAmountChange"
-        @update:show="handleTokenSelectorOnClick"
+        @update:modal="handleTokenSelectorOnClick"
       >
         <span> {{ $t('bridge.amount') }} </span>
       </AppSelectToken>

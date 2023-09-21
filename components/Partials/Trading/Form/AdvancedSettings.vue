@@ -24,10 +24,9 @@ const props = defineProps({
 
 const drawerIsOpen = ref(true)
 const slippageSelection = ref(SlippageDisplayOptions.Selectable)
-const slippageIsToggleable = ref(true)
+const slippageIsToggable = ref(true)
 
 const {
-  isConditionalOrder,
   tradingTypeStopMarket,
   tradingTypeLimit: derivativeTradingTypeLimit,
   tradingTypeMarket: derivativeTradingTypeMarket
@@ -130,7 +129,7 @@ const reduceOnlyTooltip = computed(() => {
     return
   }
 
-  return isConditionalOrder.value
+  return props.isConditionalOrder
     ? t('trade.reduceOnlyTooltipConditional')
     : t('trade.reduceOnlyTooltip')
 })
@@ -153,7 +152,7 @@ const showSlippageError = computed(
 
 watch(slippageTolerance, (tolerance) => {
   if (new BigNumberInBase(tolerance).gt(0)) {
-    slippageIsToggleable.value = true
+    slippageIsToggable.value = true
   }
 })
 
@@ -171,7 +170,7 @@ function handleBlur(value: string): void {
 }
 
 function handleSlippageCheckboxToggle() {
-  if (slippageIsToggleable.value) {
+  if (slippageIsToggable.value) {
     setToZeroSlippage()
   } else {
     setToDefaultSlippage()
@@ -231,7 +230,7 @@ function toggleDrawer() {
       <div class="flex items-stretch">
         <BaseIcon
           name="caret-down"
-          class="text-gray-500 group-hover:text-gray-200 transform rotate-180 self-center w-4 h-4"
+          class="text-gray-500 group-hover:text-gray-200 rotate-180 self-center w-4 h-4"
           :class="{ 'rotate-0': !drawerIsOpen }"
         />
       </div>
@@ -256,7 +255,7 @@ function toggleDrawer() {
           class="flex justify-between"
         >
           <AppCheckbox
-            v-model="slippageIsToggleable"
+            v-model="slippageIsToggable"
             data-cy="trading-page-slippage-checkbox"
             @input="handleSlippageCheckboxToggle"
           >
@@ -277,7 +276,7 @@ function toggleDrawer() {
               class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
               data-cy="trading-page-slippage-toggle-icon"
               :class="{
-                invisible: !slippageIsToggleable
+                invisible: !slippageIsToggable
               }"
             />
           </div>
@@ -292,7 +291,7 @@ function toggleDrawer() {
               transparent-bg
               :wrapper-classes="wrapperClasses"
               :input-classes="inputClasses"
-              :disabled="!slippageIsToggleable"
+              :disabled="!slippageIsToggable"
               :step="0.01"
               :max-decimals="2"
               small

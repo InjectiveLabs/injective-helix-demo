@@ -26,47 +26,47 @@ const tierLevelsWithZeroTierLevel = computed(() =>
             {{ $t('fee_discounts.tier') }}
           </th>
           <th class="text-right">
-            <div class="flex items-end justify-end">
+            <div class="flex items-center justify-end">
               <span>
                 {{ $t('fee_discounts.staked_amount') }}
               </span>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discounts.staked_amount_tooltip')"
+                :content="$t('fee_discounts.staked_amount_tooltip')"
               />
             </div>
           </th>
           <th class="text-center w-32"></th>
           <th class="text-right">
-            <div class="flex items-end justify-end">
+            <div class="flex items-center justify-end">
               <span>
                 {{ $t('fee_discounts.trading_volume') }}
               </span>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discounts.trading_volume_tooltip')"
+                :content="$t('fee_discounts.trading_volume_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
-            <div class="flex items-end justify-end">
+            <div class="flex items-center justify-end">
               <span>
                 {{ $t('fee_discounts.maker_rate_discount') }}
               </span>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discounts.maker_rate_discount_tooltip')"
+                :content="$t('fee_discounts.maker_rate_discount_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
-            <div class="flex items-end justify-end">
+            <div class="flex items-center justify-end">
               <span>
                 {{ $t('fee_discounts.taker_rate_discount') }}
               </span>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discounts.taker_rate_discount_tooltip')"
+                :content="$t('fee_discounts.taker_rate_discount_tooltip')"
               />
             </div>
           </th>

@@ -4,6 +4,7 @@ import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
 defineProps({
   expanded: Boolean,
+  isGrid: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
@@ -17,7 +18,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'marketsList:toggle'): void
+  'marketsList:toggle': []
 }>()
 
 function handleTokenClick() {
@@ -32,13 +33,23 @@ function handleTokenClick() {
     class="h-full px-4"
     data-cy="trading-page-market-info-component"
   >
-    <div
-      class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
-    >
+    <div class="flex items-center flex-wrap lg:flex-nowrap gap-4 h-full">
       <div
         class="flex mt-2 justify-between items-center w-full lg:w-auto lg:mt-0 gap-6"
       >
-        <div class="flex items-center gap-4" @click="handleTokenClick">
+        <template v-if="isGrid">
+          <div class="text-center hidden lg:block">
+            <p class="font-semibold text-center px-4">Spot Grid</p>
+          </div>
+
+          <div class="w-px h-8 border-r hidden lg:block" />
+        </template>
+
+        <div
+          v-if="!isGrid"
+          class="flex items-center gap-4"
+          @click="handleTokenClick"
+        >
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
           <div class="leading-none select-none cursor-pointer">
@@ -65,7 +76,7 @@ function handleTokenClick() {
           <PartialsCommonMarketAirdrop :market="market" />
         </div>
 
-        <div class="w-px h-8 border-r hidden lg:block" />
+        <div v-if="!isGrid" class="w-px h-8 border-r hidden lg:block" />
 
         <PartialsTradingMarketStatsPartialsLastTradedPriceAndChange
           v-if="summary"
@@ -83,28 +94,6 @@ function handleTokenClick() {
         :summary="summary"
         class="w-full lg:w-auto pb-4 lg:pb-0"
       />
-
-      <div class="ml-auto hidden lg:block">
-        <BaseHoverMenu
-          popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-750 shadow-dropdown z-40"
-        >
-          <template #default>
-            <button
-              id="layout-preferences-button"
-              class="w-6 h-6 cursor-pointer group flex justify-center items-center"
-            >
-              <BaseIcon
-                name="sliders"
-                class="text-gray-450 group-hover:text-white w-4 h-4"
-              />
-            </button>
-          </template>
-
-          <template #content>
-            <PartialsTradingMarketLayoutPreferences />
-          </template>
-        </BaseHoverMenu>
-      </div>
     </div>
   </CommonCard>
 </template>

@@ -261,6 +261,12 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.1')
   },
 
+  'stINJ/INJ': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
   'BTC/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.1'),
     default: getDecimalPlaceFromValue('1'),
@@ -303,15 +309,45 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.1')
   },
 
+  'XRP/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
   'BONK/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000000001'),
     default: getDecimalPlaceFromValue('0.000000001'),
     maxTick: getDecimalPlaceFromValue('0.000001')
   },
 
+  'SEI/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
   '1000PEPE/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000001'),
     default: getDecimalPlaceFromValue('0.000001'),
     maxTick: getDecimalPlaceFromValue('0.001')
+  },
+
+  'WMATIC/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'ORAI/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'NEOK/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>

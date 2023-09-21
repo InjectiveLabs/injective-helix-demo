@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
-import { BigNumberInWei, INJ_DENOM } from '@injectivelabs/utils'
 import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
-import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -17,9 +15,9 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
+import { isSgtSubaccountId } from 'app/utils/helpers'
 
 type AccountStoreState = {
-  // currently selected subaccountId, set at the default one until we have multi-subaccount support
   subaccountId: string
   bankBalances: Coin[]
   positionsWithUpnl: PositionsWithUPNL[]
@@ -41,44 +39,35 @@ export const useAccountStore = defineStore('account', {
         return {}
       }
 
-      return state.bankBalances.reduce((list, balance) => {
-        return { ...list, [balance.denom]: balance.amount }
-      }, {} as Record<string, string>)
+      return state.bankBalances.reduce(
+        (list, balance) => {
+          return { ...list, [balance.denom]: balance.amount }
+        },
+        {} as Record<string, string>
+      )
     },
 
     defaultSubaccountBalances: (state: AccountStoreState) => {
       const walletStore = useWalletStore()
 
-      if (!walletStore.defaultSubaccountId) {
+      if (!walletStore.authZOrDefaultSubaccountId) {
         return []
       }
 
-      return state.subaccountBalancesMap[walletStore.defaultSubaccountId]
+      return state.subaccountBalancesMap[walletStore.authZOrDefaultSubaccountId]
     },
 
     isDefaultSubaccount: (state: AccountStoreState) => {
       const walletStore = useWalletStore()
 
-      return walletStore.defaultSubaccountId === state.subaccountId
+      return walletStore.authZOrDefaultSubaccountId === state.subaccountId
     },
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
       return Object.keys(state.subaccountBalancesMap).length > 1
     },
 
-    hasEnoughInjForGas: (state) => {
-      const walletStore = useWalletStore()
-
-      const injBalance =
-        state.bankBalances.find(({ denom }) => denom === INJ_DENOM)?.amount ||
-        '0'
-
-      const hasEnoughInjForGas = new BigNumberInWei(injBalance)
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
-
-      return walletStore.isWalletExemptFromGasFee || hasEnoughInjForGas
-    }
+    isSgtSubaccount: (state) => isSgtSubaccountId(state.subaccountId)
   },
   actions: {
     deposit,
@@ -92,19 +81,19 @@ export const useAccountStore = defineStore('account', {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
-          walletStore.injectiveAddress
+          walletStore.authZOrInjectiveAddress
         )
 
       const defaultAccountBalances = (
         accountPortfolio.subaccountsList || []
       ).reduce((accountBalances, balance) => {
-        if (balance.subaccountId === walletStore.defaultSubaccountId) {
+        if (balance.subaccountId === walletStore.authZOrDefaultSubaccountId) {
           return [
             ...accountBalances,
             {
@@ -121,7 +110,8 @@ export const useAccountStore = defineStore('account', {
       const nonDefaultSubaccounts = accountPortfolio.subaccountsList.reduce(
         (accountBalances, subaccountBalance) => {
           if (
-            subaccountBalance.subaccountId === walletStore.defaultSubaccountId
+            subaccountBalance.subaccountId ===
+            walletStore.authZOrDefaultSubaccountId
           ) {
             return accountBalances
           }
@@ -149,13 +139,17 @@ export const useAccountStore = defineStore('account', {
         {} as Record<string, SubaccountBalance[]>
       )
 
+      const subaccountId =
+        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+
       accountStore.$patch({
-        subaccountId:
-          accountStore.subaccountId || walletStore.defaultSubaccountId,
+        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
+          ? subaccountId
+          : walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
         positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {
-          [walletStore.defaultSubaccountId]: defaultAccountBalances,
+          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
         }
       })
@@ -165,20 +159,6 @@ export const useAccountStore = defineStore('account', {
       cancelBankBalanceStream()
       cancelSubaccountBalanceStream()
       useAccountStore().$reset()
-    },
-
-    /**
-     * Reset to the default subaccount
-     * as we don't allow using others page
-     * except the activity/account page for now
-     */
-    resetToDefaultSubaccount() {
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
-
-      accountStore.$patch({
-        subaccountId: walletStore.defaultSubaccountId
-      })
     }
   }
 })

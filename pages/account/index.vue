@@ -29,7 +29,7 @@ const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.Value)
-const ascending = ref(false)
+const isAscending = ref(false)
 
 const balances = computed(() => props.balances)
 const balancesInBase = computed(() =>
@@ -129,7 +129,7 @@ const sortedBalances = computed(() => {
     }
   )
 
-  const sortedBalances = ascending.value ? result.reverse() : result
+  const sortedBalances = isAscending.value ? result.reverse() : result
 
   const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
 
@@ -176,7 +176,7 @@ const usdcAggregationTypeBalances = computed(() =>
       <PartialsAccountBalancesHeader
         v-bind="$attrs"
         v-model:sort-by="sortBy"
-        v-model:ascending="ascending"
+        v-model:isAscending="isAscending"
       />
 
       <template v-for="balance in sortedBalancesWithInjAggregation">
@@ -216,7 +216,7 @@ const usdcAggregationTypeBalances = computed(() =>
     <table class="w-full border-collapse table lg:hidden">
       <PartialsAccountBalancesMobileHeader
         v-model:sort-by="sortBy"
-        v-model:ascending="ascending"
+        v-model:isAscending="isAscending"
       />
 
       <PartialsAccountBalancesMobileRow

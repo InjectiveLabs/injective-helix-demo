@@ -8,8 +8,13 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'orai-usdt',
+  'neok-usdt',
+  'sei-usdt-perp',
+  'stinj-inj',
+  'xrp-usdt-perp',
+  'wmatic-usdt',
   '1000pepe-usdt-perp',
-  'wmatic-usdcet',
   'xau-usdt-perp',
   'gbp-usdt-perp',
   'jpy-usdt-perp',
@@ -32,12 +37,14 @@ export const experimentalMarketsSlug = [
 export const slugsToIncludeInCosmosCategory = [
   'inj-usdt',
   'cre-usdt',
+  'stinj-inj',
   'somm-usdt',
   'canto-usdt',
   'strd-usdt',
   'inj-usdt-perp',
   'osmo-usdt-perp',
-  'atom-usdt-perp'
+  'atom-usdt-perp',
+  'sei-usdt-perp'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
@@ -47,9 +54,11 @@ export const slugsToIncludeInEthereumCategory = [
   'usdt-usdcet',
   'ape-usdt',
   'link-usdt',
+  'stinj-inj',
   'weth-usdt',
   'evmos-usdt',
   'gf-usdt',
+  'wmatic-usdt',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
   'steadybtc-usdt',
@@ -61,13 +70,15 @@ export const slugsToIncludeInEthereumCategory = [
   'stx-usdt-perp'
 ]
 
-export const dmmSlugsToIncludeInLowVolume = [
+export const olpSlugsToIncludeInLowVolume = [
   'inj-usdt',
+  'xrp-usdt-perp',
   'atom-usdt',
   'weth-usdt',
   'sol-usdc',
   'sol-usdcet',
   'usdt-usdcet',
+  'wmatic-usdt',
   '1000pepe-usdt-perp',
   'atom-usdt-perp',
   'btc-usdt-perp',
@@ -119,3 +130,7 @@ export const marketPromotions = [
     end: 1671836400000
   }
 ] as MarketPromotion[]
+
+export const AUCTION_MARKET_IDS = [
+  '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
+]

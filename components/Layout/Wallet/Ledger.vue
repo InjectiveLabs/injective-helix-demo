@@ -95,7 +95,7 @@ const connect = handleSubmit(() => {
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <BaseIcon name="arrow" class="transform rotate-180 w-4 h-4" />
+      <BaseIcon name="arrow" class="rotate-180 w-4 h-4" />
     </div>
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
@@ -127,7 +127,7 @@ const connect = handleSubmit(() => {
       <AppButton
         class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
         :disabled="addressErrors.length > 0"
-        :status="status"
+        :is-loading="status.isLoading()"
         lg
         @click="connect"
       >

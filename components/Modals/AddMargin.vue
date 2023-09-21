@@ -109,7 +109,7 @@ const handleFormSubmit = handleSubmit(() => {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" sm @modal:closed="handleModalClose">
+  <AppModal :is-open="isModalOpen" sm @modal:closed="handleModalClose">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
@@ -124,9 +124,9 @@ const handleFormSubmit = handleSubmit(() => {
               <p class="uppercase text-xs font-semibold text-gray-200">
                 {{ $t('trade.availableMargin') }}
               </p>
-              <CommonInfoTooltip
+              <AppTooltip
                 class="ml-2 text-gray-200"
-                :tooltip="$t('trade.availableMarginTooltip')"
+                :content="$t('trade.availableMarginTooltip')"
               />
             </div>
             <div class="mt-4 text-center">
@@ -182,7 +182,7 @@ const handleFormSubmit = handleSubmit(() => {
                 <AppButton
                   lg
                   class="w-full bg-blue-500 text-blue-900"
-                  :status="status"
+                  :is-loading="status.isLoading()"
                   :disabled="amountErrors.length > 0"
                   data-cy="add-margin-modal-execute-button"
                   @click="handleFormSubmit"

@@ -7,9 +7,11 @@ import {
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
-import { getSubaccountIndex } from '@/app/utils/helpers'
-
-const accountStore = useAccountStore()
+import {
+  getMarketIdFromSubaccountId,
+  getSubaccountIndex,
+  isSgtSubaccountId
+} from '@/app/utils/helpers'
 
 const props = defineProps({
   hideBalances: Boolean,
@@ -25,11 +27,12 @@ const props = defineProps({
   }
 })
 
+const accountStore = useAccountStore()
+const { t } = useLang()
+
 const isSelectedSubaccountId = computed(
   () => accountStore.subaccountId === props.subaccountId
 )
-
-const subaccountIdIndex = computed(() => getSubaccountIndex(props.subaccountId))
 
 const accountTotalBalanceInUsd = computed(() =>
   props.balances.reduce(
@@ -46,6 +49,18 @@ const accountTotalBalanceInUsd = computed(() =>
 const shouldAbbreviateTotalBalance = computed(() =>
   accountTotalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
+
+const subaccountFormatted = computed(() => {
+  if (getSubaccountIndex(props.subaccountId) === 0) {
+    return `${t('account.main')}`
+  }
+
+  if (isSgtSubaccountId(props.subaccountId)) {
+    return `SGT ${getMarketIdFromSubaccountId(props.subaccountId)}`
+  }
+
+  return getSubaccountIndex(props.subaccountId).toString()
+})
 
 const { valueToString: abbreviatedTotalBalanceToString } =
   useBigNumberFormatter(accountTotalBalanceInUsd, {
@@ -72,11 +87,7 @@ function handleClick() {
       <h3 class="flex items-center">
         <span class="text-gray-300 text-xs tracking-wide uppercase">
           {{ $t('account.account') }}
-          {{
-            subaccountIdIndex === 0
-              ? `${$t('account.main')}`
-              : subaccountIdIndex
-          }}
+          {{ subaccountFormatted }}
         </span>
       </h3>
       <p class="font-sans text-lg font-semibold text-white">

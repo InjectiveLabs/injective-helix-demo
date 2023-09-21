@@ -54,10 +54,9 @@ const makerExpectedPts = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const makerPointsMultiplier =
-    marketTakerMakerExpectedPts.value.makerPointsMultiplier || 1
-
-  const boostedMultiplier = cosmosSdkDecToBigNumber(makerPointsMultiplier)
+  const boostedMultiplier = cosmosSdkDecToBigNumber(
+    marketTakerMakerExpectedPts.value.makerPointsMultiplier
+  )
 
   return new BigNumberInBase(props.fees).times(boostedMultiplier)
 })
@@ -75,10 +74,9 @@ const takerExpectedPts = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const takerPointsMultiplier =
-    marketTakerMakerExpectedPts.value.takerPointsMultiplier || 1
-
-  const boostedMultiplier = cosmosSdkDecToBigNumber(takerPointsMultiplier)
+  const boostedMultiplier = cosmosSdkDecToBigNumber(
+    marketTakerMakerExpectedPts.value.takerPointsMultiplier
+  )
 
   return new BigNumberInBase(props.fees).times(boostedMultiplier)
 })
@@ -115,10 +113,7 @@ const expectedPtsToFormat = computed(() => {
     class="mt-2"
   >
     <template #context>
-      <CommonInfoTooltip
-        class="ml-2"
-        :tooltip="$t('trade.expected_points_note')"
-      />
+      <AppTooltip class="ml-2" :content="$t('trade.expected_points_note')" />
     </template>
 
     <span class="font-mono flex items-start break-all">

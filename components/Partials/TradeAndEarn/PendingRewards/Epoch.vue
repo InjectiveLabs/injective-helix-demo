@@ -2,15 +2,16 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { PropType } from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   CampaignRewardPool,
   cosmosSdkDecToBigNumber
 } from '@injectivelabs/sdk-ts'
 import {
+  USDT_DECIMALS,
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  USDT_DECIMALS
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
 
@@ -32,6 +33,12 @@ const props = defineProps({
 })
 
 const hubUrl = `${getHubUrl()}/staking`
+
+const injUsdPrice = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+
+  return injUsdPrice || ZERO_IN_BASE
+})
 
 const stakedAmount = computed(() => {
   if (!exchangeStore.feeDiscountAccountInfo) {
@@ -85,7 +92,7 @@ const pendingRewardsCountdown = computed(() => {
   return format(
     (pendingRewardsStartTimestamp.value + vestingDurationInSeconds.value) *
       1000,
-    'dd MMM HH:mm:ss'
+    DATE_TIME_DISPLAY
   )
 })
 
@@ -99,11 +106,11 @@ const injMaxPendingCampaignRewards = computed(() => {
   return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
 })
 
-const injMaxPendingCampaignRewardsInUsd = computed(() => {
-  return injMaxPendingCampaignRewards.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+const injMaxPendingCampaignRewardsInUsd = computed(() =>
+  injMaxPendingCampaignRewards.value.multipliedBy(
+    new BigNumberInBase(injUsdPrice.value)
   )
-})
+)
 
 const pendingTradeRewardPoints = computed(() => {
   if (exchangeStore.pendingTradeRewardsPoints.length === 0) {
@@ -177,7 +184,7 @@ const pendingEstimatedRewardsCapped = computed(() => {
 
 const pendingEstimatedRewardsCappedInUsd = computed(() =>
   pendingEstimatedRewardsCapped.value.multipliedBy(
-    new BigNumberInBase(tokenStore.injUsdPrice)
+    new BigNumberInBase(injUsdPrice.value)
   )
 )
 </script>
@@ -213,9 +220,9 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
         <template #title>
           <div class="flex items-center justify-center text-gray-450 text-xs">
             {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2 text-gray-450"
-              :tooltip="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
+              :content="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
             />
           </div>
         </template>
@@ -241,9 +248,9 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
           >
             {{ $t('tradeAndEarn.myRewardPoints') }}
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2 text-gray-450"
-              :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+              :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
             />
           </div>
         </template>
@@ -283,9 +290,9 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             target="_blank"
           >
             {{ $t('stake_more') }}
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2 text-gray-450"
-              :tooltip="
+              :content="
                 $t('tradeAndEarn.stake_total_to_receive_full_amount', {
                   total: pendingEstimatedRewards.toFormat(2)
                 })
@@ -296,9 +303,9 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
         <template #title>
           <div class="flex items-center justify-center text-gray-450">
             {{ $t('tradeAndEarn.est_rewards_stake') }}
-            <CommonInfoTooltip
+            <AppTooltip
               class="ml-2 text-gray-450"
-              :tooltip="
+              :content="
                 $t('tradeAndEarn.est_rewards_stake_tooltip', {
                   maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                 })

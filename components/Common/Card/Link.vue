@@ -4,7 +4,7 @@ import { RouteLocationNamedRaw } from 'vue-router'
 
 defineProps({
   lg: Boolean,
-  showLoading: Boolean,
+  isLoading: Boolean,
 
   to: {
     type: Object as PropType<RouteLocationNamedRaw>,
@@ -36,7 +36,7 @@ defineProps({
           'justify-between': lg
         }"
       >
-        <AppSpinner v-if="showLoading" />
+        <AppSpinner v-if="isLoading" />
 
         <div
           v-else

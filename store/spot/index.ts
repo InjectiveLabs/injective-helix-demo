@@ -56,6 +56,7 @@ import {
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
+  marketIdsFromQuery: string[]
   marketsSummary: UiSpotMarketSummary[]
   orderbook?: UiSpotOrderbookWithSequence
   trades: UiSpotTrade[]
@@ -71,6 +72,7 @@ type SpotStoreState = {
 
 const initialStateFactory = (): SpotStoreState => ({
   markets: [],
+  marketIdsFromQuery: [],
   marketsSummary: [],
   orderbook: undefined,
   trades: [],
@@ -92,7 +94,11 @@ export const useSpotStore = defineStore('spot', {
 
     activeMarketIds: (state) =>
       state.markets
-        .filter(({ slug }) => MARKETS_SLUGS.spot.includes(slug))
+        .filter(
+          ({ slug, marketId }) =>
+            MARKETS_SLUGS.spot.includes(slug) ||
+            state.marketIdsFromQuery.includes(marketId)
+        )
         .map((m) => m.marketId),
 
     tradeableDenoms: (state) =>
@@ -140,15 +146,8 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
-      const marketsAlreadyFetched = spotStore.markets.length
-
-      if (marketsAlreadyFetched) {
-        await spotStore.fetchMarketsSummary()
-
-        return
-      }
-
       const markets = await indexerSpotApi.fetchMarkets()
+
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets
       )
@@ -158,7 +157,10 @@ export const useSpotStore = defineStore('spot', {
 
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
-          return MARKETS_SLUGS.spot.includes(market.slug)
+          return (
+            MARKETS_SLUGS.spot.includes(market.slug) ||
+            spotStore.marketIdsFromQuery.includes(market.marketId)
+          )
         })
         .sort((a, b) => {
           return (
@@ -172,6 +174,28 @@ export const useSpotStore = defineStore('spot', {
       })
 
       await spotStore.fetchMarketsSummary()
+    },
+
+    async initIfNotInit() {
+      const spotStore = useSpotStore()
+
+      const marketsAlreadyFetched = spotStore.markets.length
+
+      if (marketsAlreadyFetched) {
+        await spotStore.fetchMarketsSummary()
+      } else {
+        await spotStore.init()
+      }
+    },
+
+    async initFromTradingPage(marketIdsFromQuery: string[] = []) {
+      const spotStore = useSpotStore()
+
+      spotStore.$patch({
+        marketIdsFromQuery
+      })
+
+      await spotStore.init()
     },
 
     async fetchUsdcConversionMarkets() {
@@ -203,16 +227,15 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
-        subaccountId,
+        subaccountId: accountStore.subaccountId,
         marketIds: marketIds || spotStore.activeMarketIds,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -230,11 +253,10 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -242,7 +264,7 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId,
+          subaccountId: accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
@@ -308,18 +330,17 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
       const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        subaccountId,
+        subaccountId: accountStore.subaccountId,
         direction: filters?.direction,
         pagination: options?.pagination,
         marketIds: filters?.marketIds || spotStore.activeMarketIds,

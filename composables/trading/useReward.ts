@@ -3,6 +3,7 @@ import { PointsMultiplier } from '@injectivelabs/sdk-ts'
 import { UiMarketWithToken } from '@/types'
 
 export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
+  const spotStore = useSpotStore()
   const exchangeStore = useExchangeStore()
 
   const rewardsCampaign = computed(() => {
@@ -132,7 +133,7 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       return {}
     }
 
-    return spotBoostedMarketIdList.value.reduce(
+    const boostedSpotMarketsPointsMap = spotBoostedMarketIdList.value.reduce(
       (boostedMarkets, marketId, index) => {
         return {
           ...boostedMarkets,
@@ -141,6 +142,25 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       },
       {} as Record<string, PointsMultiplier>
     )
+
+    const DEFAULT_POINTS_MULTIPLIER = '1000000000000000000'
+    const nonBoostedSpotMarketsPointsMap = [...spotStore.markets]
+      .filter(
+        (spotMarket) =>
+          !spotBoostedMarketIdList.value.includes(spotMarket.marketId) &&
+          !disqualifiedMarketIdsList.value.includes(spotMarket.marketId)
+      )
+      .reduce((records, market) => {
+        return {
+          ...records,
+          [market.marketId]: {
+            makerPointsMultiplier: DEFAULT_POINTS_MULTIPLIER,
+            takerPointsMultiplier: DEFAULT_POINTS_MULTIPLIER
+          }
+        }
+      }, {}) as Record<string, PointsMultiplier>
+
+    return { ...boostedSpotMarketsPointsMap, ...nonBoostedSpotMarketsPointsMap }
   })
 
   const marketTakerMakerExpectedPts = computed(() => {

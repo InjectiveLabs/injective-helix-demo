@@ -3,11 +3,11 @@ import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistance, format } from 'date-fns'
 import {
-  UiDerivativeMarketWithToken,
   MarketType,
   ZERO_IN_BASE,
   BIG_NUMBER_ROUND_DOWN_MODE,
   UiPerpetualMarketWithToken,
+  UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
@@ -84,7 +84,7 @@ const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
       return ZERO_IN_BASE
     }
 
-    const currentUnixTime = Date.now() / 1000
+    const currentUnixTime = Math.floor(Date.now() / 1000)
     const divisor = new BigNumberInBase(currentUnixTime).mod(3600).times(24)
 
     if (divisor.lte(0)) {
@@ -356,11 +356,11 @@ useIntervalFn(() => {
       </CommonMarketInfo>
       <PartialsTradingMarketStatsPartialsNextFunding
         v-if="market.subType === MarketType.Perpetual"
-        :market="(market as UiDerivativeMarketWithToken)"
+        :market="market as UiDerivativeMarketWithToken"
       />
       <PartialsTradingMarketStatsPartialsSettlement
         v-if="market.subType === MarketType.BinaryOptions"
-        :market="(market as UiDerivativeMarketWithToken)"
+        :market="market as UiDerivativeMarketWithToken"
       />
       <CommonMarketInfo
         v-if="market.subType === MarketType.Futures && timeToExpiry"

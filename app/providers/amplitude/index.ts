@@ -1,5 +1,5 @@
 export * from './BaseTracker'
+export * from './SwapTracker'
 export * from './TradeTracker'
 export * from './WalletTracker'
-export * from './ConvertTracker'
 export * from './GenericTracker'

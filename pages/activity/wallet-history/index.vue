@@ -60,7 +60,13 @@ function handlePageChangeEvent(page: number) {
   })
 }
 
-watch(() => route.fullPath, fetchData, { immediate: true })
+watch(
+  () => route.fullPath,
+  () => {
+    fetchData()
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

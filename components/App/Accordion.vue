@@ -5,7 +5,7 @@ defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'panel:toggle'): void
+  'panel:toggle': []
 }>()
 
 function handleToggle() {

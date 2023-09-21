@@ -5,6 +5,7 @@ import { TokenType } from '@injectivelabs/token-metadata'
 import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 import { getDenomAndTypeFromQuery } from '@/app/data/bridge'
+import { denomClient } from 'app/Services'
 
 definePageMeta({
   middleware: ['connected']
@@ -16,9 +17,9 @@ const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
-const status = reactive(new Status(StatusType.Idle))
+const status = reactive(new Status(StatusType.Loading))
 
-const { values: formValues } = useForm<BridgeForm>({
+const { values: formValues, resetForm } = useForm<BridgeForm>({
   initialValues: {
     [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
     [BridgeField.BridgeType]: BridgeType.Deposit,
@@ -30,21 +31,26 @@ const { values: formValues } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
+
 const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
   computed(() => formValues)
 )
 
 onMounted(() => {
-  status.setLoading()
-
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    accountStore.streamBankBalance(),
+    accountStore.streamSubaccountBalance()
+  ])
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+    .finally(() => status.setIdle())
 
   handlePreFillCosmosWallet()
   handlePreFillFromQuery()
+})
+
+onUnmounted(() => {
+  accountStore.$reset()
 })
 
 function handlePreFillCosmosWallet() {
@@ -80,11 +86,25 @@ function handlePreFillFromQuery() {
       formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
       formValues[BridgeField.Denom] = denom
   }
+
+  const token = denomClient.getDenomTokenStatic(denom)
+
+  if (token) {
+    formValues[BridgeField.Token] = token
+  }
 }
 
 function handleBridgeConfirmed() {
   modalStore.closeModal(Modal.BridgeConfirm)
 }
+
+watch(
+  () => formValues.BridgeType,
+  (value) => {
+    resetForm()
+    formValues.BridgeType = value
+  }
+)
 </script>
 
 <template>

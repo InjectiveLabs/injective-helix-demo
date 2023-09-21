@@ -32,21 +32,5 @@ export const useLeaderboardStore = defineStore('leaderboard', {
         lastUpdatedAt: updatedAt
       })
     }
-
-    // async fetchLeaderboardRank({ state, commit }, resolution: string) {
-    //   const { subaccount } = this.app.$accessor.account
-    //   const { isUserWalletConnected, injectiveAddress } = this.app.$accessor.wallet
-
-    //   if (!isUserWalletConnected || !subaccountId || !injectiveAddress) {
-    //     return
-    //   }
-
-    //   const { updatedAt, rank } = await indexerRestLeaderboardChronosApi.fetchLeaderboardRank({
-    //     subaccountId: defaultSubaccountId,
-    //     resolution
-    //   })
-
-    //   commit('setLastUpdatedAt', updatedAt)
-    // }
   }
 })

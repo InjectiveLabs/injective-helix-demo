@@ -31,11 +31,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:activeCategory', state: MarketCategoryType): void
-  (e: 'update:search', state: string): void
-  (e: 'update:activeQuote', state: MarketQuoteType): void
-  (e: 'update:activeType', state: string): void
-  (e: 'update:showLowVolumeMarkets', state: boolean): void
+  'update:search': [state: string]
+  'update:activeType': [state: string]
+  'update:activeQuote': [state: MarketQuoteType]
+  'update:showLowVolumeMarkets': [state: boolean]
+  'update:activeCategory': [state: MarketCategoryType]
 }>()
 
 const FilterList = {
@@ -146,8 +146,8 @@ function fillRouteQueryParams(params: Record<string, string>) {
         v-model="activeFilterType"
         :value="filterType"
       >
-        <template #default="{ active }">
-          <CommonTabMenuItem :active="active">
+        <template #default="{ isActive }">
+          <CommonTabMenuItem :is-active="isActive">
             <span
               v-if="filterType === FilterList[MarketType.Favorite]"
               class="flex items-center"

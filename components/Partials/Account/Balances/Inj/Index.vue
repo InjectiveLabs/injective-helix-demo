@@ -30,6 +30,12 @@ const hasStaked = computed(() => {
     )
   ).gt(0)
 })
+
+onMounted(() => {
+  if (hasStaked.value) {
+    showStaked.value = true
+  }
+})
 </script>
 
 <template>
@@ -43,7 +49,10 @@ const hasStaked = computed(() => {
       }"
       @drawer:toggle="showStaked = !showStaked"
     />
-    <PartialsAccountBalancesInjRowStaked v-if="showStaked" />
+    <PartialsAccountBalancesInjRowStaked
+      v-if="showStaked"
+      v-bind="{ hideBalances }"
+    />
   </template>
   <template v-else>
     <PartialsAccountBalancesRow

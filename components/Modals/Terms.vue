@@ -8,7 +8,7 @@ const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
 function handleConfirm() {
   closeModal()
 
-  modalStore.openModal({ type: Modal.Connect })
+  modalStore.openModal(Modal.Connect)
 }
 
 function handleCancel() {
@@ -21,7 +21,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :show="isModalOpen" @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('Acknowledge Terms') }}
@@ -29,12 +29,12 @@ function closeModal() {
     </template>
 
     <div class="relative">
-      <i18n-t keypath="terms.disclaimer_note" tag="p" class="text-sm">
+      <i18n-t keypath="terms.disclaimerNote" tag="p" class="text-sm">
         <template #terms>
           <NuxtLink
             target="_blank"
             class="text-blue-500 hover:text-opacity-80"
-            to="https://injectivelabs.org/terms-and-conditions"
+            :to="{ name: 'terms' }"
           >
             {{ $t('terms.termsAndCondition') }}
           </NuxtLink>
@@ -44,19 +44,9 @@ function closeModal() {
           <NuxtLink
             target="_blank"
             class="text-blue-500 hover:text-opacity-80"
-            to="https://injectivelabs.org/privacy-policy"
+            to="https://injectivelabs.org/privacy"
           >
             {{ $t('terms.privacyPolicy') }}
-          </NuxtLink>
-        </template>
-
-        <template #disclaimer>
-          <NuxtLink
-            target="_blank"
-            class="text-blue-500 hover:text-opacity-80"
-            to="https://injectiveprotocol.com/disclaimer"
-          >
-            {{ $t('terms.disclaimer') }}
           </NuxtLink>
         </template>
       </i18n-t>

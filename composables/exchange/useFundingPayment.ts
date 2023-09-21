@@ -4,6 +4,7 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 import {
+  DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -52,7 +53,7 @@ export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
       return ''
     }
 
-    return format(fundingPayment.value.timestamp, 'dd MMM HH:mm:ss')
+    return format(fundingPayment.value.timestamp, DATE_TIME_DISPLAY)
   })
 
   return {

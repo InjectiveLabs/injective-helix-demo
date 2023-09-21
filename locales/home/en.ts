@@ -56,10 +56,8 @@ export default {
       interpolate([
         'By subscribing, you agree to the ',
         named('termsAndCondition'),
-        ' have read the ',
+        ' and have read the ',
         named('privacyPolicy'),
-        ' and acknowledge that you have read and understand the ',
-        named('disclaimer'),
         '.'
       ])
   },
@@ -72,6 +70,7 @@ export default {
     support: 'Support',
     faq: 'FAQ',
     submitRequest: 'Submit A Request',
+    institutional: 'Institutional',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
     community: 'Community',

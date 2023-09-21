@@ -29,7 +29,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:filterByCurrentMarket', state: boolean): void
+  'update:filterByCurrentMarket': [state: boolean]
 }>()
 
 const activeType = ref(FilterList.OpenOrders)
@@ -75,10 +75,10 @@ function handleCancelAllClick() {
               :value="filterType"
               class="text-center"
             >
-              <template #default="{ active }">
+              <template #default="{ isActive }">
                 <span
                   class="uppercase text-xs font-semibold"
-                  :class="[active ? 'text-blue-500' : 'text-gray-500']"
+                  :class="[isActive ? 'text-blue-500' : 'text-gray-500']"
                 >
                   <span v-if="filterType === FilterList.OpenOrders">
                     {{ $t('trade.open_orders') }}
@@ -121,7 +121,7 @@ function handleCancelAllClick() {
           "
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           xs
-          :status="actionStatus"
+          :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           @click="handleCancelAllClick"
         >

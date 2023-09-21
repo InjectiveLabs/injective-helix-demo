@@ -31,7 +31,7 @@ export const usePeggyStore = defineStore('peggy', {
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.address || !walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
@@ -49,7 +49,7 @@ export const usePeggyStore = defineStore('peggy', {
               allowance: '0'
             },
             usdPrice: 0
-          } as BalanceWithTokenWithErc20BalanceWithPrice)
+          }) as BalanceWithTokenWithErc20BalanceWithPrice
       )
 
       tokenStore.fetchTokensUsdPriceMap(
@@ -68,7 +68,7 @@ export const usePeggyStore = defineStore('peggy', {
       const peggyStore = usePeggyStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.address || !walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
@@ -100,7 +100,7 @@ export const usePeggyStore = defineStore('peggy', {
         async (balance) => {
           const erc20Token = balance.token as Erc20Token
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
-            address: walletStore.address,
+            address: walletStore.authZOrAddress,
             contractAddress: erc20Token.erc20.address
           })
 
@@ -122,15 +122,13 @@ export const usePeggyStore = defineStore('peggy', {
       const walletStore = useWalletStore()
       const tokenStore = useTokenStore()
 
-      const { address, isUserWalletConnected } = walletStore
-
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const balanceAndAllowance =
         await web3Client.fetchTokenBalanceAndAllowance({
-          address,
+          address: walletStore.authZOrAddress,
           contractAddress: token.denom
         })
       const balanceWithToken = {
@@ -163,9 +161,7 @@ export const usePeggyStore = defineStore('peggy', {
       const walletStore = useWalletStore()
       const tokenStore = useTokenStore()
 
-      const { address, isUserWalletConnected } = walletStore
-
-      if (!address || !isUserWalletConnected) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 

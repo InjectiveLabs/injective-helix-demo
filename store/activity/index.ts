@@ -45,16 +45,16 @@ export const useActivityStore = defineStore('activity', {
 
     async fetchTradingRewardsHistory() {
       const activityStore = useActivityStore()
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      if (!isUserWalletConnected || !subaccountId || !injectiveAddress) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
       activityStore.$patch({
         tradingRewardsHistory: await indexerAccountApi.fetchRewards({
-          address: injectiveAddress,
+          address: walletStore.authZOrInjectiveAddress,
           epoch: -1
         })
       })
@@ -63,11 +63,10 @@ export const useActivityStore = defineStore('activity', {
     async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
 
-      const { subaccountId } = useAccountStore()
-      const { isUserWalletConnected } = useWalletStore()
-
-      if (!isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -75,7 +74,7 @@ export const useActivityStore = defineStore('activity', {
 
       const { fundingPayments: subaccountFundingPayments, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
-          subaccountId,
+          subaccountId: accountStore.subaccountId,
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           pagination: options?.pagination
         })

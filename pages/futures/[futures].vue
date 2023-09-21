@@ -6,6 +6,26 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
+import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
+
+definePageMeta({
+  middleware: [
+    'grid-strategy-subaccount',
+    () => {
+      const appStore = useAppStore()
+      const modalStore = useModalStore()
+
+      if (
+        isCountryRestrictedForPerpetualMarkets(
+          appStore.userState.geoLocation.browserCountry ||
+            appStore.userState.geoLocation.country
+        )
+      ) {
+        modalStore.openModal(Modal.FuturesMarketRestricted)
+      }
+    }
+  ]
+})
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -57,7 +77,7 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
     Date.now() / 1000
 
   if (marketIsExpired) {
-    modalStore.openModal({ type: Modal.MarketExpired })
+    modalStore.openModal(Modal.MarketExpired)
   }
 }
 
@@ -143,6 +163,7 @@ watch(
 
     <template #modals>
       <div>
+        <ModalsFuturesRestricted />
         <ModalsAddMargin />
         <ModalsMarketExpired
           v-if="market && marketIsExpired"
