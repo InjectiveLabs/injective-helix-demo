@@ -334,11 +334,11 @@ export default {
   },
 
   terms: {
-    title: 'In addition, you hereby represent, warrant, and agree that: ',
+    title: 'In addition, you hereby represent, warrant, and agree that:',
     acknowledge_1:
-      'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
+      'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America (with respect to trading perpetual contracts), the UK (unless you are an Investment Professional), or a Restricted Territory (as defined in the Helix Terms and Conditions).',
     acknowledge_2:
-      'You will not in the future access this site or use helixapp.com while located in the United States of America or a Restricted Territory.',
+      'You will not now or in the future access this site or use helixapp.com while located in the United States of America (with respect to trading perpetual contracts), the UK (unless you are an Investment Professional), or a Restricted Territory (as defined in the Helix Terms and Conditions).',
     acknowledge_3:
       'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
     acknowledge_4:
@@ -350,9 +350,9 @@ export default {
     termsAndCondition: 'Terms and Conditions',
     disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
-        'By connecting to a wallet, you agree and acknowledge the Injective Labs ',
+        'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix ',
         named('terms'),
-        'and have read the ',
+        ' and the Injective Labs ',
         named('policy'),
         '.'
       ])
