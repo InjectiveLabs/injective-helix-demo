@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { AuctionTradingForm } from '~/types'
+import { AuctionTradingField, AuctionTradingForm } from '~/types'
 
 const props = defineProps({
   market: {
@@ -22,9 +22,9 @@ const availableUsd = computed(() => {
 })
 
 const totalUsd = computed(() =>
-  new BigNumberInBase(formValues.value.baseAmount || 0).times(
-    formValues.value.bidPrice || 0
-  )
+  new BigNumberInBase(
+    formValues.value[AuctionTradingField.BaseAmount] || 0
+  ).times(formValues.value[AuctionTradingField.BidPrice] || 0)
 )
 
 const { valueToString: availableUsdToString } = useBigNumberFormatter(

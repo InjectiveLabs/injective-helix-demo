@@ -13,6 +13,7 @@ const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 const spotStore = useSpotStore()
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
@@ -174,7 +175,12 @@ const { value: price, setValue: setPriceField } = useStringField({
 })
 
 function recalculateBaseQuoteAmountValue() {
-  formValues.value[TradeField.ProportionalPercentage] = 0
+  setFormValues(
+    {
+      [TradeField.ProportionalPercentage]: 0
+    },
+    false
+  )
 
   emit('update:amount', { isBaseAmount: props.isBaseAmount })
 }

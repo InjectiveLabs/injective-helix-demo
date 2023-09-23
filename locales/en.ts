@@ -5,6 +5,7 @@ import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import trade from './trade/en'
+import auction from './auction/en'
 import leaderboard from './leaderboard/en'
 import account from './account/en'
 import institutional from './institutional/en'
@@ -12,18 +13,19 @@ import sgt from './spot-grid/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
-  ...activities,
-  ...account,
-  ...banners,
-  ...activities,
+  ...sgt,
   ...home,
+  ...trade,
   ...market,
   ...bridge,
   ...wallet,
-  ...trade,
+  ...account,
+  ...auction,
+  ...banners,
+  ...activities,
+  ...activities,
   ...leaderboard,
   ...institutional,
-  ...sgt,
   common: {
     ok: 'OK',
     back: 'Back',

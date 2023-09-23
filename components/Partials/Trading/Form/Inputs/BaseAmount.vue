@@ -13,6 +13,7 @@ import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
 import { getMinQuantityTickSize } from '@/app/utils/helpers'
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
@@ -45,10 +46,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
-  ): void
+  'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
 }>()
 
 const { hasTriggerPrice, tradingTypeStopMarket } =
@@ -116,7 +114,12 @@ const { value: baseAmount, setValue: setBaseAmountValue } = useStringField({
 })
 
 function onBaseAmountChange(baseAmount: string) {
-  formValues.value[TradeField.ProportionalPercentage] = 0
+  setFormValues(
+    {
+      [TradeField.ProportionalPercentage]: 0
+    },
+    false
+  )
 
   emit('update:amount', { amount: baseAmount || '0', isBaseAmount: true })
 }

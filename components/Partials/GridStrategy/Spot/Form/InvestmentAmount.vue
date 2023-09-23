@@ -47,7 +47,7 @@ const baseDenomAmount = computed(() =>
 )
 
 const minQuoteAmount = computed(() =>
-  new BigNumberInBase(formValues.value.grids || 1)
+  new BigNumberInBase(formValues.value[SpotGridTradingField.Grids] || 1)
     .times(GST_MIN_TRADING_SIZE)
     .toFixed(2)
 )
