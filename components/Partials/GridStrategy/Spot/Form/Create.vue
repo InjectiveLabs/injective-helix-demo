@@ -7,14 +7,14 @@ import {
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  InvestmentTypeGst,
   Modal,
-  SpotGridTradingField,
-  SpotGridTradingForm
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
 } from '@/types'
 import {
-  gridStrategyAuthorizationMessageTypes,
-  spotGridMarkets
+  spotGridMarkets,
+  gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
   GST_MIN_TRADING_SIZE,

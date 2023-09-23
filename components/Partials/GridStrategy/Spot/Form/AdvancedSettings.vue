@@ -7,6 +7,7 @@ const { value: stopLossValue, errorMessage: stopLossError } = useStringField({
   name: SpotGridTradingField.StopLoss,
   rule: `lessThanSgt:@${SpotGridTradingField.LowerPrice}`
 })
+
 const { value: takeProfitValue, errorMessage: takeProfitError } =
   useStringField({
     name: SpotGridTradingField.TakeProfit,
@@ -21,11 +22,15 @@ const { value: sellAllBase } = useBooleanField({
 function toggleSellAllBase() {
   sellAllBase.value = !sellAllBase.value
 }
+
+function toggleAdvancedSettings() {
+  isOpen.value = !isOpen.value
+}
 </script>
 <template>
   <div
     class="flex justify-between items-center select-none"
-    @click="isOpen = !isOpen"
+    @click="toggleAdvancedSettings"
   >
     <p class="font-semibold text-sm">{{ $t('sgt.advancedSettings') }}</p>
     <div class="transition-all duration-300" :class="{ 'rotate-180': isOpen }">
