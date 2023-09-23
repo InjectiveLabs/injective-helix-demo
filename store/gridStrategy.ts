@@ -12,11 +12,7 @@ import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { msgBroadcastClient, indexerGrpcTradingApi } from '@/app/Services'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { backupPromiseCall } from '@/app/utils/async'
-
-export enum StrategyStatus {
-  Active = 'active',
-  Removed = 'removed'
-}
+import { StrategyStatus } from '@/types'
 
 type GridStrategyStoreState = {
   spotMarket: UiSpotMarketWithToken | undefined

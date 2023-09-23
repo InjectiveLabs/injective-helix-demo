@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
-const walletStore = useWalletStore()
-const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const props = defineProps({
@@ -17,84 +13,25 @@ const props = defineProps({
   }
 })
 
-const market = computed(() => gridStrategyStore.spotMarket)
+const emit = defineEmits<{
+  'open:details': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+}>()
+
+const market = computed(() => gridStrategyStore.spotMarket!)
+
+const { pnl, percentagePnl } = useActiveGridStrategy(
+  market,
+  computed(() => props.strategy)
+)
+
+const { totalInvestment, lowerBound, upperBound } =
+  useActiveGridStrategyTransformer(
+    market,
+    computed(() => props.strategy)
+  )
 
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
-)
-
-const upperBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.upperBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const lowerBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.lowerBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const investment = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
-
-  const baseAmountInQuote = new BigNumberInWei(props.strategy.baseQuantity || 0)
-    .toBase(market.value?.baseToken.decimals)
-    .times(
-      new BigNumberInWei(props.strategy.executionPrice).toBase(
-        market.value.quoteToken.decimals
-      )
-    )
-
-  const quoteAmount = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  return baseAmountInQuote.plus(quoteAmount)
-})
-
-const pnl = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
-
-  const creationQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const creationBaseQuantity = new BigNumberInWei(
-    props.strategy.baseQuantity
-  ).toBase(market.value?.baseToken.decimals)
-
-  const creationMidPrice = new BigNumberInWei(
-    props.strategy.executionPrice
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const completitionQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteDeposit
-  ).toBase(market.value?.quoteToken.decimals)
-  const completitionBaseQuantity = new BigNumberInWei(
-    props.strategy.baseDeposit
-  ).toBase(market.value?.baseToken.decimals)
-  const completitionMidPrice = new BigNumberInWei(
-    props.strategy.marketMidPrice
-  ).toBase(market.value?.quoteToken.decimals - market.value?.baseToken.decimals)
-
-  return completitionQuoteQuantity
-    .plus(completitionBaseQuantity.times(completitionMidPrice))
-    .minus(
-      creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
-    )
-})
-
-const percentagePnl = computed(() =>
-  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
 )
 
 const duration = computed(() =>
@@ -119,17 +56,12 @@ const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
 })
 
 const { valueToString: investmentToString } = useBigNumberFormatter(
-  investment,
+  totalInvestment,
   { decimalPlaces: 2 }
 )
 
 function onDetailsPage() {
-  accountStore.$patch({
-    subaccountId: addressAndMarketSlugToSubaccountId(
-      walletStore.address,
-      gridStrategyStore.spotMarket?.slug || 'inj-usdt'
-    )
-  })
+  emit('open:details', props.strategy, market.value)
 }
 </script>
 
@@ -187,13 +119,12 @@ function onDetailsPage() {
     <div class="flex items-center justify-end">{{ duration }}</div>
 
     <div class="flex items-center justify-center">
-      <NuxtLink
-        class="underline hover:text-blue-500"
-        :to="{ name: 'activity-spot' }"
+      <div
+        class="underline hover:text-blue-500 cursor-pointer"
         @click="onDetailsPage"
       >
-        Details
-      </NuxtLink>
+        {{ $t('sgt.details') }}
+      </div>
     </div>
   </div>
 </template>

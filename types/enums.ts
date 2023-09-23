@@ -69,6 +69,7 @@ export enum Modal {
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
   MobileTradeDetails = 'mobile-trade-details',
+  GridStrategyDetails = 'grid-strategy-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
@@ -407,4 +408,9 @@ export enum GridStrategyTabs {
 export enum InvestmentTypeGst {
   Quote = 'quote',
   BaseAndQuote = 'baseAndQuote'
+}
+
+export enum StrategyStatus {
+  Active = 'active',
+  Removed = 'removed'
 }

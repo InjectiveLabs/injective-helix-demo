@@ -53,7 +53,7 @@ function onFormValuesUpdate(
       <div class="space-y-4">
         <PartialsGridStrategySpotFormActiveStrategy
           v-if="hasActiveStrategy && walletStore.isUserWalletConnected"
-          v-bind="{ activeStrategy }"
+          v-bind="{ activeStrategy, market }"
         />
 
         <template v-else>

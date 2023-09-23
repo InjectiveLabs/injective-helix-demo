@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
@@ -9,20 +9,24 @@ import {
   durationFormatter
 } from '@/app/utils/helpers'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { StrategyStatus } from '@/types'
 
 const props = defineProps({
   activeStrategy: {
     type: Object as PropType<TradingStrategy>,
     required: true
+  },
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
   }
 })
 
 const walletStore = useWalletStore()
-const gridStrategyStore = useGridStrategyStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(() => props.market)
 
 const { percentagePnl, pnl } = useActiveGridStrategy(
   market,
@@ -34,6 +38,7 @@ const {
   lowerBound,
   upperBound,
   takeProfit,
+  totalInvestment,
   creationExecutionPrice,
   subscriptionBaseQuantity,
   subscriptionQuoteQuantity
@@ -76,26 +81,17 @@ const currentQuoteBalance = computed(() => {
   ).toBase(market.value.quoteToken.decimals)
 })
 
-const totalInvestment = computed(() => {
-  if (!subaccountBalances.value) {
-    return ZERO_IN_BASE
-  }
-
-  const baseAmountInUsd = currentBaseBalance.value.times(
-    subaccountBalances.value.find(
-      (balance) => balance.denom === market.value.baseDenom
-    )?.usdPrice || 0
-  )
-
-  return baseAmountInUsd.plus(currentQuoteBalance.value).toFixed(2)
-})
-
 const createdAtFormatted = computed(() =>
   format(new Date(Number(props.activeStrategy.createdAt)), 'dd MMM HH:mm:ss')
 )
 
 const durationFormatted = computed(() =>
-  durationFormatter(props.activeStrategy.createdAt, now.value)
+  durationFormatter(
+    props.activeStrategy.createdAt,
+    props.activeStrategy.state === StrategyStatus.Active
+      ? now.value
+      : props.activeStrategy.updatedAt
+  )
 )
 
 const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
@@ -110,6 +106,11 @@ const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
+)
+
+const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
+  totalInvestment,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
@@ -162,8 +163,18 @@ useIntervalFn(() => {
     <div class="flex items-center justify-between mb-2">
       <p class="font-bold text-lg">{{ $t('sgt.gridDetails') }}</p>
       <div class="flex items-center">
-        <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
-        <p>{{ $t('sgt.running') }}</p>
+        <div
+          class="w-2 h-2 rounded-full mr-2"
+          :class="[
+            activeStrategy.state === StrategyStatus.Active
+              ? 'bg-green-500'
+              : 'bg-red-500'
+          ]"
+        />
+        <p v-if="activeStrategy.state === StrategyStatus.Active">
+          {{ $t('sgt.running') }}
+        </p>
+        <p v-else>{{ $t('sgt.removed') }}</p>
       </div>
     </div>
 
@@ -189,7 +200,7 @@ useIntervalFn(() => {
           "
         />
       </p>
-      <p>{{ totalInvestment }} {{ market?.quoteToken.symbol }}</p>
+      <p>{{ totalInvestmentToString }} {{ market?.quoteToken.symbol }}</p>
     </div>
 
     <div class="flex items-start justify-between mb-2">

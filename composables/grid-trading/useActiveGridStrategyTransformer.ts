@@ -66,16 +66,26 @@ export default function useActiveGridStrategyFormatter(
     )
   )
 
-  // strategy.value.subscriptionBaseQuantity,
-  // strategy.value.subscriptionQuoteQuantity,
-  // strategy.value.numberOfGridLevels
-  // strategy.value.shouldExitWithQuoteOnly
+  const totalInvestment = computed(() => {
+    const baseAmountInUsd = subscriptionBaseQuantity.value.times(
+      new BigNumberInWei(strategy.value.executionPrice).toBase(
+        market.value?.quoteToken.decimals
+      )
+    )
+
+    const quoteAmountInUsd = new BigNumberInWei(
+      strategy.value.subscriptionQuoteQuantity || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    return baseAmountInUsd.plus(quoteAmountInUsd)
+  })
 
   return {
     stopLoss,
     upperBound,
     lowerBound,
     takeProfit,
+    totalInvestment,
     creationBaseQuantity,
     creationQuoteQuantity,
     creationExecutionPrice,
