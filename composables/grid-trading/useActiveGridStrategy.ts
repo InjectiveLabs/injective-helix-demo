@@ -47,11 +47,11 @@ export default function useActiveGridStrategy(
     }
 
     const creationQuoteQuantity = new BigNumberInWei(
-      strategy.value.quoteQuantity || 0
+      strategy.value.subscriptionQuoteQuantity || 0
     ).toBase(market.value?.quoteToken.decimals)
 
     const creationBaseQuantity = new BigNumberInWei(
-      strategy.value.baseQuantity
+      strategy.value.subscriptionBaseQuantity
     ).toBase(market.value?.baseToken.decimals)
 
     const creationMidPrice = new BigNumberInWei(

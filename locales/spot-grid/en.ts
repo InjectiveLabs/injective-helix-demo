@@ -13,8 +13,10 @@ export default {
     confirm: 'Confirm',
     success: 'Success',
     history: 'history',
+    enabled: 'Enabled',
     lowerPrice: 'Lower',
     upperPrice: 'Upper',
+    disabled: 'Disabled',
     duration: 'Duration',
     stopLoss: 'Stop Loss',
     gridMode: 'Grid Mode',
@@ -42,14 +44,31 @@ export default {
     numberOfGrids: 'Number Of Grids',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
+    currentBalance: 'Current Balance',
+    totalInvestment: 'Total Investment',
     strategyRemoved: 'Strategy Removed!',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
+    initialInvestment: 'Initial Investment',
+    stopLossTooltip:
+      'The bot will stop when the last price of the pair reaches the set stop loss.',
+    takeProfitTooltip:
+      'The bot will stop when the last price of the pair reaches the set take profit.',
+    initialInvestmentTooltip:
+      'The {quoteSymbol} and {baseSymbol} amount used to start the strategy.',
     initialEntryPrice: 'Initial Entry Price',
+    sellAllBaseOnStop: 'Sell all base on stop',
+
     changeToQuoteAndBase: 'Change to USDT + INJ',
     totalInvestmentAmount: 'Total Investment Amount',
     totalInvestmentCurrency: 'Total Investment Currency',
     sellAllBaseCoinsOnStop: 'Sell all base coins on Stop',
+    totalInvestmentTooltip:
+      'The amount invested to start the grid when setting up the grid in {symbol}',
+    currentBalanceTooltip:
+      'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
+    sellAllBaseOnStopTooltip:
+      'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [INJ] in your initial investment',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>

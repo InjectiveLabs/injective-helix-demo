@@ -1,43 +1,115 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { PropType } from 'nuxt/dist/app/compat/capi'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
-  durationFormatter,
-  getSgtContractAddressFromSlug
+  addressAndMarketSlugToSubaccountId,
+  durationFormatter
 } from '@/app/utils/helpers'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
+const props = defineProps({
+  activeStrategy: {
+    type: Object as PropType<TradingStrategy>,
+    required: true
+  }
+})
+
+const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
-const now = ref(Date.now())
+const { aggregatedPortfolioBalances } = useBalance()
 
 const market = computed(() => gridStrategyStore.spotMarket!)
-const activeStrategy = computed(
-  () =>
-    gridStrategyStore.activeStrategies.find(
-      (strategy) =>
-        strategy.contractAddress ===
-        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
-    )!
-)
 
-const { percentagePnl, pnl } = useActiveGridStrategy(market, activeStrategy)
+const { percentagePnl, pnl } = useActiveGridStrategy(
+  market,
+  computed(() => props.activeStrategy)
+)
 
 const {
   stopLoss,
   lowerBound,
   upperBound,
   takeProfit,
-  creationBaseQuantity,
-  creationQuoteQuantity,
-  creationExecutionPrice
-} = useActiveGridStrategyTransformer(market, activeStrategy)
+  creationExecutionPrice,
+  subscriptionBaseQuantity,
+  subscriptionQuoteQuantity
+} = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.activeStrategy)
+)
+
+const now = ref(Date.now())
+
+const marketSubaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+)
+
+const subaccountBalances = computed(
+  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+)
+
+const currentBaseBalance = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInWei(
+    subaccountBalances.value.find(
+      (balance) => balance.denom === market.value.baseDenom
+    )?.accountTotalBalanceInUsd || 0
+  ).toBase(market.value.baseToken.decimals)
+})
+
+const currentQuoteBalance = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInWei(
+    subaccountBalances.value.find(
+      (balance) => balance.denom === market.value.quoteDenom
+    )?.accountTotalBalanceInUsd || 0
+  ).toBase(market.value.quoteToken.decimals)
+})
+
+const totalInvestment = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  const baseAmountInUsd = currentBaseBalance.value.times(
+    subaccountBalances.value.find(
+      (balance) => balance.denom === market.value.baseDenom
+    )?.usdPrice || 0
+  )
+
+  return baseAmountInUsd.plus(currentQuoteBalance.value).toFixed(2)
+})
 
 const createdAtFormatted = computed(() =>
-  format(new Date(Number(activeStrategy.value.createdAt)), 'dd MMM HH:mm:ss')
+  format(new Date(Number(props.activeStrategy.createdAt)), 'dd MMM HH:mm:ss')
 )
 
 const durationFormatted = computed(() =>
-  durationFormatter(activeStrategy.value.createdAt, now.value)
+  durationFormatter(props.activeStrategy.createdAt, now.value)
+)
+
+const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
+  currentBaseBalance,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
+  currentQuoteBalance,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
@@ -60,12 +132,12 @@ const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
 })
 
 const { valueToString: creationBaseQuantityToString } = useBigNumberFormatter(
-  creationBaseQuantity,
+  subscriptionBaseQuantity,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: creationQuoteQuantitytoString } = useBigNumberFormatter(
-  creationQuoteQuantity,
+  subscriptionQuoteQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -86,7 +158,7 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div class="divide-y-0">
+  <div>
     <div class="flex items-center justify-between mb-2">
       <p class="font-bold text-lg">{{ $t('sgt.gridDetails') }}</p>
       <div class="flex items-center">
@@ -95,13 +167,62 @@ useIntervalFn(() => {
       </div>
     </div>
 
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm">{{ $t('sgt.totalProfit') }}</p>
+      <div
+        class="text-right font-bold text-lg"
+        :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
+      >
+        <p>{{ pnltoString }} {{ market?.quoteToken.symbol }}</p>
+        <p>{{ percentagePnl }} %</p>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.totalInvestment') }}</span>
+        <AppTooltip
+          :content="
+            $t('sgt.totalInvestmentTooltip', {
+              symbol: market.quoteToken.symbol
+            })
+          "
+        />
+      </p>
+      <p>{{ totalInvestment }} {{ market?.quoteToken.symbol }}</p>
+    </div>
+
+    <div class="flex items-start justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.currentBalance') }}</span>
+
+        <AppTooltip
+          :content="
+            $t('sgt.currentBalanceTooltip', {
+              quoteSymbol: market.quoteToken.symbol,
+              baseSymbol: market.baseToken.symbol
+            })
+          "
+        />
+      </p>
+      <div class="text-right">
+        <p>{{ currentBaseBalanceToString }} {{ market?.baseToken.symbol }}</p>
+
+        <p>{{ currentQuoteBalanceToString }} {{ market?.quoteToken.symbol }}</p>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-700 my-4" />
+
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
+
       <p class="text-sm">{{ createdAtFormatted }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.duration') }}</p>
+      <p class="text-gray-400">{{ $t('sgt.duration') }}</p>
+
       <p class="text-sm">{{ durationFormatted }}</p>
     </div>
 
@@ -109,18 +230,31 @@ useIntervalFn(() => {
       <p class="text-gray-400 text-sm">{{ $t('sgt.priceRange') }}</p>
       <div class="text-right text-sm">
         <p>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</p>
+
         <p>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</p>
       </div>
     </div>
 
-    <div v-if="takeProfit.gt(0)" class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.takeProfit') }}</p>
-      <p>{{ takeProfitToString }} {{ market?.quoteToken.symbol }}</p>
-    </div>
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center self-start space-x-2">
+        <span>{{ $t('sgt.initialInvestment') }}</span>
 
-    <div v-if="stopLoss.gt(0)" class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.stopLoss') }}</p>
-      <p>{{ stopLossToString }} {{ market?.quoteToken.symbol }}</p>
+        <AppTooltip
+          :content="
+            $t('sgt.initialInvestmentTooltip', {
+              quoteSymbol: market.quoteToken.symbol,
+              baseSymbol: market.baseToken.symbol
+            })
+          "
+        />
+      </p>
+      <div class="text-right">
+        <p>{{ creationBaseQuantityToString }} {{ market?.baseToken.symbol }}</p>
+
+        <p>
+          {{ creationQuoteQuantitytoString }} {{ market?.quoteToken.symbol }}
+        </p>
+      </div>
     </div>
 
     <div class="flex items-center justify-between mb-2">
@@ -128,33 +262,65 @@ useIntervalFn(() => {
         <span>{{ $t('sgt.initialEntryPrice') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </p>
-      <p class="text-sm">
+
+      <p>
         {{ creationExecutionPriceToString }} {{ market?.quoteToken.symbol }}
       </p>
     </div>
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center self-start space-x-2">
-        <span>{{ $t('sgt.investment') }}</span>
-        <AppTooltip :content="$t('sgt.investmentAmountTooltip')" />
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.grids') }}</span>
+        <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </p>
-      <div class="text-right text-sm">
-        <p>{{ creationBaseQuantityToString }} {{ market?.baseToken.symbol }}</p>
-        <p>
-          {{ creationQuoteQuantitytoString }} {{ market?.quoteToken.symbol }}
-        </p>
-      </div>
+
+      <p>
+        {{ activeStrategy.numberOfGridLevels }}
+      </p>
     </div>
 
-    <div class="flex justify-between">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.totalProfit') }}</p>
-      <div
-        class="text-right font-bold text-sm"
-        :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
-      >
-        <p>{{ pnltoString }} {{ market?.quoteToken.symbol }}</p>
-        <p>{{ percentagePnl }} %</p>
-      </div>
+    <div class="border-t border-gray-700 my-4" />
+
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.stopLoss') }}</span>
+        <AppTooltip :content="$t('sgt.stopLossTooltip')" />
+      </p>
+
+      <p v-if="stopLoss.eq(0)">-</p>
+      <p v-else>{{ stopLossToString }} {{ market?.quoteToken.symbol }}</p>
+    </div>
+
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.takeProfit') }}</span>
+        <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
+      </p>
+
+      <p v-if="takeProfit.eq(0)">-</p>
+      <p v-else>{{ takeProfitToString }} {{ market?.quoteToken.symbol }}</p>
+    </div>
+
+    <div class="flex justify-between mb-2">
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>{{ $t('sgt.sellAllBaseOnStop') }}</span>
+        <AppTooltip
+          :content="
+            $t('sgt.sellAllBaseOnStopTooltip', {
+              symbol: market.baseToken.symbol
+            })
+          "
+        />
+      </p>
+      <p>
+        {{
+          $t(
+            activeStrategy.shouldExitWithQuoteOnly
+              ? 'sgt.enabled'
+              : 'sgt.disabled'
+          )
+        }}
+      </p>
     </div>
   </div>
 </template>

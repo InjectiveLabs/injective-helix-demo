@@ -8,7 +8,7 @@ import { usdcTokenDenom } from '@/app/data/token'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const setFormValues = useSetFormValues<TradeForm>()
+const setFormValues = useSetFormValues()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()

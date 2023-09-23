@@ -31,6 +31,7 @@ export default function useActiveGridStrategyFormatter(
       market.value?.quoteToken.decimals
     )
   )
+
   const creationQuoteQuantity = computed(() =>
     new BigNumberInWei(strategy.value.quoteQuantity || 0).toBase(
       market.value?.quoteToken.decimals
@@ -38,6 +39,17 @@ export default function useActiveGridStrategyFormatter(
   )
   const creationBaseQuantity = computed(() =>
     new BigNumberInWei(strategy.value.baseQuantity).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
+  const subscriptionQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionQuoteQuantity || 0).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+  const subscriptionBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionBaseQuantity).toBase(
       market.value?.baseToken.decimals
     )
   )
@@ -54,6 +66,11 @@ export default function useActiveGridStrategyFormatter(
     )
   )
 
+  // strategy.value.subscriptionBaseQuantity,
+  // strategy.value.subscriptionQuoteQuantity,
+  // strategy.value.numberOfGridLevels
+  // strategy.value.shouldExitWithQuoteOnly
+
   return {
     stopLoss,
     upperBound,
@@ -61,6 +78,8 @@ export default function useActiveGridStrategyFormatter(
     takeProfit,
     creationBaseQuantity,
     creationQuoteQuantity,
-    creationExecutionPrice
+    creationExecutionPrice,
+    subscriptionBaseQuantity,
+    subscriptionQuoteQuantity
   }
 }
