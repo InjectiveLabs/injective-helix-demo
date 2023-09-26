@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { INJ_DENOM, BigNumberInBase } from '@injectivelabs/utils'
 import { newMarketsSlug } from '@/app/data/market'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
@@ -69,11 +69,25 @@ const topGainer = computed(() => {
     return undefined
   }
 
+  const MINIMUM_USD_VOLUME = 1000
+  const MINIMUM_INJ_VOLUME = 100
+
   return marketsWithLastTradedPriceGreaterThanZero.value.reduce(
     (
       initialMarket: UiMarketAndSummaryWithVolumeInUsd,
       market: UiMarketAndSummaryWithVolumeInUsd
     ) => {
+      const isInjQuoteMarket = market.market.quoteToken.denom === INJ_DENOM
+      const isLowMarketVolume =
+        !isInjQuoteMarket && market.volumeInUsd.lt(MINIMUM_USD_VOLUME)
+      const isLowInjQuoteMarketVolume =
+        isInjQuoteMarket &&
+        new BigNumberInBase(market.summary.volume).lt(MINIMUM_INJ_VOLUME)
+
+      if (isLowMarketVolume || isLowInjQuoteMarketVolume) {
+        return initialMarket
+      }
+
       if (initialMarket.summary.change === market.summary.change) {
         return sortMarketsAlphabetically(market, initialMarket)
       }

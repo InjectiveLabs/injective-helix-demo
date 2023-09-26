@@ -73,7 +73,7 @@ function onCloseSideBar() {
               }"
               @sidebar:closed="onCloseSideBar"
             />
-            <client-only>
+            <ClientOnly>
               <div class="bg-gray-1000">
                 <LayoutTopbar
                   :is-sidebar-open="isOpenSidebar"
@@ -107,7 +107,7 @@ function onCloseSideBar() {
                 <AppConfetti />
                 <div id="modals" />
               </div>
-            </client-only>
+            </ClientOnly>
           </div>
         </AppHocLoading>
       </div>

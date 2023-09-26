@@ -26,7 +26,9 @@ export const getRoutes = (network: Network, env: string) => {
     'somm-usdt',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
-    'steadybtc-usdt'
+    'steadybtc-usdt',
+    'neok-usdt',
+    'orai-usdt'
   ]
 
   const perpetuals = [
@@ -46,6 +48,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
+    spot.push('proj-inj')
   }
 
   if (IS_TESTNET) {

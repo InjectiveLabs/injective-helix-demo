@@ -337,5 +337,17 @@ export const customAggregations = {
     minTick: getDecimalPlaceFromValue('0.0001'),
     default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'ORAI/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'NEOK/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>
