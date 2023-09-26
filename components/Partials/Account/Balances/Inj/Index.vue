@@ -4,6 +4,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 const exchangeStore = useExchangeStore()
+const accountStore = useAccountStore()
 
 defineProps({
   hideBalances: Boolean,
@@ -39,7 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="hasStaked">
+  <template v-if="hasStaked && accountStore.isDefaultSubaccount">
     <PartialsAccountBalancesInjHeader
       v-bind="{
         ...$attrs,
