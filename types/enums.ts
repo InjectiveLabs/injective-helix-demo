@@ -414,3 +414,9 @@ export enum StrategyStatus {
   Active = 'active',
   Removed = 'removed'
 }
+
+export enum StopReason {
+  User = 'user',
+  StopLoss = 'stop_loss',
+  TakeProfit = 'take_profit'
+}

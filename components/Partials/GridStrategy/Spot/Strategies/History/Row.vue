@@ -3,6 +3,7 @@ import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
+import { StopReason } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 
@@ -67,7 +68,7 @@ function onDetailsPage() {
 
 <template>
   <div
-    class="grid grid-cols-8 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
+    class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
       <span>{{ createdAt }}</span>
@@ -117,6 +118,20 @@ function onDetailsPage() {
     </div>
 
     <div class="flex items-center justify-end">{{ duration }}</div>
+
+    <div class="flex items-center justify-end">
+      <span v-if="strategy.stopReason === StopReason.User">
+        {{ $t('sgt.user') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.StopLoss">
+        {{ $t('sgt.stopLoss') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.TakeProfit">
+        {{ $t('sgt.takeProfit') }}
+      </span>
+    </div>
 
     <div class="flex items-center justify-center">
       <div

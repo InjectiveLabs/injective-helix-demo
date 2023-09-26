@@ -281,7 +281,7 @@ useIntervalFn(() => {
 
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm flex items-center space-x-2">
-        <span>{{ $t('sgt.grids') }}</span>
+        <span>{{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </p>
 
