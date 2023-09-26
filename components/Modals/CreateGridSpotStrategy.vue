@@ -82,10 +82,10 @@ function handleCreateStrategy() {
       status.setIdle()
 
       amplitudeGridStrategyTracker.createStrategy({
-        amountQuote: formValues.value[SpotGridTradingField.InvestmentAmount]!,
-        gridsNumber: formValues.value[SpotGridTradingField.Grids]!,
-        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice]!,
-        upperPrice: formValues.value[SpotGridTradingField.UpperPrice]!,
+        amountQuote: formValues.value[SpotGridTradingField.InvestmentAmount],
+        gridsNumber: formValues.value[SpotGridTradingField.Grids],
+        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice],
+        upperPrice: formValues.value[SpotGridTradingField.UpperPrice],
         amountDenom:
           formValues.value[SpotGridTradingField.BaseInvestmentAmount],
         market: gridStrategyStore.spotMarket?.slug || '',
