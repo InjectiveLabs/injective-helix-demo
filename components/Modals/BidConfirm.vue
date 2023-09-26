@@ -2,7 +2,7 @@
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { AuctionTradingForm, Modal } from '@/types'
+import { AuctionTradingField, AuctionTradingForm, Modal } from '@/types'
 
 const props = defineProps({
   market: {
@@ -16,11 +16,12 @@ const modalStore = useModalStore()
 const formValues = useFormValues<AuctionTradingForm>()
 const { success, error } = useNotifications()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
-  computed(() => formValues.value.bidPrice),
+  computed(() => formValues.value[AuctionTradingField.BidPrice]),
   { decimalPlaces: 2 }
 )
 
@@ -34,12 +35,16 @@ function handleBid() {
   spotStore
     .submitLimitOrder({
       market: props.market,
-      price: new BigNumberInBase(formValues.value.bidPrice || 0),
-      quantity: new BigNumberInBase(formValues.value.baseAmount || 0),
+      price: new BigNumberInBase(
+        formValues.value[AuctionTradingField.BidPrice] || 0
+      ),
+      quantity: new BigNumberInBase(
+        formValues.value[AuctionTradingField.BaseAmount] || 0
+      ),
       orderSide: OrderSide.Buy
     })
     .then(() => {
-      success({ title: 'Success', description: 'Bid created!' })
+      success({ title: t('success'), description: t('auction.bidCreated') })
     })
     .finally(() => {
       status.setIdle()
@@ -47,7 +52,7 @@ function handleBid() {
     })
     .catch((e) => {
       $onError(e)
-      error({ title: 'Error', description: 'Something happened...' })
+      error({ title: t('error'), description: t('somethingHappened') })
     })
 }
 </script>
@@ -66,15 +71,17 @@ function handleBid() {
       <div>
         <p class="pb-6">
           A new bid to purchase
-          <span class="font-semibold">{{ formValues.baseAmount }}</span> DEMO
-          will be placed at price
+          <span class="font-semibold">{{
+            formValues[AuctionTradingField.BaseAmount]
+          }}</span>
+          DEMO will be placed at price
           <span class="font-semibold">{{ quoteAmountToString }} USDT</span>.
         </p>
         <AppButton
           class="w-full bg-blue-400 text-white rounded-md font-semibold"
           @click="handleBid"
         >
-          Confirm
+          {{ $t('confirm') }}
         </AppButton>
       </div>
     </AppHocLoading>

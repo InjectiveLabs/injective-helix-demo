@@ -8,6 +8,7 @@ import { usdcTokenDenom } from '@/app/data/token'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
+const setFormValues = useSetFormValues()
 const { t } = useLang()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -84,9 +85,14 @@ function resetFormValues() {
 
   isBaseAmount.value = !isBuyState
 
-  formValues[TradeField.OrderSide] = isBuyState ? OrderSide.Buy : OrderSide.Sell
-  formValues[TradeField.BaseDenom] = props.market.baseDenom
-  formValues[TradeField.QuoteDenom] = props.market.quoteDenom
+  setFormValues(
+    {
+      [TradeField.OrderSide]: isBuyState ? OrderSide.Buy : OrderSide.Sell,
+      [TradeField.BaseDenom]: props.market.baseDenom,
+      [TradeField.QuoteDenom]: props.market.quoteDenom
+    },
+    false
+  )
 }
 
 function handleFormSubmit() {

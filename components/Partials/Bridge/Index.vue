@@ -6,6 +6,7 @@ const peggyStore = usePeggyStore()
 const walletStore = useWalletStore()
 
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
+const setFormValues = useSetFormValues()
 
 const { originIsEthereum, networkIsSupported } = useBridgeState(formValues)
 const { balanceWithToken, supplyWithBalance } = useBridgeBalance(formValues)
@@ -31,14 +32,18 @@ const { value: denom } = useStringField({
 })
 
 function handleAmountChange({ amount }: { amount: string }) {
-  formValues.value[BridgeField.Amount] = amount
+  setFormValues({
+    [BridgeField.Amount]: amount
+  })
 }
 
 function handleTokenChange() {
   nextTick(() => {
     if (balanceWithToken.value) {
-      formValues.value[BridgeField.Amount] = ''
-      formValues.value[BridgeField.Token] = balanceWithToken.value.token
+      setFormValues({
+        [BridgeField.Amount]: '',
+        [BridgeField.Token]: balanceWithToken.value.token
+      })
     }
   })
 }

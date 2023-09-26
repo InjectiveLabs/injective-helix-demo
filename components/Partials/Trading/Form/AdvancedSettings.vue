@@ -14,6 +14,7 @@ enum SlippageDisplayOptions {
 const { t } = useLang()
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -77,7 +78,12 @@ const reduceOnlyValue = computed({
 
     setReduceOnlyValue(reduceOnly)
 
-    formValues.value[TradeField.Leverage] = LEVERAGE_FOR_REDUCE_ONLY
+    setFormValues(
+      {
+        [TradeField.Leverage]: LEVERAGE_FOR_REDUCE_ONLY
+      },
+      false
+    )
   }
 })
 

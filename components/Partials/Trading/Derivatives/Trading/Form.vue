@@ -45,6 +45,7 @@ const {
   values: formValues,
   resetForm: resetFormValues
 } = useForm<TradeForm>()
+const setFormValues = useSetFormValues()
 
 const isBaseAmount = ref(true)
 const status = reactive(new Status(StatusType.Idle))
@@ -396,7 +397,12 @@ watch(
         TRADE_FORM_PRICE_ROUNDING_MODE
       )
 
-      formValues[TradeField.LimitPrice] = formattedPrice
+      setFormValues(
+        {
+          [TradeField.LimitPrice]: formattedPrice
+        },
+        false
+      )
     }
   },
   { immediate: true }
@@ -417,9 +423,13 @@ function updateAmount({
   })
 
   if (amountToUpdate) {
-    formValues[
-      isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount
-    ] = amountToUpdate
+    setFormValues(
+      {
+        [isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount]:
+          amountToUpdate
+      },
+      false
+    )
   }
 }
 

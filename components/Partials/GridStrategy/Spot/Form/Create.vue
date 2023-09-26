@@ -6,10 +6,15 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { InvestmentTypeGst, Modal, SpotGridTradingForm } from '@/types'
 import {
-  gridStrategyAuthorizationMessageTypes,
-  spotGridMarkets
+  Modal,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
+import {
+  spotGridMarkets,
+  gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
   GST_MIN_TRADING_SIZE,
@@ -73,19 +78,24 @@ const baseDenomAmount = computed(() =>
 
 const calculatedAmount = computed(() => {
   if (
-    !formValues.value.investmentAmount ||
-    !formValues.value.lowerPrice ||
-    !formValues.value.upperPrice ||
+    !formValues.value[SpotGridTradingField.InvestmentAmount] ||
+    !formValues.value[SpotGridTradingField.LowerPrice] ||
+    !formValues.value[SpotGridTradingField.UpperPrice] ||
     !currentPrice.value ||
-    Number(formValues.value.upperPrice) <= Number(formValues.value.lowerPrice)
+    Number(formValues.value[SpotGridTradingField.UpperPrice]) <=
+      Number(formValues.value[SpotGridTradingField.LowerPrice])
   ) {
     return { baseAmount: ZERO_IN_BASE, quoteAmount: ZERO_IN_BASE }
   }
 
-  const lowerBoundary = new BigNumberInBase(formValues.value.lowerPrice)
-  const upperBoundary = new BigNumberInBase(formValues.value.upperPrice)
+  const lowerBoundary = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.LowerPrice]
+  )
+  const upperBoundary = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.UpperPrice]
+  )
   const initialQuoteInvestment = new BigNumberInBase(
-    formValues.value.investmentAmount
+    formValues.value[SpotGridTradingField.InvestmentAmount]
   )
 
   const ratio = currentPrice.value
@@ -108,15 +118,18 @@ async function onCheckBalanceFees() {
     return
   }
 
-  if (formValues.value.InvestmentType === InvestmentTypeGst.BaseAndQuote) {
+  if (
+    formValues.value[SpotGridTradingField.InvestmentType] ===
+    InvestmentTypeGst.BaseAndQuote
+  ) {
     onCreateStrategy()
 
     return
   }
 
-  const minAmount = new BigNumberInBase(formValues.value.grids || 1).times(
-    GST_MIN_TRADING_SIZE
-  )
+  const minAmount = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.Grids] || 1
+  ).times(GST_MIN_TRADING_SIZE)
 
   const isBaseLtBalance = baseDenomAmount.value.lt(
     calculatedAmount.value.baseAmount
@@ -190,7 +203,7 @@ function onInvestmentTypeSet() {
 
   <ModalsSgtBalancedFees
     v-bind="{
-      margin: formValues.investmentAmount!,
+      margin: formValues[SpotGridTradingField.InvestmentAmount]!,
       baseAmount: calculatedAmount.baseAmount,
       quoteAmount: calculatedAmount.quoteAmount
     }"

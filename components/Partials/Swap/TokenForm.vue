@@ -5,6 +5,7 @@ import { TokenSymbols } from '@/app/data/token'
 const swapStore = useSwapStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
+const setFormValues = useSetFormValues()
 const { query } = useRoute()
 const { accountBalancesWithToken } = useBalance()
 
@@ -55,10 +56,10 @@ onMounted(() => {
 
   const [route] = swapStore.routes
 
-  formValues.value[SwapFormField.InputDenom] =
-    usdtToken?.denom || route?.sourceDenom || ''
-  formValues.value[SwapFormField.OutputDenom] =
-    injToken?.denom || route?.targetDenom || ''
+  setFormValues({
+    [SwapFormField.InputDenom]: usdtToken?.denom || route?.sourceDenom || '',
+    [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || ''
+  })
 
   if (Object.keys(query).length !== 0) {
     handleQuery()
@@ -69,29 +70,40 @@ function handleQuery() {
   const { to, from, toAmount, fromAmount } = query
 
   if (to && from) {
-    formValues.value[SwapFormField.InputDenom] = from as string
-    formValues.value[SwapFormField.OutputDenom] = to as string
+    setFormValues({
+      [SwapFormField.InputDenom]: from as string,
+      [SwapFormField.OutputDenom]: to as string
+    })
   }
 
   if (fromAmount) {
-    formValues.value[SwapFormField.InputAmount] = fromAmount as string
+    setFormValues({
+      [SwapFormField.InputAmount]: fromAmount as string
+    })
 
     getOutputQuantity()
   } else if (toAmount) {
-    formValues.value[SwapFormField.OutputAmount] = toAmount as string
+    setFormValues({
+      [SwapFormField.OutputAmount]: toAmount as string
+    })
 
     getInputQuantity()
   }
 }
 
 function handleInputDenomChange() {
-  formValues.value[SwapFormField.OutputDenom] = selectorOutputDenom.value
+  setFormValues({
+    [SwapFormField.OutputDenom]: selectorOutputDenom.value
+  })
 
   emit('reset:form')
 }
 
 function handleOutputDenomChange() {
-  formValues.value[SwapFormField.InputDenom] = selectorInputDenom.value
+  setFormValues({
+    [SwapFormField.InputDenom]: selectorInputDenom.value
+  })
+
   emit('reset:form')
 }
 
@@ -103,8 +115,10 @@ function handleSwap() {
     [SwapFormField.OutputAmount]: outputAmount
   } = formValues.value
 
-  formValues.value[SwapFormField.InputDenom] = outputDenom
-  formValues.value[SwapFormField.OutputDenom] = inputDenom
+  setFormValues({
+    [SwapFormField.InputDenom]: outputDenom,
+    [SwapFormField.OutputDenom]: inputDenom
+  })
 
   animationCount.value = animationCount.value + 1
 
@@ -115,11 +129,15 @@ function handleSwap() {
      * Then, we query swap SC for the opposing input field's value
      **/
     if (swapStore.isInputEntered) {
-      formValues.value[SwapFormField.OutputAmount] = inputAmount || ''
+      setFormValues({
+        [SwapFormField.OutputAmount]: inputAmount || ''
+      })
 
       getInputQuantity()
     } else {
-      formValues.value[SwapFormField.InputAmount] = outputAmount || ''
+      setFormValues({
+        [SwapFormField.InputAmount]: outputAmount || ''
+      })
 
       getOutputQuantity()
     }
@@ -127,7 +145,9 @@ function handleSwap() {
 }
 
 async function getOutputQuantity() {
-  formValues.value[SwapFormField.OutputAmount] = ''
+  setFormValues({
+    [SwapFormField.OutputAmount]: ''
+  })
 
   await nextTick()
 
@@ -136,7 +156,9 @@ async function getOutputQuantity() {
 }
 
 async function getInputQuantity() {
-  formValues.value[SwapFormField.InputAmount] = ''
+  setFormValues({
+    [SwapFormField.InputAmount]: ''
+  })
 
   await nextTick()
 
@@ -145,7 +167,9 @@ async function getInputQuantity() {
 }
 
 function handleMaxUpdate({ amount }: { amount: string }) {
-  formValues.value[SwapFormField.InputAmount] = amount
+  setFormValues({
+    [SwapFormField.InputAmount]: amount
+  })
 
   getOutputQuantity()
 }
