@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
+import { TradeField, UiMarketWithToken } from '@/types'
 
-const formValues = useFormValues<TradeForm>()
+const setFormValues = useSetFormValues()
 
 defineProps({
   market: {
@@ -21,7 +21,12 @@ const { value: orderSide } = useStringField({
 })
 
 function handleSelectOrderSide() {
-  formValues.value[TradeField.ProportionalPercentage] = 0
+  setFormValues(
+    {
+      [TradeField.ProportionalPercentage]: 0
+    },
+    false
+  )
 }
 </script>
 

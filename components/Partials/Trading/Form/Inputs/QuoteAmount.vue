@@ -5,6 +5,7 @@ import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   amountStep: {
@@ -34,10 +35,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
-  ): void
+  'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
 }>()
 
 const { hasTriggerPrice, tradingTypeStopMarket } =
@@ -61,7 +59,12 @@ const { value: quoteAmount } = useStringField({
 })
 
 function onQuoteAmountChange(quoteAmount: string) {
-  formValues.value[TradeField.ProportionalPercentage] = 0
+  setFormValues(
+    {
+      [TradeField.ProportionalPercentage]: 0
+    },
+    false
+  )
 
   emit('update:amount', { amount: quoteAmount || '0', isBaseAmount: false })
 }
@@ -71,9 +74,14 @@ function onQuoteAmountBlur() {
     return
   }
 
-  formValues.value[TradeField.BaseAmount] = formatAmountToAllowableAmount(
-    formValues.value[TradeField.BaseAmount],
-    props.market.quantityTensMultiplier
+  setFormValues(
+    {
+      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+        formValues.value[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    },
+    false
   )
 
   emit('update:amount', {

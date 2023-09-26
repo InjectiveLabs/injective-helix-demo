@@ -22,6 +22,8 @@ const {
   resetForm: resetFormValues
 } = useForm<TradeForm>()
 
+const setFormValues = useSetFormValues()
+
 const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
@@ -168,7 +170,12 @@ watch(
         TRADE_FORM_PRICE_ROUNDING_MODE
       )
 
-      formValues[TradeField.LimitPrice] = formattedPrice
+      setFormValues(
+        {
+          [TradeField.LimitPrice]: formattedPrice
+        },
+        false
+      )
     }
   },
   { immediate: true }
@@ -201,7 +208,12 @@ function updateAmount({
       ? TradeField.QuoteAmount
       : TradeField.BaseAmount
 
-    formValues[field] = amountToUpdate
+    setFormValues(
+      {
+        [field]: amountToUpdate
+      },
+      false
+    )
   }
 }
 

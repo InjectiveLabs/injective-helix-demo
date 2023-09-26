@@ -12,6 +12,7 @@ defineProps({
 })
 
 const formValues = useFormValues<AuctionTradingForm>()
+const setFormValues = useSetFormValues()
 
 const { value: bidPriceValue } = useStringField({
   name: AuctionTradingField.BidPrice,
@@ -22,10 +23,12 @@ const { value: bidPriceValue } = useStringField({
 function handleValueUpdate(value: string) {
   bidPriceValue.value = value
 
-  if (formValues.value.baseAmount) {
-    formValues.value.quoteAmount = new BigNumberInBase(value)
-      .times(formValues.value.baseAmount)
-      .toFixed(3)
+  if (formValues.value[AuctionTradingField.BaseAmount]) {
+    setFormValues({
+      [AuctionTradingField.QuoteAmount]: new BigNumberInBase(value)
+        .times(formValues.value[AuctionTradingField.BaseAmount])
+        .toFixed(3)
+    })
   }
 }
 </script>

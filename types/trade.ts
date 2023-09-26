@@ -105,6 +105,9 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.BaseInvestmentAmount]: string
   [SpotGridTradingField.BaseInvestmentAmount]: string
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
+  [SpotGridTradingField.TakeProfit]: string
+  [SpotGridTradingField.StopLoss]: string
+  [SpotGridTradingField.SellAllBase]: boolean
 }
 
 export type SpotGridMarket = {

@@ -4,6 +4,7 @@ import { BINANCE_DEPOSIT_ADDRESSES } from '@/app/utils/constants'
 import { BridgeForm, BridgeField } from '@/types'
 
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
+const setFormValues = useSetFormValues()
 
 const memoRequired = ref(false)
 
@@ -22,18 +23,34 @@ const { value: memo, resetField: resetMemo } = useStringField({
 })
 
 onMounted(() => {
-  formValues.value[BridgeField.BridgingNetwork] = BridgingNetwork.Injective
+  setFormValues(
+    {
+      [BridgeField.BridgingNetwork]: BridgingNetwork.Injective
+    },
+    false
+  )
 })
 
 onBeforeUnmount(() => {
-  formValues.value[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
+  setFormValues(
+    {
+      [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum
+    },
+    false
+  )
 })
 
 watch(destination, (value: string) => {
   if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
     memoRequired.value = true
   } else {
-    formValues.value[BridgeField.Memo] = ''
+    setFormValues(
+      {
+        [BridgeField.Memo]: ''
+      },
+      false
+    )
+
     memoRequired.value = false
   }
 })

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { getSubaccountId } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from '@/types'
-import { getSubaccountIndex, isSgtSubaccountId } from '@/app/utils/helpers'
+import {
+  addBaseSubaccountIndexToAddress,
+  getSubaccountIndex,
+  isSgtSubaccountId
+} from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
@@ -70,8 +74,8 @@ const destinationOptions = computed(() => {
       display: t('bridge.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
-      value: getSubaccountId(
-        walletStore.injectiveAddress,
+      value: addBaseSubaccountIndexToAddress(
+        walletStore.address,
         newSubaccountIdIndex.value
       )
     }
