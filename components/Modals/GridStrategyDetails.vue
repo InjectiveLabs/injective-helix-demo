@@ -9,6 +9,7 @@ defineProps({
     type: Object as PropType<TradingStrategy>,
     default: undefined
   },
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     default: undefined

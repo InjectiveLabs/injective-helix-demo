@@ -16,6 +16,7 @@ const props = defineProps({
     type: Object as PropType<TradingStrategy>,
     required: true
   },
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true

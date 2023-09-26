@@ -7,7 +7,9 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
-const formValues = useFormValues<SpotGridTradingForm>()
+const formValues = useFormValues<SpotGridTradingForm>() as Readonly<
+  Ref<SpotGridTradingForm>
+>
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -59,11 +61,11 @@ function handleCreateStrategy() {
   gridStrategyStore
     .createStrategy({
       stopLoss: formValues.value[SpotGridTradingField.StopLoss],
-      levels: Number(formValues.value[SpotGridTradingField.Grids]!),
+      levels: Number(formValues.value[SpotGridTradingField.Grids]),
       takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
-      lowerBound: formValues.value[SpotGridTradingField.LowerPrice]!,
-      upperBound: formValues.value[SpotGridTradingField.UpperPrice]!,
-      quoteAmount: formValues.value[SpotGridTradingField.InvestmentAmount]!,
+      lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
+      upperBound: formValues.value[SpotGridTradingField.UpperPrice],
+      quoteAmount: formValues.value[SpotGridTradingField.InvestmentAmount],
       baseAmount: formValues.value[SpotGridTradingField.BaseInvestmentAmount],
       shouldExitWithQuoteOnly:
         formValues.value[SpotGridTradingField.SellAllBase]
