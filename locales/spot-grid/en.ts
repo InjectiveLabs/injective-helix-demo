@@ -117,7 +117,7 @@ export default {
     pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed:
       'Please read the below information carefully before you confirm to proceed.',
     termsAndConditions:
-      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
+      'I have read and agree to the Helix Terms and Conditions. I understand that my use of grid trading is solely at my own risk and that all decisions related to grid trading are solely my own.',
     amountsMayBeLessTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
@@ -125,7 +125,7 @@ export default {
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
     bannerTitle: 'Get Started on Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
-    automatesBuyingAndSelling: 'automates buying and selling on spot trading.',
+    automatesBuyingAndSelling: 'automates buying and selling in spot markets.',
     splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([named('first'), named('second')]),
     setUpABot: 'Set up a bot',
@@ -134,8 +134,8 @@ export default {
 
     step1: {
       priceRange:
-        ' determines the price at which the bot will place buy and sell orders.',
-      grids: ' in the price range, defining the profit per grid.',
+        ' represents the upper and lower price levels of the orders that will be placed.',
+      grids: ' represents the number of limit orders the bot will place.',
       investment:
         ' is the amount of capital that the bot will use to run the strategy'
     },
@@ -152,7 +152,7 @@ export default {
     step3: {
       openOrdersCancelled: 'All open orders will be canceled.',
       moneyTransferred:
-        'Your money will be transferred. back to your main account.',
+        'Your money will be transferred back to your main account.',
       review:
         "Review the performance of your past strategies in the 'Grid Trading History' tab."
     }
