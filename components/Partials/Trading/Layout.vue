@@ -19,7 +19,6 @@ const router = useRouter()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { params, query } = useRoute()
@@ -45,7 +44,6 @@ const queryMarketId = (query.marketId as string) || ''
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
-const fetchStatus = reactive(new Status(StatusType.Loading))
 const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
@@ -118,7 +116,6 @@ function init() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
-      fetchStatus.setIdle()
     })
 }
 
@@ -141,15 +138,6 @@ function closeMarketList() {
 function toggleMarketList() {
   showMarketList.value = !showMarketList.value
 }
-
-watch(
-  () => walletStore.isUserWalletConnected,
-  (isConnected: boolean) => {
-    if (!isConnected) {
-      fetchStatus.setLoading()
-    }
-  }
-)
 </script>
 
 <template>
