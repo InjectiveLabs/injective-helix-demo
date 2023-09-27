@@ -41,6 +41,7 @@ const fetchStatus = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
   filterByCurrentMarket.value = false
+
   refreshSubaccountDetails()
 })
 

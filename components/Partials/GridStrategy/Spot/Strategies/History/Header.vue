@@ -6,7 +6,7 @@
     <div class="text-right">{{ $t('sgt.upperBound') }}</div>
     <div class="text-right">
       <CommonHeaderTooltip :tooltip="$t('sgt.amountsMayBeLessTooltip')">
-        <span class="text-white">{{ $t('sgt.investment') }}</span>
+        <span class="text-white">{{ $t('sgt.amount') }}</span>
       </CommonHeaderTooltip>
     </div>
     <div class="text-right">{{ $t('sgt.pnl') }}</div>
