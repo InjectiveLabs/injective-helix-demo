@@ -8,6 +8,7 @@ export default {
     user: 'User',
     grids: 'Grids',
     close: 'Close',
+    amount: 'Amount',
     market: 'Market',
     endBot: 'End Bot',
     running: 'Running',
@@ -42,9 +43,11 @@ export default {
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
     keepQuote: 'Keep USDT Only',
+    totalAmount: 'Total Amount',
     timeCreated: 'Time Created',
     next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
+    initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
@@ -73,6 +76,8 @@ export default {
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
+    nOfGridsTooltip:
+      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [INJ] in your initial investment',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>

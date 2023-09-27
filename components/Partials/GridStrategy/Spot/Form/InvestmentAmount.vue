@@ -116,7 +116,7 @@ function setQuoteType() {
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
         <h3 class="font-bold text-sm tracking-wide">
-          3. {{ $t('sgt.investment') }}
+          3. {{ $t('sgt.amount') }}
         </h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>

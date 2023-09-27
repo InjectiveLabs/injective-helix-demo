@@ -192,7 +192,7 @@ useIntervalFn(() => {
 
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm flex items-center space-x-2">
-        <span>{{ $t('sgt.totalInvestment') }}</span>
+        <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
             $t('sgt.totalInvestmentTooltip', {
@@ -249,7 +249,7 @@ useIntervalFn(() => {
 
     <div class="flex justify-between mb-2">
       <p class="text-gray-400 text-sm flex items-center self-start space-x-2">
-        <span>{{ $t('sgt.initialInvestment') }}</span>
+        <span>{{ $t('sgt.initialAmount') }}</span>
 
         <AppTooltip
           :content="
