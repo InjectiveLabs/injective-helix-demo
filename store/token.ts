@@ -88,7 +88,7 @@ export const useTokenStore = defineStore('token', {
     async fetchSupplyTokenMeta() {
       const tokenStore = useTokenStore()
 
-      const { supply } = await bankApi.fetchTotalSupply({ limit: 200 })
+      const { supply } = await bankApi.fetchTotalSupply({ limit: 250 })
 
       const { bankSupply, ibcBankSupply } =
         UiBankTransformer.supplyToUiSupply(supply)

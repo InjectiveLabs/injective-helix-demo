@@ -27,31 +27,12 @@ export const getRoutes = (network: Network, env: string) => {
     'steadybtc-usdt'
   ]
 
-  const perpetuals = [
-    'btc-usdt-perp',
-    'inj-usdt-perp',
-    'eth-usdt-perp',
-    '1000pepe-usdt-perp',
-    'bonk-usdt-perp',
-    'osmo-usdt-perp',
-    'bnb-usdt-perp',
-    'stx-usdt-perp',
-    'atom-usdt-perp'
-  ]
+  const perpetuals = ['inj-usdt-perp']
 
   if (IS_TESTNET) {
     spot.push('wbtc-usdt')
 
-    perpetuals.push(
-      'pepe-usdt-perp',
-      'xau-usdt-perp',
-      'gbp-usdt-perp',
-      'jpy-usdt-perp',
-      'eur-usdt-perp',
-      'sol-usdt-perp',
-      'btc-usdt-perp-pyth',
-      'arb-usdt-perp'
-    )
+    perpetuals.push('gold-usdt-perp', 'evindex-usdt-perp', 'trucpi-usdt-perp')
   }
 
   const binaryOptions: string[] = []
