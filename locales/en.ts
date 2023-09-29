@@ -278,7 +278,7 @@ export default {
       `Connected to ${named('address')}. Click to close connection.`,
 
     tradingBots: 'Trading Bots',
-    tradingBotsDescription: 'Automate your trading'
+    tradingBotsDescription: 'Trade smarter with automated strategies'
   },
 
   fee_discounts: {

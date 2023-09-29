@@ -128,9 +128,10 @@ export default {
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
     investmentTooltip:
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
-    bannerTitle: 'Get Started on Spot Grid Trading.',
+    bannerTitle: 'Get started with Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
-    automatesBuyingAndSelling: 'automates buying and selling in spot markets.',
+    automatesBuyingAndSelling:
+      'Automate order placements to buy low, sell high.',
     splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([named('first'), named('second')]),
     setUpABot: 'Set up a bot',
@@ -142,14 +143,16 @@ export default {
         ' represents the upper and lower price levels of the orders that will be placed.',
       grids: ' represents the number of limit orders the bot will place.',
       investment:
-        ' is the amount of capital that the bot will use to run the strategy'
+        ' is the amount of capital that the bot will use to run the strategy.'
     },
 
     step2: {
       priceFalls:
-        'When the price falls, the bot buys and sets a higher sell point.',
-      priceRises: 'When the price rises, it sells and sets a lower buy point.',
-      viewOrders: ' to check how the bot is placing them for you.',
+        'When the price falls and meet your buy order price level, your order will be filled and the bot will automatically place a sell order at a higher price.',
+      priceRises:
+        'When the price rises and meet your sell order price level, your order will be filled and the bot will automatically place a buy order at a lower price.',
+      viewOrders:
+        'You can check the open orders placed by the bot at any time.',
       faq: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Check the ', named('faq'), ' for more info.'])
     },
@@ -157,7 +160,7 @@ export default {
     step3: {
       openOrdersCancelled: 'All open orders will be canceled.',
       moneyTransferred:
-        'Your money will be transferred back to your main account.',
+        'Assets used by the bot will be transferred back to your main account.',
       review:
         "Review the performance of your past strategies in the 'Grid Trading History' tab."
     }

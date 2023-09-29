@@ -63,7 +63,8 @@ function toggleAdvancedSettings() {
       </p>
     </div>
 
-    <div class="flex items-center select-none">
+    <!-- REMOVE v-if WHEN WE HAVE SUPPORT FROM SC -->
+    <div v-if="false" class="flex items-center select-none">
       <AppCheckbox v-model="sellAllBase" />
       <p class="text-xs" @click="toggleSellAllBase">
         {{ $t('sgt.sellAllBaseCoinsOnStop') }}

@@ -39,11 +39,7 @@ function nextStep() {
         <div>
           <p class="text-2xl font-bold">{{ $t('sgt.bannerTitle') }}</p>
           <p class="my-4">
-            {{ $t('sgt.spotGridTradingBot') }}
-
-            <span class="font-bold">
-              {{ $t('sgt.automatesBuyingAndSelling') }}
-            </span>
+            {{ $t('sgt.automatesBuyingAndSelling') }}
           </p>
 
           <div class="space-y-6">
@@ -75,9 +71,7 @@ function nextStep() {
                       </p>
 
                       <p>
-                        <span class="font-bold">{{
-                          $t('sgt.investment')
-                        }}</span>
+                        <span class="font-bold">{{ $t('sgt.amount') }}</span>
                         {{ $t('sgt.step1.investment') }}
                       </p>
                     </div>
@@ -108,19 +102,16 @@ function nextStep() {
                       </p>
 
                       <p>
-                        <span class="font-bold">
-                          {{ $t('sgt.viewOrders') }}
-                        </span>
                         {{ $t('sgt.step2.viewOrders') }}
                       </p>
 
-                      <p>
+                      <!-- <p> SHOW THIS WHEN WE HAVE FAQ
                         <i18n-t keypath="sgt.step2.faq">
                           <template #faq>
                             <NuxtLink to="/" class="font-bold">FAQ</NuxtLink>
                           </template>
                         </i18n-t>
-                      </p>
+                      </p> -->
                     </div>
                   </template>
                 </BaseAccordion>
