@@ -22,7 +22,6 @@ const status = reactive(new Status(StatusType.Loading))
 const { values: formValues, resetForm } = useForm<BridgeForm>({
   initialValues: {
     [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
-    [BridgeField.BridgeType]: BridgeType.Deposit,
     [BridgeField.Token]: injToken,
     [BridgeField.Denom]: injToken.denom,
     [BridgeField.Amount]: '',
@@ -31,6 +30,12 @@ const { values: formValues, resetForm } = useForm<BridgeForm>({
   },
   keepValuesOnUnmount: true
 })
+
+const { value: bridgeTypeValue } = useStringField({
+  name: BridgeField.BridgeType,
+  initialValue: BridgeType.Deposit
+})
+
 const setFormValues = useSetFormValues()
 
 const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
@@ -159,7 +164,7 @@ watch(
       <div>
         <div class="flex justify-start mb-6 gap-2">
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Deposit"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
@@ -174,7 +179,7 @@ watch(
           </AppSelectButton>
           <CommonSeparator />
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Withdraw"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
@@ -189,7 +194,7 @@ watch(
           </AppSelectButton>
           <CommonSeparator />
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Transfer"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
