@@ -100,9 +100,17 @@ function handleOutputDenomChange(denom: string) {
   )
 
   if (!isUserInteraction.value) {
+    const usdPrice = String(outputToken.value?.usdPrice || '')
+
+    if (!usdPrice) {
+      emit('update:inputQuantity')
+
+      return
+    }
+
     setFormValues(
       {
-        [SwapFormField.InputAmount]: String(outputToken.value?.usdPrice || '')
+        [SwapFormField.InputAmount]: usdPrice
       },
       false
     )

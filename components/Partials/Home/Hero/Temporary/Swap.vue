@@ -38,7 +38,15 @@ onMounted(async () => {
   /** W
    * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
    **/
-  const symbolsTokensToPreload = ['INJ', 'ATOM', 'WETH', 'WMATIC', 'SOMM']
+  const symbolsTokensToPreload = [
+    'INJ',
+    'NEOK',
+    'ATOM',
+    'WETH',
+    'SOMM',
+    'ORAI',
+    'WMATIC'
+  ]
   const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
   Promise.all([
