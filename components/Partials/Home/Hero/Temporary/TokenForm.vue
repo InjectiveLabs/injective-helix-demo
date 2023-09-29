@@ -100,17 +100,21 @@ function handleOutputDenomChange(denom: string) {
   )
 
   if (!isUserInteraction.value) {
+    const neokMarket = spotStore.marketsWithSummary.find(
+      ({ market }) => market.baseToken.symbol.toLowerCase() === 'neok'
+    )
+
     const usdPrice = String(outputToken.value?.usdPrice || '')
 
-    if (!usdPrice) {
-      emit('update:inputQuantity')
-
-      return
-    }
+    /** Neok does not have a usd price, so we use lastTradePrice for display **/
+    const price =
+      outputToken.value?.denom !== neokMarket?.market.baseToken.denom
+        ? usdPrice
+        : neokMarket?.summary.price
 
     setFormValues(
       {
-        [SwapFormField.InputAmount]: usdPrice
+        [SwapFormField.InputAmount]: price
       },
       false
     )
