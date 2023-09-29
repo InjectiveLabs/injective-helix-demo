@@ -313,7 +313,7 @@ useIntervalFn(() => {
       <p v-else>{{ takeProfitToString }} {{ market?.quoteToken.symbol }}</p>
     </div>
 
-    <div class="flex justify-between mb-2">
+    <!-- <div class="flex justify-between mb-2"> WE REMOVE THIS FOR NOW SINCE ADDITIONAL SUPPORT FROM SC IS NEEDED
       <p class="text-gray-400 text-sm flex items-center space-x-2">
         <span>{{ $t('sgt.sellAllBaseOnStop') }}</span>
         <AppTooltip
@@ -324,6 +324,7 @@ useIntervalFn(() => {
           "
         />
       </p>
+
       <p>
         {{
           $t(
@@ -333,6 +334,6 @@ useIntervalFn(() => {
           )
         }}
       </p>
-    </div>
+    </div> -->
   </div>
 </template>
