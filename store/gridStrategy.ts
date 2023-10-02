@@ -12,11 +12,7 @@ import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { msgBroadcastClient, indexerGrpcTradingApi } from '@/app/Services'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { backupPromiseCall } from '@/app/utils/async'
-
-export enum StrategyStatus {
-  Active = 'active',
-  Removed = 'removed'
-}
+import { StrategyStatus } from '@/types'
 
 type GridStrategyStoreState = {
   spotMarket: UiSpotMarketWithToken | undefined
@@ -70,13 +66,19 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       baseAmount,
       levels,
       lowerBound,
-      upperBound
+      upperBound,
+      shouldExitWithQuoteOnly,
+      stopLoss,
+      takeProfit
     }: {
       levels: number
       lowerBound: string
       upperBound: string
       quoteAmount: string
       baseAmount?: string
+      shouldExitWithQuoteOnly?: boolean
+      takeProfit?: string
+      stopLoss?: string
     }) {
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
@@ -134,6 +136,22 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             })
           }
 
+      const stopLossValue = stopLoss
+        ? spotPriceToChainPriceToFixed({
+            value: stopLoss,
+            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
+            quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+          })
+        : undefined
+
+      const takeProfitValue = takeProfit
+        ? spotPriceToChainPriceToFixed({
+            value: takeProfit,
+            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
+            quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+          })
+        : undefined
+
       const message = MsgExecuteContractCompat.fromJSON({
         contractAddress: gridMarket.contractAddress,
         sender: walletStore.injectiveAddress,
@@ -149,7 +167,10 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             value: upperBound,
             baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
             quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-          })
+          }),
+          shouldExitWithQuoteOnly,
+          stopLoss: stopLossValue,
+          takeProfit: takeProfitValue
         }),
 
         funds

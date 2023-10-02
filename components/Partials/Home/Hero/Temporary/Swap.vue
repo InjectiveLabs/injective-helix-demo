@@ -15,6 +15,7 @@ const swapStore = useSwapStore()
 const tokenStore = useTokenStore()
 const router = useRouter()
 const { resetForm, validate, values: formValues } = useForm<SwapForm>()
+const setFormValues = useSetFormValues()
 
 const { $onError } = useNuxtApp()
 
@@ -37,7 +38,15 @@ onMounted(async () => {
   /** W
    * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
    **/
-  const symbolsTokensToPreload = ['INJ', 'ATOM', 'WETH', 'WMATIC', 'SOMM']
+  const symbolsTokensToPreload = [
+    'INJ',
+    'NEOK',
+    'ATOM',
+    'WETH',
+    'SOMM',
+    'ORAI',
+    'WMATIC'
+  ]
   const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
   Promise.all([
@@ -71,10 +80,12 @@ function resetFormValues() {
 
   resetForm()
 
-  formValues[SwapFormField.InputAmount] = ''
-  formValues[SwapFormField.OutputAmount] = ''
-  formValues[SwapFormField.InputDenom] = inputDenom || ''
-  formValues[SwapFormField.OutputDenom] = outputDenom || ''
+  setFormValues({
+    [SwapFormField.InputAmount]: '',
+    [SwapFormField.OutputAmount]: '',
+    [SwapFormField.InputDenom]: inputDenom || '',
+    [SwapFormField.OutputDenom]: outputDenom || ''
+  })
 }
 
 async function getOutputQuantity() {
@@ -140,21 +151,29 @@ async function getInputQuantity() {
 
 function updateAmount() {
   if (swapStore.isInputEntered) {
-    formValues[SwapFormField.OutputAmount] = toBalanceInToken({
-      value: swapStore.outputQuantity.resultQuantity,
-      decimalPlaces: outputToken.value?.token.decimals || 0,
-      fixedDecimals: outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-      roundingMode: BigNumberInBase.ROUND_DOWN
-    })
+    setFormValues(
+      {
+        [SwapFormField.OutputAmount]: toBalanceInToken({
+          value: swapStore.outputQuantity.resultQuantity,
+          decimalPlaces: outputToken.value?.token.decimals || 0,
+          fixedDecimals:
+            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+          roundingMode: BigNumberInBase.ROUND_DOWN
+        })
+      },
+      false
+    )
 
     return
   }
 
-  formValues[SwapFormField.InputAmount] = toBalanceInToken({
-    value: swapStore.inputQuantity.resultQuantity,
-    decimalPlaces: inputToken.value?.token.decimals || 0,
-    fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-    roundingMode: BigNumberInBase.ROUND_UP
+  setFormValues({
+    [SwapFormField.InputAmount]: toBalanceInToken({
+      value: swapStore.inputQuantity.resultQuantity,
+      decimalPlaces: inputToken.value?.token.decimals || 0,
+      fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+      roundingMode: BigNumberInBase.ROUND_UP
+    })
   })
 }
 

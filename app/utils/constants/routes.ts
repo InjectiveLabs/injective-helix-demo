@@ -26,7 +26,9 @@ export const getRoutes = (network: Network, env: string) => {
     'somm-usdt',
     'ethbtctrend-usdt',
     'steadyeth-usdt',
-    'steadybtc-usdt'
+    'steadybtc-usdt',
+    'neok-usdt',
+    'orai-usdt'
   ]
 
   const perpetuals = [
@@ -44,8 +46,12 @@ export const getRoutes = (network: Network, env: string) => {
 
   const gridTradingSpot = ['inj-usdt']
 
+  const binaryOptions: string[] = []
+  const expiryFutures: string[] = ['eth-usdt-19sep22']
+
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
+    spot.push('proj-inj')
   }
 
   if (IS_TESTNET) {
@@ -63,10 +69,9 @@ export const getRoutes = (network: Network, env: string) => {
       'btc-usdt-perp-pyth',
       'arb-usdt-perp'
     )
-  }
 
-  const binaryOptions: string[] = []
-  const expiryFutures: string[] = ['eth-usdt-19sep22']
+    expiryFutures.push('tia-usdt-01nov2023')
+  }
 
   // Redirection pairs
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }

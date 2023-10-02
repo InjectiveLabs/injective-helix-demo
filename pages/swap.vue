@@ -23,6 +23,7 @@ const accountStore = useAccountStore()
 
 const { $onError } = useNuxtApp()
 const { resetForm, validate, values: formValues } = useForm<SwapForm>()
+const setFormValues = useSetFormValues()
 
 const txHash = ref('')
 const summaryRef = ref()
@@ -153,10 +154,15 @@ function resetFormValues() {
 
   resetForm()
 
-  formValues[SwapFormField.InputAmount] = ''
-  formValues[SwapFormField.OutputAmount] = ''
-  formValues[SwapFormField.InputDenom] = inputDenom || ''
-  formValues[SwapFormField.OutputDenom] = outputDenom || ''
+  setFormValues(
+    {
+      [SwapFormField.InputAmount]: '',
+      [SwapFormField.OutputAmount]: '',
+      [SwapFormField.InputDenom]: inputDenom || '',
+      [SwapFormField.OutputDenom]: outputDenom || ''
+    },
+    false
+  )
 }
 
 function getOutputQuantity() {
@@ -212,22 +218,33 @@ function getInputQuantity() {
 
 function updateAmount() {
   if (swapStore.isInputEntered) {
-    formValues[SwapFormField.OutputAmount] = toBalanceInToken({
-      value: swapStore.outputQuantity.resultQuantity,
-      decimalPlaces: outputToken.value?.token.decimals || 0,
-      fixedDecimals: outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-      roundingMode: BigNumberInBase.ROUND_DOWN
-    })
+    setFormValues(
+      {
+        [SwapFormField.OutputAmount]: toBalanceInToken({
+          value: swapStore.outputQuantity.resultQuantity,
+          decimalPlaces: outputToken.value?.token.decimals || 0,
+          fixedDecimals:
+            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+          roundingMode: BigNumberInBase.ROUND_DOWN
+        })
+      },
+      false
+    )
 
     return
   }
 
-  formValues[SwapFormField.InputAmount] = toBalanceInToken({
-    value: swapStore.inputQuantity.resultQuantity,
-    decimalPlaces: inputToken.value?.token.decimals || 0,
-    fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-    roundingMode: BigNumberInBase.ROUND_UP
-  })
+  setFormValues(
+    {
+      [SwapFormField.InputAmount]: toBalanceInToken({
+        value: swapStore.inputQuantity.resultQuantity,
+        decimalPlaces: inputToken.value?.token.decimals || 0,
+        fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+        roundingMode: BigNumberInBase.ROUND_UP
+      })
+    },
+    false
+  )
 }
 
 function resetQueryError() {

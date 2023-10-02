@@ -56,6 +56,17 @@ export const getHubUrl = (): string => {
 export const getSubaccountIndex = (subaccount: string) =>
   parseInt(subaccount.slice(42), 16)
 
+export const addBaseSubaccountIndexToAddress = (
+  ethAddress: string,
+  subaccountIndex: number
+) => {
+  const subaccountInHex = subaccountIndex.toString(16)
+
+  return `${ethAddress}${'0'.repeat(
+    66 - 42 - subaccountInHex.length
+  )}${subaccountInHex}`
+}
+
 export function getMinQuantityTickSize(
   isSpot: boolean,
   market: UiMarketWithToken
@@ -104,7 +115,7 @@ export const getMarketIdFromSubaccountId = (subaccountId: string) => {
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
 }
 
-export const getSgtContractAddressFromSlug = (slug: string) =>
+export const getSgtContractAddressFromSlug = (slug: string = '') =>
   spotGridMarkets.find((sgt) => sgt.slug === slug)?.contractAddress
 
 export function getMinPriceTickSize(

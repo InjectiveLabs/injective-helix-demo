@@ -31,6 +31,7 @@ export default function useActiveGridStrategyFormatter(
       market.value?.quoteToken.decimals
     )
   )
+
   const creationQuoteQuantity = computed(() =>
     new BigNumberInWei(strategy.value.quoteQuantity || 0).toBase(
       market.value?.quoteToken.decimals
@@ -42,11 +43,53 @@ export default function useActiveGridStrategyFormatter(
     )
   )
 
+  const subscriptionQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionQuoteQuantity || 0).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+  const subscriptionBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionBaseQuantity).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
+  const takeProfit = computed(() =>
+    new BigNumberInWei(strategy.value.takeProfit || 0).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  )
+
+  const stopLoss = computed(() =>
+    new BigNumberInWei(strategy.value.stopLoss || 0).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  )
+
+  const totalInvestment = computed(() => {
+    const baseAmountInUsd = subscriptionBaseQuantity.value.times(
+      new BigNumberInWei(strategy.value.executionPrice).toBase(
+        market.value?.quoteToken.decimals
+      )
+    )
+
+    const quoteAmountInUsd = new BigNumberInWei(
+      strategy.value.subscriptionQuoteQuantity || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    return baseAmountInUsd.plus(quoteAmountInUsd)
+  })
+
   return {
+    stopLoss,
     upperBound,
     lowerBound,
+    takeProfit,
+    totalInvestment,
     creationBaseQuantity,
     creationQuoteQuantity,
-    creationExecutionPrice
+    creationExecutionPrice,
+    subscriptionBaseQuantity,
+    subscriptionQuoteQuantity
   }
 }

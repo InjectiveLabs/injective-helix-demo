@@ -24,6 +24,12 @@ const { values: formValues, resetForm: resetSubaccountTransferForm } =
     keepValuesOnUnmount: true
   })
 const formErrors = useFormErrors()
+const setFormValues = useSetFormValues()
+
+const { value: denomValue } = useStringField({
+  name: SubaccountTransferField.Denom,
+  rule: ''
+})
 
 const hasFormErrors = computed(
   () =>
@@ -136,21 +142,27 @@ function handleTokenChange() {
     )
 
     if (token) {
-      formValues[SubaccountTransferField.Amount] = ''
-      formValues[SubaccountTransferField.Token] = token.token
+      setFormValues({
+        [SubaccountTransferField.Amount]: '',
+        [SubaccountTransferField.Token]: token.token
+      })
     }
   })
 }
 
 function handleAmountChange({ amount }: { amount: string }) {
-  formValues[SubaccountTransferField.Amount] = amount
+  setFormValues({
+    [SubaccountTransferField.Amount]: amount
+  })
 }
 
 function handleSubaccountIdChange() {
   nextTick(() => {
-    formValues[SubaccountTransferField.Amount] = ''
-    formValues[SubaccountTransferField.Token] = injToken
-    formValues[SubaccountTransferField.Denom] = injToken.denom
+    setFormValues({
+      [SubaccountTransferField.Amount]: '',
+      [SubaccountTransferField.Token]: injToken,
+      [SubaccountTransferField.Denom]: injToken.denom
+    })
   })
 }
 
@@ -160,8 +172,10 @@ function resetForm() {
 
   resetSubaccountTransferForm()
 
-  formValues[SubaccountTransferField.SrcSubaccountId] = srcSubaccountId
-  formValues[SubaccountTransferField.DstSubaccountId] = dstSubaccountId
+  setFormValues({
+    [SubaccountTransferField.SrcSubaccountId]: srcSubaccountId,
+    [SubaccountTransferField.DstSubaccountId]: dstSubaccountId
+  })
 }
 
 function closeModal() {
@@ -190,7 +204,7 @@ function closeModal() {
           />
           <div v-if="supplyWithBalance.length > 0" class="mt-6">
             <AppSelectToken
-              v-model:denom="formValues[SubaccountTransferField.Denom]"
+              v-model:denom="denomValue"
               v-bind="{
                 maxDecimals,
                 required: true,

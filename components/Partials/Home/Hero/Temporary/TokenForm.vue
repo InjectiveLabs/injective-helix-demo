@@ -5,6 +5,7 @@ const swapStore = useSwapStore()
 const tokenStore = useTokenStore()
 const spotStore = useSpotStore()
 const formValues = useFormValues<SwapForm>()
+const setFormValues = useSetFormValues()
 
 const { accountBalancesWithToken } = useBalance()
 
@@ -61,20 +62,27 @@ onMounted(() => {
     ({ quoteToken }) => quoteToken.symbol.toLowerCase() === 'usdt'
   )?.quoteToken
 
-  formValues.value[SwapFormField.InputDenom] =
-    peggyUsdToken?.denom || route?.sourceDenom
-  formValues.value[SwapFormField.OutputDenom] =
-    injToken?.denom || route?.targetDenom || ''
-
-  formValues.value[SwapFormField.InputAmount] = String(
-    tokenStore.tokenUsdPriceMap[injToken?.coinGeckoId || '']
+  setFormValues(
+    {
+      [SwapFormField.InputDenom]: peggyUsdToken?.denom || route?.sourceDenom,
+      [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || '',
+      [SwapFormField.InputAmount]: String(
+        tokenStore.tokenUsdPriceMap[injToken?.coinGeckoId || '']
+      ),
+      [SwapFormField.OutputAmount]: '1'
+    },
+    false
   )
-  formValues.value[SwapFormField.OutputAmount] = '1'
 })
 
 function handleInputDenomChange(denom: string) {
-  formValues.value[SwapFormField.InputDenom] = denom
-  formValues.value[SwapFormField.OutputDenom] = selectorOutputDenom.value
+  setFormValues(
+    {
+      [SwapFormField.InputDenom]: denom,
+      [SwapFormField.OutputDenom]: selectorOutputDenom.value
+    },
+    false
+  )
 
   if (isUserInteraction.value) {
     emit('update:hasUserInteraction', isUserInteraction.value)
@@ -83,12 +91,32 @@ function handleInputDenomChange(denom: string) {
 }
 
 function handleOutputDenomChange(denom: string) {
-  formValues.value[SwapFormField.OutputDenom] = denom
-  formValues.value[SwapFormField.InputDenom] = selectorInputDenom.value
+  setFormValues(
+    {
+      [SwapFormField.OutputDenom]: denom,
+      [SwapFormField.InputDenom]: selectorInputDenom.value
+    },
+    false
+  )
 
   if (!isUserInteraction.value) {
-    formValues.value[SwapFormField.InputAmount] = String(
-      outputToken.value?.usdPrice || ''
+    const neokMarket = spotStore.marketsWithSummary.find(
+      ({ market }) => market.baseToken.symbol.toLowerCase() === 'neok'
+    )
+
+    const usdPrice = String(outputToken.value?.usdPrice || '')
+
+    /** Neok does not have a usd price, so we use lastTradePrice for display **/
+    const price =
+      outputToken.value?.denom !== neokMarket?.market.baseToken.denom
+        ? usdPrice
+        : neokMarket?.summary.price
+
+    setFormValues(
+      {
+        [SwapFormField.InputAmount]: price
+      },
+      false
     )
 
     return
@@ -105,8 +133,13 @@ function handleSwap() {
     [SwapFormField.OutputAmount]: outputAmount
   } = formValues.value
 
-  formValues.value[SwapFormField.InputDenom] = outputDenom
-  formValues.value[SwapFormField.OutputDenom] = inputDenom
+  setFormValues(
+    {
+      [SwapFormField.InputDenom]: outputDenom,
+      [SwapFormField.OutputDenom]: inputDenom
+    },
+    false
+  )
 
   animationCount.value = animationCount.value + 1
 
@@ -117,11 +150,15 @@ function handleSwap() {
      * Then, we query swap SC for the opposing input field's value
      **/
     if (!swapStore.isInputEntered || isUserInteraction.value) {
-      formValues.value[SwapFormField.InputAmount] = outputAmount || ''
+      setFormValues({
+        [SwapFormField.InputAmount]: outputAmount || ''
+      })
 
       getOutputQuantity()
     } else {
-      formValues.value[SwapFormField.OutputAmount] = inputAmount || ''
+      setFormValues({
+        [SwapFormField.OutputAmount]: inputAmount || ''
+      })
 
       getInputQuantity()
     }
@@ -131,7 +168,12 @@ function handleSwap() {
 }
 
 async function getOutputQuantity() {
-  formValues.value[SwapFormField.OutputAmount] = ''
+  setFormValues(
+    {
+      [SwapFormField.OutputAmount]: ''
+    },
+    false
+  )
 
   await nextTick()
 
@@ -141,7 +183,9 @@ async function getOutputQuantity() {
 }
 
 async function getInputQuantity() {
-  formValues.value[SwapFormField.InputAmount] = ''
+  setFormValues({
+    [SwapFormField.InputAmount]: ''
+  })
 
   await nextTick()
 

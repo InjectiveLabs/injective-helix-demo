@@ -11,8 +11,9 @@ const { value: gridsValue, errorMessage } = useStringField({
 
 <template>
   <div class="pb-1">
-    <p class="pb-3 font-bold text-sm tracking-wide">
-      2. {{ $t('sgt.numberOfGrids') }}
+    <p class="pb-3 font-bold text-sm tracking-wide flex items-center space-x-2">
+      <span> 2. {{ $t('sgt.numberOfGrids') }} </span>
+      <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
     </p>
 
     <AppInputNumeric

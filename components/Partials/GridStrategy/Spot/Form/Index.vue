@@ -6,6 +6,7 @@ import {
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 
@@ -22,6 +23,15 @@ const { setFieldValue } = useForm<SpotGridTradingForm>()
 
 const hasActiveStrategy = computed(
   () => gridStrategyStore.activeStrategies.length > 0
+)
+
+const activeStrategy = computed(
+  () =>
+    gridStrategyStore.activeStrategies.find(
+      (strategy) =>
+        strategy.contractAddress ===
+        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
+    )!
 )
 
 function onFormValuesUpdate(
@@ -43,6 +53,7 @@ function onFormValuesUpdate(
       <div class="space-y-4">
         <PartialsGridStrategySpotFormActiveStrategy
           v-if="hasActiveStrategy && walletStore.isUserWalletConnected"
+          v-bind="{ activeStrategy, market }"
         />
 
         <template v-else>
@@ -52,6 +63,7 @@ function onFormValuesUpdate(
             <PartialsGridStrategySpotFormProfitPerGrid />
           </div>
           <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
+          <PartialsGridStrategySpotFormAdvancedSettings />
         </template>
 
         <CommonUserNotConnectedNote

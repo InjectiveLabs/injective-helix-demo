@@ -9,6 +9,10 @@ const getBalanceWithToken = (
 ): BalanceWithTokenAndPrice | undefined => {
   const balanceWithToken = balances.find(({ denom }) => denom === swapDenom)
 
+  if (!balanceWithToken) {
+    return
+  }
+
   return {
     token: balanceWithToken?.token,
     denom: balanceWithToken?.denom,

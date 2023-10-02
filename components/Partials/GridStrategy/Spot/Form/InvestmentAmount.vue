@@ -47,7 +47,7 @@ const baseDenomAmount = computed(() =>
 )
 
 const minQuoteAmount = computed(() =>
-  new BigNumberInBase(formValues.value.grids || 1)
+  new BigNumberInBase(formValues.value[SpotGridTradingField.Grids] || 1)
     .times(GST_MIN_TRADING_SIZE)
     .toFixed(2)
 )
@@ -116,7 +116,7 @@ function setQuoteType() {
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
         <h3 class="font-bold text-sm tracking-wide">
-          3. {{ $t('sgt.investment') }}
+          3. {{ $t('sgt.amount') }}
         </h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
@@ -125,7 +125,10 @@ function setQuoteType() {
         <template #default="{ isOpen }">
           <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
             <div
-              v-if="formValues.InvestmentType === InvestmentTypeGst.Quote"
+              v-if="
+                formValues[SpotGridTradingField.InvestmentType] ===
+                InvestmentTypeGst.Quote
+              "
               class="ml-auto font-semibold text-xs flex space-x-2 items-center"
             >
               <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
@@ -134,7 +137,8 @@ function setQuoteType() {
 
             <div
               v-if="
-                formValues.InvestmentType === InvestmentTypeGst.BaseAndQuote
+                formValues[SpotGridTradingField.InvestmentType] ===
+                InvestmentTypeGst.BaseAndQuote
               "
               class="ml-auto font-semibold text-xs flex space-x-2 items-center"
             >

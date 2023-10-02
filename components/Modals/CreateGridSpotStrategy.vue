@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Modal, SpotGridTradingForm } from '@/types'
+import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
-const formValues = useFormValues<SpotGridTradingForm>()
+const formValues = useFormValues<SpotGridTradingForm>() as Readonly<
+  Ref<SpotGridTradingForm>
+>
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -17,20 +19,24 @@ const hasAgreedToTerms = ref(false)
 
 const profitPerGrid = computed(() => {
   if (
-    !formValues.value.lowerPrice ||
-    !formValues.value.upperPrice ||
-    !formValues.value.grids ||
+    !formValues.value[SpotGridTradingField.LowerPrice] ||
+    !formValues.value[SpotGridTradingField.UpperPrice] ||
+    !formValues.value[SpotGridTradingField.Grids] ||
     !gridStrategyStore.spotMarket ||
-    Number(formValues.value.grids) === 0
+    Number(formValues.value[SpotGridTradingField.Grids]) === 0
   ) {
     return ZERO_IN_BASE
   }
 
-  const priceDifference = new BigNumberInBase(formValues.value.upperPrice)
-    .minus(formValues.value.lowerPrice)
-    .dividedBy(formValues.value.grids)
+  const priceDifference = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.UpperPrice]
+  )
+    .minus(formValues.value[SpotGridTradingField.LowerPrice])
+    .dividedBy(formValues.value[SpotGridTradingField.Grids])
 
-  return priceDifference.dividedBy(formValues.value.lowerPrice).times(100)
+  return priceDifference
+    .dividedBy(formValues.value[SpotGridTradingField.LowerPrice])
+    .times(100)
 })
 
 const quoteSymbol = computed(
@@ -54,11 +60,15 @@ function handleCreateStrategy() {
 
   gridStrategyStore
     .createStrategy({
-      levels: Number(formValues.value.grids!),
-      quoteAmount: formValues.value.investmentAmount!,
-      lowerBound: formValues.value.lowerPrice!,
-      upperBound: formValues.value.upperPrice!,
-      baseAmount: formValues.value.baseInvestmentAmount
+      stopLoss: formValues.value[SpotGridTradingField.StopLoss],
+      levels: Number(formValues.value[SpotGridTradingField.Grids]),
+      takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
+      lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
+      upperBound: formValues.value[SpotGridTradingField.UpperPrice],
+      quoteAmount: formValues.value[SpotGridTradingField.InvestmentAmount],
+      baseAmount: formValues.value[SpotGridTradingField.BaseInvestmentAmount],
+      shouldExitWithQuoteOnly:
+        formValues.value[SpotGridTradingField.SellAllBase]
     })
     .then(() => {
       success({
@@ -72,11 +82,12 @@ function handleCreateStrategy() {
       status.setIdle()
 
       amplitudeGridStrategyTracker.createStrategy({
-        amountQuote: formValues.value.investmentAmount!,
-        gridsNumber: formValues.value.grids!,
-        lowerPrice: formValues.value.lowerPrice!,
-        upperPrice: formValues.value.upperPrice!,
-        amountDenom: formValues.value.baseInvestmentAmount,
+        amountQuote: formValues.value[SpotGridTradingField.InvestmentAmount],
+        gridsNumber: formValues.value[SpotGridTradingField.Grids],
+        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice],
+        upperPrice: formValues.value[SpotGridTradingField.UpperPrice],
+        amountDenom:
+          formValues.value[SpotGridTradingField.BaseInvestmentAmount],
         market: gridStrategyStore.spotMarket?.slug || '',
         marketPrice: '-'
       })
@@ -97,13 +108,14 @@ function handleCreateStrategy() {
     <div class="max-w-sm">
       <p>
         <i18n-t
-          v-if="!formValues.baseInvestmentAmount"
+          v-if="!formValues[SpotGridTradingField.BaseInvestmentAmount]"
           tag="p"
           keypath="sgt.createStrategyModalQuote"
         >
           <template #quoteAmount>
             <span class="font-semibold">
-              {{ formValues.investmentAmount }} {{ quoteSymbol }}
+              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ quoteSymbol }}
             </span>
           </template>
 
@@ -117,13 +129,15 @@ function handleCreateStrategy() {
         <i18n-t v-else tag="p" keypath="sgt.createStrategyModalBaseAndQuote">
           <template #quoteAmount>
             <span class="font-semibold">
-              {{ formValues.investmentAmount }} {{ quoteSymbol }}
+              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ quoteSymbol }}
             </span>
           </template>
 
           <template #baseAmount>
             <span class="font-semibold">
-              {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
+              {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
+              {{ baseSymbol }}
             </span>
           </template>
 
@@ -139,16 +153,18 @@ function handleCreateStrategy() {
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
           <p class="font-semibold">
-            {{ formValues.investmentAmount }} {{ quoteSymbol }}
+            {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+            {{ quoteSymbol }}
           </p>
         </div>
 
         <div
-          v-if="formValues.baseInvestmentAmount"
+          v-if="formValues[SpotGridTradingField.BaseInvestmentAmount]"
           class="flex justify-end items-center"
         >
           <p class="font-semibold">
-            {{ formValues.baseInvestmentAmount }} {{ baseSymbol }}
+            {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
+            {{ baseSymbol }}
           </p>
         </div>
 
@@ -158,24 +174,63 @@ function handleCreateStrategy() {
             {{ gridStrategyStore.spotMarket?.ticker }}
           </p>
         </div>
+
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
           <p class="font-semibold">{{ $t('sgt.arithmetic') }}</p>
         </div>
+
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
-            {{ formValues.lowerPrice }} - {{ formValues.upperPrice }}
+            {{ formValues[SpotGridTradingField.LowerPrice] }} -
+            {{ formValues[SpotGridTradingField.UpperPrice] }}
             {{ quoteSymbol }}
           </p>
         </div>
+
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.gridNumber') }}</p>
-          <p class="font-semibold">{{ formValues.grids }}</p>
+          <p class="font-semibold">
+            {{ formValues[SpotGridTradingField.Grids] }}
+          </p>
         </div>
+
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
           <p class="font-semibold">{{ profitPerGridToString }} %</p>
+        </div>
+
+        <div
+          v-if="formValues[SpotGridTradingField.StopLoss]"
+          class="flex justify-between items-center"
+        >
+          <p class="text-gray-500">{{ $t('sgt.stopLoss') }}</p>
+          <p class="font-semibold">
+            {{ formValues[SpotGridTradingField.StopLoss] }} {{ quoteSymbol }}
+          </p>
+        </div>
+
+        <div
+          v-if="formValues[SpotGridTradingField.TakeProfit]"
+          class="flex justify-between items-center"
+        >
+          <p class="text-gray-500">{{ $t('sgt.takeProfit') }}</p>
+          <p class="font-semibold">
+            {{ formValues[SpotGridTradingField.TakeProfit] }} {{ quoteSymbol }}
+          </p>
+        </div>
+
+        <div
+          v-if="formValues[SpotGridTradingField.SellAllBase]"
+          class="flex justify-between items-center"
+        >
+          <p class="text-gray-500">{{ $t('sgt.sellAllBaseCoinsOnStop') }}</p>
+          <p class="font-semibold -mr-2">
+            <AppCheckbox
+              :model-value="formValues[SpotGridTradingField.SellAllBase]"
+            />
+          </p>
         </div>
       </div>
 

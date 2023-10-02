@@ -35,9 +35,9 @@ const { value: quoteAmountValue } = useStringField({
 function handleBaseAmountUpdate(value: string) {
   baseAmountValue.value = value
 
-  if (formValues.value.bidPrice) {
+  if (formValues.value[AuctionTradingField.BidPrice]) {
     quoteAmountValue.value = new BigNumberInBase(value)
-      .times(formValues.value.bidPrice)
+      .times(formValues.value[AuctionTradingField.BidPrice])
       .toFixed(3)
   }
 }
@@ -45,9 +45,9 @@ function handleBaseAmountUpdate(value: string) {
 function handleQuoteAmountUpdate(value: string) {
   quoteAmountValue.value = value
 
-  if (formValues.value.bidPrice) {
+  if (formValues.value[AuctionTradingField.BidPrice]) {
     baseAmountValue.value = new BigNumberInBase(value)
-      .dividedBy(formValues.value.bidPrice)
+      .dividedBy(formValues.value[AuctionTradingField.BidPrice])
       .toFixed(3)
   }
 }

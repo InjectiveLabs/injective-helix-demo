@@ -102,32 +102,6 @@ const checked = computed({
   }
 })
 
-onMounted(() => {
-  if (positionStore.subaccountPositions.length > 0) {
-    activeType.value = FilterList.OpenPositions
-  } else if (derivativeStore.subaccountOrders.length > 0) {
-    activeType.value = FilterList.OpenOrders
-  }
-})
-
-function handleCancelAllClick() {
-  actionStatus.setLoading()
-
-  const action =
-    orders.value.length === 1
-      ? derivativeStore.cancelOrder(orders.value[0])
-      : derivativeStore.batchCancelOrder(orders.value)
-
-  action
-    .then(() => {
-      success({ title: t('trade.orders_cancelled') })
-    })
-    .catch($onError)
-    .finally(() => {
-      actionStatus.setIdle()
-    })
-}
-
 function closeAllPositions(): Promise<void> {
   return positionStore.closeAllPosition(filteredPositions.value)
 }
@@ -156,7 +130,7 @@ function closePosition(): Promise<void> {
   })
 }
 
-function handleCloseAllPositionsClick() {
+function closeAllPositionsClick() {
   actionStatus.setLoading()
 
   const action =
@@ -170,6 +144,32 @@ function handleCloseAllPositionsClick() {
     .finally(() => {
       actionStatus.setIdle()
     })
+}
+
+function cancelAllOrdersClick() {
+  actionStatus.setLoading()
+
+  const action =
+    orders.value.length === 1
+      ? derivativeStore.cancelOrder(orders.value[0])
+      : derivativeStore.batchCancelOrder(orders.value)
+
+  action
+    .then(() => {
+      success({ title: t('trade.orders_cancelled') })
+    })
+    .catch($onError)
+    .finally(() => {
+      actionStatus.setIdle()
+    })
+}
+
+function onLoad() {
+  if (positionStore.subaccountPositions.length > 0) {
+    activeType.value = FilterList.OpenPositions
+  } else if (derivativeStore.subaccountOrders.length > 0) {
+    activeType.value = FilterList.OpenOrders
+  }
 }
 </script>
 
@@ -244,7 +244,7 @@ function handleCloseAllPositionsClick() {
           xs
           :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
-          @click="handleCancelAllClick"
+          @click="cancelAllOrdersClick"
         >
           {{ $t('trade.cancelAllOrders') }}
         </AppButton>
@@ -258,14 +258,14 @@ function handleCloseAllPositionsClick() {
           :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
-          @click="handleCloseAllPositionsClick"
+          @click="closeAllPositionsClick"
         >
           {{ $t('trade.closeAllPositions') }}
         </AppButton>
       </div>
     </template>
 
-    <AppHocLoading class="h-full" :status="status">
+    <AppHocLoading class="h-full" :status="status" is-emitting @loaded="onLoad">
       <CommonCard class="h-full">
         <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"

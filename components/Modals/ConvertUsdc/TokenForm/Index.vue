@@ -8,6 +8,7 @@ import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'
 
 const formValues = useFormValues<TradeForm>()
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -115,8 +116,13 @@ function handleSwap() {
 
   emit('update:isBaseAmount', !props.isBaseAmount)
 
-  formValues.value[TradeField.BaseAmount] = ''
-  formValues.value[TradeField.QuoteAmount] = ''
+  setFormValues(
+    {
+      [TradeField.BaseAmount]: '',
+      [TradeField.QuoteAmount]: ''
+    },
+    false
+  )
 
   toggleOrderSide()
 }
@@ -132,7 +138,9 @@ function updateAmount({
 }
 
 function handleMaxBaseAmountChange({ amount }: { amount: string }) {
-  formValues.value[TradeField.BaseAmount] = amount
+  setFormValues({
+    [TradeField.BaseAmount]: amount
+  })
 
   updateAmount({ amount, isBaseAmount: true })
 }
@@ -148,7 +156,9 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
     TRADE_FORM_PRICE_ROUNDING_MODE
   )
 
-  formValues.value[TradeField.BaseAmount] = amountDeductFeeToFixed
+  setFormValues({
+    [TradeField.BaseAmount]: amountDeductFee
+  })
 
   emit('update:amount', { amount: amountDeductFeeToFixed, isBaseAmount: false })
 }

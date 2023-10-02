@@ -78,7 +78,23 @@ const alternatingDenoms = computed(() => {
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'somm'
   )?.baseToken.denom
 
-  return [injDenom, atomDenom, wethDenom, wmaticDenom, sommDenom]
+  const oraiDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'orai'
+  )?.baseToken.denom
+
+  const neokDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'neok'
+  )?.baseToken.denom
+
+  return [
+    injDenom,
+    atomDenom,
+    wethDenom,
+    wmaticDenom,
+    sommDenom,
+    oraiDenom,
+    neokDenom
+  ]
 })
 
 const currentDenom = computed(

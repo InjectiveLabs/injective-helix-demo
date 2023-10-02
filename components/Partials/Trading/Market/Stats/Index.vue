@@ -2,7 +2,7 @@
 import { PropType } from 'vue'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
-defineProps({
+const props = defineProps({
   expanded: Boolean,
   isGrid: Boolean,
 
@@ -22,6 +22,10 @@ const emit = defineEmits<{
 }>()
 
 function handleTokenClick() {
+  if (props.isGrid) {
+    return
+  }
+
   emit('marketsList:toggle')
 }
 </script>
@@ -45,11 +49,7 @@ function handleTokenClick() {
           <div class="w-px h-8 border-r hidden lg:block" />
         </template>
 
-        <div
-          v-if="!isGrid"
-          class="flex items-center gap-4"
-          @click="handleTokenClick"
-        >
+        <div class="flex items-center gap-4" @click="handleTokenClick">
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
           <div class="leading-none select-none cursor-pointer">
@@ -62,6 +62,7 @@ function handleTokenClick() {
               </span>
 
               <BaseIcon
+                v-if="!isGrid"
                 name="chevron"
                 class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"

@@ -5,17 +5,24 @@ export default {
     pnl: 'PnL',
     time: 'Time',
     skip: 'Skip',
+    user: 'User',
     grids: 'Grids',
     close: 'Close',
+    amount: 'Amount',
     market: 'Market',
     endBot: 'End Bot',
     running: 'Running',
+    details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
     history: 'history',
+    enabled: 'Enabled',
+    removed: 'Removed',
     lowerPrice: 'Lower',
     upperPrice: 'Upper',
+    disabled: 'Disabled',
     duration: 'Duration',
+    stopLoss: 'Stop Loss',
     gridMode: 'Grid Mode',
     available: 'Available',
     setValues: 'Set Values',
@@ -27,24 +34,50 @@ export default {
     priceRange: 'Price Range',
     gridNumber: 'Grid Number',
     viewOrders: 'View Orders',
+    takeProfit: 'Take Profit',
+    stopReason: 'Stop Reason',
     inProgress: 'In Progress',
+    stopTrigger: 'Stop Trigger',
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
     keepQuote: 'Keep USDT Only',
+    totalAmount: 'Total Amount',
     timeCreated: 'Time Created',
     next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
+    initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
+    currentBalance: 'Current Balance',
+    totalInvestment: 'Total Investment',
     strategyRemoved: 'Strategy Removed!',
     investmentAmount: 'Investment Amount',
+    advancedSettings: 'Advanced Settings',
+    initialInvestment: 'Initial Investment',
+    stopLossTooltip:
+      'The bot will stop when the last price of the pair reaches the set stop loss.',
+    takeProfitTooltip:
+      'The bot will stop when the last price of the pair reaches the set take profit.',
+    initialInvestmentTooltip:
+      'The {quoteSymbol} and {baseSymbol} amount used to start the strategy.',
     initialEntryPrice: 'Initial Entry Price',
+    sellAllBaseOnStop: 'Sell all base on stop',
+
     changeToQuoteAndBase: 'Change to USDT + INJ',
     totalInvestmentAmount: 'Total Investment Amount',
     totalInvestmentCurrency: 'Total Investment Currency',
+    sellAllBaseCoinsOnStop: 'Sell all base coins on Stop',
+    totalInvestmentTooltip:
+      'The amount invested to start the grid when setting up the grid in {symbol}',
+    currentBalanceTooltip:
+      'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
+    sellAllBaseOnStopTooltip:
+      'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
+    nOfGridsTooltip:
+      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [INJ] in your initial investment',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
@@ -89,15 +122,16 @@ export default {
     pleaseReadTheBelowInformationCarefullyBeforeYouConfirmToProceed:
       'Please read the below information carefully before you confirm to proceed.',
     termsAndConditions:
-      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
+      'I have read and agree to the Helix Terms and Conditions. I understand that my use of grid trading is solely at my own risk and that all decisions related to grid trading are solely my own.',
     amountsMayBeLessTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
     investmentTooltip:
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
-    bannerTitle: 'Get Started on Spot Grid Trading.',
+    bannerTitle: 'Get started with Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
-    automatesBuyingAndSelling: 'automates buying and selling on spot trading.',
+    automatesBuyingAndSelling:
+      'Automate order placements to buy low, sell high.',
     splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([named('first'), named('second')]),
     setUpABot: 'Set up a bot',
@@ -106,17 +140,19 @@ export default {
 
     step1: {
       priceRange:
-        ' determines the price at which the bot will place buy and sell orders.',
-      grids: ' in the price range, defining the profit per grid.',
+        ' represents the upper and lower price levels of the orders that will be placed.',
+      grids: ' represents the number of limit orders the bot will place.',
       investment:
-        ' is the amount of capital that the bot will use to run the strategy'
+        ' is the amount of capital that the bot will use to run the strategy.'
     },
 
     step2: {
       priceFalls:
-        'When the price falls, the bot buys and sets a higher sell point.',
-      priceRises: 'When the price rises, it sells and sets a lower buy point.',
-      viewOrders: ' to check how the bot is placing them for you.',
+        'When the price falls and meet your buy order price level, your order will be filled and the bot will automatically place a sell order at a higher price.',
+      priceRises:
+        'When the price rises and meet your sell order price level, your order will be filled and the bot will automatically place a buy order at a lower price.',
+      viewOrders:
+        'You can check the open orders placed by the bot at any time.',
       faq: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Check the ', named('faq'), ' for more info.'])
     },
@@ -124,7 +160,7 @@ export default {
     step3: {
       openOrdersCancelled: 'All open orders will be canceled.',
       moneyTransferred:
-        'Your money will be transferred. back to your main account.',
+        'Assets used by the bot will be transferred back to your main account.',
       review:
         "Review the performance of your past strategies in the 'Grid Trading History' tab."
     }

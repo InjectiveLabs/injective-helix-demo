@@ -2,6 +2,7 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { StrategyStatus } from '@/types'
 
 export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarketWithToken>,
@@ -47,28 +48,38 @@ export default function useActiveGridStrategy(
     }
 
     const creationQuoteQuantity = new BigNumberInWei(
-      strategy.value.quoteQuantity || 0
+      strategy.value.subscriptionQuoteQuantity || 0
     ).toBase(market.value?.quoteToken.decimals)
 
     const creationBaseQuantity = new BigNumberInWei(
-      strategy.value.baseQuantity
+      strategy.value.subscriptionBaseQuantity
     ).toBase(market.value?.baseToken.decimals)
 
     const creationMidPrice = new BigNumberInWei(
       strategy.value.executionPrice
     ).toBase(market.value?.quoteToken.decimals)
 
-    const currentQuoteQuantity = new BigNumberInWei(
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value?.quoteDenom
-      )?.totalBalance || 0
-    ).toBase(market.value?.quoteToken.decimals)
+    const currentQuoteQuantity =
+      strategy.value.state === StrategyStatus.Active
+        ? new BigNumberInWei(
+            subaccountBalances.value.find(
+              (balance) => balance.denom === market.value?.quoteDenom
+            )?.totalBalance || 0
+          ).toBase(market.value?.quoteToken.decimals)
+        : new BigNumberInWei(strategy.value.quoteDeposit).toBase(
+            market.value?.quoteToken.decimals
+          )
 
-    const currentBaseQuantity = new BigNumberInWei(
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value?.baseDenom
-      )?.totalBalance || 0
-    ).toBase(market.value?.baseToken.decimals)
+    const currentBaseQuantity =
+      strategy.value.state === StrategyStatus.Active
+        ? new BigNumberInWei(
+            subaccountBalances.value.find(
+              (balance) => balance.denom === market.value?.baseDenom
+            )?.totalBalance || 0
+          ).toBase(market.value?.baseToken.decimals)
+        : new BigNumberInWei(strategy.value.baseDeposit).toBase(
+            market.value?.baseToken.decimals
+          )
 
     const orderbookBuy = new BigNumberInWei(
       spotStore.orderbook?.buys[0]?.price || 0
@@ -78,10 +89,12 @@ export default function useActiveGridStrategy(
       spotStore.orderbook?.sells[0]?.price || 0
     ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
 
-    const currentMidPrice = orderbookSell
-      .minus(orderbookBuy)
-      .dividedBy(2)
-      .plus(orderbookSell)
+    const currentMidPrice =
+      strategy.value.state === StrategyStatus.Active
+        ? orderbookSell.minus(orderbookBuy).dividedBy(2).plus(orderbookSell)
+        : new BigNumberInWei(strategy.value.marketMidPrice).toBase(
+            market.value?.quoteToken.decimals - market.value?.baseToken.decimals
+          )
 
     return currentQuoteQuantity
       .plus(currentBaseQuantity.times(currentMidPrice))
@@ -100,5 +113,3 @@ export default function useActiveGridStrategy(
     percentagePnl
   }
 }
-
-export type UseActiveGridStrategyType = ReturnType<typeof useActiveGridStrategy>

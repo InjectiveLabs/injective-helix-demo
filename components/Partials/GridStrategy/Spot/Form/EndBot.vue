@@ -10,7 +10,7 @@ const activeStrategy = computed(
     gridStrategyStore.activeStrategies.find(
       (strategy) =>
         strategy.contractAddress ===
-        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug || '')
+        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
     )!
 )
 

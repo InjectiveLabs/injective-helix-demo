@@ -19,6 +19,7 @@ import {
 } from '@/app/utils/constants'
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
@@ -157,9 +158,14 @@ function handleReduceOnly() {
     totalQuantity
   )
 
-  formValues.value[TradeField.BaseAmount] = amount.toFixed(
-    props.market.quantityDecimals,
-    TRADE_FORM_QUANTITY_ROUNDING_MODE
+  setFormValues(
+    {
+      [TradeField.BaseAmount]: amount.toFixed(
+        props.market.quantityDecimals,
+        TRADE_FORM_QUANTITY_ROUNDING_MODE
+      )
+    },
+    false
   )
 
   emit('update:amount', { isBaseAmount: true })
@@ -170,17 +176,25 @@ function handleDerivativePercentageChange() {
   const field = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? TradeField.BaseAmount
     : TradeField.QuoteAmount
+
   const amount = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.maxAmountOnOrderbook.totalQuantity
     : balanceToUpdateDerivativesWithFees.value
+
   const decimals = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.market.quantityDecimals
     : props.market.priceDecimals
+
   const roundingMode = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? TRADE_FORM_QUANTITY_ROUNDING_MODE
     : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  formValues.value[field] = amount.toFixed(decimals, roundingMode)
+  setFormValues(
+    {
+      [field]: amount.toFixed(decimals, roundingMode)
+    },
+    false
+  )
 
   emit('update:amount', {
     isBaseAmount: derivativeAvailableBalanceGreaterThanOrderbook.value
@@ -193,19 +207,27 @@ function handleSpotPercentageChange() {
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? TradeField.BaseAmount
       : TradeField.QuoteAmount
+
   const amount = spotAvailableBalanceGreaterThanOrderbook.value
     ? props.maxAmountOnOrderbook.totalQuantity
     : balanceToUpdateSpotWithFees.value
+
   const decimals =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? props.market.quantityDecimals
       : props.market.priceDecimals
+
   const roundingMode =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? TRADE_FORM_QUANTITY_ROUNDING_MODE
       : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  formValues.value[field] = amount.toFixed(decimals, roundingMode)
+  setFormValues(
+    {
+      [field]: amount.toFixed(decimals, roundingMode)
+    },
+    false
+  )
 
   emit('update:amount', {
     isBaseAmount:
@@ -234,9 +256,14 @@ watch(
       return
     }
 
-    formValues.value[TradeField.BaseAmount] = formatAmountToAllowableAmount(
-      formValues.value[TradeField.BaseAmount],
-      props.market.quantityTensMultiplier
+    setFormValues(
+      {
+        [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+          formValues.value[TradeField.BaseAmount],
+          props.market.quantityTensMultiplier
+        )
+      },
+      false
     )
 
     emit('update:amount', {
