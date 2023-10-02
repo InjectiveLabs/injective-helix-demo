@@ -66,7 +66,7 @@ const currentBaseBalance = computed(() => {
   return new BigNumberInWei(
     subaccountBalances.value.find(
       (balance) => balance.denom === market.value.baseDenom
-    )?.accountTotalBalanceInUsd || 0
+    )?.totalBalance || 0
   ).toBase(market.value.baseToken.decimals)
 })
 
