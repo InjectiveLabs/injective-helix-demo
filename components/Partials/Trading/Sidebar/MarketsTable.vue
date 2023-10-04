@@ -3,7 +3,7 @@ import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
-import { UiMarketAndSummaryWithVolumeInUsd, UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum SortableKeys {
@@ -34,8 +34,8 @@ const isAscending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
 const showLowVolumeMarkets = ref(false)
 
-const filteredMarkets = computed(() => {
-  return props.markets
+const filteredMarkets = computed(() =>
+  props.markets
     .filter(({ market, volumeInUsd }) => {
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
@@ -50,7 +50,7 @@ const filteredMarkets = computed(() => {
       return isPartOfType && isPartOfSearch && isLowVolumeMarket
     })
     .filter((m) => m.summary)
-})
+)
 
 const sortedMarkets = computed(() => {
   if (sortBy.value.trim() === '') {
@@ -97,7 +97,6 @@ const sortedMarkets = computed(() => {
       v-model:show-low-volume-markets="showLowVolumeMarkets"
       class="mb-2"
     />
-
     <CommonTableHeader classes="flex flex-wrap mb-2 max-3xl:px-0">
       <div class="flex items-center flex-1 text-2xs">
         <AppSortableHeaderItem
@@ -124,7 +123,7 @@ const sortedMarkets = computed(() => {
       </div>
 
       <div
-        class="flex items-center justify-end flex-1 text-2xs whitespace-nowrap"
+        class="flex items-center justify-end lg:justify-start 2xl:justify-end flex-1 text-2xs whitespace-nowrap"
       >
         <span class="font-normal text-gray-200">
           {{ $t('trade.price') }} /
@@ -147,17 +146,24 @@ const sortedMarkets = computed(() => {
       :show-empty="sortedMarkets.length === 0"
       class="rounded overflow-hidden"
     >
-      <PartialsTradingSidebarMarketsTableRow
-        v-for="(marketSummary, index) in sortedMarkets"
-        v-bind="{
-          ...$attrs,
-          market: marketSummary.market,
-          summary: marketSummary.summary,
-          volumeInUsd: marketSummary.volumeInUsd,
-          isCurrentMarket: market.marketId === marketSummary.market.marketId,
-          isGrid
-        }"
-        :key="`market-row-${index}-${marketSummary.market.marketId}`"
+      <div v-if="!activeType">
+        <PartialsTradingSidebarMarketsTableRow
+          v-for="(marketSummary, index) in sortedMarkets"
+          v-bind="{
+            ...$attrs,
+            market: marketSummary.market,
+            summary: marketSummary.summary,
+            volumeInUsd: marketSummary.volumeInUsd,
+            isCurrentMarket: market.marketId === marketSummary.market.marketId,
+            isGrid
+          }"
+          :key="`market-row-${index}-${marketSummary.market.marketId}`"
+        />
+      </div>
+
+      <PartialsTradingSidebarSpotPerpetualMarketsTableRows
+        v-else
+        v-bind="{ ...$attrs, isGrid, market, markets: sortedMarkets }"
       />
 
       <template #empty>
