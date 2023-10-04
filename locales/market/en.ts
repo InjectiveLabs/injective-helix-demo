@@ -18,7 +18,9 @@ export default {
     expiredRecently: 'Expired in last 24 hours',
     settledAt: 'Settled at',
     airdrop: 'Airdrop',
-    showLowVol: 'Show low Vol.'
+    showLowVol: 'Show low Vol.',
+    perpetuals: 'Perpetuals',
+    preLaunchExpiry: 'Pre Launch Expiry'
   },
 
   marketPage: {

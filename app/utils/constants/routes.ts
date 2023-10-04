@@ -46,6 +46,9 @@ export const getRoutes = (network: Network, env: string) => {
 
   const gridTradingSpot = ['inj-usdt']
 
+  const binaryOptions: string[] = []
+  const expiryFutures: string[] = ['eth-usdt-19sep22']
+
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
     spot.push('proj-inj')
@@ -66,10 +69,9 @@ export const getRoutes = (network: Network, env: string) => {
       'btc-usdt-perp-pyth',
       'arb-usdt-perp'
     )
-  }
 
-  const binaryOptions: string[] = []
-  const expiryFutures: string[] = ['eth-usdt-19sep22']
+    expiryFutures.push('tia-usdt-01nov2023')
+  }
 
   // Redirection pairs
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
