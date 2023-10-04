@@ -43,7 +43,7 @@ const activeType = ref('')
 const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
 const ascending = ref(false)
-const showLowVolumeMarkets = ref(false)
+const showLowVolumeMarkets = ref(true)
 
 const recentlyExpiredMarkets = computed(
   () => derivativeStore.recentlyExpiredMarkets

@@ -174,7 +174,7 @@ export enum SurveyTitle {
 }
 
 export enum DefaultMarket {
-  Perpetual = 'btc-usdt-perp',
+  Perpetual = 'gold-usdt-perp',
   Spot = 'inj-usdt'
 }
 
