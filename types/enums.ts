@@ -116,9 +116,10 @@ export enum MarketFilterType {
 
 export enum MarketCategoryType {
   All = 'all',
-  Cosmos = 'cosmos',
-  Ethereum = 'ethereum',
-  Experimental = 'experimental'
+  Energy = 'energy',
+  Index = 'index',
+  Metals = 'metals',
+  Commodities = 'commodities'
 }
 
 export enum MarketQuoteType {

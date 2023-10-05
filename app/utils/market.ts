@@ -10,19 +10,14 @@ import {
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
 import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
+import { MARKET_CATEGORIES } from './constants/categories'
 import {
   DefaultMarket,
   MarketCategoryType,
   MarketQuoteType,
   MarketRoute
 } from '@/types'
-import {
-  upcomingMarkets,
-  deprecatedMarkets,
-  experimentalMarketsSlug,
-  slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory
-} from '@/app/data/market'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -116,28 +111,7 @@ export const marketIsPartOfCategory = (
     return true
   }
 
-  const marketHasIbcDenom =
-    market.baseToken.denom.startsWith('ibc') ||
-    market.quoteDenom.startsWith('ibc')
-
-  if (activeCategory === MarketCategoryType.Cosmos) {
-    return (
-      marketHasIbcDenom || slugsToIncludeInCosmosCategory.includes(market.slug)
-    )
-  }
-
-  if (activeCategory === MarketCategoryType.Ethereum) {
-    return (
-      !marketHasIbcDenom &&
-      slugsToIncludeInEthereumCategory.includes(market.slug)
-    )
-  }
-
-  if (activeCategory === MarketCategoryType.Experimental) {
-    return experimentalMarketsSlug.includes(market.slug)
-  }
-
-  return true
+  return MARKET_CATEGORIES[activeCategory].includes(market.slug)
 }
 
 export const marketIsQuotePair = (

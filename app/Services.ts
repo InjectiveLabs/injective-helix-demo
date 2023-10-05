@@ -121,7 +121,7 @@ export const tokenService = new TokenService({
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
-export const denomClient = new DenomClient(NETWORK, { endpoints: ENDPOINTS })
+export const denomClient = new DenomClient(NETWORK)
 
 // UI Services
 export const bridgeTransformer = new UiBridgeTransformer(NETWORK)

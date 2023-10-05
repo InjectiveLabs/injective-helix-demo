@@ -157,14 +157,6 @@ function fillRouteQueryParams(params: Record<string, string>) {
             <span v-else-if="filterType === FilterList.All">
               {{ $t('trade.allMarkets') }}
             </span>
-
-            <span v-else-if="filterType === FilterList[MarketType.Spot]">
-              {{ $t('trade.spots') }}
-            </span>
-
-            <span v-else-if="filterType === FilterList[MarketType.Derivative]">
-              {{ $t('trade.futures') }}
-            </span>
           </CommonTabMenuItem>
         </template>
       </AppSelectButton>
