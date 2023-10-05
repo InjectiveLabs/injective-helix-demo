@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const auctionStore = useAuctionStore()
-
-const market = computed(() => auctionStore.markets[0])
+import { AUCTIONS } from '@/app/data/market'
 </script>
 
 <template>
@@ -13,12 +11,11 @@ const market = computed(() => auctionStore.markets[0])
         the community to participate in projects on Injective.
       </p>
 
-      <div v-if="auctionStore.markets.length > 0" class="max-md:w-full">
-        <!-- We only have two auctions for now as a mockup demo -->
-        <PartialsAuctionsAuction v-bind="{ market }" />
+      <div class="max-md:w-full space-y-4">
         <PartialsAuctionsAuction
-          v-bind="{ market, isUpcoming: true }"
-          class="mt-6"
+          v-for="auction in AUCTIONS"
+          :key="`auction-${auction.marketId}-${auction.name}`"
+          v-bind="{ auction }"
         />
       </div>
 

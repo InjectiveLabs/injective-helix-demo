@@ -4,7 +4,7 @@ import {
   UiSpotTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import { indexerSpotApi, tokenService } from '~/app/Services'
-import { AUCTION_MARKET_IDS } from '~/app/data/market'
+import { AUCTIONS } from '@/app/data/market'
 
 type AuctionStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -30,7 +30,7 @@ export const useAuctionStore = defineStore('auction', {
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
       const uiMarketsWithToken = uiMarkets.filter((market) =>
-        AUCTION_MARKET_IDS.includes(market.marketId)
+        AUCTIONS.find((auction) => auction.marketId === market.marketId)
       )
 
       auctionStore.$patch({

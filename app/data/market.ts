@@ -1,5 +1,5 @@
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { MarketPromotion, UiMarketWithToken } from '@/types'
+import { Auction, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -133,4 +133,26 @@ export const marketPromotions = [
 
 export const AUCTION_MARKET_IDS = [
   '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
+]
+
+export const AUCTIONS: Auction[] = [
+  {
+    name: 'Talis',
+    description:
+      'Talis is a NFT marketplace that empowers artists and bridges physical & digital art on the Injective. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam et velit odio. Integer nisl arcu, vulputate vel gravida vitae, rutrum nec enim. Nunc sit amet est in enim malesuada lobortis id ut metus. Cras ut ex ac orci sollicitudin facilisis. Integer vehicula mollis vulputate.',
+    logo: '/images/talis-logo.svg',
+    marketId:
+      '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2',
+    tokensOffered: '100000',
+    auctionStarts: new Date(2023, 8, 17, 3, 0),
+    auctionCloses: new Date(2023, 11, 17, 3, 0),
+    projectDetails: '',
+    website: 'https://injective.talis.art/',
+    twitter: 'https://twitter.com/ProtocolTalis',
+    tokenAddress: '',
+    startingBidPrice: '1',
+    slug: 'demo-usdt',
+    headerDescription:
+      'The NFT marketplace that empowers artists and bridges physical & digital art on the Injective.'
+  }
 ]

@@ -14,7 +14,7 @@ watch(
   () => walletStore.isUserWalletConnected,
   (isConnected) => {
     if (!isConnected) {
-      navigateTo(`/auctions/${props.market.slug}/?showAuctions=true`)
+      navigateTo(`/auctions/${props.market.slug}/`)
     }
   }
 )

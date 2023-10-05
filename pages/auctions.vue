@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-definePageMeta({
-  middleware: ['auction']
-})
-
 const auctionStore = useAuctionStore()
 const { $onError } = useNuxtApp()
 
