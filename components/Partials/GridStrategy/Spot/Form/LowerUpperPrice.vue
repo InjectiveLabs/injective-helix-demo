@@ -19,14 +19,24 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
     rule: 'requiredSgt',
-    dynamicRule: computed(() => `lessThanSgt:${spotLastTradedPrice.value}`)
+    dynamicRule: computed(
+      () =>
+        `lessThanSgt:${spotLastTradedPrice.value.minus(
+          spotLastTradedPrice.value.times(0.05)
+        )}`
+    )
   })
 
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: SpotGridTradingField.UpperPrice,
     rule: 'requiredSgt',
-    dynamicRule: computed(() => `greaterThanSgt:${spotLastTradedPrice.value}`)
+    dynamicRule: computed(
+      () =>
+        `greaterThanSgt:${spotLastTradedPrice.value.plus(
+          spotLastTradedPrice.value.times(0.05)
+        )}`
+    )
   })
 </script>
 
