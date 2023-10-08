@@ -380,8 +380,8 @@ export const customAggregations = {
   },
 
   'TIA/USDT-30NOV23': {
-    minTick: getDecimalPlaceFromValue('0.1'),
-    default: getDecimalPlaceFromValue('0.1'),
-    maxTick: getDecimalPlaceFromValue('100')
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   }
 } as Record<string, CustomAggregation>
