@@ -4,6 +4,7 @@ import { UiMarketWithToken } from '@/types'
 
 export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
   const spotStore = useSpotStore()
+  const derivativeStore = useDerivativeStore()
   const exchangeStore = useExchangeStore()
 
   const rewardsCampaign = computed(() => {
@@ -117,15 +118,40 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       return {}
     }
 
-    return derivativeBoostedMarketIdList.value.reduce(
-      (boostedMarkets, marketId, index) => {
+    const boostedDerivativeMarketsPointsMap =
+      derivativeBoostedMarketIdList.value.reduce(
+        (boostedMarkets, marketId, index) => {
+          return {
+            ...boostedMarkets,
+            [marketId]: derivativeBoostedMultiplierList.value[index]
+          }
+        },
+        {} as Record<string, PointsMultiplier>
+      )
+
+    const DEFAULT_POINTS_MULTIPLIER = '1000000000000000000'
+    const nonBoostedDerivativesMarketsPointsMap = [...derivativeStore.markets]
+      .filter(
+        (derivativeMarket) =>
+          !derivativeBoostedMarketIdList.value.includes(
+            derivativeMarket.marketId
+          ) &&
+          !disqualifiedMarketIdsList.value.includes(derivativeMarket.marketId)
+      )
+      .reduce((records, market) => {
         return {
-          ...boostedMarkets,
-          [marketId]: derivativeBoostedMultiplierList.value[index]
+          ...records,
+          [market.marketId]: {
+            makerPointsMultiplier: DEFAULT_POINTS_MULTIPLIER,
+            takerPointsMultiplier: DEFAULT_POINTS_MULTIPLIER
+          }
         }
-      },
-      {} as Record<string, PointsMultiplier>
-    )
+      }, {}) as Record<string, PointsMultiplier>
+
+    return {
+      ...boostedDerivativeMarketsPointsMap,
+      ...nonBoostedDerivativesMarketsPointsMap
+    }
   })
 
   const spotMarketMakerTakePointsMap = computed(() => {
