@@ -9,6 +9,7 @@ export const getRoutes = (network: Network, env: string) => {
     'inj-usdt',
     'stinj-inj',
     'kava-usdt',
+    'usdtkv-usdt',
     'atom-usdt',
     'arb-usdt',
     'chz-usdcet',
