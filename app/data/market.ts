@@ -9,6 +9,7 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'axl-usdt-perp',
+  'tia-usdt-01nov2023',
   'btc-usdtkv-perp',
   'eth-usdtkv-perp',
   'orai-usdt',

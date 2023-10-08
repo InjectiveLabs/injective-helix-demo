@@ -108,6 +108,7 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    expiryFutures.push('tia-usdt-01nov2023')
   }
 
   if (IS_DEVNET) {
