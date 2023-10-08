@@ -7,8 +7,9 @@ export const getRoutes = (network: Network, env: string) => {
 
   const spot = [
     'inj-usdt',
-    'atom-usdt',
     'stinj-inj',
+    'kava-usdt',
+    'atom-usdt',
     'arb-usdt',
     'chz-usdcet',
     'wmatic-usdt',
@@ -34,6 +35,9 @@ export const getRoutes = (network: Network, env: string) => {
   const perpetuals = [
     'btc-usdt-perp',
     'inj-usdt-perp',
+    'btc-usdtkv-perp',
+    'eth-usdtkv-perp',
+    'axl-usdt-perp',
     'xrp-usdt-perp',
     'eth-usdt-perp',
     'bonk-usdt-perp',
