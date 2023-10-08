@@ -51,7 +51,7 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpot = ['inj-usdt']
 
   const binaryOptions: string[] = []
-  const expiryFutures: string[] = ['eth-usdt-19sep22']
+  const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
 
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
@@ -108,7 +108,6 @@ export const getRoutes = (network: Network, env: string) => {
 
   if (IS_STAGING) {
     spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
-    expiryFutures.push('tia-usdt-01nov2023')
   }
 
   if (IS_DEVNET) {
