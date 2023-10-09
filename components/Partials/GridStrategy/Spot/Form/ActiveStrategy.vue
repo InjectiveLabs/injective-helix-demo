@@ -39,7 +39,6 @@ const {
   lowerBound,
   upperBound,
   takeProfit,
-  totalInvestment,
   creationExecutionPrice,
   subscriptionBaseQuantity,
   subscriptionQuoteQuantity
@@ -82,6 +81,18 @@ const currentQuoteBalance = computed(() => {
   ).toBase(market.value.quoteToken.decimals)
 })
 
+const accountTotalBalanceInUsd = computed(() =>
+  subaccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
+    ZERO_IN_BASE
+  )
+)
+
 const createdAtFormatted = computed(() =>
   format(new Date(Number(props.activeStrategy.createdAt)), 'dd MMM HH:mm:ss')
 )
@@ -109,8 +120,8 @@ const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
-  totalInvestment,
+const { valueToString: totalAmountToString } = useBigNumberFormatter(
+  accountTotalBalanceInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -201,7 +212,7 @@ useIntervalFn(() => {
           "
         />
       </p>
-      <p>{{ totalInvestmentToString }} {{ market?.quoteToken.symbol }}</p>
+      <p>{{ totalAmountToString }} {{ market?.quoteToken.symbol }}</p>
     </div>
 
     <div class="flex items-start justify-between mb-2">

@@ -71,7 +71,7 @@ export default {
     totalInvestmentCurrency: 'Total Investment Currency',
     sellAllBaseCoinsOnStop: 'Sell all base coins on Stop',
     totalInvestmentTooltip:
-      'The amount invested to start the grid when setting up the grid in {symbol}',
+      'Your current Spot Grid Trading Sub account net worth',
     currentBalanceTooltip:
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
     sellAllBaseOnStopTooltip:
