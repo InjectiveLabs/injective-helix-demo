@@ -45,7 +45,7 @@ function setMarketAndStrategy(
 
     <CommonEmptyList
       v-if="removedStrategies.length === 0"
-      :message="'No Strategies Found'"
+      :message="$t('sgt.noStrategiesFound')"
     />
 
     <ModalsGridStrategyDetails
