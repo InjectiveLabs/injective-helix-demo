@@ -29,12 +29,12 @@ function setMarketAndStrategy(
 </script>
 
 <template>
-  <div>
+  <div class="bg-black h-full">
     <div v-if="removedStrategies.length > 0" class="min-w-[1100px]">
       <PartialsGridStrategySpotStrategiesHistoryHeader />
     </div>
 
-    <div class="min-w-[1100px] overflow-y-auto noScrollbar">
+    <div class="min-w-[1100px] overflow-y-auto noScrollbar bg-black">
       <PartialsGridStrategySpotStrategiesHistoryRow
         v-for="strategy in removedStrategies"
         :key="`strategy-${strategy.createdAt}`"

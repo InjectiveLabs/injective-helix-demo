@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-9 text-xs p-4 gap-2">
+  <div class="grid grid-cols-9 text-xs p-4 gap-2 bg-gray-900">
     <div>{{ $t('sgt.time') }}</div>
     <div>{{ $t('sgt.market') }}</div>
     <div class="text-right">{{ $t('sgt.lowerBound') }}</div>
