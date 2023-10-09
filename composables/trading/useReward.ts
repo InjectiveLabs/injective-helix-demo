@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 import { PointsMultiplier } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
 
 export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
@@ -143,7 +144,7 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       {} as Record<string, PointsMultiplier>
     )
 
-    const DEFAULT_POINTS_MULTIPLIER = '1000000000000000000'
+    const DEFAULT_POINTS_MULTIPLIER = new BigNumberInBase(1).toWei().toFixed()
     const nonBoostedSpotMarketsPointsMap = [...spotStore.markets]
       .filter(
         (spotMarket) =>
