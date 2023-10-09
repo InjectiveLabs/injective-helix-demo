@@ -30,7 +30,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     </PartialsGridStrategySpotCommonDetails>
 
     <PartialsGridStrategySpotCommonRemoveStrategy
-      v-bind="{ createdAt: activeStrategy.createdAt, pnl: pnl.toString() }"
+      v-bind="{ createdAt: activeStrategy.createdAt, pnl: pnl.toFixed() }"
     >
       <template #default="{ removeStrategy, status }">
         <AppButton
