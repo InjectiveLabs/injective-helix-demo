@@ -41,7 +41,7 @@ defineProps({
 
     <CommonCardTableWrap class="flex-1">
       <CommonCard class="h-full flex-auto">
-        <div v-if="!walletStore.isUserWalletConnected">
+        <div v-if="!walletStore.isUserWalletConnected" class="bg-black h-full">
           <CommonUserNotConnectedNote cta />
         </div>
 
