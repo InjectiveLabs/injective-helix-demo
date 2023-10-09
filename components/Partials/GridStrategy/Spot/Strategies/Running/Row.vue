@@ -49,17 +49,17 @@ const duration = computed(() =>
   formatDistance(Number(props.strategy.createdAt), now.value)
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
   { decimalPlaces: 2 }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
   { decimalPlaces: 2 }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
   decimalPlaces: 2
 })
 
@@ -89,7 +89,7 @@ function onRemoveStrategy() {
       amplitudeGridStrategyTracker.removeStrategy({
         duration: duration.value,
         market: gridStrategyStore.spotMarket?.slug || '',
-        totalProfit: pnltoString.value
+        totalProfit: pnlToString.value
       })
     })
 }
@@ -125,11 +125,11 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
@@ -145,7 +145,7 @@ useIntervalFn(() => {
     >
       <div>
         <div>
-          {{ pnltoString }}
+          {{ pnlToString }}
           {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>
