@@ -68,12 +68,12 @@ export const slugsToIncludeInEthereumCategory = [
   'ethbtctrend-usdt',
   'steadyeth-usdt',
   'steadybtc-usdt',
-  'btc-usdt-perp',
   'inj-usdt-perp',
   'bonk-usdt-perp',
   'eth-usdt-perp',
   'bnb-usdt-perp',
-  'stx-usdt-perp'
+  'stx-usdt-perp',
+  'eth-usdtkv-perp'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
