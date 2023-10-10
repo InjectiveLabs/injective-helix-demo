@@ -137,8 +137,8 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj'
-  // UST = 'ust'
+  INJ = 'inj',
+  USDTkv = 'usdtkv'
 }
 
 export enum StreamType {

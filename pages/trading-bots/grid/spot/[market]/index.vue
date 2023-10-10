@@ -29,7 +29,7 @@ function setMarketAndStrategy(
 </script>
 
 <template>
-  <div>
+  <div class="bg-black h-full">
     <div v-if="activeStrategies.length > 0" class="min-w-[1100px]">
       <PartialsGridStrategySpotStrategiesRunningHeader />
     </div>
@@ -45,7 +45,8 @@ function setMarketAndStrategy(
 
     <CommonEmptyList
       v-if="activeStrategies.length === 0"
-      :message="'No Strategies Found'"
+      :message="$t('sgt.noStrategiesFound')"
+      class="h-full"
     />
 
     <ModalsGridStrategyDetails
