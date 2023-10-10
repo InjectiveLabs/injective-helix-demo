@@ -125,19 +125,18 @@ export const marketIsPartOfCategory = (
     return true
   }
 
-  const marketHasIbcDenom =
-    market.baseToken.denom.startsWith('ibc') ||
-    market.quoteDenom.startsWith('ibc')
+  const isIbcBaseDenomMarket = market.baseToken.denom.startsWith('ibc')
 
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
-      marketHasIbcDenom || slugsToIncludeInCosmosCategory.includes(market.slug)
+      isIbcBaseDenomMarket ||
+      slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
-      !marketHasIbcDenom &&
+      !isIbcBaseDenomMarket &&
       slugsToIncludeInEthereumCategory.includes(market.slug)
     )
   }
@@ -157,10 +156,15 @@ export const marketIsQuotePair = (
     return true
   }
 
+  const usdtkvSymbolLowercased = MarketQuoteType.USDTkv.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
   const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
+
+  if (activeQuote === MarketQuoteType.USDTkv) {
+    return marketQuoteSymbol.includes(usdtkvSymbolLowercased)
+  }
 
   if (activeQuote === MarketQuoteType.USDT) {
     return marketQuoteSymbol.includes(usdtSymbolLowercased)
