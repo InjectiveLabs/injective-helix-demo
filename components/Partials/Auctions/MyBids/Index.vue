@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Auction } from '@/types'
 
 const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  auction: {
+    type: Object as PropType<Auction>,
     required: true
   }
 })
@@ -15,6 +22,39 @@ const orderHistoryFiltered = computed(() =>
     (order) => order.marketId === props.market.marketId
   )
 )
+
+const currentProjectedPrice = computed(() => {
+  if (!spotStore.orderbook) {
+    return 1
+  }
+
+  const auctionTotalAmount = props.auction.tokensOffered
+  const auctionTotalAmountInWei = new BigNumberInBase(auctionTotalAmount)
+    .toWei(props.market.baseToken.decimals)
+    .toNumber()
+
+  let quantity = 0
+  let currentProjectedPrice = 1
+
+  const orderbookSortedFromHighestBid = [...spotStore.orderbook.buys].sort(
+    (a, b) => new BigNumberInBase(b.price).minus(a.price).toNumber()
+  )
+
+  for (const order of orderbookSortedFromHighestBid) {
+    quantity += Number(order.quantity)
+
+    if (quantity >= auctionTotalAmountInWei) {
+      currentProjectedPrice = new BigNumberInWei(order.price)
+        .toBase(
+          props.market.baseToken.decimals - props.market.quoteToken.decimals
+        )
+        .toNumber()
+      break
+    }
+  }
+
+  return quantity < auctionTotalAmountInWei ? 1 : currentProjectedPrice
+})
 </script>
 
 <template>
@@ -35,7 +75,7 @@ const orderHistoryFiltered = computed(() =>
           <PartialsAuctionsMyBidsRow
             v-for="order in orderHistoryFiltered"
             :key="`order-${order.orderHash}`"
-            v-bind="{ order, market }"
+            v-bind="{ order, market, currentProjectedPrice }"
           />
         </tbody>
       </table>

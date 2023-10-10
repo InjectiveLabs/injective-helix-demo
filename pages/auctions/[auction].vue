@@ -62,8 +62,11 @@ onMounted(() => {
 function loadSubaccountDetails() {
   if (market.value && walletStore.isUserWalletConnected) {
     accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+    accountStore.fetchAccountPortfolio()
     spotStore.fetchSubaccountOrders([market.value.marketId])
-    spotStore.fetchSubaccountOrderHistory()
+    spotStore.fetchSubaccountOrderHistory({
+      filters: { marketIds: [market.value.marketId] }
+    })
     spotStore.streamSubaccountOrders(market.value.marketId)
     spotStore.streamSubaccountOrderHistory(market.value.marketId)
   }
@@ -124,7 +127,7 @@ useIntervalFn(() => {
 
         <div>
           <div class="bg-gray-800 rounded-2xl p-8 relative">
-            <PartialsAuctionsForm v-bind="{ market }" />
+            <PartialsAuctionsForm v-bind="{ market, auction }" />
 
             <div
               v-if="!walletStore.isUserWalletConnected"

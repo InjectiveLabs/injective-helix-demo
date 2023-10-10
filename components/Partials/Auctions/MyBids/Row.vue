@@ -16,6 +16,11 @@ const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
+  },
+
+  currentProjectedPrice: {
+    type: Number,
+    required: true
   }
 })
 
@@ -39,6 +44,10 @@ const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
 const { valueToString: totalToString } = useBigNumberFormatter(total, {
   decimalPlaces: 2
 })
+
+const isOrderLowerThatProjectedPrice = computed(() =>
+  price.value.lt(props.currentProjectedPrice)
+)
 
 function cancelOrder() {
   const order = spotStore.subaccountOrders.find(
@@ -75,7 +84,7 @@ function cancelOrder() {
       v-if="
         [OrderState.Booked, OrderState.PartiallyFilled].includes(
           order.state as OrderState
-        )
+        ) && isOrderLowerThatProjectedPrice
       "
       class="w-0"
     >

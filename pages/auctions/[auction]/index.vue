@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { UiSpotMarketWithToken, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { Auction } from '@/types'
 
 const props = defineProps({
@@ -8,6 +10,49 @@ const props = defineProps({
   auction: {
     type: Object as PropType<Auction>,
     required: true
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  }
+})
+
+const spotStore = useSpotStore()
+
+const auctionStartsFormatted = computed(() =>
+  format(props.auction.auctionStarts, 'MMM dd, yyyy HH:mm')
+)
+
+const auctionClosesFormatted = computed(() =>
+  format(props.auction.auctionCloses, 'MMM dd, yyyy HH:mm')
+)
+
+const totalAmountProjected = computed(() => {
+  let totalTokensInWei = new BigNumberInBase(props.auction.tokensOffered).toWei(
+    props.market.baseToken.decimals
+  )
+
+  let projectedAmount = ZERO_IN_WEI
+
+  if (spotStore.orderbook && spotStore.orderbook.buys.length > 0) {
+    for (const bid of spotStore.orderbook.buys) {
+      if (totalTokensInWei.minus(bid.quantity).lt(0)) {
+        projectedAmount = projectedAmount.plus(
+          totalTokensInWei.times(bid.price)
+        )
+        break
+      } else {
+        totalTokensInWei = totalTokensInWei.minus(bid.quantity)
+        projectedAmount = projectedAmount.plus(
+          new BigNumberInBase(bid.quantity).times(bid.price)
+        )
+      }
+    }
+
+    return projectedAmount.toBase(props.market.baseToken.decimals)
+  } else {
+    return new BigNumberInBase(1)
   }
 })
 
@@ -21,12 +66,9 @@ const { valueToString: startingBidPriceToString } = useBigNumberFormatter(
   { decimalPlaces: 2 }
 )
 
-const auctionStartsFormatted = computed(() =>
-  format(props.auction.auctionStarts, 'MMM dd, yyyy HH:mm')
-)
-
-const auctionClosesFormatted = computed(() =>
-  format(props.auction.auctionCloses, 'MMM dd, yyyy HH:mm')
+const { valueToString: totalAmountProjectedToString } = useBigNumberFormatter(
+  totalAmountProjected,
+  { decimalPlaces: 2 }
 )
 </script>
 
@@ -97,7 +139,7 @@ const auctionClosesFormatted = computed(() =>
         class="flex justify-between items-center py-4 border-y border-y-gray-600"
       >
         <p>Total amount raised (Projected)</p>
-        <p>10,100,200 USDT</p>
+        <p>{{ totalAmountProjectedToString }} USDT</p>
       </div>
     </div>
   </div>

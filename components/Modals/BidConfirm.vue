@@ -54,7 +54,7 @@ function handleBid() {
 
 <template>
   <AppModal
-    :show="modalStore.modals[Modal.BidConfirm]"
+    :is-open="modalStore.modals[Modal.BidConfirm]"
     sm
     @modal:closed="closeModal"
   >

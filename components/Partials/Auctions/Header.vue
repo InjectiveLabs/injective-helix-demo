@@ -46,7 +46,7 @@ const auctionTime = computed(() =>
           class="font-bold text-sm py-0.5 px-2 rounded-md text-black"
           :class="[isLive ? 'bg-green-500' : 'bg-orange-500']"
         >
-          {{ $route.query.isUpcoming === 'true' ? 'UPCOMING' : 'LIVE' }}
+          {{ isLive ? 'LIVE' : 'UPCOMING' }}
         </p>
       </div>
 

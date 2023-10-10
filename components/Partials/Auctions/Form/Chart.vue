@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { OrderState } from '@injectivelabs/ts-types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -10,9 +12,9 @@ const props = defineProps({
     required: true
   },
 
-  bid: {
-    type: String,
-    default: '0'
+  currentProjectedPrice: {
+    type: Number,
+    required: true
   }
 })
 
@@ -23,26 +25,26 @@ const walletStore = useWalletStore()
 const target = ref(null)
 const chart = ref<null | ApexCharts>(null)
 
-const isBlured = computed(
+const isBlurred = computed(
   () => !walletStore.isUserWalletConnected || route.query.isUpcoming === 'true'
 )
 
-const amount = computed(() => {
-  if (spotStore.subaccountOrders.length > 0) {
-    const subaccountOrdersSorted = [...spotStore.subaccountOrders].sort(
-      (a, b) => {
-        return Number(a.price) - Number(b.price)
-      }
+const yourBidsSorted = computed(() =>
+  [...spotStore.subaccountOrders]
+    .filter((bid) =>
+      [OrderState.Booked, OrderState.PartiallyFilled].includes(bid.state)
     )
-    return new BigNumberInWei(subaccountOrdersSorted[0].price)
-      .toBase(
-        props.market.quoteToken.decimals - props.market.baseToken.decimals
-      )
-      .toFixed(2)
-  }
-
-  return null
-})
+    .sort((a, b) => {
+      return Number(a.price) - Number(b.price)
+    })
+    .map((bid) =>
+      new BigNumberInWei(bid.price)
+        .toBase(
+          props.market.quoteToken.decimals - props.market.baseToken.decimals
+        )
+        .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    )
+)
 
 const orderbookBuysFormatted = computed(() =>
   (spotStore.orderbook?.buys || [])
@@ -58,39 +60,6 @@ const orderbookBuysFormatted = computed(() =>
     }))
     .filter((order) => Number(order.price) >= 1)
 )
-
-const currentBid = computed(() => {
-  if (!spotStore.orderbook) {
-    return 1
-  }
-
-  const TALIS_TOTAL_AMOUNT = 100000
-  const TALIS_TOTAL_AMOINT_IN_WEI = new BigNumberInBase(TALIS_TOTAL_AMOUNT)
-    .toWei(props.market.baseToken.decimals)
-    .toNumber()
-
-  let quantity = 0
-  let currentBid = 1
-
-  const orderbookSortedFromHighestBid = [...spotStore.orderbook.buys].sort(
-    (a, b) => new BigNumberInBase(b.price).minus(a.price).toNumber()
-  )
-
-  for (const order of orderbookSortedFromHighestBid) {
-    quantity += Number(order.quantity)
-
-    if (quantity >= TALIS_TOTAL_AMOINT_IN_WEI) {
-      currentBid = new BigNumberInWei(order.price)
-        .toBase(
-          props.market.baseToken.decimals - props.market.quoteToken.decimals
-        )
-        .toNumber()
-      break
-    }
-  }
-
-  return quantity < TALIS_TOTAL_AMOINT_IN_WEI ? 1 : currentBid
-})
 
 const options = computed<ApexOptions>(() => ({
   series: [
@@ -172,7 +141,7 @@ onUnmounted(() => {
 })
 
 watch(
-  [amount, currentBid, target, orderbookBuysFormatted],
+  [yourBidsSorted, props, target, orderbookBuysFormatted],
   () => {
     if (chart.value) {
       chart.value.updateOptions({
@@ -200,32 +169,11 @@ watch(
 
       chart.value.clearAnnotations()
 
-      if (isBlured.value) return
+      if (isBlurred.value) return
 
-      if (currentBid.value) {
+      if (props.currentProjectedPrice) {
         chart.value.addXaxisAnnotation({
-          x: currentBid.value,
-          strokeDashArray: 2,
-          borderColor: 'transparent',
-          label: {
-            borderColor: 'transparent',
-            style: {
-              color: '#ffffff',
-              background: 'transparent',
-              fontSize: '0.9rem',
-              padding: { bottom: 5, left: 5, right: 5, top: 5 }
-            },
-            text: 'Current Bid',
-            orientation: 'landscape',
-            borderRadius: 10,
-            id: 'currentBidText'
-          }
-        })
-      }
-
-      if (currentBid.value) {
-        chart.value.addXaxisAnnotation({
-          x: currentBid.value,
+          x: props.currentProjectedPrice,
           strokeDashArray: 2,
           borderColor: '#ffffff',
           label: {
@@ -237,7 +185,6 @@ watch(
               fontSize: '1rem'
             },
             offsetY: 30,
-            text: currentBid.value.toFixed(2),
             orientation: 'landscape',
             borderRadius: 15
           },
@@ -245,11 +192,12 @@ watch(
         })
       }
 
-      if (amount.value) {
+      for (const [index, bid] of [...yourBidsSorted.value]
+        .reverse()
+        .entries()) {
         chart.value.addXaxisAnnotation({
-          x: amount.value,
+          x: bid,
           strokeDashArray: 2,
-          offsetY: 44,
           borderColor: '#F3A400',
           label: {
             borderColor: '#F3A400',
@@ -259,7 +207,7 @@ watch(
               padding: { bottom: 5, left: 10, right: 10, top: 5 },
               fontSize: '1rem'
             },
-            text: amount.value,
+            text: index === yourBidsSorted.value.length - 1 ? bid : undefined,
             orientation: 'landscape',
             offsetY: 60,
             borderRadius: 15,
@@ -268,29 +216,72 @@ watch(
         })
       }
 
-      if (amount.value) {
+      if (props.currentProjectedPrice) {
         chart.value.addXaxisAnnotation({
-          x: amount.value,
+          x: props.currentProjectedPrice,
           strokeDashArray: 2,
           borderColor: 'transparent',
           label: {
             borderColor: 'transparent',
             style: {
-              color: '#F3A400',
+              color: '#ffffff',
               background: 'transparent',
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              padding: { bottom: 5, left: 5, right: 5, top: 5 }
             },
-            text: 'Your Bid',
+            text: 'Projected Price',
             orientation: 'landscape',
-            offsetY: 85,
             borderRadius: 10,
-            id: 'yourBidText'
+            id: 'currentBidText'
           }
         })
+
+        chart.value.addXaxisAnnotation({
+          x: props.currentProjectedPrice,
+          strokeDashArray: 2,
+          borderColor: '#ffffff00',
+          label: {
+            borderColor: '#ffffff',
+            style: {
+              color: '#000000',
+              background: '#ffffff',
+              padding: { bottom: 5, left: 10, right: 10, top: 5 },
+              fontSize: '1rem'
+            },
+            offsetY: 30,
+            text: props.currentProjectedPrice.toFixed(2),
+            orientation: 'landscape',
+            borderRadius: 15
+          },
+          id: 'currentBid'
+        })
+      }
+
+      for (const [index, bid] of yourBidsSorted.value.entries()) {
+        if (index === 0) {
+          chart.value.addXaxisAnnotation({
+            x: bid,
+            strokeDashArray: 2,
+            borderColor: 'transparent',
+            label: {
+              borderColor: 'transparent',
+              style: {
+                color: '#F3A400',
+                background: 'transparent',
+                fontSize: '0.9rem'
+              },
+              text: 'Your Bid',
+              orientation: 'landscape',
+              offsetY: 85,
+              borderRadius: 10,
+              id: 'yourBidText'
+            }
+          })
+        }
       }
     }
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 )
 </script>
 

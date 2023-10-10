@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { AuctionTradingForm, Modal } from '@/types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { PropType } from 'nuxt/dist/app/compat/capi'
+import { Auction, AuctionTradingForm, Modal } from '@/types'
 
-defineProps({
+const props = defineProps({
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  auction: {
+    type: Object as PropType<Auction>,
     required: true
   }
 })
 
+const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { validate, errors: formErrors } = useForm<AuctionTradingForm>()
 
@@ -20,6 +28,39 @@ async function handleBid() {
 
   modalStore.openModal(Modal.BidConfirm)
 }
+
+const currentProjectedPrice = computed(() => {
+  if (!spotStore.orderbook) {
+    return 1
+  }
+
+  const auctionTotalAmount = props.auction.tokensOffered
+  const auctionTotalAmountInWei = new BigNumberInBase(auctionTotalAmount)
+    .toWei(props.market.baseToken.decimals)
+    .toNumber()
+
+  let quantity = 0
+  let currentProjectedPrice = 1
+
+  const orderbookSortedFromHighestBid = [...spotStore.orderbook.buys].sort(
+    (a, b) => new BigNumberInBase(b.price).minus(a.price).toNumber()
+  )
+
+  for (const order of orderbookSortedFromHighestBid) {
+    quantity += Number(order.quantity)
+
+    if (quantity >= auctionTotalAmountInWei) {
+      currentProjectedPrice = new BigNumberInWei(order.price)
+        .toBase(
+          props.market.baseToken.decimals - props.market.quoteToken.decimals
+        )
+        .toNumber()
+      break
+    }
+  }
+
+  return quantity < auctionTotalAmountInWei ? 1 : currentProjectedPrice
+})
 </script>
 
 <template>
@@ -27,7 +68,9 @@ async function handleBid() {
     <h3 class="text-2xl font-semibold">Place Bid</h3>
     <p class="text-gray-400">Price and Bid size</p>
 
-    <PartialsAuctionsFormChart v-bind="{ market }" />
+    <PartialsAuctionsFormChart v-bind="{ market, currentProjectedPrice }" />
+
+    <PartialsAuctionsFormLegend v-bind="{ currentProjectedPrice }" />
 
     <PartialsAuctionsFormBidPrice v-bind="{ market }" />
 
@@ -35,7 +78,7 @@ async function handleBid() {
 
     <PartialsAuctionsFormAvailableAmount v-bind="{ market }" />
 
-    <PartialsAuctionsFormErrors v-bind="{ market }" />
+    <PartialsAuctionsFormErrors v-bind="{ currentProjectedPrice }" />
 
     <div>
       <button

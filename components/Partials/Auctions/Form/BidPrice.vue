@@ -13,9 +13,10 @@ defineProps({
 
 const formValues = useFormValues<AuctionTradingForm>()
 
-const { value: bidPriceValue } = useStringField({
+const { value: bidPriceValue, errorMessage } = useStringField({
   name: AuctionTradingField.BidPrice,
   initialValue: '',
+  rule: 'requiredSgt',
   dynamicRule: computed(() => `minValue:1`)
 })
 
@@ -47,4 +48,8 @@ function handleValueUpdate(value: string) {
       {{ market.quoteToken.symbol }}
     </template>
   </AppInputNumeric>
+
+  <p v-if="errorMessage" class="text-red-500 text-xs font-semibold mt-2">
+    {{ errorMessage }}
+  </p>
 </template>

@@ -22,15 +22,21 @@ const availableUsd = computed(() => {
   )
 })
 
-const { value: baseAmountValue } = useStringField({
-  name: AuctionTradingField.BaseAmount,
-  initialValue: ''
-})
-const { value: quoteAmountValue } = useStringField({
-  name: AuctionTradingField.QuoteAmount,
-  initialValue: '',
-  dynamicRule: computed(() => `between:1,${availableUsd.value.toFixed()}`)
-})
+const { value: baseAmountValue, errorMessage: baseAmountErrorMessage } =
+  useStringField({
+    name: AuctionTradingField.BaseAmount,
+    initialValue: '',
+    rule: 'requiredSgt'
+  })
+const { value: quoteAmountValue, errorMessage: quoteAmountErrorMessage } =
+  useStringField({
+    name: AuctionTradingField.QuoteAmount,
+    initialValue: '',
+    rule: 'requiredSgt',
+    dynamicRule: computed(
+      () => `insufficientSgt:${availableUsd.value.toFixed()}`
+    )
+  })
 
 function handleBaseAmountUpdate(value: string) {
   baseAmountValue.value = value
@@ -77,5 +83,21 @@ function handleQuoteAmountUpdate(value: string) {
         <span>{{ market.quoteToken.symbol }}</span>
       </template>
     </AppInputNumeric>
+  </div>
+
+  <div class="mt-2">
+    <p
+      v-if="quoteAmountErrorMessage"
+      class="text-red-500 text-xs font-semibold"
+    >
+      {{ quoteAmountErrorMessage }}
+    </p>
+
+    <p
+      v-else-if="baseAmountErrorMessage"
+      class="text-red-500 text-xs font-semibold"
+    >
+      {{ baseAmountErrorMessage }}
+    </p>
   </div>
 </template>
