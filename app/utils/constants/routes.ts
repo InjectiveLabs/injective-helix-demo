@@ -41,7 +41,8 @@ export const getRoutes = (network: Network, env: string) => {
     'bnb-usdt-perp',
     'stx-usdt-perp',
     'atom-usdt-perp',
-    'sei-usdt-perp'
+    'sei-usdt-perp',
+    'axl-usdt-perp'
   ]
 
   const gridTradingSpot = ['inj-usdt']
@@ -109,7 +110,7 @@ export const getRoutes = (network: Network, env: string) => {
       'kava-usdt',
       'usdtkv-usdt'
     )
-    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp', 'axl-usdt-perp')
+    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
     expiryFutures.push('tia-usdt-30nov2023')
   }
 
