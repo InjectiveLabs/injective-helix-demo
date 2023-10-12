@@ -206,7 +206,7 @@ useIntervalFn(() => {
         <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
-            $t('sgt.totalInvestmentTooltip', {
+            $t('sgt.totalAmountTooltip', {
               symbol: market.quoteToken.symbol
             })
           "

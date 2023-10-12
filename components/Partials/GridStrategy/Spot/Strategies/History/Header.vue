@@ -5,8 +5,8 @@
     <div class="text-right">{{ $t('sgt.lowerBound') }}</div>
     <div class="text-right">{{ $t('sgt.upperBound') }}</div>
     <div class="text-right">
-      <CommonHeaderTooltip :tooltip="$t('sgt.amountsMayBeLessTooltip')">
-        <span class="text-white">{{ $t('sgt.amount') }}</span>
+      <CommonHeaderTooltip :tooltip="$t('sgt.totalAmountTooltip')">
+        <span class="text-white">{{ $t('sgt.totalAmount') }}</span>
       </CommonHeaderTooltip>
     </div>
     <div class="text-right">{{ $t('sgt.pnl') }}</div>

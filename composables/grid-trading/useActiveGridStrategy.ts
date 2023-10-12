@@ -20,9 +20,13 @@ export default function useActiveGridStrategy(
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
       .toBase(market.value?.baseToken.decimals)
       .times(
-        new BigNumberInWei(strategy.value.executionPrice).toBase(
-          market.value?.quoteToken.decimals
-        )
+        new BigNumberInWei(strategy.value.executionPrice)
+          .dividedBy(
+            new BigNumberInBase(10).pow(
+              market.value.quoteToken.decimals - market.value.baseToken.decimals
+            )
+          )
+          .toBase()
       )
 
     const quoteAmountInUsd = new BigNumberInWei(

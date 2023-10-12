@@ -136,9 +136,10 @@ export const defineGlobalRules = () => {
 
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
 
-    if (valueInBigNumber.lte(min)) {
-      return `Value should be greater than ${min}`
+    if (valueInBigNumber.lte(minInBigNumber)) {
+      return `Value should be greater than ${minInBigNumber.toFixed(2)}`
     }
 
     return true
@@ -146,9 +147,10 @@ export const defineGlobalRules = () => {
 
   defineRule('lessThanSgt', (value: string, [max]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const maxInBigNumber = new BigNumberInBase(max)
 
-    if (valueInBigNumber.gte(max)) {
-      return `Value should be less than ${max}`
+    if (valueInBigNumber.gte(maxInBigNumber)) {
+      return `Value should be less than ${maxInBigNumber.toFixed(2)}`
     }
 
     return true

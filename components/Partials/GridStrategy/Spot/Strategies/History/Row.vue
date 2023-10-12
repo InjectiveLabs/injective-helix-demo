@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { StopReason } from '@/types'
-
-const gridStrategyStore = useGridStrategyStore()
+import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
 
 const props = defineProps({
   strategy: {
@@ -14,22 +14,46 @@ const props = defineProps({
   }
 })
 
+const walletStore = useWalletStore()
+const gridStrategyStore = useGridStrategyStore()
+
 const emit = defineEmits<{
   'open:details': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
 const market = computed(() => gridStrategyStore.spotMarket!)
 
+const { aggregatedPortfolioBalances } = useBalance()
+
 const { pnl, percentagePnl } = useActiveGridStrategy(
   market,
   computed(() => props.strategy)
 )
 
-const { totalInvestment, lowerBound, upperBound } =
-  useActiveGridStrategyTransformer(
-    market,
-    computed(() => props.strategy)
+const { lowerBound, upperBound } = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.strategy)
+)
+
+const marketSubaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+)
+
+const subaccountBalances = computed(
+  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+)
+
+const accountTotalBalanceInUsd = computed(() =>
+  subaccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
+    ZERO_IN_BASE
   )
+)
 
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
@@ -57,7 +81,7 @@ const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
 })
 
 const { valueToString: investmentToString } = useBigNumberFormatter(
-  totalInvestment,
+  accountTotalBalanceInUsd,
   { decimalPlaces: 2 }
 )
 
