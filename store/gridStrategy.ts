@@ -80,6 +80,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       takeProfit?: string
       stopLoss?: string
     }) {
+      const appStore = useAppStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const gridStrategyStore = useGridStrategyStore()
@@ -91,6 +92,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       if (!gridStrategyStore.spotMarket) {
         return
       }
+
+      await appStore.queue()
+      await walletStore.validate()
 
       if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(
@@ -186,6 +190,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async removeStrategy() {
+      const appStore = useAppStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const gridStrategyStore = useGridStrategyStore()
@@ -197,6 +202,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       if (!gridStrategyStore.spotMarket) {
         return
       }
+
+      await appStore.queue()
+      await walletStore.validate()
 
       if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(

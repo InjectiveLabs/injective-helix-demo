@@ -181,11 +181,11 @@ function onInvestmentTypeSet() {
     <AppButton
       :status="status"
       lg
-      class="w-full font-sembold shadow-none select-none"
+      class="w-full shadow-none select-none"
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
-          : 'bg-blue-500 text-white'
+          : 'bg-blue-500 text-blue-900'
       ]"
       @click="onCheckBalanceFees"
     >

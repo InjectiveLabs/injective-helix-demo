@@ -125,12 +125,12 @@ const { valueToString: totalAmountToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
@@ -140,7 +140,7 @@ const { valueToString: creationExecutionPriceToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
@@ -148,8 +148,7 @@ const { valueToString: creationBaseQuantityToString } = useBigNumberFormatter(
   subscriptionBaseQuantity,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
-
-const { valueToString: creationQuoteQuantitytoString } = useBigNumberFormatter(
+const { valueToString: creationQuoteQuantityToString } = useBigNumberFormatter(
   subscriptionQuoteQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -190,19 +189,24 @@ useIntervalFn(() => {
       </div>
     </div>
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.totalProfit') }}</p>
+    <div class="flex justify-between mb-2 text-sm">
+      <p class="text-gray-400">{{ $t('sgt.totalProfit') }}</p>
       <div
-        class="text-right font-bold text-lg"
+        class="text-right"
         :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
       >
-        <p>{{ pnltoString }} {{ market?.quoteToken.symbol }}</p>
-        <p>{{ percentagePnl }} %</p>
+        <span class="font-semibold text-lg">
+          {{ pnlToString }}
+          <span class="text-xs align-text-bottom ml-1">{{
+            market?.quoteToken.symbol
+          }}</span>
+        </span>
+        <span class="text-2xs opacity-75 ml-1">({{ percentagePnl }} %)</span>
       </div>
     </div>
 
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
@@ -211,14 +215,19 @@ useIntervalFn(() => {
             })
           "
         />
-      </p>
-      <p>{{ totalAmountToString }} {{ market?.quoteToken.symbol }}</p>
+      </span>
+
+      <span>
+        {{ totalAmountToString }}
+        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
+          market?.quoteToken.symbol
+        }}</span>
+      </span>
     </div>
 
-    <div class="flex items-start justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex items-start justify-between mb-2 text-sm">
+      <p class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.currentBalance') }}</span>
-
         <AppTooltip
           :content="
             $t('sgt.currentBalanceTooltip', {
@@ -229,9 +238,10 @@ useIntervalFn(() => {
         />
       </p>
       <div class="text-right">
-        <p>{{ currentBaseBalanceToString }} {{ market?.baseToken.symbol }}</p>
-
-        <p>{{ currentQuoteBalanceToString }} {{ market?.quoteToken.symbol }}</p>
+        <PartialsGridStrategySpotCommonDetailsPair :market="market">
+          <template #base>{{ currentBaseBalanceToString }}</template>
+          <template #quote>{{ currentQuoteBalanceToString }}</template>
+        </PartialsGridStrategySpotCommonDetailsPair>
       </div>
     </div>
 
@@ -239,29 +249,34 @@ useIntervalFn(() => {
 
     <div class="flex items-center justify-between mb-2">
       <p class="text-gray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
-
       <p class="text-sm">{{ createdAtFormatted }}</p>
     </div>
 
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400">{{ $t('sgt.duration') }}</p>
-
-      <p class="text-sm">{{ durationFormatted }}</p>
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400">{{ $t('sgt.duration') }}</span>
+      <span>{{ durationFormatted }}</span>
     </div>
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.priceRange') }}</p>
-      <div class="text-right text-sm">
-        <p>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</p>
+    <div class="border-t border-gray-800 my-4" />
 
-        <p>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</p>
+    <div class="flex justify-between mb-2 text-sm">
+      <p class="text-gray-400">{{ $t('sgt.priceRange') }}</p>
+      <div class="text-right">
+        <PartialsGridStrategySpotCommonDetailsPair
+          v-bind="{
+            baseSymbol: market.quoteToken.symbol,
+            quoteSymbol: market.quoteToken.symbol
+          }"
+        >
+          <template #base>{{ lowerBoundToString }}</template>
+          <template #quote>{{ upperBoundToString }}</template>
+        </PartialsGridStrategySpotCommonDetailsPair>
       </div>
     </div>
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center self-start space-x-2">
+    <div class="flex justify-between mb-2 text-sm">
+      <p class="text-gray-400 flex items-center self-start space-x-2">
         <span>{{ $t('sgt.initialAmount') }}</span>
-
         <AppTooltip
           :content="
             $t('sgt.initialInvestmentTooltip', {
@@ -272,56 +287,65 @@ useIntervalFn(() => {
         />
       </p>
       <div class="text-right">
-        <p>{{ creationBaseQuantityToString }} {{ market?.baseToken.symbol }}</p>
-
-        <p>
-          {{ creationQuoteQuantitytoString }} {{ market?.quoteToken.symbol }}
-        </p>
+        <PartialsGridStrategySpotCommonDetailsPair v-bind="{ market }">
+          <template #base>{{ creationBaseQuantityToString }}</template>
+          <template #quote>{{ creationQuoteQuantityToString }}</template>
+        </PartialsGridStrategySpotCommonDetailsPair>
       </div>
     </div>
 
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.initialEntryPrice') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
-      </p>
-
-      <p>
-        {{ creationExecutionPriceToString }} {{ market?.quoteToken.symbol }}
-      </p>
+      </span>
+      <span>
+        {{ creationExecutionPriceToString }}
+        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
+          market?.quoteToken.symbol
+        }}</span>
+      </span>
     </div>
 
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
-      </p>
-
-      <p>
+      </span>
+      <span>
         {{ activeStrategy.numberOfGridLevels }}
-      </p>
+      </span>
     </div>
 
-    <div class="border-t border-gray-700 my-4" />
+    <div class="border-t border-gray-800 my-4" />
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.stopLoss') }}</span>
         <AppTooltip :content="$t('sgt.stopLossTooltip')" />
-      </p>
-
-      <p v-if="stopLoss.eq(0)">-</p>
-      <p v-else>{{ stopLossToString }} {{ market?.quoteToken.symbol }}</p>
+      </span>
+      <span v-if="stopLoss.eq(0)" class="text-xs opacity-75">&mdash;</span>
+      <span v-else>
+        {{ stopLossToString }}
+        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
+          market?.quoteToken.symbol
+        }}</span>
+      </span>
     </div>
 
-    <div class="flex justify-between mb-2">
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
+    <div class="flex justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
         <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
-      </p>
+      </span>
 
-      <p v-if="takeProfit.eq(0)">-</p>
-      <p v-else>{{ takeProfitToString }} {{ market?.quoteToken.symbol }}</p>
+      <span v-if="takeProfit.eq(0)" class="text-xs opacity-75">&mdash;</span>
+      <span v-else>
+        {{ takeProfitToString }}
+        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
+          market?.quoteToken.symbol
+        }}</span>
+      </span>
     </div>
 
     <!-- <div class="flex justify-between mb-2"> WE REMOVE THIS FOR NOW SINCE ADDITIONAL SUPPORT FROM SC IS NEEDED

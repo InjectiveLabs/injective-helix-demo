@@ -5,6 +5,7 @@ export default defineNuxtRouteMiddleware((to) => {
   const modalStore = useModalStore()
   const walletStore = useWalletStore()
 
+  const toName = to.name as string
   const hasDevModeQuery = to.query.devMode === 'true'
 
   if (!appStore.devMode && hasDevModeQuery) {
@@ -13,5 +14,9 @@ export default defineNuxtRouteMiddleware((to) => {
     if (!walletStore.isUserWalletConnected) {
       modalStore.openModal(Modal.DevMode)
     }
+  }
+
+  if (!appStore.devMode && toName === 'leaderboard') {
+    return navigateTo('/')
   }
 })

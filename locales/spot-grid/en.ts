@@ -66,6 +66,7 @@ export default {
     initialEntryPrice: 'Initial Entry Price',
     sellAllBaseOnStop: 'Sell all base on stop',
 
+    noStrategiesFound: 'No Strategies Found',
     changeToQuoteAndBase: 'Change to USDT + INJ',
     totalInvestmentAmount: 'Total Investment Amount',
     totalInvestmentCurrency: 'Total Investment Currency',

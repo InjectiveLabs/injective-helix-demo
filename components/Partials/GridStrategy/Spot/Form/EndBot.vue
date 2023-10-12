@@ -22,7 +22,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     <PartialsGridStrategySpotCommonDetails v-slot="{ detailsPageChange }">
       <AppButton
         lg
-        class="w-full font-sembold shadow-none select-none bg-blue-500 text-white"
+        class="w-full shadow-none select-none bg-blue-500 text-blue-900"
         @click="detailsPageChange"
       >
         {{ $t('sgt.viewOrders') }}
@@ -30,13 +30,13 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     </PartialsGridStrategySpotCommonDetails>
 
     <PartialsGridStrategySpotCommonRemoveStrategy
-      v-bind="{ createdAt: activeStrategy.createdAt, pnl: pnl.toString() }"
+      v-bind="{ createdAt: activeStrategy.createdAt, pnl: pnl.toFixed() }"
     >
       <template #default="{ removeStrategy, status }">
         <AppButton
           v-bind="{ status }"
           lg
-          class="w-full font-sembold shadow-none select-none text-blue-500 border-blue-500"
+          class="w-full shadow-none select-none text-blue-500 border-blue-500"
           @click="removeStrategy"
         >
           {{ $t('sgt.endBot') }}
