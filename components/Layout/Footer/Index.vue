@@ -103,7 +103,7 @@ const learnList = [
         <div class="flex items-center">
           <a
             class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
-            href="https://discord.com/invite/injective"
+            href="https://discord.com/invite/5AMCBYxfW4"
             target="_blank"
           >
             <BaseIcon name="discord-circle" />
@@ -111,7 +111,15 @@ const learnList = [
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
-            href="https://twitter.com/helixapp_"
+            href="https://www.youtube.com/channel/UCZJSvVppUtK7F22xjBcbV0A"
+            target="_blank"
+          >
+            <BaseIcon name="youtube-circle" />
+          </a>
+
+          <a
+            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
+            href="https://twitter.com/truflation"
             target="_blank"
           >
             <BaseIcon name="twitter-circle" />
@@ -119,7 +127,7 @@ const learnList = [
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
-            href="https://t.me/helixapp"
+            href="https://t.me/truflation"
             target="_blank"
           >
             <BaseIcon name="telegram-circle" />
