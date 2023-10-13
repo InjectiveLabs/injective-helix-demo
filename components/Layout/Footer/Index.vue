@@ -12,18 +12,14 @@ const aboutUsList = [
   },
   {
     text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy-policy'
-  },
-  {
-    text: t('footer.termsAndConditions'),
-    link: 'https://injectivelabs.org/terms-and-conditions'
+    link: 'https://truflation.com/privacy'
   }
 ]
 
 const learnList = [
   {
-    text: t('footer.faq'),
-    link: 'https://helixapp.zendesk.com/'
+    text: t('footer.methodology'),
+    link: 'https://truflation.com/methodology'
   }
 ]
 </script>

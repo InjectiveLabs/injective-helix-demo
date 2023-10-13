@@ -27,7 +27,7 @@ export const getRoutes = (network: Network, env: string) => {
     'steadybtc-usdt'
   ]
 
-  const perpetuals = ['inj-usdt-perp']
+  const perpetuals = []
 
   if (IS_TESTNET) {
     spot.push('wbtc-usdt')
