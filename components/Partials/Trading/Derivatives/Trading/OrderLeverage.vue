@@ -49,7 +49,7 @@ const maxLeverageAvailable = computed(() => {
       .dp(0)
   )
 
-  const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
+  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
 
   const stepsLessThanMaxLeverage = steps.filter(
     (step) => step <= maxLeverage.toNumber()
