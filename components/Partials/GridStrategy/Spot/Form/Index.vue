@@ -2,13 +2,11 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import {
+  GridStrategyType,
   InvestmentTypeGst,
-  SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
 import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
-
-const walletStore = useWalletStore()
 
 defineProps({
   market: {
@@ -17,9 +15,15 @@ defineProps({
   }
 })
 
+const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
-const { setFieldValue } = useForm<SpotGridTradingForm>()
+useForm<SpotGridTradingForm>({
+  keepValuesOnUnmount: true,
+  initialValues: { investmentType: InvestmentTypeGst.Quote }
+})
+
+const activeTab = ref(GridStrategyType.Auto)
 
 const hasActiveStrategy = computed(
   () => gridStrategyStore.activeStrategies.length > 0
@@ -34,16 +38,8 @@ const activeStrategy = computed(
     )!
 )
 
-function onFormValuesUpdate(
-  investmentAmount: string,
-  baseInvestmentAmount: string
-) {
-  setFieldValue(SpotGridTradingField.InvestmentAmount, investmentAmount)
-  setFieldValue(SpotGridTradingField.BaseInvestmentAmount, baseInvestmentAmount)
-  setFieldValue(
-    SpotGridTradingField.InvestmentType,
-    InvestmentTypeGst.BaseAndQuote
-  )
+function changeTab(tab: GridStrategyType) {
+  activeTab.value = tab
 }
 </script>
 
@@ -57,30 +53,40 @@ function onFormValuesUpdate(
         />
 
         <template v-else>
-          <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
-          <div>
-            <PartialsGridStrategySpotFormGrids />
-            <PartialsGridStrategySpotFormProfitPerGrid />
+          <div
+            class="grid grid-cols-2 mb-4 border cursor-pointer font-semibold text-gray-500 bg-gray-900 overflow-hidden rounded-md select-none"
+          >
+            <div
+              class="px-2 py-4 text-center"
+              :class="{
+                'bg-gray-800 text-white': activeTab === GridStrategyType.Auto
+              }"
+              @click="changeTab(GridStrategyType.Auto)"
+            >
+              {{ $t('sgt.auto') }}
+            </div>
+
+            <div
+              class="px-2 py-4 text-center"
+              :class="{
+                'bg-gray-800 text-white': activeTab === GridStrategyType.Manual
+              }"
+              @click="changeTab(GridStrategyType.Manual)"
+            >
+              {{ $t('sgt.manual') }}
+            </div>
           </div>
-          <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
-          <PartialsGridStrategySpotFormAdvancedSettings />
-        </template>
 
-        <CommonUserNotConnectedNote
-          v-if="
-            !walletStore.isUserWalletConnected && !walletStore.injectiveAddress
-          "
-          cta
-        />
-
-        <template v-else>
-          <PartialsGridStrategySpotFormCreate
-            v-if="!hasActiveStrategy"
+          <PartialsGridStrategySpotFormAuto
+            v-if="activeTab === GridStrategyType.Auto"
             v-bind="{ market }"
-            @investment-type:set="onFormValuesUpdate"
+            @set-tab="changeTab"
           />
 
-          <PartialsGridStrategySpotFormEndBot v-else />
+          <PartialsGridStrategySpotFormManual
+            v-else-if="activeTab === GridStrategyType.Manual"
+            v-bind="{ market }"
+          />
         </template>
 
         <ModalsCheckSpotGridAuth />

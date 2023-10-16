@@ -333,7 +333,7 @@ useIntervalFn(() => {
       </span>
     </div>
 
-    <div class="flex justify-between mb-2 text-sm">
+    <div class="flex justify-between mb-4 text-sm">
       <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
         <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
@@ -370,5 +370,7 @@ useIntervalFn(() => {
         }}
       </p>
     </div> -->
+
+    <PartialsGridStrategySpotFormEndBot />
   </div>
 </template>

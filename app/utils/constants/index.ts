@@ -78,3 +78,4 @@ export const SYMBOL_DISPLAY_LENGTH = 3
 export const GST_MINIMUM_GRIDS = 3
 export const GST_MAXIMUM_GRIDS = 50
 export const GST_MIN_TRADING_SIZE = 0.5
+export const GST_DEFAULT_AUTO_GRIDS = 25

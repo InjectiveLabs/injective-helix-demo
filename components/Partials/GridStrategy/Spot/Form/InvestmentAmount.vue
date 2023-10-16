@@ -13,6 +13,8 @@ import {
 } from '@/app/utils/constants'
 
 const props = defineProps({
+  isAuto: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -66,10 +68,9 @@ const { valueToString: baseAmountToString } = useBigNumberFormatter(
   }
 )
 
-const { value: selectedInvestmentType } = useStringField({
-  name: SpotGridTradingField.InvestmentType,
-  initialValue: InvestmentTypeGst.Quote
-})
+const { value: selectedInvestmentType } = useField(
+  SpotGridTradingField.InvestmentType
+)
 
 const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
   useStringField({
@@ -116,7 +117,7 @@ function setQuoteType() {
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
         <h3 class="font-bold text-sm tracking-wide">
-          3. {{ $t('sgt.amount') }}
+          <span v-if="!isAuto">3.</span> {{ $t('sgt.amount') }}
         </h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>

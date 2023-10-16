@@ -1,0 +1,145 @@
+<script setup lang="ts">
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { GridStrategyType, SpotGridTradingField } from '@/types'
+import {
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+
+const props = defineProps({
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  }
+})
+
+const emit = defineEmits<{
+  'set-tab': [tab: GridStrategyType]
+}>()
+
+const exchangeStore = useExchangeStore()
+
+const setFormValues = useSetFormValues()
+
+const upperPrice = ref('')
+const lowerPrice = ref('')
+const grids = ref(GST_DEFAULT_AUTO_GRIDS)
+
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
+
+const profitPerGrid = computed(() => {
+  if (!lowerPrice.value || !upperPrice.value || !grids.value) {
+    return ZERO_IN_BASE
+  }
+
+  const priceDifference = new BigNumberInBase(upperPrice.value)
+    .minus(lowerPrice.value)
+    .dividedBy(grids.value)
+
+  return priceDifference.dividedBy(lowerPrice.value).times(100)
+})
+
+const { valueToString: upperPriceToString } = useBigNumberFormatter(
+  upperPrice,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+  lowerPrice,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+  profitPerGrid,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+onMounted(() => {
+  setInitialFieldValues()
+})
+
+function setInitialFieldValues() {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (market) => market.marketId === props.market.marketId
+  )
+
+  if (!marketHistory) {
+    return
+  }
+
+  const max = Math.max(...marketHistory.highPrice).toFixed(2)
+  const min = Math.min(...marketHistory.lowPrice).toFixed(2)
+
+  const minUpperBound = spotLastTradedPrice.value.plus(
+    spotLastTradedPrice.value.times(0.06)
+  )
+
+  const maxLowerBound = spotLastTradedPrice.value.minus(
+    spotLastTradedPrice.value.times(0.06)
+  )
+
+  upperPrice.value = minUpperBound.gt(max) ? minUpperBound.toFixed(2) : max
+  lowerPrice.value = maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min
+}
+
+function copyToManual() {
+  setValuesFromAuto()
+  emit('set-tab', GridStrategyType.Manual)
+}
+
+function setValuesFromAuto() {
+  setFormValues(
+    {
+      [SpotGridTradingField.UpperPrice]: upperPrice.value,
+      [SpotGridTradingField.LowerPrice]: lowerPrice.value,
+      [SpotGridTradingField.Grids]: grids.value
+    },
+    false
+  )
+}
+</script>
+
+<template>
+  <div>
+    <p class="text-xs">{{ $t('sgt.autoModeHeader') }}</p>
+    <a class="text-xs text-blue-500" href="#">{{ $t('sgt.learnMore') }}.</a>
+
+    <div class="space-y-4 my-4">
+      <div class="flex justify-between items-center text-sm">
+        <p class="text-gray-500">{{ $t('sgt.lowerPrice') }}</p>
+        <p>{{ lowerPriceToString }} USDT</p>
+      </div>
+
+      <div class="flex justify-between items-center text-sm">
+        <p class="text-gray-500">{{ $t('sgt.upperPrice') }}</p>
+        <p>{{ upperPriceToString }} USDT</p>
+      </div>
+
+      <div class="flex justify-between items-center text-sm">
+        <p class="text-gray-500">{{ $t('sgt.gridNumber') }}</p>
+        <p>{{ grids }}</p>
+      </div>
+
+      <div class="flex justify-between items-center text-sm">
+        <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
+        <p>{{ profitPerGridToString }}%</p>
+      </div>
+    </div>
+
+    <button class="text-blue-500 font-semibold" @click="copyToManual">
+      {{ $t('sgt.copyParametersToManual') }}
+    </button>
+
+    <div class="border border-t-gray-700 my-4" />
+
+    <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" is-auto />
+
+    <PartialsGridStrategySpotFormCreate
+      v-bind="{ market }"
+      @strategy:create="setValuesFromAuto"
+    />
+  </div>
+</template>

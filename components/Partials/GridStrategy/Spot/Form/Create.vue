@@ -29,16 +29,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'investment-type:set': [
-    investmentAmount: string,
-    baseInvestmentAmount: string
-  ]
+  'strategy:create': []
 }>()
 
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
+const setFormValues = useSetFormValues()
 const validate = useValidateForm()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -103,15 +101,19 @@ const calculatedAmount = computed(() => {
     .dividedBy(upperBoundary.minus(lowerBoundary))
 
   const baseAmount = initialQuoteInvestment
-    .times(new BigNumberInBase(1).minus(ratio))
+    .times(ratio)
     .dividedBy(currentPrice.value)
 
-  const quoteAmount = initialQuoteInvestment.times(ratio)
+  const quoteAmount = initialQuoteInvestment.times(
+    new BigNumberInBase(1).minus(ratio)
+  )
 
   return { baseAmount, quoteAmount }
 })
 
 async function onCheckBalanceFees() {
+  emit('strategy:create')
+
   const { valid } = await validate()
 
   if (!valid) {
@@ -123,7 +125,6 @@ async function onCheckBalanceFees() {
     InvestmentTypeGst.BaseAndQuote
   ) {
     onCreateStrategy()
-
     return
   }
 
@@ -166,11 +167,17 @@ function onCreateStrategy() {
 }
 
 function onInvestmentTypeSet() {
-  emit(
-    'investment-type:set',
-    calculatedAmount.value.quoteAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
-    calculatedAmount.value.baseAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
+  setFormValues({
+    [SpotGridTradingField.InvestmentAmount]:
+      calculatedAmount.value.quoteAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.BaseInvestmentAmount]:
+      calculatedAmount.value.baseAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.InvestmentType]: InvestmentTypeGst.BaseAndQuote
+  })
 
   onCreateStrategy()
 }
@@ -203,7 +210,7 @@ function onInvestmentTypeSet() {
 
   <ModalsSgtBalancedFees
     v-bind="{
-      margin: formValues[SpotGridTradingField.InvestmentAmount]!,
+      margin: formValues[SpotGridTradingField.InvestmentAmount] || '',
       baseAmount: calculatedAmount.baseAmount,
       quoteAmount: calculatedAmount.quoteAmount
     }"
