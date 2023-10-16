@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
@@ -54,7 +55,7 @@ const connect = handleSubmit(() => {
   status.setLoading()
 
   walletStore
-    .connectLedger(address.value)
+    .connectLedger(getEthereumAddress(address.value))
     .catch((e) => {
       walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
