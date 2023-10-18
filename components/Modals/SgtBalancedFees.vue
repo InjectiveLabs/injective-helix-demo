@@ -66,7 +66,7 @@ function onChangeInvestmentType() {
     @modal:closed="onModalClose"
   >
     <template #title>
-      <h3>{{ $t('sgt.includeDenom') }}</h3>
+      <h3>{{ $t('sgt.includeDenom', { symbol: market.baseToken.symbol }) }}</h3>
     </template>
 
     <div>
@@ -99,7 +99,12 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
-          {{ $t('sgt.changeToQuoteAndBase') }}
+          {{
+            $t('sgt.changeToQuoteAndBase', {
+              quote: market.quoteToken.symbol,
+              base: market.baseToken.symbol
+            })
+          }}
         </AppButton>
 
         <AppButton
@@ -107,7 +112,7 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
-          {{ $t('sgt.keepQuote') }}
+          {{ $t('sgt.keepQuote', { quote: market.quoteToken.symbol }) }}
         </AppButton>
       </div>
     </div>

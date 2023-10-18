@@ -131,6 +131,13 @@ const {
 
     const rules = [insuficientRule, minBaseAndQuoteAmountRule]
 
+    if (
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.BaseAndQuote
+    ) {
+      rules.unshift('requiredSgt')
+    }
+
     return rules.join('|')
   })
 })

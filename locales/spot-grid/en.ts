@@ -46,7 +46,7 @@ export default {
     totalProfit: 'Total Profit',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
-    keepQuote: 'Keep USDT Only',
+    keepQuote: 'Keep {quote} Only',
     totalAmount: 'Total Amount',
     timeCreated: 'Time Created',
     learnMore: 'Learn More',
@@ -74,7 +74,7 @@ export default {
     sellAllBaseOnStop: 'Sell all base on stop',
 
     noStrategiesFound: 'No Strategies Found',
-    changeToQuoteAndBase: 'Change to USDT + INJ',
+    changeToQuoteAndBase: 'Change to {quote} + {base}',
     totalInvestmentAmount: 'Total Investment Amount',
     totalInvestmentCurrency: 'Total Investment Currency',
     sellAllBaseCoinsOnStop: 'Sell all base coins on Stop',
@@ -86,7 +86,7 @@ export default {
     nOfGridsTooltip:
       'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
-    includeDenom: 'Include [INJ] in your initial investment',
+    includeDenom: 'Include [{symbol}] in your initial investment',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([
         named('quoteAmount'),
