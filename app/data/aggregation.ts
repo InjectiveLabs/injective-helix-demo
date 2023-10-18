@@ -379,7 +379,7 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('100')
   },
 
-  'TIA/USDT-30NOV23': {
+  'TIA/USDT-30NOV2023': {
     minTick: getDecimalPlaceFromValue('0.001'),
     default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('1')
