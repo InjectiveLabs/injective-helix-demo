@@ -28,7 +28,13 @@ const props = defineProps({
   }
 })
 
-const activeType = ref('')
+const route = useRoute()
+
+const isSpot = (route.name as string).startsWith('trading-bots-grid-spot')
+
+const activeType = ref(
+  props.isGrid ? (isSpot ? MarketType.Spot : MarketType.Futures) : ''
+)
 const search = ref('')
 const isAscending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
@@ -95,6 +101,9 @@ const sortedMarkets = computed(() => {
       v-model:active-type="activeType"
       v-model:search="search"
       v-model:show-low-volume-markets="showLowVolumeMarkets"
+      v-bind="{
+        isGrid
+      }"
       class="mb-2"
     />
     <CommonTableHeader classes="flex flex-wrap mb-2 max-3xl:px-0">

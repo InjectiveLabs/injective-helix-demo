@@ -15,25 +15,27 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
 )
 
-const { value: lowerPriceValue, errorMessage: lowerErrorMessage } = useField(
-  SpotGridTradingField.LowerPrice,
-  computed(
-    () =>
-      `requiredSgt|lessThanSgt:${spotLastTradedPrice.value.minus(
-        spotLastTradedPrice.value.times(0.05)
-      )}`
-  )
-)
+const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.LowerPrice,
+    dynamicRule: computed(
+      () =>
+        `requiredSgt|lessThanSgt:${spotLastTradedPrice.value.minus(
+          spotLastTradedPrice.value.times(0.05)
+        )}`
+    )
+  })
 
-const { value: upperPriceValue, errorMessage: upperErrorMessage } = useField(
-  SpotGridTradingField.UpperPrice,
-  computed(
-    () =>
-      `requiredSgt|greaterThanSgt:${spotLastTradedPrice.value.plus(
-        spotLastTradedPrice.value.times(0.05)
-      )}`
-  )
-)
+const { value: upperPriceValue, errorMessage: upperErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.UpperPrice,
+    dynamicRule: computed(
+      () =>
+        `requiredSgt|greaterThanSgt:${spotLastTradedPrice.value.plus(
+          spotLastTradedPrice.value.times(0.05)
+        )}`
+    )
+  })
 </script>
 
 <template>

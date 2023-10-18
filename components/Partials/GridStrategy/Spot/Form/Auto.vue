@@ -138,6 +138,7 @@ function setValuesFromAuto() {
     <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" is-auto />
 
     <PartialsGridStrategySpotFormCreate
+      class="mt-4"
       v-bind="{ market }"
       @strategy:create="setValuesFromAuto"
     />

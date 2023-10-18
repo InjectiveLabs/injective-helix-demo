@@ -20,7 +20,7 @@ const gridStrategyStore = useGridStrategyStore()
 
 useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true,
-  initialValues: { investmentType: InvestmentTypeGst.Quote }
+  initialValues: { investmentType: InvestmentTypeGst.BaseAndQuote }
 })
 
 const activeTab = ref(GridStrategyType.Auto)

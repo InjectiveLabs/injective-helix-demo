@@ -1978,15 +1978,15 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.12.24":
-  version "1.12.24"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.24.tgz#456670f4ccb62fff39e2ced0cf3c7622a295160e"
-  integrity sha512-4Zu1yG2AMtVr5R1bMNiwlxBgOr1kiKjooYlWd4zEbUQOmB3Mzvl/ccnP9330G/En1FppBDnrV679dIGA6De3cA==
+"@injectivelabs/ui-shared@1.12.29":
+  version "1.12.29"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.12.29.tgz#34f3072c7601df65d7a983ece7c5adcddd4ecee6"
+  integrity sha512-euJKRzwLLLsqyZndM5ppM//83dNq8Pwy4mIzGDWVpt+Kw9JDajN+4t3B5o4pZ7hQNVmvqOY5YoPuopbmENwW6A==
   dependencies:
     "@nuxt/kit" "3.5.3"
     "@vuepic/vue-datepicker" "^5.4.0"
     floating-vue "2.0.0-beta.24"
-    vee-validate "4.7.3"
+    vee-validate "4.11.7"
 
 "@injectivelabs/utils@1.14.1-beta.0", "@injectivelabs/utils@^1.14.1-beta.0":
   version "1.14.1-beta.0"
@@ -16449,7 +16449,7 @@ vary@^1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vee-validate@4.11.6, vee-validate@4.7.3:
+vee-validate@4.11.6, vee-validate@4.11.7:
   version "4.11.6"
   resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-4.11.6.tgz#4494a6898d25f93369bfbd93895958915c4f5bc3"
   integrity sha512-DwmNRqYVwX/CrH2ai8RRE1Y0ETmMFkS6X+8JxzC9rmE5cMqBxMiHRiqRABRvtJAbgHFG7LeSzVkPcr/mG5BiSQ==

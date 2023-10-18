@@ -3,6 +3,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
   showLowVolumeMarkets: Boolean,
+  isGrid: Boolean,
 
   search: {
     type: String,
@@ -53,42 +54,47 @@ const showLowVolumeMarketsValue = computed({
 <template>
   <div>
     <div class="flex items-center justify-between flex-wrap">
-      <div class="flex items-center flex-wrap gap-5 lg:mb-2 3xl:mb-0">
-        <AppSelectButton
-          v-for="marketType in filterList"
-          :key="`market-type-${marketType}`"
-          v-model="activeTypeValue"
-          :value="marketType"
+      <div>
+        <div
+          v-if="!isGrid"
+          class="flex items-center flex-wrap gap-5 lg:mb-2 3xl:mb-0"
         >
-          <template #default="{ isActive }">
-            <span
-              class="tracking-widest text-xs uppercase cursor-pointer select-none border-none p-0"
-              :class="[
-                isActive
-                  ? 'font-bold text-gray-200'
-                  : 'text-gray-500 hover:text-gray-200'
-              ]"
-            >
-              <BaseIcon
-                v-if="marketType === MarketType.Favorite"
-                name="star"
-                class="min-w-4 h-4 w-4"
-              />
+          <AppSelectButton
+            v-for="marketType in filterList"
+            :key="`market-type-${marketType}`"
+            v-model="activeTypeValue"
+            :value="marketType"
+          >
+            <template #default="{ isActive }">
+              <span
+                class="tracking-widest text-xs uppercase cursor-pointer select-none border-none p-0"
+                :class="[
+                  isActive
+                    ? 'font-bold text-gray-200'
+                    : 'text-gray-500 hover:text-gray-200'
+                ]"
+              >
+                <BaseIcon
+                  v-if="marketType === MarketType.Favorite"
+                  name="star"
+                  class="min-w-4 h-4 w-4"
+                />
 
-              <span v-else-if="marketType === MarketType.Derivative">
-                {{ $t('trade.futures') }}
-              </span>
+                <span v-else-if="marketType === MarketType.Derivative">
+                  {{ $t('trade.futures') }}
+                </span>
 
-              <span v-else-if="marketType === MarketType.Spot">
-                {{ $t('trade.spots') }}
-              </span>
+                <span v-else-if="marketType === MarketType.Spot">
+                  {{ $t('trade.spots') }}
+                </span>
 
-              <span v-else>
-                {{ $t('trade.all') }}
+                <span v-else>
+                  {{ $t('trade.all') }}
+                </span>
               </span>
-            </span>
-          </template>
-        </AppSelectButton>
+            </template>
+          </AppSelectButton>
+        </div>
       </div>
 
       <AppCheckbox

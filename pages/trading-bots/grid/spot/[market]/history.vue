@@ -13,8 +13,7 @@ const removedStrategies = computed(() =>
   gridStrategyStore.strategies.filter(
     (strategy) =>
       strategy.state === 'removed' &&
-      strategy.marketId === gridStrategyStore.spotMarket?.marketId &&
-      false
+      strategy.marketId === gridStrategyStore.spotMarket?.marketId
   )
 )
 

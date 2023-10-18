@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
@@ -17,6 +18,11 @@ const props = defineProps({
 
   margin: {
     type: String,
+    required: true
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   }
 })
@@ -82,8 +88,8 @@ function onChangeInvestmentType() {
         <p class="text-gray-500">{{ $t('sgt.totalInvestmentCurrency') }}</p>
 
         <div class="text-gray-500 text-right">
-          <p>{{ quoteAmountToString }} USD</p>
-          <p>{{ baseAmountToString }} INJ</p>
+          <p>{{ quoteAmountToString }} {{ market.quoteToken.symbol }}</p>
+          <p>{{ baseAmountToString }} {{ market.baseToken.symbol }}</p>
         </div>
       </div>
 
