@@ -103,7 +103,9 @@ const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
 
       const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()}`
 
-      return [insuficientRule, minBaseAndQuoteAmountRule].join('|')
+      const rules = [insuficientRule, minBaseAndQuoteAmountRule]
+
+      return rules.join('|')
     })
   })
 
@@ -128,9 +130,6 @@ const {
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()}`
 
     const rules = [insuficientRule, minBaseAndQuoteAmountRule]
-    if (selectedInvestmentType.value === InvestmentTypeGst.BaseAndQuote) {
-      rules.push('requiredSgt')
-    }
 
     return rules.join('|')
   })

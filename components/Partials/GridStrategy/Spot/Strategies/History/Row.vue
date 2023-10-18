@@ -98,18 +98,16 @@ function onDetailsPage() {
       <span>{{ createdAt }}</span>
     </div>
 
-    <div>
-      <div class="flex gap-2 items-center">
-        <div class="text-left">
-          <CommonTokenIcon
-            v-if="market?.baseToken"
-            v-bind="{ token: market?.baseToken }"
-          />
-        </div>
+    <div class="flex gap-2 items-center">
+      <div class="text-left">
+        <CommonTokenIcon
+          v-if="market?.baseToken"
+          v-bind="{ token: market?.baseToken }"
+        />
+      </div>
 
-        <div>
-          {{ market?.ticker }}
-        </div>
+      <div>
+        {{ market?.ticker }}
       </div>
     </div>
 
