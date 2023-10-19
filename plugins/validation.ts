@@ -198,7 +198,7 @@ export const defineGlobalRules = () => {
 
   defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
     if (!fieldValue && !value) {
-      return 'Field is required'
+      return 'At least one field is required'
     }
 
     return true
