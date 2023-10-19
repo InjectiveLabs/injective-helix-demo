@@ -46,6 +46,40 @@ const baseSymbol = computed(
   () => gridStrategyStore.spotMarket?.baseToken.symbol
 )
 
+const baseAmount = computed(() => {
+  if (!formValues.value[SpotGridTradingField.BaseInvestmentAmount]) {
+    return undefined
+  }
+
+  if (
+    formValues.value[SpotGridTradingField.BaseInvestmentAmount] &&
+    new BigNumberInBase(
+      formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+    ).eq(0)
+  ) {
+    return undefined
+  }
+
+  return formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+})
+
+const quoteAmount = computed(() => {
+  if (!formValues.value[SpotGridTradingField.InvestmentAmount]) {
+    return undefined
+  }
+
+  if (
+    formValues.value[SpotGridTradingField.InvestmentAmount] &&
+    new BigNumberInBase(
+      formValues.value[SpotGridTradingField.InvestmentAmount]
+    ).eq(0)
+  ) {
+    return undefined
+  }
+
+  return formValues.value[SpotGridTradingField.InvestmentAmount]
+})
+
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
@@ -65,8 +99,8 @@ function handleCreateStrategy() {
       takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
       lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
       upperBound: formValues.value[SpotGridTradingField.UpperPrice],
-      quoteAmount: formValues.value[SpotGridTradingField.InvestmentAmount],
-      baseAmount: formValues.value[SpotGridTradingField.BaseInvestmentAmount],
+      baseAmount: baseAmount.value,
+      quoteAmount: quoteAmount.value!,
       shouldExitWithQuoteOnly:
         formValues.value[SpotGridTradingField.SellAllBase]
     })
@@ -108,25 +142,10 @@ function handleCreateStrategy() {
     <div class="max-w-sm">
       <p>
         <i18n-t
-          v-if="!formValues[SpotGridTradingField.BaseInvestmentAmount]"
+          v-if="baseAmount && quoteAmount"
           tag="p"
-          keypath="sgt.createStrategyModalQuote"
+          keypath="sgt.createStrategyModalBaseAndQuote"
         >
-          <template #quoteAmount>
-            <span class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-              {{ quoteSymbol }}
-            </span>
-          </template>
-
-          <template #marketSlug>
-            <span class="uppercase">
-              {{ gridStrategyStore.spotMarket?.slug }}
-            </span>
-          </template>
-        </i18n-t>
-
-        <i18n-t v-else tag="p" keypath="sgt.createStrategyModalBaseAndQuote">
           <template #quoteAmount>
             <span class="font-semibold">
               {{ formValues[SpotGridTradingField.InvestmentAmount] }}
@@ -137,6 +156,26 @@ function handleCreateStrategy() {
           <template #baseAmount>
             <span class="font-semibold">
               {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
+              {{ baseSymbol }}
+            </span>
+          </template>
+
+          <template #marketSlug>
+            <span class="uppercase">
+              {{ gridStrategyStore.spotMarket?.slug }}
+            </span>
+          </template>
+        </i18n-t>
+
+        <i18n-t v-else tag="p" keypath="sgt.createStrategyModalQuote">
+          <template #quoteAmount>
+            <span v-if="quoteAmount" class="font-semibold">
+              {{ quoteAmount }}
+              {{ quoteSymbol }}
+            </span>
+
+            <span v-else class="font-semibold">
+              {{ baseAmount }}
               {{ baseSymbol }}
             </span>
           </template>

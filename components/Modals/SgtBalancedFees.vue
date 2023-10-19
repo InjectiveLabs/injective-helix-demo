@@ -44,6 +44,11 @@ const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
+const { valueToString: marginToString } = useBigNumberFormatter(
+  computed(() => props.margin),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
 function onModalClose() {
   modalStore.closeModal(Modal.SgtBalancedFees)
 }
@@ -66,26 +71,35 @@ function onChangeInvestmentType() {
     @modal:closed="onModalClose"
   >
     <template #title>
-      <h3>{{ $t('sgt.includeDenom', { symbol: market.baseToken.symbol }) }}</h3>
+      <h3>{{ $t('sgt.saveOnFees') }}</h3>
     </template>
 
     <div>
       <div>
         <div>
-          {{ $t('sgt.balancedFeesMessage') }}
+          {{
+            $t('sgt.balancedFeesMessage', {
+              quote: market.quoteToken.symbol,
+              base: market.baseToken.symbol
+            })
+          }}
         </div>
-        <NuxtLink to="/" class="hover:text-blue-500 underline">
+        <NuxtLink
+          to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
+          target="_blank"
+          class="hover:text-blue-500 underline"
+        >
           {{ $t('sgt.learnMoreHere') }}
         </NuxtLink>
       </div>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-gray-500">{{ $t('sgt.totalInvestmentAmount') }}</p>
-        <p>{{ margin }} USD</p>
+        <p class="text-gray-500">{{ $t('sgt.totalAmount') }}</p>
+        <p>{{ marginToString }} USD</p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-gray-500">{{ $t('sgt.totalInvestmentCurrency') }}</p>
+        <p class="text-gray-500">{{ $t('sgt.optimizedAmounts') }}</p>
 
         <div class="text-gray-500 text-right">
           <p>{{ quoteAmountToString }} {{ market.quoteToken.symbol }}</p>
@@ -100,7 +114,7 @@ function onChangeInvestmentType() {
           @click="onChangeInvestmentType"
         >
           {{
-            $t('sgt.changeToQuoteAndBase', {
+            $t('sgt.useFeeOptimizedAmounts', {
               quote: market.quoteToken.symbol,
               base: market.baseToken.symbol
             })
@@ -112,7 +126,7 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
-          {{ $t('sgt.keepQuote', { quote: market.quoteToken.symbol }) }}
+          {{ $t('sgt.keepOriginalAmounts') }}
         </AppButton>
       </div>
     </div>

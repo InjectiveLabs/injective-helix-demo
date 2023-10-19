@@ -74,7 +74,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       levels: number
       lowerBound: string
       upperBound: string
-      quoteAmount: string
+      quoteAmount?: string
       baseAmount?: string
       shouldExitWithQuoteOnly?: boolean
       takeProfit?: string
@@ -90,6 +90,10 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       }
 
       if (!gridStrategyStore.spotMarket) {
+        return
+      }
+
+      if (!baseAmount && !quoteAmount) {
         return
       }
 

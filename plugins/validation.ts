@@ -178,16 +178,16 @@ export const defineGlobalRules = () => {
 
   defineRule(
     'minBaseAndQuoteAmountSgt',
-    (_value: string, [amountA, amountB, threshold]: string[]) => {
+    (_value: string, [amountA, amountB, threshold, symbol]: string[]) => {
       const amountAInBigNumber = new BigNumberInBase(amountA)
       const amountBInBigNumber = new BigNumberInBase(amountB)
 
       const thresholdInBigNumber = new BigNumberInBase(threshold)
 
       if (
-        amountAInBigNumber.plus(amountBInBigNumber).lte(thresholdInBigNumber)
+        amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
       ) {
-        return `Minimum total asset value must be above: ${thresholdInBigNumber.toFixed(
+        return `Min ${symbol.toUpperCase()}+USDT value >= $${thresholdInBigNumber.toFixed(
           2
         )}`
       }
@@ -195,6 +195,14 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
+    if (!fieldValue && !value) {
+      return 'Field is required'
+    }
+
+    return true
+  })
 }
 
 export default defineNuxtPlugin(() => {
