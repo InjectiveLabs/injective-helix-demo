@@ -147,16 +147,6 @@ const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
       return rules.join('|')
     })
   })
-
-// function setQuoteAndBaseType() {
-//   selectedInvestmentType.value = InvestmentTypeGst.BaseAndQuote
-//   baseResetField({ value: '' })
-// }
-
-// function setQuoteType() {
-//   selectedInvestmentType.value = InvestmentTypeGst.Quote
-//   baseResetField({ value: '' })
-// }
 </script>
 
 <template>
@@ -178,67 +168,6 @@ const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
           <span>{{ market.quoteToken.symbol }}</span>
         </div>
       </button>
-
-      <!-- <BaseDropdown>
-        <template #default="{ isOpen }">
-          <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
-            <div
-              v-if="
-                formValues[SpotGridTradingField.InvestmentType] ===
-                InvestmentTypeGst.Quote
-              "
-              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
-            >
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              v-if="
-                formValues[SpotGridTradingField.InvestmentType] ===
-                InvestmentTypeGst.BaseAndQuote
-              "
-              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
-            >
-              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-              <span>{{ market.baseToken.symbol }}</span>
-              <span>+</span>
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              class="ml-2 transition-all duration-300"
-              :class="{ 'rotate-180': isOpen }"
-            >
-              <BaseIcon class="w-3 h-3" name="chevron-down" />
-            </div>
-          </button>
-        </template>
-
-        <template #content="{ close }">
-          <div class="bg-gray-800 text-white" @click="close">
-            <div
-              class="font-semibold text-xs flex justify-end space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="setQuoteType"
-            >
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              class="font-semibold text-xs flex space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="setQuoteAndBaseType"
-            >
-              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-              <span>{{ market.baseToken.symbol }}</span>
-              <span>+</span>
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-          </div>
-        </template>
-      </BaseDropdown> -->
     </div>
 
     <div class="mb-2">

@@ -119,30 +119,27 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         gridMarket.slug
       )
 
-      const funds = baseAmount
-        ? [
-            {
-              denom: gridStrategyStore.spotMarket.baseToken.denom,
-              amount: spotQuantityToChainQuantityToFixed({
-                value: baseAmount,
-                baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals
-              })
-            },
-            {
-              denom: gridStrategyStore.spotMarket.quoteToken.denom,
-              amount: spotQuantityToChainQuantityToFixed({
-                value: quoteAmount,
-                baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-              })
-            }
-          ]
-        : {
-            denom: gridStrategyStore.spotMarket.quoteToken.denom,
-            amount: spotQuantityToChainQuantityToFixed({
-              value: quoteAmount,
-              baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-            })
-          }
+      const funds = []
+
+      if (baseAmount) {
+        funds.push({
+          denom: gridStrategyStore.spotMarket.baseToken.denom,
+          amount: spotQuantityToChainQuantityToFixed({
+            value: baseAmount,
+            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals
+          })
+        })
+      }
+
+      if (quoteAmount) {
+        funds.push({
+          denom: gridStrategyStore.spotMarket.quoteToken.denom,
+          amount: spotQuantityToChainQuantityToFixed({
+            value: quoteAmount,
+            baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+          })
+        })
+      }
 
       const stopLossValue = stopLoss
         ? spotPriceToChainPriceToFixed({
