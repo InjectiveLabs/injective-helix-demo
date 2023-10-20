@@ -33,10 +33,6 @@ function init() {
 function handleClose() {
   modalStore.closeModal(Modal.NewFeature)
 }
-
-function updateNewFeatureModalViewed() {
-  handleClose()
-}
 </script>
 
 <template>
@@ -46,7 +42,7 @@ function updateNewFeatureModalViewed() {
     v-bind="{ hideCloseButton: true, dense: true }"
     @modal:closed="handleClose"
   >
-    <div class="flex flex-col -mt-5 justify-center items-center">
+    <div class="flex flex-col justify-center items-center">
       <div w-full h-auto>
         <slot name="image" />
       </div>
@@ -63,7 +59,7 @@ function updateNewFeatureModalViewed() {
         <NuxtLink
           class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4"
           :to="to"
-          @click="updateNewFeatureModalViewed"
+          @click="handleClose"
         >
           <slot name="cta" />
         </NuxtLink>

@@ -86,6 +86,10 @@ const alternatingDenoms = computed(() => {
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'neok'
   )?.baseToken.denom
 
+  const kavaDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'kava'
+  )?.baseToken.denom
+
   return [
     injDenom,
     atomDenom,
@@ -93,7 +97,8 @@ const alternatingDenoms = computed(() => {
     wmaticDenom,
     sommDenom,
     oraiDenom,
-    neokDenom
+    neokDenom,
+    kavaDenom
   ]
 })
 

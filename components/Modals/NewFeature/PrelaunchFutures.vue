@@ -23,28 +23,26 @@ const route = computed(() => {
 <template>
   <ModalsNewFeatureWrapper v-bind="{ to: route }">
     <template #image>
-      <div class="min-h-[252px]">
-        <img
-          src="https://helixapp.zendesk.com/hc/article_attachments/8162140444431"
-        />
-      </div>
+      <img src="/newFeatures/prelaunch-futures.webp" alt="" />
     </template>
 
     <template #title>
-      {{ $t('banners.newFeature.title') }}
+      {{ $t('banners.newFeature.prelaunchFutures.title') }}
     </template>
 
     <template #description>
       <div>
-        {{ $t('banners.newFeature.description1') }}
+        {{ $t('banners.newFeature.prelaunchFutures.description1') }}
       </div>
       <div>
-        {{ $t('banners.newFeature.description2') }}
+        {{ $t('banners.newFeature.prelaunchFutures.description2') }}
       </div>
     </template>
 
     <template #cta>
-      {{ $t(`banners.newFeature.${market ? 'cta' : 'continue'}`) }}
+      {{
+        $t(`banners.newFeature.prelaunchFutures.${market ? 'cta' : 'continue'}`)
+      }}
     </template>
   </ModalsNewFeatureWrapper>
 </template>

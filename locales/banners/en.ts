@@ -31,13 +31,15 @@ export default {
     },
 
     newFeature: {
-      title: 'Introducing Pre-Launch Futures!',
-      description1:
-        'Pre-Launch Futures are futures markets for tokens that have yet to launch. Effectively, this enables users to trade pre-launch markets that are typically reserved for early contributors, VCs or wealthy insiders.',
-      description2:
-        'Helix aims to disrupt this closed system by allowing, for the first time ever, the decentralized trading of popular upcoming tokens prior to their official launch or listing on a public cryptocurrency exchange.',
-      cta: 'Go to Pre-Launch Futures',
-      continue: 'Continue'
+      prelaunchFutures: {
+        title: 'Introducing Pre-Launch Futures!',
+        description1:
+          'Pre-Launch Futures are futures markets for tokens that have yet to launch. Effectively, this enables users to trade pre-launch markets that are typically reserved for early contributors, VCs or wealthy insiders.',
+        description2:
+          'Helix aims to disrupt this closed system by allowing, for the first time ever, the decentralized trading of popular upcoming tokens prior to their official launch or listing on a public cryptocurrency exchange.',
+        cta: 'Go to Pre-Launch Futures',
+        continue: 'Continue'
+      }
     }
   }
 }

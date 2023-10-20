@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'set-tab': [tab: GridStrategyType]
+  'set:tab': [tab: GridStrategyType]
 }>()
 
 const exchangeStore = useExchangeStore()
@@ -87,7 +87,7 @@ function setInitialFieldValues() {
 
 function copyToManual() {
   setValuesFromAuto()
-  emit('set-tab', GridStrategyType.Manual)
+  emit('set:tab', GridStrategyType.Manual)
 }
 
 function setValuesFromAuto() {
@@ -105,7 +105,14 @@ function setValuesFromAuto() {
 <template>
   <div>
     <p class="text-xs">{{ $t('sgt.autoModeHeader') }}</p>
-    <a class="text-xs text-blue-500" href="#">{{ $t('sgt.learnMore') }}.</a>
+    <NuxtLink
+      to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
+      target="_blank"
+      class="text-xs text-blue-500"
+      href="#"
+    >
+      {{ $t('sgt.learnMore') }}.
+    </NuxtLink>
 
     <div class="space-y-4 my-4">
       <div class="flex justify-between items-center text-sm">
