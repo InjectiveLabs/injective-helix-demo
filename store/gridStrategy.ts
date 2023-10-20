@@ -74,12 +74,13 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       levels: number
       lowerBound: string
       upperBound: string
-      quoteAmount: string
+      quoteAmount?: string
       baseAmount?: string
       shouldExitWithQuoteOnly?: boolean
       takeProfit?: string
       stopLoss?: string
     }) {
+      const appStore = useAppStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const gridStrategyStore = useGridStrategyStore()
@@ -91,6 +92,13 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       if (!gridStrategyStore.spotMarket) {
         return
       }
+
+      if (!baseAmount && !quoteAmount) {
+        return
+      }
+
+      await appStore.queue()
+      await walletStore.validate()
 
       if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(
@@ -111,30 +119,27 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         gridMarket.slug
       )
 
-      const funds = baseAmount
-        ? [
-            {
-              denom: gridStrategyStore.spotMarket.baseToken.denom,
-              amount: spotQuantityToChainQuantityToFixed({
-                value: baseAmount,
-                baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals
-              })
-            },
-            {
-              denom: gridStrategyStore.spotMarket.quoteToken.denom,
-              amount: spotQuantityToChainQuantityToFixed({
-                value: quoteAmount,
-                baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-              })
-            }
-          ]
-        : {
-            denom: gridStrategyStore.spotMarket.quoteToken.denom,
-            amount: spotQuantityToChainQuantityToFixed({
-              value: quoteAmount,
-              baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-            })
-          }
+      const funds = []
+
+      if (baseAmount) {
+        funds.push({
+          denom: gridStrategyStore.spotMarket.baseToken.denom,
+          amount: spotQuantityToChainQuantityToFixed({
+            value: baseAmount,
+            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals
+          })
+        })
+      }
+
+      if (quoteAmount) {
+        funds.push({
+          denom: gridStrategyStore.spotMarket.quoteToken.denom,
+          amount: spotQuantityToChainQuantityToFixed({
+            value: quoteAmount,
+            baseDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+          })
+        })
+      }
 
       const stopLossValue = stopLoss
         ? spotPriceToChainPriceToFixed({
@@ -186,6 +191,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async removeStrategy() {
+      const appStore = useAppStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const gridStrategyStore = useGridStrategyStore()
@@ -197,6 +203,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       if (!gridStrategyStore.spotMarket) {
         return
       }
+
+      await appStore.queue()
+      await walletStore.validate()
 
       if (walletStore.isAuthzWalletConnected) {
         throw new GeneralException(

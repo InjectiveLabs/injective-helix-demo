@@ -1,4 +1,4 @@
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
@@ -20,9 +20,13 @@ export default function useActiveGridStrategy(
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
       .toBase(market.value?.baseToken.decimals)
       .times(
-        new BigNumberInWei(strategy.value.executionPrice).toBase(
-          market.value?.quoteToken.decimals
-        )
+        new BigNumberInWei(strategy.value.executionPrice)
+          .dividedBy(
+            new BigNumberInBase(10).pow(
+              market.value.quoteToken.decimals - market.value.baseToken.decimals
+            )
+          )
+          .toBase()
       )
 
     const quoteAmountInUsd = new BigNumberInWei(
@@ -55,9 +59,13 @@ export default function useActiveGridStrategy(
       strategy.value.subscriptionBaseQuantity
     ).toBase(market.value?.baseToken.decimals)
 
-    const creationMidPrice = new BigNumberInWei(
-      strategy.value.executionPrice
-    ).toBase(market.value?.quoteToken.decimals)
+    const creationMidPrice = new BigNumberInWei(strategy.value.executionPrice)
+      .dividedBy(
+        new BigNumberInBase(10).pow(
+          market.value.quoteToken.decimals - market.value.baseToken.decimals
+        )
+      )
+      .toBase()
 
     const currentQuoteQuantity =
       strategy.value.state === StrategyStatus.Active

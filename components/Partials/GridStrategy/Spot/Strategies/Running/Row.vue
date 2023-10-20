@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
+import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
 
 const props = defineProps({
   strategy: {
@@ -19,8 +20,10 @@ const emit = defineEmits<{
   'open:details': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
+const { aggregatedPortfolioBalances } = useBalance()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -35,11 +38,18 @@ const { pnl, percentagePnl } = useActiveGridStrategy(
   computed(() => props.strategy)
 )
 
-const { upperBound, lowerBound, totalInvestment } =
-  useActiveGridStrategyTransformer(
-    market,
-    computed(() => props.strategy)
-  )
+const { upperBound, lowerBound } = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.strategy)
+)
+
+const marketSubaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+)
+
+const subaccountBalances = computed(
+  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+)
 
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
@@ -49,22 +59,34 @@ const duration = computed(() =>
   formatDistance(Number(props.strategy.createdAt), now.value)
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
   { decimalPlaces: 2 }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
   { decimalPlaces: 2 }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
   decimalPlaces: 2
 })
 
+const accountTotalBalanceInUsd = computed(() =>
+  subaccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
+    ZERO_IN_BASE
+  )
+)
+
 const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
-  totalInvestment,
+  accountTotalBalanceInUsd,
   { decimalPlaces: 2 }
 )
 
@@ -89,7 +111,7 @@ function onRemoveStrategy() {
       amplitudeGridStrategyTracker.removeStrategy({
         duration: duration.value,
         market: gridStrategyStore.spotMarket?.slug || '',
-        totalProfit: pnltoString.value
+        totalProfit: pnlToString.value
       })
     })
 }
@@ -125,11 +147,11 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
@@ -145,7 +167,7 @@ useIntervalFn(() => {
     >
       <div>
         <div>
-          {{ pnltoString }}
+          {{ pnlToString }}
           {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>

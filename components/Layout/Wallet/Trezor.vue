@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
@@ -44,7 +45,7 @@ const connect = handleSubmit(() => {
   status.setLoading()
 
   walletStore
-    .connectTrezor(address.value)
+    .connectTrezor(getEthereumAddress(address.value))
     .catch((e) => {
       walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)

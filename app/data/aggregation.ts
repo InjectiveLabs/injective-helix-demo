@@ -6,6 +6,10 @@ export interface CustomAggregation {
 
 export const aggregationList = [
   {
+    value: '-3',
+    display: '1000'
+  },
+  {
     value: '-2',
     display: '100'
   },
@@ -346,6 +350,42 @@ export const customAggregations = {
   },
 
   'NEOK/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'KAVA/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'AXL/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'BTC/USDTkv PERP': {
+    minTick: getDecimalPlaceFromValue('1'),
+    default: getDecimalPlaceFromValue('1'),
+    maxTick: getDecimalPlaceFromValue('1000')
+  },
+
+  'ETH/USDTkv PERP': {
+    minTick: getDecimalPlaceFromValue('0.1'),
+    default: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('100')
+  },
+
+  'TIA/USDT-30NOV2023': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'USDTkv/USDT': {
     minTick: getDecimalPlaceFromValue('0.0001'),
     default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.1')

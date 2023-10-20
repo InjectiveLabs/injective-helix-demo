@@ -2,10 +2,6 @@
 import { format } from 'date-fns'
 import { Status, StatusType } from '@injectivelabs/utils'
 
-definePageMeta({
-  middleware: ['leaderboard']
-})
-
 const leaderboardStore = useLeaderboardStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()

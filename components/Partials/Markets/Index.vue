@@ -51,8 +51,8 @@ const recentlyExpiredMarkets = computed(
 
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
-const filteredMarkets = computed(() => {
-  return props.markets.filter(({ market, volumeInUsd }) => {
+const filteredMarkets = computed(() =>
+  props.markets.filter(({ market, volumeInUsd }) => {
     const isPartOfCategory = marketIsPartOfCategory(
       activeCategory.value,
       market
@@ -78,7 +78,7 @@ const filteredMarkets = computed(() => {
       (isLowVolumeMarket || isOlpmarket)
     )
   })
-})
+)
 
 const sortedMarkets = computed(() => {
   const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)

@@ -7,8 +7,8 @@ export const getRoutes = (network: Network, env: string) => {
 
   const spot = [
     'inj-usdt',
-    'atom-usdt',
     'stinj-inj',
+    'atom-usdt',
     'arb-usdt',
     'chz-usdcet',
     'wmatic-usdt',
@@ -41,13 +41,14 @@ export const getRoutes = (network: Network, env: string) => {
     'bnb-usdt-perp',
     'stx-usdt-perp',
     'atom-usdt-perp',
-    'sei-usdt-perp'
+    'sei-usdt-perp',
+    'axl-usdt-perp'
   ]
 
   const gridTradingSpot = ['inj-usdt']
 
   const binaryOptions: string[] = []
-  const expiryFutures: string[] = ['eth-usdt-19sep22']
+  const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
 
   if (IS_DEVNET) {
     spot.push('wbtc-inj')
@@ -103,7 +104,13 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet')
+    spot.push(
+      ...usdcConversionModalMarkets,
+      'ldo-usdcet',
+      'kava-usdt',
+      'usdtkv-usdt'
+    )
+    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
   if (IS_DEVNET) {

@@ -100,7 +100,7 @@ export default {
       }
     ]"
     v-bind="filteredAttrs"
-    class="font-bold rounded-md border box-border focus:outline-none"
+    class="font-semibold rounded-md border box-border focus:outline-none"
     @click="handleClick"
   >
     <slot v-if="(!status || status.isNotLoading()) && !isLoading" />

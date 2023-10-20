@@ -137,8 +137,8 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj'
-  // UST = 'ust'
+  INJ = 'inj',
+  USDTkv = 'usdtkv'
 }
 
 export enum StreamType {
@@ -419,4 +419,9 @@ export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
   TakeProfit = 'take_profit'
+}
+
+export enum GridStrategyType {
+  Auto = 'auto',
+  Manual = 'manual'
 }

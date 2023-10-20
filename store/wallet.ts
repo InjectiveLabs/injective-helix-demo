@@ -189,16 +189,20 @@ export const useWalletStore = defineStore('wallet', {
       if (walletStore.addresses.length === 0 || walletStore.wallet !== wallet) {
         await connect({ wallet })
 
-        walletStore.$patch({
-          wallet,
-          addresses: await getAddresses()
-        })
-      } else {
         const addresses = await getAddresses()
+        const injectiveAddresses = addresses.map(getInjectiveAddress)
 
         walletStore.$patch({
           wallet,
-          addresses: [...walletStore.addresses, ...addresses]
+          addresses: injectiveAddresses
+        })
+      } else {
+        const addresses = await getAddresses()
+        const injectiveAddresses = addresses.map(getInjectiveAddress)
+
+        walletStore.$patch({
+          wallet,
+          addresses: [...walletStore.addresses, ...injectiveAddresses]
         })
       }
     },

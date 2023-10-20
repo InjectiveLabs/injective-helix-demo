@@ -9,10 +9,14 @@ import {
 } from '@/types'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE
+  GST_MIN_TRADING_SIZE,
+  GST_GRID_THRESHOLD,
+  GST_DEFAULT_AUTO_GRIDS
 } from '@/app/utils/constants'
 
 const props = defineProps({
+  isAuto: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -21,6 +25,8 @@ const props = defineProps({
 
 const formValues = useFormValues<SpotGridTradingForm>()
 const { accountBalancesWithToken } = useBalance()
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const quoteDenomBalance = computed(() =>
   accountBalancesWithToken.value.find(
@@ -46,11 +52,21 @@ const baseDenomAmount = computed(() =>
   )
 )
 
-const minQuoteAmount = computed(() =>
-  new BigNumberInBase(formValues.value[SpotGridTradingField.Grids] || 1)
-    .times(GST_MIN_TRADING_SIZE)
-    .toFixed(2)
-)
+const gridThreshold = computed(() => {
+  if (props.isAuto) {
+    return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
+  }
+
+  const isGridHigherThanGridTreshold =
+    !!formValues.value[SpotGridTradingField.Grids] &&
+    Number(formValues.value[SpotGridTradingField.Grids]) >= GST_GRID_THRESHOLD
+
+  return new BigNumberInBase(
+    isGridHigherThanGridTreshold
+      ? Number(formValues.value[SpotGridTradingField.Grids])
+      : GST_GRID_THRESHOLD
+  ).times(GST_MIN_TRADING_SIZE)
+})
 
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   quoteDenomAmount,
@@ -67,48 +83,70 @@ const { valueToString: baseAmountToString } = useBigNumberFormatter(
 )
 
 const { value: selectedInvestmentType } = useStringField({
-  name: SpotGridTradingField.InvestmentType,
-  initialValue: InvestmentTypeGst.Quote
+  name: SpotGridTradingField.InvestmentType
 })
 
 const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
   useStringField({
     name: SpotGridTradingField.InvestmentAmount,
-    rule: 'requiredSgt',
-    dynamicRule: computed(
-      () =>
-        `minInvestmentSgt:${
-          minQuoteAmount.value
-        }|insufficientSgt:${quoteDenomAmount.value.toFixed()}`
-    )
+    rule: '',
+    dynamicRule: computed(() => {
+      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
+
+      const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
+
+      const baseAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+      ).times(lastTradedPrice.value)
+
+      const quoteAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      )
+
+      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+        props.market.baseToken.symbol
+      }`
+
+      const rules = [
+        requiredIfFieldEmptyRule,
+        insuficientRule,
+        minBaseAndQuoteAmountRule
+      ]
+
+      return rules.join('|')
+    })
   })
 
-const {
-  value: baseInvestmentAmountValue,
-  errorMessage: baseErrorMessage,
-  resetField: baseResetField
-} = useStringField({
-  name: SpotGridTradingField.BaseInvestmentAmount,
-  rule: '',
-  dynamicRule: computed(
-    () =>
-      `${
-        selectedInvestmentType.value === InvestmentTypeGst.BaseAndQuote
-          ? 'requiredSgt|'
-          : ''
-      }minValueSgt:1|insufficientSgt:${baseDenomAmount.value.toFixed()}`
-  )
-})
+const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.BaseInvestmentAmount,
+    rule: '',
+    dynamicRule: computed(() => {
+      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
 
-function setQuoteAndBaseType() {
-  selectedInvestmentType.value = InvestmentTypeGst.BaseAndQuote
-  baseResetField({ value: '' })
-}
+      const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
 
-function setQuoteType() {
-  selectedInvestmentType.value = InvestmentTypeGst.Quote
-  baseResetField({ value: '' })
-}
+      const baseAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+      ).times(lastTradedPrice.value)
+
+      const quoteAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      )
+
+      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+        props.market.baseToken.symbol
+      }`
+
+      const rules = [
+        requiredIfFieldEmptyRule,
+        insuficientRule,
+        minBaseAndQuoteAmountRule
+      ]
+
+      return rules.join('|')
+    })
+  })
 </script>
 
 <template>
@@ -116,79 +154,24 @@ function setQuoteType() {
     <div class="flex justify-between items-center py-4">
       <div class="flex items-center space-x-2">
         <h3 class="font-bold text-sm tracking-wide">
-          3. {{ $t('sgt.amount') }}
+          <span v-if="!isAuto">3.</span> {{ $t('sgt.amount') }}
         </h3>
         <AppTooltip :content="$t('sgt.investmentTooltip')" />
       </div>
 
-      <BaseDropdown v-if="baseDenomAmount.gt(0)">
-        <template #default="{ isOpen }">
-          <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
-            <div
-              v-if="
-                formValues[SpotGridTradingField.InvestmentType] ===
-                InvestmentTypeGst.Quote
-              "
-              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
-            >
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              v-if="
-                formValues[SpotGridTradingField.InvestmentType] ===
-                InvestmentTypeGst.BaseAndQuote
-              "
-              class="ml-auto font-semibold text-xs flex space-x-2 items-center"
-            >
-              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-              <span>{{ market.baseToken.symbol }}</span>
-              <span>+</span>
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              class="ml-2 transition-all duration-300"
-              :class="{ 'rotate-180': isOpen }"
-            >
-              <BaseIcon class="w-3 h-3" name="chevron-down" />
-            </div>
-          </button>
-        </template>
-
-        <template #content="{ close }">
-          <div class="bg-gray-800 text-white" @click="close">
-            <div
-              class="font-semibold text-xs flex justify-end space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="setQuoteType"
-            >
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-
-            <div
-              class="font-semibold text-xs flex space-x-2 items-center p-2 hover:bg-gray-700 hover:cursor-pointer"
-              @click="setQuoteAndBaseType"
-            >
-              <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-              <span>{{ market.baseToken.symbol }}</span>
-              <span>+</span>
-              <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-              <span>{{ market.quoteToken.symbol }}</span>
-            </div>
-          </div>
-        </template>
-      </BaseDropdown>
+      <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
+        <div class="ml-auto font-semibold text-xs flex space-x-2 items-center">
+          <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
+          <span>{{ market.baseToken.symbol }}</span>
+          <span>+</span>
+          <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+          <span>{{ market.quoteToken.symbol }}</span>
+        </div>
+      </button>
     </div>
 
     <div class="mb-2">
-      <AppInputNumeric
-        v-model="investmentAmountValue"
-        class="text-right"
-        :placeholder="`≥ ${minQuoteAmount}`"
-      >
+      <AppInputNumeric v-model="investmentAmountValue" class="text-right">
         <template #addon>
           {{ market.quoteToken.symbol }}
         </template>
@@ -225,6 +208,19 @@ function setQuoteType() {
       <div class="text-red-500 text-xs font-semibold pt-2">
         {{ baseErrorMessage }}
       </div>
+    </div>
+
+    <div class="text-xs font-semibold text-gray-500 mt-4 space-y-2">
+      <p>{{ $t('sgt.minInvestment', { amount: gridThreshold.toFixed() }) }}</p>
+      <p>
+        {{
+          $t('sgt.totalBaseAndQuote', {
+            base: market.baseToken.symbol.toUpperCase(),
+            quote: market.quoteToken.symbol.toUpperCase(),
+            amount: gridThreshold
+          })
+        }}
+      </p>
     </div>
   </div>
 </template>
