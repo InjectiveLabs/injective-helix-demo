@@ -4,6 +4,7 @@ import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
@@ -136,9 +137,10 @@ export const defineGlobalRules = () => {
 
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
 
-    if (valueInBigNumber.lte(min)) {
-      return `Value should be greater than ${min}`
+    if (valueInBigNumber.lte(minInBigNumber)) {
+      return `Value should be greater than ${minInBigNumber.toFixed(2)}`
     }
 
     return true
@@ -146,9 +148,10 @@ export const defineGlobalRules = () => {
 
   defineRule('lessThanSgt', (value: string, [max]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const maxInBigNumber = new BigNumberInBase(max)
 
-    if (valueInBigNumber.gte(max)) {
-      return `Value should be less than ${max}`
+    if (valueInBigNumber.gte(maxInBigNumber)) {
+      return `Value should be less than ${maxInBigNumber.toFixed(2)}`
     }
 
     return true
@@ -169,6 +172,34 @@ export const defineGlobalRules = () => {
 
     if (valueInBigNumber.gt(max)) {
       return `Insufficient Amount`
+    }
+
+    return true
+  })
+
+  defineRule(
+    'minBaseAndQuoteAmountSgt',
+    (_value: string, [amountA, amountB, threshold, symbol]: string[]) => {
+      const amountAInBigNumber = new BigNumberInBase(amountA)
+      const amountBInBigNumber = new BigNumberInBase(amountB)
+
+      const thresholdInBigNumber = new BigNumberInBase(threshold)
+
+      if (
+        amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
+      ) {
+        return `Min ${symbol.toUpperCase()}+USDT value >= $${thresholdInBigNumber.toFixed(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return true
+    }
+  )
+
+  defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
+    if (!fieldValue && !value) {
+      return 'At least one field is required'
     }
 
     return true

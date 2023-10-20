@@ -39,7 +39,6 @@ const {
   lowerBound,
   upperBound,
   takeProfit,
-  totalInvestment,
   creationExecutionPrice,
   subscriptionBaseQuantity,
   subscriptionQuoteQuantity
@@ -82,6 +81,18 @@ const currentQuoteBalance = computed(() => {
   ).toBase(market.value.quoteToken.decimals)
 })
 
+const accountTotalBalanceInUsd = computed(() =>
+  subaccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
+    ZERO_IN_BASE
+  )
+)
+
 const createdAtFormatted = computed(() =>
   format(new Date(Number(props.activeStrategy.createdAt)), 'dd MMM HH:mm:ss')
 )
@@ -109,8 +120,8 @@ const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
-  totalInvestment,
+const { valueToString: totalAmountToString } = useBigNumberFormatter(
+  accountTotalBalanceInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -199,14 +210,15 @@ useIntervalFn(() => {
         <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
-            $t('sgt.totalInvestmentTooltip', {
+            $t('sgt.totalAmountTooltip', {
               symbol: market.quoteToken.symbol
             })
           "
         />
       </span>
+
       <span>
-        {{ totalInvestmentToString }}
+        {{ totalAmountToString }}
         <span class="text-xs opacity-75 align-text-bottom ml-1">{{
           market?.quoteToken.symbol
         }}</span>
@@ -321,7 +333,7 @@ useIntervalFn(() => {
       </span>
     </div>
 
-    <div class="flex justify-between mb-2 text-sm">
+    <div class="flex justify-between mb-4 text-sm">
       <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
         <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
@@ -358,5 +370,7 @@ useIntervalFn(() => {
         }}
       </p>
     </div> -->
+
+    <PartialsGridStrategySpotFormEndBot />
   </div>
 </template>

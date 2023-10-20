@@ -6,20 +6,24 @@ export default {
     time: 'Time',
     skip: 'Skip',
     user: 'User',
+    auto: 'Auto',
     grids: 'Grids',
     close: 'Close',
     amount: 'Amount',
     market: 'Market',
     endBot: 'End Bot',
+    manual: 'Manual',
     running: 'Running',
+    lower: 'Lower',
+    upper: 'Upper',
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
     history: 'history',
     enabled: 'Enabled',
     removed: 'Removed',
-    lowerPrice: 'Lower',
-    upperPrice: 'Upper',
+    lowerPrice: 'Lower Price',
+    upperPrice: 'Upper Price',
     disabled: 'Disabled',
     duration: 'Duration',
     stopLoss: 'Stop Loss',
@@ -40,11 +44,14 @@ export default {
     stopTrigger: 'Stop Trigger',
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
+    saveOnFees: 'Save on fees',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
-    keepQuote: 'Keep USDT Only',
+    keepQuote: 'Keep {quote} Only',
     totalAmount: 'Total Amount',
+    optimizedAmounts: 'Optimized Amounts',
     timeCreated: 'Time Created',
+    learnMore: 'Learn More',
     next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',
@@ -52,11 +59,17 @@ export default {
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
     currentBalance: 'Current Balance',
+    minInvestment: 'Min investment: $ {amount}',
     totalInvestment: 'Total Investment',
+    useFeeOptimizedAmounts: 'Use fee optimized amounts',
+    keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
+    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     initialInvestment: 'Initial Investment',
+    autoModeHeader:
+      'These parameters are generated automatically based on the last 7 days trading prices.',
     stopLossTooltip:
       'The bot will stop when the last price of the pair reaches the set stop loss.',
     takeProfitTooltip:
@@ -67,12 +80,11 @@ export default {
     sellAllBaseOnStop: 'Sell all base on stop',
 
     noStrategiesFound: 'No Strategies Found',
-    changeToQuoteAndBase: 'Change to USDT + INJ',
+    changeToQuoteAndBase: 'Change to {quote} + {base}',
     totalInvestmentAmount: 'Total Investment Amount',
     totalInvestmentCurrency: 'Total Investment Currency',
     sellAllBaseCoinsOnStop: 'Sell all base coins on Stop',
-    totalInvestmentTooltip:
-      'The amount invested to start the grid when setting up the grid in {symbol}',
+    totalAmountTooltip: 'Your current Spot Grid Trading Sub account net worth',
     currentBalanceTooltip:
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
     sellAllBaseOnStopTooltip:
@@ -80,7 +92,7 @@ export default {
     nOfGridsTooltip:
       'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
-    includeDenom: 'Include [INJ] in your initial investment',
+    includeDenom: 'Include [{symbol}] in your initial investment',
     createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([
         named('quoteAmount'),
@@ -107,6 +119,7 @@ export default {
     letHelixSendsYouRequestForTransactions:
       'Let Helix sends you request for transactions',
     pleaseConfirmOnYourWallet: 'Please confirm on your wallet...',
+    copyParametersToManual: 'Copy Parameters to Manual',
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridOrderConfirmation: 'Grid Order Confirmation',
@@ -115,7 +128,7 @@ export default {
     initialEntryTooltip:
       'The initial entry price is the price at which the smart contract places the first order, setting the baseline for rebalancing your INJ and USDT portfolio to kickstart the strategy.',
     balancedFeesMessage:
-      'You will be saving balancing fees if you invest in both INJ and USDT. This is because we have to convert some of the USDT to INJ to start the strategy.',
+      'You will be saving exchange fees by using the optimized amounts of {base} and {quote}, as the strategy will need rebalance {quote} and {base} to start.',
     gridIntervalTooltip:
       'Specifies the constant price gaps between grid levels within your set upper and lower price range.',
     minimizeOneTimeFees:

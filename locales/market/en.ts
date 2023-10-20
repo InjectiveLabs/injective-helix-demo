@@ -20,7 +20,7 @@ export default {
     airdrop: 'Airdrop',
     showLowVol: 'Show low Vol.',
     perpetuals: 'Perpetuals',
-    preLaunchExpiry: 'Pre Launch Expiry'
+    preLaunchFutures: 'Pre Launch Futures'
   },
 
   marketPage: {

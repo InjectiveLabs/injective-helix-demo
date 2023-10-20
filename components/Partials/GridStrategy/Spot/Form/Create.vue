@@ -17,11 +17,15 @@ import {
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
+  GST_DEFAULT_AUTO_GRIDS,
+  GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
 const props = defineProps({
+  isAuto: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -29,16 +33,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'investment-type:set': [
-    investmentAmount: string,
-    baseInvestmentAmount: string
-  ]
+  'strategy:create': []
 }>()
 
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
+const setFormValues = useSetFormValues()
 const validate = useValidateForm()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -76,9 +78,34 @@ const baseDenomAmount = computed(() =>
   )
 )
 
+const gridThreshold = computed(() => {
+  if (props.isAuto) {
+    return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
+  }
+
+  const isGridHigherThanGridTreshold =
+    !!formValues.value[SpotGridTradingField.Grids] &&
+    Number(formValues.value[SpotGridTradingField.Grids]) >= GST_GRID_THRESHOLD
+
+  return new BigNumberInBase(
+    isGridHigherThanGridTreshold
+      ? Number(formValues.value[SpotGridTradingField.Grids])
+      : GST_GRID_THRESHOLD
+  ).times(GST_MIN_TRADING_SIZE)
+})
+
+const initialInvestment = computed(() =>
+  new BigNumberInBase(
+    formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+  ).plus(
+    new BigNumberInBase(
+      formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+    ).times(currentPrice.value)
+  )
+)
+
 const calculatedAmount = computed(() => {
   if (
-    !formValues.value[SpotGridTradingField.InvestmentAmount] ||
     !formValues.value[SpotGridTradingField.LowerPrice] ||
     !formValues.value[SpotGridTradingField.UpperPrice] ||
     !currentPrice.value ||
@@ -91,58 +118,55 @@ const calculatedAmount = computed(() => {
   const lowerBoundary = new BigNumberInBase(
     formValues.value[SpotGridTradingField.LowerPrice]
   )
+
   const upperBoundary = new BigNumberInBase(
     formValues.value[SpotGridTradingField.UpperPrice]
-  )
-  const initialQuoteInvestment = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.InvestmentAmount]
   )
 
   const ratio = currentPrice.value
     .minus(lowerBoundary)
     .dividedBy(upperBoundary.minus(lowerBoundary))
 
-  const baseAmount = initialQuoteInvestment
+  const baseAmount = initialInvestment.value
     .times(new BigNumberInBase(1).minus(ratio))
     .dividedBy(currentPrice.value)
 
-  const quoteAmount = initialQuoteInvestment.times(ratio)
+  const quoteAmount = initialInvestment.value.times(ratio)
 
   return { baseAmount, quoteAmount }
 })
 
 async function onCheckBalanceFees() {
+  emit('strategy:create')
+
   const { valid } = await validate()
 
   if (!valid) {
     return
   }
 
-  if (
-    formValues.value[SpotGridTradingField.InvestmentType] ===
-    InvestmentTypeGst.BaseAndQuote
-  ) {
-    onCreateStrategy()
+  const minAmount = new BigNumberInBase(gridThreshold.value)
 
-    return
-  }
+  const baseInUsdt = new BigNumberInBase(
+    calculatedAmount.value.baseAmount
+  ).times(currentPrice.value)
 
-  const minAmount = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.Grids] || 1
-  ).times(GST_MIN_TRADING_SIZE)
-
-  const isBaseLtBalance = baseDenomAmount.value.lt(
+  const isBaseLtBalance = baseDenomAmount.value.gt(
     calculatedAmount.value.baseAmount
   )
-  const isQuoteLtBalance = quoteDenomAmount.value.lt(
+
+  const isQuoteLtBalance = quoteDenomAmount.value.gt(
     calculatedAmount.value.quoteAmount
   )
-  const isBaseGtMinAmount = minAmount.lt(calculatedAmount.value.baseAmount)
 
-  if (isBaseLtBalance || isQuoteLtBalance || !isBaseGtMinAmount) {
-    onCreateStrategy()
-  } else {
+  const isCalculatedLessThanMinimum = minAmount
+    .minus(0.1)
+    .gt(baseInUsdt.plus(calculatedAmount.value.quoteAmount))
+
+  if (isBaseLtBalance && isQuoteLtBalance && !isCalculatedLessThanMinimum) {
     modalStore.openModal(Modal.SgtBalancedFees)
+  } else {
+    onCreateStrategy()
   }
 }
 
@@ -166,11 +190,17 @@ function onCreateStrategy() {
 }
 
 function onInvestmentTypeSet() {
-  emit(
-    'investment-type:set',
-    calculatedAmount.value.quoteAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
-    calculatedAmount.value.baseAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
+  setFormValues({
+    [SpotGridTradingField.InvestmentAmount]:
+      calculatedAmount.value.quoteAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.BaseInvestmentAmount]:
+      calculatedAmount.value.baseAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.InvestmentType]: InvestmentTypeGst.BaseAndQuote
+  })
 
   onCreateStrategy()
 }
@@ -189,25 +219,18 @@ function onInvestmentTypeSet() {
       ]"
       @click="onCheckBalanceFees"
     >
-      <span v-if="hasActiveStrategy">{{ $t('sgt.inProgress') }}</span>
-      <span v-else>{{ $t('sgt.create') }}</span>
+      <span>{{ $t('sgt.create') }}</span>
     </AppButton>
 
-    <p
-      v-if="hasActiveStrategy"
-      class="text-green-500 text-xs font-semibold mt-4"
-    >
-      {{ $t('sgt.yourStrategyIsOnTheMove') }}
-    </p>
+    <ModalsSgtBalancedFees
+      v-bind="{
+        margin: initialInvestment.toFixed(),
+        baseAmount: calculatedAmount.baseAmount,
+        quoteAmount: calculatedAmount.quoteAmount,
+        market
+      }"
+      @investment-type:set="onInvestmentTypeSet"
+      @strategy:create="onCreateStrategy"
+    />
   </div>
-
-  <ModalsSgtBalancedFees
-    v-bind="{
-      margin: formValues[SpotGridTradingField.InvestmentAmount]!,
-      baseAmount: calculatedAmount.baseAmount,
-      quoteAmount: calculatedAmount.quoteAmount
-    }"
-    @investment-type:set="onInvestmentTypeSet"
-    @strategy:create="onCreateStrategy"
-  />
 </template>

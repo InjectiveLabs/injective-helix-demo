@@ -18,10 +18,9 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
-    rule: 'requiredSgt',
     dynamicRule: computed(
       () =>
-        `lessThanSgt:${spotLastTradedPrice.value.minus(
+        `requiredSgt|lessThanSgt:${spotLastTradedPrice.value.minus(
           spotLastTradedPrice.value.times(0.05)
         )}`
     )
@@ -30,10 +29,9 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: SpotGridTradingField.UpperPrice,
-    rule: 'requiredSgt',
     dynamicRule: computed(
       () =>
-        `greaterThanSgt:${spotLastTradedPrice.value.plus(
+        `requiredSgt|greaterThanSgt:${spotLastTradedPrice.value.plus(
           spotLastTradedPrice.value.times(0.05)
         )}`
     )
@@ -51,7 +49,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.lowerPrice') }}
+              {{ $t('sgt.lower') }}
             </p>
           </template>
 
@@ -71,7 +69,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.upperPrice') }}
+              {{ $t('sgt.upper') }}
             </p>
           </template>
 

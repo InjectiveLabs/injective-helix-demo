@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
@@ -17,6 +18,11 @@ const props = defineProps({
 
   margin: {
     type: String,
+    required: true
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   }
 })
@@ -35,6 +41,11 @@ const { valueToString: baseAmountToString } = useBigNumberFormatter(
 
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   computed(() => props.quoteAmount),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToString: marginToString } = useBigNumberFormatter(
+  computed(() => props.margin),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -60,30 +71,39 @@ function onChangeInvestmentType() {
     @modal:closed="onModalClose"
   >
     <template #title>
-      <h3>{{ $t('sgt.includeDenom') }}</h3>
+      <h3>{{ $t('sgt.saveOnFees') }}</h3>
     </template>
 
     <div>
       <div>
         <div>
-          {{ $t('sgt.balancedFeesMessage') }}
+          {{
+            $t('sgt.balancedFeesMessage', {
+              quote: market.quoteToken.symbol,
+              base: market.baseToken.symbol
+            })
+          }}
         </div>
-        <NuxtLink to="/" class="hover:text-blue-500 underline">
+        <NuxtLink
+          to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
+          target="_blank"
+          class="hover:text-blue-500 underline"
+        >
           {{ $t('sgt.learnMoreHere') }}
         </NuxtLink>
       </div>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-gray-500">{{ $t('sgt.totalInvestmentAmount') }}</p>
-        <p>{{ margin }} USD</p>
+        <p class="text-gray-500">{{ $t('sgt.totalAmount') }}</p>
+        <p>{{ marginToString }} USD</p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-gray-500">{{ $t('sgt.totalInvestmentCurrency') }}</p>
+        <p class="text-gray-500">{{ $t('sgt.optimizedAmounts') }}</p>
 
         <div class="text-gray-500 text-right">
-          <p>{{ quoteAmountToString }} USD</p>
-          <p>{{ baseAmountToString }} INJ</p>
+          <p>{{ quoteAmountToString }} {{ market.quoteToken.symbol }}</p>
+          <p>{{ baseAmountToString }} {{ market.baseToken.symbol }}</p>
         </div>
       </div>
 
@@ -93,7 +113,12 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
-          {{ $t('sgt.changeToQuoteAndBase') }}
+          {{
+            $t('sgt.useFeeOptimizedAmounts', {
+              quote: market.quoteToken.symbol,
+              base: market.baseToken.symbol
+            })
+          }}
         </AppButton>
 
         <AppButton
@@ -101,7 +126,7 @@ function onChangeInvestmentType() {
           class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
-          {{ $t('sgt.keepQuote') }}
+          {{ $t('sgt.keepOriginalAmounts') }}
         </AppButton>
       </div>
     </div>

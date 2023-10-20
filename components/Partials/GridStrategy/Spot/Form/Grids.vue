@@ -4,8 +4,10 @@ import { SpotGridTradingField } from '@/types'
 
 const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
-  rule: `requiredSgt|betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`,
-  dynamicRule: computed(() => ``)
+  rule: '',
+  dynamicRule: computed(
+    () => `requiredSgt|betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
+  )
 })
 </script>
 
