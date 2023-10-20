@@ -4,7 +4,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
 import { UiMarketWithToken, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
-import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
+import { GST_ROUTE, LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum SortableKeys {
   Market = 'market',
@@ -30,7 +30,7 @@ const props = defineProps({
 
 const route = useRoute()
 
-const isSpot = (route.name as string).startsWith('trading-bots-grid-spot')
+const isSpot = (route.name as string).startsWith(GST_ROUTE)
 
 const activeType = ref(
   props.isGrid ? (isSpot ? MarketType.Spot : MarketType.Futures) : ''

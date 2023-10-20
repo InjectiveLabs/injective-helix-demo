@@ -80,3 +80,5 @@ export const GST_MAXIMUM_GRIDS = 50
 export const GST_MIN_TRADING_SIZE = 1
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 25
+
+export const GST_ROUTE = 'trading-bots-grid-spot'

@@ -23,10 +23,7 @@ const walletStore = useWalletStore()
   <PartialsGridStrategySpotFormInvestmentAmount v-bind="{ market }" />
   <PartialsGridStrategySpotFormAdvancedSettings />
 
-  <CommonUserNotConnectedNote
-    v-if="!walletStore.isUserWalletConnected && !walletStore.injectiveAddress"
-    cta
-  />
+  <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
 
   <PartialsGridStrategySpotFormCreate v-else v-bind="{ market }" />
 </template>

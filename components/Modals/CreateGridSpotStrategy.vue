@@ -47,37 +47,31 @@ const baseSymbol = computed(
 )
 
 const baseAmount = computed(() => {
-  if (!formValues.value[SpotGridTradingField.BaseInvestmentAmount]) {
+  const baseAmount = formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+
+  if (!baseAmount) {
     return undefined
   }
 
-  if (
-    formValues.value[SpotGridTradingField.BaseInvestmentAmount] &&
-    new BigNumberInBase(
-      formValues.value[SpotGridTradingField.BaseInvestmentAmount]
-    ).eq(0)
-  ) {
+  if (baseAmount && new BigNumberInBase(baseAmount).eq(0)) {
     return undefined
   }
 
-  return formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+  return baseAmount
 })
 
 const quoteAmount = computed(() => {
-  if (!formValues.value[SpotGridTradingField.InvestmentAmount]) {
+  const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
+
+  if (!quoteAmount) {
     return undefined
   }
 
-  if (
-    formValues.value[SpotGridTradingField.InvestmentAmount] &&
-    new BigNumberInBase(
-      formValues.value[SpotGridTradingField.InvestmentAmount]
-    ).eq(0)
-  ) {
+  if (quoteAmount && new BigNumberInBase(quoteAmount).eq(0)) {
     return undefined
   }
 
-  return formValues.value[SpotGridTradingField.InvestmentAmount]
+  return quoteAmount
 })
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
@@ -189,22 +183,26 @@ function handleCreateStrategy() {
       </p>
 
       <div class="mt-6 space-y-1">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between">
           <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
-          <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-            {{ quoteSymbol }}
-          </p>
-        </div>
 
-        <div
-          v-if="formValues[SpotGridTradingField.BaseInvestmentAmount]"
-          class="flex justify-end items-center"
-        >
-          <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
-            {{ baseSymbol }}
-          </p>
+          <div class="flex flex-col items-end">
+            <p
+              v-if="formValues[SpotGridTradingField.InvestmentAmount]"
+              class="font-semibold"
+            >
+              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ quoteSymbol }}
+            </p>
+
+            <p
+              v-if="formValues[SpotGridTradingField.BaseInvestmentAmount]"
+              class="font-semibold"
+            >
+              {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
+              {{ baseSymbol }}
+            </p>
+          </div>
         </div>
 
         <div class="flex justify-between items-center">

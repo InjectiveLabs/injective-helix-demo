@@ -6,6 +6,7 @@ import { format, formatDistance } from 'date-fns'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { StopReason } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   strategy: {
@@ -68,21 +69,21 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
 const { valueToString: investmentToString } = useBigNumberFormatter(
   accountTotalBalanceInUsd,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onDetailsPage() {
