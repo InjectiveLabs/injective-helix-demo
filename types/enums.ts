@@ -420,3 +420,8 @@ export enum StopReason {
   StopLoss = 'stop_loss',
   TakeProfit = 'take_profit'
 }
+
+export enum GridStrategyType {
+  Auto = 'auto',
+  Manual = 'manual'
+}

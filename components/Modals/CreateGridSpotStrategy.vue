@@ -46,6 +46,26 @@ const baseSymbol = computed(
   () => gridStrategyStore.spotMarket?.baseToken.symbol
 )
 
+const baseAmount = computed(() => {
+  const baseAmount = formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+
+  if (!baseAmount || new BigNumberInBase(baseAmount).eq(0)) {
+    return undefined
+  }
+
+  return baseAmount
+})
+
+const quoteAmount = computed(() => {
+  const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
+
+  if (!quoteAmount || new BigNumberInBase(quoteAmount).eq(0)) {
+    return undefined
+  }
+
+  return quoteAmount
+})
+
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
@@ -65,8 +85,8 @@ function handleCreateStrategy() {
       takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
       lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
       upperBound: formValues.value[SpotGridTradingField.UpperPrice],
-      quoteAmount: formValues.value[SpotGridTradingField.InvestmentAmount],
-      baseAmount: formValues.value[SpotGridTradingField.BaseInvestmentAmount],
+      baseAmount: baseAmount.value,
+      quoteAmount: quoteAmount.value,
       shouldExitWithQuoteOnly:
         formValues.value[SpotGridTradingField.SellAllBase]
     })
@@ -108,25 +128,10 @@ function handleCreateStrategy() {
     <div class="max-w-sm">
       <p>
         <i18n-t
-          v-if="!formValues[SpotGridTradingField.BaseInvestmentAmount]"
+          v-if="baseAmount && quoteAmount"
           tag="p"
-          keypath="sgt.createStrategyModalQuote"
+          keypath="sgt.createStrategyModalBaseAndQuote"
         >
-          <template #quoteAmount>
-            <span class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-              {{ quoteSymbol }}
-            </span>
-          </template>
-
-          <template #marketSlug>
-            <span class="uppercase">
-              {{ gridStrategyStore.spotMarket?.slug }}
-            </span>
-          </template>
-        </i18n-t>
-
-        <i18n-t v-else tag="p" keypath="sgt.createStrategyModalBaseAndQuote">
           <template #quoteAmount>
             <span class="font-semibold">
               {{ formValues[SpotGridTradingField.InvestmentAmount] }}
@@ -147,25 +152,43 @@ function handleCreateStrategy() {
             </span>
           </template>
         </i18n-t>
+
+        <i18n-t v-else tag="p" keypath="sgt.createStrategyModalQuote">
+          <template #quoteAmount>
+            <span v-if="quoteAmount" class="font-semibold">
+              {{ quoteAmount }}
+              {{ quoteSymbol }}
+            </span>
+
+            <span v-else class="font-semibold">
+              {{ baseAmount }}
+              {{ baseSymbol }}
+            </span>
+          </template>
+
+          <template #marketSlug>
+            <span class="uppercase">
+              {{ gridStrategyStore.spotMarket?.slug }}
+            </span>
+          </template>
+        </i18n-t>
       </p>
 
       <div class="mt-6 space-y-1">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between">
           <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
-          <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-            {{ quoteSymbol }}
-          </p>
-        </div>
 
-        <div
-          v-if="formValues[SpotGridTradingField.BaseInvestmentAmount]"
-          class="flex justify-end items-center"
-        >
-          <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
-            {{ baseSymbol }}
-          </p>
+          <div class="flex flex-col items-end">
+            <p v-if="quoteAmount" class="font-semibold">
+              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ quoteSymbol }}
+            </p>
+
+            <p v-if="baseAmount" class="font-semibold">
+              {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
+              {{ baseSymbol }}
+            </p>
+          </div>
         </div>
 
         <div class="flex justify-between items-center">

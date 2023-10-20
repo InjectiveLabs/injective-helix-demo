@@ -1,6 +1,6 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 
 export default function useActiveGridStrategyFormatter(
   market: ComputedRef<UiSpotMarketWithToken>,
@@ -27,9 +27,13 @@ export default function useActiveGridStrategyFormatter(
   })
 
   const creationExecutionPrice = computed(() =>
-    new BigNumberInWei(strategy.value.executionPrice).toBase(
-      market.value?.quoteToken.decimals
-    )
+    new BigNumberInWei(strategy.value.executionPrice)
+      .dividedBy(
+        new BigNumberInBase(10).pow(
+          market.value.quoteToken.decimals - market.value.baseToken.decimals
+        )
+      )
+      .toBase()
   )
 
   const creationQuoteQuantity = computed(() =>

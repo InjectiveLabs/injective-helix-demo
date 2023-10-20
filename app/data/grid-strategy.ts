@@ -11,6 +11,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'inj-usdt',
     contractAddress: 'inj1x4kr29dlf9u4r7ya6mr2jvs0pc9sfhnlhlr9np'
+  },
+  {
+    slug: 'atom-usdt',
+    contractAddress: 'inj1c5jsz3dk2g6wywygchwrlwxl5gyz2yu7rnxxdr'
   }
 ]
 
@@ -20,8 +24,8 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
     contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
   },
   {
-    slug: 'weth-usdt',
-    contractAddress: 'inj1lktt38e7w03lm548qgs543ggjnuaf4hwqdnc7d'
+    slug: 'atom-usdt',
+    contractAddress: 'inj14yr8nj6tndmr4xyw9c66feqepv59revxsm7450'
   }
 ]
 
