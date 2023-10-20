@@ -128,12 +128,10 @@ const calculatedAmount = computed(() => {
     .dividedBy(upperBoundary.minus(lowerBoundary))
 
   const baseAmount = initialInvestment.value
-    .times(ratio)
+    .times(new BigNumberInBase(1).minus(ratio))
     .dividedBy(currentPrice.value)
 
-  const quoteAmount = initialInvestment.value.times(
-    new BigNumberInBase(1).minus(ratio)
-  )
+  const quoteAmount = initialInvestment.value.times(ratio)
 
   return { baseAmount, quoteAmount }
 })
@@ -153,20 +151,21 @@ async function onCheckBalanceFees() {
     calculatedAmount.value.baseAmount
   ).times(currentPrice.value)
 
-  const isBaseLtBalance = baseDenomAmount.value.lt(
+  const isBaseLtBalance = baseDenomAmount.value.gt(
     calculatedAmount.value.baseAmount
   )
-  const isQuoteLtBalance = quoteDenomAmount.value.lt(
+
+  const isQuoteLtBalance = quoteDenomAmount.value.gt(
     calculatedAmount.value.quoteAmount
   )
-  const isCalculatedLessThanMinimum = minAmount.lt(
+  const isCalculatedLessThanMinimum = minAmount.gt(
     baseInUsdt.plus(calculatedAmount.value.quoteAmount)
   )
 
-  if (isBaseLtBalance || isQuoteLtBalance || !isCalculatedLessThanMinimum) {
-    onCreateStrategy()
-  } else {
+  if (isBaseLtBalance && isQuoteLtBalance && !isCalculatedLessThanMinimum) {
     modalStore.openModal(Modal.SgtBalancedFees)
+  } else {
+    onCreateStrategy()
   }
 }
 
