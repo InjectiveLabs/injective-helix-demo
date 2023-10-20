@@ -4,6 +4,7 @@ import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
@@ -188,7 +189,7 @@ export const defineGlobalRules = () => {
         amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
       ) {
         return `Min ${symbol.toUpperCase()}+USDT value >= $${thresholdInBigNumber.toFixed(
-          2
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 

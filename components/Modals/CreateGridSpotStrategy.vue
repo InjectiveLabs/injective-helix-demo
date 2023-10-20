@@ -49,11 +49,7 @@ const baseSymbol = computed(
 const baseAmount = computed(() => {
   const baseAmount = formValues.value[SpotGridTradingField.BaseInvestmentAmount]
 
-  if (!baseAmount) {
-    return undefined
-  }
-
-  if (baseAmount && new BigNumberInBase(baseAmount).eq(0)) {
+  if (!baseAmount || (baseAmount && new BigNumberInBase(baseAmount).eq(0))) {
     return undefined
   }
 
@@ -63,11 +59,7 @@ const baseAmount = computed(() => {
 const quoteAmount = computed(() => {
   const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
 
-  if (!quoteAmount) {
-    return undefined
-  }
-
-  if (quoteAmount && new BigNumberInBase(quoteAmount).eq(0)) {
+  if (!quoteAmount || (quoteAmount && new BigNumberInBase(quoteAmount).eq(0))) {
     return undefined
   }
 
@@ -94,7 +86,7 @@ function handleCreateStrategy() {
       lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
       upperBound: formValues.value[SpotGridTradingField.UpperPrice],
       baseAmount: baseAmount.value,
-      quoteAmount: quoteAmount.value!,
+      quoteAmount: quoteAmount.value,
       shouldExitWithQuoteOnly:
         formValues.value[SpotGridTradingField.SellAllBase]
     })
