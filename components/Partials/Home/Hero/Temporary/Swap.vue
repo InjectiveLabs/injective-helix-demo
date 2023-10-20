@@ -45,7 +45,8 @@ onMounted(async () => {
     'WETH',
     'SOMM',
     'ORAI',
-    'WMATIC'
+    'WMATIC',
+    'KAVA'
   ]
   const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
