@@ -49,7 +49,7 @@ const baseSymbol = computed(
 const baseAmount = computed(() => {
   const baseAmount = formValues.value[SpotGridTradingField.BaseInvestmentAmount]
 
-  if (!baseAmount || (baseAmount && new BigNumberInBase(baseAmount).eq(0))) {
+  if (!baseAmount || new BigNumberInBase(baseAmount).eq(0)) {
     return undefined
   }
 
@@ -59,7 +59,7 @@ const baseAmount = computed(() => {
 const quoteAmount = computed(() => {
   const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
 
-  if (!quoteAmount || (quoteAmount && new BigNumberInBase(quoteAmount).eq(0))) {
+  if (!quoteAmount || new BigNumberInBase(quoteAmount).eq(0)) {
     return undefined
   }
 
@@ -179,18 +179,12 @@ function handleCreateStrategy() {
           <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
 
           <div class="flex flex-col items-end">
-            <p
-              v-if="formValues[SpotGridTradingField.InvestmentAmount]"
-              class="font-semibold"
-            >
+            <p v-if="quoteAmount" class="font-semibold">
               {{ formValues[SpotGridTradingField.InvestmentAmount] }}
               {{ quoteSymbol }}
             </p>
 
-            <p
-              v-if="formValues[SpotGridTradingField.BaseInvestmentAmount]"
-              class="font-semibold"
-            >
+            <p v-if="baseAmount" class="font-semibold">
               {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
               {{ baseSymbol }}
             </p>
