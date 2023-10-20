@@ -158,9 +158,10 @@ async function onCheckBalanceFees() {
   const isQuoteLtBalance = quoteDenomAmount.value.gt(
     calculatedAmount.value.quoteAmount
   )
-  const isCalculatedLessThanMinimum = minAmount.gt(
-    baseInUsdt.plus(calculatedAmount.value.quoteAmount)
-  )
+
+  const isCalculatedLessThanMinimum = minAmount
+    .minus(0.1)
+    .gt(baseInUsdt.plus(calculatedAmount.value.quoteAmount))
 
   if (isBaseLtBalance && isQuoteLtBalance && !isCalculatedLessThanMinimum) {
     modalStore.openModal(Modal.SgtBalancedFees)
