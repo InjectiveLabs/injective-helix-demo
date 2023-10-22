@@ -4,7 +4,12 @@ import {
   executionOrderTypeToOrderTypes,
   executionOrderTypeToTradeExecutionTypes
 } from '@/app/client/utils/activity'
-import { ActivityForm, BusEvents, PaginationState } from '@/types'
+import {
+  ActivityField,
+  ActivityForm,
+  BusEvents,
+  PaginationState
+} from '@/types'
 
 const route = useRoute()
 const formValues = useFormValues<ActivityForm>()
@@ -37,28 +42,32 @@ function handlePageChangeEvent(page: number) {
 function fetchData() {
   status.setLoading()
 
-  const marketIds = derivativeStore.markets
-    .filter((m) =>
-      [
-        m.quoteToken.denom,
-        m.baseToken.denom,
-        m.quoteToken.symbol,
-        m.baseToken.symbol
-      ].some((denom) =>
-        denom
-          .toLowerCase()
-          .includes((formValues.value.Denom as string).toLowerCase())
-      )
-    )
-    .map((m) => m.marketId)
+  const marketIds = (
+    formValues.value[ActivityField.Denom]
+      ? derivativeStore.markets.filter((m) =>
+          [
+            m.quoteToken.denom,
+            m.baseToken.denom,
+            m.quoteToken.symbol,
+            m.baseToken.symbol
+          ].some((denom) =>
+            denom
+              .toLowerCase()
+              .includes(formValues.value[ActivityField.Denom].toLowerCase())
+          )
+        )
+      : derivativeStore.markets
+  ).map((m) => m.marketId)
 
   const orderTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderTypes(formValues.value[ActivityField.Type])
 
   const executionTypes =
-    formValues.value.Type &&
-    executionOrderTypeToTradeExecutionTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToTradeExecutionTypes(
+      formValues.value[ActivityField.Type]
+    )
 
   Promise.all([
     derivativeStore.fetchSubaccountTrades({

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, BusEvents, PaginationState } from '@/types'
+import {
+  ActivityField,
+  ActivityForm,
+  BusEvents,
+  PaginationState
+} from '@/types'
 import {
   executionOrderTypeToOrderExecutionTypes,
   executionOrderTypeToOrderTypes
@@ -37,28 +42,32 @@ function handlePageChangeEvent(page: number) {
 function fetchData() {
   status.setLoading()
 
-  const marketIds = derivativeStore.markets
-    .filter((m) =>
-      [
-        m.quoteToken.denom,
-        m.baseToken.denom,
-        m.quoteToken.symbol,
-        m.baseToken.symbol
-      ].some((denom) =>
-        denom
-          .toLowerCase()
-          .includes((formValues.value.Denom as string).toLowerCase())
-      )
-    )
-    .map((m) => m.marketId)
+  const marketIds = (
+    formValues.value[ActivityField.Denom]
+      ? derivativeStore.markets.filter((m) =>
+          [
+            m.quoteToken.denom,
+            m.baseToken.denom,
+            m.quoteToken.symbol,
+            m.baseToken.symbol
+          ].some((denom) =>
+            denom
+              .toLowerCase()
+              .includes(formValues.value[ActivityField.Denom].toLowerCase())
+          )
+        )
+      : derivativeStore.markets
+  ).map((m) => m.marketId)
 
   const orderTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderTypes(formValues.value[ActivityField.Type])
 
   const executionTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderExecutionTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderExecutionTypes(
+      formValues.value[ActivityField.Type]
+    )
 
   Promise.all([
     derivativeStore.fetchSubaccountOrderHistory({
