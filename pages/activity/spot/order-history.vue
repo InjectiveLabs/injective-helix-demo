@@ -42,30 +42,32 @@ function handlePageChangeEvent(page: number) {
 function fetchData() {
   status.setLoading()
 
-  const marketIds = spotStore.markets
-    .filter((m) => {
-      return [
-        m.quoteToken.symbol,
-        m.baseToken.symbol,
-        m.quoteDenom,
-        m.baseDenom
-      ].some((denom) =>
-        denom
-          .toLowerCase()
-          .includes(
-            (formValues.value[ActivityField.Denom] as string).toLowerCase()
+  const marketIds = (
+    formValues.value[ActivityField.Denom]
+      ? spotStore.markets.filter((m) => {
+          return [
+            m.quoteToken.symbol,
+            m.baseToken.symbol,
+            m.quoteDenom,
+            m.baseDenom
+          ].some((denom) =>
+            denom
+              .toLowerCase()
+              .includes(formValues.value[ActivityField.Denom].toLowerCase())
           )
-      )
-    })
-    .map((m) => m.marketId)
+        })
+      : spotStore.markets
+  ).map((m) => m.marketId)
 
   const orderTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderTypes(formValues.value[ActivityField.Type])
 
   const executionTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderExecutionTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderExecutionTypes(
+      formValues.value[ActivityField.Type]
+    )
 
   Promise.all([
     spotStore.fetchSubaccountOrderHistory({
