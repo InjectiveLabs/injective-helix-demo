@@ -42,12 +42,12 @@ function handleClose() {
     v-bind="{ hideCloseButton: true, dense: true }"
     @modal:closed="handleClose"
   >
-    <div class="flex flex-col justify-center items-center">
+    <div class="flex flex-col justify-center items-center max-h-modal">
       <div w-full h-auto>
         <slot name="image" />
       </div>
 
-      <div class="p-6 w-full text-center">
+      <div class="p-6 w-full text-center overflow-y-auto pb-10">
         <div class="mb-4 font-bold leading-5">
           <slot name="title" />
         </div>
@@ -63,6 +63,13 @@ function handleClose() {
         >
           <slot name="cta" />
         </NuxtLink>
+
+        <AppButton
+          class="flex items-center justify-center md:hidden font-semibold whitespace-nowrap w-full text-sm text-white bg-gray-700 rounded p-3 mt-4"
+          @click="handleClose"
+        >
+          Close
+        </AppButton>
       </div>
     </div>
   </AppModal>
