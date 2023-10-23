@@ -31,6 +31,7 @@ export default {
     },
 
     newFeature: {
+      close: 'Close',
       prelaunchFutures: {
         title: 'Introducing Pre-Launch Futures!',
         description1:
