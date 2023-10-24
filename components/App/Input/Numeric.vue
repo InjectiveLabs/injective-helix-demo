@@ -6,6 +6,7 @@ const slots = useSlots()
 const props = defineProps({
   sm: Boolean,
   valid: Boolean,
+  disabled: Boolean,
   noPadding: Boolean,
   transparentBg: Boolean,
 
@@ -105,8 +106,11 @@ export default {
           <slot name="context" />
         </div>
       </div>
-      <div :class="wrapperClass">
-        <div class="flex items-center justify-between no-shadow">
+      <div :class="wrapperClass" class="overflow-hidden">
+        <div
+          class="flex items-center justify-between no-shadow"
+          :class="{ 'bg-gray-700': disabled }"
+        >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />
           </div>
@@ -115,6 +119,7 @@ export default {
             v-bind="$attrs"
             :class="inputClass"
             class="input"
+            :disabled="disabled"
             @input:blurred="handleBlur"
           />
 

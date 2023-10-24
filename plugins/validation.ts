@@ -117,6 +117,24 @@ export const defineGlobalRules = () => {
     return true
   })
 
+  defineRule('invalidIfBetween', (value: string, [min, max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
+    const maxInBigNumber = new BigNumberInBase(max)
+
+    const isBetween =
+      valueInBigNumber.lte(maxInBigNumber) &&
+      valueInBigNumber.gte(minInBigNumber)
+
+    if (isBetween) {
+      return `Price range must be outside of ${minInBigNumber.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )} - ${maxInBigNumber.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+    }
+
+    return true
+  })
+
   defineRule('requiredSgt', (value: string) => {
     if (!value) {
       return 'Field is required'

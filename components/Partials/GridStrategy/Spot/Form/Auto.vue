@@ -100,6 +100,17 @@ function setValuesFromAuto() {
     false
   )
 }
+
+onMounted(() => {
+  setFormValues(
+    {
+      [SpotGridTradingField.UpperPrice]: '',
+      [SpotGridTradingField.LowerPrice]: '',
+      [SpotGridTradingField.Grids]: ''
+    },
+    false
+  )
+})
 </script>
 
 <template>
