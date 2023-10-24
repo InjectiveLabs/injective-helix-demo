@@ -423,13 +423,10 @@ function updateAmount({
   })
 
   if (amountToUpdate) {
-    setFormValues(
-      {
-        [isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount]:
-          amountToUpdate
-      },
-      false
-    )
+    setFormValues({
+      [isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount]:
+        amountToUpdate
+    })
   }
 }
 

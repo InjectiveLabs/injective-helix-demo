@@ -149,15 +149,12 @@ watch(
       return
     }
 
-    setFormValues(
-      {
-        [TradeField.BaseAmount]: formatAmountToAllowableAmount(
-          formValues.value[TradeField.BaseAmount],
-          props.market.quantityTensMultiplier
-        )
-      },
-      false
-    )
+    setFormValues({
+      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+        formValues.value[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    })
 
     emit('update:amount', {
       isBaseAmount: true
