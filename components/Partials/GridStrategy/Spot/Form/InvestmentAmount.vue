@@ -95,9 +95,10 @@ const {
   value: investmentAmountValue,
   errorMessage: quoteErrorMessage,
   setValue: setInvestmentAmount
-} = useField(
-  SpotGridTradingField.InvestmentAmount,
-  computed(() => {
+} = useStringField({
+  name: SpotGridTradingField.InvestmentAmount,
+  rule: '',
+  dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
 
     const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
@@ -122,15 +123,16 @@ const {
 
     return rules.join('|')
   })
-)
+})
 
 const {
   value: baseInvestmentAmountValue,
   errorMessage: baseErrorMessage,
   setValue: setBaseInvestmentAmount
-} = useField(
-  SpotGridTradingField.BaseInvestmentAmount,
-  computed(() => {
+} = useStringField({
+  name: SpotGridTradingField.BaseInvestmentAmount,
+  rule: '',
+  dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
 
     const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
@@ -155,14 +157,14 @@ const {
 
     return rules.join('|')
   })
-)
+})
 
 watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
-  if (isUpperBoundLtLastPrice.value) {
+  if (isLowerBoundGtLastPrice.value) {
     setInvestmentAmount('', false)
   }
 
-  if (isLowerBoundGtLastPrice.value) {
+  if (isUpperBoundLtLastPrice.value) {
     setBaseInvestmentAmount('', false)
   }
 })
@@ -192,12 +194,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <div class="mb-2">
       <AppInputNumeric
         v-model="investmentAmountValue"
-        :disabled="isUpperBoundLtLastPrice"
-        :placeholder="
-          isUpperBoundLtLastPrice
-            ? 'Usable only when Upper Bound > Price'
-            : '0.00'
-        "
+        :disabled="isLowerBoundGtLastPrice"
         class="text-right"
       >
         <template #addon>
@@ -222,12 +219,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
         class="text-right"
-        :disabled="isLowerBoundGtLastPrice"
-        :placeholder="
-          isLowerBoundGtLastPrice
-            ? 'Usable only when Lower Bound < Price'
-            : '0.00'
-        "
+        :disabled="isUpperBoundLtLastPrice"
       >
         <template #addon>
           {{ market.baseToken.symbol }}
