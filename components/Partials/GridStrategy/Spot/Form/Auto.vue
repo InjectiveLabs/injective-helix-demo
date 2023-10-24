@@ -70,8 +70,10 @@ function setInitialFieldValues() {
     return
   }
 
-  const max = Math.max(...marketHistory.highPrice).toFixed(2)
-  const min = Math.min(...marketHistory.lowPrice).toFixed(2)
+  const max = Math.max(...marketHistory.highPrice)
+  const min = Math.min(...marketHistory.lowPrice)
+
+  const maxPlusPadding = max + max * 0.05
 
   const minUpperBound = spotLastTradedPrice.value.plus(
     spotLastTradedPrice.value.times(0.06)
@@ -81,8 +83,12 @@ function setInitialFieldValues() {
     spotLastTradedPrice.value.times(0.06)
   )
 
-  upperPrice.value = minUpperBound.gt(max) ? minUpperBound.toFixed(2) : max
-  lowerPrice.value = maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min
+  upperPrice.value = minUpperBound.gt(max)
+    ? minUpperBound.toFixed(2)
+    : maxPlusPadding.toFixed(2)
+  lowerPrice.value = maxLowerBound.lt(min)
+    ? maxLowerBound.toFixed(2)
+    : min.toFixed(2)
 }
 
 function copyToManual() {

@@ -26,14 +26,14 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 
 const sgtInvalidRange = computed(() => {
   const levels = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.Grids] ||
-      GST_DEFAULT_AUTO_GRIDS.toString()
+    formValues.value[SpotGridTradingField.Grids] || GST_DEFAULT_AUTO_GRIDS
   )
+
   return getSgtInvalidRange({
     midPrice: spotLastTradedPrice.value.toFixed(),
     levels:
       levels.gt(GST_MAXIMUM_GRIDS) || levels.lt(GST_MINIMUM_GRIDS)
-        ? GST_MAXIMUM_GRIDS
+        ? GST_DEFAULT_AUTO_GRIDS
         : levels.toFixed(0),
     minPriceTickSize: gridStrategyStore.spotMarket
       ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
