@@ -1,0 +1,226 @@
+<script setup lang="ts">
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { PropType } from 'nuxt/dist/app/compat/capi'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  GST_MIN_TRADING_SIZE,
+  GST_GRID_THRESHOLD,
+  GST_DEFAULT_AUTO_GRIDS
+} from '@/app/utils/constants'
+
+const props = defineProps({
+  isAuto: Boolean,
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  }
+})
+
+const formValues = useFormValues<SpotGridTradingForm>()
+const { accountBalancesWithToken } = useBalance()
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
+
+const quoteDenomBalance = computed(() =>
+  accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.quoteDenom
+  )
+)
+
+const quoteDenomAmount = computed(() =>
+  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
+    quoteDenomBalance.value?.token.decimals
+  )
+)
+
+const baseDenomBalance = computed(() =>
+  accountBalancesWithToken.value.find(
+    (balance) => balance.denom === props.market.baseDenom
+  )
+)
+
+const baseDenomAmount = computed(() =>
+  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
+    baseDenomBalance.value?.token.decimals
+  )
+)
+
+const gridThreshold = computed(() => {
+  if (props.isAuto) {
+    return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
+  }
+
+  const isGridHigherThanGridTreshold =
+    !!formValues.value[SpotGridTradingField.Grids] &&
+    Number(formValues.value[SpotGridTradingField.Grids]) >= GST_GRID_THRESHOLD
+
+  return new BigNumberInBase(
+    isGridHigherThanGridTreshold
+      ? Number(formValues.value[SpotGridTradingField.Grids])
+      : GST_GRID_THRESHOLD
+  ).times(GST_MIN_TRADING_SIZE)
+})
+
+const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+  quoteDenomAmount,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: baseAmountToString } = useBigNumberFormatter(
+  baseDenomAmount,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { value: selectedInvestmentType } = useStringField({
+  name: SpotGridTradingField.InvestmentType
+})
+
+const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.InvestmentAmount,
+    rule: '',
+    dynamicRule: computed(() => {
+      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
+
+      const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
+
+      const baseAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+      ).times(lastTradedPrice.value)
+
+      const quoteAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      )
+
+      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+        props.market.baseToken.symbol
+      }`
+
+      const rules = [
+        requiredIfFieldEmptyRule,
+        insuficientRule,
+        minBaseAndQuoteAmountRule
+      ]
+
+      return rules.join('|')
+    })
+  })
+
+const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.BaseInvestmentAmount,
+    rule: '',
+    dynamicRule: computed(() => {
+      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
+
+      const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
+
+      const baseAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+      ).times(lastTradedPrice.value)
+
+      const quoteAmount = new BigNumberInBase(
+        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      )
+
+      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+        props.market.baseToken.symbol
+      }`
+
+      const rules = [
+        requiredIfFieldEmptyRule,
+        insuficientRule,
+        minBaseAndQuoteAmountRule
+      ]
+
+      return rules.join('|')
+    })
+  })
+</script>
+
+<template>
+  <div>
+    <div class="flex justify-between items-center py-4">
+      <div class="flex items-center space-x-2">
+        <h3 class="font-bold text-sm tracking-wide">
+          <span v-if="!isAuto">3.</span> {{ $t('sgt.amount') }}
+        </h3>
+        <AppTooltip :content="$t('sgt.investmentTooltip')" />
+      </div>
+
+      <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
+        <div class="ml-auto font-semibold text-xs flex space-x-2 items-center">
+          <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
+          <span>{{ market.baseToken.symbol }}</span>
+          <span>+</span>
+          <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+          <span>{{ market.quoteToken.symbol }}</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="mb-2">
+      <AppInputNumeric v-model="investmentAmountValue" class="text-right">
+        <template #addon>
+          {{ market.quoteToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ quoteAmountToString }}
+            {{ market.quoteToken.symbol }}
+          </p>
+        </template>
+      </AppInputNumeric>
+
+      <div class="text-red-500 text-xs font-semibold pt-2">
+        {{ quoteErrorMessage }}
+      </div>
+    </div>
+
+    <div v-if="selectedInvestmentType === InvestmentTypeGst.BaseAndQuote">
+      <AppInputNumeric v-model="baseInvestmentAmountValue" class="text-right">
+        <template #addon>
+          {{ market.baseToken.symbol }}
+        </template>
+
+        <template #context>
+          <p class="text-xs font-semibold text-gray-500 mb-2">
+            {{ $t('sgt.available') }}
+            {{ baseAmountToString }}
+            {{ market.baseToken.symbol }}
+          </p>
+        </template>
+      </AppInputNumeric>
+
+      <div class="text-red-500 text-xs font-semibold pt-2">
+        {{ baseErrorMessage }}
+      </div>
+    </div>
+
+    <div class="text-xs font-semibold text-gray-500 mt-4 space-y-2">
+      <p>{{ $t('sgt.minInvestment', { amount: gridThreshold.toFixed() }) }}</p>
+      <p>
+        {{
+          $t('sgt.totalBaseAndQuote', {
+            base: market.baseToken.symbol.toUpperCase(),
+            quote: market.quoteToken.symbol.toUpperCase(),
+            amount: gridThreshold
+          })
+        }}
+      </p>
+    </div>
+  </div>
+</template>
