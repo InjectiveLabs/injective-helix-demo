@@ -10,6 +10,7 @@ import leaderboard from './leaderboard/en'
 import account from './account/en'
 import institutional from './institutional/en'
 import sgt from './spot-grid/en'
+import campaign from './campaign/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -22,6 +23,7 @@ export default {
   ...account,
   ...auction,
   ...banners,
+  ...campaign,
   ...activities,
   ...activities,
   ...leaderboard,
@@ -255,6 +257,8 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
+    liquidityFarming: 'Liquidity Farming',
+    liquidityFarmingSub: 'Rewards for using liquidity bots',
     account: 'Account',
     home: 'Home',
     makerTakerFee: ({ named }: I18nMessageFunction) =>

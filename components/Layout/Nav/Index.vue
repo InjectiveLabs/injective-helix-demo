@@ -170,6 +170,18 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </NuxtLink>
 
+          <NuxtLink
+            :to="{ name: 'liquidity-rewards' }"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
+          >
+            <p class="font-semibold text-base text-white">
+              {{ $t('navigation.liquidityFarming') }}
+            </p>
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.liquidityFarmingSub') }}
+            </p>
+          </NuxtLink>
+
           <a
             href="https://trading.injective.network/program/liquidity"
             target="_blank"
