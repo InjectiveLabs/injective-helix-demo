@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   banners: {
     welcome: {
@@ -32,15 +34,18 @@ export default {
 
     newFeature: {
       close: 'Close',
-      prelaunchFutures: {
-        title: 'Introducing Pre-Launch Futures!',
-        description1:
-          'Pre-Launch Futures are futures markets for tokens that have yet to launch. Effectively, this enables users to trade pre-launch markets that are typically reserved for early contributors, VCs or wealthy insiders.',
-        description2:
-          'Helix aims to disrupt this closed system by allowing, for the first time ever, the decentralized trading of popular upcoming tokens prior to their official launch or listing on a public cryptocurrency exchange.',
-        cta: 'Go to Pre-Launch Futures',
-        continue: 'Continue'
-      }
+      blogPost: 'blog post',
+      title: 'Celestia Pre-Launch Futures Trading Competition',
+      description1:
+        'Helix is excited to announce the launch of a special trading competition with 5,000 Celestia (TIA) tokens as rewards.',
+      description2:
+        'It is a volume trading competition in which the Top 100 volume traders will each receive 50 TIA tokens as the reward. The competition starts on October 26, 2023 at 2PM UTC, and ends on November 5, 2023 at 2PM UTC. The trading competition will offer users the opportunity to trade on Helix in order to not only win prizes exclusive to this competition, but also to enjoy market leading rebates, zero gas fees, lightning fast speeds and best-in-class security.',
+      description3: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'For more information, please visit our ',
+          named('link'),
+          '.'
+        ])
     }
   }
 }
