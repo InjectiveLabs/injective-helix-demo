@@ -136,12 +136,31 @@ const calculatedAmount = computed(() => {
   return { baseAmount, quoteAmount }
 })
 
+const isLowerBoundGtLastPrice = computed(() =>
+  currentPrice.value.lt(formValues.value[SpotGridTradingField.LowerPrice] || 0)
+)
+
+const isUpperBoundLtLastPrice = computed(() =>
+  currentPrice.value.gt(
+    formValues.value[SpotGridTradingField.UpperPrice] || Infinity
+  )
+)
+
 async function onCheckBalanceFees() {
   emit('strategy:create')
 
   const { valid } = await validate()
 
   if (!valid) {
+    return
+  }
+
+  if (
+    !props.isAuto &&
+    (isLowerBoundGtLastPrice.value || isUpperBoundLtLastPrice.value)
+  ) {
+    onCreateStrategy()
+
     return
   }
 
