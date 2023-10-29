@@ -3,6 +3,7 @@ import { RouteLocationNamedRaw } from 'vue-router'
 import { Modal } from '@/types'
 
 const route = useRoute()
+const slots = useSlots()
 const modalStore = useModalStore()
 
 defineProps({
@@ -52,12 +53,13 @@ function handleClose() {
           <slot name="title" />
         </div>
 
-        <div class="mb-4 text-sm flex flex-col gap-4 leading-5">
+        <div class="text-sm flex flex-col gap-4 leading-5">
           <slot name="description" />
         </div>
 
         <NuxtLink
-          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4"
+          v-if="slots.cta"
+          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="to"
           @click="handleClose"
         >
