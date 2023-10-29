@@ -23,6 +23,7 @@ import {
   IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
   IndexerGrpcTradingApi,
+  IndexerGrpcCampaignApi,
   IndexerGrpcExplorerApi,
   IndexerRestExplorerApi,
   ChainGrpcDistributionApi,
@@ -61,6 +62,9 @@ export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
+  ENDPOINTS.indexer
+)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer
 )
