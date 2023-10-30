@@ -22,13 +22,13 @@ const totalMarketsBatches = computed(() => {
 
 const displayedMarkets = computed(() => {
   const batchStart = currentMarketsBatch.value * MINIMUM_MARKETS
-
-  /** ensures we only display as many markets as are available */
   const itemsToDisplay = Math.min(MINIMUM_MARKETS, props.markets.length)
+  const rotatedMarkets = [
+    ...props.markets.slice(batchStart),
+    ...props.markets.slice(0, batchStart)
+  ]
 
-  return [...new Array(itemsToDisplay)].map((_, i) => {
-    return props.markets[(batchStart + i) % props.markets.length]
-  })
+  return rotatedMarkets.slice(0, itemsToDisplay)
 })
 
 function goToNext() {
@@ -36,12 +36,16 @@ function goToNext() {
     pause()
   }
 
-  if (currentMarketsBatch.value === totalMarketsBatches.value - 1) {
+  const isLastBatch =
+    currentMarketsBatch.value === totalMarketsBatches.value - 1
+
+  if (isLastBatch) {
     return
   }
 
-  currentMarketsBatch.value =
-    (currentMarketsBatch.value + 1) % totalMarketsBatches.value
+  const nextBatch = currentMarketsBatch.value + 1
+
+  currentMarketsBatch.value = nextBatch % totalMarketsBatches.value
 }
 
 function goToPrevious() {
@@ -65,8 +69,9 @@ function onClickIndicator(index: number) {
 }
 
 const { pause, isActive } = useIntervalFn(() => {
-  currentMarketsBatch.value =
-    (currentMarketsBatch.value + 1) % totalMarketsBatches.value
+  const nextBatch = currentMarketsBatch.value + 1
+
+  currentMarketsBatch.value = nextBatch % totalMarketsBatches.value
 }, 7000)
 </script>
 
