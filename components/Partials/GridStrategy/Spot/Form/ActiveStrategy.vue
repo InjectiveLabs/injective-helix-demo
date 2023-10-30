@@ -77,7 +77,7 @@ const currentQuoteBalance = computed(() => {
   return new BigNumberInWei(
     subaccountBalances.value.find(
       (balance) => balance.denom === market.value.quoteDenom
-    )?.accountTotalBalanceInUsd || 0
+    )?.accountTotalBalance || 0
   ).toBase(market.value.quoteToken.decimals)
 })
 
