@@ -10,7 +10,7 @@ useForm<SpotGridTradingForm>({
   initialValues: { investmentType: InvestmentTypeGst.BaseAndQuote }
 })
 
-const activeTab = ref(GridStrategyType.Manual)
+const activeTab = ref(GridStrategyType.Auto)
 
 function changeTab(tab: GridStrategyType) {
   activeTab.value = tab
@@ -40,5 +40,8 @@ function changeTab(tab: GridStrategyType) {
       v-if="activeTab === GridStrategyType.Auto"
     />
     <PartialsLiquidityBotsSpotCreateManual v-else />
+
+    <ModalsCheckSpotGridAuth />
+    <ModalsCreateGridSpotStrategy />
   </div>
 </template>

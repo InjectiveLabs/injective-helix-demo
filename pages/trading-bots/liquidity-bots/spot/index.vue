@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from 'app/utils/constants'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']
@@ -13,10 +14,18 @@ const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
-// const { $onError } = useNuxtApp()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
-// const market = computed(() => gridStrategyStore.spotMarket)
+
+const activeStrategy = computed(
+  () =>
+    gridStrategyStore.activeStrategies.find(
+      (strategy) =>
+        strategy.contractAddress ===
+        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
+    )!
+)
 
 function fetchData() {
   status.setLoading()
@@ -35,29 +44,37 @@ function fetchData() {
     }),
     accountStore.fetchAccountPortfolio(),
     accountStore.streamSubaccountBalance()
-  ]).finally(() => {
-    status.setIdle()
-  })
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 }
 
 onWalletConnected(() => {
   fetchData()
 })
+
+watch(() => gridStrategyStore.spotMarket, fetchData)
 </script>
 
 <template>
   <div class="flex justify-center items-start min-h-screen pt-4 md:pt-20 pb-10">
     <div class="p-6 bg-gray-900 rounded-md w-full max-w-xl">
+      <p class="text-xl font-semibold text-center mb-4">
+        {{ $t('liquidity.liquidityBots') }}
+      </p>
+
+      <PartialsLiquidityBotsSpotMarketSelector />
+
       <AppHocLoading v-bind="{ status }">
-        <p class="text-xl font-semibold text-center mb-4">
-          {{ $t('liquidity.liquidityBots') }}
-        </p>
+        <PartialsGridStrategySpotFormActiveStrategy
+          v-if="activeStrategy"
+          class="mt-4"
+          v-bind="{ activeStrategy, market: gridStrategyStore.spotMarket! }"
+        />
 
-        <PartialsLiquidityBotsSpotMarketSelector />
-
-        <PartialsLiquidityBotsSpotActive v-if="false" />
-
-        <PartialsLiquidityBotsSpotCreate />
+        <PartialsLiquidityBotsSpotCreate v-else />
       </AppHocLoading>
     </div>
   </div>

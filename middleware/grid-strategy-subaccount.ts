@@ -4,6 +4,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const toName = to.name as string
   const gridSpotStrategyRouteName = 'trading-bots-grid-spot-market'
+
   const activityRouteNames = [
     'activity',
     'activity-positions',

@@ -9,6 +9,7 @@ const props = defineProps({
   disabled: Boolean,
   noPadding: Boolean,
   transparentBg: Boolean,
+  isDisabledGray: Boolean,
 
   errors: {
     type: Array as PropType<string[]>,
@@ -109,7 +110,7 @@ export default {
       <div :class="wrapperClass" class="overflow-hidden">
         <div
           class="flex items-center justify-between no-shadow"
-          :class="{ 'bg-gray-700': disabled }"
+          :class="{ 'bg-gray-700': disabled && isDisabledGray }"
         >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />

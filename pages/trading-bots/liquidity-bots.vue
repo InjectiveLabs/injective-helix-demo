@@ -5,6 +5,8 @@ const status = reactive(new Status(StatusType.Loading))
 
 const spotStore = useSpotStore()
 const gridStrategyStore = useGridStrategyStore()
+const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 
 const { $onError } = useNuxtApp()
 
@@ -22,6 +24,9 @@ function init() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      if (walletStore.isUserWalletConnected) {
+        accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+      }
     })
 }
 

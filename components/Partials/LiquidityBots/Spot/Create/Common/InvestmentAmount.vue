@@ -24,6 +24,7 @@ const props = defineProps({
 })
 
 const formValues = useFormValues<SpotGridTradingForm>()
+
 const { accountBalancesWithToken } = useBalance()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
@@ -68,6 +69,18 @@ const gridThreshold = computed(() => {
   ).times(GST_MIN_TRADING_SIZE)
 })
 
+const isLowerBoundGtLastPrice = computed(() =>
+  lastTradedPrice.value.lt(
+    formValues.value[SpotGridTradingField.LowerPrice] || 0
+  )
+)
+
+const isUpperBoundLtLastPrice = computed(() =>
+  lastTradedPrice.value.gt(
+    formValues.value[SpotGridTradingField.UpperPrice] || Infinity
+  )
+)
+
 const { valueToString: quoteAmountToString } = useBigNumberFormatter(
   quoteDenomAmount,
   {
@@ -82,96 +95,108 @@ const { valueToString: baseAmountToString } = useBigNumberFormatter(
   }
 )
 
-const { value: selectedInvestmentType } = useStringField({
-  name: SpotGridTradingField.InvestmentType
+const {
+  value: investmentAmountValue,
+  errorMessage: quoteErrorMessage,
+  setValue: setInvestmentAmount
+} = useStringField({
+  name: SpotGridTradingField.InvestmentAmount,
+  rule: '',
+  dynamicRule: computed(() => {
+    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
+
+    const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
+
+    const baseAmount = new BigNumberInBase(
+      formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+    ).times(lastTradedPrice.value)
+
+    const quoteAmount = new BigNumberInBase(
+      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+    )
+
+    const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+      props.market.baseToken.symbol
+    }`
+
+    const rules = [
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.BaseAndQuote
+        ? requiredIfFieldEmptyRule
+        : 'requiredSgt',
+      insuficientRule,
+      minBaseAndQuoteAmountRule
+    ]
+
+    return rules.join('|')
+  })
 })
 
-const { value: investmentAmountValue, errorMessage: quoteErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.InvestmentAmount,
-    rule: '',
-    dynamicRule: computed(() => {
-      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
+const {
+  value: baseInvestmentAmountValue,
+  errorMessage: baseErrorMessage,
+  setValue: setBaseInvestmentAmount
+} = useStringField({
+  name: SpotGridTradingField.BaseInvestmentAmount,
+  rule: '',
+  dynamicRule: computed(() => {
+    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
 
-      const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
+    const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
 
-      const baseAmount = new BigNumberInBase(
-        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-      ).times(lastTradedPrice.value)
+    const baseAmount = new BigNumberInBase(
+      formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+    ).times(lastTradedPrice.value)
 
-      const quoteAmount = new BigNumberInBase(
-        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-      )
+    const quoteAmount = new BigNumberInBase(
+      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+    )
 
-      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
-        props.market.baseToken.symbol
-      }`
+    const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
+      props.market.baseToken.symbol
+    }`
 
-      const rules = [
-        requiredIfFieldEmptyRule,
-        insuficientRule,
-        minBaseAndQuoteAmountRule
-      ]
+    const rules = [
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.BaseAndQuote
+        ? requiredIfFieldEmptyRule
+        : 'requiredSgt',
+      insuficientRule,
+      minBaseAndQuoteAmountRule
+    ]
 
-      return rules.join('|')
-    })
+    return rules.join('|')
   })
+})
 
-const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.BaseInvestmentAmount,
-    rule: '',
-    dynamicRule: computed(() => {
-      const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
+watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
+  if (isLowerBoundGtLastPrice.value) {
+    setInvestmentAmount('', false)
+  }
 
-      const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
-
-      const baseAmount = new BigNumberInBase(
-        formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-      ).times(lastTradedPrice.value)
-
-      const quoteAmount = new BigNumberInBase(
-        formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-      )
-
-      const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
-        props.market.baseToken.symbol
-      }`
-
-      const rules = [
-        requiredIfFieldEmptyRule,
-        insuficientRule,
-        minBaseAndQuoteAmountRule
-      ]
-
-      return rules.join('|')
-    })
-  })
+  if (isUpperBoundLtLastPrice.value) {
+    setBaseInvestmentAmount('', false)
+  }
+})
 </script>
 
 <template>
   <div>
-    <div class="flex justify-between items-center py-4">
-      <div class="flex items-center space-x-2">
-        <h3 class="font-bold text-sm tracking-wide">
-          <span v-if="!isAuto">3.</span> {{ $t('sgt.amount') }}
-        </h3>
-        <AppTooltip :content="$t('sgt.investmentTooltip')" />
-      </div>
-
-      <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
-        <div class="ml-auto font-semibold text-xs flex space-x-2 items-center">
-          <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-          <span>{{ market.baseToken.symbol }}</span>
-          <span>+</span>
-          <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-          <span>{{ market.quoteToken.symbol }}</span>
-        </div>
-      </button>
-    </div>
-
-    <div class="mb-2">
-      <AppInputNumeric v-model="investmentAmountValue" class="text-right">
+    <div
+      v-if="
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Quote ||
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.BaseAndQuote
+      "
+      class="mb-2"
+    >
+      <AppInputNumeric
+        v-model="investmentAmountValue"
+        :disabled="isLowerBoundGtLastPrice"
+        is-disabled-gray
+        class="text-right"
+      >
         <template #addon>
           {{ market.quoteToken.symbol }}
         </template>
@@ -190,8 +215,20 @@ const { value: baseInvestmentAmountValue, errorMessage: baseErrorMessage } =
       </div>
     </div>
 
-    <div v-if="selectedInvestmentType === InvestmentTypeGst.BaseAndQuote">
-      <AppInputNumeric v-model="baseInvestmentAmountValue" class="text-right">
+    <div
+      v-if="
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Base ||
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.BaseAndQuote
+      "
+    >
+      <AppInputNumeric
+        v-model="baseInvestmentAmountValue"
+        class="text-right"
+        :disabled="isUpperBoundLtLastPrice"
+        is-disabled-gray
+      >
         <template #addon>
           {{ market.baseToken.symbol }}
         </template>

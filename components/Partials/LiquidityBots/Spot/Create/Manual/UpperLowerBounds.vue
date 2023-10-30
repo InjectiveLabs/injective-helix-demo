@@ -11,9 +11,7 @@ const props = defineProps({
 
 const gridStrategyStore = useGridStrategyStore()
 
-const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
@@ -21,8 +19,8 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
     rule: '',
     dynamicRule: computed(
       () =>
-        `requiredSgt|lessThanSgt:${spotLastTradedPrice.value.minus(
-          spotLastTradedPrice.value.times(0.05)
+        `requiredSgt|lessThanSgt:${lastTradedPrice.value.minus(
+          lastTradedPrice.value.times(0.05)
         )}`
     )
   })
@@ -33,8 +31,8 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
     rule: '',
     dynamicRule: computed(
       () =>
-        `requiredSgt|greaterThanSgt:${spotLastTradedPrice.value.plus(
-          spotLastTradedPrice.value.times(0.05)
+        `requiredSgt|greaterThanSgt:${lastTradedPrice.value.plus(
+          lastTradedPrice.value.times(0.05)
         )}`
     )
   })
@@ -42,13 +40,17 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
 <template>
   <div>
-    <p class="font-bold text-sm tracking-wide pb-4">
-      1. {{ $t('sgt.priceRange') }}
+    <p class="font-bold text-sm tracking-wide py-4">
+      {{ $t('sgt.priceRange') }}
     </p>
 
-    <div class="grid grid-cols-1 gap-4">
+    <div class="grid grid-cols-1 gap-4 mb-4">
       <div>
-        <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="lowerPriceValue"
+          placeholder="0.00"
+          class="text-right"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
               {{ $t('sgt.lowerPrice') }}
@@ -68,7 +70,11 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
       </div>
 
       <div>
-        <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="upperPriceValue"
+          placeholder="0.00"
+          class="text-right"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
               {{ $t('sgt.upperPrice') }}

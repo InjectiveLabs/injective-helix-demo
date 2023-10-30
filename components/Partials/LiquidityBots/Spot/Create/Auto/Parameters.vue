@@ -1,5 +1,52 @@
 <script setup lang="ts">
-const isOpen = ref(true)
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
+import { SpotGridTradingField } from '@/types'
+
+const props = defineProps({
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+  upperPrice: {
+    type: String,
+    required: true
+  },
+  lowerPrice: {
+    type: String,
+    required: true
+  },
+  grids: {
+    type: String,
+    required: true
+  }
+})
+
+const setFormValues = useSetFormValues()
+
+const isOpen = ref(false)
+
+const { valueToString: upperPriceToString } = useBigNumberFormatter(
+  computed(() => props.upperPrice),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+  computed(() => props.lowerPrice),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+onMounted(() => {
+  setFormValues(
+    {
+      [SpotGridTradingField.UpperPrice]: '',
+      [SpotGridTradingField.LowerPrice]: '',
+      [SpotGridTradingField.Grids]: ''
+    },
+    false
+  )
+})
 
 function toggleAdvancedSettings() {
   isOpen.value = !isOpen.value
@@ -12,7 +59,9 @@ function toggleAdvancedSettings() {
       class="flex justify-between items-center select-none"
       @click="toggleAdvancedSettings"
     >
-      <p class="font-semibold text-sm">{{ $t('sgt.advancedSettings') }}</p>
+      <p class="font-semibold text-sm">
+        {{ $t('liquidity.parametersForAdvancedStrategy') }}
+      </p>
       <div
         class="transition-all duration-300"
         :class="{ 'rotate-180': isOpen }"
@@ -24,15 +73,15 @@ function toggleAdvancedSettings() {
     <div v-if="isOpen" class="space-y-2 my-4 text-sm">
       <div class="flex justify-between">
         <p>{{ $t('sgt.numberOfGrids') }}</p>
-        <p>100</p>
+        <p>{{ props.grids }}</p>
       </div>
       <div class="flex justify-between">
         <p>{{ $t('sgt.lowerPrice') }}</p>
-        <p>100</p>
+        <p>{{ lowerPriceToString }}</p>
       </div>
       <div class="flex justify-between">
         <p>{{ $t('sgt.upperPrice') }}</p>
-        <p>100</p>
+        <p>{{ upperPriceToString }}</p>
       </div>
     </div>
   </div>
