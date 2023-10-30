@@ -1,63 +1,136 @@
 <script setup lang="ts">
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { useCampaignStore } from 'store/campaign'
 
+const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
-
-const CAMPAIGN_MARKET_ID =
-  '0x3bdb3d8b5eb4d362371b72cf459216553d74abdb55eb0208091f7777dd85c8bb'
+const { error } = useNotifications()
 
 const page = ref(1)
 const limit = ref(10)
 
 const status = reactive(new Status(StatusType.Loading))
+const tableStatus = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
-  onLimitChange()
+  Promise.all([
+    tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
+    campaignStore.fetchCampaign({
+      skip: 0,
+      limit: limit.value
+    })
+  ])
+    .then(() => {
+      if (!campaignStore.campaign) {
+        error({ title: t('campaign.campaignNotFound') })
+        navigateTo({ name: 'index' })
+      }
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
+})
+
+const market = computed(() => {
+  const campaign = campaignStore.campaign
+
+  if (!campaign) {
+    return
+  }
+
+  return spotStore.markets.find(
+    ({ marketId }) => marketId === campaign.marketId
+  )
 })
 
 function fetchCampaign({ skip }: { skip: number }) {
-  status.setLoading()
+  tableStatus.setLoading()
 
   campaignStore
     .fetchCampaign({
       skip,
-      limit: limit.value,
-      marketId: CAMPAIGN_MARKET_ID
+      limit: limit.value
+    })
+    .then(() => {
+      if (!campaignStore.campaign) {
+        error({ title: t('campaign.campaignNotFound') })
+        navigateTo({ name: 'index' })
+      }
     })
     .catch($onError)
-    .finally(() => status.setIdle())
+    .finally(() => tableStatus.setIdle())
 }
 
-function onLimitChange() {
+function onLimitChange(value: number) {
   page.value = 1
+  limit.value = value
 
   fetchCampaign({ skip: 0 })
 }
 
-// function onPageChange() {
-//   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
-// }
+function onPageChange(value: number) {
+  page.value = value
+  fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
+}
+
+useIntervalFn(
+  () => tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
+  30 * 1000
+)
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl w-full px-4 space-y-8">
-    <PartialsLiquidityHeader />
-    <PartialsLiquidityRewardStats />
-    <PartialsLiquidityTab />
+  <AppHocLoading
+    :is-loading="status.isLoading() || !campaignStore.campaign"
+    class="h-full"
+  >
+    <div
+      v-if="campaignStore.campaign"
+      class="mx-auto max-w-7xl w-full px-4 space-y-8"
+    >
+      <PartialsLiquidityHeader
+        v-bind="{
+          market,
+          campaign: campaignStore.campaign
+        }"
+      />
+      <PartialsLiquidityRewardStats
+        v-bind="{
+          totalScore: campaignStore.campaign.totalScore,
+          isClaimable: campaignStore.campaign.isClaimable,
+          quoteDecimals: market?.quoteToken.decimals || 6
+        }"
+      />
+      <PartialsLiquidityTab :date="campaignStore.campaign.lastUpdated" />
 
-    <div class="overflow-x-auto">
-      <pre>{{ campaignStore.campaign }}</pre>
+      <AppHocLoading :is-loading="tableStatus.isLoading()">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[742px]">
+            <PartialsLiquidityTableHeader />
+            <tbody>
+              <PartialsLiquidityTableRow
+                v-for="campaignUser in campaignStore.campaignUsers"
+                :key="campaignUser.accountAddress"
+                v-bind="{
+                  campaignUser,
+                  totalScore: campaignStore.campaign.totalScore,
+                  quoteDecimals: market?.quoteToken.decimals || 6
+                }"
+              />
+            </tbody>
+          </table>
+        </div>
+      </AppHocLoading>
 
-      <table class="w-full min-w-[742px]">
-        <PartialsLiquidityTableHeader />
-        <tbody>
-          <PartialsLiquidityTableRow v-for="i in 10" :key="`row-${i}`" />
-        </tbody>
-      </table>
+      <AppPagination
+        class="mt-6"
+        v-bind="{ limit, page, totalCount: campaignStore.totalUserCount }"
+        @update:limit="onLimitChange"
+        @update:page="onPageChange"
+      />
     </div>
-
-    <AppPagination v-bind="{ limit: 10, page: 3, totalCount: 100 }" />
-  </div>
+  </AppHocLoading>
 </template>

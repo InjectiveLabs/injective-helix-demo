@@ -82,3 +82,9 @@ export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 25
 
 export const GST_ROUTE = 'trading-bots-grid-spot'
+
+// Campaign
+export const CAMPAIGN_ID = 'spot-grid-inj-usdt-test'
+// we will read this from the contract later (WIP)
+export const CAMPAIGN_INJ_REWARDS = '1000'
+export const CAMPAIGN_TIA_REWARDS = '10000'

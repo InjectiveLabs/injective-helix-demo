@@ -1,53 +1,53 @@
 import { defineStore } from 'pinia'
-import { indexerGrpcCampaignApi } from '@/app/Services'
-import { campaignResponse } from '@/app/data/campaign'
-import { Campaign } from '@/types'
+import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
+// import { indexerGrpcCampaignApi } from '@/app/Services'
+import { fetchCampaign } from '@/app/services/campaign'
 
 type CampaignStoreState = {
   campaign?: Campaign
-  userCount: number
+  totalUserCount: number
+  campaignUsers: CampaignUser[]
+  ownerCampaignInfo?: CampaignUser
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
+  totalUserCount: 0,
+  campaignUsers: [],
   campaign: undefined,
-  userCount: 0
+  ownerCampaignInfo: undefined
 })
 
-export const useCampaignStore = defineStore('Campaign', {
+export const useCampaignStore = defineStore('campaign', {
   state: (): CampaignStoreState => initialStateFactory(),
   actions: {
-    async fetchCampaign({
-      skip,
-      limit,
-      marketId
-    }: {
-      skip?: number
-      limit?: number
-      marketId: string
-    }) {
+    async fetchCampaign({ skip, limit }: { skip?: number; limit?: number }) {
       const campaignStore = useCampaignStore()
 
-      // no data/env to test this at the moment, Hillari said he will set up mainnet for testing
-      const campaign = await indexerGrpcCampaignApi.fetchCampaign({
-        marketId:
-          '0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0',
-        campaignId: 'spot-grid-inj-usdt-test'
-      })
-
-      // eslint-disable-next-line no-console
-      console.log({ campaign })
-
-      // eslint-disable-next-line no-console
-      console.log({ skip, limit, marketId })
-
-      // show loading spinner
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3000)
+      const { campaign, paging, users } = await fetchCampaign({
+        skip,
+        limit
       })
 
       campaignStore.$patch({
-        campaign: campaignResponse,
-        userCount: campaignResponse?.paging?.total || 0
+        campaign,
+        campaignUsers: users,
+        totalUserCount: paging?.total || 0
+      })
+    },
+
+    async fetchCampaignOwnerInfo() {
+      const campaignStore = useCampaignStore()
+      // const walletStore = useWalletStore()
+
+      const { users } = await fetchCampaign({
+        limit: 1,
+        // accountAddress: walletStore.injectiveAddress
+        // hardcoded for testing purposes
+        accountAddress: 'inj1xk2pwh0tl6hdwv7z98mz6wjjhmfgl2h32p0x04'
+      })
+
+      campaignStore.$patch({
+        ownerCampaignInfo: users[0]
       })
     }
   }

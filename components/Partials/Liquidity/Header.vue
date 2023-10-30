@@ -1,5 +1,35 @@
 <script setup lang="ts">
-//
+import { format } from 'date-fns'
+import { Campaign } from '@injectivelabs/sdk-ts'
+import {
+  CAMPAIGN_INJ_REWARDS,
+  CAMPAIGN_TIA_REWARDS
+} from '@/app/utils/constants'
+import { UiMarketWithToken } from 'types'
+
+const props = defineProps({
+  campaign: {
+    type: Object as PropType<Campaign>,
+    required: true
+  },
+
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    default: undefined
+  }
+})
+
+const DATE_FORMAT = 'MMM dd, yyyy'
+
+const { valueToString: injRewardsToString } = useBigNumberFormatter(
+  computed(() => CAMPAIGN_INJ_REWARDS)
+)
+
+const { valueToString: tiaRewardsToString } = useBigNumberFormatter(
+  computed(() => CAMPAIGN_TIA_REWARDS)
+)
+
+const endDate = computed(() => format(props.campaign.endDate, DATE_FORMAT))
 </script>
 
 <template>
@@ -19,19 +49,21 @@
           <p class="text-gray-600 text-sm mb-2">
             {{ $t('campaign.totalRewards') }}
           </p>
-          <h2 class="text-2xl font-semibold">10,000 INJ + 10,000 TIA</h2>
+          <h2 class="text-2xl font-semibold">
+            {{ injRewardsToString }} INJ + {{ tiaRewardsToString }} TIA
+          </h2>
         </div>
-        <div>
+        <div v-if="market">
           <p class="text-gray-600 text-sm mb-2">
             {{ $t('campaign.eligibleMarkets') }}
           </p>
-          <h2 class="text-2xl font-semibold">INJ/USDT</h2>
+          <h2 class="text-2xl font-semibold">{{ market.ticker }}</h2>
         </div>
         <div>
           <p class="text-gray-600 text-sm mb-2">
             {{ $t('campaign.endTime') }}
           </p>
-          <h2 class="text-2xl font-semibold">Nov 14,2023</h2>
+          <h2 class="text-2xl font-semibold">{{ endDate }}</h2>
         </div>
       </div>
     </div>

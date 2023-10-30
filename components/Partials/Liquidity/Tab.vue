@@ -1,9 +1,32 @@
+<script lang="ts" setup>
+import { format } from 'date-fns'
+
+const props = defineProps({
+  date: {
+    type: Number,
+    default: undefined
+  }
+})
+
+const DATE_FORMAT = "yyyy-MM-dd hh:mm:ss '(UTC'xxxxx')'"
+
+const lastUpdated = computed(() => {
+  if (!props.date) {
+    return
+  }
+
+  return format(props.date, DATE_FORMAT)
+})
+</script>
+
 <template>
   <div class="border-b flex justify-between items-end">
     <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
-      Overall
+      {{ $t('campaign.overall') }}
     </button>
 
-    <p class="text-gray-300 p-2">Last updated at 2022-05-18 19:37:41 (UTC+8)</p>
+    <p v-if="lastUpdated" class="text-gray-300 p-2 text-xs">
+      {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
+    </p>
   </div>
 </template>
