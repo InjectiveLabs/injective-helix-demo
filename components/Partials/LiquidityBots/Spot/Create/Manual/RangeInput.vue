@@ -380,9 +380,9 @@ function generateEvenlySpacedNumbers(
           :height="SVG_PROPS.height"
           fill="red"
           :opacity="HANDLE_OPACITY"
-          @mousedown.stop="isLowerHandleClicked = true"
-          @mouseenter="isHovered = true"
-          @mouseleave="isHovered = false"
+          @mousedown.passive="isLowerHandleClicked = true"
+          @mouseenter.passive="isHovered = true"
+          @mouseleave.passive="isHovered = false"
         />
       </g>
 
@@ -394,9 +394,9 @@ function generateEvenlySpacedNumbers(
           :height="SVG_PROPS.height"
           fill="blue"
           :opacity="HANDLE_OPACITY"
-          @mousedown.stop="isUpperHandleClicked = true"
-          @mouseenter="isHovered = true"
-          @mouseleave="isHovered = false"
+          @mousedown.passive="isUpperHandleClicked = true"
+          @mouseenter.passive="isHovered = true"
+          @mouseleave.passive="isHovered = false"
         />
       </g>
     </svg>

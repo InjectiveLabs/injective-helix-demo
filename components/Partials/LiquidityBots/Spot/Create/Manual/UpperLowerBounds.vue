@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotGridTradingField } from '@/types'
+import { getSgtInvalidRange } from '@/app/utils/helpers'
+import {
+  GST_DEFAULT_AUTO_GRIDS,
+  GST_DEFAULT_PRICE_TICK_SIZE,
+  GST_MAXIMUM_GRIDS,
+  GST_MINIMUM_GRIDS
+} from 'app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -10,31 +18,64 @@ const props = defineProps({
 })
 
 const gridStrategyStore = useGridStrategyStore()
+const formValues = useFormValues()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
+
+const sgtInvalidRange = computed(() => {
+  const levels = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.Grids] || GST_DEFAULT_AUTO_GRIDS
+  )
+
+  return getSgtInvalidRange({
+    midPrice: lastTradedPrice.value.toFixed(),
+    levels:
+      levels.gt(GST_MAXIMUM_GRIDS) || levels.lt(GST_MINIMUM_GRIDS)
+        ? GST_DEFAULT_AUTO_GRIDS
+        : levels.toFixed(0),
+    minPriceTickSize: gridStrategyStore.spotMarket
+      ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
+          .toBase(
+            gridStrategyStore.spotMarket.quoteToken.decimals -
+              gridStrategyStore.spotMarket.baseToken.decimals
+          )
+          .toFixed()
+      : GST_DEFAULT_PRICE_TICK_SIZE
+  })
+})
 
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
     rule: '',
-    dynamicRule: computed(
-      () =>
-        `requiredSgt|lessThanSgt:${lastTradedPrice.value.minus(
-          lastTradedPrice.value.times(0.05)
-        )}`
-    )
+    dynamicRule: computed(() => {
+      const { lowerLimit, upperLimit } = sgtInvalidRange.value
+
+      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
+
+      const rules = ['requiredSgt', invalidIfBetweenRule]
+
+      return rules.join('|')
+    })
   })
 
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: SpotGridTradingField.UpperPrice,
     rule: '',
-    dynamicRule: computed(
-      () =>
-        `requiredSgt|greaterThanSgt:${lastTradedPrice.value.plus(
-          lastTradedPrice.value.times(0.05)
-        )}`
-    )
+    dynamicRule: computed(() => {
+      const { lowerLimit, upperLimit } = sgtInvalidRange.value
+
+      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
+
+      const greaterThanRule = `greaterThanSgt:${
+        formValues.value[SpotGridTradingField.LowerPrice] || 0
+      }`
+
+      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
+
+      return rules.join('|')
+    })
   })
 </script>
 

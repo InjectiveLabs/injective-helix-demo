@@ -43,7 +43,7 @@ function fetchData() {
       countback: 30
     }),
     accountStore.fetchAccountPortfolio(),
-    accountStore.streamSubaccountBalance()
+    accountStore.streamSubaccountBalance(marketId)
   ])
     .catch($onError)
     .finally(() => {
