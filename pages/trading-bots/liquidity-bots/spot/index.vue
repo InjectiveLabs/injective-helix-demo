@@ -9,8 +9,6 @@ definePageMeta({
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-// const modalStore = useModalStore()
-// const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
