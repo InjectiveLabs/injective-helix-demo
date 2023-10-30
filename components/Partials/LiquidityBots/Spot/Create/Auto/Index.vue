@@ -2,6 +2,7 @@
 import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
 import { SpotGridTradingField } from 'types'
 
+const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
@@ -80,7 +81,11 @@ function setValuesFromAuto() {
       class="mb-4"
       is-auto
     />
+
+    <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
+
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
+      v-else
       v-bind="{ market: gridStrategyStore.spotMarket! }"
       @strategy:create="setValuesFromAuto"
     />

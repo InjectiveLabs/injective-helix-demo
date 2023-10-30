@@ -2,9 +2,11 @@
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
+const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 const setFormValues = useSetFormValues()
+
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
@@ -123,7 +125,10 @@ const animate = (refValue: Ref, targetValue: string, duration = 200) => {
       class="mb-4"
     />
 
+    <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
+
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
+      v-else
       v-bind="{ market: gridStrategyStore.spotMarket! }"
     />
   </div>
