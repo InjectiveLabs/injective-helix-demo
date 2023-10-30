@@ -9,25 +9,10 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'tia-usdt-30nov2023',
-  'axl-usdt-perp',
-  'usdtkv-usdt',
+  'kava-usdt',
   'btc-usdtkv-perp',
   'eth-usdtkv-perp',
-  'orai-usdt',
-  'kava-usdt',
-  'neok-usdt',
-  'sei-usdt-perp',
-  'stinj-inj',
-  'xrp-usdt-perp',
-  'wmatic-usdt',
-  '1000pepe-usdt-perp',
-  'xau-usdt-perp',
-  'gbp-usdt-perp',
-  'jpy-usdt-perp',
-  'eur-usdt-perp',
-  'arb-usdt',
-  'chz-usdcet',
-  'canto-usdt'
+  'usdtkv-usdt'
 ]
 
 export const experimentalMarketsSlug = [

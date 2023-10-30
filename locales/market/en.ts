@@ -3,24 +3,25 @@ import { I18nMessageFunction } from '@/types'
 export default {
   markets: {
     title: 'Markets',
+    vol: 'Vol',
+    quote: 'Quote',
+    market: 'Market',
+    airdrop: 'Airdrop',
+    category: 'Category',
     whatsNew: "What's new",
     topGainer: 'Top Gainer',
     topVolume: 'Top Volume',
-    category: 'Category',
-    market: 'Market',
-    emptyHeader: 'No markets found',
-    emptyDescription: 'Try another search term or you can propose some!',
-    emptyHeaderFavorites: 'No favorited markets yet.',
-    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
     poweredBy: 'Powered by',
-    vol: 'Vol',
-    quote: 'Quote',
-    expiredRecently: 'Expired in last 24 hours',
     settledAt: 'Settled at',
-    airdrop: 'Airdrop',
-    showLowVol: 'Show low Vol.',
     perpetuals: 'Perpetuals',
-    preLaunchFutures: 'Pre Launch Futures'
+    newMarkets: 'New Markets',
+    showLowVol: 'Show low Vol.',
+    emptyHeader: 'No markets found',
+    preLaunchFutures: 'Pre Launch Futures',
+    expiredRecently: 'Expired in last 24 hours',
+    emptyHeaderFavorites: 'No favorited markets yet.',
+    emptyDescription: 'Try another search term or you can propose some!',
+    emptyDescriptionFavorites: 'Your starred markets will be shown here.'
   },
 
   marketPage: {
