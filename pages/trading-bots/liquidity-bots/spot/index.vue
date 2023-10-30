@@ -15,6 +15,7 @@ const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
+const isBannerOpen = ref(false)
 
 const activeStrategy = computed(
   () =>
@@ -45,6 +46,9 @@ function fetchData() {
   ])
     .catch($onError)
     .finally(() => {
+      if (gridStrategyStore.strategies.length === 0) {
+        isBannerOpen.value = true
+      }
       status.setIdle()
     })
 }
@@ -62,6 +66,24 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
       <p class="text-xl font-semibold text-center mb-4">
         {{ $t('liquidity.liquidityBots') }}
       </p>
+
+      <div
+        v-if="isBannerOpen"
+        class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
+      >
+        <div class="flex-1 pr-4">
+          <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
+          <p class="text-sm">
+            {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
+          </p>
+        </div>
+
+        <div>
+          <button @click="isBannerOpen = false">
+            <BaseIcon name="close" />
+          </button>
+        </div>
+      </div>
 
       <PartialsLiquidityBotsSpotMarketSelector />
 
