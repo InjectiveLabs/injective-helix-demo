@@ -51,12 +51,20 @@ onMounted(() => {
 })
 
 function zoomIn() {
-  animate(min, (Number(min.value) + Number(min.value) * 0.05).toString())
-  animate(max, (Number(max.value) - Number(max.value) * 0.05).toString())
+  const currentPrice = lastTradedPrice.value.toNumber()
+  const minPrice = Number(min.value)
+  const maxPrice = Number(max.value)
+
+  animate(min, (minPrice + (currentPrice - minPrice) / 5).toString())
+  animate(max, (maxPrice - (maxPrice - currentPrice) / 5).toString())
 }
 function zoomOut() {
-  animate(min, (Number(min.value) - Number(min.value) * 0.05).toString())
-  animate(max, (Number(max.value) + Number(max.value) * 0.05).toString())
+  const currentPrice = lastTradedPrice.value.toNumber()
+  const minPrice = Number(min.value)
+  const maxPrice = Number(max.value)
+
+  animate(min, (minPrice - (currentPrice - minPrice) / 5).toString())
+  animate(max, (maxPrice + (maxPrice - currentPrice) / 5).toString())
 }
 
 const animate = (refValue: Ref, targetValue: string, duration = 200) => {
