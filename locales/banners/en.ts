@@ -35,17 +35,21 @@ export default {
     newFeature: {
       close: 'Close',
       blogPost: 'blog post',
-      title: 'Celestia Pre-Launch Futures Trading Competition',
-      description1:
-        'Helix is excited to announce the launch of a special trading competition with 5,000 Celestia (TIA) tokens as rewards.',
-      description2:
-        'It is a volume trading competition in which the Top 100 volume traders will each receive 50 TIA tokens as the reward. The competition starts on October 26, 2023 at 2PM UTC, and ends on November 5, 2023 at 2PM UTC. The trading competition will offer users the opportunity to trade on Helix in order to not only win prizes exclusive to this competition, but also to enjoy market leading rebates, zero gas fees, lightning fast speeds and best-in-class security.',
-      description3: ({ interpolate, named }: I18nMessageFunction) =>
+      tia: '$TIA',
+      here: 'here',
+      title: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
-          'For more information, please visit our ',
+          'Celestia now live on Helix with 30,000 ',
           named('link'),
-          '.'
-        ])
+          ' in rewards up for grabs!'
+        ]),
+      description1: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Helix is the world’s first exchange to list TIA. To celebrate the addition of TIA/USDT Spot on Helix, Helix is giving away 30,000 TIA tokens to Helix traders. Enjoy gas free trading and the best rewards now! Read ',
+          named('link'),
+          ' for more details.'
+        ]),
+      cta: 'Go to TIA/USDT'
     }
   }
 }

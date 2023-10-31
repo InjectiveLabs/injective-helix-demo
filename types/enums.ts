@@ -75,7 +75,7 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   FuturesMarketRestricted = 'futures-market-restricted',
-  PreLaunchFutures = 'pre-launch-futures'
+  NewFeature = 'new-feature'
 }
 
 export enum Breakpoint {
