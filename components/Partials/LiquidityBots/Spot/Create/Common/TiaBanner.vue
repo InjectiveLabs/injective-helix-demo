@@ -41,7 +41,11 @@ defineProps({
           <span>{{ $t('sgt.learnMore') }}</span>
         </NuxtLink>
 
-        <NuxtLink v-else to="#" class="flex items-center hover:text-blue-200">
+        <NuxtLink
+          v-else
+          to="/lp-rewards"
+          class="flex items-center hover:text-blue-200"
+        >
           <span>{{ $t('liquidity.seeRewards') }}</span>
           <div class="rotate-180 ml-1"><BaseIcon name="arrow" is-sm /></div>
         </NuxtLink>

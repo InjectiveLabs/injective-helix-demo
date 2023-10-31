@@ -46,7 +46,6 @@ export enum Modal {
   MarketNew = 'market-new',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
-  NewFeature = 'new-feature',
   ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
@@ -75,8 +74,8 @@ export enum Modal {
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
-
-  FuturesMarketRestricted = 'futures-market-restricted'
+  FuturesMarketRestricted = 'futures-market-restricted',
+  PreLaunchFutures = 'pre-launch-futures'
 }
 
 export enum Breakpoint {
