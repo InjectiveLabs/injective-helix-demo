@@ -255,6 +255,7 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     swap: 'Swap',
+    liquidity: 'Liquidity',
     swapDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
