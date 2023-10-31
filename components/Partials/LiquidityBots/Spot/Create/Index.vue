@@ -7,7 +7,7 @@ import {
 
 useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true,
-  initialValues: { investmentType: InvestmentTypeGst.BaseAndQuote }
+  initialValues: { investmentType: InvestmentTypeGst.Base }
 })
 
 const activeTab = ref(GridStrategyType.Auto)

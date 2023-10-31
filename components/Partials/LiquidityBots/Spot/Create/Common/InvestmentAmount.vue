@@ -119,14 +119,21 @@ const {
       props.market.baseToken.symbol
     }`
 
-    const rules = [
+    const rules = [insuficientRule, minBaseAndQuoteAmountRule]
+
+    if (
       formValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.BaseAndQuote
-        ? requiredIfFieldEmptyRule
-        : 'requiredSgt',
-      insuficientRule,
-      minBaseAndQuoteAmountRule
-    ]
+    ) {
+      rules.push(requiredIfFieldEmptyRule)
+    }
+
+    if (
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Quote
+    ) {
+      rules.push('requiredSgt')
+    }
 
     return rules.join('|')
   })
@@ -156,14 +163,21 @@ const {
       props.market.baseToken.symbol
     }`
 
-    const rules = [
+    const rules = [insuficientRule, minBaseAndQuoteAmountRule]
+
+    if (
       formValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.BaseAndQuote
-        ? requiredIfFieldEmptyRule
-        : 'requiredSgt',
-      insuficientRule,
-      minBaseAndQuoteAmountRule
-    ]
+    ) {
+      rules.push(requiredIfFieldEmptyRule)
+    }
+
+    if (
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Base
+    ) {
+      rules.push('requiredSgt')
+    }
 
     return rules.join('|')
   })

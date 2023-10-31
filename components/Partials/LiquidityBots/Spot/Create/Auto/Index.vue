@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
-import { SpotGridTradingField } from 'types'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -10,8 +14,31 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 )
 
 const setFormValues = useSetFormValues()
+const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
 const upperPrice = computed(() => {
+  const isSingleSided =
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
+    InvestmentTypeGst.BaseAndQuote
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Base
+  ) {
+    return spotLastTradedPrice.value.times(2).toFixed(2)
+  }
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Quote
+  ) {
+    return spotLastTradedPrice.value
+      .minus(spotLastTradedPrice.value.times(0.06))
+      .toFixed(2)
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
   )
@@ -33,6 +60,28 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
+  const isSingleSided =
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
+    InvestmentTypeGst.BaseAndQuote
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Base
+  ) {
+    return spotLastTradedPrice.value
+      .plus(spotLastTradedPrice.value.times(0.06))
+      .toFixed(2)
+  }
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Quote
+  ) {
+    return spotLastTradedPrice.value.times(0.5).toFixed(2)
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
   )
@@ -71,9 +120,14 @@ function setValuesFromAuto() {
         market: gridStrategyStore.spotMarket!,
         upperPrice,
         lowerPrice,
+
         grids: grids.toFixed()
       }"
       class="mb-4"
+    />
+
+    <PartialsLiquidityBotsSpotCreateCommonInvestmentType
+      v-bind="{ market: gridStrategyStore.spotMarket! }"
     />
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
