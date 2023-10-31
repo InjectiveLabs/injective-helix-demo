@@ -6,7 +6,6 @@ import {
   getDefaultPerpetualMarketRouteParams,
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
-import { IS_MAINNET, IS_STAGING } from 'app/utils/constants'
 
 const walletStore = useWalletStore()
 
@@ -129,7 +128,6 @@ function handlePerpetualTradeClickedTrack() {
       <LayoutNavMobile />
 
       <LayoutNavItem
-        v-if="!IS_MAINNET || IS_STAGING"
         :to="{
           name: 'trading-bots-liquidity-bots-spot'
         }"
@@ -169,7 +167,6 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            v-if="!IS_MAINNET || IS_STAGING"
             :to="{ name: 'lp-rewards' }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
