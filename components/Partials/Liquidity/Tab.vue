@@ -11,11 +11,7 @@ const props = defineProps({
 const DATE_FORMAT = "yyyy-MM-dd hh:mm:ss '(UTC'xxxxx')'"
 
 const lastUpdated = computed(() => {
-  if (!props.date) {
-    return
-  }
-
-  return format(props.date, DATE_FORMAT)
+  return props.date ? format(props.date, DATE_FORMAT) : ''
 })
 </script>
 

@@ -73,6 +73,7 @@ function onLimitChange(value: number) {
 
 function onPageChange(value: number) {
   page.value = value
+
   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
 }
 
