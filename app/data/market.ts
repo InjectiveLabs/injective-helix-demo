@@ -7,14 +7,7 @@ export interface UnTradableMarket {
 
 export const betaMarketSlugs = [] as string[]
 
-export const newMarketsSlug = [
-  'tia-usdt',
-  'kava-usdt',
-  'btc-usdtkv-perp',
-  'tia-usdt-30nov2023',
-  'eth-usdtkv-perp',
-  'usdtkv-usdt'
-]
+export const newMarketsSlug = ['tia-usdt', 'tia-usdt-30nov2023']
 
 export const experimentalMarketsSlug = [
   'ape-usdt',
