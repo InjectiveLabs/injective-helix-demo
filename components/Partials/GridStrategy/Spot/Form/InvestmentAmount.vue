@@ -196,6 +196,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
         v-model="investmentAmountValue"
         :disabled="isLowerBoundGtLastPrice"
         class="text-right"
+        is-disabled-gray
       >
         <template #addon>
           {{ market.quoteToken.symbol }}
@@ -220,6 +221,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
         v-model="baseInvestmentAmountValue"
         class="text-right"
         :disabled="isUpperBoundLtLastPrice"
+        is-disabled-gray
       >
         <template #addon>
           {{ market.baseToken.symbol }}

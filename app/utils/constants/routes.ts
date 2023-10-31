@@ -130,6 +130,8 @@ export const getRoutes = (network: Network, env: string) => {
     (s) => `/trading-bots/grid/spot/${s}`
   )
 
+  const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
+
   return {
     MARKETS_SLUGS: {
       spot,
@@ -148,6 +150,7 @@ export const getRoutes = (network: Network, env: string) => {
       footerEnabledRoutes,
       spotMarketRouteNames,
       gridTradingSpotRoutes,
+      liquidityBotSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames
