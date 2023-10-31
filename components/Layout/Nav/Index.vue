@@ -6,6 +6,7 @@ import {
   getDefaultPerpetualMarketRouteParams,
   getDefaultSpotMarketRouteParams
 } from '@/app/utils/market'
+import { IS_MAINNET } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 
@@ -108,19 +109,6 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </NuxtLink>
 
-          <!-- <NuxtLink
-            :to="{ name: 'convert' }"
-            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
-            data-cy="header-convert-link"
-          >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.convert') }}
-            </p>
-            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.convertDescription') }}
-            </p>
-          </NuxtLink> -->
-
           <BaseNuxtLink
             :to="{
               name: 'trading-bots-grid-spot-market',
@@ -145,6 +133,31 @@ function handlePerpetualTradeClickedTrack() {
               {{ $t('navigation.tradingBotsDescription') }}
             </p>
           </BaseNuxtLink>
+
+          <BaseNuxtLink
+            v-if="!IS_MAINNET"
+            :to="{
+              name: 'trading-bots-liquidity-bots-spot'
+            }"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
+            data-cy="grid-spot-trading-link"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.liquidityBots') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.liquidityBotsDescription') }}
+            </p>
+          </BaseNuxtLink>
         </template>
       </LayoutNavHoverMenu>
 
@@ -152,9 +165,15 @@ function handlePerpetualTradeClickedTrack() {
 
       <LayoutNavHoverMenu>
         <template #default>
-          <LayoutNavItemDummy id="rewards-dropdown" class="hidden lg:block">
-            {{ $t('navigation.rewards') }}
-          </LayoutNavItemDummy>
+          <div class="relative">
+            <LayoutNavItemDummy id="rewards-dropdown" class="hidden lg:block">
+              {{ $t('navigation.rewards') }}
+            </LayoutNavItemDummy>
+
+            <div
+              class="bg-blue-500 rounded-full w-2 h-2 absolute right-3.5 top-2.5 hidden lg:block"
+            />
+          </div>
         </template>
 
         <template #content>
@@ -167,6 +186,28 @@ function handlePerpetualTradeClickedTrack() {
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.tradeAndEarnDescription') }}
+            </p>
+          </NuxtLink>
+
+          <NuxtLink
+            v-if="!IS_MAINNET"
+            :to="{ name: 'lp-rewards' }"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.lpRewards') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.lpRewardsSub') }}
             </p>
           </NuxtLink>
 

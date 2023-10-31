@@ -148,3 +148,24 @@ export const durationFormatter = (
 
   return `${days}D ${hours}H ${minutes}M`
 }
+
+export const getSgtInvalidRange = ({
+  levels,
+  midPrice,
+  minPriceTickSize
+}: {
+  midPrice: string | number
+  levels: string | number
+  minPriceTickSize: string | number
+}) => {
+  const midPriceInBigNumber = new BigNumberInBase(midPrice)
+  const levelsInBigNumber = new BigNumberInBase(levels)
+  return {
+    upperLimit: midPriceInBigNumber.plus(
+      levelsInBigNumber.times(minPriceTickSize).times(10)
+    ),
+    lowerLimit: midPriceInBigNumber.minus(
+      levelsInBigNumber.times(minPriceTickSize).times(10)
+    )
+  }
+}

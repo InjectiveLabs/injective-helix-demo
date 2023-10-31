@@ -26,7 +26,17 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'atom-usdt',
     contractAddress: 'inj14yr8nj6tndmr4xyw9c66feqepv59revxsm7450'
+  },
+  {
+    slug: 'tia-usdt',
+    contractAddress: 'inj18sl3ysva0czdgc2eqmqlrhfeu2v4l8vx4245ql'
   }
+
+  // Add This Market Later
+  // {
+  //   slug: 'weth-usdt',
+  //   contractAddress: 'inj1aehu642q3td95jlpprgcypmstmn3pknaq4rsjn'
+  // }
 ]
 
 export const spotGridMarkets: SpotGridMarket[] =

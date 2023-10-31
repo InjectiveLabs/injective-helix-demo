@@ -8,9 +8,10 @@ export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarketWithToken>,
   strategy: ComputedRef<TradingStrategy>
 ) {
-  const spotStore = useSpotStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+
+  const { lastTradedPrice } = useSpotLastPrice(market)
 
   const investment = computed(() => {
     if (!market.value) {
@@ -89,17 +90,9 @@ export default function useActiveGridStrategy(
             market.value?.baseToken.decimals
           )
 
-    const orderbookBuy = new BigNumberInWei(
-      spotStore.orderbook?.buys[0]?.price || 0
-    ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
-
-    const orderbookSell = new BigNumberInWei(
-      spotStore.orderbook?.sells[0]?.price || 0
-    ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
-
     const currentMidPrice =
       strategy.value.state === StrategyStatus.Active
-        ? orderbookSell.minus(orderbookBuy).dividedBy(2).plus(orderbookSell)
+        ? lastTradedPrice.value
         : new BigNumberInWei(strategy.value.marketMidPrice).toBase(
             market.value?.quoteToken.decimals - market.value?.baseToken.decimals
           )

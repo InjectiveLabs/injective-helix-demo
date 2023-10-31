@@ -1,15 +1,17 @@
-import activities from './activity/en'
-import banners from './banners/en'
-import bridge from './bridge/en'
 import home from './home/en'
+import trade from './trade/en'
+import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
-import trade from './trade/en'
-import auction from './auction/en'
-import leaderboard from './leaderboard/en'
-import account from './account/en'
-import institutional from './institutional/en'
 import sgt from './spot-grid/en'
+import banners from './banners/en'
+import auction from './auction/en'
+import account from './account/en'
+import campaign from './campaign/en'
+import activities from './activity/en'
+import leaderboard from './leaderboard/en'
+import institutional from './institutional/en'
+import liquidityBots from './liquidity-bots/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -22,10 +24,12 @@ export default {
   ...account,
   ...auction,
   ...banners,
+  ...campaign,
   ...activities,
   ...activities,
   ...leaderboard,
   ...institutional,
+  ...liquidityBots,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -255,6 +259,8 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
+    lpRewards: 'LP Rewards',
+    lpRewardsSub: 'Rewards for using liquidity bots',
     account: 'Account',
     home: 'Home',
     makerTakerFee: ({ named }: I18nMessageFunction) =>
@@ -278,7 +284,9 @@ export default {
       `Connected to ${named('address')}. Click to close connection.`,
 
     tradingBots: 'Trading Bots',
-    tradingBotsDescription: 'Trade smarter with automated strategies'
+    tradingBotsDescription: 'Trade smarter with automated strategies',
+    liquidityBots: 'Liquidity Bots',
+    liquidityBotsDescription: 'Trade smarter with automated strategies'
   },
 
   fee_discounts: {

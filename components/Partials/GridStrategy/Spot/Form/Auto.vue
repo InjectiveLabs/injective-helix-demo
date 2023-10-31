@@ -22,8 +22,45 @@ const exchangeStore = useExchangeStore()
 
 const setFormValues = useSetFormValues()
 
-const upperPrice = ref('')
-const lowerPrice = ref('')
+const upperPrice = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (market) => market.marketId === props.market.marketId
+  )
+
+  if (!marketHistory) {
+    return ''
+  }
+
+  const max = Math.max(...marketHistory.highPrice)
+  const maxPlusPadding = max + max * 0.05
+
+  const minUpperBound = spotLastTradedPrice.value.plus(
+    spotLastTradedPrice.value.times(0.06)
+  )
+
+  return minUpperBound.gt(max)
+    ? minUpperBound.toFixed(2)
+    : maxPlusPadding.toFixed(2)
+})
+
+const lowerPrice = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (market) => market.marketId === props.market.marketId
+  )
+
+  if (!marketHistory) {
+    return ''
+  }
+
+  const min = Math.min(...marketHistory.lowPrice)
+
+  const maxLowerBound = spotLastTradedPrice.value.minus(
+    spotLastTradedPrice.value.times(0.06)
+  )
+
+  return maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min.toFixed(2)
+})
+
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
@@ -57,34 +94,6 @@ const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-onMounted(() => {
-  setInitialFieldValues()
-})
-
-function setInitialFieldValues() {
-  const marketHistory = exchangeStore.marketsHistory.find(
-    (market) => market.marketId === props.market.marketId
-  )
-
-  if (!marketHistory) {
-    return
-  }
-
-  const max = Math.max(...marketHistory.highPrice).toFixed(2)
-  const min = Math.min(...marketHistory.lowPrice).toFixed(2)
-
-  const minUpperBound = spotLastTradedPrice.value.plus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  const maxLowerBound = spotLastTradedPrice.value.minus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  upperPrice.value = minUpperBound.gt(max) ? minUpperBound.toFixed(2) : max
-  lowerPrice.value = maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min
-}
-
 function copyToManual() {
   setValuesFromAuto()
   emit('set:tab', GridStrategyType.Manual)
@@ -100,6 +109,17 @@ function setValuesFromAuto() {
     false
   )
 }
+
+onMounted(() => {
+  setFormValues(
+    {
+      [SpotGridTradingField.UpperPrice]: '',
+      [SpotGridTradingField.LowerPrice]: '',
+      [SpotGridTradingField.Grids]: ''
+    },
+    false
+  )
+})
 </script>
 
 <template>
@@ -109,7 +129,6 @@ function setValuesFromAuto() {
       to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
       target="_blank"
       class="text-xs text-blue-500"
-      href="#"
     >
       {{ $t('sgt.learnMore') }}.
     </NuxtLink>
