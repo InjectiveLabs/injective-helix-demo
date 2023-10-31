@@ -69,7 +69,7 @@ export default {
     advancedSettings: 'Advanced Settings',
     initialInvestment: 'Initial Investment',
     autoModeHeader:
-      'These parameters are generated automatically based on the last 7 days trading prices.',
+      'These parameters are generated automatically based on the last 30 days trading prices.',
     stopLossTooltip:
       'The bot will stop when the last price of the pair reaches the set stop loss.',
     takeProfitTooltip:

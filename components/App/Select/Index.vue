@@ -4,6 +4,7 @@ import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 
 const props = defineProps({
   noMinW: Boolean,
+  startPlacement: Boolean,
 
   options: {
     type: Array as PropType<BaseDropdownOption[]>,
@@ -39,7 +40,7 @@ function handleSelect(option: BaseDropdownOption) {
 <template>
   <BaseDropdown
     :popper-class="`selector ${!noMinW && 'min-w-40'}`"
-    placement="bottom-end"
+    :placement="startPlacement ? 'bottom-start' : 'bottom-end'"
     :flip="false"
   >
     <template #default="{ isOpen }">

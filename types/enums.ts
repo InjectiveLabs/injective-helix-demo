@@ -407,6 +407,7 @@ export enum GridStrategyTabs {
 }
 
 export enum InvestmentTypeGst {
+  Base = 'base',
   Quote = 'quote',
   BaseAndQuote = 'baseAndQuote'
 }

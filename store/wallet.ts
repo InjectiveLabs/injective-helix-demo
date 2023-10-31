@@ -471,6 +471,7 @@ export const useWalletStore = defineStore('wallet', {
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
+      const gridStrategyStore = useGridStrategyStore()
       const authZStore = useAuthZStore()
 
       await walletStrategy.disconnectWallet()
@@ -484,6 +485,7 @@ export const useWalletStore = defineStore('wallet', {
       activityStore.$reset()
       positionStore.$reset()
       authZStore.$reset()
+      gridStrategyStore.$patch({ strategies: [] })
     },
 
     reset() {

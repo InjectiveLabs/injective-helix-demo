@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import { SpotGridTradingField } from '@/types'
 import { getSgtInvalidRange } from '@/app/utils/helpers'
 import {
   GST_DEFAULT_AUTO_GRIDS,
@@ -18,11 +18,9 @@ const props = defineProps({
 })
 
 const gridStrategyStore = useGridStrategyStore()
+const formValues = useFormValues()
 
-const formValues = useFormValues<SpotGridTradingForm>()
-const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => props.market)
-)
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const sgtInvalidRange = computed(() => {
   const levels = new BigNumberInBase(
@@ -30,7 +28,7 @@ const sgtInvalidRange = computed(() => {
   )
 
   return getSgtInvalidRange({
-    midPrice: spotLastTradedPrice.value.toFixed(),
+    midPrice: lastTradedPrice.value.toFixed(),
     levels:
       levels.gt(GST_MAXIMUM_GRIDS) || levels.lt(GST_MINIMUM_GRIDS)
         ? GST_DEFAULT_AUTO_GRIDS
@@ -55,7 +53,9 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
       const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
 
-      const rules = ['requiredSgt', invalidIfBetweenRule]
+      const greaterThanRule = `greaterThanSgt:0`
+
+      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
 
       return rules.join('|')
     })
@@ -83,16 +83,20 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
 <template>
   <div>
-    <p class="font-bold text-sm tracking-wide pb-4">
-      1. {{ $t('sgt.priceRange') }}
+    <p class="font-bold text-sm tracking-wide py-4">
+      {{ $t('sgt.priceRange') }}
     </p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4 mb-4">
       <div>
-        <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="lowerPriceValue"
+          placeholder="0.00"
+          class="text-right"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.lower') }}
+              {{ $t('sgt.lowerPrice') }}
             </p>
           </template>
 
@@ -109,10 +113,14 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
       </div>
 
       <div>
-        <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="upperPriceValue"
+          placeholder="0.00"
+          class="text-right"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.upper') }}
+              {{ $t('sgt.upperPrice') }}
             </p>
           </template>
 
