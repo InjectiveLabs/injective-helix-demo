@@ -11,7 +11,6 @@ import campaign from './campaign/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import institutional from './institutional/en'
-import sgt from './spot-grid/en'
 import liquidityBots from './liquidity-bots/en'
 import { I18nMessageFunction } from '@/types'
 
