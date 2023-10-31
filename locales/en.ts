@@ -11,6 +11,8 @@ import campaign from './campaign/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import institutional from './institutional/en'
+import sgt from './spot-grid/en'
+import liquidityBots from './liquidity-bots/en'
 import { I18nMessageFunction } from '@/types'
 
 export default {
@@ -28,6 +30,7 @@ export default {
   ...activities,
   ...leaderboard,
   ...institutional,
+  ...liquidityBots,
   common: {
     ok: 'OK',
     back: 'Back',
@@ -282,7 +285,9 @@ export default {
       `Connected to ${named('address')}. Click to close connection.`,
 
     tradingBots: 'Trading Bots',
-    tradingBotsDescription: 'Trade smarter with automated strategies'
+    tradingBotsDescription: 'Trade smarter with automated strategies',
+    liquidityBots: 'Liquidity Bots',
+    liquidityBotsDescription: 'Trade smarter with automated strategies'
   },
 
   fee_discounts: {

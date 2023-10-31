@@ -2,7 +2,11 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   GST_MIN_TRADING_SIZE,
@@ -116,7 +120,10 @@ const {
     }`
 
     const rules = [
-      requiredIfFieldEmptyRule,
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.BaseAndQuote
+        ? requiredIfFieldEmptyRule
+        : 'requiredSgt',
       insuficientRule,
       minBaseAndQuoteAmountRule
     ]
@@ -150,7 +157,10 @@ const {
     }`
 
     const rules = [
-      requiredIfFieldEmptyRule,
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.BaseAndQuote
+        ? requiredIfFieldEmptyRule
+        : 'requiredSgt',
       insuficientRule,
       minBaseAndQuoteAmountRule
     ]
@@ -172,29 +182,19 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
 <template>
   <div>
-    <div class="flex justify-between items-center py-4">
-      <div class="flex items-center space-x-2">
-        <h3 class="font-bold text-sm tracking-wide">
-          <span v-if="!isAuto">3.</span> {{ $t('sgt.amount') }}
-        </h3>
-        <AppTooltip :content="$t('sgt.investmentTooltip')" />
-      </div>
-
-      <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
-        <div class="ml-auto font-semibold text-xs flex space-x-2 items-center">
-          <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
-          <span>{{ market.baseToken.symbol }}</span>
-          <span>+</span>
-          <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
-          <span>{{ market.quoteToken.symbol }}</span>
-        </div>
-      </button>
-    </div>
-
-    <div class="mb-2">
+    <div
+      v-if="
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Quote ||
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.BaseAndQuote
+      "
+      class="mb-2"
+    >
       <AppInputNumeric
         v-model="investmentAmountValue"
         :disabled="isLowerBoundGtLastPrice"
+        is-disabled-gray
         class="text-right"
       >
         <template #addon>
@@ -215,11 +215,19 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       </div>
     </div>
 
-    <div>
+    <div
+      v-if="
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Base ||
+        formValues[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.BaseAndQuote
+      "
+    >
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
         class="text-right"
         :disabled="isUpperBoundLtLastPrice"
+        is-disabled-gray
       >
         <template #addon>
           {{ market.baseToken.symbol }}
