@@ -133,6 +133,10 @@ if (endpointsNotProvided) {
   )
 }
 
+const CAMPAIGN_ENDPOINT = IS_MAINNET // no endpoint for devnet
+  ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
+  : 'https://k8s.testnet.campaigns.grpc-web.injective.network'
+
 export const ENDPOINTS = {
   ...endpoints,
   grpc: env.VITE_SENTRY_GRPC_ENDPOINT || endpoints.grpc,
@@ -142,7 +146,8 @@ export const ENDPOINTS = {
     endpoints.rest,
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
   chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
-  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer
+  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer,
+  campaign: CAMPAIGN_ENDPOINT
 }
 
 export const BASE_URL = env.VITE_BASE_URL || ''
