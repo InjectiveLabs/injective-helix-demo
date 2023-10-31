@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { getMarketRoute } from '@/app/utils/market'
+import { Modal } from 'types'
 
 const derivativeStore = useDerivativeStore()
 
@@ -24,9 +25,15 @@ const route = computed(() => {
 </script>
 
 <template>
-  <ModalsNewFeatureWrapper v-bind="{ to: route }">
+  <ModalsNewFeatureWrapper
+    v-bind="{ to: route }"
+    :modal="Modal.PreLaunchFutures"
+  >
     <template #image>
-      <img src="/newFeatures/tia-campaign.webp" alt="" />
+      <img
+        src="/newFeatures/tia-campaign.webp"
+        alt="Tia Pre-Launch Futures Campaign"
+      />
     </template>
 
     <template #title>
