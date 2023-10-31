@@ -53,7 +53,9 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
       const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
 
-      const rules = ['requiredSgt', invalidIfBetweenRule]
+      const greaterThanRule = `greaterThanSgt:0`
+
+      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
 
       return rules.join('|')
     })
