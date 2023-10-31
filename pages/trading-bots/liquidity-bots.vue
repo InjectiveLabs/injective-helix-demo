@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import useQueryRef from 'composables/useQueryRef'
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -10,6 +11,8 @@ const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const { $onError } = useNuxtApp()
+
+const marketSlugQuery = useQueryRef('market', 'tia-usdt')
 
 function init() {
   status.setLoading()
@@ -23,7 +26,7 @@ function init() {
     .then(() => {
       gridStrategyStore.$patch({
         spotMarket: spotStore.markets.find(
-          (market) => market.slug === 'inj-usdt'
+          (market) => market.slug === marketSlugQuery.value
         )
       })
     })

@@ -5,6 +5,8 @@ const gridStrategyStore = useGridStrategyStore()
 
 const spotStore = useSpotStore()
 
+const marketSlugQuery = useQueryRef('market', 'tia-usdt')
+
 const liquidityBotsMarkets = computed(() =>
   spotStore.markets.filter((market) =>
     spotGridMarkets.find((m) => m.slug === market.slug)
@@ -14,6 +16,7 @@ const liquidityBotsMarkets = computed(() =>
 const value = computed({
   get: () => gridStrategyStore.spotMarket?.slug,
   set: (marketSlug) => {
+    marketSlugQuery.value = marketSlug as string
     gridStrategyStore.$patch({
       spotMarket: spotStore.markets.find((m) => m.slug === marketSlug)
     })
