@@ -23,7 +23,7 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
+  Promise.all([walletStore.init(), tokenStore.fetchTokens()])
     .catch($onError)
     .finally(() => {
       status.setIdle()

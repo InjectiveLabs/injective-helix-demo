@@ -29,7 +29,8 @@ export const getRoutes = (network: Network, env: string) => {
     'steadybtc-usdt',
     'neok-usdt',
     'orai-usdt',
-    'kava-usdt'
+    'kava-usdt',
+    'usdtkv-usdt'
   ]
 
   const perpetuals = [
@@ -43,7 +44,9 @@ export const getRoutes = (network: Network, env: string) => {
     'stx-usdt-perp',
     'atom-usdt-perp',
     'sei-usdt-perp',
-    'axl-usdt-perp'
+    'axl-usdt-perp',
+    'btc-usdtkv-perp',
+    'eth-usdtkv-perp'
   ]
 
   const gridTradingSpot = ['inj-usdt']

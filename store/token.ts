@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia'
-import { UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
-import type { Token } from '@injectivelabs/token-metadata'
-import { bankApi, tokenPrice, tokenService } from '@/app/Services'
+import { TokenType, type Token } from '@injectivelabs/token-metadata'
+import { awaitForAll } from '@injectivelabs/utils'
+import { bankApi, denomClient, tokenPrice } from '@/app/Services'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
   tokens: Token[]
+  unknownTokens: Token[]
   tokenUsdPriceMap: TokenUsdPriceMap
 }
 
 const initialStateFactory = (): TokenStoreState => ({
   tokens: [],
+  unknownTokens: [],
   tokenUsdPriceMap: {}
 })
 
@@ -64,21 +66,60 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
-    async fetchSupplyTokenMeta() {
+    async fetchTokens() {
       const tokenStore = useTokenStore()
 
-      const { supply } = await bankApi.fetchTotalSupply({ limit: 400 })
+      if (tokenStore.tokens.length > 0) {
+        return
+      }
 
-      const { bankSupply, ibcBankSupply } =
-        UiBankTransformer.supplyToUiSupply(supply)
+      const { supply } = await bankApi.fetchTotalSupply({ limit: 1000 })
 
-      const tokens = await tokenService.toCoinsWithToken([
-        ...bankSupply,
-        ...ibcBankSupply
-      ])
+      const supplyWithTokensOrUnknown = supply.map((coin) =>
+        denomClient.getDenomTokenStaticOrUnknown(coin.denom)
+      ) as Token[]
+
+      const supplyWithToken = supplyWithTokensOrUnknown.filter(
+        (token) => token.tokenType !== TokenType.Unknown
+      )
+      const supplyWithUnknownTokens = supplyWithTokensOrUnknown.filter(
+        (token) => token.tokenType === TokenType.Unknown
+      )
 
       tokenStore.$patch({
-        tokens
+        tokens: supplyWithToken,
+        unknownTokens: supplyWithUnknownTokens
+      })
+    },
+
+    /**
+     * Used to fetch unknown token metadata
+     * from external/internal API sources
+     * for particular set of denoms (account page/single asset page)
+     **/
+    async fetchUnknownTokensList(denoms: string[]) {
+      const tokenStore = useTokenStore()
+
+      const unknownTokens = tokenStore.unknownTokens.filter((asset) =>
+        denoms.includes(asset.denom)
+      )
+
+      if (!unknownTokens.length) {
+        return
+      }
+
+      const tokensList = await awaitForAll(unknownTokens, async (token) => ({
+        ...token,
+        token: (await denomClient.getDenomToken(token.denom)) || token
+      }))
+
+      const unknownTokensWithoutAsset = tokenStore.unknownTokens.filter(
+        (token) => !denoms.includes(token.denom)
+      )
+
+      tokenStore.$patch({
+        tokens: [...tokenStore.tokens, ...tokensList],
+        unknownTokens: unknownTokensWithoutAsset
       })
     },
 
