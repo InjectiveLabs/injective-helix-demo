@@ -14,7 +14,7 @@ const market = computed(() => {
   return spotStore.markets.find(({ slug }) => slug === MARKET_SLUG)
 })
 
-const route = computed(() => {
+const marketRoute = computed(() => {
   if (!market.value) {
     return {
       name: 'index'
@@ -23,10 +23,24 @@ const route = computed(() => {
 
   return getMarketRoute(market.value)
 })
+
+const swapRoute = computed(() => {
+  return {
+    name: 'swap',
+    query: {
+      from: market.value?.quoteDenom,
+      to: market.value?.baseDenom,
+      toAmount: '10'
+    }
+  }
+})
 </script>
 
 <template>
-  <ModalsNewFeatureWrapper v-bind="{ to: route }" :modal="Modal.NewFeature">
+  <ModalsNewFeatureWrapper
+    v-bind="{ route1: marketRoute, route2: swapRoute }"
+    :modal="Modal.NewFeature"
+  >
     <template #image>
       <img src="/newFeatures/tia-campaign.webp" alt="Tia Spot Campaign" />
     </template>
@@ -59,8 +73,12 @@ const route = computed(() => {
       </i18n-t>
     </template>
 
-    <template #cta>
-      <span>{{ $t('banners.newFeature.cta') }}</span>
+    <template #cta1>
+      <span>{{ $t('banners.newFeature.cta1') }}</span>
+    </template>
+
+    <template #cta2>
+      <span>{{ $t('banners.newFeature.cta2') }}</span>
     </template>
   </ModalsNewFeatureWrapper>
 </template>

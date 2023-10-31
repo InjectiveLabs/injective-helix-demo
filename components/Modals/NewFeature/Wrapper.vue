@@ -8,7 +8,14 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 
 const props = defineProps({
-  to: {
+  route1: {
+    type: Object as PropType<RouteLocationNamedRaw>,
+    default: () => ({
+      name: 'index'
+    })
+  },
+
+  route2: {
     type: Object as PropType<RouteLocationNamedRaw>,
     default: () => ({
       name: 'index'
@@ -73,12 +80,21 @@ function closeModal() {
         </div>
 
         <NuxtLink
-          v-if="slots.cta"
+          v-if="slots.cta1"
           class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
-          :to="to"
+          :to="route1"
           @click="closeModal"
         >
-          <slot name="cta" />
+          <slot name="cta1" />
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="slots.cta2"
+          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
+          :to="route2"
+          @click="closeModal"
+        >
+          <slot name="cta2" />
         </NuxtLink>
 
         <AppButton
