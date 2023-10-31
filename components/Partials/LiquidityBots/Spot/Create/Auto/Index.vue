@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
 import {
   InvestmentTypeGst,
@@ -10,7 +11,7 @@ const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket!)
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
 )
 
 const setFormValues = useSetFormValues()
@@ -114,10 +115,10 @@ function setValuesFromAuto() {
 </script>
 
 <template>
-  <div>
+  <div v-if="gridStrategyStore.spotMarket">
     <PartialsLiquidityBotsSpotCreateAutoParameters
       v-bind="{
-        market: gridStrategyStore.spotMarket!,
+        market: gridStrategyStore.spotMarket,
         upperPrice,
         lowerPrice,
 
@@ -127,11 +128,11 @@ function setValuesFromAuto() {
     />
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentType
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{ market: gridStrategyStore.spotMarket }"
     />
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{ market: gridStrategyStore.spotMarket }"
       class="mb-4"
       is-auto
     />
@@ -140,7 +141,7 @@ function setValuesFromAuto() {
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{ market: gridStrategyStore.spotMarket }"
       @strategy:create="setValuesFromAuto"
     />
   </div>
