@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
-import { getSgtInvalidRange } from '@/app/utils/helpers'
-import {
-  GST_DEFAULT_AUTO_GRIDS,
-  GST_DEFAULT_PRICE_TICK_SIZE,
-  GST_MAXIMUM_GRIDS,
-  GST_MINIMUM_GRIDS
-} from 'app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -24,38 +16,20 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
 )
 
-const sgtInvalidRange = computed(() => {
-  const levels = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.Grids] || GST_DEFAULT_AUTO_GRIDS
-  )
-
-  return getSgtInvalidRange({
-    midPrice: spotLastTradedPrice.value.toFixed(),
-    levels:
-      levels.gt(GST_MAXIMUM_GRIDS) || levels.lt(GST_MINIMUM_GRIDS)
-        ? GST_DEFAULT_AUTO_GRIDS
-        : levels.toFixed(0),
-    minPriceTickSize: gridStrategyStore.spotMarket
-      ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
-          .toBase(
-            gridStrategyStore.spotMarket.quoteToken.decimals -
-              gridStrategyStore.spotMarket.baseToken.decimals
-          )
-          .toFixed()
-      : GST_DEFAULT_PRICE_TICK_SIZE
-  })
-})
-
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const { lowerLimit, upperLimit } = sgtInvalidRange.value
+      const greaterThanRule = `greaterThanSgt:0`
 
-      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
+        2
+      )},${SpotGridTradingField.LowerPrice}`
 
-      const rules = ['requiredSgt', invalidIfBetweenRule]
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
       return rules.join('|')
     })
@@ -66,15 +40,17 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
     name: SpotGridTradingField.UpperPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const { lowerLimit, upperLimit } = sgtInvalidRange.value
-
-      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
-
       const greaterThanRule = `greaterThanSgt:${
         formValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
 
-      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
+        2
+      )},${SpotGridTradingField.UpperPrice}`
+
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
       return rules.join('|')
     })

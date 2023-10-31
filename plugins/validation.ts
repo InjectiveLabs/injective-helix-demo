@@ -5,6 +5,7 @@ import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { SpotGridTradingField } from 'types'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
@@ -222,6 +223,61 @@ export const defineGlobalRules = () => {
 
     return true
   })
+
+  defineRule(
+    'rangeSgt',
+    (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
+      const upperInBigNumber = new BigNumberInBase(upper)
+      const threshold = new BigNumberInBase(levels)
+        .times(minPriceTickSize)
+        .times(10)
+
+      if (upperInBigNumber.minus(lower).lt(threshold)) {
+        return 'The price range provided cannot support that many grids. Please lower the number of grids'
+      }
+      return true
+    }
+  )
+
+  defineRule(
+    'singleSided',
+    (_: string, [lower, upper, currentPrice, field]: string[]) => {
+      const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
+
+      const lowerThreshold = currentPriceInBigNumber.plus(
+        currentPriceInBigNumber.times(0.01)
+      )
+      const upperThreshold = currentPriceInBigNumber.minus(
+        currentPriceInBigNumber.times(0.01)
+      )
+
+      if (field === SpotGridTradingField.LowerPrice) {
+        if (
+          currentPriceInBigNumber.lt(lower) &&
+          currentPriceInBigNumber.lt(upper) &&
+          lowerThreshold.gt(lower)
+        ) {
+          return `Lower price level should be above ${lowerThreshold.toFixed(
+            2
+          )}`
+        }
+      }
+
+      if (field === SpotGridTradingField.UpperPrice) {
+        if (
+          currentPriceInBigNumber.gt(lower) &&
+          currentPriceInBigNumber.gt(upper) &&
+          upperThreshold.lt(upper)
+        ) {
+          return `Upper price level should be below ${upperThreshold.toFixed(
+            2
+          )}`
+        }
+      }
+
+      return true
+    }
+  )
 }
 
 export default defineNuxtPlugin(() => {
