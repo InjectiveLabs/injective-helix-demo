@@ -20,6 +20,8 @@ const props = defineProps({
 })
 
 const DATE_FORMAT = 'MMM dd, yyyy'
+const BLOG_POST_URL =
+  'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
 
 const { valueToString: injRewardsToString } = useBigNumberFormatter(
   computed(() => CAMPAIGN_INJ_REWARDS)
@@ -40,6 +42,14 @@ const endDate = computed(() => format(props.campaign.endDate, DATE_FORMAT))
           {{ $t('campaign.title') }}
         </h2>
         <p>{{ $t('campaign.description') }}</p>
+
+        <NuxtLink
+          :to="BLOG_POST_URL"
+          target="_blank"
+          class="inline-block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 rounded-lg mt-4"
+        >
+          {{ $t('campaign.campaignRules') }}
+        </NuxtLink>
       </div>
 
       <div
