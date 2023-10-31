@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { IS_TESTNET } from './setup'
 
 export * from './setup'
 
@@ -84,7 +85,9 @@ export const GST_DEFAULT_AUTO_GRIDS = 25
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
 // Campaign
-export const CAMPAIGN_ID = 'spot-grid-inj-usdt-test'
-// we will read this from the contract later (WIP)
+export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
+  ? 'spot-grid-inj-usdt-test'
+  : 'spot-grid-tia-usdt'
+// we will read this from the contract later once its ready
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'

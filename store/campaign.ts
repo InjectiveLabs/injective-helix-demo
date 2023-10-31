@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-// import { indexerGrpcCampaignApi } from '@/app/Services'
+import { indexerGrpcCampaignApi } from '@/app/Services'
 import { fetchCampaign } from '@/app/services/campaign'
+import { CAMPAIGN_ID } from 'app/utils/constants'
 
 type CampaignStoreState = {
   campaign?: Campaign
@@ -23,10 +24,12 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchCampaign({ skip, limit }: { skip?: number; limit?: number }) {
       const campaignStore = useCampaignStore()
 
-      const { campaign, paging, users } = await fetchCampaign({
-        skip,
-        limit
-      })
+      const { campaign, paging, users } =
+        await indexerGrpcCampaignApi.fetchCampaign({
+          limit,
+          skip: `${skip}`,
+          campaignId: CAMPAIGN_ID
+        })
 
       campaignStore.$patch({
         campaign,
@@ -37,13 +40,11 @@ export const useCampaignStore = defineStore('campaign', {
 
     async fetchCampaignOwnerInfo() {
       const campaignStore = useCampaignStore()
-      // const walletStore = useWalletStore()
+      const walletStore = useWalletStore()
 
       const { users } = await fetchCampaign({
         limit: 1,
-        // accountAddress: walletStore.injectiveAddress
-        // hardcoded for testing purposes
-        accountAddress: 'inj1xk2pwh0tl6hdwv7z98mz6wjjhmfgl2h32p0x04'
+        accountAddress: walletStore.injectiveAddress
       })
 
       campaignStore.$patch({

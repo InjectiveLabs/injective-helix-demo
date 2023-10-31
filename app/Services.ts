@@ -63,7 +63,7 @@ export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
-  ENDPOINTS.indexer
+  ENDPOINTS.campaign
 )
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer

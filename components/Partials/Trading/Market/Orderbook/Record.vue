@@ -122,15 +122,15 @@ const quantityChange = computed(() => {
   return oldQuantityBN.gte(quantityBN) ? Change.Decrease : Change.Increase
 })
 
-// const aggregatedValue = computed(() => {
-//   const value = new BigNumberInBase(10 ** Math.abs(props.aggregation))
+const aggregatedValue = computed(() => {
+  const value = new BigNumberInBase(10 ** Math.abs(props.aggregation))
 
-//   return props.aggregation < 0 ? value : new BigNumberInBase(1).dividedBy(value)
-// })
+  return props.aggregation < 0 ? value : new BigNumberInBase(1).dividedBy(value)
+})
 
-// const aggregatedPriceInBigNumber = computed(
-//   () => new BigNumberInBase(props.record.aggregatedPrice || 0)
-// )
+const aggregatedPriceInBigNumber = computed(
+  () => new BigNumberInBase(props.record.aggregatedPrice || 0)
+)
 
 function onPriceClick() {
   if (props.record.aggregatedPrice) {
@@ -199,7 +199,7 @@ defineExpose({
           'text-red-500': !recordTypeBuy
         }"
       >
-        <!-- <AppNumber
+        <AppNumber
           xs
           :prefix="
             aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
@@ -214,7 +214,7 @@ defineExpose({
           "
           no-grouping
           data-cy="orderbook-record-price-text-content"
-        /> -->
+        />
       </span>
     </span>
     <span class="w-1/3 text-xs px-2 z-[8]" @click.stop="onSizeClick">
