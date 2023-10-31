@@ -1,17 +1,45 @@
 <script setup lang="ts">
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
-import { SpotGridTradingField } from 'types'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket!)
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
 )
 
 const setFormValues = useSetFormValues()
+const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
 const upperPrice = computed(() => {
+  const isSingleSided =
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
+    InvestmentTypeGst.BaseAndQuote
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Base
+  ) {
+    return spotLastTradedPrice.value.times(2).toFixed(2)
+  }
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Quote
+  ) {
+    return spotLastTradedPrice.value
+      .minus(spotLastTradedPrice.value.times(0.06))
+      .toFixed(2)
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
   )
@@ -33,6 +61,28 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
+  const isSingleSided =
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
+    InvestmentTypeGst.BaseAndQuote
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Base
+  ) {
+    return spotLastTradedPrice.value
+      .plus(spotLastTradedPrice.value.times(0.06))
+      .toFixed(2)
+  }
+
+  if (
+    isSingleSided &&
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+      InvestmentTypeGst.Quote
+  ) {
+    return spotLastTradedPrice.value.times(0.5).toFixed(2)
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
   )
@@ -65,19 +115,24 @@ function setValuesFromAuto() {
 </script>
 
 <template>
-  <div>
+  <div v-if="gridStrategyStore.spotMarket">
     <PartialsLiquidityBotsSpotCreateAutoParameters
       v-bind="{
-        market: gridStrategyStore.spotMarket!,
+        market: gridStrategyStore.spotMarket,
         upperPrice,
         lowerPrice,
+
         grids: grids.toFixed()
       }"
       class="mb-4"
     />
 
+    <PartialsLiquidityBotsSpotCreateCommonInvestmentType
+      v-bind="{ market: gridStrategyStore.spotMarket }"
+    />
+
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{ market: gridStrategyStore.spotMarket }"
       class="mb-4"
       is-auto
     />
@@ -86,7 +141,7 @@ function setValuesFromAuto() {
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{ market: gridStrategyStore.spotMarket }"
       @strategy:create="setValuesFromAuto"
     />
   </div>

@@ -10,8 +10,8 @@ const setFormValues = useSetFormValues()
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
-const min = ref('10')
-const max = ref('0')
+const min = ref('0')
+const max = ref('10')
 
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
@@ -32,24 +32,34 @@ const lowerPriceValue = computed({
 })
 
 onMounted(() => {
-  setFormValues(
-    {
-      [SpotGridTradingField.LowerPrice]: lastTradedPrice.value
-        .minus(lastTradedPrice.value.times(0.06))
-        .toFixed(2),
-      [SpotGridTradingField.UpperPrice]: lastTradedPrice.value
-        .plus(lastTradedPrice.value.times(0.06))
-        .toFixed(2)
-    },
-    false
-  )
+  if (lastTradedPrice.value.gt(0)) {
+    setFormValues(
+      {
+        [SpotGridTradingField.LowerPrice]: lastTradedPrice.value
+          .minus(lastTradedPrice.value.times(0.06))
+          .toFixed(2),
+        [SpotGridTradingField.UpperPrice]: lastTradedPrice.value
+          .plus(lastTradedPrice.value.times(0.06))
+          .toFixed(2)
+      },
+      false
+    )
 
-  min.value = lastTradedPrice.value
-    .minus(lastTradedPrice.value.times(0.2))
-    .toFixed(2)
-  max.value = lastTradedPrice.value
-    .plus(lastTradedPrice.value.times(0.2))
-    .toFixed(2)
+    min.value = lastTradedPrice.value
+      .minus(lastTradedPrice.value.times(0.2))
+      .toFixed(2)
+    max.value = lastTradedPrice.value
+      .plus(lastTradedPrice.value.times(0.2))
+      .toFixed(2)
+  } else {
+    setFormValues(
+      {
+        [SpotGridTradingField.UpperPrice]: '2',
+        [SpotGridTradingField.LowerPrice]: '1'
+      },
+      false
+    )
+  }
 })
 
 function zoomIn() {
