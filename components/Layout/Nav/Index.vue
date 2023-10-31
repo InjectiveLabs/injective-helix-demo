@@ -99,19 +99,6 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </NuxtLink>
 
-          <!-- <NuxtLink
-            :to="{ name: 'convert' }"
-            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
-            data-cy="header-convert-link"
-          >
-            <p class="font-semibold text-base text-white">
-              {{ $t('navigation.convert') }}
-            </p>
-            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.convertDescription') }}
-            </p>
-          </NuxtLink> -->
-
           <BaseNuxtLink
             :to="{
               name: 'trading-bots-grid-spot-market',
