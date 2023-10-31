@@ -30,7 +30,8 @@ export const getRoutes = (network: Network, env: string) => {
     'neok-usdt',
     'orai-usdt',
     'kava-usdt',
-    'usdtkv-usdt'
+    'usdtkv-usdt',
+    'tia-usdt'
   ]
 
   const perpetuals = [
