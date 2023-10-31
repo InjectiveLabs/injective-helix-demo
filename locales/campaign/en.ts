@@ -12,9 +12,9 @@ export default {
     rewardStats: 'Reward Stats',
     totalRewards: 'Total Rewards',
     campaignNotFound: 'Campaign not found, please try again later.',
-    liquidityBotRewards: 'Liquidity Bot Rewards',
+    title: 'LP Rewards',
+    description: 'Get rewarded for providing liquidity',
     eligibleMarkets: 'Eligible Market for Rewards ',
-    getRewarded: 'Get rewarded whenever your bot trades',
     lastUpdated: ({ named }: I18nMessageFunction) =>
       `Last updated at ${named('date')}`
   }

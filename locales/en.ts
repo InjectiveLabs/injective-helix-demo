@@ -257,8 +257,8 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
-    liquidityFarming: 'Liquidity Farming',
-    liquidityFarmingSub: 'Rewards for using liquidity bots',
+    lpRewards: 'LP Rewards',
+    lpRewardsSub: 'Rewards for using liquidity bots',
     account: 'Account',
     home: 'Home',
     makerTakerFee: ({ named }: I18nMessageFunction) =>

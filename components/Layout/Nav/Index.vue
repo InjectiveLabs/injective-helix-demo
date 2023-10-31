@@ -171,14 +171,14 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            :to="{ name: 'liquidity-rewards' }"
+            :to="{ name: 'lp-rewards' }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white">
-              {{ $t('navigation.liquidityFarming') }}
+              {{ $t('navigation.lpRewards') }}
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
-              {{ $t('navigation.liquidityFarmingSub') }}
+              {{ $t('navigation.lpRewardsSub') }}
             </p>
           </NuxtLink>
 

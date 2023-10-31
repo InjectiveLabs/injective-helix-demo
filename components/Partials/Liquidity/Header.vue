@@ -37,9 +37,9 @@ const endDate = computed(() => format(props.campaign.endDate, DATE_FORMAT))
     <div class="flex-1">
       <div class="pb-4">
         <h2 class="text-3xl font-bold">
-          {{ $t('campaign.liquidityBotRewards') }}
+          {{ $t('campaign.title') }}
         </h2>
-        <p>{{ $t('campaign.getRewarded') }}</p>
+        <p>{{ $t('campaign.description') }}</p>
       </div>
 
       <div
