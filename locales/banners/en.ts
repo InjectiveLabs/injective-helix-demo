@@ -49,7 +49,8 @@ export default {
           named('link'),
           ' for more details.'
         ]),
-      cta: 'Go to TIA/USDT'
+      cta1: 'Go to TIA/USDT',
+      cta2: 'Swap TIA'
     }
   }
 }
