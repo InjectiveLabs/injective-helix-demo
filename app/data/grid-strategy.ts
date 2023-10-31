@@ -15,6 +15,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'atom-usdt',
     contractAddress: 'inj1c5jsz3dk2g6wywygchwrlwxl5gyz2yu7rnxxdr'
+  },
+  {
+    slug: 'tia-usdt',
+    contractAddress: 'inj1ljzjh8tzuvrj7mkhv9mxvv4cedn7kzauargrey'
   }
 ]
 
