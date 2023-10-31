@@ -61,41 +61,47 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 </script>
 
 <template>
-  <div class="flex justify-center items-start min-h-screen pt-4 md:pt-20 pb-10">
-    <div class="p-6 bg-gray-900 rounded-md w-full max-w-xl">
-      <p class="text-xl font-semibold text-center mb-4">
-        {{ $t('liquidity.liquidityBots') }}
-      </p>
-
-      <div
-        v-if="isBannerOpen"
-        class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
-      >
-        <div class="flex-1 pr-4">
-          <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
-          <p class="text-sm">
-            {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
-          </p>
-        </div>
-
-        <div>
-          <button @click="isBannerOpen = false">
-            <BaseIcon name="close" />
-          </button>
-        </div>
+  <div class="min-h-screen pt-4 md:pt-10 pb-10">
+    <div class="w-full max-w-xl mx-auto">
+      <div class="pb-10">
+        <PartialsLiquidityBotsSpotCreateCommonTiaBanner />
       </div>
 
-      <PartialsLiquidityBotsSpotMarketSelector />
+      <div class="p-6 bg-gray-900 rounded-md">
+        <p class="text-xl font-semibold text-center mb-4">
+          {{ $t('liquidity.liquidityBots') }}
+        </p>
 
-      <AppHocLoading v-bind="{ status }">
-        <PartialsGridStrategySpotFormActiveStrategy
-          v-if="activeStrategy"
-          class="mt-4"
-          v-bind="{ activeStrategy, market: gridStrategyStore.spotMarket! }"
-        />
+        <div
+          v-if="isBannerOpen"
+          class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
+        >
+          <div class="flex-1 pr-4">
+            <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
+            <p class="text-sm">
+              {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
+            </p>
+          </div>
 
-        <PartialsLiquidityBotsSpotCreate v-else />
-      </AppHocLoading>
+          <div>
+            <button @click="isBannerOpen = false">
+              <BaseIcon name="close" />
+            </button>
+          </div>
+        </div>
+
+        <PartialsLiquidityBotsSpotMarketSelector />
+
+        <AppHocLoading v-bind="{ status }">
+          <PartialsGridStrategySpotFormActiveStrategy
+            v-if="activeStrategy"
+            class="mt-4"
+            v-bind="{ activeStrategy, market: gridStrategyStore.spotMarket! }"
+          />
+
+          <PartialsLiquidityBotsSpotCreate v-else />
+        </AppHocLoading>
+      </div>
     </div>
   </div>
 </template>
