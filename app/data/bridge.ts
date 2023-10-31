@@ -104,6 +104,12 @@ export const networksMeta = [
     value: BridgingNetwork.Solana,
     icon: '/bridgingNetworks/solana.svg',
     symbol: 'solana.svg'
+  },
+  {
+    text: 'Celestia',
+    value: BridgingNetwork.Celestia,
+    icon: '/bridgingNetworks/celestia.webp',
+    symbol: 'celestia.webp'
   }
 ] as NetworkMeta[]
 
@@ -182,6 +188,10 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
 
   if (['ARB'].includes(symbolToUpperCase)) {
     return BridgingNetwork.EthereumWh // TODO: Arbitrum
+  }
+
+  if (['TIA', 'UTIA'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Celestia
   }
 
   return BridgingNetwork.Ethereum
