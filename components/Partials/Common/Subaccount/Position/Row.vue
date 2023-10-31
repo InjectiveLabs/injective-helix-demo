@@ -274,7 +274,7 @@ function sharePosition() {
               <span class="mr-1">≈</span>
               <span>{{ pnl.gte(0) ? '+' : '' }}</span>
               <span
-                data-cy="postion-entry-pnl"
+                data-cy="position-entry-pnl"
                 :class="{
                   'text-green-500': pnl.gte(0),
                   'text-red-500': pnl.lt(0)

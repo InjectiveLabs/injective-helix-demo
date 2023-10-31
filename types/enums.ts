@@ -46,6 +46,7 @@ export enum Modal {
   MarketNew = 'market-new',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
+  NewFeature = 'new-feature',
   ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
@@ -406,6 +407,7 @@ export enum GridStrategyTabs {
 }
 
 export enum InvestmentTypeGst {
+  Base = 'base',
   Quote = 'quote',
   BaseAndQuote = 'baseAndQuote'
 }

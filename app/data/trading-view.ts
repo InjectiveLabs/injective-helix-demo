@@ -387,6 +387,22 @@ const hardcodedExcludedTradesByMarket = {
         barMap: (bar: any) => ({ ...bar, low: 580 })
       }
     ]
+  },
+
+  'TIA/USDT-30NOV2023': {
+    excludeBefore: null,
+    bars: [
+      {
+        high: 100,
+        barMap: (bar: any) => ({
+          ...bar,
+          low: 2.25,
+          high: 3.5,
+          close: 3.3,
+          open: 2.7
+        })
+      }
+    ]
   }
 }
 

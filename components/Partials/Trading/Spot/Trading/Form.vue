@@ -208,12 +208,9 @@ function updateAmount({
       ? TradeField.QuoteAmount
       : TradeField.BaseAmount
 
-    setFormValues(
-      {
-        [field]: amountToUpdate
-      },
-      false
-    )
+    setFormValues({
+      [field]: amountToUpdate
+    })
   }
 }
 
@@ -323,9 +320,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
 <template>
   <div v-if="lastTradedPrice" class="w-full flex flex-col gap-6">
     <PartialsTradingFormTradeExecutionTypeButtons @form:reset="resetForm" />
-
     <PartialsTradingFormOrderSideSelect v-bind="{ market: props.market }" />
-
     <PartialsTradingFormOrderInputs
       v-bind="{
         fees,

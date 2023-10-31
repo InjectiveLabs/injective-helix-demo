@@ -29,7 +29,7 @@ const spotAndPerpetualMarkets = computed(() =>
   <div>
     <div v-if="expiryFuturesMarkets.length > 0">
       <div class="text-sm text-gray-450 leading-4 ml-3 mb-1">
-        {{ $t('markets.preLaunchExpiry') }}
+        {{ $t('markets.preLaunchFutures') }}
       </div>
       <div class="mb-4">
         <PartialsTradingSidebarMarketsTableRow

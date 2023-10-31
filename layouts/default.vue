@@ -23,7 +23,7 @@ const showFooter = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
+  Promise.all([walletStore.init(), tokenStore.fetchTokens()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -103,6 +103,7 @@ function onCloseSideBar() {
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
                 <!-- <ModalsUserFeedback /> -->
+                <ModalsNewFeaturePrelaunchFutures />
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />

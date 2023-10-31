@@ -138,7 +138,27 @@ watch(
       return
     }
 
-    handlePercentageChange(percentage.value)
+    changeFromPercentage(percentage.value)
+  }
+)
+
+watch(
+  () => formValues.value[TradeField.BaseAmount],
+  () => {
+    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
+      return
+    }
+
+    setFormValues({
+      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+        formValues.value[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    })
+
+    emit('update:amount', {
+      isBaseAmount: true
+    })
   }
 )
 
@@ -158,15 +178,12 @@ function handleReduceOnly() {
     totalQuantity
   )
 
-  setFormValues(
-    {
-      [TradeField.BaseAmount]: amount.toFixed(
-        props.market.quantityDecimals,
-        TRADE_FORM_QUANTITY_ROUNDING_MODE
-      )
-    },
-    false
-  )
+  setFormValues({
+    [TradeField.BaseAmount]: amount.toFixed(
+      props.market.quantityDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
+  })
 
   emit('update:amount', { isBaseAmount: true })
 }
@@ -189,12 +206,9 @@ function handleDerivativePercentageChange() {
     ? TRADE_FORM_QUANTITY_ROUNDING_MODE
     : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  setFormValues(
-    {
-      [field]: amount.toFixed(decimals, roundingMode)
-    },
-    false
-  )
+  setFormValues({
+    [field]: amount.toFixed(decimals, roundingMode)
+  })
 
   emit('update:amount', {
     isBaseAmount: derivativeAvailableBalanceGreaterThanOrderbook.value
@@ -222,12 +236,9 @@ function handleSpotPercentageChange() {
       ? TRADE_FORM_QUANTITY_ROUNDING_MODE
       : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  setFormValues(
-    {
-      [field]: amount.toFixed(decimals, roundingMode)
-    },
-    false
-  )
+  setFormValues({
+    [field]: amount.toFixed(decimals, roundingMode)
+  })
 
   emit('update:amount', {
     isBaseAmount:
@@ -235,7 +246,11 @@ function handleSpotPercentageChange() {
   })
 }
 
-function handlePercentageChange(percentage: number) {
+function onPercentageChange(percentage: number) {
+  changeFromPercentage(percentage)
+}
+
+function changeFromPercentage(percentage: number) {
   setProportionalPercentageValue(percentage)
 
   if (props.orderTypeReduceOnly) {
@@ -248,29 +263,6 @@ function handlePercentageChange(percentage: number) {
 
   return handleSpotPercentageChange()
 }
-
-watch(
-  () => formValues.value[TradeField.BaseAmount],
-  () => {
-    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
-      return
-    }
-
-    setFormValues(
-      {
-        [TradeField.BaseAmount]: formatAmountToAllowableAmount(
-          formValues.value[TradeField.BaseAmount],
-          props.market.quantityTensMultiplier
-        )
-      },
-      false
-    )
-
-    emit('update:amount', {
-      isBaseAmount: true
-    })
-  }
-)
 </script>
 
 <template>
@@ -280,7 +272,7 @@ watch(
       :key="`percentage-${index}`"
       :data-cy="`trading-page-percentage-selector-${percent}-span`"
       class="mr-1 cursor-pointer"
-      @click.stop="handlePercentageChange(percent)"
+      @click.stop="onPercentageChange(percent)"
     >
       {{ percent }}%
     </span>

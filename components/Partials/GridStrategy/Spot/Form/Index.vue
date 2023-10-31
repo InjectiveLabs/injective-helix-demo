@@ -80,7 +80,7 @@ function changeTab(tab: GridStrategyType) {
           <PartialsGridStrategySpotFormAuto
             v-if="activeTab === GridStrategyType.Auto"
             v-bind="{ market }"
-            @set-tab="changeTab"
+            @set:tab="changeTab"
           />
 
           <PartialsGridStrategySpotFormManual
