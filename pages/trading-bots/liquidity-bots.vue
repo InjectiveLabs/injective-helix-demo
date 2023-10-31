@@ -4,16 +4,22 @@ import { Status, StatusType } from '@injectivelabs/utils'
 const status = reactive(new Status(StatusType.Loading))
 
 const spotStore = useSpotStore()
-const gridStrategyStore = useGridStrategyStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
 
 const { $onError } = useNuxtApp()
 
 function init() {
   status.setLoading()
 
-  Promise.all([spotStore.init()])
+  Promise.all([
+    spotStore.init(),
+    tokenStore.fetchTokensUsdPriceMap(
+      tokenStore.tokens.map((t) => t.coinGeckoId)
+    )
+  ])
     .then(() => {
       gridStrategyStore.$patch({
         spotMarket: spotStore.markets.find(
