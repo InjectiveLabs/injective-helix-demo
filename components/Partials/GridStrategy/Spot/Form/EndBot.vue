@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { getSgtContractAddressFromSlug } from 'app/utils/helpers'
 
+defineProps({
+  isLiquidity: Boolean
+})
+
 const gridStrategyStore = useGridStrategyStore()
 
 const market = computed(() => gridStrategyStore.spotMarket!)
@@ -30,7 +34,11 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     </PartialsGridStrategySpotCommonDetails>
 
     <PartialsGridStrategySpotCommonRemoveStrategy
-      v-bind="{ createdAt: activeStrategy.createdAt, pnl: pnl.toFixed() }"
+      v-bind="{
+        createdAt: activeStrategy.createdAt,
+        pnl: pnl.toFixed(),
+        isLiquidity
+      }"
     >
       <template #default="{ removeStrategy, status }">
         <AppButton

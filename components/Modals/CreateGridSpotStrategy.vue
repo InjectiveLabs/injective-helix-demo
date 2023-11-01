@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
+const props = defineProps({
+  isLiquidity: Boolean
+})
+
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
-const formValues = useFormValues<SpotGridTradingForm>() as Readonly<
-  Ref<SpotGridTradingForm>
->
+const formValues = useFormValues<SpotGridTradingForm>()
+const { lastTradedPrice } = useSpotLastPrice(
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+)
+
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -76,6 +82,14 @@ function closeModal() {
 }
 
 function handleCreateStrategy() {
+  if (
+    !formValues.value[SpotGridTradingField.LowerPrice] ||
+    !formValues.value[SpotGridTradingField.Grids] ||
+    !formValues.value[SpotGridTradingField.UpperPrice]
+  ) {
+    return
+  }
+
   status.setLoading()
 
   gridStrategyStore
@@ -102,14 +116,18 @@ function handleCreateStrategy() {
       status.setIdle()
 
       amplitudeGridStrategyTracker.createStrategy({
-        amountQuote: formValues.value[SpotGridTradingField.InvestmentAmount],
-        gridsNumber: formValues.value[SpotGridTradingField.Grids],
-        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice],
-        upperPrice: formValues.value[SpotGridTradingField.UpperPrice],
+        amountQuote:
+          formValues.value[SpotGridTradingField.InvestmentAmount] || '',
+        gridsNumber: formValues.value[SpotGridTradingField.Grids] || '',
+        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice] || '',
+        upperPrice: formValues.value[SpotGridTradingField.UpperPrice] || '',
         amountDenom:
           formValues.value[SpotGridTradingField.BaseInvestmentAmount],
         market: gridStrategyStore.spotMarket?.slug || '',
-        marketPrice: '-'
+        marketPrice: lastTradedPrice.value.toFixed(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        ),
+        isLiquidity: props.isLiquidity
       })
     })
 }

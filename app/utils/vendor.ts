@@ -9,6 +9,9 @@ export const AMPLITUDE_ERROR = 'Error'
 export const AMPLITUDE_SUCCESS = 'Success'
 export const AMPLITUDE_SUCCESSFUL_SWAP_COUNT = 'swaps-count'
 export const AMPLITUDE_CREATE_STRATEGY_COUNT = 'create-strategy'
+export const AMPLITUDE_REMOVE_STRATEGY_COUNT = 'remove-strategy'
+export const AMPLITUDE_CREATE_LIQUIDITY_COUNT = 'create-liquidityy'
+export const AMPLITUDE_REMOVE_LIQUIDITY_COUNT = 'remove-liquidity'
 
 export const confettiOptions = {
   angle: 90,
