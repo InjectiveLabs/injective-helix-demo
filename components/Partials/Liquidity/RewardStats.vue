@@ -14,7 +14,6 @@ import {
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
 
@@ -107,7 +106,7 @@ useIntervalFn(campaignStore.fetchCampaignOwnerInfo, 30 * 1000)
 
 <template>
   <div
-    v-if="walletStore.isUserWalletConnected"
+    v-if="campaignStore.ownerCampaignInfo || status.isLoading()"
     class="bg-gray-850 rounded-md p-8"
   >
     <AppHocLoading :is-loading="status.isLoading()">

@@ -90,7 +90,8 @@ export const getRoutes = (network: Network, env: string) => {
     'index',
     'markets',
     'fee-discounts',
-    'leaderboard'
+    'leaderboard',
+    'lp-rewards'
   ]
 
   const customStaticRoutes: string[] = []
