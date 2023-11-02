@@ -13,7 +13,7 @@ const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 <template>
   <div class="mb-4">
-    <p class="text-sm">Current Price</p>
+    <p class="text-sm">{{ $t('liquidity.currentPrice') }}</p>
     <p class="text-xl font-semibold">
       {{ lastTradedPrice.toFixed(2) }}
     </p>
