@@ -41,6 +41,10 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
       const walletStore = useWalletStore()
 
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
       const { users } = await indexerGrpcCampaignApi.fetchCampaign({
         limit: 1,
         skip: '0',
@@ -48,8 +52,12 @@ export const useCampaignStore = defineStore('campaign', {
         accountAddress: walletStore.injectiveAddress
       })
 
+      const ownerCampaignInfo = users.find(
+        ({ accountAddress }) => accountAddress === walletStore.injectiveAddress
+      )
+
       campaignStore.$patch({
-        ownerCampaignInfo: users[0]
+        ownerCampaignInfo
       })
     }
   }
