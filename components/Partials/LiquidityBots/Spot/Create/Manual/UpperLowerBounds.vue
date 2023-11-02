@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { SpotGridTradingField } from '@/types'
+import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
+  isRebalanceBeforeCreationChecked: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -14,45 +16,72 @@ const formValues = useFormValues()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.LowerPrice,
-    rule: '',
-    dynamicRule: computed(() => {
-      const greaterThanRule = `greaterThanSgt:0`
+const {
+  value: lowerPriceValue,
+  errorMessage: lowerErrorMessage,
+  validate: validateUpper
+} = useStringField({
+  name: SpotGridTradingField.LowerPrice,
+  rule: '',
+  dynamicRule: computed(() => {
+    const greaterThanValue =
+      !props.isRebalanceBeforeCreationChecked &&
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+        InvestmentTypeGst.Quote
+        ? lastTradedPrice.value.toNumber()
+        : 0
+    const greaterThanRule = `greaterThanSgt:${greaterThanValue}`
 
-      const singleSidedRule = `singleSided:@${
-        SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${lastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.LowerPrice}`
+    const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.LowerPrice}`
 
-      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+    const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
-      return rules.join('|')
-    })
+    return rules.join('|')
   })
+})
 
-const { value: upperPriceValue, errorMessage: upperErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.UpperPrice,
-    rule: '',
-    dynamicRule: computed(() => {
-      const greaterThanRule = `greaterThanSgt:${
-        formValues.value[SpotGridTradingField.LowerPrice] || 0
-      }`
+const {
+  value: upperPriceValue,
+  errorMessage: upperErrorMessage,
+  validate: validateLower
+} = useStringField({
+  name: SpotGridTradingField.UpperPrice,
+  rule: '',
+  dynamicRule: computed(() => {
+    const lessThanRule = `lessThanSgt:${lastTradedPrice.value.toNumber()}`
 
-      const singleSidedRule = `singleSided:@${
-        SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${lastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.UpperPrice}`
+    const greaterThanRule = `greaterThanSgt:${
+      formValues.value[SpotGridTradingField.LowerPrice] || 0
+    }`
 
-      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+    const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.UpperPrice}`
 
-      return rules.join('|')
-    })
+    const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+    if (
+      !props.isRebalanceBeforeCreationChecked &&
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+        InvestmentTypeGst.Base
+    ) {
+      rules.push(lessThanRule)
+    }
+
+    return rules.join('|')
   })
+})
+
+watch(
+  () => props.isRebalanceBeforeCreationChecked,
+  () => {
+    validateLower({ mode: 'force' })
+    validateUpper({ mode: 'force' })
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
