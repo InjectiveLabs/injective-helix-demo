@@ -101,7 +101,11 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
           <PartialsGridStrategySpotFormActiveStrategy
             v-if="activeStrategy && gridStrategyStore.spotMarket"
             class="mt-4"
-            v-bind="{ activeStrategy, market: gridStrategyStore.spotMarket }"
+            v-bind="{
+              activeStrategy,
+              market: gridStrategyStore.spotMarket,
+              isLiquidity: true
+            }"
           />
 
           <PartialsLiquidityBotsSpotCreate v-else />

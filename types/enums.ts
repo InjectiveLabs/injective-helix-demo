@@ -184,7 +184,9 @@ export enum AmplitudeEvent {
   PlaceOrderAttempt = 'Place Order Attempt',
   PlaceOrderConfirm = 'Place Order Confirm',
   CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy'
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
 }
 
 export enum SurveyTitle {

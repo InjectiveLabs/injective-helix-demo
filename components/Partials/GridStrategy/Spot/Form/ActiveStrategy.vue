@@ -12,6 +12,8 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 
 const props = defineProps({
+  isLiquidity: Boolean,
+
   activeStrategy: {
     type: Object as PropType<TradingStrategy>,
     required: true
@@ -371,6 +373,6 @@ useIntervalFn(() => {
       </p>
     </div> -->
 
-    <PartialsGridStrategySpotFormEndBot />
+    <PartialsGridStrategySpotFormEndBot v-bind="{ isLiquidity }" />
   </div>
 </template>
