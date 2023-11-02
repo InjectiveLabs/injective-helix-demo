@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const walletStore = useWalletStore()
@@ -12,6 +17,7 @@ const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
 const min = ref('0')
 const max = ref('10')
+const isAssetRebalancingChecked = ref(true)
 
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
@@ -30,6 +36,12 @@ const lowerPriceValue = computed({
     setLowerPriceField(Number(value).toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS))
   }
 })
+
+const isBaseAndQuoteType = computed(
+  () =>
+    liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
+    InvestmentTypeGst.BaseAndQuote
+)
 
 onMounted(() => {
   if (lastTradedPrice.value.gt(0)) {
@@ -100,13 +112,26 @@ const animate = (refValue: Ref, targetValue: string, duration = 200) => {
 
   requestAnimationFrame(update)
 }
+
+watch(isBaseAndQuoteType, (value) => {
+  if (!value) {
+    isAssetRebalancingChecked.value = true
+  }
+})
 </script>
 
 <template>
   <div>
-    <PartialsLiquidityBotsSpotCreateManualGrids />
     <PartialsLiquidityBotsSpotCreateManualUpperLowerBounds
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket!,
+        isRebalanceBeforeCreationChecked:
+          !isBaseAndQuoteType && isAssetRebalancingChecked
+      }"
+    />
+
+    <PartialsLiquidityBotsSpotCreateManualCurrentPrice
+      v-bind="{ market: gridStrategyStore.spotMarket as UiSpotMarketWithToken }"
     />
 
     <PartialsLiquidityBotsSpotCreateManualRangeInput
@@ -117,7 +142,7 @@ const animate = (refValue: Ref, targetValue: string, duration = 200) => {
       v-bind="{ currentPrice: lastTradedPrice.toFixed() }"
     />
 
-    <div class="space-x-2 py-2 flex justify-end">
+    <div class="space-x-2 py-2 flex justify-end items-center">
       <button class="border p-2 rounded-md" @click="zoomIn">
         <BaseIcon name="plus" is-xs />
       </button>
@@ -126,10 +151,30 @@ const animate = (refValue: Ref, targetValue: string, duration = 200) => {
       </button>
     </div>
 
+    <PartialsLiquidityBotsSpotCreateManualGrids />
+
     <PartialsLiquidityBotsSpotCreateCommonInvestmentType
       class="my-4"
       v-bind="{ market: gridStrategyStore.spotMarket! }"
     />
+
+    <div class="flex justify-end -mb-4">
+      <div v-if="!isBaseAndQuoteType" class="flex items-center">
+        <AppCheckbox v-model="isAssetRebalancingChecked" />
+
+        <p class="mr-2 text-xs font-semibold">
+          {{ $t('liquidity.allowAssetRebalance') }}
+        </p>
+
+        <AppTooltip
+          class="mr-2"
+          v-bind="{
+            content: $t('liquidity.allowAssetRebalanceTooltip')
+          }"
+        />
+      </div>
+    </div>
+
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
       v-bind="{ market: gridStrategyStore.spotMarket! }"
       class="mb-4"
