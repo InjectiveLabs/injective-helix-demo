@@ -160,11 +160,11 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="flex justify-end -mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
+        <AppCheckbox v-model="isAssetRebalancingChecked" />
+
         <p class="mr-2 text-xs font-semibold">
           {{ $t('liquidity.allowAssetRebalance') }}
         </p>
-
-        <AppCheckbox v-model="isAssetRebalancingChecked" />
 
         <AppTooltip
           class="mr-2"
