@@ -421,7 +421,8 @@ export enum StrategyStatus {
 export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
-  TakeProfit = 'take_profit'
+  TakeProfit = 'take_profit',
+  InsufficientFunds = 'insufficient_funds'
 }
 
 export enum GridStrategyType {

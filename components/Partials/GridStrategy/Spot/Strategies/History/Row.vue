@@ -154,6 +154,10 @@ function onDetailsPage() {
       <span v-if="strategy.stopReason === StopReason.TakeProfit">
         {{ $t('sgt.takeProfit') }}
       </span>
+
+      <span v-if="strategy.stopReason === StopReason.InsufficientFunds">
+        {{ $t('sgt.insufficientFunds') }}
+      </span>
     </div>
 
     <div class="flex items-center justify-center">

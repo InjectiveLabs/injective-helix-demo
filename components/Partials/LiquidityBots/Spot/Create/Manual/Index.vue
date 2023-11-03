@@ -142,7 +142,7 @@ watch(isBaseAndQuoteType, (value) => {
       v-bind="{ currentPrice: lastTradedPrice.toFixed() }"
     />
 
-    <div class="space-x-2 py-2 flex justify-end items-center">
+    <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
         <BaseIcon name="plus" is-xs />
       </button>
@@ -167,7 +167,6 @@ watch(isBaseAndQuoteType, (value) => {
         </p>
 
         <AppTooltip
-          class="mr-2"
           v-bind="{
             content: $t('liquidity.allowAssetRebalanceTooltip')
           }"

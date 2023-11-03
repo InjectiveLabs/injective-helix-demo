@@ -17,12 +17,15 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
+const isAssetRebalancingChecked = ref(true)
+
 const upperPrice = computed(() => {
   const isSingleSided =
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
     InvestmentTypeGst.BaseAndQuote
 
   if (
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -31,6 +34,7 @@ const upperPrice = computed(() => {
   }
 
   if (
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -66,6 +70,7 @@ const lowerPrice = computed(() => {
     InvestmentTypeGst.BaseAndQuote
 
   if (
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -76,6 +81,7 @@ const lowerPrice = computed(() => {
   }
 
   if (
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -130,6 +136,28 @@ function setValuesFromAuto() {
     <PartialsLiquidityBotsSpotCreateCommonInvestmentType
       v-bind="{ market: gridStrategyStore.spotMarket }"
     />
+
+    <div class="flex justify-end -mb-4 mt-4">
+      <div
+        v-if="
+          liquidityFormValues[SpotGridTradingField.InvestmentType] !==
+          InvestmentTypeGst.BaseAndQuote
+        "
+        class="flex items-center"
+      >
+        <AppCheckbox v-model="isAssetRebalancingChecked" />
+
+        <p class="mr-2 text-xs font-semibold">
+          {{ $t('liquidity.allowAssetRebalance') }}
+        </p>
+
+        <AppTooltip
+          v-bind="{
+            content: $t('liquidity.allowAssetRebalanceTooltip')
+          }"
+        />
+      </div>
+    </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
       v-bind="{ market: gridStrategyStore.spotMarket }"
