@@ -67,6 +67,7 @@ export default {
     totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
+    insufficientFunds: 'Insufficient Funds',
     initialInvestment: 'Initial Investment',
     autoModeHeader:
       'These parameters are generated automatically based on the last 30 days trading prices.',

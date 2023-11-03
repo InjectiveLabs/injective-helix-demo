@@ -5,6 +5,8 @@ import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStra
 import { durationFormatter } from 'app/utils/helpers'
 
 const props = defineProps({
+  isLiquidity: Boolean,
+
   createdAt: {
     type: String,
     required: true
@@ -41,7 +43,8 @@ function removeStrategy() {
       amplitudeGridStrategyTracker.removeStrategy({
         duration: durationFormatter(props.createdAt, Date.now()),
         market: gridStrategyStore.spotMarket?.slug || '',
-        totalProfit: props.pnl
+        totalProfit: props.pnl,
+        isLiquidity: props.isLiquidity
       })
     })
 }

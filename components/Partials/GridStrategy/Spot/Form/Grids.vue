@@ -1,13 +1,42 @@
 <script setup lang="ts">
-import { GST_MINIMUM_GRIDS, GST_MAXIMUM_GRIDS } from '@/app/utils/constants'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import {
+  GST_MINIMUM_GRIDS,
+  GST_MAXIMUM_GRIDS,
+  GST_DEFAULT_PRICE_TICK_SIZE
+} from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
+
+const gridStrategyStore = useGridStrategyStore()
+const formValues = useFormValues()
+
+const tickSize = computed(() =>
+  gridStrategyStore.spotMarket
+    ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
+        .toBase(
+          gridStrategyStore.spotMarket.quoteToken.decimals -
+            gridStrategyStore.spotMarket.baseToken.decimals
+        )
+        .toFixed()
+    : GST_DEFAULT_PRICE_TICK_SIZE
+)
 
 const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
   rule: '',
-  dynamicRule: computed(
-    () => `requiredSgt|betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
-  )
+  dynamicRule: computed(() => {
+    const rules = ['requiredSgt']
+
+    const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
+
+    const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${formValues.value[SpotGridTradingField.Grids] || 10},${tickSize.value}`
+
+    rules.push(betweenRule, rangeRule)
+
+    return rules.join('|')
+  })
 })
 </script>
 

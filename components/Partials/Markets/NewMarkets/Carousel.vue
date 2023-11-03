@@ -102,6 +102,7 @@ const { pause, isActive } = useIntervalFn(() => {
     </ClientOnly>
 
     <TransitionGroup
+      mode="out-in"
       name="slide-fade"
       tag="div"
       class="md:grid grid-cols-12 gap-6"
@@ -141,7 +142,6 @@ const { pause, isActive } = useIntervalFn(() => {
 
 .slide-fade-enter-active {
   transition: all 0.3s ease;
-  z-index: 2;
 }
 
 .slide-fade-enter-to {
@@ -150,6 +150,6 @@ const { pause, isActive } = useIntervalFn(() => {
 }
 
 .slide-fade-leave-active {
-  visibility: hidden;
+  display: none;
 }
 </style>

@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotGridTradingField } from '@/types'
-import { getSgtInvalidRange } from '@/app/utils/helpers'
-import {
-  GST_DEFAULT_AUTO_GRIDS,
-  GST_DEFAULT_PRICE_TICK_SIZE,
-  GST_MAXIMUM_GRIDS,
-  GST_MINIMUM_GRIDS
-} from 'app/utils/constants'
+import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
+  isRebalanceBeforeCreationChecked: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
@@ -22,63 +16,72 @@ const formValues = useFormValues()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const sgtInvalidRange = computed(() => {
-  const levels = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.Grids] || GST_DEFAULT_AUTO_GRIDS
-  )
+const {
+  value: lowerPriceValue,
+  errorMessage: lowerErrorMessage,
+  validate: validateUpper
+} = useStringField({
+  name: SpotGridTradingField.LowerPrice,
+  rule: '',
+  dynamicRule: computed(() => {
+    const greaterThanValue =
+      !props.isRebalanceBeforeCreationChecked &&
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+        InvestmentTypeGst.Quote
+        ? lastTradedPrice.value.toNumber()
+        : 0
+    const greaterThanRule = `greaterThanSgt:${greaterThanValue}`
 
-  return getSgtInvalidRange({
-    midPrice: lastTradedPrice.value.toFixed(),
-    levels:
-      levels.gt(GST_MAXIMUM_GRIDS) || levels.lt(GST_MINIMUM_GRIDS)
-        ? GST_DEFAULT_AUTO_GRIDS
-        : levels.toFixed(0),
-    minPriceTickSize: gridStrategyStore.spotMarket
-      ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
-          .toBase(
-            gridStrategyStore.spotMarket.quoteToken.decimals -
-              gridStrategyStore.spotMarket.baseToken.decimals
-          )
-          .toFixed()
-      : GST_DEFAULT_PRICE_TICK_SIZE
+    const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.LowerPrice}`
+
+    const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+    return rules.join('|')
   })
 })
 
-const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.LowerPrice,
-    rule: '',
-    dynamicRule: computed(() => {
-      const { lowerLimit, upperLimit } = sgtInvalidRange.value
+const {
+  value: upperPriceValue,
+  errorMessage: upperErrorMessage,
+  validate: validateLower
+} = useStringField({
+  name: SpotGridTradingField.UpperPrice,
+  rule: '',
+  dynamicRule: computed(() => {
+    const lessThanRule = `lessThanSgt:${lastTradedPrice.value.toNumber()}`
 
-      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
+    const greaterThanRule = `greaterThanSgt:${
+      formValues.value[SpotGridTradingField.LowerPrice] || 0
+    }`
 
-      const greaterThanRule = `greaterThanSgt:0`
+    const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.UpperPrice}`
 
-      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
+    const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
-      return rules.join('|')
-    })
+    if (
+      !props.isRebalanceBeforeCreationChecked &&
+      formValues.value[SpotGridTradingField.InvestmentType] ===
+        InvestmentTypeGst.Base
+    ) {
+      rules.push(lessThanRule)
+    }
+
+    return rules.join('|')
   })
+})
 
-const { value: upperPriceValue, errorMessage: upperErrorMessage } =
-  useStringField({
-    name: SpotGridTradingField.UpperPrice,
-    rule: '',
-    dynamicRule: computed(() => {
-      const { lowerLimit, upperLimit } = sgtInvalidRange.value
-
-      const invalidIfBetweenRule = `invalidIfBetween:${lowerLimit},${upperLimit}`
-
-      const greaterThanRule = `greaterThanSgt:${
-        formValues.value[SpotGridTradingField.LowerPrice] || 0
-      }`
-
-      const rules = ['requiredSgt', invalidIfBetweenRule, greaterThanRule]
-
-      return rules.join('|')
-    })
-  })
+watch(
+  () => props.isRebalanceBeforeCreationChecked,
+  () => {
+    validateLower({ mode: 'force' })
+    validateUpper({ mode: 'force' })
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

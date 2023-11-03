@@ -28,7 +28,12 @@ const activeStrategy = computed(
 
 function fetchData() {
   status.setLoading()
-  const marketId = gridStrategyStore.spotMarket!.marketId
+
+  if (!gridStrategyStore.spotMarket) {
+    return
+  }
+
+  const marketId = gridStrategyStore.spotMarket.marketId
 
   Promise.all([
     authZStore.fetchGrants(),
@@ -37,7 +42,7 @@ function fetchData() {
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
-      marketIds: [gridStrategyStore.spotMarket!.marketId],
+      marketIds: [gridStrategyStore.spotMarket.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
       countback: 30
     }),
@@ -94,9 +99,13 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
         <AppHocLoading v-bind="{ status }">
           <PartialsGridStrategySpotFormActiveStrategy
-            v-if="activeStrategy"
+            v-if="activeStrategy && gridStrategyStore.spotMarket"
             class="mt-4"
-            v-bind="{ activeStrategy, market: gridStrategyStore.spotMarket! }"
+            v-bind="{
+              activeStrategy,
+              market: gridStrategyStore.spotMarket,
+              isLiquidity: true
+            }"
           />
 
           <PartialsLiquidityBotsSpotCreate v-else />

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { indexerGrpcCampaignApi } from '@/app/Services'
-import { fetchCampaign } from '@/app/services/campaign'
 import { CAMPAIGN_ID } from 'app/utils/constants'
 
 type CampaignStoreState = {
@@ -42,8 +41,14 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
       const walletStore = useWalletStore()
 
-      const { users } = await fetchCampaign({
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      const { users } = await indexerGrpcCampaignApi.fetchCampaign({
         limit: 1,
+        skip: '0',
+        campaignId: CAMPAIGN_ID,
         accountAddress: walletStore.injectiveAddress
       })
 

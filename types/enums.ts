@@ -75,7 +75,7 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   FuturesMarketRestricted = 'futures-market-restricted',
-  PreLaunchFutures = 'pre-launch-futures'
+  NewFeature = 'new-feature'
 }
 
 export enum Breakpoint {
@@ -184,7 +184,9 @@ export enum AmplitudeEvent {
   PlaceOrderAttempt = 'Place Order Attempt',
   PlaceOrderConfirm = 'Place Order Confirm',
   CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy'
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
 }
 
 export enum SurveyTitle {
@@ -419,7 +421,8 @@ export enum StrategyStatus {
 export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
-  TakeProfit = 'take_profit'
+  TakeProfit = 'take_profit',
+  InsufficientFunds = 'insufficient_funds'
 }
 
 export enum GridStrategyType {

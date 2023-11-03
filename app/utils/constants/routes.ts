@@ -50,7 +50,7 @@ export const getRoutes = (network: Network, env: string) => {
     'eth-usdtkv-perp'
   ]
 
-  const gridTradingSpot = ['inj-usdt']
+  const gridTradingSpot = ['inj-usdt', 'atom-usdt', 'tia-usdt']
 
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
@@ -61,6 +61,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_TESTNET) {
+    spot.push('proj-inj')
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')
     spot.push('demo-usdt')
@@ -90,7 +91,8 @@ export const getRoutes = (network: Network, env: string) => {
     'index',
     'markets',
     'fee-discounts',
-    'leaderboard'
+    'leaderboard',
+    'lp-rewards'
   ]
 
   const customStaticRoutes: string[] = []
@@ -130,6 +132,8 @@ export const getRoutes = (network: Network, env: string) => {
     (s) => `/trading-bots/grid/spot/${s}`
   )
 
+  const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
+
   return {
     MARKETS_SLUGS: {
       spot,
@@ -148,6 +152,7 @@ export const getRoutes = (network: Network, env: string) => {
       footerEnabledRoutes,
       spotMarketRouteNames,
       gridTradingSpotRoutes,
+      liquidityBotSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,
       walletConnectedRequiredRouteNames

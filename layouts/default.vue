@@ -103,7 +103,7 @@ function onCloseSideBar() {
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
                 <!-- <ModalsUserFeedback /> -->
-                <ModalsNewFeaturePrelaunchFutures />
+                <ModalsNewFeature />
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />

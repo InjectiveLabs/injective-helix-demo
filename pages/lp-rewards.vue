@@ -127,7 +127,8 @@ useIntervalFn(
       </AppHocLoading>
 
       <AppPagination
-        class="mt-6"
+        v-if="campaignStore.totalUserCount > 0"
+        class="my-6"
         v-bind="{ limit, page, totalCount: campaignStore.totalUserCount }"
         @update:limit="onLimitChange"
         @update:page="onPageChange"

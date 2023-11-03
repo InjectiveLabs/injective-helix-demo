@@ -8,10 +8,11 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'tia-usdt',
   'tia-usdt-30nov2023',
-  'kava-usdt',
   'btc-usdtkv-perp',
   'eth-usdtkv-perp',
+  'kava-usdt',
   'usdtkv-usdt'
 ]
 
@@ -29,6 +30,7 @@ export const experimentalMarketsSlug = [
 export const slugsToIncludeInCosmosCategory = [
   'inj-usdt',
   'cre-usdt',
+  'tia-usdt',
   'stinj-inj',
   'somm-usdt',
   'canto-usdt',
@@ -66,6 +68,7 @@ export const slugsToIncludeInEthereumCategory = [
 
 export const olpSlugsToIncludeInLowVolume = [
   'inj-usdt',
+  'tia-usdt',
   'xrp-usdt-perp',
   'atom-usdt',
   'weth-usdt',
