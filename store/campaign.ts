@@ -52,12 +52,8 @@ export const useCampaignStore = defineStore('campaign', {
         accountAddress: walletStore.injectiveAddress
       })
 
-      const ownerCampaignInfo = users.find(
-        ({ accountAddress }) => accountAddress === walletStore.injectiveAddress
-      )
-
       campaignStore.$patch({
-        ownerCampaignInfo
+        ownerCampaignInfo: users[0]
       })
     }
   }
