@@ -53,14 +53,14 @@ onMounted(() => {
 
       <div class="space-x-4 my-2">
         <NuxtLink
-          to="/trading-bots/liquidity-bots/spot"
+          :to="{ name: 'trading-bots-liquidity-bots-spot' }"
           active-class="underline"
           class="text-xl font-semibold"
         >
           {{ $t('liquidity.liveBots') }}
         </NuxtLink>
         <NuxtLink
-          to="/trading-bots/liquidity-bots/spot/history"
+          :to="{ name: 'trading-bots-liquidity-bots-spot-history' }"
           active-class="underline"
           class="text-xl font-semibold"
         >

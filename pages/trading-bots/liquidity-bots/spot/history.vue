@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { StrategyStatus } from 'types'
 
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -14,19 +13,13 @@ onWalletConnected(() => {
 
   Promise.all([
     accountStore.fetchAccountPortfolio(),
-    gridStrategyStore.fetchStrategies(true)
+    gridStrategyStore.fetchAllStrategies()
   ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 })
-
-const removedStrategies = computed(() =>
-  gridStrategyStore.strategies.filter(
-    (strategy) => strategy.state === StrategyStatus.Removed
-  )
-)
 </script>
 
 <template>
@@ -38,7 +31,7 @@ const removedStrategies = computed(() =>
     <AppHocLoading v-bind="{ status }">
       <div>
         <PartialsLiquidityBotsSpotHistoryRow
-          v-for="(strategy, index) in removedStrategies"
+          v-for="(strategy, index) in gridStrategyStore.removedStrategies"
           :key="`strategy-${strategy.createdHeight}-${strategy.createdAt}`"
           v-model="active"
           v-bind="{ strategy, value: index.toString() }"

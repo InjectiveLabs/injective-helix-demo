@@ -37,7 +37,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       )
   },
   actions: {
-    async fetchStrategies(fetchAll = false) {
+    async fetchStrategies() {
       const walletStore = useWalletStore()
       const gridStrategyStore = useGridStrategyStore()
 
@@ -54,7 +54,26 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         gridStrategyStore.spotMarket.slug
       )
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        subaccountId: fetchAll ? undefined : gridStrategySubaccountId,
+        subaccountId: gridStrategySubaccountId,
+        accountAddress: walletStore.injectiveAddress
+      })
+
+      gridStrategyStore.$patch({ strategies })
+    },
+
+    async fetchAllStrategies() {
+      const walletStore = useWalletStore()
+      const gridStrategyStore = useGridStrategyStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      if (!gridStrategyStore.spotMarket) {
+        return
+      }
+
+      const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         accountAddress: walletStore.injectiveAddress
       })
 
