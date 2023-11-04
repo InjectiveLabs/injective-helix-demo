@@ -59,7 +59,9 @@ onMounted(() => {
         >
           {{ $t('liquidity.liveBots') }}
         </NuxtLink>
+
         <NuxtLink
+          v-if="walletStore.isUserWalletConnected"
           :to="{ name: 'trading-bots-liquidity-bots-spot-history' }"
           active-class="underline"
           class="text-xl font-semibold"

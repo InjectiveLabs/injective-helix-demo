@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const router = useRouter()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
@@ -20,6 +22,15 @@ onWalletConnected(() => {
       status.setIdle()
     })
 })
+
+watch(
+  () => walletStore.isUserWalletConnected,
+  (isConnected) => {
+    if (!isConnected) {
+      router.replace({ name: 'trading-bots-liquidity-bots-spot' })
+    }
+  }
+)
 </script>
 
 <template>
