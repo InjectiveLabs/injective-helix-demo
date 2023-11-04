@@ -56,7 +56,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
 </script>
 
 <template>
-  <div class="text-sm space-y-2 bg-black p-4 rounded-md">
+  <div class="text-sm space-y-2">
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.market') }}</p>
 
