@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { StopReason } from '@/types'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -15,7 +13,6 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const emit = defineEmits<{
@@ -24,9 +21,7 @@ const emit = defineEmits<{
 
 const market = computed(() => gridStrategyStore.spotMarket!)
 
-const { aggregatedPortfolioBalances } = useBalance()
-
-const { pnl, percentagePnl } = useActiveGridStrategy(
+const { pnl, percentagePnl, investment } = useActiveGridStrategy(
   market,
   computed(() => props.strategy)
 )
@@ -34,26 +29,6 @@ const { pnl, percentagePnl } = useActiveGridStrategy(
 const { lowerBound, upperBound } = useActiveGridStrategyTransformer(
   market,
   computed(() => props.strategy)
-)
-
-const marketSubaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
-)
-
-const subaccountBalances = computed(
-  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
-)
-
-const accountTotalBalanceInUsd = computed(() =>
-  subaccountBalances.value.reduce(
-    (total, balance) =>
-      total.plus(
-        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
-          balance.token.decimals
-        )
-      ),
-    ZERO_IN_BASE
-  )
 )
 
 const createdAt = computed(() =>
@@ -82,7 +57,7 @@ const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
 })
 
 const { valueToString: investmentToString } = useBigNumberFormatter(
-  accountTotalBalanceInUsd,
+  investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 

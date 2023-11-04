@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
+import { StrategyStatus } from 'types'
+
+const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
+const { $onError } = useNuxtApp()
+
+const active = ref('')
+const status = reactive(new Status(StatusType.Loading))
+
+onWalletConnected(() => {
+  status.setLoading()
+
+  Promise.all([
+    accountStore.fetchAccountPortfolio(),
+    gridStrategyStore.fetchStrategies(true)
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+
+const removedStrategies = computed(() =>
+  gridStrategyStore.strategies.filter(
+    (strategy) => strategy.state === StrategyStatus.Removed
+  )
+)
+</script>
+
+<template>
+  <div>
+    <h3 class="text-xl font-semibold text-center">
+      {{ $t('liquidity.history') }}
+    </h3>
+
+    <AppHocLoading v-bind="{ status }">
+      <div>
+        <PartialsLiquidityBotsSpotHistoryRow
+          v-for="(strategy, index) in removedStrategies"
+          :key="`strategy-${strategy.createdHeight}-${strategy.createdAt}`"
+          v-model="active"
+          v-bind="{ strategy, value: index.toString() }"
+        />
+      </div>
+    </AppHocLoading>
+  </div>
+</template>

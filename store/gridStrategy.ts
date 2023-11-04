@@ -37,7 +37,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       )
   },
   actions: {
-    async fetchStrategies() {
+    async fetchStrategies(fetchAll = false) {
       const walletStore = useWalletStore()
       const gridStrategyStore = useGridStrategyStore()
 
@@ -54,7 +54,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         gridStrategyStore.spotMarket.slug
       )
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        subaccountId: gridStrategySubaccountId,
+        subaccountId: fetchAll ? undefined : gridStrategySubaccountId,
         accountAddress: walletStore.injectiveAddress
       })
 

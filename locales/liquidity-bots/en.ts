@@ -1,7 +1,10 @@
 export default {
   liquidity: {
     deposit: 'Deposit',
+    history: 'History',
+    performance: 'Performance',
     liquidityBots: 'Liquidity Bot',
+    liveBots: 'Setup & Live Bots',
     selectMarket: 'Select Market',
     parametersForAdvancedStrategy: 'Parameters For Advanced Strategy',
     bannerMessage:
