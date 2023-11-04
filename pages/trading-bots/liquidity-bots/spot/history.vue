@@ -29,7 +29,8 @@ watch(
     if (!isConnected) {
       router.replace({ name: 'trading-bots-liquidity-bots-spot' })
     }
-  }
+  },
+  { immediate: true }
 )
 </script>
 
