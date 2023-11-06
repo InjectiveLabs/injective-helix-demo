@@ -63,7 +63,7 @@ watch(destination, (value: string) => {
         <AppInput
           v-model="destination"
           is-cleared-on-paste
-          :label="$t('bridge.injAddress')"
+          :label="$t('bridge.destinationAddress')"
           placeholder="inj"
           wrapper-classes="py-2 px-1"
           data-cy="transfer-modal-inj-address-input"

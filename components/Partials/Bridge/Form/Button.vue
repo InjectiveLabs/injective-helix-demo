@@ -20,7 +20,7 @@ const isDepositAndIsAuthZConnected = computed(
     walletStore.isAuthzWalletConnected
 )
 
-async function handleBridgeConfirmation() {
+async function confirm() {
   const { valid } = await validateForm()
 
   if (!valid) {
@@ -39,7 +39,7 @@ async function handleBridgeConfirmation() {
     :disabled="hasFormErrors || isDepositAndIsAuthZConnected"
     class="w-full font-semibold rounded bg-blue-500 text-blue-900"
     data-cy="transfer-modal-transfer-now-button"
-    @click="handleBridgeConfirmation"
+    @click="confirm"
   >
     <span v-if="formValues[BridgeField.BridgeType] === BridgeType.Deposit">
       <span v-if="walletStore.isAuthzWalletConnected">{{

@@ -24,7 +24,7 @@ export default {
     confirmTransaction: 'Confirm your transaction',
     reviewTransaction: 'Please review your transaction details',
     amount: 'Amount',
-    injAddress: 'Destination Address',
+    destinationAddress: 'Destination Address',
     bridgeFee: 'Bridge Fee',
     transferAmount: 'Transfer Amount',
     confirm: 'Confirm',
@@ -60,6 +60,7 @@ export default {
       `Set allowance for ${named('asset')}`,
     successfullySetAllowance: 'Token allowance set successfully',
     keplrConnectedForEthereum: 'Please connect with Metamask',
+    metamaskConnectedForCosmos: 'Please connect with Cosmos wallet',
     balance: 'Balance',
     allowanceNote:
       'Note: When using latest Metamask extension, click on the "Use Default" button when setting allowance. Otherwise you\'d need to set your allowance again (paying gas fees one more time) if you want to transfer a different amount.',

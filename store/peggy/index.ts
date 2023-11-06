@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui-ts'
-import { awaitAll, BigNumberInBase } from '@injectivelabs/utils'
-import type { Token, Erc20Token } from '@injectivelabs/token-metadata'
+import { INJ_DENOM, awaitAll, BigNumberInBase } from '@injectivelabs/utils'
+
+import {
+  type Token,
+  type Erc20Token,
+  TokenType
+} from '@injectivelabs/token-metadata'
 import { web3Client } from '@/app/Services'
 import {
   setTokenAllowance,
@@ -36,7 +41,9 @@ export const usePeggyStore = defineStore('peggy', {
       }
 
       const tradeableErc20Tokens = tokenStore.tradeableTokens.filter(
-        (token) => token.erc20?.address
+        (token) =>
+          token.erc20?.address &&
+          (token.tokenType === TokenType.Erc20 || token.denom === INJ_DENOM)
       )
       const tradeableBalancesWithTokenAndPrice = tradeableErc20Tokens.map(
         (token) =>
