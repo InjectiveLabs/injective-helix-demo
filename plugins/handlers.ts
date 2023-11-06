@@ -18,6 +18,8 @@ declare let useBugsnag: () => any
 const reportToUser = (error: ThrownException) => {
   const { error: errorToast } = useNotifications()
 
+  console.log(error.toJson())
+
   // Timedout requests happening in the background should not be reported to the user
   if (
     error.type === ErrorType.HttpRequest &&

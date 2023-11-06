@@ -54,12 +54,12 @@ const gridThreshold = computed(() => {
     return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
   }
 
-  const isGridHigherThanGridTreshold =
+  const isGridHigherThanGridThreshold =
     !!formValues.value[SpotGridTradingField.Grids] &&
     Number(formValues.value[SpotGridTradingField.Grids]) >= GST_GRID_THRESHOLD
 
   return new BigNumberInBase(
-    isGridHigherThanGridTreshold
+    isGridHigherThanGridThreshold
       ? Number(formValues.value[SpotGridTradingField.Grids])
       : GST_GRID_THRESHOLD
   ).times(GST_MIN_TRADING_SIZE)

@@ -58,12 +58,12 @@ const gridThreshold = computed(() => {
     return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
   }
 
-  const isGridHigherThanGridTreshold =
+  const isGridHigherThanGridThreshold =
     !!formValues.value[SpotGridTradingField.Grids] &&
     Number(formValues.value[SpotGridTradingField.Grids]) >= GST_GRID_THRESHOLD
 
   return new BigNumberInBase(
-    isGridHigherThanGridTreshold
+    isGridHigherThanGridThreshold
       ? Number(formValues.value[SpotGridTradingField.Grids])
       : GST_GRID_THRESHOLD
   ).times(GST_MIN_TRADING_SIZE)
@@ -105,7 +105,7 @@ const {
   dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
 
-    const insuficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
+    const insufficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
@@ -119,7 +119,7 @@ const {
       props.market.baseToken.symbol
     }`
 
-    const rules = [insuficientRule, minBaseAndQuoteAmountRule]
+    const rules = [insufficientRule, minBaseAndQuoteAmountRule]
 
     if (
       formValues.value[SpotGridTradingField.InvestmentType] ===
@@ -149,7 +149,7 @@ const {
   dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
 
-    const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
+    const insufficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
@@ -163,7 +163,7 @@ const {
       props.market.baseToken.symbol
     }`
 
-    const rules = [insuficientRule, minBaseAndQuoteAmountRule]
+    const rules = [insufficientRule, minBaseAndQuoteAmountRule]
 
     if (
       formValues.value[SpotGridTradingField.InvestmentType] ===

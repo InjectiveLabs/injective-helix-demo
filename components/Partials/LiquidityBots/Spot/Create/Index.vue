@@ -41,7 +41,7 @@ function changeTab(tab: GridStrategyType) {
     />
     <PartialsLiquidityBotsSpotCreateManual v-else />
 
-    <ModalsCheckSpotGridAuth />
-    <ModalsCreateGridSpotStrategy v-bind="{ isLiquidity: true }" />
+    <ModalsLiquidityCheckSpotGridAuth />
+    <ModalsLiquidityCreateGridSpotStrategy v-bind="{ isLiquidity: true }" />
   </div>
 </template>

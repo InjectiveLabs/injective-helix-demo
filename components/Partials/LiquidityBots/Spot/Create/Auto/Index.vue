@@ -17,7 +17,7 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
-const isAssetRebalancingChecked = ref(true)
+const isAssetReBalancingChecked = ref(true)
 
 const upperPrice = computed(() => {
   const isSingleSided =
@@ -25,7 +25,7 @@ const upperPrice = computed(() => {
     InvestmentTypeGst.BaseAndQuote
 
   if (
-    !isAssetRebalancingChecked.value &&
+    !isAssetReBalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -34,7 +34,7 @@ const upperPrice = computed(() => {
   }
 
   if (
-    !isAssetRebalancingChecked.value &&
+    !isAssetReBalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -70,7 +70,7 @@ const lowerPrice = computed(() => {
     InvestmentTypeGst.BaseAndQuote
 
   if (
-    !isAssetRebalancingChecked.value &&
+    !isAssetReBalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -81,7 +81,7 @@ const lowerPrice = computed(() => {
   }
 
   if (
-    !isAssetRebalancingChecked.value &&
+    !isAssetReBalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -145,15 +145,15 @@ function setValuesFromAuto() {
         "
         class="flex items-center"
       >
-        <AppCheckbox v-model="isAssetRebalancingChecked" />
+        <AppCheckbox v-model="isAssetReBalancingChecked" />
 
         <p class="mr-2 text-xs font-semibold">
-          {{ $t('liquidity.allowAssetRebalance') }}
+          {{ $t('liquidity.allowAssetReBalance') }}
         </p>
 
         <AppTooltip
           v-bind="{
-            content: $t('liquidity.allowAssetRebalanceTooltip')
+            content: $t('liquidity.allowAssetReBalanceTooltip')
           }"
         />
       </div>
