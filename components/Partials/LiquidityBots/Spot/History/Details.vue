@@ -35,17 +35,17 @@ const duration = computed(() =>
   )
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
@@ -70,12 +70,12 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
 
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.lowerBound') }}</p>
-      <div>{{ lowerBoundtoString }} {{ market.quoteToken.symbol }}</div>
+      <div>{{ lowerBoundToString }} {{ market.quoteToken.symbol }}</div>
     </div>
 
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.upperBound') }}</p>
-      <div>{{ upperBoundtoString }} {{ market.quoteToken.symbol }}</div>
+      <div>{{ upperBoundToString }} {{ market.quoteToken.symbol }}</div>
     </div>
 
     <div class="flex justify-between items-center">
@@ -93,7 +93,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
         :class="[pnl.gt(0) ? 'text-green-500' : 'text-red-500']"
         class="font-semibold"
       >
-        {{ pnltoString }} {{ market.quoteToken.symbol }} ({{ percentagePnl }} %)
+        {{ pnlToString }} {{ market.quoteToken.symbol }} ({{ percentagePnl }} %)
       </div>
     </div>
 

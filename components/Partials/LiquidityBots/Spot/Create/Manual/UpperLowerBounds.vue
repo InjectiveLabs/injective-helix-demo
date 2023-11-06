@@ -3,7 +3,7 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
-  isRebalanceBeforeCreationChecked: Boolean,
+  isReBalanceBeforeCreationChecked: Boolean,
 
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
@@ -25,7 +25,7 @@ const {
   rule: '',
   dynamicRule: computed(() => {
     const greaterThanValue =
-      !props.isRebalanceBeforeCreationChecked &&
+      !props.isReBalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
         InvestmentTypeGst.Quote
         ? lastTradedPrice.value.toNumber()
@@ -63,7 +63,7 @@ const {
     const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
     if (
-      !props.isRebalanceBeforeCreationChecked &&
+      !props.isReBalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
         InvestmentTypeGst.Base
     ) {
@@ -75,7 +75,7 @@ const {
 })
 
 watch(
-  () => props.isRebalanceBeforeCreationChecked,
+  () => props.isReBalanceBeforeCreationChecked,
   () => {
     validateLower({ mode: 'force' })
     validateUpper({ mode: 'force' })
