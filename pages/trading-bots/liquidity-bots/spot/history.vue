@@ -49,6 +49,13 @@ watch(
           v-bind="{ strategy, value: index.toString() }"
         />
       </div>
+
+      <div v-if="gridStrategyStore.removedStrategies.length === 0">
+        <CommonEmptyList
+          class="bg-black rounded-md p-4 my-4"
+          v-bind="{ message: $t('liquidity.noStrategiesFound') }"
+        />
+      </div>
     </AppHocLoading>
   </div>
 </template>

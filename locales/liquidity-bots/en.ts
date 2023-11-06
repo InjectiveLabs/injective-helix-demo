@@ -3,6 +3,7 @@ export default {
     deposit: 'Deposit',
     history: 'History',
     performance: 'Performance',
+    noStrategiesFound: 'No strategies found',
     liquidityBots: 'Liquidity Bot',
     liveBots: 'Setup & Live Bots',
     selectMarket: 'Select Market',
