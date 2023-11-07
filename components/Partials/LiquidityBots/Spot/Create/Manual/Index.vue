@@ -5,7 +5,7 @@ import {
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
