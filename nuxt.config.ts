@@ -45,6 +45,15 @@ export default defineNuxtConfig({
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 
+  sitemap: {
+    hostname:
+      process.env.VITE_BASE_URL &&
+      !process.env.VITE_BASE_URL.includes('localhost')
+        ? process.env.VITE_BASE_URL
+        : 'https://helixapp.com',
+    gzip: true
+  },
+
   // @ts-ignore
   bugsnag: process.env.VITE_BUGSNAG_KEY
     ? {
