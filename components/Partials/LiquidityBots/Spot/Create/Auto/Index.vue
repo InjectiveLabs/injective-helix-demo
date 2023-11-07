@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
+import { GST_DEFAULT_AUTO_GRIDS } from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,

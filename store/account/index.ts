@@ -15,7 +15,7 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
-import { isSgtSubaccountId } from 'app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
 
 type AccountStoreState = {
   subaccountId: string

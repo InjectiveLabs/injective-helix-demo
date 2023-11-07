@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { isSgtSubaccountId } from 'app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
 
 const router = useRouter()
 const appStore = useAppStore()
