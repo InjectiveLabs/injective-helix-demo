@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import useQueryRef from 'composables/useQueryRef'
+import useQueryRef from '@/composables/useQueryRef'
 
 const status = reactive(new Status(StatusType.Loading))
 

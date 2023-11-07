@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { useCampaignStore } from 'store/campaign'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

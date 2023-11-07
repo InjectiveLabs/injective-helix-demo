@@ -4,10 +4,9 @@ import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   strategy: {

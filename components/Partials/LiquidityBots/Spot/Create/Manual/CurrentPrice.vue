@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from 'types'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
