@@ -5,7 +5,7 @@ import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SpotGridTradingField } from '@/types'
+import { SpotGridTradingField } from 'types'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 

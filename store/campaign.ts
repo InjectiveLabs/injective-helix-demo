@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { indexerGrpcCampaignApi } from '@/app/Services'
-import { CAMPAIGN_ID } from '@/app/utils/constants'
+import { CAMPAIGN_ID } from 'app/utils/constants'
 
 type CampaignStoreState = {
   campaign?: Campaign

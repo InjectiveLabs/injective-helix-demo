@@ -5,7 +5,7 @@ import {
   CAMPAIGN_INJ_REWARDS,
   CAMPAIGN_TIA_REWARDS
 } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken } from 'types'
 
 const props = defineProps({
   campaign: {

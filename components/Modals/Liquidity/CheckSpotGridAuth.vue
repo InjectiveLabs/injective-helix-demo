@@ -4,7 +4,7 @@ import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
-import { backupPromiseCall } from '@/app/utils/async'
+import { backupPromiseCall } from 'app/utils/async'
 
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()

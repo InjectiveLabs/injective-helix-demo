@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
-
+import { spotGridMarkets } from 'app/data/grid-strategy'
 const gridStrategyStore = useGridStrategyStore()
+
 const spotStore = useSpotStore()
 
 const marketSlugQuery = useQueryRef('market', 'tia-usdt')
