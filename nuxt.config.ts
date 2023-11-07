@@ -34,10 +34,6 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://helixapp.com'
-  },
-
   modules: [
     '@injectivelabs/ui-shared',
     '@nuxtjs/tailwindcss',
@@ -45,10 +41,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/devtools',
     '@nuxtjs/i18n',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : []),
-    ...(process.env.VITE_BASE_URL && isProduction
-      ? ['nuxt-simple-sitemap']
-      : [])
+    '@funken-studio/sitemap-nuxt-3',
+    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 
   // @ts-ignore

@@ -77,7 +77,7 @@ function closeModal() {
     @modal:closed="closeModal"
   >
     <template #title>
-      <p class="[text-transform:none] text-lg font-bold p-2">
+      <p class="[text-transform:none] text-lg font-bold py-2">
         {{ $t('sgt.aFewClicksBeforeTheStrategyIsCreated') }}
       </p>
     </template>
