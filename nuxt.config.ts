@@ -41,7 +41,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/devtools',
     '@nuxtjs/i18n',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
+    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : []),
+    ...(isProduction ? ['@nuxtjs/sitemap'] : [])
   ],
 
   // @ts-ignore
