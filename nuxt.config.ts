@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
 
-  // @ts-ignoreg
+  // @ts-ignore
   sitemap: {
     hostname:
       process.env.VITE_BASE_URL &&

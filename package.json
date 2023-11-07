@@ -120,7 +120,6 @@
   "resolutions": {
     "**/libsodium": "npm:@bangjelkoski/noop",
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
-    "libsodium-wrappers-sumo": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
     "vee-validate": "4.11.7"
