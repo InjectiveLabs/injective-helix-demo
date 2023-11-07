@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
+import { Modal } from 'types'
 
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()

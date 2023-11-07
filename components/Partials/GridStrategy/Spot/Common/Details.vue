@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
 
 const router = useRouter()
 const walletStore = useWalletStore()

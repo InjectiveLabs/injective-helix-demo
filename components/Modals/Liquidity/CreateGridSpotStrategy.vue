@@ -3,7 +3,7 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
 
 const props = defineProps({
   isLiquidity: Boolean
