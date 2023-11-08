@@ -74,7 +74,7 @@ const {
   dynamicRule: computed(() => `between:0.001,${availableMarginToFixed.value}`)
 })
 
-function changeMax() {
+function onMaxClicked() {
   setAmountValue(availableMarginToFixed.value)
 }
 
@@ -160,7 +160,7 @@ const handleFormSubmit = handleSubmit(() => {
                     <AppButton
                       xs
                       class="bg-blue-500 text-blue-900"
-                      @click="changeMax"
+                      @click="onMaxClicked"
                     >
                       {{ $t('trade.max') }}
                     </AppButton>

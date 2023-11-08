@@ -166,7 +166,7 @@ async function getInputQuantity() {
   emit('update:inputQuantity')
 }
 
-function onMaxUpdate({ amount }: { amount: string }) {
+function onMaxSelected({ amount }: { amount: string }) {
   setFormValues({
     [SwapFormField.InputAmount]: amount
   })
@@ -194,7 +194,7 @@ function onMaxUpdate({ amount }: { amount: string }) {
           }"
           @update:denom="handleInputDenomChange"
           @update:amount="getOutputQuantity"
-          @update:max="onMaxUpdate"
+          @update:max="onMaxSelected"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
 
