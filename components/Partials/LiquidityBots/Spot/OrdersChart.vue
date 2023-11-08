@@ -32,14 +32,15 @@ const props = defineProps({
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
-const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 const { t } = useLang()
 
-const GREEN_COLOR = '#00a153'
-const RED_COLOR = '#ff1111'
-const OPACITY_HEX = '55'
+const GREEN_COLOR = '#0EE29B'
+const RED_COLOR = '#F3164D'
+const OPACITY_HEX = '60'
 
-let chart: ApexChart
+const apexChart = ref(undefined as ApexChart | undefined)
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const priceSeries = computed(() => {
   const market = exchangeStore.marketsHistory.find(
@@ -70,7 +71,7 @@ const ordersAnnotations = computed(() =>
           props.market.quoteToken.decimals - props.market.baseToken.decimals
         )
         .toNumber(),
-      borderColor: '#ffffff48',
+      borderColor: '#F8F8F848',
       label: {
         borderColor:
           order.direction === OrderSide.Sell ? RED_COLOR : GREEN_COLOR,
@@ -171,22 +172,22 @@ const options = computed<ApexOptions>(() => ({
 }))
 
 onMounted(() => {
-  chart = new ApexChart(
+  apexChart.value = new ApexChart(
     document.getElementById('liquidity-chart'),
     options.value
   )
 
-  chart.render()
+  apexChart.value.render()
 })
 
 onUnmounted(() => {
-  chart.destroy()
+  apexChart.value?.destroy()
 })
 
 watch(
   () => [spotStore.subaccountOrderHistory, lastTradedPrice.value],
   () => {
-    chart.updateOptions(options.value)
+    apexChart.value?.updateOptions(options.value)
   }
 )
 </script>
