@@ -83,8 +83,6 @@ const upperPrice = computed(() => {
   return upperEma.value.toString()
 })
 
-// ----------------------------------------------------
-
 const lowerPrice = computed(() => {
   const isSingleSided =
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
