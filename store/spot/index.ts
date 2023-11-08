@@ -137,6 +137,10 @@ export const useSpotStore = defineStore('spot', {
     streamSubaccountOrderHistory,
 
     cancelOrder,
+    cancelSubaccountOrdersStream,
+    cancelSubaccountTradesStream,
+    cancelSubaccountOrdersHistoryStream,
+
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,

@@ -2,6 +2,10 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
+import {
+  SpotOrderIntegrityStrategy,
+  SpotTradeIntegrityStrategy
+} from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']
@@ -92,6 +96,21 @@ watch(
     refreshSubaccountDetails()
   }
 )
+
+useIntervalFn(() => {
+  if (!market.value) {
+    return
+  }
+
+  Promise.all([
+    new SpotOrderIntegrityStrategy().validate(
+      filterByCurrentMarket.value ? [market.value.marketId] : undefined
+    ),
+    new SpotTradeIntegrityStrategy().validate(
+      filterByCurrentMarket.value ? [market.value.marketId] : undefined
+    )
+  ])
+}, 3 * 1000)
 </script>
 
 <template>
