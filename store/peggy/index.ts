@@ -2,7 +2,11 @@ import { defineStore } from 'pinia'
 import { BalanceWithTokenWithErc20BalanceWithPrice } from '@injectivelabs/sdk-ui-ts'
 import { INJ_DENOM, awaitAll, BigNumberInBase } from '@injectivelabs/utils'
 
-import { type Token, type Erc20Token } from '@injectivelabs/token-metadata'
+import {
+  TokenType,
+  type Token,
+  type Erc20Token
+} from '@injectivelabs/token-metadata'
 import { web3Client } from '@/app/Services'
 import {
   setTokenAllowance,
@@ -44,6 +48,10 @@ export const usePeggyStore = defineStore('peggy', {
 
           if (token.denom.startsWith('peggy')) {
             return true
+          }
+
+          if (token.tokenType !== TokenType.Erc20) {
+            return false
           }
 
           if (!token.erc20) {

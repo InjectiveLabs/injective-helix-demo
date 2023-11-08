@@ -64,13 +64,17 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
   )
 
   const ibcBalancesWithToken = computed(() =>
-    ibcStore.balancesWithToken.map((balance) => {
-      return {
-        balance: balance.ibcBalance.balance || '0',
-        denom: balance.denom,
-        token: balance.token
-      }
-    })
+    ibcStore.balancesWithToken
+      .map((balance) => {
+        return {
+          balance: balance.ibcBalance.balance || '0',
+          denom: balance.denom,
+          token: balance.token
+        }
+      })
+      .filter(({ denom }) =>
+        tokenStore.tradeableTokens.find((token) => token.denom === denom)
+      )
   )
 
   const ibcBalancesOnInjective = computed(() => {
@@ -78,7 +82,31 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
       return network === formValues.value[BridgeField.BridgingNetwork]
     })
 
-    return (tokenStore.tokens.filter((token) => token.ibc) as IbcToken[])
+    const filteredSupplyWithTokenForBridge = tokenStore.tradeableTokens
+      .filter((token) => !token.ibc)
+      .filter(({ denom, symbol }) => {
+        const isPartOfHardcodedDenoms =
+          !tokenDenomPerNetwork ||
+          tokenDenomPerNetwork.denoms.includes(denom) ||
+          tokenDenomPerNetwork.symbols.includes(symbol)
+
+        return isPartOfHardcodedDenoms
+      })
+      .map((token) => {
+        const balance = accountStore.bankBalances.find(({ denom }) => {
+          return denom === token.denom
+        })
+
+        return {
+          balance: balance?.amount || '0',
+          denom: token.denom,
+          token
+        }
+      })
+
+    const filteredIbcSupplyWithTokenForBridge = (
+      tokenStore.tradeableTokens.filter((token) => token.ibc) as IbcToken[]
+    )
       .filter((token: IbcToken) => {
         const isSameChannel = token.ibc.channelId === cosmosIbcChannelId.value
         const isMatchingHash =
@@ -103,6 +131,11 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
           denom: token.denom
         }
       })
+
+    return [
+      ...filteredIbcSupplyWithTokenForBridge,
+      ...filteredSupplyWithTokenForBridge
+    ]
   })
 
   const erc20BalancesOnInjective = computed(() =>

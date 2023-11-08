@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { BINANCE_DEPOSIT_ADDRESSES } from '@/app/utils/constants'
 import { BridgeForm, BridgeField } from '@/types'
 
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 const setFormValues = useSetFormValues()
+const walletStore = useWalletStore()
+
+const emit = defineEmits<{
+  'ibc:connect': [state: BridgingNetwork]
+}>()
 
 const memoRequired = ref(false)
-
-const { isTransfer } = useBridgeState(formValues)
-
-const { value: destination, errors: destinationErrors } = useStringField({
-  rule: '',
-  name: BridgeField.Destination,
-  dynamicRule: computed(() => (isTransfer.value ? 'required|injAddress' : ''))
-})
 
 const { value: memo, resetField: resetMemo } = useStringField({
   rule: '',
@@ -25,7 +23,9 @@ const { value: memo, resetField: resetMemo } = useStringField({
 onMounted(() => {
   setFormValues(
     {
-      [BridgeField.BridgingNetwork]: BridgingNetwork.Injective
+      [BridgeField.BridgingNetwork]: BridgingNetwork.Injective,
+      [BridgeField.Denom]: INJ_DENOM,
+      [BridgeField.Destination]: ''
     },
     false
   )
@@ -34,48 +34,41 @@ onMounted(() => {
 onBeforeUnmount(() => {
   setFormValues(
     {
-      [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum
+      [BridgeField.BridgingNetwork]: walletStore.isCosmosWallet
+        ? BridgingNetwork.CosmosHub
+        : BridgingNetwork.Ethereum
     },
     false
   )
-})
 
-watch(destination, (value: string) => {
-  if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
-    memoRequired.value = true
-  } else {
-    setFormValues(
-      {
-        [BridgeField.Memo]: ''
-      },
-      false
-    )
-
-    memoRequired.value = false
+  if (walletStore.isCosmosWallet) {
+    emit('ibc:connect', formValues.value[BridgeField.BridgingNetwork])
   }
 })
+
+watch(
+  () => formValues.value[BridgeField.Destination],
+  (value: string) => {
+    if (BINANCE_DEPOSIT_ADDRESSES.includes(value)) {
+      memoRequired.value = true
+    } else {
+      setFormValues(
+        {
+          [BridgeField.Memo]: ''
+        },
+        false
+      )
+
+      memoRequired.value = false
+    }
+  }
+)
 </script>
 
 <template>
   <div class="mt-6">
     <div>
-      <div class="mt-6">
-        <AppInput
-          v-model="destination"
-          is-cleared-on-paste
-          :label="$t('bridge.destinationAddress')"
-          placeholder="inj"
-          wrapper-classes="py-2 px-1"
-          data-cy="transfer-modal-inj-address-input"
-        />
-
-        <p
-          v-if="destinationErrors.length > 0"
-          class="text-red-500 text-xs mt-1"
-        >
-          {{ destinationErrors[0] }}
-        </p>
-      </div>
+      <slot name="destination-address" />
       <div class="my-4 w-full">
         <div class="flex items-center justify-between text-gray-200">
           <AppTooltip :content="$t('memo.memoTooltip')">
@@ -100,7 +93,7 @@ watch(destination, (value: string) => {
     </div>
 
     <div class="mt-4">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

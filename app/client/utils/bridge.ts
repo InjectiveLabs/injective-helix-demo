@@ -10,7 +10,11 @@ export const getNetworkDefaultToken = (
   balancesWithToken: BalanceWithToken[],
   currentToken: Token | undefined
 ): BalanceWithToken => {
-  const [defaultToken] = balancesWithToken
+  const tokenStore = useTokenStore()
+
+  const defaultToken = balancesWithToken.find(({ denom }) => {
+    return tokenStore.tradeableTokens.find((token) => token.denom === denom)
+  })
 
   const sameSymbolTokenInSupply = balancesWithToken.find(
     ({ token: { symbol } }) => symbol === currentToken?.symbol
@@ -21,7 +25,7 @@ export const getNetworkDefaultToken = (
     defaultToken || {
       token: injToken,
       balance: '0',
-      denom: injToken.decimals
+      denom: injToken.denom
     }
   )
 }

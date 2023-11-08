@@ -75,7 +75,9 @@ onUnmounted(() => {
 function resetForm() {
   resetFormValidation({
     values: {
-      [BridgeField.BridgingNetwork]: formValues[BridgeField.BridgingNetwork],
+      [BridgeField.BridgingNetwork]: isTransfer.value
+        ? BridgingNetwork.Injective
+        : formValues[BridgeField.BridgingNetwork],
       [BridgeField.Denom]: formValues[BridgeField.Denom],
       [BridgeField.Amount]: '',
       [BridgeField.Memo]: '',
@@ -277,7 +279,8 @@ watch(
             </template>
           </PartialsBridgeFormNetworkSelect>
           <PartialsBridge
-            v-bind="{ isDisabled: connectCosmosStatus.isLoading() }"
+            v-bind="{ isConnecting: connectCosmosStatus.isLoading() }"
+            @ibc:connect="onConnectCosmosIbc"
           />
           <ModalsBridgeConfirm @form:submit="onBridgeConfirmed" />
           <ModalsBridgeCompleted />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { tokenSelectorDisabledNetworks } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BridgeField, BridgeType, BridgeForm } from '@/types'
 
@@ -14,6 +15,8 @@ const setFormValues = useSetFormValues()
 const fetchBalanceStatus = reactive(new Status(StatusType.Idle))
 
 const {
+  isTransfer,
+  destinationIsEthereum,
   networkIsSupported,
   originIsEthereum,
   originIsCosmosNetwork,
@@ -22,11 +25,17 @@ const {
 const { balanceWithToken, supplyWithBalance } = useBridgeBalance(formValues)
 
 defineProps({
-  isDisabled: Boolean
+  isConnecting: Boolean
 })
 
 const shouldConnectMetamask = computed(
   () => walletStore.isCosmosWallet && originIsEthereum.value
+)
+
+const isSelectorDisabled = computed(() =>
+  tokenSelectorDisabledNetworks.includes(
+    formValues.value[BridgeField.BridgingNetwork]
+  )
 )
 
 const shouldConnectCosmosWallet = computed(
@@ -53,6 +62,36 @@ const maxDecimals = computed(() => {
 const { value: denom } = useStringField({
   name: BridgeField.Denom,
   initialValue: formValues.value[BridgeField.Denom]
+})
+
+const walletAddress = computed(() => {
+  if (isTransfer.value) {
+    return ''
+  }
+
+  if (destinationIsEthereum.value) {
+    return walletStore.address
+  }
+
+  return ibcStore.cosmosAddress
+})
+
+useStringField({
+  name: BridgeField.Destination,
+  rule: '',
+  dynamicRule: computed(() => {
+    if (isTransfer.value) {
+      return 'required|injAddress'
+    }
+
+    if (!walletAddress.value) {
+      return ''
+    }
+
+    return `required|addressByNetwork:${
+      formValues.value[BridgeField.BridgingNetwork]
+    }`
+  })
 })
 
 function onAmountChange({ amount }: { amount: string }) {
@@ -108,7 +147,8 @@ function refreshBalance() {
         v-bind="{
           maxDecimals,
           required: true,
-          disabled: isDisabled,
+          disabled: isConnecting,
+          disabledTokenSelector: isSelectorDisabled,
           amountFieldName: BridgeField.Amount,
           options: supplyWithBalance
         }"
@@ -129,12 +169,15 @@ function refreshBalance() {
             }"
             @click="openTokenSelectorModal"
           >
-            <span v-if="isDisabled">&mdash;</span>
+            <span v-if="isConnecting">&mdash;</span>
 
             <AppSelectTokenItem
               v-else-if="selectedToken"
               :class="{
-                'cursor-default': isDisabled || supplyWithBalance.length === 1
+                'cursor-default':
+                  isConnecting ||
+                  supplyWithBalance.length === 1 ||
+                  isSelectorDisabled
               }"
               v-bind="{
                 token: selectedToken.token
@@ -150,7 +193,9 @@ function refreshBalance() {
 
             <BaseIcon
               v-if="
-                !isDisabled && (supplyWithBalance.length > 1 || !selectedToken)
+                !isConnecting &&
+                !isSelectorDisabled &&
+                (supplyWithBalance.length > 1 || !selectedToken)
               "
               name="caret-down-slim"
               is-sm
@@ -166,7 +211,10 @@ function refreshBalance() {
             maxBalanceToString
           }"
         >
-          <AppSpinner v-if="isDisabled || fetchBalanceStatus.isLoading()" sm />
+          <AppSpinner
+            v-if="isConnecting || fetchBalanceStatus.isLoading()"
+            sm
+          />
           <div
             v-else-if="selectedToken"
             class="text-right flex items-center gap-2"
@@ -229,12 +277,25 @@ function refreshBalance() {
         <PartialsBridgeWithdraw
           v-if="formValues[BridgeField.BridgeType] === BridgeType.Withdraw"
         >
-          <PartialsBridgeFormButton />
+          <template #default>
+            <PartialsBridgeFormButton />
+          </template>
+
+          <template #destination-address>
+            <PartialsBridgeDestinationAddress v-bind="{ walletAddress }" />
+          </template>
         </PartialsBridgeWithdraw>
         <PartialsBridgeTransfer
           v-if="formValues[BridgeField.BridgeType] === BridgeType.Transfer"
+          v-bind="$attrs"
         >
-          <PartialsBridgeFormButton />
+          <template #default>
+            <PartialsBridgeFormButton />
+          </template>
+
+          <template #destination-address>
+            <PartialsBridgeDestinationAddress v-bind="{ walletAddress }" />
+          </template>
         </PartialsBridgeTransfer>
       </template>
     </div>

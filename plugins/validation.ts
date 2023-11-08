@@ -1,6 +1,6 @@
 import { defineNuxtPlugin } from '#app'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
+import { NUMBER_REGEX, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
@@ -13,7 +13,34 @@ export const errorMessages = {
   email: () => 'This field should be a valid email',
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
-  integer: (fieldName: string) => `${fieldName} must be > 0`
+  integer: (fieldName: string) => `${fieldName} must be > 0`,
+
+  [BridgingNetwork.Axelar]: () => 'This field is not a valid Cosmos address',
+  [BridgingNetwork.CosmosHub]: () => 'This field is not a valid Cosmos address',
+  [BridgingNetwork.Ethereum]: () =>
+    'This field is not a valid Ethereum address',
+  [BridgingNetwork.Evmos]: () => 'This field is not a valid Evmos address',
+  [BridgingNetwork.Moonbeam]: () =>
+    'This field is not a valid Moonbeam address',
+  [BridgingNetwork.Injective]: () =>
+    'This field is not a valid Injective address',
+  [BridgingNetwork.Osmosis]: () => 'This field is not a valid Osmosis address',
+  [BridgingNetwork.Persistence]: () =>
+    'This field is not a valid Persistence address',
+  [BridgingNetwork.Secret]: () =>
+    'This field is not a valid Secret Network address',
+  [BridgingNetwork.Noble]: () =>
+    'This field is not a valid Noble Network address',
+  [BridgingNetwork.Stride]: () => 'This field is not a valid Stride address',
+  [BridgingNetwork.Crescent]: () =>
+    'This field is not a valid Crescent address',
+  [BridgingNetwork.Sommelier]: () =>
+    'This field is not a valid Sommelier address',
+  [BridgingNetwork.Canto]: () => 'This field is not a valid Canto address',
+  [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
+  [BridgingNetwork.Oraichain]: () =>
+    'This field is not a valid Oraichain address',
+  [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
@@ -75,6 +102,29 @@ export const defineGlobalRules = () => {
       return errorMessages.injAddress()
     }
   })
+
+  defineRule(
+    'addressByNetwork',
+    (value: string, [network]: BridgingNetwork[]) => {
+      if (network === BridgingNetwork.Ethereum) {
+        if (!value.startsWith('0x')) {
+          return errorMessages[network]()
+        }
+      } else {
+        const isValidCosmosAddress =
+          network
+            .toLowerCase()
+            .startsWith(value.toLowerCase().substring(0, 3)) &&
+          new BigNumberInBase(value.length).gte(3)
+
+        if (!isValidCosmosAddress && errorMessages[network]) {
+          return errorMessages[network]()
+        }
+      }
+
+      return true
+    }
+  )
 
   defineRule('positiveNumber', (value: string) => {
     if (NUMBER_REGEX.test(value)) {

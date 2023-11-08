@@ -24,6 +24,7 @@ const props = defineProps({
   required: Boolean,
   hideBalance: Boolean,
   shouldCheckBalance: Boolean,
+  disabledTokenSelector: Boolean,
 
   denom: {
     type: String,
@@ -158,6 +159,10 @@ const estimatedTotalInUsd = computed(() => {
 
 function openTokenSelectorModal() {
   if (props.options.length <= 1) {
+    return
+  }
+
+  if (props.disabledTokenSelector) {
     return
   }
 
