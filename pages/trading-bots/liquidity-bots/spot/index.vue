@@ -43,6 +43,10 @@ function fetchData() {
     gridStrategyStore.spotMarket.slug
   )
 
+  spotStore.cancelOrderbookUpdateStream()
+  spotStore.cancelSubaccountOrdersHistoryStream()
+  spotStore.cancelSubaccountTradesStream()
+
   Promise.all([
     authZStore.fetchGrants(),
     spotStore.fetchTrades({ marketId }),
@@ -50,7 +54,7 @@ function fetchData() {
     spotStore.fetchOrderbook(marketId),
     spotStore.streamOrderbookUpdate(marketId),
     spotStore.streamTrades(marketId),
-    spotStore.streamSubaccountOrders(marketId),
+    spotStore.streamSubaccountOrderHistory(marketId),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
