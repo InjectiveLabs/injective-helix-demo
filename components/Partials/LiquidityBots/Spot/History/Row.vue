@@ -26,7 +26,7 @@ defineEmits<{
 const spotStore = useSpotStore()
 
 const date = computed(() =>
-  format(+props.strategy.updatedAt, 'dd LLL yyyy - HH:mm:ss O')
+  format(Number(props.strategy.updatedAt), 'dd LLL yyyy - HH:mm:ss O')
 )
 
 const market = computed(

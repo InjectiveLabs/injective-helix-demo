@@ -27,6 +27,7 @@ const maximumGrids = computed(() => {
   ).minus(formValues.value[SpotGridTradingField.LowerPrice])
 
   const maximumGrids = range.dividedBy(Number(tickSize.value) * 10).toFixed(0)
+
   if (Number(maximumGrids) < GST_MINIMUM_GRIDS) {
     return GST_MINIMUM_GRIDS
   }

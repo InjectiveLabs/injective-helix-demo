@@ -35,20 +35,18 @@ const exchangeStore = useExchangeStore()
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 const { t } = useLang()
 
+const GREEN_COLOR = '#00a153'
+const RED_COLOR = '#ff1111'
+const OPACITY_HEX = '55'
+
 let chart: ApexChart
 
-const priceSerie = computed(() => {
+const priceSeries = computed(() => {
   const market = exchangeStore.marketsHistory.find(
     (m) => m.marketId === props.market.marketId
   )!
 
-  const serie = []
-
-  for (let i = 0; i < market.highPrice.length; i++) {
-    serie.push([market.time[i] * 1000, market.highPrice[i]])
-  }
-
-  return serie
+  return market.time.map((time, i) => [time * 1000, market.highPrice[i]])
 })
 
 const subaccountMarketOrders = computed(() =>
@@ -64,8 +62,8 @@ const subaccountMarketOrders = computed(() =>
   )
 )
 
-const ordersAnnotations = computed(() => {
-  return subaccountMarketOrders.value.map(
+const ordersAnnotations = computed(() =>
+  subaccountMarketOrders.value.map(
     (order): OrderAnnotation => ({
       y: new BigNumberInWei(order.price)
         .toBase(
@@ -74,12 +72,15 @@ const ordersAnnotations = computed(() => {
         .toNumber(),
       borderColor: '#ffffff48',
       label: {
-        borderColor: order.direction === OrderSide.Sell ? '#ff1111' : '#00a153',
+        borderColor:
+          order.direction === OrderSide.Sell ? RED_COLOR : GREEN_COLOR,
         text:
           order.direction === OrderSide.Sell ? t('trade.sell') : t('trade.buy'),
         style: {
           background:
-            order.direction === OrderSide.Sell ? '#ff111155' : '#00a15355',
+            order.direction === OrderSide.Sell
+              ? RED_COLOR + OPACITY_HEX
+              : GREEN_COLOR + OPACITY_HEX,
           color: 'white'
         },
         position: 'left',
@@ -88,7 +89,7 @@ const ordersAnnotations = computed(() => {
       }
     })
   )
-})
+)
 
 const minMaxRange = computed(() => {
   if (subaccountMarketOrders.value.length < 2) {
@@ -111,14 +112,14 @@ const minMaxRange = computed(() => {
 
 const currentPriceAnnotation = computed<OrderAnnotation>(() => ({
   y: lastTradedPrice.value.toNumber(),
-  borderColor: '#00a153',
+  borderColor: GREEN_COLOR,
   strokeDashArray: 0,
   label: {
-    borderColor: '#00a153',
+    borderColor: GREEN_COLOR,
     text: lastTradedPrice.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
     position: 'right',
     style: {
-      background: '#00a153',
+      background: GREEN_COLOR,
       color: 'white'
     }
   }
@@ -162,7 +163,7 @@ const options = computed<ApexOptions>(() => ({
     followCursor: true
   },
 
-  series: [{ data: priceSerie.value, name: 'Price' }],
+  series: [{ data: priceSeries.value, name: 'Price' }],
 
   annotations: {
     yaxis: [...ordersAnnotations.value, currentPriceAnnotation.value]
