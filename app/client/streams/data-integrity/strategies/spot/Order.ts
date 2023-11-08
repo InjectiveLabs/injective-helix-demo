@@ -1,14 +1,24 @@
 import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy } from '../../types'
-import { BaseDataIntegrityStrategy } from '../BaseDataIntegrityStrategy'
+import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
+import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
 import { indexerSpotApi } from '@/app/Services'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export class SpotOrderIntegrityStrategy
-  extends BaseDataIntegrityStrategy
-  implements ConcreteDataIntegrityStrategy
+  extends BaseDataIntegrityStrategy<MarketIdsArgs>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotLimitOrder>
 {
-  async validate(marketIds: string[] | undefined): Promise<void> {
+  static make(marketIds: string[] | undefined): SpotOrderIntegrityStrategy {
+    return new SpotOrderIntegrityStrategy(marketIds)
+  }
+
+  async validate(): Promise<void> {
+    const { args: marketIds } = this
+
+    if (!marketIds) {
+      return
+    }
+
     const spotStore = useSpotStore()
     const accountStore = useAccountStore()
 

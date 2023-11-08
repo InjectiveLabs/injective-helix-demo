@@ -98,17 +98,14 @@ watch(
 )
 
 useIntervalFn(() => {
-  if (!market.value) {
-    return
-  }
+  const args =
+    filterByCurrentMarket.value && market.value
+      ? [market.value.marketId]
+      : undefined
 
   Promise.all([
-    new SpotOrderIntegrityStrategy().validate(
-      filterByCurrentMarket.value ? [market.value.marketId] : undefined
-    ),
-    new SpotTradeIntegrityStrategy().validate(
-      filterByCurrentMarket.value ? [market.value.marketId] : undefined
-    )
+    SpotOrderIntegrityStrategy.make(args).validate(),
+    SpotTradeIntegrityStrategy.make(args).validate()
   ])
 }, 3 * 1000)
 </script>

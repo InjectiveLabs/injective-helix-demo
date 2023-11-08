@@ -1,4 +1,7 @@
-export abstract class BaseDataIntegrityStrategy {
-  abstract validate(marketIds: string[] | undefined): Promise<void>
-  abstract verifyData(localData: any, fetchedData: any): boolean
+export abstract class BaseDataIntegrityStrategy<T> {
+  public args: T
+
+  constructor(args: T) {
+    this.args = args
+  }
 }

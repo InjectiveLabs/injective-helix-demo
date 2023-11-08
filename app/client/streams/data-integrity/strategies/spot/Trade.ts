@@ -1,13 +1,23 @@
 import { UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy } from '../../types'
-import { BaseDataIntegrityStrategy } from '../BaseDataIntegrityStrategy'
+import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
+import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
 import { indexerSpotApi } from '@/app/Services'
 
 export class SpotTradeIntegrityStrategy
-  extends BaseDataIntegrityStrategy
-  implements ConcreteDataIntegrityStrategy
+  extends BaseDataIntegrityStrategy<MarketIdsArgs>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotTrade>
 {
-  async validate(marketIds: string[] | undefined): Promise<void> {
+  static make(marketIds: string[] | undefined): SpotTradeIntegrityStrategy {
+    return new SpotTradeIntegrityStrategy(marketIds)
+  }
+
+  async validate(): Promise<void> {
+    const { args: marketIds } = this
+
+    if (!marketIds) {
+      return
+    }
+
     const spotStore = useSpotStore()
     const accountStore = useAccountStore()
 
