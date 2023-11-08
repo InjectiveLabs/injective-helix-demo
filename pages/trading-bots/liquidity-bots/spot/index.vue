@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+import {
+  addressAndMarketSlugToSubaccountId,
+  getSgtContractAddressFromSlug
+} from '@/app/utils/helpers'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']
@@ -9,6 +12,7 @@ definePageMeta({
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -34,11 +38,19 @@ function fetchData() {
   }
 
   const marketId = gridStrategyStore.spotMarket.marketId
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    walletStore.address,
+    gridStrategyStore.spotMarket.slug
+  )
 
   Promise.all([
     authZStore.fetchGrants(),
     spotStore.fetchTrades({ marketId }),
+    spotStore.fetchSubaccountOrderHistory({ subaccountId }),
     spotStore.fetchOrderbook(marketId),
+    spotStore.streamOrderbookUpdate(marketId),
+    spotStore.streamTrades(marketId),
+    spotStore.streamSubaccountOrders(marketId),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
@@ -54,6 +66,7 @@ function fetchData() {
       if (gridStrategyStore.strategies.length === 0) {
         isBannerOpen.value = true
       }
+
       status.setIdle()
     })
 }
@@ -92,8 +105,17 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
     <PartialsLiquidityBotsSpotMarketSelector />
 
     <AppHocLoading v-bind="{ status }">
+      <PartialsLiquidityBotsSpotOrdersChart
+        v-if="gridStrategyStore.spotMarket && activeStrategy"
+        v-bind="{ market: gridStrategyStore.spotMarket }"
+      />
+
       <PartialsGridStrategySpotFormActiveStrategy
-        v-if="activeStrategy && gridStrategyStore.spotMarket"
+        v-if="
+          activeStrategy &&
+          gridStrategyStore.spotMarket &&
+          spotStore.subaccountOrderHistory.length > 0
+        "
         class="mt-4"
         v-bind="{
           activeStrategy,
