@@ -233,8 +233,9 @@ export const defineGlobalRules = () => {
         .times(10)
 
       if (upperInBigNumber.minus(lower).lt(threshold)) {
-        return 'The price range provided cannot support that many grids. Please lower the number of grids'
+        return 'The price range provided cannot support that many grids. Please lower the number of grids.'
       }
+
       return true
     }
   )

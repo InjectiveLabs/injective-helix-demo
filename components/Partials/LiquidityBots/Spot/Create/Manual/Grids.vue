@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   GST_MINIMUM_GRIDS,
   GST_MAXIMUM_GRIDS,
@@ -21,13 +21,30 @@ const tickSize = computed(() =>
     : GST_DEFAULT_PRICE_TICK_SIZE
 )
 
+const maximumGrids = computed(() => {
+  const range = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.UpperPrice]
+  ).minus(formValues.value[SpotGridTradingField.LowerPrice])
+
+  const maximumGrids = range.dividedBy(Number(tickSize.value) * 10).toFixed(0)
+  if (Number(maximumGrids) < GST_MINIMUM_GRIDS) {
+    return GST_MINIMUM_GRIDS
+  }
+
+  if (Number(maximumGrids) > GST_MAXIMUM_GRIDS) {
+    return GST_MAXIMUM_GRIDS
+  }
+
+  return Number(maximumGrids)
+})
+
 const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
   rule: '',
   dynamicRule: computed(() => {
     const rules = ['requiredSgt']
 
-    const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
+    const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${maximumGrids.value}`
 
     const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
@@ -49,7 +66,7 @@ const { value: gridsValue, errorMessage } = useStringField({
     <AppInputNumeric
       v-model="gridsValue"
       :max-decimals="0"
-      :placeholder="`${GST_MINIMUM_GRIDS} - ${GST_MAXIMUM_GRIDS}`"
+      :placeholder="`${GST_MINIMUM_GRIDS} - ${maximumGrids.toFixed(0)}`"
       class="text-right"
     />
 
