@@ -75,23 +75,21 @@ function onChangeInvestmentType() {
     </template>
 
     <div>
-      <div>
-        <div>
-          {{
-            $t('sgt.balancedFeesMessage', {
-              quote: market.quoteToken.symbol,
-              base: market.baseToken.symbol
-            })
-          }}
-        </div>
+      <p class="text-sm text-gray-300">
+        {{
+          $t('sgt.balancedFeesMessage', {
+            quote: market.quoteToken.symbol,
+            base: market.baseToken.symbol
+          })
+        }}
         <NuxtLink
           to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
           target="_blank"
-          class="hover:text-blue-500 underline"
+          class="text-blue-500 hover:text-blue-300 font-semibold"
         >
           {{ $t('sgt.learnMoreHere') }}
         </NuxtLink>
-      </div>
+      </p>
 
       <div class="flex items-center justify-between mt-4">
         <p class="text-gray-500">{{ $t('sgt.totalAmount') }}</p>

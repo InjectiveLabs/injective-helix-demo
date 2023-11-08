@@ -89,8 +89,8 @@ function changeTab(tab: GridStrategyType) {
           />
         </template>
 
-        <ModalsCheckSpotGridAuth />
-        <ModalsCreateGridSpotStrategy />
+        <ModalsLiquidityCheckSpotGridAuth />
+        <ModalsLiquidityCreateGridSpotStrategy />
       </div>
     </div>
   </div>

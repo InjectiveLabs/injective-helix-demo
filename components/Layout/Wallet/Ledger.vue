@@ -21,7 +21,7 @@ const options = [
   }
 ] as BaseDropdownOption[]
 
-const path = ref<LedgerDerivationPathType | undefined>(undefined)
+const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 

@@ -9,14 +9,17 @@ const props = defineProps({
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   },
+
   upperPrice: {
     type: String,
     required: true
   },
+
   lowerPrice: {
     type: String,
     required: true
   },
+
   grids: {
     type: String,
     required: true
