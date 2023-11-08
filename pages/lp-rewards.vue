@@ -128,7 +128,7 @@ useIntervalFn(
 
       <AppPagination
         v-if="campaignStore.totalUserCount > 0"
-        class="py-6"
+        class="pt-6 pb-12"
         v-bind="{ limit, page, totalCount: campaignStore.totalUserCount }"
         @update:limit="onLimitChange"
         @update:page="onPageChange"
