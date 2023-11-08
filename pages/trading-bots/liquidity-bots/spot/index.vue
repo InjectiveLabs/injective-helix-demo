@@ -66,6 +66,7 @@ function fetchData() {
       if (gridStrategyStore.strategies.length === 0) {
         isBannerOpen.value = true
       }
+
       status.setIdle()
     })
 }

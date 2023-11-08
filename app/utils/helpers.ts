@@ -169,3 +169,23 @@ export const getSgtInvalidRange = ({
     )
   }
 }
+
+export const pricesToEma = (priceArray: number[], smoothing: number) => {
+  const prices = priceArray
+  const emaPrices: number[] = []
+
+  const k = smoothing
+  const length = prices.length
+
+  for (let i = 0; i < length; i++) {
+    if (i === 0) {
+      emaPrices.push(prices[i])
+    } else {
+      emaPrices.push(
+        prices[i] * (k / length) + emaPrices[i - 1] * (1 - k / length)
+      )
+    }
+  }
+
+  return emaPrices
+}

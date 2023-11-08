@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
+import { GST_DEFAULT_AUTO_GRIDS } from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
+import { pricesToEma } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -18,6 +19,41 @@ const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
 const isAssetRebalancingChecked = ref(true)
+
+const upperEma = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (m) => m.marketId === gridStrategyStore.spotMarket?.marketId
+  )
+
+  if (!marketHistory) {
+    return spotLastTradedPrice.value.toNumber() * 1.05
+  }
+
+  return (
+    Math.max(
+      ...pricesToEma(
+        marketHistory.highPrice,
+        marketHistory.highPrice.length / 3
+      )
+    ) * 1.05
+  )
+})
+
+const lowerEma = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (m) => m.marketId === gridStrategyStore.spotMarket?.marketId
+  )
+
+  if (!marketHistory) {
+    return spotLastTradedPrice.value.toNumber() * 0.95
+  }
+
+  return (
+    Math.min(
+      ...pricesToEma(marketHistory.lowPrice, marketHistory.highPrice.length / 3)
+    ) * 0.95
+  )
+})
 
 const upperPrice = computed(() => {
   const isSingleSided =
@@ -44,25 +80,10 @@ const upperPrice = computed(() => {
       .toFixed(2)
   }
 
-  const marketHistory = exchangeStore.marketsHistory.find(
-    (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
-  )
-
-  if (!marketHistory) {
-    return ''
-  }
-
-  const max = Math.max(...marketHistory.highPrice)
-  const maxPlusPadding = max + max * 0.05
-
-  const minUpperBound = spotLastTradedPrice.value.plus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  return minUpperBound.gt(max)
-    ? minUpperBound.toFixed(2)
-    : maxPlusPadding.toFixed(2)
+  return upperEma.value.toString()
 })
+
+// ----------------------------------------------------
 
 const lowerPrice = computed(() => {
   const isSingleSided =
@@ -89,21 +110,7 @@ const lowerPrice = computed(() => {
     return spotLastTradedPrice.value.times(0.5).toFixed(2)
   }
 
-  const marketHistory = exchangeStore.marketsHistory.find(
-    (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
-  )
-
-  if (!marketHistory) {
-    return ''
-  }
-
-  const min = Math.min(...marketHistory.lowPrice)
-
-  const maxLowerBound = spotLastTradedPrice.value.minus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  return maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min.toFixed(2)
+  return lowerEma.value.toString()
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
