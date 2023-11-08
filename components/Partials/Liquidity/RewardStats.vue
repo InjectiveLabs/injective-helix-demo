@@ -109,7 +109,7 @@ useIntervalFn(campaignStore.fetchCampaignOwnerInfo, 30 * 1000)
     v-if="campaignStore.ownerCampaignInfo || status.isLoading()"
     class="bg-gray-850 rounded-md p-8"
   >
-    <AppHocLoading :is-loading="status.isLoading()">
+    <AppHocLoading :status="status">
       <template v-if="campaignStore.ownerCampaignInfo">
         <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
