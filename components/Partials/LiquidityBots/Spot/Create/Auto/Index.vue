@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { GST_DEFAULT_AUTO_GRIDS } from 'app/utils/constants'
+import {
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
+import { pricesToEma } from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -17,7 +21,49 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
+const LOWER_BOUND_PERCENTAGE = 0.94
+const UPPER_BOUND_PERCENTAGE = 1.06
+const SMOOTHING = 3
+
 const isAssetReBalancingChecked = ref(true)
+
+const upperEma = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (m) => m.marketId === gridStrategyStore.spotMarket?.marketId
+  )
+
+  if (!marketHistory) {
+    return spotLastTradedPrice.value.toNumber() * UPPER_BOUND_PERCENTAGE
+  }
+
+  return (
+    Math.max(
+      ...pricesToEma(
+        marketHistory.highPrice,
+        marketHistory.highPrice.length / SMOOTHING
+      )
+    ) * UPPER_BOUND_PERCENTAGE
+  )
+})
+
+const lowerEma = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (m) => m.marketId === gridStrategyStore.spotMarket?.marketId
+  )
+
+  if (!marketHistory) {
+    return spotLastTradedPrice.value.toNumber() * LOWER_BOUND_PERCENTAGE
+  }
+
+  return (
+    Math.min(
+      ...pricesToEma(
+        marketHistory.lowPrice,
+        marketHistory.highPrice.length / SMOOTHING
+      )
+    ) * LOWER_BOUND_PERCENTAGE
+  )
+})
 
 const upperPrice = computed(() => {
   const isSingleSided =
@@ -30,7 +76,9 @@ const upperPrice = computed(() => {
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
   ) {
-    return spotLastTradedPrice.value.times(2).toFixed(2)
+    return spotLastTradedPrice.value
+      .times(2)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
   if (
@@ -41,27 +89,10 @@ const upperPrice = computed(() => {
   ) {
     return spotLastTradedPrice.value
       .minus(spotLastTradedPrice.value.times(0.06))
-      .toFixed(2)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  const marketHistory = exchangeStore.marketsHistory.find(
-    (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
-  )
-
-  if (!marketHistory) {
-    return ''
-  }
-
-  const max = Math.max(...marketHistory.highPrice)
-  const maxPlusPadding = max + max * 0.05
-
-  const minUpperBound = spotLastTradedPrice.value.plus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  return minUpperBound.gt(max)
-    ? minUpperBound.toFixed(2)
-    : maxPlusPadding.toFixed(2)
+  return upperEma.value.toString()
 })
 
 const lowerPrice = computed(() => {
@@ -77,7 +108,7 @@ const lowerPrice = computed(() => {
   ) {
     return spotLastTradedPrice.value
       .plus(spotLastTradedPrice.value.times(0.06))
-      .toFixed(2)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
   if (
@@ -86,24 +117,12 @@ const lowerPrice = computed(() => {
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
   ) {
-    return spotLastTradedPrice.value.times(0.5).toFixed(2)
+    return spotLastTradedPrice.value
+      .times(0.5)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  const marketHistory = exchangeStore.marketsHistory.find(
-    (market) => market.marketId === gridStrategyStore.spotMarket!.marketId
-  )
-
-  if (!marketHistory) {
-    return ''
-  }
-
-  const min = Math.min(...marketHistory.lowPrice)
-
-  const maxLowerBound = spotLastTradedPrice.value.minus(
-    spotLastTradedPrice.value.times(0.06)
-  )
-
-  return maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min.toFixed(2)
+  return lowerEma.value.toString()
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
@@ -137,7 +156,7 @@ function setValuesFromAuto() {
       v-bind="{ market: gridStrategyStore.spotMarket }"
     />
 
-    <div class="flex justify-end -mb-4 mt-4">
+    <div class="flex justify-end mb-2 sm:-mb-4 mt-4">
       <div
         v-if="
           liquidityFormValues[SpotGridTradingField.InvestmentType] !==
