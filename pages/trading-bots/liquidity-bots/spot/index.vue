@@ -45,7 +45,7 @@ function fetchData() {
 
   spotStore.cancelOrderbookUpdateStream()
   spotStore.cancelSubaccountOrdersHistoryStream()
-  spotStore.cancelSubaccountTradesStream()
+  spotStore.cancelTradesStream()
 
   Promise.all([
     authZStore.fetchGrants(),
