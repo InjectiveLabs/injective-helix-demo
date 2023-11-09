@@ -117,5 +117,12 @@ export const usdcTokenDenoms = [
   // usdcTokenDenom.USDCso
 ]
 
-export const stableCoinDenoms = ['USDT', 'USDC', 'USDCet', 'USDCso']
+export const stableCoinDenoms = [
+  'USDT',
+  'USDC',
+  'USDCet',
+  'USDCso',
+  'USDCnb',
+  'USDTkv'
+]
 export const allowanceResetSymbols = ['USDT']

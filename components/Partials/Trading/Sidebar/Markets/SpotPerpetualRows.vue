@@ -32,7 +32,7 @@ const spotAndPerpetualMarkets = computed(() =>
         {{ $t('markets.preLaunchFutures') }}
       </div>
       <div class="mb-4">
-        <PartialsTradingSidebarMarketsTableRow
+        <PartialsTradingSidebarMarketsRow
           v-for="(marketSummary, index) in expiryFuturesMarkets"
           v-bind="{
             ...$attrs,
@@ -54,7 +54,7 @@ const spotAndPerpetualMarkets = computed(() =>
       {{ $t('markets.perpetuals') }}
     </div>
 
-    <PartialsTradingSidebarMarketsTableRow
+    <PartialsTradingSidebarMarketsRow
       v-for="(marketSummary, index) in spotAndPerpetualMarkets"
       v-bind="{
         ...$attrs,
