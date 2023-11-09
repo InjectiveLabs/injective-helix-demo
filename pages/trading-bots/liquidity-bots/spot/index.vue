@@ -59,8 +59,8 @@ function fetchData() {
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
-      resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
-      countback: 30
+      resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
+      countback: 30 * 24
     }),
     accountStore.fetchAccountPortfolio(),
     accountStore.streamSubaccountBalance(marketId)

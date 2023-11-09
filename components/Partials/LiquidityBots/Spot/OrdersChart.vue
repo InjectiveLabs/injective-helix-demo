@@ -42,6 +42,17 @@ const apexChart = ref(undefined as ApexChart | undefined)
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
+const DAY = 1000 * 60 * 60 * 24
+
+const timerangeOptions = [
+  { value: DAY, display: '1D' },
+  { value: DAY * 3, display: '3D' },
+  { value: DAY * 7, display: '1W' },
+  { value: DAY * 30, display: '1M' }
+]
+
+const range = ref(DAY)
+
 const priceSeries = computed(() => {
   const market = exchangeStore.marketsHistory.find(
     (m) => m.marketId === props.market.marketId
@@ -133,7 +144,8 @@ const options = computed<ApexOptions>(() => ({
     type: 'area',
     background: 'transparent',
     toolbar: {
-      show: false
+      show: false,
+      autoSelected: 'pan'
     },
     redrawOnWindowResize: true
   },
@@ -142,7 +154,12 @@ const options = computed<ApexOptions>(() => ({
 
   dataLabels: { enabled: false },
 
-  xaxis: { type: 'datetime' },
+  xaxis: {
+    type: 'datetime',
+    labels: { datetimeUTC: false },
+    tooltip: { enabled: true },
+    range: range.value
+  },
 
   yaxis: {
     opposite: true,
@@ -184,8 +201,12 @@ onUnmounted(() => {
   apexChart.value?.destroy()
 })
 
+function setRange(time: number) {
+  range.value = time
+}
+
 watch(
-  () => [spotStore.subaccountOrderHistory, lastTradedPrice.value],
+  () => [spotStore.subaccountOrderHistory, lastTradedPrice.value, range.value],
   () => {
     apexChart.value?.updateOptions(options.value)
   }
@@ -193,5 +214,20 @@ watch(
 </script>
 
 <template>
-  <div v-show="subaccountMarketOrders.length > 0" id="liquidity-chart"></div>
+  <div v-show="subaccountMarketOrders.length > 0">
+    <div class="flex justify-end">
+      <div class="mt-4 px-1 py-0.5 bg-black rounded overflow-hidden">
+        <button
+          v-for="{ display, value } in timerangeOptions"
+          :key="`option-${display}`"
+          class="text-[11px] rounded-sm px-1 py-0.5 min-w-10 font-bold"
+          :class="{ 'bg-gray-700': range === value }"
+          @click="setRange(value)"
+        >
+          {{ display }}
+        </button>
+      </div>
+    </div>
+    <div id="liquidity-chart"></div>
+  </div>
 </template>
