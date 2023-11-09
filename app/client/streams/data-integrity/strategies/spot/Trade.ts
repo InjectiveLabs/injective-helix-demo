@@ -19,24 +19,21 @@ export class SpotTradeIntegrityStrategy
     }
 
     const spotStore = useSpotStore()
-    const accountStore = useAccountStore()
 
-    const existingSpotTrades = [...spotStore.subaccountTrades]
+    const latestTrades = await this.fetchData()
 
-    const { trades: latestTrades } = await indexerSpotApi.fetchTrades({
-      subaccountId: accountStore.subaccountId,
-      marketIds: marketIds || spotStore.activeMarketIds
-    })
-
-    if (latestTrades.length === 0) {
+    if (!latestTrades || latestTrades.length === 0) {
       return
     }
+
+    const existingSpotTrades = [...spotStore.subaccountTrades]
 
     const isDataValid = this.verifyData(existingSpotTrades, latestTrades)
 
     if (!isDataValid) {
-      spotStore.$patch({ subaccountTrades: latestTrades })
       spotStore.cancelSubaccountTradesStream()
+
+      spotStore.$patch({ subaccountTrades: await this.fetchData() })
 
       const [marketId] = marketIds || []
 
@@ -55,5 +52,23 @@ export class SpotTradeIntegrityStrategy
      * each trade should have its own unique orderHash
      **/
     return lastTradeFromStream.orderHash === latestTradeFromFetch.orderHash
+  }
+
+  async fetchData() {
+    const { args: marketIds } = this
+
+    if (!marketIds) {
+      return
+    }
+
+    const accountStore = useAccountStore()
+    const spotStore = useSpotStore()
+
+    const { trades: latestTrades } = await indexerSpotApi.fetchTrades({
+      subaccountId: accountStore.subaccountId,
+      marketIds: marketIds || spotStore.activeMarketIds
+    })
+
+    return latestTrades
   }
 }
