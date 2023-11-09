@@ -107,7 +107,7 @@ useIntervalFn(() => {
     SpotOrderIntegrityStrategy.make(args).validate(),
     SpotTradeIntegrityStrategy.make(args).validate()
   ])
-}, 3 * 1000)
+}, 30 * 1000)
 </script>
 
 <template>

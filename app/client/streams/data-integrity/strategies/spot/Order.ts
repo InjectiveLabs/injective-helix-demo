@@ -20,27 +20,20 @@ export class SpotOrderIntegrityStrategy
     }
 
     const spotStore = useSpotStore()
-    const accountStore = useAccountStore()
 
-    const existingSpotOrders = [...spotStore.subaccountOrders]
+    const latestOrders = await this.fetchData()
 
-    const { orders: latestOrders } = await indexerSpotApi.fetchOrders({
-      subaccountId: accountStore.subaccountId,
-      marketIds: marketIds || spotStore.activeMarketIds,
-      pagination: {
-        limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-      }
-    })
-
-    if (latestOrders.length === 0) {
+    if (!latestOrders || latestOrders.length === 0) {
       return
     }
+
+    const existingSpotOrders = [...spotStore.subaccountOrders]
 
     const isDataValid = this.verifyData(existingSpotOrders, latestOrders)
 
     if (!isDataValid) {
-      spotStore.$patch({ subaccountOrders: latestOrders })
       spotStore.cancelSubaccountOrdersStream()
+      spotStore.$patch({ subaccountOrders: await this.fetchData() })
 
       const [marketId] = marketIds || []
 
@@ -59,5 +52,26 @@ export class SpotOrderIntegrityStrategy
      * each order should have its own unique orderHash
      **/
     return lastOrderFromStream.orderHash === latestOrderFromFetch.orderHash
+  }
+
+  async fetchData() {
+    const { args: marketIds } = this
+
+    if (!marketIds) {
+      return
+    }
+
+    const spotStore = useSpotStore()
+    const accountStore = useAccountStore()
+
+    const { orders: latestOrders } = await indexerSpotApi.fetchOrders({
+      subaccountId: accountStore.subaccountId,
+      marketIds: marketIds || spotStore.activeMarketIds,
+      pagination: {
+        limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+      }
+    })
+
+    return latestOrders
   }
 }
