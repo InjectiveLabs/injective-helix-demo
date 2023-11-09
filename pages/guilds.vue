@@ -17,14 +17,24 @@ const baseToken = computed(() =>
 
 onWalletConnected(() => {
   Promise.all([
-    campaignStore.fetchGuilds(),
+    campaignStore.fetchGuildsByTVL(),
     accountStore.streamBankBalance(),
     campaignStore.fetchUserGuildInfo(),
+    campaignStore.fetchGuildsByVolume(),
     accountStore.fetchAccountPortfolio()
   ])
     .catch($onError)
     .finally(() => status.setIdle())
 })
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      campaignStore.fetchGuildsByTVL(),
+      campaignStore.fetchGuildsByVolume()
+    ]),
+  30 * 1000
+)
 </script>
 
 <template>
@@ -34,7 +44,16 @@ onWalletConnected(() => {
         v-if="campaignStore.guildCampaignSummary"
         v-bind="{ summary: campaignStore.guildCampaignSummary }"
       />
-      <PartialsGuildLeaderboard class="mt-10" />
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-bold mb-6">
+          {{ $t('guild.leaderboard.title') }}
+        </h2>
+        <section class="grid grid-cols-2 gap-10">
+          <PartialsGuildLeaderboard />
+          <PartialsGuildLeaderboard is-volume />
+        </section>
+      </section>
     </div>
 
     <PartialsGuildModalsAlreadyJoinedGuild />

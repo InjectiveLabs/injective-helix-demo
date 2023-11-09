@@ -13,7 +13,8 @@ import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
   guild?: Guild
-  guilds: Guild[]
+  guildsByTVL: Guild[]
+  guildsByVolume: Guild[]
   campaign?: Campaign
   totalUserCount: number
   totalGuildMember: number
@@ -25,11 +26,12 @@ type CampaignStoreState = {
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
-  guilds: [],
   guild: undefined,
+  guildsByTVL: [],
   guildMembers: [],
   totalUserCount: 0,
   campaignUsers: [],
+  guildsByVolume: [],
   totalGuildMember: 0,
   campaign: undefined,
   userGuildInfo: undefined,
@@ -80,7 +82,7 @@ export const useCampaignStore = defineStore('campaign', {
       })
     },
 
-    async fetchGuilds() {
+    async fetchGuildsByTVL() {
       const campaignStore = useCampaignStore()
 
       const { guilds, summary } = await indexerGrpcGuildApi.fetchGuilds({
@@ -90,7 +92,22 @@ export const useCampaignStore = defineStore('campaign', {
       })
 
       campaignStore.$patch({
-        guilds,
+        guildsByTVL: guilds,
+        guildCampaignSummary: summary
+      })
+    },
+
+    async fetchGuildsByVolume() {
+      const campaignStore = useCampaignStore()
+
+      const { guilds, summary } = await indexerGrpcGuildApi.fetchGuilds({
+        sortBy: GuildSortBy.Volume,
+        limit: 100,
+        campaignContract: GUILD_CONTRACT_ADDRESS
+      })
+
+      campaignStore.$patch({
+        guildsByVolume: guilds,
         guildCampaignSummary: summary
       })
     },

@@ -34,7 +34,8 @@ export default {
     leaderboard: {
       title: 'Leaderboard',
       tab: {
-        overall: 'Overall'
+        rankByTVL: 'Rank by TVL',
+        rankByVolume: 'Rank by volume'
       },
       guildMembers: 'Guild members',
       fetchNewData: 'Fetch new data',

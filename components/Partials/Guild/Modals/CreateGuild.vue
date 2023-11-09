@@ -8,12 +8,13 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
-const { validate } = useForm()
+const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const MAX_CHARACTERS = 30
 const NAME_FIELD = 'guild-name'
+const THUMBNAIL_FIELD = 'thumbnail'
 const MIN_AMOUNT = 10000
 const JOIN_GUILD_LINK = 'https://twitter.com/HelixApp_'
 
@@ -24,6 +25,10 @@ const { accountBalancesWithToken } = useBalance()
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
   rule: `required|maxCharacter:${MAX_CHARACTERS}`
+})
+
+const { value: thumbnail, errors: thumbnailErrors } = useStringField({
+  name: THUMBNAIL_FIELD
 })
 
 const { valueToString: minAmountToString } = useBigNumberFormatter(
@@ -51,6 +56,8 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
 const hasSufficientBalance = computed(() =>
   balanceToBigNumber.value.gte(MIN_AMOUNT)
 )
+
+const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
 function handleDisconnect() {
   walletStore.disconnect()
@@ -86,6 +93,15 @@ async function onSubmit() {
       status.setIdle()
     })
 }
+
+watch(
+  () => modalStore.modals[Modal.CreateGuild],
+  (isOpen: boolean) => {
+    if (isOpen) {
+      resetForm()
+    }
+  }
+)
 </script>
 
 <template>
@@ -179,16 +195,33 @@ async function onSubmit() {
       </p>
 
       <div class="mt-8">
+        <h3 class="text-xs font-semibold">
+          {{ $t('guild.createGuild.thumbnail') }}
+        </h3>
+
+        <PartialsGuildThumbnailSelector v-model="thumbnail" />
+        <p
+          v-if="thumbnailErrors[0]"
+          class="text-red-500 first-letter:uppercase text-sm mt-1"
+        >
+          {{ thumbnailErrors[0] }}
+        </p>
+      </div>
+
+      <div class="mt-8">
         <AppButton
           class="w-full bg-blue-500 text-white font-semibold"
           v-bind="{
             status,
             lg: true,
-            disabled: !hasSufficientBalance || !name
+            disabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"
         >
-          <span v-if="hasSufficientBalance" :class="{ 'text-gray-600': !name }">
+          <span
+            v-if="hasSufficientBalance"
+            :class="{ 'text-gray-600': hasEmptyField }"
+          >
             {{ $t('guild.createGuild.cta') }}
           </span>
           <span v-else class="text-gray-600">

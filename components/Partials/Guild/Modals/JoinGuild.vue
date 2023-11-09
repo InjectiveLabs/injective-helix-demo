@@ -12,6 +12,11 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const props = defineProps({
+  limit: {
+    type: Number,
+    required: true
+  },
+
   guild: {
     type: Object as PropType<Guild>,
     required: true
@@ -52,6 +57,7 @@ function onSubmit() {
 
   campaignStore
     .joinGuild({
+      limit: props.limit,
       guildId: props.guild.guildId
     })
     .then(() => {
@@ -80,7 +86,13 @@ function onSubmit() {
     </template>
 
     <div class="text-center">
-      <h3 class="text-lg font-semibold text-center">
+      <PartialsGuildThumbnail
+        class="mx-auto"
+        is-xl
+        :thumbnail-id="guild.logo"
+      />
+
+      <h3 class="text-lg font-semibold text-center mt-4">
         {{ guild.name }}
       </h3>
 

@@ -1,10 +1,12 @@
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
 import { msgBroadcastClient } from '@/app/Services'
+import { delayPromiseCall } from '@/app/utils/async'
 import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 
 export const createGuild = async ({ name }: { name: string }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const campaignStore = useCampaignStore()
 
   await appStore.queue()
   await walletStore.validate()
@@ -25,11 +27,27 @@ export const createGuild = async ({ name }: { name: string }) => {
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })
+
+  await delayPromiseCall(
+    () =>
+      Promise.all([
+        campaignStore.fetchGuildsByTVL(),
+        campaignStore.fetchGuildsByVolume()
+      ]),
+    3 * 1000
+  )
 }
 
-export const joinGuild = async ({ guildId }: { guildId: string }) => {
+export const joinGuild = async ({
+  limit,
+  guildId
+}: {
+  limit: number
+  guildId: string
+}) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const campaignStore = useCampaignStore()
 
   await appStore.queue()
   await walletStore.validate()
@@ -49,4 +67,9 @@ export const joinGuild = async ({ guildId }: { guildId: string }) => {
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })
+
+  await delayPromiseCall(
+    () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),
+    3 * 1000
+  )
 }

@@ -153,22 +153,29 @@ watch(lastUpdated, () => {
       <AppHocLoading v-bind="{ status }" class="h-full">
         <div v-if="campaignStore.guild">
           <section class="mt-4 flex items-center justify-between flex-wrap">
-            <div>
-              <div class="flex items-center">
-                <h3 class="text-2xl font-semibold">
-                  {{ campaignStore.guild.name }}
-                </h3>
-                <AppDotStatus
-                  class="ml-5"
-                  v-bind="{ isActive: campaignStore.guild.isActive }"
-                />
+            <article class="flex items-center gap-5">
+              <PartialsGuildThumbnail
+                is-xl
+                :thumbnail-id="campaignStore.guild.logo"
+              />
+
+              <div>
+                <div class="flex items-center">
+                  <h3 class="text-2xl font-semibold">
+                    {{ campaignStore.guild.name }}
+                  </h3>
+                  <AppDotStatus
+                    class="ml-5"
+                    v-bind="{ isActive: campaignStore.guild.isActive }"
+                  />
+                </div>
+                <NuxtLink :to="explorerLink" target="_blank">
+                  <p class="text-sm text-blue-500 mt-1 truncate">
+                    {{ campaignStore.guild.masterAddress }}
+                  </p>
+                </NuxtLink>
               </div>
-              <NuxtLink :to="explorerLink" target="_blank">
-                <p class="text-sm text-blue-500 mt-1 truncate">
-                  {{ campaignStore.guild.masterAddress }}
-                </p>
-              </NuxtLink>
-            </div>
+            </article>
 
             <AppButton
               class="bg-blue-500 text-white"
@@ -252,6 +259,7 @@ watch(lastUpdated, () => {
           <PartialsGuildModalsJoinGuild
             v-if="campaignStore.guild"
             v-bind="{
+              limit,
               guildInvitationHash,
               guild: campaignStore.guild
             }"

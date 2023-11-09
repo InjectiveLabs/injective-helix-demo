@@ -7,6 +7,8 @@ import { CampaignPage } from '@/types'
 const tokenStore = useTokenStore()
 
 const props = defineProps({
+  isVolume: Boolean,
+
   guild: {
     type: Object as PropType<Guild>,
     required: true
@@ -35,21 +37,29 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
   <tr class="border-b hover:bg-gray-800 text-sm">
     <td>
       <div class="p-3 flex items-center gap-2">
-        <span>{{ guild.rankByTvl }}</span>
-        <AssetTrophyColor />
+        <template v-if="isVolume">
+          <span>{{ guild.rankByVolume }}</span>
+          <AssetTrophyColor v-if="guild.rankByVolume === 0" />
+        </template>
+
+        <template v-else>
+          <span>{{ guild.rankByTvl }}</span>
+          <AssetTrophyColor v-if="guild.rankByTvl === 0" />
+        </template>
       </div>
     </td>
     <td>
-      <div class="p-3">{{ guild.name }}</div>
+      <div class="p-3 flex items-center gap-2">
+        <PartialsGuildThumbnail :thumbnail-id="guild.logo" />
+        <span>{{ guild.name }}</span>
+      </div>
     </td>
     <td>
       <div class="p-3"><AppDotStatus :is-active="guild.isActive" /></div>
     </td>
     <td class="text-right">
-      <div class="p-3">{{ tvlScoreToString }} INJ</div>
-    </td>
-    <td class="text-right">
-      <div class="p-3">{{ volumeScoreToString }} USD</div>
+      <div v-if="isVolume" class="p-3">{{ tvlScoreToString }} INJ</div>
+      <div v-else class="p-3">{{ volumeScoreToString }} USD</div>
     </td>
     <td class="text-right">
       <div class="p-3">

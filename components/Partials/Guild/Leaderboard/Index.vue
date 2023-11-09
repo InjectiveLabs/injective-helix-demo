@@ -3,7 +3,15 @@ import { format } from 'date-fns'
 
 const campaignStore = useCampaignStore()
 
+const props = defineProps({
+  isVolume: Boolean
+})
+
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
+
+const guilds = computed(() =>
+  props.isVolume ? campaignStore.guildsByVolume : campaignStore.guildsByTVL
+)
 
 const lastUpdated = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
@@ -16,14 +24,15 @@ const lastUpdated = computed(() => {
 
 <template>
   <div>
-    <h2 class="text-2xl font-bold">{{ $t('guild.leaderboard.title') }}</h2>
-
-    <div class="border-b flex justify-between items-end mt-6">
+    <div class="border-b flex justify-between items-end">
       <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
-        {{ $t('guild.leaderboard.tab.overall') }}
+        <span v-if="isVolume">
+          {{ $t('guild.leaderboard.tab.rankByVolume') }}
+        </span>
+        <span v-else>{{ $t('guild.leaderboard.tab.rankByTVL') }}</span>
       </button>
 
-      <p v-if="lastUpdated" class="text-gray-300 p-2 text-xs">
+      <p v-if="isVolume && lastUpdated" class="text-gray-300 p-2 text-xs">
         {{ $t('guild.leaderboard.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>
@@ -41,24 +50,22 @@ const lastUpdated = computed(() => {
             <th class="p-4 text-left">
               {{ $t('guild.leaderboard.table.status') }}
             </th>
-
             <th class="p-4 text-right">
-              {{ $t('guild.leaderboard.table.averageTvl') }}
+              <span v-if="isVolume">
+                {{ $t('guild.leaderboard.table.tradingVolume') }}
+              </span>
+              <span v-else>{{ $t('guild.leaderboard.table.averageTvl') }}</span>
             </th>
-
-            <th class="p-4 text-right">
-              {{ $t('guild.leaderboard.table.tradingVolume') }}
-            </th>
-
             <th class="min-w-[40px]" />
           </tr>
         </thead>
         <tbody>
-          <PartialsGuildRow
-            v-for="guild in campaignStore.guilds"
+          <PartialsGuildLeaderboardRow
+            v-for="guild in guilds"
             :key="guild.guildId"
             v-bind="{
-              guild
+              guild,
+              isVolume
             }"
           />
         </tbody>

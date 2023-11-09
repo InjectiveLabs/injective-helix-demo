@@ -45,7 +45,7 @@
     "@injectivelabs/token-metadata": "1.14.2-beta.14",
     "@injectivelabs/token-utils": "1.14.2-beta.3",
     "@injectivelabs/ts-types": "1.14.2-beta.0",
-    "@injectivelabs/ui-shared": "1.12.32",
+    "@injectivelabs/ui-shared": "1.12.33",
     "@injectivelabs/utils": "1.14.2-beta.2",
     "@injectivelabs/wallet-ts": "1.14.3-beta.2",
     "@nuxtjs/dotenv": "^1.4.1",
