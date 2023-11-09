@@ -15,6 +15,7 @@ const setFormValues = useSetFormValues()
 const fetchBalanceStatus = reactive(new Status(StatusType.Idle))
 
 const {
+  isDeposit,
   isTransfer,
   destinationIsEthereum,
   networkIsSupported,
@@ -80,6 +81,10 @@ useStringField({
   name: BridgeField.Destination,
   rule: '',
   dynamicRule: computed(() => {
+    if (isDeposit.value) {
+      return ''
+    }
+
     if (isTransfer.value) {
       return 'required|injAddress'
     }

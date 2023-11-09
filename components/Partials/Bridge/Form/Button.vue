@@ -4,15 +4,23 @@ import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 const walletStore = useWalletStore()
 const modalStore = useModalStore()
 
-const formValues = useFormValues<BridgeForm>()
+const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 const formErrors = useFormErrors()
 const validateForm = useValidateForm()
 
-const hasFormErrors = computed(
-  () =>
+const { isWithdraw, isTransfer } = useBridgeState(formValues)
+
+const hasFormErrors = computed(() => {
+  const isDestinationRequired =
+    (isWithdraw.value || isTransfer.value) &&
+    !formValues.value[BridgeField.Destination]
+
+  return (
     Object.keys(formErrors.value).length > 0 ||
-    formValues.value[BridgeField.Amount] === ''
-)
+    formValues.value[BridgeField.Amount] === '' ||
+    isDestinationRequired
+  )
+})
 
 const isDepositAndIsAuthZConnected = computed(
   () =>

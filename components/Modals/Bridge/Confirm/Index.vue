@@ -320,7 +320,7 @@ function cosmosIbcTransferFromInjective() {
 
   ibcStore
     .withdraw({
-      destinationAddress: ibcStore.cosmosAddress,
+      destinationAddress: formValues.value[BridgeField.Destination],
       token: balanceWithToken.value.token,
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount])
     })
