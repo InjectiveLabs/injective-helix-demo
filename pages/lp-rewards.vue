@@ -86,7 +86,7 @@ useIntervalFn(
 <template>
   <AppHocLoading
     :is-loading="status.isLoading() || !campaignStore.campaign"
-    class="h-full"
+    class="h-full container"
   >
     <div
       v-if="campaignStore.campaign"
