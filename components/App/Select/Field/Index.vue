@@ -5,6 +5,7 @@ import { DropdownOptionWithToken } from '@/types'
 const props = defineProps({
   clearable: Boolean,
   searchable: Boolean,
+  isDisabled: Boolean,
 
   options: {
     type: Array as PropType<DropdownOptionWithToken[]>,
@@ -67,6 +68,7 @@ function handleClear() {
 <template>
   <BaseDropdown
     class="w-full"
+    :disabled="isDisabled"
     :delay="300"
     auto-size="true"
     auto-boundary-max-size
@@ -90,7 +92,7 @@ function handleClear() {
           </div>
         </slot>
 
-        <div class="flex items-center gap-2">
+        <div v-if="!isDisabled" class="flex items-center gap-2">
           <BaseIcon
             v-if="clearable && selectedItem"
             name="close"

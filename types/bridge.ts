@@ -9,7 +9,6 @@ export type BridgeForm = {
   [BridgeField.Denom]: string
   [BridgeField.Destination]: string
   [BridgeField.Memo]: string
-  [BridgeField.Token]: Token
 }
 
 export type SubaccountTransferForm = {
