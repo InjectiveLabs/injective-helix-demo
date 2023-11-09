@@ -3,7 +3,6 @@ import { BridgeForm, BridgeField } from '@/types'
 
 const { t } = useLang()
 const bridgeFormValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
-const setBridgeFormValues = useSetFormValues()
 const setDestinationValue = useSetFieldValue(BridgeField.Destination)
 const bridgeFormErrors = useFormErrors<BridgeForm>()
 const { isTransfer } = useBridgeState(bridgeFormValues)
@@ -76,15 +75,10 @@ function addressChange(destination: string) {
 
 function destinationChangeWithoutValidation(address: string) {
   /**
-   * We shouldn't validate the form when the user clicks to edit the address
+   * We shouldn't validate the field when the user clicks to edit the address
    * As to prevent unactionable error messages
    *  **/
-  setBridgeFormValues(
-    {
-      [BridgeField.Destination]: address
-    },
-    false
-  )
+  setDestinationValue(address, false)
 }
 
 function onPasted(address: string) {

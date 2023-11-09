@@ -16,6 +16,7 @@ definePageMeta({
 
 const route = useRoute()
 const ibcStore = useIbcStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -47,7 +48,9 @@ const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
   computed(() => formValues)
 )
 
-const { balanceWithToken } = useBridgeBalance(computed(() => formValues))
+const { balanceWithToken, supplyWithBalance } = useBridgeBalance(
+  computed(() => formValues)
+)
 
 onMounted(() => {
   Promise.all([
@@ -142,7 +145,10 @@ function preFillFromQuery() {
       setFormValues(
         {
           [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
-          [BridgeField.Denom]: denom
+          [BridgeField.Denom]: getNetworkDefaultToken(
+            supplyWithBalance.value,
+            tokenStore.tradeableTokens.find((token) => token.denom === denom)
+          ).token.denom
         },
         false
       )
