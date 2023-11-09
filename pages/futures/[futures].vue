@@ -7,6 +7,7 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
+import { DerivativeOraclePriceIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: [
@@ -144,6 +145,12 @@ watch(
     refreshSubaccountDetails()
   }
 )
+
+useIntervalFn(() => {
+  const args = derivativeStore.activeMarketIds
+
+  Promise.all([DerivativeOraclePriceIntegrityStrategy.make(args).validate()])
+}, 30 * 1000)
 </script>
 
 <template>
