@@ -38,11 +38,10 @@ const GREEN_COLOR = '#0EE29B'
 const RED_COLOR = '#F3164D'
 const OPACITY_HEX = '60'
 
-<<<<<<< HEAD
 const apexChart = ref(undefined as ApexChart | undefined)
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
-=======
+
 const DAY = 1000 * 60 * 60 * 24
 
 const timerangeOptions = [
@@ -51,9 +50,6 @@ const timerangeOptions = [
   { value: DAY * 7, display: '1W' },
   { value: DAY * 30, display: '1M' }
 ]
-
-let chart: ApexChart
->>>>>>> 53c798c3 (chore: time range selector)
 
 const range = ref(DAY)
 
