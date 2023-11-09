@@ -156,7 +156,7 @@ const sortedMarkets = computed(() => {
       class="rounded overflow-hidden"
     >
       <div v-if="!activeType">
-        <PartialsTradingSidebarMarketsTableRow
+        <PartialsTradingSidebarMarketsRow
           v-for="(marketSummary, index) in sortedMarkets"
           v-bind="{
             ...$attrs,
