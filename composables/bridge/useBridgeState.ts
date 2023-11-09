@@ -1,9 +1,15 @@
 import type { Ref } from 'vue'
-import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
+import {
+  BridgingNetwork,
+  CosmosNetworks,
+  KeplrNetworks
+} from '@injectivelabs/sdk-ui-ts'
 import { BridgeField, BridgeForm, BridgeType } from '@/types'
 import { networksMeta } from '@/app/data/bridge'
 
 export default function useBridgeState(formValues: Ref<BridgeForm>) {
+  const ibcStore = useIbcStore()
+
   const isWithdraw = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw
   )
@@ -64,6 +70,14 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     return origin.value === BridgingNetwork.Ethereum
   })
 
+  const originIsCosmosNetwork = computed(() =>
+    CosmosNetworks.includes(origin.value)
+  )
+
+  const destinationIsCosmosNetwork = computed(() =>
+    CosmosNetworks.includes(destination.value)
+  )
+
   const isIbcTransfer = computed(() => {
     const cosmosNetworks = [
       ...KeplrNetworks,
@@ -79,11 +93,9 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
 
   const networkIsSupported = computed(() => {
     const notSupportedNetworks = [
-      ...KeplrNetworks,
       BridgingNetwork.Terra,
       BridgingNetwork.Axelar,
       BridgingNetwork.Moonbeam,
-      BridgingNetwork.Crescent,
       BridgingNetwork.Solana,
       BridgingNetwork.EthereumWh,
       BridgingNetwork.Arbitrum
@@ -92,6 +104,24 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     return !notSupportedNetworks.some(
       (network) => network === origin.value || network === destination.value
     )
+  })
+
+  const cosmosIbcChannelId = computed(() => {
+    if (!ibcStore.channel) {
+      return ''
+    }
+
+    return originIsInjective.value
+      ? ibcStore.channel.bToAChannelId
+      : ibcStore.channel.aToBChannelId
+  })
+
+  const cosmosIbcInjectiveChannelId = computed(() => {
+    if (!ibcStore.channel) {
+      return ''
+    }
+
+    return ibcStore.channel.bToAChannelId
   })
 
   return {
@@ -103,8 +133,12 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     originNetworkMeta,
     originIsInjective,
     destinationIsEthereum,
+    originIsCosmosNetwork,
     networkIsSupported,
+    cosmosIbcChannelId,
     destinationIsInjective,
-    destinationNetworkMeta
+    destinationNetworkMeta,
+    destinationIsCosmosNetwork,
+    cosmosIbcInjectiveChannelId
   }
 }

@@ -6,11 +6,9 @@ import {
   UNLIMITED_ALLOWANCE,
   BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
-import { BridgeForm, BridgeField } from '@/types'
 import { allowanceResetSymbols } from '@/app/data/token'
 
 const peggyStore = usePeggyStore()
-const formValues = useFormValues<BridgeForm>()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -88,7 +86,7 @@ function handleSetAllowance() {
     <p class="mb-3 text-xs text-gray-300">
       <span>{{
         $t('bridge.setAllowanceForBridging', {
-          asset: formValues[BridgeField.Token]?.symbol || ''
+          asset: balanceWithToken.token.symbol || ''
         })
       }}</span>
 

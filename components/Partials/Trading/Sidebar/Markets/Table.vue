@@ -155,7 +155,7 @@ const sortedMarkets = computed(() => {
       :show-empty="sortedMarkets.length === 0"
       class="rounded overflow-hidden"
     >
-      <div v-if="!activeType">
+      <div v-if="isGrid || !activeType">
         <PartialsTradingSidebarMarketsRow
           v-for="(marketSummary, index) in sortedMarkets"
           v-bind="{

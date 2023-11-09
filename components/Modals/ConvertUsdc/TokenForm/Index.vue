@@ -97,7 +97,7 @@ watch(
 
 onMounted(() => {
   if ([usdcTokenDenom.USDC].includes(baseBalance.value?.denom || '')) {
-    handleMaxBaseAmountChange({
+    onMaxBaseAmountChange({
       amount: maxBalanceToFixed.value
     })
   }
@@ -137,7 +137,7 @@ function updateAmount({
   emit('update:amount', { amount, isBaseAmount })
 }
 
-function handleMaxBaseAmountChange({ amount }: { amount: string }) {
+function onMaxBaseAmountChange({ amount }: { amount: string }) {
   setFormValues({
     [TradeField.BaseAmount]: amount
   })
@@ -145,7 +145,7 @@ function handleMaxBaseAmountChange({ amount }: { amount: string }) {
   updateAmount({ amount, isBaseAmount: true })
 }
 
-function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
+function onMaxQuoteAmountChange({ amount }: { amount: string }) {
   const amountInBigNumber = new BigNumberInBase(amount)
 
   const feeRateToDeduct = amountInBigNumber.times(takerFeeRate.value)
@@ -203,7 +203,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
             ]
           }"
           @update:amount="updateAmount"
-          @update:max="handleMaxBaseAmountChange"
+          @update:max="onMaxBaseAmountChange"
         >
           <span>
             {{ $t(`trade.swap.${isBuy ? 'youReceive' : 'youPay'}`) }}
@@ -262,7 +262,7 @@ function handleMaxQuoteAmountChange({ amount }: { amount: string }) {
             ]
           }"
           @update:amount="updateAmount"
-          @update:max="handleMaxQuoteAmountChange"
+          @update:max="onMaxQuoteAmountChange"
         >
           <span>
             {{ $t(`trade.swap.${isBuy ? 'youPay' : 'youReceive'}`) }}

@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { BridgingNetwork, CosmosNetworks } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '@/app/data/bridge'
 import { BridgeField, BridgeForm } from '@/types'
 
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 
 const { isTransfer } = useBridgeState(formValues)
+
+const emit = defineEmits<{
+  'ibc:connect': [state: BridgingNetwork]
+}>()
 
 const { value: network } = useStringField({
   name: BridgeField.BridgingNetwork
@@ -42,6 +46,14 @@ const options = computed(() => {
       }
     })
 })
+
+function onNetworkChange(network: string) {
+  if (!CosmosNetworks.includes(network as BridgingNetwork)) {
+    return
+  }
+
+  emit('ibc:connect', network as BridgingNetwork)
+}
 </script>
 
 <template>
@@ -52,9 +64,11 @@ const options = computed(() => {
 
     <AppSelectField
       v-model="network"
+      v-bind="$attrs"
       selected-class="h-20 bg-gray-1000"
       :options="options"
       :placeholder="$t('bridge.selectOriginNetwork')"
+      @update:modelValue="onNetworkChange"
     >
       <template #selected-option="{ option }">
         <PartialsBridgeFormNetworkSelectOption
