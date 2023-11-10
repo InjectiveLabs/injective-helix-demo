@@ -72,7 +72,7 @@ export const joinGuild = async ({
     exec: {
       action: 'join_guild',
       msg: {
-        guild_id: Number(guildId)
+        id: Number(guildId)
       }
     }
   })
