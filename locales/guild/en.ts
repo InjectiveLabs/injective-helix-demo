@@ -3,13 +3,14 @@ import { I18nMessageFunction } from '@/types'
 export default {
   guild: {
     title: 'Guilds',
-    description: ({ named }: I18nMessageFunction) =>
-      `Earn a share of ${named('amount')} INJ Reward`,
+    description:
+      'Helix Guilds is a team-based trading competition. Be part of the winning guild and win together!',
 
     guilds: 'Guilds',
     participants: 'Participants',
     totalRewards: 'Total rewards',
     currentSeason: 'Current season',
+    campaignRules: 'Campaign rules',
 
     toast: {
       copiedInvitationLink: 'Invitation link copied to your clipboard.'
@@ -19,22 +20,23 @@ export default {
       title: 'How to participate',
       createGuild: {
         title: 'Be a Guild Master and invite others to join you',
-        description: 'Hold 10,000 TIA in the wallet to',
+        description:
+          'Have at least 10,000 TIA in your wallet throughout the competition. Earn 20% of the rewards if your guild wins!',
         cta: 'Create guild'
       },
       joinGuild: {
-        title: 'Join a guild and share rewards with others',
+        title: 'Join a guild and win with your friends',
         description:
-          'Be a Guild member with an invite link from a Guild master',
-        ctaMobile: 'Check out Discord',
-        cta: 'Check our Discord to find a community'
+          'Climb up the ranking by having more TIA and trading volume. Share 80% of the rewards with your friends if your guild wins!',
+        ctaMobile: 'Find guild to join',
+        cta: 'Check Injective Discord to find a guild to join'
       }
     },
 
     leaderboard: {
-      title: 'Leaderboard',
+      title: 'Leaderboards',
       tab: {
-        rankByTVL: 'Rank by TVL',
+        rankByTVL: 'Rank by TIA Balance',
         rankByVolume: 'Rank by volume'
       },
       guildMembers: 'Guild members',
@@ -48,7 +50,7 @@ export default {
         members: 'Members',
         address: 'Address',
         tvlRank: 'TVL rank',
-        averageTvl: 'Average TVL',
+        averageTvl: 'TIA Balance',
         volumeRank: 'Volume rank',
         currentRank: 'Current rank',
         tradingVolume: 'Trading volume',
@@ -69,6 +71,7 @@ export default {
     createGuild: {
       title: 'Create a guild',
       name: 'Name of the guild',
+      selectName: 'Select name',
       namePlaceholder: 'Enter name',
       thumbnail: 'Select a guild thumbnail',
       masterAddress: 'Guild master address',

@@ -58,7 +58,7 @@ function onConnectWallet() {
       {{ $t('guild.title') }}
     </h2>
     <p class="text-lg">
-      {{ $t('guild.description', { amount: totalRewardsToString }) }}
+      {{ $t('guild.description') }}
     </p>
 
     <div
@@ -91,6 +91,14 @@ function onConnectWallet() {
         </p>
         <p>{{ campaignDateRange }}</p>
       </div>
+    </div>
+
+    <div class="mt-8">
+      <AppButton class="bg-blue-500 text-white">
+        <div class="flex items-center gap-1">
+          <span>{{ $t('guild.campaignRules') }}</span>
+        </div>
+      </AppButton>
     </div>
 
     <div class="mt-20">
