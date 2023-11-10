@@ -43,7 +43,17 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
 
       <div>
         <p class="text-gray-475 text-sm">
-          {{ $t('guild.leaderboard.table.currentRank') }}
+          {{ $t('guild.leaderboard.table.tvlRank') }}
+        </p>
+        <div class="flex items-center gap-2 mt-3">
+          <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />
+          <span>#{{ campaignStore.guild.rankByTvl }}</span>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-gray-475 text-sm">
+          {{ $t('guild.leaderboard.table.volumeRank') }}
         </p>
         <div class="flex items-center gap-2 mt-3">
           <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />

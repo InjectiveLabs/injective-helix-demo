@@ -47,7 +47,9 @@ export default {
         status: 'Status',
         members: 'Members',
         address: 'Address',
+        tvlRank: 'TVL rank',
         averageTvl: 'Average TVL',
+        volumeRank: 'Volume rank',
         currentRank: 'Current rank',
         tradingVolume: 'Trading volume',
         totalTradingVolume: 'Total trading volume'

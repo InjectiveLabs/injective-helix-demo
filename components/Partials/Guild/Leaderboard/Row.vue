@@ -9,6 +9,11 @@ const tokenStore = useTokenStore()
 const props = defineProps({
   isVolume: Boolean,
 
+  rank: {
+    type: Number,
+    required: true
+  },
+
   guild: {
     type: Object as PropType<Guild>,
     required: true
@@ -37,15 +42,8 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
   <tr class="border-b hover:bg-gray-800 text-sm">
     <td>
       <div class="p-3 flex items-center gap-2">
-        <template v-if="isVolume">
-          <span>{{ guild.rankByVolume }}</span>
-          <AssetTrophyColor v-if="guild.rankByVolume === 1" />
-        </template>
-
-        <template v-else>
-          <span>{{ guild.rankByTvl }}</span>
-          <AssetTrophyColor v-if="guild.rankByTvl === 1" />
-        </template>
+        <span>{{ rank }}</span>
+        <AssetTrophyColor v-if="rank === 1" />
       </div>
     </td>
     <td>

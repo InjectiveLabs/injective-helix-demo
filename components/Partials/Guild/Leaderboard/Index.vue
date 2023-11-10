@@ -61,11 +61,12 @@ const lastUpdated = computed(() => {
         </thead>
         <tbody>
           <PartialsGuildLeaderboardRow
-            v-for="guild in guilds"
+            v-for="(guild, index) in guilds"
             :key="guild.guildId"
             v-bind="{
               guild,
-              isVolume
+              isVolume,
+              rank: index + 1
             }"
           />
         </tbody>
