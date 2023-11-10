@@ -7,8 +7,12 @@ import {
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  BridgeType,
+  BankBalanceIntegrityStrategy,
+  SubaccountBalanceIntegrityStrategy
+} from '@/app/client/streams/data-integrity/strategies'
+import {
   MainPage,
+  BridgeType,
   UiMarketWithToken,
   WalletConnectStatus
 } from '@/types'
@@ -117,6 +121,13 @@ watch(
     setSubaccountStreams()
   }
 )
+
+useIntervalFn(() => {
+  Promise.all([
+    BankBalanceIntegrityStrategy.make().validate(),
+    SubaccountBalanceIntegrityStrategy.make().validate()
+  ])
+}, 30 * 1000)
 </script>
 
 <template>
