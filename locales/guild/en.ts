@@ -75,13 +75,9 @@ export default {
       insufficientBalance: 'Insufficient balance',
       findAGuildToJoin: 'Find a guild to join',
       insufficientBalanceDescription: ({ named }: I18nMessageFunction) =>
-        `You will need at least ${named('amount')} ${named(
+        `A guild master must have at least ${named('amount')} ${named(
           'symbol'
-        )} in the wallet to create a guild, and to maintain min. ${named(
-          'amount'
-        )} ${named(
-          'symbol'
-        )} for the guild to be eligible for winning rewards.`,
+        )} in the wallet throughout the whole competition, including at time of creation.`,
       characters: 'characters',
       balanceInWallet: ({ named }: I18nMessageFunction) =>
         `${named('symbol')} balance in wallet:`,
@@ -100,11 +96,11 @@ export default {
     },
 
     alreadyPartOfGuild: {
-      title: 'Already part of a guild',
+      title: 'Already a member of a guild',
       description: ({ named }: I18nMessageFunction) =>
         `${named(
           'address'
-        )} is already part of a guild, during the campaign every account is allowed to participate in one guild.`
+        )}  is already a part of a guild. Each address can only be a part of one guild during the competition.`
     }
   }
 }
