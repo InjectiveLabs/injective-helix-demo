@@ -5,6 +5,7 @@ import {
   getDefaultSpotMarketRouteParams,
   getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
+import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   DefaultMarket,
@@ -27,7 +28,9 @@ function handleSpotTradeClickedTrack() {
 
 function handlePerpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: DefaultMarket.Perpetual,
+    market: IS_TESTNET
+      ? DefaultMarket.PerpetualTestnet
+      : DefaultMarket.Perpetual,
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
