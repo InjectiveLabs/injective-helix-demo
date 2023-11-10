@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { useCampaignStore } from 'store/campaign'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
+import { MainPage } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -27,7 +27,7 @@ onWalletConnected(() => {
     .then(() => {
       if (!campaignStore.campaign) {
         error({ title: t('campaign.campaignNotFound') })
-        navigateTo({ name: 'index' })
+        navigateTo({ name: MainPage.Index })
       }
     })
     .catch($onError)
@@ -57,7 +57,7 @@ function fetchCampaign({ skip }: { skip: number }) {
     .then(() => {
       if (!campaignStore.campaign) {
         error({ title: t('campaign.campaignNotFound') })
-        navigateTo({ name: 'index' })
+        navigateTo({ name: MainPage.Index })
       }
     })
     .catch($onError)

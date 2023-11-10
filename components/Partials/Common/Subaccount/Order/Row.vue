@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeLimitOrder,
   UiSpotLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
+import { TradeSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
@@ -24,7 +24,7 @@ const props = defineProps({
   }
 })
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 
 const status = reactive(new Status(StatusType.Idle))
 

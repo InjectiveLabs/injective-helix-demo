@@ -121,6 +121,7 @@ export interface AmplitudeTrackerUser {
   tierLevel: number
 }
 
+export * from './page'
 export * from './swap'
 export * from './enums'
 export * from './trade'

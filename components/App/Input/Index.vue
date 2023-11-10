@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-
 const slots = useSlots()
 
 const props = defineProps({

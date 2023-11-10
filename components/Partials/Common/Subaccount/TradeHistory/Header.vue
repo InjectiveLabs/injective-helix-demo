@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { TradeSubPage } from '@/types'
+
 const route = useRoute()
 const { t } = useLang()
 
-const isSpot = route.name === 'spot-spot'
+const isSpot = route.name === TradeSubPage.Spot
 
 const totalTooltip = computed(() =>
   isSpot ? t('trade.spotTradeHistoryTotalTooltip') : t('trade.total_tooltip')

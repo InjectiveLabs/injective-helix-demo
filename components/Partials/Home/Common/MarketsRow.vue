@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiMarketHistory,
@@ -13,12 +12,12 @@ import {
   MARKETS_HISTORY_CHART_SEVEN_DAYS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Change, TradeClickOrigin } from '@/types'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { Change, MainPage, TradeClickOrigin } from '@/types'
 
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
@@ -123,7 +122,7 @@ const chartIsPositive = computed(() => {
 const marketRoute = computed(() => {
   const marketRoute = getMarketRoute(props.market)
 
-  return marketRoute || { name: 'markets' }
+  return marketRoute || { name: MainPage.Markets }
 })
 
 watch(

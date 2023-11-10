@@ -1,4 +1,5 @@
 import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
+import { MainPage, TradeSubPage } from '../../../types'
 
 export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: boolean = isDevnet(network)
@@ -84,15 +85,19 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = ['activity', 'account', 'bridge']
+  const walletConnectedRequiredRouteNames = [
+    MainPage.Bridge,
+    MainPage.Account,
+    MainPage.Activity
+  ]
 
   // Layout routes
   const footerEnabledRoutes = [
-    'index',
-    'markets',
-    'fee-discounts',
-    'leaderboard',
-    'lp-rewards'
+    MainPage.Index,
+    MainPage.Markets,
+    MainPage.LpRewards,
+    MainPage.Leaderboard,
+    MainPage.FeeDiscounts
   ]
 
   const customStaticRoutes: string[] = []
@@ -100,12 +105,12 @@ export const getRoutes = (network: Network, env: string) => {
   // const deprecatedMarketsRoutes = []
 
   const derivativeMarketRouteNames = [
-    'perpetuals-perpetual',
-    'futures-futures',
-    'binary-options-binaryOption',
-    'derivatives-derivative'
+    TradeSubPage.Futures,
+    TradeSubPage.Perpetual,
+    TradeSubPage.Derivatives,
+    TradeSubPage.BinaryOption
   ]
-  const spotMarketRouteNames = ['spot-spot']
+  const spotMarketRouteNames = [TradeSubPage.Spot]
 
   // Market we want to load to the app state but we don't want to show on the UI
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']

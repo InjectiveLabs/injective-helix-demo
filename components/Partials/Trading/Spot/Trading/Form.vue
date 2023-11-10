@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'

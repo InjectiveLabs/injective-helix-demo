@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MainPage } from '@/types'
 
 const router = useRouter()
 const walletStore = useWalletStore()
@@ -27,7 +28,7 @@ watch(
   () => walletStore.isUserWalletConnected,
   (isConnected) => {
     if (!isConnected) {
-      router.replace({ name: 'trading-bots-liquidity-bots-spot' })
+      router.replace({ name: MainPage.TradingBotsLiquidityBotsSpot })
     }
   },
   { immediate: true }

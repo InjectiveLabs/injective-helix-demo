@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { DropdownOptionWithToken } from '@/types'
 
 const props = defineProps({

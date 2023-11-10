@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
 import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 

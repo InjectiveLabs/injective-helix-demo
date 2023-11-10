@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import type { Token } from '@injectivelabs/token-metadata'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { usdcTokenDenom } from '@/app/data/token'

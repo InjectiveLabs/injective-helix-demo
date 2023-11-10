@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { UiMarketWithToken } from '@/types'
 import { MAX_SYMBOL_LENGTH, SYMBOL_DISPLAY_LENGTH } from '@/app/utils/constants'
 

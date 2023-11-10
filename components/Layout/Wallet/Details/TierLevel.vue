@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
+import { MainPage } from '@/types'
 
 const exchangeStore = useExchangeStore()
 
@@ -62,7 +63,7 @@ const makerFeeDiscount = computed(() => {
     </span>
 
     <NuxtLink
-      :to="{ name: 'fee-discounts' }"
+      :to="{ name: MainPage.FeeDiscounts }"
       class="text-green-500 hover:opacity-80 flex items-center gap-2"
     >
       <span>

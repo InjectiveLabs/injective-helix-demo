@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import {
   UiDerivativeMarketWithToken,

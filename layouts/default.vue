@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
+import { BusEvents, MainPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -19,7 +19,7 @@ const isOpenSidebar = ref(false)
 const container = computed(() => document.getElementById('pro'))
 
 const showFooter = computed(() =>
-  ROUTES.footerEnabledRoutes.includes(route.name as string)
+  ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
 )
 
 onMounted(() => {

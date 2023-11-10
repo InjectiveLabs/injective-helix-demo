@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 
 const props = defineProps({

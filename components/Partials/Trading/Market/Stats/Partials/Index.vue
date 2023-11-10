@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistance, format } from 'date-fns'
 import {
@@ -356,11 +355,11 @@ useIntervalFn(() => {
       </CommonMarketInfo>
       <PartialsTradingMarketStatsPartialsNextFunding
         v-if="market.subType === MarketType.Perpetual"
-        :market="(market as UiDerivativeMarketWithToken)"
+        :market="market as UiDerivativeMarketWithToken"
       />
       <PartialsTradingMarketStatsPartialsSettlement
         v-if="market.subType === MarketType.BinaryOptions"
-        :market="(market as UiDerivativeMarketWithToken)"
+        :market="market as UiDerivativeMarketWithToken"
       />
       <CommonMarketInfo
         v-if="market.subType === MarketType.Futures && timeToExpiry"

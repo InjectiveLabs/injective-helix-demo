@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PropType } from 'vue'
+
 import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import {
   AccountBalance,
