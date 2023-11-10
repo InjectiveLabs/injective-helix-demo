@@ -32,9 +32,7 @@ export const createGuild = async ({
         id: generateUniqueHash({
           value: `${Date.now()}`,
           limit: GUILD_HASH_CHAR_LIMIT
-        }),
-        // todo: remove this later when contract updates
-        description: 'description placeholder'
+        })
       }
     }
   })

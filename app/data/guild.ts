@@ -20,22 +20,3 @@ export const thumbnailMap = {
   19: '/guild/thumbnail/shield.svg',
   20: '/guild/thumbnail/shield.svg'
 } as Record<string, string>
-
-export const guildNames = [
-  'The Market Masters',
-  'The Trading Titans',
-  'The Profit Seekers',
-  'The Ninja Clan',
-  'The Market Wizards',
-  'The Trading Alliance',
-  'The Wealth Builders',
-  'The Trade Syndicate',
-  'The Market Analysts',
-  'The Trading Legends',
-  'The Hidden Order',
-  'The Ninja Brotherhood',
-  'The Forgotten Traders',
-  'The Hodlers',
-  'The Stealth Squad',
-  'The Moon Boys'
-] as string[]

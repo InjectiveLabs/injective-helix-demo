@@ -54,57 +54,59 @@ function onConnectWallet() {
 
 <template>
   <div>
-    <h2 class="text-6xl font-bold uppercase">
-      {{ $t('guild.title') }}
-    </h2>
-    <p class="text-lg">
-      {{ $t('guild.description') }}
-    </p>
-
-    <div
-      class="flex items-center gap-10 font-semibold text-2xl mt-10 flex-wrap"
-    >
-      <div class="space-y-2">
-        <p class="text-sm text-gray-475">
-          {{ $t('guild.guilds') }}
-        </p>
-        <p>{{ summary.totalGuildsCount }}</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-475">
-          {{ $t('guild.participants') }}
-        </p>
-        <p>{{ summary.totalMembersCount }}</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-475">
-          {{ $t('guild.totalRewards') }}
-        </p>
-        <p class="uppercase">{{ totalRewardsToString }} INJ</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-475">
-          {{ $t('guild.currentSeason') }}
-        </p>
-        <p>{{ campaignDateRange }}</p>
-      </div>
-    </div>
-
-    <div class="mt-8">
-      <AppButton class="bg-blue-500 text-white">
-        <div class="flex items-center gap-1">
-          <span>{{ $t('guild.campaignRules') }}</span>
-        </div>
-      </AppButton>
-    </div>
-
-    <div class="mt-20">
-      <h2 class="text-2xl font-bold">
-        {{ $t('guild.howToParticipate.title') }}
+    <section class="text-center">
+      <h2 class="text-6xl font-bold uppercase">
+        {{ $t('guild.title') }}
       </h2>
+      <p class="text-lg max-w-screen-sm mx-auto">
+        {{ $t('guild.description') }}
+      </p>
+
+      <div
+        class="flex items-center justify-center gap-10 font-semibold text-2xl mt-10 flex-wrap"
+      >
+        <div class="space-y-2">
+          <p class="text-sm text-gray-475">
+            {{ $t('guild.guilds') }}
+          </p>
+          <p>{{ summary.totalGuildsCount }}</p>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-sm text-gray-475">
+            {{ $t('guild.participants') }}
+          </p>
+          <p>{{ summary.totalMembersCount }}</p>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-sm text-gray-475">
+            {{ $t('guild.totalRewards') }}
+          </p>
+          <p class="uppercase">{{ totalRewardsToString }} INJ</p>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-sm text-gray-475">
+            {{ $t('guild.currentSeason') }}
+          </p>
+          <p>{{ campaignDateRange }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-20">
+      <div class="flex justify-between items-center gap-10">
+        <h2 class="text-2xl font-bold">
+          {{ $t('guild.howToParticipate.title') }}
+        </h2>
+
+        <AppButton class="bg-blue-500 text-white">
+          <div class="flex items-center gap-1">
+            <span>{{ $t('guild.campaignRules') }}</span>
+          </div>
+        </AppButton>
+      </div>
 
       <section class="grid lg:grid-cols-2 gap-10 pt-6">
         <article class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg">
@@ -158,6 +160,6 @@ function onConnectWallet() {
           </NuxtLink>
         </article>
       </section>
-    </div>
+    </section>
   </div>
 </template>

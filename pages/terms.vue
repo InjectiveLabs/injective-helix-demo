@@ -5,7 +5,7 @@
         <span>Terms and Conditions</span>
       </h1>
       <p class="font-semibold mt-2">
-        <span>Last updated: 10.31.2023</span>
+        <span>Last updated: 11.10.2023</span>
       </p>
 
       <p class="mt-4">
@@ -843,21 +843,21 @@
       </p>
 
       <p class="mt-4">
-        If you choose to add liquidity through the Site’s LP Rewards function,
-        you do so entirely at your own discretion and your own risk. Any funds
-        you use to add liquidity shall remain in your custody at all times. We
-        will not take custody of any such funds. The funds you use to add
-        liquidity through the Site’s LP Rewards function shall be
-        programmatically deployed to add liquidity to the grid trading strategy
-        that you, in your sole discretion, have chosen. Your funds will not be
-        pooled with those of any other user of the Site. As with all other
-        aspects of grid trading, you shall be solely responsible for determining
-        whether or not to add liquidity in light of your investment objectives,
-        risk tolerance, financial situation and needs. Injective makes no
-        representation or warranty as to the outcome of your decision to add
-        liquidity through the Site’s LP Rewards function and will not be liable
-        to you for any loss that might arise from or in connection with your
-        decision to add liquidity.
+        If you choose to participate in Helix Guilds, you do so entirely at your
+        own discretion and your own risk. Any funds you use to participate in
+        Helix Guilds shall remain in your custody at all times. We will not take
+        custody of any such funds. Your funds will not be pooled with those of
+        any other user of the Site. As with all other aspects of trading on the
+        Site, you shall be solely responsible for determining whether or not to
+        participate in light of your investment objectives, risk tolerance,
+        financial situation and needs. Injective makes no representation or
+        warranty as to the outcome of your decision to participate in Helix
+        Guilds and will not be liable to you for any loss that might arise from
+        or in connection with your decision to participate in Helix Guilds. If
+        you qualify to select a name for a Helix Guild, you should exercise good
+        judgment in choosing a name that will not be offensive to the community.
+        By using Helix Guilds, you agree that potentially offensive Helix Guild
+        names set by users may be altered by the Site.
       </p>
 
       <p class="mt-4">

@@ -2,7 +2,6 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
-import { guildNames } from '@/app/data/guild'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -13,17 +12,11 @@ const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const MAX_CHARACTERS = 30
+const MAX_CHARACTERS = 10
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
 const MIN_AMOUNT = 10000
 const JOIN_GUILD_LINK = 'https://twitter.com/HelixApp_'
-
-const filteredGuildNames = computed(() =>
-  guildNames.filter(
-    (name) => !campaignStore.guildsByTVL.find((guild) => guild.name === name)
-  )
-)
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -130,29 +123,18 @@ watch(
         <span class="font-bold">
           {{ $t('guild.createGuild.name') }}
         </span>
-        <!-- <span class="text-gray-450">
+        <span class="text-gray-450">
           {{ name?.length || 0 }} / {{ MAX_CHARACTERS }}
           {{ $t('guild.createGuild.characters') }}
-        </span> -->
+        </span>
       </div>
 
-      <AppSelectField
-        v-model="name"
-        :options="
-          filteredGuildNames.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
-        popper-class="nestedDropdown"
-        :placeholder="$t('guild.createGuild.selectName')"
-      />
-      <!-- <AppInput
+      <AppInput
         v-model="name"
         sm
         wrapper-classes="p-2"
         :placeholder="$t('guild.createGuild.namePlaceholder')"
-      /> -->
+      />
       <p
         v-if="nameErrors[0]"
         class="text-red-500 first-letter:uppercase text-sm mt-1"
@@ -262,9 +244,3 @@ watch(
     </div>
   </AppModal>
 </template>
-
-<style>
-.nestedDropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-850 border-blue-300 border shadow-primaryBlue;
-}
-</style>

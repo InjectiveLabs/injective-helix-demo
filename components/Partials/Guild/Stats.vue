@@ -63,7 +63,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
 
       <div>
         <p class="text-gray-475 text-sm">
-          {{ $t('guild.leaderboard.table.tvl') }}
+          {{ $t('guild.leaderboard.table.totalTIABalance') }}
         </p>
         <p class="mt-3">{{ tvlScoreToString }} {{ token?.symbol }}</p>
       </div>

@@ -54,7 +54,7 @@ const lastUpdated = computed(() => {
               <span v-if="isVolume">
                 {{ $t('guild.leaderboard.table.tradingVolume') }}
               </span>
-              <span v-else>{{ $t('guild.leaderboard.table.averageTvl') }}</span>
+              <span v-else>{{ $t('guild.leaderboard.table.balance') }}</span>
             </th>
             <th class="min-w-[40px]" />
           </tr>

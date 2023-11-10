@@ -56,8 +56,8 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
       <div class="p-3"><AppDotStatus :is-active="guild.isActive" /></div>
     </td>
     <td class="text-right">
-      <div v-if="isVolume" class="p-3">{{ tvlScoreToString }} INJ</div>
-      <div v-else class="p-3">{{ volumeScoreToString }} USD</div>
+      <div v-if="isVolume" class="p-3">{{ volumeScoreToString }} USD</div>
+      <div v-else class="p-3">{{ tvlScoreToString }} INJ</div>
     </td>
     <td class="text-right">
       <div class="p-3">

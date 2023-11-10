@@ -225,10 +225,28 @@ watch(lastUpdated, () => {
                       {{ $t('guild.leaderboard.table.address') }}
                     </th>
                     <th class="p-4 text-right">
-                      {{ $t('guild.leaderboard.table.averageTvl') }}
+                      <CommonHeaderTooltip
+                        :tooltip="
+                          $t('guild.leaderboard.table.tiaBalanceTooltip')
+                        "
+                      >
+                        <span>
+                          {{
+                            $t(
+                              'guild.leaderboard.table.weightedAverageTiaBalance'
+                            )
+                          }}
+                        </span>
+                      </CommonHeaderTooltip>
                     </th>
                     <th class="p-4 text-right">
-                      {{ $t('guild.leaderboard.table.tradingVolume') }}
+                      <CommonHeaderTooltip
+                        :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
+                      >
+                        <span>
+                          {{ $t('guild.leaderboard.table.tradingVolume') }}
+                        </span>
+                      </CommonHeaderTooltip>
                     </th>
                   </tr>
                 </thead>
