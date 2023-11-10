@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityField, ActivityPage } from '@/types'
+import { ActivityField, ActivitySubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -69,7 +69,7 @@ function handleCancelOrders() {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.DerivativeOpenOrders}`">
+      <Teleport :to="`#${ActivitySubPage.Derivatives}`">
         <span class="ml-1">({{ filteredOrders.length }})</span>
       </Teleport>
     </ClientOnly>

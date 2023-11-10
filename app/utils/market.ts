@@ -11,10 +11,12 @@ import {
 } from '@injectivelabs/utils'
 import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
 import {
+  MarketRoute,
+  TradeSubPage,
   DefaultMarket,
-  MarketCategoryType,
   MarketQuoteType,
-  MarketRoute
+  MarketCategoryType,
+  TradingBotsSubPage
 } from '@/types'
 import {
   upcomingMarkets,
@@ -29,7 +31,7 @@ export const getMarketRoute = (
 ): MarketRoute => {
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
-      name: 'market-market',
+      name: TradeSubPage.Market,
       params: {
         market: market.slug
       }
@@ -38,7 +40,7 @@ export const getMarketRoute = (
 
   if (deprecatedMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
-      name: 'market-market',
+      name: TradeSubPage.Market,
       params: {
         market: market.slug
       }
@@ -48,7 +50,7 @@ export const getMarketRoute = (
   if (market.type === MarketType.Derivative) {
     if (market.subType === MarketType.BinaryOptions) {
       return {
-        name: 'binary-options-binaryOption',
+        name: TradeSubPage.BinaryOption,
         params: {
           binaryOption: market.slug
         }
@@ -57,7 +59,7 @@ export const getMarketRoute = (
 
     if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
       return {
-        name: 'futures-futures',
+        name: TradeSubPage.Futures,
         params: {
           futures: market.slug
         }
@@ -66,7 +68,7 @@ export const getMarketRoute = (
 
     /* Default derivative market route */
     return {
-      name: 'derivatives-derivative',
+      name: TradeSubPage.Derivatives,
       params: {
         derivative: market.slug
       }
@@ -75,7 +77,7 @@ export const getMarketRoute = (
 
   if (market.type === MarketType.Spot) {
     return {
-      name: 'spot-spot',
+      name: TradeSubPage.Spot,
       params: {
         spot: market.slug
       }
@@ -83,7 +85,7 @@ export const getMarketRoute = (
   }
 
   return {
-    name: 'market-market',
+    name: TradeSubPage.Market,
     params: {
       market: market.slug
     }
@@ -92,7 +94,7 @@ export const getMarketRoute = (
 
 export const getDefaultPerpetualMarketRouteParams = () => {
   return {
-    name: 'futures-futures',
+    name: TradeSubPage.Futures,
     params: {
       futures: DefaultMarket.Perpetual
     }
@@ -101,7 +103,7 @@ export const getDefaultPerpetualMarketRouteParams = () => {
 
 export const getDefaultSpotMarketRouteParams = () => {
   return {
-    name: 'spot-spot',
+    name: TradeSubPage.Spot,
     params: {
       spot: DefaultMarket.Spot
     }
@@ -110,7 +112,7 @@ export const getDefaultSpotMarketRouteParams = () => {
 
 export const getDefaultGridSpotMarketRouteParams = () => {
   return {
-    name: 'trading-bots-grid-spot-market',
+    name: TradingBotsSubPage.GridSpotMarket,
     params: {
       market: DefaultMarket.Spot
     }

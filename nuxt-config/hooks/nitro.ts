@@ -2,6 +2,7 @@ import path from 'path'
 import { NitroConfig } from 'nitropack'
 import { Network } from '@injectivelabs/networks'
 import { getRoutes } from './../../app/utils/constants/routes'
+import { TradeSubPage } from './../../types/page'
 
 const VITE_ENV = process.env.VITE_ENV as string
 const VITE_NETWORK = process.env.VITE_NETWORK as Network
@@ -62,18 +63,18 @@ export default {
         children: []
       },
       {
-        name: 'binary-options-binaryOption',
+        name: TradeSubPage.BinaryOption,
         path: '/binary-options/:binaryOption',
         file: resolvePagePath('pages/futures/[futures].vue'),
         children: []
       },
       {
-        name: 'derivative-derivative',
+        name: TradeSubPage.Derivatives,
         path: '/derivative/:derivative',
         file: resolvePagePath('pages/futures/[futures].vue')
       },
       {
-        name: 'perpetual-perpetual',
+        name: TradeSubPage.Perpetual,
         path: '/perpetual/:perpetual',
         file: resolvePagePath('pages/futures/[futures].vue')
       }

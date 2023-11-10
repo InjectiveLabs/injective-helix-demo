@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 
@@ -24,7 +24,7 @@ function handleClose() {
       </span>
       <NuxtLink
         class="whitespace-nowrap w-full bg-blue-500 text-black rounded"
-        :to="{ name: 'account' }"
+        :to="{ name: MainPage.Account }"
       >
         <div
           class="flex items-center justify-center py-2 text-blue-900 font-bold"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MainPage, AuctionSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
@@ -57,7 +58,10 @@ useIntervalFn(() => {
   <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 min-h-screen pb-20">
     <div>
       <NuxtLink
-        :to="`/auctions?showAuctions=true`"
+        :to="{
+          name: MainPage.Auctions,
+          query: { showActions: 'true' }
+        }"
         class="flex items-center text-2xl space-x-4 py-4 hover:text-blue-400 transition-colors duration-300"
       >
         <BaseIcon name="chevron" />
@@ -70,9 +74,11 @@ useIntervalFn(() => {
 
       <div class="flex space-x-4 py-4 md:py-8">
         <NuxtLink
-          :to="`/auctions/${
-            market.slug
-          }?showAuctions=true&isUpcoming=${!!isUpcoming}`"
+          :to="{
+            name: AuctionSubPage.Details,
+            params: { auction: market.slug },
+            query: { showActions: 'true', isUpcoming: `${!!isUpcoming}` }
+          }"
         >
           Project Details
         </NuxtLink>
@@ -82,9 +88,11 @@ useIntervalFn(() => {
             walletStore.isUserWalletConnected &&
             $route.query.isUpcoming === 'false'
           "
-          :to="`/auctions/${
-            market.slug
-          }/bids/?showAuctions=true&isUpcoming=${!!isUpcoming}`"
+          :to="{
+            name: AuctionSubPage.Bids,
+            params: { auction: market.slug },
+            query: { showActions: 'true', isUpcoming: `${!!isUpcoming}` }
+          }"
         >
           My Bids
         </NuxtLink>

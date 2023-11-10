@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { AccountBalance, BridgeField, TradeField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 import { usdcTokenDenom } from '@/app/data/token'

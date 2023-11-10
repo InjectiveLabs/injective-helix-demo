@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { upcomingMarkets } from '@/app/data/market'
 import { getHubUrl } from '@/app/utils/helpers'
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
@@ -17,7 +17,7 @@ const isModalOpen = computed(() => modalStore.modals[Modal.MarketNew])
 
 function closeModal() {
   modalStore.closeModal(Modal.MarketNew)
-  router.push({ name: 'index' })
+  router.push({ name: MainPage.Index })
 }
 
 function onModalClose() {

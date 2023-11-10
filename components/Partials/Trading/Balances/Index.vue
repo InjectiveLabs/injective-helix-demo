@@ -1,17 +1,21 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
+import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   BankBalanceIntegrityStrategy,
   SubaccountBalanceIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
+import {
+  MainPage,
+  BridgeType,
+  UiMarketWithToken,
+  WalletConnectStatus
+} from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -148,7 +152,7 @@ useIntervalFn(() => {
         </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
-          :to="{ name: 'account' }"
+          :to="{ name: MainPage.Account }"
           class="text-blue-500 text-2xs font-semibold"
         >
           {{ $t('marketPage.account') }}
@@ -173,7 +177,7 @@ useIntervalFn(() => {
 
               <BaseNuxtLink
                 :to="{
-                  name: 'bridge',
+                  name: MainPage.Bridge,
                   query: {
                     type: BridgeType.Deposit,
                     denom: isSpot

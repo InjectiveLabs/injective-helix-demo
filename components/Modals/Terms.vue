@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 
@@ -34,7 +34,7 @@ function closeModal() {
           <NuxtLink
             target="_blank"
             class="text-blue-500 hover:text-opacity-80"
-            :to="{ name: 'terms' }"
+            :to="{ name: MainPage.Terms }"
           >
             {{ $t('terms.termsAndCondition') }}
           </NuxtLink>

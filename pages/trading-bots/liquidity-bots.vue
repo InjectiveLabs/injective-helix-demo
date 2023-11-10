@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import useQueryRef from 'composables/useQueryRef'
+import { MainPage } from '@/types'
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -53,7 +53,7 @@ onMounted(() => {
 
       <div class="space-x-4 my-2">
         <NuxtLink
-          :to="{ name: 'trading-bots-liquidity-bots-spot' }"
+          :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
           active-class="underline"
           class="text-xl font-semibold"
         >
@@ -62,7 +62,7 @@ onMounted(() => {
 
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
-          :to="{ name: 'trading-bots-liquidity-bots-spot-history' }"
+          :to="{ name: MainPage.TradingBotsLiquidityBotsSpotHistory }"
           active-class="underline"
           class="text-xl font-semibold"
         >

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getHubUrl } from '@/app/utils/helpers'
 

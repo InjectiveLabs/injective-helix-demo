@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
 

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityTab } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 defineProps({
   status: {
@@ -20,22 +19,22 @@ const { t } = useLang()
 const tabs = computed(() => [
   {
     label: t('activity.positions'),
-    to: { name: ActivityTab.Positions },
+    to: { name: ActivitySubPage.Positions },
     count: positionStore.subaccountPositionsCount
   },
   {
     label: t('activity.derivativeOrders'),
-    to: { name: ActivityTab.Derivatives },
+    to: { name: ActivitySubPage.Derivatives },
     count: derivativeStore.subaccountOrdersCount
   },
   {
     label: t('activity.spotOrders'),
-    to: { name: ActivityTab.Spot },
+    to: { name: ActivitySubPage.Spot },
     count: spotStore.subaccountOrdersCount
   },
   {
     label: t('activity.walletHistory'),
-    to: { name: ActivityTab.WalletHistory }
+    to: { name: ActivitySubPage.WalletHistory }
   }
 ])
 

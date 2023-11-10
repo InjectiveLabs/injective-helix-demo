@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal, TradeField, TradeForm } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { Modal, MainPage, TradeField, TradeForm } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -89,7 +88,7 @@ function handleNavigation() {
     modalStore.closeModal(Modal.ConvertUsdc)
   }
 
-  router.push({ name: 'account' })
+  router.push({ name: MainPage.Account })
 }
 </script>
 
