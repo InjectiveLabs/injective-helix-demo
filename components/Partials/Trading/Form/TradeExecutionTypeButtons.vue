@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TradeExecutionType, TradeField } from '@/types'
+import { TradeExecutionType, TradeField, TradeSubPage } from '@/types'
 
 const { t } = useLang()
 const route = useRoute()
@@ -19,7 +19,7 @@ const dropdownOptions = [
   }
 ]
 
-const isSpot = route.name === 'spot-spot'
+const isSpot = route.name === TradeSubPage.Spot
 
 const { value: tradingType } = useStringField({
   name: TradeField.TradingType,

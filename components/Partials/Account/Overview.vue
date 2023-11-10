@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
+  BTC_COIN_GECKO_ID,
   HIDDEN_BALANCE_DISPLAY,
-  UI_MINIMAL_ABBREVIATION_FLOOR,
-  BTC_COIN_GECKO_ID
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeType, Modal } from '@/types'
+import { AccountBalance, MainPage, BridgeType, Modal } from '@/types'
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
@@ -160,7 +160,7 @@ function handleTransferClick() {
       <div class="flex items-center justify-between md:justify-end sm:gap-4">
         <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }"
+          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Deposit } }"
         >
           <AppButton class="bg-blue-500">
             <span class="text-blue-900 font-semibold">
@@ -171,7 +171,7 @@ function handleTransferClick() {
 
         <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
+          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Withdraw } }"
         >
           <AppButton class="border border-blue-500">
             <span class="text-blue-500 font-semibold">

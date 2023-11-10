@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { RouteLocationNamedRaw } from 'vue-router'
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
 const slots = useSlots()
@@ -11,14 +11,14 @@ const props = defineProps({
   route1: {
     type: Object as PropType<RouteLocationNamedRaw>,
     default: () => ({
-      name: 'index'
+      name: MainPage.Index
     })
   },
 
   route2: {
     type: Object as PropType<RouteLocationNamedRaw>,
     default: () => ({
-      name: 'index'
+      name: MainPage.Index
     })
   },
 
@@ -35,7 +35,7 @@ const isModalOpen = computed(
 )
 
 onMounted(() => {
-  if (route.name === 'index') {
+  if (route.name === MainPage.Index) {
     init()
   }
 })

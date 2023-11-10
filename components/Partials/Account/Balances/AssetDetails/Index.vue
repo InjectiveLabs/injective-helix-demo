@@ -1,11 +1,18 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { AccountBalance, BridgeType, BusEvents, Modal } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import {
+  Modal,
+  MainPage,
+  BusEvents,
+  BridgeType,
+  TradeSubPage,
+  AccountBalance
+} from '@/types'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
@@ -196,7 +203,7 @@ function handleClose() {
                   v-for="{ market, summary } in filteredMarketsWithSummary"
                   :key="market.slug"
                   :to="{
-                    name: 'spot-spot',
+                    name: TradeSubPage.Spot,
                     params: { spot: market.slug }
                   }"
                 >
@@ -219,7 +226,7 @@ function handleClose() {
             <BaseNuxtLink
               class="w-full"
               :to="{
-                name: 'bridge',
+                name: MainPage.Bridge,
                 query: {
                   type: BridgeType.Deposit,
                   denom: accountBalance.token.denom
@@ -238,7 +245,7 @@ function handleClose() {
             <BaseNuxtLink
               class="w-full"
               :to="{
-                name: 'bridge',
+                name: MainPage.Bridge,
                 query: {
                   type: BridgeType.Withdraw,
                   denom: accountBalance.token.denom

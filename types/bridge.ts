@@ -1,6 +1,10 @@
 import type { Token } from '@injectivelabs/token-metadata'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { BridgeField, BridgeType, SubaccountTransferField } from '@/types'
+import {
+  BridgeType,
+  BridgeField,
+  SubaccountTransferField
+} from '../types/enums'
 
 export type BridgeForm = {
   [BridgeField.Amount]: string

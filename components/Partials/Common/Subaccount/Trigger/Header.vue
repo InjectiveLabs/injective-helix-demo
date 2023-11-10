@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { TradeSubPage } from '@/types'
+
 const route = useRoute()
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 </script>
 
 <template>

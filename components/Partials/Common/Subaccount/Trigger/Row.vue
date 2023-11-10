@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { Status } from '@injectivelabs/utils'
+import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
+import { TradeSubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const route = useRoute()
@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 
 const status = reactive(new Status())
 

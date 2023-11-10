@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ActivityPage } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 const { t } = useLang()
 
 const tabs = [
   {
     label: t('walletHistory.transfers.transfers'),
-    value: ActivityPage.WalletHistoryTransfers
+    value: ActivitySubPage.WalletHistory
   },
   {
     label: t('walletHistory.deposits'),
-    value: ActivityPage.WalletHistoryDeposits
+    value: ActivitySubPage.WalletHistoryDeposits
   },
   {
     label: t('walletHistory.withdrawals'),
-    value: ActivityPage.WalletHistoryWithdrawals
+    value: ActivitySubPage.WalletHistoryWithdrawals
   }
 ]
 </script>

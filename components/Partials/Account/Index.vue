@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
 import {
   INJ_COIN_GECKO_ID,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { BusEvents, Modal, USDCSymbol } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import type { Token } from '@injectivelabs/token-metadata'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
+import { BusEvents, MainPage, Modal, AccountSubpage, USDCSymbol } from '@/types'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -112,11 +112,16 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 
       <div class="h-full-flex">
         <CommonTabMenu>
-          <CommonTabMenuLinkItem v-bind="{ to: { name: 'account' } }" is-index>
+          <CommonTabMenuLinkItem
+            v-bind="{ to: { name: MainPage.Account } }"
+            is-index
+          >
             {{ $t('account.tabs.balances') }}
           </CommonTabMenuLinkItem>
 
-          <CommonTabMenuLinkItem v-bind="{ to: { name: 'account-positions' } }">
+          <CommonTabMenuLinkItem
+            v-bind="{ to: { name: AccountSubpage.Positions } }"
+          >
             {{ $t('account.tabs.positions') }}
           </CommonTabMenuLinkItem>
         </CommonTabMenu>

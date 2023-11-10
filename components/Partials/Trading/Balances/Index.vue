@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
-import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
+  BridgeType,
+  MainPage,
+  UiMarketWithToken,
+  WalletConnectStatus
+} from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -137,7 +141,7 @@ watch(
         </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
-          :to="{ name: 'account' }"
+          :to="{ name: MainPage.Account }"
           class="text-blue-500 text-2xs font-semibold"
         >
           {{ $t('marketPage.account') }}
@@ -162,7 +166,7 @@ watch(
 
               <BaseNuxtLink
                 :to="{
-                  name: 'bridge',
+                  name: MainPage.Bridge,
                   query: {
                     type: BridgeType.Deposit,
                     denom: isSpot

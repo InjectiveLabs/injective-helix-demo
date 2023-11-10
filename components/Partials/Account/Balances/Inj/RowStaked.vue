@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { MainPage } from '@/types'
 
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
@@ -132,7 +133,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           >
             <NuxtLink
-              :to="{ name: 'fee-discounts' }"
+              :to="{ name: MainPage.FeeDiscounts }"
               class="text-blue-500 text-sm font-medium"
             >
               {{ 'View Fee Discounts' }}

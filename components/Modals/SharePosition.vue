@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'

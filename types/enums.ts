@@ -346,29 +346,6 @@ export enum PaginationState {
   QueryMoreThanTotalPage = 'query-more-than-total-page'
 }
 
-export enum ActivityPage {
-  OpenPositions = 'activity-positions',
-  FundingPayments = 'activity-positions-funding-payments',
-  DerivativeOpenOrders = 'activity-derivatives',
-  DerivativeTriggers = 'activity-derivatives-triggers',
-  DerivativeOrderHistory = 'activity-derivatives-order-history',
-  DerivativeTradeHistory = 'activity-derivatives-trade-history',
-  SpotOpenOrders = 'activity-spot',
-  SpotOrderHistory = 'activity-spot-order-history',
-  SpotTradeHistory = 'activity-spot-trade-history',
-  SwapHistory = 'activity-spot-swap-history',
-  WalletHistoryTransfers = 'activity-wallet-history',
-  WalletHistoryDeposits = 'activity-wallet-history-deposits',
-  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
-}
-
-export enum ActivityTab {
-  Spot = 'activity-spot',
-  Positions = 'activity-positions',
-  Derivatives = 'activity-derivatives',
-  WalletHistory = 'activity-wallet-history'
-}
-
 export enum AuctionTradingField {
   BidPrice = 'bidPrice',
   BaseAmount = 'baseAmount',

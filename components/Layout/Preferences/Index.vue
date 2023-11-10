@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ROUTES } from '@/app/utils/constants'
+import { TradeSubPage } from '@/types'
 
 const route = useRoute()
 
@@ -7,7 +8,7 @@ const isTradingRoute = computed(() =>
   [
     ...ROUTES.spotMarketRouteNames,
     ...ROUTES.derivativeMarketRouteNames
-  ].includes(route.name as string)
+  ].includes(route.name as TradeSubPage)
 )
 </script>
 <template>

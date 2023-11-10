@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeType } from '@/types'
+import { MainPage, AccountBalance, BridgeType } from '@/types'
 
 const accountStore = useAccountStore()
 
@@ -184,7 +183,7 @@ const {
 
           <BaseNuxtLink
             :to="{
-              name: 'bridge',
+              name: MainPage.Bridge,
               query: {
                 type: BridgeType.Deposit,
                 denom: balance.token.denom
@@ -204,7 +203,7 @@ const {
 
           <BaseNuxtLink
             :to="{
-              name: 'bridge',
+              name: MainPage.Bridge,
               query: {
                 type: BridgeType.Withdraw,
                 denom: balance.token.denom

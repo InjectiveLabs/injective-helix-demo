@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm } from '@/types'
+import { ActivityForm, MainPage, ActivitySubPage } from '@/types'
 
 definePageMeta({
   middleware: [
     'connected',
     'grid-strategy-subaccount',
     (to) => {
-      if (to.name === 'activity') {
-        return navigateTo({ name: 'activity-positions' })
+      if (to.name === MainPage.Activity) {
+        return navigateTo({ name: ActivitySubPage.Positions })
       }
     }
   ]

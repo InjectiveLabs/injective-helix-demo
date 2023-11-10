@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import type { UseScrollReturn } from '@vueuse/core'
 import { createPopperLite } from '@popperjs/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
