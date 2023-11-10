@@ -169,7 +169,7 @@ const sortedMarkets = computed(() => {
         />
       </div>
 
-      <PartialsTradingSidebarSpotPerpetualMarketsTableRows
+      <PartialsTradingSidebarMarketsSpotPerpetualRows
         v-else
         v-bind="{ ...$attrs, isGrid, market, markets: sortedMarkets }"
       />
