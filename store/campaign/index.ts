@@ -120,15 +120,19 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const { info: userGuildInfo } =
-        await indexerGrpcGuildApi.fetchGuildMember({
-          address: walletStore.injectiveAddress,
-          campaignContract: GUILD_CONTRACT_ADDRESS
-        })
+      try {
+        const { info: userGuildInfo } =
+          await indexerGrpcGuildApi.fetchGuildMember({
+            address: walletStore.injectiveAddress,
+            campaignContract: GUILD_CONTRACT_ADDRESS
+          })
 
-      campaignStore.$patch({
-        userGuildInfo
-      })
+        campaignStore.$patch({
+          userGuildInfo
+        })
+      } catch {
+        // silently throw error
+      }
     },
 
     async fetchGuildDetails({

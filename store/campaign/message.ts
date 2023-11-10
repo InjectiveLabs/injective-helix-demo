@@ -1,9 +1,19 @@
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
 import { msgBroadcastClient } from '@/app/Services'
 import { delayPromiseCall } from '@/app/utils/async'
-import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import {
+  GUILD_HASH_CHAR_LIMIT,
+  GUILD_CONTRACT_ADDRESS
+} from '@/app/utils/constants'
+import { generateUniqueHash } from '@/app/utils/formatters'
 
-export const createGuild = async ({ name }: { name: string }) => {
+export const createGuild = async ({
+  name,
+  logo
+}: {
+  name: string
+  logo: string
+}) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const campaignStore = useCampaignStore()
@@ -18,7 +28,13 @@ export const createGuild = async ({ name }: { name: string }) => {
       action: 'create_guild',
       msg: {
         name,
-        description: ''
+        logo,
+        id: generateUniqueHash({
+          value: `${Date.now()}`,
+          limit: GUILD_HASH_CHAR_LIMIT
+        }),
+        // todo: remove this later when contract updates
+        description: 'description placeholder'
       }
     }
   })

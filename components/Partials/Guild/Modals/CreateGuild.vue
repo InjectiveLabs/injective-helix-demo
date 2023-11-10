@@ -80,7 +80,8 @@ async function onSubmit() {
 
   campaignStore
     .createGuild({
-      name: name.value
+      name: name.value,
+      logo: thumbnail.value
     })
     .then(() => {
       success({

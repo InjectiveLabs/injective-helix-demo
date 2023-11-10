@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import { encode, toWords } from 'bech32/index'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
   NETWORK,
   GUILD_ENCODE_KEY,
+  GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from 'app/utils/constants'
+import { generateUniqueHash } from '@/app/utils/formatters'
 import { MainPage } from '@/types'
 
 const route = useRoute()
@@ -51,15 +52,10 @@ const explorerLink = computed(() => {
 })
 
 const guildInvitationHash = computed(() =>
-  encode(
-    '',
-    toWords(
-      Buffer.from(
-        `${GUILD_ENCODE_KEY}${campaignStore.guild?.guildId || 0}`,
-        'utf8'
-      )
-    )
-  )
+  generateUniqueHash({
+    value: `${GUILD_ENCODE_KEY}${campaignStore.guild?.guildId || 0}`,
+    limit: GUILD_HASH_CHAR_LIMIT
+  })
 )
 
 const invitationLink = computed(

@@ -1,11 +1,12 @@
+import keccak256 from 'keccak256'
 import {
   BigNumber,
   BigNumberInBase,
   BigNumberInWei
 } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Coin } from '@injectivelabs/sdk-ts'
 import { type Token } from '@injectivelabs/token-metadata'
+import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 BigNumber.config({
   FORMAT: {
@@ -116,4 +117,14 @@ export const convertCoinToBalancesWithToken = (
     denom: coin.denom,
     balance: coin.amount
   }
+}
+
+export const generateUniqueHash = ({
+  value,
+  limit
+}: {
+  value: string
+  limit: number
+}) => {
+  return keccak256(value).toString('hex').replace('0x', '').slice(0, limit)
 }

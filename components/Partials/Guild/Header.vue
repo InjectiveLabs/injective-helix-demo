@@ -46,6 +46,10 @@ function openCreateGuildModal() {
 
   modalStore.openModal(Modal.CreateGuild)
 }
+
+function onConnectWallet() {
+  modalStore.openModal(Modal.Connect)
+}
 </script>
 
 <template>
@@ -89,7 +93,7 @@ function openCreateGuildModal() {
       </div>
     </div>
 
-    <div v-if="walletStore.isUserWalletConnected" class="mt-20">
+    <div class="mt-20">
       <h2 class="text-2xl font-bold">
         {{ $t('guild.howToParticipate.title') }}
       </h2>
@@ -105,6 +109,15 @@ function openCreateGuildModal() {
           </p>
 
           <AppButton
+            v-if="!walletStore.isUserWalletConnected"
+            class="bg-blue-500 text-white min-w-3xs mt-10"
+            @click="onConnectWallet"
+          >
+            <span class="text-sm">{{ $t('connect.connectWallet') }}</span>
+          </AppButton>
+
+          <AppButton
+            v-else
             class="bg-blue-500 text-white min-w-3xs mt-10"
             @click="openCreateGuildModal"
           >

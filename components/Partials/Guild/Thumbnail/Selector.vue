@@ -23,7 +23,7 @@ const selectedValue = computed({
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-4 mt-2 flex-wrap">
+  <div class="flex items-center gap-4 mt-2 flex-wrap">
     <PartialsGuildThumbnailItem
       v-for="value in Object.keys(thumbnailMap)"
       :key="value"

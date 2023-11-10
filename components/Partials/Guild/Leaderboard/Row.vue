@@ -2,7 +2,7 @@
 import { Guild } from '@injectivelabs/sdk-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
-import { CampaignPage } from '@/types'
+import { CampaignSubPage } from '@/types'
 
 const tokenStore = useTokenStore()
 
@@ -39,12 +39,12 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
       <div class="p-3 flex items-center gap-2">
         <template v-if="isVolume">
           <span>{{ guild.rankByVolume }}</span>
-          <AssetTrophyColor v-if="guild.rankByVolume === 0" />
+          <AssetTrophyColor v-if="guild.rankByVolume === 1" />
         </template>
 
         <template v-else>
           <span>{{ guild.rankByTvl }}</span>
-          <AssetTrophyColor v-if="guild.rankByTvl === 0" />
+          <AssetTrophyColor v-if="guild.rankByTvl === 1" />
         </template>
       </div>
     </td>
@@ -66,7 +66,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         <NuxtLink
           class="text-blue-500 hover:opacity-80"
           :to="{
-            name: CampaignPage.GuildDetails,
+            name: CampaignSubPage.GuildDetails,
             params: { guild: guild.guildId }
           }"
         >

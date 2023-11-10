@@ -39,7 +39,7 @@ useIntervalFn(
 
 <template>
   <AppHocLoading class="h-full container" v-bind="{ status }">
-    <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-10">
+    <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-12">
       <PartialsGuildHeader
         v-if="campaignStore.guildCampaignSummary"
         v-bind="{ summary: campaignStore.guildCampaignSummary }"
@@ -49,7 +49,7 @@ useIntervalFn(
         <h2 class="text-2xl font-bold mb-6">
           {{ $t('guild.leaderboard.title') }}
         </h2>
-        <section class="grid grid-cols-2 gap-10">
+        <section class="grid lg:grid-cols-2 gap-10">
           <PartialsGuildLeaderboard />
           <PartialsGuildLeaderboard is-volume />
         </section>
