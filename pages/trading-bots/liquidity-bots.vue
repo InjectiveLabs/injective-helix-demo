@@ -53,7 +53,7 @@ onMounted(() => {
 
       <div class="space-x-4 my-2">
         <NuxtLink
-          :to="{ name: MainPage.TradingBotsLiquidityBots }"
+          :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
           active-class="underline"
           class="text-xl font-semibold"
         >
