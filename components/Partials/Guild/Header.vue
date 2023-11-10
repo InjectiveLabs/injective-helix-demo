@@ -7,7 +7,7 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 
-const TOTAL_REWARDS = '10000'
+const TOTAL_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 const DISCORD_LINK = 'https://discord.gg/injective'
 
@@ -32,10 +32,6 @@ const campaignDateRange = computed(() => {
 
   return `${startDate} - ${endDate}`
 })
-
-const { valueToString: totalRewardsToString } = useBigNumberFormatter(
-  computed(() => TOTAL_REWARDS)
-)
 
 function openCreateGuildModal() {
   if (campaignStore.userGuildInfo) {
@@ -83,7 +79,7 @@ function onConnectWallet() {
           <p class="text-sm text-gray-475">
             {{ $t('guild.totalRewards') }}
           </p>
-          <p class="uppercase">{{ totalRewardsToString }} INJ</p>
+          <p class="uppercase">{{ TOTAL_REWARDS }} INJ</p>
         </div>
 
         <div class="space-y-2">

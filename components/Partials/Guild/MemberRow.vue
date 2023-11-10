@@ -13,9 +13,9 @@ const props = defineProps({
   }
 })
 
-const explorerLink = computed(() => {
-  return `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
-})
+const explorerLink = computed(
+  () => `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
+)
 
 const baseToken = computed(() =>
   tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)

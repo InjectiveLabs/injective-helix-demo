@@ -148,9 +148,9 @@ export const useCampaignStore = defineStore('campaign', {
 
       const { members, guildInfo, paging } =
         await indexerGrpcGuildApi.fetchGuildMembers({
+          skip,
           limit,
           guildId,
-          skip: `${skip}`,
           includeGuildInfo: true,
           campaignContract: GUILD_CONTRACT_ADDRESS
         })
@@ -175,9 +175,9 @@ export const useCampaignStore = defineStore('campaign', {
 
       const { members, guildInfo, paging } =
         await indexerGrpcGuildApi.fetchGuildMembers({
+          skip,
           limit,
           guildId,
-          skip: `${skip}`,
           includeGuildInfo: true,
           campaignContract: GUILD_CONTRACT_ADDRESS
         })
