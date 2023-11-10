@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AmplitudeEvent, Modal, SurveyTitle } from '@/types'
 import { amplitudeGenericTracker } from '@/app/providers/amplitude'
+import { AmplitudeEvent, Modal, SurveyTitle, TradeSubPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -23,15 +23,15 @@ function init() {
 
   setTimeout(() => {
     const disabledRoutes = [
-      'spot-spot',
-      'market-market',
-      'futures-futures',
-      'perpetual-perpetual',
-      'derivative-derivative',
-      'binary-options-binaryOption'
+      TradeSubPage.Spot,
+      TradeSubPage.Market,
+      TradeSubPage.Futures,
+      TradeSubPage.Perpetual,
+      TradeSubPage.Derivatives,
+      TradeSubPage.BinaryOption
     ]
 
-    if (!disabledRoutes.includes(route.name as string)) {
+    if (!disabledRoutes.includes(route.name as TradeSubPage)) {
       modalStore.openModal(Modal.UserFeedback)
     }
   }, DELAY_MODAL_DISPLAY_TIME)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ActivityPage } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const route = useRoute()
@@ -9,19 +9,19 @@ const { t } = useLang()
 const tabs = [
   {
     label: t('activity.openOrders'),
-    value: ActivityPage.SpotOpenOrders
+    value: ActivitySubPage.Spot
   },
   {
     label: t('activity.orderHistory'),
-    value: ActivityPage.SpotOrderHistory
+    value: ActivitySubPage.SpotOrderHistory
   },
   {
     label: t('activity.tradeHistory'),
-    value: ActivityPage.SpotTradeHistory
+    value: ActivitySubPage.SpotTradeHistory
   },
   {
     label: t('activity.swapHistory'),
-    value: ActivityPage.SwapHistory
+    value: ActivitySubPage.SpotSwapHistory
   }
 ]
 </script>
@@ -43,8 +43,8 @@ const tabs = [
 
         <span
           v-if="
-            route.name !== ActivityPage.SpotOpenOrders &&
-            tab.value === ActivityPage.SpotOpenOrders
+            route.name !== ActivitySubPage.Spot &&
+            tab.value === ActivitySubPage.Spot
           "
           class="ml-1"
         >

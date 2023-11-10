@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 
@@ -27,7 +27,7 @@ function closeModal() {
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <NuxtLink :to="{ name: 'index' }">
+        <NuxtLink :to="{ name: MainPage.Index }">
           <AppButton class="bg-blue-500 text-blue-900" @click="closeModal">
             {{ $t('futuresMarketRestricted.cta') }}
           </AppButton>

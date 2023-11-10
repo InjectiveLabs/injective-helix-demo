@@ -4,7 +4,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 import {
   SpotOrderIntegrityStrategy,
-  SpotTradeIntegrityStrategy
+  SpotTradeIntegrityStrategy,
+  SpotOrderbookIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
@@ -98,14 +99,16 @@ watch(
 )
 
 useIntervalFn(() => {
-  const args =
-    filterByCurrentMarket.value && market.value
-      ? [market.value.marketId]
-      : undefined
+  if (!market.value) {
+    return
+  }
+
+  const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
 
   Promise.all([
     SpotOrderIntegrityStrategy.make(args).validate(),
-    SpotTradeIntegrityStrategy.make(args).validate()
+    SpotTradeIntegrityStrategy.make(args).validate(),
+    SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate()
   ])
 }, 30 * 1000)
 </script>

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ThrownException } from '@injectivelabs/exceptions'
-import { SwapForm, SwapFormField } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import { mapErrorToMessage } from '@/app/client/utils/swap'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { denomClient } from '@/app/Services'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { mapErrorToMessage } from '@/app/client/utils/swap'
+import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
 const swapStore = useSwapStore()
@@ -190,7 +190,7 @@ function handleNavigation() {
       : { fromAmount: formValues[SwapFormField.InputAmount] }
 
   router.push({
-    name: 'swap',
+    name: MainPage.Swap,
     query: {
       from: formValues[SwapFormField.InputDenom],
       to: formValues[SwapFormField.OutputDenom],
@@ -221,7 +221,7 @@ function handleNavigation() {
             lg
             @click="handleNavigation"
           >
-            Get
+            {{ $t('trade.get') }}
             <span class="uppercase">
               {{ outputToken?.token.symbol || 'INJ' }}
             </span>

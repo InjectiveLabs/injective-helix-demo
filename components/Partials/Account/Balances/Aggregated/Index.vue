@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 import { AccountBalance } from '@/types'

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
@@ -170,7 +169,7 @@ const sortedMarkets = computed(() => {
         />
       </div>
 
-      <PartialsTradingSidebarSpotPerpetualMarketsTableRows
+      <PartialsTradingSidebarMarketsSpotPerpetualRows
         v-else
         v-bind="{ ...$attrs, isGrid, market, markets: sortedMarkets }"
       />

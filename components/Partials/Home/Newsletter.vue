@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { subscribeToNewsletter } from '@/app/services/newsletter'
+import { MainPage } from '@/types'
 
 const { t } = useLang()
 const { success, error } = useNotifications()
@@ -75,7 +76,7 @@ const subscribe = handleSubmit((values) => {
             <NuxtLink
               target="_blank"
               class="underline hover:text-opacity-80"
-              :to="{ name: 'terms' }"
+              :to="{ name: MainPage.Terms }"
             >
               {{ $t('terms.termsAndCondition') }}
             </NuxtLink>

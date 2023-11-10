@@ -2,6 +2,7 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   trade: {
+    get: 'Get',
     asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',

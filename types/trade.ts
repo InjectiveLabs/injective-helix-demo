@@ -14,7 +14,7 @@ import {
   InvestmentTypeGst,
   AuctionTradingField,
   SpotGridTradingField
-} from '@/types'
+} from '../types'
 
 export type TradeForm = Record<TradeField, any>
 

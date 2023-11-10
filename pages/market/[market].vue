@@ -30,7 +30,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
 </script>
 
 <template>
-  <PartialsTradingLayout hardcoded-slug="btc-usdt-perp" @loaded="onLoad">
+  <PartialsTradingLayout hardcoded-slug="btc-usdt-perp-pyth" @loaded="onLoad">
     <template #trading-form>
       <PartialsTradingDerivativesTradingForm v-if="market" :market="market" />
     </template>

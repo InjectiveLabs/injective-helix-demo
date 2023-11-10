@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { CampaignUser } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   NETWORK,
   CAMPAIGN_INJ_REWARDS,
   CAMPAIGN_TIA_REWARDS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -44,28 +45,35 @@ const estRewardsInPercentage = computed(() => {
   return new BigNumberInBase(props.campaignUser.score)
     .dividedBy(props.totalScore)
     .times(100)
-    .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN)
 })
 
+const estRewardsInINJ = computed(() =>
+  new BigNumberInBase(estRewardsInPercentage.value)
+    .dividedBy(100)
+    .multipliedBy(CAMPAIGN_INJ_REWARDS)
+)
+
 const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(estRewardsInPercentage.value)
-      .dividedBy(100)
-      .multipliedBy(CAMPAIGN_INJ_REWARDS)
-  ),
+  estRewardsInINJ,
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: estRewardsInINJ.value.gt(0.1)
+      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
 
+const estRewardsInTIA = computed(() =>
+  new BigNumberInBase(estRewardsInPercentage.value)
+    .dividedBy(100)
+    .multipliedBy(CAMPAIGN_TIA_REWARDS)
+)
+
 const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(estRewardsInPercentage.value)
-      .dividedBy(100)
-      .multipliedBy(CAMPAIGN_TIA_REWARDS)
-  ),
+  estRewardsInTIA,
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: estRewardsInTIA.value.gte(0.1)
+      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
 

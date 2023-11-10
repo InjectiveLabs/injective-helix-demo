@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
 import { Banner } from '@/types'
 
 const appStore = useAppStore()

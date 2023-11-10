@@ -6,6 +6,7 @@ import {
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
   streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
   cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices,
+  cancelOrderbookUpdateStream as grpcCancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
@@ -14,6 +15,7 @@ import {
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
+export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream

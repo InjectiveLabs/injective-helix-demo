@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import {
-  getDefaultPerpetualMarketRouteParams,
-  getDefaultSpotMarketRouteParams
+  getDefaultSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
+import { MainPage, TradingBotsSubPage } from '@/types'
 
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
 
-const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 
 function handleToggleTradeMenu() {
   tradeMenuOpen.value = !tradeMenuOpen.value
@@ -36,7 +37,7 @@ function handleToggleRewardsMenu() {
       </template>
 
       <template #content>
-        <LayoutNavItem :to="{ name: 'swap' }">
+        <LayoutNavItem :to="{ name: MainPage.Swap }">
           <div class="flex items-center gap-2 font-normal tracking-wide">
             <p>
               {{ $t('navigation.swap') }}
@@ -53,26 +54,20 @@ function handleToggleRewardsMenu() {
         </LayoutNavItem>
 
         <LayoutNavItem :to="defaultSpotMarketRoute">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.spot')
-          }}</span>
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.spot') }}
+          </span>
         </LayoutNavItem>
 
         <LayoutNavItem :to="defaultPerpetualMarketRoute">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.perpetual')
-          }}</span>
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.perpetual') }}
+          </span>
         </LayoutNavItem>
-
-        <!-- <LayoutNavItem :to="{ name: 'convert' }">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.convert')
-          }}</span>
-        </LayoutNavItem> -->
 
         <LayoutNavItem
           :to="{
-            name: 'trading-bots-grid-spot-market',
+            name: TradingBotsSubPage.GridSpotMarket,
             params: { market: 'inj-usdt' }
           }"
         >
@@ -96,7 +91,7 @@ function handleToggleRewardsMenu() {
 
       <template #content>
         <div>
-          <LayoutNavItem :to="{ name: 'trade-and-earn' }">
+          <LayoutNavItem :to="{ name: MainPage.TradeAndEarn }">
             <span class="font-normal tracking-wide">
               {{ $t('navigation.tradeAndEarn') }}
             </span>

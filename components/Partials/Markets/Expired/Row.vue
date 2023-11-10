@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
