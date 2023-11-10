@@ -8,6 +8,10 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
+import {
+  BankBalanceIntegrityStrategy,
+  SubaccountBalanceIntegrityStrategy
+} from '@/app/client/streams/data-integrity/strategies'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -113,6 +117,13 @@ watch(
     setSubaccountStreams()
   }
 )
+
+useIntervalFn(() => {
+  Promise.all([
+    BankBalanceIntegrityStrategy.make().validate(),
+    SubaccountBalanceIntegrityStrategy.make().validate()
+  ])
+}, 30 * 1000)
 </script>
 
 <template>

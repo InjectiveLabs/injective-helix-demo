@@ -7,7 +7,12 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import { DerivativeOraclePriceIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
+import {
+  DerivativeOrderIntegrityStrategy,
+  DerivativeTradeIntegrityStrategy,
+  DerivativeOrderbookIntegrityStrategy,
+  DerivativeOraclePriceIntegrityStrategy
+} from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: [
@@ -147,9 +152,20 @@ watch(
 )
 
 useIntervalFn(() => {
-  const args = derivativeStore.activeMarketIds
+  if (!market.value) {
+    return
+  }
 
-  Promise.all([DerivativeOraclePriceIntegrityStrategy.make(args).validate()])
+  const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
+
+  Promise.all([
+    DerivativeOrderIntegrityStrategy.make(args).validate(),
+    DerivativeTradeIntegrityStrategy.make(args).validate(),
+    DerivativeOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+    DerivativeOraclePriceIntegrityStrategy.make(
+      derivativeStore.activeMarketIds
+    ).validate()
+  ])
 }, 30 * 1000)
 </script>
 

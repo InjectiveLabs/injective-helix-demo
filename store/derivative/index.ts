@@ -44,6 +44,7 @@ import {
   cancelMarketsMarkPrices,
   cancelSubaccountTradesStream,
   cancelSubaccountOrdersStream,
+  cancelOrderbookUpdateStream,
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
@@ -160,6 +161,7 @@ export const useDerivativeStore = defineStore('derivative', {
     streamSubaccountOrders,
     streamMarketsMarkPrices,
     cancelMarketsMarkPrices,
+    cancelOrderbookUpdateStream,
     cancelSubaccountOrdersStream,
     streamSubaccountOrderHistory,
     cancelSubaccountTradesStream,

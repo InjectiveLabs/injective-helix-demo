@@ -28,7 +28,6 @@ export class SpotOrderIntegrityStrategy
     }
 
     const existingSpotOrders = [...spotStore.subaccountOrders]
-
     const isDataValid = this.verifyData(existingSpotOrders, latestOrders)
 
     if (!isDataValid) {
