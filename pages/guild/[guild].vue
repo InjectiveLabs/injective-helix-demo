@@ -32,13 +32,12 @@ const baseToken = computed(() =>
   tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)
 )
 
-// todo change createdAt to lastUpdated once indexer fixes this bug
 const lastUpdated = computed(() => {
   if (!campaignStore.guild) {
     return
   }
 
-  return format(campaignStore.guild.createdAt, DATE_FORMAT)
+  return format(campaignStore.guild.updatedAt, DATE_FORMAT)
 })
 
 const explorerLink = computed(() => {
@@ -174,6 +173,7 @@ watch(lastUpdated, () => {
             </article>
 
             <AppButton
+              v-if="campaignStore.userGuildInfo"
               class="bg-blue-500 text-white"
               @click="onCopyInvitationLink"
             >
