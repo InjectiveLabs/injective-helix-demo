@@ -3,9 +3,9 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultFuturesMarket
 } from '@/app/utils/market'
-import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   DefaultMarket,
@@ -28,9 +28,7 @@ function handleSpotTradeClickedTrack() {
 
 function handlePerpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: IS_TESTNET
-      ? DefaultMarket.PerpetualTestnet
-      : DefaultMarket.Perpetual,
+    market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })

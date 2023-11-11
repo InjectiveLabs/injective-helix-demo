@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { IS_TESTNET } from '@/app/utils/constants'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
-import { getDefaultPerpetualMarketRouteParams } from '@/app/utils/market'
-import { DefaultMarket, TradeClickOrigin, Modal } from '@/types'
+import {
+  getDefaultFuturesMarket,
+  getDefaultPerpetualMarketRouteParams
+} from '@/app/utils/market'
+import { TradeClickOrigin, Modal } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -21,9 +23,7 @@ function handleGetStartedClick() {
 
 function handleTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: IS_TESTNET
-      ? DefaultMarket.PerpetualTestnet
-      : DefaultMarket.Perpetual,
+    market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander
   })

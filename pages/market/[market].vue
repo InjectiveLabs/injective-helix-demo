@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { IS_TESTNET } from '@/app/utils/constants'
 import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
-import { Modal, DefaultMarket, UiMarketWithToken } from '@/types'
+import { Modal, UiMarketWithToken } from '@/types'
+import { getDefaultFuturesMarket } from '@/app/utils/market'
 
 const modalStore = useModalStore()
 const route = useRoute()
@@ -32,9 +32,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
 
 <template>
   <PartialsTradingLayout
-    :hardcoded-slug="
-      IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
-    "
+    :hardcoded-slug="getDefaultFuturesMarket()"
     @loaded="onLoad"
   >
     <template #trading-form>
