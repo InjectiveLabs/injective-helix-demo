@@ -69,6 +69,12 @@ const lastUpdated = computed(() => {
               rank: index + 1
             }"
           />
+
+          <tr v-if="guilds.length === 0" class="text-center border-b">
+            <td colspan="5">
+              <div class="p-3">{{ $t('guild.noData') }}</div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

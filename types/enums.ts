@@ -76,6 +76,7 @@ export enum Modal {
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
+  VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   FuturesMarketRestricted = 'futures-market-restricted',
   NewFeature = 'new-feature'

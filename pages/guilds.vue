@@ -41,7 +41,6 @@ useIntervalFn(
   <AppHocLoading class="h-full container" v-bind="{ status }">
     <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-12">
       <PartialsGuildHeader
-        v-if="campaignStore.guildCampaignSummary"
         v-bind="{ summary: campaignStore.guildCampaignSummary }"
       />
 

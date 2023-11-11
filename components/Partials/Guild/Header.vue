@@ -14,11 +14,15 @@ const DISCORD_LINK = 'https://discord.gg/injective'
 const props = defineProps({
   summary: {
     type: Object as PropType<GuildCampaignSummary>,
-    required: true
+    default: undefined
   }
 })
 
 const campaignDateRange = computed(() => {
+  if (!props.summary) {
+    return
+  }
+
   let startDate = format(props.summary.startTime, DATE_FORMAT)
   let endDate = format(props.summary.endTime, DATE_FORMAT)
 
@@ -65,28 +69,32 @@ function onConnectWallet() {
           <p class="text-sm text-gray-475">
             {{ $t('guild.guilds') }}
           </p>
-          <p>{{ summary.totalGuildsCount }}</p>
+          <p v-if="summary">{{ summary.totalGuildsCount }}</p>
+          <p v-else>&mdash;</p>
         </div>
 
         <div class="space-y-2">
           <p class="text-sm text-gray-475">
             {{ $t('guild.participants') }}
           </p>
-          <p>{{ summary.totalMembersCount }}</p>
+          <p v-if="summary">{{ summary.totalMembersCount }}</p>
+          <p v-else>&mdash;</p>
         </div>
 
         <div class="space-y-2">
           <p class="text-sm text-gray-475">
             {{ $t('guild.totalRewards') }}
           </p>
-          <p class="uppercase">{{ TOTAL_REWARDS }} INJ</p>
+          <p v-if="campaignDateRange">{{ TOTAL_REWARDS }} INJ</p>
+          <p v-else>&mdash;</p>
         </div>
 
         <div class="space-y-2">
           <p class="text-sm text-gray-475">
             {{ $t('guild.currentSeason') }}
           </p>
-          <p>{{ campaignDateRange }}</p>
+          <p v-if="campaignDateRange">{{ campaignDateRange }}</p>
+          <p v-else>&mdash;</p>
         </div>
       </div>
     </section>

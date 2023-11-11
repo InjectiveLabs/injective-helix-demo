@@ -7,6 +7,7 @@ export default {
       'Helix Guilds is a team-based trading competition. Be part of the winning guild and win together!',
 
     guilds: 'Guilds',
+    noData: 'No data',
     participants: 'Participants',
     totalRewards: 'Total rewards',
     currentSeason: 'Current season',
@@ -103,6 +104,15 @@ export default {
         )}” on Helix to earn a share of the rewards!`,
       cta: 'Join Guild',
       toast: 'Successfully joined guild'
+    },
+
+    verifyJoinGuild: {
+      title: 'Enter invitation code',
+      description: 'Please provide the invitation code to join this guild.',
+      hash: 'Invitation code',
+      hashPlaceholder: 'Enter invitation code',
+      cta: 'Join',
+      discord: 'Check Injective Discord to find a guild to join'
     },
 
     alreadyPartOfGuild: {

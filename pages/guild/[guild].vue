@@ -9,10 +9,12 @@ import {
   GUILD_BASE_TOKEN_SYMBOL
 } from 'app/utils/constants'
 import { generateUniqueHash } from '@/app/utils/formatters'
-import { MainPage } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
 const tokenStore = useTokenStore()
+const modalStore = useModalStore()
+const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { copy } = useClipboard()
@@ -115,6 +117,10 @@ function onPageChange(value: number) {
   fetchGuildDetails({ skip: (Number(page.value) - 1) * limit.value })
 }
 
+function onJoinGuild() {
+  modalStore.openModal(Modal.VerifyJoinGuildHash)
+}
+
 useIntervalFn(
   () =>
     campaignStore.pollGuildDetails({
@@ -172,16 +178,28 @@ watch(lastUpdated, () => {
               </div>
             </article>
 
-            <AppButton
-              v-if="campaignStore.userGuildInfo"
-              class="bg-blue-500 text-white"
-              @click="onCopyInvitationLink"
-            >
-              <div class="flex items-center gap-1">
-                <span>{{ $t('guild.leaderboard.invitationLink') }}</span>
-                <BaseIcon name="link" is-md />
-              </div>
-            </AppButton>
+            <template v-if="walletStore.isUserWalletConnected">
+              <AppButton
+                v-if="campaignStore.userGuildInfo"
+                class="bg-blue-500 text-white"
+                @click="onCopyInvitationLink"
+              >
+                <div class="flex items-center gap-1">
+                  <span>{{ $t('guild.leaderboard.invitationLink') }}</span>
+                  <BaseIcon name="link" is-md />
+                </div>
+              </AppButton>
+
+              <AppButton
+                v-else
+                class="bg-blue-500 text-white"
+                @click="onJoinGuild"
+              >
+                <div class="flex items-center gap-1">
+                  <span>{{ $t('guild.joinGuild.cta') }}</span>
+                </div>
+              </AppButton>
+            </template>
           </section>
 
           <PartialsGuildStats v-bind="{ token: baseToken }" />
@@ -270,6 +288,9 @@ watch(lastUpdated, () => {
           />
 
           <PartialsGuildModalsAlreadyJoinedGuild />
+          <PartialsGuildModalsVerifyJoinGuildHash
+            :invitation-hash="guildInvitationHash"
+          />
           <PartialsGuildModalsJoinGuild
             v-if="campaignStore.guild"
             v-bind="{
