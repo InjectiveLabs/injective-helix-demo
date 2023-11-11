@@ -93,8 +93,12 @@ export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
 // Guild
+// inj1ga9qd3ldkau5mlnmzfphtxhypsp6726jjas7lv
+// https://k8s.testnet.campaigns.grpc-web.injective.network
+
 export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
-export const GUILD_CONTRACT_ADDRESS =
-  'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2'
+export const GUILD_CONTRACT_ADDRESS = IS_TESTNET
+  ? 'inj1ga9qd3ldkau5mlnmzfphtxhypsp6726jjas7lv'
+  : 'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2' // devnet
 export const GUILD_ENCODE_KEY = 'guild'
 export const GUILD_HASH_CHAR_LIMIT = 6

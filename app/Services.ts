@@ -65,7 +65,6 @@ export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
   ENDPOINTS.campaign
 )
-export const indexerGrpcGuildApi = new IndexerGrpcCampaignApi(ENDPOINTS.indexer)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer
 )
