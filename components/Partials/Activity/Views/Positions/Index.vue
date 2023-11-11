@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, ActivityField, Modal, ActivityPage } from '@/types'
+import { ActivityForm, ActivityField, Modal, ActivitySubPage } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -120,7 +119,7 @@ function handleSharePosition(position: UiPosition) {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.OpenPositions}`">
+      <Teleport :to="`#${ActivitySubPage.Positions}`">
         <span class="ml-1">({{ filteredPositions.length }})</span>
       </Teleport>
     </ClientOnly>

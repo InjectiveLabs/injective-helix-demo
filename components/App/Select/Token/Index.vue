@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   BalanceWithToken,
   BalanceWithTokenAndPrice
@@ -24,6 +23,7 @@ const props = defineProps({
   required: Boolean,
   hideBalance: Boolean,
   shouldCheckBalance: Boolean,
+  disabledTokenSelector: Boolean,
 
   denom: {
     type: String,
@@ -161,6 +161,10 @@ function openTokenSelectorModal() {
     return
   }
 
+  if (props.disabledTokenSelector) {
+    return
+  }
+
   modalStore.openModal(props.modal)
   emit('update:modal')
 }
@@ -174,7 +178,7 @@ function handleAmountUpdate(amount: string) {
   })
 }
 
-function handleMax() {
+function changeMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
@@ -205,20 +209,30 @@ export default {
     >
       <slot />
 
-      <div v-if="selectedToken" class="text-right flex items-center gap-2">
-        <span
-          v-if="valueToBigNumber.gt(0) && !hideMax"
-          class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
-          @click="handleMax"
-        >
-          {{ $t('trade.max') }}
-        </span>
-        <p v-if="!hideBalance" class="text-xs text-blue-500">
-          <span>
-            {{ $t('trade.balance', { balance: maxBalanceToString }) }}
+      <slot
+        name="balance"
+        v-bind="{
+          changeMax,
+          selectedToken,
+          valueToBigNumber,
+          maxBalanceToString
+        }"
+      >
+        <div v-if="selectedToken" class="text-right flex items-center gap-2">
+          <span
+            v-if="valueToBigNumber.gt(0) && !hideMax"
+            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
+            @click="changeMax"
+          >
+            {{ $t('trade.max') }}
           </span>
-        </p>
-      </div>
+          <p v-if="!hideBalance" class="text-xs text-blue-500">
+            <span>
+              {{ $t('trade.balance', { balance: maxBalanceToString }) }}
+            </span>
+          </p>
+        </div>
+      </slot>
     </div>
 
     <div class="px-4">
@@ -237,32 +251,37 @@ export default {
         />
 
         <div class="flex items-center gap-2">
-          <div
-            class="flex items-center gap-2 p-1.5"
-            :class="{
-              'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
-                options.length > 1
-            }"
-            @click="openTokenSelectorModal"
+          <slot
+            name="token-item"
+            v-bind="{ openTokenSelectorModal, selectedToken }"
           >
-            <AppSelectTokenItem
-              v-if="selectedToken"
-              :class="{ 'cursor-default': disabled || options.length === 1 }"
-              v-bind="{
-                token: selectedToken.token
+            <div
+              class="flex items-center gap-2 p-1.5"
+              :class="{
+                'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
+                  options.length > 1
               }"
-            />
+              @click="openTokenSelectorModal"
+            >
+              <AppSelectTokenItem
+                v-if="selectedToken"
+                :class="{ 'cursor-default': disabled || options.length === 1 }"
+                v-bind="{
+                  token: selectedToken.token
+                }"
+              />
 
-            <div v-else-if="options.length > 0" class="whitespace-nowrap">
-              {{ $t('trade.swap.tokenSelector.selectToken') }}
+              <div v-else-if="options.length > 0" class="whitespace-nowrap">
+                {{ $t('trade.swap.tokenSelector.selectToken') }}
+              </div>
+
+              <BaseIcon
+                v-if="options.length > 1 || !selectedToken"
+                name="caret-down-slim"
+                is-sm
+              />
             </div>
-
-            <BaseIcon
-              v-if="options.length > 1 || !selectedToken"
-              name="caret-down-slim"
-              is-sm
-            />
-          </div>
+          </slot>
 
           <ModalsTokenSelector
             v-model="denomValue"

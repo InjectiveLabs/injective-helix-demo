@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+import {
+  addressAndMarketSlugToSubaccountId,
+  getSgtContractAddressFromSlug
+} from '@/app/utils/helpers'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']
@@ -9,6 +12,7 @@ definePageMeta({
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -34,17 +38,29 @@ function fetchData() {
   }
 
   const marketId = gridStrategyStore.spotMarket.marketId
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    walletStore.address,
+    gridStrategyStore.spotMarket.slug
+  )
+
+  spotStore.cancelOrderbookUpdateStream()
+  spotStore.cancelSubaccountOrdersHistoryStream()
+  spotStore.cancelTradesStream()
 
   Promise.all([
     authZStore.fetchGrants(),
     spotStore.fetchTrades({ marketId }),
+    spotStore.fetchSubaccountOrderHistory({ subaccountId }),
     spotStore.fetchOrderbook(marketId),
+    spotStore.streamOrderbookUpdate(marketId),
+    spotStore.streamTrades(marketId),
+    spotStore.streamSubaccountOrderHistory(marketId),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
-      resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
-      countback: 30
+      resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
+      countback: 30 * 24
     }),
     accountStore.fetchAccountPortfolio(),
     accountStore.streamSubaccountBalance(marketId)
@@ -54,6 +70,7 @@ function fetchData() {
       if (gridStrategyStore.strategies.length === 0) {
         isBannerOpen.value = true
       }
+
       status.setIdle()
     })
 }
@@ -66,51 +83,52 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 </script>
 
 <template>
-  <div class="min-h-screen pt-4 md:pt-10 pb-10">
-    <div class="w-full max-w-xl mx-auto">
-      <div class="pb-10">
-        <PartialsLiquidityBotsSpotCreateCommonTiaBanner />
+  <div>
+    <p class="text-xl font-semibold text-center mb-4">
+      {{ $t('liquidity.liquidityBots') }}
+    </p>
+
+    <div
+      v-if="isBannerOpen"
+      class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
+    >
+      <div class="flex-1 pr-4">
+        <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
+        <p class="text-sm">
+          {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
+        </p>
       </div>
 
-      <div class="p-6 bg-gray-900 rounded-md">
-        <p class="text-xl font-semibold text-center mb-4">
-          {{ $t('liquidity.liquidityBots') }}
-        </p>
-
-        <div
-          v-if="isBannerOpen"
-          class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
-        >
-          <div class="flex-1 pr-4">
-            <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
-            <p class="text-sm">
-              {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
-            </p>
-          </div>
-
-          <div>
-            <button @click="isBannerOpen = false">
-              <BaseIcon name="close" />
-            </button>
-          </div>
-        </div>
-
-        <PartialsLiquidityBotsSpotMarketSelector />
-
-        <AppHocLoading v-bind="{ status }">
-          <PartialsGridStrategySpotFormActiveStrategy
-            v-if="activeStrategy && gridStrategyStore.spotMarket"
-            class="mt-4"
-            v-bind="{
-              activeStrategy,
-              market: gridStrategyStore.spotMarket,
-              isLiquidity: true
-            }"
-          />
-
-          <PartialsLiquidityBotsSpotCreate v-else />
-        </AppHocLoading>
+      <div>
+        <button @click="isBannerOpen = false">
+          <BaseIcon name="close" />
+        </button>
       </div>
     </div>
+
+    <PartialsLiquidityBotsSpotMarketSelector />
+
+    <AppHocLoading v-bind="{ status }">
+      <PartialsLiquidityBotsSpotOrdersChart
+        v-if="gridStrategyStore.spotMarket && activeStrategy"
+        v-bind="{ market: gridStrategyStore.spotMarket }"
+      />
+
+      <PartialsGridStrategySpotFormActiveStrategy
+        v-if="
+          activeStrategy &&
+          gridStrategyStore.spotMarket &&
+          spotStore.subaccountOrderHistory.length > 0
+        "
+        class="mt-4"
+        v-bind="{
+          activeStrategy,
+          market: gridStrategyStore.spotMarket,
+          isLiquidity: true
+        }"
+      />
+
+      <PartialsLiquidityBotsSpotCreate v-else />
+    </AppHocLoading>
   </div>
 </template>

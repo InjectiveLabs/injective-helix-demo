@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 
 defineProps({

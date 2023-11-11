@@ -137,6 +137,10 @@ export const useSpotStore = defineStore('spot', {
     streamSubaccountOrderHistory,
 
     cancelOrder,
+    cancelSubaccountOrdersStream,
+    cancelSubaccountTradesStream,
+    cancelSubaccountOrdersHistoryStream,
+
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
@@ -256,7 +260,10 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (
+        !walletStore.isUserWalletConnected ||
+        !(accountStore.subaccountId || options?.subaccountId)
+      ) {
         return
       }
 
@@ -264,7 +271,9 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId: accountStore.subaccountId,
+          subaccountId: options?.subaccountId
+            ? options?.subaccountId
+            : accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,

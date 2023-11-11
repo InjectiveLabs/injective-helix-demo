@@ -52,6 +52,7 @@ export default {
     optimizedAmounts: 'Optimized Amounts',
     timeCreated: 'Time Created',
     learnMore: 'Learn More',
+    currentPrice: 'Current Price',
     next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',

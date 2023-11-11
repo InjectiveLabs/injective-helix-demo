@@ -1,7 +1,8 @@
 import { MARKETS_SLUGS, ROUTES } from '@/app/utils/constants'
+import { TradeSubPage } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
-  if (!ROUTES.spotMarketRouteNames.includes(to.name as string)) {
+  if (!ROUTES.spotMarketRouteNames.includes(to.name as TradeSubPage)) {
     return
   }
 
@@ -13,7 +14,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
     if (to.params.spot === source) {
       return navigateTo({
-        name: 'spot-spot',
+        name: TradeSubPage.Spot,
         params: {
           spot: destination
         }

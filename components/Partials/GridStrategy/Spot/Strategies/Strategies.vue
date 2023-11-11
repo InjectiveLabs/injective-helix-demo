@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PropType } from 'nuxt/dist/app/compat/capi'
+import { TradingBotsSubPage } from '@/types'
 
 const route = useRoute()
 const walletStore = useWalletStore()
@@ -18,7 +18,7 @@ defineProps({
     <div class="p-4 flex text-gray-500 uppercase text-xs font-semibold">
       <BaseNuxtLink
         :to="{
-          name: 'trading-bots-grid-spot-market',
+          name: TradingBotsSubPage.GridSpotMarket,
           params: { market: route.params.market }
         }"
         exact-active-class="text-blue-500"
@@ -30,7 +30,7 @@ defineProps({
 
       <BaseNuxtLink
         :to="{
-          name: 'trading-bots-grid-spot-market-history',
+          name: TradingBotsSubPage.GridSpotMarketHistory,
           params: { market: route.params.market }
         }"
         exact-active-class="text-blue-500 font-bold"

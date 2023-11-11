@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
-import { BusEvents, Modal } from '@/types'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
+import { BusEvents, Modal, TradeSubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
@@ -45,7 +44,7 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 const status = reactive(new Status())
 
 const reduceOnlyCurrentOrders = computed(() =>

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
+import { IS_TESTNET } from '@/app/utils/constants'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
 
 const props = defineProps({
   dense: Boolean
@@ -42,7 +43,11 @@ const futuresMarket = computed(() => {
 })
 
 const market = computed(() =>
-  spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+  spotMarket
+    ? DefaultMarket.Spot
+    : IS_TESTNET
+    ? DefaultMarket.PerpetualTestnet
+    : DefaultMarket.Perpetual
 )
 
 const marketType = computed(() =>

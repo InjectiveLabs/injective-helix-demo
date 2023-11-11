@@ -17,7 +17,7 @@ const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
 const min = ref('0')
 const max = ref('10')
-const isAssetRebalancingChecked = ref(true)
+const isAssetReBalancingChecked = ref(true)
 
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
@@ -115,7 +115,7 @@ const animate = (refValue: Ref, targetValue: string, duration = 200) => {
 
 watch(isBaseAndQuoteType, (value) => {
   if (!value) {
-    isAssetRebalancingChecked.value = true
+    isAssetReBalancingChecked.value = true
   }
 })
 </script>
@@ -125,8 +125,8 @@ watch(isBaseAndQuoteType, (value) => {
     <PartialsLiquidityBotsSpotCreateManualUpperLowerBounds
       v-bind="{
         market: gridStrategyStore.spotMarket!,
-        isRebalanceBeforeCreationChecked:
-          !isBaseAndQuoteType && isAssetRebalancingChecked
+        isReBalanceBeforeCreationChecked:
+          !isBaseAndQuoteType && isAssetReBalancingChecked
       }"
     />
 
@@ -160,15 +160,15 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="flex justify-end -mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
-        <AppCheckbox v-model="isAssetRebalancingChecked" />
+        <AppCheckbox v-model="isAssetReBalancingChecked" />
 
         <p class="mr-2 text-xs font-semibold">
-          {{ $t('liquidity.allowAssetRebalance') }}
+          {{ $t('liquidity.allowAssetReBalance') }}
         </p>
 
         <AppTooltip
           v-bind="{
-            content: $t('liquidity.allowAssetRebalanceTooltip')
+            content: $t('liquidity.allowAssetReBalanceTooltip')
           }"
         />
       </div>

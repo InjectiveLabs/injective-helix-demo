@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'

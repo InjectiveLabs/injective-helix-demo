@@ -55,10 +55,15 @@ const needsAllowanceSet = computed(() => {
 })
 
 onMounted(() => {
-  peggyStore.getErc20BalancesWithTokenAndPrice()
-  peggyStore.getErc20DenomBalanceAndAllowance(
-    formValues.value[BridgeField.Denom]
-  )
+  if (
+    formValues.value[BridgeField.BridgingNetwork] === BridgingNetwork.Ethereum
+  ) {
+    peggyStore.getErc20BalancesWithTokenAndPrice()
+
+    peggyStore.getErc20DenomBalanceAndAllowance(
+      formValues.value[BridgeField.Denom]
+    )
+  }
 })
 </script>
 

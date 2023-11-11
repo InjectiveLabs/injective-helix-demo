@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ActivityPage } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 const positionStore = usePositionStore()
 const route = useRoute()
@@ -9,11 +9,11 @@ const { t } = useLang()
 const tabs = [
   {
     label: t('activity.openPositions'),
-    value: ActivityPage.OpenPositions
+    value: ActivitySubPage.Positions
   },
   {
     label: t('activity.fundingPayments'),
-    value: ActivityPage.FundingPayments
+    value: ActivitySubPage.PositionsFundingPayments
   }
 ]
 </script>
@@ -35,8 +35,8 @@ const tabs = [
 
         <span
           v-if="
-            route.name !== ActivityPage.OpenPositions &&
-            tab.value === ActivityPage.OpenPositions
+            route.name !== ActivitySubPage.Positions &&
+            tab.value === ActivitySubPage.Positions
           "
           class="ml-1"
         >

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import {

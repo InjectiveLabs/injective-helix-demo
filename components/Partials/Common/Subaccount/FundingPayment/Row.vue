@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'

@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
-import { getMarketRoute } from '@/app/utils/market'
-import { stableCoinDenoms } from '@/app/data/token'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { stableCoinDenoms } from '@/app/data/token'
+import { getMarketRoute } from '@/app/utils/market'
+import {
+  MainPage,
+  UiMarketSummary,
+  UiMarketWithToken,
+  TradingBotsSubPage
+} from '@/types'
 
 const appStore = useAppStore()
 
@@ -32,10 +36,10 @@ const props = defineProps({
 
 const marketRoute = props.isGrid
   ? {
-      to: 'trading-bots-grid-spot-market',
+      to: TradingBotsSubPage.GridSpotMarket,
       params: { market: props.market.slug }
     }
-  : getMarketRoute(props.market) || { name: 'markets' }
+  : getMarketRoute(props.market) || { name: MainPage.Markets }
 
 const isFavorite = computed(() =>
   appStore.favoriteMarkets.includes(props.market.marketId)

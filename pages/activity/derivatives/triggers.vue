@@ -5,10 +5,10 @@ import {
   executionOrderTypeToOrderExecutionTypes
 } from '@/app/client/utils/activity'
 import {
+  TradeTypes,
   ActivityForm,
-  ActivityPage,
-  ConditionalOrderSide,
-  TradeTypes
+  ActivitySubPage,
+  ConditionalOrderSide
 } from '@/types'
 
 const derivativeStore = useDerivativeStore()
@@ -93,7 +93,7 @@ function handleCancelOrders() {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.DerivativeTriggers}`">
+      <Teleport :to="`#${ActivitySubPage.Derivatives}`">
         <span class="ml-1">({{ filteredTriggers.length }})</span>
       </Teleport>
     </ClientOnly>

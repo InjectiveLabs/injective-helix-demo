@@ -1,11 +1,17 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { DefaultMarket, TradeClickOrigin } from '@/types'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
-  getDefaultPerpetualMarketRouteParams,
-  getDefaultSpotMarketRouteParams
+  getDefaultSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
+import { IS_TESTNET } from '@/app/utils/constants'
+import {
+  MainPage,
+  DefaultMarket,
+  TradeClickOrigin,
+  TradingBotsSubPage
+} from '@/types'
 
 const walletStore = useWalletStore()
 
@@ -22,7 +28,9 @@ function handleSpotTradeClickedTrack() {
 
 function handlePerpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: DefaultMarket.Perpetual,
+    market: IS_TESTNET
+      ? DefaultMarket.PerpetualTestnet
+      : DefaultMarket.Perpetual,
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
@@ -32,12 +40,12 @@ function handlePerpetualTradeClickedTrack() {
 <template>
   <div>
     <nav class="block flex-1 lg:flex">
-      <LayoutNavItem :to="{ name: 'index' }" class="block lg:hidden">
+      <LayoutNavItem :to="{ name: MainPage.Index }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </LayoutNavItem>
 
       <LayoutNavItem
-        :to="{ name: 'markets' }"
+        :to="{ name: MainPage.Markets }"
         class="block"
         data-cy="header-markets-link"
       >
@@ -55,7 +63,7 @@ function handlePerpetualTradeClickedTrack() {
 
         <template #content>
           <NuxtLink
-            :to="{ name: 'swap' }"
+            :to="{ name: MainPage.Swap }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-swap-link"
           >
@@ -100,7 +108,7 @@ function handlePerpetualTradeClickedTrack() {
 
           <BaseNuxtLink
             :to="{
-              name: 'trading-bots-grid-spot-market',
+              name: TradingBotsSubPage.GridSpotMarket,
               params: { market: 'inj-usdt' }
             }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
@@ -129,7 +137,7 @@ function handlePerpetualTradeClickedTrack() {
 
       <LayoutNavItem
         :to="{
-          name: 'trading-bots-liquidity-bots-spot'
+          name: MainPage.TradingBotsLiquidityBotsSpot
         }"
         class="block relative"
         data-cy="header-markets-link"
@@ -155,7 +163,7 @@ function handlePerpetualTradeClickedTrack() {
 
         <template #content>
           <NuxtLink
-            :to="{ name: 'trade-and-earn' }"
+            :to="{ name: MainPage.TradeAndEarn }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white">
@@ -167,7 +175,7 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            :to="{ name: 'lp-rewards' }"
+            :to="{ name: MainPage.LpRewards }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
             <div class="flex items-center gap-2.5">
@@ -184,6 +192,27 @@ function handlePerpetualTradeClickedTrack() {
 
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.lpRewardsSub') }}
+            </p>
+          </NuxtLink>
+
+          <NuxtLink
+            :to="{ name: MainPage.Guilds }"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.guilds') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.guildsSub') }}
             </p>
           </NuxtLink>
 
@@ -205,8 +234,11 @@ function handlePerpetualTradeClickedTrack() {
 
       <LayoutNavItem
         v-if="$route.query.showAuctions === 'true'"
-        to="/auctions?showAuctions=true"
         class="block"
+        :to="{
+          name: MainPage.Auctions,
+          query: { showAuctions: 'true' }
+        }"
       >
         Auctions
       </LayoutNavItem>
@@ -214,7 +246,7 @@ function handlePerpetualTradeClickedTrack() {
       <!-- <LayoutNavItem
         class="block"
         data-cy="nav-leaderboard-link"
-        :to="{ name: 'leaderboard' }"
+        :to="{ name: MainPage.Leaderboard }"
       >
         {{ $t('navigation.leaderboard') }}
       </LayoutNavItem> -->
@@ -223,7 +255,7 @@ function handlePerpetualTradeClickedTrack() {
         v-if="walletStore.isUserWalletConnected"
         class="block lg:hidden"
         data-cy="header-account-link"
-        :to="{ name: 'account', query: { view: 'balances' } }"
+        :to="{ name: MainPage.Account, query: { view: 'balances' } }"
       >
         {{ $t('navigation.account') }}
       </LayoutNavItem>
@@ -232,7 +264,7 @@ function handlePerpetualTradeClickedTrack() {
         v-if="walletStore.isUserWalletConnected"
         class="block lg:hidden"
         data-cy="nav-activity-link"
-        :to="{ name: 'activity' }"
+        :to="{ name: MainPage.Activity }"
       >
         {{ $t('navigation.activity') }}
       </LayoutNavItem>

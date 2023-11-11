@@ -44,8 +44,10 @@ export enum Modal {
   DevMode = 'dev-mode',
   SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
+  JoinGuild = 'join-guild',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
+  CreateGuild = 'create-guild',
   ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
@@ -68,11 +70,13 @@ export enum Modal {
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
+  AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
   GridStrategyDetails = 'grid-strategy-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
+  VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   FuturesMarketRestricted = 'futures-market-restricted',
   NewFeature = 'new-feature'
@@ -195,6 +199,7 @@ export enum SurveyTitle {
 
 export enum DefaultMarket {
   Perpetual = 'btc-usdt-perp',
+  PerpetualTestnet = 'btc-usdt-perp-pyth',
   Spot = 'inj-usdt'
 }
 
@@ -346,29 +351,6 @@ export enum PaginationState {
   QueryMoreThanTotalPage = 'query-more-than-total-page'
 }
 
-export enum ActivityPage {
-  OpenPositions = 'activity-positions',
-  FundingPayments = 'activity-positions-funding-payments',
-  DerivativeOpenOrders = 'activity-derivatives',
-  DerivativeTriggers = 'activity-derivatives-triggers',
-  DerivativeOrderHistory = 'activity-derivatives-order-history',
-  DerivativeTradeHistory = 'activity-derivatives-trade-history',
-  SpotOpenOrders = 'activity-spot',
-  SpotOrderHistory = 'activity-spot-order-history',
-  SpotTradeHistory = 'activity-spot-trade-history',
-  SwapHistory = 'activity-spot-swap-history',
-  WalletHistoryTransfers = 'activity-wallet-history',
-  WalletHistoryDeposits = 'activity-wallet-history-deposits',
-  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
-}
-
-export enum ActivityTab {
-  Spot = 'activity-spot',
-  Positions = 'activity-positions',
-  Derivatives = 'activity-derivatives',
-  WalletHistory = 'activity-wallet-history'
-}
-
 export enum AuctionTradingField {
   BidPrice = 'bidPrice',
   BaseAmount = 'baseAmount',
@@ -428,4 +410,9 @@ export enum StopReason {
 export enum GridStrategyType {
   Auto = 'auto',
   Manual = 'manual'
+}
+
+export enum GuildSortBy {
+  TVL = 'tvl',
+  Volume = 'volume'
 }

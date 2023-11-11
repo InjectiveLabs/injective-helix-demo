@@ -42,7 +42,7 @@ export default function useActiveGridStrategy(
       accountStore.subaccountBalancesMap[
         addressAndMarketSlugToSubaccountId(
           walletStore.address,
-          market.value?.slug || ''
+          market.value.slug
         )
       ]
   )

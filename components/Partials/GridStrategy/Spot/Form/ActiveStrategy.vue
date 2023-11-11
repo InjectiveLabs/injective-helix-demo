@@ -312,7 +312,7 @@ useIntervalFn(() => {
     <div class="flex items-center justify-between mb-2 text-sm">
       <span class="text-gray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.numberOfGrids') }}</span>
-        <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
+        <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </span>
       <span>
         {{ activeStrategy.numberOfGridLevels }}

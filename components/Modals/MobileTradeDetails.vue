@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

@@ -138,7 +138,7 @@ function handleCreateStrategy() {
     @modal:closed="closeModal"
   >
     <template #title>
-      <p class="[text-transform:none] text-lg font-bold p-2">
+      <p class="[text-transform:none] text-lg font-bold py-2">
         {{ $t('sgt.gridOrderConfirmation') }}
       </p>
     </template>
@@ -280,7 +280,7 @@ function handleCreateStrategy() {
           <AppCheckbox v-model="hasAgreedToTerms" />
         </div>
         <div>
-          <p>
+          <p class="text-xs opacity-75 leading-none">
             {{ $t('sgt.termsAndConditions') }}
           </p>
         </div>

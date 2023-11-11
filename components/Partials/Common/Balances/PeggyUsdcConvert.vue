@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, UiMarketWithToken } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'

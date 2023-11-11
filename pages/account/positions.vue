@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
 import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { AccountBalance, Modal } from '@/types'

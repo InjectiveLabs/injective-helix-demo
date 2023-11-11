@@ -1,7 +1,11 @@
 export default {
   liquidity: {
     deposit: 'Deposit',
+    history: 'History',
+    performance: 'Performance',
+    noStrategiesFound: 'No strategies found',
     liquidityBots: 'Liquidity Bot',
+    liveBots: 'Setup & Live Bots',
     selectMarket: 'Select Market',
     parametersForAdvancedStrategy: 'Parameters For Advanced Strategy',
     bannerMessage:
@@ -12,8 +16,8 @@ export default {
     tiaBannerLiquidity:
       'Earn LP Rewards for providing liquidity in the TIA/USDT market',
     seeRewards: 'See Rewards',
-    allowAssetRebalance: 'Allow asset rebalancing before creation',
-    allowAssetRebalanceTooltip:
+    allowAssetReBalance: 'Allow asset rebalancing before creation',
+    allowAssetReBalanceTooltip:
       'If asset rebalancing is not allowed, then the current price cannot be within the price range.',
     currentPrice: 'Current Price'
   }

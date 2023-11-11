@@ -61,6 +61,25 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       gridStrategyStore.$patch({ strategies })
     },
 
+    async fetchAllStrategies() {
+      const walletStore = useWalletStore()
+      const gridStrategyStore = useGridStrategyStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      if (!gridStrategyStore.spotMarket) {
+        return
+      }
+
+      const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
+        accountAddress: walletStore.injectiveAddress
+      })
+
+      gridStrategyStore.$patch({ strategies })
+    },
+
     async createStrategy({
       quoteAmount,
       baseAmount,

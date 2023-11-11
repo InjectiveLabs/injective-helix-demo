@@ -98,7 +98,7 @@ function fetchData({
     </template>
 
     <template #modals>
-      <ModalsSgtBanner />
+      <ModalsLiquiditySgtBanner />
     </template>
   </PartialsTradingLayout>
 </template>

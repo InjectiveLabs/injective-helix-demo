@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { useCampaignStore } from 'store/campaign'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
+import { MainPage } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -27,7 +27,7 @@ onWalletConnected(() => {
     .then(() => {
       if (!campaignStore.campaign) {
         error({ title: t('campaign.campaignNotFound') })
-        navigateTo({ name: 'index' })
+        navigateTo({ name: MainPage.Index })
       }
     })
     .catch($onError)
@@ -57,7 +57,7 @@ function fetchCampaign({ skip }: { skip: number }) {
     .then(() => {
       if (!campaignStore.campaign) {
         error({ title: t('campaign.campaignNotFound') })
-        navigateTo({ name: 'index' })
+        navigateTo({ name: MainPage.Index })
       }
     })
     .catch($onError)
@@ -86,7 +86,7 @@ useIntervalFn(
 <template>
   <AppHocLoading
     :is-loading="status.isLoading() || !campaignStore.campaign"
-    class="h-full"
+    class="h-full container"
   >
     <div
       v-if="campaignStore.campaign"
@@ -128,7 +128,7 @@ useIntervalFn(
 
       <AppPagination
         v-if="campaignStore.totalUserCount > 0"
-        class="my-6"
+        class="pt-6 pb-12"
         v-bind="{ limit, page, totalCount: campaignStore.totalUserCount }"
         @update:limit="onLimitChange"
         @update:page="onPageChange"

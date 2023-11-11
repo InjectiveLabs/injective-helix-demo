@@ -49,7 +49,7 @@ function setMarketAndStrategy(
       class="h-full"
     />
 
-    <ModalsGridStrategyDetails
+    <ModalsLiquidityGridStrategyDetails
       v-bind="{ market: selectedMarket, strategy: selectedStrategy }"
     />
   </div>

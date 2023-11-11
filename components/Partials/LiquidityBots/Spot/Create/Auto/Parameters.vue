@@ -9,20 +9,24 @@ const props = defineProps({
     type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   },
+
   upperPrice: {
     type: String,
     required: true
   },
+
   lowerPrice: {
     type: String,
     required: true
   },
+
   grids: {
     type: String,
     required: true
   }
 })
 
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 const setFormValues = useSetFormValues()
 
 const isOpen = ref(false)
@@ -34,6 +38,11 @@ const { valueToString: upperPriceToString } = useBigNumberFormatter(
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   computed(() => props.lowerPrice),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToString: currentPriceToString } = useBigNumberFormatter(
+  lastTradedPrice,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -82,6 +91,10 @@ function toggleAdvancedSettings() {
       <div class="flex justify-between">
         <p>{{ $t('sgt.upperPrice') }}</p>
         <p>{{ upperPriceToString }}</p>
+      </div>
+      <div class="flex justify-between">
+        <p>{{ $t('sgt.currentPrice') }}</p>
+        <p>{{ currentPriceToString }}</p>
       </div>
     </div>
   </div>

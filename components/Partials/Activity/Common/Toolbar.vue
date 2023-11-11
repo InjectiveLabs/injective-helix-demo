@@ -3,12 +3,11 @@ import type { Token } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
 import {
   BusEvents,
-  ActivityField,
-  ConditionalOrderType,
   ActivityForm,
-  ActivityPage,
+  ActivityField,
+  ActivitySubPage,
   UiMarketWithToken,
-  ActivityTab
+  ConditionalOrderType
 } from '@/types'
 
 const route = useRoute()
@@ -32,8 +31,8 @@ const hasActiveFilters = computed(
 
 const isSpot = computed(
   () =>
-    routeName.value.startsWith(ActivityTab.Spot) ||
-    routeName.value.startsWith(ActivityTab.WalletHistory)
+    routeName.value.startsWith(ActivitySubPage.Spot) ||
+    routeName.value.startsWith(ActivitySubPage.WalletHistory)
 )
 
 const markets = computed<UiMarketWithToken[]>(() =>
@@ -58,23 +57,23 @@ const tokens = computed(() => {
 
 const showTypeField = computed(() => {
   return [
-    ActivityPage.DerivativeOrderHistory,
-    ActivityPage.DerivativeTradeHistory,
-    ActivityPage.DerivativeTriggers,
-    ActivityPage.SpotOrderHistory,
-    ActivityPage.SpotTradeHistory
-  ].includes(route.name as ActivityPage)
+    ActivitySubPage.SpotOrderHistory,
+    ActivitySubPage.SpotTradeHistory,
+    ActivitySubPage.DerivativesTriggers,
+    ActivitySubPage.DerivativesOrderHistory,
+    ActivitySubPage.DerivativesTradeHistory
+  ].includes(route.name as ActivitySubPage)
 })
 
 const showSideField = computed(
   () =>
-    !routeName.value.includes(ActivityTab.WalletHistory) &&
-    !routeName.value.includes(ActivityPage.FundingPayments) &&
-    !routeName.value.includes(ActivityPage.SwapHistory)
+    !routeName.value.includes(ActivitySubPage.WalletHistory) &&
+    !routeName.value.includes(ActivitySubPage.SpotSwapHistory) &&
+    !routeName.value.includes(ActivitySubPage.PositionsFundingPayments)
 )
 
 const sideOptions = computed(() => {
-  if (routeName.value.startsWith(ActivityTab.Positions)) {
+  if (routeName.value.startsWith(ActivitySubPage.Positions)) {
     return [
       {
         display: t('trade.long'),
@@ -111,7 +110,7 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (routeName.value.startsWith(ActivityTab.Spot)) {
+  if (routeName.value.startsWith(ActivitySubPage.Spot)) {
     return result
   }
 
@@ -134,13 +133,13 @@ const typeOptions = computed(() => {
     }
   ]
 
-  if (routeName.value.includes(ActivityPage.DerivativeTriggers)) {
+  if (routeName.value.includes(ActivitySubPage.DerivativesTriggers)) {
     return derivativeTypes
   }
 
   if (
-    routeName.value.includes(ActivityPage.DerivativeOrderHistory) ||
-    routeName.value.includes(ActivityPage.DerivativeTradeHistory)
+    routeName.value.includes(ActivitySubPage.DerivativesOrderHistory) ||
+    routeName.value.includes(ActivitySubPage.DerivativesTradeHistory)
   ) {
     result = [...result, ...derivativeTypes]
   }
@@ -162,7 +161,7 @@ function handleUpdate() {
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
       <PartialsActivityCommonMarketFilter
-        v-if="!routeName.includes(ActivityPage.SwapHistory)"
+        v-if="!routeName.includes(ActivitySubPage.SpotSwapHistory)"
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tokens="tokens"

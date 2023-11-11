@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { DropdownOptionWithToken } from '@/types'
 
 const props = defineProps({
   clearable: Boolean,
   searchable: Boolean,
+  isDisabled: Boolean,
 
   options: {
     type: Array as PropType<DropdownOptionWithToken[]>,
@@ -24,6 +24,11 @@ const props = defineProps({
   selectedClass: {
     type: String,
     default: ''
+  },
+
+  popperClass: {
+    type: String,
+    default: 'dropdown'
   }
 })
 
@@ -67,10 +72,11 @@ function handleClear() {
 <template>
   <BaseDropdown
     class="w-full"
+    :disabled="isDisabled"
     :delay="300"
     auto-size="true"
     auto-boundary-max-size
-    popper-class="dropdown"
+    :popper-class="popperClass"
   >
     <template #default="{ isOpen }">
       <div
@@ -90,7 +96,7 @@ function handleClear() {
           </div>
         </slot>
 
-        <div class="flex items-center gap-2">
+        <div v-if="!isDisabled" class="flex items-center gap-2">
           <BaseIcon
             v-if="clearable && selectedItem"
             name="close"

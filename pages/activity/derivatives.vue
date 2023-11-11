@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ActivityPage } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const route = useRoute()
@@ -9,19 +9,19 @@ const { t } = useLang()
 const tabs = [
   {
     label: t('activity.openOrders'),
-    value: ActivityPage.DerivativeOpenOrders
+    value: ActivitySubPage.Derivatives
   },
   {
     label: t('activity.triggers'),
-    value: ActivityPage.DerivativeTriggers
+    value: ActivitySubPage.DerivativesTriggers
   },
   {
     label: t('activity.orderHistory'),
-    value: ActivityPage.DerivativeOrderHistory
+    value: ActivitySubPage.DerivativesOrderHistory
   },
   {
     label: t('activity.tradeHistory'),
-    value: ActivityPage.DerivativeTradeHistory
+    value: ActivitySubPage.DerivativesTradeHistory
   }
 ]
 </script>
@@ -44,8 +44,8 @@ const tabs = [
 
           <span
             v-if="
-              route.name !== ActivityPage.DerivativeOpenOrders &&
-              tab.value === ActivityPage.DerivativeOpenOrders
+              route.name !== ActivitySubPage.Derivatives &&
+              tab.value === ActivitySubPage.Derivatives
             "
             class="ml-1"
           >
@@ -54,8 +54,8 @@ const tabs = [
 
           <span
             v-if="
-              route.name !== ActivityPage.DerivativeTriggers &&
-              tab.value === ActivityPage.DerivativeTriggers
+              route.name !== ActivitySubPage.DerivativesTriggers &&
+              tab.value === ActivitySubPage.DerivativesTriggers
             "
             class="ml-1"
           >

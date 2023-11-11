@@ -16,18 +16,22 @@ const props = defineProps({
     type: String,
     required: true
   },
+
   max: {
     type: String,
     required: true
   },
+
   lower: {
     type: String,
     required: true
   },
+
   upper: {
     type: String,
     required: true
   },
+
   currentPrice: {
     type: String,
     required: true

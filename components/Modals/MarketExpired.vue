@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'vue'
-import { Modal } from '@/types'
+
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
@@ -19,7 +19,7 @@ const isModalOpen = computed(
 
 function closeModal() {
   modalStore.closeModal(Modal.MarketExpired)
-  router.push({ name: 'markets' })
+  router.push({ name: MainPage.Markets })
 }
 
 function onModalClose() {
@@ -66,7 +66,7 @@ function onModalClose() {
 
       <div class="mt-6 flex items-center justify-center gap-2">
         <NuxtLink
-          :to="{ name: 'markets' }"
+          :to="{ name: MainPage.Markets }"
           class="flex items-center justify-center px-4 py-2"
         >
           <AppButton class="bg-blue-500 text-blue-900 font-semibold">
@@ -74,7 +74,7 @@ function onModalClose() {
           </AppButton>
         </NuxtLink>
 
-        <NuxtLink :to="{ name: 'activity' }" target="_blank">
+        <NuxtLink :to="{ name: MainPage.Activity }" target="_blank">
           <AppButton
             class="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-blue-900"
           >

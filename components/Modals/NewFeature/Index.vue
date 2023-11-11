@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getMarketRoute } from '@/app/utils/market'
-import { Modal } from 'types'
+import { Modal, MainPage } from 'types'
 
 const spotStore = useSpotStore()
 
@@ -17,7 +17,7 @@ const market = computed(() => {
 const marketRoute = computed(() => {
   if (!market.value) {
     return {
-      name: 'index'
+      name: MainPage.Index
     }
   }
 
@@ -26,7 +26,7 @@ const marketRoute = computed(() => {
 
 const swapRoute = computed(() => {
   return {
-    name: 'swap',
+    name: MainPage.Swap,
     query: {
       from: market.value?.quoteDenom,
       to: market.value?.baseDenom,

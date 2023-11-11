@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, ActivityPage } from '@/types'
+import { ActivityForm, ActivitySubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
@@ -67,7 +67,7 @@ function handleCancelOrders() {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.SpotOpenOrders}`">
+      <Teleport :to="`#${ActivitySubPage.Spot}`">
         <span class="ml-1">({{ filteredOrders.length }})</span>
       </Teleport>
     </ClientOnly>
