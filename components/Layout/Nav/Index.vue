@@ -3,7 +3,8 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultFuturesMarket
 } from '@/app/utils/market'
 import {
   MainPage,
@@ -11,6 +12,7 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
+import { IS_MAINNET } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 
@@ -27,7 +29,7 @@ function handleSpotTradeClickedTrack() {
 
 function handlePerpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: DefaultMarket.Perpetual,
+    market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
@@ -192,6 +194,28 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </NuxtLink>
 
+          <NuxtLink
+            v-if="!IS_MAINNET"
+            :to="{ name: MainPage.Guilds }"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.guilds') }}
+              </p>
+
+              <div
+                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
+              >
+                {{ $t('navigation.new') }}
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.guildsSub') }}
+            </p>
+          </NuxtLink>
+
           <a
             href="https://trading.injective.network/program/liquidity"
             target="_blank"
@@ -207,17 +231,6 @@ function handlePerpetualTradeClickedTrack() {
           </a>
         </template>
       </LayoutNavHoverMenu>
-
-      <LayoutNavItem
-        v-if="$route.query.showAuctions === 'true'"
-        class="block"
-        :to="{
-          name: MainPage.Auctions,
-          query: { showAuctions: 'true' }
-        }"
-      >
-        Auctions
-      </LayoutNavItem>
 
       <!-- <LayoutNavItem
         class="block"

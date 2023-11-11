@@ -86,12 +86,24 @@ export const defineGlobalRules = () => {
           return 'amount is required'
         }
 
+        if (field.includes('-')) {
+          return `${field.replaceAll('-', ' ')} is required.`
+        }
+
         return `${formatFieldName(field)} is required.`
       }
 
       return true
     }
   )
+
+  defineRule('maxCharacter', (value: string, [max]: number[]) => {
+    if (value.length > max) {
+      return 'Exceeds max characters'
+    }
+
+    return true
+  })
 
   defineRule('injAddress', (value: string) => {
     try {

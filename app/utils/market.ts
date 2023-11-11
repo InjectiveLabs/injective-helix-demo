@@ -11,6 +11,14 @@ import {
 } from '@injectivelabs/utils'
 import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
 import {
+  upcomingMarkets,
+  deprecatedMarkets,
+  experimentalMarketsSlug,
+  slugsToIncludeInCosmosCategory,
+  slugsToIncludeInEthereumCategory
+} from '@/app/data/market'
+import { IS_TESTNET } from '@/app/utils/constants'
+import {
   MarketRoute,
   TradeSubPage,
   DefaultMarket,
@@ -18,13 +26,6 @@ import {
   MarketCategoryType,
   TradingBotsSubPage
 } from '@/types'
-import {
-  upcomingMarkets,
-  deprecatedMarkets,
-  experimentalMarketsSlug,
-  slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory
-} from '@/app/data/market'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -96,7 +97,7 @@ export const getDefaultPerpetualMarketRouteParams = () => {
   return {
     name: TradeSubPage.Futures,
     params: {
-      futures: DefaultMarket.Perpetual
+      futures: getDefaultFuturesMarket()
     }
   }
 }
@@ -118,6 +119,9 @@ export const getDefaultGridSpotMarketRouteParams = () => {
     }
   }
 }
+
+export const getDefaultFuturesMarket = () =>
+  IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,

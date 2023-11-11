@@ -1,7 +1,10 @@
 import path from 'path'
 import { NitroConfig } from 'nitropack'
 import { Network } from '@injectivelabs/networks'
+import { HttpClient } from '@injectivelabs/utils'
+import { ENDPOINTS } from './../../app/utils/constants/setup'
 import { getRoutes } from './../../app/utils/constants/routes'
+import { GUILD_CONTRACT_ADDRESS } from './../../app/utils/constants'
 import { TradeSubPage } from './../../types/page'
 
 const VITE_ENV = process.env.VITE_ENV as string
@@ -26,8 +29,27 @@ const resolvePagePath = (page: string) => {
   return path.resolve(__dirname, '..', '..', page)
 }
 
+const fetchGuildRoutes = async (): Promise<string[]> => {
+  const client = new HttpClient(
+    `${ENDPOINTS.indexer}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
+  )
+
+  try {
+    const { data } = (await client.get('guilds')) as {
+      data: { guilds: { guildId: string }[] }
+    }
+
+    return data.guilds.map(({ guildId }) => `/guild/${guildId}`)
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+
+    return []
+  }
+}
+
 export default {
-  'nitro:config'(nitroConfig: NitroConfig) {
+  async 'nitro:config'(nitroConfig: NitroConfig) {
     if (
       nitroConfig.dev ||
       !nitroConfig.prerender ||
@@ -44,7 +66,8 @@ export default {
       ...spotRoutes,
       ...upcomingMarketsRoutes,
       ...gridTradingSpotRoutes,
-      ...liquidityBotSpotRoutes
+      ...liquidityBotSpotRoutes,
+      ...(await fetchGuildRoutes())
     ]
   },
 

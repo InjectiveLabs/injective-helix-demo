@@ -123,6 +123,7 @@ export interface AmplitudeTrackerUser {
 
 export * from './page'
 export * from './swap'
+export * from './page'
 export * from './enums'
 export * from './trade'
 export * from './bridge'
