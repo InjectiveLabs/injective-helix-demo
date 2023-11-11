@@ -6,7 +6,6 @@ import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
 import banners from './banners/en'
-import auction from './auction/en'
 import account from './account/en'
 import campaign from './campaign/en'
 import activities from './activity/en'
@@ -24,7 +23,6 @@ export default {
   ...bridge,
   ...wallet,
   ...account,
-  ...auction,
   ...banners,
   ...campaign,
   ...activities,

@@ -232,17 +232,6 @@ function handlePerpetualTradeClickedTrack() {
         </template>
       </LayoutNavHoverMenu>
 
-      <LayoutNavItem
-        v-if="$route.query.showAuctions === 'true'"
-        class="block"
-        :to="{
-          name: MainPage.Auctions,
-          query: { showAuctions: 'true' }
-        }"
-      >
-        Auctions
-      </LayoutNavItem>
-
       <!-- <LayoutNavItem
         class="block"
         data-cy="nav-leaderboard-link"
