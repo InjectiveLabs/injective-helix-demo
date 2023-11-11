@@ -110,6 +110,7 @@ export default {
       title: 'Enter invitation code',
       description: 'Please provide the invitation code to join this guild.',
       hash: 'Invitation code',
+      incorrectCode: 'Incorrect code',
       hashPlaceholder: 'Enter invitation code',
       cta: 'Join',
       discord: 'Check Injective Discord to find a guild to join'

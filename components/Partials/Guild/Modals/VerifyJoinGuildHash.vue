@@ -17,6 +17,8 @@ const { value: hash, errors: hashErrors } = useStringField({
   name: HASH_FIELD
 })
 
+const hashMatches = computed(() => props.invitationHash === hash.value)
+
 function onCloseModal() {
   modalStore.closeModal(Modal.VerifyJoinGuildHash)
 }
@@ -86,11 +88,15 @@ watch(
         class="w-full bg-blue-500 text-white font-semibold"
         v-bind="{
           lg: true,
-          disabled: !hash
+          disabled: !hash || !hashMatches
         }"
         @click="onSubmit"
       >
-        <span :class="{ 'text-gray-600': !hash }">
+        <span v-if="hash && !hashMatches" class="text-gray-600">
+          {{ $t('guild.verifyJoinGuild.incorrectCode') }}
+        </span>
+
+        <span v-else :class="{ 'text-gray-600': !hash }">
           {{ $t('guild.verifyJoinGuild.cta') }}
         </span>
       </AppButton>
