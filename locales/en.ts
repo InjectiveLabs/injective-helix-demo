@@ -1,5 +1,6 @@
 import home from './home/en'
 import trade from './trade/en'
+import guild from './guild/en'
 import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
@@ -17,6 +18,7 @@ import { I18nMessageFunction } from '@/types'
 export default {
   ...sgt,
   ...home,
+  ...guild,
   ...trade,
   ...market,
   ...bridge,
@@ -38,14 +40,17 @@ export default {
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
+    active: 'active',
     submit: 'Submit',
     search: 'Search',
     cancel: 'Cancel',
     waived: 'Waived',
+    details: 'Details',
     network: 'Network',
     deposit: 'Deposit',
     filters: 'Filters',
     confirm: 'Confirm',
+    inactive: 'inactive',
     transfer: 'Transfer',
     withdraw: 'Withdraw',
     download: 'Download',
@@ -260,6 +265,8 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
+    guilds: 'Guilds',
+    guildsSub: 'Team up with other traders to earn rewards',
     lpRewards: 'LP Rewards',
     lpRewardsSub: 'Rewards for using liquidity bots',
     account: 'Account',

@@ -464,15 +464,16 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async disconnect() {
-      const accountStore = useAccountStore()
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()
+      const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
+      const campaignStore = useCampaignStore()
       const derivativeStore = useDerivativeStore()
       const gridStrategyStore = useGridStrategyStore()
-      const authZStore = useAuthZStore()
 
       await walletStrategy.disconnectWallet()
 
@@ -485,6 +486,7 @@ export const useWalletStore = defineStore('wallet', {
       activityStore.$reset()
       positionStore.$reset()
       authZStore.$reset()
+      campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
     },
 

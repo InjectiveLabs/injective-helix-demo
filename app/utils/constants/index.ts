@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IS_TESTNET } from './setup'
+import { IS_DEVNET, IS_TESTNET } from './setup'
 
 export * from './setup'
 
@@ -92,3 +92,9 @@ export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
 // we will read this from the contract later once its ready
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
+// Guild
+export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
+export const GUILD_CONTRACT_ADDRESS =
+  'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2'
+export const GUILD_ENCODE_KEY = 'guild'
+export const GUILD_HASH_CHAR_LIMIT = 6

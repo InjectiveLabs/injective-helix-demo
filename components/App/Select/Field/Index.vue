@@ -24,6 +24,11 @@ const props = defineProps({
   selectedClass: {
     type: String,
     default: ''
+  },
+
+  popperClass: {
+    type: String,
+    default: 'dropdown'
   }
 })
 
@@ -71,7 +76,7 @@ function handleClear() {
     :delay="300"
     auto-size="true"
     auto-boundary-max-size
-    popper-class="dropdown"
+    :popper-class="popperClass"
   >
     <template #default="{ isOpen }">
       <div
