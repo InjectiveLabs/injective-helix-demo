@@ -7,6 +7,7 @@ export default {
     liquidityBots: 'Liquidity Bot',
     liveBots: 'Setup & Live Bots',
     selectMarket: 'Select Market',
+    placingOrders: 'Placing And Charting Orders...',
     parametersForAdvancedStrategy: 'Parameters For Advanced Strategy',
     bannerMessage:
       'Powered by Helix Grid Trading Bot, you can now automate your trades and provide liquidity within the range you specify.',
