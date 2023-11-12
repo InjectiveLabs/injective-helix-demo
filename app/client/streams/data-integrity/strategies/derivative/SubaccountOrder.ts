@@ -61,6 +61,7 @@ export class DerivativeSubaccountOrderIntegrityStrategy
     const accountStore = useAccountStore()
 
     const { orders: latestOrders } = await indexerDerivativesApi.fetchOrders({
+      isConditional: false,
       subaccountId: accountStore.subaccountId,
       marketIds: marketIds || derivativeStore.activeMarketIds,
       pagination: {
