@@ -1,6 +1,6 @@
 import { Coin } from '@injectivelabs/ts-types'
-import { ConcreteDataIntegrityStrategy } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 
 export class BankBalanceIntegrityStrategy

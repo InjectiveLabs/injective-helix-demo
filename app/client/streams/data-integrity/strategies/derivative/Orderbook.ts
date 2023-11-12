@@ -1,5 +1,5 @@
-import { ConcreteDataIntegrityStrategy } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerDerivativesApi } from '@/app/Services'
 import { UiDerivativeOrderbookWithSequence } from '@/types'
 
