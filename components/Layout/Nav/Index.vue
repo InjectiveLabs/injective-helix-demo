@@ -3,15 +3,16 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultFuturesMarket
 } from '@/app/utils/market'
-import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   DefaultMarket,
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
+import { IS_MAINNET } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 
@@ -28,9 +29,7 @@ function handleSpotTradeClickedTrack() {
 
 function handlePerpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: IS_TESTNET
-      ? DefaultMarket.PerpetualTestnet
-      : DefaultMarket.Perpetual,
+    market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
@@ -196,6 +195,7 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
+            v-if="!IS_MAINNET"
             :to="{ name: MainPage.Guilds }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
@@ -231,17 +231,6 @@ function handlePerpetualTradeClickedTrack() {
           </a>
         </template>
       </LayoutNavHoverMenu>
-
-      <LayoutNavItem
-        v-if="$route.query.showAuctions === 'true'"
-        class="block"
-        :to="{
-          name: MainPage.Auctions,
-          query: { showAuctions: 'true' }
-        }"
-      >
-        Auctions
-      </LayoutNavItem>
 
       <!-- <LayoutNavItem
         class="block"

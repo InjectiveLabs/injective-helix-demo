@@ -351,12 +351,6 @@ export enum PaginationState {
   QueryMoreThanTotalPage = 'query-more-than-total-page'
 }
 
-export enum AuctionTradingField {
-  BidPrice = 'bidPrice',
-  BaseAmount = 'baseAmount',
-  QuoteAmount = 'quoteAmount'
-}
-
 export enum InstitutionalFormField {
   FirstName = 'firstName',
   LastName = 'lastName',

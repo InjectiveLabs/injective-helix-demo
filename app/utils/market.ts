@@ -97,9 +97,7 @@ export const getDefaultPerpetualMarketRouteParams = () => {
   return {
     name: TradeSubPage.Futures,
     params: {
-      futures: IS_TESTNET
-        ? DefaultMarket.PerpetualTestnet
-        : DefaultMarket.Perpetual
+      futures: getDefaultFuturesMarket()
     }
   }
 }
@@ -121,6 +119,9 @@ export const getDefaultGridSpotMarketRouteParams = () => {
     }
   }
 }
+
+export const getDefaultFuturesMarket = () =>
+  IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,

@@ -6,7 +6,6 @@ export enum MainPage {
   Bridge = 'bridge',
   Account = 'account',
   Markets = 'markets',
-  Auctions = 'auctions',
   Activity = 'activity',
   LpRewards = 'lp-rewards',
   Leaderboard = 'leaderboard',
@@ -37,11 +36,6 @@ export enum ActivitySubPage {
 
 export enum CampaignSubPage {
   GuildDetails = 'guild-guild'
-}
-
-export enum AuctionSubPage {
-  Details = 'auctions-auction',
-  Bids = 'auctions-auction-bids'
 }
 
 export enum AccountSubpage {
