@@ -49,7 +49,9 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
       </NuxtLink>
     </td>
     <td class="text-right">
-      <div class="p-3">{{ tvlScoreToString }} INJ</div>
+      <div class="p-3">
+        {{ tvlScoreToString }} {{ baseToken?.symbol || 'INJ' }}
+      </div>
     </td>
     <td class="text-right">
       <div class="p-3">{{ volumeScoreToString }} USD</div>

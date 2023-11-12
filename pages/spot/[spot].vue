@@ -3,9 +3,10 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 import {
-  SpotOrderIntegrityStrategy,
   SpotTradeIntegrityStrategy,
-  SpotOrderbookIntegrityStrategy
+  SpotOrderbookIntegrityStrategy,
+  SpotSubaccountOrderIntegrityStrategy,
+  SpotSubaccountTradeIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
@@ -106,8 +107,9 @@ useIntervalFn(() => {
   const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
 
   Promise.all([
-    SpotOrderIntegrityStrategy.make(args).validate(),
-    SpotTradeIntegrityStrategy.make(args).validate(),
+    SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
+    SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
+    SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
     SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate()
   ])
 }, 30 * 1000)
