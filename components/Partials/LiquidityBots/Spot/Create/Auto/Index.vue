@@ -92,7 +92,7 @@ const upperPrice = computed(() => {
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  return upperEma.value.toString()
+  return upperEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 })
 
 const lowerPrice = computed(() => {
@@ -122,7 +122,7 @@ const lowerPrice = computed(() => {
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  return lowerEma.value.toString()
+  return lowerEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)

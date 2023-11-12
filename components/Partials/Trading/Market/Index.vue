@@ -64,14 +64,6 @@ onMounted(() => {
     })
 })
 
-watchDebounced(
-  isDesktop,
-  (isDesktop) => {
-    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
-  },
-  { debounce: 100, immediate: true }
-)
-
 function onInit() {
   if (props.market && props.market.minQuantityTickSize) {
     const formattedPriceTickSize = getMinPriceTickSize(isSpot, props.market)
@@ -97,6 +89,14 @@ function onInit() {
     aggregation.value = customAggregation.default || minTickSize
   }
 }
+
+watchDebounced(
+  isDesktop,
+  (isDesktop) => {
+    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
+  },
+  { debounce: 100, immediate: true }
+)
 </script>
 
 <template>

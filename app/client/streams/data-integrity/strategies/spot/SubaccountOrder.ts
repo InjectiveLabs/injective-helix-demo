@@ -1,23 +1,24 @@
 import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import {
+  MarketIdsArgs,
+  ConcreteDataIntegrityStrategy
+} from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerSpotApi } from '@/app/Services'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
-export class SpotOrderIntegrityStrategy
+export class SpotSubaccountOrderIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
   implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotLimitOrder>
 {
-  static make(marketIds: string[] | undefined): SpotOrderIntegrityStrategy {
-    return new SpotOrderIntegrityStrategy(marketIds)
+  static make(
+    marketIds: string[] | undefined
+  ): SpotSubaccountOrderIntegrityStrategy {
+    return new SpotSubaccountOrderIntegrityStrategy(marketIds)
   }
 
   async validate(): Promise<void> {
     const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
 
     const spotStore = useSpotStore()
 
@@ -48,17 +49,13 @@ export class SpotOrderIntegrityStrategy
     const [latestOrderFromFetch] = latestOrders
 
     /**
-     * each order should have its own unique orderHash
+     * Each order should have its own unique orderHash
      **/
-    return lastOrderFromStream.orderHash === latestOrderFromFetch.orderHash
+    return lastOrderFromStream?.orderHash === latestOrderFromFetch?.orderHash
   }
 
   async fetchData() {
     const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
 
     const spotStore = useSpotStore()
     const accountStore = useAccountStore()

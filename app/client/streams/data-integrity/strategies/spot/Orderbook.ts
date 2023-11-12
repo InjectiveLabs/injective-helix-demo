@@ -1,5 +1,5 @@
-import { ConcreteDataIntegrityStrategy } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerSpotApi } from '@/app/Services'
 import { UiSpotOrderbookWithSequence } from '@/types'
 

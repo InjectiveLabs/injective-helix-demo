@@ -158,7 +158,7 @@ watch(isBaseAndQuoteType, (value) => {
       v-bind="{ market: gridStrategyStore.spotMarket! }"
     />
 
-    <div class="flex justify-end -mb-4">
+    <div class="flex justify-end mb-2 sm:-mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
         <AppCheckbox v-model="isAssetReBalancingChecked" />
 

@@ -15,6 +15,11 @@ const props = defineProps({
   pnl: {
     type: String,
     required: true
+  },
+
+  contractAddress: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -29,7 +34,7 @@ function removeStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy()
+    .removeStrategy(props.contractAddress)
     .then(() => {
       success({
         title: t('sgt.success'),

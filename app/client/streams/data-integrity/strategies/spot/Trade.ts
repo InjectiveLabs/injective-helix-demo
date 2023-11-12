@@ -1,22 +1,19 @@
 import { UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerSpotApi } from '@/app/Services'
 
 export class SpotTradeIntegrityStrategy
-  extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotTrade>
+  extends BaseDataIntegrityStrategy<string>
+  implements ConcreteDataIntegrityStrategy<string, UiSpotTrade>
 {
-  static make(marketIds: string[] | undefined): SpotTradeIntegrityStrategy {
-    return new SpotTradeIntegrityStrategy(marketIds)
+  static make(marketId: string): SpotTradeIntegrityStrategy {
+    return new SpotTradeIntegrityStrategy(marketId)
   }
 
   async validate(): Promise<void> {
-    const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
+    const { args: marketId } = this
 
     const spotStore = useSpotStore()
 
@@ -26,47 +23,36 @@ export class SpotTradeIntegrityStrategy
       return
     }
 
-    const existingSpotTrades = [...spotStore.subaccountTrades]
+    const existingTrades = [...spotStore.trades]
 
-    const isDataValid = this.verifyData(existingSpotTrades, latestTrades)
+    const isDataValid = this.verifyData(existingTrades, latestTrades)
 
     if (!isDataValid) {
-      spotStore.cancelSubaccountTradesStream()
-
-      spotStore.$patch({ subaccountTrades: await this.fetchData() })
-
-      const [marketId] = marketIds || []
-
-      spotStore.streamSubaccountTrades(marketId)
+      spotStore.cancelTradesStream()
+      spotStore.$patch({ trades: await this.fetchData() })
+      spotStore.streamTrades(marketId)
     }
   }
 
   verifyData(
-    existingSpotTrades: UiSpotTrade[],
+    existingTrades: UiSpotTrade[],
     latestTrades: UiSpotTrade[]
   ): boolean {
-    const [lastTradeFromStream] = existingSpotTrades
+    const [lastTradeFromStream] = existingTrades
     const [latestTradeFromFetch] = latestTrades
 
     /**
-     * each trade should have its own unique orderHash
+     * Assuming each trade has a unique orderHash
      **/
-    return lastTradeFromStream.orderHash === latestTradeFromFetch.orderHash
+    return lastTradeFromStream?.orderHash === latestTradeFromFetch?.orderHash
   }
 
   async fetchData() {
-    const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
-
-    const accountStore = useAccountStore()
-    const spotStore = useSpotStore()
+    const { args: marketId } = this
 
     const { trades: latestTrades } = await indexerSpotApi.fetchTrades({
-      subaccountId: accountStore.subaccountId,
-      marketIds: marketIds || spotStore.activeMarketIds
+      marketIds: [marketId],
+      executionSide: TradeExecutionSide.Taker
     })
 
     return latestTrades

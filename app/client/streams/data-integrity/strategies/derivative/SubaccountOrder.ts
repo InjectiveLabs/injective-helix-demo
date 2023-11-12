@@ -1,26 +1,25 @@
 import { UiDerivativeLimitOrder } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import {
+  MarketIdsArgs,
+  ConcreteDataIntegrityStrategy
+} from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerDerivativesApi } from '@/app/Services'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
-export class DerivativeOrderIntegrityStrategy
+export class DerivativeSubaccountOrderIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
   implements
     ConcreteDataIntegrityStrategy<MarketIdsArgs, UiDerivativeLimitOrder>
 {
   static make(
-    marketIds: string[] | undefined
-  ): DerivativeOrderIntegrityStrategy {
-    return new DerivativeOrderIntegrityStrategy(marketIds)
+    marketIds: MarketIdsArgs
+  ): DerivativeSubaccountOrderIntegrityStrategy {
+    return new DerivativeSubaccountOrderIntegrityStrategy(marketIds)
   }
 
   async validate(): Promise<void> {
     const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
 
     const derivativeStore = useDerivativeStore()
 
@@ -49,16 +48,14 @@ export class DerivativeOrderIntegrityStrategy
     const [lastOrderFromStream] = existingOrders
     const [latestOrderFromFetch] = latestOrders
 
-    // each order should have its own unique orderHash
-    return lastOrderFromStream.orderHash === latestOrderFromFetch.orderHash
+    /**
+     * Each order should have its own unique orderHash
+     **/
+    return lastOrderFromStream?.orderHash === latestOrderFromFetch?.orderHash
   }
 
   async fetchData() {
     const { args: marketIds } = this
-
-    if (!marketIds) {
-      return []
-    }
 
     const derivativeStore = useDerivativeStore()
     const accountStore = useAccountStore()
