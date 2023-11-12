@@ -214,7 +214,7 @@ watch(
 </script>
 
 <template>
-  <div v-show="subaccountMarketOrders.length > 0">
+  <div>
     <div class="flex justify-end">
       <div class="mt-4 px-1 py-0.5 bg-black rounded overflow-hidden">
         <button

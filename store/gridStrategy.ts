@@ -209,7 +209,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       backupPromiseCall(() => accountStore.fetchAccountPortfolio())
     },
 
-    async removeStrategy() {
+    async removeStrategy(contractAddress?: string) {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
@@ -244,8 +244,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         walletStore.address,
         gridStrategyStore.spotMarket.slug
       )
+
       const message = MsgExecuteContractCompat.fromJSON({
-        contractAddress: gridMarket.contractAddress,
+        contractAddress: contractAddress || gridMarket.contractAddress,
         sender: walletStore.injectiveAddress,
         execArgs: ExecArgRemoveGridStrategy.fromJSON({
           subaccountId: gridStrategySubaccountId
