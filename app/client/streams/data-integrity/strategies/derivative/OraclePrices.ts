@@ -3,8 +3,11 @@ import {
   UiPerpetualMarketWithToken,
   UiBinaryOptionsMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import {
+  MarketIdsArgs,
+  ConcreteDataIntegrityStrategy
+} from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { MarketMarkPriceMap } from '@/types'
 import { indexerOracleApi } from '@/app/Services'
 
@@ -13,7 +16,7 @@ export class DerivativeOraclePriceIntegrityStrategy
   implements ConcreteDataIntegrityStrategy<MarketIdsArgs, MarketMarkPriceMap>
 {
   static make(
-    marketIds: string[] | undefined
+    marketIds: MarketIdsArgs
   ): DerivativeOraclePriceIntegrityStrategy {
     return new DerivativeOraclePriceIntegrityStrategy(marketIds)
   }

@@ -1,24 +1,19 @@
-import { DerivativeTrade } from '@injectivelabs/sdk-ts'
-import { ConcreteDataIntegrityStrategy, MarketIdsArgs } from '../../types'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { UiDerivativeTrade } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 import { indexerDerivativesApi } from '@/app/Services'
 
 export class DerivativeTradeIntegrityStrategy
-  extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, DerivativeTrade[]>
+  extends BaseDataIntegrityStrategy<string>
+  implements ConcreteDataIntegrityStrategy<string, UiDerivativeTrade>
 {
-  static make(
-    marketIds: string[] | undefined
-  ): DerivativeTradeIntegrityStrategy {
-    return new DerivativeTradeIntegrityStrategy(marketIds)
+  static make(marketId: string): DerivativeTradeIntegrityStrategy {
+    return new DerivativeTradeIntegrityStrategy(marketId)
   }
 
   async validate(): Promise<void> {
-    const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
+    const { args: marketId } = this
 
     const derivativeStore = useDerivativeStore()
 
@@ -28,47 +23,36 @@ export class DerivativeTradeIntegrityStrategy
       return
     }
 
-    const existingTrades = [...derivativeStore.subaccountTrades]
+    const existingTrades = [...derivativeStore.trades]
 
     const isDataValid = this.verifyData(existingTrades, latestTrades)
 
     if (!isDataValid) {
-      derivativeStore.cancelSubaccountTradesStream()
-
-      derivativeStore.$patch({ subaccountTrades: await this.fetchData() })
-
-      const [marketId] = marketIds || []
-
-      derivativeStore.streamSubaccountTrades(marketId)
+      derivativeStore.cancelTradesStream()
+      derivativeStore.$patch({ trades: await this.fetchData() })
+      derivativeStore.streamTrades(marketId)
     }
   }
 
   verifyData(
-    existingTrades: DerivativeTrade[],
-    latestTrades: DerivativeTrade[]
+    existingTrades: UiDerivativeTrade[],
+    latestTrades: UiDerivativeTrade[]
   ): boolean {
     const [lastTradeFromStream] = existingTrades
     const [latestTradeFromFetch] = latestTrades
 
     /**
-     * each trade should have its own unique orderHash
+     * Assuming each trade has a unique orderHash
      **/
-    return lastTradeFromStream.orderHash === latestTradeFromFetch.orderHash
+    return lastTradeFromStream?.orderHash === latestTradeFromFetch?.orderHash
   }
 
   async fetchData() {
-    const { args: marketIds } = this
-
-    if (!marketIds) {
-      return
-    }
-
-    const accountStore = useAccountStore()
-    const derivativeStore = useDerivativeStore()
+    const { args: marketId } = this
 
     const { trades: latestTrades } = await indexerDerivativesApi.fetchTrades({
-      subaccountId: accountStore.subaccountId,
-      marketIds: marketIds || derivativeStore.activeMarketIds
+      marketIds: [marketId],
+      executionSide: TradeExecutionSide.Taker
     })
 
     return latestTrades

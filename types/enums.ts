@@ -147,14 +147,11 @@ export enum MarketQuoteType {
 
 export enum StreamType {
   SpotTrades = 'spot-trades',
-  SpotOrders = 'spot-orders',
   OraclePrices = 'oracle-prices',
   DerivativesTrades = 'derivatives-trades',
-  DerivativesOrders = 'derivatives-orders',
   BankBalance = 'bank-balance',
   SubaccountBalances = 'subaccount-balances',
   SpotOrderbookUpdate = 'spot-orderbook-update',
-  DerivativesPositions = 'derivatives-positions',
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
