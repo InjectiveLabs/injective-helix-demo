@@ -83,11 +83,9 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
 
   marketIsExpired.value =
     expiryFuturesMarket.expiryFuturesMarketInfo.expirationTimestamp <=
-    Date.now() / 1000
+    Math.floor(Date.now() / 1000)
 
-  modalStore.openModal(Modal.MarketExpired)
-
-  if (marketIsExpired) {
+  if (marketIsExpired.value) {
     modalStore.openModal(Modal.MarketExpired)
   }
 }
