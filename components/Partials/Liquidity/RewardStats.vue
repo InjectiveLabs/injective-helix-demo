@@ -7,6 +7,7 @@ import {
 } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { addDays, differenceInHours } from 'date-fns'
 import {
   NETWORK,
   CAMPAIGN_INJ_REWARDS,
@@ -14,13 +15,13 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { LP_EPOCHS } from 'app/data/guild'
 
 const campaignStore = useCampaignStore()
+const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
-  isClaimable: Boolean,
-
   totalScore: {
     type: String,
     required: true
@@ -38,6 +39,7 @@ const props = defineProps({
 })
 
 const status = reactive(new Status(StatusType.Loading))
+const claimStatus = reactive(new Status(StatusType.Idle))
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -107,6 +109,40 @@ onWalletConnected(() => {
     .finally(() => status.setIdle())
 })
 
+function claimRewards() {
+  const scContract = LP_EPOCHS.find(
+    (e) => e.campaignId === props.campaign.campaignId
+  )?.scAddress
+
+  if (!scContract) {
+    return
+  }
+
+  claimStatus.setLoading()
+
+  campaignStore
+    .claimReward(scContract)
+    .then(() => {
+      success({ title: 'Success', description: 'Succesfuuly Claimed Rewards' })
+    })
+    .catch($onError)
+    .finally(() => {
+      claimStatus.setIdle()
+    })
+}
+
+const claimDate = computed(() => addDays(props.campaign.endDate, 1))
+
+const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
+
+const readyIn = computed(() =>
+  differenceInHours(claimDate.value.getTime(), Date.now())
+)
+
+const isClaimButtonShowed = computed(
+  () => readyIn.value < 24 && readyIn.value > 0
+)
+
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
 }, 30 * 1000)
@@ -139,22 +175,31 @@ useIntervalFn(() => {
             </div>
             <div>
               <p class="text-xs uppercase pb-1">
-                {{ $t('campaign.estRewards') }}
+                {{ $t('campaign.rewards') }}
               </p>
-              <div class="flex items-center justify-between max-w-[200px]">
+              <div class="flex items-center justify-between">
                 <p class="text-sm">
                   {{ estRewardsInINJToString }} INJ,
                   {{ estRewardsInTIAToString }} TIA
                 </p>
-                <AppButton
-                  :disabled="!isClaimable"
-                  class="border border-blue-500"
-                  xs
+
+                <div
+                  v-if="isClaimButtonShowed"
+                  class="flex flex-col items-center"
                 >
-                  <span class="text-blue-500 font-semibold">
-                    {{ $t('campaign.claim') }}
-                  </span>
-                </AppButton>
+                  <AppButton
+                    :disabled="!isClaimable"
+                    class="border border-blue-500"
+                    xs
+                    @click="claimRewards"
+                  >
+                    <span class="text-blue-500 font-semibold">
+                      {{ $t('campaign.claim') }}
+                    </span>
+                  </AppButton>
+
+                  <div class="text-xs mt-2">Ready in {{ readyIn }} Hrs</div>
+                </div>
               </div>
             </div>
           </div>

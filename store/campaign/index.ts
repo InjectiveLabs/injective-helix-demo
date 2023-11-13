@@ -87,7 +87,9 @@ export const useCampaignStore = defineStore('campaign', {
         limit: 1,
         skip: '0',
         campaignId,
-        accountAddress: walletStore.injectiveAddress
+        accountAddress:
+          'inj1c4624prpr9gp3jsal4hfwp0q6qewzpmmw78yyc' || // DELETE THIS
+          walletStore.injectiveAddress
       })
 
       campaignStore.$patch({

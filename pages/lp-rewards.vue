@@ -23,15 +23,6 @@ const campaign = computed(() =>
   LP_EPOCHS.find((ep) => ep.epoch === Number(epoch.value))
 )
 
-const epochOptions = computed(() =>
-  LP_EPOCHS.filter(({ startDate }) => startDate * 1000 < Date.now()).map(
-    (ep) => ({
-      display: `EPOCH ${ep.epoch}`,
-      value: ep.epoch.toString()
-    })
-  )
-)
-
 onWalletConnected(() => {
   if (!campaign.value) {
     error({ title: t('campaign.campaignNotFound') })
@@ -99,6 +90,10 @@ function onPageChange(value: number) {
   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
 }
 
+function updateEpoch(value: string) {
+  epoch.value = value
+}
+
 useIntervalFn(
   () => tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
   30 * 1000
@@ -119,37 +114,15 @@ watch(epoch, () => fetchCampaign({ skip: 0 }))
       <PartialsLiquidityHeader
         v-bind="{
           market,
-          campaign: campaignStore.campaign
+          campaign: campaignStore.campaign,
+          epoch
         }"
+        @update:epoch="updateEpoch"
       />
-
-      <div class="flex">
-        <AppSelect
-          v-model="epoch"
-          start-placement
-          v-bind="{
-            options: epochOptions,
-            wrapperClass: 'border px-4 py-1 rounded'
-          }"
-        >
-          <template #default="{ selected }">
-            <span class="font-bold select-none">
-              {{ selected?.display }}
-            </span>
-          </template>
-
-          <template #option="{ option }">
-            <span class="font-bold">
-              {{ option.display }}
-            </span>
-          </template>
-        </AppSelect>
-      </div>
 
       <PartialsLiquidityRewardStats
         v-bind="{
           totalScore: campaignStore.campaign.totalScore,
-          isClaimable: campaignStore.campaign.isClaimable,
           quoteDecimals: market?.quoteToken.decimals || 6,
           campaign: campaignStore.campaign
         }"
