@@ -8,7 +8,7 @@ import {
   MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
-import { CAMPAIGN_ID, GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
+import { GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
 import {
   indexerGrpcGuildApi,
   indexerGrpcCampaignApi,
@@ -65,7 +65,7 @@ export const useCampaignStore = defineStore('campaign', {
         await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
-          campaignId: campaignId || CAMPAIGN_ID
+          campaignId
         })
 
       campaignStore.$patch({
@@ -87,9 +87,7 @@ export const useCampaignStore = defineStore('campaign', {
         limit: 1,
         skip: '0',
         campaignId,
-        accountAddress:
-          'inj1c4624prpr9gp3jsal4hfwp0q6qewzpmmw78yyc' || // DELETE THIS
-          walletStore.injectiveAddress
+        accountAddress: walletStore.injectiveAddress
       })
 
       campaignStore.$patch({
