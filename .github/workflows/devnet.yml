@@ -57,11 +57,6 @@ jobs:
             SendEnv $SOURCE_DIR
           END
 
-      - name: 'Use NodeJS 16' # Setup node using version 14
-        uses: actions/setup-node@v2 # Public action
-        with:
-          node-version: '16.18.1'
-
       - name: Check out the source
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
 
