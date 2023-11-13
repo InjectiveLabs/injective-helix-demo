@@ -8,7 +8,8 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 
-const TOTAL_REWARDS = '10,000'
+const TOTAL_INJ_REWARDS = '1,000'
+const TOTAL_TIA_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 
 const props = defineProps({
@@ -85,7 +86,9 @@ function onConnectWallet() {
           <p class="text-sm text-gray-475">
             {{ $t('guild.totalRewards') }}
           </p>
-          <p v-if="campaignDateRange">{{ TOTAL_REWARDS }} INJ</p>
+          <p v-if="campaignDateRange">
+            {{ TOTAL_INJ_REWARDS }} INJ + {{ TOTAL_TIA_REWARDS }} TIA
+          </p>
           <p v-else>&mdash;</p>
         </div>
 
