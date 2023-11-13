@@ -94,7 +94,7 @@ export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
 // Guild
 export const GUILD_CONTRACT_ADDRESS = IS_MAINNET
-  ? 'inj1ph6495x37erwvk5vdnkkw4qret932qh8r7uahg'
+  ? 'inj1tej4n683z7l4wqnngjxyc5vf8p589d08mc23pa'
   : IS_TESTNET
   ? 'inj1hasnh2e0eqzyzh02wrgufuq40ptu0d037tuc3r'
   : 'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2' // devnet
