@@ -2,7 +2,7 @@ import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from './setup'
 
 // Campaign
 export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
-  ? 'spot-grid-inj-usdt-test'
+  ? 'spot-grid-tia-usdt'
   : 'spot-grid-tia-usdt'
 // we will read this from the contract later once its ready
 export const CAMPAIGN_INJ_REWARDS = '1000'

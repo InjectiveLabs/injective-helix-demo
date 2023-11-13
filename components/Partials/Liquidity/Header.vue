@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import {
-  CAMPAIGN_INJ_REWARDS,
-  CAMPAIGN_TIA_REWARDS
-} from '@/app/utils/constants'
 import { UiMarketWithToken } from 'types'
+import { LP_EPOCHS } from 'app/data/guild'
 
 const props = defineProps({
   campaign: {
@@ -19,16 +16,22 @@ const props = defineProps({
   }
 })
 
-const DATE_FORMAT = 'MMM dd, yyyy'
+const epoch = computed(() =>
+  LP_EPOCHS.find(({ campaignId }) => campaignId === props.campaign.campaignId)
+)
+
+const DATE_FORMAT = "MMM dd - hh a 'UTC' X"
 const BLOG_POST_URL =
   'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
 
 const { valueToString: injRewardsToString } = useBigNumberFormatter(
-  computed(() => CAMPAIGN_INJ_REWARDS)
+  computed(() => epoch.value?.baseRewards),
+  { decimalPlaces: 0 }
 )
 
 const { valueToString: tiaRewardsToString } = useBigNumberFormatter(
-  computed(() => CAMPAIGN_TIA_REWARDS)
+  computed(() => epoch.value?.quoteRewards),
+  { decimalPlaces: 0 }
 )
 
 const endDate = computed(() => format(props.campaign.endDate, DATE_FORMAT))
