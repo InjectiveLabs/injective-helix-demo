@@ -5,6 +5,8 @@ export default {
     title: 'Guilds',
     description:
       'Helix Guilds is a team-based trading competition. Be part of the winning guild and win together!',
+    rewardDescription:
+      '500 INJ and 5,000 TIA will be rewarded to the top ranked guild in combined trading volume and combined TIA balance respectively. There is no limit to the amount of members each guild can have, so go ahead and grow your guilds!',
 
     guilds: 'Guilds',
     noData: 'No data',
