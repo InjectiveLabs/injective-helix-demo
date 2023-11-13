@@ -17,9 +17,9 @@ const fetchBalanceStatus = reactive(new Status(StatusType.Idle))
 const {
   isDeposit,
   isTransfer,
-  destinationIsEthereum,
-  networkIsSupported,
   originIsEthereum,
+  networkIsSupported,
+  destinationIsEthereum,
   originIsCosmosNetwork,
   destinationIsCosmosNetwork
 } = useBridgeState(formValues)
@@ -30,7 +30,9 @@ defineProps({
 })
 
 const shouldConnectMetamask = computed(
-  () => walletStore.isCosmosWallet && originIsEthereum.value
+  () =>
+    walletStore.isCosmosWallet &&
+    (originIsEthereum.value || destinationIsEthereum.value)
 )
 
 const isSelectorDisabled = computed(() =>
