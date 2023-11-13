@@ -21,6 +21,7 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
   const tokenStore = useTokenStore()
   const peggyStore = usePeggyStore()
   const accountStore = useAccountStore()
+  const walletStore = useWalletStore()
 
   const { cosmosIbcChannelId } = useBridgeState(formValues)
 
@@ -170,7 +171,8 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
     if (formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw) {
       if (
         formValues.value[BridgeField.BridgingNetwork] ===
-        BridgingNetwork.Ethereum
+          BridgingNetwork.Ethereum &&
+        !walletStore.isCosmosWallet
       ) {
         return erc20BalancesOnInjective.value
       }
