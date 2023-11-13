@@ -4,11 +4,16 @@ import {
   Campaign,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary
+  GuildCampaignSummary,
+  MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
-import { CAMPAIGN_ID, GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
-import { indexerGrpcGuildApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
+import {
+  indexerGrpcGuildApi,
+  indexerGrpcCampaignApi,
+  msgBroadcastClient
+} from '@/app/Services'
 import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
@@ -45,14 +50,22 @@ export const useCampaignStore = defineStore('campaign', {
     joinGuild,
     createGuild,
 
-    async fetchCampaign({ skip, limit }: { skip?: number; limit?: number }) {
+    async fetchCampaign({
+      skip,
+      limit,
+      campaignId
+    }: {
+      skip?: number
+      limit?: number
+      campaignId: string
+    }) {
       const campaignStore = useCampaignStore()
 
       const { campaign, paging, users } =
         await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
-          campaignId: CAMPAIGN_ID
+          campaignId
         })
 
       campaignStore.$patch({
@@ -62,7 +75,7 @@ export const useCampaignStore = defineStore('campaign', {
       })
     },
 
-    async fetchCampaignOwnerInfo() {
+    async fetchCampaignOwnerInfo(campaignId: string) {
       const walletStore = useWalletStore()
       const campaignStore = useCampaignStore()
 
@@ -73,7 +86,7 @@ export const useCampaignStore = defineStore('campaign', {
       const { users } = await indexerGrpcCampaignApi.fetchCampaign({
         limit: 1,
         skip: '0',
-        campaignId: CAMPAIGN_ID,
+        campaignId,
         accountAddress: walletStore.injectiveAddress
       })
 
@@ -192,6 +205,34 @@ export const useCampaignStore = defineStore('campaign', {
         guild: guildInfo,
         totalGuildMember: paging?.total || 0
       })
+    },
+
+    async claimReward(contractAddress: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.queue()
+      await walletStore.validate()
+
+      if (!walletStore.address) {
+        return
+      }
+
+      const message = MsgExecuteContractCompat.fromJSON({
+        sender: walletStore.injectiveAddress,
+        contractAddress,
+        exec: {
+          action: 'claim_reward',
+          msg: {}
+        }
+      })
+
+      const reward = await msgBroadcastClient.broadcast({
+        msgs: [message],
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      return reward
     },
 
     reset() {

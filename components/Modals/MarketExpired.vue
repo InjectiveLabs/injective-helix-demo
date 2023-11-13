@@ -14,7 +14,7 @@ const props = defineProps({
 })
 
 const isModalOpen = computed(
-  () => modalStore.modals[Modal.MarketExpired] && props.market
+  () => modalStore.modals[Modal.MarketExpired] && !!props.market
 )
 
 function closeModal() {
@@ -40,9 +40,14 @@ function onModalClose() {
       </h3>
     </template>
 
-    <div v-if="market" class="flex justify-between mt-4">
+    <div v-if="market" class="mt-4">
       <div class="flex items-center">
-        <CommonTokenIcon v-if="market.baseToken" lg :token="market.baseToken" />
+        <CommonTokenIcon
+          v-if="market.baseToken"
+          lg
+          :token="market.baseToken"
+          class="mr-4"
+        />
 
         <div class="flex flex-col">
           <p
