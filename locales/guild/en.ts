@@ -30,8 +30,9 @@ export default {
         title: 'Join a guild and win with your friends',
         description:
           'Climb up the ranking by having more TIA and trading volume. Share 80% of the rewards with your friends if your guild wins!',
-        ctaMobile: 'Find guild to join',
-        cta: 'Check Injective Discord to find a guild to join'
+        description2:
+          'Find a guild in the #helix-guilds Discord channel or ask your friends for an invitation code!',
+        cta: 'Go to Injective Discord'
       }
     },
 

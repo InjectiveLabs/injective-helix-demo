@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { format, isSameYear, isSameMonth } from 'date-fns'
 import { GuildCampaignSummary } from '@injectivelabs/sdk-ts'
+import { GUILD_DISCORD_LINK, GUILD_ZENDESK_LINK } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -9,7 +10,6 @@ const campaignStore = useCampaignStore()
 
 const TOTAL_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
-const DISCORD_LINK = 'https://discord.gg/injective'
 
 const props = defineProps({
   summary: {
@@ -105,40 +105,48 @@ function onConnectWallet() {
           {{ $t('guild.howToParticipate.title') }}
         </h2>
 
-        <AppButton class="bg-blue-500 text-white">
-          <div class="flex items-center gap-1">
-            <span>{{ $t('guild.campaignRules') }}</span>
-          </div>
-        </AppButton>
+        <NuxtLink :to="GUILD_ZENDESK_LINK" target="_blank">
+          <AppButton class="bg-blue-500 text-white">
+            <div class="flex items-center gap-1">
+              <span>{{ $t('guild.campaignRules') }}</span>
+            </div>
+          </AppButton>
+        </NuxtLink>
       </div>
 
       <section class="grid lg:grid-cols-2 gap-10 pt-6">
-        <article class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg">
-          <img src="/guild/howToParticipate.svg" class="mx-auto" />
-          <h2 class="text-2xl font-semibold max-w-sm mx-auto mt-3">
-            {{ $t('guild.howToParticipate.createGuild.title') }}
-          </h2>
-          <p class="text-sm font-semibold mt-2">
-            {{ $t('guild.howToParticipate.createGuild.description') }}
-          </p>
+        <article
+          class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg flex flex-col"
+        >
+          <div class="grow">
+            <img src="/guild/howToParticipate.svg" class="mx-auto" />
+            <h2 class="text-2xl font-semibold max-w-sm mx-auto mt-3">
+              {{ $t('guild.howToParticipate.createGuild.title') }}
+            </h2>
+            <p class="text-sm font-semibold mt-2">
+              {{ $t('guild.howToParticipate.createGuild.description') }}
+            </p>
+          </div>
 
-          <AppButton
-            v-if="!walletStore.isUserWalletConnected"
-            class="bg-blue-500 text-white min-w-3xs mt-10"
-            @click="onConnectWallet"
-          >
-            <span class="text-sm">{{ $t('connect.connectWallet') }}</span>
-          </AppButton>
+          <div>
+            <AppButton
+              v-if="!walletStore.isUserWalletConnected"
+              class="bg-blue-500 text-white min-w-3xs mt-10"
+              @click="onConnectWallet"
+            >
+              <span class="text-sm">{{ $t('connect.connectWallet') }}</span>
+            </AppButton>
 
-          <AppButton
-            v-else
-            class="bg-blue-500 text-white min-w-3xs mt-10"
-            @click="openCreateGuildModal"
-          >
-            <span class="text-sm">
-              {{ $t('guild.howToParticipate.createGuild.cta') }}
-            </span>
-          </AppButton>
+            <AppButton
+              v-else
+              class="bg-blue-500 text-white min-w-3xs mt-10"
+              @click="openCreateGuildModal"
+            >
+              <span class="text-sm">
+                {{ $t('guild.howToParticipate.createGuild.cta') }}
+              </span>
+            </AppButton>
+          </div>
         </article>
 
         <article class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg">
@@ -149,14 +157,14 @@ function onConnectWallet() {
           <p class="text-sm font-semibold mt-2">
             {{ $t('guild.howToParticipate.joinGuild.description') }}
           </p>
+          <p class="text-sm font-semibold mt-2">
+            {{ $t('guild.howToParticipate.joinGuild.description2') }}
+          </p>
 
-          <NuxtLink :to="DISCORD_LINK" target="_blank">
+          <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
             <AppButton class="bg-blue-500 text-white min-w-3xs mt-10">
               <div class="text-sm">
-                <span class="xs:hidden">
-                  {{ $t('guild.howToParticipate.joinGuild.ctaMobile') }}
-                </span>
-                <span class="max-xs:hidden">
+                <span>
                   {{ $t('guild.howToParticipate.joinGuild.cta') }}
                 </span>
               </div>

@@ -103,3 +103,7 @@ export const GUILD_HASH_CHAR_LIMIT = 6
 // todo: update later when indexer adds base and quote denom to the api
 export const GUILD_QUOTE_TOKEN_SYMBOL = 'USDT'
 export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
+export const GUILD_DISCORD_LINK =
+  'https://discord.com/channels/739552603322450092/1172055840606400563'
+export const GUILD_ZENDESK_LINK =
+  'https://helixapp.zendesk.com/hc/en-us/articles/8336183812751-Announcing-Helix-Guilds'
