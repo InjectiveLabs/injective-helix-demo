@@ -8,7 +8,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
 import { CAMPAIGN_ID, GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
-import { indexerGrpcGuildApi } from '@/app/Services'
+import { indexerGrpcGuildApi, indexerGrpcCampaignApi } from '@/app/Services'
 import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
@@ -49,7 +49,7 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
 
       const { campaign, paging, users } =
-        await indexerGrpcGuildApi.fetchCampaign({
+        await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
           campaignId: CAMPAIGN_ID
@@ -70,7 +70,7 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const { users } = await indexerGrpcGuildApi.fetchCampaign({
+      const { users } = await indexerGrpcCampaignApi.fetchCampaign({
         limit: 1,
         skip: '0',
         campaignId: CAMPAIGN_ID,
