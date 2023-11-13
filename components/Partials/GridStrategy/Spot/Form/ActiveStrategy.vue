@@ -31,7 +31,7 @@ const { aggregatedPortfolioBalances } = useBalance()
 
 const market = computed(() => props.market)
 
-const { percentagePnl, pnl } = useActiveGridStrategy(
+const { percentagePnl, pnl, investment } = useActiveGridStrategy(
   market,
   computed(() => props.activeStrategy)
 )
@@ -123,7 +123,9 @@ const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
 )
 
 const { valueToString: totalAmountToString } = useBigNumberFormatter(
-  accountTotalBalanceInUsd,
+  props.activeStrategy.state === StrategyStatus.Active
+    ? accountTotalBalanceInUsd
+    : investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
