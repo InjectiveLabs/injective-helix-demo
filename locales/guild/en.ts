@@ -12,6 +12,7 @@ export default {
     totalRewards: 'Total rewards',
     currentSeason: 'Current season',
     campaignRules: 'Campaign rules',
+    startOn: ({ named }: I18nMessageFunction) => `Starts on ${named('date')}`,
 
     toast: {
       copiedInvitationLink: 'Invitation link copied to your clipboard.'
@@ -43,6 +44,8 @@ export default {
       guildMembers: 'Guild members',
       fetchNewData: 'Fetch new data',
       invitationLink: 'Invitation link',
+      guildMasterAddress: 'Guild master address',
+      guildMasterBalance: 'Guild master current TIA balance',
       table: {
         tvl: 'TVL',
         rank: 'Rank',
@@ -66,14 +69,6 @@ export default {
       },
       lastUpdated: ({ named }: I18nMessageFunction) =>
         `Last updated at ${named('date')}`
-    },
-
-    guildMaster: {
-      title: 'Your are the Guild Master',
-      noOfMembers: 'No. of members',
-      status: 'Status',
-      statusTooltip: 'status tooltip placeholder',
-      copyLinkToShare: 'Copy this link to share'
     },
 
     createGuild: {

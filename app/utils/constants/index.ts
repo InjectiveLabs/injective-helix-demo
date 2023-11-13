@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IS_DEVNET, IS_TESTNET } from './setup'
+import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from './setup'
 
 export * from './setup'
 
@@ -93,9 +93,13 @@ export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
 // Guild
-export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
-export const GUILD_CONTRACT_ADDRESS = IS_TESTNET
+export const GUILD_CONTRACT_ADDRESS = IS_MAINNET
+  ? 'inj1ph6495x37erwvk5vdnkkw4qret932qh8r7uahg'
+  : IS_TESTNET
   ? 'inj1hasnh2e0eqzyzh02wrgufuq40ptu0d037tuc3r'
   : 'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2' // devnet
 export const GUILD_ENCODE_KEY = 'guild'
 export const GUILD_HASH_CHAR_LIMIT = 6
+// todo: update later when indexer adds base and quote denom to the api
+export const GUILD_QUOTE_TOKEN_SYMBOL = 'USDT'
+export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'

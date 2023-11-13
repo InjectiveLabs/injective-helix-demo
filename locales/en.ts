@@ -54,6 +54,7 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
+    ready: 'Ready',
     new: 'New',
     success: 'Success',
     error: 'Error',

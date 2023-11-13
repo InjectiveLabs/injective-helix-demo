@@ -1,19 +1,12 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { IS_DEVNET } from 'app/utils/constants'
 
-const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
-
-const TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
+const { baseToken } = useGuild()
 
 const status = reactive(new Status(StatusType.Loading))
-
-const baseToken = computed(() =>
-  tokenStore.tokens.find(({ symbol }) => symbol === TOKEN_SYMBOL)
-)
 
 onWalletConnected(() => {
   Promise.all([

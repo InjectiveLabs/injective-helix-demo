@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
   NETWORK,
@@ -8,16 +8,16 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from 'app/utils/constants'
-import { generateUniqueHash } from '@/app/utils/formatters'
+import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
-const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { copy } = useClipboard()
+const { baseToken } = useGuild()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
@@ -25,14 +25,19 @@ const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
 const page = ref(1)
 const limit = ref(10)
+const date = ref(Date.now())
 const hasNewData = ref(false)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
 
-const baseToken = computed(() =>
-  tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)
-)
+const isCampaignStarted = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return false
+  }
+
+  return campaignStore.guildCampaignSummary.startTime < date.value
+})
 
 const lastUpdated = computed(() => {
   if (!campaignStore.guild) {
@@ -59,6 +64,15 @@ const guildInvitationHash = computed(() =>
   })
 )
 
+const { valueToString: guildMasterBalance } = useBigNumberFormatter(
+  computed(() =>
+    toBalanceInToken({
+      value: campaignStore.guild?.masterBalance || 0,
+      decimalPlaces: baseToken.value?.decimals || 18
+    })
+  )
+)
+
 const invitationLink = computed(
   () => `${document.URL}/?invite=${guildInvitationHash.value}`
 )
@@ -70,6 +84,7 @@ onWalletConnected(() => {
       limit: limit.value,
       guildId: route.params.guild as string
     }),
+    campaignStore.fetchGuildsByTVL(),
     campaignStore.fetchUserGuildInfo()
   ])
     .catch((error) => {
@@ -138,6 +153,8 @@ watch(lastUpdated, () => {
 
   hasNewData.value = true
 })
+
+useIntervalFn(() => (date.value = Date.now()), 1000)
 </script>
 
 <template>
@@ -152,29 +169,55 @@ watch(lastUpdated, () => {
       </NuxtLink>
 
       <AppHocLoading v-bind="{ status }" class="h-full">
-        <div v-if="campaignStore.guild">
-          <section class="mt-4 flex items-center justify-between flex-wrap">
+        <div v-if="campaignStore.guild" class="text-ellipsis overflow-hidden">
+          <section class="mt-4 flex justify-between flex-wrap gap-4">
             <article class="flex items-center gap-5">
               <PartialsGuildThumbnail
                 is-xl
                 :thumbnail-id="campaignStore.guild.logo"
               />
 
-              <div>
-                <div class="flex items-center">
+              <div class="overflow-hidden">
+                <div class="flex items-center gap-5">
                   <h3 class="text-2xl font-semibold">
                     {{ campaignStore.guild.name }}
                   </h3>
                   <AppDotStatus
-                    class="ml-5"
-                    v-bind="{ isActive: campaignStore.guild.isActive }"
+                    v-if="isCampaignStarted"
+                    :is-active="campaignStore.guild.isActive"
                   />
+                  <AppDotStatus v-else color="text-orange-500">
+                    {{ $t('common.ready') }}
+                  </AppDotStatus>
                 </div>
-                <NuxtLink :to="explorerLink" target="_blank">
-                  <p class="text-sm text-blue-500 mt-1 truncate">
-                    {{ campaignStore.guild.masterAddress }}
-                  </p>
-                </NuxtLink>
+                <section class="text-sm mt-2">
+                  <NuxtLink
+                    :to="explorerLink"
+                    target="_blank"
+                    class="gap-1 flex flex-wrap"
+                  >
+                    <p class="whitespace-nowrap">
+                      {{ $t('guild.leaderboard.guildMasterAddress') }}:
+                    </p>
+                    <p class="text-blue-500">
+                      <span class="sm:hidden">
+                        {{
+                          formatWalletAddress(campaignStore.guild.masterAddress)
+                        }}
+                      </span>
+                      <span class="max-sm:hidden">
+                        {{ campaignStore.guild.masterAddress }}
+                      </span>
+                    </p>
+                  </NuxtLink>
+                  <div class="flex items-center flex-wrap gap-1">
+                    <p>{{ $t('guild.leaderboard.guildMasterBalance') }}:</p>
+                    <p class="font-semibold">
+                      {{ guildMasterBalance }}
+                      {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
+                    </p>
+                  </div>
+                </section>
               </div>
             </article>
 
@@ -202,7 +245,7 @@ watch(lastUpdated, () => {
             </template>
           </section>
 
-          <PartialsGuildStats v-bind="{ token: baseToken }" />
+          <PartialsGuildStats v-bind="{ isCampaignStarted }" />
 
           <section class="pt-8 pb-4 px-6">
             <div class="flex items-center justify-between flex-wrap">
@@ -272,7 +315,7 @@ watch(lastUpdated, () => {
                   <PartialsGuildMemberRow
                     v-for="member in campaignStore.guildMembers"
                     :key="member.address"
-                    v-bind="{ member }"
+                    v-bind="{ member, isCampaignStarted }"
                   />
                 </tbody>
               </table>
