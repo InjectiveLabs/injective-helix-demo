@@ -85,6 +85,8 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
     expiryFuturesMarket.expiryFuturesMarketInfo.expirationTimestamp <=
     Date.now() / 1000
 
+  modalStore.openModal(Modal.MarketExpired)
+
   if (marketIsExpired) {
     modalStore.openModal(Modal.MarketExpired)
   }
@@ -193,10 +195,7 @@ useIntervalFn(() => {
       <div>
         <ModalsFuturesRestricted />
         <ModalsAddMargin />
-        <ModalsMarketExpired
-          v-if="market && marketIsExpired"
-          :market="market"
-        />
+        <ModalsMarketExpired v-if="market" :market="market" />
       </div>
     </template>
   </PartialsTradingLayout>
