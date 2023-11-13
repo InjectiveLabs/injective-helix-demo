@@ -7,6 +7,7 @@ export default {
     volume: 'Volume',
     overall: 'Overall',
     address: 'Address',
+    rewards: 'Rewards',
     endTime: 'End Time',
     estRewards: 'Est. Rewards',
     rewardStats: 'Reward Stats',

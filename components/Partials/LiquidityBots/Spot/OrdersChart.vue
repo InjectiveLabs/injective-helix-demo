@@ -117,8 +117,8 @@ const minMaxRange = computed(() => {
   )
 
   return {
-    min: Math.min(...range, lastTradedPrice.value.toNumber()) * 0.99,
-    max: Math.max(...range, lastTradedPrice.value.toNumber()) * 1.01
+    min: Math.min(...range) * 0.99,
+    max: Math.max(...range) * 1.01
   }
 })
 
