@@ -97,6 +97,24 @@ function handleToggleRewardsMenu() {
             </span>
           </LayoutNavItem>
 
+          <LayoutNavItem :to="{ name: MainPage.LpRewards }">
+            <div class="flex gap-1">
+              <span class="font-normal tracking-wide">
+                {{ $t('navigation.lpRewards') }}
+              </span>
+              <div class="bg-blue-500 rounded-full w-2 h-2 block lg:hidden" />
+            </div>
+          </LayoutNavItem>
+
+          <LayoutNavItem :to="{ name: MainPage.Guilds }">
+            <div class="flex gap-1">
+              <span class="font-normal tracking-wide">
+                {{ $t('navigation.guilds') }}
+              </span>
+              <div class="bg-blue-500 rounded-full w-2 h-2 block lg:hidden" />
+            </div>
+          </LayoutNavItem>
+
           <a
             class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center px-6 py-2"
             href="https://trading.injective.network/program/liquidity"

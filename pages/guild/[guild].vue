@@ -74,7 +74,7 @@ const { valueToString: guildMasterBalance } = useBigNumberFormatter(
 )
 
 const invitationLink = computed(
-  () => `${document.URL}/?invite=${guildInvitationHash.value}`
+  () => `${document.URL}?invite=${guildInvitationHash.value}`
 )
 
 onWalletConnected(() => {
