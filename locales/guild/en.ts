@@ -15,7 +15,7 @@ export default {
     startOn: ({ named }: I18nMessageFunction) => `Starts on ${named('date')}`,
 
     toast: {
-      copiedInvitationLink: 'Invitation link copied to your clipboard.'
+      copiedInvitationLink: 'Invitation code copied to your clipboard.'
     },
 
     howToParticipate: {
