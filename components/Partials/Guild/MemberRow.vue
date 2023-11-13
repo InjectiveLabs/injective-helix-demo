@@ -4,9 +4,11 @@ import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { NETWORK, GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
 
-const tokenStore = useTokenStore()
+const { baseToken, quoteToken } = useGuild()
 
 const props = defineProps({
+  isCampaignStarted: Boolean,
+
   member: {
     type: Object as PropType<GuildMember>,
     required: true
@@ -15,10 +17,6 @@ const props = defineProps({
 
 const explorerLink = computed(
   () => `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
-)
-
-const baseToken = computed(() =>
-  tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)
 )
 
 const { valueToString: tvlScoreToString } = useBigNumberFormatter(
@@ -31,7 +29,12 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
 )
 
 const { valueToString: volumeScoreToString } = useBigNumberFormatter(
-  computed(() => props.member.volumeScore)
+  computed(() =>
+    toBalanceInToken({
+      value: props.member.volumeScore,
+      decimalPlaces: quoteToken.value?.decimals || 6
+    })
+  )
 )
 </script>
 
@@ -50,11 +53,20 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
     </td>
     <td class="text-right">
       <div class="p-3">
-        {{ tvlScoreToString }} {{ baseToken?.symbol || 'INJ' }}
+        <p>
+          <span v-if="!isCampaignStarted">&mdash;</span>
+          <span v-else>
+            {{ tvlScoreToString }}
+            {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
+          </span>
+        </p>
       </div>
     </td>
     <td class="text-right">
-      <div class="p-3">{{ volumeScoreToString }} USD</div>
+      <div class="p-3">
+        <span v-if="!isCampaignStarted">&mdash;</span>
+        <span v-else>{{ volumeScoreToString }} USD</span>
+      </div>
     </td>
   </tr>
 </template>

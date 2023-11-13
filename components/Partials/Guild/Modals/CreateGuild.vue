@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
+import {
+  GUILD_DISCORD_LINK,
+  GUILD_BASE_TOKEN_SYMBOL
+} from 'app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -16,7 +19,6 @@ const MAX_CHARACTERS = 10
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
 const MIN_AMOUNT = 10000
-const JOIN_GUILD_LINK = 'https://twitter.com/HelixApp_'
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -233,7 +235,7 @@ watch(
         <NuxtLink
           v-if="!hasSufficientBalance"
           class="text-blue-500 hover:opacity-80 text-center"
-          :to="JOIN_GUILD_LINK"
+          :to="GUILD_DISCORD_LINK"
           target="_blank"
         >
           <p class="text-xs font-semibold mt-4">

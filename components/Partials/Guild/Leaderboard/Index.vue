@@ -9,6 +9,8 @@ const props = defineProps({
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
+const date = ref(Date.now())
+
 const guilds = computed(() =>
   props.isVolume ? campaignStore.guildsByVolume : campaignStore.guildsByTVL
 )
@@ -20,6 +22,16 @@ const lastUpdated = computed(() => {
 
   return format(campaignStore.guildCampaignSummary.updatedAt, DATE_FORMAT)
 })
+
+const isCampaignStarted = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return false
+  }
+
+  return campaignStore.guildCampaignSummary.startTime < date.value
+})
+
+useIntervalFn(() => (date.value = Date.now()), 1000)
 </script>
 
 <template>
@@ -66,7 +78,9 @@ const lastUpdated = computed(() => {
             v-bind="{
               guild,
               isVolume,
-              rank: index + 1
+              rank: index + 1,
+              isCampaignStarted,
+              summary: campaignStore.guildCampaignSummary
             }"
           />
 

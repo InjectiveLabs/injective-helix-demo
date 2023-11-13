@@ -12,6 +12,7 @@ export default {
     totalRewards: 'Total rewards',
     currentSeason: 'Current season',
     campaignRules: 'Campaign rules',
+    startOn: ({ named }: I18nMessageFunction) => `Starts on ${named('date')}`,
 
     toast: {
       copiedInvitationLink: 'Invitation link copied to your clipboard.'
@@ -29,8 +30,9 @@ export default {
         title: 'Join a guild and win with your friends',
         description:
           'Climb up the ranking by having more TIA and trading volume. Share 80% of the rewards with your friends if your guild wins!',
-        ctaMobile: 'Find guild to join',
-        cta: 'Check Injective Discord to find a guild to join'
+        description2:
+          'Find a guild in the #helix-guilds Discord channel or ask your friends for an invitation code!',
+        cta: 'Go to Injective Discord'
       }
     },
 
@@ -43,6 +45,8 @@ export default {
       guildMembers: 'Guild members',
       fetchNewData: 'Fetch new data',
       invitationLink: 'Invitation link',
+      guildMasterAddress: 'Guild master address',
+      guildMasterBalance: 'Guild master current TIA balance',
       table: {
         tvl: 'TVL',
         rank: 'Rank',
@@ -66,14 +70,6 @@ export default {
       },
       lastUpdated: ({ named }: I18nMessageFunction) =>
         `Last updated at ${named('date')}`
-    },
-
-    guildMaster: {
-      title: 'Your are the Guild Master',
-      noOfMembers: 'No. of members',
-      status: 'Status',
-      statusTooltip: 'status tooltip placeholder',
-      copyLinkToShare: 'Copy this link to share'
     },
 
     createGuild: {

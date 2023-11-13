@@ -12,7 +12,6 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
-import { IS_MAINNET } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 
@@ -195,7 +194,6 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            v-if="!IS_MAINNET"
             :to="{ name: MainPage.Guilds }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >

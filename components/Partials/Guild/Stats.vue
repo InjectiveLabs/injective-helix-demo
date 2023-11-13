@@ -1,27 +1,30 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const campaignStore = useCampaignStore()
+const { baseToken, quoteToken } = useGuild()
 
-const props = defineProps({
-  token: {
-    type: Object as PropType<Token>,
-    default: undefined
-  }
+defineProps({
+  isCampaignStarted: Boolean
 })
 
 const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.totalTvl || 0,
-      decimalPlaces: props.token?.decimals || 18
+      decimalPlaces: baseToken.value?.decimals || 18
     })
   )
 )
 
 const { valueToString: volumeScoreToString } = useBigNumberFormatter(
-  computed(() => campaignStore.guild?.volumeScore || 0)
+  computed(() =>
+    toBalanceInToken({
+      value: campaignStore.guild?.volumeScore || 0,
+      decimalPlaces: quoteToken.value?.decimals || 6
+    })
+  )
 )
 </script>
 
@@ -47,7 +50,12 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         </p>
         <div class="flex items-center gap-2 mt-3">
           <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />
-          <span>#{{ campaignStore.guild.rankByTvl }}</span>
+          <span
+            v-if="!isCampaignStarted || campaignStore.guild.rankByTvl === 0"
+          >
+            &mdash;
+          </span>
+          <span v-else>#{{ campaignStore.guild.rankByTvl }}</span>
         </div>
       </div>
 
@@ -57,7 +65,12 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         </p>
         <div class="flex items-center gap-2 mt-3">
           <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />
-          <span>#{{ campaignStore.guild.rankByVolume }}</span>
+          <span
+            v-if="!isCampaignStarted || campaignStore.guild.rankByVolume === 0"
+          >
+            &mdash;
+          </span>
+          <span v-else>#{{ campaignStore.guild.rankByVolume }}</span>
         </div>
       </div>
 
@@ -65,14 +78,23 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         <p class="text-gray-475 text-sm">
           {{ $t('guild.leaderboard.table.totalTIABalance') }}
         </p>
-        <p class="mt-3">{{ tvlScoreToString }} {{ token?.symbol }}</p>
+        <p class="mt-3">
+          <span v-if="!isCampaignStarted"> &mdash; </span>
+          <span v-else>
+            {{ tvlScoreToString }}
+            {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
+          </span>
+        </p>
       </div>
 
       <div>
         <p class="text-gray-475 text-sm">
           {{ $t('guild.leaderboard.table.totalTradingVolume') }}
         </p>
-        <p class="mt-3">{{ volumeScoreToString }} USD</p>
+        <p class="mt-3">
+          <span v-if="!isCampaignStarted"> &mdash; </span>
+          <span v-else>{{ volumeScoreToString }} USD</span>
+        </p>
       </div>
     </div>
 
