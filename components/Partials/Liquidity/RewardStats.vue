@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import {
-  Status,
-  BigNumber,
-  StatusType,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { addDays, differenceInHours } from 'date-fns'
 import {
   NETWORK,
   CAMPAIGN_INJ_REWARDS,
   CAMPAIGN_TIA_REWARDS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { LP_EPOCHS } from 'app/data/guild'
@@ -69,13 +65,12 @@ const estRewardsInPercentage = computed(() => {
     !campaignStore.ownerCampaignInfo ||
     new BigNumberInBase(props.totalScore).isZero()
   ) {
-    return 0
+    return ZERO_IN_BASE
   }
 
   return new BigNumberInBase(campaignStore.ownerCampaignInfo.score)
     .dividedBy(props.totalScore)
     .times(100)
-    .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN)
 })
 
 const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
@@ -85,7 +80,9 @@ const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
       .multipliedBy(CAMPAIGN_INJ_REWARDS)
   ),
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: estRewardsInPercentage.value.gt(0.1)
+      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
 
@@ -96,7 +93,9 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
       .multipliedBy(CAMPAIGN_TIA_REWARDS)
   ),
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: estRewardsInPercentage.value.gt(0.1)
+      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
 
