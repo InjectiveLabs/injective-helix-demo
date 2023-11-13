@@ -228,7 +228,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                 @click="onCopyInvitationLink"
               >
                 <div class="flex items-center gap-1">
-                  <span>{{ $t('guild.leaderboard.invitationLink') }}</span>
+                  <span>{{ $t('guild.leaderboard.invitationCode') }}</span>
                   <BaseIcon name="link" is-md />
                 </div>
               </AppButton>
