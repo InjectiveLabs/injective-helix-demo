@@ -83,7 +83,7 @@ watch(
       {{ hashErrors[0] }}
     </p>
 
-    <div class="w-full mt-8">
+    <div class="w-full mt-8 flex flex-col gap-1 items-center">
       <AppButton
         class="w-full bg-blue-500 text-white font-semibold"
         v-bind="{
@@ -100,6 +100,14 @@ watch(
           {{ $t('guild.verifyJoinGuild.cta') }}
         </span>
       </AppButton>
+
+      <NuxtLink
+        target="_blank"
+        class="text-blue-500 hover:text-opacity-80 text-sm"
+        to="https://discord.com/channels/739552603322450092/1172055840606400563/"
+      >
+        {{ $t('guild.joinGuild.invitationCode') }}
+      </NuxtLink>
     </div>
   </AppModal>
 </template>
