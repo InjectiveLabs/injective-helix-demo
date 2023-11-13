@@ -44,7 +44,7 @@ export default {
       },
       guildMembers: 'Guild members',
       fetchNewData: 'Fetch new data',
-      invitationLink: 'Invitation link',
+      invitationCode: 'Invitation code',
       guildMasterAddress: 'Guild master address',
       guildMasterBalance: 'Guild master current TIA balance',
       table: {
