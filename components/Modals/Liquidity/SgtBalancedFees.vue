@@ -79,7 +79,10 @@ function onChangeInvestmentType() {
         {{
           $t('sgt.balancedFeesMessage', {
             quote: market.quoteToken.symbol,
-            base: market.baseToken.symbol
+            base: market.baseToken.symbol,
+            quoteAmount: quoteAmountToString,
+            baseAmount: baseAmountToString,
+            initialInvestment: marginToString
           })
         }}
         <NuxtLink

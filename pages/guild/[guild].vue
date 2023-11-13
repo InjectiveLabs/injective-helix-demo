@@ -39,6 +39,14 @@ const isCampaignStarted = computed(() => {
   return campaignStore.guildCampaignSummary.startTime < date.value
 })
 
+const startDate = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return
+  }
+
+  return format(campaignStore.guildCampaignSummary.startTime, 'MMM dd')
+})
+
 const lastUpdated = computed(() => {
   if (!campaignStore.guild) {
     return
@@ -73,9 +81,9 @@ const { valueToString: guildMasterBalance } = useBigNumberFormatter(
   )
 )
 
-const invitationLink = computed(
-  () => `${document.URL}?invite=${guildInvitationHash.value}`
-)
+// const invitationLink = computed(
+//   () => `${document.URL}?invite=${guildInvitationHash.value}`
+// )
 
 onWalletConnected(() => {
   Promise.all([
@@ -108,7 +116,7 @@ function fetchGuildDetails({ skip }: { skip: number }) {
 }
 
 function onCopyInvitationLink() {
-  copy(invitationLink.value)
+  copy(guildInvitationHash.value)
   success({ title: t('guild.toast.copiedInvitationLink') })
 }
 
@@ -279,46 +287,57 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                 tableStatus.isLoading() ? 'min-h-xs items-center' : ''
               "
             >
-              <table class="w-full">
-                <thead>
-                  <tr class="border-b uppercase text-xs text-gray-500">
-                    <th class="p-4 text-left">
-                      {{ $t('guild.leaderboard.table.address') }}
-                    </th>
-                    <th class="p-4 text-right">
-                      <CommonHeaderTooltip
-                        :tooltip="
-                          $t('guild.leaderboard.table.tiaBalanceTooltip')
-                        "
-                      >
-                        <span>
-                          {{
-                            $t(
-                              'guild.leaderboard.table.weightedAverageTiaBalance'
-                            )
-                          }}
-                        </span>
-                      </CommonHeaderTooltip>
-                    </th>
-                    <th class="p-4 text-right">
-                      <CommonHeaderTooltip
-                        :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
-                      >
-                        <span>
-                          {{ $t('guild.leaderboard.table.tradingVolume') }}
-                        </span>
-                      </CommonHeaderTooltip>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <PartialsGuildMemberRow
-                    v-for="member in campaignStore.guildMembers"
-                    :key="member.address"
-                    v-bind="{ member, isCampaignStarted }"
-                  />
-                </tbody>
-              </table>
+              <section class="relative">
+                <div
+                  v-if="startDate && !isCampaignStarted"
+                  class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-filter backdrop-blur bg-gray-900 bg-opacity-40"
+                >
+                  <p class="font-semibold">
+                    {{ $t('guild.startOn', { date: startDate }) }}
+                  </p>
+                </div>
+
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b uppercase text-xs text-gray-500">
+                      <th class="p-4 text-left">
+                        {{ $t('guild.leaderboard.table.address') }}
+                      </th>
+                      <th class="p-4 text-right">
+                        <CommonHeaderTooltip
+                          :tooltip="
+                            $t('guild.leaderboard.table.tiaBalanceTooltip')
+                          "
+                        >
+                          <span>
+                            {{
+                              $t(
+                                'guild.leaderboard.table.weightedAverageTiaBalance'
+                              )
+                            }}
+                          </span>
+                        </CommonHeaderTooltip>
+                      </th>
+                      <th class="p-4 text-right">
+                        <CommonHeaderTooltip
+                          :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
+                        >
+                          <span>
+                            {{ $t('guild.leaderboard.table.tradingVolume') }}
+                          </span>
+                        </CommonHeaderTooltip>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <PartialsGuildMemberRow
+                      v-for="member in campaignStore.guildMembers"
+                      :key="member.address"
+                      v-bind="{ member, isCampaignStarted }"
+                    />
+                  </tbody>
+                </table>
+              </section>
             </AppHocLoading>
           </section>
 

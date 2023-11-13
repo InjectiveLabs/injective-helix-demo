@@ -102,6 +102,8 @@ function onConnectWallet() {
       </div>
     </section>
 
+    <p class="max-w-4xl mx-auto mt-8">{{ $t('guild.rewardDescription') }}</p>
+
     <section class="mt-20">
       <div class="flex justify-between items-center gap-10">
         <h2 class="text-2xl font-bold">
