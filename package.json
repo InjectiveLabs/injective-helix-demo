@@ -59,6 +59,7 @@
     "canvas-confetti": "^1.6.0",
     "core-js": "^3.10.1",
     "date-fns": "^2.29.3",
+    "date-fns-tz": "^2.0.0",
     "deepmerge": "^4.2.2",
     "html-to-image": "^1.11.11",
     "js-confetti": "^0.11.0",
