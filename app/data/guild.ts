@@ -20,7 +20,7 @@ const mainnetEpochs: Epoch[] = [
   {
     epoch: 1,
     campaignId: 'spot-grid-tia-usdt',
-    startDate: 1697295600,
+    startDate: 1698753600,
     endDate: 1699974000,
     baseRewards: '1000',
     quoteRewards: '10000',
@@ -30,8 +30,8 @@ const mainnetEpochs: Epoch[] = [
   {
     epoch: 2,
     campaignId: 'spot-grid-tia-usdt-2',
-    startDate: 1697295600,
-    endDate: 1702594800,
+    startDate: 1699974000,
+    endDate: 1702566000,
     baseRewards: '500',
     quoteRewards: '4000',
     scAddress: ''

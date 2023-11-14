@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
-import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 import { MainPage } from '@/types'
 import { LP_EPOCHS } from 'app/data/guild'
 
@@ -12,14 +11,12 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { error } = useNotifications()
 
-const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
+// WE WILL USE THIS LATER - WE HAVE TO HARDCODE 1 FOR NOW BELOW
+// const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
 
 const page = ref(1)
 const limit = ref(10)
-const epoch = useQueryRef(
-  'epoch',
-  latestEpoch.toString()
-) as WritableComputedRef<string>
+const epoch = useQueryRef('epoch', '1')
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
