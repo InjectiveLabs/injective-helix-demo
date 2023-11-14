@@ -168,7 +168,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
 
         <div class="flex">
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr] gap-4 flex-1"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
           >
             <div>
               <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
@@ -185,35 +185,32 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
             </div>
 
             <div>
-              <p class="text-xs uppercase pb-1">
-                {{ $t('campaign.rewards') }}
-              </p>
+              <div class="text-xs uppercase pb-1 flex items-center space-x-2">
+                <p>{{ $t('campaign.rewards') }}</p>
+              </div>
               <div class="flex items-center justify-between gap-2">
-                <p class="text-sm">
-                  {{ estRewardsInINJToString }} INJ,
-                  {{ estRewardsInTIAToString }} TIA
-                </p>
-
-                <div
-                  v-if="isClaimButtonShowed"
-                  class="flex flex-col items-center text-center"
-                >
-                  <AppButton
-                    :disabled="!isClaimable"
-                    class="border border-blue-500"
-                    xs
-                    @click="claimRewards"
-                  >
-                    <span class="text-blue-500 font-semibold">
-                      {{ $t('campaign.claim') }}
-                    </span>
-                  </AppButton>
-
-                  <div class="text-xs mt-2">
-                    {{ $t('campaign.readyIn', { hours: readyIn }) }}
-                  </div>
+                <div class="text-sm">
+                  <p>{{ estRewardsInINJToString }} INJ,</p>
+                  <p>{{ estRewardsInTIAToString }} TIA</p>
                 </div>
               </div>
+            </div>
+
+            <div v-if="isClaimButtonShowed" class="whitespace-nowrap">
+              <AppButton
+                :disabled="!isClaimable"
+                class="border border-blue-500 mb-1"
+                xs
+                @click="claimRewards"
+              >
+                <div class="text-blue-500 font-semibold">
+                  {{ $t('campaign.claim') }}
+                </div>
+              </AppButton>
+
+              <p class="text-xs text-gray-500">
+                ({{ $t('campaign.readyIn', { hours: readyIn }) }})
+              </p>
             </div>
           </div>
         </div>
