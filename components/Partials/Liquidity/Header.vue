@@ -86,7 +86,7 @@ const endDate = computed(() => {
           </p>
           <h2 class="text-2xl font-semibold">{{ market.ticker }}</h2>
         </div>
-        <div class="justify-self-end">
+        <div class="md:justify-self-end">
           <p class="text-gray-600 text-sm mb-2">
             {{ $t('campaign.endTime') }}
           </p>
