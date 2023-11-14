@@ -11,6 +11,7 @@ export default {
     rewards: 'Rewards',
     endTime: 'End Time',
     estRewards: 'Est. Rewards',
+    round: 'Round {round}',
     rewardStats: 'Reward Stats',
     totalRewards: 'Total Rewards',
     campaignRules: 'Campaign Rules',
