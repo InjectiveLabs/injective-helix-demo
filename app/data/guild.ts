@@ -24,8 +24,19 @@ const mainnetEpochs: Epoch[] = [
     endDate: 1699974000,
     baseRewards: '1000',
     quoteRewards: '10000',
-    scAddress: 'inj19ppy6u4wse8dcgcqz6ynq22q3sftmlyvvqvyyz'
+    scAddress: 'inj1u5hslmdxksvu04d5wk8ec5ewxgpnrs5jxl75rm'
   }
+
+  // ADD THIS WHEN WHEN WE HAVE THE CORRECT DATA
+  // {
+  //   epoch: 2,
+  //   campaignId: 'spot-grid-tia-usdt-2',
+  //   startDate: 1697295600,
+  //   endDate: 1702594800,
+  //   baseRewards: '500',
+  //   quoteRewards: '5000',
+  //   scAddress: 'inj19ppy6u4wse8dcgcqz6ynq22q3sftmlyvvqvyyz'
+  // }
 ]
 
 const testnetEpochs: Epoch[] = [
