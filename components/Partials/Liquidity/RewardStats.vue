@@ -101,13 +101,17 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
 )
 
 onWalletConnected(() => {
+  fetchOwnerInfo()
+})
+
+function fetchOwnerInfo() {
   status.setLoading()
 
   campaignStore
     .fetchCampaignOwnerInfo(props.campaign.campaignId)
     .catch($onError)
     .finally(() => status.setIdle())
-})
+}
 
 function claimRewards() {
   const scContract = LP_EPOCHS.find(
@@ -149,6 +153,8 @@ const isClaimButtonShowed = computed(
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
 }, 30 * 1000)
+
+watch(() => props.campaign.campaignId, fetchOwnerInfo)
 </script>
 
 <template>

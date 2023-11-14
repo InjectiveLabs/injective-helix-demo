@@ -12,9 +12,14 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { error } = useNotifications()
 
+const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
+
 const page = ref(1)
 const limit = ref(10)
-const epoch = useQueryRef('epoch', '1') as WritableComputedRef<string>
+const epoch = useQueryRef(
+  'epoch',
+  latestEpoch.toString()
+) as WritableComputedRef<string>
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))

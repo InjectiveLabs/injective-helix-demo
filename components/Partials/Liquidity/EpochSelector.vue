@@ -2,7 +2,12 @@
 import { WritableComputedRef } from 'nuxt/dist/app/compat/capi'
 import { LP_EPOCHS } from '@/app/data/guild'
 
-const epoch = useQueryRef('epoch', '1') as WritableComputedRef<string>
+const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
+
+const epoch = useQueryRef(
+  'epoch',
+  latestEpoch.toString()
+) as WritableComputedRef<string>
 
 const epochOptions = computed(() =>
   LP_EPOCHS.filter(({ startDate }) => startDate < Date.now()).map((ep) => ({
