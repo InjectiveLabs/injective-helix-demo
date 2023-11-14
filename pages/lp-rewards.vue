@@ -141,6 +141,7 @@ watch(epoch, () => fetchCampaign({ skip: 0 }))
                 v-for="campaignUser in campaignStore.campaignUsers"
                 :key="campaignUser.accountAddress"
                 v-bind="{
+                  campaign: campaignStore.campaign,
                   campaignUser,
                   totalScore: campaignStore.campaign.totalScore,
                   quoteDecimals: market?.quoteToken.decimals || 6
