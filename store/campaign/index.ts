@@ -9,11 +9,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
 import { GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
-import {
-  indexerGrpcGuildApi,
-  indexerGrpcCampaignApi,
-  msgBroadcastClient
-} from '@/app/Services'
+import { msgBroadcastClient, indexerGrpcCampaignApi } from '@/app/Services'
 import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
@@ -98,7 +94,7 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchGuildsByTVL() {
       const campaignStore = useCampaignStore()
 
-      const { guilds, summary } = await indexerGrpcGuildApi.fetchGuilds({
+      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
         sortBy: GuildSortBy.TVL,
         limit: 100,
         campaignContract: GUILD_CONTRACT_ADDRESS
@@ -113,7 +109,7 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchGuildsByVolume() {
       const campaignStore = useCampaignStore()
 
-      const { guilds, summary } = await indexerGrpcGuildApi.fetchGuilds({
+      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
         sortBy: GuildSortBy.Volume,
         limit: 100,
         campaignContract: GUILD_CONTRACT_ADDRESS
@@ -135,7 +131,7 @@ export const useCampaignStore = defineStore('campaign', {
 
       try {
         const { info: userGuildInfo } =
-          await indexerGrpcGuildApi.fetchGuildMember({
+          await indexerGrpcCampaignApi.fetchGuildMember({
             address: walletStore.injectiveAddress,
             campaignContract: GUILD_CONTRACT_ADDRESS
           })
@@ -160,7 +156,7 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
 
       const { members, guildInfo, paging } =
-        await indexerGrpcGuildApi.fetchGuildMembers({
+        await indexerGrpcCampaignApi.fetchGuildMembers({
           skip,
           limit,
           guildId,
@@ -187,7 +183,7 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
 
       const { members, guildInfo, paging } =
-        await indexerGrpcGuildApi.fetchGuildMembers({
+        await indexerGrpcCampaignApi.fetchGuildMembers({
           skip,
           limit,
           guildId,
