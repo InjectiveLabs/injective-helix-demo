@@ -140,13 +140,6 @@ const CAMPAIGN_ENDPOINT =
     ? 'https://testnet.exchange.grpc-web.injective.dev' // temp for testing
     : endpoints.indexer
 
-// todo: remove once guild indexer finish syncing
-const GUILD_ENDPOINT = IS_TESTNET
-  ? 'https://testnet.exchange.grpc-web.injective.dev'
-  : IS_MAINNET
-  ? 'https://staging.api.injective.network'
-  : endpoints.indexer
-
 export const ENDPOINTS = {
   ...endpoints,
   grpc: env.VITE_SENTRY_GRPC_ENDPOINT || endpoints.grpc,
@@ -157,8 +150,7 @@ export const ENDPOINTS = {
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
   chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
   explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer,
-  campaign: CAMPAIGN_ENDPOINT,
-  guild: GUILD_ENDPOINT
+  campaign: CAMPAIGN_ENDPOINT
 }
 
 export const BASE_URL = env.VITE_BASE_URL || ''

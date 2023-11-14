@@ -31,7 +31,7 @@ const resolvePagePath = (page: string) => {
 
 const fetchGuildRoutes = async (): Promise<string[]> => {
   const client = new HttpClient(
-    `${ENDPOINTS.guild}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
+    `${ENDPOINTS.indexer}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
   )
 
   try {

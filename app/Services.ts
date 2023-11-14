@@ -65,8 +65,6 @@ export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
   ENDPOINTS.campaign
 )
-// todo: remove once guild indexer finish syncing
-export const indexerGrpcGuildApi = new IndexerGrpcCampaignApi(ENDPOINTS.guild)
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer
 )

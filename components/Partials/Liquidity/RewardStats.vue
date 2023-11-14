@@ -16,6 +16,7 @@ import { LP_EPOCHS } from 'app/data/guild'
 const campaignStore = useCampaignStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const props = defineProps({
   totalScore: {
@@ -122,7 +123,10 @@ function claimRewards() {
   campaignStore
     .claimReward(scContract)
     .then(() => {
-      success({ title: 'Success', description: 'Succesfuuly Claimed Rewards' })
+      success({
+        title: t('campaign.success'),
+        description: t('campaign.succesfulyClaimedRewards')
+      })
     })
     .catch($onError)
     .finally(() => {
@@ -158,9 +162,9 @@ useIntervalFn(() => {
 
         <div class="flex">
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 flex-1"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr] gap-4 flex-1"
           >
-            <div class="md:col-span-2">
+            <div>
               <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
               <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
                 <p class="text-blue-500 truncate">
@@ -168,15 +172,17 @@ useIntervalFn(() => {
                 </p>
               </NuxtLink>
             </div>
+
             <div>
               <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
               <p class="text-sm">{{ volumeInUsdToString }} USD</p>
             </div>
+
             <div>
               <p class="text-xs uppercase pb-1">
                 {{ $t('campaign.rewards') }}
               </p>
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-2">
                 <p class="text-sm">
                   {{ estRewardsInINJToString }} INJ,
                   {{ estRewardsInTIAToString }} TIA
@@ -184,7 +190,7 @@ useIntervalFn(() => {
 
                 <div
                   v-if="isClaimButtonShowed"
-                  class="flex flex-col items-center"
+                  class="flex flex-col items-center text-center"
                 >
                   <AppButton
                     :disabled="!isClaimable"
@@ -197,7 +203,9 @@ useIntervalFn(() => {
                     </span>
                   </AppButton>
 
-                  <div class="text-xs mt-2">Ready in {{ readyIn }} Hrs</div>
+                  <div class="text-xs mt-2">
+                    {{ $t('campaign.readyIn', { hours: readyIn }) }}
+                  </div>
                 </div>
               </div>
             </div>
