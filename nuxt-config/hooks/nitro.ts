@@ -31,7 +31,7 @@ const resolvePagePath = (page: string) => {
 
 const fetchGuildRoutes = async (): Promise<string[]> => {
   const client = new HttpClient(
-    `${ENDPOINTS.indexer}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
+    `${ENDPOINTS.campaign}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
   )
 
   try {
@@ -42,7 +42,7 @@ const fetchGuildRoutes = async (): Promise<string[]> => {
     return data.guilds.map(({ guildId }) => `/guild/${guildId}`)
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error(e)
+    console.log(e)
 
     return []
   }
