@@ -172,11 +172,11 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async pollGuildDetails({
-      skip,
+      page,
       limit,
       guildId
     }: {
-      skip?: number
+      page?: number
       limit?: number
       guildId: string
     }) {
@@ -184,14 +184,14 @@ export const useCampaignStore = defineStore('campaign', {
 
       const { members, guildInfo, paging } =
         await indexerGrpcCampaignApi.fetchGuildMembers({
-          skip,
           limit,
           guildId,
+          skip: 0,
           includeGuildInfo: true,
           campaignContract: GUILD_CONTRACT_ADDRESS
         })
 
-      if (skip === 0) {
+      if (page === 1) {
         campaignStore.$patch({
           guildMembers: members
         })

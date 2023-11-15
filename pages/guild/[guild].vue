@@ -147,7 +147,7 @@ function onJoinGuild() {
 useIntervalFn(
   () =>
     campaignStore.pollGuildDetails({
-      skip: 0,
+      page: page.value,
       limit: limit.value,
       guildId: route.params.guild as string
     }),
@@ -281,8 +281,11 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             </div>
 
             <AppHocLoading
-              class="overflow-x-auto overflow-y-hidden mt-6"
+              class="overflow-y-hidden mt-6"
               :status="tableStatus"
+              :class="[
+                isCampaignStarted ? 'overflow-x-auto' : 'overflow-x-hidden'
+              ]"
               :loader-class="
                 tableStatus.isLoading() ? 'min-h-xs items-center' : ''
               "
@@ -309,7 +312,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                             $t('guild.leaderboard.table.tiaBalanceTooltip')
                           "
                         >
-                          <span>
+                          <span class="whitespace-nowrap">
                             {{
                               $t(
                                 'guild.leaderboard.table.weightedAverageTiaBalance'
@@ -322,7 +325,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                         <CommonHeaderTooltip
                           :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
                         >
-                          <span>
+                          <span class="whitespace-nowrap">
                             {{ $t('guild.leaderboard.table.tradingVolume') }}
                           </span>
                         </CommonHeaderTooltip>

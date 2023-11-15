@@ -137,7 +137,7 @@ const CAMPAIGN_ENDPOINT =
   IS_MAINNET && !IS_STAGING
     ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
     : IS_TESTNET
-    ? 'https://testnet.exchange.grpc-web.injective.dev' // temp for testing
+    ? 'https://testnet.exchange.grpc-web.injective.dev'
     : endpoints.indexer
 
 export const ENDPOINTS = {

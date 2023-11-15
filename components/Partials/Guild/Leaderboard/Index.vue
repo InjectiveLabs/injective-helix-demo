@@ -35,8 +35,8 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
 </script>
 
 <template>
-  <div>
-    <div class="border-b flex justify-between items-end">
+  <div class="overflow-x-auto">
+    <div class="border-b flex justify-between items-end flex-wrap">
       <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
         <span v-if="isVolume">
           {{ $t('guild.leaderboard.tab.rankByVolume') }}
@@ -62,7 +62,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             <th class="p-4 text-left">
               {{ $t('guild.leaderboard.table.status') }}
             </th>
-            <th class="p-4 text-right">
+            <th class="p-4 text-right whitespace-nowrap">
               <span v-if="isVolume">
                 {{ $t('guild.leaderboard.table.tradingVolume') }}
               </span>

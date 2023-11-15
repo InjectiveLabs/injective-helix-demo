@@ -57,14 +57,16 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
 <template>
   <tr class="border-b hover:bg-gray-800 text-sm">
     <td>
-      <div v-if="!isCampaignStarted">&mdash;</div>
-      <div v-else class="p-3 flex items-center gap-2">
-        <span>{{ rank }}</span>
-        <AssetTrophyColor v-if="rank === 1" />
+      <div class="whitespace-nowrap p-3 block">
+        <div v-if="isCampaignStarted" class="flex items-center gap-2">
+          <span>{{ rank }}</span>
+          <AssetTrophyColor v-if="rank === 1" />
+        </div>
+        <span v-else>&mdash;</span>
       </div>
     </td>
     <td>
-      <div class="p-3 flex items-center gap-2">
+      <div class="p-3 flex items-center gap-2 min-w-[7.5rem]">
         <PartialsGuildThumbnail :thumbnail-id="guild.logo" />
         <span>{{ guild.name }}</span>
       </div>
@@ -79,7 +81,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
     </td>
     <td class="text-right">
       <template v-if="!isCampaignStarted">
-        <span v-if="startDate">
+        <span v-if="startDate" class="whitespace-nowrap">
           {{ $t('guild.startOn', { date: startDate }) }}
         </span>
         <span v-else>&mdash;</span>
