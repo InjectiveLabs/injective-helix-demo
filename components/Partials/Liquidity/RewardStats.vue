@@ -129,7 +129,7 @@ function claimRewards() {
     .then(() => {
       success({
         title: t('campaign.success'),
-        description: t('campaign.succesfulyClaimedRewards')
+        description: t('campaign.successfullyClaimedRewards')
       })
     })
     .catch((er) => {
@@ -148,14 +148,13 @@ function claimRewards() {
 }
 
 const claimDate = computed(() => addDays(props.campaign.endDate, 1))
-
 const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
 
-const readyIn = computed(() =>
+const estimatedTimeToReady = computed(() =>
   differenceInHours(claimDate.value.getTime(), Date.now())
 )
 
-const isClaimButtonShowed = computed(() => readyIn.value < 24)
+const isClaimButtonShowed = computed(() => estimatedTimeToReady.value < 24)
 
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
@@ -205,10 +204,12 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
 
             <div v-if="isClaimButtonShowed" class="whitespace-nowrap">
               <AppButton
-                :disabled="!isClaimable"
                 class="border border-blue-500 mb-1"
                 xs
-                v-bind="{ isLoading: claimStatus.isLoading() }"
+                v-bind="{
+                  status: claimStatus,
+                  disabled: !isClaimable
+                }"
                 @click="claimRewards"
               >
                 <div class="text-blue-500 font-semibold">
@@ -216,18 +217,20 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 </div>
               </AppButton>
 
-              <p v-if="readyIn > 0" class="text-xs text-gray-500">
-                ({{ $t('campaign.readyIn', { hours: readyIn }) }})
+              <p v-if="estimatedTimeToReady > 0" class="text-xs text-gray-500">
+                ({{ $t('campaign.readyIn', { hours: estimatedTimeToReady }) }})
               </p>
 
               <p
-                v-else-if="readyIn === 0 && !isClaimable"
+                v-else-if="estimatedTimeToReady === 0 && !isClaimable"
                 class="text-xs text-gray-500"
               >
                 ({{
                   $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
                 }})
               </p>
+
+              <p v-else class="text-xs text-gray-500">&mdash;</p>
             </div>
           </div>
         </div>

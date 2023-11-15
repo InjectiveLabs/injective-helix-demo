@@ -16,7 +16,7 @@ export default {
     rewardStats: 'Reward Stats',
     totalRewards: 'Total Rewards',
     campaignRules: 'Campaign Rules',
-    succesfulyClaimedRewards: 'Succesfuly Claimed Rewards',
+    successfullyClaimedRewards: 'Succesfuly Claimed Rewards',
     errorAlreadyClaimed: 'This reward has already been claimed.',
     readyIn: 'Ready in {hours} Hrs',
     readyInLessThan: 'Ready in less than {time} {interval}',
