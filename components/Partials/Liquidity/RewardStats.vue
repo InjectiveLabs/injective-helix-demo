@@ -208,7 +208,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 xs
                 v-bind="{
                   status: claimStatus,
-                  disabled: true // !isClaimable
+                  disabled: !isClaimable
                 }"
                 @click="claimRewards"
               >
@@ -230,13 +230,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 }})
               </p>
 
-              <div v-else class="text-xs text-gray-500">
-                <p class="w-32 whitespace-normal">
-                  Reward claiming is temporarily unavailable due to technical
-                  difficulties. We are working to resolve the issue.
-                </p>
-                <p class="font-bold">Your rewards are safe.</p>
-              </div>
+              <p v-else class="text-xs text-gray-500">&mdash;</p>
             </div>
           </div>
         </div>
