@@ -80,16 +80,7 @@ export const validateCosmosWallet = async ({
     chainId
   })
 
-  if (!(await cosmosWalletStrategy.isChainIdSupported())) {
-    throw new CosmosWalletException(
-      new Error(`The wallet does not support ${chainId}`),
-      {
-        code: UnspecifiedErrorCode
-      }
-    )
-  }
-
-  const accounts = await cosmosWalletStrategy.getAddresses()
+  const accounts = await cosmosWalletStrategy.enableAndGetAddresses()
 
   if (accounts.length === 0) {
     throw new CosmosWalletException(
@@ -127,7 +118,7 @@ export const getAccountsFromCosmosWallet = async (
     chainId
   })
 
-  return await cosmosWalletStrategy.getAddresses()
+  return await cosmosWalletStrategy.enableAndGetAddresses()
 }
 
 export const getTokenMetaFromChainId = (chainId: string): Token | Token[] => {
