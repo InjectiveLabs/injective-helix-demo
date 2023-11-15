@@ -14,7 +14,7 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import { LP_EPOCHS } from 'app/data/guild'
 
 const campaignStore = useCampaignStore()
-const { success } = useNotifications()
+const { success, error } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -109,7 +109,16 @@ function fetchOwnerInfo() {
 
   campaignStore
     .fetchCampaignOwnerInfo(props.campaign.campaignId)
-    .catch($onError)
+    .catch((er) => {
+      if ((er.originalMessage as string).includes('has already claimed')) {
+        error({
+          title: t('campaign.alreadyClaimed'),
+          description: t('campaign.errorAlreadyClaimed')
+        })
+      } else {
+        $onError(er)
+      }
+    })
     .finally(() => status.setIdle())
 }
 
@@ -206,8 +215,14 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 </div>
               </AppButton>
 
-              <p v-if="readyIn >= 0" class="text-xs text-gray-500">
+              <p v-if="readyIn > 0" class="text-xs text-gray-500">
                 ({{ $t('campaign.readyIn', { hours: readyIn }) }})
+              </p>
+
+              <p v-else-if="readyIn === 0" class="text-xs text-gray-500">
+                ({{
+                  $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
+                }})
               </p>
             </div>
           </div>
