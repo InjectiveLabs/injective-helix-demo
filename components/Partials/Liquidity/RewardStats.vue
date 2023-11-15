@@ -109,16 +109,7 @@ function fetchOwnerInfo() {
 
   campaignStore
     .fetchCampaignOwnerInfo(props.campaign.campaignId)
-    .catch((er) => {
-      if ((er.originalMessage as string).includes('has already claimed')) {
-        error({
-          title: t('campaign.alreadyClaimed'),
-          description: t('campaign.errorAlreadyClaimed')
-        })
-      } else {
-        $onError(er)
-      }
-    })
+    .catch($onError)
     .finally(() => status.setIdle())
 }
 
@@ -141,7 +132,16 @@ function claimRewards() {
         description: t('campaign.succesfulyClaimedRewards')
       })
     })
-    .catch($onError)
+    .catch((er) => {
+      if ((er.originalMessage as string).includes('has already claimed')) {
+        error({
+          title: t('campaign.error'),
+          description: t('campaign.errorAlreadyClaimed')
+        })
+      } else {
+        $onError(er)
+      }
+    })
     .finally(() => {
       claimStatus.setIdle()
     })
@@ -208,6 +208,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 :disabled="!isClaimable"
                 class="border border-blue-500 mb-1"
                 xs
+                v-bind="{ isLoading: claimStatus.isLoading() }"
                 @click="claimRewards"
               >
                 <div class="text-blue-500 font-semibold">
@@ -219,7 +220,10 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 ({{ $t('campaign.readyIn', { hours: readyIn }) }})
               </p>
 
-              <p v-else-if="readyIn === 0" class="text-xs text-gray-500">
+              <p
+                v-else-if="readyIn === 0 && !isClaimable"
+                class="text-xs text-gray-500"
+              >
                 ({{
                   $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
                 }})

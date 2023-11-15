@@ -61,6 +61,7 @@ const actionsThatSetAppStateToBusy = [
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
+  'campaign/claimReward',
   'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
@@ -83,7 +84,9 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitStopMarketOrder',
   'swap/submitAtomicOrderExactOutput',
   'activity/batchCancelDerivativeOrders',
-  'position/closePositionAndReduceOnlyOrders'
+  'position/closePositionAndReduceOnlyOrders',
+  'gridStrategy/createStrategy',
+  'gridStrategy/removeStrategy'
 ]
 
 const persistState = (
