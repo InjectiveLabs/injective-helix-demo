@@ -14,7 +14,7 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import { LP_EPOCHS } from 'app/data/guild'
 
 const campaignStore = useCampaignStore()
-const { success } = useNotifications()
+const { success, error } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -132,7 +132,16 @@ function claimRewards() {
         description: t('campaign.succesfulyClaimedRewards')
       })
     })
-    .catch($onError)
+    .catch((er) => {
+      if ((er.originalMessage as string).includes('has already claimed')) {
+        error({
+          title: t('campaign.error'),
+          description: t('campaign.errorAlreadyClaimed')
+        })
+      } else {
+        $onError(er)
+      }
+    })
     .finally(() => {
       claimStatus.setIdle()
     })
@@ -146,9 +155,7 @@ const readyIn = computed(() =>
   differenceInHours(claimDate.value.getTime(), Date.now())
 )
 
-const isClaimButtonShowed = computed(
-  () => readyIn.value < 24 && readyIn.value > 0
-)
+const isClaimButtonShowed = computed(() => readyIn.value < 24)
 
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
@@ -201,6 +208,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 :disabled="!isClaimable"
                 class="border border-blue-500 mb-1"
                 xs
+                v-bind="{ isLoading: claimStatus.isLoading() }"
                 @click="claimRewards"
               >
                 <div class="text-blue-500 font-semibold">
@@ -208,8 +216,17 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 </div>
               </AppButton>
 
-              <p class="text-xs text-gray-500">
+              <p v-if="readyIn > 0" class="text-xs text-gray-500">
                 ({{ $t('campaign.readyIn', { hours: readyIn }) }})
+              </p>
+
+              <p
+                v-else-if="readyIn === 0 && !isClaimable"
+                class="text-xs text-gray-500"
+              >
+                ({{
+                  $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
+                }})
               </p>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { I18nMessageFunction } from '@/types'
 export default {
   campaign: {
     rank: 'Rank',
+    error: 'Error',
     claim: 'Claim',
     volume: 'Volume',
     success: 'Success',
@@ -16,7 +17,9 @@ export default {
     totalRewards: 'Total Rewards',
     campaignRules: 'Campaign Rules',
     succesfulyClaimedRewards: 'Succesfuly Claimed Rewards',
+    errorAlreadyClaimed: 'This reward has already been claimed.',
     readyIn: 'Ready in {hours} Hrs',
+    readyInLessThan: 'Ready in less than {time} {interval}',
     campaignNotFound: 'Campaign not found, please try again later.',
     title: 'LP Rewards',
     description: 'View and claim your LP Rewards',
