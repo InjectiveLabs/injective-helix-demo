@@ -109,8 +109,10 @@ onWalletConnected(() => {
 function fetchOwnerInfo() {
   status.setLoading()
 
-  campaignStore
-    .fetchCampaignOwnerInfo(props.campaign.campaignId)
+  Promise.all([
+    campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId),
+    campaignStore.fetchUserClaimedStatus(epochRound.value?.scAddress || '')
+  ])
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -133,6 +135,8 @@ function claimRewards() {
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
+
+      campaignStore.$patch({ userHasClaimed: true })
     })
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {
@@ -156,11 +160,7 @@ const estimatedTimeToClaimable = computed(() =>
   differenceInHours(claimDate.value.getTime(), Date.now())
 )
 
-const isClaimButtonVisible = computed(
-  () =>
-    estimatedTimeToClaimable.value <
-    24 /* add the smart contract query to check if the user already claimed */
-)
+const isClaimButtonVisible = computed(() => estimatedTimeToClaimable.value < 24)
 
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
@@ -214,12 +214,21 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 xs
                 v-bind="{
                   status: claimStatus,
-                  disabled: !isClaimable
+                  disabled: !isClaimable || campaignStore.userHasClaimed
                 }"
                 @click="claimRewards"
               >
-                <div class="text-blue-500 font-semibold">
-                  {{ $t('campaign.claim') }}
+                <div
+                  class="font-semibold"
+                  :class="{ 'text-blue-500': !campaignStore.userHasClaimed }"
+                >
+                  {{
+                    $t(
+                      `campaign.${
+                        campaignStore.userHasClaimed ? 'claimed' : 'claim'
+                      }`
+                    )
+                  }}
                 </div>
               </AppButton>
 

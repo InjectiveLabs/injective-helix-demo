@@ -5,11 +5,17 @@ import {
   GuildMember,
   CampaignUser,
   GuildCampaignSummary,
-  MsgExecuteContractCompat
+  MsgExecuteContractCompat,
+  toBase64,
+  fromBase64
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
 import { GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
-import { msgBroadcastClient, indexerGrpcCampaignApi } from '@/app/Services'
+import {
+  msgBroadcastClient,
+  indexerGrpcCampaignApi,
+  chainGrpcWasmApi
+} from '@/app/Services'
 import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
@@ -17,6 +23,7 @@ type CampaignStoreState = {
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
+  userHasClaimed: boolean
   totalUserCount: number
   totalGuildMember: number
   userGuildInfo?: GuildMember
@@ -34,6 +41,7 @@ const initialStateFactory = (): CampaignStoreState => ({
   campaignUsers: [],
   guildsByVolume: [],
   totalGuildMember: 0,
+  userHasClaimed: false,
   campaign: undefined,
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
@@ -229,6 +237,29 @@ export const useCampaignStore = defineStore('campaign', {
       })
 
       return reward
+    },
+
+    async fetchUserClaimedStatus(contractAddress: string) {
+      const walletStore = useWalletStore()
+      const campaignStore = useCampaignStore()
+
+      if (!walletStore.injectiveAddress || !contractAddress) {
+        campaignStore.$patch({ userHasClaimed: false })
+        return
+      }
+
+      const response = (await chainGrpcWasmApi.fetchSmartContractState(
+        contractAddress,
+        toBase64({
+          has_claimed: {
+            user: walletStore.injectiveAddress
+          }
+        })
+      )) as unknown as { data: string }
+
+      const userHasClaimed = fromBase64(response.data) as unknown as boolean
+
+      campaignStore.$patch({ userHasClaimed })
     },
 
     reset() {
