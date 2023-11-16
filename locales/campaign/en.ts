@@ -10,6 +10,7 @@ export default {
     overall: 'Overall',
     address: 'Address',
     rewards: 'Rewards',
+    claimed: 'Claimed',
     endTime: 'End Time',
     estRewards: 'Est. Rewards',
     round: 'Round {round}',

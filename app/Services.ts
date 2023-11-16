@@ -59,6 +59,7 @@ export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
 export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
 export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
+export const chainGrpcWasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
