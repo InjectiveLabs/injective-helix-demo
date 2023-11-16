@@ -23,7 +23,6 @@ type CampaignStoreState = {
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
-  userHasClaimed: boolean
   totalUserCount: number
   totalGuildMember: number
   userGuildInfo?: GuildMember
@@ -41,7 +40,6 @@ const initialStateFactory = (): CampaignStoreState => ({
   campaignUsers: [],
   guildsByVolume: [],
   totalGuildMember: 0,
-  userHasClaimed: false,
   campaign: undefined,
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
@@ -241,10 +239,8 @@ export const useCampaignStore = defineStore('campaign', {
 
     async fetchUserClaimedStatus(contractAddress: string) {
       const walletStore = useWalletStore()
-      const campaignStore = useCampaignStore()
 
       if (!walletStore.injectiveAddress || !contractAddress) {
-        campaignStore.$patch({ userHasClaimed: false })
         return
       }
 
@@ -259,7 +255,7 @@ export const useCampaignStore = defineStore('campaign', {
 
       const userHasClaimed = fromBase64(response.data) as unknown as boolean
 
-      campaignStore.$patch({ userHasClaimed })
+      return userHasClaimed
     },
 
     reset() {

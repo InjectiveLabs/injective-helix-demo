@@ -35,10 +35,20 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Loading))
 const claimStatus = reactive(new Status(StatusType.Idle))
+const hasUserClaimed = ref(false)
 
 const epochRound = computed(() =>
   LP_EPOCHS.find(({ campaignId }) => props.campaign.campaignId === campaignId)
 )
+
+const claimDate = computed(() => addDays(props.campaign.endDate, 1))
+const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
+
+const estimatedTimeToClaimable = computed(() =>
+  differenceInHours(claimDate.value.getTime(), Date.now())
+)
+
+const isClaimButtonVisible = computed(() => estimatedTimeToClaimable.value < 24)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -109,34 +119,43 @@ onWalletConnected(() => {
 function fetchOwnerInfo() {
   status.setLoading()
 
-  Promise.all([
-    campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId),
-    campaignStore.fetchUserClaimedStatus(epochRound.value?.scAddress || '')
-  ])
+  Promise.all([campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)])
+    .then(() => {
+      fetchUserClaimedStatus()
+    })
     .catch($onError)
     .finally(() => status.setIdle())
+}
+
+function fetchUserClaimedStatus() {
+  campaignStore
+    .fetchUserClaimedStatus(epochRound.value?.scAddress || '')
+    .then((hasUserClaimedStatus: boolean | undefined) => {
+      hasUserClaimed.value = hasUserClaimedStatus || false
+    })
+    .catch($onError)
 }
 
 function claimRewards() {
   const scContract = LP_EPOCHS.find(
     (e) => e.campaignId === props.campaign.campaignId
-  )?.scAddress
+  )
 
-  if (!scContract) {
+  if (!scContract?.scAddress) {
     return
   }
 
   claimStatus.setLoading()
 
   campaignStore
-    .claimReward(scContract)
+    .claimReward(scContract.scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
 
-      campaignStore.$patch({ userHasClaimed: true })
+      hasUserClaimed.value = true
     })
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {
@@ -152,15 +171,6 @@ function claimRewards() {
       claimStatus.setIdle()
     })
 }
-
-const claimDate = computed(() => addDays(props.campaign.endDate, 1))
-const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
-
-const estimatedTimeToClaimable = computed(() =>
-  differenceInHours(claimDate.value.getTime(), Date.now())
-)
-
-const isClaimButtonVisible = computed(() => estimatedTimeToClaimable.value < 24)
 
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
@@ -214,21 +224,15 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 xs
                 v-bind="{
                   status: claimStatus,
-                  disabled: !isClaimable || campaignStore.userHasClaimed
+                  disabled: !isClaimable || hasUserClaimed
                 }"
                 @click="claimRewards"
               >
                 <div
                   class="font-semibold"
-                  :class="{ 'text-blue-500': !campaignStore.userHasClaimed }"
+                  :class="{ 'text-blue-500': !hasUserClaimed }"
                 >
-                  {{
-                    $t(
-                      `campaign.${
-                        campaignStore.userHasClaimed ? 'claimed' : 'claim'
-                      }`
-                    )
-                  }}
+                  {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
                 </div>
               </AppButton>
 
