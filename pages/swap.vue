@@ -255,11 +255,7 @@ function resetQueryError() {
 <template>
   <AppHocLoading :status="status" class="h-full">
     <div class="w-full max-w-xl mx-auto min-h-screen overflow-auto">
-      <div class="my-10">
-        <PartialsLiquidityBotsSpotCreateCommonTiaBanner is-swap-page />
-      </div>
-
-      <div class="bg-gray-850 rounded-lg mx-auto p-6 h-fit">
+      <div class="bg-gray-850 rounded-lg mx-auto p-6 h-fit mt-10">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="font-bold text-lg">
             {{ $t('trade.swap.swap') }}
