@@ -150,11 +150,15 @@ function claimRewards() {
 const claimDate = computed(() => addDays(props.campaign.endDate, 1))
 const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
 
-const estimatedTimeToReady = computed(() =>
+const estimatedTimeToClaimable = computed(() =>
   differenceInHours(claimDate.value.getTime(), Date.now())
 )
 
-const isClaimButtonShowed = computed(() => estimatedTimeToReady.value < 24)
+const isClaimButtonVisible = computed(
+  () =>
+    estimatedTimeToClaimable.value <
+    24 /* add the smart contract query to check if the user already claimed */
+)
 
 useIntervalFn(() => {
   campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
@@ -202,7 +206,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
               </div>
             </div>
 
-            <div v-if="isClaimButtonShowed" class="whitespace-nowrap">
+            <div v-if="isClaimButtonVisible" class="whitespace-nowrap">
               <AppButton
                 class="border border-blue-500 mb-1"
                 xs
@@ -217,20 +221,23 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                 </div>
               </AppButton>
 
-              <p v-if="estimatedTimeToReady > 0" class="text-xs text-gray-500">
-                ({{ $t('campaign.readyIn', { hours: estimatedTimeToReady }) }})
+              <p
+                v-if="estimatedTimeToClaimable > 0"
+                class="text-xs text-gray-500"
+              >
+                ({{
+                  $t('campaign.readyIn', { hours: estimatedTimeToClaimable })
+                }})
               </p>
 
               <p
-                v-else-if="estimatedTimeToReady === 0 && !isClaimable"
+                v-else-if="estimatedTimeToClaimable === 0 && !isClaimable"
                 class="text-xs text-gray-500"
               >
                 ({{
                   $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
                 }})
               </p>
-
-              <p v-else class="text-xs text-gray-500">&mdash;</p>
             </div>
           </div>
         </div>
