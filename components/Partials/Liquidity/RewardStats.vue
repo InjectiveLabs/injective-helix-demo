@@ -119,21 +119,15 @@ onWalletConnected(() => {
 function fetchOwnerInfo() {
   status.setLoading()
 
-  Promise.all([campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)])
-    .then(() => {
-      fetchUserClaimedStatus()
-    })
-    .catch($onError)
-    .finally(() => status.setIdle())
-}
-
-function fetchUserClaimedStatus() {
-  campaignStore
-    .fetchUserClaimedStatus(epochRound.value?.scAddress || '')
-    .then((hasUserClaimedStatus: boolean | undefined) => {
+  Promise.all([
+    campaignStore.fetchUserClaimedStatus(epochRound.value?.scAddress || ''),
+    campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
+  ])
+    .then(([hasUserClaimedStatus]) => {
       hasUserClaimed.value = hasUserClaimedStatus || false
     })
     .catch($onError)
+    .finally(() => status.setIdle())
 }
 
 function claimRewards() {
