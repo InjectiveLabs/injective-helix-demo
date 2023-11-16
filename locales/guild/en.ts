@@ -25,7 +25,7 @@ export default {
       createGuild: {
         title: 'Be a Guild Master and invite others to join you',
         description:
-          'Have at least 10,000 TIA in your wallet throughout the competition. Earn 20% of the rewards if your guild wins!',
+          'Have at least 1000 TIA in your wallet throughout the competition. Earn 20% of the rewards if your guild wins!',
         cta: 'Create guild'
       },
       joinGuild: {
