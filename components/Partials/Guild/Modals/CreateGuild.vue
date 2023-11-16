@@ -18,7 +18,7 @@ const { success } = useNotifications()
 const MAX_CHARACTERS = 10
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
-const MIN_AMOUNT = 10000
+const MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
