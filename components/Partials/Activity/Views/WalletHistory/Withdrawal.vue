@@ -108,7 +108,7 @@ const time = computed(() => {
     <td class="h-12 text-left cursor-pointer">
       <div class="flex items-center justify-start">
         <div v-if="transaction.token">
-          <CommonTokenIcon :token="transaction.token" md />
+          <CommonTokenIcon :token="transaction.token" is-md />
         </div>
         <div class="ml-3">
           <span
@@ -123,7 +123,7 @@ const time = computed(() => {
 
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         :number="amount"
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
@@ -139,7 +139,7 @@ const time = computed(() => {
 
     <td class="h-12 text-left font-mono">
       <PartialsActivityViewsWalletHistoryCommonAddress
-        xs
+        is-xs
         :address="transaction.sender"
         data-cy="wallet-history-sender-table-data"
       >
@@ -149,7 +149,7 @@ const time = computed(() => {
 
     <td class="h-12 text-left font-mono">
       <PartialsActivityViewsWalletHistoryCommonAddress
-        xs
+        is-xs
         :address="transaction.receiver"
         data-cy="wallet-history-receiver-table-data"
       >

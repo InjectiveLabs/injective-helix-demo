@@ -25,7 +25,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
   <div class="grid grid-cols-1 gap-4">
     <PartialsGridStrategySpotCommonDetails v-slot="{ detailsPageChange }">
       <AppButton
-        lg
+        is-lg
         class="w-full shadow-none select-none bg-blue-500 text-blue-900"
         @click="detailsPageChange"
       >
@@ -43,7 +43,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
       <template #default="{ removeStrategy, status }">
         <AppButton
           v-bind="{ status }"
-          lg
+          is-lg
           class="w-full shadow-none select-none text-blue-500 border-blue-500"
           @click="removeStrategy"
         >

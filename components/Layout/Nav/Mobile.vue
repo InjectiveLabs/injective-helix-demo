@@ -11,11 +11,11 @@ const rewardsMenuOpen = ref(false)
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 
-function handleToggleTradeMenu() {
+function toggleTradeMenu() {
   tradeMenuOpen.value = !tradeMenuOpen.value
 }
 
-function handleToggleRewardsMenu() {
+function toggleRewardsMenu() {
   rewardsMenuOpen.value = !rewardsMenuOpen.value
 }
 </script>
@@ -24,8 +24,8 @@ function handleToggleRewardsMenu() {
   <div class="block lg:hidden">
     <AppAccordion
       :is-open="tradeMenuOpen"
-      sm
-      @panel:toggle="handleToggleTradeMenu"
+      is-sm
+      @panel:toggle="toggleTradeMenu"
     >
       <template #title>
         <div class="flex gap-0.5">
@@ -80,8 +80,8 @@ function handleToggleRewardsMenu() {
 
     <AppAccordion
       :is-open="rewardsMenuOpen"
-      sm
-      @panel:toggle="handleToggleRewardsMenu"
+      is-sm
+      @panel:toggle="toggleRewardsMenu"
     >
       <template #title>
         <div class="text-sm font-semibold">

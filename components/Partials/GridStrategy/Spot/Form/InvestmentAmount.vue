@@ -182,10 +182,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
       <button class="bg-gray-800 rounded-md py-2 px-2 flex items-center">
         <div class="ml-auto font-semibold text-xs flex space-x-2 items-center">
-          <CommonTokenIcon sm :token="market.baseToken" class="w-2" />
+          <CommonTokenIcon is-sm :token="market.baseToken" class="w-2" />
           <span>{{ market.baseToken.symbol }}</span>
           <span>+</span>
-          <CommonTokenIcon sm :token="market.quoteToken" class="w-2" />
+          <CommonTokenIcon is-sm :token="market.quoteToken" class="w-2" />
           <span>{{ market.quoteToken.symbol }}</span>
         </div>
       </button>
@@ -194,7 +194,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <div class="mb-2">
       <AppInputNumeric
         v-model="investmentAmountValue"
-        :disabled="isLowerBoundGtLastPrice"
+        :is-disabled="isLowerBoundGtLastPrice"
         class="text-right"
         is-disabled-gray
       >
@@ -220,7 +220,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
         class="text-right"
-        :disabled="isUpperBoundLtLastPrice"
+        :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
         <template #addon>

@@ -245,7 +245,7 @@ function onInvestmentTypeSet() {
   <div>
     <AppButton
       :status="status"
-      lg
+      is-lg
       class="w-full shadow-none select-none"
       :class="[
         hasActiveStrategy

@@ -32,6 +32,10 @@ const props = defineProps({
   }
 })
 
+const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
+  props.campaignUser.accountAddress
+}`
+
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
@@ -84,10 +88,6 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
       : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
-
-const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
-  props.campaignUser.accountAddress
-}`
 </script>
 
 <template>

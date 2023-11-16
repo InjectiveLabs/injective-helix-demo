@@ -2,8 +2,8 @@
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
 
 defineProps({
-  maxOrdersError: Boolean,
-  highDeviation: Boolean
+  highDeviation: Boolean,
+  maxOrdersError: Boolean
 })
 </script>
 

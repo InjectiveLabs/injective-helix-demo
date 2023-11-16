@@ -2,17 +2,20 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { MainPage } from '@/types'
 
-const status = reactive(new Status(StatusType.Loading))
-
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
-
 const { $onError } = useNuxtApp()
 
 const marketSlugQuery = useQueryRef('market', 'tia-usdt')
+
+const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  init()
+})
 
 function init() {
   status.setLoading()
@@ -38,10 +41,6 @@ function init() {
       }
     })
 }
-
-onMounted(() => {
-  init()
-})
 </script>
 
 <template>

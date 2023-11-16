@@ -182,7 +182,7 @@ function resetQueryError() {
   queryError.value = ''
 }
 
-function handleNavigation() {
+function onNavigation() {
   /* isInputEntered tells us which input field the user has typed a value and hasUserInteraction is used to submit the toAmount by default if no interaction */
   const amount =
     !swapStore.isInputEntered || !hasUserInteraction.value
@@ -212,14 +212,14 @@ function handleNavigation() {
             }"
             @update:outputQuantity="getOutputQuantity"
             @update:inputQuantity="getInputQuantity"
-            @reset:queryError="resetQueryError"
-            @reset:form="resetFormValues"
+            @queryError:reset="resetQueryError"
+            @form:reset="resetFormValues"
           />
 
           <AppButton
             class="w-full bg-blue-500 font-semibold mt-4 text-white"
-            lg
-            @click="handleNavigation"
+            is-lg
+            @click="onNavigation"
           >
             {{ $t('trade.get') }}
             <span class="uppercase">

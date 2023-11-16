@@ -41,7 +41,7 @@ const checked = computed({
   }
 })
 
-function handleCancelAllClick() {
+function onCancelAll() {
   actionStatus.setLoading()
 
   const action =
@@ -119,10 +119,10 @@ function handleCancelAllClick() {
             spotStore.subaccountOrders.length > 0
           "
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-          xs
+          is-xs
           :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
-          @click="handleCancelAllClick"
+          @click="onCancelAll"
         >
           {{ $t('trade.cancelAllOrders') }}
         </AppButton>

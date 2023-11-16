@@ -131,11 +131,11 @@ function getMarketBySlugOrMarketId() {
   )
 }
 
-function closeMarketList() {
+function onCloseMarketList() {
   showMarketList.value = false
 }
 
-function toggleMarketList() {
+function onToggleMarketList() {
   showMarketList.value = !showMarketList.value
 }
 </script>
@@ -151,7 +151,7 @@ function toggleMarketList() {
             market: market,
             expanded: showMarketList
           }"
-          @marketsList:toggle="toggleMarketList"
+          @marketsList:toggle="onToggleMarketList"
         />
       </div>
 
@@ -165,11 +165,14 @@ function toggleMarketList() {
             key="market-trading-panel"
             class="flex-col flex-wrap h-full w-full flex space-y-1"
           >
-            <CommonCard v-if="!isGrid" no-padding>
+            <CommonCard v-if="!isGrid" is-no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
 
-            <CommonCard no-padding class="px-6 py-4 rounded-xl relative grow">
+            <CommonCard
+              is-no-padding
+              class="px-6 py-4 rounded-xl relative grow"
+            >
               <div
                 :class="{
                   invisible: showMarketList
@@ -189,7 +192,7 @@ function toggleMarketList() {
         >
           <div class="h-full-flex">
             <div class="w-full flex-none">
-              <CommonCard tight class="relative">
+              <CommonCard is-tight class="relative">
                 <div class="grid grid-cols-6 lg:grid-cols-12">
                   <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-30">
                     <PartialsTradingMarket :market="market" />
@@ -234,7 +237,7 @@ function toggleMarketList() {
             isGrid,
             market
           }"
-          @close="closeMarketList"
+          @close="onCloseMarketList"
         />
       </div>
 

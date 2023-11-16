@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  disabled: Boolean,
+  isDisabled: Boolean,
 
   page: {
     type: Number,
@@ -31,7 +31,7 @@ defineProps({
       page,
       limit,
       totalCount,
-      isDisabled: disabled,
+      isDisabled: isDisabled,
       ...$attrs
     }"
   >
@@ -105,7 +105,7 @@ defineProps({
         <slot name="rows-prefix" />
 
         <AppPaginationRowSelector
-          :disabled="disabled"
+          :disabled="isDisabled"
           :limit="limit"
           :options="rowOptions"
           :selected-class="rowClass"

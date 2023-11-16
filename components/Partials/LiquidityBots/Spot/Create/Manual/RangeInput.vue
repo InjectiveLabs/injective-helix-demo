@@ -99,6 +99,7 @@ const currentPriceX = computed(() => {
 
 const rulerValues = computed(() => {
   const numbers = generateEvenlySpacedNumbers(+props.min, +props.max, 8)
+
   return numbers.map((number) => {
     const range = Number(props.max) - Number(props.min)
     const value = number - Number(props.min)
@@ -118,7 +119,7 @@ const rulerValues = computed(() => {
   })
 })
 
-function handleMouseMove(ev: MouseEvent) {
+function mouseMove(ev: MouseEvent) {
   if (isLowerHandleClicked.value) {
     const amount = getAmountFromMouseEvent(ev)
 
@@ -162,7 +163,7 @@ function getAmountFromMouseEvent(ev: MouseEvent) {
   return lerp(+props.min, +props.max, value)
 }
 
-function handleMouseUp() {
+function mouseUp() {
   isLowerHandleClicked.value = false
   isUpperHandleClicked.value = false
 }
@@ -212,8 +213,8 @@ function generateEvenlySpacedNumbers(
       :viewBox="`0 0 ${SVG_PROPS.width} ${SVG_PROPS.height + 50}`"
       class="overflow-visible"
       :class="{ 'cursor-[ew-resize]': isHovered }"
-      @mousemove.passive="handleMouseMove"
-      @mouseup.passive="handleMouseUp"
+      @mousemove.passive="mouseMove"
+      @mouseup.passive="mouseUp"
     >
       <mask id="myMask">
         <rect width="100%" height="100%" fill="white" />

@@ -64,8 +64,8 @@ const volumeInUsdToFormat = computed(() =>
   props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
 )
 
-const formatterOptions = computed(() => {
-  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
+const formatterOptions = computed(() =>
+  stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
@@ -74,7 +74,7 @@ const formatterOptions = computed(() => {
         abbreviationFloor: undefined,
         decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
       }
-})
+)
 
 const change = computed(() => {
   if (!props.summary || !props.summary.change) {
@@ -122,11 +122,11 @@ const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
   formatterOptions.value
 )
 
-function updateWatchList() {
+function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
@@ -144,7 +144,7 @@ function handleTradeClickedTrack() {
       <div
         class="3md:hidden text-blue-500 mr-3 cursor-pointer"
         data-cy="markets-favourite-button"
-        @click="updateWatchList"
+        @click="toggleFavoriteMarket"
       >
         <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
         <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
@@ -153,7 +153,7 @@ function handleTradeClickedTrack() {
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
         <div
           class="cursor-pointer flex items-center"
-          @click="handleTradeClickedTrack"
+          @click="tradeClickedTrack"
         >
           <CommonTokenIcon
             v-if="market.baseToken"
@@ -263,7 +263,7 @@ function handleTradeClickedTrack() {
         class="text-blue-500 hover:text-blue-600 cursor-pointer"
         data-cy="markets-trade-link"
       >
-        <div @click.stop="handleTradeClickedTrack">
+        <div @click.stop="tradeClickedTrack">
           {{ $t('trade.trade') }}
         </div>
       </NuxtLink>
@@ -271,7 +271,7 @@ function handleTradeClickedTrack() {
       <div
         class="text-blue-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-blue-500 hover:bg-opacity-10"
         data-cy="markets-favorite-button"
-        @click="updateWatchList"
+        @click="toggleFavoriteMarket"
       >
         <BaseIcon
           v-if="isFavorite"

@@ -4,6 +4,8 @@ import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
 
+const modalStore = useModalStore()
+
 defineProps({
   strategy: {
     type: Object as PropType<TradingStrategy>,
@@ -16,17 +18,15 @@ defineProps({
   }
 })
 
-const modalStore = useModalStore()
-
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(Modal.GridStrategyDetails)
 }
 </script>
 <template>
   <AppModal
-    md
+    is-md
     :is-open="modalStore.modals[Modal.GridStrategyDetails]"
-    @modal:closed="closeModal"
+    @modal:closed="onCloseModal"
   >
     <PartialsGridStrategySpotFormActiveStrategy
       v-if="strategy && market"

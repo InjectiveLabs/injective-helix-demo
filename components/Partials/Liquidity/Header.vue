@@ -41,6 +41,7 @@ const { valueToString: tiaRewardsToString } = useBigNumberFormatter(
 
 const endDate = computed(() => {
   const utcDate = utcToZonedTime(props.campaign.endDate, 'UTC')
+
   return format(utcDate, DATE_FORMAT, { timeZone: 'UTC' })
 })
 </script>

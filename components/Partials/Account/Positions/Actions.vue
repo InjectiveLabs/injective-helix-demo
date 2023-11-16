@@ -48,18 +48,18 @@ const marketDenom = computed({
 })
 
 onMounted(() => {
-  updateFilterVisibility()
+  modifyFilterVisibility()
 })
 
-function updateFilterVisibility() {
+function modifyFilterVisibility() {
   showFilters.value = window.innerWidth > 768
 }
 
-function handleCloseAllPositions() {
+function closeAllPositions() {
   emit('positions:close')
 }
 
-function handleToggleFilters() {
+function toggleFilters() {
   showFilters.value = !showFilters.value
 }
 </script>
@@ -71,7 +71,7 @@ function handleToggleFilters() {
     >
       <div
         class="flex justify-start items-center gap-2 md:hidden cursor-pointer"
-        @click="handleToggleFilters"
+        @click="toggleFilters"
       >
         <span
           class="text-sm"
@@ -97,7 +97,7 @@ function handleToggleFilters() {
         v-if="positionStore.subaccountPositions.length"
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex md:hidden items-center justify-center w-auto"
         data-cy="trading-account-positions-table-cancel-all-button"
-        @click="handleCloseAllPositions"
+        @click="closeAllPositions"
       >
         <span class="text-xs text-red-500">
           {{ $t('account.positions.closeAllPositions') }}
@@ -110,8 +110,8 @@ function handleToggleFilters() {
         :options="marketOptions"
         :placeholder="$t('account.positions.market.label')"
         :selected-class="'border-gray-600'"
-        searchable
-        clearable
+        is-searchable
+        is-clearable
         data-cy="universal-table-filter-by-asset-input"
       >
         <template #selected-option="{ option }">
@@ -121,10 +121,10 @@ function handleToggleFilters() {
           />
         </template>
 
-        <template #option="{ option, active }">
+        <template #option="{ option, isActive }">
           <PartialsAccountPositionsFilterOption
             :option="option"
-            :active="active"
+            :is-active="isActive"
           />
         </template>
       </AppSelectField>
@@ -135,7 +135,7 @@ function handleToggleFilters() {
         :options="sideOptions"
         :placeholder="$t('account.positions.side.label')"
         :selected-class="'border-gray-600'"
-        clearable
+        is-clearable
         data-cy="universal-table-filter-by-side-select"
       />
     </div>
@@ -145,7 +145,7 @@ function handleToggleFilters() {
         v-if="positionStore.subaccountPositions.length"
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex items-center justify-center w-full md:w-auto"
         data-cy="trading-account-positions-table-cancel-all-button"
-        @click="handleCloseAllPositions"
+        @click="closeAllPositions"
       >
         <span class="text-xs text-red-500">
           {{ $t('account.positions.closeAllPositions') }}

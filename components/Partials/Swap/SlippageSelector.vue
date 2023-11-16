@@ -93,7 +93,7 @@ function checkForInvalidSlippageValue() {
               >
                 <template #default="{ isActive }">
                   <AppButton
-                    sm
+                    is-sm
                     class="w-full border-blue-500 border"
                     :class="[
                       isActive
@@ -114,7 +114,7 @@ function checkForInvalidSlippageValue() {
               v-model="slippageTolerance"
               class="ml-auto"
               input-classes="text-right"
-              sm
+              is-sm
               @blur="checkForInvalidSlippageValue"
             >
               <template v-if="slippageError" #prefix>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps({
-  sm: Boolean,
-  showPrefix: Boolean,
+  isSm: Boolean,
+  isPrefixVisible: Boolean,
 
   inputClasses: {
     type: String,
@@ -12,7 +12,7 @@ const props = defineProps({
 const inputClass = computed(() => {
   const result = []
 
-  if (props.showPrefix) {
+  if (props.isPrefixVisible) {
     result.push('px-2')
   }
 
@@ -26,15 +26,15 @@ const inputClass = computed(() => {
   <AppInput
     v-bind="$attrs"
     ref="search-input"
-    :sm="sm"
+    :is-sm="isSm"
     :input-classes="inputClass"
   >
-    <template v-if="showPrefix" #prefix>
-      <BaseIcon name="search" :class="[sm ? 'w-4 h-4' : 'w-5 h-5']" />
+    <template v-if="isPrefixVisible" #prefix>
+      <BaseIcon name="search" :class="[isSm ? 'w-4 h-4' : 'w-5 h-5']" />
     </template>
 
     <template v-else #addon>
-      <BaseIcon name="search" :class="[sm ? 'w-4 h-4' : 'w-5 h-5']" />
+      <BaseIcon name="search" :class="[isSm ? 'w-4 h-4' : 'w-5 h-5']" />
     </template>
   </AppInput>
 </template>

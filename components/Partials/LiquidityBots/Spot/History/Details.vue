@@ -61,7 +61,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
       <p>{{ $t('sgt.market') }}</p>
 
       <div class="flex items-center space-x-2">
-        <CommonTokenIcon v-bind="{ token: market.baseToken }" sm />
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" is-sm />
         <p class="font-semibold">
           {{ market.baseToken.symbol }}/{{ market.quoteToken.symbol }}
         </p>

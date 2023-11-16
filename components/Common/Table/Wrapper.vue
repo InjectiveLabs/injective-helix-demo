@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  breakMd: Boolean
+  isBreakMd: Boolean
 })
 
 const walletStore = useWalletStore()
@@ -10,8 +10,8 @@ const walletStore = useWalletStore()
   <div
     class="min-h-orders flex-col h-full overflow-y-auto bg-gray-1000 flex-grow"
     :class="{
-      'md:min-h-0 md:flex': breakMd,
-      'min-h-0 flex': !breakMd
+      'md:min-h-0 md:flex': isBreakMd,
+      'min-h-0 flex': !isBreakMd
     }"
   >
     <CommonUserNotConnectedNote

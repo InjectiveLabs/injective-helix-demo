@@ -246,7 +246,7 @@ onMounted(() => {
             </AppNumberEmp>
 
             <AppNumberEmp
-              sm
+              is-sm
               class="text-gray-450"
               prefix="≈"
               :number="injMaxPendingCampaignRewardsInUsd"
@@ -309,7 +309,7 @@ onMounted(() => {
             <span v-else>&mdash;</span>
             <AppNumberEmp
               v-if="walletStore.isUserWalletConnected"
-              sm
+              is-sm
               class="text-gray-450"
               prefix="≈"
               :number="pendingEstimatedRewardsCappedInUsd"

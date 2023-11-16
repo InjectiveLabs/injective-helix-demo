@@ -16,7 +16,7 @@ const props = defineProps({
 const gridStrategyStore = useGridStrategyStore()
 
 const emit = defineEmits<{
-  'open:details': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
 const market = computed(() => gridStrategyStore.spotMarket!)
@@ -62,7 +62,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
 )
 
 function onDetailsPage() {
-  emit('open:details', props.strategy, market.value)
+  emit('details:open', props.strategy, market.value)
 }
 </script>
 

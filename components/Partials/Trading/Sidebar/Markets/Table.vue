@@ -37,7 +37,7 @@ const activeType = ref(
 const search = ref('')
 const isAscending = ref(false)
 const sortBy = ref(SortableKeys.Volume)
-const showLowVolumeMarkets = ref(false)
+const isLowVolumeMarketsVisible = ref(false)
 
 const filteredMarkets = computed(() =>
   props.markets
@@ -49,7 +49,7 @@ const filteredMarkets = computed(() =>
         activeType: activeType.value as MarketType
       })
       const isLowVolumeMarket =
-        showLowVolumeMarkets.value ||
+        isLowVolumeMarketsVisible.value ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
       return isPartOfType && isPartOfSearch && isLowVolumeMarket
@@ -99,7 +99,7 @@ const sortedMarkets = computed(() => {
     <PartialsTradingSidebarMarketsFilter
       v-model:active-type="activeType"
       v-model:search="search"
-      v-model:show-low-volume-markets="showLowVolumeMarkets"
+      v-model:is-low-volume-markets-visible="isLowVolumeMarketsVisible"
       v-bind="{
         isGrid
       }"
@@ -151,7 +151,7 @@ const sortedMarkets = computed(() => {
     </CommonTableHeader>
 
     <CommonTableBody
-      :show-empty="sortedMarkets.length === 0"
+      :is-empty="sortedMarkets.length === 0"
       class="rounded overflow-hidden"
     >
       <div v-if="isGrid || !activeType">

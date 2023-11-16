@@ -9,7 +9,7 @@ const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -153,7 +153,7 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           executionPrice,
           liquidationPrice,
           minimumReceivedAmount,
-          orderTypeReduceOnly
+          isOrderTypeReduceOnly
         }"
       >
         <template #total>{{ notionalWithFeesToFormat }}</template>
@@ -166,7 +166,6 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           <PartialsTradingOrderDetailsMakerTakerFeeRate
             v-bind="{
               market,
-              postOnly: formValues[TradeField.PostOnly],
               tradingType: formValues[TradeField.TradingType]
             }"
           />
@@ -177,9 +176,7 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
             v-bind="{
               fees,
               market,
-              notionalValue,
-              postOnly: formValues[TradeField.PostOnly],
-              tradingType: formValues[TradeField.TradingType]
+              notionalValue
             }"
           />
         </template>
@@ -194,9 +191,7 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           <PartialsTradingOrderDetailsExpectedPoints
             v-bind="{
               fees,
-              market,
-              postOnly: formValues[TradeField.PostOnly],
-              tradingType: formValues[TradeField.TradingType]
+              market
             }"
           />
         </template>

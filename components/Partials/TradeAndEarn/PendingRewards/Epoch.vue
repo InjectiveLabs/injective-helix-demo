@@ -208,7 +208,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           </AppNumberEmp>
 
           <AppNumberEmp
-            sm
+            is-sm
             class="text-gray-450"
             prefix="≈"
             :number="injMaxPendingCampaignRewardsInUsd"
@@ -267,7 +267,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <span v-else>&mdash;</span>
           <AppNumberEmp
             v-if="walletStore.isUserWalletConnected"
-            sm
+            is-sm
             class="text-gray-450"
             prefix="≈"
             :number="pendingEstimatedRewardsCappedInUsd"

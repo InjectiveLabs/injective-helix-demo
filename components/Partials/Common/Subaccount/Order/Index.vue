@@ -25,7 +25,7 @@ const sortedOrders = computed(() =>
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="sortedOrders.length === 0"
+      :is-empty="sortedOrders.length === 0"
       class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountOrderMobile

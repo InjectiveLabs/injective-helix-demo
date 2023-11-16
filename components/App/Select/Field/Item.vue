@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const isActive = computed(() => props.modelValue === props.value)
 
-function handleClick() {
+function click() {
   emit('update:modelValue', props.value)
 }
 </script>
@@ -25,8 +25,8 @@ function handleClick() {
 <template>
   <div
     class="p-2 hover:bg-blue-500 rounded text-white text-sm font-semibold cursor-pointer group"
-    @click="handleClick"
+    @click="click"
   >
-    <slot :active="isActive" />
+    <slot :is-active="isActive" />
   </div>
 </template>

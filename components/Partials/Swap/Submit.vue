@@ -153,7 +153,7 @@ function getResultQuantity() {
   emit('update:inputQuantity')
 }
 
-function handleConnect() {
+function onConnect() {
   modalStore.openModal(Modal.Connect)
 }
 
@@ -183,9 +183,9 @@ watch(
   <div>
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
-      lg
+      is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      @click="handleConnect"
+      @click="onConnect"
     >
       {{ $t('trade.swap.connect_wallet') }}
     </AppButton>
@@ -213,8 +213,8 @@ watch(
           rateExpired && hasAmounts && !props.isLoading && !hasErrors
       }"
       :classes="'border border-accent-500 text-accent-500  bg-opacity-50'"
-      xl
-      :disabled="isLoading || !!hasErrors || !hasAmounts"
+      is-xl
+      :is-disabled="isLoading || !!hasErrors || !hasAmounts"
       :is-loading="isLoading"
       @click="handlerFunction"
     >

@@ -39,7 +39,7 @@ function setMarketAndStrategy(
         v-for="strategy in activeStrategies"
         :key="`strategy-${strategy.createdAt}`"
         v-bind="{ strategy }"
-        @open:details="setMarketAndStrategy"
+        @details:open="setMarketAndStrategy"
       />
     </div>
 

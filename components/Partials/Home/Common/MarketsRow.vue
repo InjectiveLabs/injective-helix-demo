@@ -132,7 +132,7 @@ watch(
       return
     }
 
-    updateLastPriceChangeColor()
+    lastPriceChangeColor()
   }
 )
 
@@ -150,7 +150,7 @@ onMounted(() => {
     })
 })
 
-function updateLastPriceChangeColor() {
+function lastPriceChangeColor() {
   useDefaultLastTradedPriceColor.value = false
 
   setTimeout(() => {
@@ -158,7 +158,7 @@ function updateLastPriceChangeColor() {
   }, 3000)
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
@@ -172,7 +172,7 @@ function handleTradeClickedTrack() {
     <div
       class="grid grid-cols-12 items-center py-4 box-content"
       :class="{ 'gap-4': isHero }"
-      @click="handleTradeClickedTrack"
+      @click="tradeClickedTrack"
     >
       <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start gap-2">
@@ -247,7 +247,7 @@ function handleTradeClickedTrack() {
           'col-span-3': isHero
         }"
       >
-        <AppSpinner v-if="status.isLoading()" md />
+        <AppSpinner v-if="status.isLoading()" is-md />
 
         <BaseLineGraph
           v-if="chartData.length > 1"

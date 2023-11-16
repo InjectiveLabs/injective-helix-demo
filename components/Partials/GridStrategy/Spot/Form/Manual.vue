@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
+
+const walletStore = useWalletStore()
 
 defineProps({
   market: {
@@ -8,8 +9,6 @@ defineProps({
     required: true
   }
 })
-
-const walletStore = useWalletStore()
 </script>
 
 <template>

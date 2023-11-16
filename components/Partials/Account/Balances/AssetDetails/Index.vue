@@ -84,23 +84,23 @@ watch(
   () => isModalOpen.value,
   (value: boolean) => {
     if (value) {
-      return handleOpen()
+      return open()
     }
 
-    handleClosed()
+    closed()
   }
 )
 
-function handleOpen() {
+function open() {
   scrollOffset.value = window.pageYOffset
   window.scrollTo(0, 0)
 }
 
-function handleClosed() {
+function closed() {
   window.scrollTo(0, scrollOffset.value)
 }
 
-function handleClose() {
+function close() {
   modalStore.closeModal(Modal.AssetDetails)
   accountBalance.value = undefined
 }
@@ -119,7 +119,7 @@ function handleClose() {
           class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 flex flex-col h-full flex-grow"
         >
           <div class="flex items-center justify-start gap-2">
-            <div class="cursor-pointer" @click="handleClose">
+            <div class="cursor-pointer" @click="close">
               <!-- TODO: ArrowLeft -->
               <BaseIcon name="arrow" class="w-4 h-4 text-white" />
             </div>
@@ -137,7 +137,7 @@ function handleClose() {
               <CommonTokenIcon
                 v-if="accountBalance && accountBalance.token"
                 :token="accountBalance.token"
-                sm
+                is-sm
               />
               <span class="tracking-wide font-bold text-sm">
                 {{ accountBalance.token.symbol }}

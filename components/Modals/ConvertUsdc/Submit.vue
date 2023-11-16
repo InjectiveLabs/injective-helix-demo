@@ -75,7 +75,7 @@ const hasInsufficientBalance = computed(() =>
   )
 )
 
-function handleConnect() {
+function onConnect() {
   modalStore.openModal(Modal.Connect)
 }
 
@@ -83,7 +83,7 @@ function submit() {
   emit('form:submit')
 }
 
-function handleNavigation() {
+function goToMainPage() {
   if (modalStore.modals[Modal.ConvertUsdc]) {
     modalStore.closeModal(Modal.ConvertUsdc)
   }
@@ -96,9 +96,9 @@ function handleNavigation() {
   <div class="w-full">
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
-      lg
+      is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      @click="handleConnect"
+      @click="onConnect"
     >
       {{ $t('trade.swap.connect_wallet') }}
     </AppButton>
@@ -106,8 +106,8 @@ function handleNavigation() {
     <AppButton
       v-else
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      lg
-      :disabled="isSubmitDisabled"
+      is-lg
+      :is-disabled="isSubmitDisabled"
       :is-loading="status.isLoading()"
       @click="submit"
     >
@@ -131,7 +131,7 @@ function handleNavigation() {
           })
         }}
       </span>
-      <span class="text-blue-600" @click="handleNavigation">
+      <span class="text-blue-600" @click="goToMainPage">
         {{ $t('trade.swap.goToAccount') }}
       </span>
     </p>

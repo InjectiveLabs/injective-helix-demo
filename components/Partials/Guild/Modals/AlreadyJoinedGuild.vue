@@ -11,7 +11,7 @@ function onCloseModal() {
 
 <template>
   <AppModal
-    sm
+    is-sm
     :is-open="modalStore.modals[Modal.AlreadyJoinedGuild]"
     @modal:closed="onCloseModal"
   >
@@ -34,7 +34,7 @@ function onCloseModal() {
         <AppButton
           class="w-full font-semibold bg-blue-500 text-white"
           v-bind="{
-            lg: true
+            isLg: true
           }"
           @click="onCloseModal"
         >

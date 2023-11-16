@@ -130,7 +130,7 @@ function fetchOwnerInfo() {
     .finally(() => status.setIdle())
 }
 
-function claimRewards() {
+function onClaimRewards() {
   const scContract = LP_EPOCHS.find(
     (e) => e.campaignId === props.campaign.campaignId
   )
@@ -215,12 +215,12 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
             <div v-if="isClaimButtonVisible" class="whitespace-nowrap">
               <AppButton
                 class="border border-blue-500 mb-1"
-                xs
                 v-bind="{
+                  isXs: true,
                   status: claimStatus,
-                  disabled: !isClaimable || hasUserClaimed
+                  isDisabled: !isClaimable || hasUserClaimed
                 }"
-                @click="claimRewards"
+                @click="onClaimRewards"
               >
                 <div
                   class="font-semibold"

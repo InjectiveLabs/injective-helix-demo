@@ -15,12 +15,12 @@ watch(
   () => modalStore.modals[Modal.CheckSpotGridAuth],
   (isOpened) => {
     if (isOpened) {
-      handleCheckAuth()
+      checkAuth()
     }
   }
 )
 
-function handleCheckAuth() {
+function checkAuth() {
   const gridMarket = spotGridMarkets.find(
     (m) => m.slug === gridStrategyStore.spotMarket?.slug
   )
@@ -36,11 +36,11 @@ function handleCheckAuth() {
     modalStore.closeModal(Modal.CheckSpotGridAuth)
     modalStore.openModal(Modal.CreateSpotGridStrategy)
   } else {
-    handleAuthorization()
+    authorize()
   }
 }
 
-function handleAuthorization() {
+function authorize() {
   const gridMarket = spotGridMarkets.find(
     (market) => market.slug === gridStrategyStore.spotMarket!.slug
   )
@@ -66,7 +66,7 @@ function handleAuthorization() {
     })
 }
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(Modal.CheckSpotGridAuth)
 }
 </script>
@@ -74,7 +74,7 @@ function closeModal() {
   <AppModal
     key="authz-grid-spot"
     :is-open="modalStore.modals[Modal.CheckSpotGridAuth]"
-    @modal:closed="closeModal"
+    @modal:closed="onCloseModal"
   >
     <template #title>
       <p class="[text-transform:none] text-lg font-bold py-2">

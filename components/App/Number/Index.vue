@@ -6,11 +6,11 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const slots = useSlots()
 
 const props = defineProps({
-  sm: Boolean,
-  xs: Boolean,
-  flex: Boolean,
-  dense: Boolean,
-  noGrouping: Boolean,
+  isSm: Boolean,
+  isXs: Boolean,
+  isFlex: Boolean,
+  isDense: Boolean,
+  isNoGrouping: Boolean,
   useNumberDecimals: Boolean,
 
   prefix: {
@@ -65,7 +65,7 @@ const formattedNumber = computed(() => {
     return ['0.00']
   }
 
-  if (props.noGrouping) {
+  if (props.isNoGrouping) {
     return [formattedNumberToString.value]
   }
 
@@ -85,14 +85,14 @@ const formattedNumber = computed(() => {
 </script>
 
 <template>
-  <div :class="{ 'flex justify-start items-center gap-1': flex }">
+  <div :class="{ 'flex justify-start items-center gap-1': isFlex }">
     <span
       class="font-mono"
       :class="{
-        'text-xs': xs,
-        'text-sm': sm,
-        'inline-block': !flex,
-        'flex items-center': flex
+        'text-xs': isXs,
+        'text-sm': isSm,
+        'inline-block': !isFlex,
+        'flex items-center': isFlex
       }"
     >
       <div class="flex" :class="{ 'mr-1': slots.addon }">

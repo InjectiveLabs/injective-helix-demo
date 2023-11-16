@@ -17,7 +17,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'open:details': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
 const walletStore = useWalletStore()
@@ -117,7 +117,7 @@ function onRemoveStrategy() {
 }
 
 function onDetailsPage() {
-  emit('open:details', props.strategy, market.value)
+  emit('details:open', props.strategy, market.value)
 }
 
 useIntervalFn(() => {

@@ -48,7 +48,7 @@ function connect() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('devMode.connectWithAddress') }}
@@ -66,9 +66,9 @@ function connect() {
         </div>
         <div class="w-full mt-4 text-center">
           <AppButton
-            lg
+            is-lg
             class="text-blue-900 bg-blue-500"
-            :disabled="errors.length > 0"
+            :is-disabled="errors.length > 0"
             :is-loading="status.isLoading()"
             @click="connect"
           >

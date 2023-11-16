@@ -26,13 +26,13 @@ onMounted(() => {
   useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
 })
 
-function handleLimitChangeEvent(limit: number) {
+function onLimitChangeEvent(limit: number) {
   updateRouteQuery({
     limit: `${limit}`
   })
 }
 
-function handlePageChangeEvent(page: number) {
+function onPageChangeEvent(page: number) {
   updateRouteQuery({
     page: page > 1 ? `${page}` : undefined,
     limit: `${limit.value}`
@@ -91,7 +91,7 @@ function fetchData() {
       }
 
       if (state === PaginationState.QueryMoreThanTotalPage) {
-        handlePageChangeEvent(totalPages.value)
+        onPageChangeEvent(totalPages.value)
       }
     })
     .finally(() => {
@@ -120,8 +120,8 @@ watch(
             limit,
             totalCount: derivativeStore.subaccountOrderHistoryCount
           }"
-          @update:limit="handleLimitChangeEvent"
-          @update:page="handlePageChangeEvent"
+          @update:limit="onLimitChangeEvent"
+          @update:page="onPageChangeEvent"
         />
       </div>
     </AppHocLoading>

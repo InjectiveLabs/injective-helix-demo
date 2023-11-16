@@ -17,11 +17,11 @@ const fetchBalanceStatus = reactive(new Status(StatusType.Idle))
 const {
   isDeposit,
   isTransfer,
-  originIsEthereum,
-  networkIsSupported,
-  destinationIsEthereum,
-  originIsCosmosNetwork,
-  destinationIsCosmosNetwork
+  isEthereumOrigin,
+  isNetworkSupported,
+  isEthereumDestination,
+  isCosmosNetworkOrigin,
+  isCosmosNetworkDestination
 } = useBridgeState(formValues)
 const { balanceWithToken, supplyWithBalance } = useBridgeBalance(formValues)
 
@@ -32,7 +32,7 @@ defineProps({
 const shouldConnectMetamask = computed(
   () =>
     walletStore.isCosmosWallet &&
-    (originIsEthereum.value || destinationIsEthereum.value)
+    (isEthereumOrigin.value || isEthereumDestination.value)
 )
 
 const isSelectorDisabled = computed(() =>
@@ -44,7 +44,7 @@ const isSelectorDisabled = computed(() =>
 const shouldConnectCosmosWallet = computed(
   () =>
     !walletStore.isCosmosWallet &&
-    (originIsCosmosNetwork.value || destinationIsCosmosNetwork.value)
+    (isCosmosNetworkOrigin.value || isCosmosNetworkDestination.value)
 )
 
 const maxDecimals = computed(() => {
@@ -72,7 +72,7 @@ const walletAddress = computed(() => {
     return ''
   }
 
-  if (destinationIsEthereum.value) {
+  if (isEthereumDestination.value) {
     return walletStore.address
   }
 
@@ -126,11 +126,11 @@ function onSelectTokenClick() {
 
 function balanceRefresh() {
   return accountStore.fetchAccountPortfolio().then(() => {
-    if (originIsEthereum.value) {
+    if (isEthereumOrigin.value) {
       peggyStore.updateErc20BalancesWithTokenAndPrice()
     }
 
-    if (originIsCosmosNetwork.value) {
+    if (isCosmosNetworkOrigin.value) {
       ibcStore.fetchBalances()
     }
   })
@@ -149,13 +149,13 @@ function refreshBalance() {
   <div>
     <div class="mt-6">
       <AppSelectToken
-        v-if="networkIsSupported"
+        v-if="isNetworkSupported"
         v-model:denom="denom"
         v-bind="{
           maxDecimals,
-          required: true,
-          disabled: isConnecting,
-          disabledTokenSelector: isSelectorDisabled,
+          isRequired: true,
+          isDisabled: isConnecting,
+          isTokenSelectorDisabled: isSelectorDisabled,
           amountFieldName: BridgeField.Amount,
           options: supplyWithBalance
         }"
@@ -220,7 +220,7 @@ function refreshBalance() {
         >
           <AppSpinner
             v-if="isConnecting || fetchBalanceStatus.isLoading()"
-            sm
+            is-sm
           />
           <div
             v-else-if="selectedToken"
@@ -248,20 +248,20 @@ function refreshBalance() {
       </AppSelectToken>
 
       <PartialsBridgeNotSupported
-        v-else-if="!networkIsSupported"
+        v-else-if="!isNetworkSupported"
         v-bind="{
           selectedNetwork: formValues[BridgeField.BridgingNetwork]
         }"
       />
     </div>
 
-    <div v-if="networkIsSupported" class="mt-6">
+    <div v-if="isNetworkSupported" class="mt-6">
       <AppButton
         v-if="shouldConnectMetamask || shouldConnectCosmosWallet"
-        lg
+        is-lg
         class="w-full font-semibold rounded bg-blue-500 text-blue-900"
         data-cy="transfer-modal-transfer-now-button"
-        :disabled="true"
+        :is-disabled="true"
         @click="() => {}"
       >
         {{

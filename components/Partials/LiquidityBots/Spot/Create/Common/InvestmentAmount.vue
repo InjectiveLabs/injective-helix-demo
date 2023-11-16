@@ -207,7 +207,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     >
       <AppInputNumeric
         v-model="investmentAmountValue"
-        :disabled="isLowerBoundGtLastPrice"
+        :is-disabled="isLowerBoundGtLastPrice"
         is-disabled-gray
         class="text-right"
       >
@@ -240,7 +240,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
         class="text-right"
-        :disabled="isUpperBoundLtLastPrice"
+        :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
         <template #addon>

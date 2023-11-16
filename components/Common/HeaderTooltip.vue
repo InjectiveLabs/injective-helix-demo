@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps({
-  noStyling: Boolean,
+  isNoStyling: Boolean,
 
   tooltip: {
     type: String,
@@ -15,7 +15,7 @@ defineProps({
       <span
         :class="{
           'text-gray-350 text-xs normal-case border-dashed border-b border-gray-400 cursor-pointer':
-            !noStyling
+            !isNoStyling
         }"
       >
         <slot />

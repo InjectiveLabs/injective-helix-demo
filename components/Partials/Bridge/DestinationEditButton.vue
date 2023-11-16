@@ -18,15 +18,15 @@ const emit = defineEmits<{
   'isEditing:changed': [isEditing: boolean]
 }>()
 
-const { destinationIsCosmosNetwork, destinationIsEthereum } =
+const { isCosmosNetworkDestination, isEthereumDestination } =
   useBridgeState(bridgeFormValues)
 
 const wallet = computed(() => {
-  if (destinationIsEthereum.value) {
+  if (isEthereumDestination.value) {
     return walletStore.wallet
   }
 
-  if (destinationIsCosmosNetwork.value && walletStore.isCosmosWallet) {
+  if (isCosmosNetworkDestination.value && walletStore.isCosmosWallet) {
     return walletStore.wallet
   }
 
@@ -52,7 +52,7 @@ function useAddress() {
   <div class="flex">
     <AppButton
       class="bg-primaryLight text-primary-500 flex-shrink-0"
-      xs
+      is-xs
       @click="handlerFunction"
     >
       <div class="flex items-center gap-2">

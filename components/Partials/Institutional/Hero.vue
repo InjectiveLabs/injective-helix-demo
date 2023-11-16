@@ -3,7 +3,7 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-function handleOpenModal() {
+function openModal() {
   modalStore.openModal(Modal.InstitutionalForm)
 }
 </script>
@@ -22,7 +22,7 @@ function handleOpenModal() {
       <div>
         <button
           class="bg-white text-black py-2 px-4 rounded-md font-semibold"
-          @click="handleOpenModal"
+          @click="openModal"
         >
           {{ $t('institutional.getInTouch') }}
         </button>
