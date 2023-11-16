@@ -5,8 +5,6 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { addDays, differenceInHours } from 'date-fns'
 import {
   NETWORK,
-  CAMPAIGN_INJ_REWARDS,
-  CAMPAIGN_TIA_REWARDS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -37,6 +35,10 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Loading))
 const claimStatus = reactive(new Status(StatusType.Idle))
+
+const epochRound = computed(() =>
+  LP_EPOCHS.find(({ campaignId }) => props.campaign.campaignId === campaignId)
+)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -78,7 +80,7 @@ const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(estRewardsInPercentage.value)
       .dividedBy(100)
-      .multipliedBy(CAMPAIGN_INJ_REWARDS)
+      .multipliedBy(epochRound.value?.baseRewards || 0)
   ),
   {
     decimalPlaces: estRewardsInPercentage.value.gt(0.1)
@@ -91,7 +93,7 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(estRewardsInPercentage.value)
       .dividedBy(100)
-      .multipliedBy(CAMPAIGN_TIA_REWARDS)
+      .multipliedBy(epochRound.value?.quoteRewards || 0)
   ),
   {
     decimalPlaces: estRewardsInPercentage.value.gt(0.1)
