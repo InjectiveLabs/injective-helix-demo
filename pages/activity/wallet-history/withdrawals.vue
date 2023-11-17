@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BridgeTransactionState } from '@injectivelabs/sdk-ui-ts'
 import { ActivityForm } from '@/types'

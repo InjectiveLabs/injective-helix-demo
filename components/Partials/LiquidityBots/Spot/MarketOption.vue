@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 
 const props = defineProps({

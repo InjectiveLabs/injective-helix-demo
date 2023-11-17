@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,

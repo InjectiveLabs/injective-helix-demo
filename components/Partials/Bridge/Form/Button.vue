@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 
 const walletStore = useWalletStore()

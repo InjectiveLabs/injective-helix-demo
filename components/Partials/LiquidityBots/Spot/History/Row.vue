@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, OrderState } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'

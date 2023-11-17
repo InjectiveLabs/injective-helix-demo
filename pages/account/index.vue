@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 
 import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'

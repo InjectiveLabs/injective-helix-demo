@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   GST_MINIMUM_GRIDS,

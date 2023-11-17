@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { ActivitySubPage } from '@/types'
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { UiMarketWithToken } from '@/types'

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { tokenSelectorDisabledNetworks } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'

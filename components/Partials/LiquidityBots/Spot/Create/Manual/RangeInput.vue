@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
 const HANDLE_WIDTH = 50

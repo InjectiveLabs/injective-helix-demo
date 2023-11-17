@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
