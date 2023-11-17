@@ -239,7 +239,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
                     </p>
                   </div>
-                  <p class="text-gray-500">
+                  <p v-if="!campaignStore.guild.isActive" class="text-gray-500">
                     *{{
                       $t('guild.inactiveDescription', {
                         amount: GUILD_MIN_AMOUNT
