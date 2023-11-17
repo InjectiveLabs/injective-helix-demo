@@ -9,7 +9,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LP_EPOCHS } from 'app/data/guild'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const campaignStore = useCampaignStore()
 const { success, error } = useNotifications()

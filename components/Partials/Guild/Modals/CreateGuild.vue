@@ -4,7 +4,7 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
-} from 'app/utils/constants'
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()

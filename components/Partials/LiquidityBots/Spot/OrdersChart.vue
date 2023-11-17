@@ -3,8 +3,8 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, OrderState } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import ApexChart, { ApexOptions } from 'apexcharts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 type OrderAnnotation = {
   y: number

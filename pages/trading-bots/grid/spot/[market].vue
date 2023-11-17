@@ -3,7 +3,7 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from 'app/utils/constants'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']

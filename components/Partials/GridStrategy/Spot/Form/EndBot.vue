@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSgtContractAddressFromSlug } from 'app/utils/helpers'
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 defineProps({
   isLiquidity: Boolean

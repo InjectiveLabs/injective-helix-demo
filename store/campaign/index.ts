@@ -10,7 +10,7 @@ import {
   fromBase64
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
-import { GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
+import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import {
   msgBroadcastClient,
   indexerGrpcCampaignApi,

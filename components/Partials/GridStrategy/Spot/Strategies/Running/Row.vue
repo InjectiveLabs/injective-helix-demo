@@ -7,7 +7,7 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   strategy: {

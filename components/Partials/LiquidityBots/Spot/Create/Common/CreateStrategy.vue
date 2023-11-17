@@ -22,7 +22,7 @@ import {
   GST_MIN_TRADING_SIZE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   isAuto: Boolean,

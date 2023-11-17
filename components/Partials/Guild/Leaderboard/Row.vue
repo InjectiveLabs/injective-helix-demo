@@ -2,7 +2,7 @@
 import { format } from 'date-fns'
 import { Guild, GuildCampaignSummary } from '@injectivelabs/sdk-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
+import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 import { CampaignSubPage } from '@/types'
 
 const { baseToken, quoteToken } = useGuild()

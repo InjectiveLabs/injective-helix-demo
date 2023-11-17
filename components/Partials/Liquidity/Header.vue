@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { UiMarketWithToken } from 'types'
-import { LP_EPOCHS } from 'app/data/guild'
+import { UiMarketWithToken } from '@/types'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const props = defineProps({
   epoch: {
