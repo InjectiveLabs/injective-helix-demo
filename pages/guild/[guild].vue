@@ -274,6 +274,10 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             </template>
           </section>
 
+          <p v-if="campaignStore.guild.description" class="mt-8">
+            {{ campaignStore.guild.description }}
+          </p>
+
           <PartialsGuildStats v-bind="{ isCampaignStarted }" />
 
           <section class="pt-8 pb-4 px-6">
