@@ -241,7 +241,7 @@ export const useCampaignStore = defineStore('campaign', {
       const walletStore = useWalletStore()
 
       if (!walletStore.injectiveAddress || !contractAddress) {
-        return
+        return false
       }
 
       const response = (await chainGrpcWasmApi.fetchSmartContractState(

@@ -10,7 +10,7 @@ export const thumbnailMap = {
   6: '/guild/thumbnail/knight.svg',
   7: '/guild/thumbnail/shield-yellow.svg',
   8: '/guild/thumbnail/sword-green.svg',
-  9: '/guild/thumbnail/flag-navy.svg',
+  9: '/guild/thumbnail/quant.png',
   10: '/guild/thumbnail/diamond-blue.svg',
   11: '/guild/thumbnail/saber-pink.svg',
   12: '/guild/thumbnail/knight-gray.svg'
