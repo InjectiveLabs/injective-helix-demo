@@ -18,7 +18,7 @@ const { success } = useNotifications()
 const MAX_CHARACTERS = 10
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
-const MIN_AMOUNT = 1000
+const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -34,7 +34,7 @@ const { value: thumbnail, errors: thumbnailErrors } = useStringField({
 })
 
 const { valueToString: minAmountToString } = useBigNumberFormatter(
-  computed(() => MIN_AMOUNT)
+  computed(() => GUILD_MIN_AMOUNT)
 )
 
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
@@ -56,7 +56,7 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
   )
 
 const hasSufficientBalance = computed(() =>
-  balanceToBigNumber.value.gte(MIN_AMOUNT)
+  balanceToBigNumber.value.gte(GUILD_MIN_AMOUNT)
 )
 
 const hasEmptyField = computed(() => !name.value || !thumbnail.value)
@@ -174,7 +174,7 @@ watch(
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
           <BaseIcon
-            v-if="balanceToBigNumber.gte(MIN_AMOUNT)"
+            v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
             name="check-circle"
             class="text-green-500"
             is-sm

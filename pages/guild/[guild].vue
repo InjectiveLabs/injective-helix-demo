@@ -4,10 +4,11 @@ import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
   NETWORK,
+  GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
-} from 'app/utils/constants'
+} from '@/app/utils/constants'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage } from '@/types'
 
@@ -30,6 +31,14 @@ const hasNewData = ref(false)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
+
+const isMyGuild = computed(() => {
+  if (!campaignStore.userGuildInfo || !campaignStore.guild) {
+    return false
+  }
+
+  return campaignStore.userGuildInfo?.guildId === campaignStore.guild?.guildId
+})
 
 const isCampaignStarted = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
@@ -179,7 +188,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
       <AppHocLoading v-bind="{ status }" class="h-full">
         <div v-if="campaignStore.guild" class="text-ellipsis overflow-hidden">
           <section class="mt-4 flex justify-between flex-wrap gap-4">
-            <article class="flex items-center gap-5">
+            <article class="flex items-center gap-5 max-sm:flex-wrap">
               <PartialsGuildThumbnail
                 is-xl
                 :thumbnail-id="campaignStore.guild.logo"
@@ -190,13 +199,18 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                   <h3 class="text-2xl font-semibold">
                     {{ campaignStore.guild.name }}
                   </h3>
-                  <AppDotStatus
-                    v-if="isCampaignStarted"
-                    :is-active="campaignStore.guild.isActive"
+                  <PartialsGuildStatus
+                    v-bind="{
+                      isCampaignStarted,
+                      isActive: campaignStore.guild.isActive
+                    }"
                   />
-                  <AppDotStatus v-else color="text-orange-500">
-                    {{ $t('common.ready') }}
-                  </AppDotStatus>
+                  <div
+                    v-if="isMyGuild"
+                    class="px-2 py-0.5 border border-blue-500 text-blue-500 rounded text-xs"
+                  >
+                    {{ $t('guild.you') }}
+                  </div>
                 </div>
                 <section class="text-sm mt-2">
                   <NuxtLink
@@ -218,13 +232,20 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       </span>
                     </p>
                   </NuxtLink>
-                  <div class="flex items-center flex-wrap gap-1">
+                  <div class="flex items-center flex-wrap gap-x-1">
                     <p>{{ $t('guild.leaderboard.guildMasterBalance') }}:</p>
                     <p class="font-semibold">
                       {{ guildMasterBalance }}
                       {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
                     </p>
                   </div>
+                  <p v-if="!campaignStore.guild.isActive" class="text-gray-500">
+                    *{{
+                      $t('guild.inactiveDescription', {
+                        amount: GUILD_MIN_AMOUNT
+                      })
+                    }}
+                  </p>
                 </section>
               </div>
             </article>

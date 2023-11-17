@@ -9,6 +9,7 @@ const { baseToken, quoteToken } = useGuild()
 
 const props = defineProps({
   isVolume: Boolean,
+  isMyGuild: Boolean,
   isCampaignStarted: Boolean,
 
   rank: {
@@ -67,16 +68,24 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
     </td>
     <td>
       <div class="p-3 flex items-center gap-2 min-w-[7.5rem]">
-        <PartialsGuildThumbnail :thumbnail-id="guild.logo" />
+        <PartialsGuildThumbnail :thumbnail-id="guild.logo" is-lg />
         <span>{{ guild.name }}</span>
+        <div
+          v-if="isMyGuild"
+          class="px-2 py-0.5 border border-blue-500 text-blue-500 rounded text-xs"
+        >
+          {{ $t('guild.you') }}
+        </div>
       </div>
     </td>
     <td>
       <div class="p-3">
-        <AppDotStatus v-if="isCampaignStarted" :is-active="guild.isActive" />
-        <AppDotStatus v-else color="text-orange-500">
-          {{ $t('common.ready') }}
-        </AppDotStatus>
+        <PartialsGuildStatus
+          v-bind="{
+            isCampaignStarted,
+            isActive: guild.isActive
+          }"
+        />
       </div>
     </td>
     <td class="text-right">

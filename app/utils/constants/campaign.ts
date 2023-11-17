@@ -22,3 +22,4 @@ export const GUILD_DISCORD_LINK =
   'https://discord.com/channels/739552603322450092/1172055840606400563'
 export const GUILD_ZENDESK_LINK =
   'https://helixapp.zendesk.com/hc/en-us/articles/8336183812751-Announcing-Helix-Guilds'
+export const GUILD_MIN_AMOUNT = 1000
