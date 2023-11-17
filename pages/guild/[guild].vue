@@ -362,9 +362,11 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       </th>
                       <th class="p-4 text-right">
                         <CommonHeaderTooltip
-                          :tooltip="
-                            $t('guild.leaderboard.table.tiaBalanceTooltip')
-                          "
+                          v-bind="{
+                            tooltip: $t(
+                              'guild.leaderboard.table.tiaBalanceTooltip'
+                            )
+                          }"
                         >
                           <span class="whitespace-nowrap">
                             {{
@@ -377,7 +379,9 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       </th>
                       <th class="p-4 text-right">
                         <CommonHeaderTooltip
-                          :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
+                          v-bind="{
+                            tooltip: $t('guild.leaderboard.table.volumeTooltip')
+                          }"
                         >
                           <span class="whitespace-nowrap">
                             {{ $t('guild.leaderboard.table.tradingVolume') }}

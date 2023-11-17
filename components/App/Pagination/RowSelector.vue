@@ -24,7 +24,7 @@ const selectedOption = computed(() =>
   props.options.find((option) => option === props.limit)
 )
 
-function onModifyLimit(limit: any) {
+function onLimitChange(limit: any) {
   emit('update:modelValue', limit)
 }
 </script>
@@ -59,7 +59,7 @@ function onModifyLimit(limit: any) {
           :key="`selector-row-item-${item}`"
           :value="item.toString()"
           :model-value="limit"
-          @update:modelValue="onModifyLimit"
+          @update:modelValue="onLimitChange"
           @click="close"
         >
           <template #default="{ isActive }">
