@@ -23,3 +23,4 @@ export const GUILD_DISCORD_LINK =
 export const GUILD_ZENDESK_LINK =
   'https://helixapp.zendesk.com/hc/en-us/articles/8336183812751-Announcing-Helix-Guilds'
 export const GUILD_MIN_AMOUNT = 1000
+export const GUILD_MAX_CAP = 150

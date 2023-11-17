@@ -4,6 +4,7 @@ import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
   NETWORK,
+  GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
@@ -39,6 +40,8 @@ const isMyGuild = computed(() => {
 
   return campaignStore.userGuildInfo?.guildId === campaignStore.guild?.guildId
 })
+
+const isMaxCap = computed(() => campaignStore.totalGuildMember >= GUILD_MAX_CAP)
 
 const isCampaignStarted = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
@@ -263,8 +266,19 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
               </AppButton>
 
               <AppButton
+                v-else-if="isMaxCap"
+                class="text-gray-600"
+                :disabled="isMaxCap"
+              >
+                <div class="flex items-center gap-1">
+                  <span>{{ $t('guild.joinGuild.maxCap') }}</span>
+                </div>
+              </AppButton>
+
+              <AppButton
                 v-else
                 class="bg-blue-500 text-white"
+                :disabled="isMaxCap"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -385,6 +399,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             v-if="campaignStore.guild"
             v-bind="{
               limit,
+              isMaxCap,
               guildInvitationHash,
               guild: campaignStore.guild
             }"

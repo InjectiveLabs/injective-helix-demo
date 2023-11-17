@@ -111,6 +111,7 @@ export default {
           'name'
         )}” on Helix to earn a share of the rewards!`,
       cta: 'Join Guild',
+      maxCap: 'Max Capacity',
       toast: 'Successfully joined guild',
       invitationCode: 'Get invitation code on Discord'
     },
