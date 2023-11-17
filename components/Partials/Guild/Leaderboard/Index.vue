@@ -15,6 +15,20 @@ const guilds = computed(() =>
   props.isVolume ? campaignStore.guildsByVolume : campaignStore.guildsByTVL
 )
 
+const sortedGuilds = computed(() => {
+  if (isCampaignStarted.value) {
+    return guilds.value
+  }
+
+  return guilds.value.sort((g1, g2) => {
+    if (g1.isActive === g2.isActive) {
+      return g1.name.localeCompare(g2.name)
+    }
+
+    return Number(g2.isActive) - Number(g1.isActive)
+  })
+})
+
 const lastUpdated = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
     return
@@ -73,14 +87,15 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
         </thead>
         <tbody>
           <PartialsGuildLeaderboardRow
-            v-for="(guild, index) in guilds"
+            v-for="(guild, index) in sortedGuilds"
             :key="guild.guildId"
             v-bind="{
               guild,
               isVolume,
               rank: index + 1,
               isCampaignStarted,
-              summary: campaignStore.guildCampaignSummary
+              summary: campaignStore.guildCampaignSummary,
+              isMyGuild: campaignStore.userGuildInfo?.guildId === guild.guildId
             }"
           />
 

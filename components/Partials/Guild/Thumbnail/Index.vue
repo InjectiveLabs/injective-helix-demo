@@ -4,6 +4,7 @@ import { thumbnailMap } from '@/app/data/guild'
 const props = defineProps({
   isLg: Boolean,
   isXl: Boolean,
+
   thumbnailId: {
     type: String,
     required: true

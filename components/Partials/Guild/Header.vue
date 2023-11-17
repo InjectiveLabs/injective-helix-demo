@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { format, isSameYear, isSameMonth } from 'date-fns'
 import { GuildCampaignSummary } from '@injectivelabs/sdk-ts'
-import { GUILD_DISCORD_LINK, GUILD_ZENDESK_LINK } from '@/app/utils/constants'
+import {
+  GUILD_MIN_AMOUNT,
+  GUILD_DISCORD_LINK,
+  GUILD_ZENDESK_LINK
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -129,7 +133,11 @@ function onConnectWallet() {
               {{ $t('guild.howToParticipate.createGuild.title') }}
             </h2>
             <p class="text-sm font-semibold mt-2">
-              {{ $t('guild.howToParticipate.createGuild.description') }}
+              {{
+                $t('guild.howToParticipate.createGuild.description', {
+                  amount: GUILD_MIN_AMOUNT
+                })
+              }}
             </p>
           </div>
 
