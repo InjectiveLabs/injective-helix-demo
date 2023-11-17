@@ -15,9 +15,11 @@ const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const MAX_CHARACTERS = 10
+const NAME_MAX_CHARACTERS = 10
+const DESCRIPTION_MAX_CHARACTERS = 255
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
+const DESCRIPTION_FIELD = 'guild-description'
 const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
@@ -26,7 +28,12 @@ const { accountBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
-  rule: `required|maxCharacter:${MAX_CHARACTERS}`
+  rule: `required|maxCharacter:${NAME_MAX_CHARACTERS}`
+})
+
+const { value: description, errors: descriptionErrors } = useStringField({
+  name: DESCRIPTION_FIELD,
+  rule: `required|maxCharacter:${DESCRIPTION_MAX_CHARACTERS}`
 })
 
 const { value: thumbnail, errors: thumbnailErrors } = useStringField({
@@ -83,7 +90,8 @@ async function onSubmit() {
   campaignStore
     .createGuild({
       name: name.value,
-      logo: thumbnail.value
+      logo: thumbnail.value,
+      description: description.value
     })
     .then(() => {
       success({
@@ -121,47 +129,71 @@ watch(
     </template>
 
     <div>
-      <div class="flex items-center justify-between text-xs mb-2">
-        <span class="font-bold">
-          {{ $t('guild.createGuild.name') }}
-        </span>
-        <span class="text-gray-450">
-          {{ name?.length || 0 }} / {{ MAX_CHARACTERS }}
-          {{ $t('guild.createGuild.characters') }}
-        </span>
-      </div>
+      <section>
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.name') }}
+          </span>
+          <span class="text-gray-450">
+            {{ name?.length || 0 }} / {{ NAME_MAX_CHARACTERS }}
+            {{ $t('guild.createGuild.characters') }}
+          </span>
+        </div>
 
-      <AppInput
-        v-model="name"
-        sm
-        wrapper-classes="p-2"
-        :placeholder="$t('guild.createGuild.namePlaceholder')"
-      />
-      <p
-        v-if="nameErrors[0]"
-        class="text-red-500 first-letter:uppercase text-sm mt-1"
-      >
-        {{ nameErrors[0] }}
-      </p>
-
-      <div class="flex items-center justify-between text-xs mb-2 mt-8">
-        <span class="font-bold">
-          {{ $t('guild.createGuild.masterAddress') }}
-        </span>
-        <span
-          class="font-semibold text-blue-500 hover:text-opacity-80 cursor-pointer"
-          @click="handleDisconnect"
+        <AppInput
+          v-model="name"
+          sm
+          wrapper-classes="p-2"
+          :placeholder="$t('guild.createGuild.namePlaceholder')"
+        />
+        <p
+          v-if="nameErrors[0]"
+          class="text-red-500 first-letter:uppercase text-sm mt-1"
         >
-          {{ $t('navigation.disconnect') }}
-        </span>
-      </div>
-      <AppInput
-        sm
-        disabled
-        :model-value="walletStore.injectiveAddress"
-        wrapper-classes="p-2"
-        :placeholder="$t('guild.createGuild.namePlaceholder')"
-      />
+          {{ nameErrors[0] }}
+        </p>
+      </section>
+
+      <section class="mt-8">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.masterAddress') }}
+          </span>
+          <span
+            class="font-semibold text-blue-500 hover:text-opacity-80 cursor-pointer"
+            @click="handleDisconnect"
+          >
+            {{ $t('navigation.disconnect') }}
+          </span>
+        </div>
+        <AppInput
+          sm
+          disabled
+          :model-value="walletStore.injectiveAddress"
+          wrapper-classes="p-2"
+          :placeholder="$t('guild.createGuild.namePlaceholder')"
+        />
+      </section>
+
+      <section class="mt-8">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.description') }}
+          </span>
+          <span class="text-gray-450">
+            {{ description?.length || 0 }} / {{ DESCRIPTION_MAX_CHARACTERS }}
+          </span>
+        </div>
+
+        <AppTextarea v-model="description" />
+
+        <p
+          v-if="descriptionErrors[0]"
+          class="text-red-500 first-letter:uppercase text-sm mt-1"
+        >
+          {{ descriptionErrors[0] }}
+        </p>
+      </section>
 
       <div class="flex justify-between mt-2">
         <span class="font-semibold text-xs">

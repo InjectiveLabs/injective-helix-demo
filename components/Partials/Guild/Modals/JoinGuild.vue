@@ -12,6 +12,8 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const props = defineProps({
+  isMaxCap: Boolean,
+
   limit: {
     type: Number,
     required: true
@@ -32,6 +34,10 @@ const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
   if (!walletStore.isUserWalletConnected) {
+    return
+  }
+
+  if (props.isMaxCap) {
     return
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
+import { GUILD_MAX_CAP, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
@@ -40,7 +40,9 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         </p>
         <div class="flex items-center gap-2 mt-3">
           <BaseIcon name="user-filled" class="h-5 w-5 min-w-5" />
-          <span>{{ campaignStore.totalGuildMember }}</span>
+          <span>
+            {{ campaignStore.totalGuildMember }} / {{ GUILD_MAX_CAP }}
+          </span>
         </div>
       </div>
 
