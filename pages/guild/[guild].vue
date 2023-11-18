@@ -158,11 +158,14 @@ function onJoinGuild() {
 
 useIntervalFn(
   () =>
-    campaignStore.pollGuildDetails({
-      page: page.value,
-      limit: limit.value,
-      guildId: route.params.guild as string
-    }),
+    Promise.all([
+      campaignStore.fetchGuildsByTVL(), // refresh list of guilds logo
+      campaignStore.pollGuildDetails({
+        page: page.value,
+        limit: limit.value,
+        guildId: route.params.guild as string
+      })
+    ]),
   30 * 1000
 )
 
