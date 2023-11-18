@@ -48,7 +48,8 @@ export const getRoutes = (network: Network, env: string) => {
     'sei-usdt-perp',
     'axl-usdt-perp',
     'btc-usdtkv-perp',
-    'eth-usdtkv-perp'
+    'eth-usdtkv-perp',
+    'pyth-usdt-perp'
   ]
 
   const gridTradingSpot = ['inj-usdt', 'atom-usdt', 'tia-usdt']
