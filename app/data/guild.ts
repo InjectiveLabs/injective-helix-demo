@@ -17,7 +17,7 @@ export const thumbnailMap = {
 } as Record<string, string>
 
 export const guildDescriptionMap = {
-  bd5082: 'The Quants > Premier Berbs',
+  '25269b': 'The Quants > Premier Berbs',
   ef3bc2:
     'Just a guild started by a whale. If you are a fellow whale, this is the guild for you!'
 } as Record<string, string>
