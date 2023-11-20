@@ -121,7 +121,8 @@ export const getRoutes = (network: Network, env: string) => {
       ...usdcConversionModalMarkets,
       'ldo-usdcet',
       'usdtkv-usdt',
-      'kuji-usdt'
+      'kuji-usdt',
+      'pyth-usdt'
     )
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
