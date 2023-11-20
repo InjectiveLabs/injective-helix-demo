@@ -1,40 +1,35 @@
 <script lang="ts" setup>
-import { format } from 'date-fns'
-
 const campaignStore = useCampaignStore()
 
 const props = defineProps({
   isVolume: Boolean
 })
 
-const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
-
 const date = ref(Date.now())
+const showInactive = ref(false)
 
 const guilds = computed(() =>
   props.isVolume ? campaignStore.guildsByVolume : campaignStore.guildsByTVL
 )
 
+const filteredGuilds = computed(() =>
+  showInactive.value
+    ? guilds.value
+    : guilds.value.filter((guild) => guild.isActive)
+)
+
 const sortedGuilds = computed(() => {
   if (isCampaignStarted.value) {
-    return guilds.value
+    return filteredGuilds.value
   }
 
-  return guilds.value.sort((g1, g2) => {
+  return filteredGuilds.value.sort((g1, g2) => {
     if (g1.isActive === g2.isActive) {
       return g1.name.localeCompare(g2.name)
     }
 
     return Number(g2.isActive) - Number(g1.isActive)
   })
-})
-
-const lastUpdated = computed(() => {
-  if (!campaignStore.guildCampaignSummary) {
-    return
-  }
-
-  return format(campaignStore.guildCampaignSummary.updatedAt, DATE_FORMAT)
 })
 
 const isCampaignStarted = computed(() => {
@@ -50,7 +45,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
 
 <template>
   <div class="overflow-x-auto">
-    <div class="border-b flex justify-between items-end flex-wrap">
+    <div class="border-b flex justify-between items-center flex-wrap">
       <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
         <span v-if="isVolume">
           {{ $t('guild.leaderboard.tab.rankByVolume') }}
@@ -58,9 +53,9 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
         <span v-else>{{ $t('guild.leaderboard.tab.rankByTVL') }}</span>
       </button>
 
-      <p v-if="isVolume && lastUpdated" class="text-gray-300 p-2 text-xs">
-        {{ $t('guild.leaderboard.lastUpdated', { date: lastUpdated }) }}
-      </p>
+      <AppCheckbox v-model="showInactive" sm>
+        {{ $t('guild.showInactive') }}
+      </AppCheckbox>
     </div>
 
     <div class="overflow-x-auto">
