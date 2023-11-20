@@ -49,7 +49,7 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime > date.value
+  return campaignStore.guildCampaignSummary.startTime < date.value
 })
 
 const guildDescription = computed(() => {
