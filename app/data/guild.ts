@@ -11,9 +11,15 @@ export const thumbnailMap = {
   7: '/guild/thumbnail/shield-yellow.svg',
   8: '/guild/thumbnail/sword-green.svg',
   9: '/guild/thumbnail/quant.png',
-  10: '/guild/thumbnail/diamond-blue.svg',
+  10: '/guild/thumbnail/berbs.png',
   11: '/guild/thumbnail/saber-pink.svg',
   12: '/guild/thumbnail/knight-gray.svg'
+} as Record<string, string>
+
+export const guildDescriptionMap = {
+  bd5082: 'The Quants > Premier Berbs',
+  ef3bc2:
+    'Just a guild started by a whale. If you are a fellow whale, this is the guild for you!'
 } as Record<string, string>
 
 const mainnetEpochs: Epoch[] = [
