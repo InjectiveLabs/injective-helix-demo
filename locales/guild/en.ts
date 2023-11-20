@@ -23,6 +23,7 @@ export default {
     totalRewards: 'Total rewards',
     currentSeason: 'Current season',
     campaignRules: 'Campaign rules',
+    showInactive: 'Show inactive',
     startOn: ({ named }: I18nMessageFunction) => `Starts on ${named('date')}`,
 
     toast: {
