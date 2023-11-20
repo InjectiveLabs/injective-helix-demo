@@ -15,7 +15,7 @@ const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const NAME_MAX_CHARACTERS = 10
+const NAME_MAX_CHARACTERS = 15
 const DESCRIPTION_MAX_CHARACTERS = 255
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
