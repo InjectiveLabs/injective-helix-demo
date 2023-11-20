@@ -10,6 +10,7 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
+import { guildDescriptionMap } from '@/app/data/guild'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage } from '@/types'
 
@@ -48,7 +49,18 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime < date.value
+  return campaignStore.guildCampaignSummary.startTime > date.value
+})
+
+const guildDescription = computed(() => {
+  if (!campaignStore.guild) {
+    return
+  }
+
+  return (
+    campaignStore.guild.description ||
+    guildDescriptionMap[campaignStore.guild.guildId]
+  )
 })
 
 const startDate = computed(() => {
@@ -291,8 +303,8 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             </template>
           </section>
 
-          <p v-if="campaignStore.guild.description" class="mt-8">
-            {{ campaignStore.guild.description }}
+          <p v-if="guildDescription" class="mt-8">
+            {{ guildDescription }}
           </p>
 
           <PartialsGuildStats v-bind="{ isCampaignStarted }" />
