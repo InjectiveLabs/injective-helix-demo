@@ -122,7 +122,8 @@ export const getRoutes = (network: Network, env: string) => {
       'ldo-usdcet',
       'usdtkv-usdt',
       'kuji-usdt',
-      'pyth-usdt'
+      'pyth-usdt',
+      'usdy-usdt'
     )
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
