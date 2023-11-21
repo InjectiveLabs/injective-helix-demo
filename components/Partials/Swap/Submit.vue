@@ -192,8 +192,8 @@ watch(
 
     <AppButton
       v-else-if="restrictedTokenBasedOnUserGeoIP"
-      lg
-      disabled
+      is-lg
+      is-disabled
       class="w-full"
     >
       {{
