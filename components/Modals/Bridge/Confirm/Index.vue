@@ -194,7 +194,7 @@ const handlerFunction = computed(() => {
   return withdrawToEthereum
 })
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.BridgeConfirm)
 }
 
@@ -344,7 +344,7 @@ function cosmosIbcTransferFromInjective() {
     :is-open="isModalOpen"
     is-sm
     data-cy="transfer-confirm-modal"
-    @modal:closed="close"
+    @modal:closed="closeModal"
   >
     <template #title>
       <h3>

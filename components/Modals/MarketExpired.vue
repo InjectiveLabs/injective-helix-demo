@@ -23,6 +23,10 @@ function closeModal() {
 }
 
 function onModalClose() {
+  if (!isModalOpen.value) {
+    return
+  }
+
   closeModal()
 }
 </script>

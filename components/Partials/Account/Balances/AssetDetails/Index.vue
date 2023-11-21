@@ -100,7 +100,7 @@ function closed() {
   window.scrollTo(0, scrollOffset.value)
 }
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.AssetDetails)
   accountBalance.value = undefined
 }
@@ -119,7 +119,7 @@ function close() {
           class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 flex flex-col h-full flex-grow"
         >
           <div class="flex items-center justify-start gap-2">
-            <div class="cursor-pointer" @click="close">
+            <div class="cursor-pointer" @click="closeModal">
               <!-- TODO: ArrowLeft -->
               <BaseIcon name="arrow" class="w-4 h-4 text-white" />
             </div>
