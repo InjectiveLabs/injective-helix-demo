@@ -14,8 +14,6 @@ const props = defineProps({
   }
 })
 
-const isModalOpen = computed(() => modalStore.modals[Modal.MarketRestricted])
-
 const disallowedTokenSymbol = computed(() => {
   const disallowedToken = [
     props.market.baseToken,
@@ -31,6 +29,12 @@ const disallowedTokenSymbol = computed(() => {
 
   return disallowedToken?.symbol
 })
+
+const isModalOpen = computed(() =>
+  props.isSpot
+    ? modalStore.modals[Modal.MarketRestricted] && disallowedTokenSymbol.value
+    : modalStore.modals[Modal.MarketRestricted]
+)
 
 onWalletConnected(() => {
   if (!props.isSpot) {
