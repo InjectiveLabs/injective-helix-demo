@@ -31,7 +31,6 @@ export const restrictedCountries = [
 ] as string[]
 
 export const restrictedPerpetualMarketsCountries = ['US']
-// todo: remove TW and HK
 export const restrictedSpotMarketsCountries = ['US']
 export const disallowedSpotMarketSymbols = [
   'usdy',
