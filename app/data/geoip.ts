@@ -50,9 +50,12 @@ export const isCountryRestrictedForSpotMarket = ({
 }: {
   country: string
   denomOrSymbol: string
-}) =>
-  GEO_IP_RESTRICTIONS_ENABLED &&
-  restrictedSpotMarketsCountries.includes(country) &&
-  !disallowedSpotMarketDenomOrSymbol.some((value: string) =>
-    value.toLowerCase().includes(denomOrSymbol.toLowerCase())
+}) => {
+  return (
+    GEO_IP_RESTRICTIONS_ENABLED &&
+    restrictedSpotMarketsCountries.includes(country) &&
+    disallowedSpotMarketDenomOrSymbol.some((value: string) =>
+      value.toLowerCase().includes(denomOrSymbol.toLowerCase())
+    )
   )
+}
