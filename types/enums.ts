@@ -78,7 +78,8 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
-  FuturesMarketRestricted = 'futures-market-restricted',
+  SpotMarketRestricted = 'spot-market-restricted',
+  FuturesMarketRestricted = 'perpetual-market-restricted',
   NewFeature = 'new-feature'
 }
 

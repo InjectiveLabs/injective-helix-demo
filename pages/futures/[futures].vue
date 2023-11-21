@@ -22,7 +22,6 @@ definePageMeta({
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
-
       if (
         isCountryRestrictedForPerpetualMarkets(
           appStore.userState.geoLocation.browserCountry ||
@@ -191,7 +190,7 @@ useIntervalFn(() => {
 
     <template #modals>
       <div>
-        <ModalsFuturesRestricted />
+        <ModalsMarketRestricted />
         <ModalsAddMargin />
         <ModalsMarketExpired v-if="market" :market="market" />
       </div>

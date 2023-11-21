@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
+import { Modal, ActivityFetchOptions, UiMarketWithToken } from '@/types'
 import {
   SpotTradeIntegrityStrategy,
   SpotOrderbookIntegrityStrategy,
   SpotSubaccountOrderIntegrityStrategy,
   SpotSubaccountTradeIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
+import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 
 definePageMeta({
   middleware: ['markets', 'grid-strategy-subaccount']
@@ -16,6 +17,9 @@ definePageMeta({
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const appStore = useAppStore()
+const modalStore = useModalStore()
+
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
@@ -27,6 +31,32 @@ onWalletConnected(() => {
   refreshSubaccountDetails()
 })
 
+const disallowedTokenSymbol = computed(() => {
+  if (!market.value) {
+    return
+  }
+
+  const disallowedToken = [
+    market.value.baseToken,
+    market.value.quoteToken
+  ].find((token) =>
+    isCountryRestrictedForSpotMarket({
+      country:
+        appStore.userState.geoLocation.browserCountry ||
+        appStore.userState.geoLocation.country,
+      symbol: token.symbol.toLowerCase()
+    })
+  )
+
+  return disallowedToken?.symbol
+})
+
+function checkUserIsDisallowed() {
+  if (disallowedTokenSymbol.value) {
+    modalStore.openModal(Modal.SpotMarketRestricted)
+  }
+}
+
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
 
@@ -36,6 +66,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
   ]).catch($onError)
 
   market.value = pageMarket as UiSpotMarketWithToken
+  checkUserIsDisallowed()
   refreshSubaccountDetails()
 }
 
@@ -128,6 +159,16 @@ useIntervalFn(() => {
         :market="market"
         :status="fetchStatus"
         @update:filter-by-current-market="refreshSubaccountDetails"
+      />
+    </template>
+
+    <template #modals>
+      <ModalsMarketRestricted
+        v-bind="{
+          isSpot: true,
+          modal: Modal.SpotMarketRestricted,
+          symbol: disallowedTokenSymbol?.toUpperCase() || ''
+        }"
       />
     </template>
   </PartialsTradingLayout>
