@@ -32,7 +32,8 @@ export const getRoutes = (network: Network, env: string) => {
     'orai-usdt',
     'kava-usdt',
     'usdtkv-usdt',
-    'tia-usdt'
+    'tia-usdt',
+    'usdy-usdt'
   ]
 
   const perpetuals = [
@@ -122,8 +123,7 @@ export const getRoutes = (network: Network, env: string) => {
       'ldo-usdcet',
       'usdtkv-usdt',
       'kuji-usdt',
-      'pyth-usdt',
-      'usdy-usdt'
+      'pyth-usdt'
     )
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
