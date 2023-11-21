@@ -31,7 +31,7 @@ export const restrictedCountries = [
 ] as string[]
 
 export const restrictedPerpetualMarketsCountries = ['US']
-export const restrictedSpotMarketsCountries = ['US']
+export const restrictedSpotMarketsCountries = ['US', 'CA', 'UK']
 export const disallowedSpotMarketDenomOrSymbol = [
   'usdy',
   'peggy0x96F6eF951840721AdBF46Ac996b59E0235CB985C' // USDY denom

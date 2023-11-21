@@ -17,7 +17,6 @@ function closeNoticeBanner() {
   })
 }
 </script>
-g
 
 <template>
   <div
