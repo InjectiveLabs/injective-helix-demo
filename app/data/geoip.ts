@@ -31,21 +31,27 @@ export const restrictedCountries = [
 ] as string[]
 
 export const restrictedPerpetualMarketsCountries = ['US']
+// todo: remove TW and HK
 export const restrictedSpotMarketsCountries = ['US']
-export const disallowedSpotMarketSymbols = ['usdy']
+export const disallowedSpotMarketSymbols = [
+  'usdy',
+  '0x96F6eF951840721AdBF46Ac996b59E0235CB985C' // USDY denom
+]
 
 export const isCountryRestricted = (country: string) =>
   GEO_IP_RESTRICTIONS_ENABLED && restrictedCountries.includes(country)
+
 export const isCountryRestrictedForPerpetualMarkets = (country: string) =>
   GEO_IP_RESTRICTIONS_ENABLED &&
   restrictedPerpetualMarketsCountries.includes(country)
+
 export const isCountryRestrictedForSpotMarket = ({
   country,
-  symbol
+  denomOrSymbol
 }: {
   country: string
-  symbol: string
+  denomOrSymbol: string
 }) =>
   GEO_IP_RESTRICTIONS_ENABLED &&
   restrictedSpotMarketsCountries.includes(country) &&
-  disallowedSpotMarketSymbols.includes(symbol.toLowerCase())
+  disallowedSpotMarketSymbols.includes(denomOrSymbol.toLowerCase())

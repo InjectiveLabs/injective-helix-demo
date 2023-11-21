@@ -8,7 +8,12 @@ const props = defineProps({
   sm: Boolean,
   dense: Boolean,
   isAlwaysOpen: Boolean,
-  hideCloseButton: Boolean
+  hideCloseButton: Boolean,
+
+  modalContentClass: {
+    type: String,
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -89,12 +94,8 @@ watchDebounced(
         >
           <AppSpinner lg />
         </div>
-        <div v-else>
-          <div
-            :class="{
-              'px-6': !dense
-            }"
-          >
+        <div v-else :class="modalContentClass">
+          <div :class="[{ 'px-6': !dense }]">
             <slot />
           </div>
 
