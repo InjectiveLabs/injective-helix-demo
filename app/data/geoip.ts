@@ -32,9 +32,9 @@ export const restrictedCountries = [
 
 export const restrictedPerpetualMarketsCountries = ['US']
 export const restrictedSpotMarketsCountries = ['US']
-export const disallowedSpotMarketSymbols = [
+export const disallowedSpotMarketDenomOrSymbol = [
   'usdy',
-  '0x96F6eF951840721AdBF46Ac996b59E0235CB985C' // USDY denom
+  'peggy0x96F6eF951840721AdBF46Ac996b59E0235CB985C' // USDY denom
 ]
 
 export const isCountryRestricted = (country: string) =>
@@ -50,7 +50,12 @@ export const isCountryRestrictedForSpotMarket = ({
 }: {
   country: string
   denomOrSymbol: string
-}) =>
-  GEO_IP_RESTRICTIONS_ENABLED &&
-  restrictedSpotMarketsCountries.includes(country) &&
-  disallowedSpotMarketSymbols.includes(denomOrSymbol.toLowerCase())
+}) => {
+  return (
+    GEO_IP_RESTRICTIONS_ENABLED &&
+    restrictedSpotMarketsCountries.includes(country) &&
+    disallowedSpotMarketDenomOrSymbol.some((value: string) =>
+      value.toLowerCase().includes(denomOrSymbol.toLowerCase())
+    )
+  )
+}
