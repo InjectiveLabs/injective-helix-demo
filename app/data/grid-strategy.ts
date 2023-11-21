@@ -19,23 +19,24 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'tia-usdt',
     contractAddress: 'inj1ljzjh8tzuvrj7mkhv9mxvv4cedn7kzauargrey'
-  },
-  {
-    slug: 'weth-usdt',
-    contractAddress: 'inj1vldp2685n8gwynpxfnmv6ucn5qumjsnqkkmhm5'
-  },
-  {
-    slug: 'pyth-usdt',
-    contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
-  },
-  {
-    slug: 'usdtkv-usdt',
-    contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
-  },
-  {
-    slug: 'usdt-usdcet',
-    contractAddress: 'inj18njxtxdcv49aalx4dhtzew7d5kug52m09vn87t'
   }
+  // UNCOMENT THE FOLLOWING WHEN INDEXER IS READY
+  // {
+  //   slug: 'weth-usdt',
+  //   contractAddress: 'inj1vldp2685n8gwynpxfnmv6ucn5qumjsnqkkmhm5'
+  // },
+  // {
+  //   slug: 'pyth-usdt',
+  //   contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
+  // },
+  // {
+  //   slug: 'usdtkv-usdt',
+  //   contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
+  // },
+  // {
+  //   slug: 'usdt-usdcet',
+  //   contractAddress: 'inj18njxtxdcv49aalx4dhtzew7d5kug52m09vn87t'
+  // }
   // {
   //   slug: 'stinj-inj',
   //   contractAddress: 'inj195l0hketpha2x2zahckfhlchlkrwckxd74030v'
