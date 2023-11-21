@@ -1,26 +1,53 @@
 <script lang="ts" setup>
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, UiMarketWithToken } from '@/types'
+import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 
+const appStore = useAppStore()
 const modalStore = useModalStore()
 
 const props = defineProps({
   isSpot: Boolean,
 
-  modal: {
-    type: String as PropType<Modal>,
-    default: Modal.FuturesMarketRestricted
-  },
-
-  symbol: {
-    type: String,
-    default: ''
+  market: {
+    type: Object as PropType<UiMarketWithToken>,
+    required: true
   }
 })
 
-const isModalOpen = computed(() => modalStore.modals[props.modal])
+const isModalOpen = computed(() => modalStore.modals[Modal.MarketRestricted])
+
+const disallowedTokenSymbol = computed(() => {
+  const disallowedToken = [
+    props.market.baseToken,
+    props.market.quoteToken
+  ].find((token) =>
+    isCountryRestrictedForSpotMarket({
+      country:
+        appStore.userState.geoLocation.browserCountry ||
+        appStore.userState.geoLocation.country,
+      symbol: token.symbol.toLowerCase()
+    })
+  )
+
+  return disallowedToken?.symbol
+})
+
+onWalletConnected(() => {
+  if (!props.isSpot) {
+    return
+  }
+
+  checkUserIsDisallowed()
+})
+
+function checkUserIsDisallowed() {
+  if (disallowedTokenSymbol.value) {
+    modalStore.openModal(Modal.MarketRestricted)
+  }
+}
 
 function closeModal() {
-  modalStore.closeModal(props.modal)
+  modalStore.closeModal(Modal.MarketRestricted)
 }
 </script>
 
@@ -36,7 +63,7 @@ function closeModal() {
       <p class="text-center text-sm text-gray-100">
         {{
           $t(`MarketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
-            symbol
+            symbol: disallowedTokenSymbol
           })
         }}
       </p>

@@ -230,7 +230,7 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    validateGeoIpBasedOnFuturesAction() {
+    validateGeoIpBasedOnDerivativesAction() {
       const appStore = useAppStore()
 
       if (
