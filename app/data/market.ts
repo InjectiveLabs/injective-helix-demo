@@ -9,6 +9,8 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'pyth-usdt-perp',
+  'pyth-usdt',
+  'usdy-usdt',
   'kuji-usdt',
   'tia-usdt',
   'tia-usdt-30nov2023',
@@ -19,6 +21,7 @@ export const newMarketsSlug = [
 ]
 
 export const experimentalMarketsSlug = [
+  'usdy-usdt',
   'ape-usdt',
   'gf-usdt',
   'tia-usdt-30nov2023',
@@ -46,6 +49,7 @@ export const slugsToIncludeInCosmosCategory = [
 ]
 
 export const slugsToIncludeInEthereumCategory = [
+  'usdy-usdt',
   'inj-usdt',
   'arb-usdt',
   'chz-usdcet',
