@@ -256,7 +256,7 @@ export const useAppStore = defineStore('app', {
           country:
             appStore.userState.geoLocation.browserCountry ||
             appStore.userState.geoLocation.country,
-          symbol: token.symbol.toLowerCase()
+          denomOrSymbol: token.symbol.toLowerCase()
         })
       )
 

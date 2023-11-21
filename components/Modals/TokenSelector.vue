@@ -17,20 +17,23 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :is-open="modalStore.modals[modal]" sm @modal:closed="closeModal">
+  <AppModal
+    :is-open="modalStore.modals[modal]"
+    sm
+    modal-content-class="overflow-y-hidden"
+    @modal:closed="closeModal"
+  >
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
         {{ $t('trade.swap.tokenSelector.selectAToken') }}
       </div>
     </template>
 
-    <div>
-      <AppSelectTokenList
-        class="-mt-8"
-        show-balance
-        v-bind="$attrs"
-        @close="closeModal"
-      />
-    </div>
+    <AppSelectTokenList
+      show-balance
+      v-bind="$attrs"
+      class="overflow-y-auto"
+      @close="closeModal"
+    />
   </AppModal>
 </template>

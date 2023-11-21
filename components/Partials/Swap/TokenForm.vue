@@ -184,17 +184,17 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             showUsd: true,
-            options: inputDenomOptions,
-            maxDecimals: inputToken?.quantityDecimals || 0,
             hideMax: false,
-            modal: Modal.TokenSelectorFrom,
-            hideBalance: !walletStore.isUserWalletConnected,
             shouldCheckBalance: true,
-            amountFieldName: SwapFormField.InputAmount
+            options: inputDenomOptions,
+            modal: Modal.TokenSelectorFrom,
+            amountFieldName: SwapFormField.InputAmount,
+            maxDecimals: inputToken?.quantityDecimals || 0,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleInputDenomChange"
-          @update:amount="getOutputQuantity"
           @update:max="onMaxSelected"
+          @update:amount="getOutputQuantity"
+          @update:denom="handleInputDenomChange"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
 
@@ -222,15 +222,15 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             showUsd: true,
             debounce: 600,
-            options: outputDenomOptions,
-            maxDecimals: outputToken?.quantityDecimals || 0,
             hideMax: true,
+            options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
-            hideBalance: !walletStore.isUserWalletConnected,
-            amountFieldName: SwapFormField.OutputAmount
+            amountFieldName: SwapFormField.OutputAmount,
+            maxDecimals: outputToken?.quantityDecimals || 0,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleOutputDenomChange"
           @update:amount="getInputQuantity"
+          @update:denom="handleOutputDenomChange"
         >
           <span>
             {{ $t('trade.swap.youReceive') }}

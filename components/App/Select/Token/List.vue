@@ -70,7 +70,7 @@ function handleClick(denom: string) {
 </script>
 
 <template>
-  <div class="max-h-xs px-4 pt-4 pb-4">
+  <div class="max-h-xs">
     <div class="mb-2 text-white">
       <AppInput v-model="search" sm :placeholder="$t('common.search')" />
     </div>
