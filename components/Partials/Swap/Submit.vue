@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
+import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
+const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -42,6 +45,36 @@ const hasAmounts = computed(() => {
     new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || '').gt(
       0
     )
+  )
+})
+
+const restrictedTokenBasedOnUserGeoIP = computed(() => {
+  if (!GEO_IP_RESTRICTIONS_ENABLED) {
+    return
+  }
+
+  const disallowedDenom = [
+    formValues.value[SwapFormField.InputDenom],
+    formValues.value[SwapFormField.OutputDenom]
+  ].find((denom) => {
+    if (!denom) {
+      return false
+    }
+
+    return isCountryRestrictedForSpotMarket({
+      country:
+        appStore.userState.geoLocation.browserCountry ||
+        appStore.userState.geoLocation.country,
+      denomOrSymbol: denom
+    })
+  })
+
+  if (!disallowedDenom) {
+    return
+  }
+
+  return accountBalancesWithToken.value.find(
+    ({ denom }) => denom === disallowedDenom
   )
 })
 
@@ -155,6 +188,19 @@ watch(
       @click="handleConnect"
     >
       {{ $t('trade.swap.connect_wallet') }}
+    </AppButton>
+
+    <AppButton
+      v-else-if="restrictedTokenBasedOnUserGeoIP"
+      lg
+      disabled
+      class="w-full"
+    >
+      {{
+        $t('marketRestricted.swapCta', {
+          symbol: restrictedTokenBasedOnUserGeoIP.token.symbol
+        })
+      }}
     </AppButton>
 
     <AppButton
