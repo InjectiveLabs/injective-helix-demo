@@ -16,6 +16,7 @@ definePageMeta({
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+
 const { $onError } = useNuxtApp()
 
 const filterByCurrentMarket = ref(false)
@@ -128,6 +129,17 @@ useIntervalFn(() => {
         :market="market"
         :status="fetchStatus"
         @update:filter-by-current-market="refreshSubaccountDetails"
+      />
+    </template>
+
+    <template #modals>
+      <ModalsMarketRestricted
+        v-if="market"
+        :key="market.marketId"
+        v-bind="{
+          market,
+          isSpot: true
+        }"
       />
     </template>
   </PartialsTradingLayout>

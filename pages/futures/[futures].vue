@@ -22,14 +22,13 @@ definePageMeta({
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
-
       if (
         isCountryRestrictedForPerpetualMarkets(
           appStore.userState.geoLocation.browserCountry ||
             appStore.userState.geoLocation.country
         )
       ) {
-        modalStore.openModal(Modal.FuturesMarketRestricted)
+        modalStore.openModal(Modal.MarketRestricted)
       }
     }
   ]
@@ -191,9 +190,13 @@ useIntervalFn(() => {
 
     <template #modals>
       <div>
-        <ModalsFuturesRestricted />
+        <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
         <ModalsAddMargin />
-        <ModalsMarketExpired v-if="market" :market="market" />
+        <ModalsMarketExpired
+          v-if="market"
+          :key="market.marketId"
+          :market="market"
+        />
       </div>
     </template>
   </PartialsTradingLayout>
