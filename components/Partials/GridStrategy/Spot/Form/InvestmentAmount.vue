@@ -113,7 +113,7 @@ const {
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
-    }`
+    },${props.market.quoteToken.symbol}`
 
     const rules = [
       requiredIfFieldEmptyRule,
@@ -147,7 +147,7 @@ const {
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
-    }`
+    },${props.market.quoteToken.symbol}`
 
     const rules = [
       requiredIfFieldEmptyRule,
