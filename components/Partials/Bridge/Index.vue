@@ -12,6 +12,7 @@ const accountStore = useAccountStore()
 const formValues = useFormValues<BridgeForm>() as Ref<BridgeForm>
 const setFormValues = useSetFormValues()
 
+const refreshBalanceStatus = reactive(new Status(StatusType.Idle))
 const fetchBalanceStatus = reactive(new Status(StatusType.Idle))
 
 const {
@@ -121,26 +122,30 @@ function onTokenChange() {
 }
 
 function onSelectTokenClick() {
-  balanceRefresh()
+  fetchBalanceStatus.setLoading()
+
+  balanceRefresh().finally(() => {
+    fetchBalanceStatus.setIdle()
+  })
 }
 
 function balanceRefresh() {
   return accountStore.fetchAccountPortfolio().then(() => {
     if (isEthereumOrigin.value) {
-      peggyStore.updateErc20BalancesWithTokenAndPrice()
+      return peggyStore.updateErc20BalancesWithTokenAndPrice()
     }
 
     if (isCosmosNetworkOrigin.value) {
-      ibcStore.fetchBalances()
+      return ibcStore.fetchBalances()
     }
   })
 }
 
 function refreshBalance() {
-  fetchBalanceStatus.setLoading()
+  refreshBalanceStatus.setLoading()
 
   balanceRefresh().finally(() => {
-    fetchBalanceStatus.setIdle()
+    refreshBalanceStatus.setIdle()
   })
 }
 </script>
@@ -155,9 +160,10 @@ function refreshBalance() {
           maxDecimals,
           isRequired: true,
           isDisabled: isConnecting,
-          isTokenSelectorDisabled: isSelectorDisabled,
+          options: supplyWithBalance,
           amountFieldName: BridgeField.Amount,
-          options: supplyWithBalance
+          isLoading: fetchBalanceStatus.isLoading(),
+          isTokenSelectorDisabled: isSelectorDisabled
         }"
         @update:denom="onTokenChange"
         @update:max="onAmountChange"
@@ -219,7 +225,7 @@ function refreshBalance() {
           }"
         >
           <AppSpinner
-            v-if="isConnecting || fetchBalanceStatus.isLoading()"
+            v-if="isConnecting || refreshBalanceStatus.isLoading()"
             is-sm
           />
           <div

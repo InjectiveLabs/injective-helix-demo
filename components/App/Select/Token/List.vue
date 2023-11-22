@@ -78,12 +78,13 @@ function onClick(denom: string) {
     <AppSelectTokenItem
       v-for="balance in sortedBalancesWithBalancesToBase"
       v-bind="{
+        ...$attrs,
         isSm: true,
         isLgTokenIcon: true,
-        isTokenNameVisible: true,
         token: balance.token,
-        balance: balance.balance,
-        isBalanceVisible: true
+        isBalanceVisible: true,
+        isTokenNameVisible: true,
+        balance: balance.balance
       }"
       :key="balance.denom"
       class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
