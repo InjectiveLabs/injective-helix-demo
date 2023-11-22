@@ -1,7 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { formatDistance } from 'date-fns'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 import { StopReason } from '@/types'
 
@@ -61,7 +61,7 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
       <p>{{ $t('sgt.market') }}</p>
 
       <div class="flex items-center space-x-2">
-        <CommonTokenIcon v-bind="{ token: market.baseToken }" sm />
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" is-sm />
         <p class="font-semibold">
           {{ market.baseToken.symbol }}/{{ market.quoteToken.symbol }}
         </p>

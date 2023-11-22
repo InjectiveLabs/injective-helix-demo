@@ -52,13 +52,13 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-function handleAddMargin() {
+function addMargin() {
   useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
 
   modalStore.openModal(Modal.AddMarginToPosition)
 }
 
-function handleClosePositionClick() {
+function closePositionClicked() {
   if (!market.value) {
     return
   }
@@ -67,10 +67,10 @@ function handleClosePositionClick() {
     return error({ title: t('trade.no_liquidity') })
   }
 
-  handleClosePosition()
+  closePositionHandler()
 }
 
-function handleClosePosition() {
+function closePositionHandler() {
   if (hasReduceOnlyOrders.value) {
     return closePositionAndReduceOnlyOrders()
   }
@@ -126,7 +126,7 @@ function sharePosition() {
 </script>
 
 <template>
-  <CommonTableRow v-if="market" dense>
+  <CommonTableRow v-if="market" is-dense>
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
@@ -147,7 +147,7 @@ function sharePosition() {
           <CommonTokenIcon
             v-if="market.baseToken"
             :token="market.baseToken"
-            sm
+            is-sm
           />
         </div>
         <span class="text-gray-200 font-semibold">
@@ -169,8 +169,8 @@ function sharePosition() {
         v-if="!hideBalance"
         class="cursor-pointer rounded"
         :status="status"
-        sm
-        @click="handleClosePositionClick"
+        is-sm
+        @click="closePositionClicked"
       >
         <template #icon>
           <BaseIcon name="close" is-sm />
@@ -183,7 +183,12 @@ function sharePosition() {
     </span>
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <AppNumber v-else dense :decimals="quantityDecimals" :number="quantity" />
+      <AppNumber
+        v-else
+        is-dense
+        :decimals="quantityDecimals"
+        :number="quantity"
+      />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
@@ -192,13 +197,13 @@ function sharePosition() {
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
-        <AppNumber dense :decimals="priceDecimals" :number="price" />
+        <AppNumber is-dense :decimals="priceDecimals" :number="price" />
         <span class="mx-2">/</span>
         <span>
           <AppNumber
             class="text-gray-500"
             v-bind="{
-              dense: true,
+              isDense: true,
               decimals: market.priceDecimals,
               number: markPrice
             }"
@@ -292,7 +297,7 @@ function sharePosition() {
           role="button"
           type="button"
           class="border border-gray-500 text-gray-500 ml-2 px-1"
-          @click.stop.prevent="handleAddMargin"
+          @click.stop.prevent="addMargin"
         >
           &plus;
         </button>

@@ -155,11 +155,11 @@ function onNotionalClick() {
   })
 }
 
-function handleMouseEnter() {
+function mouseEnter() {
   emit('update:active-position', props.position)
 }
 
-function handleMouseLeave() {
+function mouseLeave() {
   emit('update:active-position')
 }
 
@@ -172,8 +172,8 @@ defineExpose({
   <li
     ref="element"
     class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -199,7 +199,7 @@ defineExpose({
         }"
       >
         <AppNumber
-          xs
+          is-xs
           :prefix="
             aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
               ? '<'
@@ -211,7 +211,7 @@ defineExpose({
               ? aggregatedValue
               : aggregatedPriceInBigNumber
           "
-          no-grouping
+          is-no-grouping
           data-cy="orderbook-record-price-text-content"
         />
       </span>
@@ -225,11 +225,11 @@ defineExpose({
         }"
       >
         <AppNumber
-          xs
+          is-xs
           :decimals="market.quantityDecimals"
           :number="quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
-          no-grouping
+          is-no-grouping
           data-cy="orderbook-record-quantity-text-content"
         />
       </span>
@@ -239,10 +239,10 @@ defineExpose({
       @click.stop="onNotionalClick"
     >
       <AppNumber
-        xs
+        is-xs
         :decimals="market.priceDecimals"
         :number="total"
-        no-grouping
+        is-no-grouping
         data-cy="orderbook-record-total-text-content"
       />
     </span>

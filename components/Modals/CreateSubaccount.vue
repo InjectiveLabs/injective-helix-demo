@@ -3,7 +3,7 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-function handleOpenSubaccountTransferModal() {
+function onOpenSubaccountTransferModal() {
   modalStore.openModal(Modal.SubaccountTransfer)
   modalStore.closeModal(Modal.CreateSubaccount)
 }
@@ -16,7 +16,7 @@ function closeModal() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.CreateSubaccount]"
-    sm
+    is-sm
     @modal:closed="closeModal"
   >
     <template #title>
@@ -43,9 +43,9 @@ function closeModal() {
 
       <div class="mt-6">
         <AppButton
-          lg
+          is-lg
           class="w-full text-blue-900 bg-blue-500"
-          @click="handleOpenSubaccountTransferModal"
+          @click="onOpenSubaccountTransferModal"
         >
           <span class="font-semibold">
             {{ $t('account.createSubaccount') }}

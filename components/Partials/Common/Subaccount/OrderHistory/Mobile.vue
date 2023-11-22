@@ -41,7 +41,7 @@ const marketRoute = computed(() => {
 </script>
 
 <template>
-  <CommonTableRow v-if="market" dense>
+  <CommonTableRow v-if="market" is-dense>
     <NuxtLink class="pb-1 col-span-2" :to="marketRoute">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
@@ -54,7 +54,7 @@ const marketRoute = computed(() => {
             {{ isBuy ? $t('trade.buy') : $t('trade.sell') }}
           </span>
           <div v-if="market.baseToken" class="w-4 h-4">
-            <CommonTokenIcon :token="market.baseToken" sm />
+            <CommonTokenIcon :token="market.baseToken" is-sm />
           </div>
           <span class="text-gray-200 font-semibold">
             {{ market.ticker }}

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { LP_EPOCHS } from '@/app/data/guild'
 
 const { t } = useLang()

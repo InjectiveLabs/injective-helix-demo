@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { AccountBalance, Modal } from '@/types'
 
 defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -53,8 +53,8 @@ const marketIds = computed(() => {
     .map(({ marketId }) => marketId)
 })
 
-const filteredPositions = computed(() => {
-  return positionStore.subaccountPositions.filter((position) => {
+const filteredPositions = computed(() =>
+  positionStore.subaccountPositions.filter((position) => {
     const positionMatchedSide = !side.value || position.direction === side.value
     const positionMatchedMarket =
       marketIds.value.length === 0 ||
@@ -62,7 +62,7 @@ const filteredPositions = computed(() => {
 
     return positionMatchedMarket && positionMatchedSide
   })
-})
+)
 
 const supportedTokens = computed(() => {
   const tokens = markets.value.reduce((tokens, market) => {
@@ -88,16 +88,16 @@ const supportedTokens = computed(() => {
   return uniqueTokens
 })
 
-const marketOptions = computed(() => {
-  return supportedTokens.value.map(({ token }) => {
+const marketOptions = computed(() =>
+  supportedTokens.value.map(({ token }) => {
     return {
       display: token.symbol,
       value: token.denom
     }
   })
-})
+)
 
-const showEmpty = computed(() => {
+const isEmpty = computed(() => {
   if (filteredPositions.value.length === 0) {
     return true
   }
@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
   positionStore.cancelSubaccountPositionsStream()
 })
 
-function handleCloseAllPositions() {
+function onCloseAllPositions() {
   return positions.value.length === 1 ? closePosition() : closeAllPositions()
 }
 
@@ -157,7 +157,7 @@ function closePosition() {
     .catch($onError)
 }
 
-function handleSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }
@@ -177,7 +177,7 @@ watch(
       v-model:side="side"
       :market-options="marketOptions"
       :side-options="sideOptions"
-      @positions:close="handleCloseAllPositions"
+      @positions:close="onCloseAllPositions"
     />
 
     <table class="w-full border-collapse hidden md:table">
@@ -188,10 +188,10 @@ watch(
         :key="`position-${i}`"
         v-bind="{
           position,
-          hideBalances
+          isHideBalances
         }"
         is-account
-        @share:position="handleSharePosition"
+        @share:position="onSharePosition"
       />
     </table>
 
@@ -201,14 +201,14 @@ watch(
         :key="`position-mobile-${i}`"
         v-bind="{
           position,
-          hideBalances
+          isHideBalances
         }"
-        @share:position="handleSharePosition"
+        @share:position="onSharePosition"
       />
     </table>
 
     <CommonEmptyList
-      v-if="showEmpty"
+      v-if="isEmpty"
       class="min-h-3xs bg-gray-900"
       data-cy="markets-no-data-table"
       :message="$t('account.positions.empty')"

@@ -11,7 +11,7 @@ const props = defineProps({
 
 const modalStore = useModalStore()
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(props.modal)
 }
 </script>
@@ -19,9 +19,9 @@ function closeModal() {
 <template>
   <AppModal
     :is-open="modalStore.modals[modal]"
-    sm
+    is-sm
     modal-content-class="overflow-y-hidden"
-    @modal:closed="closeModal"
+    @modal:closed="onCloseModal"
   >
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
@@ -30,10 +30,10 @@ function closeModal() {
     </template>
 
     <AppSelectTokenList
-      show-balance
+      is-balance-visible
       v-bind="$attrs"
       class="overflow-y-auto"
-      @close="closeModal"
+      @close="onCloseModal"
     />
   </AppModal>
 </template>

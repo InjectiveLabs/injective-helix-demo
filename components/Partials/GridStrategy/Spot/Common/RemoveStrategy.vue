@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { durationFormatter } from 'app/utils/helpers'
+import { durationFormatter } from '@/app/utils/helpers'
 
 const props = defineProps({
   isLiquidity: Boolean,

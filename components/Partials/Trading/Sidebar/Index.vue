@@ -59,7 +59,7 @@ useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
 <template>
   <CommonCard
     class="col-span-6 lg:col-span-3 4xl:col-span-3 h-screen-excluding-header-and-market-info pointer-events-auto overflow-y-auto"
-    md
+    is-md
   >
     <AppHocLoading
       loader-class="relative"

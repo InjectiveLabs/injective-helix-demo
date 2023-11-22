@@ -127,7 +127,7 @@ const { pause, isActive } = useIntervalFn(() => {
       <AppHorizontalScrollViewIndicator
         v-for="index in totalMarketsBatches"
         :key="`horizontal-scroll-view-indicator-${index}`"
-        :active="currentMarketsBatch === index - 1"
+        :is-active="currentMarketsBatch === index - 1"
         @click="onClickIndicator(index - 1)"
       />
     </div>

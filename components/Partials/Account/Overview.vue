@@ -19,7 +19,7 @@ const exchangeStore = useExchangeStore()
 
 const props = defineProps({
   isLoading: Boolean,
-  hideBalances: Boolean
+  isHideBalances: Boolean
 })
 
 const emit = defineEmits<{
@@ -112,10 +112,10 @@ const { valueToString: abbreviatedTotalBalanceToString } =
   })
 
 function toggleHideBalances() {
-  emit('update:hide-balances', !props.hideBalances)
+  emit('update:hide-balances', !props.isHideBalances)
 }
 
-function handleTransferClick() {
+function onTransferClick() {
   modalStore.openModal(Modal.SubaccountTransfer)
 }
 </script>
@@ -125,10 +125,10 @@ function handleTransferClick() {
     <div
       class="flex justify-between md:items-center gap-4 flex-col md:flex-row"
     >
-      <AppSpinner v-if="isLoading" lg />
+      <AppSpinner v-if="isLoading" is-lg />
       <div v-else class="flex items-center justify-start gap-2">
         <span
-          v-if="!hideBalances"
+          v-if="!isHideBalances"
           class="text-white font-bold text-2xl md:text-3xl"
         >
           &dollar;
@@ -139,7 +139,7 @@ function handleTransferClick() {
           &dollar; {{ HIDDEN_BALANCE_DISPLAY }} USD
         </span>
 
-        <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
+        <span v-if="!isHideBalances" class="text-gray-450 md:text-lg">
           &thickapprox;
           <span class="font-sans">{{ accountTotalBalanceInBtcToString }}</span>
           BTC
@@ -152,7 +152,7 @@ function handleTransferClick() {
           class="text-gray-450 hover:text-white cursor-pointer"
           @click="toggleHideBalances"
         >
-          <BaseIcon v-if="hideBalances" name="hide" class="w-4 h-4" />
+          <BaseIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
           <BaseIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
@@ -185,9 +185,9 @@ function handleTransferClick() {
             appStore.isSubaccountManagementActive &&
             !walletStore.isAuthzWalletConnected
           "
-          :disabled="accountStore.isSgtSubaccount"
+          :is-disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
-          @click="handleTransferClick"
+          @click="onTransferClick"
         >
           <span class="text-blue-500 font-semibold">
             {{ $t('account.transfer') }}
@@ -199,7 +199,7 @@ function handleTransferClick() {
     <PartialsAccountSubaccountSelector
       v-if="!isLoading && appStore.isSubaccountManagementActive"
       v-bind="{
-        hideBalances
+        isHideBalances
       }"
     />
   </div>

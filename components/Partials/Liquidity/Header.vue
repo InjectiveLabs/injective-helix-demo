@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { UiMarketWithToken } from 'types'
-import { LP_EPOCHS } from 'app/data/guild'
+import { UiMarketWithToken } from '@/types'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const props = defineProps({
   epoch: {
@@ -41,6 +41,7 @@ const { valueToString: tiaRewardsToString } = useBigNumberFormatter(
 
 const endDate = computed(() => {
   const utcDate = utcToZonedTime(props.campaign.endDate, 'UTC')
+
   return format(utcDate, DATE_FORMAT, { timeZone: 'UTC' })
 })
 </script>

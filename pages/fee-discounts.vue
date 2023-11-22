@@ -14,9 +14,6 @@ onMounted(() => {
     exchangeStore.fetchFeeDiscountAccountInfo(),
     paramStore.fetchAprParams()
   ])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

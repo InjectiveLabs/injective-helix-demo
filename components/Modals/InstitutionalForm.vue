@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
@@ -120,9 +120,9 @@ async function onSubmit() {
 
       <div class="mt-10">
         <AppButton
-          dark-spinner
+          is-dark-spinner
           class="bg-white text-black py-2 px-4 rounded-md font-semibold"
-          v-bind="{ status, disabled: Object.keys(errors).length > 0 }"
+          v-bind="{ status, isDisabled: Object.keys(errors).length > 0 }"
           @click="onSubmit"
         >
           {{ $t('common.submit') }}

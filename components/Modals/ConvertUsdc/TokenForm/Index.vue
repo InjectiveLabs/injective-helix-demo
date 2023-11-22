@@ -106,7 +106,7 @@ function toggleOrderSide() {
   setOrderSide(isBuy.value ? OrderSide.Sell : OrderSide.Buy)
 }
 
-function handleSwap() {
+function onSwap() {
   if (!isWHSolUSDTBaseDenom.value) {
     return
   }
@@ -126,7 +126,7 @@ function handleSwap() {
   toggleOrderSide()
 }
 
-function updateAmount({
+function onAmountChange({
   amount,
   isBaseAmount
 }: {
@@ -141,7 +141,7 @@ function onMaxBaseAmountChange({ amount }: { amount: string }) {
     [TradeField.BaseAmount]: amount
   })
 
-  updateAmount({ amount, isBaseAmount: true })
+  onAmountChange({ amount, isBaseAmount: true })
 }
 
 function onMaxQuoteAmountChange({ amount }: { amount: string }) {
@@ -189,9 +189,9 @@ function onMaxQuoteAmountChange({ amount }: { amount: string }) {
           v-bind="{
             denom: baseBalance.denom,
             amountFieldName: TradeField.BaseAmount,
-            disabled: isLoading,
-            required: !isBuy,
-            hideMax: isBuy,
+            isDisabled: isLoading,
+            isRequired: !isBuy,
+            isMaxHidden: isBuy,
             maxDecimals: market?.quantityDecimals,
             options: [
               {
@@ -201,7 +201,7 @@ function onMaxQuoteAmountChange({ amount }: { amount: string }) {
               }
             ]
           }"
-          @update:amount="updateAmount"
+          @update:amount="onAmountChange"
           @update:max="onMaxBaseAmountChange"
         >
           <span>
@@ -221,7 +221,7 @@ function onMaxQuoteAmountChange({ amount }: { amount: string }) {
           '-rotate-90': !isWHSolUSDTBaseDenom,
           'ml-2': isWHSolUSDTBaseDenom
         }"
-        @click="handleSwap"
+        @click="onSwap"
       />
     </div>
 
@@ -248,9 +248,9 @@ function onMaxQuoteAmountChange({ amount }: { amount: string }) {
           v-bind="{
             denom: quoteBalance.denom,
             amountFieldName: TradeField.QuoteAmount,
-            disabled: isLoading,
-            required: isBuy,
-            hideMax: !isBuy,
+            isDisabled: isLoading,
+            isRequired: isBuy,
+            isMaxHidden: !isBuy,
             maxDecimals: market?.quantityDecimals,
             options: [
               {
@@ -260,7 +260,7 @@ function onMaxQuoteAmountChange({ amount }: { amount: string }) {
               }
             ]
           }"
-          @update:amount="updateAmount"
+          @update:amount="onAmountChange"
           @update:max="onMaxQuoteAmountChange"
         >
           <span>

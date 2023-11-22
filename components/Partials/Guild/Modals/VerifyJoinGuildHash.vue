@@ -50,7 +50,7 @@ watch(
 
 <template>
   <AppModal
-    sm
+    is-sm
     :is-open="modalStore.modals[Modal.VerifyJoinGuildHash]"
     @modal:closed="onCloseModal"
   >
@@ -72,7 +72,7 @@ watch(
 
     <AppInput
       v-model="hash"
-      sm
+      is-sm
       wrapper-classes="p-2"
       :placeholder="$t('guild.verifyJoinGuild.hashPlaceholder')"
     />
@@ -87,7 +87,7 @@ watch(
       <AppButton
         class="w-full bg-blue-500 text-white font-semibold"
         v-bind="{
-          lg: true,
+          isLg: true,
           disabled: !hash || !hashMatches
         }"
         @click="onSubmit"

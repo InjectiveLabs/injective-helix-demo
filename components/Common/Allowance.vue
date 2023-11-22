@@ -34,19 +34,17 @@ const needsAllowanceReset = computed(() =>
   allowanceResetSymbols.includes(props.balanceWithToken.token.symbol)
 )
 
-function handleClickOnSetAllowance() {
+function onSetAllowance() {
   if (!props.balanceWithToken) {
     return
   }
 
   status.setLoading()
 
-  return hasNonUnlimitedAllowanceSet.value
-    ? handleSetZeroAllowance()
-    : handleSetAllowance()
+  return hasNonUnlimitedAllowanceSet.value ? setZeroAllowance() : setAllowance()
 }
 
-function handleSetZeroAllowance() {
+function setZeroAllowance() {
   peggyStore
     .setTokenAllowance(
       props.balanceWithToken as BalanceWithTokenWithErc20Balance,
@@ -63,7 +61,7 @@ function handleSetZeroAllowance() {
     })
 }
 
-function handleSetAllowance() {
+function setAllowance() {
   peggyStore
     .setTokenAllowance(
       props.balanceWithToken as BalanceWithTokenWithErc20Balance
@@ -96,11 +94,11 @@ function handleSetAllowance() {
     </p>
 
     <AppButton
-      lg
+      is-lg
       :is-loading="status.isLoading()"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       data-cy="allowance-modal-set-button"
-      @click="handleClickOnSetAllowance"
+      @click="onSetAllowance"
     >
       <span>{{ $t('bridge.setAllowance') }}</span>
     </AppButton>

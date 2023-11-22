@@ -36,7 +36,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketDeprecated.title') }}
@@ -73,7 +73,7 @@ function onModalClose() {
 
       <div class="mt-6 flex flex-col gap-4">
         <NuxtLink :to="{ name: MainPage.Markets }">
-          <AppButton lg class="w-full text-blue-900 bg-blue-500">
+          <AppButton is-lg class="w-full text-blue-900 bg-blue-500">
             <span class="font-semibold">
               {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>

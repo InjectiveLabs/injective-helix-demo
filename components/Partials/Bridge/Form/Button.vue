@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 
 const walletStore = useWalletStore()
@@ -43,8 +43,8 @@ async function confirm() {
 
 <template>
   <AppButton
-    lg
-    :disabled="hasFormErrors || isDepositAndIsAuthZConnected"
+    is-lg
+    :is-disabled="hasFormErrors || isDepositAndIsAuthZConnected"
     class="w-full font-semibold rounded bg-blue-500 text-blue-900"
     data-cy="transfer-modal-transfer-now-button"
     @click="confirm"

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getMarketRoute } from '@/app/utils/market'
-import { Modal, MainPage } from 'types'
+import { Modal, MainPage } from '@/types'
 
 const spotStore = useSpotStore()
 

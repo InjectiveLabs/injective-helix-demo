@@ -2,12 +2,12 @@
 const slots = useSlots()
 
 const props = defineProps({
-  sm: Boolean,
-  valid: Boolean,
-  disabled: Boolean,
-  noPadding: Boolean,
-  transparentBg: Boolean,
+  isSm: Boolean,
+  isValid: Boolean,
+  isDisabled: Boolean,
+  isNoPadding: Boolean,
   isDisabledGray: Boolean,
+  isTransparentBg: Boolean,
 
   errors: {
     type: Array as PropType<string[]>,
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 const wrapperClass = computed(() => {
   const result = ['shadow-none']
 
-  if (!props.transparentBg) {
+  if (!props.isTransparentBg) {
     result.push('input-wrapper p-0')
   }
 
@@ -44,15 +44,15 @@ const wrapperClass = computed(() => {
 const inputClass = computed(() => {
   const result = []
 
-  if (!props.noPadding) {
+  if (!props.isNoPadding) {
     result.push('px-3')
   }
 
-  if (props.sm) {
+  if (props.isSm) {
     result.push('h-8')
   }
 
-  if (props.transparentBg) {
+  if (props.isTransparentBg) {
     result.push('input-bg-transparent')
   }
 
@@ -64,18 +64,18 @@ const inputClass = computed(() => {
 const classes = computed(() => {
   const result = ['w-full']
 
-  if (props.valid) {
+  if (props.isValid) {
     result.push('is-valid')
   }
 
-  if (!props.valid && props.errors.length > 0) {
+  if (!props.isValid && props.errors.length > 0) {
     result.push('is-invalid')
   }
 
   return result.join(' ')
 })
 
-function handleBlur(e?: Event) {
+function onBlur(e?: Event) {
   const { value } = e?.target as HTMLInputElement
 
   if (isNaN(parseInt(value))) {
@@ -108,7 +108,7 @@ export default {
       <div :class="wrapperClass" class="overflow-hidden">
         <div
           class="flex items-center justify-between no-shadow"
-          :class="{ 'bg-gray-700': disabled && isDisabledGray }"
+          :class="{ 'bg-gray-700': isDisabled && isDisabledGray }"
         >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />
@@ -118,17 +118,19 @@ export default {
             v-bind="$attrs"
             :class="inputClass"
             class="input"
-            :disabled="disabled"
-            @input:blurred="handleBlur"
-          />
+            :disabled="isDisabled"
+            @input:blurred="onBlur"
+          >
+            />
 
-          <div v-if="slots.max" class="mr-3">
-            <slot name="max" />
-          </div>
+            <div v-if="slots.max" class="mr-3">
+              <slot name="max" />
+            </div>
 
-          <div v-if="slots.addon" class="mr-3 text-gray-300">
-            <slot name="addon" />
-          </div>
+            <div v-if="slots.addon" class="mr-3 text-gray-300">
+              <slot name="addon" />
+            </div>
+          </BaseNumericInput>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 const slots = useSlots()
 
 defineProps({
-  dense: Boolean,
+  isDense: Boolean,
 
   title: {
     default: '',
@@ -36,7 +36,7 @@ defineProps({
     <slot name="context" />
     <CommonCard
       class="relative flex-1"
-      :lg="!dense"
+      :is-lg="!isDense"
       :class="cardWrapperClass"
       :bg-color="'bg-transparent'"
     >

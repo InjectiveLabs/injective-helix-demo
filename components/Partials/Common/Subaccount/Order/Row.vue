@@ -86,7 +86,7 @@ function onCancelOrder() {
     <td class="h-12 text-left cursor-pointer pl-3">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market && market.baseToken">
-          <CommonTokenIcon :token="market.baseToken" md />
+          <CommonTokenIcon :token="market.baseToken" is-md />
         </div>
         <div class="ml-3">
           <span
@@ -114,7 +114,7 @@ function onCancelOrder() {
 
     <td class="h-12 font-mono text-right">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-price-table-data"
         :decimals="priceDecimals"
         :number="price"
@@ -122,7 +122,7 @@ function onCancelOrder() {
     </td>
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-quantity-table-data"
         :decimals="quantityDecimals"
         :number="quantity"
@@ -130,7 +130,7 @@ function onCancelOrder() {
     </td>
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-unfilled-quantity-table-data"
         :decimals="quantityDecimals"
         :number="unfilledQuantity"
@@ -139,7 +139,7 @@ function onCancelOrder() {
     <td class="h-12">
       <div class="flex items-center justify-end">
         <AppNumber
-          xs
+          is-xs
           data-cy="order-filled-quantity-table-data"
           :decimals="quantityDecimals"
           :number="filledQuantity"
@@ -170,7 +170,7 @@ function onCancelOrder() {
 
     <td class="h-12 font-mono text-right">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-total-table-data"
         :decimals="priceDecimals"
         :number="total"

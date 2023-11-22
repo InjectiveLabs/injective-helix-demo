@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps({
-  lg: Boolean,
-  md: Boolean,
+  isLg: Boolean,
 
   classes: {
     type: String,
@@ -12,7 +11,7 @@ const props = defineProps({
 const sizeClasses = computed(() => {
   const result = []
 
-  if (props.lg) {
+  if (props.isLg) {
     result.push('py-2', 'px-6', 'text-2xs', '2xl:text-xs')
   } else {
     result.push('px-3', 'py-4', 'text-2xs', '2xl:text-xs')

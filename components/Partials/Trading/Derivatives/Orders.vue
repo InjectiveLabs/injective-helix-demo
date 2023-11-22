@@ -42,8 +42,8 @@ const emit = defineEmits<{
 const actionStatus = reactive(new Status(StatusType.Idle))
 const activeType = ref(FilterList.OpenOrders)
 
-const filteredConditionalOrders = computed(() => {
-  return derivativeStore.subaccountConditionalOrders.filter((order) => {
+const filteredConditionalOrders = computed(() =>
+  derivativeStore.subaccountConditionalOrders.filter((order) => {
     if (props.market.subType !== MarketType.BinaryOptions) {
       return derivativeStore.markets.some(
         (market) => market.marketId === order.marketId
@@ -54,10 +54,10 @@ const filteredConditionalOrders = computed(() => {
       (market) => market.marketId === order.marketId
     )
   })
-})
+)
 
-const filteredOrders = computed(() => {
-  return derivativeStore.subaccountOrders.filter((order) => {
+const filteredOrders = computed(() =>
+  derivativeStore.subaccountOrders.filter((order) => {
     if (props.market.subType !== MarketType.BinaryOptions) {
       return derivativeStore.markets.some(
         (market) => market.marketId === order.marketId
@@ -68,7 +68,7 @@ const filteredOrders = computed(() => {
       (market) => market.marketId === order.marketId
     )
   })
-})
+)
 
 const filteredPositions = computed(() => {
   const result = positionStore.subaccountPositions.filter((position) => {
@@ -129,7 +129,7 @@ function closePosition(): Promise<void> {
   })
 }
 
-function closeAllPositionsClick() {
+function onCloseAllPositions() {
   actionStatus.setLoading()
 
   const action =
@@ -240,7 +240,7 @@ function onLoad() {
             orders.length > 0
           "
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
-          xs
+          is-xs
           :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           @click="cancelAllOrdersClick"
@@ -253,11 +253,11 @@ function onLoad() {
             activeType === FilterList.OpenPositions &&
             filteredPositions.length > 0
           "
-          xs
+          is-xs
           :is-loading="actionStatus.isLoading()"
           data-cy="trade-page-cancel-all-button"
           class="bg-red-500 bg-opacity-10 text-red-500 hover:text-white"
-          @click="closeAllPositionsClick"
+          @click="onCloseAllPositions"
         >
           {{ $t('trade.closeAllPositions') }}
         </AppButton>

@@ -28,7 +28,7 @@ function confirm() {
   <AppModal
     :is-open="isModalOpen"
     data-cy="price-deviation-modal"
-    sm
+    is-sm
     @modal:closed="onModalClose"
   >
     <template #title>

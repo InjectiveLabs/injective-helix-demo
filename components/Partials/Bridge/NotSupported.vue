@@ -34,7 +34,7 @@ const isWormholeTransfer = computed(
     <div class="text-center mt-6">
       <NuxtLink :to="bridgeUrl" target="_blank">
         <AppButton
-          lg
+          is-lg
           class="w-full bg-blue-500 text-blue-900"
           data-cy="ibc-transfer-modal-hub-button"
         >

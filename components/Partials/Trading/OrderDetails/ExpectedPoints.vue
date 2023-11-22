@@ -5,11 +5,16 @@ import {
   cosmosSdkDecToBigNumber,
   getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
-import { UiMarketWithToken, TradeExecutionType } from '@/types'
+import {
+  TradeField,
+  TradeForm,
+  UiMarketWithToken,
+  TradeExecutionType
+} from '@/types'
+
+const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
-  postOnly: Boolean,
-
   fees: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -17,11 +22,6 @@ const props = defineProps({
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  tradingType: {
-    type: String as PropType<TradeExecutionType>,
     required: true
   }
 })
@@ -36,7 +36,7 @@ const { makerFeeRate, takerFeeRate } = useTradeFee(computed(() => props.market))
 
 const tradeTypeMarket = computed(() =>
   [TradeExecutionType.Market, TradeExecutionType.StopMarket].includes(
-    props.tradingType
+    formValues.value[TradeField.TradingType]
   )
 )
 
@@ -81,7 +81,7 @@ const takerExpectedPts = computed(() => {
 })
 
 const expectedPts = computed(() => {
-  if (!props.postOnly || tradeTypeMarket.value) {
+  if (!formValues.value[TradeField.PostOnly] || tradeTypeMarket.value) {
     return takerExpectedPts.value
   }
 
@@ -89,7 +89,7 @@ const expectedPts = computed(() => {
 })
 
 const expectedPtsToFormat = computed(() => {
-  if (!tradeTypeMarket.value && props.postOnly) {
+  if (!tradeTypeMarket.value && formValues.value[TradeField.PostOnly]) {
     const makerExpectedPtsBasedOnTradingType = tradeTypeMarket.value
       ? makerExpectedPts.value
       : makerExpectedPts.value.abs()

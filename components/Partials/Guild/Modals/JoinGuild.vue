@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Guild } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
@@ -81,7 +81,7 @@ function onSubmit() {
 
 <template>
   <AppModal
-    sm
+    is-sm
     :is-open="modalStore.modals[Modal.JoinGuild]"
     @modal:closed="onCloseModal"
   >
@@ -110,7 +110,7 @@ function onSubmit() {
         <AppButton
           class="w-full bg-blue-500 text-white font-semibold"
           v-bind="{
-            lg: true
+            isLg: true
           }"
           @click="onSubmit"
         >
@@ -122,7 +122,7 @@ function onSubmit() {
         <AppButton
           class="w-full font-semibold border border-white"
           v-bind="{
-            lg: true
+            isLg: true
           }"
           @click="onSubmit"
         >

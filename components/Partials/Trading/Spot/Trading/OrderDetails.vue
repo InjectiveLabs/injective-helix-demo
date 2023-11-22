@@ -32,7 +32,7 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
     <AppDrawer>
       <template #header>
         <p class="flex justify-between text-sm">
-          <CommonTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" is-lg>
             <template v-if="tradingTypeMarket" #context>
               <AppTooltip
                 class="ml-2"

@@ -1,11 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -125,7 +125,7 @@ watch(isBaseAndQuoteType, (value) => {
     <PartialsLiquidityBotsSpotCreateManualUpperLowerBounds
       v-bind="{
         market: gridStrategyStore.spotMarket!,
-        isReBalanceBeforeCreationChecked:
+        isRebalanceBeforeCreationChecked:
           !isBaseAndQuoteType && isAssetReBalancingChecked
       }"
     />
@@ -163,12 +163,12 @@ watch(isBaseAndQuoteType, (value) => {
         <AppCheckbox v-model="isAssetReBalancingChecked" />
 
         <p class="mr-2 text-xs font-semibold">
-          {{ $t('liquidity.allowAssetReBalance') }}
+          {{ $t('liquidity.allowAssetRebalance') }}
         </p>
 
         <AppTooltip
           v-bind="{
-            content: $t('liquidity.allowAssetReBalanceTooltip')
+            content: $t('liquidity.allowAssetRebalanceTooltip')
           }"
         />
       </div>

@@ -23,7 +23,7 @@ const props = defineProps({
   highDeviation: Boolean,
   maxOrdersError: Boolean,
   hasTriggerPrice: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,
@@ -98,7 +98,7 @@ const tradingTypeMarket = isSpot
   ? spotTradingTypeMarket
   : derivativeTradingTypeMarket
 
-const disabled = computed(() => {
+const isDisabled = computed(() => {
   const commonErrors =
     hasError.value || !props.hasBaseAmount || !walletStore.isUserWalletConnected
 
@@ -127,7 +127,7 @@ const disabled = computed(() => {
   return false
 })
 
-function handleSubmit() {
+function onSubmit() {
   trackPlaceOrder()
 
   if (!walletStore.isUserWalletConnected) {
@@ -149,7 +149,7 @@ function trackPlaceOrder() {
   amplitudeTradeTracker.submitPlaceOrderAttemptTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
-    reduceOnly: props.orderTypeReduceOnly,
+    reduceOnly: props.isOrderTypeReduceOnly,
     slippageTolerance: actualSlippageTolerance,
     amount: formValues.value[TradeField.BaseAmount],
     leverage: formValues.value[TradeField.Leverage],
@@ -161,7 +161,7 @@ function trackPlaceOrder() {
   })
 }
 
-function handleConnect() {
+function onConnect() {
   modalStore.openModal(Modal.Connect)
 }
 </script>
@@ -177,27 +177,27 @@ function handleConnect() {
 
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
-      lg
+      is-lg
       class="bg-blue-500 text-blue-900 font-semibold w-full"
-      @click="handleConnect"
+      @click="onConnect"
     >
       <span>{{ $t('connect.connect') }}</span>
     </AppButton>
 
     <AppButton
       v-else
-      lg
+      is-lg
       :is-loading="status.isLoading()"
-      :disabled="disabled"
+      :is-disabled="isDisabled"
       :class="{
         'hover:text-green-900 bg-green-500 text-green-800':
-          !disabled && !hasError && isBuy,
+          !isDisabled && !hasError && isBuy,
         'hover:text-red-900 bg-red-500 text-red-800':
-          !disabled && !hasError && !isBuy
+          !isDisabled && !hasError && !isBuy
       }"
       class="w-full font-sembold shadow-none"
       data-cy="trading-page-execute-button"
-      @click="handleSubmit"
+      @click="onSubmit"
     >
       <span v-if="isSpot">{{
         isBuy ? $t('trade.buy') : $t('trade.sell')

@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <div>
-    <CommonTableBody light :show-empty="markets.length === 0">
+    <CommonTableBody :is-empty="markets.length === 0">
       <PartialsMarketsExpiredRow
         v-for="(market, index) in markets"
         :key="`market-expired-row-${index}`"

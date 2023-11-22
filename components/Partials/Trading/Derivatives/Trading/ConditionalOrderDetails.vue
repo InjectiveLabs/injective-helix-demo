@@ -7,7 +7,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
 const props = defineProps({
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   liquidationPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -50,7 +50,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
     <AppDrawer>
       <template #header>
         <p class="flex justify-between">
-          <CommonTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" is-lg>
             <template #context>
               <AppTooltip
                 class="ml-2"
@@ -73,7 +73,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
 
       <div class="mt-4">
         <CommonTextInfo
-          v-if="!orderTypeReduceOnly && !isBinaryOption"
+          v-if="!isOrderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
@@ -98,7 +98,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         </CommonTextInfo>
 
         <CommonTextInfo
-          v-if="!orderTypeReduceOnly"
+          v-if="!isOrderTypeReduceOnly"
           :title="$t('trade.margin')"
           class="mt-2"
         >

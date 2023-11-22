@@ -54,27 +54,27 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     )
   })
 
-  const destinationIsEthereum = computed(() => {
+  const isEthereumDestination = computed(() => {
     return destination.value === BridgingNetwork.Ethereum
   })
 
-  const destinationIsInjective = computed(() => {
+  const isInjectiveDestination = computed(() => {
     return destination.value === BridgingNetwork.Injective
   })
 
-  const originIsInjective = computed(() => {
+  const isInjectiveOrigin = computed(() => {
     return origin.value === BridgingNetwork.Injective
   })
 
-  const originIsEthereum = computed(() => {
+  const isEthereumOrigin = computed(() => {
     return origin.value === BridgingNetwork.Ethereum
   })
 
-  const originIsCosmosNetwork = computed(() =>
+  const isCosmosNetworkOrigin = computed(() =>
     CosmosNetworks.includes(origin.value)
   )
 
-  const destinationIsCosmosNetwork = computed(() =>
+  const isCosmosNetworkDestination = computed(() =>
     CosmosNetworks.includes(destination.value)
   )
 
@@ -91,7 +91,7 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     )
   })
 
-  const networkIsSupported = computed(() => {
+  const isNetworkSupported = computed(() => {
     const notSupportedNetworks = [
       BridgingNetwork.Terra,
       BridgingNetwork.Axelar,
@@ -111,7 +111,7 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
       return ''
     }
 
-    return originIsInjective.value
+    return isInjectiveOrigin.value
       ? ibcStore.channel.bToAChannelId
       : ibcStore.channel.aToBChannelId
   })
@@ -129,16 +129,16 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     isWithdraw,
     isTransfer,
     isIbcTransfer,
-    originIsEthereum,
+    isEthereumOrigin,
     originNetworkMeta,
-    originIsInjective,
-    destinationIsEthereum,
-    originIsCosmosNetwork,
-    networkIsSupported,
+    isInjectiveOrigin,
+    isEthereumDestination,
+    isCosmosNetworkOrigin,
+    isNetworkSupported,
     cosmosIbcChannelId,
-    destinationIsInjective,
+    isInjectiveDestination,
     destinationNetworkMeta,
-    destinationIsCosmosNetwork,
+    isCosmosNetworkDestination,
     cosmosIbcInjectiveChannelId
   }
 }

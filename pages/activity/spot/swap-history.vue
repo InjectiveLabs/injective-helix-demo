@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { PaginationState } from '@/types'
 
@@ -18,13 +18,13 @@ onMounted(() => {
   fetchAtomicSwapHistory()
 })
 
-function handleLimitChangeEvent(limit: number) {
+function onLimitChangeEvent(limit: number) {
   updateRouteQuery({
     limit: `${limit}`
   })
 }
 
-function handlePageChangeEvent(page: number) {
+function onPageChangeEvent(page: number) {
   updateRouteQuery({
     page: page > 1 ? `${page}` : undefined,
     limit: `${limit.value}`
@@ -47,7 +47,7 @@ function fetchAtomicSwapHistory() {
       }
 
       if (state === PaginationState.QueryMoreThanTotalPage) {
-        handlePageChangeEvent(totalPages.value)
+        onPageChangeEvent(totalPages.value)
       }
     })
     .catch($onError)
@@ -75,8 +75,8 @@ watch(
             limit,
             totalCount: swapStore.swapHistoryTotal
           }"
-          @update:limit="handleLimitChangeEvent"
-          @update:page="handlePageChangeEvent"
+          @update:limit="onLimitChangeEvent"
+          @update:page="onPageChangeEvent"
         />
       </div>
     </AppHocLoading>

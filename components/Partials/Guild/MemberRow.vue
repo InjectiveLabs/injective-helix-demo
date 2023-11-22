@@ -2,7 +2,7 @@
 import { GuildMember } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { NETWORK, GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
+import { NETWORK, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
 

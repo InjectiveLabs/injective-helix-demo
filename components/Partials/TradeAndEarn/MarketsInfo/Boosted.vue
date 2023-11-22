@@ -157,7 +157,7 @@ const spotBoostedMarkets = computed(() => {
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
           class="mt-1 text-gray-550"
-          sm
+          is-sm
         >
           <p class="text-white font-mono">
             <span>
@@ -184,7 +184,7 @@ const spotBoostedMarkets = computed(() => {
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
           class="mt-1 text-gray-550"
-          sm
+          is-sm
         >
           <p class="text-white font-mono">
             <span>

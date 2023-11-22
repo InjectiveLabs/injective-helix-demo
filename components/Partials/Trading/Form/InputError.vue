@@ -9,7 +9,7 @@ const formErrors = useFormErrors()
 defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,

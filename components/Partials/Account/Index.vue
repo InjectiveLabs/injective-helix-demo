@@ -16,7 +16,7 @@ const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
-const hideBalances = ref(false)
+const isHideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
@@ -81,8 +81,8 @@ function refreshUsdTokenPrice() {
     .finally(() => usdPriceStatus.setIdle())
 }
 
-function handleHideBalances(value: boolean) {
-  hideBalances.value = value
+function onHideBalances(value: boolean) {
+  isHideBalances.value = value
 }
 
 watch(
@@ -106,8 +106,8 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 
       <PartialsAccountOverview
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
-        v-bind="{ hideBalances }"
-        @update:hide-balances="handleHideBalances"
+        v-bind="{ isHideBalances }"
+        @update:hide-balances="onHideBalances"
       />
 
       <div class="h-full-flex">
@@ -130,7 +130,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
           <NuxtPage
             v-bind="{
               balances: currentSubaccountBalances,
-              hideBalances,
+              isHideBalances,
               usdPriceStatus
             }"
           />

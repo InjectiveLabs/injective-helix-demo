@@ -188,7 +188,7 @@ onMounted(() => {
 
             <AppNumberEmp
               class="text-gray-450"
-              sm
+              is-sm
               prefix="≈"
               :number="injMaxCampaignRewardsInUsd"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
@@ -248,7 +248,7 @@ onMounted(() => {
             <span v-else>&mdash;</span>
             <AppNumberEmp
               v-if="walletStore.isUserWalletConnected"
-              sm
+              is-sm
               class="text-gray-450"
               prefix="≈"
               :number="estimatedRewardsInUsd"

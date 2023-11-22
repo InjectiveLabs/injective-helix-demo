@@ -50,7 +50,7 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
           :decimals="market.quantityDecimals"
           :number="props.summary.quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
-          no-grouping
+          is-no-grouping
         />
       </span>
     </div>
@@ -66,7 +66,7 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
         <AppNumber
           :decimals="market.priceDecimals"
           :number="props.summary.total"
-          no-grouping
+          is-no-grouping
         />
       </span>
     </div>

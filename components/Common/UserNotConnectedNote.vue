@@ -7,7 +7,7 @@ defineProps({
   cta: Boolean
 })
 
-function handleConnect() {
+function onConnect() {
   modalStore.openModal(Modal.Connect)
 }
 </script>
@@ -24,7 +24,7 @@ function handleConnect() {
       <AppButton
         class="bg-blue-500 text-blue-900 font-semibold mt-2"
         data-cy="wallet-not-connected-warning-modal-connect-button"
-        @click="handleConnect"
+        @click="onConnect"
       >
         {{ $t('connect.connect') }}
       </AppButton>

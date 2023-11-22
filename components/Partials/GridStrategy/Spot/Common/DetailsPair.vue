@@ -25,12 +25,16 @@ defineProps({
 </script>
 <template>
   <p>
-    <span><slot name="base"></slot></span>
+    <span>
+      <slot name="base" />
+    </span>
     <span class="text-xs opacity-75 align-text-bottom ml-1">{{
       market ? market.baseToken.symbol : baseSymbol
     }}</span>
     <span v-if="quote && base" class="mx-1 text-sm opacity-75">/</span>
-    <span><slot name="quote"></slot></span>
+    <span>
+      <slot name="quote"></slot>
+    </span>
     <span v-if="quote" class="text-xs opacity-75 align-text-bottom ml-1">{{
       market ? market.quoteToken.symbol : quoteSymbol
     }}</span>
