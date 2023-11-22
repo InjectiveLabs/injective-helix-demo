@@ -20,7 +20,7 @@ const fundingPayments = computed(() => activityStore.subaccountFundingPayments)
   >
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="fundingPayments.length === 0"
+      :is-empty="fundingPayments.length === 0"
       class="sm:hidden mt-3 max-h-lg overflow-y-auto"
     >
       <PartialsCommonSubaccountFundingPaymentMobile
@@ -37,7 +37,7 @@ const fundingPayments = computed(() => activityStore.subaccountFundingPayments)
       </template>
     </CommonTableBody>
 
-    <CommonTableWrapper break-md class="hidden sm:block">
+    <CommonTableWrapper is-break-md class="hidden sm:block">
       <table v-if="fundingPayments.length > 0" class="table">
         <PartialsCommonSubaccountFundingPaymentHeader />
         <tbody>

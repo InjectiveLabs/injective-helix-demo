@@ -21,7 +21,7 @@ const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
   isBaseAmount: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
@@ -173,7 +173,7 @@ function onAmountUpdate({
           position,
           maxReduceOnly,
           orderbookOrders,
-          orderTypeReduceOnly,
+          isOrderTypeReduceOnly,
           maxAmountOnOrderbook,
           baseAvailableBalance,
           quoteAvailableBalance,

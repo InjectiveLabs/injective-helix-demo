@@ -47,7 +47,7 @@ onMounted(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
 })
 
-function handleSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }
@@ -61,7 +61,7 @@ useIntervalFn(() => {
   <div class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="sortedPositions.length === 0"
+      :is-empty="sortedPositions.length === 0"
       class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountPositionMobile
@@ -71,7 +71,7 @@ useIntervalFn(() => {
         v-bind="{
           position
         }"
-        @share:position="handleSharePosition"
+        @share:position="onSharePosition"
       />
 
       <template #empty>
@@ -92,7 +92,7 @@ useIntervalFn(() => {
             v-bind="{
               position
             }"
-            @share:position="handleSharePosition"
+            @share:position="onSharePosition"
           />
         </tbody>
       </table>

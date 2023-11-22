@@ -1,5 +1,5 @@
-import { IS_TESTNET } from 'app/utils/constants'
-import { Epoch } from 'types'
+import { IS_TESTNET } from '@/app/utils/constants'
+import { Epoch } from '@/types'
 
 export const thumbnailMap = {
   1: '/guild/thumbnail/shield.svg',

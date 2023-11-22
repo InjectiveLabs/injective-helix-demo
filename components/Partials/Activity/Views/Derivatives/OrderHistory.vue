@@ -21,7 +21,7 @@ const orders = computed(() => derivativeStore.subaccountOrderHistory)
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="orders.length === 0"
+        :is-empty="orders.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountOrderHistoryMobile
@@ -40,7 +40,7 @@ const orders = computed(() => derivativeStore.subaccountOrderHistory)
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="orders.length > 0" class="table">
           <PartialsCommonSubaccountOrderHistoryHeader />
           <tbody>

@@ -28,7 +28,7 @@ definePageMeta({
             to="https://status.exchange.injective.network/"
             target="_blank"
           >
-            <AppButton xl class="rounded-full text-blue-900 bg-blue-500">
+            <AppButton is-xl class="rounded-full text-blue-900 bg-blue-500">
               <span class="font-semibold">
                 {{ $t('maintenance_button') }}
               </span>

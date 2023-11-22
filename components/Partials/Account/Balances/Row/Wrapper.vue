@@ -9,8 +9,8 @@ import { MainPage, AccountBalance, BridgeType } from '@/types'
 const accountStore = useAccountStore()
 
 const props = defineProps({
-  hideActions: Boolean,
-  hideBalances: Boolean,
+  isHideActions: Boolean,
+  isHideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -90,7 +90,7 @@ const {
         class="flex justify-end"
         data-cy="wallet-balance-trading-account-table-data"
       >
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <span v-if="isHideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
 
@@ -107,7 +107,7 @@ const {
 
     <td>
       <div class="flex justify-end">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <span v-if="isHideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
 
@@ -124,7 +124,7 @@ const {
 
     <td>
       <div class="flex justify-end">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <span v-if="isHideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
 
@@ -141,7 +141,7 @@ const {
 
     <td>
       <div class="flex justify-end" data-cy="wallet-balance-wallet-table-data">
-        <span v-if="hideBalances" class="font-mono text-sm text-right">
+        <span v-if="isHideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
 
@@ -158,9 +158,9 @@ const {
 
     <td>
       <div class="flex justify-end">
-        <AppSpinner v-if="usdPriceStatus.isLoading()" md />
+        <AppSpinner v-if="usdPriceStatus.isLoading()" is-md />
 
-        <span v-else-if="hideBalances" class="font-mono text-sm text-right">
+        <span v-else-if="isHideBalances" class="font-mono text-sm text-right">
           {{ HIDDEN_BALANCE_DISPLAY }} USD
         </span>
 
@@ -175,7 +175,7 @@ const {
       </div>
     </td>
 
-    <td v-if="hideActions" />
+    <td v-if="isHideActions" />
     <td v-else class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <slot name="action">

@@ -4,7 +4,7 @@ import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 import { AccountBalance } from '@/types'
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const showUsdcBalances = ref(true)
+const isShowUsdcBalances = ref(true)
 
 const usdcBalances = computed(() =>
   props.balances.filter((balance) =>
@@ -41,7 +41,7 @@ const hasPeggyUsdcBalance = computed(() => {
 })
 
 function toggleUsdcBalances() {
-  showUsdcBalances.value = !showUsdcBalances.value
+  isShowUsdcBalances.value = !isShowUsdcBalances.value
 }
 </script>
 
@@ -51,14 +51,14 @@ function toggleUsdcBalances() {
       <PartialsAccountBalancesAggregatedHeader
         v-bind="{
           ...$attrs,
-          hideBalances,
-          showUsdcBalances,
+          isHideBalances,
+          isShowUsdcBalances,
           aggregatedBalance
         }"
         @drawer:toggle="toggleUsdcBalances"
       />
 
-      <template v-if="showUsdcBalances">
+      <template v-if="isShowUsdcBalances">
         <PartialsAccountBalancesAggregatedRow
           v-for="(usdcBalance, index) in usdcBalances"
           :key="usdcBalance.token.denom"
@@ -67,9 +67,9 @@ function toggleUsdcBalances() {
           }"
           v-bind="{
             ...$attrs,
-            hideBalances,
+            isHideBalances,
             hasPeggyUsdcBalance,
-            isOpen: showUsdcBalances,
+            isOpen: isShowUsdcBalances,
             balance: usdcBalance,
             isHoldingSingleUsdcDenom: usdcBalances.length === 1
           }"
@@ -82,7 +82,7 @@ function toggleUsdcBalances() {
       :key="peggyUsdcetBalance.denom"
       v-bind="{
         ...$attrs,
-        hideBalances,
+        isHideBalances,
         balance: peggyUsdcetBalance
       }"
     />

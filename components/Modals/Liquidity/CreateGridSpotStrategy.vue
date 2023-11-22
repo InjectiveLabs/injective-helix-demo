@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   isLiquidity: Boolean
@@ -77,11 +77,11 @@ const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(Modal.CreateSpotGridStrategy)
 }
 
-function handleCreateStrategy() {
+function onCreateStrategy() {
   if (
     !formValues.value[SpotGridTradingField.LowerPrice] ||
     !formValues.value[SpotGridTradingField.Grids] ||
@@ -135,7 +135,7 @@ function handleCreateStrategy() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.CreateSpotGridStrategy]"
-    @modal:closed="closeModal"
+    @modal:closed="onCloseModal"
   >
     <template #title>
       <p class="[text-transform:none] text-lg font-bold py-2">
@@ -289,9 +289,9 @@ function handleCreateStrategy() {
       <div>
         <AppButton
           v-bind="{ status }"
-          :disabled="!hasAgreedToTerms"
+          :is-disabled="!hasAgreedToTerms"
           class="bg-blue-500 disabled:bg-gray-500 w-full"
-          @click="handleCreateStrategy"
+          @click="onCreateStrategy"
         >
           {{ $t('sgt.confirm') }}
         </AppButton>

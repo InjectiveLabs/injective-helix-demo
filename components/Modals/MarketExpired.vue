@@ -23,6 +23,10 @@ function closeModal() {
 }
 
 function onModalClose() {
+  if (!isModalOpen.value) {
+    return
+  }
+
   closeModal()
 }
 </script>
@@ -30,8 +34,8 @@ function onModalClose() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
-    hide-close-button
+    is-sm
+    is-hide-close-button
     @modal:closed="onModalClose"
   >
     <template #title>
@@ -44,7 +48,7 @@ function onModalClose() {
       <div class="flex items-center">
         <CommonTokenIcon
           v-if="market.baseToken"
-          lg
+          is-lg
           :token="market.baseToken"
           class="mr-4"
         />

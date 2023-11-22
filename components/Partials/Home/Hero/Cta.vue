@@ -11,8 +11,8 @@ const router = useRouter()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-function handleGetStartedClick() {
-  handleTradeClickedTrack()
+function onGetStartedClick() {
+  tradeClickedTrack()
 
   if (walletStore.isUserWalletConnected) {
     router.push(getDefaultPerpetualMarketRouteParams())
@@ -21,7 +21,7 @@ function handleGetStartedClick() {
   }
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
@@ -77,9 +77,9 @@ function handleTradeClickedTrack() {
       </div>
     </div>
     <AppButton
-      lg
+      is-lg
       class="bg-gray-750 text-white mt-8 font-semibold"
-      @click="handleGetStartedClick"
+      @click="onGetStartedClick"
     >
       {{ $t('home.startTradingNow') }}
     </AppButton>

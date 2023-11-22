@@ -486,7 +486,7 @@ function onScrollBuys() {
   }
 }
 
-function handleSellOrderHover(position?: number) {
+function onSellOrderHover(position?: number) {
   sellHoverPosition.value = position
 
   if (position !== undefined) {
@@ -517,7 +517,7 @@ function handleSellOrderHover(position?: number) {
   }
 }
 
-function handleBuyOrderHover(position?: number) {
+function onBuyOrderHover(position?: number) {
   buyHoverPosition.value = position
 
   if (position !== undefined) {
@@ -606,7 +606,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             :user-orders="sellUserOrderPrices"
             :record="sell"
             data-cy="orderbook-sell-list-item"
-            @update:active-position="handleSellOrderHover"
+            @update:active-position="onSellOrderHover"
           />
         </ul>
       </div>
@@ -703,7 +703,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
               userOrders: buyUserOrderPrices
             }"
             data-cy="orderbook-buy-list-item"
-            @update:active-position="handleBuyOrderHover"
+            @update:active-position="onBuyOrderHover"
           />
         </ul>
       </div>

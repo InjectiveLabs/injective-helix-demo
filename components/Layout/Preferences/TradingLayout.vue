@@ -3,7 +3,7 @@ import { TradingLayout } from '@/types'
 
 const appStore = useAppStore()
 
-function handleChangeTradingLayout(tradingLayout: TradingLayout) {
+function onChangeTradingLayout(tradingLayout: TradingLayout) {
   appStore.setUserState({
     ...appStore.userState,
     preferences: {
@@ -25,11 +25,11 @@ function handleChangeTradingLayout(tradingLayout: TradingLayout) {
     <AppRadioGroup
       class="flex gap-8 items-start"
       :value="appStore.userState.preferences.tradingLayout"
-      @change="handleChangeTradingLayout"
+      @change="onChangeTradingLayout"
     >
       <template #options="{ value, setValue }">
         <AppRadioButton
-          :active="value === TradingLayout.Left"
+          :is-active="value === TradingLayout.Left"
           @click="setValue(TradingLayout.Left)"
         >
           <template #label>
@@ -52,7 +52,7 @@ function handleChangeTradingLayout(tradingLayout: TradingLayout) {
         </AppRadioButton>
 
         <AppRadioButton
-          :active="value === TradingLayout.Right"
+          :is-active="value === TradingLayout.Right"
           @click="setValue(TradingLayout.Right)"
         >
           <template #label>

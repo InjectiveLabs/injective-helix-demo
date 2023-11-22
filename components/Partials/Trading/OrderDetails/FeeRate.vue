@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketWithToken, TradeExecutionType } from '@/types'
+import {
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType
+} from '@/types'
+
+const tradingFormValues = useFormValues<TradeForm>() as Ref<TradeForm>
 
 const props = defineProps({
-  postOnly: Boolean,
-
   fees: {
     type: Object as PropType<BigNumberInBase>,
     required: true
@@ -19,11 +24,6 @@ const props = defineProps({
   notionalValue: {
     type: Object as PropType<BigNumberInBase>,
     default: ZERO_IN_BASE
-  },
-
-  tradingType: {
-    type: String as PropType<TradeExecutionType>,
-    default: ''
   }
 })
 
@@ -40,7 +40,7 @@ const marketHasNegativeMakerFee = computed(() =>
 
 const tradeTypeMarket = computed(() =>
   [TradeExecutionType.Market, TradeExecutionType.StopMarket].includes(
-    props.tradingType
+    tradingFormValues.value[TradeField.TradingType]
   )
 )
 
@@ -75,7 +75,10 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
 
 <template>
   <CommonTextInfo
-    v-if="!(postOnly && marketHasNegativeMakerFee) || tradeTypeMarket"
+    v-if="
+      !(tradingFormValues[TradeField.PostOnly] && marketHasNegativeMakerFee) ||
+      tradeTypeMarket
+    "
     :title="$t('trade.fee')"
     class="mt-2"
   >

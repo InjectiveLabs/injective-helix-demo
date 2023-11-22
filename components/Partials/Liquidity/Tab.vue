@@ -10,9 +10,9 @@ const props = defineProps({
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
-const lastUpdated = computed(() => {
-  return props.date ? format(props.date, DATE_FORMAT) : ''
-})
+const lastUpdated = computed(() =>
+  props.date ? format(props.date, DATE_FORMAT) : ''
+)
 </script>
 
 <template>

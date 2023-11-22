@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 const props = defineProps({
-  lg: Boolean,
-  md: Boolean,
-  tight: Boolean,
-  noPadding: Boolean,
-  noTopBorderRadius: Boolean,
+  isLg: Boolean,
+  isMd: Boolean,
+  isTight: Boolean,
+  isNoPadding: Boolean,
+  isNoTopBorderRadius: Boolean,
 
   bgColor: {
     type: String,
@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const borderRadiusClass = computed(() => {
-  if (props.noTopBorderRadius) {
+  if (props.isNoTopBorderRadius) {
     return 'rounded-b-xl'
   }
 
@@ -21,14 +21,14 @@ const borderRadiusClass = computed(() => {
 })
 
 const padding = computed(() => {
-  if (props.noPadding) {
+  if (props.isNoPadding) {
     return 'p-0'
   }
 
   return {
-    'p-4 lg:p-6': props.lg && !props.tight,
-    'p-4': props.md && !props.tight,
-    'p-2 lg:p-3': !props.md && !props.lg && !props.tight
+    'p-4 lg:p-6': props.isLg && !props.isTight,
+    'p-4': props.isMd && !props.isTight,
+    'p-2 lg:p-3': !props.isMd && !props.isLg && !props.isTight
   }
 })
 </script>

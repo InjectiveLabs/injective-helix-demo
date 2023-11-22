@@ -5,13 +5,13 @@ const modalStore = useModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketBeta])
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(Modal.MarketBeta)
 }
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm hide-close-button>
+  <AppModal :is-open="isModalOpen" is-sm is-hide-close-button>
     <template #title>
       <h3>
         {{ $t('marketBeta.title') }}
@@ -25,7 +25,7 @@ function closeModal() {
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="closeModal">
+        <AppButton class="bg-blue-500 text-blue-900" @click="onCloseModal">
           {{ $t('marketBeta.I Understand') }}
         </AppButton>
       </div>

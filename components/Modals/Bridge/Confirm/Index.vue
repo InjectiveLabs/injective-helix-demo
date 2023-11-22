@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
@@ -33,13 +33,13 @@ const {
   isDeposit,
   isWithdraw,
   isTransfer,
-  originIsInjective,
-  originIsEthereum,
-  originIsCosmosNetwork,
+  isInjectiveOrigin,
+  isEthereumOrigin,
+  isCosmosNetworkOrigin,
   originNetworkMeta,
-  destinationIsEthereum,
+  isEthereumDestination,
   destinationNetworkMeta,
-  destinationIsCosmosNetwork
+  isCosmosNetworkDestination
 } = useBridgeState(formValues)
 
 const { balanceWithToken } = useBridgeBalance(formValues)
@@ -149,7 +149,7 @@ const ibcBridgeFeeInUsdToString = computed(() => {
 })
 
 const transferAmount = computed(() => {
-  if (destinationIsEthereum.value) {
+  if (isEthereumDestination.value) {
     return amount.value.minus(ethBridgeFee.value)
   }
 
@@ -175,11 +175,11 @@ const { valueToString: transferAmountInUsdToString } =
   useBigNumberFormatter(transferAmountInUsd)
 
 const handlerFunction = computed(() => {
-  if (originIsEthereum.value) {
+  if (isEthereumOrigin.value) {
     return depositFromEthereum
   }
 
-  if (originIsCosmosNetwork.value) {
+  if (isCosmosNetworkOrigin.value) {
     return cosmosIbcTransferToInjective
   }
 
@@ -187,14 +187,14 @@ const handlerFunction = computed(() => {
     return transfer
   }
 
-  if (destinationIsCosmosNetwork.value) {
+  if (isCosmosNetworkDestination.value) {
     return cosmosIbcTransferFromInjective
   }
 
   return withdrawToEthereum
 })
 
-function close() {
+function closeModal() {
   modalStore.closeModal(Modal.BridgeConfirm)
 }
 
@@ -342,9 +342,9 @@ function cosmosIbcTransferFromInjective() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
+    is-sm
     data-cy="transfer-confirm-modal"
-    @modal:closed="close"
+    @modal:closed="closeModal"
   >
     <template #title>
       <h3>
@@ -371,7 +371,7 @@ function cosmosIbcTransferFromInjective() {
         <CommonTokenIcon
           v-if="balanceWithToken.token.logo"
           :token="balanceWithToken.token"
-          xl
+          is-xl
           class="mx-auto"
         />
         <BaseIcon
@@ -402,7 +402,9 @@ function cosmosIbcTransferFromInjective() {
         <PartialsBridgeFormNetworkCard
           class="w-1/2"
           data-cy="transfer-confirm-modal-from-text-content"
-          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :is-hide-icon="
+            originNetworkMeta.value === destinationNetworkMeta.value
+          "
           :network-meta="originNetworkMeta"
         />
 
@@ -415,12 +417,14 @@ function cosmosIbcTransferFromInjective() {
         <PartialsBridgeFormNetworkCard
           class="w-1/2"
           data-cy="transfer-confirm-modal-to-text-content"
-          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :is-hide-icon="
+            originNetworkMeta.value === destinationNetworkMeta.value
+          "
           :network-meta="destinationNetworkMeta"
         />
       </div>
 
-      <div v-if="originIsInjective" class="mt-6">
+      <div v-if="isInjectiveOrigin" class="mt-6">
         <!-- Amount -->
         <ModalsBridgeConfirmRow class="mb-4">
           <template #title>
@@ -443,7 +447,7 @@ function cosmosIbcTransferFromInjective() {
 
         <!-- Bridge Fee -->
         <ModalsBridgeConfirmRow
-          v-if="destinationIsEthereum || destinationIsCosmosNetwork"
+          v-if="isEthereumDestination || isCosmosNetworkDestination"
           class="mb-4"
         >
           <template #title>
@@ -451,7 +455,7 @@ function cosmosIbcTransferFromInjective() {
           </template>
 
           <template #amount>
-            <span v-if="destinationIsCosmosNetwork">
+            <span v-if="isCosmosNetworkDestination">
               {{ $t('bridge.waived') }}
             </span>
             <span
@@ -466,7 +470,7 @@ function cosmosIbcTransferFromInjective() {
           <template #amountInUsd>
             <span data-cy="transfer-confirm-modal-bridge-fee-usd-text-content">
               ${{
-                destinationIsEthereum
+                isEthereumDestination
                   ? ethBridgeFeeInUsdToString
                   : ibcBridgeFeeInUsdToString
               }}
@@ -475,7 +479,7 @@ function cosmosIbcTransferFromInjective() {
         </ModalsBridgeConfirmRow>
       </div>
 
-      <div v-if="originIsInjective">
+      <div v-if="isInjectiveOrigin">
         <ModalsBridgeConfirmRow class="mb-4" bold>
           <template #title>
             {{ $t('bridge.transferAmount') }}
@@ -512,9 +516,9 @@ function cosmosIbcTransferFromInjective() {
 
       <div class="text-center mt-6">
         <AppButton
-          lg
+          is-lg
           class="w-full font-semibold rounded bg-blue-500 text-blue-900"
-          :disabled="isConfirmationDisabled"
+          :is-disabled="isConfirmationDisabled"
           :is-loading="status.isLoading()"
           data-cy="transfer-confirm-modal-confirm-button"
           @click="confirm"

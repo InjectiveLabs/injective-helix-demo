@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-// @ts-ignore
-// import identicon from 'identicon'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NETWORK } from '@/app/utils/constants'
@@ -42,24 +40,6 @@ const { valueToString: volumeInBaseToFormat } = useBigNumberFormatter(
     decimalPlaces: 2
   }
 )
-
-onMounted(() => {
-  // generateAvatar()
-})
-
-/* TODO: replace identicon with library not requiring canvas */
-// function generateAvatar() {
-//   identicon.generate(
-//     { id: props.address, size: 24 },
-//     (err: any, buffer: string) => {
-//       if (err) {
-//         return
-//       }
-
-//       avatarSrc.value = buffer
-//     }
-//   )
-// }
 </script>
 
 <template>

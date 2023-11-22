@@ -283,7 +283,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
               <AppButton
                 v-else-if="isMaxCap"
                 class="text-gray-600"
-                :disabled="isMaxCap"
+                :is-disabled="isMaxCap"
               >
                 <div class="flex items-center gap-1">
                   <span>{{ $t('guild.joinGuild.maxCap') }}</span>
@@ -293,7 +293,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
               <AppButton
                 v-else
                 class="bg-blue-500 text-white"
-                :disabled="isMaxCap"
+                :is-disabled="isMaxCap"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -362,9 +362,11 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       </th>
                       <th class="p-4 text-right">
                         <CommonHeaderTooltip
-                          :tooltip="
-                            $t('guild.leaderboard.table.tiaBalanceTooltip')
-                          "
+                          v-bind="{
+                            tooltip: $t(
+                              'guild.leaderboard.table.tiaBalanceTooltip'
+                            )
+                          }"
                         >
                           <span class="whitespace-nowrap">
                             {{
@@ -377,7 +379,9 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       </th>
                       <th class="p-4 text-right">
                         <CommonHeaderTooltip
-                          :tooltip="$t('guild.leaderboard.table.volumeTooltip')"
+                          v-bind="{
+                            tooltip: $t('guild.leaderboard.table.volumeTooltip')
+                          }"
                         >
                           <span class="whitespace-nowrap">
                             {{ $t('guild.leaderboard.table.tradingVolume') }}

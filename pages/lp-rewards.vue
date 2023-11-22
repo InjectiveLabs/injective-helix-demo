@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { MainPage } from '@/types'
-import { LP_EPOCHS } from 'app/data/guild'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

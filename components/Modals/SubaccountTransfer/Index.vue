@@ -55,25 +55,25 @@ const maxDecimals = computed(() => {
   return formValues[SubaccountTransferField.Token].decimals
 })
 
-function handleSubaccountTransfer() {
+function onSubaccountTransfer() {
   if (
     formValues[SubaccountTransferField.SrcSubaccountId] ===
     walletStore.defaultSubaccountId
   ) {
-    return handleDefaultSubaccountTransfer()
+    return defaultSubaccountTransfer()
   }
 
   if (
     formValues[SubaccountTransferField.DstSubaccountId] ===
     walletStore.defaultSubaccountId
   ) {
-    return handleDefaultSubaccountWithdraw()
+    return defaultSubaccountWithdraw()
   }
 
-  return handleNonDefaultSubaccountTransfer()
+  return nonDefaultSubaccountTransfer()
 }
 
-function handleNonDefaultSubaccountTransfer() {
+function nonDefaultSubaccountTransfer() {
   status.setLoading()
 
   accountStore
@@ -95,7 +95,7 @@ function handleNonDefaultSubaccountTransfer() {
     })
 }
 
-function handleDefaultSubaccountTransfer() {
+function defaultSubaccountTransfer() {
   status.setLoading()
 
   accountStore
@@ -115,7 +115,7 @@ function handleDefaultSubaccountTransfer() {
     })
 }
 
-function handleDefaultSubaccountWithdraw() {
+function defaultSubaccountWithdraw() {
   status.setLoading()
 
   accountStore
@@ -135,7 +135,7 @@ function handleDefaultSubaccountWithdraw() {
     })
 }
 
-function handleTokenChange() {
+function onTokenChange() {
   nextTick(() => {
     const token = supplyWithBalance.value.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
@@ -150,13 +150,13 @@ function handleTokenChange() {
   })
 }
 
-function handleAmountChange({ amount }: { amount: string }) {
+function onAmountChange({ amount }: { amount: string }) {
   setFormValues({
     [SubaccountTransferField.Amount]: amount
   })
 }
 
-function handleSubaccountIdChange() {
+function onSubaccountIdChange() {
   nextTick(() => {
     setFormValues({
       [SubaccountTransferField.Amount]: '',
@@ -186,7 +186,7 @@ function closeModal() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.SubaccountTransfer]"
-    md
+    is-md
     :ignore="['.v-popper__inner']"
     @modal:closed="closeModal"
   >
@@ -200,19 +200,19 @@ function closeModal() {
       <div class="mt-6">
         <div>
           <ModalsSubaccountTransferSelect
-            @update:subaccount-id="handleSubaccountIdChange"
+            @update:subaccount-id="onSubaccountIdChange"
           />
           <div v-if="supplyWithBalance.length > 0" class="mt-6">
             <AppSelectToken
               v-model:denom="denomValue"
               v-bind="{
                 maxDecimals,
-                required: true,
+                isRequired: true,
                 amountFieldName: SubaccountTransferField.Amount,
                 options: supplyWithBalance
               }"
-              @update:max="handleAmountChange"
-              @update:denom="handleTokenChange"
+              @update:max="onAmountChange"
+              @update:denom="onTokenChange"
             >
               <span> {{ $t('bridge.amount') }} </span>
             </AppSelectToken>
@@ -222,11 +222,11 @@ function closeModal() {
           </div>
         </div>
         <AppButton
-          lg
+          is-lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
           :is-loading="status.isLoading()"
-          :disabled="hasFormErrors"
-          @click="handleSubaccountTransfer"
+          :is-disabled="hasFormErrors"
+          @click="onSubaccountTransfer"
         >
           <span class="font-semibold">
             {{ $t('account.transfer') }}

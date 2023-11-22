@@ -5,25 +5,23 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
-const feeDiscountAccountInfo = computed(() => {
-  return exchangeStore.feeDiscountAccountInfo
-})
-
 const tierLevel = computed(() =>
-  new BigNumberInBase(feeDiscountAccountInfo.value?.tierLevel || 0).toNumber()
+  new BigNumberInBase(
+    exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+  ).toNumber()
 )
 
 const makerFeeDiscount = computed(() => {
-  if (!feeDiscountAccountInfo.value) {
+  if (!exchangeStore.feeDiscountAccountInfo) {
     return ''
   }
 
-  if (!feeDiscountAccountInfo.value.accountInfo) {
+  if (!exchangeStore.feeDiscountAccountInfo.accountInfo) {
     return ''
   }
 
   return new BigNumberInWei(
-    feeDiscountAccountInfo.value.accountInfo.makerDiscountRate
+    exchangeStore.feeDiscountAccountInfo.accountInfo.makerDiscountRate
   )
     .toBase()
     .times(100)
@@ -31,16 +29,16 @@ const makerFeeDiscount = computed(() => {
 })
 
 const takerFeeDiscount = computed(() => {
-  if (!feeDiscountAccountInfo.value) {
+  if (!exchangeStore.feeDiscountAccountInfo) {
     return ''
   }
 
-  if (!feeDiscountAccountInfo.value.accountInfo) {
+  if (!exchangeStore.feeDiscountAccountInfo.accountInfo) {
     return ''
   }
 
   return new BigNumberInWei(
-    feeDiscountAccountInfo.value.accountInfo.takerDiscountRate
+    exchangeStore.feeDiscountAccountInfo.accountInfo.takerDiscountRate
   )
     .toBase()
     .times(100)
@@ -49,14 +47,14 @@ const takerFeeDiscount = computed(() => {
 
 const lastUpdateTimestamp = computed(() => {
   if (
-    !feeDiscountAccountInfo.value ||
-    !feeDiscountAccountInfo.value.accountTtl
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountTtl
   ) {
     return undefined
   }
 
   return format(
-    Number(feeDiscountAccountInfo.value.accountTtl.ttlTimestamp) * 1000,
+    Number(exchangeStore.feeDiscountAccountInfo.accountTtl.ttlTimestamp) * 1000,
     'yyyy-MM-dd HH:mm:ss (zzz)'
   )
 })

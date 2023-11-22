@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { RouteLocationNamedRaw } from 'vue-router'
 
 defineProps({

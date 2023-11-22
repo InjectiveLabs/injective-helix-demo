@@ -272,8 +272,8 @@ function resetQueryError() {
           }"
           @update:outputQuantity="getOutputQuantity"
           @update:inputQuantity="getInputQuantity"
-          @reset:queryError="resetQueryError"
-          @reset:form="resetFormValues"
+          @queryError:reset="resetQueryError"
+          @form:reset="resetFormValues"
         />
 
         <PartialsSwapSummary

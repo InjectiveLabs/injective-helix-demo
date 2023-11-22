@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ActivitySubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
@@ -66,7 +66,7 @@ const tabs = [
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex">
+      <CommonCard is-md class="h-full-flex">
         <div class="h-full-flex space-y-4">
           <PartialsActivityCommonToolbar />
           <NuxtPage />

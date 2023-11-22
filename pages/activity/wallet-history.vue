@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ActivitySubPage } from '@/types'
 
 const { t } = useLang()
@@ -38,7 +38,7 @@ const tabs = [
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex space-y-4">
+      <CommonCard is-md class="h-full-flex space-y-4">
         <div class="h-full-flex space-y-4">
           <PartialsActivityCommonToolbar />
 

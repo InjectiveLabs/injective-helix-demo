@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { LP_EPOCHS } from 'app/data/guild'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const props = defineProps({
   campaignUser: {
@@ -31,6 +31,10 @@ const props = defineProps({
     required: true
   }
 })
+
+const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
+  props.campaignUser.accountAddress
+}`
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
@@ -84,10 +88,6 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
       : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
-
-const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
-  props.campaignUser.accountAddress
-}`
 </script>
 
 <template>

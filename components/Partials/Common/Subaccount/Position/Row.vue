@@ -79,7 +79,7 @@ function onAddMarginButtonClick() {
   modalStore.openModal(Modal.AddMarginToPosition)
 }
 
-function handleClosePosition() {
+function closePositionClicked() {
   if (!market.value) {
     return
   }
@@ -195,8 +195,8 @@ function sharePosition() {
       <AppNumber
         v-else
         v-bind="{
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: quantityDecimals,
           number: quantity
         }"
@@ -213,8 +213,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: price,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           data-cy="open-position-price-table-data"
@@ -222,8 +222,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: markPrice,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           class="text-gray-500 text-xs"
@@ -242,8 +242,8 @@ function sharePosition() {
         v-else
         v-bind="{
           number: liquidationPrice,
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: priceDecimals
         }"
         data-cy="open-position-liquidation-price-table-data"
@@ -321,8 +321,8 @@ function sharePosition() {
         v-else
         v-bind="{
           number: notionalValue,
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: priceDecimals
         }"
         data-cy="open-position-total-table-data"
@@ -349,8 +349,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: margin,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           data-cy="open-position-margin-table-data"
@@ -400,7 +400,7 @@ function sharePosition() {
         v-if="!hideBalance"
         :status="status"
         data-cy="open-position-cancel-link"
-        @click="handleClosePosition"
+        @click="closePositionClicked"
       >
         <template #icon>
           <BaseIcon name="close" is-sm />

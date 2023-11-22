@@ -81,7 +81,10 @@ const connect = handleSubmit(() => {
       v-if="fetchStatus.isLoading()"
       class="text-gray-400 text-xs my-2 flex items-center gap-2"
     >
-      <AppSpinner sm /> <span>{{ $t('connect.getAddressNote') }}</span>
+      <AppSpinner is-sm />
+      <span>
+        {{ $t('connect.getAddressNote') }}
+      </span>
     </p>
 
     <div
@@ -108,7 +111,7 @@ const connect = handleSubmit(() => {
 
       <AppSelectField
         v-model="address"
-        searchable
+        is-searchable
         :options="
           walletStore.addresses.map((address: string) => ({
             display: address,
@@ -127,9 +130,9 @@ const connect = handleSubmit(() => {
 
       <AppButton
         class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
-        :disabled="addressErrors.length > 0"
+        :is-disabled="addressErrors.length > 0"
         :is-loading="status.isLoading()"
-        lg
+        is-lg
         @click="connect"
       >
         {{ $t('connect.connect') }}

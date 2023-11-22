@@ -5,7 +5,7 @@
     <div class="text-right">{{ $t('sgt.lowerBound') }}</div>
     <div class="text-right">{{ $t('sgt.upperBound') }}</div>
     <div class="text-right">
-      <CommonHeaderTooltip :tooltip="$t('sgt.totalAmountTooltip')">
+      <CommonHeaderTooltip v-bind="{ tooltip: $t('sgt.totalAmountTooltip') }">
         <span class="text-white">{{ $t('sgt.totalAmount') }}</span>
       </CommonHeaderTooltip>
     </div>

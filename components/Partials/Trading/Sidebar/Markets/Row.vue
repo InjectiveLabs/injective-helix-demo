@@ -45,8 +45,8 @@ const isFavorite = computed(() =>
   appStore.favoriteMarkets.includes(props.market.marketId)
 )
 
-const formatterOptions = computed(() => {
-  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
+const formatterOptions = computed(() =>
+  stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
@@ -55,14 +55,14 @@ const formatterOptions = computed(() => {
         abbreviationFloor: undefined,
         decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
       }
-})
+)
 
 const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
   computed(() => props.volumeInUsd),
   formatterOptions.value
 )
 
-function updateWatchList() {
+function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
 }
 </script>
@@ -75,7 +75,7 @@ function updateWatchList() {
     <div
       class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
       data-cy="markets-favorite-button"
-      @click="updateWatchList"
+      @click="toggleFavoriteMarket"
     >
       <BaseIcon
         v-if="isFavorite"

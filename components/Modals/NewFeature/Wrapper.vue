@@ -48,7 +48,7 @@ function init() {
   }, DELAY_MODAL_DISPLAY_TIME)
 }
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(props.modal)
 
   appStore.setUserState({
@@ -60,10 +60,13 @@ function closeModal() {
 
 <template>
   <AppModal
-    :is-open="isModalOpen"
-    sm
-    v-bind="{ hideCloseButton: true, dense: true }"
-    @modal:closed="closeModal"
+    v-bind="{
+      isSm: true,
+      isDense: true,
+      isOpen: isModalOpen,
+      isHideCloseButton: true
+    }"
+    @modal:closed="onCloseModal"
   >
     <div class="flex flex-col justify-center items-center max-h-modal">
       <div w-full h-auto>
@@ -83,7 +86,7 @@ function closeModal() {
           v-if="slots.cta1"
           class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route1"
-          @click="closeModal"
+          @click="onCloseModal"
         >
           <slot name="cta1" />
         </NuxtLink>
@@ -92,16 +95,16 @@ function closeModal() {
           v-if="slots.cta2"
           class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route2"
-          @click="closeModal"
+          @click="onCloseModal"
         >
           <slot name="cta2" />
         </NuxtLink>
 
         <AppButton
           class="flex items-center justify-center md:hidden font-semibold whitespace-nowrap w-full text-sm text-white bg-gray-700 rounded p-3 mt-4"
-          @click="closeModal"
+          @click="onCloseModal"
         >
-          Close
+          {{ $t('banners.newFeature.close') }}
         </AppButton>
       </div>
     </div>

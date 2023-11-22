@@ -5,13 +5,13 @@ const modalStore = useModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.USDCDetected])
 
-function handleClose() {
+function onCloseModal() {
   modalStore.closeModal(Modal.USDCDetected)
 }
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="handleClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onCloseModal">
     <template #title>
       <h3>
         {{ $t('trade.usdcLegacyBalanceDetected') }}

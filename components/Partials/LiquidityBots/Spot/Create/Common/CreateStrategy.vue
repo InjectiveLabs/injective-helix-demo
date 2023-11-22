@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
   Status,
   StatusType,
@@ -22,7 +22,7 @@ import {
   GST_MIN_TRADING_SIZE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   isAuto: Boolean,
@@ -245,7 +245,7 @@ function onInvestmentTypeSet() {
   <div>
     <AppButton
       :status="status"
-      lg
+      is-lg
       class="w-full shadow-none select-none"
       :class="[
         hasActiveStrategy

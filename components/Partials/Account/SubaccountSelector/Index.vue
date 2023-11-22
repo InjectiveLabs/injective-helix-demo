@@ -1,10 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Modal } from '@/types'
 
 defineProps({
-  hideBalances: {
-    type: Boolean
-  }
+  isHideBalances: Boolean
 })
 
 const walletStore = useWalletStore()
@@ -12,7 +10,7 @@ const modalStore = useModalStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 
-function handleCreateSubaccount() {
+function onCreateSubaccount() {
   modalStore.openModal(Modal.CreateSubaccount)
 }
 </script>
@@ -30,7 +28,7 @@ function handleCreateSubaccount() {
       v-bind="{
         balances,
         subaccountId,
-        hideBalances
+        isHideBalances
       }"
       :key="`subaccount-${subaccountId}`"
     />
@@ -39,7 +37,7 @@ function handleCreateSubaccount() {
       <BaseIcon
         name="circle-plus"
         class="w-8 h-8 text-blue-500 cursor-pointer hover:text-opacity-80"
-        @click="handleCreateSubaccount"
+        @click="onCreateSubaccount"
       />
     </div>
   </div>

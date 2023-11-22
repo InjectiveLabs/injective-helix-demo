@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
-} from 'app/utils/constants'
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -68,7 +68,7 @@ const hasSufficientBalance = computed(() =>
 
 const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
-function handleDisconnect() {
+function disconnect() {
   walletStore.disconnect()
 
   onCloseModal()
@@ -117,7 +117,7 @@ watch(
 
 <template>
   <AppModal
-    sm
+    is-sm
     :ignore="['.v-popper__popper']"
     :is-open="modalStore.modals[Modal.CreateGuild]"
     @modal:closed="onCloseModal"
@@ -142,7 +142,7 @@ watch(
 
         <AppInput
           v-model="name"
-          sm
+          is-sm
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
         />
@@ -161,14 +161,14 @@ watch(
           </span>
           <span
             class="font-semibold text-blue-500 hover:text-opacity-80 cursor-pointer"
-            @click="handleDisconnect"
+            @click="disconnect"
           >
             {{ $t('navigation.disconnect') }}
           </span>
         </div>
         <AppInput
-          sm
-          disabled
+          is-sm
+          is-disabled
           :model-value="walletStore.injectiveAddress"
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
@@ -248,8 +248,8 @@ watch(
           class="w-full bg-blue-500 text-white font-semibold"
           v-bind="{
             status,
-            lg: true,
-            disabled: !hasSufficientBalance || hasEmptyField
+            isLg: true,
+            isDisabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"
         >

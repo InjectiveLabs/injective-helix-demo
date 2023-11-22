@@ -103,7 +103,7 @@ const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 const {
   slippage,
   maxAmountOnOrderbook,
-  updateAmountFromBase,
+  changeAmountFromBase,
   worstPriceWithSlippage
 } = useSpotPrice({
   isBaseAmount,
@@ -111,11 +111,9 @@ const {
   formValues: computed(() => formValues)
 })
 
-const executionPrice = computed(() => {
-  return tradingTypeMarket.value
-    ? worstPriceWithSlippage.value
-    : limitPrice.value
-})
+const executionPrice = computed(() =>
+  tradingTypeMarket.value ? worstPriceWithSlippage.value : limitPrice.value
+)
 
 const notionalValue = computed(() => {
   if (!hasExecutionPrice.value || !hasBaseAmount.value) {
@@ -185,10 +183,10 @@ watch(executionPrice, () => {
     return
   }
 
-  updateAmount({ isBaseAmount: isBaseAmount.value })
+  changeAmount({ isBaseAmount: isBaseAmount.value })
 })
 
-function updateAmount({
+function changeAmount({
   amount,
   isBaseAmount: isBaseAmountUpdate
 }: {
@@ -197,7 +195,7 @@ function updateAmount({
 }) {
   isBaseAmount.value = isBaseAmountUpdate
 
-  const amountToUpdate = updateAmountFromBase({
+  const amountToUpdate = changeAmountFromBase({
     amount,
     isBaseAmount: isBaseAmountUpdate
   })
@@ -238,12 +236,12 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e.message)
+      attemptPlaceOrderTrack(e.message)
       $onError(e)
     })
     .finally(() => {
@@ -262,12 +260,12 @@ function submitMarketOrder() {
       price: worstPriceWithSlippage.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      attemptPlaceOrderTrack(e)
       $onError(e)
     })
     .finally(() => {
@@ -275,15 +273,15 @@ function submitMarketOrder() {
     })
 }
 
-function handleRequestSubmit() {
+function onRequestSubmit() {
   if (highDeviation.value) {
     return modalStore.openModal(Modal.PriceDeviation)
   }
 
-  return handleSubmit()
+  return submit()
 }
 
-function handleSubmit() {
+function submit() {
   switch (formValues[TradeField.TradingType]) {
     case TradeExecutionType.LimitFill:
       return submitLimitOrder()
@@ -292,7 +290,7 @@ function handleSubmit() {
   }
 }
 
-function handleAttemptPlaceOrderTrack(errorMessage?: string) {
+function attemptPlaceOrderTrack(errorMessage?: string) {
   const slippageTolerance = tradingTypeMarket.value
     ? formValues[TradeField.SlippageTolerance]
     : ''
@@ -335,7 +333,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         quoteAvailableBalance,
         worstPriceWithSlippage
       }"
-      @update:amount="updateAmount"
+      @update:amount="changeAmount"
     />
 
     <PartialsTradingFormDebug
@@ -377,9 +375,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         executionPrice,
         availableBalanceError
       }"
-      @submit:request="handleRequestSubmit"
+      @submit:request="onRequestSubmit"
     />
 
-    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="submit" />
   </div>
 </template>

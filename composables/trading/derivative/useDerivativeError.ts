@@ -22,7 +22,7 @@ export function useDerivativeError({
   markPrice,
   formValues,
   executionPrice,
-  orderTypeReduceOnly,
+  isOrderTypeReduceOnly,
   notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
@@ -34,7 +34,7 @@ export function useDerivativeError({
   formValues: Ref<TradeForm>
   executionPrice: Ref<BigNumberInBase>
   market: Ref<UiDerivativeMarketWithToken>
-  orderTypeReduceOnly: Ref<BigNumberInBase>
+  isOrderTypeReduceOnly: Ref<BigNumberInBase>
   notionalWithLeverage: Ref<BigNumberInBase>
   quoteAvailableBalance: Ref<BigNumberInBase>
   worstPriceWithSlippage: Ref<BigNumberInBase>
@@ -84,7 +84,7 @@ export function useDerivativeError({
       executionPrice.value.lte(0) ||
       lastTradedPrice.value.lte(0) ||
       quantity.lte(0) ||
-      orderTypeReduceOnly.value
+      isOrderTypeReduceOnly.value
     ) {
       return false
     }
@@ -99,7 +99,7 @@ export function useDerivativeError({
 
   const availableBalanceError = computed(
     () =>
-      !orderTypeReduceOnly.value &&
+      !isOrderTypeReduceOnly.value &&
       quoteAvailableBalance.value.lt(notionalWithLeverageAndFees.value)
   )
 

@@ -1,8 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
+
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   market: {
@@ -26,10 +28,9 @@ const props = defineProps({
   }
 })
 
-const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
-const setFormValues = useSetFormValues()
-
 const isOpen = ref(false)
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   computed(() => props.upperPrice),
