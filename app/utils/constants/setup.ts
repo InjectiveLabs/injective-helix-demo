@@ -133,11 +133,12 @@ if (endpointsNotProvided) {
   )
 }
 
-const CAMPAIGN_ENDPOINT = IS_MAINNET // no endpoint for devnet
-  ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
-  : IS_TESTNET
-  ? 'https://testnet.exchange.grpc-web.injective.dev' // temp for testing
-  : endpoints.indexer // devnet
+const CAMPAIGN_ENDPOINT =
+  IS_MAINNET && !IS_STAGING
+    ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
+    : IS_TESTNET
+    ? 'https://testnet.exchange.grpc-web.injective.dev'
+    : endpoints.indexer
 
 export const ENDPOINTS = {
   ...endpoints,

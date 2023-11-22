@@ -10,13 +10,13 @@ const setFormValues = useSetFormValues()
 const { accountBalancesWithToken } = useBalance()
 
 const props = defineProps({
-  disabled: Boolean,
+  isDisabled: Boolean,
   hasUserInteraction: Boolean
 })
 
 const emit = defineEmits<{
-  'reset:form': []
-  'reset:queryError': []
+  'form:reset': []
+  'queryError:reset': []
   'update:inputQuantity': []
   'update:outputQuantity': []
   'update:hasUserInteraction': [state: boolean]
@@ -75,7 +75,7 @@ onMounted(() => {
   )
 })
 
-function handleInputDenomChange(denom: string) {
+function inputDenomChange(denom: string) {
   setFormValues(
     {
       [SwapFormField.InputDenom]: denom,
@@ -86,11 +86,11 @@ function handleInputDenomChange(denom: string) {
 
   if (isUserInteraction.value) {
     emit('update:hasUserInteraction', isUserInteraction.value)
-    emit('reset:form')
+    emit('form:reset')
   }
 }
 
-function handleOutputDenomChange(denom: string) {
+function outputDenomChange(denom: string) {
   setFormValues(
     {
       [SwapFormField.OutputDenom]: denom,
@@ -122,10 +122,10 @@ function handleOutputDenomChange(denom: string) {
     return
   }
 
-  emit('reset:form')
+  emit('form:reset')
 }
 
-function handleSwap() {
+function swap() {
   const {
     [SwapFormField.InputDenom]: inputDenom,
     [SwapFormField.OutputDenom]: outputDenom,
@@ -177,7 +177,7 @@ async function getOutputQuantity() {
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:outputQuantity')
   emit('update:hasUserInteraction', true)
 }
@@ -189,7 +189,7 @@ async function getInputQuantity() {
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:inputQuantity')
   emit('update:hasUserInteraction', true)
 }
@@ -202,17 +202,14 @@ async function getInputQuantity() {
         <PartialsHomeHeroTemporarySelectToken
           v-model:is-user-interaction="isUserInteraction"
           v-bind="{
-            disabled,
+            disabled: isDisabled,
             denom: inputDenom,
             debounce: 600,
-            showUsd: true,
             options: inputDenomOptions,
             maxDecimals: inputToken?.quantityDecimals || 0,
-            hideMax: false,
-            shouldCheckBalance: true,
             amountFieldName: SwapFormField.InputAmount
           }"
-          @update:denom="handleInputDenomChange"
+          @update:denom="inputDenomChange"
           @update:amount="getOutputQuantity"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
@@ -224,7 +221,7 @@ async function getInputQuantity() {
       <BaseIcon
         name="arrow"
         class="mx-auto min-w-6 w-6 h-6 -rotate-90 text-black"
-        @click="handleSwap"
+        @click="swap"
       />
     </div>
 
@@ -233,16 +230,14 @@ async function getInputQuantity() {
         <PartialsHomeHeroTemporarySelectToken
           v-model:is-user-interaction="isUserInteraction"
           v-bind="{
-            disabled,
+            disabled: isDisabled,
             denom: outputDenom,
-            showUsd: false,
             debounce: 600,
             options: outputDenomOptions,
             maxDecimals: outputToken?.quantityDecimals || 0,
-            hideMax: true,
             amountFieldName: SwapFormField.OutputAmount
           }"
-          @update:denom="handleOutputDenomChange"
+          @update:denom="outputDenomChange"
           @update:amount="getInputQuantity"
         >
           <span>

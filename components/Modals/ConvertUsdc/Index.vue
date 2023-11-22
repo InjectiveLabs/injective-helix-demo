@@ -40,7 +40,7 @@ const amount = computed(() =>
     : formValues[TradeField.BaseAmount]
 )
 
-const { updateAmountFromBase, worstPrice, worstPriceWithSlippage } =
+const { changeAmountFromBase, worstPrice, worstPriceWithSlippage } =
   useSpotPrice({
     formValues: computed(() => formValues),
     market: computed(() => props.market),
@@ -56,7 +56,7 @@ function updateAmount({
 }) {
   isBaseAmount.value = isBaseAmountUpdate
 
-  const updatedAmount = updateAmountFromBase({
+  const updatedAmount = changeAmountFromBase({
     amount,
     isBaseAmount: isBaseAmountUpdate
   })
@@ -94,7 +94,7 @@ function resetFormValues() {
   )
 }
 
-function handleFormSubmit() {
+function onFormSubmit() {
   submitStatus.setLoading()
 
   spotStore
@@ -121,7 +121,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="closeModal">
     <template #title>
       <h3>
         {{ $t('account.convertUsdc') }}
@@ -167,7 +167,7 @@ function closeModal() {
             status: submitStatus,
             executionPrice: worstPrice
           }"
-          @form:submit="handleFormSubmit"
+          @form:submit="onFormSubmit"
         />
       </div>
     </AppHocLoading>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -117,7 +117,7 @@ const {
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
-    }`
+    },${props.market.quoteToken.symbol}`
 
     const rules = [insufficientRule, minBaseAndQuoteAmountRule]
 
@@ -161,7 +161,7 @@ const {
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
-    }`
+    },${props.market.quoteToken.symbol}`
 
     const rules = [insufficientRule, minBaseAndQuoteAmountRule]
 
@@ -207,7 +207,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     >
       <AppInputNumeric
         v-model="investmentAmountValue"
-        :disabled="isLowerBoundGtLastPrice"
+        :is-disabled="isLowerBoundGtLastPrice"
         is-disabled-gray
         class="text-right"
       >
@@ -240,7 +240,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
         class="text-right"
-        :disabled="isUpperBoundLtLastPrice"
+        :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
         <template #addon>

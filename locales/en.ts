@@ -54,6 +54,7 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
+    ready: 'Ready',
     new: 'New',
     success: 'Success',
     error: 'Error',
@@ -188,10 +189,16 @@ export default {
       `Stake total of ${named('total')} INJ to receive the full amount`
   },
 
-  futuresMarketRestricted: {
+  marketRestricted: {
     title: 'Unavailable Market',
-    description: 'Perpetual markets are not available in your region.',
-    cta: 'Return to homepage'
+    description: {
+      perpetual: 'Perpetual markets are not available in your region.',
+      spot: ({ named }: I18nMessageFunction) =>
+        `${named('symbol')} is not available in your region.`
+    },
+    cta: 'Return to homepage',
+    swapCta: ({ named }: I18nMessageFunction) =>
+      `${named('symbol')} is not available in your region`
   },
 
   marketBeta: {

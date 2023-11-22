@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
@@ -39,7 +39,7 @@ function setMarketAndStrategy(
         v-for="strategy in activeStrategies"
         :key="`strategy-${strategy.createdAt}`"
         v-bind="{ strategy }"
-        @open:details="setMarketAndStrategy"
+        @details:open="setMarketAndStrategy"
       />
     </div>
 

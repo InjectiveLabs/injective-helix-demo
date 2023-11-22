@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { BINANCE_DEPOSIT_ADDRESSES } from '@/app/utils/constants'

@@ -10,8 +10,7 @@ const spotStore = useSpotStore()
 const formValues = useFormValues<SwapForm>()
 
 const props = defineProps({
-  hideMax: Boolean,
-  disabled: Boolean,
+  isDisabled: Boolean,
   isUserInteraction: Boolean,
 
   denom: {
@@ -132,7 +131,7 @@ const denomValue = computed({
   }
 })
 
-function handleAmountUpdate(amount: string) {
+function changeAmount(amount: string) {
   setAmountValue(amount)
 
   emit('update:amount', {
@@ -140,16 +139,16 @@ function handleAmountUpdate(amount: string) {
   })
 }
 
-function updateIsUserInteraction() {
+function modifyIsUserInteraction() {
   emit('update:isUserInteraction', true)
 }
 
-const updateAmountDebounce = useDebounceFn((value) => {
+const amountChangeDebounce = useDebounceFn((value) => {
   /**
    *Use debounce since AppNumericInput emits two update events
    *And we only need the last one
    **/
-  handleAmountUpdate(value)
+  changeAmount(value)
 }, props.debounce)
 
 watch(
@@ -206,31 +205,31 @@ export default {
     <BaseDropdown
       id="temporaryDropdown"
       class="w-full mb-2"
-      :disabled="disabled || options.length <= 1"
+      :disabled="isDisabled || options.length <= 1"
       :distance="amountErrors.length > 0 ? 44 : 24"
       :flip="false"
       :auto-size="true"
       placement="bottom"
       auto-boundary-max-size
       popper-class="tempDropdown"
-      @click="updateIsUserInteraction"
+      @click="modifyIsUserInteraction"
     >
       <div class="px-4">
         <div class="flex justify-between relative">
-          <div @click.stop="updateIsUserInteraction">
+          <div @click.stop="modifyIsUserInteraction">
             <Transition name="fade-down" mode="out-in">
               <AppInputNumeric
                 :key="animateFromAmount"
                 v-model="amount"
-                sm
-                no-padding
-                transparent-bg
+                is-sm
+                is-no-padding
+                is-transparent-bg
                 input-classes="p-0 text-xl font-bold text-gray-600"
                 :max-decimals="maxDecimals"
                 :placeholder="inputPlaceholder"
-                :disabled="disabled || !selectedToken"
-                @update:model-value="updateAmountDebounce"
-                @click.stop="updateIsUserInteraction"
+                :is-disabled="isDisabled || !selectedToken"
+                @update:model-value="amountChangeDebounce"
+                @click.stop="modifyIsUserInteraction"
               />
             </Transition>
           </div>

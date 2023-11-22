@@ -9,13 +9,9 @@ const setFormValues = useSetFormValues()
 const { query } = useRoute()
 const { accountBalancesWithToken } = useBalance()
 
-defineProps({
-  disabled: Boolean
-})
-
 const emit = defineEmits<{
-  'reset:form': []
-  'reset:queryError': []
+  'form:reset': []
+  'queryError:reset': []
   'update:inputQuantity': []
   'update:outputQuantity': []
 }>()
@@ -62,11 +58,11 @@ onMounted(() => {
   })
 
   if (Object.keys(query).length !== 0) {
-    handleQuery()
+    modifyFormFromQuery()
   }
 })
 
-function handleQuery() {
+function modifyFormFromQuery() {
   const { to, from, toAmount, fromAmount } = query
 
   if (to && from) {
@@ -91,23 +87,23 @@ function handleQuery() {
   }
 }
 
-function handleInputDenomChange() {
+function onInputDenomChange() {
   setFormValues({
     [SwapFormField.OutputDenom]: selectorOutputDenom.value
   })
 
-  emit('reset:form')
+  emit('form:reset')
 }
 
-function handleOutputDenomChange() {
+function onOutputDenomChange() {
   setFormValues({
     [SwapFormField.InputDenom]: selectorInputDenom.value
   })
 
-  emit('reset:form')
+  emit('form:reset')
 }
 
-function handleSwap() {
+function swap() {
   const {
     [SwapFormField.InputDenom]: inputDenom,
     [SwapFormField.OutputDenom]: outputDenom,
@@ -151,7 +147,7 @@ async function getOutputQuantity() {
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:outputQuantity')
 }
 
@@ -162,7 +158,7 @@ async function getInputQuantity() {
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:inputQuantity')
 }
 
@@ -183,18 +179,18 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
-            showUsd: true,
-            options: inputDenomOptions,
-            maxDecimals: inputToken?.quantityDecimals || 0,
-            hideMax: false,
-            modal: Modal.TokenSelectorFrom,
-            hideBalance: !walletStore.isUserWalletConnected,
+            isMaxHidden: false,
+            isUsdVisible: true,
             shouldCheckBalance: true,
-            amountFieldName: SwapFormField.InputAmount
+            options: inputDenomOptions,
+            modal: Modal.TokenSelectorFrom,
+            amountFieldName: SwapFormField.InputAmount,
+            maxDecimals: inputToken?.quantityDecimals || 0,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleInputDenomChange"
-          @update:amount="getOutputQuantity"
           @update:max="onMaxSelected"
+          @update:amount="getOutputQuantity"
+          @update:denom="onInputDenomChange"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
 
@@ -211,7 +207,7 @@ function onMaxSelected({ amount }: { amount: string }) {
       <BaseIcon
         name="arrow"
         class="mx-auto min-w-6 w-6 h-6 -rotate-90"
-        @click="handleSwap"
+        @click="swap"
       />
     </div>
 
@@ -220,17 +216,17 @@ function onMaxSelected({ amount }: { amount: string }) {
         <AppSelectToken
           v-model:denom="outputDenom"
           v-bind="{
-            showUsd: true,
             debounce: 600,
+            isMaxHidden: true,
+            isUsdVisible: true,
             options: outputDenomOptions,
-            maxDecimals: outputToken?.quantityDecimals || 0,
-            hideMax: true,
             modal: Modal.TokenSelectorTo,
-            hideBalance: !walletStore.isUserWalletConnected,
-            amountFieldName: SwapFormField.OutputAmount
+            amountFieldName: SwapFormField.OutputAmount,
+            maxDecimals: outputToken?.quantityDecimals || 0,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleOutputDenomChange"
           @update:amount="getInputQuantity"
+          @update:denom="onOutputDenomChange"
         >
           <span>
             {{ $t('trade.swap.youReceive') }}

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Banner } from '@/types'
 
 const appStore = useAppStore()
@@ -17,7 +17,6 @@ function closeNoticeBanner() {
   })
 }
 </script>
-g
 
 <template>
   <div

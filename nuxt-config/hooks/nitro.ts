@@ -30,8 +30,11 @@ const resolvePagePath = (page: string) => {
 }
 
 const fetchGuildRoutes = async (): Promise<string[]> => {
+  // hardcode guild ids to balance unstable indexer api response
+  const GUILD_IDS = new Set(['ef3bc2', '25269b', '5f90cb', '50be68'])
+
   const client = new HttpClient(
-    `${ENDPOINTS.indexer}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
+    `${ENDPOINTS.campaign}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
   )
 
   try {
@@ -39,12 +42,14 @@ const fetchGuildRoutes = async (): Promise<string[]> => {
       data: { guilds: { guildId: string }[] }
     }
 
-    return data.guilds.map(({ guildId }) => `/guild/${guildId}`)
+    data.guilds.forEach(({ guildId }) => GUILD_IDS.add(guildId))
+
+    return Array.from(GUILD_IDS).map((guildId) => `/guild/${guildId}`)
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error(e)
+    console.log(e)
 
-    return []
+    return Array.from(GUILD_IDS).map((guildId) => `/guild/${guildId}`)
   }
 }
 

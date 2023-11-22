@@ -1,19 +1,23 @@
-<script setup lang="ts">
-import { CampaignUser } from '@injectivelabs/sdk-ts'
+<script lang="ts" setup>
+import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   NETWORK,
-  CAMPAIGN_INJ_REWARDS,
-  CAMPAIGN_TIA_REWARDS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const props = defineProps({
   campaignUser: {
     type: Object as PropType<CampaignUser>,
+    required: true
+  },
+
+  campaign: {
+    type: Object as PropType<Campaign>,
     required: true
   },
 
@@ -28,6 +32,10 @@ const props = defineProps({
   }
 })
 
+const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
+  props.campaignUser.accountAddress
+}`
+
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
@@ -35,6 +43,10 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
       decimalPlaces: props.quoteDecimals
     })
   )
+)
+
+const lpEpoch = computed(() =>
+  LP_EPOCHS.find(({ campaignId }) => campaignId === props.campaign.campaignId)
 )
 
 const estRewardsInPercentage = computed(() => {
@@ -50,7 +62,7 @@ const estRewardsInPercentage = computed(() => {
 const estRewardsInINJ = computed(() =>
   new BigNumberInBase(estRewardsInPercentage.value)
     .dividedBy(100)
-    .multipliedBy(CAMPAIGN_INJ_REWARDS)
+    .multipliedBy(lpEpoch.value?.baseRewards || 0)
 )
 
 const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
@@ -65,7 +77,7 @@ const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
 const estRewardsInTIA = computed(() =>
   new BigNumberInBase(estRewardsInPercentage.value)
     .dividedBy(100)
-    .multipliedBy(CAMPAIGN_TIA_REWARDS)
+    .multipliedBy(lpEpoch.value?.quoteRewards || 0)
 )
 
 const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
@@ -76,10 +88,6 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
       : UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 )
-
-const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
-  props.campaignUser.accountAddress
-}`
 </script>
 
 <template>

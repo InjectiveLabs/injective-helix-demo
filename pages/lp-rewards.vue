@@ -1,7 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { MainPage } from '@/types'
+import { LP_EPOCHS } from '@/app/data/guild'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -10,18 +11,31 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { error } = useNotifications()
 
+// WE WILL USE THIS LATER - WE HAVE TO HARDCODE 1 FOR NOW BELOW
+// const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
+
 const page = ref(1)
 const limit = ref(10)
+const epoch = useQueryRef('epoch', '1')
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
 
+const campaign = computed(() =>
+  LP_EPOCHS.find((ep) => ep.epoch === Number(epoch.value))
+)
+
 onWalletConnected(() => {
+  if (!campaign.value) {
+    error({ title: t('campaign.campaignNotFound') })
+    navigateTo({ name: MainPage.Index })
+  }
   Promise.all([
     tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
     campaignStore.fetchCampaign({
       skip: 0,
-      limit: limit.value
+      limit: limit.value,
+      campaignId: campaign.value!.campaignId
     })
   ])
     .then(() => {
@@ -52,7 +66,8 @@ function fetchCampaign({ skip }: { skip: number }) {
   campaignStore
     .fetchCampaign({
       skip,
-      limit: limit.value
+      limit: limit.value,
+      campaignId: campaign.value!.campaignId
     })
     .then(() => {
       if (!campaignStore.campaign) {
@@ -77,10 +92,16 @@ function onPageChange(value: number) {
   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
 }
 
+function updateEpoch(value: string) {
+  epoch.value = value
+}
+
 useIntervalFn(
   () => tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
   30 * 1000
 )
+
+watch(epoch, () => fetchCampaign({ skip: 0 }))
 </script>
 
 <template>
@@ -95,16 +116,20 @@ useIntervalFn(
       <PartialsLiquidityHeader
         v-bind="{
           market,
-          campaign: campaignStore.campaign
+          campaign: campaignStore.campaign,
+          epoch
         }"
+        @update:epoch="updateEpoch"
       />
+
       <PartialsLiquidityRewardStats
         v-bind="{
           totalScore: campaignStore.campaign.totalScore,
-          isClaimable: campaignStore.campaign.isClaimable,
-          quoteDecimals: market?.quoteToken.decimals || 6
+          quoteDecimals: market?.quoteToken.decimals || 6,
+          campaign: campaignStore.campaign
         }"
       />
+
       <PartialsLiquidityTab :date="campaignStore.campaign.lastUpdated" />
 
       <AppHocLoading :is-loading="tableStatus.isLoading()">
@@ -116,6 +141,7 @@ useIntervalFn(
                 v-for="campaignUser in campaignStore.campaignUsers"
                 :key="campaignUser.accountAddress"
                 v-bind="{
+                  campaign: campaignStore.campaign,
                   campaignUser,
                   totalScore: campaignStore.campaign.totalScore,
                   quoteDecimals: market?.quoteToken.decimals || 6

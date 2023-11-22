@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { spotGridMarkets } from 'app/data/grid-strategy'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 const gridStrategyStore = useGridStrategyStore()
 
 const spotStore = useSpotStore()

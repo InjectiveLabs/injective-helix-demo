@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 
 const props = defineProps({
@@ -17,7 +17,7 @@ const token = computed(
 
 <template>
   <div class="flex mr-auto items-center space-x-2 font-semibold tracking-wide">
-    <CommonTokenIcon sm v-bind="{ token }" />
+    <CommonTokenIcon v-bind="{ isSm: true, token }" />
     <div class="mr-auto">{{ option?.display }}</div>
   </div>
 </template>

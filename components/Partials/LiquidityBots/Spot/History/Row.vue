@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 
@@ -55,7 +55,7 @@ const market = computed(
         >
           <div class="flex items-center space-x-2 flex-1">
             <p class="text-sm font-semibold">{{ date }}</p>
-            <CommonTokenIcon :token="market.baseToken" sm />
+            <CommonTokenIcon :token="market.baseToken" is-sm />
           </div>
 
           <div :class="{ 'rotate-180': isActive }">

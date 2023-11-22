@@ -7,7 +7,7 @@ import { AccountBalance, BusEvents, Modal } from '@/types'
 const modalStore = useModalStore()
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
   isHoldingSingleUsdcDenom: Boolean,
 
   balance: {
@@ -25,7 +25,7 @@ const showConvertModalLink = computed(() => {
   return props.balance.denom === usdcTokenDenom.USDC
 })
 
-function handleConvert() {
+function convert() {
   useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
 
   modalStore.openModal(Modal.ConvertUsdc)
@@ -36,7 +36,7 @@ function handleConvert() {
   <PartialsAccountBalancesRowWrapper
     v-bind="{
       balance,
-      hideBalances,
+      isHideBalances,
       usdPriceStatus
     }"
   >
@@ -60,7 +60,7 @@ function handleConvert() {
       <div
         class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
         data-cy="wallet-balance-convert"
-        @click="handleConvert"
+        @click="convert"
       >
         <span class="text-blue-500 text-sm font-medium">
           {{ $t('account.convertUsdc') }}

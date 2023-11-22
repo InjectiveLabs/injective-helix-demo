@@ -5,14 +5,14 @@ import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType,
   MaxAmountOnOrderbook,
   OrderBookPriceAndType,
   OrderBookNotionalAndType,
-  OrderBookQuantityAndType,
-  TradeExecutionType,
-  TradeField,
-  TradeForm,
-  UiMarketWithToken
+  OrderBookQuantityAndType
 } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
@@ -23,7 +23,7 @@ const props = defineProps({
   isSpot: Boolean,
   isBaseAmount: Boolean,
   showReduceOnly: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,
@@ -172,7 +172,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         isBaseAmount,
         maxReduceOnly,
         lastTradedPrice,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         baseAvailableBalance,
         maxAmountOnOrderbook,
         quoteAvailableBalance
@@ -185,7 +185,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         isBuy,
         isSpot,
         maxReduceOnly,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         baseAvailableBalance,
         maxAmountOnOrderbook,
         availableBalanceError,
@@ -197,7 +197,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
 
     <PartialsTradingDerivativesTradingOrderLeverage
       v-show="
-        !orderTypeReduceOnly &&
+        !isOrderTypeReduceOnly &&
         !isSpot &&
         market.subType !== MarketType.BinaryOptions
       "

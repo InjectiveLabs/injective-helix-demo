@@ -1,30 +1,51 @@
 <script lang="ts" setup>
-import { format } from 'date-fns'
-
 const campaignStore = useCampaignStore()
 
 const props = defineProps({
   isVolume: Boolean
 })
 
-const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
+const date = ref(Date.now())
+const showInactive = ref(false)
 
 const guilds = computed(() =>
   props.isVolume ? campaignStore.guildsByVolume : campaignStore.guildsByTVL
 )
 
-const lastUpdated = computed(() => {
-  if (!campaignStore.guildCampaignSummary) {
-    return
+const filteredGuilds = computed(() =>
+  showInactive.value
+    ? guilds.value
+    : guilds.value.filter((guild) => guild.isActive)
+)
+
+const sortedGuilds = computed(() => {
+  if (isCampaignStarted.value) {
+    return filteredGuilds.value
   }
 
-  return format(campaignStore.guildCampaignSummary.updatedAt, DATE_FORMAT)
+  return filteredGuilds.value.sort((g1, g2) => {
+    if (g1.isActive === g2.isActive) {
+      return g1.name.localeCompare(g2.name)
+    }
+
+    return Number(g2.isActive) - Number(g1.isActive)
+  })
 })
+
+const isCampaignStarted = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return false
+  }
+
+  return campaignStore.guildCampaignSummary.startTime < date.value
+})
+
+useIntervalFn(() => (date.value = Date.now()), 1000)
 </script>
 
 <template>
-  <div>
-    <div class="border-b flex justify-between items-end">
+  <div class="overflow-x-auto">
+    <div class="border-b flex justify-between items-center flex-wrap">
       <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
         <span v-if="isVolume">
           {{ $t('guild.leaderboard.tab.rankByVolume') }}
@@ -32,9 +53,9 @@ const lastUpdated = computed(() => {
         <span v-else>{{ $t('guild.leaderboard.tab.rankByTVL') }}</span>
       </button>
 
-      <p v-if="isVolume && lastUpdated" class="text-gray-300 p-2 text-xs">
-        {{ $t('guild.leaderboard.lastUpdated', { date: lastUpdated }) }}
-      </p>
+      <AppCheckbox v-model="showInactive" sm>
+        {{ $t('guild.showInactive') }}
+      </AppCheckbox>
     </div>
 
     <div class="overflow-x-auto">
@@ -50,7 +71,7 @@ const lastUpdated = computed(() => {
             <th class="p-4 text-left">
               {{ $t('guild.leaderboard.table.status') }}
             </th>
-            <th class="p-4 text-right">
+            <th class="p-4 text-right whitespace-nowrap">
               <span v-if="isVolume">
                 {{ $t('guild.leaderboard.table.tradingVolume') }}
               </span>
@@ -61,12 +82,15 @@ const lastUpdated = computed(() => {
         </thead>
         <tbody>
           <PartialsGuildLeaderboardRow
-            v-for="(guild, index) in guilds"
+            v-for="(guild, index) in sortedGuilds"
             :key="guild.guildId"
             v-bind="{
               guild,
               isVolume,
-              rank: index + 1
+              rank: index + 1,
+              isCampaignStarted,
+              summary: campaignStore.guildCampaignSummary,
+              isMyGuild: campaignStore.userGuildInfo?.guildId === guild.guildId
             }"
           />
 

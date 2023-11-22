@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IS_DEVNET, IS_TESTNET } from './setup'
 
 export * from './setup'
+export * from './campaign'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -84,18 +84,3 @@ export const GST_DEFAULT_AUTO_GRIDS = 20
 export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
 
 export const GST_ROUTE = 'trading-bots-grid-spot'
-
-// Campaign
-export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
-  ? 'spot-grid-inj-usdt-test'
-  : 'spot-grid-tia-usdt'
-// we will read this from the contract later once its ready
-export const CAMPAIGN_INJ_REWARDS = '1000'
-export const CAMPAIGN_TIA_REWARDS = '10000'
-// Guild
-export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
-export const GUILD_CONTRACT_ADDRESS = IS_TESTNET
-  ? 'inj1hasnh2e0eqzyzh02wrgufuq40ptu0d037tuc3r'
-  : 'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2' // devnet
-export const GUILD_ENCODE_KEY = 'guild'
-export const GUILD_HASH_CHAR_LIMIT = 6

@@ -44,7 +44,7 @@ export default {
     stopTrigger: 'Stop Trigger',
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
-    saveOnFees: 'Save on fees',
+    saveOnFees: 'Adjust Deposit Amounts',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
     keepQuote: 'Keep {quote} Only',
@@ -62,7 +62,7 @@ export default {
     currentBalance: 'Current Balance',
     minInvestment: 'Min investment: $ {amount}',
     totalInvestment: 'Total Investment',
-    useFeeOptimizedAmounts: 'Use fee optimized amounts',
+    useFeeOptimizedAmounts: 'Use suggested amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
     totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
@@ -130,7 +130,7 @@ export default {
     initialEntryTooltip:
       'The initial entry price is the price at which the smart contract places the first order, setting the baseline for rebalancing your INJ and USDT portfolio to kickstart the strategy.',
     balancedFeesMessage:
-      'You will be saving exchange fees by using the optimized amounts of {base} and {quote}, as the strategy will need rebalance {quote} and {base} to start.',
+      'The value of your deposit is {initialInvestment} USD. Based on the price range and number of grids provided, the suggested amount for each asset is {quoteAmount} {quote} and {baseAmount} {base}. The suggested deposit amounts are based on the buy and sell orders the bot is going to create initially, while maintaining the same value as the original deposit amounts you provided.',
     gridIntervalTooltip:
       'Specifies the constant price gaps between grid levels within your set upper and lower price range.',
     minimizeOneTimeFees:

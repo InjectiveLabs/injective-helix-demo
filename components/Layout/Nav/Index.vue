@@ -12,14 +12,13 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
-import { IS_MAINNET } from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 
 const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
-function handleSpotTradeClickedTrack() {
+function spotTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
@@ -27,7 +26,7 @@ function handleSpotTradeClickedTrack() {
   })
 }
 
-function handlePerpetualTradeClickedTrack() {
+function perpetualTradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
@@ -81,7 +80,7 @@ function handlePerpetualTradeClickedTrack() {
             :to="defaultSpotMarketRoute"
             class="p-4 block rounded-t group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-trade-link"
-            @click="handleSpotTradeClickedTrack"
+            @click="spotTradeClickedTrack"
           >
             <p class="font-semibold text-base text-white">
               {{ $t('navigation.spot') }}
@@ -95,7 +94,7 @@ function handlePerpetualTradeClickedTrack() {
             :to="defaultPerpetualMarketRoute"
             class="p-4 block group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-trade-link"
-            @click="handlePerpetualTradeClickedTrack"
+            @click="perpetualTradeClickedTrack"
           >
             <p class="font-semibold text-base text-white">
               {{ $t('navigation.perpetual') }}
@@ -195,7 +194,6 @@ function handlePerpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            v-if="!IS_MAINNET"
             :to="{ name: MainPage.Guilds }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >

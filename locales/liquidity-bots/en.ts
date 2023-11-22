@@ -7,6 +7,7 @@ export default {
     liquidityBots: 'Liquidity Bot',
     liveBots: 'Setup & Live Bots',
     selectMarket: 'Select Market',
+    placingOrders: 'Placing And Charting Orders...',
     parametersForAdvancedStrategy: 'Parameters For Advanced Strategy',
     bannerMessage:
       'Powered by Helix Grid Trading Bot, you can now automate your trades and provide liquidity within the range you specify.',
@@ -16,8 +17,8 @@ export default {
     tiaBannerLiquidity:
       'Earn LP Rewards for providing liquidity in the TIA/USDT market',
     seeRewards: 'See Rewards',
-    allowAssetReBalance: 'Allow asset rebalancing before creation',
-    allowAssetReBalanceTooltip:
+    allowAssetRebalance: 'Allow asset rebalancing before creation',
+    allowAssetRebalanceTooltip:
       'If asset rebalancing is not allowed, then the current price cannot be within the price range.',
     currentPrice: 'Current Price'
   }

@@ -9,10 +9,12 @@ import { generateUniqueHash } from '@/app/utils/formatters'
 
 export const createGuild = async ({
   name,
-  logo
+  logo,
+  description
 }: {
   name: string
   logo: string
+  description: string
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -29,6 +31,7 @@ export const createGuild = async ({
       msg: {
         name,
         logo,
+        description,
         id: generateUniqueHash({
           value: `${Date.now()}`,
           limit: GUILD_HASH_CHAR_LIMIT

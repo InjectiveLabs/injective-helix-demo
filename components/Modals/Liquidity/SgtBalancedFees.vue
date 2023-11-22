@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
@@ -11,8 +11,8 @@ const props = defineProps({
     required: true
   },
 
-  quoteAmount: {
-    type: Object as PropType<BigNumberInBase>,
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   },
 
@@ -21,8 +21,8 @@ const props = defineProps({
     required: true
   },
 
-  market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+  quoteAmount: {
+    type: Object as PropType<BigNumberInBase>,
     required: true
   }
 })
@@ -67,7 +67,7 @@ function onChangeInvestmentType() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.SgtBalancedFees]"
-    sm
+    is-sm
     @modal:closed="onModalClose"
   >
     <template #title>
@@ -79,7 +79,10 @@ function onChangeInvestmentType() {
         {{
           $t('sgt.balancedFeesMessage', {
             quote: market.quoteToken.symbol,
-            base: market.baseToken.symbol
+            base: market.baseToken.symbol,
+            quoteAmount: quoteAmountToString,
+            baseAmount: baseAmountToString,
+            initialInvestment: marginToString
           })
         }}
         <NuxtLink
@@ -107,7 +110,7 @@ function onChangeInvestmentType() {
 
       <div class="grid grid-cols-1 gap-2 mt-6">
         <AppButton
-          lg
+          is-lg
           class="w-full font-sembold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
@@ -120,7 +123,7 @@ function onChangeInvestmentType() {
         </AppButton>
 
         <AppButton
-          lg
+          is-lg
           class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >

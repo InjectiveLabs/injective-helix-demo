@@ -3,12 +3,17 @@ const slots = useSlots()
 const { width } = useWindowSize()
 
 const props = defineProps({
-  lg: Boolean,
-  md: Boolean,
-  sm: Boolean,
-  dense: Boolean,
+  isLg: Boolean,
+  isMd: Boolean,
+  isSm: Boolean,
+  isDense: Boolean,
   isAlwaysOpen: Boolean,
-  hideCloseButton: Boolean
+  isHideCloseButton: Boolean,
+
+  modalContentClass: {
+    type: String,
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -18,11 +23,11 @@ const emit = defineEmits<{
 const classes = computed(() => {
   const result = []
 
-  if (props.sm) {
+  if (props.isSm) {
     result.push('sm:min-w-md sm:max-w-md')
-  } else if (props.md) {
+  } else if (props.isMd) {
     result.push('md:min-w-lg md:max-w-lg', 'md:min-w-2xl lg:max-w-2xl')
-  } else if (props.lg) {
+  } else if (props.isLg) {
     result.push('max-w-lg', 'lg:max-w-3xl')
   } else {
     result.push('max-w-lg', 'lg:max-w-4xl')
@@ -68,13 +73,13 @@ watchDebounced(
       >
         <div
           class="flex items-center justify-between"
-          :class="{ 'mb-6 px-6 pt-6': !dense }"
+          :class="{ 'mb-6 px-6 pt-6': !isDense }"
         >
           <div class="text-sm uppercase text-gray-100 font-semibold flex-grow">
             <slot name="title" />
           </div>
 
-          <div v-if="!hideCloseButton">
+          <div v-if="!isHideCloseButton">
             <BaseIcon
               name="close"
               class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
@@ -89,12 +94,8 @@ watchDebounced(
         >
           <AppSpinner lg />
         </div>
-        <div v-else>
-          <div
-            :class="{
-              'px-6': !dense
-            }"
-          >
+        <div v-else :class="modalContentClass">
+          <div :class="[{ 'px-6': !isDense }]">
             <slot />
           </div>
 
@@ -102,7 +103,7 @@ watchDebounced(
             <slot name="footer" />
           </div>
 
-          <div :class="{ 'pb-6': !dense }" />
+          <div :class="{ 'pb-6': !isDense }" />
         </div>
       </div>
     </template>

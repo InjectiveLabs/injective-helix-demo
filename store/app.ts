@@ -17,7 +17,8 @@ import {
   GeoLocation,
   NoticeBanner,
   TradingLayout,
-  OrderbookLayout
+  OrderbookLayout,
+  UiMarketWithToken
 } from '@/types'
 import {
   fetchGeoLocation,
@@ -30,7 +31,10 @@ import { todayInSeconds } from '@/app/utils/time'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { alchemyKey } from '@/app/wallet-strategy'
 import { amplitudeWalletTracker } from '@/app/providers/amplitude'
-import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
+import {
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
 
 export interface UserBasedState {
   favoriteMarkets: string[]
@@ -226,7 +230,7 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    validateGeoIpBasedOnAction() {
+    validateGeoIpBasedOnDerivativesAction() {
       const appStore = useAppStore()
 
       if (
@@ -235,6 +239,28 @@ export const useAppStore = defineStore('app', {
             appStore.userState.geoLocation.country
         )
       ) {
+        throw new GeneralException(
+          new Error('This action is not allowed in your country')
+        )
+      }
+    },
+
+    validateGeoIpBasedOnSpotAction(market: UiMarketWithToken) {
+      const appStore = useAppStore()
+
+      const isCountryRestrictedFromSpotMarket = [
+        market.baseToken,
+        market.quoteToken
+      ].some((token) =>
+        isCountryRestrictedForSpotMarket({
+          country:
+            appStore.userState.geoLocation.browserCountry ||
+            appStore.userState.geoLocation.country,
+          denomOrSymbol: token.symbol.toLowerCase()
+        })
+      )
+
+      if (isCountryRestrictedFromSpotMarket) {
         throw new GeneralException(
           new Error('This action is not allowed in your country')
         )

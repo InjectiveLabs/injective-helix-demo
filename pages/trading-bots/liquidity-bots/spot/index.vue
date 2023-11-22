@@ -1,5 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { OrderState } from '@injectivelabs/ts-types'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import {
   addressAndMarketSlugToSubaccountId,
@@ -30,6 +32,22 @@ const activeStrategy = computed(
     )!
 )
 
+const subaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(
+    walletStore.address,
+    (gridStrategyStore.spotMarket as UiSpotMarketWithToken).slug
+  )
+)
+
+const marketOrders = computed(() =>
+  spotStore.subaccountOrderHistory.filter(
+    ({ marketId, subaccountId: orderSubaccountId, state }) =>
+      marketId === gridStrategyStore.spotMarket?.marketId &&
+      orderSubaccountId === subaccountId.value &&
+      state === OrderState.Booked
+  )
+)
+
 function fetchData() {
   status.setLoading()
 
@@ -49,12 +67,12 @@ function fetchData() {
 
   Promise.all([
     authZStore.fetchGrants(),
-    spotStore.fetchTrades({ marketId }),
-    spotStore.fetchSubaccountOrderHistory({ subaccountId }),
-    spotStore.fetchOrderbook(marketId),
-    spotStore.streamOrderbookUpdate(marketId),
     spotStore.streamTrades(marketId),
+    spotStore.fetchOrderbook(marketId),
+    spotStore.fetchTrades({ marketId }),
+    spotStore.streamOrderbookUpdate(marketId),
     spotStore.streamSubaccountOrderHistory(marketId),
+    spotStore.fetchSubaccountOrderHistory({ subaccountId }),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
@@ -63,7 +81,7 @@ function fetchData() {
       countback: 30 * 24
     }),
     accountStore.fetchAccountPortfolio(),
-    accountStore.streamSubaccountBalance(marketId)
+    accountStore.streamSubaccountBalance(subaccountId)
   ])
     .catch($onError)
     .finally(() => {
@@ -77,6 +95,12 @@ function fetchData() {
 
 onWalletConnected(() => {
   fetchData()
+})
+
+onUnmounted(() => {
+  spotStore.cancelOrderbookUpdateStream()
+  spotStore.cancelSubaccountOrdersHistoryStream()
+  spotStore.cancelTradesStream()
 })
 
 watch(() => gridStrategyStore.spotMarket, fetchData)
@@ -110,16 +134,21 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
     <AppHocLoading v-bind="{ status }">
       <PartialsLiquidityBotsSpotOrdersChart
-        v-if="gridStrategyStore.spotMarket && activeStrategy"
+        v-if="
+          gridStrategyStore.spotMarket &&
+          marketOrders.length > 0 &&
+          activeStrategy
+        "
         v-bind="{ market: gridStrategyStore.spotMarket }"
       />
 
+      <PartialsLiquidityBotsSpotPlacingOrders
+        v-else-if="activeStrategy"
+        v-bind="{ subaccountId }"
+      />
+
       <PartialsGridStrategySpotFormActiveStrategy
-        v-if="
-          activeStrategy &&
-          gridStrategyStore.spotMarket &&
-          spotStore.subaccountOrderHistory.length > 0
-        "
+        v-if="activeStrategy && gridStrategyStore.spotMarket"
         class="mt-4"
         v-bind="{
           activeStrategy,

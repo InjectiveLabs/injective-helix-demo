@@ -11,26 +11,29 @@ const props = defineProps({
 
 const modalStore = useModalStore()
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(props.modal)
 }
 </script>
 
 <template>
-  <AppModal :is-open="modalStore.modals[modal]" sm @modal:closed="closeModal">
+  <AppModal
+    :is-open="modalStore.modals[modal]"
+    is-sm
+    modal-content-class="overflow-y-hidden"
+    @modal:closed="onCloseModal"
+  >
     <template #title>
       <div class="font-semibold text-base max-h-xs p-2 normal-case ml-2">
         {{ $t('trade.swap.tokenSelector.selectAToken') }}
       </div>
     </template>
 
-    <div>
-      <AppSelectTokenList
-        class="-mt-8"
-        show-balance
-        v-bind="$attrs"
-        @close="closeModal"
-      />
-    </div>
+    <AppSelectTokenList
+      is-balance-visible
+      v-bind="$attrs"
+      class="overflow-y-auto"
+      @close="onCloseModal"
+    />
   </AppModal>
 </template>

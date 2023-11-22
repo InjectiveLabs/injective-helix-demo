@@ -6,7 +6,7 @@ const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
-  showLowVolumeMarkets: Boolean,
+  isLowVolumeMarketsVisible: Boolean,
 
   search: {
     type: String,
@@ -33,7 +33,7 @@ const emit = defineEmits<{
   'update:search': [state: string]
   'update:activeType': [state: string]
   'update:activeQuote': [state: MarketQuoteType]
-  'update:showLowVolumeMarkets': [state: boolean]
+  'update:isLowVolumeMarketsVisible': [state: boolean]
   'update:activeCategory': [state: MarketCategoryType]
 }>()
 
@@ -62,10 +62,10 @@ const activeQuoteValue = computed({
   }
 })
 
-const showLowVolumeMarketsValue = computed({
-  get: (): boolean => props.showLowVolumeMarkets,
+const isLowVolumeMarketsVisibleValue = computed({
+  get: (): boolean => props.isLowVolumeMarketsVisible,
   set: (type: boolean) => {
-    emit('update:showLowVolumeMarkets', type)
+    emit('update:isLowVolumeMarketsVisible', type)
   }
 })
 
@@ -175,11 +175,11 @@ function fillRouteQueryParams(params: Record<string, string>) {
           name="search"
           class="sm:w-auto md:w-3xs"
           input-classes="placeholder-white"
-          dense
-          transparent-bg
+          is-dense
+          is-transparent-bg
           data-cy="markets-search-input"
           :placeholder="$t('trade.search_markets')"
-          show-prefix
+          is-prefix-visible
           :model-value="search"
           @update:modelValue="handleSearchedEvent"
         />
@@ -194,7 +194,7 @@ function fillRouteQueryParams(params: Record<string, string>) {
           v-for="marketCategoryType in marketCategoryTypes"
           :key="marketCategoryType.key"
           :type="marketCategoryType.type"
-          :active="activeCategory === marketCategoryType.type"
+          :is-active="activeCategory === marketCategoryType.type"
           :data-cy="`market-category-${marketCategoryType.key}-button`"
           @click="handleCategoryChange"
         >
@@ -228,7 +228,11 @@ function fillRouteQueryParams(params: Record<string, string>) {
           </template>
         </AppSelect>
 
-        <AppCheckbox v-model="showLowVolumeMarketsValue" class="ml-4" sm>
+        <AppCheckbox
+          v-model="isLowVolumeMarketsVisibleValue"
+          class="ml-4"
+          is-sm
+        >
           {{ $t('markets.showLowVol') }}
         </AppCheckbox>
       </div>

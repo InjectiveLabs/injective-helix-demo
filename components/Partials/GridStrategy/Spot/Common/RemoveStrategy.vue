@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
-import { durationFormatter } from 'app/utils/helpers'
+import { durationFormatter } from '@/app/utils/helpers'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -15,6 +15,11 @@ const props = defineProps({
   pnl: {
     type: String,
     required: true
+  },
+
+  contractAddress: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -29,7 +34,7 @@ function removeStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy()
+    .removeStrategy(props.contractAddress)
     .then(() => {
       success({
         title: t('sgt.success'),

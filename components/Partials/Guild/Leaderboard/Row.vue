@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import { Guild } from '@injectivelabs/sdk-ts'
+import { format } from 'date-fns'
+import { Guild, GuildCampaignSummary } from '@injectivelabs/sdk-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
+import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 import { CampaignSubPage } from '@/types'
 
-const tokenStore = useTokenStore()
+const { baseToken, quoteToken } = useGuild()
 
 const props = defineProps({
   isVolume: Boolean,
+  isMyGuild: Boolean,
+  isCampaignStarted: Boolean,
 
   rank: {
     type: Number,
@@ -17,12 +20,21 @@ const props = defineProps({
   guild: {
     type: Object as PropType<Guild>,
     required: true
+  },
+
+  summary: {
+    type: Object as PropType<GuildCampaignSummary>,
+    default: undefined
   }
 })
 
-const baseToken = computed(() =>
-  tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)
-)
+const startDate = computed(() => {
+  if (!props.summary) {
+    return
+  }
+
+  return format(props.summary.startTime, 'MMM dd')
+})
 
 const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   computed(() =>
@@ -34,34 +46,62 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
 )
 
 const { valueToString: volumeScoreToString } = useBigNumberFormatter(
-  computed(() => props.guild.volumeScore)
+  computed(() =>
+    toBalanceInToken({
+      value: props.guild.volumeScore,
+      decimalPlaces: quoteToken.value?.decimals || 6
+    })
+  )
 )
 </script>
 
 <template>
   <tr class="border-b hover:bg-gray-800 text-sm">
     <td>
-      <div class="p-3 flex items-center gap-2">
-        <span>{{ rank }}</span>
-        <AssetTrophyColor v-if="rank === 1" />
+      <div class="whitespace-nowrap p-3 block">
+        <div v-if="isCampaignStarted" class="flex items-center gap-2">
+          <span>{{ rank }}</span>
+          <AssetTrophyColor v-if="rank === 1" />
+        </div>
+        <span v-else>&mdash;</span>
       </div>
     </td>
     <td>
-      <div class="p-3 flex items-center gap-2">
-        <PartialsGuildThumbnail :thumbnail-id="guild.logo" />
+      <div class="p-3 flex items-center gap-2 min-w-[7.5rem]">
+        <PartialsGuildThumbnail :thumbnail-id="guild.logo" is-lg />
         <span>{{ guild.name }}</span>
+        <div
+          v-if="isMyGuild"
+          class="px-2 py-0.5 border border-blue-500 text-blue-500 rounded text-xs"
+        >
+          {{ $t('guild.you') }}
+        </div>
       </div>
     </td>
     <td>
       <div class="p-3">
-        <AppDotStatus :is-active="guild.isActive" />
+        <PartialsGuildStatus
+          v-bind="{
+            isCampaignStarted,
+            isActive: guild.isActive
+          }"
+        />
       </div>
     </td>
     <td class="text-right">
-      <div v-if="isVolume" class="p-3">{{ volumeScoreToString }} USD</div>
-      <div v-else class="p-3">
-        {{ tvlScoreToString }} {{ baseToken?.symbol || 'INJ' }}
-      </div>
+      <template v-if="!isCampaignStarted">
+        <span v-if="startDate" class="whitespace-nowrap">
+          {{ $t('guild.startOn', { date: startDate }) }}
+        </span>
+        <span v-else>&mdash;</span>
+      </template>
+      <template v-else>
+        <div v-if="isVolume" class="p-3">{{ volumeScoreToString }} USD</div>
+        <div v-else class="p-3">
+          {{ tvlScoreToString }}
+          {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
+        </div>
+      </template>
     </td>
     <td class="text-right">
       <div class="p-3">

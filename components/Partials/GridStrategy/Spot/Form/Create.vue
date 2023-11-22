@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
   Status,
   StatusType,
@@ -22,6 +22,7 @@ import {
   GST_MIN_TRADING_SIZE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   isAuto: Boolean,
@@ -38,6 +39,7 @@ const emit = defineEmits<{
 
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const setFormValues = useSetFormValues()
@@ -50,8 +52,22 @@ const { lastTradedPrice: currentPrice } = useSpotLastPrice(
 )
 const { accountBalancesWithToken } = useBalance()
 
-const hasActiveStrategy = computed(
-  () => gridStrategyStore.activeStrategies.length > 0
+const hasActiveStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find((strategy) => {
+    const subaccountId = addressAndMarketSlugToSubaccountId(
+      walletStore.address,
+      props.market.slug
+    )
+
+    const contractAddress = spotGridMarkets.find(
+      (m) => m.slug === props.market.slug
+    )?.contractAddress
+
+    return (
+      strategy.subaccountId === subaccountId &&
+      strategy.contractAddress === contractAddress
+    )
+  })
 )
 
 const quoteDenomBalance = computed(() =>
@@ -229,7 +245,7 @@ function onInvestmentTypeSet() {
   <div>
     <AppButton
       :status="status"
-      lg
+      is-lg
       class="w-full shadow-none select-none"
       :class="[
         hasActiveStrategy

@@ -17,13 +17,13 @@ import {
 } from '@/app/utils/constants'
 
 const props = defineProps({
-  hideMax: Boolean,
-  showUsd: Boolean,
-  disabled: Boolean,
-  required: Boolean,
-  hideBalance: Boolean,
+  isMaxHidden: Boolean,
+  isUsdVisible: Boolean,
+  isDisabled: Boolean,
+  isRequired: Boolean,
+  isBalanceHidden: Boolean,
   shouldCheckBalance: Boolean,
-  disabledTokenSelector: Boolean,
+  isTokenSelectorDisabled: Boolean,
 
   denom: {
     type: String,
@@ -107,11 +107,11 @@ const {
   dynamicRule: computed(() => {
     const rules = []
 
-    if (props.required) {
+    if (props.isRequired) {
       rules.push('required')
     }
 
-    if (props.required || props.shouldCheckBalance) {
+    if (props.isRequired || props.shouldCheckBalance) {
       rules.push(`insufficientBalance:${maxBalanceToFixed.value}`)
     }
 
@@ -161,7 +161,7 @@ function openTokenSelectorModal() {
     return
   }
 
-  if (props.disabledTokenSelector) {
+  if (props.isTokenSelectorDisabled) {
     return
   }
 
@@ -169,7 +169,7 @@ function openTokenSelectorModal() {
   emit('update:modal')
 }
 
-function handleAmountUpdate(amount: string) {
+function changeAmount(amount: string) {
   setAmountValue(amount)
 
   emit('update:amount', {
@@ -182,12 +182,12 @@ function changeMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
-const updateAmountDebounce = useDebounceFn((value) => {
+const onAmountChangeDebounced = useDebounceFn((value) => {
   /**
    *Use debounce since AppNumericInput emits two update events
    *And we only need the last one
    **/
-  handleAmountUpdate(value)
+  changeAmount(value)
 }, props.debounce)
 </script>
 
@@ -201,7 +201,7 @@ export default {
   <div
     class="bg-gray-1000 rounded-xl py-4"
     :class="{
-      'border-red-500 border': amountErrors.length > 0 && required
+      'border-red-500 border': amountErrors.length > 0 && isRequired
     }"
   >
     <div
@@ -220,13 +220,13 @@ export default {
       >
         <div v-if="selectedToken" class="text-right flex items-center gap-2">
           <span
-            v-if="valueToBigNumber.gt(0) && !hideMax"
+            v-if="valueToBigNumber.gt(0) && !isMaxHidden"
             class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
             @click="changeMax"
           >
             {{ $t('trade.max') }}
           </span>
-          <p v-if="!hideBalance" class="text-xs text-blue-500">
+          <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
             <span>
               {{ $t('trade.balance', { balance: maxBalanceToString }) }}
             </span>
@@ -239,14 +239,14 @@ export default {
       <div class="flex justify-between">
         <AppInputNumeric
           v-model="amount"
-          sm
-          no-padding
-          transparent-bg
+          is-sm
+          is-no-padding
+          is-transparent-bg
           input-classes="p-0 text-xl font-bold"
           :max-decimals="maxDecimals"
           :placeholder="inputPlaceholder"
-          :disabled="disabled || !selectedToken"
-          @update:model-value="updateAmountDebounce"
+          :is-disabled="isDisabled || !selectedToken"
+          @update:model-value="onAmountChangeDebounced"
           @click.stop
         />
 
@@ -265,7 +265,9 @@ export default {
             >
               <AppSelectTokenItem
                 v-if="selectedToken"
-                :class="{ 'cursor-default': disabled || options.length === 1 }"
+                :class="{
+                  'cursor-default': isDisabled || options.length === 1
+                }"
                 v-bind="{
                   token: selectedToken.token
                 }"
@@ -306,7 +308,7 @@ export default {
       </slot>
 
       <p
-        v-if="showUsd && selectedToken"
+        v-if="isUsdVisible && selectedToken"
         class="text-right text-sm text-gray-500 truncate"
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">

@@ -203,7 +203,7 @@ export function useDerivativePrice({
     )
   })
 
-  function updateAmountFromBase({
+  function changeAmountFromBase({
     amount,
     isBaseAmount: isBaseAmountUpdate
   }: {
@@ -276,7 +276,7 @@ export function useDerivativePrice({
     worstPrice,
     averagePrice,
     maxReduceOnly,
-    updateAmountFromBase,
+    changeAmountFromBase,
     maxAmountOnOrderbook,
     amountForCalculation,
     worstPriceWithSlippage,

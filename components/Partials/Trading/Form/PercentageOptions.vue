@@ -24,7 +24,7 @@ const setFormValues = useSetFormValues()
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
@@ -131,38 +131,7 @@ const balanceToUpdateDerivativesWithFees = computed(() => {
   )
 })
 
-watch(
-  () => props.feeRate,
-  () => {
-    if (!percentage.value) {
-      return
-    }
-
-    changeFromPercentage(percentage.value)
-  }
-)
-
-watch(
-  () => formValues.value[TradeField.BaseAmount],
-  () => {
-    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
-      return
-    }
-
-    setFormValues({
-      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
-        formValues.value[TradeField.BaseAmount],
-        props.market.quantityTensMultiplier
-      )
-    })
-
-    emit('update:amount', {
-      isBaseAmount: true
-    })
-  }
-)
-
-function handleReduceOnly() {
+function changeAmountFromPercentageForReduceOnly() {
   if (!props.maxReduceOnly) {
     return
   }
@@ -188,7 +157,7 @@ function handleReduceOnly() {
   emit('update:amount', { isBaseAmount: true })
 }
 
-function handleDerivativePercentageChange() {
+function derivativePercentageChange() {
   // compare percent click amount to the max allowable quantity
   const field = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? TradeField.BaseAmount
@@ -215,7 +184,7 @@ function handleDerivativePercentageChange() {
   })
 }
 
-function handleSpotPercentageChange() {
+function spotPercentageChange() {
   // compare percent click amount to the max allowable quantity
   const field =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
@@ -253,16 +222,47 @@ function onPercentageChange(percentage: number) {
 function changeFromPercentage(percentage: number) {
   setProportionalPercentageValue(percentage)
 
-  if (props.orderTypeReduceOnly) {
-    return handleReduceOnly()
+  if (props.isOrderTypeReduceOnly) {
+    return changeAmountFromPercentageForReduceOnly()
   }
 
   if (!props.isSpot) {
-    return handleDerivativePercentageChange()
+    return derivativePercentageChange()
   }
 
-  return handleSpotPercentageChange()
+  return spotPercentageChange()
 }
+
+watch(
+  () => props.feeRate,
+  () => {
+    if (!percentage.value) {
+      return
+    }
+
+    changeFromPercentage(percentage.value)
+  }
+)
+
+watch(
+  () => formValues.value[TradeField.BaseAmount],
+  () => {
+    if (props.market.quantityTensMultiplier < 1 || !percentage.value) {
+      return
+    }
+
+    setFormValues({
+      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+        formValues.value[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    })
+
+    emit('update:amount', {
+      isBaseAmount: true
+    })
+  }
+)
 </script>
 
 <template>

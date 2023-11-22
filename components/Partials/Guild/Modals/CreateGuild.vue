@@ -1,7 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { GUILD_BASE_TOKEN_SYMBOL } from 'app/utils/constants'
+import {
+  GUILD_DISCORD_LINK,
+  GUILD_BASE_TOKEN_SYMBOL
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -12,11 +15,12 @@ const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const MAX_CHARACTERS = 10
+const NAME_MAX_CHARACTERS = 15
+const DESCRIPTION_MAX_CHARACTERS = 255
 const NAME_FIELD = 'guild-name'
 const THUMBNAIL_FIELD = 'thumbnail'
-const MIN_AMOUNT = 10000
-const JOIN_GUILD_LINK = 'https://twitter.com/HelixApp_'
+const DESCRIPTION_FIELD = 'guild-description'
+const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -24,7 +28,12 @@ const { accountBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
-  rule: `required|maxCharacter:${MAX_CHARACTERS}`
+  rule: `required|maxCharacter:${NAME_MAX_CHARACTERS}`
+})
+
+const { value: description, errors: descriptionErrors } = useStringField({
+  name: DESCRIPTION_FIELD,
+  rule: `required|maxCharacter:${DESCRIPTION_MAX_CHARACTERS}`
 })
 
 const { value: thumbnail, errors: thumbnailErrors } = useStringField({
@@ -32,7 +41,7 @@ const { value: thumbnail, errors: thumbnailErrors } = useStringField({
 })
 
 const { valueToString: minAmountToString } = useBigNumberFormatter(
-  computed(() => MIN_AMOUNT)
+  computed(() => GUILD_MIN_AMOUNT)
 )
 
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
@@ -54,12 +63,12 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
   )
 
 const hasSufficientBalance = computed(() =>
-  balanceToBigNumber.value.gte(MIN_AMOUNT)
+  balanceToBigNumber.value.gte(GUILD_MIN_AMOUNT)
 )
 
 const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
-function handleDisconnect() {
+function disconnect() {
   walletStore.disconnect()
 
   onCloseModal()
@@ -81,7 +90,8 @@ async function onSubmit() {
   campaignStore
     .createGuild({
       name: name.value,
-      logo: thumbnail.value
+      logo: thumbnail.value,
+      description: description.value
     })
     .then(() => {
       success({
@@ -107,7 +117,7 @@ watch(
 
 <template>
   <AppModal
-    sm
+    is-sm
     :ignore="['.v-popper__popper']"
     :is-open="modalStore.modals[Modal.CreateGuild]"
     @modal:closed="onCloseModal"
@@ -119,47 +129,71 @@ watch(
     </template>
 
     <div>
-      <div class="flex items-center justify-between text-xs mb-2">
-        <span class="font-bold">
-          {{ $t('guild.createGuild.name') }}
-        </span>
-        <span class="text-gray-450">
-          {{ name?.length || 0 }} / {{ MAX_CHARACTERS }}
-          {{ $t('guild.createGuild.characters') }}
-        </span>
-      </div>
+      <section>
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.name') }}
+          </span>
+          <span class="text-gray-450">
+            {{ name?.length || 0 }} / {{ NAME_MAX_CHARACTERS }}
+            {{ $t('guild.createGuild.characters') }}
+          </span>
+        </div>
 
-      <AppInput
-        v-model="name"
-        sm
-        wrapper-classes="p-2"
-        :placeholder="$t('guild.createGuild.namePlaceholder')"
-      />
-      <p
-        v-if="nameErrors[0]"
-        class="text-red-500 first-letter:uppercase text-sm mt-1"
-      >
-        {{ nameErrors[0] }}
-      </p>
-
-      <div class="flex items-center justify-between text-xs mb-2 mt-8">
-        <span class="font-bold">
-          {{ $t('guild.createGuild.masterAddress') }}
-        </span>
-        <span
-          class="font-semibold text-blue-500 hover:text-opacity-80 cursor-pointer"
-          @click="handleDisconnect"
+        <AppInput
+          v-model="name"
+          is-sm
+          wrapper-classes="p-2"
+          :placeholder="$t('guild.createGuild.namePlaceholder')"
+        />
+        <p
+          v-if="nameErrors[0]"
+          class="text-red-500 first-letter:uppercase text-sm mt-1"
         >
-          {{ $t('navigation.disconnect') }}
-        </span>
-      </div>
-      <AppInput
-        sm
-        disabled
-        :model-value="walletStore.injectiveAddress"
-        wrapper-classes="p-2"
-        :placeholder="$t('guild.createGuild.namePlaceholder')"
-      />
+          {{ nameErrors[0] }}
+        </p>
+      </section>
+
+      <section class="mt-8">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.masterAddress') }}
+          </span>
+          <span
+            class="font-semibold text-blue-500 hover:text-opacity-80 cursor-pointer"
+            @click="disconnect"
+          >
+            {{ $t('navigation.disconnect') }}
+          </span>
+        </div>
+        <AppInput
+          is-sm
+          is-disabled
+          :model-value="walletStore.injectiveAddress"
+          wrapper-classes="p-2"
+          :placeholder="$t('guild.createGuild.namePlaceholder')"
+        />
+      </section>
+
+      <section class="mt-8">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold">
+            {{ $t('guild.createGuild.description') }}
+          </span>
+          <span class="text-gray-450">
+            {{ description?.length || 0 }} / {{ DESCRIPTION_MAX_CHARACTERS }}
+          </span>
+        </div>
+
+        <AppTextarea v-model="description" />
+
+        <p
+          v-if="descriptionErrors[0]"
+          class="text-red-500 first-letter:uppercase text-sm mt-1"
+        >
+          {{ descriptionErrors[0] }}
+        </p>
+      </section>
 
       <div class="flex justify-between mt-2">
         <span class="font-semibold text-xs">
@@ -172,7 +206,7 @@ watch(
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
           <BaseIcon
-            v-if="balanceToBigNumber.gte(MIN_AMOUNT)"
+            v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
             name="check-circle"
             class="text-green-500"
             is-sm
@@ -214,8 +248,8 @@ watch(
           class="w-full bg-blue-500 text-white font-semibold"
           v-bind="{
             status,
-            lg: true,
-            disabled: !hasSufficientBalance || hasEmptyField
+            isLg: true,
+            isDisabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"
         >
@@ -233,7 +267,7 @@ watch(
         <NuxtLink
           v-if="!hasSufficientBalance"
           class="text-blue-500 hover:opacity-80 text-center"
-          :to="JOIN_GUILD_LINK"
+          :to="GUILD_DISCORD_LINK"
           target="_blank"
         >
           <p class="text-xs font-semibold mt-4">

@@ -5,7 +5,7 @@ import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SpotGridTradingField } from 'types'
+import { SpotGridTradingField } from '@/types'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
@@ -260,7 +260,10 @@ export const defineGlobalRules = () => {
 
   defineRule(
     'minBaseAndQuoteAmountSgt',
-    (_value: string, [amountA, amountB, threshold, symbol]: string[]) => {
+    (
+      _value: string,
+      [amountA, amountB, threshold, baseSymbol, quoteSymbol]: string[]
+    ) => {
       const amountAInBigNumber = new BigNumberInBase(amountA)
       const amountBInBigNumber = new BigNumberInBase(amountB)
 
@@ -269,7 +272,7 @@ export const defineGlobalRules = () => {
       if (
         amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
       ) {
-        return `Min ${symbol.toUpperCase()}+USDT value >= $${thresholdInBigNumber.toFixed(
+        return `Min ${baseSymbol}+${quoteSymbol} value >= $${thresholdInBigNumber.toFixed(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }

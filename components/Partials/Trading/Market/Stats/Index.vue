@@ -20,15 +20,15 @@ const emit = defineEmits<{
   'marketsList:toggle': []
 }>()
 
-function handleTokenClick() {
+function tokenClick() {
   emit('marketsList:toggle')
 }
 </script>
 
 <template>
   <CommonCard
-    no-top-border-radius
-    no-padding
+    is-no-top-border-radius
+    is-no-padding
     class="h-full px-4"
     data-cy="trading-page-market-info-component"
   >
@@ -44,7 +44,7 @@ function handleTokenClick() {
           <div class="w-px h-8 border-r hidden lg:block" />
         </template>
 
-        <div class="flex items-center gap-4" @click="handleTokenClick">
+        <div class="flex items-center gap-4" @click="tokenClick">
           <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" />
 
           <div class="leading-none select-none cursor-pointer">
@@ -77,7 +77,7 @@ function handleTokenClick() {
           v-if="summary"
           :market="market"
           :summary="summary"
-          lg
+          is-lg
           is-current-market
           is-stats-bar
         />

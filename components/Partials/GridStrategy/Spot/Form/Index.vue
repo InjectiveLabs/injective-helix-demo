@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import {
@@ -25,10 +25,6 @@ useForm<SpotGridTradingForm>({
 
 const activeTab = ref(GridStrategyType.Auto)
 
-const hasActiveStrategy = computed(
-  () => gridStrategyStore.activeStrategies.length > 0
-)
-
 const activeStrategy = computed(
   () =>
     gridStrategyStore.activeStrategies.find(
@@ -48,7 +44,7 @@ function changeTab(tab: GridStrategyType) {
     <div>
       <div class="space-y-4">
         <PartialsGridStrategySpotFormActiveStrategy
-          v-if="hasActiveStrategy && walletStore.isUserWalletConnected"
+          v-if="activeStrategy && walletStore.isUserWalletConnected"
           v-bind="{ activeStrategy, market }"
         />
 

@@ -27,13 +27,12 @@ const props = defineProps({
 
 const { takerFeeRate } = useTradeFee(computed(() => props.market))
 
-const showEmpty = computed(() => {
-  return (
+const isEmpty = computed(
+  () =>
     !props.market ||
     props.worstPriceWithSlippage.eq(0) ||
     new BigNumberInBase(props.amount || 0).isNaN()
-  )
-})
+)
 
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
@@ -57,7 +56,7 @@ const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
 <template>
   <div>
     <div v-if="isLoading" class="flex items-center justify-end gap-2">
-      <AppSpinner sm />
+      <AppSpinner is-sm />
       <span class="text-xs text-gray-500">{{
         $t('trade.swap.fetching_price')
       }}</span>
@@ -65,7 +64,7 @@ const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
 
     <div class="space-y-3 mt-2">
       <PartialsSwapSummaryRow :title="`${$t('account.fee')}`">
-        <span v-if="showEmpty">&mdash;</span>
+        <span v-if="isEmpty">&mdash;</span>
         <span v-else>≈ {{ feeToFormat }} {{ market?.quoteToken.symbol }} </span>
       </PartialsSwapSummaryRow>
     </div>

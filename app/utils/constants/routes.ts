@@ -32,7 +32,8 @@ export const getRoutes = (network: Network, env: string) => {
     'orai-usdt',
     'kava-usdt',
     'usdtkv-usdt',
-    'tia-usdt'
+    'tia-usdt',
+    'usdy-usdt'
   ]
 
   const perpetuals = [
@@ -48,7 +49,8 @@ export const getRoutes = (network: Network, env: string) => {
     'sei-usdt-perp',
     'axl-usdt-perp',
     'btc-usdtkv-perp',
-    'eth-usdtkv-perp'
+    'eth-usdtkv-perp',
+    'pyth-usdt-perp'
   ]
 
   const gridTradingSpot = ['inj-usdt', 'atom-usdt', 'tia-usdt']
@@ -62,7 +64,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_TESTNET) {
-    spot.push('proj-inj')
+    spot.push('projx-inj')
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')
     spot.push('demo-usdt')
@@ -116,7 +118,13 @@ export const getRoutes = (network: Network, env: string) => {
   const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
 
   if (IS_STAGING) {
-    spot.push(...usdcConversionModalMarkets, 'ldo-usdcet', 'usdtkv-usdt')
+    spot.push(
+      ...usdcConversionModalMarkets,
+      'ldo-usdcet',
+      'usdtkv-usdt',
+      'kuji-usdt',
+      'pyth-usdt'
+    )
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 

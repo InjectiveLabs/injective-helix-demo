@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
@@ -12,7 +12,7 @@ const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 
 defineProps({
-  hideBalances: Boolean
+  isHideBalances: Boolean
 })
 
 const stakedAmount = computed(() => {
@@ -79,7 +79,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
             {{ $t('account.staked') }}:
           </p>
 
-          <span v-if="hideBalances" class="font-mono text-sm text-right">
+          <span v-if="isHideBalances" class="font-mono text-sm text-right">
             {{ HIDDEN_BALANCE_DISPLAY }} INJ
           </span>
 
@@ -110,7 +110,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
     <td>
       <div class="flex justify-end">
         <div class="flex justify-end">
-          <span v-if="hideBalances" class="font-mono text-sm text-right">
+          <span v-if="isHideBalances" class="font-mono text-sm text-right">
             {{ HIDDEN_BALANCE_DISPLAY }} USD
           </span>
 

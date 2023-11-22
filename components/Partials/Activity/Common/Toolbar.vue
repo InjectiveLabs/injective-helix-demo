@@ -147,12 +147,12 @@ const typeOptions = computed(() => {
   return result
 })
 
-function handleClearFilters() {
+function onClearFilters() {
   resetForm()
   useEventBus<string>(BusEvents.ActivityFilterUpdate).emit()
 }
 
-function handleUpdate() {
+function onUpdate() {
   useEventBus<string>(BusEvents.ActivityFilterUpdate).emit()
 }
 </script>
@@ -165,7 +165,7 @@ function handleUpdate() {
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :tokens="tokens"
-        @update:model-value="handleUpdate"
+        @update:model-value="onUpdate"
       />
 
       <AppSelectField
@@ -174,9 +174,9 @@ function handleUpdate() {
         class="col-span-2 sm:col-span-1"
         :options="typeOptions"
         :placeholder="$t('activity.common.type')"
-        clearable
+        is-clearable
         data-cy="universal-table-filter-by-type-drop-down"
-        @update:model-value="handleUpdate"
+        @update:model-value="onUpdate"
       />
 
       <AppSelectField
@@ -185,9 +185,9 @@ function handleUpdate() {
         class="col-span-2 sm:col-span-1"
         :options="sideOptions"
         :placeholder="$t('trade.side')"
-        clearable
+        is-clearable
         data-cy="universal-table-filter-by-asset-input"
-        @update:model-value="handleUpdate"
+        @update:model-value="onUpdate"
       />
 
       <div
@@ -197,8 +197,8 @@ function handleUpdate() {
         <AppButton
           v-if="hasActiveFilters"
           class="border-gray-500 text-gray-500 px-3"
-          sm
-          @click="handleClearFilters"
+          is-sm
+          @click="onClearFilters"
         >
           <div class="items-center flex gap-1">
             <BaseIcon name="close" is-md />
@@ -206,7 +206,7 @@ function handleUpdate() {
           </div>
         </AppButton>
 
-        <PartialsActivityRefreshButton @click="handleClearFilters" />
+        <PartialsActivityRefreshButton @click="onClearFilters" />
       </div>
     </div>
 

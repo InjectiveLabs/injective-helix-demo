@@ -2,8 +2,8 @@
 import { DropdownOptionWithToken } from '@/types'
 
 const props = defineProps({
-  clearable: Boolean,
-  searchable: Boolean,
+  isClearable: Boolean,
+  isSearchable: Boolean,
   isDisabled: Boolean,
 
   options: {
@@ -98,7 +98,7 @@ function handleClear() {
 
         <div v-if="!isDisabled" class="flex items-center gap-2">
           <BaseIcon
-            v-if="clearable && selectedItem"
+            v-if="isClearable && selectedItem"
             name="close"
             class="min-w-4 w-4 h-4 text-gray-500 hover:text-white"
             @click.stop="handleClear"
@@ -120,11 +120,11 @@ function handleClear() {
       <slot name="list">
         <div class="p-2 py-4 max-h-xs space-y-3" @click.stop>
           <AppInput
-            v-if="searchable"
+            v-if="isSearchable"
             v-model="search"
             class="text-white"
-            sm
-            bg-transparent
+            is-sm
+            is-bg-transparent
             :placeholder="$t('common.search')"
           />
 
@@ -136,12 +136,12 @@ function handleClear() {
               :value="item.value"
               @update:modelValue="close"
             >
-              <template #default="{ active }">
-                <slot name="option" :option="item" :active="active">
+              <template #default="{ isActive }">
+                <slot name="option" :option="item" :is-active="isActive">
                   <div
                     :class="{
-                      'text-white': !active,
-                      'text-blue-500 group-hover:text-white': active
+                      'text-white': !isActive,
+                      'text-blue-500 group-hover:text-white': isActive
                     }"
                   >
                     <span>

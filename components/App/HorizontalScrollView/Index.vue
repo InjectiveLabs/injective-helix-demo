@@ -16,11 +16,11 @@ onMounted(() => {
   nextTick(modifyViewCount)
 })
 
-function handleResize() {
+function resize() {
   modifyViewCount()
 }
 
-function handleScroll(e: WheelEvent): void {
+function scroll(e: WheelEvent): void {
   if (hasFocus.value && views.value) {
     const total = views.value.scrollWidth - views.value.clientWidth
     const deltaX = e.deltaX
@@ -62,7 +62,7 @@ function scrollToIndex(index: number) {
   const padding = totalPadding / (viewCount.value - 1)
   const newOffsetX = views.value.clientWidth * index + padding * index
 
-  modifyAnimationClasses()
+  animate()
 
   currentOffsetX.value = newOffsetX
   lastKnownOffsetX.value = newOffsetX
@@ -127,7 +127,7 @@ function modifyIndicators(offsetX: number) {
   viewIndex.value = Math.round((offsetX / total) * viewCount.value) || 0
 }
 
-function modifyAnimationClasses() {
+function animate() {
   if (!views.value) {
     return
   }
@@ -177,8 +177,8 @@ function onClickIndicator(index: number) {
   scrollToIndex(index)
 }
 
-useEventListener(window, 'wheel', handleScroll)
-useEventListener(window, 'resize', handleResize)
+useEventListener(window, 'wheel', scroll)
+useEventListener(window, 'resize', resize)
 
 const { start, stop } = useTimeoutFn(() => {
   if (!views.value) {
@@ -235,7 +235,7 @@ const { pause, isActive } = useIntervalFn(() => {
       <AppHorizontalScrollViewIndicator
         v-for="index in viewCount"
         :key="`horizontal-scroll-view-indicator-${index}`"
-        :active="viewIndex === index - 1"
+        :is-active="viewIndex === index - 1"
         @click="onClickIndicator(index - 1)"
       />
     </div>

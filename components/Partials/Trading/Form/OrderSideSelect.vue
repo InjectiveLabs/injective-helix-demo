@@ -19,7 +19,7 @@ const { value: orderSide } = useStringField({
   rule: 'required'
 })
 
-function handleSelectOrderSide() {
+function onSelectOrderSide() {
   setFormValues(
     {
       [TradeField.ProportionalPercentage]: 0
@@ -37,7 +37,7 @@ function handleSelectOrderSide() {
       v-model="orderSide"
       class="w-1/2 bg-gray-1000 shadow-sm"
       :value="orderSideItem"
-      @update:modelValue="handleSelectOrderSide"
+      @update:modelValue="onSelectOrderSide"
     >
       <template #default="{ isActive }">
         <span

@@ -42,7 +42,7 @@ const activeType = ref('')
 const search = ref('')
 const sortBy = ref(MarketHeaderType.Volume)
 const isAscending = ref(false)
-const showLowVolumeMarkets = ref(false)
+const isLowVolumeMarketsVisible = ref(false)
 
 const recentlyExpiredMarkets = computed(
   () => derivativeStore.recentlyExpiredMarkets
@@ -66,7 +66,7 @@ const filteredMarkets = computed(() =>
     const isOlpmarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
     const isLowVolumeMarket = search.value
       ? true
-      : showLowVolumeMarkets.value ||
+      : isLowVolumeMarketsVisible.value ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
     return (
@@ -193,7 +193,7 @@ function prefillFromQueryParams() {
         v-model:active-category="activeCategory"
         v-model:active-quote="activeQuote"
         v-model:active-type="activeType"
-        v-model:show-low-volume-markets="showLowVolumeMarkets"
+        v-model:is-low-volume-markets-visible="isLowVolumeMarketsVisible"
         v-model:search="search"
       />
 
@@ -290,7 +290,7 @@ function prefillFromQueryParams() {
       </CommonTableHeader>
 
       <CommonTableBody
-        :show-empty="sortedMarkets.length === 0"
+        :is-empty="sortedMarkets.length === 0"
         class="bg-transparent"
       >
         <PartialsMarketsRow

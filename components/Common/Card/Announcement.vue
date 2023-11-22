@@ -11,12 +11,12 @@ defineProps({
 
 <template>
   <CommonCard
-    md
+    is-md
     :class="
       !slots.illustration ? 'bg-gray-100 max-w-[375px]' : 'bg-transparent'
     "
     :bg-color="'bg-gray-150'"
-    :no-padding="slots.illustration ? true : false"
+    :is-no-padding="slots.illustration ? true : false"
     class="text-xl relative"
   >
     <NuxtLink

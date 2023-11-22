@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+<script lang="ts" setup>
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { ActivitySubPage } from '@/types'
 
 const router = useRouter()

@@ -73,16 +73,16 @@ function onNetworkChange(network: string) {
       <template #selected-option="{ option }">
         <PartialsBridgeFormNetworkSelectOption
           v-if="option"
-          selected
+          is-selected
           :option="option"
         />
       </template>
 
-      <template #option="{ option, active }">
+      <template #option="{ option, isActive }">
         <PartialsBridgeFormNetworkSelectOption
           v-bind="{
             option,
-            active
+            isActive
           }"
         />
       </template>

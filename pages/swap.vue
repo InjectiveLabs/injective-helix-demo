@@ -253,13 +253,11 @@ function resetQueryError() {
 </script>
 
 <template>
-  <AppHocLoading :status="status" class="h-full">
-    <div class="w-full max-w-xl mx-auto min-h-screen overflow-auto">
-      <div class="my-10">
-        <PartialsLiquidityBotsSpotCreateCommonTiaBanner is-swap-page />
-      </div>
-
-      <div class="bg-gray-850 rounded-lg mx-auto p-6 h-fit">
+  <AppHocLoading :status="status" class="h-full container">
+    <div
+      class="w-full px-4 max-w-xl mx-auto h-full overflow-auto flex items-center justify-center"
+    >
+      <div class="bg-gray-850 rounded-lg mx-auto p-6 h-fit w-full">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="font-bold text-lg">
             {{ $t('trade.swap.swap') }}
@@ -274,8 +272,8 @@ function resetQueryError() {
           }"
           @update:outputQuantity="getOutputQuantity"
           @update:inputQuantity="getInputQuantity"
-          @reset:queryError="resetQueryError"
-          @reset:form="resetFormValues"
+          @queryError:reset="resetQueryError"
+          @form:reset="resetFormValues"
         />
 
         <PartialsSwapSummary

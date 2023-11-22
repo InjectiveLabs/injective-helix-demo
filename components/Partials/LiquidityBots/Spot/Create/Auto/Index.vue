@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
@@ -14,10 +14,6 @@ import { pricesToEma } from '@/app/utils/helpers'
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
-const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
-)
-
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
@@ -25,7 +21,11 @@ const LOWER_BOUND_PERCENTAGE = 0.94
 const UPPER_BOUND_PERCENTAGE = 1.06
 const SMOOTHING = 3
 
-const isAssetReBalancingChecked = ref(true)
+const isAssetRebalancingChecked = ref(true)
+
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+)
 
 const upperEma = computed(() => {
   const marketHistory = exchangeStore.marketsHistory.find(
@@ -71,7 +71,7 @@ const upperPrice = computed(() => {
     InvestmentTypeGst.BaseAndQuote
 
   if (
-    !isAssetReBalancingChecked.value &&
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -82,7 +82,7 @@ const upperPrice = computed(() => {
   }
 
   if (
-    !isAssetReBalancingChecked.value &&
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -92,7 +92,7 @@ const upperPrice = computed(() => {
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  return upperEma.value.toString()
+  return upperEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 })
 
 const lowerPrice = computed(() => {
@@ -101,7 +101,7 @@ const lowerPrice = computed(() => {
     InvestmentTypeGst.BaseAndQuote
 
   if (
-    !isAssetReBalancingChecked.value &&
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
@@ -112,7 +112,7 @@ const lowerPrice = computed(() => {
   }
 
   if (
-    !isAssetReBalancingChecked.value &&
+    !isAssetRebalancingChecked.value &&
     isSingleSided &&
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
@@ -122,7 +122,7 @@ const lowerPrice = computed(() => {
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   }
 
-  return lowerEma.value.toString()
+  return lowerEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
@@ -146,7 +146,6 @@ function setValuesFromAuto() {
         market: gridStrategyStore.spotMarket,
         upperPrice,
         lowerPrice,
-
         grids: grids.toFixed()
       }"
       class="mb-4"
@@ -164,15 +163,15 @@ function setValuesFromAuto() {
         "
         class="flex items-center"
       >
-        <AppCheckbox v-model="isAssetReBalancingChecked" />
+        <AppCheckbox v-model="isAssetRebalancingChecked" />
 
         <p class="mr-2 text-xs font-semibold">
-          {{ $t('liquidity.allowAssetReBalance') }}
+          {{ $t('liquidity.allowAssetRebalance') }}
         </p>
 
         <AppTooltip
           v-bind="{
-            content: $t('liquidity.allowAssetReBalanceTooltip')
+            content: $t('liquidity.allowAssetRebalanceTooltip')
           }"
         />
       </div>

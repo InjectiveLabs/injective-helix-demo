@@ -10,9 +10,9 @@ const props = defineProps({
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
-const lastUpdated = computed(() => {
-  return props.date ? format(props.date, DATE_FORMAT) : ''
-})
+const lastUpdated = computed(() =>
+  props.date ? format(props.date, DATE_FORMAT) : ''
+)
 </script>
 
 <template>
@@ -21,8 +21,10 @@ const lastUpdated = computed(() => {
       {{ $t('campaign.overall') }}
     </button>
 
-    <p v-if="lastUpdated" class="text-gray-300 p-2 text-xs">
-      {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
-    </p>
+    <div class="flex space-x-4 items-end mb-2">
+      <p v-if="lastUpdated" class="text-gray-300 text-xs">
+        {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
+      </p>
+    </div>
   </div>
 </template>

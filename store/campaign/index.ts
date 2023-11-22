@@ -4,11 +4,18 @@ import {
   Campaign,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary
+  GuildCampaignSummary,
+  MsgExecuteContractCompat,
+  toBase64,
+  fromBase64
 } from '@injectivelabs/sdk-ts'
 import { joinGuild, createGuild } from '@/store/campaign/message'
-import { CAMPAIGN_ID, GUILD_CONTRACT_ADDRESS } from 'app/utils/constants'
-import { indexerGrpcCampaignApi } from '@/app/Services'
+import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import {
+  msgBroadcastClient,
+  indexerGrpcCampaignApi,
+  chainGrpcWasmApi
+} from '@/app/Services'
 import { GuildSortBy } from '@/types'
 
 type CampaignStoreState = {
@@ -45,14 +52,22 @@ export const useCampaignStore = defineStore('campaign', {
     joinGuild,
     createGuild,
 
-    async fetchCampaign({ skip, limit }: { skip?: number; limit?: number }) {
+    async fetchCampaign({
+      skip,
+      limit,
+      campaignId
+    }: {
+      skip?: number
+      limit?: number
+      campaignId: string
+    }) {
       const campaignStore = useCampaignStore()
 
       const { campaign, paging, users } =
         await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
-          campaignId: CAMPAIGN_ID
+          campaignId
         })
 
       campaignStore.$patch({
@@ -62,7 +77,7 @@ export const useCampaignStore = defineStore('campaign', {
       })
     },
 
-    async fetchCampaignOwnerInfo() {
+    async fetchCampaignOwnerInfo(campaignId: string) {
       const walletStore = useWalletStore()
       const campaignStore = useCampaignStore()
 
@@ -73,7 +88,7 @@ export const useCampaignStore = defineStore('campaign', {
       const { users } = await indexerGrpcCampaignApi.fetchCampaign({
         limit: 1,
         skip: '0',
-        campaignId: CAMPAIGN_ID,
+        campaignId,
         accountAddress: walletStore.injectiveAddress
       })
 
@@ -163,11 +178,11 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async pollGuildDetails({
-      skip,
+      page,
       limit,
       guildId
     }: {
-      skip?: number
+      page?: number
       limit?: number
       guildId: string
     }) {
@@ -175,14 +190,14 @@ export const useCampaignStore = defineStore('campaign', {
 
       const { members, guildInfo, paging } =
         await indexerGrpcCampaignApi.fetchGuildMembers({
-          skip,
           limit,
           guildId,
+          skip: 0,
           includeGuildInfo: true,
           campaignContract: GUILD_CONTRACT_ADDRESS
         })
 
-      if (skip === 0) {
+      if (page === 1) {
         campaignStore.$patch({
           guildMembers: members
         })
@@ -192,6 +207,55 @@ export const useCampaignStore = defineStore('campaign', {
         guild: guildInfo,
         totalGuildMember: paging?.total || 0
       })
+    },
+
+    async claimReward(contractAddress: string) {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      await appStore.queue()
+      await walletStore.validate()
+
+      if (!walletStore.address) {
+        return
+      }
+
+      const message = MsgExecuteContractCompat.fromJSON({
+        sender: walletStore.injectiveAddress,
+        contractAddress,
+        exec: {
+          action: 'claim_reward',
+          msg: {}
+        }
+      })
+
+      const reward = await msgBroadcastClient.broadcast({
+        msgs: [message],
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      return reward
+    },
+
+    async fetchUserClaimedStatus(contractAddress: string) {
+      const walletStore = useWalletStore()
+
+      if (!walletStore.injectiveAddress || !contractAddress) {
+        return false
+      }
+
+      const response = (await chainGrpcWasmApi.fetchSmartContractState(
+        contractAddress,
+        toBase64({
+          has_claimed: {
+            user: walletStore.injectiveAddress
+          }
+        })
+      )) as unknown as { data: string }
+
+      const userHasClaimed = fromBase64(response.data) as unknown as boolean
+
+      return userHasClaimed
     },
 
     reset() {

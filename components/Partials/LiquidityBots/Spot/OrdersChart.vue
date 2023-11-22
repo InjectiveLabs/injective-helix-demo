@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, OrderState } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import ApexChart, { ApexOptions } from 'apexcharts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from 'app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 type OrderAnnotation = {
   y: number
@@ -117,8 +117,8 @@ const minMaxRange = computed(() => {
   )
 
   return {
-    min: Math.min(...range, lastTradedPrice.value.toNumber()) * 0.99,
-    max: Math.max(...range, lastTradedPrice.value.toNumber()) * 1.01
+    min: Math.min(...range) * 0.99,
+    max: Math.max(...range) * 1.01
   }
 })
 
@@ -214,7 +214,7 @@ watch(
 </script>
 
 <template>
-  <div v-show="subaccountMarketOrders.length > 0">
+  <div>
     <div class="flex justify-end">
       <div class="mt-4 px-1 py-0.5 bg-black rounded overflow-hidden">
         <button

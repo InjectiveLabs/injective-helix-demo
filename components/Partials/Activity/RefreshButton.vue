@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 const routeName = route.name as string
 
-const showRefreshBtn = computed(() => {
+const isRefreshButtonVisible = computed(() => {
   if (routeName === ActivitySubPage.DerivativesOrderHistory) {
     const latestVisibleOrders = derivativeStore.subaccountOrderHistory
 
@@ -63,18 +63,18 @@ const showRefreshBtn = computed(() => {
   }
 })
 
-function handleRefresh() {
+function onRefresh() {
   emit('click')
 }
 </script>
 
 <template>
   <AppButton
-    v-if="showRefreshBtn"
+    v-if="isRefreshButtonVisible"
     name="exchange"
     class="border-blue-500 text-blue-500 px-3"
-    sm
-    @click="handleRefresh"
+    is-sm
+    @click="onRefresh"
   >
     {{
       routeName === ActivitySubPage.DerivativesTradeHistory ||

@@ -22,14 +22,13 @@ definePageMeta({
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
-
       if (
         isCountryRestrictedForPerpetualMarkets(
           appStore.userState.geoLocation.browserCountry ||
             appStore.userState.geoLocation.country
         )
       ) {
-        modalStore.openModal(Modal.FuturesMarketRestricted)
+        modalStore.openModal(Modal.MarketRestricted)
       }
     }
   ]
@@ -83,9 +82,9 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
 
   marketIsExpired.value =
     expiryFuturesMarket.expiryFuturesMarketInfo.expirationTimestamp <=
-    Date.now() / 1000
+    Math.floor(Date.now() / 1000)
 
-  if (marketIsExpired) {
+  if (marketIsExpired.value) {
     modalStore.openModal(Modal.MarketExpired)
   }
 }
@@ -191,10 +190,11 @@ useIntervalFn(() => {
 
     <template #modals>
       <div>
-        <ModalsFuturesRestricted />
+        <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
         <ModalsAddMargin />
         <ModalsMarketExpired
-          v-if="market && marketIsExpired"
+          v-if="market"
+          :key="market.marketId"
           :market="market"
         />
       </div>
