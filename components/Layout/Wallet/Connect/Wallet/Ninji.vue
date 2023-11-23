@@ -35,6 +35,7 @@ function connect() {
 
     <template #title>
       {{ $t('connect.ninji') }}
+      <span class="text-2xs ml-2 text-primary-500">Beta</span>
     </template>
 
     <template #description>
