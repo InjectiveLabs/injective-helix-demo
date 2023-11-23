@@ -53,7 +53,8 @@ export default {
 
     leap: 'Leap',
     cosmostation: 'Cosmostation',
-    trustWallet: 'Trust Wallet'
+    trustWallet: 'Trust Wallet',
+    ninji: 'Ninji'
   },
 
   memo: {
