@@ -354,6 +354,27 @@ export const useWalletStore = defineStore('wallet', {
       await walletStore.onConnect()
     },
 
+    async connectNinji() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.Ninji)
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getEthereumAddress(injectiveAddress)
+
+      walletStore.$patch({
+        injectiveAddress,
+        addressConfirmation,
+        address: ethereumAddress,
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
     async connectCosmostation() {
       const walletStore = useWalletStore()
 
