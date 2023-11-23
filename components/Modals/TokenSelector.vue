@@ -15,6 +15,11 @@ function onCloseModal() {
   modalStore.closeModal(props.modal)
 }
 </script>
+<script lang="ts">
+export default {
+  inheritAttrs: false
+}
+</script>
 
 <template>
   <AppModal
@@ -31,8 +36,8 @@ function onCloseModal() {
 
     <AppSelectTokenList
       is-balance-visible
-      v-bind="$attrs"
       class="overflow-y-auto"
+      v-bind="$attrs"
       @close="onCloseModal"
     />
   </AppModal>

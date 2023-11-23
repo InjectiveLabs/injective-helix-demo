@@ -3,8 +3,8 @@ import nitroConfig from './nitro'
 import { tokenMetadata } from './../../scripts/scripts/tokens'
 
 export default {
-  'build:done'() {
-    tokenMetadata()
+  async 'build:done'() {
+    await tokenMetadata()
   },
 
   ...nitroConfig

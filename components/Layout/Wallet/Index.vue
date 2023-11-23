@@ -115,6 +115,7 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
+      <LayoutWalletConnectWalletNinji />
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />

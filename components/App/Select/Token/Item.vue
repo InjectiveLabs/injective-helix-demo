@@ -4,6 +4,7 @@ import type { Token } from '@injectivelabs/token-metadata'
 const props = defineProps({
   isSm: Boolean,
   isXl: Boolean,
+  isLoading: Boolean,
   isLgTokenIcon: Boolean,
   isShowTokenName: Boolean,
   isBalanceVisible: Boolean,
@@ -59,7 +60,7 @@ function click() {
         </span>
       </div>
     </div>
-
-    <div v-if="isBalanceVisible">{{ balanceToString }}</div>
+    <AppSpinner v-if="isLoading" class="relative" is-sm />
+    <div v-else-if="isBalanceVisible">{{ balanceToString }}</div>
   </div>
 </template>
