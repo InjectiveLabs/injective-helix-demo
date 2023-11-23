@@ -288,8 +288,9 @@ export default {
           <ModalsTokenSelector
             v-model="denomValue"
             v-bind="{
-              balances: options,
-              modal
+              modal,
+              ...$attrs,
+              balances: options
             }"
           />
         </div>

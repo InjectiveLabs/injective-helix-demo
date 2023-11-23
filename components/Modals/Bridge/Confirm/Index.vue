@@ -2,7 +2,6 @@
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
-  BRIDGE_FEE_IN_USD,
   BalanceWithTokenAndPrice,
   BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
@@ -46,6 +45,7 @@ const { balanceWithToken } = useBridgeBalance(formValues)
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
+const ETH_BRIDGE_FEE_IN_USD = 20
 const IBC_BRIDGE_FEE_IN_USD = 0
 
 const status = reactive(new Status())
@@ -107,7 +107,7 @@ const ethBridgeFee = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
+  return new BigNumberInBase(ETH_BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
 })
 
 const ethBridgeFeeToString = computed(() =>
