@@ -131,7 +131,7 @@ export const useCampaignStore = defineStore('campaign', {
         return { user: users[0], campaign }
       })
 
-      const filteredRewards = rewards.filter((user) => !!user)
+      const filteredRewards = rewards.filter((reward) => reward.user)
 
       const claimedCampaignRewards = await awaitForAll(
         filteredRewards,
@@ -151,9 +151,10 @@ export const useCampaignStore = defineStore('campaign', {
       )
 
       const campaignsInfo = rewards.map((rew) => rew.campaign)
+      const ownerRewards = filteredRewards.map((rew) => rew.user)
 
       campaignStore.$patch({
-        ownerRewards: filteredRewards.map((rew) => rew.user),
+        ownerRewards,
         campaignsInfo,
         claimedRewards: claimedCampaignRewards.filter((r) => !!r)
       })
