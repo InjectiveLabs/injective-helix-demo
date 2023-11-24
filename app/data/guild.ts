@@ -1,5 +1,5 @@
 import { IS_TESTNET } from '@/app/utils/constants'
-import { Epoch } from '@/types'
+import { Epoch, CampaignRound } from '@/types'
 
 export const thumbnailMap = {
   1: '/guild/thumbnail/shield.svg',
@@ -47,13 +47,89 @@ const mainnetEpochs: Epoch[] = [
 const testnetEpochs: Epoch[] = [
   {
     epoch: 1,
-    campaignId: 'spot-grid-inj-usdt',
-    startDate: 1697295600,
+    campaignId: 'spot-grid-tia-usdt-test-1',
+    startDate: 1699974000,
     endDate: 1699974000,
     baseRewards: '1000',
     quoteRewards: '10000',
-    scAddress: 'inj1tze0el9kvnw06mha3gty6fqcmn2t7efqpzz6pj'
+    scAddress: ''
   }
 ]
 
 export const LP_EPOCHS = IS_TESTNET ? testnetEpochs : mainnetEpochs
+
+// ---------
+
+const testnetCampaignRounds: CampaignRound[] = [
+  {
+    round: 1,
+    startDate: 1698753600,
+    endDate: 1699974000,
+    campaigns: [
+      {
+        rewards: [
+          { symbol: 'INJ', amount: '1000' },
+          { symbol: 'TIA', amount: '10000' }
+        ],
+        campaignId: 'spot-grid-tia-usdt-test-1',
+        scAddress: 'inj1u5hslmdxksvu04d5wk8ec5ewxgpnrs5jxl75rm',
+        marketSlug: 'tia-usdt'
+      }
+    ]
+  },
+  {
+    round: 2,
+    startDate: 1699974000,
+    endDate: 1702566000,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-inj-usdt-test-1',
+        scAddress: 'inj1tze0el9kvnw06mha3gty6fqcmn2t7efqpzz6pj',
+        marketSlug: 'inj-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '500' },
+          { symbol: 'TIA', amount: '5000' }
+        ]
+      }
+    ]
+  }
+]
+
+const mainnetCampaignRounds: CampaignRound[] = [
+  {
+    round: 1,
+    startDate: 1698753600,
+    endDate: 1699974000,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt',
+        scAddress: 'inj1u5hslmdxksvu04d5wk8ec5ewxgpnrs5jxl75rm',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '1000' },
+          { symbol: 'TIA', amount: '10000' }
+        ]
+      }
+    ]
+  },
+  {
+    round: 2,
+    startDate: 1699974000,
+    endDate: 1702566000,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-2',
+        scAddress: '',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '500' },
+          { symbol: 'TIA', amount: '4000' }
+        ]
+      }
+    ]
+  }
+]
+
+export const CAMPAIGN_LP_ROUNDS = IS_TESTNET
+  ? testnetCampaignRounds
+  : mainnetCampaignRounds

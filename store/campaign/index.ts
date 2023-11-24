@@ -9,6 +9,7 @@ import {
   toBase64,
   fromBase64
 } from '@injectivelabs/sdk-ts'
+import { awaitForAll } from '@injectivelabs/utils'
 import { joinGuild, createGuild } from '@/store/campaign/message'
 import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import {
@@ -16,20 +17,24 @@ import {
   indexerGrpcCampaignApi,
   chainGrpcWasmApi
 } from '@/app/Services'
-import { GuildSortBy } from '@/types'
+import { CampaignWithSc, GuildSortBy } from '@/types'
+import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
 
 type CampaignStoreState = {
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
+  campaignsInfo: Campaign[]
   totalUserCount: number
   totalGuildMember: number
   userGuildInfo?: GuildMember
   guildMembers: GuildMember[]
   campaignUsers: CampaignUser[]
   ownerCampaignInfo?: CampaignUser
+  ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
+  claimedRewards: string[]
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -41,9 +46,12 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildsByVolume: [],
   totalGuildMember: 0,
   campaign: undefined,
+  campaignsInfo: [],
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
-  guildCampaignSummary: undefined
+  ownerRewards: [],
+  guildCampaignSummary: undefined,
+  claimedRewards: []
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -94,6 +102,60 @@ export const useCampaignStore = defineStore('campaign', {
 
       campaignStore.$patch({
         ownerCampaignInfo: users[0]
+      })
+    },
+
+    async fetchCampaignRewardsForUser() {
+      const walletStore = useWalletStore()
+      const campaignStore = useCampaignStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      const campaigns = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithSc[]>(
+        (campaigns, round) => {
+          return [...campaigns, ...round.campaigns]
+        },
+        []
+      )
+
+      const rewards = await awaitForAll(campaigns, async (campaignWithSc) => {
+        const { users, campaign } = await indexerGrpcCampaignApi.fetchCampaign({
+          limit: 1,
+          skip: '0',
+          campaignId: campaignWithSc.campaignId,
+          accountAddress: walletStore.injectiveAddress
+        })
+
+        return { user: users[0], campaign }
+      })
+
+      const filteredRewards = rewards.filter((user) => !!user)
+
+      const claimedCampaignRewards = await awaitForAll(
+        filteredRewards,
+        async (rew) => {
+          const campaignWithSc = campaigns.find(
+            (c) => c.campaignId === rew.campaign?.campaignId
+          )
+
+          const hasClaimed = campaignWithSc
+            ? await campaignStore.fetchUserClaimedStatus(
+                campaignWithSc.scAddress
+              )
+            : false
+
+          return hasClaimed ? rew.campaign?.campaignId : undefined
+        }
+      )
+
+      const campaignsInfo = rewards.map((rew) => rew.campaign)
+
+      campaignStore.$patch({
+        ownerRewards: filteredRewards.map((rew) => rew.user),
+        campaignsInfo,
+        claimedRewards: claimedCampaignRewards.filter((r) => !!r)
       })
     },
 

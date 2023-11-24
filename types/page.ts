@@ -55,3 +55,8 @@ export enum TradeSubPage {
   Derivatives = 'derivatives-derivative',
   BinaryOption = 'binary-options-binaryOption'
 }
+
+export enum LiquidityRewardsPage {
+  Home = 'lp-rewards',
+  CampaignDetails = 'lp-rewards-campaign'
+}

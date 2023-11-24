@@ -1,0 +1,167 @@
+<script setup lang="ts">
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { addDays } from 'date-fns'
+import { CampaignWithSc } from '@/types'
+
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
+
+const props = defineProps({
+  campaignWithSc: {
+    type: Object as PropType<CampaignWithSc>,
+    required: true
+  }
+})
+
+const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
+const campaignStore = useCampaignStore()
+
+const market = computed(() =>
+  spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
+)
+
+const token = computed(() =>
+  tokenStore.tokens.find(
+    ({ coinGeckoId }) => market.value?.baseToken.coinGeckoId === coinGeckoId
+  )
+)
+
+const marketVolume = computed(
+  () =>
+    spotStore.marketsSummary.find((m) => m.marketId === market.value?.marketId)
+      ?.volume
+)
+
+const campaignUserInfo = computed(() =>
+  campaignStore.ownerRewards.find(
+    (r) => r.campaignId === props.campaignWithSc.campaignId
+  )
+)
+const campaign = computed(() =>
+  campaignStore.campaignsInfo.find(
+    (c) => c.campaignId === props.campaignWithSc.campaignId
+  )
+)
+
+const estRewardsInPercentage = computed(() => {
+  if (
+    !campaignUserInfo.value ||
+    !campaign.value ||
+    new BigNumberInBase(campaign.value?.totalScore).isZero()
+  ) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(campaignUserInfo.value.score)
+    .dividedBy(campaign.value?.totalScore)
+    .times(100)
+})
+
+const rewards = computed(() => {
+  return props.campaignWithSc.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(
+      ({ symbol }) => symbol === reward.symbol
+    )
+
+    const amount = new BigNumberInBase(estRewardsInPercentage.value)
+      .dividedBy(100)
+      .multipliedBy(reward.amount || 0)
+
+    const amountInUsd = token
+      ? new BigNumberInBase(amount).times(
+          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+        )
+      : ZERO_IN_BASE
+
+    return {
+      amount,
+      symbol: reward.symbol,
+      amountInUsd
+    }
+  })
+})
+
+const totalAmountInUsd = computed(() =>
+  rewards.value.reduce(
+    (total, reward) => total.plus(reward.amountInUsd),
+    ZERO_IN_BASE
+  )
+)
+
+const round = computed(
+  () =>
+    CAMPAIGN_LP_ROUNDS.find((r) =>
+      r.campaigns.find((c) => c.campaignId === props.campaignWithSc.campaignId)
+    )!
+)
+
+const claimDate = computed(() => addDays(round.value.endDate * 1000, 1))
+const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
+
+const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
+  totalAmountInUsd,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: marketVolumeToString } = useBigNumberFormatter(
+  marketVolume,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+</script>
+
+<template>
+  <tr v-if="market">
+    <td class="text-left">
+      <div class="flex items-center space-x-2">
+        <div v-if="token">
+          <CommonTokenIcon v-bind="{ token }" />
+        </div>
+        <div>
+          <p class="text-sm font-bold">{{ market.ticker }}</p>
+          <p class="text-xs text-gray-500">
+            {{ market.baseToken.name }}
+          </p>
+        </div>
+      </div>
+    </td>
+    <td>
+      <div class="tracking-wider">{{ marketVolumeToString }} USD</div>
+    </td>
+    <td>
+      <div>//</div>
+    </td>
+    <td class="text-left w-72">
+      <div>
+        <p class="font-semibold">{{ totalAmountInUsdToString }} USD</p>
+        <div class="flex items-center space-x-2">
+          <PartialsLiquidityCommonTokenAmount
+            v-for="({ amount, symbol }, i) in rewards"
+            :key="`${symbol}-${symbol}`"
+            v-bind="{ amount: amount.toFixed(), symbol, index: i }"
+          />
+        </div>
+      </div>
+    </td>
+    <td class="w-40">
+      <PartialsLiquidityCommonClaimButton
+        v-bind="{
+          scAddress: campaignWithSc.scAddress,
+          isClaimable,
+          campaignId: campaignWithSc.campaignId
+        }"
+      />
+    </td>
+  </tr>
+</template>
+
+<style>
+td {
+  @apply px-2 py-2;
+}
+</style>
