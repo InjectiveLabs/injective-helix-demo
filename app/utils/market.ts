@@ -9,7 +9,11 @@ import {
   BigNumberInBase,
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
-import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
+import {
+  DerivativeMarket,
+  ExpiryFuturesMarket,
+  PriceLevel
+} from '@injectivelabs/sdk-ts'
 import {
   upcomingMarkets,
   deprecatedMarkets,
@@ -242,6 +246,12 @@ export const getFormattedMarketsHistoryChartData = (
 
     return [xAxisTime, yAxisHolcAveragePrice]
   })
+}
+
+export const marketIsInactive = (market: DerivativeMarket) => {
+  const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
+
+  return INACTIVE_MARKET_TICKERS.includes(market.ticker)
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {

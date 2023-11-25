@@ -13,7 +13,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { Change, TradeClickOrigin } from '@/types'
+import { Change, TradeClickOrigin, MarketStatus } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { stableCoinDenoms } from '@/app/data/token'
 
@@ -143,7 +143,7 @@ function tradeClickedTrack() {
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center gap-4">
       <div
         class="3md:hidden text-blue-500 mr-3 cursor-pointer"
-        data-cy="markets-favourite-button"
+        data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
         <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
@@ -179,6 +179,10 @@ function tradeClickedTrack() {
             :market="market"
             class="visible sm:invisible lg:visible ml-auto"
           />
+          <PartialsCommonMarketInactive
+            v-if="market.marketStatus === MarketStatus.Paused"
+            class="visible sm:invisible lg:visible ml-auto"
+          />
         </div>
       </NuxtLink>
     </span>
@@ -187,7 +191,10 @@ function tradeClickedTrack() {
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
         <span
-          v-if="!lastTradedPrice.isNaN()"
+          v-if="
+            !lastTradedPrice.isNaN() ||
+            market.marketStatus !== MarketStatus.Paused
+          "
           class=""
           :class="{
             'text-green-500': lastPriceChange === Change.Increase,
