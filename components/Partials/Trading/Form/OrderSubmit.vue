@@ -8,7 +8,7 @@ import {
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { Modal, TradeField, TradeForm } from '@/types'
+import { MarketStatus, Modal, TradeField, TradeForm } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -124,6 +124,10 @@ const isDisabled = computed(() => {
     return true
   }
 
+  if (props.market.marketStatus === MarketStatus.Paused) {
+    return true
+  }
+
   return false
 })
 
@@ -199,12 +203,17 @@ function onConnect() {
       data-cy="trading-page-execute-button"
       @click="onSubmit"
     >
-      <span v-if="isSpot">{{
-        isBuy ? $t('trade.buy') : $t('trade.sell')
-      }}</span>
-      <span v-else>{{
-        isBuy ? t('trade.buyLong') : t('trade.sellShort')
-      }}</span>
+      <div v-if="market.marketStatus === MarketStatus.Paused">
+        {{ $t('markets.inactive') }}
+      </div>
+      <div v-else>
+        <span v-if="isSpot">{{
+          isBuy ? $t('trade.buy') : $t('trade.sell')
+        }}</span>
+        <span v-else>{{
+          isBuy ? t('trade.buyLong') : t('trade.sellShort')
+        }}</span>
+      </div>
     </AppButton>
   </div>
 </template>

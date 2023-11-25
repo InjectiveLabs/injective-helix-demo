@@ -4,6 +4,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   MarketCategoryType,
   MarketQuoteType,
+  MarketStatus,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 import {
@@ -63,7 +64,7 @@ const filteredMarkets = computed(() =>
       activeType: activeType.value as MarketType
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isOlpmarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+    const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
     const isLowVolumeMarket = search.value
       ? true
       : isLowVolumeMarketsVisible.value ||
@@ -74,7 +75,7 @@ const filteredMarkets = computed(() =>
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      (isLowVolumeMarket || isOlpmarket)
+      (isLowVolumeMarket || isOLPMarket)
     )
   })
 )
@@ -124,6 +125,23 @@ const sortedMarkets = computed(() => {
 
   return isAscending.value ? markets.reverse() : markets
 })
+
+const sortedActiveMarkets = computed(() =>
+  sortedMarkets.value.filter((market) =>
+    [MarketStatus.Active, MarketStatus.Expired].includes(
+      market.market.marketStatus as MarketStatus
+    )
+  )
+)
+
+const sortedInActiveMarkets = computed(() =>
+  sortedMarkets.value.filter(
+    (market) =>
+      ![MarketStatus.Active, MarketStatus.Expired].includes(
+        market.market.marketStatus as MarketStatus
+      )
+  )
+)
 
 onMounted(() => {
   prefillFromQueryParams()
@@ -294,7 +312,19 @@ function prefillFromQueryParams() {
         class="bg-transparent"
       >
         <PartialsMarketsRow
-          v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
+          v-for="(
+            { market, summary, volumeInUsd }, index
+          ) in sortedActiveMarkets"
+          :key="`market-row-${market.marketId}-${index}`"
+          :market="market"
+          :summary="summary"
+          :volume-in-usd="volumeInUsd"
+        />
+
+        <PartialsMarketsInactiveRow
+          v-for="(
+            { market, summary, volumeInUsd }, index
+          ) in sortedInActiveMarkets"
           :key="`market-row-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"
