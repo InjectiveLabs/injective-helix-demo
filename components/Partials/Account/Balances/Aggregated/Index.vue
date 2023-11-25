@@ -26,7 +26,7 @@ const usdcBalances = computed(() =>
 )
 
 // default usdc balance to show on accounts page
-const peggyUsdcetBalance = computed(() => {
+const defaultUsdcBalance = computed(() => {
   return props.balances.find(
     (balance) => balance.denom === usdcTokenDenom.USDCet
   )
@@ -78,12 +78,12 @@ function toggleUsdcBalances() {
     </template>
 
     <PartialsAccountBalancesRow
-      v-else-if="peggyUsdcetBalance"
-      :key="peggyUsdcetBalance.denom"
+      v-else-if="defaultUsdcBalance"
+      :key="defaultUsdcBalance.denom"
       v-bind="{
         ...$attrs,
         isHideBalances,
-        balance: peggyUsdcetBalance
+        balance: defaultUsdcBalance
       }"
     />
   </tbody>

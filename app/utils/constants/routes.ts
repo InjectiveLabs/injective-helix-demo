@@ -16,6 +16,7 @@ export const getRoutes = (network: Network, env: string) => {
     'sol-usdcet',
     'canto-usdt',
     'usdt-usdcet',
+    'usdc-usdcet',
     'ape-usdt',
     'cre-usdt',
     'link-usdt',
@@ -114,22 +115,13 @@ export const getRoutes = (network: Network, env: string) => {
   ]
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
-  // Market we want to load to the app state but we don't want to show on the UI
-  const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
-
   if (IS_STAGING) {
-    spot.push(
-      ...usdcConversionModalMarkets,
-      'ldo-usdcet',
-      'usdtkv-usdt',
-      'kuji-usdt',
-      'pyth-usdt'
-    )
+    spot.push('ldo-usdcet', 'usdtkv-usdt', 'kuji-usdt', 'pyth-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
   if (IS_DEVNET) {
-    spot.push(...usdcConversionModalMarkets, 'proj-usdt')
+    spot.push('proj-usdt')
   }
 
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
@@ -154,7 +146,6 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptions,
       expiryFutures,
       gridTradingSpot,
-      usdcConversionModalMarkets,
       spotMarketRedirectsSlugsPairs
     },
     ROUTES: {

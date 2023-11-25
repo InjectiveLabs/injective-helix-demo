@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import type { Token } from '@injectivelabs/token-metadata'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { usdcTokenDenom } from '@/app/data/token'
-import { AccountBalance, BusEvents, Modal } from '@/types'
+import { AccountBalance } from '@/types'
 
-const modalStore = useModalStore()
-
-const props = defineProps({
+defineProps({
   isHideBalances: Boolean,
   isHoldingSingleUsdcDenom: Boolean,
 
@@ -20,16 +16,6 @@ const props = defineProps({
     default: new Status(StatusType.Loading)
   }
 })
-
-const showConvertModalLink = computed(() => {
-  return props.balance.denom === usdcTokenDenom.USDC
-})
-
-function convert() {
-  useEventBus<Token>(BusEvents.ConvertUsdc).emit(props.balance.token as Token)
-
-  modalStore.openModal(Modal.ConvertUsdc)
-}
 </script>
 
 <template>
@@ -54,18 +40,6 @@ function convert() {
           />
         </template>
       </PartialsAccountBalancesRowTokenSymbol>
-    </template>
-
-    <template v-if="showConvertModalLink" #action>
-      <div
-        class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-        data-cy="wallet-balance-convert"
-        @click="convert"
-      >
-        <span class="text-blue-500 text-sm font-medium">
-          {{ $t('account.convertUsdc') }}
-        </span>
-      </div>
     </template>
   </PartialsAccountBalancesRowWrapper>
 </template>
