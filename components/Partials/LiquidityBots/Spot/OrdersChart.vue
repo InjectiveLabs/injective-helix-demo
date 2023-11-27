@@ -62,7 +62,7 @@ const priceSeries = computed(() => {
 })
 
 const subaccountMarketOrders = computed(() =>
-  spotStore.subaccountOrderHistory.filter(
+  spotStore.subaccountOrders.filter(
     (order) =>
       order.marketId === props.market.marketId &&
       order.subaccountId ===
@@ -85,12 +85,12 @@ const ordersAnnotations = computed(() =>
       borderColor: '#F8F8F848',
       label: {
         borderColor:
-          order.direction === OrderSide.Sell ? RED_COLOR : GREEN_COLOR,
+          order.orderSide === OrderSide.Sell ? RED_COLOR : GREEN_COLOR,
         text:
-          order.direction === OrderSide.Sell ? t('trade.sell') : t('trade.buy'),
+          order.orderSide === OrderSide.Sell ? t('trade.sell') : t('trade.buy'),
         style: {
           background:
-            order.direction === OrderSide.Sell
+            order.orderSide === OrderSide.Sell
               ? RED_COLOR + OPACITY_HEX
               : GREEN_COLOR + OPACITY_HEX,
           color: 'white'

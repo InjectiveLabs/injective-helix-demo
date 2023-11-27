@@ -255,6 +255,37 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    async fetchOrdersBySubaccount({
+      subaccountId,
+      marketIds
+    }: {
+      subaccountId: string
+      marketIds: string[]
+    }) {
+      const spotStore = useSpotStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected || !subaccountId) {
+        return
+      }
+
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        subaccountId,
+        marketIds: marketIds || spotStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
+      })
+
+      spotStore.$patch({
+        subaccountOrders: orders,
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
+      })
+    },
+
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()

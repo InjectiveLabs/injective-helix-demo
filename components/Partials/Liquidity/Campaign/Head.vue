@@ -42,8 +42,9 @@ const rewardsWithToken = computed(() => {
   if (!campaignWithSc.value) {
     return []
   }
+
   return campaignWithSc.value.rewards.map((r) => ({
-    value: new Intl.NumberFormat('en-US').format(Number(r.amount)),
+    value: new BigNumberInBase(r.amount).toFormat(2),
     token: tokenStore.tokens.find((t) => t.symbol === r.symbol)
   }))
 })
