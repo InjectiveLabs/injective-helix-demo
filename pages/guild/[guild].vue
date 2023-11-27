@@ -10,7 +10,7 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { guildDescriptionMap } from '@/app/data/guild'
+import { prohibitedAddresses, guildDescriptionMap } from '@/app/data/guild'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
@@ -44,6 +44,14 @@ const isMyGuild = computed(() => {
 })
 
 const isMaxCap = computed(() => campaignStore.totalGuildMember >= GUILD_MAX_CAP)
+
+const isUserProhibitedFromJoining = computed(() => {
+  if (!walletStore.isUserWalletConnected) {
+    return false
+  }
+
+  return prohibitedAddresses.includes(walletStore.injectiveAddress)
+})
 
 const isCampaignStarted = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
@@ -293,7 +301,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               <AppButton
                 v-else
                 class="bg-blue-500 text-white"
-                :is-disabled="isMaxCap"
+                :is-disabled="isMaxCap || isUserProhibitedFromJoining"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -432,9 +440,9 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             v-if="campaignStore.guild"
             v-bind="{
               limit,
-              isMaxCap,
               guildInvitationHash,
-              guild: campaignStore.guild
+              guild: campaignStore.guild,
+              isDisabled: isMaxCap || isUserProhibitedFromJoining
             }"
           />
         </div>
