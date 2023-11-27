@@ -12,9 +12,6 @@
         {{ $t('campaign.volume') }}
       </th>
       <th>
-        {{ $t('campaign.apy') }}
-      </th>
-      <th>
         {{ $t('campaign.estRewards') }}
       </th>
     </tr>

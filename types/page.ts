@@ -58,5 +58,6 @@ export enum TradeSubPage {
 
 export enum LiquidityRewardsPage {
   Home = 'lp-rewards',
+  Dashboard = 'lp-rewards-dashboard',
   CampaignDetails = 'lp-rewards-campaign'
 }

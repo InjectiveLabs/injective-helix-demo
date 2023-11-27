@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  USDT_DECIMALS
+} from '~/app/utils/constants'
 
-const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
 
@@ -101,16 +103,16 @@ const volumeThisRound = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const marketsWithSummary = round.value.campaigns
-    .map((c) => spotStore.markets.find((m) => m.slug === c.marketSlug))
-    .map((m) =>
-      spotStore.marketsSummary.find(({ marketId }) => marketId === m?.marketId)
+  const rewards = campaignStore.ownerRewards
+    .filter(
+      ({ campaignId }) =>
+        round.value?.campaigns.find((c) => c.campaignId === campaignId)
     )
+    .map(({ score }) => score)
 
-  return marketsWithSummary.reduce(
-    (sum, summary) => sum.plus(summary?.volume || 0),
-    ZERO_IN_BASE
-  )
+  return rewards
+    .reduce((sum, score) => sum.plus(score), ZERO_IN_WEI)
+    .toBase(USDT_DECIMALS)
 })
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(

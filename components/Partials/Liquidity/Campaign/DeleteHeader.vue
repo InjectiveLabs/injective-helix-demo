@@ -24,6 +24,12 @@ const DATE_FORMAT = 'MMM dd - hh a'
 const BLOG_POST_URL =
   'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
 
+const endDate = computed(() => {
+  const utcDate = utcToZonedTime(props.campaign.endDate, 'UTC')
+
+  return format(utcDate, DATE_FORMAT, { timeZone: 'UTC' })
+})
+
 const { valueToString: injRewardsToString } = useBigNumberFormatter(
   computed(() => epoch.value?.baseRewards),
   { decimalPlaces: 0 }
@@ -33,12 +39,6 @@ const { valueToString: tiaRewardsToString } = useBigNumberFormatter(
   computed(() => epoch.value?.quoteRewards),
   { decimalPlaces: 0 }
 )
-
-const endDate = computed(() => {
-  const utcDate = utcToZonedTime(props.campaign.endDate, 'UTC')
-
-  return format(utcDate, DATE_FORMAT, { timeZone: 'UTC' })
-})
 </script>
 
 <template>

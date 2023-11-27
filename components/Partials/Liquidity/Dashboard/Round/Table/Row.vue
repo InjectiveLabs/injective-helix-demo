@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addDays } from 'date-fns'
-import { CampaignWithSc } from '@/types'
+import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  USDT_DECIMALS
+} from '~/app/utils/constants'
 import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
 
 const props = defineProps({
@@ -28,12 +31,6 @@ const token = computed(() =>
   )
 )
 
-const marketVolume = computed(
-  () =>
-    spotStore.marketsSummary.find((m) => m.marketId === market.value?.marketId)
-      ?.volume
-)
-
 const campaignUserInfo = computed(() =>
   campaignStore.ownerRewards.find(
     (r) => r.campaignId === props.campaignWithSc.campaignId
@@ -43,6 +40,10 @@ const campaign = computed(() =>
   campaignStore.campaignsInfo.find(
     (c) => c.campaignId === props.campaignWithSc.campaignId
   )
+)
+
+const marketVolume = computed(() =>
+  new BigNumberInWei(campaign.value?.totalScore || 0).toBase(USDT_DECIMALS)
 )
 
 const estRewardsInPercentage = computed(() => {
@@ -118,7 +119,13 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
 <template>
   <tr v-if="market">
     <td class="text-left">
-      <div class="flex items-center space-x-2">
+      <NuxtLink
+        :to="{
+          name: LiquidityRewardsPage.CampaignDetails,
+          query: { campaign: campaign?.campaignId }
+        }"
+        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+      >
         <div v-if="token">
           <CommonTokenIcon v-bind="{ token }" />
         </div>
@@ -128,14 +135,13 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
             {{ market.baseToken.name }}
           </p>
         </div>
-      </div>
+      </NuxtLink>
     </td>
-    <td>
+
+    <td class="w-1/4">
       <div class="tracking-wider">{{ marketVolumeToString }} USD</div>
     </td>
-    <td>
-      <div>//</div>
-    </td>
+
     <td class="text-left w-72">
       <div>
         <p class="font-semibold">{{ totalAmountInUsdToString }} USD</p>
@@ -148,6 +154,7 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
         </div>
       </div>
     </td>
+
     <td class="w-40">
       <PartialsLiquidityCommonClaimButton
         v-bind="{

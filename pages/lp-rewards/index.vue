@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
-import { DEFAULT_LP_ROUND } from '@/app/utils/constants'
 
-const round = useQueryRef('round', DEFAULT_LP_ROUND)
+const DEFAULT_ROUND = Math.max(...CAMPAIGN_LP_ROUNDS.map(({ round }) => round))
+
+const round = useQueryRef('round', DEFAULT_ROUND.toString())
 
 const filteredCampaigns = computed(
   () =>

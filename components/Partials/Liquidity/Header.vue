@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  USDT_TOKEN_DECIMALS
+} from '@/app/utils/constants'
+import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
   round: {
@@ -13,6 +17,7 @@ const props = defineProps({
 })
 
 const tokenStore = useTokenStore()
+const campaignStore = useCampaignStore()
 
 const round = computed(() =>
   CAMPAIGN_LP_ROUNDS.find(({ round }) => round === props.round)
@@ -38,6 +43,24 @@ const totalRewardsThisRound = computed(() => {
   }, ZERO_IN_BASE)
 })
 
+const campaignsForRound = computed(() => {
+  return campaignStore.campaigns.filter(
+    (campaign) =>
+      round.value?.campaigns.find(
+        (campaignWithSc) => campaignWithSc.campaignId === campaign.campaignId
+      )
+  )
+})
+
+const totalVolume = computed(() =>
+  campaignsForRound.value
+    .reduce((totalScore, campaign) => {
+      return totalScore.plus(campaign.totalScore)
+    }, ZERO_IN_WEI)
+    .toBase(USDT_TOKEN_DECIMALS)
+    .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+)
+
 const endDate = computed(() => {
   const utcDate = utcToZonedTime(Number(round.value!.endDate) * 1000, 'UTC')
 
@@ -55,16 +78,26 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
     <div class="space-y-4">
       <div class="flex items-center space-x-4">
         <h1 class="text-3xl font-bold">{{ $t('campaign.title') }}</h1>
-        <PartialsLiquidityRoundSelector />
+        <div class="flex items-center space-x-2">
+          <div class="w-2 h-2 rounded-full bg-green-500" />
+          <p>{{ $t('campaign.round', { round: props.round }) }}</p>
+        </div>
       </div>
       <div>
         <p>{{ $t('campaign.description') }}</p>
       </div>
-      <div>
+      <div class="space-x-2 flex">
+        <NuxtLink
+          :to="{ name: LiquidityRewardsPage.Dashboard }"
+          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
+        >
+          {{ $t('campaign.dashboard') }}
+        </NuxtLink>
+
         <NuxtLink
           :to="'#'"
           target="_blank"
-          class="inline-block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 rounded-lg mt-4"
+          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white border-white hover:text-gray-300 border rounded-lg"
         >
           {{ $t('campaign.campaignRules') }}
         </NuxtLink>
@@ -81,9 +114,9 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
         </div>
         <div>
           <h3 class="text-sm font-semibold text-gray-400">
-            {{ $t('campaign.totalLiquidity') }}
+            {{ $t('campaign.totalVolume') }}
           </h3>
-          <p class="text-xl font-semibold">123,123 USD</p>
+          <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-gray-400">

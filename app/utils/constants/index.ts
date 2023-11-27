@@ -86,3 +86,4 @@ export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'
+export const USDT_TOKEN_DECIMALS = 6

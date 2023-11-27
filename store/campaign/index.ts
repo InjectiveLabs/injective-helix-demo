@@ -25,6 +25,7 @@ type CampaignStoreState = {
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
+  campaigns: Campaign[]
   campaignsInfo: Campaign[]
   totalUserCount: number
   totalGuildMember: number
@@ -46,6 +47,7 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildsByVolume: [],
   totalGuildMember: 0,
   campaign: undefined,
+  campaigns: [],
   campaignsInfo: [],
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
@@ -103,6 +105,25 @@ export const useCampaignStore = defineStore('campaign', {
       campaignStore.$patch({
         ownerCampaignInfo: users[0]
       })
+    },
+
+    async fetchCampaigns(campaignIds: string[]) {
+      const campaignStore = useCampaignStore()
+
+      const campaigns = await awaitForAll(
+        campaignIds,
+        async (campaignId: string) => {
+          const { campaign } = await indexerGrpcCampaignApi.fetchCampaign({
+            campaignId,
+            limit: 1,
+            skip: '1'
+          })
+
+          return campaign
+        }
+      )
+
+      campaignStore.$patch({ campaigns })
     },
 
     async fetchCampaignRewardsForUser() {

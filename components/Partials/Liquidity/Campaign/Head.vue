@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   CampaignWithSc,
   LiquidityRewardsPage,
   UiMarketWithToken
 } from '@/types'
-import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  USDT_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -22,7 +25,6 @@ const props = defineProps({
   }
 })
 
-const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 
 const campaignWithSc = computed(() => {
@@ -44,7 +46,9 @@ const rewardsWithToken = computed(() => {
   }
 
   return campaignWithSc.value.rewards.map((r) => ({
-    value: new BigNumberInBase(r.amount).toFormat(2),
+    value: new BigNumberInBase(r.amount).toFormat(
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    ),
     token: tokenStore.tokens.find((t) => t.symbol === r.symbol)
   }))
 })
@@ -68,30 +72,21 @@ const totalRewardsInUsd = computed(() => {
   }, ZERO_IN_BASE)
 })
 
-const marketSummary = computed(() =>
-  spotStore.marketsSummary.find(
-    (summary) => summary.marketId === props.market.marketId
-  )
-)
-
-const marketVolume = computed(
-  () => new BigNumberInBase(marketSummary.value?.volume || 0)
+const volume = computed(() =>
+  new BigNumberInWei(props.campaign.totalScore)
+    .toBase(USDT_DECIMALS)
+    .toFormat(2)
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   totalRewardsInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
-
-const { valueToString: marketVolumeToString } = useBigNumberFormatter(
-  marketVolume,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
 </script>
 
 <template>
   <div>
-    <div>
+    <div class="flex space-x-4">
       <NuxtLink
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
@@ -101,18 +96,27 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
       </NuxtLink>
     </div>
 
-    <div class="flex items-center space-x-2 my-4">
+    <div class="flex items-center my-4">
       <div>
         <CommonTokenIcon is-xl v-bind="{ token: market.baseToken }" />
       </div>
 
-      <div>
+      <div class="mx-2">
         <h3 class="text-xl sm:text-3xl font-bold">{{ market.ticker }}</h3>
         <p class="text-gray-500">{{ market.baseToken.name }}</p>
       </div>
+
+      <div class="flex items-center ml-auto">
+        <NuxtLink
+          :to="{ name: LiquidityRewardsPage.Dashboard }"
+          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
+        >
+          {{ $t('campaign.dashboard') }}
+        </NuxtLink>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-gray-500 mb-2">
           {{ $t('campaign.rewardsRound') }}
@@ -138,23 +142,12 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
           </div>
         </div>
       </div>
-      <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
-          {{ $t('campaign.rewardYield') }}
-        </p>
-        <h3 class="text-xl font-semibold">- USD</h3>
-      </div>
-      <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
-          {{ $t('campaign.liquidity') }}
-        </p>
-        <h3 class="text-xl font-semibold">- USD</h3>
-      </div>
+
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-gray-500 mb-2">
           {{ $t('campaign.volume') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ marketVolumeToString }} USD</h3>
+        <h3 class="text-xl font-semibold">{{ volume }} USD</h3>
       </div>
     </div>
   </div>

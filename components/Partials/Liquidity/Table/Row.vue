@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  USDT_DECIMALS
+} from '@/app/utils/constants'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
@@ -13,6 +16,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const campaignStore = useCampaignStore()
 
 const market = computed(() =>
   spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
@@ -46,14 +50,12 @@ const totalRewardsInUsd = computed(() => {
   }, ZERO_IN_BASE)
 })
 
-const marketSummary = computed(() =>
-  spotStore.marketsSummary.find(
-    (summary) => summary.marketId === market.value?.marketId
-  )
-)
-
-const marketVolume = computed(
-  () => new BigNumberInBase(marketSummary.value?.volume || 0)
+const marketVolume = computed(() =>
+  new BigNumberInWei(
+    campaignStore.campaigns.find(
+      (c) => c.campaignId === props.campaignWithSc.campaignId
+    )?.totalScore || 0
+  ).toBase(USDT_DECIMALS)
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
@@ -70,7 +72,13 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
 <template>
   <tr v-if="market" class="text-right text-sm">
     <td class="text-left">
-      <div class="flex items-center space-x-2">
+      <NuxtLink
+        :to="{
+          name: LiquidityRewardsPage.CampaignDetails,
+          query: { campaign: campaignWithSc.campaignId }
+        }"
+        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+      >
         <div v-if="token">
           <CommonTokenIcon v-bind="{ token }" />
         </div>
@@ -80,7 +88,7 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
             {{ market.baseToken.name }}
           </p>
         </div>
-      </div>
+      </NuxtLink>
     </td>
 
     <td class="text-left">
