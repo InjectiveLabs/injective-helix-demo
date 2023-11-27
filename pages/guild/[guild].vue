@@ -28,7 +28,7 @@ const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
 const page = ref(1)
 const limit = ref(10)
-const date = ref(Date.now())
+const now = ref(Date.now())
 const hasNewData = ref(false)
 
 const status = reactive(new Status(StatusType.Loading))
@@ -49,7 +49,7 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime < date.value
+  return campaignStore.guildCampaignSummary.startTime > now.value
 })
 
 const guildDescription = computed(() => {
@@ -104,10 +104,6 @@ const { valueToString: guildMasterBalance } = useBigNumberFormatter(
     })
   )
 )
-
-// const invitationLink = computed(
-//   () => `${document.URL}?invite=${guildInvitationHash.value}`
-// )
 
 onWalletConnected(() => {
   Promise.all([
@@ -189,7 +185,7 @@ watch(lastUpdated, () => {
   hasNewData.value = true
 })
 
-useIntervalFn(() => (date.value = Date.now()), 1000)
+useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>

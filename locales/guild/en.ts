@@ -24,6 +24,9 @@ export default {
     currentSeason: 'Current season',
     campaignRules: 'Campaign rules',
     showInactive: 'Show inactive',
+    endsIn: 'Ends in',
+    startsIn: 'Starts in',
+    competitionOver: 'Competition over',
     startOn: ({ named }: I18nMessageFunction) => `Starts on ${named('date')}`,
 
     toast: {

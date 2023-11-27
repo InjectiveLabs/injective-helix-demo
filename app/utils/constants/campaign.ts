@@ -21,6 +21,6 @@ export const GUILD_BASE_TOKEN_SYMBOL = IS_DEVNET ? 'INJ' : 'TIA'
 export const GUILD_DISCORD_LINK =
   'https://discord.com/channels/739552603322450092/1172055840606400563'
 export const GUILD_ZENDESK_LINK =
-  'https://helixapp.zendesk.com/hc/en-us/articles/8336183812751-Announcing-Helix-Guilds'
+  'https://helixapp.zendesk.com/hc/en-us/articles/8391676095887-Share-10-000-TIA-Rewards-in-Helix-Guilds-Competition'
 export const GUILD_MIN_AMOUNT = 1000
 export const GUILD_MAX_CAP = 150
