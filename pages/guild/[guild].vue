@@ -12,7 +12,7 @@ import {
 } from '@/app/utils/constants'
 import { guildDescriptionMap } from '@/app/data/guild'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -30,6 +30,7 @@ const page = ref(1)
 const limit = ref(10)
 const now = ref(Date.now())
 const hasNewData = ref(false)
+const sortBy = ref(GuildSortBy.TVL)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
@@ -49,7 +50,7 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime > now.value
+  return campaignStore.guildCampaignSummary.startTime < now.value
 })
 
 const guildDescription = computed(() => {
@@ -109,6 +110,7 @@ onWalletConnected(() => {
   Promise.all([
     campaignStore.fetchGuildDetails({
       skip: 0,
+      sortBy: sortBy.value,
       limit: limit.value,
       guildId: route.params.guild as string
     }),
@@ -122,13 +124,14 @@ onWalletConnected(() => {
     .finally(() => status.setIdle())
 })
 
-function fetchGuildDetails({ skip }: { skip: number }) {
+function fetchGuildDetails({ skip = 0 }: { skip: number }) {
   tableStatus.setLoading()
 
   campaignStore
     .fetchGuildDetails({
       skip,
       limit: limit.value,
+      sortBy: sortBy.value,
       guildId: route.params.guild as string
     })
     .catch($onError)
@@ -171,6 +174,7 @@ useIntervalFn(
       campaignStore.pollGuildDetails({
         page: page.value,
         limit: limit.value,
+        sortBy: sortBy.value,
         guildId: route.params.guild as string
       })
     ]),
@@ -356,7 +360,14 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                       <th class="p-4 text-left">
                         {{ $t('guild.leaderboard.table.address') }}
                       </th>
-                      <th class="p-4 text-right">
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.TVL"
+                        :value="GuildSortBy.TVL"
+                        @sortBy:changed="fetchGuildDetails"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t(
@@ -372,8 +383,15 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                             }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
-                      <th class="p-4 text-right">
+                      </AppSortableHeaderItem>
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.Volume"
+                        :value="GuildSortBy.Volume"
+                        @sortBy:changed="fetchGuildDetails"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t('guild.leaderboard.table.volumeTooltip')
@@ -383,7 +401,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                             {{ $t('guild.leaderboard.table.tradingVolume') }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
+                      </AppSortableHeaderItem>
                     </tr>
                   </thead>
                   <tbody>
