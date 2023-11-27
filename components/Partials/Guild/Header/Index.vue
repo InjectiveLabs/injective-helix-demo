@@ -17,6 +17,11 @@ const TOTAL_TIA_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 
 const props = defineProps({
+  now: {
+    type: Number,
+    required: true
+  },
+
   summary: {
     type: Object as PropType<GuildCampaignSummary>,
     default: undefined
@@ -28,8 +33,8 @@ const campaignDateRange = computed(() => {
     return
   }
 
-  let startDate = format(props.summary.startTime, DATE_FORMAT)
   let endDate = format(props.summary.endTime, DATE_FORMAT)
+  let startDate = format(props.summary.startTime, DATE_FORMAT)
 
   if (isSameYear(props.summary.startTime, props.summary.endTime)) {
     startDate = format(props.summary.startTime, 'MMM dd')
@@ -109,6 +114,12 @@ function onConnectWallet() {
     <p class="max-w-4xl mx-auto mt-8">{{ $t('guild.rewardDescription1') }}</p>
 
     <p class="max-w-4xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
+
+    <PartialsGuildHeaderCountdown
+      v-if="summary"
+      v-bind="{ now, summary }"
+      class="mt-8"
+    />
 
     <section class="mt-20">
       <div class="flex justify-between items-center gap-10">

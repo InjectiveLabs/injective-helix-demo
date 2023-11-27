@@ -402,3 +402,10 @@ export enum GuildSortBy {
   TVL = 'tvl',
   Volume = 'volume'
 }
+
+export enum TimeDuration {
+  Day = 'day',
+  Hour = 'hour',
+  Minute = 'minute',
+  Second = 'second'
+}

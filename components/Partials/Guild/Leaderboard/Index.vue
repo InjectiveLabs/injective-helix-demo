@@ -2,10 +2,14 @@
 const campaignStore = useCampaignStore()
 
 const props = defineProps({
-  isVolume: Boolean
+  isVolume: Boolean,
+
+  now: {
+    type: Number,
+    required: true
+  }
 })
 
-const date = ref(Date.now())
 const showInactive = ref(false)
 
 const guilds = computed(() =>
@@ -37,10 +41,8 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime < date.value
+  return campaignStore.guildCampaignSummary.startTime < props.now
 })
-
-useIntervalFn(() => (date.value = Date.now()), 1000)
 </script>
 
 <template>

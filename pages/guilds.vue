@@ -9,6 +9,7 @@ const { baseToken } = useGuild()
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
+const now = ref(Date.now())
 const status = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
@@ -39,13 +40,15 @@ useIntervalFn(
     ]),
   30 * 1000
 )
+
+useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
   <AppHocLoading class="h-full container" v-bind="{ status }">
     <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-12">
       <PartialsGuildHeader
-        v-bind="{ summary: campaignStore.guildCampaignSummary }"
+        v-bind="{ now, summary: campaignStore.guildCampaignSummary }"
       />
 
       <section class="mt-10">
@@ -59,8 +62,8 @@ useIntervalFn(
           </p>
         </div>
         <section class="grid lg:grid-cols-2 gap-10">
-          <PartialsGuildLeaderboard />
-          <PartialsGuildLeaderboard is-volume />
+          <PartialsGuildLeaderboard v-bind="{ now }" />
+          <PartialsGuildLeaderboard v-bind="{ now, isVolume: true }" />
         </section>
       </section>
     </div>
