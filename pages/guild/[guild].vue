@@ -30,7 +30,7 @@ const page = ref(1)
 const limit = ref(10)
 const now = ref(Date.now())
 const hasNewData = ref(false)
-const sortBy = ref(GuildSortBy.TVL)
+const sortBy = ref(GuildSortBy.Volume)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
