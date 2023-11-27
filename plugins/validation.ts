@@ -40,6 +40,7 @@ export const errorMessages = {
   [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
   [BridgingNetwork.Oraichain]: () =>
     'This field is not a valid Oraichain address',
+  [BridgingNetwork.Migaloo]: () => 'This field is not a valid Migaloo address',
   [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 

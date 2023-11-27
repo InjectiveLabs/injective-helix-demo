@@ -13,7 +13,7 @@ import {
 import { LocationQuery } from 'vue-router'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { BridgeType, TransferSide } from '@/types'
-import { IS_TESTNET } from '@/app/utils/constants'
+import { IS_TESTNET, IS_STAGING } from '@/app/utils/constants'
 
 export const networksMeta = [
   {
@@ -126,6 +126,14 @@ export const networksMeta = [
   }
 ] as NetworkMeta[]
 
+if (IS_STAGING) {
+  networksMeta.push({
+    text: 'Migaloo',
+    value: BridgingNetwork.Migaloo,
+    icon: '/bridgingNetworks/migaloo.svg'
+  })
+}
+
 export const transferSideMeta = {
   [TransferSide.Bank]: {
     text: 'Injective Wallet',
@@ -138,84 +146,6 @@ export const transferSideMeta = {
     value: BridgingNetwork.Injective,
     icon: '/bridgingNetworks/injective.png'
   }
-}
-
-export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
-  const symbolToUpperCase = symbol.toUpperCase()
-
-  if (['ATOM', 'UPHOTON'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.CosmosHub
-  }
-
-  if (['LUNA', 'ULUNA', 'UST', 'UUSD'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Terra
-  }
-
-  if (['OSMO', 'UOSMO'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Osmosis
-  }
-
-  if (['HUAHUA', 'UHUAHUA'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Chihuahua
-  }
-
-  if (['JUNO', 'UJUNO'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Juno
-  }
-
-  if (['EVMOS'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Evmos
-  }
-
-  if (['XPRT'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Persistence
-  }
-
-  if (['STRD'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Stride
-  }
-
-  if (['XRPT'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Persistence
-  }
-
-  if (['AXL', 'UAXL', 'DOT', 'DOT-PLANCK'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Axelar
-  }
-
-  if (['DOT'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Moonbeam
-  }
-
-  if (['CRE'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Crescent
-  }
-
-  if (['SOL', 'USDCSO'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Solana
-  }
-
-  if (['USDCET'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.EthereumWh
-  }
-
-  if (['ARB'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.EthereumWh // TODO: Arbitrum
-  }
-
-  if (['TIA', 'UTIA'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Celestia
-  }
-
-  if (['KAVA', 'UKAVA', 'USDTKV'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Kava
-  }
-
-  if (['ORAI'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Oraichain
-  }
-
-  return BridgingNetwork.Ethereum
 }
 
 export const isTokenWormholeToken = (token: Token) => {
@@ -309,7 +239,8 @@ export const COSMOS_CHAIN_ID = {
   [BridgingNetwork.Kava]: IS_TESTNET ? '' : CosmosChainId.Kava,
   [BridgingNetwork.Oraichain]: IS_TESTNET ? '' : CosmosChainId.Oraichain,
   [BridgingNetwork.Noble]: IS_TESTNET ? '' : CosmosChainId.Noble,
-  [BridgingNetwork.Celestia]: IS_TESTNET ? '' : CosmosChainId.Celestia
+  [BridgingNetwork.Celestia]: IS_TESTNET ? '' : CosmosChainId.Celestia,
+  [BridgingNetwork.Migaloo]: IS_TESTNET ? '' : CosmosChainId.Migaloo
 } as { [key in BridgingNetwork]: string }
 
 export const COSMOS_CHANNEL: Array<CosmosChannel> = [
@@ -427,6 +358,15 @@ export const COSMOS_CHANNEL: Array<CosmosChannel> = [
     aToBChannelId: IS_TESTNET ? '' : 'channel-7',
     aToBClientId: IS_TESTNET ? '' : '',
     bToAChannelId: IS_TESTNET ? '' : 'channel-152',
+    bToAClientId: IS_TESTNET ? '' : '',
+    port: 'transfer'
+  },
+  {
+    aChainId: COSMOS_CHAIN_ID[BridgingNetwork.Migaloo],
+    bChainId: COSMOS_CHAIN_ID[BridgingNetwork.Injective],
+    aToBChannelId: IS_TESTNET ? '' : 'channel-3',
+    aToBClientId: IS_TESTNET ? '' : '',
+    bToAChannelId: IS_TESTNET ? '' : 'channel-102',
     bToAClientId: IS_TESTNET ? '' : '',
     port: 'transfer'
   }
