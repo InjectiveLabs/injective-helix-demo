@@ -118,29 +118,24 @@ watch(countdown, (oldVal, newVal) => {
 
 <style>
 .animate-duration {
-  animation: rotateUp 1s infinite;
+  animation: rotateIn 1s linear infinite;
   animation-fill-mode: forwards;
 }
 
-@keyframes rotateUp {
+@keyframes rotateIn {
   0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
+    opacity: 0;
+    transform: translateY(20%);
   }
 
   50% {
-    transform: translateY(-50%) scale(1);
-    opacity: 0;
-  }
-
-  75% {
-    transform: translateY(50%) scale(0.8);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
     opacity: 1;
   }
+
+  /* 100% {
+    transform: translateY(0);
+    opacity: 1;
+  } */
 }
 </style>

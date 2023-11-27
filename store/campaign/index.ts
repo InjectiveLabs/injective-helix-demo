@@ -153,10 +153,12 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchGuildDetails({
       skip,
       limit,
+      sortBy,
       guildId
     }: {
       skip?: number
       limit?: number
+      sortBy?: string
       guildId: string
     }) {
       const campaignStore = useCampaignStore()
@@ -165,6 +167,7 @@ export const useCampaignStore = defineStore('campaign', {
         await indexerGrpcCampaignApi.fetchGuildMembers({
           skip,
           limit,
+          sortBy,
           guildId,
           includeGuildInfo: true,
           campaignContract: GUILD_CONTRACT_ADDRESS
@@ -180,10 +183,12 @@ export const useCampaignStore = defineStore('campaign', {
     async pollGuildDetails({
       page,
       limit,
+      sortBy,
       guildId
     }: {
       page?: number
       limit?: number
+      sortBy: string
       guildId: string
     }) {
       const campaignStore = useCampaignStore()
@@ -191,6 +196,7 @@ export const useCampaignStore = defineStore('campaign', {
       const { members, guildInfo, paging } =
         await indexerGrpcCampaignApi.fetchGuildMembers({
           limit,
+          sortBy,
           guildId,
           skip: 0,
           includeGuildInfo: true,
