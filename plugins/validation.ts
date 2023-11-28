@@ -222,7 +222,7 @@ export const defineGlobalRules = () => {
     const minInBigNumber = new BigNumberInBase(min)
 
     if (valueInBigNumber.lte(minInBigNumber)) {
-      return `Value should be greater than ${minInBigNumber.toFixed(2)}`
+      return `Value should be greater than ${minInBigNumber.toFixed()}`
     }
 
     return true
@@ -233,7 +233,7 @@ export const defineGlobalRules = () => {
     const maxInBigNumber = new BigNumberInBase(max)
 
     if (valueInBigNumber.gte(maxInBigNumber)) {
-      return `Value should be less than ${maxInBigNumber.toFixed(2)}`
+      return `Value should be less than ${maxInBigNumber.toFixed()}`
     }
 
     return true

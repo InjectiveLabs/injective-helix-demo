@@ -4,6 +4,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { GridStrategyType, SpotGridTradingField } from '@/types'
 import {
   GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
@@ -19,8 +20,14 @@ const emit = defineEmits<{
 }>()
 
 const exchangeStore = useExchangeStore()
-
 const setFormValues = useSetFormValues()
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
+
+const decimalsPlaces = computed(() =>
+  lastTradedPrice.value.isGreaterThan(1)
+    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+)
 
 const upperPrice = computed(() => {
   const marketHistory = exchangeStore.marketsHistory.find(
@@ -39,8 +46,8 @@ const upperPrice = computed(() => {
   )
 
   return minUpperBound.gt(max)
-    ? minUpperBound.toFixed(2)
-    : maxPlusPadding.toFixed(2)
+    ? minUpperBound.toFixed(decimalsPlaces.value)
+    : maxPlusPadding.toFixed(decimalsPlaces.value)
 })
 
 const lowerPrice = computed(() => {
@@ -58,7 +65,9 @@ const lowerPrice = computed(() => {
     spotLastTradedPrice.value.times(0.06)
   )
 
-  return maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min.toFixed(2)
+  return maxLowerBound.lt(min)
+    ? maxLowerBound.toFixed(decimalsPlaces.value)
+    : min.toFixed(decimalsPlaces.value)
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
@@ -81,12 +90,12 @@ const profitPerGrid = computed(() => {
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   upperPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: decimalsPlaces.value }
 )
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   lowerPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: decimalsPlaces.value }
 )
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

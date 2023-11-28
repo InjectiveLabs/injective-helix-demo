@@ -25,6 +25,11 @@ const props = defineProps({
   grids: {
     type: String,
     required: true
+  },
+
+  decimalPlaces: {
+    type: Number,
+    default: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 })
 
@@ -34,17 +39,17 @@ const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   computed(() => props.upperPrice),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: props.decimalPlaces }
 )
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   computed(() => props.lowerPrice),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: props.decimalPlaces }
 )
 
 const { valueToString: currentPriceToString } = useBigNumberFormatter(
   lastTradedPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: props.decimalPlaces }
 )
 
 onMounted(() => {

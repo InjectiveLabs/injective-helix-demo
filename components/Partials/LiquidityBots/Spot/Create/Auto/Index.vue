@@ -2,6 +2,7 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
@@ -16,6 +17,9 @@ const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
+const { lastTradedPrice } = useSpotLastPrice(
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+)
 
 const LOWER_BOUND_PERCENTAGE = 0.94
 const UPPER_BOUND_PERCENTAGE = 1.06
@@ -25,6 +29,12 @@ const isAssetRebalancingChecked = ref(true)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+)
+
+const decimalPlaces = computed(() =>
+  lastTradedPrice.value.isGreaterThan(1)
+    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
 )
 
 const upperEma = computed(() => {
@@ -76,9 +86,7 @@ const upperPrice = computed(() => {
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Base
   ) {
-    return spotLastTradedPrice.value
-      .times(2)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    return spotLastTradedPrice.value.times(2).toFixed(decimalPlaces.value)
   }
 
   if (
@@ -89,10 +97,10 @@ const upperPrice = computed(() => {
   ) {
     return spotLastTradedPrice.value
       .minus(spotLastTradedPrice.value.times(0.06))
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      .toFixed(decimalPlaces.value)
   }
 
-  return upperEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  return upperEma.value.toFixed(decimalPlaces.value)
 })
 
 const lowerPrice = computed(() => {
@@ -108,7 +116,7 @@ const lowerPrice = computed(() => {
   ) {
     return spotLastTradedPrice.value
       .plus(spotLastTradedPrice.value.times(0.06))
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      .toFixed(decimalPlaces.value)
   }
 
   if (
@@ -117,12 +125,10 @@ const lowerPrice = computed(() => {
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] ===
       InvestmentTypeGst.Quote
   ) {
-    return spotLastTradedPrice.value
-      .times(0.5)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    return spotLastTradedPrice.value.times(0.5).toFixed(decimalPlaces.value)
   }
 
-  return lowerEma.value.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  return lowerEma.value.toFixed(decimalPlaces.value)
 })
 
 const grids = ref(GST_DEFAULT_AUTO_GRIDS)
@@ -146,6 +152,7 @@ function setValuesFromAuto() {
         market: gridStrategyStore.spotMarket,
         upperPrice,
         lowerPrice,
+        decimalPlaces,
         grids: grids.toFixed()
       }"
       class="mb-4"
