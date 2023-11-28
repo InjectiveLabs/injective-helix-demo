@@ -54,7 +54,10 @@ const totalVolume = computed(() =>
 )
 
 const endDate = computed(() => {
-  const utcDate = utcToZonedTime(Number(round.value!.endDate) * 1000, 'UTC')
+  const utcDate = utcToZonedTime(
+    Number(round.value?.endDate || 0) * 1000,
+    'UTC'
+  )
 
   return format(utcDate, 'MMM dd - hh a', { timeZone: 'UTC' })
 })

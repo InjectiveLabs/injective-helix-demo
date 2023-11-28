@@ -1,7 +1,3 @@
-<script setup lang="ts">
-//
-</script>
-
 <template>
   <thead class="text-right">
     <tr class="text-xs text-gray-400 uppercase">

@@ -64,6 +64,7 @@ const totalRewardsInUsd = computed(() =>
       (sum, rew) => sum.plus(rew.amountInUsd),
       ZERO_IN_BASE
     )
+
     return sum.plus(totalRewardPerCampaignIsUsd)
   }, ZERO_IN_BASE)
 )
@@ -94,6 +95,7 @@ const rewardsThisRoundInUsd = computed(() =>
       (sum, rew) => sum.plus(rew.amountInUsd),
       ZERO_IN_BASE
     )
+
     return sum.plus(totalRewardPerCampaignIsUsd)
   }, ZERO_IN_BASE)
 )

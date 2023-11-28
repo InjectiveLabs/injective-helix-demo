@@ -28,12 +28,12 @@ const props = defineProps({
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const campaignWithScAndData = computed<CampaignWithScAndData>(() => {
+const campaignWithScAndData = computed(() => {
   const campaignWithSc = LP_CAMPAIGNS.find(
     (c) => c.campaignId === props.campaign.campaignId
   )!
 
-  return { ...campaignWithSc, ...props.campaign }
+  return { ...campaignWithSc, ...props.campaign } as CampaignWithScAndData
 })
 
 const rewardsWithToken = computed(() => {
