@@ -197,23 +197,6 @@ function generateEvenlySpacedNumbers(
 
 <template>
   <div class="border py-5 select-none">
-    <pre v-if="false">
-      {{
-        {
-          currentPriceX,
-          lowerHandleX,
-          upperHandleX,
-          isLowerHandleClicked,
-          isUpperHandleClicked,
-          max,
-          min,
-          upper,
-          lower
-        }
-      }}
-      {{ rulerValues }}
-    </pre>
-
     <svg
       :viewBox="`0 0 ${SVG_PROPS.width} ${SVG_PROPS.height + 50}`"
       class="overflow-visible"

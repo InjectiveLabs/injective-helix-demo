@@ -37,7 +37,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import { TokenMetaUtilsFactory } from '@injectivelabs/token-metadata'
-
+import { IS_MAINNET } from './utils/constants/setup'
 import {
   NETWORK,
   CHAIN_ID,
@@ -71,8 +71,10 @@ export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer
 )
+
+/** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
-  ENDPOINTS.indexer
+  IS_MAINNET ? 'https://staging.api.injective.network' : ENDPOINTS.indexer
 )
 
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)

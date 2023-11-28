@@ -121,19 +121,6 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
       </div>
     </td>
 
-    <td v-if="false">
-      <div>
-        <p>8.23% Weekly</p>
-        <p>8.23% Yearly</p>
-      </div>
-    </td>
-
-    <td v-if="false">
-      <div>
-        <p>100 USD</p>
-      </div>
-    </td>
-
     <td>
       <div>
         <p>{{ marketVolumeToString }} USD</p>
