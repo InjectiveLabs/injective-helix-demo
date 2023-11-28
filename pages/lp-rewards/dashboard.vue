@@ -55,7 +55,7 @@ watch(
 
       <h3 class="text-lg font-semibold my-6">
         {{
-          $t('campaign.myRewards', {
+          $t('campaign.myRewardsCount', {
             rewards: campaignStore.ownerRewards.length
           })
         }}

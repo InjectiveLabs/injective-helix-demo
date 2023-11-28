@@ -58,8 +58,6 @@ const testnetEpochs: Epoch[] = [
 
 export const LP_EPOCHS = IS_TESTNET ? testnetEpochs : mainnetEpochs
 
-// ---------
-
 const testnetCampaignRounds: CampaignRound[] = [
   {
     round: 1,
@@ -67,13 +65,13 @@ const testnetCampaignRounds: CampaignRound[] = [
     endDate: 1699974000,
     campaigns: [
       {
+        campaignId: 'spot-grid-inj-usdt-test',
+        scAddress: 'inj1tze0el9kvnw06mha3gty6fqcmn2t7efqpzz6pj',
+        marketSlug: 'inj-usdt',
         rewards: [
-          { symbol: 'INJ', amount: '1000' },
-          { symbol: 'TIA', amount: '10000' }
-        ],
-        campaignId: 'spot-grid-tia-usdt-test-1',
-        scAddress: 'inj1u5hslmdxksvu04d5wk8ec5ewxgpnrs5jxl75rm',
-        marketSlug: 'tia-usdt'
+          { symbol: 'INJ', amount: '500' },
+          { symbol: 'TIA', amount: '5000' }
+        ]
       }
     ]
   },
@@ -83,12 +81,21 @@ const testnetCampaignRounds: CampaignRound[] = [
     endDate: 1702566000,
     campaigns: [
       {
-        campaignId: 'spot-grid-inj-usdt-test-1',
+        campaignId: 'spot-grid-inj-usdt-test-2',
         scAddress: 'inj1tze0el9kvnw06mha3gty6fqcmn2t7efqpzz6pj',
         marketSlug: 'inj-usdt',
         rewards: [
-          { symbol: 'INJ', amount: '500' },
-          { symbol: 'TIA', amount: '5000' }
+          { symbol: 'INJ', amount: '502' },
+          { symbol: 'TIA', amount: '5002' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-tia-usdt-test-1',
+        scAddress: 'inj1tze0el9kvnw06mha3gty6fqcmn2t7efqpzz6pj',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '501' },
+          { symbol: 'TIA', amount: '5001' }
         ]
       }
     ]

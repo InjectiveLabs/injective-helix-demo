@@ -19,15 +19,19 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'tia-usdt',
     contractAddress: 'inj1ljzjh8tzuvrj7mkhv9mxvv4cedn7kzauargrey'
+  },
+  {
+    slug: 'stinj-inj',
+    contractAddress: 'inj195l0hketpha2x2zahckfhlchlkrwckxd74030v'
+  },
+  {
+    slug: 'weth-usdt',
+    contractAddress: 'inj1vldp2685n8gwynpxfnmv6ucn5qumjsnqkkmhm5'
   }
 ]
 
 if (IS_STAGING) {
   mainnetSpotGridMarkets.push(
-    {
-      slug: 'weth-usdt',
-      contractAddress: 'inj1vldp2685n8gwynpxfnmv6ucn5qumjsnqkkmhm5'
-    },
     {
       slug: 'pyth-usdt',
       contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
@@ -39,10 +43,6 @@ if (IS_STAGING) {
     {
       slug: 'usdt-usdcet',
       contractAddress: 'inj18njxtxdcv49aalx4dhtzew7d5kug52m09vn87t'
-    },
-    {
-      slug: 'stinj-inj',
-      contractAddress: 'inj195l0hketpha2x2zahckfhlchlkrwckxd74030v'
     }
   )
 }
