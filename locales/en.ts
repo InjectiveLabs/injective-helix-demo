@@ -12,7 +12,7 @@ import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import institutional from './institutional/en'
 import liquidityBots from './liquidity-bots/en'
-import { I18nMessageFunction } from '@/types'
+import { I18nMessageFunction, TimeDuration } from '@/types'
 
 export default {
   ...sgt,
@@ -58,7 +58,11 @@ export default {
     new: 'New',
     success: 'Success',
     error: 'Error',
-    somethingHappened: 'Something Happened...'
+    somethingHappened: 'Something Happened...',
+    [TimeDuration.Day]: 'Day',
+    [TimeDuration.Hour]: 'Hour',
+    [TimeDuration.Minute]: 'Minute',
+    [TimeDuration.Second]: 'Second'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',

@@ -10,9 +10,9 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { guildDescriptionMap } from '@/app/data/guild'
+import { prohibitedAddresses, guildDescriptionMap } from '@/app/data/guild'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -28,8 +28,9 @@ const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
 const page = ref(1)
 const limit = ref(10)
-const date = ref(Date.now())
+const now = ref(Date.now())
 const hasNewData = ref(false)
+const sortBy = ref(GuildSortBy.Volume)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
@@ -44,12 +45,20 @@ const isMyGuild = computed(() => {
 
 const isMaxCap = computed(() => campaignStore.totalGuildMember >= GUILD_MAX_CAP)
 
+const isUserProhibitedFromJoining = computed(() => {
+  if (!walletStore.isUserWalletConnected) {
+    return false
+  }
+
+  return prohibitedAddresses.includes(walletStore.injectiveAddress)
+})
+
 const isCampaignStarted = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime < date.value
+  return campaignStore.guildCampaignSummary.startTime < now.value
 })
 
 const guildDescription = computed(() => {
@@ -105,14 +114,11 @@ const { valueToString: guildMasterBalance } = useBigNumberFormatter(
   )
 )
 
-// const invitationLink = computed(
-//   () => `${document.URL}?invite=${guildInvitationHash.value}`
-// )
-
 onWalletConnected(() => {
   Promise.all([
     campaignStore.fetchGuildDetails({
       skip: 0,
+      sortBy: sortBy.value,
       limit: limit.value,
       guildId: route.params.guild as string
     }),
@@ -126,13 +132,14 @@ onWalletConnected(() => {
     .finally(() => status.setIdle())
 })
 
-function fetchGuildDetails({ skip }: { skip: number }) {
+function fetchGuildDetails({ skip = 0 }: { skip: number }) {
   tableStatus.setLoading()
 
   campaignStore
     .fetchGuildDetails({
       skip,
       limit: limit.value,
+      sortBy: sortBy.value,
       guildId: route.params.guild as string
     })
     .catch($onError)
@@ -175,6 +182,7 @@ useIntervalFn(
       campaignStore.pollGuildDetails({
         page: page.value,
         limit: limit.value,
+        sortBy: sortBy.value,
         guildId: route.params.guild as string
       })
     ]),
@@ -189,7 +197,7 @@ watch(lastUpdated, () => {
   hasNewData.value = true
 })
 
-useIntervalFn(() => (date.value = Date.now()), 1000)
+useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
@@ -293,7 +301,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
               <AppButton
                 v-else
                 class="bg-blue-500 text-white"
-                :is-disabled="isMaxCap"
+                :is-disabled="isMaxCap || isUserProhibitedFromJoining"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -360,7 +368,14 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                       <th class="p-4 text-left">
                         {{ $t('guild.leaderboard.table.address') }}
                       </th>
-                      <th class="p-4 text-right">
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.TVL"
+                        :value="GuildSortBy.TVL"
+                        @sortBy:changed="fetchGuildDetails"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t(
@@ -376,8 +391,15 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                             }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
-                      <th class="p-4 text-right">
+                      </AppSortableHeaderItem>
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.Volume"
+                        :value="GuildSortBy.Volume"
+                        @sortBy:changed="fetchGuildDetails"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t('guild.leaderboard.table.volumeTooltip')
@@ -387,7 +409,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                             {{ $t('guild.leaderboard.table.tradingVolume') }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
+                      </AppSortableHeaderItem>
                     </tr>
                   </thead>
                   <tbody>
@@ -418,9 +440,9 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             v-if="campaignStore.guild"
             v-bind="{
               limit,
-              isMaxCap,
               guildInvitationHash,
-              guild: campaignStore.guild
+              guild: campaignStore.guild,
+              isDisabled: isMaxCap || isUserProhibitedFromJoining
             }"
           />
         </div>

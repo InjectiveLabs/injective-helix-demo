@@ -7,6 +7,7 @@ import {
 import { Coin } from '@injectivelabs/sdk-ts'
 import { type Token } from '@injectivelabs/token-metadata'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { TimeDuration } from '@/types'
 
 BigNumber.config({
   FORMAT: {
@@ -127,4 +128,44 @@ export const generateUniqueHash = ({
   limit: number
 }) => {
   return keccak256(value).toString('hex').replace('0x', '').slice(0, limit)
+}
+
+export const formatSecondsToDisplay = ({
+  value,
+  roundUp = true
+}: {
+  value: number
+  roundUp?: boolean
+}) => {
+  if (value === 0) {
+    return
+  }
+
+  const output = {
+    [TimeDuration.Day]: Math.floor(value / (3600 * 24)),
+    [TimeDuration.Hour]: Math.floor((value % (3600 * 24)) / 3600),
+    [TimeDuration.Minute]: Math.floor((value % 3600) / 60),
+    [TimeDuration.Second]: Math.floor(value % 60)
+  } as Record<string, number>
+
+  if (!roundUp) {
+    return output
+  }
+
+  if (output[TimeDuration.Day] === 1 && output[TimeDuration.Hour] === 0) {
+    output[TimeDuration.Day] = 0
+    output[TimeDuration.Hour] = 24
+  }
+
+  if (output[TimeDuration.Hour] === 1 && output.minutes === 0) {
+    output[TimeDuration.Hour] = 0
+    output[TimeDuration.Minute] = 60
+  }
+
+  if (output[TimeDuration.Minute] === 1 && output[TimeDuration.Second] === 0) {
+    output[TimeDuration.Minute] = 0
+    output[TimeDuration.Second] = 60
+  }
+
+  return output
 }

@@ -51,13 +51,15 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
           {{ $t('guild.leaderboard.table.tvlRank') }}
         </p>
         <div class="flex items-center gap-2 mt-3">
-          <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />
-          <span
-            v-if="!isCampaignStarted || campaignStore.guild.rankByTvl === 0"
-          >
-            &mdash;
-          </span>
-          <span v-else>#{{ campaignStore.guild.rankByTvl }}</span>
+          <span v-if="!isCampaignStarted"> &mdash; </span>
+          <template v-else>
+            <BaseIcon
+              v-if="campaignStore.guild.rankByTvl === 1"
+              name="trophy-filled"
+              class="h-5 w-5 min-w-5"
+            />
+            <span>#{{ campaignStore.guild.rankByTvl }}</span>
+          </template>
         </div>
       </div>
 
@@ -66,13 +68,15 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
           {{ $t('guild.leaderboard.table.volumeRank') }}
         </p>
         <div class="flex items-center gap-2 mt-3">
-          <BaseIcon name="trophy-filled" class="h-5 w-5 min-w-5" />
-          <span
-            v-if="!isCampaignStarted || campaignStore.guild.rankByVolume === 0"
-          >
-            &mdash;
-          </span>
-          <span v-else>#{{ campaignStore.guild.rankByVolume }}</span>
+          <span v-if="!isCampaignStarted"> &mdash; </span>
+          <template v-else>
+            <BaseIcon
+              v-if="campaignStore.guild.rankByVolume === 1"
+              name="trophy-filled"
+              class="h-5 w-5 min-w-5"
+            />
+            <span>#{{ campaignStore.guild.rankByVolume }}</span>
+          </template>
         </div>
       </div>
 

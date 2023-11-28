@@ -51,7 +51,8 @@ import {
 } from '@/store/derivative/stream'
 import {
   combineOrderbookRecords,
-  marketHasRecentlyExpired
+  marketHasRecentlyExpired,
+  marketIsInactive
 } from '@/app/utils/market'
 import {
   tokenService,
@@ -180,10 +181,16 @@ export const useDerivativeStore = defineStore('derivative', {
           marketStatus: 'expired'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketHasRecentlyExpired)
+      const pausedMarkets = (
+        (await indexerDerivativesApi.fetchMarkets({
+          marketStatus: 'paused'
+        })) as Array<ExpiryFuturesMarket>
+      ).filter(marketIsInactive)
 
-      const marketsWithToken = await tokenService.toDerivativeMarketsWithToken(
-        markets
-      )
+      const marketsWithToken = await tokenService.toDerivativeMarketsWithToken([
+        ...markets,
+        ...pausedMarkets
+      ])
 
       const recentlyExpiredMarketsWithToken =
         await tokenService.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
@@ -477,7 +484,10 @@ export const useDerivativeStore = defineStore('derivative', {
           ),
           ...marketsWithoutMarketSummaries.map(({ marketId }) =>
             zeroDerivativeMarketSummary(marketId)
-          )
+          ),
+          ...markets
+            .filter(marketIsInactive)
+            .map(({ marketId }) => zeroDerivativeMarketSummary(marketId))
         ]
       })
     },

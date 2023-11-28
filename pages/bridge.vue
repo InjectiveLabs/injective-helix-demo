@@ -2,6 +2,8 @@
 import { BridgingNetwork, CosmosNetworks } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TokenType } from '@injectivelabs/token-metadata'
+import { WalletException } from '@injectivelabs/exceptions'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
 import { getDenomAndTypeFromQuery, COSMOS_CHAIN_ID } from '@/app/data/bridge'
@@ -104,6 +106,13 @@ function preFillCosmosWallet() {
 }
 
 function onConnectCosmosIbc(network: BridgingNetwork) {
+  /** Ninji is not supported for other cosmos chains */
+  if (walletStore.wallet === Wallet.Ninji) {
+    return $onError(
+      new WalletException(new Error('Ninji is not supported for IBC'))
+    )
+  }
+
   ibcStore.reset()
   connectCosmosStatus.setLoading()
 
