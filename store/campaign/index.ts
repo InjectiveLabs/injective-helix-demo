@@ -9,6 +9,7 @@ import {
   toBase64,
   fromBase64
 } from '@injectivelabs/sdk-ts'
+import { awaitForAll } from '@injectivelabs/utils'
 import { joinGuild, createGuild } from '@/store/campaign/message'
 import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import {
@@ -16,20 +17,26 @@ import {
   indexerGrpcCampaignApi,
   chainGrpcWasmApi
 } from '@/app/Services'
-import { GuildSortBy } from '@/types'
+import { CampaignWithScAndData, GuildSortBy } from '@/types'
+import { LP_CAMPAIGNS } from '@/app/data/guild'
 
 type CampaignStoreState = {
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
+  campaigns: Campaign[]
+  campaignsWithSc: CampaignWithScAndData[]
+  campaignsInfo: Campaign[]
   totalUserCount: number
   totalGuildMember: number
   userGuildInfo?: GuildMember
   guildMembers: GuildMember[]
   campaignUsers: CampaignUser[]
   ownerCampaignInfo?: CampaignUser
+  ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
+  claimedRewards: string[]
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -41,9 +48,14 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildsByVolume: [],
   totalGuildMember: 0,
   campaign: undefined,
+  campaigns: [],
+  campaignsInfo: [],
+  campaignsWithSc: [],
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
-  guildCampaignSummary: undefined
+  ownerRewards: [],
+  guildCampaignSummary: undefined,
+  claimedRewards: []
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -94,6 +106,88 @@ export const useCampaignStore = defineStore('campaign', {
 
       campaignStore.$patch({
         ownerCampaignInfo: users[0]
+      })
+    },
+
+    async fetchCampaignsWithSc({
+      campaignIds,
+      pagination
+    }: {
+      campaignIds: string[]
+      pagination?: { limit?: number; skip?: number }
+    }) {
+      const campaignStore = useCampaignStore()
+
+      const campaignsWithSc = await awaitForAll(
+        campaignIds,
+        async (campaignId: string) => {
+          const { campaign } = await indexerGrpcCampaignApi.fetchCampaign({
+            campaignId,
+            limit: pagination?.limit || 1,
+            skip: (pagination?.skip || 0).toString()
+          })
+
+          const campaignWithSc = LP_CAMPAIGNS.find(
+            (c) => c.campaignId === campaignId
+          )!
+
+          return { ...campaign, ...campaignWithSc }
+        }
+      )
+
+      campaignStore.$patch({ campaignsWithSc })
+    },
+
+    async fetchCampaignRewardsForUser() {
+      const walletStore = useWalletStore()
+      const campaignStore = useCampaignStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      const rewards = await awaitForAll(
+        LP_CAMPAIGNS,
+        async (campaignWithSc) => {
+          const { users, campaign } =
+            await indexerGrpcCampaignApi.fetchCampaign({
+              limit: 1,
+              skip: '0',
+              campaignId: campaignWithSc.campaignId,
+              accountAddress: walletStore.injectiveAddress
+            })
+
+          return { user: users[0], campaign }
+        }
+      )
+
+      const filteredRewards = rewards.filter((reward) => reward.user)
+
+      const claimedCampaignRewards = await awaitForAll(
+        filteredRewards,
+        async (rew) => {
+          const campaignWithSc = LP_CAMPAIGNS.find(
+            (c) => c.campaignId === rew.campaign?.campaignId
+          )
+
+          const hasClaimed = campaignWithSc
+            ? await campaignStore.fetchUserClaimedStatus(
+                campaignWithSc.scAddress
+              )
+            : false
+
+          return hasClaimed ? rew.campaign?.campaignId : undefined
+        }
+      )
+
+      const campaignsInfo = rewards.map((rew) => rew.campaign)
+      const ownerRewards = filteredRewards.map((rew) => rew.user)
+      const claimedRewards = claimedCampaignRewards.filter((r) => !!r)
+
+      campaignStore.$patch({
+        ownerRewards,
+        campaignsInfo,
+        claimedRewards
       })
     },
 

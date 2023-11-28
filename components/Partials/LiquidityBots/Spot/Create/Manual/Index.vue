@@ -5,7 +5,10 @@ import {
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -26,14 +29,26 @@ const { lastTradedPrice } = useSpotLastPrice(
 const upperPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.UpperPrice] || '',
   set: (value) => {
-    setUpperPriceField(Number(value).toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS))
+    setUpperPriceField(
+      Number(value).toFixed(
+        lastTradedPrice.value.isGreaterThan(1)
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      )
+    )
   }
 })
 
 const lowerPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.LowerPrice] || '',
   set: (value) => {
-    setLowerPriceField(Number(value).toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS))
+    setLowerPriceField(
+      Number(value).toFixed(
+        lastTradedPrice.value.isGreaterThan(1)
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      )
+    )
   }
 })
 
@@ -49,10 +64,18 @@ onMounted(() => {
       {
         [SpotGridTradingField.LowerPrice]: lastTradedPrice.value
           .minus(lastTradedPrice.value.times(0.06))
-          .toFixed(2),
+          .toFixed(
+            lastTradedPrice.value.isGreaterThan(1)
+              ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+          ),
         [SpotGridTradingField.UpperPrice]: lastTradedPrice.value
           .plus(lastTradedPrice.value.times(0.06))
-          .toFixed(2)
+          .toFixed(
+            lastTradedPrice.value.isGreaterThan(1)
+              ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+          )
       },
       false
     )
