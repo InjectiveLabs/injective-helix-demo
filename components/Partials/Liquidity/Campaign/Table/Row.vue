@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE, getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { LP_EPOCHS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/guild'
 
 const props = defineProps({
   campaignUser: {
@@ -32,6 +32,8 @@ const props = defineProps({
   }
 })
 
+const tokenStore = useTokenStore()
+
 const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
   props.campaignUser.accountAddress
 }`
@@ -45,8 +47,10 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   )
 )
 
-const lpEpoch = computed(() =>
-  LP_EPOCHS.find(({ campaignId }) => campaignId === props.campaign.campaignId)
+const campaignWithSc = computed(() =>
+  LP_CAMPAIGNS.find(
+    ({ campaignId }) => campaignId === props.campaign.campaignId
+  )
 )
 
 const estRewardsInPercentage = computed(() => {
@@ -54,39 +58,48 @@ const estRewardsInPercentage = computed(() => {
     return 0
   }
 
-  return new BigNumberInBase(props.campaignUser.score)
-    .dividedBy(props.totalScore)
-    .times(100)
+  return new BigNumberInBase(props.campaignUser.score).dividedBy(
+    props.totalScore
+  )
 })
 
-const estRewardsInINJ = computed(() =>
-  new BigNumberInBase(estRewardsInPercentage.value)
-    .dividedBy(100)
-    .multipliedBy(lpEpoch.value?.baseRewards || 0)
-)
-
-const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
-  estRewardsInINJ,
-  {
-    decimalPlaces: estRewardsInINJ.value.gt(0.1)
-      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+const rewards = computed(() => {
+  if (!campaignWithSc.value) {
+    return []
   }
-)
 
-const estRewardsInTIA = computed(() =>
-  new BigNumberInBase(estRewardsInPercentage.value)
-    .dividedBy(100)
-    .multipliedBy(lpEpoch.value?.quoteRewards || 0)
-)
+  return campaignWithSc.value.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(
+      ({ symbol }) => symbol === reward.symbol
+    )
 
-const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
-  estRewardsInTIA,
-  {
-    decimalPlaces: estRewardsInTIA.value.gte(0.1)
-      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-  }
+    const amount = new BigNumberInBase(
+      estRewardsInPercentage.value
+    ).multipliedBy(reward.amount || 0)
+
+    const amountInUsd = token
+      ? new BigNumberInBase(amount).times(
+          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+        )
+      : ZERO_IN_BASE
+
+    return {
+      amount,
+      symbol: reward.symbol,
+      amountInUsd
+    }
+  })
+})
+
+const rewardsFormatted = computed(() =>
+  rewards.value.map((reward) => ({
+    amount: reward.amount.toFormat(
+      reward.amount.isLessThan(0.1)
+        ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+        : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    ),
+    symbol: reward.symbol
+  }))
 )
 </script>
 
@@ -107,7 +120,12 @@ const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
     <td class="text-right">
       <div class="p-3">
         <p>
-          {{ estRewardsInINJToString }} INJ, {{ estRewardsInTIAToString }} TIA
+          <span
+            v-for="({ amount, symbol }, i) in rewardsFormatted"
+            :key="symbol"
+          >
+            {{ i > 0 ? ',' : '' }} {{ amount }} {{ symbol }}
+          </span>
         </p>
       </div>
     </td>
