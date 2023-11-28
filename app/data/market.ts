@@ -8,7 +8,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
-  // 'whale-usdt', hide for now
+  'whale-usdt',
   'pyth-usdt-perp',
   'pyth-usdt',
   'usdy-usdt',
