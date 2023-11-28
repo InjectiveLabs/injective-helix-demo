@@ -2,25 +2,28 @@ import { defineStore } from 'pinia'
 import {
   Guild,
   Campaign,
+  toBase64,
+  fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary,
-  MsgExecuteContractCompat,
-  toBase64,
-  fromBase64
+  GuildCampaignSummary
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
-import { joinGuild, createGuild } from '@/store/campaign/message'
-import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import {
-  msgBroadcastClient,
-  indexerGrpcCampaignApi,
-  chainGrpcWasmApi
-} from '@/app/Services'
-import { CampaignWithScAndData, GuildSortBy } from '@/types'
-import { LP_CAMPAIGNS } from '@/app/data/guild'
+  pollGuildDetails,
+  fetchGuildsByTVL,
+  fetchGuildDetails,
+  fetchUserGuildInfo,
+  fetchGuildsByVolume,
+  fetchUserIsOptedOutOfRewards
+} from '@/store/campaign/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import { chainGrpcWasmApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { joinGuild, createGuild, claimLPReward } from '@/store/campaign/message'
+import { CampaignWithScAndData } from '@/types'
 
 type CampaignStoreState = {
+  userIsOptedOutOfReward: boolean
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
@@ -40,6 +43,7 @@ type CampaignStoreState = {
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
+  userIsOptedOutOfReward: false,
   guild: undefined,
   guildsByTVL: [],
   guildMembers: [],
@@ -63,6 +67,15 @@ export const useCampaignStore = defineStore('campaign', {
   actions: {
     joinGuild,
     createGuild,
+    claimLPReward,
+
+    // guild queries
+    pollGuildDetails,
+    fetchGuildsByTVL,
+    fetchGuildDetails,
+    fetchUserGuildInfo,
+    fetchGuildsByVolume,
+    fetchUserIsOptedOutOfRewards,
 
     async fetchCampaign({
       skip,
@@ -189,152 +202,6 @@ export const useCampaignStore = defineStore('campaign', {
         campaignsInfo,
         claimedRewards
       })
-    },
-
-    async fetchGuildsByTVL() {
-      const campaignStore = useCampaignStore()
-
-      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
-        sortBy: GuildSortBy.TVL,
-        limit: 100,
-        campaignContract: GUILD_CONTRACT_ADDRESS
-      })
-
-      campaignStore.$patch({
-        guildsByTVL: guilds,
-        guildCampaignSummary: summary
-      })
-    },
-
-    async fetchGuildsByVolume() {
-      const campaignStore = useCampaignStore()
-
-      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
-        sortBy: GuildSortBy.Volume,
-        limit: 100,
-        campaignContract: GUILD_CONTRACT_ADDRESS
-      })
-
-      campaignStore.$patch({
-        guildsByVolume: guilds,
-        guildCampaignSummary: summary
-      })
-    },
-
-    async fetchUserGuildInfo() {
-      const walletStore = useWalletStore()
-      const campaignStore = useCampaignStore()
-
-      if (!walletStore.isUserWalletConnected || campaignStore.userGuildInfo) {
-        return
-      }
-
-      try {
-        const { info: userGuildInfo } =
-          await indexerGrpcCampaignApi.fetchGuildMember({
-            address: walletStore.injectiveAddress,
-            campaignContract: GUILD_CONTRACT_ADDRESS
-          })
-
-        campaignStore.$patch({
-          userGuildInfo
-        })
-      } catch {
-        // silently throw error
-      }
-    },
-
-    async fetchGuildDetails({
-      skip,
-      limit,
-      sortBy,
-      guildId
-    }: {
-      skip?: number
-      limit?: number
-      sortBy?: string
-      guildId: string
-    }) {
-      const campaignStore = useCampaignStore()
-
-      const { members, guildInfo, paging } =
-        await indexerGrpcCampaignApi.fetchGuildMembers({
-          skip,
-          limit,
-          sortBy,
-          guildId,
-          includeGuildInfo: true,
-          campaignContract: GUILD_CONTRACT_ADDRESS
-        })
-
-      campaignStore.$patch({
-        guild: guildInfo,
-        guildMembers: members,
-        totalGuildMember: paging?.total || 0
-      })
-    },
-
-    async pollGuildDetails({
-      page,
-      limit,
-      sortBy,
-      guildId
-    }: {
-      page?: number
-      limit?: number
-      sortBy: string
-      guildId: string
-    }) {
-      const campaignStore = useCampaignStore()
-
-      const { members, guildInfo, paging } =
-        await indexerGrpcCampaignApi.fetchGuildMembers({
-          limit,
-          sortBy,
-          guildId,
-          skip: 0,
-          includeGuildInfo: true,
-          campaignContract: GUILD_CONTRACT_ADDRESS
-        })
-
-      if (page === 1) {
-        campaignStore.$patch({
-          guildMembers: members
-        })
-      }
-
-      campaignStore.$patch({
-        guild: guildInfo,
-        totalGuildMember: paging?.total || 0
-      })
-    },
-
-    async claimReward(contractAddress: string) {
-      const appStore = useAppStore()
-      const walletStore = useWalletStore()
-
-      await appStore.queue()
-      await walletStore.validate()
-
-      if (!walletStore.address) {
-        return
-      }
-
-      const message = MsgExecuteContractCompat.fromJSON({
-        sender: walletStore.injectiveAddress,
-        contractAddress,
-        exec: {
-          action: 'claim_reward',
-          msg: {}
-        }
-      })
-
-      const reward = await msgBroadcastClient.broadcast({
-        msgs: [message],
-        injectiveAddress: walletStore.injectiveAddress
-      })
-
-      return reward
     },
 
     async fetchUserClaimedStatus(contractAddress: string) {

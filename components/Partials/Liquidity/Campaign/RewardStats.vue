@@ -9,7 +9,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LP_CAMPAIGNS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const campaignStore = useCampaignStore()
 const { success, error } = useNotifications()
@@ -157,7 +157,7 @@ function onClaimRewards() {
   claimStatus.setLoading()
 
   campaignStore
-    .claimReward(scAddress)
+    .claimLPReward(scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),

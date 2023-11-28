@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 
 const props = defineProps({
   campaignWithSc: {

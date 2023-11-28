@@ -2,7 +2,7 @@
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_TOKEN_DECIMALS

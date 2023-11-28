@@ -7,7 +7,7 @@ import {
   LiquidityRewardsPage,
   UiMarketWithToken
 } from '@/types'
-import { LP_CAMPAIGNS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS

@@ -34,7 +34,7 @@ function claimLpRewards() {
   status.setLoading()
 
   campaignStore
-    .claimReward(props.scAddress)
+    .claimLPReward(props.scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),

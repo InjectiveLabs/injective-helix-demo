@@ -22,28 +22,6 @@ export const guildDescriptionMap = {
     'Just a guild started by a whale. If you are a fellow whale, this is the guild for you!'
 } as Record<string, string>
 
-// OLP addresses are not allowed to join the TIA guild competition
-export const prohibitedAddresses = [
-  'inj1akxycslq8cjt0uffw4rjmfm3echchptu52a2dq',
-  'inj1xyc8au3vwlxgnnt7vyjxvz83twpdp8lde3qmkg',
-  'inj1rwv4zn3jptsqs7l8lpa3uvzhs57y8duemete9e',
-  'inj1y9vkk3ga59gq96amj9np7l67nuhnwg6rv4a06j',
-  'inj1mcys5v244eelwr8c0xpg3c9ac2m2add5saytyh',
-  'inj14k7wgey85pt226ugr9sq4h2ya774n82hzy26nf',
-  'inj1n5dfuan908fdlxxkjt9xajt8s9lt40v0x4g9yw',
-  'inj1as4jrta885z3zn37a2z3xk9cddt8dyzmfvwemw',
-  'inj1ek6d8fxfh485adwr9mznkvtrm664g9eaz5s4l6',
-  'inj10xvv532h2sy03d86x487v9dt7dp4eud8fe2qv5',
-  'inj12vpajtjf5cvmk2w737m0t8qwwkyjz0xgvxwyus',
-  'inj13glcnaum2xqv5a0n0hdsmv0f6nfacjsfvrh5j9',
-  'inj1clj2aeqaw2z3529jqp7qyhhg3uhlnk9hk0j0zz',
-  'inj1pdrwxwts36jds77jlnrpv98ppxkrwja7hc2659',
-  'inj1dx4pxhzc2a0dv9htu3xzqk53r4q6tthwqn4562',
-  'inj19qwtymgvs5qa57flxp9gc0h0sazd78hwpenqu2',
-  'inj1kukxjpf0c2s2rzt8v2s89gtrfh7waywa85m0fu',
-  'inj1ju48ulgakgclvlne0lx0h5zdzluztlx7suwq7z'
-]
-
 const mainnetEpochs: Epoch[] = [
   {
     epoch: 1,

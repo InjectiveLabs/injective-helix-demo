@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
+import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { BusEvents, MainPage, Modal, AccountSubpage } from '@/types'
 
 const spotStore = useSpotStore()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LP_CAMPAIGNS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

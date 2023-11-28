@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 
 const latestRound = Math.max(...CAMPAIGN_LP_ROUNDS.map((round) => round.round))
 

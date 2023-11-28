@@ -10,7 +10,7 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { prohibitedAddresses, guildDescriptionMap } from '@/app/data/guild'
+import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
@@ -45,14 +45,6 @@ const isMyGuild = computed(() => {
 
 const isMaxCap = computed(() => campaignStore.totalGuildMember >= GUILD_MAX_CAP)
 
-const isUserProhibitedFromJoining = computed(() => {
-  if (!walletStore.isUserWalletConnected) {
-    return false
-  }
-
-  return prohibitedAddresses.includes(walletStore.injectiveAddress)
-})
-
 const isCampaignStarted = computed(() => {
   if (!campaignStore.guildCampaignSummary) {
     return false
@@ -67,7 +59,7 @@ const guildDescription = computed(() => {
   }
 
   return (
-    campaignStore.guild.description ||
+    campaignStore.guild.description.replace('No description', '') ||
     guildDescriptionMap[campaignStore.guild.guildId]
   )
 })
@@ -123,7 +115,8 @@ onWalletConnected(() => {
       guildId: route.params.guild as string
     }),
     campaignStore.fetchGuildsByTVL(),
-    campaignStore.fetchUserGuildInfo()
+    campaignStore.fetchUserGuildInfo(),
+    campaignStore.fetchUserIsOptedOutOfRewards()
   ])
     .catch((error) => {
       $onError(error)
@@ -301,7 +294,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               <AppButton
                 v-else
                 class="bg-blue-500 text-white"
-                :is-disabled="isMaxCap || isUserProhibitedFromJoining"
+                :is-disabled="isMaxCap || campaignStore.userIsOptedOutOfReward"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -366,6 +359,9 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   <thead>
                     <tr class="border-b uppercase text-xs text-gray-500">
                       <th class="p-4 text-left">
+                        {{ $t('guild.leaderboard.table.rank') }}
+                      </th>
+                      <th class="p-4 text-left">
                         {{ $t('guild.leaderboard.table.address') }}
                       </th>
 
@@ -374,7 +370,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.TVL"
                         :value="GuildSortBy.TVL"
-                        @sortBy:changed="fetchGuildDetails"
+                        @sortBy:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{
@@ -398,7 +394,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.Volume"
                         :value="GuildSortBy.Volume"
-                        @sortBy:changed="fetchGuildDetails"
+                        @sortBy:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{
@@ -414,9 +410,13 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   </thead>
                   <tbody>
                     <PartialsGuildMemberRow
-                      v-for="member in campaignStore.guildMembers"
+                      v-for="(member, index) in campaignStore.guildMembers"
                       :key="member.address"
-                      v-bind="{ member, isCampaignStarted }"
+                      v-bind="{
+                        member,
+                        isCampaignStarted,
+                        rank: (page - 1) * limit + index + 1
+                      }"
                     />
                   </tbody>
                 </table>
@@ -442,7 +442,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               limit,
               guildInvitationHash,
               guild: campaignStore.guild,
-              isDisabled: isMaxCap || isUserProhibitedFromJoining
+              isDisabled: isMaxCap || campaignStore.userIsOptedOutOfReward
             }"
           />
         </div>
