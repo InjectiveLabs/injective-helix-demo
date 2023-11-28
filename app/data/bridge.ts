@@ -13,7 +13,7 @@ import {
 import { LocationQuery } from 'vue-router'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { BridgeType, TransferSide } from '@/types'
-import { IS_TESTNET, IS_STAGING } from '@/app/utils/constants'
+import { IS_TESTNET } from '@/app/utils/constants'
 
 export const networksMeta = [
   {
@@ -123,16 +123,13 @@ export const networksMeta = [
     text: 'Oraichain',
     value: BridgingNetwork.Oraichain,
     icon: '/bridgingNetworks/orai.svg'
-  }
-] as NetworkMeta[]
-
-if (IS_STAGING) {
-  networksMeta.push({
+  },
+  {
     text: 'Migaloo',
     value: BridgingNetwork.Migaloo,
     icon: '/bridgingNetworks/migaloo.svg'
-  })
-}
+  }
+] as NetworkMeta[]
 
 export const transferSideMeta = {
   [TransferSide.Bank]: {
