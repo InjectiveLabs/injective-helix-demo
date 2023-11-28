@@ -7,7 +7,7 @@ import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
 
 const props = defineProps({
@@ -43,7 +43,7 @@ const campaign = computed(() =>
 )
 
 const marketVolume = computed(() =>
-  new BigNumberInWei(campaign.value?.totalScore || 0).toBase(USDT_DECIMALS)
+  new BigNumberInWei(campaignUserInfo.value?.score || 0).toBase(USDT_DECIMALS)
 )
 
 const estRewardsInPercentage = computed(() => {
