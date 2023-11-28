@@ -27,6 +27,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'weth-usdt',
     contractAddress: 'inj1vldp2685n8gwynpxfnmv6ucn5qumjsnqkkmhm5'
+  },
+  {
+    slug: 'whale-usdt',
+    contractAddress: 'inj1fuftrqrfmuh0xrg50jlgnq4ptarq5dd9f6k450'
   }
 ]
 

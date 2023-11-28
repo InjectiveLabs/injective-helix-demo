@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import {
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
 const HANDLE_WIDTH = 50
@@ -182,7 +187,7 @@ function generateEvenlySpacedNumbers(
   const step = (b - a) / (count - 1)
 
   for (let i = 0; i < count; i++) {
-    const value = +(a + step * i).toFixed(2)
+    const value = +(a + step * i)
     result.push(value)
   }
 
@@ -286,7 +291,13 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="end"
         >
-          {{ Number(props.lower).toFixed(2) }}
+          {{
+            Number(props.lower).toFixed(
+              Number(currentPrice) > 1
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+            )
+          }}
         </text>
 
         <text
@@ -300,7 +311,13 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="start"
         >
-          {{ Number(props.upper).toFixed(2) }}
+          {{
+            Number(props.upper).toFixed(
+              Number(currentPrice) > 1
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+            )
+          }}
         </text>
       </g>
 
@@ -315,7 +332,7 @@ function generateEvenlySpacedNumbers(
         />
       </g>
 
-      <g id="ruler">
+      <g id="ruler" mask="url(#myMask)">
         <line
           x1="0"
           :y1="SVG_PROPS.height"

@@ -29,17 +29,20 @@ const token = computed(() =>
 )
 
 const rewardsWithToken = computed(() =>
-  props.campaignWithSc.rewards.map((r) => ({
-    value: new BigNumberInBase(r.amount).toFormat(
+  props.campaignWithSc.rewards.map((reward) => ({
+    value: new BigNumberInBase(reward.amount).toFormat(
       UI_DEFAULT_MIN_DISPLAY_DECIMALS
     ),
-    token: tokenStore.tokens.find((t) => t.symbol === r.symbol)
+    token: tokenStore.tokens.find(({ symbol }) => symbol === reward.symbol)
   }))
 )
 
 const totalRewardsInUsd = computed(() => {
   return props.campaignWithSc.rewards.reduce((total, reward) => {
-    const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)
+    const token = tokenStore.tokens.find(
+      ({ symbol }) => symbol === reward.symbol
+    )
+
     if (!token) {
       return total
     }

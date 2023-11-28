@@ -37,41 +37,43 @@ const campaignWithScAndData = computed<CampaignWithScAndData>(() => {
 })
 
 const rewardsWithToken = computed(() => {
-  return campaignWithScAndData.value.rewards.map((r) => ({
-    value: new BigNumberInBase(r.amount).toFormat(
+  return campaignWithScAndData.value.rewards.map((reward) => ({
+    value: new BigNumberInBase(reward.amount).toFormat(
       UI_DEFAULT_MIN_DISPLAY_DECIMALS
     ),
-    token: tokenStore.tokens.find((t) => t.symbol === r.symbol)
+    token: tokenStore.tokens.find(({ symbol }) => symbol === reward.symbol)
   }))
 })
 
-const totalRewardsInUsd = computed(() => {
-  return campaignWithScAndData.value.rewards.reduce((total, reward) => {
-    const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)
-    if (!token) {
-      return total
-    }
-
-    const rewardInUsd = new BigNumberInBase(reward.amount).times(
-      tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-    )
-
-    return total.plus(rewardInUsd)
-  }, ZERO_IN_BASE)
-})
-
-const volume = computed(() =>
-  new BigNumberInWei(props.campaign.totalScore).toBase(USDT_DECIMALS)
-)
-
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  totalRewardsInUsd,
+  computed(() => {
+    return campaignWithScAndData.value.rewards.reduce((total, reward) => {
+      const token = tokenStore.tokens.find(
+        ({ symbol }) => symbol === reward.symbol
+      )
+
+      if (!token) {
+        return total
+      }
+
+      const rewardInUsd = new BigNumberInBase(reward.amount).times(
+        tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+      )
+
+      return total.plus(rewardInUsd)
+    }, ZERO_IN_BASE)
+  }),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: volumeToString } = useBigNumberFormatter(volume, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
+const { valueToString: volumeToString } = useBigNumberFormatter(
+  computed(() =>
+    new BigNumberInWei(props.campaign.totalScore).toBase(USDT_DECIMALS)
+  ),
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
 </script>
 
 <template>

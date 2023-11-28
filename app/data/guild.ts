@@ -154,6 +154,12 @@ const mainnetCampaignRounds: CampaignRound[] = [
           { symbol: 'INJ', amount: '500' },
           { symbol: 'TIA', amount: '4000' }
         ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-2',
+        scAddress: '',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '62500' }]
       }
     ]
   }
