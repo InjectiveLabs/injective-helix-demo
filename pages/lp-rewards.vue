@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/guild'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -13,13 +13,7 @@ const status = reactive(new Status(StatusType.Idle))
 onMounted(() => {
   status.setLoading()
 
-  const campaignIds = CAMPAIGN_LP_ROUNDS.reduce<string[]>(
-    (campaignIds, round) => [
-      ...campaignIds,
-      ...round.campaigns.map((c) => c.campaignId)
-    ],
-    []
-  )
+  const campaignIds = LP_CAMPAIGNS.map(({ campaignId }) => campaignId)
 
   Promise.all([
     spotStore.init(),
@@ -27,7 +21,7 @@ onMounted(() => {
     tokenStore.fetchTokensUsdPriceMap(
       tokenStore.tokens.map(({ coinGeckoId }) => coinGeckoId)
     ),
-    campaignStore.fetchCampaigns(campaignIds)
+    campaignStore.fetchCampaignsWithSc({ campaignIds })
   ])
     .catch($onError)
     .finally(() => {

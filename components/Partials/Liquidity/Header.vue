@@ -7,28 +7,29 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_TOKEN_DECIMALS
 } from '@/app/utils/constants'
-import { LiquidityRewardsPage } from '@/types'
+import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
   round: {
     type: Number,
     required: true
+  },
+
+  campaignsWithScAndData: {
+    type: Object as PropType<CampaignWithScAndData[]>,
+    required: true
   }
 })
 
 const tokenStore = useTokenStore()
-const campaignStore = useCampaignStore()
+const walletStore = useWalletStore()
 
 const round = computed(() =>
   CAMPAIGN_LP_ROUNDS.find(({ round }) => round === props.round)
 )
 
 const totalRewardsThisRound = computed(() => {
-  if (!round.value) {
-    return ZERO_IN_BASE
-  }
-
-  return round.value.campaigns.reduce((sum, campaign) => {
+  return props.campaignsWithScAndData.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
       const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)!
 
@@ -43,17 +44,8 @@ const totalRewardsThisRound = computed(() => {
   }, ZERO_IN_BASE)
 })
 
-const campaignsForRound = computed(() => {
-  return campaignStore.campaigns.filter(
-    (campaign) =>
-      round.value?.campaigns.find(
-        (campaignWithSc) => campaignWithSc.campaignId === campaign.campaignId
-      )
-  )
-})
-
 const totalVolume = computed(() =>
-  campaignsForRound.value
+  props.campaignsWithScAndData
     .reduce((totalScore, campaign) => {
       return totalScore.plus(campaign.totalScore)
     }, ZERO_IN_WEI)
@@ -88,6 +80,7 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
       </div>
       <div class="space-x-2 flex">
         <NuxtLink
+          v-if="walletStore.isUserWalletConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >

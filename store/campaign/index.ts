@@ -17,8 +17,8 @@ import {
   indexerGrpcCampaignApi,
   chainGrpcWasmApi
 } from '@/app/Services'
-import { CampaignWithSc, GuildSortBy } from '@/types'
-import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
+import { CampaignWithScAndData, GuildSortBy } from '@/types'
+import { LP_CAMPAIGNS } from '@/app/data/guild'
 
 type CampaignStoreState = {
   guild?: Guild
@@ -26,6 +26,7 @@ type CampaignStoreState = {
   guildsByVolume: Guild[]
   campaign?: Campaign
   campaigns: Campaign[]
+  campaignsWithSc: CampaignWithScAndData[]
   campaignsInfo: Campaign[]
   totalUserCount: number
   totalGuildMember: number
@@ -49,6 +50,7 @@ const initialStateFactory = (): CampaignStoreState => ({
   campaign: undefined,
   campaigns: [],
   campaignsInfo: [],
+  campaignsWithSc: [],
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
   ownerRewards: [],
@@ -107,23 +109,33 @@ export const useCampaignStore = defineStore('campaign', {
       })
     },
 
-    async fetchCampaigns(campaignIds: string[]) {
+    async fetchCampaignsWithSc({
+      campaignIds,
+      pagination
+    }: {
+      campaignIds: string[]
+      pagination?: { limit?: number; skip?: number }
+    }) {
       const campaignStore = useCampaignStore()
 
-      const campaigns = await awaitForAll(
+      const campaignsWithSc = await awaitForAll(
         campaignIds,
         async (campaignId: string) => {
           const { campaign } = await indexerGrpcCampaignApi.fetchCampaign({
             campaignId,
-            limit: 1,
-            skip: '1'
+            limit: pagination?.limit || 1,
+            skip: (pagination?.skip || 0).toString()
           })
 
-          return campaign
+          const campaignWithSc = LP_CAMPAIGNS.find(
+            (c) => c.campaignId === campaignId
+          )!
+
+          return { ...campaign, ...campaignWithSc }
         }
       )
 
-      campaignStore.$patch({ campaigns })
+      campaignStore.$patch({ campaignsWithSc })
     },
 
     async fetchCampaignRewardsForUser() {
@@ -134,30 +146,27 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const campaigns = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithSc[]>(
-        (campaigns, round) => {
-          return [...campaigns, ...round.campaigns]
-        },
-        []
+      const rewards = await awaitForAll(
+        LP_CAMPAIGNS,
+        async (campaignWithSc) => {
+          const { users, campaign } =
+            await indexerGrpcCampaignApi.fetchCampaign({
+              limit: 1,
+              skip: '0',
+              campaignId: campaignWithSc.campaignId,
+              accountAddress: walletStore.injectiveAddress
+            })
+
+          return { user: users[0], campaign }
+        }
       )
-
-      const rewards = await awaitForAll(campaigns, async (campaignWithSc) => {
-        const { users, campaign } = await indexerGrpcCampaignApi.fetchCampaign({
-          limit: 1,
-          skip: '0',
-          campaignId: campaignWithSc.campaignId,
-          accountAddress: walletStore.injectiveAddress
-        })
-
-        return { user: users[0], campaign }
-      })
 
       const filteredRewards = rewards.filter((reward) => reward.user)
 
       const claimedCampaignRewards = await awaitForAll(
         filteredRewards,
         async (rew) => {
-          const campaignWithSc = campaigns.find(
+          const campaignWithSc = LP_CAMPAIGNS.find(
             (c) => c.campaignId === rew.campaign?.campaignId
           )
 
@@ -173,11 +182,12 @@ export const useCampaignStore = defineStore('campaign', {
 
       const campaignsInfo = rewards.map((rew) => rew.campaign)
       const ownerRewards = filteredRewards.map((rew) => rew.user)
+      const claimedRewards = claimedCampaignRewards.filter((r) => !!r)
 
       campaignStore.$patch({
         ownerRewards,
         campaignsInfo,
-        claimedRewards: claimedCampaignRewards.filter((r) => !!r)
+        claimedRewards
       })
     },
 

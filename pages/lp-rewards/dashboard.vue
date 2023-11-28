@@ -20,7 +20,7 @@ onMounted(() => {
     })
 })
 
-const filteredRounds = computed(() =>
+const roundsWithCampaignRewards = computed(() =>
   [
     ...CAMPAIGN_LP_ROUNDS.reduce<CampaignRound[]>((rounds, nextRound) => {
       const roundFiltered = {
@@ -63,7 +63,7 @@ watch(
 
       <div class="space-y-4">
         <PartialsLiquidityDashboardRound
-          v-for="round in filteredRounds"
+          v-for="round in roundsWithCampaignRewards"
           v-bind="{ round }"
           :key="round.round"
         />

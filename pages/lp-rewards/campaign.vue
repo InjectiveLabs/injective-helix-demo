@@ -101,7 +101,7 @@ useIntervalFn(
       v-if="campaignStore.campaign"
       class="mx-auto max-w-7xl w-full px-4 space-y-8 mt-6"
     >
-      <PartialsLiquidityCampaignHead
+      <PartialsLiquidityCampaignHeader
         v-if="market"
         v-bind="{ market, campaign: campaignStore.campaign }"
       />

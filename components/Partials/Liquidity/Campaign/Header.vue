@@ -3,11 +3,11 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  CampaignWithSc,
+  CampaignWithScAndData,
   LiquidityRewardsPage,
   UiMarketWithToken
 } from '@/types'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/guild'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
@@ -26,26 +26,18 @@ const props = defineProps({
 })
 
 const tokenStore = useTokenStore()
+const walletStore = useWalletStore()
 
-const campaignWithSc = computed(() => {
-  const campaigns = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithSc[]>(
-    (campaigns, round) => {
-      return [...campaigns, ...round.campaigns]
-    },
-    []
-  )
+const campaignWithScAndData = computed<CampaignWithScAndData>(() => {
+  const campaignWithSc = LP_CAMPAIGNS.find(
+    (c) => c.campaignId === props.campaign.campaignId
+  )!
 
-  return campaigns.find(
-    ({ campaignId }) => campaignId === props.campaign.campaignId
-  )
+  return { ...campaignWithSc, ...props.campaign }
 })
 
 const rewardsWithToken = computed(() => {
-  if (!campaignWithSc.value) {
-    return []
-  }
-
-  return campaignWithSc.value.rewards.map((r) => ({
+  return campaignWithScAndData.value.rewards.map((r) => ({
     value: new BigNumberInBase(r.amount).toFormat(
       UI_DEFAULT_MIN_DISPLAY_DECIMALS
     ),
@@ -54,11 +46,7 @@ const rewardsWithToken = computed(() => {
 })
 
 const totalRewardsInUsd = computed(() => {
-  if (!campaignWithSc.value) {
-    return ZERO_IN_BASE
-  }
-
-  return campaignWithSc.value.rewards.reduce((total, reward) => {
+  return campaignWithScAndData.value.rewards.reduce((total, reward) => {
     const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)
     if (!token) {
       return total
@@ -73,15 +61,17 @@ const totalRewardsInUsd = computed(() => {
 })
 
 const volume = computed(() =>
-  new BigNumberInWei(props.campaign.totalScore)
-    .toBase(USDT_DECIMALS)
-    .toFormat(2)
+  new BigNumberInWei(props.campaign.totalScore).toBase(USDT_DECIMALS)
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   totalRewardsInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
+
+const { valueToString: volumeToString } = useBigNumberFormatter(volume, {
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+})
 </script>
 
 <template>
@@ -108,6 +98,7 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
 
       <div class="flex items-center ml-auto">
         <NuxtLink
+          v-if="walletStore.isUserWalletConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
@@ -147,7 +138,7 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
         <p class="text-xs uppercase text-gray-500 mb-2">
           {{ $t('campaign.volume') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ volume }} USD</h3>
+        <h3 class="text-xl font-semibold">{{ volumeToString }} USD</h3>
       </div>
     </div>
   </div>

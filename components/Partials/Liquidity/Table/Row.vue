@@ -5,11 +5,11 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
+import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
   campaignWithSc: {
-    type: Object as PropType<CampaignWithSc>,
+    type: Object as PropType<CampaignWithScAndData>,
     required: true
   }
 })
@@ -30,7 +30,9 @@ const token = computed(() =>
 
 const rewardsWithToken = computed(() =>
   props.campaignWithSc.rewards.map((r) => ({
-    value: new Intl.NumberFormat('en-US').format(Number(r.amount)),
+    value: new BigNumberInBase(r.amount).toFormat(
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    ),
     token: tokenStore.tokens.find((t) => t.symbol === r.symbol)
   }))
 )
@@ -52,7 +54,7 @@ const totalRewardsInUsd = computed(() => {
 
 const marketVolume = computed(() =>
   new BigNumberInWei(
-    campaignStore.campaigns.find(
+    campaignStore.campaignsWithSc.find(
       (c) => c.campaignId === props.campaignWithSc.campaignId
     )?.totalScore || 0
   ).toBase(USDT_DECIMALS)

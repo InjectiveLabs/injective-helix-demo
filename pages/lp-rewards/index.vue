@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+const campaignStore = useCampaignStore()
 
-const DEFAULT_ROUND = Math.max(...CAMPAIGN_LP_ROUNDS.map(({ round }) => round))
+const DEFAULT_ROUND = Math.max(
+  ...campaignStore.campaignsWithSc.map(({ round }) => round)
+)
 
 const round = useQueryRef('round', DEFAULT_ROUND.toString())
 
-const filteredCampaigns = computed(
-  () =>
-    CAMPAIGN_LP_ROUNDS.find((c) => c.round === Number(round.value))!.campaigns
+const filteredCampaigns = computed(() =>
+  campaignStore.campaignsWithSc.filter((c) => c.round === Number(round.value))
 )
 </script>
 
 <template>
   <div class="mx-auto max-w-7xl w-full px-4 space-y-8 py-10">
-    <PartialsLiquidityHeader v-bind="{ round: Number(round) }" />
+    <PartialsLiquidityHeader
+      v-bind="{
+        round: Number(round),
+        campaignsWithScAndData: filteredCampaigns
+      }"
+    />
     <PartialsLiquidityTabs class="mt-10 mb-4" />
 
     <div class="overflow-y-auto">

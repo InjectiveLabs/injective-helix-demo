@@ -174,11 +174,11 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
 </script>
 
 <template>
-  <div
-    v-if="campaignStore.ownerCampaignInfo || status.isLoading()"
-    class="bg-gray-850 rounded-md p-8"
-  >
-    <AppHocLoading :status="status">
+  <AppHocLoading :status="status">
+    <div
+      v-if="campaignStore.ownerCampaignInfo"
+      class="bg-gray-850 rounded-md p-8"
+    >
       <template v-if="campaignStore.ownerCampaignInfo">
         <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
@@ -251,6 +251,6 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
           </div>
         </div>
       </template>
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

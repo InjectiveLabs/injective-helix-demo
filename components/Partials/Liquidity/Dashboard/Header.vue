@@ -2,11 +2,11 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
-import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()

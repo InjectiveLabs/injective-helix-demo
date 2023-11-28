@@ -1,5 +1,5 @@
 import { IS_TESTNET } from '@/app/utils/constants'
-import { Epoch, CampaignRound } from '@/types'
+import { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
 
 export const thumbnailMap = {
   1: '/guild/thumbnail/shield.svg',
@@ -133,3 +133,16 @@ const mainnetCampaignRounds: CampaignRound[] = [
 export const CAMPAIGN_LP_ROUNDS = IS_TESTNET
   ? testnetCampaignRounds
   : mainnetCampaignRounds
+
+export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
+  (campaigns, round) => [
+    ...campaigns,
+    ...round.campaigns.map((campaign) => ({
+      ...campaign,
+      round: round.round,
+      endDate: round.endDate,
+      startDate: round.startDate
+    }))
+  ],
+  []
+)

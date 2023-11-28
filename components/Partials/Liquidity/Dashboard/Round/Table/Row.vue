@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '~/app/utils/constants'
-import { CAMPAIGN_LP_ROUNDS } from '~/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
 
 const props = defineProps({
   campaignWithSc: {
@@ -37,7 +37,7 @@ const campaignUserInfo = computed(() =>
   )
 )
 const campaign = computed(() =>
-  campaignStore.campaignsInfo.find(
+  campaignStore.campaignsWithSc.find(
     (c) => c.campaignId === props.campaignWithSc.campaignId
   )
 )
@@ -55,9 +55,9 @@ const estRewardsInPercentage = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(campaignUserInfo.value.score)
-    .dividedBy(campaign.value?.totalScore)
-    .times(100)
+  return new BigNumberInBase(campaignUserInfo.value.score).dividedBy(
+    campaign.value?.totalScore
+  )
 })
 
 const rewards = computed(() => {
@@ -66,9 +66,9 @@ const rewards = computed(() => {
       ({ symbol }) => symbol === reward.symbol
     )
 
-    const amount = new BigNumberInBase(estRewardsInPercentage.value)
-      .dividedBy(100)
-      .multipliedBy(reward.amount || 0)
+    const amount = new BigNumberInBase(
+      estRewardsInPercentage.value
+    ).multipliedBy(reward.amount || 0)
 
     const amountInUsd = token
       ? new BigNumberInBase(amount).times(
