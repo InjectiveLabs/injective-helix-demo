@@ -64,6 +64,7 @@ export const chainGrpcWasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
   ENDPOINTS.campaign
 )

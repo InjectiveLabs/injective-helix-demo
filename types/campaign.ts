@@ -1,3 +1,5 @@
+import { Campaign } from '@injectivelabs/sdk-ts'
+
 export type Epoch = {
   epoch: number
   campaignId: string
@@ -7,3 +9,29 @@ export type Epoch = {
   quoteRewards: string
   scAddress: string
 }
+
+export type CampaignWithSc = {
+  campaignId: string
+  marketSlug: string
+  rewards: { symbol: string; amount: string }[]
+  scAddress: string
+}
+
+export type CampaignWithScAndRound = {
+  round: number
+  endDate: number
+  startDate: number
+  campaignId: string
+  marketSlug: string
+  rewards: { symbol: string; amount: string }[]
+  scAddress: string
+}
+
+export type CampaignRound = {
+  round: number
+  startDate: number
+  endDate: number
+  campaigns: CampaignWithSc[]
+}
+
+export type CampaignWithScAndData = CampaignWithScAndRound & Campaign
