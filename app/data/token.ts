@@ -125,4 +125,5 @@ export const stableCoinDenoms = [
   'USDCnb',
   'USDTkv'
 ]
+export const KAVA_USDT_SYMBOL = 'USDTkv'
 export const allowanceResetSymbols = ['USDT']
