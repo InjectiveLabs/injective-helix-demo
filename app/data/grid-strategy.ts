@@ -47,6 +47,10 @@ if (IS_STAGING) {
     {
       slug: 'usdt-usdcet',
       contractAddress: 'inj18njxtxdcv49aalx4dhtzew7d5kug52m09vn87t'
+    },
+    {
+      slug: 'wmatic-usdt',
+      contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
     }
   )
 }

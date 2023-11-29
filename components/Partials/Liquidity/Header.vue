@@ -59,7 +59,7 @@ const endDate = computed(() => {
     'UTC'
   )
 
-  return format(utcDate, 'MMM dd - hh a', { timeZone: 'UTC' })
+  return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
 
 const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
@@ -120,7 +120,7 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
           <h3 class="text-sm font-semibold text-gray-400">
             {{ $t('campaign.endTimeForRound', { round: props.round }) }}
           </h3>
-          <p class="text-xl font-semibold">{{ endDate }}</p>
+          <p class="text-xl font-semibold">{{ endDate }} UTC</p>
         </div>
       </div>
     </div>

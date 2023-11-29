@@ -1,4 +1,4 @@
-import { IS_TESTNET } from '@/app/utils/constants'
+import { IS_STAGING, IS_TESTNET } from '@/app/utils/constants'
 import { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
 
 export const thumbnailMap = {
@@ -122,7 +122,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
   {
     round: 2,
     startDate: 1699974000,
-    endDate: 1702566000,
+    endDate: 1702339200,
     campaigns: [
       {
         campaignId: 'spot-grid-tia-usdt-2',
@@ -142,6 +142,37 @@ const mainnetCampaignRounds: CampaignRound[] = [
     ]
   }
 ]
+
+if (IS_STAGING) {
+  mainnetCampaignRounds[1].campaigns.push(
+    ...[
+      {
+        campaignId: 'spot-grid-weth-usdt-2',
+        scAddress: '',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '500' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-2',
+        scAddress: '',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '500' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-2',
+        scAddress: '',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '250' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-2',
+        scAddress: '',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '250' }]
+      }
+    ]
+  )
+}
 
 export const CAMPAIGN_LP_ROUNDS = IS_TESTNET
   ? testnetCampaignRounds
