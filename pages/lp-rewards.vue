@@ -31,7 +31,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppHocLoading v-bind="{ status }">
-    <NuxtPage />
-  </AppHocLoading>
+  <div class="mb-40">
+    <AppHocLoading v-bind="{ status }">
+      <NuxtPage />
+    </AppHocLoading>
+  </div>
 </template>

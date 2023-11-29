@@ -1,5 +1,5 @@
 import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
-import { MainPage, TradeSubPage } from '../../../types'
+import { LiquidityRewardsPage, MainPage, TradeSubPage } from '../../../types'
 
 export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: boolean = isDevnet(network)
@@ -107,7 +107,9 @@ export const getRoutes = (network: Network, env: string) => {
     MainPage.Markets,
     MainPage.LpRewards,
     MainPage.Leaderboard,
-    MainPage.FeeDiscounts
+    MainPage.FeeDiscounts,
+    LiquidityRewardsPage.Dashboard,
+    LiquidityRewardsPage.CampaignDetails
   ]
 
   const customStaticRoutes: string[] = []

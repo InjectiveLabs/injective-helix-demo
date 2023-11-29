@@ -78,10 +78,12 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
           <p>{{ $t('campaign.round', { round: props.round }) }}</p>
         </div>
       </div>
+
       <div>
-        <p>{{ $t('campaign.description') }}</p>
+        <p class="text-gray-300">{{ $t('campaign.description') }}</p>
       </div>
-      <div class="space-x-2 flex">
+
+      <div class="space-x-2 flex pb-6">
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
@@ -121,10 +123,6 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
           <p class="text-xl font-semibold">{{ endDate }}</p>
         </div>
       </div>
-    </div>
-
-    <div class="hidden md:block">
-      <img src="/svg/leaderboard_graphic.svg" />
     </div>
   </div>
 </template>
