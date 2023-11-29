@@ -76,6 +76,10 @@ function fetchData({
       }
     })
 }
+
+onUnmounted(() => {
+  spotStore.reset()
+})
 </script>
 
 <template>
