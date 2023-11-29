@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -112,7 +113,11 @@ const rulerValues = computed(() => {
     const normalizedValue = value / range
 
     return {
-      display: new Intl.NumberFormat('en-US').format(number),
+      display: new BigNumberInBase(number).toFormat(
+        Number(props.currentPrice) > 1
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      ),
       value:
         lerp(
           HANDLE_WIDTH / 2,
@@ -325,9 +330,9 @@ function generateEvenlySpacedNumbers(
         />
 
         <g
-          v-for="{ display, value } in rulerValues"
+          v-for="({ display, value }, i) in rulerValues"
           id="ruler-values"
-          :key="`${value}-${display}`"
+          :key="`${value}-${display}-${i}`"
         >
           <line
             :x1="value + HANDLE_WIDTH / 2"

@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { LP_CAMPAIGNS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const props = defineProps({
   campaignUser: {

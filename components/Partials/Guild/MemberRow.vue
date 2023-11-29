@@ -10,6 +10,11 @@ const { baseToken, quoteToken } = useGuild()
 const props = defineProps({
   isCampaignStarted: Boolean,
 
+  rank: {
+    type: Number,
+    required: true
+  },
+
   member: {
     type: Object as PropType<GuildMember>,
     required: true
@@ -55,6 +60,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
 
 <template>
   <tr class="border-b hover:bg-gray-800 text-sm">
+    <td class="p-3">{{ rank }}</td>
     <td>
       <NuxtLink
         :to="explorerLink"

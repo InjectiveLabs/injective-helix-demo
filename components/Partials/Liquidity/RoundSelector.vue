@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 import { DEFAULT_LP_ROUND } from '@/app/utils/constants'
 
 const { t } = useLang()

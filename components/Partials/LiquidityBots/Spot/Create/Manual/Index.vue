@@ -58,34 +58,32 @@ const isBaseAndQuoteType = computed(
     InvestmentTypeGst.BaseAndQuote
 )
 
+const decimalPlaces = computed(() =>
+  lastTradedPrice.value.isGreaterThan(1)
+    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+)
+
 onMounted(() => {
   if (lastTradedPrice.value.gt(0)) {
     setFormValues(
       {
         [SpotGridTradingField.LowerPrice]: lastTradedPrice.value
           .minus(lastTradedPrice.value.times(0.06))
-          .toFixed(
-            lastTradedPrice.value.isGreaterThan(1)
-              ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-              : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-          ),
+          .toFixed(decimalPlaces.value),
         [SpotGridTradingField.UpperPrice]: lastTradedPrice.value
           .plus(lastTradedPrice.value.times(0.06))
-          .toFixed(
-            lastTradedPrice.value.isGreaterThan(1)
-              ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-              : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-          )
+          .toFixed(decimalPlaces.value)
       },
       false
     )
 
     min.value = lastTradedPrice.value
       .minus(lastTradedPrice.value.times(0.2))
-      .toFixed(2)
+      .toFixed(decimalPlaces.value)
     max.value = lastTradedPrice.value
       .plus(lastTradedPrice.value.times(0.2))
-      .toFixed(2)
+      .toFixed(decimalPlaces.value)
   } else {
     setFormValues(
       {

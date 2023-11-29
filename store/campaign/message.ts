@@ -7,6 +7,34 @@ import {
 } from '@/app/utils/constants'
 import { generateUniqueHash } from '@/app/utils/formatters'
 
+export const claimLPReward = async (contractAddress: string) => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+
+  await appStore.queue()
+  await walletStore.validate()
+
+  if (!walletStore.address) {
+    return
+  }
+
+  const message = MsgExecuteContractCompat.fromJSON({
+    sender: walletStore.injectiveAddress,
+    contractAddress,
+    exec: {
+      action: 'claim_reward',
+      msg: {}
+    }
+  })
+
+  const reward = await msgBroadcastClient.broadcast({
+    msgs: [message],
+    injectiveAddress: walletStore.injectiveAddress
+  })
+
+  return reward
+}
+
 export const createGuild = async ({
   name,
   logo,

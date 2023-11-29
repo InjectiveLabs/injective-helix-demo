@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 import { CampaignRound, LiquidityRewardsPage } from '@/types'
 
 const router = useRouter()
