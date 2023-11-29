@@ -62,7 +62,7 @@ export default {
     currentBalance: 'Current Balance',
     minInvestment: 'Min investment: $ {amount}',
     totalInvestment: 'Total Investment',
-    useFeeOptimizedAmounts: 'Use suggested amounts',
+    useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
     totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
