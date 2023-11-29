@@ -21,7 +21,13 @@ export class DerivativeSubaccountOrderIntegrityStrategy
   async validate(): Promise<void> {
     const { args: marketIds } = this
 
+    const accountStore = useAccountStore()
+    const walletStore = useWalletStore()
     const derivativeStore = useDerivativeStore()
+
+    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      return
+    }
 
     const latestOrders = await this.fetchData()
 
