@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import { GST_SINGLE_SIDED_THRESHOLD } from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -25,9 +26,11 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.LowerPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.LowerPrice
+      },${GST_SINGLE_SIDED_THRESHOLD}`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
@@ -46,9 +49,11 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.UpperPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.UpperPrice
+      },${GST_SINGLE_SIDED_THRESHOLD}`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 

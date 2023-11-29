@@ -307,15 +307,34 @@ export const defineGlobalRules = () => {
   )
 
   defineRule(
+    'rangeKavaSgt',
+    (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
+      const upperInBigNumber = new BigNumberInBase(upper)
+      const lowerInBigNumber = new BigNumberInBase(lower)
+      const levelsInBigNumber = new BigNumberInBase(levels)
+
+      const deltaPrice = upperInBigNumber
+        .minus(lowerInBigNumber)
+        .dividedBy(levelsInBigNumber)
+
+      if (deltaPrice.lt(minPriceTickSize)) {
+        return 'Invalid grid spacing'
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
     'singleSided',
-    (_: string, [lower, upper, currentPrice, field]: string[]) => {
+    (_: string, [lower, upper, currentPrice, field, threshold]: string[]) => {
       const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
 
       const lowerThreshold = currentPriceInBigNumber.plus(
-        currentPriceInBigNumber.times(0.01)
+        currentPriceInBigNumber.times(threshold)
       )
       const upperThreshold = currentPriceInBigNumber.minus(
-        currentPriceInBigNumber.times(0.01)
+        currentPriceInBigNumber.times(threshold)
       )
 
       if (field === SpotGridTradingField.LowerPrice) {

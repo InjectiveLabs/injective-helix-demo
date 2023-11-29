@@ -31,9 +31,23 @@ const { value: gridsValue, errorMessage } = useStringField({
 
     const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
-    },${formValues.value[SpotGridTradingField.Grids] || 10},${tickSize.value}`
+    },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
+      tickSize.value
+    }`
 
-    rules.push(betweenRule, rangeRule)
+    const rangeKavaRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
+      tickSize.value
+    }`
+
+    if (gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt') {
+      rules.push(rangeKavaRule)
+    } else {
+      rules.push(rangeRule)
+    }
+
+    rules.push(betweenRule)
 
     return rules.join('|')
   })
