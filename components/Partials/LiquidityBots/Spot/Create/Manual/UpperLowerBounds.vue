@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import {
+  GST_KAVA_SINGLE_SIDED_THRESHOLD,
+  GST_SINGLE_SIDED_THRESHOLD
+} from '@/app/utils/constants'
 
 const props = defineProps({
   isRebalanceBeforeCreationChecked: Boolean,
@@ -24,17 +28,22 @@ const {
   name: SpotGridTradingField.LowerPrice,
   rule: '',
   dynamicRule: computed(() => {
+    const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
+
     const greaterThanValue =
       !props.isRebalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
         InvestmentTypeGst.Quote
         ? lastTradedPrice.value.toNumber()
         : 0
+
     const greaterThanRule = `greaterThanSgt:${greaterThanValue}`
 
     const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
-    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.LowerPrice}`
+    },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.LowerPrice},${
+      isKavaUsdt ? GST_KAVA_SINGLE_SIDED_THRESHOLD : GST_SINGLE_SIDED_THRESHOLD
+    }`
 
     const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
@@ -50,6 +59,8 @@ const {
   name: SpotGridTradingField.UpperPrice,
   rule: '',
   dynamicRule: computed(() => {
+    const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
+
     const lessThanRule = `lessThanSgt:${lastTradedPrice.value.toNumber()}`
 
     const greaterThanRule = `greaterThanSgt:${
@@ -58,7 +69,9 @@ const {
 
     const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
-    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.UpperPrice}`
+    },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+      isKavaUsdt ? GST_KAVA_SINGLE_SIDED_THRESHOLD : GST_SINGLE_SIDED_THRESHOLD
+    }`
 
     const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 

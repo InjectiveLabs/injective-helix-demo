@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import {
+  GST_SINGLE_SIDED_THRESHOLD,
+  GST_KAVA_SINGLE_SIDED_THRESHOLD
+} from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -21,13 +25,21 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
     name: SpotGridTradingField.LowerPrice,
     rule: '',
     dynamicRule: computed(() => {
+      const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
+
       const greaterThanRule = `greaterThanSgt:0`
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.LowerPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.LowerPrice
+      },${
+        isKavaUsdt
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
@@ -40,15 +52,23 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
     name: SpotGridTradingField.UpperPrice,
     rule: '',
     dynamicRule: computed(() => {
+      const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
+
       const greaterThanRule = `greaterThanSgt:${
         formValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.UpperPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.UpperPrice
+      },${
+        isKavaUsdt
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 

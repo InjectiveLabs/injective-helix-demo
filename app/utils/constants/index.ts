@@ -82,6 +82,8 @@ export const GST_MIN_TRADING_SIZE = 5
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 20
 export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
+export const GST_SINGLE_SIDED_THRESHOLD = 0.01
+export const GST_KAVA_SINGLE_SIDED_THRESHOLD = 0.001
 
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
