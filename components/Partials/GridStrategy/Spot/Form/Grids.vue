@@ -6,16 +6,18 @@ import {
   GST_DEFAULT_PRICE_TICK_SIZE
 } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
+import { KAVA_USDT_SYMBOL } from '@/app/data/token'
 
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues()
 
+const market = computed(() => gridStrategyStore.spotMarket)
+
 const tickSize = computed(() =>
-  gridStrategyStore.spotMarket
-    ? new BigNumberInWei(gridStrategyStore.spotMarket.minPriceTickSize)
+  market.value
+    ? new BigNumberInWei(market.value.minPriceTickSize)
         .toBase(
-          gridStrategyStore.spotMarket.quoteToken.decimals -
-            gridStrategyStore.spotMarket.baseToken.decimals
+          market.value.quoteToken.decimals - market.value.baseToken.decimals
         )
         .toFixed()
     : GST_DEFAULT_PRICE_TICK_SIZE
@@ -27,25 +29,33 @@ const { value: gridsValue, errorMessage } = useStringField({
   dynamicRule: computed(() => {
     const rules = ['requiredSgt']
 
-    const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
+    const marketUsesKavaUsdt = [
+      market.value?.baseToken.symbol,
+      market.value?.quoteToken.symbol
+    ].some(
+      (symbol) =>
+        symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
+    )
 
-    const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
-      SpotGridTradingField.UpperPrice
-    },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
-      tickSize.value
-    }`
+    if (marketUsesKavaUsdt) {
+      const rangeKavaRule = `rangeKavaSgt:@${
+        SpotGridTradingField.LowerPrice
+      },@${SpotGridTradingField.UpperPrice},${
+        formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS
+      },${tickSize.value}`
 
-    const rangeKavaRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
-      SpotGridTradingField.UpperPrice
-    },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
-      tickSize.value
-    }`
-
-    if (gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt') {
       rules.push(rangeKavaRule)
     } else {
+      const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
+        SpotGridTradingField.UpperPrice
+      },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
+        tickSize.value
+      }`
+
       rules.push(rangeRule)
     }
+
+    const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
 
     rules.push(betweenRule)
 
