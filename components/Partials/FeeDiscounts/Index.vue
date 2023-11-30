@@ -1,19 +1,10 @@
 <script lang="ts" setup>
 const exchangeStore = useExchangeStore()
 
-const tierLevelsWithZeroTierLevel = computed(() =>
-  exchangeStore.feeDiscountSchedule
-    ? [
-        {
-          volume: '0',
-          stakedAmount: '0',
-          feePaidAmount: '0',
-          makerDiscountRate: '0',
-          takerDiscountRate: '0'
-        },
-        ...exchangeStore.feeDiscountSchedule.tierInfosList
-      ]
-    : []
+// Note: Keep in mind that on chain the #0 tier level is actually shown as  #1 on the UI
+// check store/exchange.ts on the fetchFeeDiscountSchedule action
+const tierLevelsWithZeroTierLevel = computed(
+  () => exchangeStore.feeDiscountSchedule?.tierInfosList || []
 )
 </script>
 

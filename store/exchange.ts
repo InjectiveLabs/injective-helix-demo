@@ -119,7 +119,18 @@ export const useExchangeStore = defineStore('exchange', {
         } as FeeDiscountSchedule
 
         exchangeStore.$patch({
-          feeDiscountSchedule: feeDiscountScheduleWithToken
+          feeDiscountSchedule: {
+            ...feeDiscountScheduleWithToken,
+            tierInfosList: [
+              {
+                volume: '0',
+                stakedAmount: '0',
+                makerDiscountRate: '0',
+                takerDiscountRate: '0'
+              },
+              ...feeDiscountScheduleWithToken.tierInfosList
+            ]
+          }
         })
       }
     },
