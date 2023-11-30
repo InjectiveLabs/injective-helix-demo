@@ -31,28 +31,22 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'whale-usdt',
     contractAddress: 'inj1fuftrqrfmuh0xrg50jlgnq4ptarq5dd9f6k450'
+  },
+  {
+    slug: 'usdtkv-usdt',
+    contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
+  },
+  {
+    slug: 'wmatic-usdt',
+    contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
   }
 ]
 
 if (IS_STAGING) {
-  mainnetSpotGridMarkets.push(
-    {
-      slug: 'pyth-usdt',
-      contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
-    },
-    {
-      slug: 'usdtkv-usdt',
-      contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
-    },
-    {
-      slug: 'usdt-usdcet',
-      contractAddress: 'inj18njxtxdcv49aalx4dhtzew7d5kug52m09vn87t'
-    },
-    {
-      slug: 'wmatic-usdt',
-      contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
-    }
-  )
+  mainnetSpotGridMarkets.push({
+    slug: 'pyth-usdt',
+    contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
+  })
 }
 
 const testnetSpotGridMarkets: SpotGridMarket[] = [

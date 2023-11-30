@@ -2,8 +2,12 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
+  GST_KAVA_GRIDS,
+  GST_KAVA_LOWER_PRICE,
+  GST_KAVA_UPPER_PRICE,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  GST_AUTO_PRICE_THRESHOLD
 } from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
@@ -11,6 +15,7 @@ import {
   SpotGridTradingForm
 } from '@/types'
 import { pricesToEma } from '@/app/utils/helpers'
+import { KAVA_USDT_SYMBOL } from '@/app/data/token'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -32,9 +37,19 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 )
 
 const decimalPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(1)
+  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
     ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
     : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+)
+
+const marketUsesKavaUsdt = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
+  )
 )
 
 const upperEma = computed(() => {
@@ -76,6 +91,10 @@ const lowerEma = computed(() => {
 })
 
 const upperPrice = computed(() => {
+  if (marketUsesKavaUsdt.value) {
+    return GST_KAVA_UPPER_PRICE
+  }
+
   const isSingleSided =
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
     InvestmentTypeGst.BaseAndQuote
@@ -104,6 +123,10 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
+  if (marketUsesKavaUsdt.value) {
+    return GST_KAVA_LOWER_PRICE
+  }
+
   const isSingleSided =
     liquidityFormValues.value[SpotGridTradingField.InvestmentType] !==
     InvestmentTypeGst.BaseAndQuote
@@ -131,7 +154,9 @@ const lowerPrice = computed(() => {
   return lowerEma.value.toFixed(decimalPlaces.value)
 })
 
-const grids = ref(GST_DEFAULT_AUTO_GRIDS)
+const grids = computed(() =>
+  marketUsesKavaUsdt.value ? GST_KAVA_GRIDS : GST_DEFAULT_AUTO_GRIDS
+)
 
 function setValuesFromAuto() {
   setFormValues(
