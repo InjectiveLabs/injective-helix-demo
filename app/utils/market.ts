@@ -277,7 +277,7 @@ export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   }
 
   return (
-    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
+    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay * 7 > now
   )
 }
 
