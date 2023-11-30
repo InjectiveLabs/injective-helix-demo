@@ -162,6 +162,12 @@ const mainnetCampaignRounds: CampaignRound[] = [
         scAddress: '',
         marketSlug: 'wmatic-usdt',
         rewards: [{ symbol: 'INJ', amount: '250' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-2',
+        scAddress: '',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'USDTkv', amount: '3000' }]
       }
     ]
   }
