@@ -3,10 +3,15 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GridStrategyType, SpotGridTradingField } from '@/types'
 import {
+  GST_AUTO_PRICE_THRESHOLD,
   GST_DEFAULT_AUTO_GRIDS,
+  GST_KAVA_GRIDS,
+  GST_KAVA_LOWER_PRICE,
+  GST_KAVA_UPPER_PRICE,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL } from '@/app/data/token'
 
 const props = defineProps({
   market: {
@@ -21,15 +26,30 @@ const emit = defineEmits<{
 
 const exchangeStore = useExchangeStore()
 const setFormValues = useSetFormValues()
+const gridStrategyStore = useGridStrategyStore()
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const decimalsPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(1)
+  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
     ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
     : UI_DEFAULT_MAX_DISPLAY_DECIMALS
 )
 
+const marketUsesKavaUsdt = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
+  )
+)
+
 const upperPrice = computed(() => {
+  if (marketUsesKavaUsdt.value) {
+    return GST_KAVA_UPPER_PRICE
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.market.marketId
   )
@@ -51,6 +71,10 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
+  if (marketUsesKavaUsdt.value) {
+    return GST_KAVA_LOWER_PRICE
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.market.marketId
   )
@@ -70,7 +94,9 @@ const lowerPrice = computed(() => {
     : min.toFixed(decimalsPlaces.value)
 })
 
-const grids = ref(GST_DEFAULT_AUTO_GRIDS)
+const grids = computed(() =>
+  marketUsesKavaUsdt.value ? GST_KAVA_GRIDS : GST_DEFAULT_AUTO_GRIDS
+)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)

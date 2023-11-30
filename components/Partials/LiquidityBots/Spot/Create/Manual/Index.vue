@@ -6,6 +6,7 @@ import {
   SpotGridTradingForm
 } from '@/types'
 import {
+  GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -31,7 +32,7 @@ const upperPriceValue = computed({
   set: (value) => {
     setUpperPriceField(
       Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(1)
+        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
           ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
           : UI_DEFAULT_MAX_DISPLAY_DECIMALS
       )
@@ -44,7 +45,7 @@ const lowerPriceValue = computed({
   set: (value) => {
     setLowerPriceField(
       Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(1)
+        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
           ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
           : UI_DEFAULT_MAX_DISPLAY_DECIMALS
       )
@@ -59,7 +60,7 @@ const isBaseAndQuoteType = computed(
 )
 
 const decimalPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(1)
+  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
     ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
     : UI_DEFAULT_MAX_DISPLAY_DECIMALS
 )
