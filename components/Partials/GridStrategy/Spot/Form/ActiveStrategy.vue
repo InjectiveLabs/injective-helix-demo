@@ -8,7 +8,11 @@ import {
   addressAndMarketSlugToSubaccountId,
   durationFormatter
 } from '@/app/utils/helpers'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 
 const props = defineProps({
@@ -131,12 +135,20 @@ const { valueToString: totalAmountToString } = useBigNumberFormatter(
 
 const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: creationExecutionPriceToString } = useBigNumberFormatter(

@@ -8,6 +8,11 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   strategy: {
@@ -61,16 +66,24 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
 const accountTotalBalanceInUsd = computed(() =>
@@ -87,7 +100,7 @@ const accountTotalBalanceInUsd = computed(() =>
 
 const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
   accountTotalBalanceInUsd,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onRemoveStrategy() {
