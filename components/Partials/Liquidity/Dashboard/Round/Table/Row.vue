@@ -4,10 +4,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addDays } from 'date-fns'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 
 const props = defineProps({
@@ -42,8 +39,12 @@ const campaign = computed(() =>
   )
 )
 
-const marketVolume = computed(() =>
-  new BigNumberInWei(campaignUserInfo.value?.score || 0).toBase(USDT_DECIMALS)
+const marketVolumeInUsd = computed(() =>
+  market.value
+    ? new BigNumberInWei(campaignUserInfo.value?.score || 0)
+        .toBase(market.value.quoteToken.decimals)
+        .times(tokenStore.tokenUsdPriceMap[market.value.quoteToken.coinGeckoId])
+    : ZERO_IN_BASE
 )
 
 const estRewardsInPercentage = computed(() => {
@@ -108,8 +109,8 @@ const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: marketVolumeToString } = useBigNumberFormatter(
-  marketVolume,
+const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
+  marketVolumeInUsd,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -139,7 +140,7 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
     </td>
 
     <td class="w-1/4">
-      <div class="tracking-wider">{{ marketVolumeToString }} USD</div>
+      <div class="tracking-wider">{{ marketVolumeInUsdToString }} USD</div>
     </td>
 
     <td class="text-left w-72">

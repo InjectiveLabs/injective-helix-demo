@@ -60,7 +60,15 @@ const marketVolume = computed(() =>
     campaignStore.campaignsWithSc.find(
       (c) => c.campaignId === props.campaignWithSc.campaignId
     )?.totalScore || 0
-  ).toBase(USDT_DECIMALS)
+  ).toBase(market.value?.quoteToken.decimals || USDT_DECIMALS)
+)
+
+const marketVolumeInUsd = computed(() =>
+  marketVolume.value.times(
+    market.value
+      ? tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId]
+      : 0
+  )
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
@@ -68,8 +76,8 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: marketVolumeToString } = useBigNumberFormatter(
-  marketVolume,
+const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
+  marketVolumeInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 </script>
@@ -123,7 +131,7 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
 
     <td>
       <div>
-        <p>{{ marketVolumeToString }} USD</p>
+        <p>{{ marketVolumeInUsdToString }} USD</p>
       </div>
     </td>
 

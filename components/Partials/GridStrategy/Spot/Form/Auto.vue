@@ -5,13 +5,13 @@ import { GridStrategyType, SpotGridTradingField } from '@/types'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   GST_DEFAULT_AUTO_GRIDS,
-  GST_KAVA_GRIDS,
-  GST_KAVA_LOWER_PRICE,
-  GST_KAVA_UPPER_PRICE,
+  GST_STABLE_GRIDS,
+  GST_STABLE_LOWER_PRICE,
+  GST_STABLE_UPPER_PRICE,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { KAVA_USDT_SYMBOL } from '@/app/data/token'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const props = defineProps({
   market: {
@@ -35,19 +35,23 @@ const decimalsPlaces = computed(() =>
     : UI_DEFAULT_MAX_DISPLAY_DECIMALS
 )
 
-const marketUsesKavaUsdt = computed(() =>
+const marketUsesStableCoins = computed(() =>
   [
     gridStrategyStore.spotMarket?.baseToken.symbol,
     gridStrategyStore.spotMarket?.quoteToken.symbol
   ].some(
     (symbol) =>
-      symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
   )
 )
 
 const upperPrice = computed(() => {
-  if (marketUsesKavaUsdt.value) {
-    return GST_KAVA_UPPER_PRICE
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_UPPER_PRICE
   }
 
   const marketHistory = exchangeStore.marketsHistory.find(
@@ -71,8 +75,8 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
-  if (marketUsesKavaUsdt.value) {
-    return GST_KAVA_LOWER_PRICE
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_LOWER_PRICE
   }
 
   const marketHistory = exchangeStore.marketsHistory.find(
@@ -95,7 +99,7 @@ const lowerPrice = computed(() => {
 })
 
 const grids = computed(() =>
-  marketUsesKavaUsdt.value ? GST_KAVA_GRIDS : GST_DEFAULT_AUTO_GRIDS
+  marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
 )
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(

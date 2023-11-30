@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 import {
@@ -8,8 +8,20 @@ import {
   USDT_DECIMALS
 } from '@/app/utils/constants'
 
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+
+const finishedCampaigns = CAMPAIGN_LP_ROUNDS.reduce((campaigns, round) => {
+  if (
+    round.startDate < Date.now() / 1000 &&
+    round.endDate > Date.now() / 1000
+  ) {
+    return campaigns
+  }
+
+  return [...campaigns, ...round.campaigns]
+}, [] as CampaignWithSc[])
 
 const totalRewards = computed(() =>
   campaignStore.ownerRewards.map((reward) => {
@@ -59,14 +71,20 @@ const totalRewards = computed(() =>
 )
 
 const totalRewardsInUsd = computed(() =>
-  totalRewards.value.reduce((sum, reward) => {
-    const totalRewardPerCampaignIsUsd = reward.totalRewards.reduce(
-      (sum, rew) => sum.plus(rew.amountInUsd),
-      ZERO_IN_BASE
+  totalRewards.value
+    .filter((reward) =>
+      finishedCampaigns.find(
+        (campaign) => campaign.campaignId === reward.campaign?.campaignId
+      )
     )
+    .reduce((sum, reward) => {
+      const totalRewardPerCampaignIsUsd = reward.totalRewards.reduce(
+        (sum, rew) => sum.plus(rew.amountInUsd),
+        ZERO_IN_BASE
+      )
 
-    return sum.plus(totalRewardPerCampaignIsUsd)
-  }, ZERO_IN_BASE)
+      return sum.plus(totalRewardPerCampaignIsUsd)
+    }, ZERO_IN_BASE)
 )
 
 const rewardsToClaim = computed(
@@ -105,16 +123,28 @@ const volumeThisRound = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const rewards = campaignStore.ownerRewards
-    .filter(
-      ({ campaignId }) =>
-        round.value?.campaigns.find((c) => c.campaignId === campaignId)
-    )
-    .map(({ score }) => score)
+  const rewards = campaignStore.ownerRewards.filter(
+    ({ campaignId }) =>
+      round.value?.campaigns.find((c) => c.campaignId === campaignId)
+  )
 
-  return rewards
-    .reduce((sum, score) => sum.plus(score), ZERO_IN_WEI)
-    .toBase(USDT_DECIMALS)
+  const volumeThisRoundInUsd = rewards.reduce((sum, reward) => {
+    const market = spotStore.markets.find(
+      ({ marketId }) => marketId === reward.marketId
+    )
+
+    if (!market) {
+      return sum
+    }
+
+    const volumeInUsd = new BigNumberInWei(reward.score)
+      .toBase(market.quoteToken.decimals || USDT_DECIMALS)
+      .times(tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId])
+
+    return sum.plus(volumeInUsd)
+  }, ZERO_IN_BASE)
+
+  return volumeThisRoundInUsd
 })
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
