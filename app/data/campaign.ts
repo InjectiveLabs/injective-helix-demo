@@ -151,12 +151,12 @@ const mainnetCampaignRounds: CampaignRound[] = [
         marketSlug: 'atom-usdt',
         rewards: [{ symbol: 'INJ', amount: '500' }]
       },
-      {
-        campaignId: 'spot-grid-stinj-inj-2',
-        scAddress: '',
-        marketSlug: 'stinj-inj',
-        rewards: [{ symbol: 'INJ', amount: '250' }]
-      },
+      // {
+      //   campaignId: 'spot-grid-stinj-inj-2',
+      //   scAddress: '',
+      //   marketSlug: 'stinj-inj',
+      //   rewards: [{ symbol: 'INJ', amount: '250' }]
+      // },
       {
         campaignId: 'spot-grid-wmatic-usdt-2',
         scAddress: '',
