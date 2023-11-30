@@ -17,13 +17,19 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
 
 const { pnl, percentagePnl, investment } = useActiveGridStrategy(
   market,

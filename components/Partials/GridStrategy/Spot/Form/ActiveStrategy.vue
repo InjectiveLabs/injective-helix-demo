@@ -387,6 +387,8 @@ useIntervalFn(() => {
       </p>
     </div> -->
 
-    <PartialsGridStrategySpotFormEndBot v-bind="{ isLiquidity }" />
+    <PartialsGridStrategySpotFormEndBot
+      v-bind="{ isLiquidity, strategy: activeStrategy }"
+    />
   </div>
 </template>

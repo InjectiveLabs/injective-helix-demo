@@ -8,10 +8,18 @@ export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarketWithToken>,
   strategy: ComputedRef<TradingStrategy>
 ) {
+  const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
 
-  const { lastTradedPrice } = useSpotLastPrice(market)
+  // const { lastTradedPrice } = useSpotLastPrice(market)
+
+  const lastTradedPrice = computed(
+    () =>
+      new BigNumberInBase(
+        tokenStore.tokenUsdPriceMap[market.value.baseToken.coinGeckoId]
+      )
+  )
 
   const investment = computed(() => {
     if (!market.value) {
@@ -94,8 +102,17 @@ export default function useActiveGridStrategy(
       strategy.value.state === StrategyStatus.Active
         ? lastTradedPrice.value
         : new BigNumberInWei(strategy.value.marketMidPrice).toBase(
-            market.value?.quoteToken.decimals - market.value?.baseToken.decimals
+            market.value.quoteToken.decimals - market.value.baseToken.decimals
           )
+
+    // console.log({
+    //   currentQuoteQuantity: currentQuoteQuantity.toFixed(),
+    //   currentBaseQuantity: currentBaseQuantity.toFixed(),
+    //   currentMidPrice: currentMidPrice.toFixed(),
+    //   creationQuoteQuantity: creationQuoteQuantity.toFixed(),
+    //   creationBaseQuantity: creationBaseQuantity.toFixed(),
+    //   creationMidPrice: creationMidPrice.toFixed()
+    // })
 
     return currentQuoteQuantity
       .plus(currentBaseQuantity.times(currentMidPrice))

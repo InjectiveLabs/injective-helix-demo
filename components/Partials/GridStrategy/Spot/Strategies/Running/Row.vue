@@ -25,6 +25,7 @@ const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
+const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -36,7 +37,12 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 const now = ref(Date.now())
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
 
 const { pnl, percentagePnl } = useActiveGridStrategy(
   market,
@@ -86,8 +92,12 @@ const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const accountTotalBalanceInUsd = computed(() =>
-  subaccountBalances.value.reduce(
+const accountTotalBalanceInUsd = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  return subaccountBalances.value.reduce(
     (total, balance) =>
       total.plus(
         new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
@@ -96,7 +106,7 @@ const accountTotalBalanceInUsd = computed(() =>
       ),
     ZERO_IN_BASE
   )
-)
+})
 
 const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
   accountTotalBalanceInUsd,
@@ -123,7 +133,7 @@ function onRemoveStrategy() {
 
       amplitudeGridStrategyTracker.removeStrategy({
         duration: duration.value,
-        market: gridStrategyStore.spotMarket?.slug || '',
+        market: market.value?.slug || '',
         totalProfit: pnlToString.value
       })
     })
@@ -139,7 +149,11 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    :to="{
+      name: 'trading-bots-grid-spot-market',
+      params: { market: market.slug }
+    }"
     class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
@@ -170,7 +184,7 @@ useIntervalFn(() => {
     <div class="flex items-center justify-end break-words font-semibold">
       <div>
         {{ totalInvestmentToString }}
-        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        {{ market.quoteToken.symbol }}
       </div>
     </div>
 
@@ -181,7 +195,7 @@ useIntervalFn(() => {
       <div>
         <div>
           {{ pnlToString }}
-          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+          {{ market.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>
       </div>
@@ -192,17 +206,17 @@ useIntervalFn(() => {
     <div class="flex items-center justify-center">
       <div
         class="underline hover:text-blue-500 cursor-pointer"
-        @click="onDetailsPage"
+        @click.prevent="onDetailsPage"
       >
         {{ $t('sgt.details') }}
       </div>
     </div>
 
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-center" @click.prevent.stop>
       <PartialsCommonCancelButton
         v-bind="{ status }"
         @click="onRemoveStrategy"
       />
     </div>
-  </div>
+  </NuxtLink>
 </template>
