@@ -1,4 +1,4 @@
-import { IS_STAGING, IS_TESTNET } from '@/app/utils/constants'
+import { IS_TESTNET } from '@/app/utils/constants'
 import { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
 
 export const thumbnailMap = {
@@ -138,14 +138,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
         scAddress: '',
         marketSlug: 'whale-usdt',
         rewards: [{ symbol: 'WHALE', amount: '62500' }]
-      }
-    ]
-  }
-]
-
-if (IS_STAGING) {
-  mainnetCampaignRounds[1].campaigns.push(
-    ...[
+      },
       {
         campaignId: 'spot-grid-weth-usdt-2',
         scAddress: '',
@@ -171,8 +164,8 @@ if (IS_STAGING) {
         rewards: [{ symbol: 'INJ', amount: '250' }]
       }
     ]
-  )
-}
+  }
+]
 
 export const CAMPAIGN_LP_ROUNDS = IS_TESTNET
   ? testnetCampaignRounds
