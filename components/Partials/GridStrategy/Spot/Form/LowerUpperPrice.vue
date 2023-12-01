@@ -5,6 +5,7 @@ import {
   GST_SINGLE_SIDED_THRESHOLD,
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '~/app/data/token'
 
 const props = defineProps({
   market: {
@@ -20,13 +21,25 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
 )
 
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
+)
+
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
-
       const greaterThanRule = `greaterThanSgt:0`
 
       const singleSidedRule = `singleSided:@${
@@ -36,7 +49,7 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
       },${spotLastTradedPrice.value.toFixed()},${
         SpotGridTradingField.LowerPrice
       },${
-        isKavaUsdt
+        marketUsesStableCoins.value
           ? GST_KAVA_SINGLE_SIDED_THRESHOLD
           : GST_SINGLE_SIDED_THRESHOLD
       }`
@@ -52,8 +65,6 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
     name: SpotGridTradingField.UpperPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const isKavaUsdt = gridStrategyStore.spotMarket?.slug === 'usdtkv-usdt'
-
       const greaterThanRule = `greaterThanSgt:${
         formValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
@@ -65,7 +76,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
       },${spotLastTradedPrice.value.toFixed()},${
         SpotGridTradingField.UpperPrice
       },${
-        isKavaUsdt
+        marketUsesStableCoins.value
           ? GST_KAVA_SINGLE_SIDED_THRESHOLD
           : GST_SINGLE_SIDED_THRESHOLD
       }`

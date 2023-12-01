@@ -8,10 +8,7 @@ import {
   UiMarketWithToken
 } from '@/types'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
@@ -66,9 +63,11 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: volumeToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
-    new BigNumberInWei(props.campaign.totalScore).toBase(USDT_DECIMALS)
+    new BigNumberInWei(props.campaign.totalScore)
+      .toBase(props.market.quoteToken.decimals)
+      .times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -140,7 +139,7 @@ const { valueToString: volumeToString } = useBigNumberFormatter(
         <p class="text-xs uppercase text-gray-500 mb-2">
           {{ $t('campaign.volume') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ volumeToString }} USD</h3>
+        <h3 class="text-xl font-semibold">{{ volumeInUsdToString }} USD</h3>
       </div>
     </div>
   </div>

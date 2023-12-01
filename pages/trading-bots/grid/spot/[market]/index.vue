@@ -9,14 +9,6 @@ const gridStrategyStore = useGridStrategyStore()
 const selectedStrategy = ref<TradingStrategy>()
 const selectedMarket = ref<UiSpotMarketWithToken>()
 
-const activeStrategies = computed(() =>
-  gridStrategyStore.strategies.filter(
-    (strategy) =>
-      strategy.state === 'active' &&
-      strategy.marketId === gridStrategyStore.spotMarket?.marketId
-  )
-)
-
 function setMarketAndStrategy(
   strategy: TradingStrategy,
   market: UiSpotMarketWithToken
@@ -30,13 +22,16 @@ function setMarketAndStrategy(
 
 <template>
   <div class="bg-black h-full">
-    <div v-if="activeStrategies.length > 0" class="min-w-[1100px]">
+    <div
+      v-if="gridStrategyStore.activeStrategies.length > 0"
+      class="min-w-[1100px]"
+    >
       <PartialsGridStrategySpotStrategiesRunningHeader />
     </div>
 
     <div class="min-w-[1100px] overflow-y-auto noScrollbar">
       <PartialsGridStrategySpotStrategiesRunningRow
-        v-for="strategy in activeStrategies"
+        v-for="strategy in gridStrategyStore.activeStrategies"
         :key="`strategy-${strategy.createdAt}`"
         v-bind="{ strategy }"
         @details:open="setMarketAndStrategy"
@@ -44,7 +39,7 @@ function setMarketAndStrategy(
     </div>
 
     <CommonEmptyList
-      v-if="activeStrategies.length === 0"
+      v-if="gridStrategyStore.activeStrategies.length === 0"
       :message="$t('sgt.noStrategiesFound')"
       class="h-full"
     />

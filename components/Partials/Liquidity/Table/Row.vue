@@ -5,7 +5,11 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
+import {
+  CampaignWithScAndData,
+  LiquidityRewardsPage,
+  TradingBotsSubPage
+} from '@/types'
 
 const props = defineProps({
   campaignWithSc: {
@@ -60,7 +64,15 @@ const marketVolume = computed(() =>
     campaignStore.campaignsWithSc.find(
       (c) => c.campaignId === props.campaignWithSc.campaignId
     )?.totalScore || 0
-  ).toBase(USDT_DECIMALS)
+  ).toBase(market.value?.quoteToken.decimals || USDT_DECIMALS)
+)
+
+const marketVolumeInUsd = computed(() =>
+  marketVolume.value.times(
+    market.value
+      ? tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId]
+      : 0
+  )
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
@@ -68,8 +80,8 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: marketVolumeToString } = useBigNumberFormatter(
-  marketVolume,
+const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
+  marketVolumeInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 </script>
@@ -79,8 +91,8 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
     <td class="text-left">
       <NuxtLink
         :to="{
-          name: LiquidityRewardsPage.CampaignDetails,
-          query: { campaign: campaignWithSc.campaignId }
+          name: TradingBotsSubPage.GridSpotMarket,
+          params: { market: campaignWithSc.marketSlug }
         }"
         class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
       >
@@ -123,12 +135,12 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
 
     <td>
       <div>
-        <p>{{ marketVolumeToString }} USD</p>
+        <p>{{ marketVolumeInUsdToString }} USD</p>
       </div>
     </td>
 
     <td>
-      <div>
+      <div class="flex space-x-2 justify-end">
         <NuxtLink
           class="text-blue-500"
           :to="{
@@ -136,7 +148,17 @@ const { valueToString: marketVolumeToString } = useBigNumberFormatter(
             query: { campaign: campaignWithSc.campaignId }
           }"
         >
-          {{ $t('campaign.details') }}
+          {{ $t('campaign.rewardsDetails') }}
+        </NuxtLink>
+
+        <NuxtLink
+          class="text-blue-500"
+          :to="{
+            name: TradingBotsSubPage.LiquiditySpotMarket,
+            query: { market: market.slug }
+          }"
+        >
+          {{ $t('campaign.addLiquidity') }}
         </NuxtLink>
       </div>
     </td>

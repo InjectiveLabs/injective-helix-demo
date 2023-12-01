@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { formatDistance } from 'date-fns'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 import { StopReason } from '@/types'
 
@@ -37,12 +41,20 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {

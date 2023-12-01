@@ -2,9 +2,9 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
-  GST_KAVA_GRIDS,
-  GST_KAVA_LOWER_PRICE,
-  GST_KAVA_UPPER_PRICE,
+  GST_STABLE_GRIDS,
+  GST_STABLE_LOWER_PRICE,
+  GST_STABLE_UPPER_PRICE,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   GST_AUTO_PRICE_THRESHOLD
@@ -15,7 +15,7 @@ import {
   SpotGridTradingForm
 } from '@/types'
 import { pricesToEma } from '@/app/utils/helpers'
-import { KAVA_USDT_SYMBOL } from '@/app/data/token'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -42,13 +42,17 @@ const decimalPlaces = computed(() =>
     : UI_DEFAULT_MAX_DISPLAY_DECIMALS
 )
 
-const marketUsesKavaUsdt = computed(() =>
+const marketUsesStableCoins = computed(() =>
   [
     gridStrategyStore.spotMarket?.baseToken.symbol,
     gridStrategyStore.spotMarket?.quoteToken.symbol
   ].some(
     (symbol) =>
-      symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
   )
 )
 
@@ -91,8 +95,8 @@ const lowerEma = computed(() => {
 })
 
 const upperPrice = computed(() => {
-  if (marketUsesKavaUsdt.value) {
-    return GST_KAVA_UPPER_PRICE
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_UPPER_PRICE
   }
 
   const isSingleSided =
@@ -123,8 +127,8 @@ const upperPrice = computed(() => {
 })
 
 const lowerPrice = computed(() => {
-  if (marketUsesKavaUsdt.value) {
-    return GST_KAVA_LOWER_PRICE
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_LOWER_PRICE
   }
 
   const isSingleSided =
@@ -155,7 +159,7 @@ const lowerPrice = computed(() => {
 })
 
 const grids = computed(() =>
-  marketUsesKavaUsdt.value ? GST_KAVA_GRIDS : GST_DEFAULT_AUTO_GRIDS
+  marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
 )
 
 function setValuesFromAuto() {

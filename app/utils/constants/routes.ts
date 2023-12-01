@@ -56,7 +56,16 @@ export const getRoutes = (network: Network, env: string) => {
     'pyth-usdt-perp'
   ]
 
-  const gridTradingSpot = ['inj-usdt', 'atom-usdt', 'tia-usdt']
+  const gridTradingSpot = [
+    'inj-usdt',
+    'atom-usdt',
+    'tia-usdt',
+    'stinj-inj',
+    'weth-usdt',
+    'whale-usdt',
+    'usdtkv-usdt',
+    'wmatic-usdt'
+  ]
 
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
@@ -137,7 +146,6 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
   )
-
   const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
 
   return {

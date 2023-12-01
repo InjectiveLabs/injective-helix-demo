@@ -122,7 +122,7 @@ useIntervalFn(
         <div class="overflow-x-auto">
           <table class="w-full min-w-[742px]">
             <PartialsLiquidityCampaignTableHeader />
-            <tbody>
+            <tbody v-if="market">
               <PartialsLiquidityCampaignTableRow
                 v-for="campaignUser in campaignStore.campaignUsers"
                 :key="campaignUser.accountAddress"
@@ -130,7 +130,8 @@ useIntervalFn(
                   campaign: campaignStore.campaign,
                   campaignUser,
                   totalScore: campaignStore.campaign.totalScore,
-                  quoteDecimals: market?.quoteToken.decimals || 6
+                  quoteDecimals: market?.quoteToken.decimals || 6,
+                  market
                 }"
               />
             </tbody>

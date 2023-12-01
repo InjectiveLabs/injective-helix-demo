@@ -6,7 +6,7 @@ import {
   GST_DEFAULT_PRICE_TICK_SIZE
 } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
-import { KAVA_USDT_SYMBOL } from '@/app/data/token'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues()
@@ -23,21 +23,27 @@ const tickSize = computed(() =>
     : GST_DEFAULT_PRICE_TICK_SIZE
 )
 
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
+)
+
 const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
   rule: '',
   dynamicRule: computed(() => {
     const rules = ['requiredSgt']
 
-    const marketUsesKavaUsdt = [
-      market.value?.baseToken.symbol,
-      market.value?.quoteToken.symbol
-    ].some(
-      (symbol) =>
-        symbol && symbol.toLowerCase() === KAVA_USDT_SYMBOL.toLowerCase()
-    )
-
-    if (marketUsesKavaUsdt) {
+    if (marketUsesStableCoins.value) {
       const rangeKavaRule = `rangeKavaSgt:@${
         SpotGridTradingField.LowerPrice
       },@${SpotGridTradingField.UpperPrice},${
