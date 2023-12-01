@@ -14,7 +14,6 @@ export const newMarketsSlug = [
   'usdy-usdt',
   'kuji-usdt',
   'tia-usdt',
-  'tia-usdt-30nov2023',
   'btc-usdtkv-perp',
   'eth-usdtkv-perp',
   'kava-usdt',
