@@ -41,6 +41,7 @@ onMounted(async () => {
   const symbolsTokensToPreload = [
     'INJ',
     'NEOK',
+    'SOL',
     'ATOM',
     'WETH',
     'SOMM',
