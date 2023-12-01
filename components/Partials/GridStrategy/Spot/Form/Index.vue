@@ -4,6 +4,7 @@ import { PropType } from 'nuxt/dist/app/compat/capi'
 import {
   GridStrategyType,
   InvestmentTypeGst,
+  Modal,
   SpotGridTradingForm
 } from '@/types'
 import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
@@ -15,6 +16,7 @@ defineProps({
   }
 })
 
+const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
@@ -36,6 +38,10 @@ const activeStrategy = computed(
 
 function changeTab(tab: GridStrategyType) {
   activeTab.value = tab
+}
+
+function openGettingStartedModal() {
+  modalStore.openModal(Modal.SgtBanner)
 }
 </script>
 
@@ -71,6 +77,14 @@ function changeTab(tab: GridStrategyType) {
             >
               {{ $t('sgt.manual') }}
             </div>
+          </div>
+
+          <div
+            class="flex items-center space-x-2 text-blue-500 hover:underline cursor-pointer"
+            @click="openGettingStartedModal"
+          >
+            <p>{{ $t('sgt.gettingStarted') }}</p>
+            <AppTooltip />
           </div>
 
           <PartialsGridStrategySpotFormAuto

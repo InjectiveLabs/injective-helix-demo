@@ -140,7 +140,7 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     </td>
 
     <td>
-      <div class="flex space-x-2 justify-end">
+      <div class="flex space-x-8 justify-end">
         <NuxtLink
           class="text-blue-500"
           :to="{

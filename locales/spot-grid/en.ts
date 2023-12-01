@@ -57,6 +57,7 @@ export default {
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
+    gettingStarted: 'Getting Started',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
     currentBalance: 'Current Balance',
