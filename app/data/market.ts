@@ -1,5 +1,5 @@
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { MarketPromotion, UiMarketWithToken } from '@/types'
+import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -98,6 +98,13 @@ export const upcomingMarkets = [
 ] as Array<UiMarketWithToken>
 
 export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
+
+export const notLiquidMarkets = [
+  {
+    slug: 'sol-usdcet',
+    redirectionSlug: 'sol-usdt'
+  }
+] as NotLiquidMarket[]
 
 export const deprecatedMarkets =
   IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
