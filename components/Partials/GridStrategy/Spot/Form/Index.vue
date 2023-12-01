@@ -83,7 +83,7 @@ function openGettingStartedModal() {
             class="flex items-center space-x-2 text-blue-500 hover:underline cursor-pointer"
             @click="openGettingStartedModal"
           >
-            <p>Getting Started</p>
+            <p>{{ $t('sgt.gettingStarted') }}</p>
             <AppTooltip />
           </div>
 
