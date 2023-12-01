@@ -137,7 +137,6 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
   )
-
   const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
 
   return {
