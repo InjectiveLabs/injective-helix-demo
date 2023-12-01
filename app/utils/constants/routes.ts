@@ -1,6 +1,5 @@
 import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
 import { LiquidityRewardsPage, MainPage, TradeSubPage } from '../../../types'
-import { spotGridMarkets } from '~/app/data/grid-strategy'
 
 export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: boolean = isDevnet(network)
@@ -57,7 +56,16 @@ export const getRoutes = (network: Network, env: string) => {
     'pyth-usdt-perp'
   ]
 
-  const gridTradingSpot = spotGridMarkets.map((gstMarket) => gstMarket.slug)
+  const gridTradingSpot = [
+    'inj-usdt',
+    'atom-usdt',
+    'tia-usdt',
+    'stinj-inj',
+    'weth-usdt',
+    'whale-usdt',
+    'usdtkv-usdt',
+    'wmatic-usdt'
+  ]
 
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
