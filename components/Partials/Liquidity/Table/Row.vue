@@ -91,8 +91,8 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     <td class="text-left">
       <NuxtLink
         :to="{
-          name: LiquidityRewardsPage.CampaignDetails,
-          query: { campaign: campaignWithSc.campaignId }
+          name: TradingBotsSubPage.GridSpotMarket,
+          params: { market: campaignWithSc.marketSlug }
         }"
         class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
       >
@@ -144,21 +144,21 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
         <NuxtLink
           class="text-blue-500"
           :to="{
-            name: TradingBotsSubPage.LiquiditySpotMarket,
-            query: { market: market.slug }
+            name: LiquidityRewardsPage.CampaignDetails,
+            query: { campaign: campaignWithSc.campaignId }
           }"
         >
-          {{ $t('campaign.addLiquidity') }}
+          {{ $t('campaign.rewardsDetails') }}
         </NuxtLink>
 
         <NuxtLink
           class="text-blue-500"
           :to="{
-            name: LiquidityRewardsPage.CampaignDetails,
-            query: { campaign: campaignWithSc.campaignId }
+            name: TradingBotsSubPage.LiquiditySpotMarket,
+            query: { market: market.slug }
           }"
         >
-          {{ $t('campaign.details') }}
+          {{ $t('campaign.addLiquidity') }}
         </NuxtLink>
       </div>
     </td>

@@ -28,6 +28,7 @@ export default {
     addLiquidity: 'Add Liquidity',
     rewardsRound: 'Rewards/Round',
     myRewards: 'My Rewards',
+    rewardsDetails: 'Rewards Details',
     myRewardsCount: 'My Rewards ({rewards})',
     totalRewards: 'Total Rewards',
     campaignRules: 'Campaign Rules',
