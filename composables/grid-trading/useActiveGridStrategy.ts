@@ -12,8 +12,6 @@ export default function useActiveGridStrategy(
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
 
-  // const { lastTradedPrice } = useSpotLastPrice(market)
-
   const lastTradedPrice = computed(
     () =>
       new BigNumberInBase(
@@ -104,15 +102,6 @@ export default function useActiveGridStrategy(
         : new BigNumberInWei(strategy.value.marketMidPrice).toBase(
             market.value.quoteToken.decimals - market.value.baseToken.decimals
           )
-
-    // console.log({
-    //   currentQuoteQuantity: currentQuoteQuantity.toFixed(),
-    //   currentBaseQuantity: currentBaseQuantity.toFixed(),
-    //   currentMidPrice: currentMidPrice.toFixed(),
-    //   creationQuoteQuantity: creationQuoteQuantity.toFixed(),
-    //   creationBaseQuantity: creationBaseQuantity.toFixed(),
-    //   creationMidPrice: creationMidPrice.toFixed()
-    // })
 
     return currentQuoteQuantity
       .plus(currentBaseQuantity.times(currentMidPrice))
