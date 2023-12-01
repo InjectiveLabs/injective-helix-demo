@@ -8,6 +8,12 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -20,6 +26,7 @@ const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
+const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -31,7 +38,12 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 const now = ref(Date.now())
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
 
 const { pnl, percentagePnl } = useActiveGridStrategy(
   market,
@@ -61,20 +73,32 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const accountTotalBalanceInUsd = computed(() =>
-  subaccountBalances.value.reduce(
+const accountTotalBalanceInUsd = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  return subaccountBalances.value.reduce(
     (total, balance) =>
       total.plus(
         new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
@@ -83,11 +107,11 @@ const accountTotalBalanceInUsd = computed(() =>
       ),
     ZERO_IN_BASE
   )
-)
+})
 
 const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
   accountTotalBalanceInUsd,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onRemoveStrategy() {
@@ -110,7 +134,7 @@ function onRemoveStrategy() {
 
       amplitudeGridStrategyTracker.removeStrategy({
         duration: duration.value,
-        market: gridStrategyStore.spotMarket?.slug || '',
+        market: market.value?.slug || '',
         totalProfit: pnlToString.value
       })
     })
@@ -126,7 +150,11 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    :to="{
+      name: TradingBotsSubPage.GridSpotMarket,
+      params: { market: market.slug }
+    }"
     class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
@@ -157,7 +185,7 @@ useIntervalFn(() => {
     <div class="flex items-center justify-end break-words font-semibold">
       <div>
         {{ totalInvestmentToString }}
-        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        {{ market.quoteToken.symbol }}
       </div>
     </div>
 
@@ -168,7 +196,7 @@ useIntervalFn(() => {
       <div>
         <div>
           {{ pnlToString }}
-          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+          {{ market.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>
       </div>
@@ -179,17 +207,17 @@ useIntervalFn(() => {
     <div class="flex items-center justify-center">
       <div
         class="underline hover:text-blue-500 cursor-pointer"
-        @click="onDetailsPage"
+        @click.prevent="onDetailsPage"
       >
         {{ $t('sgt.details') }}
       </div>
     </div>
 
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-center" @click.prevent.stop>
       <PartialsCommonCancelButton
         v-bind="{ status }"
         @click="onRemoveStrategy"
       />
     </div>
-  </div>
+  </NuxtLink>
 </template>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-//
+defineProps({
+  isActive: Boolean
+})
 </script>
 
 <template>
@@ -12,7 +14,7 @@
         {{ $t('campaign.volume') }}
       </th>
       <th>
-        {{ $t('campaign.estRewards') }}
+        {{ $t(`campaign.${isActive ? 'estRewards' : 'rewards'}`) }}
       </th>
     </tr>
   </thead>

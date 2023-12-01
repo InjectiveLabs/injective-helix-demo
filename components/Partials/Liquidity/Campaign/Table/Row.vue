@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE, getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import {
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE,
+  getExplorerUrl
+} from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   NETWORK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -26,8 +29,8 @@ const props = defineProps({
     required: true
   },
 
-  quoteDecimals: {
-    type: Number,
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
     required: true
   }
 })
@@ -40,10 +43,9 @@ const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
-      value: props.campaignUser.score,
-      decimalPlaces: props.quoteDecimals
-    })
+    new BigNumberInWei(props.campaignUser.score)
+      .toBase(props.market.quoteToken.decimals)
+      .times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
   )
 )
 

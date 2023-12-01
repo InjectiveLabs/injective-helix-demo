@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_TOKEN_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
@@ -21,6 +18,7 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
@@ -47,9 +45,15 @@ const totalRewardsThisRound = computed(() => {
 const totalVolume = computed(() =>
   props.campaignsWithScAndData
     .reduce((totalScore, campaign) => {
-      return totalScore.plus(campaign.totalScore)
-    }, ZERO_IN_WEI)
-    .toBase(USDT_TOKEN_DECIMALS)
+      const market = spotStore.markets.find(
+        ({ slug }) => slug === campaign.marketSlug
+      )!
+
+      const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
+        .toBase(market.quoteToken.decimals)
+        .times(tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId])
+      return totalScore.plus(campaignVolumeInUsd)
+    }, ZERO_IN_BASE)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 )
 

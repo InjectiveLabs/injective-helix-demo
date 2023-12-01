@@ -44,7 +44,8 @@ export enum AccountSubpage {
 
 export enum TradingBotsSubPage {
   GridSpotMarket = 'trading-bots-grid-spot-market',
-  GridSpotMarketHistory = 'trading-bots-grid-spot-market-history'
+  GridSpotMarketHistory = 'trading-bots-grid-spot-market-history',
+  LiquiditySpotMarket = 'trading-bots-liquidity-bots-spot'
 }
 
 export enum TradeSubPage {
