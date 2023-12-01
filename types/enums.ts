@@ -63,6 +63,7 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
+  MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
   InstitutionalForm = 'institutionalForm',
   TokenSelectorFrom = 'token-selector-from',
