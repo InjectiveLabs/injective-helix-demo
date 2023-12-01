@@ -238,6 +238,17 @@ export default {
     goToActivity: 'Go To Activity'
   },
 
+  marketNotLiquid: {
+    title: ({ named }: I18nMessageFunction) =>
+      `${named('slug')} market is no longer liquid`,
+    description: ({ named }: I18nMessageFunction) => `
+      The majority of trading activities for ${named(
+        'content'
+      )}. Please proceed to ${named('slug')} for a better trading experience.`,
+    cta: ({ named }: I18nMessageFunction) => `Go to ${named('slug')}`,
+    'sol-usdcet-description': 'Solana is in the SOL/USDT market'
+  },
+
   marketDeprecated: {
     title: 'No longer tradable',
     description: ({ interpolate, named }: I18nMessageFunction) =>
