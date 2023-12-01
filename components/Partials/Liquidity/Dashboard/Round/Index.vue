@@ -29,7 +29,7 @@ const isActive = computed(
 
     <div class="overflow-y-auto">
       <table class="w-full min-w-3xl">
-        <PartialsLiquidityDashboardRoundTableHeader />
+        <PartialsLiquidityDashboardRoundTableHeader v-bind="{ isActive }" />
 
         <tbody>
           <PartialsLiquidityDashboardRoundTableRow

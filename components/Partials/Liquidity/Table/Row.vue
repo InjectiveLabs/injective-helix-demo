@@ -5,7 +5,11 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
+import {
+  CampaignWithScAndData,
+  LiquidityRewardsPage,
+  TradingBotsSubPage
+} from '@/types'
 
 const props = defineProps({
   campaignWithSc: {
@@ -136,7 +140,17 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     </td>
 
     <td>
-      <div>
+      <div class="flex space-x-2 justify-end">
+        <NuxtLink
+          class="text-blue-500"
+          :to="{
+            name: TradingBotsSubPage.LiquiditySpotMarket,
+            query: { market: market.slug }
+          }"
+        >
+          {{ $t('campaign.addLiquidity') }}
+        </NuxtLink>
+
         <NuxtLink
           class="text-blue-500"
           :to="{

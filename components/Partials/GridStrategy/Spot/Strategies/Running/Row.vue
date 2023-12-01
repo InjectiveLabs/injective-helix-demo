@@ -13,6 +13,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -151,7 +152,7 @@ useIntervalFn(() => {
 <template>
   <NuxtLink
     :to="{
-      name: 'trading-bots-grid-spot-market',
+      name: TradingBotsSubPage.GridSpotMarket,
       params: { market: market.slug }
     }"
     class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"

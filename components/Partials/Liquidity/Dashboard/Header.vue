@@ -23,6 +23,10 @@ const finishedCampaigns = CAMPAIGN_LP_ROUNDS.reduce((campaigns, round) => {
   return [...campaigns, ...round.campaigns]
 }, [] as CampaignWithSc[])
 
+const currentRound = computed(() =>
+  Math.max(...CAMPAIGN_LP_ROUNDS.map(({ round }) => round))
+)
+
 const totalRewards = computed(() =>
   campaignStore.ownerRewards.map((reward) => {
     const userScore = reward.score
@@ -182,7 +186,7 @@ const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-gray-500 mb-2">
-          {{ $t('campaign.totalEstRewards') }}
+          {{ $t('campaign.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
           {{ rewardsThisRoundInUsdToString }} USD
