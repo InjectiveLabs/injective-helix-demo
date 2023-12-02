@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiSpotOrderbookWithSequence } from '@/types'
 
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
@@ -41,6 +43,16 @@ const props = defineProps({
   currentPrice: {
     type: String,
     required: true
+  },
+
+  orderbook: {
+    type: Object as PropType<UiSpotOrderbookWithSequence>,
+    default: undefined
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    default: undefined
   }
 })
 
@@ -129,6 +141,96 @@ const rulerValues = computed(() => {
   })
 })
 
+const orderbookVolume = computed(() => {
+  if (!props.orderbook || !props.market) {
+    return []
+  }
+
+  const orders = [...props.orderbook.buys, ...props.orderbook.sells]
+
+  return orders
+    .map((order) => ({
+      price: new BigNumberInWei(order.price)
+        .toBase(
+          props.market!.quoteToken.decimals - props.market!.baseToken.decimals
+        )
+        .toNumber(),
+      quantity: new BigNumberInWei(order.quantity)
+        .toBase(props.market!.baseToken.decimals)
+        .toNumber()
+    }))
+    .filter(
+      (order) =>
+        Number(order.price) > Number(props.min) &&
+        Number(order.price) < Number(props.max)
+    )
+    .sort((a, b) => a.price - b.price)
+})
+
+const steps = computed(() => {
+  return Number(props.currentPrice) / 100
+})
+
+const orderbookVolumeQuantized = computed(() => {
+  const MIN = Math.floor(Number(props.min))
+  const MAX = Math.ceil(Number(props.max))
+
+  const STEP = steps.value
+
+  const orderbookQuantized = [] as { price: number; quantity: number }[]
+
+  for (let i = MIN; i < MAX; i += STEP) {
+    const volumes = orderbookVolume.value
+      .filter((volume) => volume.price >= i && volume.price < i + STEP)
+      .reduce((sum, quantity) => sum + quantity.quantity, 0)
+
+    orderbookQuantized.push({ price: i, quantity: volumes })
+  }
+
+  return orderbookQuantized
+})
+
+const highestOrderbookQuantity = computed(() =>
+  Math.max(...orderbookVolumeQuantized.value.map((o) => o.quantity))
+)
+
+const volumePoints = computed(() =>
+  orderbookVolumeQuantized.value.map((order) => {
+    const range = Number(props.max) - Number(props.min)
+    const value = Number(order.price) - Number(props.min)
+
+    const normalizedValue = value / range
+    const normalizedHeight = order.quantity / highestOrderbookQuantity.value
+
+    return {
+      x:
+        lerp(
+          HANDLE_WIDTH / 2,
+          SVG_PROPS.width - HANDLE_WIDTH / 2,
+          normalizedValue
+        ) -
+        HANDLE_WIDTH / 2,
+      height: lerp(0, SVG_PROPS.height, normalizedHeight)
+    }
+  })
+)
+
+const rectWidth = computed(() => {
+  const range = Number(props.max) - Number(props.min)
+  const value = Number(props.min) + steps.value - Number(props.min)
+
+  const normalizedValue = value / range
+
+  return (
+    lerp(
+      HANDLE_WIDTH / 2,
+      SVG_PROPS.width - HANDLE_WIDTH / 2,
+      normalizedValue
+    ) -
+    HANDLE_WIDTH / 2
+  )
+})
+
 function mouseMove(ev: MouseEvent) {
   if (isLowerHandleClicked.value) {
     const amount = getAmountFromMouseEvent(ev)
@@ -212,6 +314,19 @@ function generateEvenlySpacedNumbers(
       <mask id="myMask">
         <rect width="100%" height="100%" fill="white" />
       </mask>
+
+      <g id="volume" mask="url(#myMask)">
+        <rect
+          v-for="({ height, x }, i) in volumePoints"
+          :key="`point-${i}-{${x}-${height}}`"
+          v-memo="[props.orderbook]"
+          :x="x"
+          :y="SVG_PROPS.height - height"
+          :width="rectWidth"
+          :height="height"
+          fill="#0EE29B33"
+        />
+      </g>
 
       <g id="handle-pads" mask="url(#myMask)">
         <rect

@@ -11,6 +11,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
@@ -161,7 +162,11 @@ watch(isBaseAndQuoteType, (value) => {
       v-model:max="max"
       v-model:min="min"
       v-model:upper="upperPriceValue"
-      v-bind="{ currentPrice: lastTradedPrice.toFixed() }"
+      v-bind="{
+        currentPrice: lastTradedPrice.toFixed(),
+        market: gridStrategyStore.spotMarket,
+        orderbook: spotStore.orderbook
+      }"
     />
 
     <div class="space-x-2 py-2 flex justify-end">
