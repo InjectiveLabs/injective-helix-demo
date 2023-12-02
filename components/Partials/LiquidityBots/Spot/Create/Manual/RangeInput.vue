@@ -67,6 +67,8 @@ const isLowerHandleClicked = ref(false)
 const isUpperHandleClicked = ref(false)
 const isHovered = ref(false)
 
+const orderbook = ref(props.orderbook)
+
 const lowerHandleX = computed(() => {
   const range = Number(props.max) - Number(props.min)
   const value = Number(props.lower) - Number(props.min)
@@ -142,11 +144,11 @@ const rulerValues = computed(() => {
 })
 
 const orderbookVolume = computed(() => {
-  if (!props.orderbook || !props.market) {
+  if (!orderbook.value || !props.market) {
     return []
   }
 
-  const orders = [...props.orderbook.buys, ...props.orderbook.sells]
+  const orders = [...orderbook.value.buys, ...orderbook.value.sells]
 
   return orders
     .map((order) => ({
@@ -319,7 +321,6 @@ function generateEvenlySpacedNumbers(
         <rect
           v-for="({ height, x }, i) in volumePoints"
           :key="`point-${i}-{${x}-${height}}`"
-          v-memo="[props.orderbook]"
           :x="x"
           :y="SVG_PROPS.height - height"
           :width="rectWidth"
