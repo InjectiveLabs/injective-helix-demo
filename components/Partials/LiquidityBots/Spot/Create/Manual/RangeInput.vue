@@ -317,7 +317,7 @@ function generateEvenlySpacedNumbers(
         <rect width="100%" height="100%" fill="white" />
       </mask>
 
-      <g id="volume" mask="url(#myMask)">
+      <g id="volume" v-memo="[props.min, props.max]" mask="url(#myMask)">
         <rect
           v-for="({ height, x }, i) in volumePoints"
           :key="`point-${i}-{${x}-${height}}`"
