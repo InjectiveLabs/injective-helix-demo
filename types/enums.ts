@@ -39,6 +39,7 @@ export enum Icon {
 
 export enum Modal {
   Terms = 'terms',
+  QrCode = 'qrcode',
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',

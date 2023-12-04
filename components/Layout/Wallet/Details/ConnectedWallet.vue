@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { Modal } from '@/types'
 
 const walletStore = useWalletStore()
 const { copy } = useClipboard()
@@ -13,6 +14,8 @@ defineProps({
     type: String as PropType<Wallet>
   }
 })
+
+const modalStore = useModalStore()
 
 const isDropdownVisible = ref(false)
 
@@ -36,6 +39,10 @@ function onCopyInjectiveAddress() {
   copy(walletStore.injectiveAddress)
   success({ title: t('connect.copiedAddress') })
 }
+
+function openQrCodeModal() {
+  modalStore.openModal(Modal.QrCode)
+}
 </script>
 
 <template>
@@ -48,6 +55,11 @@ function onCopyInjectiveAddress() {
         </p>
       </div>
       <div class="flex items-center gap-2">
+        <AssetQrCode
+          class="hover:text-blue-500 h-4 w-4"
+          @click="openQrCodeModal"
+        />
+
         <BaseIcon
           name="copy-filled"
           class="hover:text-blue-500 h-4 w-4"
