@@ -58,6 +58,7 @@ export default {
     new: 'New',
     success: 'Success',
     error: 'Error',
+    qrCode: 'QR Code',
     somethingHappened: 'Something Happened...',
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
