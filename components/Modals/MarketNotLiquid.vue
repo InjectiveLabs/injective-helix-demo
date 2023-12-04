@@ -18,14 +18,17 @@ const redirectionSlug = props.notLiquidMarket.redirectionSlug
 onMounted(() => {
   modalStore.openModal(Modal.MarketNotLiquid)
 })
+
+function onCloseModal() {
+  modalStore.closeModal(Modal.MarketNotLiquid)
+}
 </script>
 
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.MarketNotLiquid]"
     is-sm
-    is-always-open
-    is-hide-close-button
+    @modal:closed="onCloseModal"
   >
     <template #title>
       <h3 class="text-base">
