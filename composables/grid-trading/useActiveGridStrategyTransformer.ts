@@ -36,11 +36,24 @@ export default function useActiveGridStrategyFormatter(
       .toBase()
   )
 
+  const stopBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.baseDeposit || 0).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
+  const stopQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.quoteDeposit || 0).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+
   const creationQuoteQuantity = computed(() =>
     new BigNumberInWei(strategy.value.quoteQuantity || 0).toBase(
       market.value?.quoteToken.decimals
     )
   )
+
   const creationBaseQuantity = computed(() =>
     new BigNumberInWei(strategy.value.baseQuantity).toBase(
       market.value?.baseToken.decimals
@@ -90,6 +103,8 @@ export default function useActiveGridStrategyFormatter(
     lowerBound,
     takeProfit,
     totalInvestment,
+    stopBaseQuantity,
+    stopQuoteQuantity,
     creationBaseQuantity,
     creationQuoteQuantity,
     creationExecutionPrice,

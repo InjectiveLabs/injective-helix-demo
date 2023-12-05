@@ -60,6 +60,7 @@ export default {
     gettingStarted: 'Getting Started',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
+    finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
     minInvestment: 'Min investment: $ {amount}',
     totalInvestment: 'Total Investment',
@@ -90,6 +91,8 @@ export default {
     totalAmountTooltip: 'Your current Spot Grid Trading Sub account net worth',
     currentBalanceTooltip:
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
+    finalBalanceTooltip:
+      'The final amount of {quoteSymbol} and {baseSymbol} in the spot grid trading subaccount.',
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
