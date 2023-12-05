@@ -92,7 +92,7 @@ export default {
     currentBalanceTooltip:
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
     finalBalanceTooltip:
-      'The final amount of {quoteSymbol} and {baseSymbol} in the spot grid trading subaccount.',
+      'Represents the total amount of {quoteSymbol} and {baseSymbol} remaining before stopping the grid strategy',
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
