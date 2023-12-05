@@ -13,7 +13,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { StrategyStatus } from '@/types'
+import { StopReason, StrategyStatus } from '@/types'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -45,6 +45,8 @@ const {
   lowerBound,
   upperBound,
   takeProfit,
+  stopBaseQuantity,
+  stopQuoteQuantity,
   creationExecutionPrice,
   subscriptionBaseQuantity,
   subscriptionQuoteQuantity
@@ -62,30 +64,6 @@ const marketSubaccountId = computed(() =>
 const subaccountBalances = computed(
   () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
 )
-
-const currentBaseBalance = computed(() => {
-  if (!subaccountBalances.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(
-    subaccountBalances.value.find(
-      (balance) => balance.denom === market.value.baseDenom
-    )?.totalBalance || 0
-  ).toBase(market.value.baseToken.decimals)
-})
-
-const currentQuoteBalance = computed(() => {
-  if (!subaccountBalances.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(
-    subaccountBalances.value.find(
-      (balance) => balance.denom === market.value.quoteDenom
-    )?.accountTotalBalance || 0
-  ).toBase(market.value.quoteToken.decimals)
-})
 
 const accountTotalBalanceInUsd = computed(() =>
   subaccountBalances.value.reduce(
@@ -113,14 +91,40 @@ const durationFormatted = computed(() =>
 )
 
 const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
-  currentBaseBalance,
+  computed(() => {
+    if (!subaccountBalances.value) {
+      return ZERO_IN_BASE
+    }
+    return new BigNumberInWei(
+      subaccountBalances.value.find(
+        (balance) => balance.denom === market.value.baseDenom
+      )?.totalBalance || 0
+    ).toBase(market.value.baseToken.decimals)
+  })
+)
+
+const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
+  computed(() => {
+    if (!subaccountBalances.value) {
+      return ZERO_IN_BASE
+    }
+    return new BigNumberInWei(
+      subaccountBalances.value.find(
+        (balance) => balance.denom === market.value.quoteDenom
+      )?.accountTotalBalance || 0
+    ).toBase(market.value.quoteToken.decimals)
+  })
+)
+
+const { valueToString: stopBaseQuantityToString } = useBigNumberFormatter(
+  stopBaseQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
-  currentQuoteBalance,
+const { valueToString: stopQuoteQuantityToString } = useBigNumberFormatter(
+  stopQuoteQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -201,7 +205,28 @@ useIntervalFn(() => {
         <p v-if="activeStrategy.state === StrategyStatus.Active">
           {{ $t('sgt.running') }}
         </p>
-        <p v-else>{{ $t('sgt.removed') }}</p>
+        <p v-else class="space-x-1">
+          <span>{{ $t('sgt.removed') }}</span>
+          <span>
+            <span v-if="activeStrategy.stopReason === StopReason.User">
+              ({{ $t('sgt.user') }})
+            </span>
+
+            <span v-if="activeStrategy.stopReason === StopReason.StopLoss">
+              ({{ $t('sgt.stopLoss') }})
+            </span>
+
+            <span v-if="activeStrategy.stopReason === StopReason.TakeProfit">
+              ({{ $t('sgt.takeProfit') }})
+            </span>
+
+            <span
+              v-if="activeStrategy.stopReason === StopReason.InsufficientFunds"
+            >
+              ({{ $t('sgt.insufficientFunds') }})
+            </span>
+          </span>
+        </p>
       </div>
     </div>
 
@@ -213,9 +238,9 @@ useIntervalFn(() => {
       >
         <span class="font-semibold text-lg">
           {{ pnlToString }}
-          <span class="text-xs align-text-bottom ml-1">{{
-            market?.quoteToken.symbol
-          }}</span>
+          <span class="text-xs align-text-bottom ml-1">
+            {{ market?.quoteToken.symbol }}
+          </span>
         </span>
         <span class="text-2xs opacity-75 ml-1">({{ percentagePnl }} %)</span>
       </div>
@@ -243,20 +268,41 @@ useIntervalFn(() => {
 
     <div class="flex items-start justify-between mb-2 text-sm">
       <p class="text-gray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.currentBalance') }}</span>
-        <AppTooltip
-          :content="
-            $t('sgt.currentBalanceTooltip', {
-              quoteSymbol: market.quoteToken.symbol,
-              baseSymbol: market.baseToken.symbol
-            })
-          "
-        />
+        <template v-if="activeStrategy.state === StrategyStatus.Active">
+          <span>{{ $t('sgt.currentBalance') }}</span>
+          <AppTooltip
+            :content="
+              $t('sgt.currentBalanceTooltip', {
+                quoteSymbol: market.quoteToken.symbol,
+                baseSymbol: market.baseToken.symbol
+              })
+            "
+          />
+        </template>
+        <template v-else>
+          <span>{{ $t('sgt.finalBalance') }}</span>
+          <AppTooltip
+            :content="
+              $t('sgt.finalBalanceTooltip', {
+                quoteSymbol: market.quoteToken.symbol,
+                baseSymbol: market.baseToken.symbol
+              })
+            "
+          />
+        </template>
       </p>
       <div class="text-right">
-        <PartialsGridStrategySpotCommonDetailsPair :market="market">
+        <PartialsGridStrategySpotCommonDetailsPair
+          v-if="activeStrategy.state === StrategyStatus.Active"
+          :market="market"
+        >
           <template #base>{{ currentBaseBalanceToString }}</template>
           <template #quote>{{ currentQuoteBalanceToString }}</template>
+        </PartialsGridStrategySpotCommonDetailsPair>
+
+        <PartialsGridStrategySpotCommonDetailsPair v-else :market="market">
+          <template #base>{{ stopBaseQuantityToString }}</template>
+          <template #quote>{{ stopQuoteQuantityToString }}</template>
         </PartialsGridStrategySpotCommonDetailsPair>
       </div>
     </div>
