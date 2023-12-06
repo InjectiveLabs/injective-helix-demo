@@ -8,6 +8,8 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'tia-usdt-perp',
+  'sei-usdt-perp',
   'whale-usdt',
   'pyth-usdt-perp',
   'pyth-usdt',
@@ -45,7 +47,8 @@ export const slugsToIncludeInCosmosCategory = [
   'atom-usdt-perp',
   'sei-usdt-perp',
   'axl-usdt-perp',
-  'tia-usdt-30nov2023'
+  'tia-usdt-30nov2023',
+  'tia-usdt-perp'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
@@ -78,8 +81,6 @@ export const olpSlugsToIncludeInLowVolume = [
   'xrp-usdt-perp',
   'atom-usdt',
   'weth-usdt',
-  'sol-usdc',
-  'sol-usdcet',
   'usdt-usdcet',
   'wmatic-usdt',
   '1000pepe-usdt-perp',
@@ -87,7 +88,14 @@ export const olpSlugsToIncludeInLowVolume = [
   'btc-usdt-perp',
   'eth-usdt-perp',
   'inj-usdt-perp',
-  'bnb-usdt-perp'
+  'bnb-usdt-perp',
+  'pyth-usdt-perp',
+  'sol-usdt',
+  'axl-usdt-perp',
+  'kava-usdt',
+  'sei-usdt-perp',
+  'tia-usdt-30nov2023',
+  'tia-usdt-perp'
 ]
 
 export const excludedPriceDeviationSlugs = [] as string[]
