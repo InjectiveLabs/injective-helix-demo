@@ -65,17 +65,16 @@ const filteredMarkets = computed(() =>
     })
     const isQuotePair = marketIsQuotePair(activeQuote.value, market)
     const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-    const isLowVolumeMarket = search.value
-      ? true
-      : isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+    const isLowVolumeMarket =
+      isLowVolumeMarketsVisible.value ||
+      volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
     return (
       isPartOfCategory &&
       isPartOfType &&
       isPartOfSearch &&
       isQuotePair &&
-      (isLowVolumeMarket || isOLPMarket)
+      (isLowVolumeMarket || isOLPMarket || search.value)
     )
   })
 )
