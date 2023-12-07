@@ -97,7 +97,13 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    spot.push('ldo-usdcet', 'usdtkv-usdt', 'kuji-usdt', 'pyth-usdt')
+    spot.push(
+      'ldo-usdcet',
+      'usdtkv-usdt',
+      'kuji-usdt',
+      'pyth-usdt',
+      'talis-usdt'
+    )
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp', 'tia-usdt-perp')
   }
 
