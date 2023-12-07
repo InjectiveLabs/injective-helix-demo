@@ -10,10 +10,12 @@ import {
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
 import {
+  PriceLevel,
+  SpotMarket,
   DerivativeMarket,
-  ExpiryFuturesMarket,
-  PriceLevel
+  ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
+import { MarketStatus } from '../../types/exchange'
 import {
   upcomingMarkets,
   deprecatedMarkets,
@@ -252,6 +254,10 @@ export const marketIsInactive = (market: DerivativeMarket) => {
   const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
 
   return INACTIVE_MARKET_TICKERS.includes(market.ticker)
+}
+
+export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
+  return market.marketStatus === MarketStatus.Active
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
