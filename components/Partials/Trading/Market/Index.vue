@@ -73,6 +73,7 @@ function onInit() {
       UI_DEFAULT_AGGREGATION_DECIMALS_STRING
 
     minTick.value = minTickSize
+    aggregation.value = minTickSize
 
     const customAggregation = customAggregations[props.market.ticker]
 

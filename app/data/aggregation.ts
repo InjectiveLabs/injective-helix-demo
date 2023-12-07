@@ -272,15 +272,15 @@ export const customAggregations = {
   },
 
   'BTC/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.1'),
+    minTick: getDecimalPlaceFromValue('1'),
     default: getDecimalPlaceFromValue('1'),
-    maxTick: getDecimalPlaceFromValue('100')
+    maxTick: getDecimalPlaceFromValue('1000')
   },
 
   'ETH/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.01'),
+    minTick: getDecimalPlaceFromValue('0.1'),
     default: getDecimalPlaceFromValue('0.1'),
-    maxTick: getDecimalPlaceFromValue('10')
+    maxTick: getDecimalPlaceFromValue('100')
   },
 
   'BNB/USDT PERP': {
