@@ -53,7 +53,8 @@ export const getRoutes = (network: Network, env: string) => {
     'axl-usdt-perp',
     'btc-usdtkv-perp',
     'eth-usdtkv-perp',
-    'pyth-usdt-perp'
+    'pyth-usdt-perp',
+    'tia-usdt-perp'
   ]
 
   const gridTradingSpot = [
@@ -104,7 +105,7 @@ export const getRoutes = (network: Network, env: string) => {
       'pyth-usdt',
       'talis-usdt'
     )
-    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp', 'tia-usdt-perp')
+    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
   // Redirection pairs
