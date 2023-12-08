@@ -496,7 +496,7 @@ export const useWalletStore = defineStore('wallet', {
       const derivativeStore = useDerivativeStore()
       const gridStrategyStore = useGridStrategyStore()
 
-      await walletStrategy.disconnectWallet()
+      await walletStrategy.disconnect()
 
       walletStore.reset()
       spotStore.resetSubaccount()

@@ -2,17 +2,18 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  MarketCategoryType,
-  MarketQuoteType,
-  MarketStatus,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
-import {
-  marketIsPartOfCategory,
+  marketIsActive,
   marketIsQuotePair,
+  marketIsPartOfCategory,
   marketIsPartOfType,
   marketIsPartOfSearch
 } from '@/app/utils/market'
+import {
+  MarketStatus,
+  MarketQuoteType,
+  MarketCategoryType,
+  UiMarketAndSummaryWithVolumeInUsd
+} from '@/types'
 import {
   deprecatedMarkets,
   olpSlugsToIncludeInLowVolume,
@@ -52,31 +53,33 @@ const recentlyExpiredMarkets = computed(
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() =>
-  props.markets.filter(({ market, volumeInUsd }) => {
-    const isPartOfCategory = marketIsPartOfCategory(
-      activeCategory.value,
-      market
-    )
-    const isPartOfSearch = marketIsPartOfSearch(search.value, market)
-    const isPartOfType = marketIsPartOfType({
-      market,
-      favoriteMarkets: favoriteMarkets.value,
-      activeType: activeType.value as MarketType
-    })
-    const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-    const isLowVolumeMarket =
-      isLowVolumeMarketsVisible.value ||
-      volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+  props.markets
+    .filter(({ market, volumeInUsd }) => {
+      const isPartOfCategory = marketIsPartOfCategory(
+        activeCategory.value,
+        market
+      )
+      const isPartOfSearch = marketIsPartOfSearch(search.value, market)
+      const isPartOfType = marketIsPartOfType({
+        market,
+        favoriteMarkets: favoriteMarkets.value,
+        activeType: activeType.value as MarketType
+      })
+      const isQuotePair = marketIsQuotePair(activeQuote.value, market)
+      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+      const isLowVolumeMarket =
+        isLowVolumeMarketsVisible.value ||
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-    return (
-      isPartOfCategory &&
-      isPartOfType &&
-      isPartOfSearch &&
-      isQuotePair &&
-      (isLowVolumeMarket || isOLPMarket || search.value)
-    )
-  })
+      return (
+        isPartOfCategory &&
+        isPartOfType &&
+        isPartOfSearch &&
+        isQuotePair &&
+        (isLowVolumeMarket || isOLPMarket || search.value)
+      )
+    })
+    .filter((market) => marketIsActive(market.market))
 )
 
 const sortedMarkets = computed(() => {
