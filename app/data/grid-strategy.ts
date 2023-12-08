@@ -43,10 +43,18 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
 ]
 
 if (IS_STAGING) {
-  mainnetSpotGridMarkets.push({
-    slug: 'pyth-usdt',
-    contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
-  })
+  mainnetSpotGridMarkets.push(
+    ...[
+      {
+        slug: 'pyth-usdt',
+        contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
+      },
+      {
+        slug: 'talis-usdt',
+        contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
+      }
+    ]
+  )
 }
 
 const testnetSpotGridMarkets: SpotGridMarket[] = [
