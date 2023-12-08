@@ -169,9 +169,11 @@ watchDebounced(
           />
           <div v-if="activeType === FilterList.Orderbook">
             <PartialsTradingMarketOrderbookHeader :market="market" />
-            <PartialsTradingMarketOrderbook
-              :aggregation="Number(aggregation)"
-              :market="market"
+            <PartialsTradingMarketOrderbookWrapper
+              v-bind="{
+                market,
+                aggregation: Number(aggregation)
+              }"
             />
           </div>
 
