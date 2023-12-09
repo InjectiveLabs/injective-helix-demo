@@ -1,4 +1,5 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 
 export type Epoch = {
   epoch: number
@@ -32,6 +33,11 @@ export type CampaignRound = {
   startDate: number
   endDate: number
   campaigns: CampaignWithSc[]
+}
+
+export type RewardWithToken = {
+  token: Token
+  amount: string
 }
 
 export type CampaignWithScAndData = CampaignWithScAndRound & Campaign

@@ -19,7 +19,7 @@ import {
 } from '@/store/campaign/guild'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import { chainGrpcWasmApi, indexerGrpcCampaignApi } from '@/app/Services'
-import { joinGuild, createGuild, claimLPReward } from '@/store/campaign/message'
+import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { CampaignWithScAndData } from '@/types'
 
 type CampaignStoreState = {
@@ -67,7 +67,7 @@ export const useCampaignStore = defineStore('campaign', {
   actions: {
     joinGuild,
     createGuild,
-    claimLPReward,
+    claimReward,
 
     // guild queries
     pollGuildDetails,
