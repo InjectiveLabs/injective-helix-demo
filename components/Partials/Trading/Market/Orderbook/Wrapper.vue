@@ -20,6 +20,7 @@ const props = defineProps({
   }
 })
 
+const MAX_DECIMALS_FOR_AGGREGATION_KEY = 9
 const isSpot = props.market.type === MarketType.Spot
 
 const buys = computed(() => (isSpot ? spotStore.buys : derivativeStore.buys))
@@ -46,7 +47,7 @@ const aggregatedBuys = computed(() => {
         aggregation: props.aggregation
       })
       const aggregatedPriceKey = aggregatedPrice.toFixed(
-        9
+        MAX_DECIMALS_FOR_AGGREGATION_KEY
       ) as keyof typeof aggregatedRecords
       const quantity = isSpot
         ? new BigNumberInWei(record.quantity).toBase(
@@ -99,7 +100,7 @@ const aggregatedSells = computed(() => {
         aggregation: props.aggregation
       })
       const aggregatedPriceKey = aggregatedPrice.toFixed(
-        6
+        MAX_DECIMALS_FOR_AGGREGATION_KEY
       ) as keyof typeof aggregatedRecords
       const quantity = isSpot
         ? new BigNumberInWei(record.quantity).toBase(
