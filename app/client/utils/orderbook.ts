@@ -13,8 +13,8 @@ export const getAggregationPrice = ({
 }): BigNumberInBase => {
   const aggregateBy = new BigNumberInBase(10 ** Math.abs(aggregation))
 
+  // handles 10, 100 and 1000
   if (aggregation <= 0) {
-    // handles 10, 100 and 1000
     return new BigNumberInBase(
       price
         .dividedBy(aggregateBy)

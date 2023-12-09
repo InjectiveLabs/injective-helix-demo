@@ -1,17 +1,17 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
+  UiPosition,
+  ZERO_IN_BASE,
   UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken,
-  UiOrderbookPriceLevel,
-  UiPerpetualMarketWithToken,
-  UiPosition,
-  ZERO_IN_BASE
+  UiPerpetualMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { UiAggregatedPriceLevel } from '@/types'
 
 export const calculateMargin = ({
   quantity,
@@ -67,12 +67,14 @@ export const calculateBinaryOptionsMargin = ({
 }
 
 export const computeOrderbookSummary = (
-  summary: { quantity: BigNumberInBase; total: BigNumberInBase },
-  record: UiOrderbookPriceLevel
+  summary: { quantity: string; total: string },
+  record: UiAggregatedPriceLevel
 ) => {
   return {
-    quantity: summary.quantity.plus(new BigNumberInBase(record.quantity)),
-    total: summary.total.plus(new BigNumberInBase(record.total || 0))
+    quantity: new BigNumberInBase(summary.quantity)
+      .plus(record.quantity)
+      .toFixed(),
+    total: new BigNumberInBase(summary.total).plus(record.total || 0).toFixed()
   }
 }
 
