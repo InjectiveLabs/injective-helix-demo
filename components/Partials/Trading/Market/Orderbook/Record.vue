@@ -139,6 +139,10 @@ function onNotionalClick() {
 }
 
 function mouseEnter() {
+  if (props.isLast) {
+    return
+  }
+
   emit('update:active-position', props.position)
 }
 

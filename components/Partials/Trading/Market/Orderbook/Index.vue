@@ -132,7 +132,11 @@ const buysTotalNotional = computed(() => {
     new BigNumberInBase(20).div(100)
   )
 
-  const filteredBuys = Object.entries(props.aggregatedBuyOrders)
+  const filteredBuysWithoutLast = Object.entries(
+    props.aggregatedBuyOrders
+  ).slice(0, -1)
+
+  const filteredBuys = filteredBuysWithoutLast
     .filter(([price]) => {
       return new BigNumberInWei(price).div(props.midPrice).gte(threshold)
     })
@@ -149,7 +153,7 @@ const buysTotalNotional = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const [, highestNotionalBuy] = filteredBuys
+  const [highestNotionalBuy] = filteredBuys
   const [highestNotionalBuyPrice, highestNotionalBuyQuantity] =
     highestNotionalBuy
 
@@ -163,7 +167,11 @@ const sellsHighestBaseQuantity = computed(() => {
     new BigNumberInBase(20).div(100)
   )
 
-  const filteredSells = Object.entries(props.aggregatedSellOrders)
+  const filteredSellsWithoutLast = Object.entries(
+    props.aggregatedSellOrders
+  ).slice(0, -1)
+
+  const filteredSells = filteredSellsWithoutLast
     .filter(([price]) => {
       return new BigNumberInBase(props.midPrice).div(price).gte(threshold)
     })
