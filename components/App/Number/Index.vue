@@ -24,8 +24,15 @@ const props = defineProps({
   },
 
   number: {
-    required: true,
+    required: false,
+    default: new BigNumberInBase(0),
     type: Object as PropType<BigNumberInBase>
+  },
+
+  numberString: {
+    required: false,
+    default: '',
+    type: String
   },
 
   decimals: {
@@ -44,14 +51,18 @@ const props = defineProps({
   }
 })
 
+const actualNumber = computed(
+  () => new BigNumberInBase(props.numberString || props.number)
+)
+
 const actualDecimals = computed(() =>
   props.useNumberDecimals
-    ? getExactDecimalsFromNumber(props.number.toNumber())
+    ? getExactDecimalsFromNumber(actualNumber.value.toNumber())
     : props.decimals
 )
 
 const { valueToString: formattedNumberToString } = useBigNumberFormatter(
-  computed(() => props.number),
+  computed(() => actualNumber.value),
   {
     abbreviationFloor: props.abbreviationFloor,
     decimalPlaces: actualDecimals.value,
@@ -61,7 +72,7 @@ const { valueToString: formattedNumberToString } = useBigNumberFormatter(
 )
 
 const formattedNumber = computed(() => {
-  if (props.number.eq(0)) {
+  if (actualNumber.value.eq(0)) {
     return ['0.00']
   }
 

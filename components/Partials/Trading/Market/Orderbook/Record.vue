@@ -1,25 +1,20 @@
 <script lang="ts" setup>
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
-import {
-  Change,
-  MarketType,
-  UiOrderbookPriceLevel
-} from '@injectivelabs/sdk-ui-ts'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { Change } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   OrderBookPriceAndType,
   OrderBookQuantityAndType,
   OrderBookNotionalAndType,
-  UiMarketWithToken
+  UiMarketWithToken,
+  UiAggregatedPriceLevel
 } from '@/types'
 import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
+  isLast: Boolean,
+
   aggregation: {
     type: Number,
     required: true
@@ -47,7 +42,7 @@ const props = defineProps({
 
   record: {
     required: true,
-    type: Object as PropType<UiOrderbookPriceLevel>
+    type: Object as PropType<UiAggregatedPriceLevel>
   }
 })
 
@@ -55,31 +50,19 @@ const emit = defineEmits<{
   'update:active-position': [position?: number]
 }>()
 
-const isSpot = props.market.type === MarketType.Spot
-
 const element = ref()
 
 const existsInUserOrders = computed(() =>
   props.userOrders.some((price) => {
-    if (!props.record.aggregatePrices) {
+    if (!props.record.price) {
       return false
     }
 
-    return props.record.aggregatePrices.includes(price)
+    return props.record.price.includes(price)
   })
 )
 
 const recordTypeBuy = computed(() => props.type === OrderSide.Buy)
-
-const total = computed(() => new BigNumberInBase(props.record.total || 0))
-
-const quantity = computed(() =>
-  isSpot
-    ? new BigNumberInWei(props.record.quantity).toBase(
-        props.market.baseToken.decimals
-      )
-    : new BigNumberInBase(props.record.quantity)
-)
 
 const depthWidth = computed(() => ({
   width: `${props.record.depth}%`
@@ -128,14 +111,14 @@ const aggregatedValue = computed(() => {
 })
 
 const aggregatedPriceInBigNumber = computed(
-  () => new BigNumberInBase(props.record.aggregatedPrice || 0)
+  () => new BigNumberInBase(props.record.price || 0)
 )
 
 function onPriceClick() {
-  if (props.record.aggregatedPrice) {
+  if (props.record.price) {
     useEventBus<OrderBookPriceAndType>(BusEvents.OrderbookPriceClick).emit({
       isBuy: recordTypeBuy.value,
-      price: props.record.aggregatedPrice
+      price: props.record.price
     })
   }
 }
@@ -143,19 +126,23 @@ function onPriceClick() {
 function onSizeClick() {
   useEventBus<OrderBookQuantityAndType>(BusEvents.OrderbookSizeClick).emit({
     isBuy: recordTypeBuy.value,
-    quantity: quantity.value.toFixed()
+    quantity: props.record.quantity
   })
 }
 
 function onNotionalClick() {
   useEventBus<OrderBookNotionalAndType>(BusEvents.OrderbookNotionalClick).emit({
     isBuy: recordTypeBuy.value,
-    quantity: quantity.value.toFixed(),
-    total: total.value.toFixed()
+    quantity: props.record.quantity,
+    total: props.record.total
   })
 }
 
 function mouseEnter() {
+  if (props.isLast) {
+    return
+  }
+
   emit('update:active-position', props.position)
 }
 
@@ -192,22 +179,19 @@ defineExpose({
         class="text-gray-300 rotate-180 mr-2 w-2 h-2"
       />
       <span
-        class="block text-right font-mono"
+        class="text-right font-mono flex items-center"
         :class="{
           'text-green-500': recordTypeBuy,
           'text-red-500': !recordTypeBuy
         }"
       >
+        <span v-if="isLast && recordTypeBuy">&le;</span>
+        <span v-if="isLast && !recordTypeBuy">&ge;</span>
         <AppNumber
           is-xs
-          :prefix="
-            aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
-              ? '<'
-              : ''
-          "
           :decimals="aggregation < 0 ? 0 : aggregation"
           :number="
-            aggregatedValue.gt(record.aggregatedPrice || 0)
+            aggregatedValue.gt(record.price || 0)
               ? aggregatedValue
               : aggregatedPriceInBigNumber
           "
@@ -227,7 +211,7 @@ defineExpose({
         <AppNumber
           is-xs
           :decimals="market.quantityDecimals"
-          :number="quantity"
+          :number-string="record.quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
           is-no-grouping
           data-cy="orderbook-record-quantity-text-content"
@@ -241,7 +225,7 @@ defineExpose({
       <AppNumber
         is-xs
         :decimals="market.priceDecimals"
-        :number="total"
+        :number-string="record.total"
         is-no-grouping
         data-cy="orderbook-record-total-text-content"
       />
