@@ -54,11 +54,9 @@ export const useSwapStore = defineStore('swap', {
     async fetchRoutes() {
       const swapStore = useSwapStore()
 
-      const queryAllRoutesPayload = new QueryAllRoutes({}).toPayload()
-
       const queryAllRoutesResponse = await wasmApi.fetchSmartContractState(
         SWAP_CONTRACT_ADDRESS,
-        queryAllRoutesPayload
+        new QueryAllRoutes({}).toPayload()
       )
 
       const routes =
