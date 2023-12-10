@@ -128,3 +128,13 @@ export const stableCoinDenoms = [
 export const KAVA_USDT_SYMBOL = 'USDTkv'
 export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
+export const SWAP_SUPPORTED_SYMBOLS = [
+  'INJ',
+  'USDT',
+  'TIA',
+  'ATOM',
+  'WETH',
+  'WMATIC',
+  'KAVA',
+  'ARB'
+]
