@@ -71,6 +71,7 @@ export default {
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     insufficientFunds: 'Insufficient Funds',
+    exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
     autoModeHeader:
       'These parameters are generated automatically based on the last 30 days trading prices.',

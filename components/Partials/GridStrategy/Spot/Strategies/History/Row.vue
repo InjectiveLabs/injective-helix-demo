@@ -151,6 +151,10 @@ function onDetailsPage() {
       <span v-if="strategy.stopReason === StopReason.InsufficientFunds">
         {{ $t('sgt.insufficientFunds') }}
       </span>
+
+      <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
+        {{ $t('sgt.exceededMaxRetries') }}
+      </span>
     </div>
 
     <div class="flex items-center justify-center">
