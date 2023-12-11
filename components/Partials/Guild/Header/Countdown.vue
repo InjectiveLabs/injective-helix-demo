@@ -79,11 +79,12 @@ watch(countdown, (oldVal, newVal) => {
 <template>
   <section v-if="countdown" class="text-center">
     <h3 class="text-2xl font-semibold">
-      <span v-if="isCampaignOver">{{ $t('guild.competitionOver') }}</span>
+      <span v-if="isCampaignOver">{{ $t('guild.seasonOneEnded') }}</span>
       <span v-else-if="isCampaignStarted">{{ $t('guild.startsIn') }}</span>
       <span v-else>{{ $t('guild.endsIn') }}</span>
     </h3>
     <div
+      v-if="!isCampaignOver"
       class="my-4 flex items-center justify-around max-w-[300px] min-h-[66px] mx-auto"
     >
       <div

@@ -53,6 +53,14 @@ const isCampaignStarted = computed(() => {
   return campaignStore.guildCampaignSummary.startTime < now.value
 })
 
+const isCampaignOver = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return false
+  }
+
+  return campaignStore.guildCampaignSummary.endTime < now.value
+})
+
 const guildDescription = computed(() => {
   if (!campaignStore.guild) {
     return
@@ -122,7 +130,9 @@ onWalletConnected(() => {
       $onError(error)
       navigateTo({ name: MainPage.Guilds })
     })
-    .finally(() => status.setIdle())
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 function fetchGuildDetails({ skip = 0 }: { skip: number }) {
@@ -309,6 +319,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
           </p>
 
           <PartialsGuildStats v-bind="{ isCampaignStarted }" />
+          <PartialsGuildReward v-bind="{ isCampaignOver, now }" />
 
           <section class="pt-8 pb-4 px-6">
             <div class="flex items-center justify-between flex-wrap">

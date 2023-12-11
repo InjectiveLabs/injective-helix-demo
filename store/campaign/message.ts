@@ -7,7 +7,7 @@ import {
 } from '@/app/utils/constants'
 import { generateUniqueHash } from '@/app/utils/formatters'
 
-export const claimLPReward = async (contractAddress: string) => {
+export const claimReward = async (contractAddress: string) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
 
@@ -27,12 +27,12 @@ export const claimLPReward = async (contractAddress: string) => {
     }
   })
 
-  const reward = await msgBroadcastClient.broadcast({
+  const tx = await msgBroadcastClient.broadcast({
     msgs: [message],
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  return reward
+  return tx
 }
 
 export const createGuild = async ({

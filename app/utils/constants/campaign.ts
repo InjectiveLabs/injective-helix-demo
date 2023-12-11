@@ -13,6 +13,7 @@ export const GUILD_CONTRACT_ADDRESS = IS_MAINNET
   : IS_TESTNET
   ? 'inj1hasnh2e0eqzyzh02wrgufuq40ptu0d037tuc3r'
   : 'inj1h4fu6dq4lafxme6gnke5s44rsjjaxu276458r2' // devnet
+
 export const GUILD_ENCODE_KEY = 'guild'
 export const GUILD_HASH_CHAR_LIMIT = 6
 // todo: update later when indexer adds base and quote denom to the api
@@ -24,3 +25,11 @@ export const GUILD_ZENDESK_LINK =
   'https://helixapp.zendesk.com/hc/en-us/articles/8391676095887-Share-10-000-TIA-Rewards-in-Helix-Guilds-Competition'
 export const GUILD_MIN_AMOUNT = 1000
 export const GUILD_MAX_CAP = 150
+export const GUILD_CAMPAIGN_END_DATE = 1702393200000
+
+export const GUILD_VOLUME_REWARD_CONTRACT = IS_DEVNET
+  ? 'inj182uvgv8vmzk8yusmtusnq55xs3x3dtp3zw0z2f'
+  : 'inj1kst34rnencvp8q4et4a5h0fcnh39l5aqk8u2wh'
+export const GUILD_BALANCE_REWARD_CONTRACT = IS_DEVNET
+  ? 'inj1f00gl2z68g5la6yfckpyfzk5gscaz6uw82qvx8'
+  : 'inj1rkhzqu2x0znh75n2fhf3y3v2rluce4qg3dy9kh'
