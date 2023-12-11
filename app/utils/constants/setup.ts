@@ -134,11 +134,9 @@ if (endpointsNotProvided) {
 }
 
 const CAMPAIGN_ENDPOINT =
-  IS_MAINNET || IS_STAGING
-    ? 'https://staging.api.injective.network'
-    : // : IS_MAINNET && !IS_STAGING
-    // ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
-    IS_TESTNET
+  IS_MAINNET && !IS_STAGING
+    ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
+    : IS_TESTNET
     ? 'https://k8s.testnet.campaigns.grpc-web.injective.network'
     : endpoints.indexer
 
