@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { Route } from '@injectivelabs/sdk-ts'
 import { AccountBalance } from '@/types'
-import { SWAP_SUPPORTED_SYMBOLS } from '@/app/data/token'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 
 const getBalanceWithToken = (
   swapDenom: string,
@@ -52,10 +52,10 @@ export function useSwapTokenSelector({
 
         /** Filter out illiquid markets */
         if (
-          !SWAP_SUPPORTED_SYMBOLS.includes(
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
             inputTokenWithBalance?.token.symbol.toUpperCase()
           ) ||
-          !SWAP_SUPPORTED_SYMBOLS.includes(
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
             outputTokenWithBalance?.token.symbol.toUpperCase()
           )
         ) {
