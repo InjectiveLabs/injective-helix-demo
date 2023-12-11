@@ -59,6 +59,7 @@ export enum Modal {
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
+  LpRewardsDelay = 'lp-rewards-delay',
   SgtBalancedFees = 'sgtBalancedFees',
   BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
