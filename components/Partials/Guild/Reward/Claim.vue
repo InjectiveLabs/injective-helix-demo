@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { Coin } from '@injectivelabs/sdk-ts'
-import { BigNumber, Status, StatusType } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  Status,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   GUILD_VOLUME_REWARD_CONTRACT,
@@ -51,6 +56,10 @@ const contractAddress = props.isVolume
 const hasUserClaimed = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 const fetchClaimStatus = reactive(new Status(StatusType.Loading))
+
+const hasReward = computed(() =>
+  props.rewards.some(({ amount }) => new BigNumberInBase(amount).gt(0))
+)
 
 const { valueToString: scoreToString } = useBigNumberFormatter(
   computed(() =>
@@ -171,13 +180,14 @@ function onClaimRewards() {
       <p class="text-xs pb-2">
         {{ $t('guild.rewards') }}
       </p>
-      <div class="flex items-center gap-2">
+      <div v-if="hasReward" class="flex items-center gap-2">
         <PartialsGuildRewardDisplay
           v-for="reward in rewardsWithToken"
           :key="`${isVolume ? 'volume' : 'balance'}-${reward.token.symbol}`"
           :reward="reward"
         />
       </div>
+      <span v-else>&mdash;</span>
     </div>
 
     <div
@@ -188,7 +198,7 @@ function onClaimRewards() {
         v-bind="{
           isSm: true,
           isLoading: status.isLoading() || fetchClaimStatus.isLoading(),
-          isDisabled: hasUserClaimed || !isReadyToClaim
+          isDisabled: hasUserClaimed || !isReadyToClaim || !hasReward
         }"
         @click="onClaimRewards"
       >

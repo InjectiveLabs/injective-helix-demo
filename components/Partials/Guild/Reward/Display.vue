@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { RewardWithToken } from '@/types'
 
 const props = defineProps({
@@ -15,7 +16,11 @@ const { valueToString: rewardToString } = useBigNumberFormatter(
       value: props.reward.amount,
       decimalPlaces: props.reward.token.decimals
     })
-  )
+  ),
+  {
+    decimalPlaces: UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+    minimalDecimalPlaces: UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  }
 )
 </script>
 
