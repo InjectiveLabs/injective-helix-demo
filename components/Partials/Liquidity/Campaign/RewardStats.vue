@@ -35,9 +35,9 @@ const props = defineProps({
 
 const tokenStore = useTokenStore()
 
+const hasUserClaimed = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 const claimStatus = reactive(new Status(StatusType.Idle))
-const hasUserClaimed = ref(false)
 
 const campaignWithSc = computed(() =>
   LP_CAMPAIGNS.find(
@@ -157,7 +157,7 @@ function onClaimRewards() {
   claimStatus.setLoading()
 
   campaignStore
-    .claimLPReward(scAddress)
+    .claimReward(scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),

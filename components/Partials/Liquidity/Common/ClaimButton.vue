@@ -26,7 +26,7 @@ const isClaimed = computed(() =>
   campaignStore.claimedRewards.includes(props.campaignId)
 )
 
-function claimLpRewards() {
+function claimRewards() {
   if (isClaimed.value || !props.isClaimable) {
     return
   }
@@ -34,7 +34,7 @@ function claimLpRewards() {
   status.setLoading()
 
   campaignStore
-    .claimLPReward(props.scAddress)
+    .claimReward(props.scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),
@@ -55,7 +55,7 @@ function claimLpRewards() {
       'bg-blue-500 border-blue-500 border': !isClaimed && isClaimable
     }"
     :is-disabled="isClaimed || !isClaimable"
-    @click="claimLpRewards"
+    @click="claimRewards"
   >
     <span v-if="isClaimed">{{ $t('campaign.claimed') }}</span>
     <span v-else>{{ $t('campaign.claim') }}</span>

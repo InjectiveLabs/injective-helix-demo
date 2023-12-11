@@ -47,6 +47,14 @@ const campaignDateRange = computed(() => {
   return `${startDate} - ${endDate}`
 })
 
+const isCampaignOver = computed(() => {
+  if (!props.summary) {
+    return false
+  }
+
+  return props.summary.endTime < props.now
+})
+
 function openCreateGuildModal() {
   if (campaignStore.userGuildInfo) {
     modalStore.openModal(Modal.AlreadyJoinedGuild)
@@ -165,10 +173,14 @@ function onConnectWallet() {
 
             <AppButton
               v-else
-              class="bg-blue-500 text-white min-w-3xs mt-10"
+              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              :is-disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
-              <span class="text-sm">
+              <span v-if="isCampaignOver" class="text-gray-600">
+                {{ $t('guild.seasonEnded') }}
+              </span>
+              <span v-else>
                 {{ $t('guild.howToParticipate.createGuild.cta') }}
               </span>
             </AppButton>
@@ -188,12 +200,16 @@ function onConnectWallet() {
           </p>
 
           <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
-            <AppButton class="bg-blue-500 text-white min-w-3xs mt-10">
-              <div class="text-sm">
-                <span>
-                  {{ $t('guild.howToParticipate.joinGuild.cta') }}
-                </span>
-              </div>
+            <AppButton
+              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              :is-disabled="isCampaignOver"
+            >
+              <span v-if="isCampaignOver" class="text-gray-600">
+                {{ $t('guild.seasonEnded') }}
+              </span>
+              <span v-else>
+                {{ $t('guild.howToParticipate.joinGuild.cta') }}
+              </span>
             </AppButton>
           </NuxtLink>
         </article>
