@@ -225,6 +225,11 @@ useIntervalFn(() => {
             >
               ({{ $t('sgt.insufficientFunds') }})
             </span>
+            <span
+              v-if="activeStrategy.stopReason === StopReason.ExceededMaxRetries"
+            >
+              ({{ $t('sgt.exceededMaxRetries') }})
+            </span>
           </span>
         </p>
       </div>
