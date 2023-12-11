@@ -122,7 +122,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
   {
     round: 2,
     startDate: 1699974000,
-    endDate: 1702252800,
+    endDate: 1702339200,
     campaigns: [
       {
         campaignId: 'spot-grid-tia-usdt-2',
@@ -173,7 +173,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
   },
   {
     round: 3,
-    startDate: 1702252800,
+    startDate: 1702339200,
     endDate: 1702944000,
     campaigns: [
       {
