@@ -27,7 +27,7 @@ export const claimReward = async (contractAddress: string) => {
     }
   })
 
-  const tx = await msgBroadcastClient.broadcast({
+  const tx = await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: [message],
     injectiveAddress: walletStore.injectiveAddress
   })
