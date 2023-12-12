@@ -71,7 +71,6 @@ function fetchData() {
     spotStore.streamTrades(marketId),
     spotStore.fetchOrderbook(marketId),
     spotStore.fetchTrades({ marketId }),
-    spotStore.streamOrderbookUpdate(marketId),
     spotStore.streamSubaccountOrders(marketId, subaccountId),
     spotStore.fetchOrdersBySubaccount({
       marketIds: [gridStrategyStore.spotMarket.marketId],
