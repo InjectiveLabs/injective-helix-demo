@@ -36,7 +36,8 @@ export const getRoutes = (network: Network, env: string) => {
     'tia-usdt',
     'usdy-usdt',
     'whale-usdt',
-    'sol-usdt'
+    'sol-usdt',
+    'kuji-usdt'
   ]
 
   const perpetuals = [
@@ -98,13 +99,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    spot.push(
-      'ldo-usdcet',
-      'usdtkv-usdt',
-      'kuji-usdt',
-      'pyth-usdt',
-      'talis-usdt'
-    )
+    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt', 'talis-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
