@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { addDays } from 'date-fns'
+import { addDays, differenceInHours } from 'date-fns'
 import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
 
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -100,7 +100,12 @@ const round = computed(
 )
 
 const claimDate = computed(() => addDays(round.value.endDate * 1000, 1))
+
 const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
+
+const estimatedTimeToClaimable = computed(() =>
+  differenceInHours(claimDate.value.getTime(), Date.now())
+)
 
 const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
   totalAmountInUsd,
@@ -157,13 +162,29 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     </td>
 
     <td class="w-40">
-      <PartialsLiquidityCommonClaimButton
-        v-bind="{
-          scAddress: campaignWithSc.scAddress,
-          isClaimable,
-          campaignId: campaignWithSc.campaignId
-        }"
-      />
+      <div class="space-y-2">
+        <PartialsLiquidityCommonClaimButton
+          v-bind="{
+            scAddress: campaignWithSc.scAddress,
+            isClaimable,
+            campaignId: campaignWithSc.campaignId
+          }"
+        />
+
+        <p
+          v-if="estimatedTimeToClaimable > 0 && estimatedTimeToClaimable < 24"
+          class="text-xs text-gray-500"
+        >
+          ({{ $t('campaign.readyIn', { hours: estimatedTimeToClaimable }) }})
+        </p>
+
+        <p
+          v-else-if="estimatedTimeToClaimable === 0 && !isClaimable"
+          class="text-xs text-gray-500"
+        >
+          ({{ $t('campaign.readyInLessThan', { time: '1', interval: 'hr' }) }})
+        </p>
+      </div>
     </td>
   </tr>
 </template>

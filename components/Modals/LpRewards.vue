@@ -1,18 +1,29 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
+defineProps({
+  round: {
+    type: Number,
+    required: true
+  }
+})
+
 const modalStore = useModalStore()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.LpRewardsDelay])
+const isModalOpen = computed(() => modalStore.modals[Modal.LpRewards])
 
 function closeModal() {
-  modalStore.closeModal(Modal.LpRewardsDelay)
+  modalStore.closeModal(Modal.LpRewards)
 }
 </script>
 
 <template>
   <Teleport to="body">
     <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
+      <template #title>
+        <p>{{ $t('campaign.helixLpRewardsRound', { round: round }) }}</p>
+      </template>
+
       <div
         class="max-sm:pt-10 max-w-sm md:text-xl space-y-2 text-center text-gray-300"
       >
@@ -34,14 +45,21 @@ function closeModal() {
         </div>
 
         <div>
-          <p>
-            Get ready for <span class="font-bold">Round 3</span> of LP rewards,
-            starting later today and lasting for one week.
-          </p>
-
-          <p class="py-2">
-            Happy <span class="font-bold text-white">LP</span>'ing!
-          </p>
+          <i18n-t keypath="campaign.roundIsLive" tag="div">
+            <template #round1>
+              <span class="font-bold">{{
+                $t('campaign.round', { round })
+              }}</span>
+            </template>
+            <template #round2>
+              <span class="font-bold">{{
+                $t('campaign.round', { round: round - 1 })
+              }}</span>
+            </template>
+            <template #myRewards>
+              <span class="font-bold">{{ $t('campaign.myRewards') }}</span>
+            </template>
+          </i18n-t>
         </div>
 
         <div class="pt-2">
@@ -49,7 +67,7 @@ function closeModal() {
             class="bg-blue-500 text-blue-900 font-semibold w-full"
             @click="closeModal"
           >
-            Close
+            Let's go!
           </AppButton>
         </div>
       </div>

@@ -27,6 +27,6 @@ const { valueToString: rewardToString } = useBigNumberFormatter(
 <template>
   <div class="flex items-center gap-1">
     <CommonTokenIcon :token="reward.token" is-sm />
-    <span>{{ rewardToString }}</span>
+    <span>≈ {{ rewardToString }}</span>
   </div>
 </template>

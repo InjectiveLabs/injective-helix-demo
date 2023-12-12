@@ -54,6 +54,18 @@ function fetchAddresses() {
 const connect = handleSubmit(() => {
   status.setLoading()
 
+  if (path.value === LedgerDerivationPathType.LedgerMew) {
+    return walletStore
+      .connectLedgerLegacy(getEthereumAddress(address.value))
+      .catch((e) => {
+        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+        $onError(e)
+      })
+      .finally(() => {
+        status.setIdle()
+      })
+  }
+
   walletStore
     .connectLedger(getEthereumAddress(address.value))
     .catch((e) => {
