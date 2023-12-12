@@ -5,29 +5,29 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
 
-// const ACTIVE_CAMPAIGN_ROUNDS = campaignStore.campaignsWithSc
-//   .filter(
-//     ({ startDate, endDate }) =>
-//       startDate * 1000 < Date.now() && endDate * 1000 > Date.now()
-//   )
-//   .map(({ round }) => round)
+const ACTIVE_CAMPAIGN_ROUNDS = campaignStore.campaignsWithSc
+  .filter(
+    ({ startDate, endDate }) =>
+      startDate * 1000 < Date.now() && endDate * 1000 > Date.now()
+  )
+  .map(({ round }) => round)
 
-// const DEFAULT_ROUND =
-//   ACTIVE_CAMPAIGN_ROUNDS.length > 0 ? Math.max(...ACTIVE_CAMPAIGN_ROUNDS) : 2
+const DEFAULT_ROUND =
+  ACTIVE_CAMPAIGN_ROUNDS.length > 0 ? Math.max(...ACTIVE_CAMPAIGN_ROUNDS) : 3
 
-const round = useQueryRef('round', '2')
+const round = useQueryRef('round', DEFAULT_ROUND.toString())
 
 const filteredCampaigns = computed(() =>
   campaignStore.campaignsWithSc.filter((c) => c.round === Number(round.value))
 )
 
 onMounted(() => {
-  if (!appStore.userState.modalsViewed.includes(Modal.LpRewardsDelay)) {
-    modalStore.openModal(Modal.LpRewardsDelay)
+  if (!appStore.userState.modalsViewed.includes(Modal.LpRewards)) {
+    modalStore.openModal(Modal.LpRewards)
 
     appStore.setUserState({
       ...appStore.userState,
-      modalsViewed: [...appStore.userState.modalsViewed, Modal.LpRewardsDelay]
+      modalsViewed: [...appStore.userState.modalsViewed, Modal.LpRewards]
     })
   }
 })
@@ -57,6 +57,6 @@ onMounted(() => {
       </table>
     </div>
 
-    <ModalsLpRewardsDelay />
+    <ModalsLpRewards v-bind="{ round: Number(round) }" />
   </div>
 </template>

@@ -42,6 +42,7 @@ export default {
     totalRewardsAllTime: 'Total Rewards (All Time)',
     totalRewardsThisRound: 'Total Rewards This Round',
     totalRewardsOfRound: 'Total Rewards of Round {round}',
+    helixLpRewardsRound: 'Helix LP Rewards Round {round}',
     successfullyClaimedRewards: 'Succesfuly Claimed Rewards',
     errorAlreadyClaimed: 'This reward has already been claimed.',
     readyInLessThan: 'Ready in less than {time} {interval}',
@@ -50,6 +51,16 @@ export default {
     eligibleMarkets: 'Eligible Market for Rewards ',
     lastUpdatedAt: 'Last updated at {date}',
     lastUpdated: ({ named }: I18nMessageFunction) =>
-      `Last updated at ${named('date')}`
+      `Last updated at ${named('date')}`,
+    roundIsLive: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate([
+        named('round1'),
+        ' is now live! Check out the new markets added to this round! ',
+        'To claim your rewards from ',
+        named('round2'),
+        ' go to ',
+        named('myRewards'),
+        ' on the page.'
+      ])
   }
 }
