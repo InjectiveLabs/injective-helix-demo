@@ -17,6 +17,7 @@ export default {
     claimed: 'Claimed',
     endTime: 'End Time',
     title: 'LP Rewards',
+    letsGo: "Let's go!",
     liquidity: 'Liquidity',
     dashboard: 'Dashboard',
     round: 'Round {round}',
