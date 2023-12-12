@@ -227,6 +227,26 @@ export const useWalletStore = defineStore('wallet', {
       await walletStore.onConnect()
     },
 
+    async connectLedgerLegacy(address: string) {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(walletStore.wallet)
+
+      const addresses = [address]
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
     async connectTrezor(address: string) {
       const walletStore = useWalletStore()
 
