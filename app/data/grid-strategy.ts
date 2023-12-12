@@ -39,11 +39,12 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'wmatic-usdt',
     contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
-  },
-  {
-    slug: 'arb-usdt',
-    contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
   }
+  // Remove for now since API is still not ready
+  // {
+  //   slug: 'arb-usdt',
+  //   contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
+  // }
 ]
 
 if (IS_STAGING) {
