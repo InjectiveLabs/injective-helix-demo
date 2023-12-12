@@ -2,7 +2,6 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { addDays, differenceInHours } from 'date-fns'
 import {
   NETWORK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -45,14 +44,7 @@ const campaignWithSc = computed(() =>
   )
 )
 
-const claimDate = computed(() => addDays(props.campaign.endDate, 1))
-const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
-
-const estimatedTimeToClaimable = computed(() =>
-  differenceInHours(claimDate.value.getTime(), Date.now())
-)
-
-const isClaimButtonVisible = computed(() => estimatedTimeToClaimable.value < 24)
+const isClaimable = computed(() => Date.now() > props.campaign.endDate)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -231,7 +223,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
               </div>
             </div>
 
-            <div v-if="isClaimButtonVisible" class="whitespace-nowrap">
+            <div class="whitespace-nowrap">
               <AppButton
                 class="border border-blue-500 mb-1"
                 v-bind="{
@@ -248,24 +240,6 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                   {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
                 </div>
               </AppButton>
-
-              <p
-                v-if="estimatedTimeToClaimable > 0"
-                class="text-xs text-gray-500"
-              >
-                ({{
-                  $t('campaign.readyIn', { hours: estimatedTimeToClaimable })
-                }})
-              </p>
-
-              <p
-                v-else-if="estimatedTimeToClaimable === 0 && !isClaimable"
-                class="text-xs text-gray-500"
-              >
-                ({{
-                  $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
-                }})
-              </p>
             </div>
           </div>
         </div>

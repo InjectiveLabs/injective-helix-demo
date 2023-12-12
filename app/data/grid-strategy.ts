@@ -43,6 +43,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'arb-usdt',
     contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
+  },
+  {
+    slug: 'kuji-usdt',
+    contractAddress: 'inj1zen7yh00gffkvsxcptqzaslu27msrw0ee933vf'
   }
 ]
 

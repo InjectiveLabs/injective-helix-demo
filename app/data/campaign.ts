@@ -220,6 +220,18 @@ const mainnetCampaignRounds: CampaignRound[] = [
         scAddress: '',
         marketSlug: 'usdtkv-usdt',
         rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-3',
+        scAddress: '',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '125' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-3',
+        scAddress: '',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
       }
     ]
   }

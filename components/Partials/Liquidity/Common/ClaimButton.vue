@@ -40,6 +40,10 @@ function claimRewards() {
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
+
+      campaignStore.$patch({
+        claimedRewards: [...campaignStore.claimedRewards, props.campaignId]
+      })
     })
     .catch($onError)
     .finally(() => {
