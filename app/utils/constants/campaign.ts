@@ -29,7 +29,7 @@ export const GUILD_CAMPAIGN_END_DATE = 1702393200000
 
 export const GUILD_VOLUME_REWARD_CONTRACT = IS_DEVNET
   ? 'inj182uvgv8vmzk8yusmtusnq55xs3x3dtp3zw0z2f'
-  : 'inj1c3f0nsshxte8a20eelh3v8uxhwgu3dxkq8h8hn'
+  : 'inj17ryrqr78f9w0rmr2n77pvl9636ghurgkt2mmme'
 export const GUILD_BALANCE_REWARD_CONTRACT = IS_DEVNET
   ? 'inj1f00gl2z68g5la6yfckpyfzk5gscaz6uw82qvx8'
-  : 'inj1l755uvujt3fpn8gavr8n6dsmjn6sa8s68m3klu'
+  : 'inj1klxkep4s6fe2pltn6u2rctq8hl7fwzhmuwzvyt'
