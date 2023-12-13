@@ -43,8 +43,7 @@ const campaignWithSc = computed(() =>
     ({ campaignId }) => props.campaign.campaignId === campaignId
   )
 )
-// remove false && when claiming is fixed
-const isClaimable = computed(() => false && Date.now() > props.campaign.endDate)
+const isClaimable = computed(() => Date.now() > props.campaign.endDate)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
