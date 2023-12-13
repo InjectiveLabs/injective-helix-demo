@@ -169,7 +169,7 @@ const usdcAggregationTypeBalances = computed(() =>
     <PartialsAccountBalancesActions
       v-model:search="searchQuery"
       v-model:show-margin-currency-only="showMarginCurrencyOnly"
-      v-model:hide-small-balances="isHideSmallBalances"
+      v-model:is-hide-small-balances="isHideSmallBalances"
     />
 
     <table class="w-full border-collapse hidden lg:table">

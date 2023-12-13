@@ -234,11 +234,11 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             class="flex flex-wrap justify-center"
           >
             <AppNumberEmp :number="pendingTradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+              <span>{{ $t('tradeAndEarn.pts') }}</span>
             </AppNumberEmp>
             <span class="px-2 text-xl self-center">/</span>
             <AppNumberEmp :number="totalPendingTradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+              <span>{{ $t('tradeAndEarn.pts') }}</span>
             </AppNumberEmp>
           </div>
           <span v-else class="text-gray-450">&mdash;</span>
@@ -289,7 +289,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             class="text-blue-500 flex justify-center"
             target="_blank"
           >
-            {{ $t('stake_more') }}
+            {{ $t('tradeAndEarn.stakeMore') }}
             <AppTooltip
               class="ml-2 text-gray-450"
               :content="
@@ -302,11 +302,11 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
         </template>
         <template #title>
           <div class="flex items-center justify-center text-gray-450">
-            {{ $t('tradeAndEarn.est_rewards_stake') }}
+            {{ $t('tradeAndEarn.estRewardsStake') }}
             <AppTooltip
               class="ml-2 text-gray-450"
               :content="
-                $t('tradeAndEarn.est_rewards_stake_tooltip', {
+                $t('tradeAndEarn.estRewardsStakeTooltip', {
                   maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                 })
               "

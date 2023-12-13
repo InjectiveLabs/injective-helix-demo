@@ -163,12 +163,12 @@ const spotBoostedMarkets = computed(() => {
             <span>
               {{ derivative.makerPointsMultiplier }}x
               <span class="text-sm text-gray-350 font-sans">
-                {{ $t('maker_points_mul') }}
+                {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ derivative.takerPointsMultiplier }}x
               <span class="text-sm text-gray-350 font-sans">
-                {{ $t('taker_points_mul') }}
+                {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
           </p>
@@ -190,12 +190,12 @@ const spotBoostedMarkets = computed(() => {
             <span>
               {{ spot.makerPointsMultiplier }}x
               <span class="text-sm text-gray-350 font-sans">
-                {{ $t('maker_points_mul') }}
+                {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ spot.takerPointsMultiplier }}x
               <span class="text-sm text-gray-350 font-sans">
-                {{ $t('taker_points_mul') }}
+                {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
           </p>
