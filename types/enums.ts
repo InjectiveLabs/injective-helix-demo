@@ -189,6 +189,25 @@ export enum AmplitudeEvent {
   RemoveLiquidityBot = 'Remove Liquidity Bot'
 }
 
+export enum MixPanelEvent {
+  Swap = 'Swap',
+  Login = 'Login',
+  Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
+  SwapAttempt = 'Swap Attempt',
+  TradeClicked = 'Trade Clicked',
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  SurveyAccepted = 'Survey - Accepted',
+  SurveyRejected = 'Survey - Rejected',
+  PlaceOrderAttempt = 'Place Order Attempt',
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
+}
+
 export enum SurveyTitle {
   HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
