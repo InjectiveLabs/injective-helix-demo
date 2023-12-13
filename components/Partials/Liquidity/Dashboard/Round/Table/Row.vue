@@ -98,10 +98,7 @@ const round = computed(
     )!
 )
 
-// remove false && when claiming is fixed
-const isClaimable = computed(
-  () => false && Date.now() > round.value.endDate * 1000
-)
+const isClaimable = computed(() => Date.now() > round.value.endDate * 1000)
 
 const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
   totalAmountInUsd,
