@@ -37,13 +37,17 @@ const props = defineProps({
   },
 
   aggregatedSellOrders: {
-    type: Object as PropType<Record<string, string>>,
+    type: Object as PropType<
+      Record<string, { quantity: string; total: string }>
+    >,
     required: true,
     default: () => ({})
   },
 
   aggregatedBuyOrders: {
-    type: Object as PropType<Record<string, string>>,
+    type: Object as PropType<
+      Record<string, { quantity: string; total: string }>
+    >,
     required: true,
     default: () => ({})
   },
@@ -141,12 +145,12 @@ const buysTotalNotional = computed(() => {
       return new BigNumberInWei(price).div(props.midPrice).gte(threshold)
     })
     .sort((a, b) => {
-      const [aPrice, aQuantity] = a
-      const [bPrice, bQuantity] = b
-      const aNotional = new BigNumberInWei(aQuantity).times(aPrice)
-      const bNotional = new BigNumberInWei(bQuantity).times(bPrice)
+      const [, aQuantityAndTotal] = a
+      const [, bQuantityAndTotal] = b
 
-      return new BigNumberInBase(bNotional).minus(aNotional).toNumber()
+      return new BigNumberInBase(bQuantityAndTotal.total)
+        .minus(aQuantityAndTotal.total)
+        .toNumber()
     })
 
   if (filteredBuys.length === 0) {
@@ -154,12 +158,9 @@ const buysTotalNotional = computed(() => {
   }
 
   const [highestNotionalBuy] = filteredBuys
-  const [highestNotionalBuyPrice, highestNotionalBuyQuantity] =
-    highestNotionalBuy
+  const [, highestNotionalBuyQuantityAndTotal] = highestNotionalBuy
 
-  return new BigNumberInWei(highestNotionalBuyQuantity)
-    .times(highestNotionalBuyPrice)
-    .toFixed()
+  return new BigNumberInWei(highestNotionalBuyQuantityAndTotal.total).toFixed()
 })
 
 const sellsHighestBaseQuantity = computed(() => {
@@ -176,10 +177,12 @@ const sellsHighestBaseQuantity = computed(() => {
       return new BigNumberInBase(props.midPrice).div(price).gte(threshold)
     })
     .sort((a, b) => {
-      const [, aQuantity] = a
-      const [, bQuantity] = b
+      const [, aTotalAndQuantity] = a
+      const [, bQuantityAndTotal] = b
 
-      return new BigNumberInBase(bQuantity).minus(aQuantity).toNumber()
+      return new BigNumberInBase(bQuantityAndTotal.quantity)
+        .minus(aTotalAndQuantity.quantity)
+        .toNumber()
     })
 
   if (filteredSells.length === 0) {
@@ -189,26 +192,31 @@ const sellsHighestBaseQuantity = computed(() => {
   const [highestSell] = filteredSells
   const [, highestSellQuantity] = highestSell
 
-  return highestSellQuantity
+  return highestSellQuantity.quantity
 })
 
 const buysWithDepth = computed(() => {
-  return Object.entries(props.aggregatedBuyOrders).map(([price, quantity]) => {
-    const total = new BigNumberInWei(quantity).times(price)
-
-    return {
-      price,
-      quantity,
-      total: total.toFixed(),
-      depth: total.dividedBy(buysTotalNotional.value).times(100).toNumber()
-    } as UiAggregatedPriceLevel
-  })
+  return Object.entries(props.aggregatedBuyOrders).map(
+    ([price, quantityAndTotal]) => {
+      return {
+        price,
+        ...quantityAndTotal,
+        depth: new BigNumberInBase(quantityAndTotal.total)
+          .dividedBy(buysTotalNotional.value)
+          .times(100)
+          .toNumber()
+      } as UiAggregatedPriceLevel
+    }
+  )
 })
 
 const buyOrdersSummary = computed<
   { quantity: string; total: string } | undefined
 >(() => {
-  if (buysWithDepth.value.length === 0 || !buyHoverPosition.value) {
+  if (
+    buysWithDepth.value.length === 0 ||
+    buyHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -236,14 +244,11 @@ const buyOrdersSummary = computed<
 
 const sellsWithDepth = computed(() => {
   return Object.entries(props.aggregatedSellOrders)
-    .map(([price, quantity]) => {
-      const total = new BigNumberInWei(quantity).times(price)
-
+    .map(([price, quantityAndTotal]) => {
       return {
         price,
-        quantity,
-        total: total.toFixed(),
-        depth: new BigNumberInWei(quantity)
+        ...quantityAndTotal,
+        depth: new BigNumberInWei(quantityAndTotal.quantity)
           .dividedBy(sellsHighestBaseQuantity.value)
           .times(100)
           .toNumber()
@@ -255,7 +260,10 @@ const sellsWithDepth = computed(() => {
 const sellOrdersSummary = computed<
   { quantity: string; total: string } | undefined
 >(() => {
-  if (sellsWithDepth.value.length === 0 || !sellHoverPosition.value) {
+  if (
+    sellsWithDepth.value.length === 0 ||
+    sellHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -284,11 +292,11 @@ const sellOrdersSummary = computed<
 })
 
 const orderBookSummary = computed(() => {
-  if (buyHoverPosition.value) {
+  if (buyHoverPosition.value !== undefined) {
     return buyOrdersSummary.value
   }
 
-  if (sellHoverPosition.value) {
+  if (sellHoverPosition.value !== undefined) {
     return sellOrdersSummary.value
   }
 
@@ -408,10 +416,13 @@ function onBuyOrderHover(position?: number) {
 }
 
 function hidePopperOnScroll(state: UseScrollReturn) {
+  if (!orderbookSummaryRef.value) {
+    return
+  }
+
   if (
-    !buyHoverPosition.value ||
-    !sellHoverPosition.value ||
-    !orderbookSummaryRef.value
+    buyHoverPosition.value === undefined &&
+    sellHoverPosition.value === undefined
   ) {
     return
   }

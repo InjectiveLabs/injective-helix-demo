@@ -32,7 +32,6 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
 
 <template>
   <div
-    v-if="summary"
     class="p-4 bg-gray-700 rounded-xl flex flex-col flex-wrap text-xs min-w-2xs"
   >
     <div class="flex justify-between items-center mb-2">
