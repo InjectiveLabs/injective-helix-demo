@@ -44,7 +44,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.my_staked_amount') }}
+          {{ $t('feeDiscounts.my_staked_amount') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -60,7 +60,7 @@ const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
     </div>
     <div class="mt-4">
       <span class="text-xs text-gray-400">
-        {{ $t('fee_discounts.current_apr') }}: ≈ {{ aprToFormat }}%
+        {{ $t('feeDiscounts.current_apr') }}: ≈ {{ aprToFormat }}%
       </span>
     </div>
   </div>

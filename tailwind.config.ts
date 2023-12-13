@@ -1,4 +1,3 @@
-import { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { colors } from './nuxt-config/tailwind'
 
@@ -21,7 +20,7 @@ const extraSizings = {
   '6xl': '72rem'
 }
 
-export default <Config>{
+export default {
   presets: [require('@injectivelabs/ui-shared/lib/tailwind-preset.cjs')],
   content: ['./components/**/*.vue', './pages/**/*.vue', './layouts/*.vue'],
   safelist: [
@@ -43,7 +42,8 @@ export default <Config>{
       padding: {
         DEFAULT: '1rem',
         xs: '0.5rem',
-        sm: '1rem'
+        sm: '1.5rem',
+        md: '2rem'
       }
     },
 

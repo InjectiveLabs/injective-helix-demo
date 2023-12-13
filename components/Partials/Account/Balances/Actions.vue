@@ -12,14 +12,14 @@ const props = defineProps({
 const emit = defineEmits<{
   'update:search': [state: string]
   'update:subaccount': [state: string]
-  'update:hide-small-balances': [state: boolean]
+  'update:is-hide-small-balances': [state: boolean]
   'update:show-margin-currency-only': [state: boolean]
 }>()
 
 const hideSmallBalancesCheck = computed({
   get: (): boolean => props.isHideSmallBalances,
   set: (type: boolean) => {
-    emit('update:hide-small-balances', type)
+    emit('update:is-hide-small-balances', type)
   }
 })
 
