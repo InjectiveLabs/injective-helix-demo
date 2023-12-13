@@ -208,7 +208,10 @@ const buysWithDepth = computed(() => {
 const buyOrdersSummary = computed<
   { quantity: string; total: string } | undefined
 >(() => {
-  if (buysWithDepth.value.length === 0 || !buyHoverPosition.value) {
+  if (
+    buysWithDepth.value.length === 0 ||
+    buyHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -255,7 +258,10 @@ const sellsWithDepth = computed(() => {
 const sellOrdersSummary = computed<
   { quantity: string; total: string } | undefined
 >(() => {
-  if (sellsWithDepth.value.length === 0 || !sellHoverPosition.value) {
+  if (
+    sellsWithDepth.value.length === 0 ||
+    sellHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -284,11 +290,11 @@ const sellOrdersSummary = computed<
 })
 
 const orderBookSummary = computed(() => {
-  if (buyHoverPosition.value) {
+  if (buyHoverPosition.value !== undefined) {
     return buyOrdersSummary.value
   }
 
-  if (sellHoverPosition.value) {
+  if (sellHoverPosition.value !== undefined) {
     return sellOrdersSummary.value
   }
 
@@ -408,10 +414,13 @@ function onBuyOrderHover(position?: number) {
 }
 
 function hidePopperOnScroll(state: UseScrollReturn) {
+  if (!orderbookSummaryRef.value) {
+    return
+  }
+
   if (
-    !buyHoverPosition.value ||
-    !sellHoverPosition.value ||
-    !orderbookSummaryRef.value
+    buyHoverPosition.value === undefined &&
+    sellHoverPosition.value === undefined
   ) {
     return
   }
