@@ -54,6 +54,7 @@ const aggregatedBuys = computed(() => {
             props.market.baseToken.decimals
           )
         : new BigNumberInBase(record.quantity)
+      const total = quantity.times(price)
 
       if (
         Object.keys(aggregatedRecords).length > UI_DEFAULT_MAX_NUMBER_OF_ORDERS
@@ -62,20 +63,30 @@ const aggregatedBuys = computed(() => {
 
         return {
           ...aggregatedRecords,
-          [lowestBuyAggregation]: new BigNumberInBase(quantity)
-            .plus(aggregatedRecords[lowestBuyAggregation] || 0)
-            .toFixed()
+          [lowestBuyAggregation]: {
+            quantity: new BigNumberInBase(quantity)
+              .plus(aggregatedRecords[lowestBuyAggregation]?.quantity || 0)
+              .toFixed(),
+            total: new BigNumberInBase(total)
+              .plus(aggregatedRecords[lowestBuyAggregation]?.total || 0)
+              .toFixed()
+          }
         }
       }
 
       return {
         ...aggregatedRecords,
-        [aggregatedPriceKey]: new BigNumberInBase(quantity)
-          .plus(aggregatedRecords[aggregatedPriceKey] || 0)
-          .toFixed()
+        [aggregatedPriceKey]: {
+          quantity: new BigNumberInBase(quantity)
+            .plus(aggregatedRecords[aggregatedPriceKey]?.quantity || 0)
+            .toFixed(),
+          total: new BigNumberInBase(total)
+            .plus(aggregatedRecords[aggregatedPriceKey]?.total || 0)
+            .toFixed()
+        }
       }
     },
-    {} as Record<string, string>
+    {} as Record<string, { quantity: string; total: string }>
   )
 })
 
@@ -115,20 +126,30 @@ const aggregatedSells = computed(() => {
 
         return {
           ...aggregatedRecords,
-          [highestSellAggregation]: new BigNumberInBase(quantity)
-            .plus(aggregatedRecords[highestSellAggregation] || 0)
-            .toFixed()
+          [highestSellAggregation]: {
+            quantity: new BigNumberInBase(quantity)
+              .plus(aggregatedRecords[highestSellAggregation]?.quantity || 0)
+              .toFixed(),
+            total: new BigNumberInBase(quantity.times(highestSellAggregation))
+              .plus(aggregatedRecords[highestSellAggregation]?.total || 0)
+              .toFixed()
+          }
         }
       }
 
       return {
         ...aggregatedRecords,
-        [aggregatedPriceKey]: new BigNumberInBase(quantity)
-          .plus(aggregatedRecords[aggregatedPriceKey] || 0)
-          .toFixed()
+        [aggregatedPriceKey]: {
+          quantity: new BigNumberInBase(quantity)
+            .plus(aggregatedRecords[aggregatedPriceKey]?.quantity || 0)
+            .toFixed(),
+          total: new BigNumberInBase(quantity.times(price))
+            .plus(aggregatedRecords[aggregatedPriceKey]?.total || 0)
+            .toFixed()
+        }
       }
     },
-    {} as Record<string, string>
+    {} as Record<string, { quantity: string; total: string }>
   )
 })
 
