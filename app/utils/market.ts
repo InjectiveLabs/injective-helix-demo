@@ -33,6 +33,10 @@ import {
   TradingBotsSubPage
 } from '@/types'
 
+interface PriceLevelMap {
+  [price: string]: PriceLevel
+}
+
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
 ): MarketRoute => {
@@ -296,26 +300,20 @@ export const updateOrderbookRecord = (
   currentRecords: PriceLevel[] = [],
   updatedRecords: PriceLevel[] = []
 ) => {
-  const newRecords = [...updatedRecords].reduce((records, record) => {
-    const existingRecord = currentRecords.find((r) => r.price === record.price)
+  const currentRecordsMap: PriceLevelMap = currentRecords.reduce(
+    (currentRecordsMap, record) => {
+      currentRecordsMap[record.price] = record
 
-    return existingRecord ? records : [...records, record]
-  }, [] as PriceLevel[])
+      return currentRecordsMap
+    },
+    {} as PriceLevelMap
+  )
 
-  const affectedRecords = [...currentRecords].map((record) => {
-    const updatedRecord = updatedRecords.find((r) => r.price === record.price)
-
-    if (!updatedRecord) {
-      return record
-    }
-
-    return {
-      ...record,
-      quantity: updatedRecord.quantity
-    }
+  updatedRecords.forEach((record) => {
+    currentRecordsMap[record.price] = record
   })
 
-  return [...newRecords, ...affectedRecords].filter((record) =>
+  return Object.values(currentRecordsMap).filter((record) =>
     new BigNumber(record.quantity).gt(0)
   )
 }
