@@ -5,7 +5,7 @@ import {
   GST_KAVA_SINGLE_SIDED_THRESHOLD,
   GST_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
-import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '~/app/data/token'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const props = defineProps({
   isRebalanceBeforeCreationChecked: Boolean,
@@ -46,7 +46,7 @@ const {
     const greaterThanValue =
       !props.isRebalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
-        InvestmentTypeGst.Quote
+        InvestmentTypeGst.Base
         ? lastTradedPrice.value.toNumber()
         : 0
 
@@ -93,7 +93,7 @@ const {
     if (
       !props.isRebalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
-        InvestmentTypeGst.Base
+        InvestmentTypeGst.Quote
     ) {
       rules.push(lessThanRule)
     }
