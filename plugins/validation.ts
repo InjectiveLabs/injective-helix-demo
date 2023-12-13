@@ -327,7 +327,10 @@ export const defineGlobalRules = () => {
 
   defineRule(
     'singleSided',
-    (_: string, [lower, upper, currentPrice, field, threshold]: string[]) => {
+    (
+      _: string,
+      [lower, upper, currentPrice, field, threshold]: string[]
+    ): boolean | string => {
       const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
 
       const lowerThreshold = currentPriceInBigNumber.plus(

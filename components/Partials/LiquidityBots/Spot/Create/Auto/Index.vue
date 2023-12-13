@@ -3,8 +3,6 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
-  GST_STABLE_LOWER_PRICE,
-  GST_STABLE_UPPER_PRICE,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   GST_AUTO_PRICE_THRESHOLD
@@ -96,7 +94,7 @@ const lowerEma = computed(() => {
 
 const upperPrice = computed(() => {
   if (marketUsesStableCoins.value) {
-    return GST_STABLE_UPPER_PRICE
+    return lastTradedPrice.value.times(1.01).toFixed(decimalPlaces.value)
   }
 
   const isSingleSided =
@@ -128,7 +126,7 @@ const upperPrice = computed(() => {
 
 const lowerPrice = computed(() => {
   if (marketUsesStableCoins.value) {
-    return GST_STABLE_LOWER_PRICE
+    return lastTradedPrice.value.times(0.99).toFixed(decimalPlaces.value)
   }
 
   const isSingleSided =
