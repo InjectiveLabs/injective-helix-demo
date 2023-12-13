@@ -163,16 +163,6 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
             campaignId: campaignWithSc.campaignId
           }"
         />
-
-        <div class="flex">
-          <p class="text-xs">
-            The claiming feature is currently unavailable due to technical
-            maintenance.
-          </p>
-          <AppTooltip
-            :content="'We will re-enable the feature as soon as possible.'"
-          />
-        </div>
       </div>
     </td>
   </tr>

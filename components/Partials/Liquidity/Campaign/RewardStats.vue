@@ -239,16 +239,6 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                   {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
                 </div>
               </AppButton>
-
-              <div class="flex mt-2">
-                <p class="text-xs w-32 pr-2">
-                  The claiming feature is currently unavailable due to technical
-                  maintenance.
-                </p>
-                <AppTooltip
-                  :content="'We will re-enable the feature as soon as possible.'"
-                />
-              </div>
             </div>
           </div>
         </div>
