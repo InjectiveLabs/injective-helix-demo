@@ -11,7 +11,7 @@ const props = defineProps({
 
 const MINIMUM_MARKETS = 3
 
-const animationClass = ref('slide-fade-left')
+const animationClass = ref('slide-fade-right')
 
 const currentMarketsBatch = ref(0)
 
