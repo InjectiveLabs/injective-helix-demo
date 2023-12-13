@@ -13,7 +13,7 @@ jobs:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
       VITE_BASE_URL: https://helixapp.com
-      VITE_NETWORK: mainnetSentry
+      VITE_NETWORK: internal
       VITE_ENV: mainnet
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
