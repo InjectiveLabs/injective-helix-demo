@@ -43,8 +43,8 @@ const campaignWithSc = computed(() =>
     ({ campaignId }) => props.campaign.campaignId === campaignId
   )
 )
-
-const isClaimable = computed(() => Date.now() > props.campaign.endDate)
+// remove false && when claiming is fixed
+const isClaimable = computed(() => false && Date.now() > props.campaign.endDate)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -223,7 +223,7 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
               </div>
             </div>
 
-            <div class="whitespace-nowrap">
+            <div>
               <AppButton
                 class="border border-blue-500 mb-1"
                 v-bind="{
@@ -240,6 +240,16 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                   {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
                 </div>
               </AppButton>
+
+              <div class="flex mt-2">
+                <p class="text-xs w-32 pr-2">
+                  The claiming feature is currently unavailable due to technical
+                  maintenance.
+                </p>
+                <AppTooltip
+                  :content="'We will re-enable the feature as soon as possible.'"
+                />
+              </div>
             </div>
           </div>
         </div>
