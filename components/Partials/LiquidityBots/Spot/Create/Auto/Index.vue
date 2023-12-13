@@ -5,7 +5,9 @@ import {
   GST_STABLE_GRIDS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_AUTO_PRICE_THRESHOLD
+  GST_AUTO_PRICE_THRESHOLD,
+  GST_STABLE_LOWER_PERCENTAGE,
+  GST_STABLE_UPPER_PERCENTAGE
 } from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
@@ -94,7 +96,9 @@ const lowerEma = computed(() => {
 
 const upperPrice = computed(() => {
   if (marketUsesStableCoins.value) {
-    return lastTradedPrice.value.times(1.01).toFixed(decimalPlaces.value)
+    return lastTradedPrice.value
+      .times(GST_STABLE_UPPER_PERCENTAGE)
+      .toFixed(decimalPlaces.value)
   }
 
   const isSingleSided =
@@ -126,7 +130,9 @@ const upperPrice = computed(() => {
 
 const lowerPrice = computed(() => {
   if (marketUsesStableCoins.value) {
-    return lastTradedPrice.value.times(0.99).toFixed(decimalPlaces.value)
+    return lastTradedPrice.value
+      .times(GST_STABLE_LOWER_PERCENTAGE)
+      .toFixed(decimalPlaces.value)
   }
 
   const isSingleSided =
