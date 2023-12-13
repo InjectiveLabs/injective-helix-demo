@@ -76,7 +76,9 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
 
-export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)
+export const indexerExplorerApi = new IndexerGrpcExplorerApi(
+  ENDPOINTS.explorer || ENDPOINTS.indexer
+)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(
   `${ENDPOINTS.explorer}/api/explorer/v1`
 )
