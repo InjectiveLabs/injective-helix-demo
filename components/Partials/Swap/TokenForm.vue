@@ -180,7 +180,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: false,
-            isUsdVisible: true,
+            isUsdVisible: !!inputToken?.token.coinGeckoId,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
@@ -218,7 +218,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
-            isUsdVisible: true,
+            isUsdVisible: !!outputToken?.token.coinGeckoId,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
