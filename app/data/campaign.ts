@@ -232,6 +232,12 @@ const mainnetCampaignRounds: CampaignRound[] = [
         scAddress: '',
         marketSlug: 'kuji-usdt',
         rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-3',
+        scAddress: '',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '50000' }]
       }
     ]
   }
