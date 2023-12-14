@@ -10,7 +10,7 @@ import {
 } from '@/app/utils/helpers'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy-subaccount']
+  middleware: ['grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()

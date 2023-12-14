@@ -6,7 +6,7 @@ import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy-subaccount']
+  middleware: ['grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()

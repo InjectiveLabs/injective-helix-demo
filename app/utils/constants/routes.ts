@@ -15,8 +15,6 @@ export const getRoutes = (network: Network, env: string) => {
     'wmatic-usdt',
     'sol-usdcet',
     'canto-usdt',
-    'usdt-usdcet',
-    'usdc-usdcet',
     'ape-usdt',
     'cre-usdt',
     'link-usdt',
@@ -105,9 +103,6 @@ export const getRoutes = (network: Network, env: string) => {
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
-  // Redirection pairs
-  const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
-
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
     MainPage.Bridge,
@@ -139,9 +134,6 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
-    (s) => `/spot/${s}`
-  )
   const futures = [...perpetuals, ...expiryFutures]
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
   const binaryOptionsRoutes =
@@ -158,11 +150,10 @@ export const getRoutes = (network: Network, env: string) => {
       futures,
       binaryOptions,
       expiryFutures,
-      gridTradingSpot,
-      spotMarketRedirectsSlugsPairs
+      gridTradingSpot
     },
     ROUTES: {
-      spotRoutes: [...spotRoutes, ...spotRedirectRoutes],
+      spotRoutes: [...spotRoutes],
       futuresRoutes,
       customStaticRoutes,
       binaryOptionsRoutes,
