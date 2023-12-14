@@ -175,7 +175,7 @@ const options = computed<ApexOptions>(() => ({
     yaxis: { lines: { show: false } }
   },
 
-  stroke: { width: 1 },
+  stroke: { width: 1, curve: 'straight' },
 
   tooltip: {
     followCursor: true
