@@ -90,6 +90,7 @@ function onCloseModal() {
         </div>
 
         <div
+          v-if="slots.countdown"
           class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
         >
           <BaseIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
@@ -99,7 +100,7 @@ function onCloseModal() {
 
         <NuxtLink
           v-if="slots.cta1"
-          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
+          class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route1"
           @click="onCloseModal"
         >
@@ -108,7 +109,7 @@ function onCloseModal() {
 
         <NuxtLink
           v-if="slots.cta2"
-          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
+          class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route2"
           @click="onCloseModal"
         >
@@ -116,6 +117,7 @@ function onCloseModal() {
         </NuxtLink>
 
         <AppButton
+          v-if="!(slots.cta1 || slots.cta2)"
           class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >
