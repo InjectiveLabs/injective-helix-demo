@@ -11,7 +11,7 @@ import {
 } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy-subaccount']
+  middleware: ['grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()

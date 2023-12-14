@@ -19,6 +19,7 @@ export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
   -UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 export const MAX_QUOTE_DECIMALS = 3
+export const MAX_QUOTE_TENS_MULTIPLIER = 3
 export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP

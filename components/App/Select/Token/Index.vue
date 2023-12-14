@@ -4,6 +4,7 @@ import {
   BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   Modal,
   TradeField,
@@ -46,6 +47,12 @@ const props = defineProps({
     default: 6
   },
 
+  tensMultiplier: {
+    type: Number,
+    required: false,
+    default: 6
+  },
+
   additionalRules: {
     type: Object,
     default: undefined
@@ -85,9 +92,13 @@ const selectedTokenBalance = computed(() =>
     : '0'
 )
 
-const inputPlaceholder = computed(() =>
-  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
-)
+const inputPlaceholder = computed(() => {
+  if (!props.tensMultiplier) {
+    return ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
+  }
+
+  return ONE_IN_BASE.shiftedBy(props.tensMultiplier).toFixed()
+})
 
 const {
   valueToBigNumber,
@@ -184,10 +195,19 @@ function changeMax() {
 
 const onAmountChangeDebounced = useDebounceFn((value) => {
   /**
-   *Use debounce since AppNumericInput emits two update events
-   *And we only need the last one
+   * Use debounce since AppNumericInput emits two update events
+   * And we only need the last one
    **/
-  changeAmount(value)
+  if (!props.tensMultiplier) {
+    return changeAmount(value)
+  }
+
+  const allowableValue = formatAmountToAllowableAmount(
+    value,
+    props.tensMultiplier
+  )
+
+  changeAmount(allowableValue)
 }, props.debounce)
 </script>
 
@@ -244,6 +264,7 @@ export default {
           is-transparent-bg
           input-classes="p-0 text-xl font-bold"
           :max-decimals="maxDecimals"
+          :tens-multiplier="tensMultiplier"
           :placeholder="inputPlaceholder"
           :is-disabled="isDisabled || !selectedToken"
           @update:model-value="onAmountChangeDebounced"
