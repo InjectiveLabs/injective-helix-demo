@@ -334,6 +334,22 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    async fetchLastTrade({
+      marketId,
+      executionSide
+    }: {
+      marketId: string
+      executionSide?: TradeExecutionSide
+    }) {
+      const { trades } = await indexerSpotApi.fetchTrades({
+        marketIds: [marketId],
+        executionSide,
+        pagination: { limit: 1 }
+      })
+
+      return trades[0]
+    },
+
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
