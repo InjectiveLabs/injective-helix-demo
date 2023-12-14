@@ -3,6 +3,7 @@ import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { BigNumberInWei, awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
 import { SymbolWithMarketId, TokenUsdPriceMap } from '@/types'
+import { TALIS_METADATA } from '@/app/data/market'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -118,8 +119,8 @@ export const useTokenStore = defineStore('token', {
 
       // REMOVE WHEN COINGECKO ADDS TALIS
       const supplyWithTokenWithTalis = supplyWithToken.map((token) => {
-        if (token.symbol === 'TALIS') {
-          return { ...token, coinGeckoId: 'talis' } as Token
+        if (token.symbol === TALIS_METADATA.symbol) {
+          return { ...token, coinGeckoId: TALIS_METADATA.coingeckoId } as Token
         } else {
           return token
         }
