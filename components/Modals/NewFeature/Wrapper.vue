@@ -69,17 +69,32 @@ function onCloseModal() {
     @modal:closed="onCloseModal"
   >
     <div class="flex flex-col justify-center items-center max-h-modal">
-      <div w-full h-auto>
+      <div class="w-full h-auto">
         <slot name="image" />
+        <div class="absolute right-0 top-0 mt-2 mr-2">
+          <BaseIcon
+            name="close"
+            class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+            @click="onCloseModal"
+          />
+        </div>
       </div>
 
-      <div class="p-6 w-full text-center overflow-y-auto pb-10">
-        <div class="mb-4 font-bold leading-5">
+      <div class="p-6 w-full text-center overflow-y-auto">
+        <div class="mb-4 text-xl font-semibold leading-5">
           <slot name="title" />
         </div>
 
         <div class="text-sm flex flex-col gap-4 leading-5">
           <slot name="description" />
+        </div>
+
+        <div
+          class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
+        >
+          <BaseIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
+          <slot name="countdown" />
+          <BaseIcon name="arrow" class="h-4 w-4 text-blue-500" />
         </div>
 
         <NuxtLink
@@ -101,7 +116,7 @@ function onCloseModal() {
         </NuxtLink>
 
         <AppButton
-          class="flex items-center justify-center md:hidden font-semibold whitespace-nowrap w-full text-sm text-white bg-gray-700 rounded p-3 mt-4"
+          class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >
           {{ $t('banners.newFeature.close') }}
