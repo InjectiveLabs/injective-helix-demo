@@ -35,8 +35,10 @@ const hasOutputAmount = computed(() =>
 )
 
 onMounted(async () => {
-  /** W
-   * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
+  /**
+   * We hardcode only the denoms we need on page load for t
+   * he token selector animation as to not
+   * load the component faster as to improve UX
    **/
   const symbolsTokensToPreload = [
     'INJ',
@@ -56,11 +58,7 @@ onMounted(async () => {
       ...QUOTE_DENOMS_GECKO_IDS,
       ...tokens.map((token) => token?.coinGeckoId || '')
     ])
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+  ]).catch($onError)
 
   Promise.all([spotStore.init(), swapStore.fetchRoutes()])
     .then(async () => {
@@ -74,6 +72,9 @@ onMounted(async () => {
       ])
     })
     .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 function resetFormValues() {
