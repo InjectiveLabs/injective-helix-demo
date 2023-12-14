@@ -17,6 +17,11 @@ export const injToken = {
   usdPrice: 0
 } as TokenWithPrice
 
+export const usdtToken = {
+  ...(tokenMetaUtils.getMetaBySymbol('USDT') || {}),
+  denom: `peggy${tokenMetaUtils.getMetaBySymbol('USDT')?.erc20?.address}` || ''
+} as Token
+
 interface NetworkToSymbolMap {
   [key: string]: string
 }
