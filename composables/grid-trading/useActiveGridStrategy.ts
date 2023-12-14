@@ -8,16 +8,11 @@ export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarketWithToken>,
   strategy: ComputedRef<TradingStrategy>
 ) {
-  const tokenStore = useTokenStore()
+  const spotStore = useSpotStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
 
-  const lastTradedPrice = computed(
-    () =>
-      new BigNumberInBase(
-        tokenStore.tokenUsdPriceMap[market.value.baseToken.coinGeckoId]
-      )
-  )
+  const lastTradedPrice = ref(ZERO_IN_BASE)
 
   const investment = computed(() => {
     if (!market.value) {
@@ -103,6 +98,13 @@ export default function useActiveGridStrategy(
             market.value.quoteToken.decimals - market.value.baseToken.decimals
           )
 
+    if (
+      lastTradedPrice.value.isEqualTo(ZERO_IN_BASE) &&
+      strategy.value.state === StrategyStatus.Active
+    ) {
+      return ZERO_IN_BASE
+    }
+
     return currentQuoteQuantity
       .plus(currentBaseQuantity.times(currentMidPrice))
       .minus(
@@ -112,6 +114,24 @@ export default function useActiveGridStrategy(
 
   const percentagePnl = computed(() =>
     pnl.value.dividedBy(investment.value).times(100).toFixed(2)
+  )
+
+  useIntervalFn(
+    async () => {
+      if (strategy.value.state !== StrategyStatus.Active) {
+        return
+      }
+
+      const lastTrade = await spotStore.fetchLastTrade({
+        marketId: market.value.marketId
+      })
+
+      lastTradedPrice.value = new BigNumberInWei(lastTrade.price).toBase(
+        market.value.quoteToken.decimals - market.value.baseToken.decimals
+      )
+    },
+    10000,
+    { immediateCallback: true }
   )
 
   return {
