@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
-import { awaitForAll } from '@injectivelabs/utils'
+import { BigNumberInWei, awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { TokenUsdPriceMap } from '@/types'
+import { SymbolWithMarketId, TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -41,7 +41,6 @@ export const useTokenStore = defineStore('token', {
   },
   actions: {
     async fetchTokensUsdPriceMap(coinGeckoIdList: string[]) {
-      const spotStore = useSpotStore()
       const tokenStore = useTokenStore()
 
       if (coinGeckoIdList.length === 0) {
@@ -59,19 +58,44 @@ export const useTokenStore = defineStore('token', {
         coinGeckoIdsNotInStore
       )
 
-      // REMOVE WHEN COINGECKO ADDS TALIS
-      const talisLastTradedPrice = await spotStore.fetchLastTrade({
-        marketId:
-          '0x21f3eed62ddc64458129c0dcbff32b3f54c92084db787eb5cf7c20e69a1de033'
-      })
-
-      tokenUsdPriceMap.talis = Number(talisLastTradedPrice.price)
-
       tokenStore.$patch({
         tokenUsdPriceMap: {
           ...tokenUsdPriceMap,
           ...tokenStore.tokenUsdPriceMap
         }
+      })
+    },
+
+    async fetchLastTradedPrice(symbolWithMarketId: SymbolWithMarketId[]) {
+      const spotStore = useSpotStore()
+      const tokenStore = useTokenStore()
+
+      const priceMapsArray = await awaitForAll(
+        symbolWithMarketId,
+        async ({
+          marketId,
+          baseDecimals,
+          quoteDecimals,
+          coingeckoId
+        }: SymbolWithMarketId) => {
+          const lastTradedPrice = await spotStore.fetchLastTrade({
+            marketId
+          })
+
+          return {
+            [coingeckoId]: new BigNumberInWei(lastTradedPrice.price)
+              .toBase(quoteDecimals - baseDecimals)
+              .toNumber()
+          }
+        }
+      )
+
+      const priceMap = priceMapsArray.reduce((acc, priceMap) => {
+        return { ...acc, ...priceMap }
+      }, {} as TokenUsdPriceMap)
+
+      tokenStore.$patch({
+        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
       })
     },
 
@@ -91,9 +115,6 @@ export const useTokenStore = defineStore('token', {
       const supplyWithToken = supplyWithTokensOrUnknown.filter(
         (token) => token.tokenType !== TokenType.Unknown
       )
-      const supplyWithUnknownTokens = supplyWithTokensOrUnknown.filter(
-        (token) => token.tokenType === TokenType.Unknown
-      )
 
       // REMOVE WHEN COINGECKO ADDS TALIS
       const supplyWithTokenWithTalis = supplyWithToken.map((token) => {
@@ -103,6 +124,10 @@ export const useTokenStore = defineStore('token', {
           return token
         }
       })
+
+      const supplyWithUnknownTokens = supplyWithTokensOrUnknown.filter(
+        (token) => token.tokenType === TokenType.Unknown
+      )
 
       tokenStore.$patch({
         tokens: supplyWithTokenWithTalis,

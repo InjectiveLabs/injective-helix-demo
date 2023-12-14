@@ -1,5 +1,10 @@
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
+import {
+  NotLiquidMarket,
+  MarketPromotion,
+  UiMarketWithToken,
+  SymbolWithMarketId
+} from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -151,4 +156,20 @@ export const marketPromotions = [
 
 export const AUCTION_MARKET_IDS = [
   '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
+]
+
+const TALIS_METADATA = {
+  symbol: 'TALIS',
+  coingeckoId: 'talis'
+}
+
+export const MARKET_ID_WITHOUT_COINGECKO_ID: SymbolWithMarketId[] = [
+  {
+    symbol: TALIS_METADATA.symbol,
+    marketId:
+      '0x21f3eed62ddc64458129c0dcbff32b3f54c92084db787eb5cf7c20e69a1de033',
+    quoteDecimals: 6,
+    baseDecimals: 6,
+    coingeckoId: TALIS_METADATA.coingeckoId
+  }
 ]

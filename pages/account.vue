@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MARKET_ID_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 definePageMeta({
   middleware: ['connected']
 })
 
 const appStore = useAppStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
@@ -16,7 +18,8 @@ onMounted(() => {
   Promise.all([
     accountStore.fetchAccountPortfolio(),
     accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance()
+    accountStore.streamSubaccountBalance(),
+    tokenStore.fetchLastTradedPrice(MARKET_ID_WITHOUT_COINGECKO_ID)
   ])
     .then(() => {
       //
