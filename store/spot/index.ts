@@ -380,24 +380,28 @@ export const useSpotStore = defineStore('spot', {
 
       const { markets } = spotStore
 
-      const marketSummaries =
-        await indexerRestSpotChronosApi.fetchMarketsSummary()
+      try {
+        const marketSummaries =
+          await indexerRestSpotChronosApi.fetchMarketsSummary()
 
-      const marketsWithoutMarketSummaries = marketSummaries.filter(
-        ({ marketId }) =>
-          !markets.some((market) => market.marketId === marketId)
-      )
+        const marketsWithoutMarketSummaries = marketSummaries.filter(
+          ({ marketId }) =>
+            !markets.some((market) => market.marketId === marketId)
+        )
 
-      spotStore.$patch({
-        marketsSummary: [
-          ...marketSummaries.map(
-            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
-          ),
-          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-            zeroSpotMarketSummary(marketId)
-          )
-        ]
-      })
+        spotStore.$patch({
+          marketsSummary: [
+            ...marketSummaries.map(
+              UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+            ),
+            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+              zeroSpotMarketSummary(marketId)
+            )
+          ]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
     },
 
     cancelSubaccountStream() {

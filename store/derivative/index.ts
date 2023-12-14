@@ -468,27 +468,31 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { markets } = derivativeStore
 
-      const marketSummaries =
-        await indexerRestDerivativesChronosApi.fetchMarketsSummary()
+      try {
+        const marketSummaries =
+          await indexerRestDerivativesChronosApi.fetchMarketsSummary()
 
-      const marketsWithoutMarketSummaries = marketSummaries.filter(
-        ({ marketId }) =>
-          !markets.some((market) => market.marketId === marketId)
-      )
+        const marketsWithoutMarketSummaries = marketSummaries.filter(
+          ({ marketId }) =>
+            !markets.some((market) => market.marketId === marketId)
+        )
 
-      derivativeStore.$patch({
-        marketsSummary: [
-          ...marketSummaries.map(
-            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
-          ),
-          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-            zeroDerivativeMarketSummary(marketId)
-          ),
-          ...markets
-            .filter(marketIsInactive)
-            .map(({ marketId }) => zeroDerivativeMarketSummary(marketId))
-        ]
-      })
+        derivativeStore.$patch({
+          marketsSummary: [
+            ...marketSummaries.map(
+              UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+            ),
+            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+              zeroDerivativeMarketSummary(marketId)
+            ),
+            ...markets
+              .filter(marketIsInactive)
+              .map(({ marketId }) => zeroDerivativeMarketSummary(marketId))
+          ]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
     },
 
     async fetchMarket(marketId: string) {
