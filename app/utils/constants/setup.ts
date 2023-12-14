@@ -148,8 +148,8 @@ export const ENDPOINTS = {
     env.VITE_SENTRY_HTTP_ENDPOINT ||
     endpoints.rest,
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
-  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
-  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
+  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
+  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer,
   campaign: CAMPAIGN_ENDPOINT
 }
 
