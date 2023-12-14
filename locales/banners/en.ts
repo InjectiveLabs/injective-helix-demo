@@ -36,7 +36,7 @@ export default {
       tia: '$TIA',
       talis: '$TALIS',
       here: 'here',
-      title: 'TALIS coming soon, join the countdown!',
+      title: 'TALIS is now live on Helix!',
       description:
         'Helix is the first venue available to trade TALIS, the native token of Talis - the leading NFT marketplace in Cosmos. Explore ways to trade TALIS!',
       cta1: 'Go to TALIS/USDT',
