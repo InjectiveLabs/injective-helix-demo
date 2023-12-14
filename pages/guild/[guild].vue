@@ -10,9 +10,9 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { guildDescriptionMap } from '@/app/data/guild'
+import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
@@ -28,8 +28,9 @@ const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
 const page = ref(1)
 const limit = ref(10)
-const date = ref(Date.now())
+const now = ref(Date.now())
 const hasNewData = ref(false)
+const sortBy = ref(GuildSortBy.Volume)
 
 const status = reactive(new Status(StatusType.Loading))
 const tableStatus = reactive(new Status(StatusType.Idle))
@@ -49,7 +50,15 @@ const isCampaignStarted = computed(() => {
     return false
   }
 
-  return campaignStore.guildCampaignSummary.startTime < date.value
+  return campaignStore.guildCampaignSummary.startTime < now.value
+})
+
+const isCampaignOver = computed(() => {
+  if (!campaignStore.guildCampaignSummary) {
+    return false
+  }
+
+  return campaignStore.guildCampaignSummary.endTime < now.value
 })
 
 const guildDescription = computed(() => {
@@ -58,7 +67,7 @@ const guildDescription = computed(() => {
   }
 
   return (
-    campaignStore.guild.description ||
+    campaignStore.guild.description.replace('No description', '') ||
     guildDescriptionMap[campaignStore.guild.guildId]
   )
 })
@@ -105,34 +114,35 @@ const { valueToString: guildMasterBalance } = useBigNumberFormatter(
   )
 )
 
-// const invitationLink = computed(
-//   () => `${document.URL}?invite=${guildInvitationHash.value}`
-// )
-
 onWalletConnected(() => {
   Promise.all([
     campaignStore.fetchGuildDetails({
       skip: 0,
+      sortBy: sortBy.value,
       limit: limit.value,
       guildId: route.params.guild as string
     }),
     campaignStore.fetchGuildsByTVL(),
-    campaignStore.fetchUserGuildInfo()
+    campaignStore.fetchUserGuildInfo(),
+    campaignStore.fetchUserIsOptedOutOfRewards()
   ])
     .catch((error) => {
       $onError(error)
       navigateTo({ name: MainPage.Guilds })
     })
-    .finally(() => status.setIdle())
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
-function fetchGuildDetails({ skip }: { skip: number }) {
+function fetchGuildDetails({ skip = 0 }: { skip: number }) {
   tableStatus.setLoading()
 
   campaignStore
     .fetchGuildDetails({
       skip,
       limit: limit.value,
+      sortBy: sortBy.value,
       guildId: route.params.guild as string
     })
     .catch($onError)
@@ -175,6 +185,7 @@ useIntervalFn(
       campaignStore.pollGuildDetails({
         page: page.value,
         limit: limit.value,
+        sortBy: sortBy.value,
         guildId: route.params.guild as string
       })
     ]),
@@ -189,7 +200,7 @@ watch(lastUpdated, () => {
   hasNewData.value = true
 })
 
-useIntervalFn(() => (date.value = Date.now()), 1000)
+useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
@@ -293,7 +304,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
               <AppButton
                 v-else
                 class="bg-blue-500 text-white"
-                :is-disabled="isMaxCap"
+                :is-disabled="isMaxCap || campaignStore.userIsOptedOutOfReward"
                 @click="onJoinGuild"
               >
                 <div class="flex items-center gap-1">
@@ -308,6 +319,7 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
           </p>
 
           <PartialsGuildStats v-bind="{ isCampaignStarted }" />
+          <PartialsGuildReward v-bind="{ isCampaignOver, now }" />
 
           <section class="pt-8 pb-4 px-6">
             <div class="flex items-center justify-between flex-wrap">
@@ -358,9 +370,19 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                   <thead>
                     <tr class="border-b uppercase text-xs text-gray-500">
                       <th class="p-4 text-left">
+                        {{ $t('guild.leaderboard.table.rank') }}
+                      </th>
+                      <th class="p-4 text-left">
                         {{ $t('guild.leaderboard.table.address') }}
                       </th>
-                      <th class="p-4 text-right">
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.TVL"
+                        :value="GuildSortBy.TVL"
+                        @sortBy:changed="onRefresh"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t(
@@ -376,8 +398,15 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                             }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
-                      <th class="p-4 text-right">
+                      </AppSortableHeaderItem>
+
+                      <AppSortableHeaderItem
+                        v-model:sort-by="sortBy"
+                        class="justify-end px-1.5"
+                        :is-ascending="sortBy !== GuildSortBy.Volume"
+                        :value="GuildSortBy.Volume"
+                        @sortBy:changed="onRefresh"
+                      >
                         <CommonHeaderTooltip
                           v-bind="{
                             tooltip: $t('guild.leaderboard.table.volumeTooltip')
@@ -387,14 +416,18 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
                             {{ $t('guild.leaderboard.table.tradingVolume') }}
                           </span>
                         </CommonHeaderTooltip>
-                      </th>
+                      </AppSortableHeaderItem>
                     </tr>
                   </thead>
                   <tbody>
                     <PartialsGuildMemberRow
-                      v-for="member in campaignStore.guildMembers"
+                      v-for="(member, index) in campaignStore.guildMembers"
                       :key="member.address"
-                      v-bind="{ member, isCampaignStarted }"
+                      v-bind="{
+                        member,
+                        isCampaignStarted,
+                        rank: (page - 1) * limit + index + 1
+                      }"
                     />
                   </tbody>
                 </table>
@@ -418,9 +451,9 @@ useIntervalFn(() => (date.value = Date.now()), 1000)
             v-if="campaignStore.guild"
             v-bind="{
               limit,
-              isMaxCap,
               guildInvitationHash,
-              guild: campaignStore.guild
+              guild: campaignStore.guild,
+              isDisabled: isMaxCap || campaignStore.userIsOptedOutOfReward
             }"
           />
         </div>

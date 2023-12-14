@@ -60,12 +60,17 @@ const alternatingDenoms = computed(() => {
   const injDenom = spotStore.markets.find(
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'inj'
   )?.baseToken.denom
+
   const atomDenom = spotStore.markets.find(
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'atom'
   )?.baseToken.denom
 
   const wethDenom = spotStore.markets.find(
     ({ baseToken }) => baseToken.symbol.toLowerCase() === 'weth'
+  )?.baseToken.denom
+
+  const solDenom = spotStore.markets.find(
+    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'sol'
   )?.baseToken.denom
 
   const wmaticDenom = spotStore.markets.find(
@@ -92,6 +97,7 @@ const alternatingDenoms = computed(() => {
     injDenom,
     atomDenom,
     wethDenom,
+    solDenom,
     wmaticDenom,
     sommDenom,
     oraiDenom,

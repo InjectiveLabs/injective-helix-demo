@@ -1,27 +1,25 @@
 <script lang="ts" setup>
-import { LP_EPOCHS } from '@/app/data/guild'
+import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
+import { DEFAULT_LP_ROUND } from '@/app/utils/constants'
 
 const { t } = useLang()
 
-// WE WILL USE THIS LATER - WE HAVE TO HARDCODE 1 FOR NOW BELOW
-// const latestEpoch = Math.max(...LP_EPOCHS.map(({ epoch }) => epoch))
+const round = useQueryRef('round', DEFAULT_LP_ROUND)
 
-const epoch = useQueryRef('epoch', '1')
-
-const epochOptions = computed(() =>
-  LP_EPOCHS.filter(({ startDate }) => startDate < Date.now()).map((ep) => ({
-    display: t('campaign.round', { round: ep.epoch }),
-    value: ep.epoch.toString()
+const roundOptions = computed(() =>
+  CAMPAIGN_LP_ROUNDS.map(({ round }) => ({
+    display: t('campaign.round', { round }),
+    value: round.toString()
   }))
 )
 </script>
 
 <template>
   <AppSelect
-    v-model="epoch"
+    v-model="round"
     start-placement
     v-bind="{
-      options: epochOptions,
+      options: roundOptions,
       wrapperClass: 'border px-4 py-1 rounded'
     }"
   >

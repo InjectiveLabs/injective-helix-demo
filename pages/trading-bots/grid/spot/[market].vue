@@ -54,7 +54,7 @@ function fetchData({
   Promise.all([
     authZStore.fetchGrants(),
     accountStore.streamBankBalance(),
-    gridStrategyStore.fetchStrategies(),
+    gridStrategyStore.fetchAllStrategies(),
     exchangeStore.getMarketsHistory({
       marketIds: [market.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
@@ -76,6 +76,10 @@ function fetchData({
       }
     })
 }
+
+onUnmounted(() => {
+  spotStore.reset()
+})
 </script>
 
 <template>

@@ -137,7 +137,7 @@ const CAMPAIGN_ENDPOINT =
   IS_MAINNET && !IS_STAGING
     ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
     : IS_TESTNET
-    ? 'https://testnet.exchange.grpc-web.injective.dev'
+    ? 'https://k8s.testnet.campaigns.grpc-web.injective.network'
     : endpoints.indexer
 
 export const ENDPOINTS = {
@@ -148,8 +148,8 @@ export const ENDPOINTS = {
     env.VITE_SENTRY_HTTP_ENDPOINT ||
     endpoints.rest,
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
-  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
-  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer,
+  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
+  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
   campaign: CAMPAIGN_ENDPOINT
 }
 

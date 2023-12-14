@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import {
+  GST_KAVA_SINGLE_SIDED_THRESHOLD,
+  GST_SINGLE_SIDED_THRESHOLD
+} from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const props = defineProps({
   isRebalanceBeforeCreationChecked: Boolean,
@@ -16,6 +21,20 @@ const formValues = useFormValues()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
+)
+
 const {
   value: lowerPriceValue,
   errorMessage: lowerErrorMessage,
@@ -27,14 +46,19 @@ const {
     const greaterThanValue =
       !props.isRebalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
-        InvestmentTypeGst.Quote
+        InvestmentTypeGst.Base
         ? lastTradedPrice.value.toNumber()
         : 0
+
     const greaterThanRule = `greaterThanSgt:${greaterThanValue}`
 
     const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
-    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.LowerPrice}`
+    },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.LowerPrice},${
+      marketUsesStableCoins.value
+        ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+        : GST_SINGLE_SIDED_THRESHOLD
+    }`
 
     const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
@@ -58,14 +82,18 @@ const {
 
     const singleSidedRule = `singleSided:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
-    },${lastTradedPrice.value.toFixed(2)},${SpotGridTradingField.UpperPrice}`
+    },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+      marketUsesStableCoins.value
+        ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+        : GST_SINGLE_SIDED_THRESHOLD
+    }`
 
     const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
     if (
       !props.isRebalanceBeforeCreationChecked &&
       formValues.value[SpotGridTradingField.InvestmentType] ===
-        InvestmentTypeGst.Base
+        InvestmentTypeGst.Quote
     ) {
       rules.push(lessThanRule)
     }

@@ -12,7 +12,7 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const props = defineProps({
-  isMaxCap: Boolean,
+  isDisabled: Boolean,
 
   limit: {
     type: Number,
@@ -37,7 +37,7 @@ onWalletConnected(() => {
     return
   }
 
-  if (props.isMaxCap) {
+  if (props.isDisabled) {
     return
   }
 

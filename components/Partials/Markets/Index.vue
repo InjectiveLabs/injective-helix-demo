@@ -2,16 +2,18 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  MarketCategoryType,
-  MarketQuoteType,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
-import {
-  marketIsPartOfCategory,
+  marketIsActive,
   marketIsQuotePair,
+  marketIsPartOfCategory,
   marketIsPartOfType,
   marketIsPartOfSearch
 } from '@/app/utils/market'
+import {
+  MarketStatus,
+  MarketQuoteType,
+  MarketCategoryType,
+  UiMarketAndSummaryWithVolumeInUsd
+} from '@/types'
 import {
   deprecatedMarkets,
   olpSlugsToIncludeInLowVolume,
@@ -51,32 +53,33 @@ const recentlyExpiredMarkets = computed(
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() =>
-  props.markets.filter(({ market, volumeInUsd }) => {
-    const isPartOfCategory = marketIsPartOfCategory(
-      activeCategory.value,
-      market
-    )
-    const isPartOfSearch = marketIsPartOfSearch(search.value, market)
-    const isPartOfType = marketIsPartOfType({
-      market,
-      favoriteMarkets: favoriteMarkets.value,
-      activeType: activeType.value as MarketType
-    })
-    const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-    const isOlpmarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-    const isLowVolumeMarket = search.value
-      ? true
-      : isLowVolumeMarketsVisible.value ||
+  props.markets
+    .filter(({ market, volumeInUsd }) => {
+      const isPartOfCategory = marketIsPartOfCategory(
+        activeCategory.value,
+        market
+      )
+      const isPartOfSearch = marketIsPartOfSearch(search.value, market)
+      const isPartOfType = marketIsPartOfType({
+        market,
+        favoriteMarkets: favoriteMarkets.value,
+        activeType: activeType.value as MarketType
+      })
+      const isQuotePair = marketIsQuotePair(activeQuote.value, market)
+      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+      const isLowVolumeMarket =
+        isLowVolumeMarketsVisible.value ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-    return (
-      isPartOfCategory &&
-      isPartOfType &&
-      isPartOfSearch &&
-      isQuotePair &&
-      (isLowVolumeMarket || isOlpmarket)
-    )
-  })
+      return (
+        isPartOfCategory &&
+        isPartOfType &&
+        isPartOfSearch &&
+        isQuotePair &&
+        (isLowVolumeMarket || isOLPMarket || search.value)
+      )
+    })
+    .filter((market) => marketIsActive(market.market))
 )
 
 const sortedMarkets = computed(() => {
@@ -124,6 +127,23 @@ const sortedMarkets = computed(() => {
 
   return isAscending.value ? markets.reverse() : markets
 })
+
+const sortedActiveMarkets = computed(() =>
+  sortedMarkets.value.filter((market) =>
+    [MarketStatus.Active, MarketStatus.Expired].includes(
+      market.market.marketStatus as MarketStatus
+    )
+  )
+)
+
+const sortedInActiveMarkets = computed(() =>
+  sortedMarkets.value.filter(
+    (market) =>
+      ![MarketStatus.Active, MarketStatus.Expired].includes(
+        market.market.marketStatus as MarketStatus
+      )
+  )
+)
 
 onMounted(() => {
   prefillFromQueryParams()
@@ -294,7 +314,19 @@ function prefillFromQueryParams() {
         class="bg-transparent"
       >
         <PartialsMarketsRow
-          v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
+          v-for="(
+            { market, summary, volumeInUsd }, index
+          ) in sortedActiveMarkets"
+          :key="`market-row-${market.marketId}-${index}`"
+          :market="market"
+          :summary="summary"
+          :volume-in-usd="volumeInUsd"
+        />
+
+        <PartialsMarketsInactiveRow
+          v-for="(
+            { market, summary, volumeInUsd }, index
+          ) in sortedInActiveMarkets"
           :key="`market-row-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"

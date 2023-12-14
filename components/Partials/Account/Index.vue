@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import {
-  INJ_COIN_GECKO_ID,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
-import { BusEvents, MainPage, Modal, AccountSubpage, USDCSymbol } from '@/types'
+import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
+import { BusEvents, MainPage, Modal, AccountSubpage } from '@/types'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -20,15 +16,12 @@ const isHideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
-const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
-
 const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
 onMounted(() => {
   initBalances()
 
   useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
-  useEventBus<Token>(BusEvents.ConvertUsdc).on(setUsdcConvertMarket)
 })
 
 onBeforeUnmount(() => {
@@ -36,17 +29,8 @@ onBeforeUnmount(() => {
   spotStore.reset()
 })
 
-function setUsdcConvertMarket(token: Token) {
-  usdcConvertMarket.value = spotStore.usdcConversionModalMarkets.find(
-    (market) =>
-      market.baseToken.symbol === token.symbol &&
-      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
-  )
-}
-
 function initBalances() {
   Promise.all([
-    spotStore.fetchUsdcConversionMarkets(),
     derivativeStore.streamSubaccountOrders(),
     positionStore.fetchSubaccountPositions()
   ])
@@ -145,10 +129,5 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     <ModalsAddMargin />
     <ModalsCreateSubaccount />
     <ModalsSubaccountTransfer />
-    <ModalsConvertUsdc
-      v-if="usdcConvertMarket"
-      :balances="currentSubaccountBalances"
-      :market="usdcConvertMarket"
-    />
   </div>
 </template>

@@ -1,5 +1,5 @@
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { MarketPromotion, UiMarketWithToken } from '@/types'
+import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -8,16 +8,17 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
-  'pyth-usdt-perp',
+  'talis-usdt',
   'pyth-usdt',
-  'usdy-usdt',
   'kuji-usdt',
+  'tia-usdt-perp',
+  'sei-usdt-perp',
+  'whale-usdt',
+  'pyth-usdt-perp',
+  'usdy-usdt',
   'tia-usdt',
-  'tia-usdt-30nov2023',
   'btc-usdtkv-perp',
-  'eth-usdtkv-perp',
-  'kava-usdt',
-  'usdtkv-usdt'
+  'eth-usdtkv-perp'
 ]
 
 export const experimentalMarketsSlug = [
@@ -45,7 +46,9 @@ export const slugsToIncludeInCosmosCategory = [
   'atom-usdt-perp',
   'sei-usdt-perp',
   'axl-usdt-perp',
-  'tia-usdt-30nov2023'
+  'tia-usdt-30nov2023',
+  'tia-usdt-perp',
+  'talis-usdt'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
@@ -78,8 +81,6 @@ export const olpSlugsToIncludeInLowVolume = [
   'xrp-usdt-perp',
   'atom-usdt',
   'weth-usdt',
-  'sol-usdc',
-  'sol-usdcet',
   'usdt-usdcet',
   'wmatic-usdt',
   '1000pepe-usdt-perp',
@@ -87,7 +88,14 @@ export const olpSlugsToIncludeInLowVolume = [
   'btc-usdt-perp',
   'eth-usdt-perp',
   'inj-usdt-perp',
-  'bnb-usdt-perp'
+  'bnb-usdt-perp',
+  'pyth-usdt-perp',
+  'sol-usdt',
+  'axl-usdt-perp',
+  'kava-usdt',
+  'sei-usdt-perp',
+  'tia-usdt-30nov2023',
+  'tia-usdt-perp'
 ]
 
 export const excludedPriceDeviationSlugs = [] as string[]
@@ -97,6 +105,13 @@ export const upcomingMarkets = [
 ] as Array<UiMarketWithToken>
 
 export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
+
+export const notLiquidMarkets = [
+  {
+    slug: 'sol-usdcet',
+    redirectionSlug: 'sol-usdt'
+  }
+] as NotLiquidMarket[]
 
 export const deprecatedMarkets =
   IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)

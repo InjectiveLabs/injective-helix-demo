@@ -30,16 +30,16 @@ defineProps({
   isConnecting: Boolean
 })
 
-const shouldConnectMetamask = computed(
-  () =>
-    walletStore.isCosmosWallet &&
-    (isEthereumOrigin.value || isEthereumDestination.value)
-)
-
 const isSelectorDisabled = computed(() =>
   tokenSelectorDisabledNetworks.includes(
     formValues.value[BridgeField.BridgingNetwork]
   )
+)
+
+const shouldConnectMetamask = computed(
+  () =>
+    walletStore.isCosmosWallet &&
+    (isEthereumOrigin.value || isEthereumDestination.value)
 )
 
 const shouldConnectCosmosWallet = computed(
@@ -63,11 +63,6 @@ const maxDecimals = computed(() => {
   return balanceWithToken.value.token.decimals
 })
 
-const { value: denom } = useStringField({
-  name: BridgeField.Denom,
-  initialValue: formValues.value[BridgeField.Denom]
-})
-
 const walletAddress = computed(() => {
   if (isTransfer.value) {
     return ''
@@ -78,6 +73,11 @@ const walletAddress = computed(() => {
   }
 
   return ibcStore.cosmosAddress
+})
+
+const { value: denom } = useStringField({
+  name: BridgeField.Denom,
+  initialValue: formValues.value[BridgeField.Denom]
 })
 
 useStringField({

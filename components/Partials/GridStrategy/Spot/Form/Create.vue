@@ -45,12 +45,12 @@ const formValues = useFormValues<SpotGridTradingForm>()
 const setFormValues = useSetFormValues()
 const validate = useValidateForm()
 
-const status = reactive(new Status(StatusType.Idle))
-
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
 const { accountBalancesWithToken } = useBalance()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const hasActiveStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find((strategy) => {

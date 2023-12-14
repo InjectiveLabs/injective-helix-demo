@@ -6,7 +6,6 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { format, fromUnixTime } from 'date-fns'
-import { getMarketRoute } from '@/app/utils/market'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -75,14 +74,6 @@ const expiryAt = computed(() => {
     'dd LLL yyyy, HH:mm:ss'
   )
 })
-
-const marketRoute = computed(() => {
-  if (!props.market) {
-    return undefined
-  }
-
-  return getMarketRoute(props.market)
-})
 </script>
 
 <template>
@@ -91,25 +82,23 @@ const marketRoute = computed(() => {
     :data-cy="`markets-expired-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
-      <NuxtLink class="cursor-pointer" :to="marketRoute">
-        <div class="cursor-pointer flex items-center">
-          <CommonTokenIcon
-            v-if="market.baseToken"
-            :token="market.baseToken"
-            class="mr-3 hidden 3md:block"
-          />
-          <div class="flex flex-col">
-            <span
-              class="tracking-wider font-bold mb-1"
-              data-cy="markets-ticker-name-table-data"
-              >{{ market.ticker }}
-            </span>
-            <span class="text-gray-500 text-xs hidden md:block">
-              {{ market.baseToken.name }}
-            </span>
-          </div>
+      <div class="flex items-center">
+        <CommonTokenIcon
+          v-if="market.baseToken"
+          :token="market.baseToken"
+          class="mr-3 hidden 3md:block"
+        />
+        <div class="flex flex-col">
+          <span
+            class="tracking-wider font-bold mb-1"
+            data-cy="markets-ticker-name-table-data"
+            >{{ market.ticker }}
+          </span>
+          <span class="text-gray-500 text-xs hidden md:block">
+            {{ market.baseToken.name }}
+          </span>
         </div>
-      </NuxtLink>
+      </div>
     </span>
 
     <!-- Mobile column -->

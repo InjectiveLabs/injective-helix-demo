@@ -4,7 +4,11 @@ import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
 import { StopReason } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   strategy: {
@@ -13,13 +17,19 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
 }>()
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
 
 const { pnl, percentagePnl, investment } = useActiveGridStrategy(
   market,
@@ -44,12 +54,20 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
@@ -132,6 +150,10 @@ function onDetailsPage() {
 
       <span v-if="strategy.stopReason === StopReason.InsufficientFunds">
         {{ $t('sgt.insufficientFunds') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
+        {{ $t('sgt.exceededMaxRetries') }}
       </span>
     </div>
 

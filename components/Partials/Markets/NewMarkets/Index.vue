@@ -17,7 +17,9 @@ const newMarkets = computed(
           (market) => market.market.slug.toLowerCase() === slug.toLowerCase()
         )
       )
-      .filter((market) => market) as UiMarketAndSummaryWithVolumeInUsd[]
+      .filter(
+        (market) => market?.market && market?.summary
+      ) as UiMarketAndSummaryWithVolumeInUsd[]
 )
 </script>
 

@@ -2,14 +2,13 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { addDays, differenceInHours } from 'date-fns'
 import {
   NETWORK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LP_EPOCHS } from '@/app/data/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const campaignStore = useCampaignStore()
 const { success, error } = useNotifications()
@@ -33,22 +32,18 @@ const props = defineProps({
   }
 })
 
+const tokenStore = useTokenStore()
+
+const hasUserClaimed = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 const claimStatus = reactive(new Status(StatusType.Idle))
-const hasUserClaimed = ref(false)
 
-const epochRound = computed(() =>
-  LP_EPOCHS.find(({ campaignId }) => props.campaign.campaignId === campaignId)
+const campaignWithSc = computed(() =>
+  LP_CAMPAIGNS.find(
+    ({ campaignId }) => props.campaign.campaignId === campaignId
+  )
 )
-
-const claimDate = computed(() => addDays(props.campaign.endDate, 1))
-const isClaimable = computed(() => Date.now() > claimDate.value.getTime())
-
-const estimatedTimeToClaimable = computed(() =>
-  differenceInHours(claimDate.value.getTime(), Date.now())
-)
-
-const isClaimButtonVisible = computed(() => estimatedTimeToClaimable.value < 24)
+const isClaimable = computed(() => Date.now() > props.campaign.endDate)
 
 const explorerLink = computed(() => {
   if (!campaignStore.ownerCampaignInfo) {
@@ -81,35 +76,48 @@ const estRewardsInPercentage = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(campaignStore.ownerCampaignInfo.score)
-    .dividedBy(props.totalScore)
-    .times(100)
+  return new BigNumberInBase(campaignStore.ownerCampaignInfo.score).dividedBy(
+    props.totalScore
+  )
 })
 
-const { valueToString: estRewardsInINJToString } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(estRewardsInPercentage.value)
-      .dividedBy(100)
-      .multipliedBy(epochRound.value?.baseRewards || 0)
-  ),
-  {
-    decimalPlaces: estRewardsInPercentage.value.gt(0.1)
-      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+const rewards = computed(() => {
+  if (!campaignWithSc.value) {
+    return []
   }
-)
 
-const { valueToString: estRewardsInTIAToString } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(estRewardsInPercentage.value)
-      .dividedBy(100)
-      .multipliedBy(epochRound.value?.quoteRewards || 0)
-  ),
-  {
-    decimalPlaces: estRewardsInPercentage.value.gt(0.1)
-      ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-  }
+  return campaignWithSc.value.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(
+      ({ symbol }) => symbol === reward.symbol
+    )
+
+    const amount = new BigNumberInBase(
+      estRewardsInPercentage.value
+    ).multipliedBy(reward.amount || 0)
+
+    const amountInUsd = token
+      ? new BigNumberInBase(amount).times(
+          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+        )
+      : ZERO_IN_BASE
+
+    return {
+      amount,
+      symbol: reward.symbol,
+      amountInUsd
+    }
+  })
+})
+
+const rewardsFormatted = computed(() =>
+  rewards.value.map((reward) => ({
+    amount: reward.amount.toFormat(
+      reward.amount.isLessThan(0.1)
+        ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+        : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    ),
+    symbol: reward.symbol
+  }))
 )
 
 onWalletConnected(() => {
@@ -120,7 +128,7 @@ function fetchOwnerInfo() {
   status.setLoading()
 
   Promise.all([
-    campaignStore.fetchUserClaimedStatus(epochRound.value?.scAddress || ''),
+    campaignStore.fetchUserClaimedStatus(campaignWithSc.value?.scAddress || ''),
     campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
   ])
     .then(([hasUserClaimedStatus]) => {
@@ -131,18 +139,16 @@ function fetchOwnerInfo() {
 }
 
 function onClaimRewards() {
-  const scContract = LP_EPOCHS.find(
-    (e) => e.campaignId === props.campaign.campaignId
-  )
+  const scAddress = campaignWithSc.value?.scAddress
 
-  if (!scContract?.scAddress) {
+  if (!scAddress) {
     return
   }
 
   claimStatus.setLoading()
 
   campaignStore
-    .claimReward(scContract.scAddress)
+    .claimReward(scAddress)
     .then(() => {
       success({
         title: t('campaign.success'),
@@ -174,11 +180,11 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
 </script>
 
 <template>
-  <div
-    v-if="campaignStore.ownerCampaignInfo || status.isLoading()"
-    class="bg-gray-850 rounded-md p-8"
-  >
-    <AppHocLoading :status="status">
+  <AppHocLoading :status="status">
+    <div
+      v-if="campaignStore.ownerCampaignInfo"
+      class="bg-gray-850 rounded-md p-8"
+    >
       <template v-if="campaignStore.ownerCampaignInfo">
         <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
@@ -206,13 +212,17 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
               </div>
               <div class="flex items-center justify-between gap-2">
                 <div class="text-sm">
-                  <p>{{ estRewardsInINJToString }} INJ,</p>
-                  <p>{{ estRewardsInTIAToString }} TIA</p>
+                  <p
+                    v-for="{ amount, symbol } in rewardsFormatted"
+                    :key="symbol"
+                  >
+                    {{ amount }} {{ symbol }}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div v-if="isClaimButtonVisible" class="whitespace-nowrap">
+            <div>
               <AppButton
                 class="border border-blue-500 mb-1"
                 v-bind="{
@@ -229,28 +239,10 @@ watch(() => props.campaign.campaignId, fetchOwnerInfo)
                   {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
                 </div>
               </AppButton>
-
-              <p
-                v-if="estimatedTimeToClaimable > 0"
-                class="text-xs text-gray-500"
-              >
-                ({{
-                  $t('campaign.readyIn', { hours: estimatedTimeToClaimable })
-                }})
-              </p>
-
-              <p
-                v-else-if="estimatedTimeToClaimable === 0 && !isClaimable"
-                class="text-xs text-gray-500"
-              >
-                ({{
-                  $t('campaign.readyInLessThan', { time: '1', interval: 'hr' })
-                }})
-              </p>
             </div>
           </div>
         </div>
       </template>
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

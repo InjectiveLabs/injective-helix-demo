@@ -19,7 +19,13 @@ export class SpotSubaccountTradeIntegrityStrategy
   async validate(): Promise<void> {
     const { args: marketIds } = this
 
+    const accountStore = useAccountStore()
+    const walletStore = useWalletStore()
     const spotStore = useSpotStore()
+
+    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      return
+    }
 
     const latestTrades = await this.fetchData()
 

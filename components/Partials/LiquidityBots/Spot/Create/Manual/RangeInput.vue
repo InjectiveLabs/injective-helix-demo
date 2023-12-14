@@ -1,4 +1,12 @@
 <script lang="ts" setup>
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import { UiSpotOrderbookWithSequence } from '@/types'
+
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
 const HANDLE_WIDTH = 50
@@ -35,6 +43,16 @@ const props = defineProps({
   currentPrice: {
     type: String,
     required: true
+  },
+
+  orderbook: {
+    type: Object as PropType<UiSpotOrderbookWithSequence>,
+    default: undefined
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarketWithToken>,
+    default: undefined
   }
 })
 
@@ -48,6 +66,8 @@ const emit = defineEmits<{
 const isLowerHandleClicked = ref(false)
 const isUpperHandleClicked = ref(false)
 const isHovered = ref(false)
+
+const orderbook = ref(props.orderbook)
 
 const lowerHandleX = computed(() => {
   const range = Number(props.max) - Number(props.min)
@@ -107,7 +127,11 @@ const rulerValues = computed(() => {
     const normalizedValue = value / range
 
     return {
-      display: new Intl.NumberFormat('en-US').format(number),
+      display: new BigNumberInBase(number).toFormat(
+        Number(props.currentPrice) > 1
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      ),
       value:
         lerp(
           HANDLE_WIDTH / 2,
@@ -117,6 +141,96 @@ const rulerValues = computed(() => {
         HANDLE_WIDTH / 2
     }
   })
+})
+
+const orderbookVolume = computed(() => {
+  if (!orderbook.value || !props.market) {
+    return []
+  }
+
+  const orders = [...orderbook.value.buys, ...orderbook.value.sells]
+
+  return orders
+    .map((order) => ({
+      price: new BigNumberInWei(order.price)
+        .toBase(
+          props.market!.quoteToken.decimals - props.market!.baseToken.decimals
+        )
+        .toNumber(),
+      quantity: new BigNumberInWei(order.quantity)
+        .toBase(props.market!.baseToken.decimals)
+        .toNumber()
+    }))
+    .filter(
+      (order) =>
+        Number(order.price) > Number(props.min) &&
+        Number(order.price) < Number(props.max)
+    )
+    .sort((a, b) => a.price - b.price)
+})
+
+const steps = computed(() => {
+  return Number(props.currentPrice) / 100
+})
+
+const orderbookVolumeQuantized = computed(() => {
+  const MIN = Math.floor(Number(props.min))
+  const MAX = Math.ceil(Number(props.max))
+
+  const STEP = steps.value
+
+  const orderbookQuantized = [] as { price: number; quantity: number }[]
+
+  for (let i = MIN; i < MAX; i += STEP) {
+    const volumes = orderbookVolume.value
+      .filter((volume) => volume.price >= i && volume.price < i + STEP)
+      .reduce((sum, quantity) => sum + quantity.quantity, 0)
+
+    orderbookQuantized.push({ price: i, quantity: volumes })
+  }
+
+  return orderbookQuantized
+})
+
+const highestOrderbookQuantity = computed(() =>
+  Math.max(...orderbookVolumeQuantized.value.map((o) => o.quantity))
+)
+
+const volumePoints = computed(() =>
+  orderbookVolumeQuantized.value.map((order) => {
+    const range = Number(props.max) - Number(props.min)
+    const value = Number(order.price) - Number(props.min)
+
+    const normalizedValue = value / range
+    const normalizedHeight = order.quantity / highestOrderbookQuantity.value
+
+    return {
+      x:
+        lerp(
+          HANDLE_WIDTH / 2,
+          SVG_PROPS.width - HANDLE_WIDTH / 2,
+          normalizedValue
+        ) -
+        HANDLE_WIDTH / 2,
+      height: lerp(0, SVG_PROPS.height, normalizedHeight)
+    }
+  })
+)
+
+const rectWidth = computed(() => {
+  const range = Number(props.max) - Number(props.min)
+  const value = Number(props.min) + steps.value - Number(props.min)
+
+  const normalizedValue = value / range
+
+  return (
+    lerp(
+      HANDLE_WIDTH / 2,
+      SVG_PROPS.width - HANDLE_WIDTH / 2,
+      normalizedValue
+    ) -
+    HANDLE_WIDTH / 2
+  )
 })
 
 function mouseMove(ev: MouseEvent) {
@@ -182,7 +296,7 @@ function generateEvenlySpacedNumbers(
   const step = (b - a) / (count - 1)
 
   for (let i = 0; i < count; i++) {
-    const value = +(a + step * i).toFixed(2)
+    const value = +(a + step * i)
     result.push(value)
   }
 
@@ -192,23 +306,6 @@ function generateEvenlySpacedNumbers(
 
 <template>
   <div class="border py-5 select-none">
-    <pre v-if="false">
-      {{
-        {
-          currentPriceX,
-          lowerHandleX,
-          upperHandleX,
-          isLowerHandleClicked,
-          isUpperHandleClicked,
-          max,
-          min,
-          upper,
-          lower
-        }
-      }}
-      {{ rulerValues }}
-    </pre>
-
     <svg
       :viewBox="`0 0 ${SVG_PROPS.width} ${SVG_PROPS.height + 50}`"
       class="overflow-visible"
@@ -219,6 +316,18 @@ function generateEvenlySpacedNumbers(
       <mask id="myMask">
         <rect width="100%" height="100%" fill="white" />
       </mask>
+
+      <g id="volume" v-memo="[props.min, props.max]" mask="url(#myMask)">
+        <rect
+          v-for="({ height, x }, i) in volumePoints"
+          :key="`point-${i}-{${x}-${height}}`"
+          :x="x"
+          :y="SVG_PROPS.height - height"
+          :width="rectWidth"
+          :height="height"
+          fill="#0EE29B33"
+        />
+      </g>
 
       <g id="handle-pads" mask="url(#myMask)">
         <rect
@@ -286,7 +395,13 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="end"
         >
-          {{ Number(props.lower).toFixed(2) }}
+          {{
+            Number(props.lower).toFixed(
+              Number(currentPrice) > 1
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+            )
+          }}
         </text>
 
         <text
@@ -300,7 +415,13 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="start"
         >
-          {{ Number(props.upper).toFixed(2) }}
+          {{
+            Number(props.upper).toFixed(
+              Number(currentPrice) > 1
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+            )
+          }}
         </text>
       </g>
 
@@ -315,7 +436,7 @@ function generateEvenlySpacedNumbers(
         />
       </g>
 
-      <g id="ruler">
+      <g id="ruler" mask="url(#myMask)">
         <line
           x1="0"
           :y1="SVG_PROPS.height"
@@ -325,9 +446,9 @@ function generateEvenlySpacedNumbers(
         />
 
         <g
-          v-for="{ display, value } in rulerValues"
+          v-for="({ display, value }, i) in rulerValues"
           id="ruler-values"
-          :key="`${value}-${display}`"
+          :key="`${value}-${display}-${i}`"
         >
           <line
             :x1="value + HANDLE_WIDTH / 2"

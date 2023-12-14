@@ -18,10 +18,11 @@ export default {
     showLowVol: 'Show low Vol.',
     emptyHeader: 'No markets found',
     preLaunchFutures: 'Pre Launch Futures',
-    expiredRecently: 'Expired in last 24 hours',
+    expiredRecently: 'Expired recently',
     emptyHeaderFavorites: 'No favorited markets yet.',
     emptyDescription: 'Try another search term or you can propose some!',
-    emptyDescriptionFavorites: 'Your starred markets will be shown here.'
+    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
+    inactive: 'Inactive'
   },
 
   marketPage: {

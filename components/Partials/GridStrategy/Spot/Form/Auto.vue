@@ -3,9 +3,15 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GridStrategyType, SpotGridTradingField } from '@/types'
 import {
+  GST_AUTO_PRICE_THRESHOLD,
   GST_DEFAULT_AUTO_GRIDS,
+  GST_STABLE_GRIDS,
+  GST_STABLE_LOWER_PRICE,
+  GST_STABLE_UPPER_PRICE,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const props = defineProps({
   market: {
@@ -19,10 +25,35 @@ const emit = defineEmits<{
 }>()
 
 const exchangeStore = useExchangeStore()
-
 const setFormValues = useSetFormValues()
+const gridStrategyStore = useGridStrategyStore()
+const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
+
+const decimalsPlaces = computed(() =>
+  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
+    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+)
+
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
+)
 
 const upperPrice = computed(() => {
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_UPPER_PRICE
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.market.marketId
   )
@@ -39,11 +70,15 @@ const upperPrice = computed(() => {
   )
 
   return minUpperBound.gt(max)
-    ? minUpperBound.toFixed(2)
-    : maxPlusPadding.toFixed(2)
+    ? minUpperBound.toFixed(decimalsPlaces.value)
+    : maxPlusPadding.toFixed(decimalsPlaces.value)
 })
 
 const lowerPrice = computed(() => {
+  if (marketUsesStableCoins.value) {
+    return GST_STABLE_LOWER_PRICE
+  }
+
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.market.marketId
   )
@@ -58,10 +93,14 @@ const lowerPrice = computed(() => {
     spotLastTradedPrice.value.times(0.06)
   )
 
-  return maxLowerBound.lt(min) ? maxLowerBound.toFixed(2) : min.toFixed(2)
+  return maxLowerBound.lt(min)
+    ? maxLowerBound.toFixed(decimalsPlaces.value)
+    : min.toFixed(decimalsPlaces.value)
 })
 
-const grids = ref(GST_DEFAULT_AUTO_GRIDS)
+const grids = computed(() =>
+  marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
+)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -81,12 +120,12 @@ const profitPerGrid = computed(() => {
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   upperPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: decimalsPlaces.value }
 )
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   lowerPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: decimalsPlaces.value }
 )
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

@@ -67,7 +67,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.my_tier') }}
+          {{ $t('feeDiscounts.my_tier') }}
         </span>
         <span
           class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-blue-500"
@@ -79,7 +79,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.maker') }}
+          {{ $t('feeDiscounts.maker') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -89,14 +89,14 @@ const lastUpdateTimestamp = computed(() => {
           >
             {{ makerFeeDiscount }}%
           </b>
-          {{ $t('fee_discounts.off') }}
+          {{ $t('feeDiscounts.off') }}
         </span>
       </div>
       <div class="flex flex-col">
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.taker') }}
+          {{ $t('feeDiscounts.taker') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -106,14 +106,14 @@ const lastUpdateTimestamp = computed(() => {
           >
             {{ takerFeeDiscount }}%
           </b>
-          {{ $t('fee_discounts.off') }}
+          {{ $t('feeDiscounts.off') }}
         </span>
       </div>
     </div>
     <div class="mt-4">
       <span v-if="lastUpdateTimestamp" class="text-xs text-gray-400">
-        {{ $t('fee_discounts.update_daily') }}.
-        {{ $t('fee_discounts.last_updated_at') }} {{ lastUpdateTimestamp }}
+        {{ $t('feeDiscounts.update_daily') }}.
+        {{ $t('feeDiscounts.last_updated_at') }} {{ lastUpdateTimestamp }}
       </span>
       <span v-else class="text-xs text-gray-400">&mdash;</span>
     </div>

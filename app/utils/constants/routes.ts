@@ -1,5 +1,5 @@
 import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
-import { MainPage, TradeSubPage } from '../../../types'
+import { LiquidityRewardsPage, MainPage, TradeSubPage } from '../../../types'
 
 export const getRoutes = (network: Network, env: string) => {
   const IS_DEVNET: boolean = isDevnet(network)
@@ -16,6 +16,7 @@ export const getRoutes = (network: Network, env: string) => {
     'sol-usdcet',
     'canto-usdt',
     'usdt-usdcet',
+    'usdc-usdcet',
     'ape-usdt',
     'cre-usdt',
     'link-usdt',
@@ -33,7 +34,10 @@ export const getRoutes = (network: Network, env: string) => {
     'kava-usdt',
     'usdtkv-usdt',
     'tia-usdt',
-    'usdy-usdt'
+    'usdy-usdt',
+    'whale-usdt',
+    'sol-usdt',
+    'kuji-usdt'
   ]
 
   const perpetuals = [
@@ -50,20 +54,32 @@ export const getRoutes = (network: Network, env: string) => {
     'axl-usdt-perp',
     'btc-usdtkv-perp',
     'eth-usdtkv-perp',
-    'pyth-usdt-perp'
+    'pyth-usdt-perp',
+    'tia-usdt-perp'
   ]
 
-  const gridTradingSpot = ['inj-usdt', 'atom-usdt', 'tia-usdt']
+  const gridTradingSpot = [
+    'inj-usdt',
+    'atom-usdt',
+    'tia-usdt',
+    'stinj-inj',
+    'weth-usdt',
+    'whale-usdt',
+    'usdtkv-usdt',
+    'wmatic-usdt'
+  ]
 
   const binaryOptions: string[] = []
   const expiryFutures: string[] = ['eth-usdt-19sep22', 'tia-usdt-30nov2023']
 
   if (IS_DEVNET) {
+    spot.push('proj-usdt')
     spot.push('wbtc-inj')
     spot.push('proj-inj')
   }
 
   if (IS_TESTNET) {
+    spot.push('zen-inj')
     spot.push('projx-inj')
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')
@@ -83,6 +99,11 @@ export const getRoutes = (network: Network, env: string) => {
     expiryFutures.push('tia-usdt-01nov2023')
   }
 
+  if (IS_STAGING) {
+    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt', 'talis-usdt')
+    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
+  }
+
   // Redirection pairs
   const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
@@ -99,7 +120,9 @@ export const getRoutes = (network: Network, env: string) => {
     MainPage.Markets,
     MainPage.LpRewards,
     MainPage.Leaderboard,
-    MainPage.FeeDiscounts
+    MainPage.FeeDiscounts,
+    LiquidityRewardsPage.Dashboard,
+    LiquidityRewardsPage.CampaignDetails
   ]
 
   const customStaticRoutes: string[] = []
@@ -114,24 +137,6 @@ export const getRoutes = (network: Network, env: string) => {
   ]
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
-  // Market we want to load to the app state but we don't want to show on the UI
-  const usdcConversionModalMarkets = ['usdt-usdcet', 'usdc-usdcet']
-
-  if (IS_STAGING) {
-    spot.push(
-      ...usdcConversionModalMarkets,
-      'ldo-usdcet',
-      'usdtkv-usdt',
-      'kuji-usdt',
-      'pyth-usdt'
-    )
-    perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
-  }
-
-  if (IS_DEVNET) {
-    spot.push(...usdcConversionModalMarkets, 'proj-usdt')
-  }
-
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
   const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
     (s) => `/spot/${s}`
@@ -144,7 +149,6 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
   )
-
   const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
 
   return {
@@ -154,7 +158,6 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptions,
       expiryFutures,
       gridTradingSpot,
-      usdcConversionModalMarkets,
       spotMarketRedirectsSlugsPairs
     },
     ROUTES: {

@@ -1,19 +1,10 @@
 <script lang="ts" setup>
 const exchangeStore = useExchangeStore()
 
-const tierLevelsWithZeroTierLevel = computed(() =>
-  exchangeStore.feeDiscountSchedule
-    ? [
-        {
-          volume: '0',
-          stakedAmount: '0',
-          feePaidAmount: '0',
-          makerDiscountRate: '0',
-          takerDiscountRate: '0'
-        },
-        ...exchangeStore.feeDiscountSchedule.tierInfosList
-      ]
-    : []
+// Note: Keep in mind that on chain the #0 tier level is actually shown as  #1 on the UI
+// check store/exchange.ts on the fetchFeeDiscountSchedule action
+const tierLevelsWithZeroTierLevel = computed(
+  () => exchangeStore.feeDiscountSchedule?.tierInfosList || []
 )
 </script>
 
@@ -23,16 +14,16 @@ const tierLevelsWithZeroTierLevel = computed(() =>
       <thead>
         <tr>
           <th class="text-left">
-            {{ $t('fee_discounts.tier') }}
+            {{ $t('feeDiscounts.tier') }}
           </th>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('fee_discounts.staked_amount') }}
+                {{ $t('feeDiscounts.staked_amount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('fee_discounts.staked_amount_tooltip')"
+                :content="$t('feeDiscounts.staked_amount_tooltip')"
               />
             </div>
           </th>
@@ -40,33 +31,33 @@ const tierLevelsWithZeroTierLevel = computed(() =>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('fee_discounts.trading_volume') }}
+                {{ $t('feeDiscounts.trading_volume') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('fee_discounts.trading_volume_tooltip')"
+                :content="$t('feeDiscounts.trading_volume_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('fee_discounts.maker_rate_discount') }}
+                {{ $t('feeDiscounts.maker_rate_discount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('fee_discounts.maker_rate_discount_tooltip')"
+                :content="$t('feeDiscounts.maker_rate_discount_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('fee_discounts.taker_rate_discount') }}
+                {{ $t('feeDiscounts.taker_rate_discount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('fee_discounts.taker_rate_discount_tooltip')"
+                :content="$t('feeDiscounts.taker_rate_discount_tooltip')"
               />
             </div>
           </th>

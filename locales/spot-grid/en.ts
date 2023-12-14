@@ -57,18 +57,21 @@ export default {
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
+    gettingStarted: 'Getting Started',
     learnMoreHere: 'Learn more here.',
     removeStrategy: 'Remove Strategy',
+    finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
     minInvestment: 'Min investment: $ {amount}',
     totalInvestment: 'Total Investment',
-    useFeeOptimizedAmounts: 'Use suggested amounts',
+    useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
     totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     insufficientFunds: 'Insufficient Funds',
+    exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
     autoModeHeader:
       'These parameters are generated automatically based on the last 30 days trading prices.',
@@ -89,6 +92,8 @@ export default {
     totalAmountTooltip: 'Your current Spot Grid Trading Sub account net worth',
     currentBalanceTooltip:
       'The current amount of {quoteSymbol} and {baseSymbol} in you spot grid trading subaccount.',
+    finalBalanceTooltip:
+      'Represents the total amount of {quoteSymbol} and {baseSymbol} remaining before stopping the grid strategy',
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { thumbnailMap } from '@/app/data/guild'
+import { thumbnailMap } from '@/app/data/campaign'
 
 const campaignStore = useCampaignStore()
 

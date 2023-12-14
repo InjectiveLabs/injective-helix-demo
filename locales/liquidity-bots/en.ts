@@ -15,7 +15,7 @@ export default {
     tiaBannerSwap:
       'Earn a Galxe OAT when you use Helix Swap to purchase 10 TIA',
     tiaBannerLiquidity:
-      'Earn LP Rewards for providing liquidity in the TIA/USDT market',
+      'Earn LP Rewards for providing liquidity in the TIA/USDT and WHALE/USDT markets',
     seeRewards: 'See Rewards',
     allowAssetRebalance: 'Allow asset rebalancing before creation',
     allowAssetRebalanceTooltip:

@@ -41,6 +41,10 @@ function init() {
       }
     })
 }
+
+onUnmounted(() => {
+  spotStore.reset()
+})
 </script>
 
 <template>

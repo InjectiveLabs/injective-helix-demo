@@ -19,6 +19,13 @@ export class DerivativeSubaccountPositionIntegrityStrategy
   async validate(): Promise<void> {
     const marketIds = this.args
 
+    const accountStore = useAccountStore()
+    const walletStore = useWalletStore()
+
+    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      return
+    }
+
     const latestPositions = await this.fetchData()
 
     if (!latestPositions || latestPositions.length === 0) {

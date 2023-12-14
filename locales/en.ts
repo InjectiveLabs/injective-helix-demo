@@ -10,9 +10,10 @@ import account from './account/en'
 import campaign from './campaign/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
+import tradeAndEarn from './tradeAndEarn/en'
 import institutional from './institutional/en'
 import liquidityBots from './liquidity-bots/en'
-import { I18nMessageFunction } from '@/types'
+import { I18nMessageFunction, TimeDuration } from '@/types'
 
 export default {
   ...sgt,
@@ -28,6 +29,7 @@ export default {
   ...activities,
   ...activities,
   ...leaderboard,
+  ...tradeAndEarn,
   ...institutional,
   ...liquidityBots,
   common: {
@@ -58,7 +60,12 @@ export default {
     new: 'New',
     success: 'Success',
     error: 'Error',
-    somethingHappened: 'Something Happened...'
+    qrCode: 'QR Code',
+    somethingHappened: 'Something Happened...',
+    [TimeDuration.Day]: 'Day',
+    [TimeDuration.Hour]: 'Hour',
+    [TimeDuration.Minute]: 'Minute',
+    [TimeDuration.Second]: 'Second'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -111,83 +118,18 @@ export default {
   'faq-category-All': 'All',
   'faq-category-General': 'General',
   and: 'and',
-  fee_discount_fees_paid: 'Total Fees Paid',
-  fee_discount_fees_paid_tooltip:
-    'The total fees required to be paid on Injective. Fees are paid to execute trades on the protocol. The amount of fees paid helps determine the fee tier. The total fees collected are summed up on a 30 day rolling basis period.',
-  'Current Epoch': 'Current Epoch',
-  'Past Epoch': 'Past Epoch',
   Rewards: 'Rewards',
   resources: 'Resources',
   calculator: 'Calculator',
-  'Trade & Earn': 'Trade & Earn',
-  trading_fee_to_date: 'Trading fee to date',
-  trading_fee_to_date_tooltip: 'Trading fee to date tooltip',
-  current_epoch: 'Current Epoch',
-  current_epoch_tooltip: 'Current Epoch tooltip',
-  est_rewards: 'Est. Rewards',
-  est_rewards_tooltip: ({ named }: I18nMessageFunction) =>
-    `Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at ${named(
-      'maxRewards'
-    )} INJ or the equivalent amount of INJ staked, whichever is higher`,
-  reward_points: 'My Reward Points Earned',
-  reward_points_tooltip:
-    'The current reward points you earned during this campaign. Reward points will reset to 0 at the beginning of next campaign.',
-  total_reward_points: 'Total Reward Points',
-  total_reward_points_tooltip:
-    'The current total reward points collected by all addresses on Injective in this campaign. This number will grow until the end of campaign.',
-  countdown_campaign: 'Campaign end time',
-  countdown_campaign_tooltip:
-    'Date and time when the current campaign ends (shown in the timezone of your browser). Any reward point earned after the countdown will be counted toward the next campaign.',
-  reward_earned_up_to_date: 'Rewards earned up to date',
-  reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
-  fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
-    `Based on your tier, you are eligible for ${named(
-      'maker'
-    )}% maker discount and ${named('taker')}% taker discount.`,
   remaining: 'remaining',
   campaign_duration: 'Campaign Duration',
   campaign_duration_tooltip:
     'The duration of this campaign. A new campaign will start immediately after the previous campaign until 2026.',
-  max_campaign_rewards: 'Total allocated Rewards',
-  max_campaign_rewards_tooltip:
-    'The total number of INJ that will be distributed in this epoch. Reward distribution will happen at the end of the vesting period after each campaign is finished.',
-  maker_points_mul: 'maker pts',
-  taker_points_mul: 'taker pts',
-  pts: 'pts',
   switch_to_injective_address: 'Switch to Injective Address',
   switch_to_ethereum_address: 'Switch to Ethereum Address',
 
   terra: 'Terra',
   overview: 'Overview',
-  trade_and_earn_my_staked_amount: 'My Staked Amount',
-  trade_and_earn_my_staked_amount_tooltip: ({ named }: I18nMessageFunction) =>
-    `The default maximum rewards you can receive is capped at ${named(
-      'maxRewards'
-    )} INJ. You may increase this cap by staking more than ${named(
-      'maxRewards'
-    )} INJ and it will be the same level as your staked amount.`,
-  stake_more: 'Stake More',
-  stake_now: 'Stake Now',
-  tradeAndEarn: {
-    pendingRewards: 'Pending Rewards',
-    emptyPendingRewards: 'No pending rewards available.',
-    campaignEndingOn: ({ named }: I18nMessageFunction) =>
-      `Ending on ${named('date')}`,
-    campaignAsOf: ({ named }: I18nMessageFunction) => `As of ${named('date')}`,
-    myRewardPoints: 'My Reward Points / Total Reward Points',
-    myRewardPoints_tooltip:
-      'The current reward points you earned during this campaign and the total reward points in the campaign. Reward points will reset to 0 at the beginning of next campaign.',
-    pending_max_campaign_rewards: 'Total allocated Rewards',
-    pending_max_campaign_rewards_tooltip:
-      'The total number of INJ that was distributed in the previous epoch. Reward distribution will happen at the end of the vesting period.',
-    est_rewards_stake: 'Est. Rewards',
-    est_rewards_stake_tooltip: ({ named }: I18nMessageFunction) =>
-      `Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at ${named(
-        'maxRewards'
-      )} INJ or the equivalent amount of INJ staked, whichever is higher`,
-    stake_total_to_receive_full_amount: ({ named }: I18nMessageFunction) =>
-      `Stake total of ${named('total')} INJ to receive the full amount`
-  },
 
   marketRestricted: {
     title: 'Unavailable Market',
@@ -232,6 +174,17 @@ export default {
       'If you did hold position(s) till expiry, please go to Activity to check the settlement record.',
     exploreMarkets: 'Explore Markets',
     goToActivity: 'Go To Activity'
+  },
+
+  marketNotLiquid: {
+    title: ({ named }: I18nMessageFunction) =>
+      `${named('slug')} market is no longer liquid`,
+    description: ({ named }: I18nMessageFunction) => `
+      The majority of trading activities for ${named(
+        'content'
+      )}. Please proceed to ${named('slug')} for a better trading experience.`,
+    cta: ({ named }: I18nMessageFunction) => `Go to ${named('slug')}`,
+    'sol-usdcet-description': 'Solana is in the SOL/USDT market'
   },
 
   marketDeprecated: {
@@ -302,7 +255,7 @@ export default {
     liquidityBotsDescription: 'Trade smarter with automated strategies'
   },
 
-  fee_discounts: {
+  feeDiscounts: {
     page_title: 'Fee Discounts',
     page_description:
       "Trading fees are based on a user's staked amount of INJ and the total trading volume in the past 28 days.",

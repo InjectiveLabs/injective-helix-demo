@@ -6,10 +6,7 @@ export default function useConvertFormatter() {
   const spotStore = useSpotStore()
 
   const tradableSlugMap = computed(() => {
-    return [
-      ...spotStore.markets,
-      ...spotStore.usdcConversionModalMarkets
-    ].reduce(
+    return [...spotStore.markets].reduce(
       (list, market) => {
         const reversedSlug = market.slug.split('-').reverse().join('-')
 
@@ -27,26 +24,20 @@ export default function useConvertFormatter() {
   })
 
   const availableQuoteDenoms = computed(() =>
-    [...spotStore.markets, ...spotStore.usdcConversionModalMarkets].reduce(
-      (tokens, market) => {
-        // remove duplicate USDT keys
-        const quoteTokenExistOnTokensList = tokens.some(
-          (token) => token.denom === market.quoteDenom
-        )
+    [...spotStore.markets].reduce((tokens, market) => {
+      // remove duplicate USDT keys
+      const quoteTokenExistOnTokensList = tokens.some(
+        (token) => token.denom === market.quoteDenom
+      )
 
-        return quoteTokenExistOnTokensList
-          ? tokens
-          : [market.quoteToken, ...tokens]
-      },
-      [] as Token[]
-    )
+      return quoteTokenExistOnTokensList
+        ? tokens
+        : [market.quoteToken, ...tokens]
+    }, [] as Token[])
   )
 
   const tradableTokensMap = computed(() => {
-    return [
-      ...spotStore.markets,
-      ...spotStore.usdcConversionModalMarkets
-    ].reduce(
+    return [...spotStore.markets].reduce(
       (tokens, market) => {
         const baseTokens = tokens[market.quoteDenom]
           ? [...tokens[market.quoteDenom], market.baseToken]

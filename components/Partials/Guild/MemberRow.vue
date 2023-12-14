@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { toBalanceInToken } from '@/app/utils/formatters'
@@ -9,6 +10,11 @@ const { baseToken, quoteToken } = useGuild()
 const props = defineProps({
   isCampaignStarted: Boolean,
 
+  rank: {
+    type: Number,
+    required: true
+  },
+
   member: {
     type: Object as PropType<GuildMember>,
     required: true
@@ -17,6 +23,20 @@ const props = defineProps({
 
 const explorerLink = computed(
   () => `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
+)
+
+const { valueToString: tvlScorePercentageToString } = useBigNumberFormatter(
+  computed(() => props.member.tvlScorePercentage),
+  {
+    roundingMode: BigNumber.ROUND_DOWN
+  }
+)
+
+const { valueToString: volumeScorePercentageToString } = useBigNumberFormatter(
+  computed(() => props.member.volumeScorePercentage),
+  {
+    roundingMode: BigNumber.ROUND_DOWN
+  }
 )
 
 const { valueToString: tvlScoreToString } = useBigNumberFormatter(
@@ -40,6 +60,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
 
 <template>
   <tr class="border-b hover:bg-gray-800 text-sm">
+    <td class="p-3">{{ rank }}</td>
     <td>
       <NuxtLink
         :to="explorerLink"
@@ -58,6 +79,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
           <span v-else>
             {{ tvlScoreToString }}
             {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
+            ({{ tvlScorePercentageToString }}%)
           </span>
         </p>
       </div>
@@ -65,7 +87,9 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
     <td class="text-right">
       <div class="p-3">
         <span v-if="!isCampaignStarted">&mdash;</span>
-        <span v-else>{{ volumeScoreToString }} USD</span>
+        <span v-else>
+          {{ volumeScoreToString }} USD ({{ volumeScorePercentageToString }}%)
+        </span>
       </div>
     </td>
   </tr>

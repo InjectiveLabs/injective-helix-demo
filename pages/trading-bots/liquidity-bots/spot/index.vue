@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderState } from '@injectivelabs/ts-types'
+
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import {
   addressAndMarketSlugToSubaccountId,
@@ -40,7 +41,7 @@ const subaccountId = computed(() =>
 )
 
 const marketOrders = computed(() =>
-  spotStore.subaccountOrderHistory.filter(
+  spotStore.subaccountOrders.filter(
     ({ marketId, subaccountId: orderSubaccountId, state }) =>
       marketId === gridStrategyStore.spotMarket?.marketId &&
       orderSubaccountId === subaccountId.value &&
@@ -70,9 +71,17 @@ function fetchData() {
     spotStore.streamTrades(marketId),
     spotStore.fetchOrderbook(marketId),
     spotStore.fetchTrades({ marketId }),
-    spotStore.streamOrderbookUpdate(marketId),
-    spotStore.streamSubaccountOrderHistory(marketId),
-    spotStore.fetchSubaccountOrderHistory({ subaccountId }),
+    spotStore.streamSubaccountOrders(marketId, subaccountId),
+    spotStore.fetchOrdersBySubaccount({
+      marketIds: [gridStrategyStore.spotMarket.marketId],
+      subaccountId
+    }),
+    spotStore.fetchSubaccountOrderHistory({
+      subaccountId,
+      filters: {
+        marketIds: [gridStrategyStore.spotMarket.marketId]
+      }
+    }),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchStrategies(),
     exchangeStore.getMarketsHistory({
@@ -99,7 +108,7 @@ onWalletConnected(() => {
 
 onUnmounted(() => {
   spotStore.cancelOrderbookUpdateStream()
-  spotStore.cancelSubaccountOrdersHistoryStream()
+  spotStore.cancelSubaccountOrdersStream()
   spotStore.cancelTradesStream()
 })
 

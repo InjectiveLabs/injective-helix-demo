@@ -222,10 +222,6 @@ useIntervalFn(() => {
                   }}
                 </span>
                 <div class="flex gap-2">
-                  <PartialsCommonBalancesPeggyUsdcConvert
-                    v-if="market"
-                    :market="market"
-                  />
                   <span class="font-mono text-white">
                     {{ quoteTradingBalanceToFormat }}
                   </span>

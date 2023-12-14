@@ -36,7 +36,7 @@ export default {
     confirmTransaction: 'Confirm your transaction',
     withdrawFromInjective: 'Withdraw from Injective',
     selectDestinationNetwork: 'Select destination network',
-    keplrConnectedForEthereum: 'Please connect with Metamask',
+    keplrConnectedForEthereum: 'Please connect with Ethereum Wallet',
     selectTokenAndAmount: 'Select a token and input an amount',
     connectFundingWallet: 'Connect funding wallet to continue',
     reviewTransaction: 'Please review your transaction details',
@@ -80,6 +80,8 @@ export default {
         'asset'
       )} through the Injective Bridge.`,
     subaccountId: ({ named }: I18nMessageFunction) =>
-      `Subaccount ${named('subaccountId')}`
+      `Subaccount ${named('subaccountId')}`,
+
+    ninjiNotSupported: 'Ninji not supported for IBC transfers.'
   }
 }

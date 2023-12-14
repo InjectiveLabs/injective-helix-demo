@@ -1,9 +1,15 @@
 <script lang="ts" setup>
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { formatDistance } from 'date-fns'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { StopReason } from '@/types'
+
+const spotStore = useSpotStore()
 
 const props = defineProps({
   strategy: {
@@ -12,7 +18,9 @@ const props = defineProps({
   }
 })
 
-const spotStore = useSpotStore()
+const emit = defineEmits<{
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+}>()
 
 const market = computed(
   () => spotStore.markets.find((m) => m.marketId === props.strategy.marketId)!
@@ -37,12 +45,20 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
@@ -53,10 +69,14 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
   investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
+
+function onDetailsPage() {
+  emit('details:open', props.strategy, market.value)
+}
 </script>
 
 <template>
-  <div class="text-sm space-y-2">
+  <div class="text-sm space-y-2 pt-2">
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.market') }}</p>
 
@@ -122,7 +142,23 @@ const { valueToString: investmentToString } = useBigNumberFormatter(
         <span v-if="strategy.stopReason === StopReason.InsufficientFunds">
           {{ $t('sgt.insufficientFunds') }}
         </span>
+
+        <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
+          {{ $t('sgt.exceededMaxRetries') }}
+        </span>
       </div>
+    </div>
+
+    <div class="flex items-center justify-center">
+      <AppButton
+        class="text-blue-500 border-blue-500"
+        is-sm
+        @click="onDetailsPage"
+      >
+        <span class="text-sm font-medium">
+          {{ $t('sgt.details') }}
+        </span>
+      </AppButton>
     </div>
   </div>
 </template>

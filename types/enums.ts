@@ -39,20 +39,20 @@ export enum Icon {
 
 export enum Modal {
   Terms = 'terms',
+  QrCode = 'qrcode',
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
   SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
   JoinGuild = 'join-guild',
+  LpRewards = 'lp-rewards',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
-  ConvertUsdc = 'convert-usdc',
   SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
-  USDCDetected = 'usdc-detected',
   UserFeedback = 'user-feedback',
   GasFeeRebate = 'gas-fee-rebate',
   BridgeConfirm = 'bridge-confirm',
@@ -65,6 +65,7 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
+  MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
   InstitutionalForm = 'institutionalForm',
   TokenSelectorFrom = 'token-selector-from',
@@ -174,8 +175,25 @@ export enum AmplitudeEvent {
   Login = 'Login',
   Transfer = 'Transfer',
   SwapClicked = 'Swap Clicked',
-  ConvertUSDCAttempt = 'Convert USDC Attempt',
-  ConvertUSDCClicked = 'Convert USDC Clicked',
+  SwapAttempt = 'Swap Attempt',
+  TradeClicked = 'Trade Clicked',
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  SurveyAccepted = 'Survey - Accepted',
+  SurveyRejected = 'Survey - Rejected',
+  PlaceOrderAttempt = 'Place Order Attempt',
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
+}
+
+export enum MixPanelEvent {
+  Swap = 'Swap',
+  Login = 'Login',
+  Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
   SwapAttempt = 'Swap Attempt',
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
@@ -233,7 +251,6 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
-  ConvertUsdc = 'convert-usdc',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
   OrderbookNotionalClick = 'orderbook-notional-click',
@@ -395,7 +412,8 @@ export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
   TakeProfit = 'take_profit',
-  InsufficientFunds = 'insufficient_funds'
+  InsufficientFunds = 'insufficient_funds',
+  ExceededMaxRetries = 'exceeded_max_retries'
 }
 
 export enum GridStrategyType {
@@ -406,4 +424,11 @@ export enum GridStrategyType {
 export enum GuildSortBy {
   TVL = 'tvl',
   Volume = 'volume'
+}
+
+export enum TimeDuration {
+  Day = 'day',
+  Hour = 'hour',
+  Minute = 'minute',
+  Second = 'second'
 }

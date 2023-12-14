@@ -66,8 +66,6 @@ type SpotStoreState = {
   subaccountOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
-
-  usdcConversionModalMarkets: UiSpotMarketWithToken[]
 }
 
 const initialStateFactory = (): SpotStoreState => ({
@@ -81,9 +79,7 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
-  subaccountOrderHistoryCount: 0,
-
-  usdcConversionModalMarkets: []
+  subaccountOrderHistoryCount: 0
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -102,20 +98,17 @@ export const useSpotStore = defineStore('spot', {
         .map((m) => m.marketId),
 
     tradeableDenoms: (state) =>
-      [...state.usdcConversionModalMarkets, ...state.markets].reduce(
-        (denoms, market) => {
-          if (!denoms.includes(market.baseDenom)) {
-            denoms.push(market.baseDenom)
-          }
+      [...state.markets].reduce((denoms, market) => {
+        if (!denoms.includes(market.baseDenom)) {
+          denoms.push(market.baseDenom)
+        }
 
-          if (!denoms.includes(market.quoteDenom)) {
-            denoms.push(market.quoteDenom)
-          }
+        if (!denoms.includes(market.quoteDenom)) {
+          denoms.push(market.quoteDenom)
+        }
 
-          return denoms
-        },
-        [] as string[]
-      ),
+        return denoms
+      }, [] as string[]),
 
     marketsWithSummary: (state) =>
       state.markets
@@ -202,33 +195,6 @@ export const useSpotStore = defineStore('spot', {
       await spotStore.init()
     },
 
-    async fetchUsdcConversionMarkets() {
-      const spotStore = useSpotStore()
-
-      const markets = await indexerSpotApi.fetchMarkets()
-
-      const marketsWithToken = await tokenService.toSpotMarketsWithToken(
-        markets
-      )
-      const uiMarkets =
-        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
-
-      const usdcConversionModalMarketsWithToken = uiMarkets
-        .filter((market) => {
-          return MARKETS_SLUGS.usdcConversionModalMarkets.includes(market.slug)
-        })
-        .sort((a, b) => {
-          return (
-            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(a.slug) -
-            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(b.slug)
-          )
-        })
-
-      spotStore.$patch({
-        usdcConversionModalMarkets: usdcConversionModalMarketsWithToken
-      })
-    },
-
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
@@ -240,6 +206,37 @@ export const useSpotStore = defineStore('spot', {
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         subaccountId: accountStore.subaccountId,
+        marketIds: marketIds || spotStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
+      })
+
+      spotStore.$patch({
+        subaccountOrders: orders,
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
+      })
+    },
+
+    async fetchOrdersBySubaccount({
+      subaccountId,
+      marketIds
+    }: {
+      subaccountId: string
+      marketIds: string[]
+    }) {
+      const spotStore = useSpotStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected || !subaccountId) {
+        return
+      }
+
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        subaccountId,
         marketIds: marketIds || spotStore.activeMarketIds,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -335,6 +332,22 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         trades
       })
+    },
+
+    async fetchLastTrade({
+      marketId,
+      executionSide
+    }: {
+      marketId: string
+      executionSide?: TradeExecutionSide
+    }) {
+      const { trades } = await indexerSpotApi.fetchTrades({
+        marketIds: [marketId],
+        executionSide,
+        pagination: { limit: 1 }
+      })
+
+      return trades[0]
     },
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {

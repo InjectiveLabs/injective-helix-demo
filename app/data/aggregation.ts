@@ -272,15 +272,15 @@ export const customAggregations = {
   },
 
   'BTC/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.1'),
+    minTick: getDecimalPlaceFromValue('1'),
     default: getDecimalPlaceFromValue('1'),
-    maxTick: getDecimalPlaceFromValue('100')
+    maxTick: getDecimalPlaceFromValue('1000')
   },
 
   'ETH/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.01'),
+    minTick: getDecimalPlaceFromValue('0.1'),
     default: getDecimalPlaceFromValue('0.1'),
-    maxTick: getDecimalPlaceFromValue('10')
+    maxTick: getDecimalPlaceFromValue('100')
   },
 
   'BNB/USDT PERP': {
@@ -395,5 +395,23 @@ export const customAggregations = {
     minTick: getDecimalPlaceFromValue('0.001'),
     default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'WHALE/USDT': {
+    minTick: getDecimalPlaceFromValue('0.00001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.01')
+  },
+
+  'TIA/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'TALIS/USDT': {
+    minTick: getDecimalPlaceFromValue('0.00001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.01')
   }
 } as Record<string, CustomAggregation>

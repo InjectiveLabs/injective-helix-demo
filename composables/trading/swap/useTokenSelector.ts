@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { Route } from '@injectivelabs/sdk-ts'
 import { AccountBalance } from '@/types'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 
 const getBalanceWithToken = (
   swapDenom: string,
@@ -49,6 +50,18 @@ export function useSwapTokenSelector({
           return tokens
         }
 
+        /** Filter out illiquid markets */
+        if (
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+            inputTokenWithBalance?.token.symbol.toUpperCase()
+          ) ||
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+            outputTokenWithBalance?.token.symbol.toUpperCase()
+          )
+        ) {
+          return tokens
+        }
+
         const inputTokens = tokens[route.targetDenom]
           ? [...tokens[route.targetDenom], inputTokenWithBalance]
           : [inputTokenWithBalance]
@@ -82,7 +95,7 @@ export function useSwapTokenSelector({
 
   /**
    * Token selector output denom must be tradable to the input denom
-   * So we either keep the curently selected output denom or update to a default one
+   * So we either keep the currently selected output denom or update to a default one
    **/
   const selectorOutputDenom = computed(() => {
     const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(

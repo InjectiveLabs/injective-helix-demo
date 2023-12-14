@@ -17,6 +17,11 @@ const TOTAL_TIA_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 
 const props = defineProps({
+  now: {
+    type: Number,
+    required: true
+  },
+
   summary: {
     type: Object as PropType<GuildCampaignSummary>,
     default: undefined
@@ -28,8 +33,8 @@ const campaignDateRange = computed(() => {
     return
   }
 
-  let startDate = format(props.summary.startTime, DATE_FORMAT)
   let endDate = format(props.summary.endTime, DATE_FORMAT)
+  let startDate = format(props.summary.startTime, DATE_FORMAT)
 
   if (isSameYear(props.summary.startTime, props.summary.endTime)) {
     startDate = format(props.summary.startTime, 'MMM dd')
@@ -40,6 +45,14 @@ const campaignDateRange = computed(() => {
   }
 
   return `${startDate} - ${endDate}`
+})
+
+const isCampaignOver = computed(() => {
+  if (!props.summary) {
+    return false
+  }
+
+  return props.summary.endTime < props.now
 })
 
 function openCreateGuildModal() {
@@ -110,6 +123,12 @@ function onConnectWallet() {
 
     <p class="max-w-4xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
 
+    <PartialsGuildHeaderCountdown
+      v-if="summary"
+      v-bind="{ now, summary }"
+      class="mt-8"
+    />
+
     <section class="mt-20">
       <div class="flex justify-between items-center gap-10">
         <h2 class="text-2xl font-bold">
@@ -154,10 +173,14 @@ function onConnectWallet() {
 
             <AppButton
               v-else
-              class="bg-blue-500 text-white min-w-3xs mt-10"
+              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              :is-disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
-              <span class="text-sm">
+              <span v-if="isCampaignOver" class="text-gray-600">
+                {{ $t('guild.seasonEnded') }}
+              </span>
+              <span v-else>
                 {{ $t('guild.howToParticipate.createGuild.cta') }}
               </span>
             </AppButton>
@@ -177,12 +200,16 @@ function onConnectWallet() {
           </p>
 
           <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
-            <AppButton class="bg-blue-500 text-white min-w-3xs mt-10">
-              <div class="text-sm">
-                <span>
-                  {{ $t('guild.howToParticipate.joinGuild.cta') }}
-                </span>
-              </div>
+            <AppButton
+              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              :is-disabled="isCampaignOver"
+            >
+              <span v-if="isCampaignOver" class="text-gray-600">
+                {{ $t('guild.seasonEnded') }}
+              </span>
+              <span v-else>
+                {{ $t('guild.howToParticipate.joinGuild.cta') }}
+              </span>
             </AppButton>
           </NuxtLink>
         </article>

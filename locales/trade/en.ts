@@ -318,10 +318,6 @@ export default {
       left: 'Left',
       right: 'Right'
     },
-    usdcLegacyBalanceDetected: 'Different version of USDC detected',
-    haveLegacyUSDC:
-      'You have USD Coin (Injective bridge) in your balance. This market only supports the USD Coin (Wormhole from Ethereum). Please go to the Accounts page to convert your USDC.',
-    viewUSDC: 'View USDC on Accounts ',
     swap: {
       to: 'To',
       fee: 'Fee',

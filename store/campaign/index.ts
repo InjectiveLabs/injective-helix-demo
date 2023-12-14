@@ -2,37 +2,48 @@ import { defineStore } from 'pinia'
 import {
   Guild,
   Campaign,
+  toBase64,
+  fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary,
-  MsgExecuteContractCompat,
-  toBase64,
-  fromBase64
+  GuildCampaignSummary
 } from '@injectivelabs/sdk-ts'
-import { joinGuild, createGuild } from '@/store/campaign/message'
-import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { awaitForAll } from '@injectivelabs/utils'
 import {
-  msgBroadcastClient,
-  indexerGrpcCampaignApi,
-  chainGrpcWasmApi
-} from '@/app/Services'
-import { GuildSortBy } from '@/types'
+  pollGuildDetails,
+  fetchGuildsByTVL,
+  fetchGuildDetails,
+  fetchUserGuildInfo,
+  fetchGuildsByVolume,
+  fetchUserIsOptedOutOfRewards
+} from '@/store/campaign/guild'
+import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import { chainGrpcWasmApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
+import { CampaignWithScAndData } from '@/types'
 
 type CampaignStoreState = {
+  userIsOptedOutOfReward: boolean
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   campaign?: Campaign
+  campaigns: Campaign[]
+  campaignsWithSc: CampaignWithScAndData[]
+  campaignsInfo: Campaign[]
   totalUserCount: number
   totalGuildMember: number
   userGuildInfo?: GuildMember
   guildMembers: GuildMember[]
   campaignUsers: CampaignUser[]
   ownerCampaignInfo?: CampaignUser
+  ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
+  claimedRewards: string[]
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
+  userIsOptedOutOfReward: false,
   guild: undefined,
   guildsByTVL: [],
   guildMembers: [],
@@ -41,9 +52,14 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildsByVolume: [],
   totalGuildMember: 0,
   campaign: undefined,
+  campaigns: [],
+  campaignsInfo: [],
+  campaignsWithSc: [],
   userGuildInfo: undefined,
   ownerCampaignInfo: undefined,
-  guildCampaignSummary: undefined
+  ownerRewards: [],
+  guildCampaignSummary: undefined,
+  claimedRewards: []
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -51,6 +67,15 @@ export const useCampaignStore = defineStore('campaign', {
   actions: {
     joinGuild,
     createGuild,
+    claimReward,
+
+    // guild queries
+    pollGuildDetails,
+    fetchGuildsByTVL,
+    fetchGuildDetails,
+    fetchUserGuildInfo,
+    fetchGuildsByVolume,
+    fetchUserIsOptedOutOfRewards,
 
     async fetchCampaign({
       skip,
@@ -97,144 +122,86 @@ export const useCampaignStore = defineStore('campaign', {
       })
     },
 
-    async fetchGuildsByTVL() {
+    async fetchCampaignsWithSc({
+      campaignIds,
+      pagination
+    }: {
+      campaignIds: string[]
+      pagination?: { limit?: number; skip?: number }
+    }) {
       const campaignStore = useCampaignStore()
 
-      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
-        sortBy: GuildSortBy.TVL,
-        limit: 100,
-        campaignContract: GUILD_CONTRACT_ADDRESS
-      })
-
-      campaignStore.$patch({
-        guildsByTVL: guilds,
-        guildCampaignSummary: summary
-      })
-    },
-
-    async fetchGuildsByVolume() {
-      const campaignStore = useCampaignStore()
-
-      const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
-        sortBy: GuildSortBy.Volume,
-        limit: 100,
-        campaignContract: GUILD_CONTRACT_ADDRESS
-      })
-
-      campaignStore.$patch({
-        guildsByVolume: guilds,
-        guildCampaignSummary: summary
-      })
-    },
-
-    async fetchUserGuildInfo() {
-      const walletStore = useWalletStore()
-      const campaignStore = useCampaignStore()
-
-      if (!walletStore.isUserWalletConnected || campaignStore.userGuildInfo) {
-        return
-      }
-
-      try {
-        const { info: userGuildInfo } =
-          await indexerGrpcCampaignApi.fetchGuildMember({
-            address: walletStore.injectiveAddress,
-            campaignContract: GUILD_CONTRACT_ADDRESS
+      const campaignsWithSc = await awaitForAll(
+        campaignIds,
+        async (campaignId: string) => {
+          const { campaign } = await indexerGrpcCampaignApi.fetchCampaign({
+            campaignId,
+            limit: pagination?.limit || 1,
+            skip: (pagination?.skip || 0).toString()
           })
 
-        campaignStore.$patch({
-          userGuildInfo
-        })
-      } catch {
-        // silently throw error
-      }
+          const campaignWithSc = LP_CAMPAIGNS.find(
+            (c) => c.campaignId === campaignId
+          )!
+
+          return { ...campaign, ...campaignWithSc }
+        }
+      )
+
+      campaignStore.$patch({ campaignsWithSc })
     },
 
-    async fetchGuildDetails({
-      skip,
-      limit,
-      guildId
-    }: {
-      skip?: number
-      limit?: number
-      guildId: string
-    }) {
-      const campaignStore = useCampaignStore()
-
-      const { members, guildInfo, paging } =
-        await indexerGrpcCampaignApi.fetchGuildMembers({
-          skip,
-          limit,
-          guildId,
-          includeGuildInfo: true,
-          campaignContract: GUILD_CONTRACT_ADDRESS
-        })
-
-      campaignStore.$patch({
-        guild: guildInfo,
-        guildMembers: members,
-        totalGuildMember: paging?.total || 0
-      })
-    },
-
-    async pollGuildDetails({
-      page,
-      limit,
-      guildId
-    }: {
-      page?: number
-      limit?: number
-      guildId: string
-    }) {
-      const campaignStore = useCampaignStore()
-
-      const { members, guildInfo, paging } =
-        await indexerGrpcCampaignApi.fetchGuildMembers({
-          limit,
-          guildId,
-          skip: 0,
-          includeGuildInfo: true,
-          campaignContract: GUILD_CONTRACT_ADDRESS
-        })
-
-      if (page === 1) {
-        campaignStore.$patch({
-          guildMembers: members
-        })
-      }
-
-      campaignStore.$patch({
-        guild: guildInfo,
-        totalGuildMember: paging?.total || 0
-      })
-    },
-
-    async claimReward(contractAddress: string) {
-      const appStore = useAppStore()
+    async fetchCampaignRewardsForUser() {
       const walletStore = useWalletStore()
+      const campaignStore = useCampaignStore()
 
-      await appStore.queue()
-      await walletStore.validate()
-
-      if (!walletStore.address) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
-      const message = MsgExecuteContractCompat.fromJSON({
-        sender: walletStore.injectiveAddress,
-        contractAddress,
-        exec: {
-          action: 'claim_reward',
-          msg: {}
+      const rewards = await awaitForAll(
+        LP_CAMPAIGNS,
+        async (campaignWithSc) => {
+          const { users, campaign } =
+            await indexerGrpcCampaignApi.fetchCampaign({
+              limit: 1,
+              skip: '0',
+              campaignId: campaignWithSc.campaignId,
+              accountAddress: walletStore.injectiveAddress
+            })
+
+          return { user: users[0], campaign }
         }
-      })
+      )
 
-      const reward = await msgBroadcastClient.broadcast({
-        msgs: [message],
-        injectiveAddress: walletStore.injectiveAddress
-      })
+      const filteredRewards = rewards.filter((reward) => reward.user)
 
-      return reward
+      const claimedCampaignRewards = await awaitForAll(
+        filteredRewards,
+        async (rew) => {
+          const campaignWithSc = LP_CAMPAIGNS.find(
+            (c) => c.campaignId === rew.campaign?.campaignId
+          )
+
+          const hasClaimed = campaignWithSc
+            ? await campaignStore.fetchUserClaimedStatus(
+                campaignWithSc.scAddress
+              )
+            : false
+
+          return hasClaimed ? rew.campaign?.campaignId : undefined
+        }
+      )
+
+      const campaignsInfo = rewards.map((rew) => rew.campaign)
+      const ownerRewards = filteredRewards.map((rew) => rew.user)
+      const claimedRewards = claimedCampaignRewards.filter((r) => !!r)
+
+      campaignStore.$patch({
+        ownerRewards,
+        campaignsInfo,
+        claimedRewards
+      })
     },
 
     async fetchUserClaimedStatus(contractAddress: string) {

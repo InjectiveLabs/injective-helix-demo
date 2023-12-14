@@ -2,6 +2,7 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
+import { notLiquidMarkets } from '@/app/data/market'
 import {
   SpotTradeIntegrityStrategy,
   SpotOrderbookIntegrityStrategy,
@@ -27,6 +28,10 @@ onWalletConnected(() => {
   filterByCurrentMarket.value = false
   refreshSubaccountDetails()
 })
+
+const notLiquidMarket = computed(() =>
+  notLiquidMarkets.find((m) => m.slug === market.value?.slug)
+)
 
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
@@ -133,6 +138,10 @@ useIntervalFn(() => {
     </template>
 
     <template #modals>
+      <ModalsMarketNotLiquid
+        v-if="notLiquidMarket"
+        v-bind="{ notLiquidMarket }"
+      />
       <ModalsMarketRestricted
         v-if="market"
         :key="market.marketId"

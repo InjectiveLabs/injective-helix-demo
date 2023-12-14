@@ -73,6 +73,7 @@ function onInit() {
       UI_DEFAULT_AGGREGATION_DECIMALS_STRING
 
     minTick.value = minTickSize
+    aggregation.value = minTickSize
 
     const customAggregation = customAggregations[props.market.ticker]
 
@@ -168,9 +169,11 @@ watchDebounced(
           />
           <div v-if="activeType === FilterList.Orderbook">
             <PartialsTradingMarketOrderbookHeader :market="market" />
-            <PartialsTradingMarketOrderbook
-              :aggregation="Number(aggregation)"
-              :market="market"
+            <PartialsTradingMarketOrderbookWrapper
+              v-bind="{
+                market,
+                aggregation: Number(aggregation)
+              }"
             />
           </div>
 

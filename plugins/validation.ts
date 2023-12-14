@@ -40,6 +40,7 @@ export const errorMessages = {
   [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
   [BridgingNetwork.Oraichain]: () =>
     'This field is not a valid Oraichain address',
+  [BridgingNetwork.Migaloo]: () => 'This field is not a valid Migaloo address',
   [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
@@ -221,7 +222,7 @@ export const defineGlobalRules = () => {
     const minInBigNumber = new BigNumberInBase(min)
 
     if (valueInBigNumber.lte(minInBigNumber)) {
-      return `Value should be greater than ${minInBigNumber.toFixed(2)}`
+      return `Value should be greater than ${minInBigNumber.toFixed()}`
     }
 
     return true
@@ -232,7 +233,7 @@ export const defineGlobalRules = () => {
     const maxInBigNumber = new BigNumberInBase(max)
 
     if (valueInBigNumber.gte(maxInBigNumber)) {
-      return `Value should be less than ${maxInBigNumber.toFixed(2)}`
+      return `Value should be less than ${maxInBigNumber.toFixed()}`
     }
 
     return true
@@ -306,15 +307,37 @@ export const defineGlobalRules = () => {
   )
 
   defineRule(
+    'rangeKavaSgt',
+    (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
+      const upperInBigNumber = new BigNumberInBase(upper)
+      const lowerInBigNumber = new BigNumberInBase(lower)
+      const levelsInBigNumber = new BigNumberInBase(levels)
+
+      const deltaPrice = upperInBigNumber
+        .minus(lowerInBigNumber)
+        .dividedBy(levelsInBigNumber)
+
+      if (deltaPrice.lt(minPriceTickSize)) {
+        return 'Invalid grid spacing'
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
     'singleSided',
-    (_: string, [lower, upper, currentPrice, field]: string[]) => {
+    (
+      _: string,
+      [lower, upper, currentPrice, field, threshold]: string[]
+    ): boolean | string => {
       const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
 
       const lowerThreshold = currentPriceInBigNumber.plus(
-        currentPriceInBigNumber.times(0.01)
+        currentPriceInBigNumber.times(threshold)
       )
       const upperThreshold = currentPriceInBigNumber.minus(
-        currentPriceInBigNumber.times(0.01)
+        currentPriceInBigNumber.times(threshold)
       )
 
       if (field === SpotGridTradingField.LowerPrice) {

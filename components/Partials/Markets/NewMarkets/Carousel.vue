@@ -11,6 +11,8 @@ const props = defineProps({
 
 const MINIMUM_MARKETS = 3
 
+const animationClass = ref('slide-fade-right')
+
 const currentMarketsBatch = ref(0)
 
 const totalMarketsBatches = computed(() => {
@@ -43,6 +45,8 @@ function goToNext() {
     return
   }
 
+  animationClass.value = 'slide-fade-right'
+
   const nextBatch = currentMarketsBatch.value + 1
 
   currentMarketsBatch.value = nextBatch % totalMarketsBatches.value
@@ -57,12 +61,24 @@ function goToPrevious() {
     return
   }
 
+  animationClass.value = 'slide-fade-left'
+
   currentMarketsBatch.value -= 1
 }
 
 function onClickIndicator(index: number) {
   if (isActive.value) {
     pause()
+  }
+
+  if (currentMarketsBatch.value === index) {
+    return
+  }
+
+  if (currentMarketsBatch.value < index) {
+    animationClass.value = 'slide-fade-right'
+  } else {
+    animationClass.value = 'slide-fade-left'
   }
 
   currentMarketsBatch.value = index
@@ -101,24 +117,23 @@ const { pause, isActive } = useIntervalFn(() => {
       </Teleport>
     </ClientOnly>
 
-    <TransitionGroup
-      mode="out-in"
-      name="slide-fade"
-      tag="div"
-      class="md:grid grid-cols-12 gap-6"
-    >
-      <PartialsMarketsCard
-        v-for="(newMarket, index) in displayedMarkets"
-        :key="`${newMarket.market.marketId}-${currentMarketsBatch}-${index}`"
-        class="flex-0-full col-span-4"
-        data-cy="market-card-whats-new"
-        v-bind="{
-          market: newMarket.market,
-          summary: newMarket.summary,
-          volumeInUsd: newMarket.volumeInUsd
-        }"
-      />
-    </TransitionGroup>
+    <div class="relative overflow-hidden">
+      <Transition mode="default" :name="animationClass">
+        <div :key="currentMarketsBatch" class="md:grid grid-cols-12 gap-6">
+          <PartialsMarketsCard
+            v-for="(newMarket, index) in displayedMarkets"
+            :key="`${newMarket.market.marketId}-${currentMarketsBatch}-${index}`"
+            class="flex-0-full col-span-4"
+            data-cy="market-card-whats-new"
+            v-bind="{
+              market: newMarket.market,
+              summary: newMarket.summary,
+              volumeInUsd: newMarket.volumeInUsd
+            }"
+          />
+        </div>
+      </Transition>
+    </div>
 
     <div
       v-if="markets.length > MINIMUM_MARKETS"
@@ -135,21 +150,54 @@ const { pause, isActive } = useIntervalFn(() => {
 </template>
 
 <style scoped>
-.slide-fade-enter-from {
+.slide-fade-right-enter-from {
   transform: translateX(100%);
   opacity: 0;
 }
 
-.slide-fade-enter-active {
+.slide-fade-right-enter-active {
   transition: all 0.3s ease;
 }
 
-.slide-fade-enter-to {
+.slide-fade-right-enter-to {
   transform: translateX(0);
   opacity: 1;
 }
 
-.slide-fade-leave-active {
-  display: none;
+.slide-fade-right-leave-active {
+  /* display: none; */
+  position: absolute;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+.slide-fade-right-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-fade-left-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-fade-left-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-left-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-fade-left-leave-active {
+  /* display: none; */
+  position: absolute;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.slide-fade-left-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>

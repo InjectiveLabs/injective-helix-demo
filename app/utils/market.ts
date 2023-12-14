@@ -9,7 +9,13 @@ import {
   BigNumberInBase,
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
-import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
+import {
+  PriceLevel,
+  SpotMarket,
+  DerivativeMarket,
+  ExpiryFuturesMarket
+} from '@injectivelabs/sdk-ts'
+import { MarketStatus } from '../../types/exchange'
 import {
   upcomingMarkets,
   deprecatedMarkets,
@@ -26,6 +32,10 @@ import {
   MarketCategoryType,
   TradingBotsSubPage
 } from '@/types'
+
+interface PriceLevelMap {
+  [price: string]: PriceLevel
+}
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -244,6 +254,16 @@ export const getFormattedMarketsHistoryChartData = (
   })
 }
 
+export const marketIsInactive = (market: DerivativeMarket) => {
+  const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
+
+  return INACTIVE_MARKET_TICKERS.includes(market.ticker)
+}
+
+export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
+  return market.marketStatus === MarketStatus.Active
+}
+
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   const now = Date.now() / 1000
   const secondsInADay = SECONDS_IN_A_DAY.toNumber()
@@ -267,7 +287,7 @@ export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   }
 
   return (
-    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
+    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay * 7 > now
   )
 }
 
@@ -280,26 +300,20 @@ export const updateOrderbookRecord = (
   currentRecords: PriceLevel[] = [],
   updatedRecords: PriceLevel[] = []
 ) => {
-  const newRecords = [...updatedRecords].reduce((records, record) => {
-    const existingRecord = currentRecords.find((r) => r.price === record.price)
+  const currentRecordsMap: PriceLevelMap = currentRecords.reduce(
+    (currentRecordsMap, record) => {
+      currentRecordsMap[record.price] = record
 
-    return existingRecord ? records : [...records, record]
-  }, [] as PriceLevel[])
+      return currentRecordsMap
+    },
+    {} as PriceLevelMap
+  )
 
-  const affectedRecords = [...currentRecords].map((record) => {
-    const updatedRecord = updatedRecords.find((r) => r.price === record.price)
-
-    if (!updatedRecord) {
-      return record
-    }
-
-    return {
-      ...record,
-      quantity: updatedRecord.quantity
-    }
+  updatedRecords.forEach((record) => {
+    currentRecordsMap[record.price] = record
   })
 
-  return [...newRecords, ...affectedRecords].filter((record) =>
+  return Object.values(currentRecordsMap).filter((record) =>
     new BigNumber(record.quantity).gt(0)
   )
 }

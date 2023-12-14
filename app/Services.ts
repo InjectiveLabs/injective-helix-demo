@@ -63,17 +63,22 @@ export const chainGrpcWasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
   ENDPOINTS.campaign
 )
 export const indexerAccountPortfolioApi = new IndexerGrpcAccountPortfolioApi(
   ENDPOINTS.indexer
 )
+
+/** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
 
-export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.explorer)
+export const indexerExplorerApi = new IndexerGrpcExplorerApi(
+  ENDPOINTS.explorer || ENDPOINTS.indexer
+)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(
   `${ENDPOINTS.explorer}/api/explorer/v1`
 )

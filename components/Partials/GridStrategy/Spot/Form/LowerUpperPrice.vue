@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import {
+  GST_SINGLE_SIDED_THRESHOLD,
+  GST_KAVA_SINGLE_SIDED_THRESHOLD
+} from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '~/app/data/token'
 
 const props = defineProps({
   market: {
@@ -16,6 +21,20 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
 )
 
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
+)
+
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
@@ -25,9 +44,15 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.LowerPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.LowerPrice
+      },${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
@@ -46,9 +71,15 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
       const singleSidedRule = `singleSided:@${
         SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${spotLastTradedPrice.value.toFixed(
-        2
-      )},${SpotGridTradingField.UpperPrice}`
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.UpperPrice
+      },${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
 
       const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 

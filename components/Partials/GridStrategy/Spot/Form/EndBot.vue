@@ -1,20 +1,32 @@
 <script lang="ts" setup>
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
-defineProps({
-  isLiquidity: Boolean
+const props = defineProps({
+  isLiquidity: Boolean,
+
+  strategy: {
+    type: Object as PropType<TradingStrategy>,
+    required: true
+  }
 })
 
+const spotStore = useSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 
-const market = computed(() => gridStrategyStore.spotMarket!)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
 
 const activeStrategy = computed(
   () =>
     gridStrategyStore.activeStrategies.find(
       (strategy) =>
         strategy.contractAddress ===
-        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
+        getSgtContractAddressFromSlug(market.value.slug)
     )!
 )
 
@@ -34,6 +46,7 @@ const { pnl } = useActiveGridStrategy(market, activeStrategy)
     </PartialsGridStrategySpotCommonDetails>
 
     <PartialsGridStrategySpotCommonRemoveStrategy
+      v-if="activeStrategy"
       v-bind="{
         createdAt: activeStrategy.createdAt,
         pnl: pnl.toFixed(),

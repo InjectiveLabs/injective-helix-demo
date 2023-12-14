@@ -107,3 +107,8 @@ export type SpotGridMarket = {
   slug: string
   contractAddress: string
 }
+
+export type NotLiquidMarket = {
+  slug: string
+  redirectionSlug: string
+}

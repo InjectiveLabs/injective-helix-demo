@@ -5,8 +5,13 @@ import {
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
+const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
@@ -26,14 +31,26 @@ const { lastTradedPrice } = useSpotLastPrice(
 const upperPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.UpperPrice] || '',
   set: (value) => {
-    setUpperPriceField(Number(value).toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS))
+    setUpperPriceField(
+      Number(value).toFixed(
+        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      )
+    )
   }
 })
 
 const lowerPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.LowerPrice] || '',
   set: (value) => {
-    setLowerPriceField(Number(value).toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS))
+    setLowerPriceField(
+      Number(value).toFixed(
+        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
+          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      )
+    )
   }
 })
 
@@ -43,26 +60,32 @@ const isBaseAndQuoteType = computed(
     InvestmentTypeGst.BaseAndQuote
 )
 
+const decimalPlaces = computed(() =>
+  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
+    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
+)
+
 onMounted(() => {
   if (lastTradedPrice.value.gt(0)) {
     setFormValues(
       {
         [SpotGridTradingField.LowerPrice]: lastTradedPrice.value
           .minus(lastTradedPrice.value.times(0.06))
-          .toFixed(2),
+          .toFixed(decimalPlaces.value),
         [SpotGridTradingField.UpperPrice]: lastTradedPrice.value
           .plus(lastTradedPrice.value.times(0.06))
-          .toFixed(2)
+          .toFixed(decimalPlaces.value)
       },
       false
     )
 
     min.value = lastTradedPrice.value
       .minus(lastTradedPrice.value.times(0.2))
-      .toFixed(2)
+      .toFixed(decimalPlaces.value)
     max.value = lastTradedPrice.value
       .plus(lastTradedPrice.value.times(0.2))
-      .toFixed(2)
+      .toFixed(decimalPlaces.value)
   } else {
     setFormValues(
       {
@@ -139,7 +162,11 @@ watch(isBaseAndQuoteType, (value) => {
       v-model:max="max"
       v-model:min="min"
       v-model:upper="upperPriceValue"
-      v-bind="{ currentPrice: lastTradedPrice.toFixed() }"
+      v-bind="{
+        currentPrice: lastTradedPrice.toFixed(),
+        market: gridStrategyStore.spotMarket,
+        orderbook: spotStore.orderbook
+      }"
     />
 
     <div class="space-x-2 py-2 flex justify-end">
