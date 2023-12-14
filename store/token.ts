@@ -41,6 +41,7 @@ export const useTokenStore = defineStore('token', {
   },
   actions: {
     async fetchTokensUsdPriceMap(coinGeckoIdList: string[]) {
+      const spotStore = useSpotStore()
       const tokenStore = useTokenStore()
 
       if (coinGeckoIdList.length === 0) {
@@ -57,6 +58,14 @@ export const useTokenStore = defineStore('token', {
       const tokenUsdPriceMap = await tokenPrice.fetchUsdTokensPrice(
         coinGeckoIdsNotInStore
       )
+
+      // REMOVE WHEN COINGECKO ADDS TALIS
+      const talisLastTradedPrice = await spotStore.fetchLastTrade({
+        marketId:
+          '0x21f3eed62ddc64458129c0dcbff32b3f54c92084db787eb5cf7c20e69a1de033'
+      })
+
+      tokenUsdPriceMap.talis = Number(talisLastTradedPrice.price)
 
       tokenStore.$patch({
         tokenUsdPriceMap: {
@@ -86,8 +95,17 @@ export const useTokenStore = defineStore('token', {
         (token) => token.tokenType === TokenType.Unknown
       )
 
+      // REMOVE WHEN COINGECKO ADDS TALIS
+      const supplyWithTokenWithTalis = supplyWithToken.map((token) => {
+        if (token.symbol === 'TALIS') {
+          return { ...token, coinGeckoId: 'talis' } as Token
+        } else {
+          return token
+        }
+      })
+
       tokenStore.$patch({
-        tokens: supplyWithToken,
+        tokens: supplyWithTokenWithTalis,
         unknownTokens: supplyWithUnknownTokens
       })
     },
