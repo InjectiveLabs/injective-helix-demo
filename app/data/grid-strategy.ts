@@ -47,6 +47,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'kuji-usdt',
     contractAddress: 'inj1zen7yh00gffkvsxcptqzaslu27msrw0ee933vf'
+  },
+  {
+    slug: 'talis-usdt',
+    contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
   }
 ]
 
@@ -56,10 +60,6 @@ if (IS_STAGING) {
       {
         slug: 'pyth-usdt',
         contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
-      },
-      {
-        slug: 'talis-usdt',
-        contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
       }
     ]
   )
