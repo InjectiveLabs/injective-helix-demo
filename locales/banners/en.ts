@@ -1,5 +1,3 @@
-import { I18nMessageFunction } from '@/types'
-
 export default {
   banners: {
     welcome: {
@@ -36,21 +34,13 @@ export default {
       close: 'Close',
       blogPost: 'blog post',
       tia: '$TIA',
+      talis: '$TALIS',
       here: 'here',
-      title: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Celestia now live on Helix with 30,000 ',
-          named('link'),
-          ' in rewards up for grabs!'
-        ]),
-      description1: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Helix is the world’s first exchange to list TIA. To celebrate the addition of TIA/USDT Spot on Helix, Helix is giving away 30,000 TIA tokens to Helix traders. Enjoy gas free trading and the best rewards now! Read ',
-          named('link'),
-          ' for more details.'
-        ]),
-      cta1: 'Go to TIA/USDT',
-      cta2: 'Swap TIA'
+      title: 'TALIS coming soon, join the countdown!',
+      description:
+        'Helix is the first venue available to trade TALIS, the native token of Talis - the leading NFT marketplace in Cosmos. Explore ways to trade TALIS!',
+      cta1: 'Go to TALIS/USDT',
+      cta2: 'Swap TALIS'
     }
   }
 }

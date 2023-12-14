@@ -79,6 +79,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_TESTNET) {
+    spot.push('zen-inj')
     spot.push('projx-inj')
     spot.push('wbtc-usdt')
     spot.push('usdc-usdt')

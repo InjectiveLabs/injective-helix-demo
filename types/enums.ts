@@ -80,7 +80,7 @@ export enum Modal {
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   MarketRestricted = 'market-restricted',
-  NewFeature = 'new-feature'
+  NewFeatureTalis = 'new-feature-talis'
 }
 
 export enum Breakpoint {
