@@ -118,7 +118,7 @@ const expectedPtsToFormat = computed(() => {
     <span class="font-mono flex items-start break-all">
       {{ `${expectedPtsToFormat}` }}
       <span class="text-gray-500 ml-1 break-normal">
-        {{ $t('pts') }}
+        {{ $t('tradeAndEarn.pts') }}
       </span>
     </span>
   </CommonTextInfo>
