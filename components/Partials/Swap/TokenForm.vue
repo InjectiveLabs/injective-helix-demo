@@ -18,6 +18,13 @@ const emit = defineEmits<{
 
 const animationCount = ref(0)
 
+const DISABLED_LIST = [
+  {
+    baseDenom: 'factory/inj1maeyvxfamtn8lfyxpjca8kuvauuf2qeu6gtxm3/Talis',
+    quoteDenom: 'peggy0xdAC17F958D2ee523a2206206994597C13D831ec7'
+  }
+]
+
 const { value: inputDenom } = useStringField({
   name: SwapFormField.InputDenom,
   initialValue: swapStore?.routes[0]?.sourceDenom
@@ -37,6 +44,19 @@ const {
   inputDenom,
   outputDenom,
   balances: accountBalancesWithToken
+})
+
+const outputIsDisabledQuoteDenom = computed(
+  () =>
+    !!DISABLED_LIST.find(({ quoteDenom }) => quoteDenom === outputDenom.value)
+)
+
+const shouldDisableQuoteToken = computed(() => {
+  return DISABLED_LIST.some(
+    ({ baseDenom, quoteDenom }) =>
+      [baseDenom, quoteDenom].includes(inputDenom.value) &&
+      [baseDenom, quoteDenom].includes(outputDenom.value)
+  )
 })
 
 const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
@@ -179,6 +199,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledQuoteDenom,
             isMaxHidden: false,
             isUsdVisible: !!inputToken?.token.coinGeckoId,
             shouldCheckBalance: true,
@@ -219,6 +240,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledQuoteDenom,
             isUsdVisible: !!outputToken?.token.coinGeckoId,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
