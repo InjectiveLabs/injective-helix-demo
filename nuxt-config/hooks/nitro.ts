@@ -42,7 +42,7 @@ const fetchGuildRoutes = async (): Promise<string[]> => {
       data: { guilds: { guildId: string }[] }
     }
 
-    data.guilds.forEach(({ guildId }) => GUILD_IDS.add(guildId))
+    data.guilds || [].forEach(({ guildId }) => GUILD_IDS.add(guildId))
 
     return Array.from(GUILD_IDS).map((guildId) => `/guild/${guildId}`)
   } catch (e) {
