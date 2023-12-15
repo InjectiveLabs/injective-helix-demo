@@ -50,7 +50,7 @@ const props = defineProps({
   tensMultiplier: {
     type: Number,
     required: false,
-    default: 6
+    default: undefined
   },
 
   additionalRules: {
