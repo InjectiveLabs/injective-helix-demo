@@ -54,9 +54,8 @@ const outputIsDisabledQuoteDenom = computed(
 const shouldDisableQuoteToken = computed(() => {
   return DISABLED_LIST.some(
     ({ baseDenom, quoteDenom }) =>
-      inputDenom.value ||
-      (outputDenom.value === baseDenom && inputDenom.value) ||
-      outputDenom.value === quoteDenom
+      [baseDenom, quoteDenom].includes(inputDenom.value) &&
+      [baseDenom, quoteDenom].includes(outputDenom.value)
   )
 })
 
