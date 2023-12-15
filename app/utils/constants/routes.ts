@@ -65,7 +65,10 @@ export const getRoutes = (network: Network, env: string) => {
     'weth-usdt',
     'whale-usdt',
     'usdtkv-usdt',
-    'wmatic-usdt'
+    'wmatic-usdt',
+    'arb-usdt',
+    'kuji-usdt',
+    'talis-usdt'
   ]
 
   const binaryOptions: string[] = []
