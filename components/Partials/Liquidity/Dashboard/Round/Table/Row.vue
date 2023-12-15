@@ -23,7 +23,7 @@ const market = computed(() =>
 
 const token = computed(() =>
   tokenStore.tokens.find(
-    ({ coinGeckoId }) => market.value?.baseToken.coinGeckoId === coinGeckoId
+    ({ symbol }) => market.value?.baseToken.symbol === symbol
   )
 )
 

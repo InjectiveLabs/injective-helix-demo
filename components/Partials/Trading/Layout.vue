@@ -175,7 +175,8 @@ function onToggleMarketList() {
             >
               <div
                 :class="{
-                  invisible: showMarketList
+                  invisible:
+                    showMarketList && userTradingLayout !== TradingLayout.Right
                 }"
               >
                 <slot name="trading-form" />
