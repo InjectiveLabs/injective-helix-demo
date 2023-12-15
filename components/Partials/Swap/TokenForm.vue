@@ -18,11 +18,8 @@ const emit = defineEmits<{
 
 const animationCount = ref(0)
 
-const DISABLED_LIST = [
-  {
-    baseDenom: 'factory/inj1maeyvxfamtn8lfyxpjca8kuvauuf2qeu6gtxm3/Talis',
-    quoteDenom: 'peggy0xdAC17F958D2ee523a2206206994597C13D831ec7'
-  }
+const SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST = [
+  'factory/inj1maeyvxfamtn8lfyxpjca8kuvauuf2qeu6gtxm3/Talis'
 ]
 
 const { value: inputDenom } = useStringField({
@@ -46,18 +43,15 @@ const {
   balances: accountBalancesWithToken
 })
 
-const outputIsDisabledQuoteDenom = computed(
-  () =>
-    !!DISABLED_LIST.find(({ quoteDenom }) => quoteDenom === outputDenom.value)
+const outputIsDisabledBaseDenom = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.includes(outputDenom.value)
 )
 
-const shouldDisableQuoteToken = computed(() => {
-  return DISABLED_LIST.some(
-    ({ baseDenom, quoteDenom }) =>
-      [baseDenom, quoteDenom].includes(inputDenom.value) &&
-      [baseDenom, quoteDenom].includes(outputDenom.value)
+const shouldDisableQuoteToken = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.some((denom) =>
+    [inputDenom.value, outputDenom.value].includes(denom)
   )
-})
+)
 
 const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
   useSwap(formValues)
@@ -199,7 +193,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
-            isDisabled: shouldDisableQuoteToken && !outputIsDisabledQuoteDenom,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
             isUsdVisible: !!inputToken?.token.coinGeckoId,
             shouldCheckBalance: true,
@@ -240,7 +234,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
-            isDisabled: shouldDisableQuoteToken && outputIsDisabledQuoteDenom,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
             isUsdVisible: !!outputToken?.token.coinGeckoId,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
