@@ -14,7 +14,9 @@ import type { Token } from '@injectivelabs/token-metadata'
 import {
   denomClient,
   exchangeApi,
-  indexerRestMarketChronosApi
+  indexerDerivativesApi,
+  indexerRestMarketChronosApi,
+  indexerSpotApi
 } from '@/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
@@ -99,6 +101,24 @@ export const useExchangeStore = defineStore('exchange', {
       exchangeStore.$patch({
         params: await exchangeApi.fetchModuleParams()
       })
+    },
+
+    async fetchMarketsFromTicker(ticker: string) {
+      const spotMarkets = await indexerSpotApi.fetchMarkets()
+      const derivativeMarkets = await indexerDerivativesApi.fetchMarkets()
+
+      return {
+        spotMarketIds: spotMarkets
+          .filter((market) =>
+            market.ticker.toLowerCase().includes(ticker.toLowerCase())
+          )
+          .map((m) => m.marketId),
+        derivativeMarketIds: derivativeMarkets
+          .filter((market) =>
+            market.ticker.toLowerCase().includes(ticker.toLowerCase())
+          )
+          .map((m) => m.marketId)
+      }
     },
 
     async fetchFeeDiscountSchedule() {

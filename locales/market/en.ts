@@ -20,7 +20,8 @@ export default {
     preLaunchFutures: 'Pre Launch Futures',
     expiredRecently: 'Expired recently',
     emptyHeaderFavorites: 'No favorited markets yet.',
-    emptyDescription: 'Try another search term or you can propose some!',
+    emptyDescription:
+      'No results found. Search for markets available on Injective outside of Helix.',
     emptyDescriptionFavorites: 'Your starred markets will be shown here.',
     inactive: 'Inactive'
   },

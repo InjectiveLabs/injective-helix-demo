@@ -71,6 +71,7 @@ export enum Modal {
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
+  MarketNotOnHelix = 'market-not-on-helix',
   AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
   GridStrategyDetails = 'grid-strategy-details',

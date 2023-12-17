@@ -296,7 +296,11 @@ export const useDerivativeStore = defineStore('derivative', {
         marketIdsFromQuery
       })
 
-      await derivativeStore.init()
+      if (marketIdsFromQuery.length === 0) {
+        await derivativeStore.initIfNotInit()
+      } else {
+        await derivativeStore.init()
+      }
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {

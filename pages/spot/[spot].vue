@@ -33,6 +33,8 @@ const notLiquidMarket = computed(() =>
   notLiquidMarkets.find((m) => m.slug === market.value?.slug)
 )
 
+const isMarketIdInQuery = computed(() => !!useQueryRef('marketId', '').value)
+
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
 
@@ -142,6 +144,7 @@ useIntervalFn(() => {
         v-if="notLiquidMarket"
         v-bind="{ notLiquidMarket }"
       />
+      <ModalsMarketNotOnHelix v-if="isMarketIdInQuery" />
       <ModalsMarketRestricted
         v-if="market"
         :key="market.marketId"
