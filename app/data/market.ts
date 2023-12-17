@@ -154,10 +154,6 @@ export const marketPromotions = [
   }
 ] as MarketPromotion[]
 
-export const AUCTION_MARKET_IDS = [
-  '0xe5fcbb5a2935d0b1ce700c841343cd86803ca04f43ca6a03f0c714ec27550cd2'
-]
-
 export const TALIS_METADATA = {
   symbol: 'TALIS',
   coingeckoId: 'talis'
