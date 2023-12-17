@@ -192,7 +192,11 @@ export const useSpotStore = defineStore('spot', {
         marketIdsFromQuery
       })
 
-      await spotStore.init()
+      if (marketIdsFromQuery.length === 0) {
+        await spotStore.initIfNotInit()
+      } else {
+        await spotStore.init()
+      }
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {

@@ -349,14 +349,15 @@ function prefillFromQueryParams() {
 
             <span
               v-if="activeType === MarketType.Favorite"
-              class="mt-2 text-xs text-gray-500"
+              class="mt-2 text-sm text-gray-500"
             >
               {{ $t('markets.emptyDescriptionFavorites') }}
             </span>
 
-            <span v-else class="mt-2 text-xs text-gray-500">
-              {{ $t('markets.emptyDescription') }}
-            </span>
+            <PartialsMarketsFiltersSearchMarketOnChain
+              v-else
+              v-bind="{ search }"
+            />
           </CommonEmptyList>
         </template>
       </CommonTableBody>
