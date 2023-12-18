@@ -8,7 +8,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import axios, { AxiosInstance } from 'axios'
 
-const BASE_URL = 'http://localhost:3001/api'
+const BASE_URL = '/api'
 
 export class CacheApi {
   client: AxiosInstance
