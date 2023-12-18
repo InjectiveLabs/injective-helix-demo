@@ -9,8 +9,8 @@ import {
   UiPerpetualMarketWithToken,
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
 import { stableCoinDenoms } from '@/app/data/token'
+import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
 const props = defineProps({
   market: {
@@ -151,7 +151,8 @@ const { valueToString: lowToFormat, valueToBigNumber: low } =
       return new BigNumberInBase(props.summary.low)
     }),
     {
-      decimalPlaces: props.market.priceDecimals
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
     }
   )
 
