@@ -3,7 +3,7 @@ import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
 import { TokenUsdPriceMap } from '@/types'
-import { TALIS_METADATA } from '@/app/data/market'
+import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -84,10 +84,13 @@ export const useTokenStore = defineStore('token', {
         (token) => token.tokenType !== TokenType.Unknown
       )
 
-      // REMOVE WHEN COINGECKO ADDS TALIS
-      const supplyWithTokenWithTalis = supplyWithToken.map((token) => {
-        if (token.symbol === TALIS_METADATA.symbol) {
-          return { ...token, coinGeckoId: TALIS_METADATA.coingeckoId } as Token
+      const supplyWithTokenWithInjTokens = supplyWithToken.map((token) => {
+        const marketData = MARKET_IDS_WITHOUT_COINGECKO_ID.find(
+          (market) => market.symbol === token.symbol
+        )
+
+        if (marketData) {
+          return { ...token, coinGeckoId: marketData.coingeckoId }
         } else {
           return token
         }
@@ -98,7 +101,7 @@ export const useTokenStore = defineStore('token', {
       )
 
       tokenStore.$patch({
-        tokens: supplyWithTokenWithTalis,
+        tokens: supplyWithTokenWithInjTokens,
         unknownTokens: supplyWithUnknownTokens
       })
     },
