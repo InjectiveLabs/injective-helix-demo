@@ -5,6 +5,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeForm, UiMarketWithToken } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
+
 defineProps({
   isBuy: Boolean,
 
@@ -46,9 +47,6 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
             >
               <span class="mr-1">≈</span>
               <slot name="total" />
-              <span class="text-gray-500 ml-1 break-normal">
-                {{ market.quoteToken.symbol }}
-              </span>
             </span>
           </CommonTextInfo>
         </p>

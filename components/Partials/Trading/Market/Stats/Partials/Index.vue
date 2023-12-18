@@ -2,15 +2,18 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistance, format } from 'date-fns'
 import {
-  UiDerivativeMarketWithToken,
   MarketType,
   ZERO_IN_BASE,
   BIG_NUMBER_ROUND_DOWN_MODE,
+  UiDerivativeMarketWithToken,
   UiPerpetualMarketWithToken,
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { stableCoinDenoms } from '@/app/data/token'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
+
+const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
@@ -24,10 +27,13 @@ const props = defineProps({
   }
 })
 
-const userTimezone = format(new Date(), 'OOOO')
 const now = ref(Date.now() / 1000)
+const userTimezone = format(new Date(), 'OOOO')
 
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
 
 const {
   valueToString: markPriceToFormat,
@@ -59,6 +65,21 @@ const { valueToString: highToFormat, valueToBigNumber: high } =
       decimalPlaces: props.market.priceDecimals
     }
   )
+
+const {
+  valueToString: spotLastTradedPriceInUsdToString,
+  valueToBigNumber: spotLastTradedPriceInUsdToBigNumber
+} = useBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(
+      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+    ).times(spotLastTradedPrice.value)
+  ),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
+  }
+)
 
 const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
   computed(() => {
@@ -292,6 +313,28 @@ useIntervalFn(() => {
           data-cy="market-info-mark-price-span"
         >
           {{ markPriceToFormat }}
+        </span>
+        <span v-else class="text-gray-400">&mdash;</span>
+      </CommonMarketInfo>
+
+      <CommonMarketInfo
+        v-if="QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(market.quoteToken.denom)"
+        :title="$t('trade.usd_value')"
+        :tooltip="
+          $t('trade.usd_value_tooltip', {
+            asset: market.quoteToken.symbol
+          })
+        "
+      >
+        <span
+          v-if="
+            spotLastTradedPriceInUsdToBigNumber.gt(0) &&
+            !spotLastTradedPriceInUsdToBigNumber.isNaN()
+          "
+          class="lg:text-right font-mono block"
+          data-cy="market-info-volume-24h-span"
+        >
+          {{ spotLastTradedPriceInUsdToString }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </CommonMarketInfo>

@@ -1,3 +1,4 @@
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import {
   NotLiquidMarket,
@@ -172,3 +173,5 @@ export const MARKET_ID_WITHOUT_COINGECKO_ID: SymbolWithMarketId[] = [
     coingeckoId: TALIS_METADATA.coingeckoId
   }
 ]
+
+export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
