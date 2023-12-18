@@ -103,6 +103,8 @@ function fetchData() {
 }
 
 onWalletConnected(() => {
+  spotStore.resetOrderbookAndTrades()
+
   fetchData()
 })
 

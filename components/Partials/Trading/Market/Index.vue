@@ -40,6 +40,10 @@ const aggregation = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
 onMounted(() => {
   const { marketId } = props.market
 
+  // reset state
+  spotStore.resetOrderbookAndTrades()
+  derivativeStore.resetOrderbookAndTrades()
+
   Promise.all(
     isSpot
       ? [
