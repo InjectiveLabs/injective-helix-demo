@@ -387,8 +387,7 @@ export const useSpotStore = defineStore('spot', {
       const { markets } = spotStore
 
       try {
-        const marketSummaries =
-          await indexerRestSpotChronosApi.fetchMarketsSummary()
+        const marketSummaries = await cacheApi.fetchSpotMarketSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>
