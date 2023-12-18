@@ -35,7 +35,10 @@ export const experimentalMarketsSlug = [
   'eth-usdt-19sep22',
   'ethbtctrend-usdt',
   'steadyeth-usdt',
-  'steadybtc-usdt'
+  'steadybtc-usdt',
+  'ninja-inj',
+  'kira-inj',
+  'katana-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
