@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
-import { BigNumberInWei, awaitForAll } from '@injectivelabs/utils'
+import { awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { SymbolWithMarketId, TokenUsdPriceMap } from '@/types'
+import { TokenUsdPriceMap } from '@/types'
 import { TALIS_METADATA } from '@/app/data/market'
 
 type TokenStoreState = {
@@ -64,39 +64,6 @@ export const useTokenStore = defineStore('token', {
           ...tokenUsdPriceMap,
           ...tokenStore.tokenUsdPriceMap
         }
-      })
-    },
-
-    async fetchLastTradedPrice(symbolWithMarketId: SymbolWithMarketId[]) {
-      const spotStore = useSpotStore()
-      const tokenStore = useTokenStore()
-
-      const priceMapsArray = await awaitForAll(
-        symbolWithMarketId,
-        async ({
-          marketId,
-          baseDecimals,
-          quoteDecimals,
-          coingeckoId
-        }: SymbolWithMarketId) => {
-          const lastTradedPrice = await spotStore.fetchLastTrade({
-            marketId
-          })
-
-          return {
-            [coingeckoId]: new BigNumberInWei(lastTradedPrice.price)
-              .toBase(quoteDecimals - baseDecimals)
-              .toNumber()
-          }
-        }
-      )
-
-      const priceMap = priceMapsArray.reduce((acc, priceMap) => {
-        return { ...acc, ...priceMap }
-      }, {} as TokenUsdPriceMap)
-
-      tokenStore.$patch({
-        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
       })
     },
 
