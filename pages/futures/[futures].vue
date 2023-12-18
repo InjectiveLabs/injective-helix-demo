@@ -7,14 +7,14 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import {
-  DerivativeTradeIntegrityStrategy,
-  DerivativeOrderbookIntegrityStrategy,
-  DerivativeOraclePriceIntegrityStrategy,
-  DerivativeSubaccountOrderIntegrityStrategy,
-  DerivativeSubaccountTradeIntegrityStrategy,
-  DerivativeSubaccountPositionIntegrityStrategy
-} from '@/app/client/streams/data-integrity/strategies'
+// import {
+//   DerivativeTradeIntegrityStrategy,
+//   DerivativeOrderbookIntegrityStrategy,
+//   DerivativeOraclePriceIntegrityStrategy,
+//   DerivativeSubaccountOrderIntegrityStrategy,
+//   DerivativeSubaccountTradeIntegrityStrategy,
+//   DerivativeSubaccountPositionIntegrityStrategy
+// } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: [
@@ -152,24 +152,24 @@ watch(
   }
 )
 
-useIntervalFn(() => {
-  if (!market.value) {
-    return
-  }
+// useIntervalFn(() => {
+//   if (!market.value) {
+//     return
+//   }
 
-  const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
+//   const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
 
-  Promise.all([
-    DerivativeSubaccountOrderIntegrityStrategy.make(args).validate(),
-    DerivativeSubaccountTradeIntegrityStrategy.make(args).validate(),
-    DerivativeSubaccountPositionIntegrityStrategy.make(args).validate(),
-    DerivativeTradeIntegrityStrategy.make(market.value.marketId).validate(),
-    DerivativeOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
-    DerivativeOraclePriceIntegrityStrategy.make(
-      derivativeStore.activeMarketIds
-    ).validate()
-  ])
-}, 30 * 1000)
+//   Promise.all([
+//     DerivativeSubaccountOrderIntegrityStrategy.make(args).validate(),
+//     DerivativeSubaccountTradeIntegrityStrategy.make(args).validate(),
+//     DerivativeSubaccountPositionIntegrityStrategy.make(args).validate(),
+//     DerivativeTradeIntegrityStrategy.make(market.value.marketId).validate(),
+//     DerivativeOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+//     DerivativeOraclePriceIntegrityStrategy.make(
+//       derivativeStore.activeMarketIds
+//     ).validate()
+//   ])
+// }, 30 * 1000)
 </script>
 
 <template>
