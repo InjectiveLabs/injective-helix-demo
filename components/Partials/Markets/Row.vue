@@ -1,23 +1,25 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Change, TradeClickOrigin, MarketStatus } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { stableCoinDenoms } from '@/app/data/token'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
+import { Change, TradeClickOrigin, MarketStatus } from '@/types'
 
 const appStore = useAppStore()
+const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
@@ -47,6 +49,24 @@ const lastTradedPrice = computed(() => {
 
   return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
 })
+
+const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
+  computed(() => {
+    if (
+      !QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(props.market.quoteToken.denom)
+    ) {
+      return lastTradedPrice.value
+    }
+
+    return new BigNumberInBase(
+      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+    ).times(lastTradedPrice.value)
+  }),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
+  }
+)
 
 const isFavorite = computed(() =>
   appStore.favoriteMarkets.includes(props.market.marketId)
@@ -218,16 +238,10 @@ function tradeClickedTrack() {
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <span
-        v-if="!lastTradedPrice.isNaN()"
-        :class="{
-          'text-green-500': lastPriceChange === Change.Increase,
-          'text-white': lastPriceChange === Change.NoChange,
-          'text-red-500': lastPriceChange === Change.Decrease
-        }"
-      >
-        {{ lastTradedPriceToFormat }}
-      </span>
+      <p v-if="!lastTradedPrice.isNaN()" class="flex items-center gap-2">
+        <span> {{ lastTradedPriceToFormat }}</span>
+        <span class="text-xs text-gray-500"> ${{ lastTradedPriceInUsd }} </span>
+      </p>
       <span v-else class="text-gray-400">&mdash;</span>
     </span>
 
