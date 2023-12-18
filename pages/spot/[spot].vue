@@ -3,12 +3,12 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 import { notLiquidMarkets } from '@/app/data/market'
-import {
-  SpotTradeIntegrityStrategy,
-  SpotOrderbookIntegrityStrategy,
-  SpotSubaccountOrderIntegrityStrategy,
-  SpotSubaccountTradeIntegrityStrategy
-} from '@/app/client/streams/data-integrity/strategies'
+// import {
+//   SpotTradeIntegrityStrategy,
+//   SpotOrderbookIntegrityStrategy,
+//   SpotSubaccountOrderIntegrityStrategy,
+//   SpotSubaccountTradeIntegrityStrategy
+// } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
@@ -114,13 +114,13 @@ useIntervalFn(() => {
     return
   }
 
-  const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
+  // const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
 
   Promise.all([
-    SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
-    SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
-    SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
-    SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+    // SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
+    // SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
+    // SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
+    // SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
     tokenStore.fetchTokensUsdPriceMap([market.value.quoteToken.coinGeckoId])
   ])
 }, 30 * 1000)
