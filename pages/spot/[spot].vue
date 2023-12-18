@@ -15,6 +15,7 @@ definePageMeta({
 })
 
 const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 
@@ -40,7 +41,8 @@ function onLoad(pageMarket: UiMarketWithToken) {
 
   Promise.all([
     spotStore.streamTrades(pageMarket.marketId),
-    spotStore.streamOrderbookUpdate(pageMarket.marketId)
+    spotStore.streamOrderbookUpdate(pageMarket.marketId),
+    tokenStore.fetchTokensUsdPriceMap([pageMarket.quoteToken.coinGeckoId])
   ]).catch($onError)
 
   market.value = pageMarket as UiSpotMarketWithToken
@@ -118,7 +120,8 @@ useIntervalFn(() => {
     SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
     SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
     SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
-    SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate()
+    SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+    tokenStore.fetchTokensUsdPriceMap([market.value.quoteToken.coinGeckoId])
   ])
 }, 30 * 1000)
 </script>

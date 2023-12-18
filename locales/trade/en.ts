@@ -154,6 +154,9 @@ export default {
     volume: 'Volume',
     volume_24h: 'Volume (24H)',
     total_market_volume_24h: 'Total Volume (24H)',
+    usd_value: 'USD Value',
+    usd_value_tooltip: ({ named }: I18nMessageFunction) =>
+      `The USD value based on the ${named('symbol')} price`,
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
     market_volume_24h: 'Volume (24h)',
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
