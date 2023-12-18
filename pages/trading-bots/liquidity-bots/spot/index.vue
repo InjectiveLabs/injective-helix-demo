@@ -103,8 +103,7 @@ function fetchData() {
 }
 
 onWalletConnected(() => {
-  spotStore.trades = []
-  spotStore.orderbook = undefined
+  spotStore.resetOrderbookAndTrades()
 
   fetchData()
 })

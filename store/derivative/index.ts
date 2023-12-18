@@ -562,6 +562,15 @@ export const useDerivativeStore = defineStore('derivative', {
       positionStore.cancelSubaccountPositionsStream()
     },
 
+    resetOrderbookAndTrades() {
+      const derivativeStore = useDerivativeStore()
+
+      derivativeStore.$patch({
+        trades: [],
+        orderbook: undefined
+      })
+    },
+
     resetSubaccount() {
       const derivativeStore = useDerivativeStore()
       const initialState = initialStateFactory()

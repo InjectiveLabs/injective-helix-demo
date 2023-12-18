@@ -416,6 +416,15 @@ export const useSpotStore = defineStore('spot', {
       cancelSubaccountOrdersHistoryStream()
     },
 
+    resetOrderbookAndTrades() {
+      const spotStore = useSpotStore()
+
+      spotStore.$patch({
+        trades: [],
+        orderbook: undefined
+      })
+    },
+
     resetSubaccount() {
       const spotStore = useSpotStore()
 

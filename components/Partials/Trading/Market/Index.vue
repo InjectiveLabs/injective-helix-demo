@@ -41,14 +41,13 @@ onMounted(() => {
   const { marketId } = props.market
 
   // reset state
-  spotStore.trades = []
-  spotStore.orderbook = undefined
-  derivativeStore.trades = []
-  derivativeStore.orderbook = undefined
+  spotStore.resetOrderbookAndTrades()
+  derivativeStore.resetOrderbookAndTrades()
 
   Promise.all(
     isSpot
       ? [
+          spotStore.resetOrderbookAndTrades(),
           spotStore.fetchOrderbook(marketId),
           spotStore.fetchTrades({
             marketId,
