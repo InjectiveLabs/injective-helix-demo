@@ -47,7 +47,6 @@ onMounted(() => {
   Promise.all(
     isSpot
       ? [
-          spotStore.resetOrderbookAndTrades(),
           spotStore.fetchOrderbook(marketId),
           spotStore.fetchTrades({
             marketId,
