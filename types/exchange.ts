@@ -22,7 +22,7 @@ export interface UiAggregatedPriceLevel {
 export interface SymbolWithMarketId {
   symbol: string
   marketId: string
-  quoteDecimals: number
-  baseDecimals: number
   coingeckoId: string
+  isUsdtQuote: boolean
+  quoteMarket: string
 }
