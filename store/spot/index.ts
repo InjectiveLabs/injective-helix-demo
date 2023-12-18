@@ -53,6 +53,7 @@ import {
   ActivityFetchOptions,
   UiSpotOrderbookWithSequence
 } from '@/types'
+import { cacheApi } from '~/app/services/cache-api'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -143,7 +144,8 @@ export const useSpotStore = defineStore('spot', {
     async init() {
       const spotStore = useSpotStore()
 
-      const markets = await indexerSpotApi.fetchMarkets()
+      // const markets = await indexerSpotApi.fetchMarkets()
+      const markets = await cacheApi.fetchSpotMarkets()
 
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets

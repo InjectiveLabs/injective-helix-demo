@@ -4,6 +4,7 @@ import { BigNumberInWei, awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
 import { SymbolWithMarketId, TokenUsdPriceMap } from '@/types'
 import { TALIS_METADATA } from '@/app/data/market'
+import { cacheApi } from '~/app/services/cache-api'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -107,7 +108,8 @@ export const useTokenStore = defineStore('token', {
         return
       }
 
-      const { supply } = await bankApi.fetchTotalSupply({ limit: 1000 })
+      // const { supply } = await bankApi.fetchTotalSupply({ limit: 1000 })
+      const { supply } = await cacheApi.fetchTokens()
 
       const supplyWithTokensOrUnknown = supply.map((coin) =>
         denomClient.getDenomTokenStaticOrUnknown(coin.denom)

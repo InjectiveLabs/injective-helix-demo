@@ -72,6 +72,7 @@ import {
   ActivityFetchOptions,
   UiDerivativeOrderbookWithSequence
 } from '@/types'
+import { CacheApi, cacheApi } from '~/app/services/cache-api'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -173,12 +174,13 @@ export const useDerivativeStore = defineStore('derivative', {
     async init() {
       const derivativeStore = useDerivativeStore()
 
-      const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
+      const markets = (await cacheApi.fetchDerivativeMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
       const recentlyExpiredMarkets = (await indexerDerivativesApi.fetchMarkets({
         marketStatus: 'expired'
       })) as Array<ExpiryFuturesMarket>
+
       const pausedMarkets = (
         (await indexerDerivativesApi.fetchMarkets({
           marketStatus: 'paused'
