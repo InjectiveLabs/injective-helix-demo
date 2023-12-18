@@ -33,7 +33,9 @@ onMounted(() => {
   Promise.all([
     appStore.init(),
     spotStore.initIfNotInit(),
+    spotStore.fetchMarketsSummary(),
     derivativeStore.initIfNotInit(),
+    derivativeStore.fetchMarketsSummary(),
     exchangeStore.initFeeDiscounts(),
     authzStore.fetchGrants()
   ])

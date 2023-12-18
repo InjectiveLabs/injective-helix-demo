@@ -1,10 +1,10 @@
-import { INJ_DENOM } from '@injectivelabs/utils'
 import {
   getChecksumAddress,
   CW20_ADAPTER_CONTRACT_BY_NETWORK
 } from '@injectivelabs/sdk-ts'
-import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { NETWORK } from '@/app/utils/constants'
 import { denomClient, tokenMetaUtils } from '@/app/Services'
 import { USDCSymbol } from '@/types'
