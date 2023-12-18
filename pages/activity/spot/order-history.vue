@@ -45,15 +45,10 @@ function fetchData() {
   const marketIds = (
     formValues.value[ActivityField.Denom]
       ? spotStore.markets.filter((m) => {
-          return [
-            m.quoteToken.symbol,
-            m.baseToken.symbol,
-            m.quoteDenom,
-            m.baseDenom
-          ].some((denom) =>
+          return [m.quoteToken.denom, m.baseToken.denom].some((denom) =>
             denom
               .toLowerCase()
-              .includes(formValues.value[ActivityField.Denom].toLowerCase())
+              .startsWith(formValues.value[ActivityField.Denom].toLowerCase())
           )
         })
       : spotStore.markets
