@@ -102,7 +102,8 @@ const lastTradedPriceChange = computed(() =>
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
   }
 )
 const { valueToString: markPriceToFormat } = useBigNumberFormatter(

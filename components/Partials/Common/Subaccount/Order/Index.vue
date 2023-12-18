@@ -46,7 +46,7 @@ const sortedOrders = computed(() =>
 
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="sortedOrders.length > 0" class="table">
-        <PartialsCommonSubaccountOrderHeader />
+        <PartialsCommonSubaccountOrderHeader v-bind="{ isSpot }" />
         <tbody>
           <PartialsCommonSubaccountOrderRow
             v-for="(order, index) in sortedOrders"
