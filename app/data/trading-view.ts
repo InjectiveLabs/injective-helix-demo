@@ -298,9 +298,9 @@ const hardcodedExcludedTradesByMarket = {
     ]
   },
 
-  // kira/inj
+  // KIRA/INJ
   'factory/inj1xy3kvlr4q4wdd6lrelsrw2fk2ged0any44hhwq/KIRA/inj': {
-    excludeBefore: 1702857600000,
+    excludeBefore: 1702858500000,
     bars: []
   },
 

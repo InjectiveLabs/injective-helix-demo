@@ -150,7 +150,10 @@ function onCancelOrder() {
       </div>
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="h-12 text-right font-mono">
+    <td
+      v-if="!isBinaryOptionsPage && !isSpot"
+      class="h-12 text-right font-mono"
+    >
       <span
         v-if="leverage.gt(0)"
         class="flex items-center justify-end text-xs"
