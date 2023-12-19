@@ -61,6 +61,7 @@
     "deepmerge": "^4.2.2",
     "html-to-image": "^1.11.11",
     "js-confetti": "^0.11.0",
+    "lightweight-charts": "^4.1.1",
     "lottie-web": "^5.12.2",
     "nuxt": "^3.8.1",
     "qrcode": "^1.5.3",
