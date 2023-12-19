@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
-import { MARKET_ID_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -22,7 +21,6 @@ onMounted(() => {
     tokenStore.fetchTokensUsdPriceMap(
       tokenStore.tokens.map(({ coinGeckoId }) => coinGeckoId)
     ),
-    tokenStore.fetchLastTradedPrice(MARKET_ID_WITHOUT_COINGECKO_ID),
     campaignStore.fetchCampaignsWithSc({ campaignIds })
   ])
     .catch($onError)

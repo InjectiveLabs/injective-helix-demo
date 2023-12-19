@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
-import { BigNumberInWei, awaitForAll } from '@injectivelabs/utils'
+import { awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { SymbolWithMarketId, TokenUsdPriceMap } from '@/types'
-import { TALIS_METADATA } from '@/app/data/market'
 import { IS_STAGING } from '@/app/utils/constants/setup'
 import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
+import { TokenUsdPriceMap } from '@/types'
+import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -69,39 +69,6 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
-    async fetchLastTradedPrice(symbolWithMarketId: SymbolWithMarketId[]) {
-      const spotStore = useSpotStore()
-      const tokenStore = useTokenStore()
-
-      const priceMapsArray = await awaitForAll(
-        symbolWithMarketId,
-        async ({
-          marketId,
-          baseDecimals,
-          quoteDecimals,
-          coingeckoId
-        }: SymbolWithMarketId) => {
-          const lastTradedPrice = await spotStore.fetchLastTrade({
-            marketId
-          })
-
-          return {
-            [coingeckoId]: new BigNumberInWei(lastTradedPrice.price)
-              .toBase(quoteDecimals - baseDecimals)
-              .toNumber()
-          }
-        }
-      )
-
-      const priceMap = priceMapsArray.reduce((acc, priceMap) => {
-        return { ...acc, ...priceMap }
-      }, {} as TokenUsdPriceMap)
-
-      tokenStore.$patch({
-        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
-      })
-    },
-
     async fetchTokens() {
       const tokenStore = useTokenStore()
       const apiClient = IS_STAGING ? baseCacheApi : bankApi
@@ -120,10 +87,13 @@ export const useTokenStore = defineStore('token', {
         (token) => token.tokenType !== TokenType.Unknown
       )
 
-      // REMOVE WHEN COINGECKO ADDS TALIS
-      const supplyWithTokenWithTalis = supplyWithToken.map((token) => {
-        if (token.symbol === TALIS_METADATA.symbol) {
-          return { ...token, coinGeckoId: TALIS_METADATA.coingeckoId } as Token
+      const supplyWithTokenWithInjTokens = supplyWithToken.map((token) => {
+        const marketData = MARKET_IDS_WITHOUT_COINGECKO_ID.find(
+          (market) => market.symbol === token.symbol
+        )
+
+        if (marketData) {
+          return { ...token, coinGeckoId: marketData.coingeckoId }
         } else {
           return token
         }
@@ -134,7 +104,7 @@ export const useTokenStore = defineStore('token', {
       )
 
       tokenStore.$patch({
-        tokens: supplyWithTokenWithTalis,
+        tokens: supplyWithTokenWithInjTokens,
         unknownTokens: supplyWithUnknownTokens
       })
     },
