@@ -28,6 +28,12 @@ import {
   cancelSubaccountBalanceStream
 } from '../account/stream'
 import {
+  indexerRestDerivativesChronosApi,
+  tokenService,
+  indexerOracleApi,
+  indexerDerivativesApi
+} from '../../app/Services'
+import {
   cancelOrder,
   batchCancelOrder,
   submitLimitOrder,
@@ -55,12 +61,6 @@ import {
   marketIsInactive
 } from '@/app/utils/market'
 import {
-  tokenService,
-  indexerOracleApi,
-  indexerDerivativesApi,
-  indexerRestDerivativesChronosApi
-} from '@/app/Services'
-import {
   IS_DEVNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -72,6 +72,8 @@ import {
   ActivityFetchOptions,
   UiDerivativeOrderbookWithSequence
 } from '@/types'
+import { IS_STAGING } from '@/app/utils/constants/setup'
+import { derivativeCacheApi } from '@/app/providers/cache/DerivativeCacheApi'
 
 type DerivativeStoreState = {
   perpetualMarkets: UiPerpetualMarketWithToken[]
@@ -172,15 +174,17 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async init() {
       const derivativeStore = useDerivativeStore()
+      const apiClient = IS_STAGING ? derivativeCacheApi : indexerDerivativesApi
 
-      const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
+      const markets = (await apiClient.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
-      const recentlyExpiredMarkets = (await indexerDerivativesApi.fetchMarkets({
+      const recentlyExpiredMarkets = (await apiClient.fetchMarkets({
         marketStatus: 'expired'
       })) as Array<ExpiryFuturesMarket>
+
       const pausedMarkets = (
-        (await indexerDerivativesApi.fetchMarkets({
+        (await apiClient.fetchMarkets({
           marketStatus: 'paused'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
@@ -469,12 +473,14 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchMarketsSummary() {
       const derivativeStore = useDerivativeStore()
+      const apiClient = IS_STAGING
+        ? derivativeCacheApi
+        : indexerRestDerivativesChronosApi
 
       const { markets } = derivativeStore
 
       try {
-        const marketSummaries =
-          await indexerRestDerivativesChronosApi.fetchMarketsSummary()
+        const marketSummaries = await apiClient.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>

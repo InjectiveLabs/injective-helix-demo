@@ -17,6 +17,7 @@ import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
 } from '../account/stream'
+import { spotCacheApi } from '@/app/providers/cache/SpotCacheApi'
 import {
   streamTrades,
   cancelTradesStream,
@@ -43,6 +44,7 @@ import {
   indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
+  IS_STAGING,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -143,9 +145,9 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
+      const apiClient = IS_STAGING ? spotCacheApi : indexerSpotApi
 
-      const markets = await indexerSpotApi.fetchMarkets()
-
+      const markets = await apiClient.fetchMarkets()
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets
       )
@@ -382,12 +384,12 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
+      const apiClient = IS_STAGING ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
       try {
-        const marketSummaries =
-          await indexerRestSpotChronosApi.fetchMarketsSummary()
+        const marketSummaries = await apiClient.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>
