@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps({
+  isXs: Boolean,
   isSm: Boolean,
   isMd: Boolean,
   isLg: Boolean,
@@ -8,6 +9,10 @@ const props = defineProps({
 })
 
 const sizeClasses = computed(() => {
+  if (props.isXs) {
+    return 'h-2 w-2 border-[2px]'
+  }
+
   if (props.isSm) {
     return 'h-4 w-4 border-[3px]'
   }

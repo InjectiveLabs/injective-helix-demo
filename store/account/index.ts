@@ -92,6 +92,45 @@ export const useAccountStore = defineStore('account', {
       }
 
       const accountPortfolio =
+        await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
+          walletStore.authZOrInjectiveAddress
+        )
+
+      const defaultAccountBalances = getDefaultAccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
+      )
+
+      const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
+      )
+
+      const subaccountId =
+        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+
+      accountStore.$patch({
+        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
+          ? subaccountId
+          : walletStore.authZOrDefaultSubaccountId,
+        bankBalances: accountPortfolio.bankBalancesList || [],
+        positionsWithUpnl: [],
+        subaccountBalancesMap: {
+          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
+          ...nonDefaultSubaccounts
+        }
+      })
+    },
+
+    async fetchAccountPortfolioUnrealizedPnL() {
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolio(
           walletStore.authZOrInjectiveAddress
         )

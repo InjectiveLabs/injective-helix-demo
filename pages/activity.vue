@@ -48,13 +48,9 @@ function fetchData() {
     activityStore.streamDerivativeSubaccountTrades(),
     activityStore.streamSpotSubaccountOrderHistory(),
     activityStore.streamSpotSubaccountTrades(),
-    derivativeStore.fetchSubaccountOrders(),
     derivativeStore.streamMarketsMarkPrices(),
-    derivativeStore.fetchSubaccountConditionalOrders(),
     derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions(),
     positionStore.streamSubaccountPositions(),
-    spotStore.fetchSubaccountOrders(),
     spotStore.streamSubaccountOrders()
   ])
     .catch($onError)
@@ -70,6 +66,7 @@ watch(
   },
   { immediate: true }
 )
+
 watch(
   () => route.name,
   () => resetForm()
@@ -82,7 +79,6 @@ watch(
       class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative h-full-excluding-header"
     >
       <PartialsActivitySubaccounts />
-
       <PartialsActivityCommonNavigation
         v-bind="{
           status

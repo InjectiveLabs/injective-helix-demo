@@ -3,6 +3,7 @@ import { BalanceHeaderType } from '@/types'
 
 const props = defineProps({
   isAscending: Boolean,
+  isPositionsLoading: Boolean,
 
   sortBy: {
     type: String as PropType<BalanceHeaderType>,
@@ -67,10 +68,19 @@ const isAscendingValue = computed({
     <AppHeaderItem class="justify-end">
       <CommonHeaderTooltip
         v-bind="{
-          tooltip: $t('account.balances.unrealizedTooltip')
+          tooltip: isPositionsLoading
+            ? $t('account.unrealizedPnLLoading')
+            : $t('account.balances.unrealizedTooltip')
         }"
       >
-        {{ $t('account.balances.cols.unrealized') }}
+        <span class="inline-block">
+          {{ $t('account.balances.cols.unrealized') }}
+          <AppSpinner
+            v-if="isPositionsLoading"
+            is-xs
+            class="float-right ml-1 mt-1"
+          />
+        </span>
       </CommonHeaderTooltip>
     </AppHeaderItem>
 

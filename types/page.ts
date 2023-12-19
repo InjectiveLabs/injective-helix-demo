@@ -38,7 +38,7 @@ export enum CampaignSubPage {
   GuildDetails = 'guild-guild'
 }
 
-export enum AccountSubpage {
+export enum AccountSubPage {
   Positions = 'account-positions'
 }
 
