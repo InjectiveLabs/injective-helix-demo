@@ -113,6 +113,8 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
+
+const isRound3 = computed(() => props.campaignWithSc.campaignId.endsWith('3'))
 </script>
 
 <template>
@@ -159,10 +161,13 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
         <PartialsLiquidityCommonClaimButton
           v-bind="{
             scAddress: campaignWithSc.scAddress,
-            isClaimable,
+            isClaimable: isRound3 ? false : isClaimable,
             campaignId: campaignWithSc.campaignId
           }"
         />
+        <p v-if="isRound3" class="text-xs text-gray-500">
+          (Available to claim in less then 12hrs)
+        </p>
       </div>
     </td>
   </tr>
