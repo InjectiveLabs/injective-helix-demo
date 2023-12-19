@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { IS_STAGING } from '@/app/utils/constants/setup'
+import { IS_MAINNET } from '@/app/utils/constants/setup'
 import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
 import { TokenUsdPriceMap } from '@/types'
 import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
@@ -71,7 +71,7 @@ export const useTokenStore = defineStore('token', {
 
     async fetchTokens() {
       const tokenStore = useTokenStore()
-      const apiClient = IS_STAGING ? baseCacheApi : bankApi
+      const apiClient = IS_MAINNET ? baseCacheApi : bankApi
 
       if (tokenStore.tokens.length > 0) {
         return

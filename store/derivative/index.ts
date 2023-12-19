@@ -72,7 +72,7 @@ import {
   ActivityFetchOptions,
   UiDerivativeOrderbookWithSequence
 } from '@/types'
-import { IS_STAGING } from '@/app/utils/constants/setup'
+import { IS_MAINNET } from '@/app/utils/constants/setup'
 import { derivativeCacheApi } from '@/app/providers/cache/DerivativeCacheApi'
 
 type DerivativeStoreState = {
@@ -174,7 +174,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async init() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_STAGING ? derivativeCacheApi : indexerDerivativesApi
+      const apiClient = IS_MAINNET ? derivativeCacheApi : indexerDerivativesApi
 
       const markets = (await apiClient.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
@@ -473,7 +473,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchMarketsSummary() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_STAGING
+      const apiClient = IS_MAINNET
         ? derivativeCacheApi
         : indexerRestDerivativesChronosApi
 

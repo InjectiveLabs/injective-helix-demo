@@ -44,7 +44,7 @@ import {
   indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
-  IS_STAGING,
+  IS_MAINNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -145,7 +145,7 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
-      const apiClient = IS_STAGING ? spotCacheApi : indexerSpotApi
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
 
       const markets = await apiClient.fetchMarkets()
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
@@ -384,7 +384,7 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
-      const apiClient = IS_STAGING ? spotCacheApi : indexerRestSpotChronosApi
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
