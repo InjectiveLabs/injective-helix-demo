@@ -8,7 +8,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import axios, { AxiosInstance } from 'axios'
 
-const BASE_URL = '/api'
+const BASE_URL = 'https://xplorer-injective-test.vercel.app/api/'
 
 export class CacheApi {
   client: AxiosInstance
