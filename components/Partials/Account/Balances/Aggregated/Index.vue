@@ -5,6 +5,7 @@ import { AccountBalance } from '@/types'
 
 const props = defineProps({
   isHideBalances: Boolean,
+  isUnrealizedPnLLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,

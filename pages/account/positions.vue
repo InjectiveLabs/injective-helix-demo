@@ -5,6 +5,7 @@ import { AccountBalance, Modal } from '@/types'
 
 defineProps({
   isHideBalances: Boolean,
+  isPositionsLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -171,56 +172,58 @@ watch(
 </script>
 
 <template>
-  <div class="relative overflow-auto">
-    <PartialsAccountPositionsActions
-      v-model:market-denom="marketDenom"
-      v-model:side="side"
-      :market-options="marketOptions"
-      :side-options="sideOptions"
-      @positions:close="onCloseAllPositions"
-    />
-
-    <table class="w-full border-collapse hidden md:table">
-      <PartialsCommonSubaccountPositionHeader is-account />
-
-      <PartialsCommonSubaccountPositionRow
-        v-for="(position, i) in filteredPositions"
-        :key="`position-${i}`"
-        v-bind="{
-          position,
-          isHideBalances
-        }"
-        is-account
-        @share:position="onSharePosition"
+  <AppHocLoading :is-loading="isPositionsLoading">
+    <div class="relative overflow-auto">
+      <PartialsAccountPositionsActions
+        v-model:market-denom="marketDenom"
+        v-model:side="side"
+        :market-options="marketOptions"
+        :side-options="sideOptions"
+        @positions:close="onCloseAllPositions"
       />
-    </table>
 
-    <table class="w-full border-collapse table md:hidden">
-      <PartialsCommonSubaccountPositionMobile
-        v-for="(position, i) in filteredPositions"
-        :key="`position-mobile-${i}`"
-        v-bind="{
-          position,
-          isHideBalances
-        }"
-        @share:position="onSharePosition"
+      <table class="w-full border-collapse hidden md:table">
+        <PartialsCommonSubaccountPositionHeader is-account />
+
+        <PartialsCommonSubaccountPositionRow
+          v-for="(position, i) in filteredPositions"
+          :key="`position-${i}`"
+          v-bind="{
+            position,
+            isHideBalances
+          }"
+          is-account
+          @share:position="onSharePosition"
+        />
+      </table>
+
+      <table class="w-full border-collapse table md:hidden">
+        <PartialsCommonSubaccountPositionMobile
+          v-for="(position, i) in filteredPositions"
+          :key="`position-mobile-${i}`"
+          v-bind="{
+            position,
+            isHideBalances
+          }"
+          @share:position="onSharePosition"
+        />
+      </table>
+
+      <CommonEmptyList
+        v-if="isEmpty"
+        class="min-h-3xs bg-gray-900"
+        data-cy="markets-no-data-table"
+        :message="$t('account.positions.empty')"
+      >
+        <span class="mt-2 text-xs text-gray-500">
+          {{ $t('account.positions.empty') }}
+        </span>
+      </CommonEmptyList>
+
+      <ModalsSharePosition
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
       />
-    </table>
-
-    <CommonEmptyList
-      v-if="isEmpty"
-      class="min-h-3xs bg-gray-900"
-      data-cy="markets-no-data-table"
-      :message="$t('account.positions.empty')"
-    >
-      <span class="mt-2 text-xs text-gray-500">
-        {{ $t('account.positions.empty') }}
-      </span>
-    </CommonEmptyList>
-
-    <ModalsSharePosition
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-    />
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

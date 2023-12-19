@@ -16,6 +16,7 @@ import {
 
 const props = defineProps({
   isHideBalances: Boolean,
+  isUnrealizedPnLLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -23,14 +24,14 @@ const props = defineProps({
   }
 })
 
-const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
-  useBalance()
 const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
 const isHideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.Value)
 const isAscending = ref(false)
 
+const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
+  useBalance()
 const balances = computed(() => props.balances)
 const balancesInBase = computed(() =>
   getAccountBalancesWithTokenInBases(balances)
@@ -174,7 +175,7 @@ const usdcAggregationTypeBalances = computed(() =>
 
     <table class="w-full border-collapse hidden lg:table">
       <PartialsAccountBalancesHeader
-        v-bind="$attrs"
+        v-bind="{ ...$attrs, isUnrealizedPnLLoading }"
         v-model:sort-by="sortBy"
         v-model:isAscending="isAscending"
       />

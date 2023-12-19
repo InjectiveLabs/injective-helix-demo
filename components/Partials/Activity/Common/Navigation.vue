@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivitySubPage } from '@/types'
 
 defineProps({
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
-  }
+  isLoading: Boolean
 })
 
 const spotStore = useSpotStore()
@@ -54,7 +50,7 @@ const tabsFiltered = computed(() =>
     <div class="flex lg:grid grid-cols-4 gap-4">
       <CommonCardLink
         v-for="tab in tabsFiltered"
-        v-bind="{ to: tab.to, isLoading: status.isLoading() }"
+        v-bind="{ to: tab.to, isLoading }"
         :key="`tab-${tab.label}`"
       >
         <span>{{ tab.label }}</span>

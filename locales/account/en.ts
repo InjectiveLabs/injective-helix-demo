@@ -97,6 +97,7 @@ export default {
         'To activate it, you first need to transfer funds. Learn more about subaccounts in our',
         named('faq')
       ]),
-    subaccountTransfer: 'Subaccount Transfer'
+    subaccountTransfer: 'Subaccount Transfer',
+    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.'
   }
 }
