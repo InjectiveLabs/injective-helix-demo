@@ -11,6 +11,10 @@ import {
   CandlestickData,
   WhitespaceData
 } from 'lightweight-charts'
+import {
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
 
@@ -100,6 +104,12 @@ function init() {
   }
 
   candlestickSeries.setData(props.candlesticksData)
+
+  candlestickSeries.priceFormatter().format = (price) => {
+    return price > 1
+      ? price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      : price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+  }
 }
 
 function destroy() {
