@@ -320,11 +320,7 @@ useIntervalFn(() => {
       <CommonMarketInfo
         v-if="QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(market.quoteToken.denom)"
         :title="$t('trade.usd_value')"
-        :tooltip="
-          $t('trade.usd_value_tooltip', {
-            asset: market.quoteToken.symbol
-          })
-        "
+        :tooltip="$t('trade.usd_value_tooltip')"
       >
         <span
           v-if="
