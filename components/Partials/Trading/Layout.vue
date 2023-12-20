@@ -206,7 +206,7 @@ function onToggleMarketList() {
                   >
                     <CommonTradingChartWrapper
                       v-if="isDesktop"
-                      v-bind="{ marketId: market.marketId }"
+                      v-bind="{ marketId: market.marketId, isSpot, market }"
                     />
                   </div>
                 </div>

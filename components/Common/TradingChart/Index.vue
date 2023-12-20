@@ -45,7 +45,13 @@ const getChart = () => {
   return chart
 }
 
-defineExpose({ fitContent, getChart })
+const updateCandlesticksData = (data: CandlestickData<Time>) => {
+  if (!candlestickSeries) return
+
+  candlestickSeries.update(data)
+}
+
+defineExpose({ fitContent, getChart, updateCandlesticksData })
 
 const resizeHandler = () => {
   if (!chart || !wrapper.value) return
@@ -74,6 +80,15 @@ onUnmounted(() => {
 
   window.removeEventListener('resize', resizeHandler)
 })
+
+watch(
+  () => props.candlesticksData,
+  () => {
+    if (candlestickSeries) {
+      candlestickSeries.setData(props.candlesticksData)
+    }
+  }
+)
 </script>
 
 <template>
