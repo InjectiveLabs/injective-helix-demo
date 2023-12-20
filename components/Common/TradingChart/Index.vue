@@ -8,13 +8,20 @@ import {
   createChart,
   CandlestickData,
   Time,
-  WhitespaceData
+  WhitespaceData,
+  HistogramData
 } from 'lightweight-charts'
 
 const props = defineProps({
   candlesticksData: {
     type: Object as PropType<(CandlestickData<Time> | WhitespaceData<Time>)[]>,
     required: true
+  },
+
+  volumeData: {
+    type: Object as PropType<(HistogramData<Time> | WhitespaceData<Time>)[]>,
+    required: false,
+    default: undefined
   }
 })
 
@@ -24,6 +31,7 @@ const wrapper = ref()
 let chart: IChartApi
 
 let candlestickSeries: ReturnType<typeof chart.addCandlestickSeries>
+let volumeSeries: ReturnType<typeof chart.addHistogramSeries>
 
 const chartOptions: DeepPartial<ChartOptions> = {
   layout: {
@@ -63,6 +71,25 @@ onMounted(() => {
   chart = createChart(container.value!, chartOptions)
 
   candlestickSeries = chart.addCandlestickSeries()
+
+  volumeSeries = chart.addHistogramSeries({
+    color: '#26a69a',
+    priceFormat: {
+      type: 'volume'
+    },
+    priceScaleId: ''
+  })
+
+  if (props.volumeData) {
+    volumeSeries.setData(props.volumeData)
+
+    chart.priceScale('').applyOptions({
+      scaleMargins: {
+        top: 0.8,
+        bottom: 0
+      }
+    })
+  }
 
   candlestickSeries.setData(props.candlesticksData)
 

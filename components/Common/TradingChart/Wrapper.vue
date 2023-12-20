@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
-import { CandlestickData, Time } from 'lightweight-charts'
+import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
 import { UiMarketWithToken } from '~/types'
 
 const props = defineProps({
@@ -75,6 +75,25 @@ const candlesticksData = computed<CandlestickData<Time>[]>(() => {
   }))
 })
 
+const volume = computed(() => {
+  const marketHistory = exchangeStore.marketsHistory.find(
+    (market) => market.marketId === props.marketId
+  )
+
+  if (!marketHistory) {
+    return []
+  }
+
+  return marketHistory.time.map<HistogramData<Time>>((time, index) => ({
+    time: time as Time,
+    value: marketHistory.volume[index],
+    color:
+      marketHistory.openPrice[index] > marketHistory.closePrice[index]
+        ? '#ef535066'
+        : '#26a69a66'
+  }))
+})
+
 function fetchMarketHistory() {
   status.setLoading()
 
@@ -127,7 +146,8 @@ watch(lastTradedPrice, (lastTradedPrice) => {
       <CommonTradingChart
         ref="chart"
         v-bind="{
-          candlesticksData: candlesticksData
+          candlesticksData,
+          volumeData: volume
         }"
       />
     </AppHocLoading>
