@@ -137,7 +137,7 @@ useIntervalFn(() => {
       resolution: interval.value.value.resolution
     })
     .catch($onError)
-}, refetchInterval.value)
+}, refetchInterval)
 </script>
 
 <template>
