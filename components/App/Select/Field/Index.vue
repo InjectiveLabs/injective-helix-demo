@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { DropdownOptionWithToken } from '@/types'
 
 const props = defineProps({
-  clearable: Boolean,
-  searchable: Boolean,
+  isClearable: Boolean,
+  isSearchable: Boolean,
+  isDisabled: Boolean,
 
   options: {
     type: Array as PropType<DropdownOptionWithToken[]>,
@@ -24,6 +24,11 @@ const props = defineProps({
   selectedClass: {
     type: String,
     default: ''
+  },
+
+  popperClass: {
+    type: String,
+    default: 'dropdown'
   }
 })
 
@@ -67,10 +72,11 @@ function handleClear() {
 <template>
   <BaseDropdown
     class="w-full"
+    :disabled="isDisabled"
     :delay="300"
     auto-size="true"
     auto-boundary-max-size
-    popper-class="dropdown"
+    :popper-class="popperClass"
   >
     <template #default="{ isOpen }">
       <div
@@ -90,9 +96,9 @@ function handleClear() {
           </div>
         </slot>
 
-        <div class="flex items-center gap-2">
+        <div v-if="!isDisabled" class="flex items-center gap-2">
           <BaseIcon
-            v-if="clearable && selectedItem"
+            v-if="isClearable && selectedItem"
             name="close"
             class="min-w-4 w-4 h-4 text-gray-500 hover:text-white"
             @click.stop="handleClear"
@@ -114,11 +120,11 @@ function handleClear() {
       <slot name="list">
         <div class="p-2 py-4 max-h-xs space-y-3" @click.stop>
           <AppInput
-            v-if="searchable"
+            v-if="isSearchable"
             v-model="search"
             class="text-white"
-            sm
-            bg-transparent
+            is-sm
+            is-bg-transparent
             :placeholder="$t('common.search')"
           />
 
@@ -130,12 +136,12 @@ function handleClear() {
               :value="item.value"
               @update:modelValue="close"
             >
-              <template #default="{ active }">
-                <slot name="option" :option="item" :active="active">
+              <template #default="{ isActive }">
+                <slot name="option" :option="item" :is-active="isActive">
                   <div
                     :class="{
-                      'text-white': !active,
-                      'text-blue-500 group-hover:text-white': active
+                      'text-white': !isActive,
+                      'text-blue-500 group-hover:text-white': isActive
                     }"
                   >
                     <span>

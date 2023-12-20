@@ -1,20 +1,20 @@
-<script setup lang="ts">
-import { ActivityPage } from '@/types'
+<script lang="ts" setup>
+import { ActivitySubPage } from '@/types'
 
 const { t } = useLang()
 
 const tabs = [
   {
     label: t('walletHistory.transfers.transfers'),
-    value: ActivityPage.WalletHistoryTransfers
+    value: ActivitySubPage.WalletHistory
   },
   {
     label: t('walletHistory.deposits'),
-    value: ActivityPage.WalletHistoryDeposits
+    value: ActivitySubPage.WalletHistoryDeposits
   },
   {
     label: t('walletHistory.withdrawals'),
-    value: ActivityPage.WalletHistoryWithdrawals
+    value: ActivitySubPage.WalletHistoryWithdrawals
   }
 ]
 </script>
@@ -38,7 +38,7 @@ const tabs = [
     </div>
 
     <div class="h-full rounded-xl overflow-y-auto">
-      <CommonCard md class="h-full-flex space-y-4">
+      <CommonCard is-md class="h-full-flex space-y-4">
         <div class="h-full-flex space-y-4">
           <PartialsActivityCommonToolbar />
 

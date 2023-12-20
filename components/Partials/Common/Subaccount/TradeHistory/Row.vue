@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
@@ -47,7 +46,7 @@ const marketRoute = computed(() => {
     <td class="h-12 text-left cursor-pointer">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken">
-          <CommonTokenIcon :token="market.baseToken" md />
+          <CommonTokenIcon :token="market.baseToken" is-md />
         </div>
         <div class="ml-3">
           <span
@@ -90,7 +89,7 @@ const marketRoute = computed(() => {
 
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="trade-history-price-table-data"
         :decimals="priceDecimals"
         :number="price"
@@ -99,7 +98,7 @@ const marketRoute = computed(() => {
 
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="trade-history-quantity-table-data"
         :decimals="quantityDecimals"
         :number="quantity"
@@ -107,7 +106,7 @@ const marketRoute = computed(() => {
     </td>
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         use-number-decimals
         :number="fee"
         data-cy="trade-history-fee-table-data"
@@ -122,7 +121,7 @@ const marketRoute = computed(() => {
 
     <td class="h-12 text-right font-mono pr-3">
       <AppNumber
-        xs
+        is-xs
         data-cy="trade-history-total-table-data"
         :decimals="priceDecimals"
         :number="total"

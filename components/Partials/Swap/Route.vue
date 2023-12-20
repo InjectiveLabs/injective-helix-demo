@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  sm: Boolean,
+  isSm: Boolean,
 
   routeSymbols: {
     type: Array as PropType<string[]>,
@@ -17,7 +17,7 @@ defineProps({
       v-if="index !== routeSymbols?.length - 1"
       name="arrow"
       class="rotate-180 w-3 h-3 cursor-text"
-      :class="[sm ? 'w-3 h-3' : 'w-4 h-4']"
+      :class="[isSm ? 'w-3 h-3' : 'w-4 h-4']"
     />
   </template>
 </template>

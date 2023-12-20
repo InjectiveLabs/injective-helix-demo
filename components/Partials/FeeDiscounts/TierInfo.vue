@@ -5,25 +5,23 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
-const feeDiscountAccountInfo = computed(() => {
-  return exchangeStore.feeDiscountAccountInfo
-})
-
 const tierLevel = computed(() =>
-  new BigNumberInBase(feeDiscountAccountInfo.value?.tierLevel || 0).toNumber()
+  new BigNumberInBase(
+    exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+  ).toNumber()
 )
 
 const makerFeeDiscount = computed(() => {
-  if (!feeDiscountAccountInfo.value) {
+  if (!exchangeStore.feeDiscountAccountInfo) {
     return ''
   }
 
-  if (!feeDiscountAccountInfo.value.accountInfo) {
+  if (!exchangeStore.feeDiscountAccountInfo.accountInfo) {
     return ''
   }
 
   return new BigNumberInWei(
-    feeDiscountAccountInfo.value.accountInfo.makerDiscountRate
+    exchangeStore.feeDiscountAccountInfo.accountInfo.makerDiscountRate
   )
     .toBase()
     .times(100)
@@ -31,16 +29,16 @@ const makerFeeDiscount = computed(() => {
 })
 
 const takerFeeDiscount = computed(() => {
-  if (!feeDiscountAccountInfo.value) {
+  if (!exchangeStore.feeDiscountAccountInfo) {
     return ''
   }
 
-  if (!feeDiscountAccountInfo.value.accountInfo) {
+  if (!exchangeStore.feeDiscountAccountInfo.accountInfo) {
     return ''
   }
 
   return new BigNumberInWei(
-    feeDiscountAccountInfo.value.accountInfo.takerDiscountRate
+    exchangeStore.feeDiscountAccountInfo.accountInfo.takerDiscountRate
   )
     .toBase()
     .times(100)
@@ -49,14 +47,14 @@ const takerFeeDiscount = computed(() => {
 
 const lastUpdateTimestamp = computed(() => {
   if (
-    !feeDiscountAccountInfo.value ||
-    !feeDiscountAccountInfo.value.accountTtl
+    !exchangeStore.feeDiscountAccountInfo ||
+    !exchangeStore.feeDiscountAccountInfo.accountTtl
   ) {
     return undefined
   }
 
   return format(
-    Number(feeDiscountAccountInfo.value.accountTtl.ttlTimestamp) * 1000,
+    Number(exchangeStore.feeDiscountAccountInfo.accountTtl.ttlTimestamp) * 1000,
     'yyyy-MM-dd HH:mm:ss (zzz)'
   )
 })
@@ -69,7 +67,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.my_tier') }}
+          {{ $t('feeDiscounts.my_tier') }}
         </span>
         <span
           class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-blue-500"
@@ -81,7 +79,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.maker') }}
+          {{ $t('feeDiscounts.maker') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -91,14 +89,14 @@ const lastUpdateTimestamp = computed(() => {
           >
             {{ makerFeeDiscount }}%
           </b>
-          {{ $t('fee_discounts.off') }}
+          {{ $t('feeDiscounts.off') }}
         </span>
       </div>
       <div class="flex flex-col">
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.taker') }}
+          {{ $t('feeDiscounts.taker') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -108,14 +106,14 @@ const lastUpdateTimestamp = computed(() => {
           >
             {{ takerFeeDiscount }}%
           </b>
-          {{ $t('fee_discounts.off') }}
+          {{ $t('feeDiscounts.off') }}
         </span>
       </div>
     </div>
     <div class="mt-4">
       <span v-if="lastUpdateTimestamp" class="text-xs text-gray-400">
-        {{ $t('fee_discounts.update_daily') }}.
-        {{ $t('fee_discounts.last_updated_at') }} {{ lastUpdateTimestamp }}
+        {{ $t('feeDiscounts.update_daily') }}.
+        {{ $t('feeDiscounts.last_updated_at') }} {{ lastUpdateTimestamp }}
       </span>
       <span v-else class="text-xs text-gray-400">&mdash;</span>
     </div>

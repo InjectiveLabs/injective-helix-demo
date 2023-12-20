@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps({
-  round: Boolean,
-  showEmpty: Boolean
+  isRound: Boolean,
+  isEmpty: Boolean
 })
 </script>
 
@@ -9,14 +9,14 @@ defineProps({
   <div
     class="grid grid-cols-1"
     :class="{
-      'rounded-lg overflow-hidden': round,
-      'h-full': showEmpty
+      'rounded-lg overflow-hidden': isRound,
+      'h-full': isEmpty
     }"
   >
     <slot />
 
     <div
-      v-if="showEmpty"
+      v-if="isEmpty"
       class="col-span-1 px-6 text-sm py-4 text-gray-200 items-center rounded"
     >
       <slot name="empty" />

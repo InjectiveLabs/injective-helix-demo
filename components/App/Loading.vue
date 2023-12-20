@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps({
-  left: Boolean,
-  right: Boolean
+  isLeft: Boolean,
+  isRight: Boolean
 })
 </script>
 
@@ -10,9 +10,9 @@ defineProps({
     <div
       class="h-full w-full flex items-center"
       :class="{
-        'justify-start': left,
-        'justify-end': right,
-        'justify-center': !left && !right
+        'justify-start': isLeft,
+        'justify-end': isRight,
+        'justify-center': !isLeft && !isRight
       }"
     >
       <AssetLogoSpinner v-bind="$attrs" />

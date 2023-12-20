@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -67,7 +67,7 @@ function showNinjaPassModal() {
   >
     <div
       class="cursor-pointer pl-6 lg:pr-6 lg:border-r flex items-center"
-      @click="router.push({ name: 'index' })"
+      @click="router.push({ name: MainPage.Index })"
     >
       <AssetLogo class="w-auto h-6 lg:h-[30px]" alt="Helix" />
     </div>
@@ -90,7 +90,7 @@ function showNinjaPassModal() {
           v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-activity-link"
-          :to="{ name: 'activity' }"
+          :to="{ name: MainPage.Activity }"
         >
           {{ $t('navigation.activity') }}
         </LayoutNavItem>
@@ -99,7 +99,7 @@ function showNinjaPassModal() {
           v-if="walletStore.isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-account-link"
-          :to="{ name: 'account' }"
+          :to="{ name: MainPage.Account }"
         >
           {{ $t('navigation.account') }}
         </LayoutNavItem>

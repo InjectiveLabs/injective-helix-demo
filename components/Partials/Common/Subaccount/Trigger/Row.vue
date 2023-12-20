@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { Status } from '@injectivelabs/utils'
+import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
+import { TradeSubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const route = useRoute()
@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 
 const status = reactive(new Status())
 
@@ -47,7 +47,7 @@ const marketRoute = computed(() => {
   return getMarketRoute(market.value)
 })
 
-function onCancelOrder(): void {
+function cancelOrder(): void {
   status.setLoading()
 
   derivativeStore
@@ -71,7 +71,7 @@ function onCancelOrder(): void {
     <td class="text-left cursor-pointer pl-3">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken" class="w-4 h-4">
-          <CommonTokenIcon :token="market.baseToken" sm />
+          <CommonTokenIcon :token="market.baseToken" is-sm />
         </div>
 
         <div class="ml-3">
@@ -118,7 +118,7 @@ function onCancelOrder(): void {
 
       <AppNumber
         v-else
-        xs
+        is-xs
         data-cy="derivative-order-price-table-data"
         :decimals="priceDecimals"
         :number="price"
@@ -127,7 +127,7 @@ function onCancelOrder(): void {
 
     <td class="text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="derivative-order-quantity-table-data"
         :decimals="quantityDecimals"
         :number="quantity"
@@ -154,7 +154,7 @@ function onCancelOrder(): void {
 
     <td class="text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="derivative-order-filled-quantity-table-data"
         :decimals="quantityDecimals"
         :number="total"
@@ -182,7 +182,7 @@ function onCancelOrder(): void {
         <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
         <AppNumber
-          xs
+          is-xs
           data-cy="derivative-order-total-table-data"
           :decimals="priceDecimals"
           :number="triggerPrice"
@@ -205,7 +205,7 @@ function onCancelOrder(): void {
           v-if="isCancelable"
           :status="status"
           data-cy="derivative-order-cancel-link"
-          @click="onCancelOrder"
+          @click="cancelOrder"
         />
         <span v-else class="inline-block">&mdash;</span>
       </div>

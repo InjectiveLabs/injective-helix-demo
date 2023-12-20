@@ -56,8 +56,8 @@ function closeModal() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
-    hide-close-button
+    is-sm
+    is-hide-close-button
     @modal:closed="closeModal"
   >
     <template #title>

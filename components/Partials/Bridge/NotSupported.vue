@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { BridgingNetwork, CosmosNetworks } from '@injectivelabs/sdk-ui-ts'
+import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { getHubUrl } from '@/app/utils/helpers'
 
 const props = defineProps({
@@ -17,10 +16,6 @@ const isWormholeTransfer = computed(
     [BridgingNetwork.Solana].includes(props.selectedNetwork) ||
     [BridgingNetwork.EthereumWh].includes(props.selectedNetwork)
 )
-
-const isIbcTransfer = computed(() =>
-  CosmosNetworks.includes(props.selectedNetwork)
-)
 </script>
 
 <template>
@@ -31,9 +26,6 @@ const isIbcTransfer = computed(() =>
         <span v-if="isWormholeTransfer">
           {{ $t('bridge.transfersNote', { network: $t('bridge.wormhole') }) }}
         </span>
-        <span v-else-if="isIbcTransfer">
-          {{ $t('bridge.transfersNote', { network: $t('bridge.ibc') }) }}
-        </span>
         <span v-else>
           {{ $t('bridge.transfersNote', { network: $t('common.network') }) }}
         </span>
@@ -42,7 +34,7 @@ const isIbcTransfer = computed(() =>
     <div class="text-center mt-6">
       <NuxtLink :to="bridgeUrl" target="_blank">
         <AppButton
-          lg
+          is-lg
           class="w-full bg-blue-500 text-blue-900"
           data-cy="ibc-transfer-modal-hub-button"
         >

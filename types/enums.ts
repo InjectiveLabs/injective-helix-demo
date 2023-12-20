@@ -39,18 +39,20 @@ export enum Icon {
 
 export enum Modal {
   Terms = 'terms',
+  QrCode = 'qrcode',
   Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
   SgtBanner = 'sgt-banner',
   MarketNew = 'market-new',
+  JoinGuild = 'join-guild',
+  LpRewards = 'lp-rewards',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
-  ConvertUsdc = 'convert-usdc',
+  CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
-  USDCDetected = 'usdc-detected',
   UserFeedback = 'user-feedback',
   GasFeeRebate = 'gas-fee-rebate',
   BridgeConfirm = 'bridge-confirm',
@@ -63,18 +65,23 @@ export enum Modal {
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
+  MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
   InstitutionalForm = 'institutionalForm',
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
+  MarketNotOnHelix = 'market-not-on-helix',
+  AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
+  GridStrategyDetails = 'grid-strategy-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
+  VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
-
-  FuturesMarketRestricted = 'futures-market-restricted'
+  MarketRestricted = 'market-restricted',
+  NewFeatureTalisLaunch = 'new-feature-talis-launch'
 }
 
 export enum Breakpoint {
@@ -136,20 +143,17 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj'
-  // UST = 'ust'
+  INJ = 'inj',
+  USDTkv = 'usdtkv'
 }
 
 export enum StreamType {
   SpotTrades = 'spot-trades',
-  SpotOrders = 'spot-orders',
   OraclePrices = 'oracle-prices',
   DerivativesTrades = 'derivatives-trades',
-  DerivativesOrders = 'derivatives-orders',
   BankBalance = 'bank-balance',
   SubaccountBalances = 'subaccount-balances',
   SpotOrderbookUpdate = 'spot-orderbook-update',
-  DerivativesPositions = 'derivatives-positions',
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
@@ -172,8 +176,6 @@ export enum AmplitudeEvent {
   Login = 'Login',
   Transfer = 'Transfer',
   SwapClicked = 'Swap Clicked',
-  ConvertUSDCAttempt = 'Convert USDC Attempt',
-  ConvertUSDCClicked = 'Convert USDC Clicked',
   SwapAttempt = 'Swap Attempt',
   TradeClicked = 'Trade Clicked',
   ConnectClicked = 'Connect Clicked',
@@ -183,7 +185,28 @@ export enum AmplitudeEvent {
   PlaceOrderAttempt = 'Place Order Attempt',
   PlaceOrderConfirm = 'Place Order Confirm',
   CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy'
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
+}
+
+export enum MixPanelEvent {
+  Swap = 'Swap',
+  Login = 'Login',
+  Transfer = 'Transfer',
+  SwapClicked = 'Swap Clicked',
+  SwapAttempt = 'Swap Attempt',
+  TradeClicked = 'Trade Clicked',
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  SurveyAccepted = 'Survey - Accepted',
+  SurveyRejected = 'Survey - Rejected',
+  PlaceOrderAttempt = 'Place Order Attempt',
+  PlaceOrderConfirm = 'Place Order Confirm',
+  CreateStrategy = 'Create Strategy',
+  RemoveStrategy = 'Remove Strategy',
+  CreateLiquidityBot = 'Create Liquidity Bot',
+  RemoveLiquidityBot = 'Remove Liquidity Bot'
 }
 
 export enum SurveyTitle {
@@ -192,6 +215,7 @@ export enum SurveyTitle {
 
 export enum DefaultMarket {
   Perpetual = 'btc-usdt-perp',
+  PerpetualTestnet = 'btc-usdt-perp-pyth',
   Spot = 'inj-usdt'
 }
 
@@ -228,7 +252,6 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
-  ConvertUsdc = 'convert-usdc',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
   OrderbookNotionalClick = 'orderbook-notional-click',
@@ -343,35 +366,6 @@ export enum PaginationState {
   QueryMoreThanTotalPage = 'query-more-than-total-page'
 }
 
-export enum ActivityPage {
-  OpenPositions = 'activity-positions',
-  FundingPayments = 'activity-positions-funding-payments',
-  DerivativeOpenOrders = 'activity-derivatives',
-  DerivativeTriggers = 'activity-derivatives-triggers',
-  DerivativeOrderHistory = 'activity-derivatives-order-history',
-  DerivativeTradeHistory = 'activity-derivatives-trade-history',
-  SpotOpenOrders = 'activity-spot',
-  SpotOrderHistory = 'activity-spot-order-history',
-  SpotTradeHistory = 'activity-spot-trade-history',
-  SwapHistory = 'activity-spot-swap-history',
-  WalletHistoryTransfers = 'activity-wallet-history',
-  WalletHistoryDeposits = 'activity-wallet-history-deposits',
-  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
-}
-
-export enum ActivityTab {
-  Spot = 'activity-spot',
-  Positions = 'activity-positions',
-  Derivatives = 'activity-derivatives',
-  WalletHistory = 'activity-wallet-history'
-}
-
-export enum AuctionTradingField {
-  BidPrice = 'bidPrice',
-  BaseAmount = 'baseAmount',
-  QuoteAmount = 'quoteAmount'
-}
-
 export enum InstitutionalFormField {
   FirstName = 'firstName',
   LastName = 'lastName',
@@ -382,11 +376,14 @@ export enum InstitutionalFormField {
 
 export enum SpotGridTradingField {
   Grids = 'grids',
+  StopLoss = 'stopLoss',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
+  TakeProfit = 'takeProfit',
+  SellAllBase = 'sellAllBase',
+  InvestmentType = 'investmentType',
   InvestmentAmount = 'investmentAmount',
-  BaseInvestmentAmount = 'baseInvestmentAmount',
-  InvestmentType = 'InvestmentType'
+  BaseInvestmentAmount = 'baseInvestmentAmount'
 }
 
 export enum SpotGridMessages {
@@ -402,6 +399,37 @@ export enum GridStrategyTabs {
 }
 
 export enum InvestmentTypeGst {
+  Base = 'base',
   Quote = 'quote',
   BaseAndQuote = 'baseAndQuote'
+}
+
+export enum StrategyStatus {
+  Active = 'active',
+  Removed = 'removed'
+}
+
+export enum StopReason {
+  User = 'user',
+  StopLoss = 'stop_loss',
+  TakeProfit = 'take_profit',
+  InsufficientFunds = 'insufficient_funds',
+  ExceededMaxRetries = 'exceeded_max_retries'
+}
+
+export enum GridStrategyType {
+  Auto = 'auto',
+  Manual = 'manual'
+}
+
+export enum GuildSortBy {
+  TVL = 'tvl',
+  Volume = 'volume'
+}
+
+export enum TimeDuration {
+  Day = 'day',
+  Hour = 'hour',
+  Minute = 'minute',
+  Second = 'second'
 }

@@ -1,5 +1,4 @@
-<script setup lang="ts">
-import { PropType } from 'vue'
+<script lang="ts" setup>
 import { Banner } from '@/types'
 
 const appStore = useAppStore()
@@ -18,7 +17,6 @@ function closeNoticeBanner() {
   })
 }
 </script>
-g
 
 <template>
   <div

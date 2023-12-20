@@ -297,6 +297,13 @@ const hardcodedExcludedTradesByMarket = {
       }
     ]
   },
+
+  // KIRA/INJ
+  'factory/inj1xy3kvlr4q4wdd6lrelsrw2fk2ged0any44hhwq/KIRA/inj': {
+    excludeBefore: 1702858500000,
+    bars: []
+  },
+
   'BTC/USDT PERP': {
     excludeBefore: null,
     bars: [
@@ -385,6 +392,22 @@ const hardcodedExcludedTradesByMarket = {
       {
         low: 409.3,
         barMap: (bar: any) => ({ ...bar, low: 580 })
+      }
+    ]
+  },
+
+  'TIA/USDT-30NOV2023': {
+    excludeBefore: null,
+    bars: [
+      {
+        high: 100,
+        barMap: (bar: any) => ({
+          ...bar,
+          low: 2.25,
+          high: 3.5,
+          close: 3.3,
+          open: 2.7
+        })
       }
     ]
   }

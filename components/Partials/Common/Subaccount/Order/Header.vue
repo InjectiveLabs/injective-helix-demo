@@ -1,7 +1,13 @@
 <script lang="ts" setup>
+import { TradeSubPage } from '@/types'
+
+defineProps({
+  isSpot: Boolean
+})
+
 const route = useRoute()
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 </script>
 
 <template>
@@ -33,7 +39,7 @@ const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
       <th class="h-8 text-right">
         {{ $t('trade.filled') }}
       </th>
-      <th v-if="!isBinaryOptionsPage" class="text-right">
+      <th v-if="!isBinaryOptionsPage && !isSpot" class="text-right">
         {{ $t('trade.leverage') }}
       </th>
       <th class="h-8 text-right">

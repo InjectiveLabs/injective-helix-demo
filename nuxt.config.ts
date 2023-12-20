@@ -41,8 +41,19 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/devtools',
     '@nuxtjs/i18n',
+    '@funken-studio/sitemap-nuxt-3',
     ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
   ],
+
+  // @ts-ignore
+  sitemap: {
+    hostname:
+      process.env.VITE_BASE_URL &&
+      !process.env.VITE_BASE_URL.includes('localhost')
+        ? process.env.VITE_BASE_URL
+        : 'https://helixapp.com',
+    gzip: true
+  },
 
   // @ts-ignore
   bugsnag: process.env.VITE_BUGSNAG_KEY

@@ -1,12 +1,19 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+
 import { backupPromiseCall } from '@/app/utils/async'
 import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -15,10 +22,15 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+}>()
+
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
+const { aggregatedPortfolioBalances } = useBalance()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -26,141 +38,87 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 const now = ref(Date.now())
 
-const market = computed(() => gridStrategyStore.spotMarket)
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
+
+const { pnl, percentagePnl } = useActiveGridStrategy(
+  market,
+  computed(() => props.strategy)
+)
+
+const { upperBound, lowerBound } = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.strategy)
+)
+
+const marketSubaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+)
+
+const subaccountBalances = computed(
+  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+)
 
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
-)
-
-const upperBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.upperBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const lowerBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.lowerBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const investment = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
-
-  const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
-    .toBase(market.value?.baseToken.decimals)
-    .times(
-      new BigNumberInWei(props.strategy.executionPrice).toBase(
-        market.value?.quoteToken.decimals
-      )
-    )
-
-  const quoteAmountInUsd = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  return baseAmountInUsd.plus(quoteAmountInUsd)
-})
-
-const subaccountBalances = computed(
-  () =>
-    accountStore.subaccountBalancesMap[
-      addressAndMarketSlugToSubaccountId(
-        walletStore.address,
-        market.value?.slug || ''
-      )
-    ]
-)
-
-const pnl = computed(() => {
-  if (!market.value || !subaccountBalances.value) {
-    return ZERO_IN_BASE
-  }
-
-  const creationQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const creationBaseQuantity = new BigNumberInWei(
-    props.strategy.baseQuantity
-  ).toBase(market.value?.baseToken.decimals)
-
-  const creationMidPrice = new BigNumberInWei(
-    props.strategy.executionPrice
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const currentQuoteQuantity = new BigNumberInWei(
-    subaccountBalances.value.find(
-      (balance) => balance.denom === market.value?.quoteDenom
-    )?.totalBalance || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const currentBaseQuantity = new BigNumberInWei(
-    subaccountBalances.value.find(
-      (balance) => balance.denom === market.value?.baseDenom
-    )?.totalBalance || 0
-  ).toBase(market.value?.baseToken.decimals)
-
-  const orderbookBuy = new BigNumberInWei(
-    spotStore.orderbook?.buys[0]?.price || 0
-  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
-
-  const orderbookSell = new BigNumberInWei(
-    spotStore.orderbook?.sells[0]?.price || 0
-  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
-
-  const currentMidPrice = orderbookSell
-    .minus(orderbookBuy)
-    .dividedBy(2)
-    .plus(orderbookSell)
-
-  return currentQuoteQuantity
-    .plus(currentBaseQuantity.times(currentMidPrice))
-    .minus(
-      creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
-    )
-})
-
-const percentagePnl = computed(() =>
-  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
 )
 
 const duration = computed(() =>
   formatDistance(Number(props.strategy.createdAt), now.value)
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: investmentToString } = useBigNumberFormatter(
-  investment,
-  { decimalPlaces: 2 }
+const accountTotalBalanceInUsd = computed(() => {
+  if (!subaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
+
+  return subaccountBalances.value.reduce(
+    (total, balance) =>
+      total.plus(
+        new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+          balance.token.decimals
+        )
+      ),
+    ZERO_IN_BASE
+  )
+})
+
+const { valueToString: totalInvestmentToString } = useBigNumberFormatter(
+  accountTotalBalanceInUsd,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onRemoveStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy()
+    .removeStrategy(props.strategy.contractAddress)
     .then(() => {
       success({
         title: t('sgt.success'),
@@ -176,19 +134,14 @@ function onRemoveStrategy() {
 
       amplitudeGridStrategyTracker.removeStrategy({
         duration: duration.value,
-        market: gridStrategyStore.spotMarket?.slug || '',
-        totalProfit: pnltoString.value
+        market: market.value?.slug || '',
+        totalProfit: pnlToString.value
       })
     })
 }
 
 function onDetailsPage() {
-  accountStore.$patch({
-    subaccountId: addressAndMarketSlugToSubaccountId(
-      walletStore.address,
-      gridStrategyStore.spotMarket?.slug || 'inj-usdt'
-    )
-  })
+  emit('details:open', props.strategy, market.value)
 }
 
 useIntervalFn(() => {
@@ -197,40 +150,42 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    :to="{
+      name: TradingBotsSubPage.GridSpotMarket,
+      params: { market: market.slug }
+    }"
     class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
       <span>{{ createdAt }}</span>
     </div>
 
-    <div>
-      <div class="flex gap-2 items-center">
-        <div class="text-left">
-          <CommonTokenIcon
-            v-if="market?.baseToken"
-            v-bind="{ token: market?.baseToken }"
-          />
-        </div>
+    <div class="flex gap-2 items-center">
+      <div class="text-left">
+        <CommonTokenIcon
+          v-if="market?.baseToken"
+          v-bind="{ token: market?.baseToken }"
+        />
+      </div>
 
-        <div>
-          {{ market?.ticker }}
-        </div>
+      <div>
+        {{ market?.ticker }}
       </div>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundToString }} {{ market?.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
       <div>
-        {{ investmentToString }}
-        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        {{ totalInvestmentToString }}
+        {{ market.quoteToken.symbol }}
       </div>
     </div>
 
@@ -240,8 +195,8 @@ useIntervalFn(() => {
     >
       <div>
         <div>
-          {{ pnltoString }}
-          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+          {{ pnlToString }}
+          {{ market.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>
       </div>
@@ -250,20 +205,19 @@ useIntervalFn(() => {
     <div class="flex items-center justify-end">{{ duration }}</div>
 
     <div class="flex items-center justify-center">
-      <NuxtLink
-        class="underline hover:text-blue-500"
-        :to="{ name: 'activity-spot' }"
-        @click="onDetailsPage"
+      <div
+        class="underline hover:text-blue-500 cursor-pointer"
+        @click.prevent="onDetailsPage"
       >
-        Details
-      </NuxtLink>
+        {{ $t('sgt.details') }}
+      </div>
     </div>
 
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-center" @click.prevent.stop>
       <PartialsCommonCancelButton
         v-bind="{ status }"
         @click="onRemoveStrategy"
       />
     </div>
-  </div>
+  </NuxtLink>
 </template>

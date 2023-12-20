@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
 import { UiTrade } from '@/types'
@@ -38,13 +37,13 @@ const marketRoute = computed(() => {
   return getMarketRoute(market.value)
 })
 
-function handleShowTradeDetails() {
+function showTradeDetails() {
   emit('showTradeDetails', props.trade)
 }
 </script>
 
 <template>
-  <CommonTableRow v-if="market" dense @click="handleShowTradeDetails">
+  <CommonTableRow v-if="market" is-dense @click="showTradeDetails">
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
@@ -67,7 +66,7 @@ function handleShowTradeDetails() {
           }}
         </span>
         <div v-if="market.baseToken">
-          <CommonTokenIcon :token="market.baseToken" sm />
+          <CommonTokenIcon :token="market.baseToken" is-sm />
         </div>
         <span class="text-gray-200 font-semibold">
           {{ market.ticker }}

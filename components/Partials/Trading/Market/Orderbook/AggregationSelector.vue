@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { aggregationList } from '@/app/data/aggregation'
 
 const props = defineProps({
@@ -46,7 +45,7 @@ const filteredList = computed(() => {
     ({ value }) => value === props.minTick
   )
 
-  return aggregationList.slice(Math.max(index - 2, 0), index + 1)
+  return aggregationList.slice(Math.max(index - 3, 0), index + 1)
 })
 </script>
 

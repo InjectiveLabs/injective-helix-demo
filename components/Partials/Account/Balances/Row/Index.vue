@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -22,7 +21,7 @@ defineProps({
   <PartialsAccountBalancesRowWrapper
     v-bind="{
       balance,
-      hideBalances,
+      isHideBalances,
       usdPriceStatus
     }"
   />

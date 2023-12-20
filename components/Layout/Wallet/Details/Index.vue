@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
+import { MainPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,8 +14,10 @@ const formattedInjectiveAddress = computed(() =>
 function disconnect() {
   walletStore.disconnect()
 
-  if (ROUTES.walletConnectedRequiredRouteNames.includes(route.name as string)) {
-    router.push({ name: 'index' })
+  if (
+    ROUTES.walletConnectedRequiredRouteNames.includes(route.name as MainPage)
+  ) {
+    router.push({ name: MainPage.Index })
   }
 }
 </script>
@@ -59,5 +62,7 @@ function disconnect() {
         </div>
       </template>
     </BaseHoverMenu>
+
+    <ModalsQrCode />
   </div>
 </template>

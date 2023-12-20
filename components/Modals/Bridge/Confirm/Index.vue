@@ -1,8 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
-  BRIDGE_FEE_IN_USD,
   BalanceWithTokenAndPrice,
   BalanceWithTokenWithErc20BalanceWithPrice
 } from '@injectivelabs/sdk-ui-ts'
@@ -13,6 +12,8 @@ import {
   UI_MINIMAL_AMOUNT
 } from '@/app/utils/constants'
 
+const ibcStore = useIbcStore()
+const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const tokenStore = useTokenStore()
 const peggyStore = usePeggyStore()
@@ -31,32 +32,48 @@ const {
   isDeposit,
   isWithdraw,
   isTransfer,
-  originIsInjective,
+  isInjectiveOrigin,
+  isEthereumOrigin,
+  isCosmosNetworkOrigin,
   originNetworkMeta,
-  destinationIsEthereum,
-  destinationNetworkMeta
+  isEthereumDestination,
+  destinationNetworkMeta,
+  isCosmosNetworkDestination
 } = useBridgeState(formValues)
 
+const { balanceWithToken } = useBridgeBalance(formValues)
+
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
+
+const ETH_BRIDGE_FEE_IN_USD = 20
+const IBC_BRIDGE_FEE_IN_USD = 0
 
 const status = reactive(new Status())
 
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeConfirm])
 
-const balanceWithTokenAndPrice = computed(() => {
-  return peggyStore.tradeableErc20BalancesWithTokenAndPrice.find(
-    (token) => token.denom === formValues.value[BridgeField.Token].denom
-  ) as BalanceWithTokenAndPrice | undefined
+const usdPrice = computed(() => {
+  if (
+    balanceWithToken.value?.token &&
+    tokenStore.tokenUsdPrice(balanceWithToken.value.token.coinGeckoId)
+  ) {
+    return (
+      tokenStore.tokenUsdPrice(balanceWithToken.value.token.coinGeckoId) || 0
+    )
+  }
+
+  return 0
 })
 
-const usdPrice = computed(
-  () =>
-    new BigNumberInBase(
-      tokenStore.tokenUsdPrice(
-        balanceWithTokenAndPrice.value?.token.coinGeckoId || ''
-      )
-    )
-)
+const balanceWithTokenAndPrice = computed(() => {
+  if (!balanceWithToken.value) {
+    return
+  }
+
+  return { ...balanceWithToken.value, usdPrice: usdPrice.value } as
+    | BalanceWithTokenAndPrice
+    | undefined
+})
 
 const amount = computed(
   () => new BigNumberInBase(formValues.value[BridgeField.Amount] || 0)
@@ -86,11 +103,11 @@ const ethBridgeFee = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (usdPrice.value.isZero()) {
+  if (usdPrice.value === 0) {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
+  return new BigNumberInBase(ETH_BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
 })
 
 const ethBridgeFeeToString = computed(() =>
@@ -111,8 +128,28 @@ const ethBridgeFeeInUsdToString = computed(() =>
     : ethBridgeFeeInUsd.value.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
 )
 
+const ibcBridgeFee = computed(() => {
+  if (!balanceWithToken.value) {
+    return ZERO_IN_BASE
+  }
+
+  if (!usdPrice.value || usdPrice.value === 0) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(IBC_BRIDGE_FEE_IN_USD).dividedBy(usdPrice.value)
+})
+
+const ibcBridgeFeeInUsd = computed(() => {
+  return ibcBridgeFee.value.multipliedBy(new BigNumberInBase(usdPrice.value))
+})
+
+const ibcBridgeFeeInUsdToString = computed(() => {
+  return ibcBridgeFeeInUsd.value.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+})
+
 const transferAmount = computed(() => {
-  if (destinationIsEthereum.value) {
+  if (isEthereumDestination.value) {
     return amount.value.minus(ethBridgeFee.value)
   }
 
@@ -138,28 +175,39 @@ const { valueToString: transferAmountInUsdToString } =
   useBigNumberFormatter(transferAmountInUsd)
 
 const handlerFunction = computed(() => {
-  if (isDeposit.value) {
-    return handleDeposit
+  if (isEthereumOrigin.value) {
+    return depositFromEthereum
+  }
+
+  if (isCosmosNetworkOrigin.value) {
+    return cosmosIbcTransferToInjective
   }
 
   if (isTransfer.value) {
-    return handleWithdrawToInjective
+    return transfer
   }
 
-  // Withdraw to Ethereum
-  return handleWithdraw
+  if (isCosmosNetworkDestination.value) {
+    return cosmosIbcTransferFromInjective
+  }
+
+  return withdrawToEthereum
 })
 
-function handleModalClose() {
+function closeModal() {
   modalStore.closeModal(Modal.BridgeConfirm)
 }
 
-function handleConfirmation() {
+function confirm() {
   handlerFunction.value()
 }
 
-function handleWithdrawToInjective() {
+function transfer() {
   status.setLoading()
+
+  if (!balanceWithToken.value) {
+    return
+  }
 
   accountStore
     .transfer({
@@ -167,7 +215,7 @@ function handleWithdrawToInjective() {
       denom: formValues.value[BridgeField.Denom],
       destination: formValues.value[BridgeField.Destination],
       memo: formValues.value[BridgeField.Memo],
-      token: formValues.value[BridgeField.Token]
+      token: balanceWithToken.value.token
     })
     .then(() => {
       success({ title: t('bridge.withdrawToInjectiveAddressSuccess') })
@@ -181,17 +229,21 @@ function handleWithdrawToInjective() {
     })
 }
 
-function handleWithdraw() {
-  status.setLoading()
-
+function withdrawToEthereum() {
   if (ethBridgeFee.value.gte(formValues.value[BridgeField.Amount])) {
     return
   }
 
+  if (!balanceWithToken.value) {
+    return
+  }
+
+  status.setLoading()
+
   peggyStore
     .withdraw({
       bridgeFee: ethBridgeFee.value,
-      token: formValues.value[BridgeField.Token],
+      token: balanceWithToken.value.token,
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount])
     })
     .then(() => {
@@ -206,7 +258,11 @@ function handleWithdraw() {
     })
 }
 
-function handleDeposit() {
+function depositFromEthereum() {
+  if (!balanceWithToken.value) {
+    return
+  }
+
   status.setLoading()
 
   peggyStore
@@ -214,7 +270,7 @@ function handleDeposit() {
       amount: new BigNumberInBase(formValues.value[BridgeField.Amount]),
       balanceWithTokenAndPrice:
         balanceWithTokenAndPrice.value as BalanceWithTokenWithErc20BalanceWithPrice,
-      token: formValues.value[BridgeField.Token]
+      token: balanceWithToken.value.token
     })
     .then(() => {
       success({ title: t('bridge.depositToInjectiveSuccess') })
@@ -227,14 +283,68 @@ function handleDeposit() {
       status.setIdle()
     })
 }
+
+function cosmosIbcTransferToInjective() {
+  if (!balanceWithToken.value) {
+    return
+  }
+
+  status.setLoading()
+
+  ibcStore
+    .deposit({
+      destinationAddress: walletStore.injectiveAddress,
+      token: balanceWithToken.value.token,
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount])
+    })
+    .then(() => {
+      success({ title: t('bridge.depositToInjectiveSuccess') })
+
+      emit('form:submit')
+      emitFundingRefresh()
+    })
+    .catch((error: any) => {
+      $onError(error)
+    })
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function cosmosIbcTransferFromInjective() {
+  if (!balanceWithToken.value) {
+    return
+  }
+
+  status.setLoading()
+
+  ibcStore
+    .withdraw({
+      destinationAddress: formValues.value[BridgeField.Destination],
+      token: balanceWithToken.value.token,
+      amount: new BigNumberInBase(formValues.value[BridgeField.Amount])
+    })
+    .then(() => {
+      success({ title: t('bridge.withdrawFromInjectiveSuccess') })
+
+      emit('form:submit')
+      emitFundingRefresh()
+    })
+    .catch((error: any) => {
+      $onError(error)
+    })
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
+    is-sm
     data-cy="transfer-confirm-modal"
-    @modal:closed="handleModalClose"
+    @modal:closed="closeModal"
   >
     <template #title>
       <h3>
@@ -257,11 +367,11 @@ function handleDeposit() {
         {{ $t('bridge.confirmTransaction') }}
       </h3>
 
-      <div v-if="formValues[BridgeField.Token]" class="text-center my-8">
+      <div v-if="balanceWithToken" class="text-center my-8">
         <CommonTokenIcon
-          v-if="formValues[BridgeField.Token].logo"
-          :token="formValues[BridgeField.Token]"
-          xl
+          v-if="balanceWithToken.token.logo"
+          :token="balanceWithToken.token"
+          is-xl
           class="mx-auto"
         />
         <BaseIcon
@@ -274,7 +384,7 @@ function handleDeposit() {
           data-cy="transfer-confirm-modal-value-text-content"
         >
           {{ amountToString }}
-          {{ formValues[BridgeField.Token].symbol }}
+          {{ balanceWithToken.token.symbol }}
         </p>
         <p
           v-if="amountInUsd.gt(0)"
@@ -292,7 +402,9 @@ function handleDeposit() {
         <PartialsBridgeFormNetworkCard
           class="w-1/2"
           data-cy="transfer-confirm-modal-from-text-content"
-          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :is-hide-icon="
+            originNetworkMeta.value === destinationNetworkMeta.value
+          "
           :network-meta="originNetworkMeta"
         />
 
@@ -305,12 +417,14 @@ function handleDeposit() {
         <PartialsBridgeFormNetworkCard
           class="w-1/2"
           data-cy="transfer-confirm-modal-to-text-content"
-          :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+          :is-hide-icon="
+            originNetworkMeta.value === destinationNetworkMeta.value
+          "
           :network-meta="destinationNetworkMeta"
         />
       </div>
 
-      <div v-if="originIsInjective" class="mt-6">
+      <div v-if="isInjectiveOrigin" class="mt-6">
         <!-- Amount -->
         <ModalsBridgeConfirmRow class="mb-4">
           <template #title>
@@ -320,7 +434,7 @@ function handleDeposit() {
           <template #amount>
             <span data-cy="transfer-confirm-modal-amount-text-content">
               {{ amountToString }}
-              {{ formValues[BridgeField.Token].symbol }}
+              {{ balanceWithToken?.token.symbol }}
             </span>
           </template>
 
@@ -332,27 +446,40 @@ function handleDeposit() {
         </ModalsBridgeConfirmRow>
 
         <!-- Bridge Fee -->
-        <ModalsBridgeConfirmRow v-if="destinationIsEthereum" class="mb-4">
+        <ModalsBridgeConfirmRow
+          v-if="isEthereumDestination || isCosmosNetworkDestination"
+          class="mb-4"
+        >
           <template #title>
             {{ $t('bridge.bridgeFee') }}
           </template>
 
           <template #amount>
-            <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
+            <span v-if="isCosmosNetworkDestination">
+              {{ $t('bridge.waived') }}
+            </span>
+            <span
+              v-else
+              data-cy="transfer-confirm-modal-bridge-fee-text-content"
+            >
               {{ ethBridgeFeeToString }}
-              {{ formValues[BridgeField.Token].symbol }}
+              {{ balanceWithToken?.token.symbol }}
             </span>
           </template>
 
           <template #amountInUsd>
             <span data-cy="transfer-confirm-modal-bridge-fee-usd-text-content">
-              ${{ ethBridgeFeeInUsdToString }}
+              ${{
+                isEthereumDestination
+                  ? ethBridgeFeeInUsdToString
+                  : ibcBridgeFeeInUsdToString
+              }}
             </span>
           </template>
         </ModalsBridgeConfirmRow>
       </div>
 
-      <div v-if="originIsInjective">
+      <div v-if="isInjectiveOrigin">
         <ModalsBridgeConfirmRow class="mb-4" bold>
           <template #title>
             {{ $t('bridge.transferAmount') }}
@@ -361,7 +488,7 @@ function handleDeposit() {
           <template #amount>
             <span data-cy="transfer-confirm-modal-transfer-amount-text-content">
               {{ transferAmountToString }}
-              {{ formValues[BridgeField.Token].symbol }}
+              {{ balanceWithToken?.token.symbol }}
             </span>
           </template>
 
@@ -389,12 +516,12 @@ function handleDeposit() {
 
       <div class="text-center mt-6">
         <AppButton
-          lg
+          is-lg
           class="w-full font-semibold rounded bg-blue-500 text-blue-900"
-          :disabled="isConfirmationDisabled"
+          :is-disabled="isConfirmationDisabled"
           :is-loading="status.isLoading()"
           data-cy="transfer-confirm-modal-confirm-button"
-          @click="handleConfirmation"
+          @click="confirm"
         >
           <span v-if="transferAmount.lte(0)">
             {{ $t('bridge.insufficientAmount') }}

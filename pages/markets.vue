@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 
 const appStore = useAppStore()
@@ -39,7 +40,10 @@ const marketsWithSummariesLoaded = computed(
 function getQuoteTokenPrice() {
   Promise.all([
     appStore.pollMarkets(),
-    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
+    tokenStore.fetchTokensUsdPriceMap([
+      ...QUOTE_DENOMS_GECKO_IDS,
+      INJ_COIN_GECKO_ID
+    ])
   ]).catch($onError)
 }
 
@@ -49,7 +53,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 <template>
   <AppHocLoading :is-loading="!marketsWithSummariesLoaded" class="h-full">
     <div class="container">
-      <PartialsMarketsOverview :markets="marketsWithSummaryAndVolumeInUsd" />
+      <PartialsMarketsNewMarkets :markets="marketsWithSummaryAndVolumeInUsd" />
       <PartialsMarkets :markets="marketsWithSummaryAndVolumeInUsd" />
     </div>
   </AppHocLoading>

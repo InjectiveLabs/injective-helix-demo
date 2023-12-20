@@ -1,22 +1,27 @@
 <script lang="ts" setup>
 const props = defineProps({
-  sm: Boolean,
-  md: Boolean,
-  lg: Boolean,
-  xl: Boolean,
-  white: Boolean
+  isXs: Boolean,
+  isSm: Boolean,
+  isMd: Boolean,
+  isLg: Boolean,
+  isXl: Boolean,
+  isWhite: Boolean
 })
 
 const sizeClasses = computed(() => {
-  if (props.sm) {
+  if (props.isXs) {
+    return 'h-2 w-2 border-[2px]'
+  }
+
+  if (props.isSm) {
     return 'h-4 w-4 border-[3px]'
   }
 
-  if (props.lg) {
+  if (props.isLg) {
     return 'h-8 w-8 border-[4px]'
   }
 
-  if (props.xl) {
+  if (props.isXl) {
     return 'h-12 w-12 border-[6px]'
   }
 
@@ -29,7 +34,7 @@ const sizeClasses = computed(() => {
     class="m-0"
     :class="[
       sizeClasses,
-      white
+      isWhite
         ? 'border-t-gray-200 border-r-gray-200'
         : 'border-t-blue-500 border-r-blue-500'
     ]"

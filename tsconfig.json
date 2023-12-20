@@ -10,7 +10,8 @@
       "@pinia/nuxt",
       "@nuxtjs/i18n",
       "@injectivelabs/nuxt-bugsnag"
-    ]
+    ],
+    "verbatimModuleSyntax": false
   },
   "exclude": [
     "node_modules",

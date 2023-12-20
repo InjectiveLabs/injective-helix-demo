@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -41,7 +40,7 @@ function onModalClose() {
   <AppModal
     v-if="trade && market"
     :is-open="isModalOpen"
-    sm
+    is-sm
     @modal:closed="onModalClose"
   >
     <template #title>
@@ -70,7 +69,11 @@ function onModalClose() {
         {{ $t('trade.pair') }}
       </span>
       <div class="flex items-center justify-end">
-        <CommonTokenIcon v-if="market.baseToken" :token="market.baseToken" sm />
+        <CommonTokenIcon
+          v-if="market.baseToken"
+          :token="market.baseToken"
+          is-sm
+        />
         <span class="font-semibold uppercase ml-1">
           {{ market.ticker }}
         </span>

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
-  UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
-  UiOrderbookSummary
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
   summary: {
-    type: Object as PropType<UiOrderbookSummary>,
+    type: Object as PropType<{ quantity: string; total: string }>,
     required: true
   },
 
@@ -22,7 +21,9 @@ const props = defineProps({
 })
 
 const { valueToString: averagePriceToString } = useBigNumberFormatter(
-  computed(() => props.summary.total.dividedBy(props.summary.quantity)),
+  computed(() =>
+    new BigNumberInBase(props.summary.total).dividedBy(props.summary.quantity)
+  ),
   {
     decimalPlaces: props.market.priceDecimals
   }
@@ -31,7 +32,6 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
 
 <template>
   <div
-    v-if="summary"
     class="p-4 bg-gray-700 rounded-xl flex flex-col flex-wrap text-xs min-w-2xs"
   >
     <div class="flex justify-between items-center mb-2">
@@ -49,9 +49,9 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
       <span>
         <AppNumber
           :decimals="market.quantityDecimals"
-          :number="props.summary.quantity"
+          :number-string="summary.quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
-          no-grouping
+          is-no-grouping
         />
       </span>
     </div>
@@ -66,8 +66,8 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
       <span class="flex items-center">
         <AppNumber
           :decimals="market.priceDecimals"
-          :number="props.summary.total"
-          no-grouping
+          :number-string="summary.total"
+          is-no-grouping
         />
       </span>
     </div>

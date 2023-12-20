@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount } from 'vue'
+const props = defineProps({
+  isCarousel: Boolean
+})
 
 const views = ref<HTMLElement | null>(null)
 const viewCount = ref(0)
@@ -8,25 +10,17 @@ const hasFocus = ref(false)
 const lastKnownOffsetX = ref(0)
 const currentOffsetX = ref(0)
 const touchStartX = ref(0)
-const animationTimeout = ref(undefined) as any
+const isTransitionEnabled = ref(true)
 
 onMounted(() => {
-  window.addEventListener('wheel', handleScroll)
-  window.addEventListener('resize', handleResize)
-
-  nextTick(updateViewCount)
+  nextTick(modifyViewCount)
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('wheel', handleScroll)
-  window.removeEventListener('resize', handleResize)
-})
-
-function handleResize() {
-  updateViewCount()
+function resize() {
+  modifyViewCount()
 }
 
-function handleScroll(e: WheelEvent): void {
+function scroll(e: WheelEvent): void {
   if (hasFocus.value && views.value) {
     const total = views.value.scrollWidth - views.value.clientWidth
     const deltaX = e.deltaX
@@ -37,12 +31,12 @@ function handleScroll(e: WheelEvent): void {
 
     currentOffsetX.value = newOffsetX
 
-    updateOffset(newOffsetX)
-    updateIndicators(newOffsetX)
+    modifyOffset(newOffsetX)
+    modifyIndicators(newOffsetX)
   }
 }
 
-function handleTouchMove(e: TouchEvent) {
+function touchMove(e: TouchEvent) {
   e.preventDefault()
 
   if (hasFocus.value && views.value) {
@@ -52,12 +46,12 @@ function handleTouchMove(e: TouchEvent) {
     const total = views.value.scrollWidth - views.value.clientWidth
     const newOffsetX = clamp(currentOffsetX.value - offsetX, 0, total)
 
-    updateOffset(newOffsetX)
-    updateIndicators(newOffsetX)
+    modifyOffset(newOffsetX)
+    modifyIndicators(newOffsetX)
   }
 }
 
-function handleScrollToIndex(index: number) {
+function scrollToIndex(index: number) {
   if (!views.value) {
     return
   }
@@ -68,32 +62,37 @@ function handleScrollToIndex(index: number) {
   const padding = totalPadding / (viewCount.value - 1)
   const newOffsetX = views.value.clientWidth * index + padding * index
 
-  updateAnimationClasses()
+  animate()
 
   currentOffsetX.value = newOffsetX
   lastKnownOffsetX.value = newOffsetX
 
-  updateOffset(newOffsetX)
-  updateIndicators(newOffsetX)
+  modifyOffset(newOffsetX)
+  modifyIndicators(newOffsetX)
 }
 
-function handleMouseEnter() {
+function mouseEnter() {
   currentOffsetX.value = lastKnownOffsetX.value
   hasFocus.value = true
 }
 
-function handleMouseLeave() {
+function mouseLeave() {
   hasFocus.value = false
   lastKnownOffsetX.value = currentOffsetX.value
 }
 
-function handleTouchStart(e: TouchEvent) {
+function touchStart(e: TouchEvent) {
+  if (isActive.value) {
+    isTransitionEnabled.value = false
+    pause()
+  }
+
   currentOffsetX.value = lastKnownOffsetX.value
   touchStartX.value = getTouchPositionX(e)
   hasFocus.value = true
 }
 
-function handleTouchEnd() {
+function touchEnd() {
   hasFocus.value = false
 
   if (!views.value) {
@@ -107,43 +106,38 @@ function handleTouchEnd() {
   currentOffsetX.value = lastKnownOffsetX.value
 }
 
-function updateOffset(offset: number) {
+function modifyOffset(offset: number) {
   if (!views.value) {
     return
   }
 
+  views.value.style.transition = isTransitionEnabled.value
+    ? 'transform 400ms ease-in-out'
+    : 'none'
   views.value.style.transform = `translate3d(${offset * -1}px, 0, 0)`
 }
 
-function updateIndicators(offsetX: number) {
+function modifyIndicators(offsetX: number) {
   if (!views.value) {
     return
   }
 
   const total = views.value.scrollWidth
 
-  viewIndex.value = Math.round((offsetX / total) * viewCount.value)
+  viewIndex.value = Math.round((offsetX / total) * viewCount.value) || 0
 }
 
-function updateAnimationClasses() {
+function animate() {
   if (!views.value) {
     return
   }
 
   views.value.classList.add('animated')
-
-  clearTimeout(animationTimeout.value)
-
-  animationTimeout.value = setTimeout(() => {
-    if (!views.value) {
-      return
-    }
-
-    views.value.classList.remove('animated')
-  }, 200)
+  stop()
+  start()
 }
 
-function updateViewCount() {
+function modifyViewCount() {
   if (!views.value) {
     return
   }
@@ -173,28 +167,76 @@ function getTouchPositionX(e: TouchEvent) {
 function clamp(val: number, min: number, max: number) {
   return Math.min(Math.max(val, min), max)
 }
+
+function onClickIndicator(index: number) {
+  if (isActive.value) {
+    isTransitionEnabled.value = false
+    pause()
+  }
+
+  scrollToIndex(index)
+}
+
+useEventListener(window, 'wheel', scroll)
+useEventListener(window, 'resize', resize)
+
+const { start, stop } = useTimeoutFn(() => {
+  if (!views.value) {
+    return
+  }
+
+  views.value.classList.remove('animated')
+}, 200)
+
+const { pause, isActive } = useIntervalFn(() => {
+  if (!props.isCarousel) {
+    pause()
+
+    return
+  }
+
+  const nextIndex = viewIndex.value + 1
+
+  if (nextIndex === viewCount.value && views.value) {
+    isTransitionEnabled.value = false
+
+    // Set to last position so first card can fly in from the right
+    currentOffsetX.value = -views.value.clientWidth
+    modifyOffset(-views.value.clientWidth)
+
+    return nextTick(() => {
+      isTransitionEnabled.value = true
+      viewIndex.value = 0
+
+      scrollToIndex(viewIndex.value)
+    })
+  }
+
+  viewIndex.value = nextIndex
+  scrollToIndex(viewIndex.value)
+}, 7000)
 </script>
 
 <template>
   <div>
     <div
       class="overflow-x-hidden hide-scrollbar"
-      @mouseenter="handleMouseEnter"
-      @mouseleave="handleMouseLeave"
-      @touchstart="handleTouchStart"
-      @touchend="handleTouchEnd"
-      @touchmove="handleTouchMove"
+      @mouseenter="mouseEnter"
+      @mouseleave="mouseLeave"
+      @touchstart="touchStart"
+      @touchend="touchEnd"
+      @touchmove="touchMove"
     >
       <div ref="views" class="flex md:grid grid-cols-12 gap-6 views">
-        <slot></slot>
+        <slot />
       </div>
     </div>
     <div class="flex gap-2 justify-center mt-4 md:hidden">
       <AppHorizontalScrollViewIndicator
         v-for="index in viewCount"
         :key="`horizontal-scroll-view-indicator-${index}`"
-        :active="viewIndex === index - 1"
-        @click="handleScrollToIndex(index - 1)"
+        :is-active="viewIndex === index - 1"
+        @click="onClickIndicator(index - 1)"
       />
     </div>
   </div>

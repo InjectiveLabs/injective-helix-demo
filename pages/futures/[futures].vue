@@ -7,6 +7,14 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, Modal, UiMarketWithToken } from '@/types'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
+// import {
+//   DerivativeTradeIntegrityStrategy,
+//   DerivativeOrderbookIntegrityStrategy,
+//   DerivativeOraclePriceIntegrityStrategy,
+//   DerivativeSubaccountOrderIntegrityStrategy,
+//   DerivativeSubaccountTradeIntegrityStrategy,
+//   DerivativeSubaccountPositionIntegrityStrategy
+// } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
   middleware: [
@@ -14,14 +22,13 @@ definePageMeta({
     () => {
       const appStore = useAppStore()
       const modalStore = useModalStore()
-
       if (
         isCountryRestrictedForPerpetualMarkets(
           appStore.userState.geoLocation.browserCountry ||
             appStore.userState.geoLocation.country
         )
       ) {
-        modalStore.openModal(Modal.FuturesMarketRestricted)
+        modalStore.openModal(Modal.MarketRestricted)
       }
     }
   ]
@@ -41,6 +48,7 @@ const fetchStatus = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
   filterByCurrentMarket.value = false
+
   refreshSubaccountDetails()
 })
 
@@ -74,9 +82,9 @@ function checkMarketIsExpired(market: UiDerivativeMarketWithToken) {
 
   marketIsExpired.value =
     expiryFuturesMarket.expiryFuturesMarketInfo.expirationTimestamp <=
-    Date.now() / 1000
+    Math.floor(Date.now() / 1000)
 
-  if (marketIsExpired) {
+  if (marketIsExpired.value) {
     modalStore.openModal(Modal.MarketExpired)
   }
 }
@@ -143,6 +151,25 @@ watch(
     refreshSubaccountDetails()
   }
 )
+
+// useIntervalFn(() => {
+//   if (!market.value) {
+//     return
+//   }
+
+//   const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
+
+//   Promise.all([
+//     DerivativeSubaccountOrderIntegrityStrategy.make(args).validate(),
+//     DerivativeSubaccountTradeIntegrityStrategy.make(args).validate(),
+//     DerivativeSubaccountPositionIntegrityStrategy.make(args).validate(),
+//     DerivativeTradeIntegrityStrategy.make(market.value.marketId).validate(),
+//     DerivativeOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+//     DerivativeOraclePriceIntegrityStrategy.make(
+//       derivativeStore.activeMarketIds
+//     ).validate()
+//   ])
+// }, 30 * 1000)
 </script>
 
 <template>
@@ -163,10 +190,11 @@ watch(
 
     <template #modals>
       <div>
-        <ModalsFuturesRestricted />
+        <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
         <ModalsAddMargin />
         <ModalsMarketExpired
-          v-if="market && marketIsExpired"
+          v-if="market"
+          :key="market.marketId"
           :market="market"
         />
       </div>

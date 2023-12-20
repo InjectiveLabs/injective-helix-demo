@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-const quoteDenoms = computed(() => {
-  return useTradeReward().quoteSymbolsList.value.join(', ')
-})
+const { quoteSymbolsList } = useTradeReward()
+
+const quoteDenoms = computed(() => quoteSymbolsList.value.join(', '))
 </script>
 
 <template>

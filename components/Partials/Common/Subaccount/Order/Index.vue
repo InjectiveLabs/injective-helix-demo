@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
@@ -26,7 +25,7 @@ const sortedOrders = computed(() =>
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="sortedOrders.length === 0"
+      :is-empty="sortedOrders.length === 0"
       class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountOrderMobile
@@ -47,7 +46,7 @@ const sortedOrders = computed(() =>
 
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="sortedOrders.length > 0" class="table">
-        <PartialsCommonSubaccountOrderHeader />
+        <PartialsCommonSubaccountOrderHeader v-bind="{ isSpot }" />
         <tbody>
           <PartialsCommonSubaccountOrderRow
             v-for="(order, index) in sortedOrders"

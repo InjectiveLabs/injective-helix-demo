@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getDecimalsBasedOnNumber } from '@/app/utils/helpers'
 
 const props = defineProps({
-  sm: Boolean,
+  isSm: Boolean,
 
   number: {
     required: true,
@@ -36,7 +35,7 @@ const classes = computed(() => {
 
   if (
     formattedNumber.length > 12 + formattedNumberWithDecimals.value.decimals ||
-    props.sm
+    props.isSm
   ) {
     result.push('text-sm')
   } else {

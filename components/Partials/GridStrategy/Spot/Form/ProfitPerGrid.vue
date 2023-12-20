@@ -1,27 +1,31 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SpotGridTradingForm } from '@/types'
+import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 
 const profitPerGrid = computed(() => {
   if (
-    !formValues.value.lowerPrice ||
-    !formValues.value.upperPrice ||
-    !formValues.value.grids ||
+    !formValues.value[SpotGridTradingField.LowerPrice] ||
+    !formValues.value[SpotGridTradingField.UpperPrice] ||
+    !formValues.value[SpotGridTradingField.Grids] ||
     !gridStrategyStore.spotMarket ||
-    Number(formValues.value.grids) === 0
+    Number(formValues.value[SpotGridTradingField.Grids]) === 0
   ) {
     return ZERO_IN_BASE
   }
 
-  const priceDifference = new BigNumberInBase(formValues.value.upperPrice)
-    .minus(formValues.value.lowerPrice)
-    .dividedBy(formValues.value.grids)
+  const priceDifference = new BigNumberInBase(
+    formValues.value[SpotGridTradingField.UpperPrice]
+  )
+    .minus(formValues.value[SpotGridTradingField.LowerPrice])
+    .dividedBy(formValues.value[SpotGridTradingField.Grids])
 
-  return priceDifference.dividedBy(formValues.value.lowerPrice).times(100)
+  return priceDifference
+    .dividedBy(formValues.value[SpotGridTradingField.LowerPrice])
+    .times(100)
 })
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
+import { getDefaultFuturesMarket } from '@/app/utils/market'
 
 const props = defineProps({
-  dense: Boolean
+  isDense: Boolean
 })
 
 const attrs = useAttrs()
 
 const classes = computed(() => {
-  if (props.dense) {
+  if (props.isDense) {
     return ['hover:text-blue-500']
   }
 
@@ -42,22 +43,22 @@ const futuresMarket = computed(() => {
 })
 
 const market = computed(() =>
-  spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+  spotMarket ? DefaultMarket.Spot : getDefaultFuturesMarket()
 )
 
 const marketType = computed(() =>
   spotMarket ? MarketType.Spot : MarketType.Perpetual
 )
 
-function handleVisit() {
+function onClick() {
   if (spotMarket.value || futuresMarket.value) {
-    handleTradeClickedTrack()
+    tradeClickedTrack()
   }
 
   useEventBus<string>(BusEvents.NavLinkClicked).emit()
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: market.value,
     marketType: marketType.value,
@@ -72,7 +73,7 @@ function handleTradeClickedTrack() {
     class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center"
     :class="classes"
     exact
-    @click="handleVisit"
+    @click="onClick"
   >
     <span class="block">
       <slot></slot>

@@ -59,7 +59,9 @@ const actionsThatSetAppStateToBusy = [
   'account/transfer',
   'account/withdraw',
   'spot/cancelOrder',
-  'account/externalTransfer',
+  'campaign/joinGuild',
+  'campaign/createGuild',
+  'campaign/claimReward',
   'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
@@ -67,11 +69,14 @@ const actionsThatSetAppStateToBusy = [
   'position/closePosition',
   'spot/submitMarketOrder',
   'peggy/setTokenAllowance',
+  'account/externalTransfer',
   'position/closeAllPosition',
   'spot/submitStopLimitOrder',
   'spot/submitStopMarketOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
+  'gridStrategy/createStrategy',
+  'gridStrategy/removeStrategy',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
@@ -79,7 +84,9 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitStopMarketOrder',
   'swap/submitAtomicOrderExactOutput',
   'activity/batchCancelDerivativeOrders',
-  'position/closePositionAndReduceOnlyOrders'
+  'position/closePositionAndReduceOnlyOrders',
+  'gridStrategy/createStrategy',
+  'gridStrategy/removeStrategy'
 ]
 
 const persistState = (

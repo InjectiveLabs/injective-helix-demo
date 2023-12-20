@@ -1,6 +1,6 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 
 export default function useActiveGridStrategyFormatter(
   market: ComputedRef<UiSpotMarketWithToken>,
@@ -27,26 +27,88 @@ export default function useActiveGridStrategyFormatter(
   })
 
   const creationExecutionPrice = computed(() =>
-    new BigNumberInWei(strategy.value.executionPrice).toBase(
+    new BigNumberInWei(strategy.value.executionPrice)
+      .dividedBy(
+        new BigNumberInBase(10).pow(
+          market.value.quoteToken.decimals - market.value.baseToken.decimals
+        )
+      )
+      .toBase()
+  )
+
+  const stopBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.baseDeposit || 0).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
+  const stopQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.quoteDeposit || 0).toBase(
       market.value?.quoteToken.decimals
     )
   )
+
   const creationQuoteQuantity = computed(() =>
     new BigNumberInWei(strategy.value.quoteQuantity || 0).toBase(
       market.value?.quoteToken.decimals
     )
   )
+
   const creationBaseQuantity = computed(() =>
     new BigNumberInWei(strategy.value.baseQuantity).toBase(
       market.value?.baseToken.decimals
     )
   )
 
+  const subscriptionQuoteQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionQuoteQuantity || 0).toBase(
+      market.value?.quoteToken.decimals
+    )
+  )
+  const subscriptionBaseQuantity = computed(() =>
+    new BigNumberInWei(strategy.value.subscriptionBaseQuantity).toBase(
+      market.value?.baseToken.decimals
+    )
+  )
+
+  const takeProfit = computed(() =>
+    new BigNumberInWei(strategy.value.takeProfit || 0).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  )
+
+  const stopLoss = computed(() =>
+    new BigNumberInWei(strategy.value.stopLoss || 0).toBase(
+      market.value.quoteToken.decimals - market.value.baseToken.decimals
+    )
+  )
+
+  const totalInvestment = computed(() => {
+    const baseAmountInUsd = subscriptionBaseQuantity.value.times(
+      new BigNumberInWei(strategy.value.executionPrice).toBase(
+        market.value?.quoteToken.decimals
+      )
+    )
+
+    const quoteAmountInUsd = new BigNumberInWei(
+      strategy.value.subscriptionQuoteQuantity || 0
+    ).toBase(market.value?.quoteToken.decimals)
+
+    return baseAmountInUsd.plus(quoteAmountInUsd)
+  })
+
   return {
+    stopLoss,
     upperBound,
     lowerBound,
+    takeProfit,
+    totalInvestment,
+    stopBaseQuantity,
+    stopQuoteQuantity,
     creationBaseQuantity,
     creationQuoteQuantity,
-    creationExecutionPrice
+    creationExecutionPrice,
+    subscriptionBaseQuantity,
+    subscriptionQuoteQuantity
   }
 }

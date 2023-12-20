@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   executionOrderTypeToOrderExecutionTypes,
@@ -26,13 +26,13 @@ onMounted(() => {
   useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
 })
 
-function handleLimitChangeEvent(limit: number) {
+function onLimitChangeEvent(limit: number) {
   updateRouteQuery({
     limit: `${limit}`
   })
 }
 
-function handlePageChangeEvent(page: number) {
+function onPageChangeEvent(page: number) {
   updateRouteQuery({
     page: page > 1 ? `${page}` : undefined,
     limit: `${limit.value}`
@@ -42,30 +42,27 @@ function handlePageChangeEvent(page: number) {
 function fetchData() {
   status.setLoading()
 
-  const marketIds = spotStore.markets
-    .filter((m) => {
-      return [
-        m.quoteToken.symbol,
-        m.baseToken.symbol,
-        m.quoteDenom,
-        m.baseDenom
-      ].some((denom) =>
-        denom
-          .toLowerCase()
-          .includes(
-            (formValues.value[ActivityField.Denom] as string).toLowerCase()
+  const marketIds = (
+    formValues.value[ActivityField.Denom]
+      ? spotStore.markets.filter((m) => {
+          return [m.quoteToken.denom, m.baseToken.denom].some((denom) =>
+            denom
+              .toLowerCase()
+              .startsWith(formValues.value[ActivityField.Denom].toLowerCase())
           )
-      )
-    })
-    .map((m) => m.marketId)
+        })
+      : spotStore.markets
+  ).map((m) => m.marketId)
 
   const orderTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderTypes(formValues.value[ActivityField.Type])
 
   const executionTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderExecutionTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderExecutionTypes(
+      formValues.value[ActivityField.Type]
+    )
 
   Promise.all([
     spotStore.fetchSubaccountOrderHistory({
@@ -89,7 +86,7 @@ function fetchData() {
       }
 
       if (state === PaginationState.QueryMoreThanTotalPage) {
-        handlePageChangeEvent(totalPages.value)
+        onPageChangeEvent(totalPages.value)
       }
     })
     .finally(() => {
@@ -117,8 +114,8 @@ watch(
           limit,
           totalCount: spotStore.subaccountOrderHistoryCount
         }"
-        @update:limit="handleLimitChangeEvent"
-        @update:page="handlePageChangeEvent"
+        @update:limit="onLimitChangeEvent"
+        @update:page="onPageChangeEvent"
       />
     </div>
   </AppHocLoading>

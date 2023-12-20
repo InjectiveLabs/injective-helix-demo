@@ -164,7 +164,7 @@ export function useSpotPrice({
     )
   })
 
-  function updateAmountFromBase({
+  function changeAmountFromBase({
     amount,
     isBaseAmount: isBaseAmountUpdate
   }: {
@@ -230,7 +230,7 @@ export function useSpotPrice({
     worstPrice,
     averagePrice,
     maxAmountOnOrderbook,
-    updateAmountFromBase,
+    changeAmountFromBase,
     amountForCalculation,
     worstPriceWithSlippage,
     averagePriceWithSlippage

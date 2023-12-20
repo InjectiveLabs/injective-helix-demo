@@ -5,21 +5,22 @@ import { TokenSymbols } from '@/app/data/token'
 const swapStore = useSwapStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
+const setFormValues = useSetFormValues()
 const { query } = useRoute()
 const { accountBalancesWithToken } = useBalance()
 
-defineProps({
-  disabled: Boolean
-})
-
 const emit = defineEmits<{
-  'reset:form': []
-  'reset:queryError': []
+  'form:reset': []
+  'queryError:reset': []
   'update:inputQuantity': []
   'update:outputQuantity': []
 }>()
 
 const animationCount = ref(0)
+
+const SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST = [
+  'factory/inj1maeyvxfamtn8lfyxpjca8kuvauuf2qeu6gtxm3/Talis'
+]
 
 const { value: inputDenom } = useStringField({
   name: SwapFormField.InputDenom,
@@ -42,6 +43,16 @@ const {
   balances: accountBalancesWithToken
 })
 
+const outputIsDisabledBaseDenom = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.includes(outputDenom.value)
+)
+
+const shouldDisableQuoteToken = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.some((denom) =>
+    [inputDenom.value, outputDenom.value].includes(denom)
+  )
+)
+
 const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
   useSwap(formValues)
 
@@ -55,47 +66,58 @@ onMounted(() => {
 
   const [route] = swapStore.routes
 
-  formValues.value[SwapFormField.InputDenom] =
-    usdtToken?.denom || route?.sourceDenom || ''
-  formValues.value[SwapFormField.OutputDenom] =
-    injToken?.denom || route?.targetDenom || ''
+  setFormValues({
+    [SwapFormField.InputDenom]: usdtToken?.denom || route?.sourceDenom || '',
+    [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || ''
+  })
 
   if (Object.keys(query).length !== 0) {
-    handleQuery()
+    modifyFormFromQuery()
   }
 })
 
-function handleQuery() {
+function modifyFormFromQuery() {
   const { to, from, toAmount, fromAmount } = query
 
   if (to && from) {
-    formValues.value[SwapFormField.InputDenom] = from as string
-    formValues.value[SwapFormField.OutputDenom] = to as string
+    setFormValues({
+      [SwapFormField.InputDenom]: from as string,
+      [SwapFormField.OutputDenom]: to as string
+    })
   }
 
   if (fromAmount) {
-    formValues.value[SwapFormField.InputAmount] = fromAmount as string
+    setFormValues({
+      [SwapFormField.InputAmount]: fromAmount as string
+    })
 
     getOutputQuantity()
   } else if (toAmount) {
-    formValues.value[SwapFormField.OutputAmount] = toAmount as string
+    setFormValues({
+      [SwapFormField.OutputAmount]: toAmount as string
+    })
 
     getInputQuantity()
   }
 }
 
-function handleInputDenomChange() {
-  formValues.value[SwapFormField.OutputDenom] = selectorOutputDenom.value
+function onInputDenomChange() {
+  setFormValues({
+    [SwapFormField.OutputDenom]: selectorOutputDenom.value
+  })
 
-  emit('reset:form')
+  emit('form:reset')
 }
 
-function handleOutputDenomChange() {
-  formValues.value[SwapFormField.InputDenom] = selectorInputDenom.value
-  emit('reset:form')
+function onOutputDenomChange() {
+  setFormValues({
+    [SwapFormField.InputDenom]: selectorInputDenom.value
+  })
+
+  emit('form:reset')
 }
 
-function handleSwap() {
+function swap() {
   const {
     [SwapFormField.InputDenom]: inputDenom,
     [SwapFormField.OutputDenom]: outputDenom,
@@ -103,8 +125,10 @@ function handleSwap() {
     [SwapFormField.OutputAmount]: outputAmount
   } = formValues.value
 
-  formValues.value[SwapFormField.InputDenom] = outputDenom
-  formValues.value[SwapFormField.OutputDenom] = inputDenom
+  setFormValues({
+    [SwapFormField.InputDenom]: outputDenom,
+    [SwapFormField.OutputDenom]: inputDenom
+  })
 
   animationCount.value = animationCount.value + 1
 
@@ -115,11 +139,15 @@ function handleSwap() {
      * Then, we query swap SC for the opposing input field's value
      **/
     if (swapStore.isInputEntered) {
-      formValues.value[SwapFormField.OutputAmount] = inputAmount || ''
+      setFormValues({
+        [SwapFormField.OutputAmount]: inputAmount || ''
+      })
 
       getInputQuantity()
     } else {
-      formValues.value[SwapFormField.InputAmount] = outputAmount || ''
+      setFormValues({
+        [SwapFormField.InputAmount]: outputAmount || ''
+      })
 
       getOutputQuantity()
     }
@@ -127,25 +155,31 @@ function handleSwap() {
 }
 
 async function getOutputQuantity() {
-  formValues.value[SwapFormField.OutputAmount] = ''
+  setFormValues({
+    [SwapFormField.OutputAmount]: ''
+  })
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:outputQuantity')
 }
 
 async function getInputQuantity() {
-  formValues.value[SwapFormField.InputAmount] = ''
+  setFormValues({
+    [SwapFormField.InputAmount]: ''
+  })
 
   await nextTick()
 
-  emit('reset:queryError')
+  emit('queryError:reset')
   emit('update:inputQuantity')
 }
 
-function handleMaxUpdate({ amount }: { amount: string }) {
-  formValues.value[SwapFormField.InputAmount] = amount
+function onMaxSelected({ amount }: { amount: string }) {
+  setFormValues({
+    [SwapFormField.InputAmount]: amount
+  })
 
   getOutputQuantity()
 }
@@ -159,18 +193,20 @@ function handleMaxUpdate({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
-            showUsd: true,
-            options: inputDenomOptions,
-            maxDecimals: inputToken?.quantityDecimals || 0,
-            hideMax: false,
-            modal: Modal.TokenSelectorFrom,
-            hideBalance: !walletStore.isUserWalletConnected,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
+            isMaxHidden: false,
+            isUsdVisible: !!inputToken?.token.coinGeckoId,
             shouldCheckBalance: true,
-            amountFieldName: SwapFormField.InputAmount
+            options: inputDenomOptions,
+            modal: Modal.TokenSelectorFrom,
+            amountFieldName: SwapFormField.InputAmount,
+            maxDecimals: inputToken?.quantityDecimals || 0,
+            tensMultiplier: inputToken?.quantityTensMultiplier || undefined,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleInputDenomChange"
+          @update:max="onMaxSelected"
           @update:amount="getOutputQuantity"
-          @update:max="handleMaxUpdate"
+          @update:denom="onInputDenomChange"
         >
           <span>{{ $t('trade.swap.youPay') }}</span>
 
@@ -187,7 +223,7 @@ function handleMaxUpdate({ amount }: { amount: string }) {
       <BaseIcon
         name="arrow"
         class="mx-auto min-w-6 w-6 h-6 -rotate-90"
-        @click="handleSwap"
+        @click="swap"
       />
     </div>
 
@@ -196,17 +232,19 @@ function handleMaxUpdate({ amount }: { amount: string }) {
         <AppSelectToken
           v-model:denom="outputDenom"
           v-bind="{
-            showUsd: true,
             debounce: 600,
+            isMaxHidden: true,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
+            isUsdVisible: !!outputToken?.token.coinGeckoId,
             options: outputDenomOptions,
-            maxDecimals: outputToken?.quantityDecimals || 0,
-            hideMax: true,
             modal: Modal.TokenSelectorTo,
-            hideBalance: !walletStore.isUserWalletConnected,
-            amountFieldName: SwapFormField.OutputAmount
+            amountFieldName: SwapFormField.OutputAmount,
+            maxDecimals: outputToken?.quantityDecimals || 0,
+            tensMultiplier: outputToken?.quantityTensMultiplier || undefined,
+            hideBalance: !walletStore.isUserWalletConnected
           }"
-          @update:denom="handleOutputDenomChange"
           @update:amount="getInputQuantity"
+          @update:denom="onOutputDenomChange"
         >
           <span>
             {{ $t('trade.swap.youReceive') }}

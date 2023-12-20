@@ -56,6 +56,17 @@ export const getHubUrl = (): string => {
 export const getSubaccountIndex = (subaccount: string) =>
   parseInt(subaccount.slice(42), 16)
 
+export const addBaseSubaccountIndexToAddress = (
+  ethAddress: string,
+  subaccountIndex: number
+) => {
+  const subaccountInHex = subaccountIndex.toString(16)
+
+  return `${ethAddress}${'0'.repeat(
+    66 - 42 - subaccountInHex.length
+  )}${subaccountInHex}`
+}
+
 export function getMinQuantityTickSize(
   isSpot: boolean,
   market: UiMarketWithToken
@@ -136,4 +147,40 @@ export const durationFormatter = (
   })
 
   return `${days}D ${hours}H ${minutes}M`
+}
+
+export const getSgtInvalidRange = ({
+  levels,
+  midPrice,
+  minPriceTickSize
+}: {
+  midPrice: string | number
+  levels: string | number
+  minPriceTickSize: string | number
+}) => {
+  const midPriceInBigNumber = new BigNumberInBase(midPrice)
+  const levelsInBigNumber = new BigNumberInBase(levels)
+  return {
+    upperLimit: midPriceInBigNumber.plus(
+      levelsInBigNumber.times(minPriceTickSize).times(10)
+    ),
+    lowerLimit: midPriceInBigNumber.minus(
+      levelsInBigNumber.times(minPriceTickSize).times(10)
+    )
+  }
+}
+
+export const pricesToEma = (priceArray: number[], smoothing: number) => {
+  const length = priceArray.length
+
+  return priceArray.reduce((acc, currentPrice, i) => {
+    if (i === 0) {
+      return [...acc, currentPrice]
+    } else {
+      const ema =
+        currentPrice * (smoothing / length) +
+        acc[i - 1] * (1 - smoothing / length)
+      return [...acc, ema]
+    }
+  }, [] as number[])
 }

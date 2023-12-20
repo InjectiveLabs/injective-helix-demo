@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
@@ -57,11 +56,11 @@ function randomImageIndex() {
   return Math.ceil(Math.random() * 3)
 }
 
-function closeModal() {
+function onCloseModal() {
   modalStore.closeModal(Modal.SharePosition)
 }
 
-async function handleDownload() {
+async function download() {
   showSelectors.value = false
 
   await nextTick()
@@ -72,7 +71,7 @@ async function handleDownload() {
     link.href = dataUrl
     link.click()
 
-    closeModal()
+    onCloseModal()
   })
 }
 
@@ -91,7 +90,7 @@ watchDebounced(
   width,
   (newWidth, oldWidth) => {
     if (oldWidth && newWidth >= 640) {
-      closeModal()
+      onCloseModal()
     }
   },
   { debounce: 200, immediate: true }
@@ -105,7 +104,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
     :is-open="isModalOpen"
-    @close="closeModal"
+    @close="onCloseModal"
   >
     <section v-if="market" ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
@@ -124,7 +123,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             v-if="showSelectors"
             name="close"
             class="w-6 h-6 min-w-6 text-white hover:text-gray-500"
-            @click="closeModal"
+            @click="onCloseModal"
           />
         </div>
 
@@ -151,7 +150,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 
             <div class="flex items-center justify-start">
               <div v-if="market.baseToken">
-                <CommonTokenIcon sm :token="market.baseToken" />
+                <CommonTokenIcon is-sm :token="market.baseToken" />
               </div>
               <div class="ml-2">
                 <span class="text-white text-xs">
@@ -228,7 +227,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 
           <div
             class="bg-blue-500 text-white font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
-            @click="handleDownload"
+            @click="download"
           >
             <BaseIcon name="download" class="w-4 h-4 min-w-4" />
           </div>

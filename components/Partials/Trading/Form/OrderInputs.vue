@@ -5,24 +5,25 @@ import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType,
   MaxAmountOnOrderbook,
   OrderBookPriceAndType,
   OrderBookNotionalAndType,
-  OrderBookQuantityAndType,
-  TradeExecutionType,
-  TradeField,
-  TradeForm,
-  UiMarketWithToken
+  OrderBookQuantityAndType
 } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
   isBaseAmount: Boolean,
   showReduceOnly: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,
@@ -84,10 +85,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
-  ): void
+  'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
 }>()
 
 const isSpot = props.market.type === MarketType.Spot
@@ -115,16 +113,24 @@ function updateAmount({
 }
 
 function updateOrderSide(isBuy: boolean) {
-  formValues.value[TradeField.OrderSide] = isBuy
-    ? OrderSide.Sell
-    : OrderSide.Buy
+  setFormValues(
+    {
+      [TradeField.OrderSide]: isBuy ? OrderSide.Sell : OrderSide.Buy
+    },
+    false
+  )
 }
 
 function onOrderbookNotionalClick(notionalAndType: OrderBookNotionalAndType) {
   updateOrderSide(notionalAndType.isBuy)
 
-  formValues.value[TradeField.TradingType] = TradeExecutionType.Market
-  formValues.value[TradeField.QuoteAmount] = notionalAndType.total
+  setFormValues(
+    {
+      [TradeField.TradingType]: TradeExecutionType.Market,
+      [TradeField.QuoteAmount]: notionalAndType.total
+    },
+    false
+  )
 
   updateAmount({ isBaseAmount: false })
 }
@@ -132,7 +138,9 @@ function onOrderbookNotionalClick(notionalAndType: OrderBookNotionalAndType) {
 function onOrderbookSizeClick(quantityAndOrderSide: OrderBookQuantityAndType) {
   updateOrderSide(quantityAndOrderSide.isBuy)
 
-  formValues.value[TradeField.BaseAmount] = quantityAndOrderSide.quantity
+  setFormValues({
+    [TradeField.BaseAmount]: quantityAndOrderSide.quantity
+  })
 
   updateAmount({ isBaseAmount: true })
 }
@@ -142,7 +150,9 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
     formValues.value[TradeField.TradingType] === TradeExecutionType.LimitFill ||
     formValues.value[TradeField.TradingType] === TradeExecutionType.StopLimit
   ) {
-    formValues.value[TradeField.LimitPrice] = priceAndOrderSide.price
+    setFormValues({
+      [TradeField.LimitPrice]: priceAndOrderSide.price
+    })
 
     updateAmount({ isBaseAmount: true })
   }
@@ -162,7 +172,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         isBaseAmount,
         maxReduceOnly,
         lastTradedPrice,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         baseAvailableBalance,
         maxAmountOnOrderbook,
         quoteAvailableBalance
@@ -175,7 +185,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         isBuy,
         isSpot,
         maxReduceOnly,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         baseAvailableBalance,
         maxAmountOnOrderbook,
         availableBalanceError,
@@ -187,7 +197,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
 
     <PartialsTradingDerivativesTradingOrderLeverage
       v-show="
-        !orderTypeReduceOnly &&
+        !isOrderTypeReduceOnly &&
         !isSpot &&
         market.subType !== MarketType.BinaryOptions
       "

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 
 const props = defineProps({
-  noMinW: Boolean,
+  isNoMinWidth: Boolean,
+  startPlacement: Boolean,
 
   options: {
     type: Array as PropType<BaseDropdownOption[]>,
@@ -31,15 +31,15 @@ const selectedOption = computed(() =>
   props.options.find((option) => option.value === props.modelValue)
 )
 
-function handleSelect(option: BaseDropdownOption) {
+function select(option: BaseDropdownOption) {
   emit('update:modelValue', option.value)
 }
 </script>
 
 <template>
   <BaseDropdown
-    :popper-class="`selector ${!noMinW && 'min-w-40'}`"
-    placement="bottom-end"
+    :popper-class="`selector ${!isNoMinWidth && 'min-w-40'}`"
+    :placement="startPlacement ? 'bottom-start' : 'bottom-end'"
     :flip="false"
   >
     <template #default="{ isOpen }">
@@ -75,7 +75,7 @@ function handleSelect(option: BaseDropdownOption) {
           ]"
           @click="
             () => {
-              handleSelect(option)
+              select(option)
               close()
             }
           "

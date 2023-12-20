@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { AccountBalance } from '@/types'
@@ -13,20 +12,20 @@ const props = defineProps({
   }
 })
 
-const filteredMarkets = computed<UiSpotMarketWithToken[]>(() => {
-  return spotStore.markets.filter(
+const filteredMarkets = computed<UiSpotMarketWithToken[]>(() =>
+  spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||
       m.quoteDenom === props.balance.token.denom
   )
-})
+)
 
-const filteredMarketsWithRoute = computed(() => {
-  return filteredMarkets.value.map((market) => ({
+const filteredMarketsWithRoute = computed(() =>
+  filteredMarkets.value.map((market) => ({
     ...market,
     route: getMarketRoute(market)
   }))
-})
+)
 </script>
 
 <template>

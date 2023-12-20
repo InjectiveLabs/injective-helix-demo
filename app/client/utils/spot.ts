@@ -1,12 +1,14 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiOrderbookPriceLevel } from '@injectivelabs/sdk-ui-ts'
+import { UiAggregatedPriceLevel } from '@/types'
 
 export const computeOrderbookSummary = (
-  summary: { quantity: BigNumberInWei; total: BigNumberInBase },
-  record: UiOrderbookPriceLevel
+  summary: { quantity: string; total: string },
+  record: UiAggregatedPriceLevel
 ) => {
   return {
-    total: summary.total.plus(new BigNumberInBase(record.total || 0)),
-    quantity: summary.quantity.plus(new BigNumberInWei(record.quantity))
+    total: new BigNumberInBase(summary.total).plus(record.total || 0).toFixed(),
+    quantity: new BigNumberInWei(summary.quantity)
+      .plus(record.quantity)
+      .toFixed()
   }
 }

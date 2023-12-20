@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
@@ -25,14 +24,14 @@ const marketRoute = computed(() => {
 </script>
 
 <template>
-  <CommonTableRow v-if="market" dense>
+  <CommonTableRow v-if="market" is-dense>
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
       <NuxtLink :to="marketRoute" class="flex flex-col cursor-pointer">
         <div class="flex items-center justify-start">
           <div v-if="market.baseToken" class="w-4 h-4">
-            <CommonTokenIcon :token="market.baseToken" sm />
+            <CommonTokenIcon :token="market.baseToken" is-sm />
           </div>
           <div class="ml-1">
             <span class="text-gray-200 font-semibold text-xs">

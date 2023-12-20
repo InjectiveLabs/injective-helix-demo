@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 
-defineProps({
+const props = defineProps({
+  isEmitting: Boolean,
   noPadding: Boolean,
   isLoading: Boolean,
 
@@ -16,13 +16,30 @@ defineProps({
     default: 'relative'
   }
 })
+
+const emit = defineEmits<{
+  loading: []
+  loaded: []
+}>()
+
+const isLoading = computed(() => props.isLoading || props.status.isLoading())
+
+watch(isLoading, (isLoading, oldIsLoading) => {
+  if (oldIsLoading && !isLoading && props.isEmitting) {
+    emit('loaded')
+  }
+
+  if (isLoading && !oldIsLoading && props.isEmitting) {
+    emit('loading')
+  }
+})
 </script>
 
 <template>
   <div>
     <Suspense>
       <div
-        v-if="status.isLoading() || isLoading"
+        v-if="isLoading"
         class="h-full"
         :class="{
           'py-4': !noPadding

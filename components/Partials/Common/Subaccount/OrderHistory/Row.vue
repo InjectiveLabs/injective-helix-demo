@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   UiDerivativeOrderHistory,
   UiSpotOrderHistory
@@ -60,7 +59,7 @@ const marketRoute = computed(() => {
     <td class="h-12 text-left cursor-pointer">
       <NuxtLink class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken">
-          <CommonTokenIcon :token="market.baseToken" md />
+          <CommonTokenIcon :token="market.baseToken" is-md />
         </div>
         <div class="ml-3">
           <span
@@ -106,7 +105,7 @@ const marketRoute = computed(() => {
 
       <AppNumber
         v-else
-        xs
+        is-xs
         data-cy="order-price-table-data"
         :decimals="priceDecimals"
         :number="price"
@@ -115,7 +114,7 @@ const marketRoute = computed(() => {
 
     <td class="h-12 text-right font-mono">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-quantity-table-data"
         :decimals="quantityDecimals"
         :number="quantity"
@@ -124,7 +123,7 @@ const marketRoute = computed(() => {
 
     <td class="h-12 font-right text-right">
       <AppNumber
-        xs
+        is-xs
         data-cy="order-total-table-data"
         :decimals="market.priceDecimals"
         :number="total"
@@ -152,7 +151,7 @@ const marketRoute = computed(() => {
         <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
         <AppNumber
-          xs
+          is-xs
           data-cy="order-total-table-data"
           :decimals="market.priceDecimals"
           :number="triggerPrice"

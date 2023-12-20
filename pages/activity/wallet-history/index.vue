@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityForm, BusEvents, PaginationState } from '@/types'
 
@@ -39,7 +39,7 @@ function fetchData() {
       }
 
       if (state === PaginationState.QueryMoreThanTotalPage) {
-        handlePageChangeEvent(totalPages.value)
+        onPageChangeEvent(totalPages.value)
       }
     })
     .finally(() => {
@@ -47,13 +47,13 @@ function fetchData() {
     })
 }
 
-function handleLimitChangeEvent(limit: number) {
+function onLimitChangeEvent(limit: number) {
   updateRouteQuery({
     limit: `${limit}`
   })
 }
 
-function handlePageChangeEvent(page: number) {
+function onPageChangeEvent(page: number) {
   updateRouteQuery({
     page: page > 1 ? `${page}` : undefined,
     limit: `${limit.value}`
@@ -80,8 +80,8 @@ watch(
           limit,
           totalCount: bridgeStore.subaccountTransferBridgeTransactionsCount
         }"
-        @update:limit="handleLimitChangeEvent"
-        @update:page="handlePageChangeEvent"
+        @update:limit="onLimitChangeEvent"
+        @update:page="onPageChangeEvent"
       />
     </div>
   </AppHocLoading>

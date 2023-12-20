@@ -1,11 +1,13 @@
 import { OrderState, OrderSide, StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamsTrades,
+  cancelTradesStream as grpcCancelTradesStream,
   streamOrderbookUpdate as grpcStreamOrderbookUpdate,
   streamSubaccountOrders as grpcStreamsSubaccountOrders,
   streamSubaccountTrades as grpcStreamsSubaccountTrades,
   streamMarketsMarkPrices as grpcStreamMarketsMarkPrices,
   cancelMarketsMarkPrices as grpcCancelMarketsMarkPrices,
+  cancelOrderbookUpdateStream as grpcCancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
@@ -14,6 +16,8 @@ import {
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
+export const cancelTradesStream = grpcCancelTradesStream
+export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream

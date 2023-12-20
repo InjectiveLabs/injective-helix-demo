@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   ZERO_IN_WEI,
   UNLIMITED_ALLOWANCE,
   BalanceWithTokenWithErc20Balance
 } from '@injectivelabs/sdk-ui-ts'
-import { BridgeForm, BridgeField } from '@/types'
 import { allowanceResetSymbols } from '@/app/data/token'
 
 const peggyStore = usePeggyStore()
-const formValues = useFormValues<BridgeForm>()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -37,19 +34,17 @@ const needsAllowanceReset = computed(() =>
   allowanceResetSymbols.includes(props.balanceWithToken.token.symbol)
 )
 
-function handleClickOnSetAllowance() {
+function onSetAllowance() {
   if (!props.balanceWithToken) {
     return
   }
 
   status.setLoading()
 
-  return hasNonUnlimitedAllowanceSet.value
-    ? handleSetZeroAllowance()
-    : handleSetAllowance()
+  return hasNonUnlimitedAllowanceSet.value ? setZeroAllowance() : setAllowance()
 }
 
-function handleSetZeroAllowance() {
+function setZeroAllowance() {
   peggyStore
     .setTokenAllowance(
       props.balanceWithToken as BalanceWithTokenWithErc20Balance,
@@ -66,7 +61,7 @@ function handleSetZeroAllowance() {
     })
 }
 
-function handleSetAllowance() {
+function setAllowance() {
   peggyStore
     .setTokenAllowance(
       props.balanceWithToken as BalanceWithTokenWithErc20Balance
@@ -88,7 +83,7 @@ function handleSetAllowance() {
     <p class="mb-3 text-xs text-gray-300">
       <span>{{
         $t('bridge.setAllowanceForBridging', {
-          asset: formValues[BridgeField.Token]?.symbol || ''
+          asset: balanceWithToken.token.symbol || ''
         })
       }}</span>
 
@@ -99,11 +94,11 @@ function handleSetAllowance() {
     </p>
 
     <AppButton
-      lg
+      is-lg
       :is-loading="status.isLoading()"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       data-cy="allowance-modal-set-button"
-      @click="handleClickOnSetAllowance"
+      @click="onSetAllowance"
     >
       <span>{{ $t('bridge.setAllowance') }}</span>
     </AppButton>

@@ -1,17 +1,18 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { MainPage } from '@/types'
 
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 
 defineProps({
-  hideBalances: Boolean
+  isHideBalances: Boolean
 })
 
 const stakedAmount = computed(() => {
@@ -78,7 +79,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
             {{ $t('account.staked') }}:
           </p>
 
-          <span v-if="hideBalances" class="font-mono text-sm text-right">
+          <span v-if="isHideBalances" class="font-mono text-sm text-right">
             {{ HIDDEN_BALANCE_DISPLAY }} INJ
           </span>
 
@@ -109,7 +110,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
     <td>
       <div class="flex justify-end">
         <div class="flex justify-end">
-          <span v-if="hideBalances" class="font-mono text-sm text-right">
+          <span v-if="isHideBalances" class="font-mono text-sm text-right">
             {{ HIDDEN_BALANCE_DISPLAY }} USD
           </span>
 
@@ -132,7 +133,7 @@ const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
             class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           >
             <NuxtLink
-              :to="{ name: 'fee-discounts' }"
+              :to="{ name: MainPage.FeeDiscounts }"
               class="text-blue-500 text-sm font-medium"
             >
               {{ 'View Fee Discounts' }}

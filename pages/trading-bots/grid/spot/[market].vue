@@ -3,9 +3,10 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy-subaccount']
+  middleware: ['grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()
@@ -13,6 +14,7 @@ const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
@@ -32,20 +34,32 @@ function onLoad(pageMarket: UiMarketWithToken) {
     spotMarket: pageMarket as UiSpotMarketWithToken
   })
 
-  fetchData(
-    walletStore.isUserWalletConnected
+  fetchData({
+    subaccountId: walletStore.isUserWalletConnected
       ? addressAndMarketSlugToSubaccountId(walletStore.address, pageMarket.slug)
-      : undefined
-  )
+      : undefined,
+    market: pageMarket
+  })
 }
 
-function fetchData(subaccountId?: string) {
+function fetchData({
+  subaccountId,
+  market
+}: {
+  subaccountId?: string
+  market: UiMarketWithToken
+}) {
   status.setLoading()
 
   Promise.all([
     authZStore.fetchGrants(),
     accountStore.streamBankBalance(),
-    gridStrategyStore.fetchStrategies(),
+    gridStrategyStore.fetchAllStrategies(),
+    exchangeStore.getMarketsHistory({
+      marketIds: [market.marketId],
+      resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
+      countback: 30
+    }),
     accountStore.fetchAccountPortfolio(),
     accountStore.streamSubaccountBalance(subaccountId)
   ])
@@ -62,12 +76,18 @@ function fetchData(subaccountId?: string) {
       }
     })
 }
+
+onUnmounted(() => {
+  spotStore.reset()
+})
 </script>
 
 <template>
   <PartialsTradingLayout is-spot is-grid @loaded="onLoad">
     <template #trading-form>
-      <PartialsGridStrategySpotForm v-if="market" :market="market" />
+      <AppHocLoading v-bind="{ status }">
+        <PartialsGridStrategySpotForm v-if="market" :market="market" />
+      </AppHocLoading>
     </template>
 
     <template #orders>
@@ -82,7 +102,7 @@ function fetchData(subaccountId?: string) {
     </template>
 
     <template #modals>
-      <ModalsSgtBanner />
+      <ModalsLiquiditySgtBanner />
     </template>
   </PartialsTradingLayout>
 </template>

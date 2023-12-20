@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 
 const attrs = useAttrs()
 
 const props = defineProps({
-  xs: Boolean,
-  sm: Boolean,
-  lg: Boolean,
-  xl: Boolean,
-  disabled: Boolean,
+  isXs: Boolean,
+  isSm: Boolean,
+  isLg: Boolean,
+  isXl: Boolean,
+  isDisabled: Boolean,
   isLoading: Boolean,
-  darkSpinner: Boolean,
+  isDarkSpinner: Boolean,
 
   status: {
     type: Object as PropType<Status | undefined>,
@@ -24,19 +23,19 @@ const emit = defineEmits<{
 }>()
 
 const classes = computed(() => {
-  if (props.xs) {
+  if (props.isXs) {
     return 'text-xs leading-4 px-2 h-6'
   }
 
-  if (props.sm) {
+  if (props.isSm) {
     return 'text-xs leading-4 px-6 h-8'
   }
 
-  if (props.lg) {
+  if (props.isLg) {
     return 'text-base leading-5 px-6 h-10'
   }
 
-  if (props.xl) {
+  if (props.isXl) {
     return 'text-base leading-5 px-4 h-12'
   }
 
@@ -47,8 +46,8 @@ const classes = computed(() => {
 const filteredAttrs = computed(() => {
   const filteredAttrs = { ...attrs }
 
-  /** Remove text|bg color from buttons when they are disabled */
-  if (props.disabled) {
+  /** Remove text|bg color from buttons when they are isDisabled */
+  if (props.isDisabled) {
     const filteredClass = (filteredAttrs.class as string)
       .replace(/text-(\w+)-(\d+)/g, '')
       .replace(/bg-(\w+)-(\d+)/g, '')
@@ -69,7 +68,7 @@ const hasBackground = computed(() => {
   return classes.includes('bg-')
 })
 
-function handleClick() {
+function click() {
   if (props.isLoading || props.status?.isLoading()) {
     return
   }
@@ -86,26 +85,26 @@ export default {
 
 <template>
   <button
-    :disabled="disabled"
+    :disabled="isDisabled"
     type="button"
     role="button"
     :class="[
       classes,
       {
-        'border-transparent': hasBackground && !disabled,
+        'border-transparent': hasBackground && !isDisabled,
         ' border-gray-600 bg-transparent text-gray-600 cursor-not-allowed':
-          disabled,
+          isDisabled,
         'hover:bg-opacity-80 hover:text-opacity-80 hover:border-opacity-80':
-          !disabled
+          !isDisabled
       }
     ]"
     v-bind="filteredAttrs"
-    class="font-bold rounded-md border box-border focus:outline-none"
-    @click="handleClick"
+    class="font-semibold rounded-md border box-border focus:outline-none"
+    @click="click"
   >
     <slot v-if="(!status || status.isNotLoading()) && !isLoading" />
     <span v-else class="flex items-center justify-center">
-      <AppSpinner sm v-bind="{ white: !darkSpinner }" />
+      <AppSpinner v-bind="{ isSm: true, isWhite: !isDarkSpinner }" />
     </span>
   </button>
 </template>

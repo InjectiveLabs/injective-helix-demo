@@ -74,17 +74,17 @@ const {
   dynamicRule: computed(() => `between:0.001,${availableMarginToFixed.value}`)
 })
 
-function handleMax() {
+function onMaxClicked() {
   setAmountValue(availableMarginToFixed.value)
 }
 
-function handleModalClose() {
+function onModalClose() {
   position.value = undefined
 
   modalStore.closeModal(Modal.AddMarginToPosition)
 }
 
-const handleFormSubmit = handleSubmit(() => {
+const onSubmit = handleSubmit(() => {
   if (!market.value) {
     return
   }
@@ -99,7 +99,7 @@ const handleFormSubmit = handleSubmit(() => {
     .then(() => {
       resetForm()
       success({ title: t('trade.success_added_margin') })
-      handleModalClose()
+      onModalClose()
     })
     .catch($onError)
     .finally(() => {
@@ -109,7 +109,7 @@ const handleFormSubmit = handleSubmit(() => {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="handleModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
@@ -158,9 +158,9 @@ const handleFormSubmit = handleSubmit(() => {
                 >
                   <template #max>
                     <AppButton
-                      xs
+                      is-xs
                       class="bg-blue-500 text-blue-900"
-                      @click="handleMax"
+                      @click="onMaxClicked"
                     >
                       {{ $t('trade.max') }}
                     </AppButton>
@@ -180,12 +180,12 @@ const handleFormSubmit = handleSubmit(() => {
               </div>
               <div class="w-full mt-6 text-center">
                 <AppButton
-                  lg
+                  is-lg
                   class="w-full bg-blue-500 text-blue-900"
                   :is-loading="status.isLoading()"
-                  :disabled="amountErrors.length > 0"
+                  :is-disabled="amountErrors.length > 0"
                   data-cy="add-margin-modal-execute-button"
-                  @click="handleFormSubmit"
+                  @click="onSubmit"
                 >
                   {{ $t('trade.add_margin') }}
                 </AppButton>

@@ -35,7 +35,7 @@ export default function ({
     toolbar_bg: colors.gray[950],
     height: 100,
     width: 100,
-    datafeed: new Datafeed(datafeedEndpoint, 2000),
+    datafeed: new Datafeed(datafeedEndpoint, 4000),
     library_path: `${
       window.location ? window.location.origin : BASE_URL
     }/chart/charting_library/`,

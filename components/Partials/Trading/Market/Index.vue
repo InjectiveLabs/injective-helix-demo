@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { breakpointsTailwind } from '@vueuse/core'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
@@ -41,6 +40,10 @@ const aggregation = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
 onMounted(() => {
   const { marketId } = props.market
 
+  // reset state
+  spotStore.resetOrderbookAndTrades()
+  derivativeStore.resetOrderbookAndTrades()
+
   Promise.all(
     isSpot
       ? [
@@ -65,14 +68,6 @@ onMounted(() => {
     })
 })
 
-watchDebounced(
-  isDesktop,
-  (isDesktop) => {
-    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
-  },
-  { debounce: 100, immediate: true }
-)
-
 function onInit() {
   if (props.market && props.market.minQuantityTickSize) {
     const formattedPriceTickSize = getMinPriceTickSize(isSpot, props.market)
@@ -82,6 +77,7 @@ function onInit() {
       UI_DEFAULT_AGGREGATION_DECIMALS_STRING
 
     minTick.value = minTickSize
+    aggregation.value = minTickSize
 
     const customAggregation = customAggregations[props.market.ticker]
 
@@ -98,6 +94,14 @@ function onInit() {
     aggregation.value = customAggregation.default || minTickSize
   }
 }
+
+watchDebounced(
+  isDesktop,
+  (isDesktop) => {
+    activeType.value = !isDesktop ? FilterList.Charts : FilterList.Orderbook
+  },
+  { debounce: 100, immediate: true }
+)
 </script>
 
 <template>
@@ -163,15 +167,17 @@ function onInit() {
           }"
         >
           <PartialsTradingMarketChart
-            v-show="activeType === FilterList.Charts"
+            v-if="activeType === FilterList.Charts"
             :market="market"
             class="lg:hidden"
           />
           <div v-if="activeType === FilterList.Orderbook">
             <PartialsTradingMarketOrderbookHeader :market="market" />
-            <PartialsTradingMarketOrderbook
-              :aggregation="Number(aggregation)"
-              :market="market"
+            <PartialsTradingMarketOrderbookWrapper
+              v-bind="{
+                market,
+                aggregation: Number(aggregation)
+              }"
             />
           </div>
 

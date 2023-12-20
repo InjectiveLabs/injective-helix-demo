@@ -1,6 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { SpotGridTradingField } from '@/types'
+import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
+import {
+  GST_SINGLE_SIDED_THRESHOLD,
+  GST_KAVA_SINGLE_SIDED_THRESHOLD
+} from '@/app/utils/constants'
+import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '~/app/data/token'
 
 const props = defineProps({
   market: {
@@ -11,22 +16,75 @@ const props = defineProps({
 
 const gridStrategyStore = useGridStrategyStore()
 
+const formValues = useFormValues<SpotGridTradingForm>()
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
+)
+
+const marketUsesStableCoins = computed(() =>
+  [
+    gridStrategyStore.spotMarket?.baseToken.symbol,
+    gridStrategyStore.spotMarket?.quoteToken.symbol
+  ].some(
+    (symbol) =>
+      symbol &&
+      [
+        KAVA_USDT_SYMBOL.toLowerCase(),
+        STINJ_USDT_SYMBOL.toLowerCase()
+      ].includes(symbol.toLowerCase())
+  )
 )
 
 const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
   useStringField({
     name: SpotGridTradingField.LowerPrice,
-    rule: 'requiredSgt',
-    dynamicRule: computed(() => `lessThanSgt:${spotLastTradedPrice.value}`)
+    rule: '',
+    dynamicRule: computed(() => {
+      const greaterThanRule = `greaterThanSgt:0`
+
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.LowerPrice
+      },${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
+
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+      return rules.join('|')
+    })
   })
 
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: SpotGridTradingField.UpperPrice,
-    rule: 'requiredSgt',
-    dynamicRule: computed(() => `greaterThanSgt:${spotLastTradedPrice.value}`)
+    rule: '',
+    dynamicRule: computed(() => {
+      const greaterThanRule = `greaterThanSgt:${
+        formValues.value[SpotGridTradingField.LowerPrice] || 0
+      }`
+
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${spotLastTradedPrice.value.toFixed()},${
+        SpotGridTradingField.UpperPrice
+      },${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
+
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+      return rules.join('|')
+    })
   })
 </script>
 
@@ -41,7 +99,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.lowerPrice') }}
+              {{ $t('sgt.lower') }}
             </p>
           </template>
 
@@ -61,7 +119,7 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.upperPrice') }}
+              {{ $t('sgt.upper') }}
             </p>
           </template>
 

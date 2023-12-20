@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { DropdownOption } from '@/types'
 
 defineProps({
-  active: Boolean,
-  selected: Boolean,
+  isSelected: Boolean,
 
   option: {
     type: Object as PropType<DropdownOption>,
@@ -20,12 +18,15 @@ defineProps({
       :src="option.icon"
       :alt="option.display"
       class="selected-icon rounded-full"
-      :class="{ 'w-6 h-6 min-w-6': !selected, 'w-10 h-10 min-w-10': selected }"
+      :class="{
+        'w-6 h-6 min-w-6': !isSelected,
+        'w-10 h-10 min-w-10': isSelected
+      }"
     />
 
     <span
       class="tracking-1"
-      :class="{ 'text-2xl': selected }"
+      :class="{ 'text-2xl': isSelected }"
       data-cy="network-selector-selected-option-text-content"
     >
       {{ option.display }}

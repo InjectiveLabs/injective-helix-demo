@@ -14,7 +14,9 @@ import type { Token } from '@injectivelabs/token-metadata'
 import {
   denomClient,
   exchangeApi,
-  indexerRestMarketChronosApi
+  indexerDerivativesApi,
+  indexerRestMarketChronosApi,
+  indexerSpotApi
 } from '@/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
@@ -101,6 +103,24 @@ export const useExchangeStore = defineStore('exchange', {
       })
     },
 
+    async fetchMarketsFromTicker(ticker: string) {
+      const spotMarkets = await indexerSpotApi.fetchMarkets()
+      const derivativeMarkets = await indexerDerivativesApi.fetchMarkets()
+
+      return {
+        spotMarketIds: spotMarkets
+          .filter((market) =>
+            market.ticker.toLowerCase().includes(ticker.toLowerCase())
+          )
+          .map((m) => m.marketId),
+        derivativeMarketIds: derivativeMarkets
+          .filter((market) =>
+            market.ticker.toLowerCase().includes(ticker.toLowerCase())
+          )
+          .map((m) => m.marketId)
+      }
+    },
+
     async fetchFeeDiscountSchedule() {
       const exchangeStore = useExchangeStore()
 
@@ -119,7 +139,18 @@ export const useExchangeStore = defineStore('exchange', {
         } as FeeDiscountSchedule
 
         exchangeStore.$patch({
-          feeDiscountSchedule: feeDiscountScheduleWithToken
+          feeDiscountSchedule: {
+            ...feeDiscountScheduleWithToken,
+            tierInfosList: [
+              {
+                volume: '0',
+                stakedAmount: '0',
+                makerDiscountRate: '0',
+                takerDiscountRate: '0'
+              },
+              ...feeDiscountScheduleWithToken.tierInfosList
+            ]
+          }
         })
       }
     },
@@ -259,24 +290,60 @@ export const useExchangeStore = defineStore('exchange', {
         return
       }
 
-      const marketsHistory =
-        await indexerRestMarketChronosApi.fetchMarketsHistory({
-          marketIds,
-          resolution,
-          countback
+      try {
+        const marketsHistory =
+          await indexerRestMarketChronosApi.fetchMarketsHistory({
+            marketIds,
+            resolution,
+            countback
+          })
+
+        const marketsHistoryToUiMarketsHistory =
+          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
+            marketsHistory
+          )
+
+        exchangeStore.$patch({
+          marketsHistory: [
+            ...exchangeStore.marketsHistory,
+            ...marketsHistoryToUiMarketsHistory
+          ]
         })
+      } catch (e) {
+        // don't do anything for now
+      }
+    },
 
-      const marketsHistoryToUiMarketsHistory =
-        UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
-          marketsHistory
-        )
+    async getMarketsHistoryNew({
+      marketIds,
+      resolution,
+      countback
+    }: {
+      marketIds: string[]
+      resolution: number
+      countback: number
+    }) {
+      const exchangeStore = useExchangeStore()
 
-      exchangeStore.$patch({
-        marketsHistory: [
-          ...exchangeStore.marketsHistory,
-          ...marketsHistoryToUiMarketsHistory
-        ]
-      })
+      try {
+        const marketsHistory =
+          await indexerRestMarketChronosApi.fetchMarketsHistory({
+            marketIds,
+            resolution,
+            countback
+          })
+
+        const marketsHistoryToUiMarketsHistory =
+          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
+            marketsHistory
+          )
+
+        exchangeStore.$patch({
+          marketsHistory: [...marketsHistoryToUiMarketsHistory]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
     },
 
     reset() {

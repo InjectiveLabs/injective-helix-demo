@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 
 const props = defineProps({
-  sm: Boolean,
-  disabled: Boolean,
+  isSm: Boolean,
+  isDisabled: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -16,7 +15,7 @@ const emit = defineEmits<{
   click: []
 }>()
 
-function handleClick() {
+function click() {
   if (props.status.isLoading()) {
     return
   }
@@ -29,22 +28,22 @@ function handleClick() {
   <div
     class="flex justify-end items-center"
     :class="{
-      'h-5 w-5 min-h-5 min-w-6': sm,
-      'h-6 w-6 min-h-6 min-w-6': !sm
+      'h-5 w-5 min-h-5 min-w-6': isSm,
+      'h-6 w-6 min-h-6 min-w-6': !isSm
     }"
-    @click="handleClick"
+    @click="click"
   >
-    <AppSpinner v-if="status.isLoading()" sm white />
+    <AppSpinner v-if="status.isLoading()" is-sm is-white />
 
     <div
       v-else
       class="cursor-pointer flex items-center justify-center rounded-full bg-opacity-10 hover:bg-opacity-30 h"
       :class="{
         'pointer-events-none cursor-not-allowed over:text-red-600 bg-gray-500 text-gray-500':
-          disabled,
-        'cursor-pointer over:text-red-600 bg-red-500 text-red-500': !disabled,
-        'min-w-5 w-5 h-5': sm,
-        'min-w-6 h-6 w-6': !sm
+          isDisabled,
+        'cursor-pointer over:text-red-600 bg-red-500 text-red-500': !isDisabled,
+        'min-w-5 w-5 h-5': isSm,
+        'min-w-6 h-6 w-6': !isSm
       }"
     >
       <slot name="icon">

@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
-import { UiMarketWithToken, TradeExecutionType } from '@/types'
+import {
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType
+} from '@/types'
+
+const tradingFormValues = useFormValues<TradeForm>() as Ref<TradeForm>
 
 const props = defineProps({
-  postOnly: Boolean,
-
-  tradingType: {
-    type: String as PropType<TradeExecutionType>,
-    required: true
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -36,7 +35,7 @@ const takerFeeRateToFormat = computed(() => {
   <CommonTextInfo
     v-if="
       [TradeExecutionType.Market, TradeExecutionType.StopMarket].includes(
-        tradingType
+        tradingFormValues[TradeField.TradingType]
       )
     "
     :title="$t('trade.taker_rate')"
@@ -56,7 +55,7 @@ const takerFeeRateToFormat = computed(() => {
   </CommonTextInfo>
 
   <CommonTextInfo
-    v-else-if="postOnly"
+    v-else-if="tradingFormValues[TradeField.PostOnly]"
     :title="$t('trade.maker_rate')"
     class="mt-2"
   >

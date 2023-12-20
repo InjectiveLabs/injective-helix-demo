@@ -26,4 +26,5 @@ export interface FilterOptions {
 export interface ActivityFetchOptions {
   filters?: FilterOptions
   pagination?: PaginationOption
+  subaccountId?: string
 }

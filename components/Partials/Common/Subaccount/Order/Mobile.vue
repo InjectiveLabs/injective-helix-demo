@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import {
   UiSpotLimitOrder,
@@ -68,7 +67,7 @@ function onCancelOrder() {
 </script>
 
 <template>
-  <CommonTableRow v-if="market" dense>
+  <CommonTableRow v-if="market" is-dense>
     <NuxtLink class="pb-1 col-span-2" :to="marketRoute">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
@@ -85,7 +84,7 @@ function onCancelOrder() {
             }}
           </span>
           <div v-if="market.baseToken">
-            <CommonTokenIcon :token="market.baseToken" md />
+            <CommonTokenIcon :token="market.baseToken" is-md />
           </div>
           <span class="text-gray-200 font-semibold">
             {{ market.ticker }}
@@ -99,7 +98,7 @@ function onCancelOrder() {
         <PartialsCommonCancelButton
           v-if="orderFillable"
           :status="status"
-          sm
+          is-sm
           @click="onCancelOrder"
         />
       </div>

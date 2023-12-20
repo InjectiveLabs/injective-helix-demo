@@ -1,5 +1,4 @@
-<script setup lang="ts">
-import { PropType } from 'vue'
+<script lang="ts" setup>
 import { RouteLocationNamedRaw } from 'vue-router'
 
 defineProps({

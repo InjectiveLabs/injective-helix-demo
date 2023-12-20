@@ -61,7 +61,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative">
         <AppCustomConfetti
@@ -102,8 +102,8 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 
         <AppButton
           class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
-          md
-          @click="closeModal"
+          is-md
+          @click="onModalClose"
         >
           {{ $t('trade.swap.backToSwap') }}
         </AppButton>

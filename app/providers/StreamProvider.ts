@@ -33,7 +33,7 @@ const GRPC_ERROR_CODES = {
   DEADLINE_EXCEEDED: 4
 }
 
-const MAX_RECONNECTION = 10
+const MAX_RECONNECTION = 2
 
 /**
  * Every stream we extend with
@@ -66,8 +66,12 @@ export class StreamProvider {
         this.reconnectOnTimeout(key, status)
       },
       onStatusCallback: (status: StreamStatusResponse): any => {
-        if (Object.values(GRPC_ERROR_CODES).includes(status.code)) {
+        if (
+          Object.values(GRPC_ERROR_CODES).includes(status.code) &&
+          this.getReconnectCount(key) <= MAX_RECONNECTION
+        ) {
           this.reconnect(key)
+          this.incrementReconnectCount(key)
         }
       }
     }

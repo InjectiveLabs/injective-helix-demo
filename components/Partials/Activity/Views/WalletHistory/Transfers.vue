@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 
 defineProps({
@@ -22,7 +21,7 @@ const transactions = computed(
     :loader-class="status.isLoading() ? 'relative' : ''"
   >
     <div class="w-full h-full">
-      <CommonTableWrapper break-md>
+      <CommonTableWrapper is-break-md>
         <table v-if="transactions.length > 0" class="table">
           <PartialsActivityViewsWalletHistoryCommonTableHeader />
           <tbody>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Token } from '@injectivelabs/token-metadata'
-import { PropType } from 'vue'
-import { ActivityTab } from '@/types'
+
+import { ActivitySubPage } from '@/types'
 
 const route = useRoute()
 
@@ -42,20 +42,23 @@ const value = computed({
     v-model="value"
     :options="options"
     :placeholder="
-      route.name?.toString().startsWith(ActivityTab.WalletHistory)
+      route.name?.toString().startsWith(ActivitySubPage.WalletHistory)
         ? $t('walletHistory.transfers.asset')
         : $t('account.positions.market.label')
     "
-    searchable
-    clearable
+    is-searchable
+    is-clearable
     data-cy="universal-table-filter-by-asset-input"
   >
     <template #selected-option="{ option }">
       <PartialsAccountPositionsFilterOption v-if="option" :option="option" />
     </template>
 
-    <template #option="{ option, active }">
-      <PartialsAccountPositionsFilterOption :option="option" :active="active" />
+    <template #option="{ option, isActive }">
+      <PartialsAccountPositionsFilterOption
+        :option="option"
+        :is-active="isActive"
+      />
     </template>
   </AppSelectField>
 </template>

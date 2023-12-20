@@ -6,64 +6,64 @@ export default function useConvertFormatter() {
   const spotStore = useSpotStore()
 
   const tradableSlugMap = computed(() => {
-    return [
-      ...spotStore.markets,
-      ...spotStore.usdcConversionModalMarkets
-    ].reduce((list, market) => {
-      const reversedSlug = market.slug.split('-').reverse().join('-')
+    return [...spotStore.markets].reduce(
+      (list, market) => {
+        const reversedSlug = market.slug.split('-').reverse().join('-')
 
-      return {
-        ...list,
-        [market.slug]: { orderType: OrderSide.Sell, market },
-        [reversedSlug]: { orderType: OrderSide.Buy, market }
-      }
-    }, {} as Record<string, { orderType: OrderSide; market: UiSpotMarketWithToken }>)
+        return {
+          ...list,
+          [market.slug]: { orderType: OrderSide.Sell, market },
+          [reversedSlug]: { orderType: OrderSide.Buy, market }
+        }
+      },
+      {} as Record<
+        string,
+        { orderType: OrderSide; market: UiSpotMarketWithToken }
+      >
+    )
   })
 
   const availableQuoteDenoms = computed(() =>
-    [...spotStore.markets, ...spotStore.usdcConversionModalMarkets].reduce(
-      (tokens, market) => {
-        // remove duplicate USDT keys
-        const quoteTokenExistOnTokensList = tokens.some(
-          (token) => token.denom === market.quoteDenom
-        )
+    [...spotStore.markets].reduce((tokens, market) => {
+      // remove duplicate USDT keys
+      const quoteTokenExistOnTokensList = tokens.some(
+        (token) => token.denom === market.quoteDenom
+      )
 
-        return quoteTokenExistOnTokensList
-          ? tokens
-          : [market.quoteToken, ...tokens]
-      },
-      [] as Token[]
-    )
+      return quoteTokenExistOnTokensList
+        ? tokens
+        : [market.quoteToken, ...tokens]
+    }, [] as Token[])
   )
 
   const tradableTokensMap = computed(() => {
-    return [
-      ...spotStore.markets,
-      ...spotStore.usdcConversionModalMarkets
-    ].reduce((tokens, market) => {
-      const baseTokens = tokens[market.quoteDenom]
-        ? [...tokens[market.quoteDenom], market.baseToken]
-        : [market.baseToken]
+    return [...spotStore.markets].reduce(
+      (tokens, market) => {
+        const baseTokens = tokens[market.quoteDenom]
+          ? [...tokens[market.quoteDenom], market.baseToken]
+          : [market.baseToken]
 
-      /**
-       * For markets where the base could also be the quote for another market, we only need to add the denoms
-       * which are not the base of the current market
-       * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
-       */
-      const filteredAvailableQuoteDenoms = availableQuoteDenoms.value.filter(
-        (token) => token.denom !== market.baseDenom
-      )
+        /**
+         * For markets where the base could also be the quote for another market, we only need to add the denoms
+         * which are not the base of the current market
+         * I.E. USDT/USDCet where USDT is base, but could also be the quote for an INJ/USDT market
+         */
+        const filteredAvailableQuoteDenoms = availableQuoteDenoms.value.filter(
+          (token) => token.denom !== market.baseDenom
+        )
 
-      const quoteToken = tokens[market.baseDenom]
-        ? [...tokens[market.baseDenom], ...filteredAvailableQuoteDenoms]
-        : filteredAvailableQuoteDenoms
+        const quoteToken = tokens[market.baseDenom]
+          ? [...tokens[market.baseDenom], ...filteredAvailableQuoteDenoms]
+          : filteredAvailableQuoteDenoms
 
-      return {
-        ...tokens,
-        [market.quoteDenom]: baseTokens,
-        [market.baseDenom]: quoteToken
-      }
-    }, {} as Record<string, Token[]>)
+        return {
+          ...tokens,
+          [market.quoteDenom]: baseTokens,
+          [market.baseDenom]: quoteToken
+        }
+      },
+      {} as Record<string, Token[]>
+    )
   })
 
   function getMarketsForQuoteDenom({

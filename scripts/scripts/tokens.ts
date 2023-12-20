@@ -1,8 +1,26 @@
 /* eslint-disable no-console */
 import path from 'path'
-import { copy, removeSync, pathExistsSync, copySync } from 'fs-extra'
+import { copy, removeSync, pathExistsSync, readdir } from 'fs-extra'
 
-export function tokenMetadata(isProduction = false) {
+async function copyInChunks(
+  sourceDir: string,
+  destDir: string,
+  chunkSize = 25
+) {
+  const files = await readdir(sourceDir)
+
+  for (let i = 0; i < files.length; i += chunkSize) {
+    const chunk = files.slice(i, i + chunkSize)
+
+    for (const file of chunk) {
+      await copy(path.join(sourceDir, file), path.join(destDir, file), {
+        overwrite: true
+      })
+    }
+  }
+}
+
+export async function tokenMetadata(isProduction = false) {
   const outputPathPrefix = isProduction ? '.output/public' : 'public'
   const tokenMetadataDstDir = path.resolve(
     process.cwd(),
@@ -17,15 +35,10 @@ export function tokenMetadata(isProduction = false) {
   try {
     if (outDirPathExist) {
       removeSync(tokenMetadataDstDir)
-      copySync(tokenMetadataSrcDir, tokenMetadataDstDir, {
-        overwrite: true
-      })
-    } else {
-      copy(tokenMetadataSrcDir, tokenMetadataDstDir, {
-        overwrite: true,
-        errorOnExist: false
-      })
     }
+
+    await copyInChunks(tokenMetadataSrcDir, tokenMetadataDstDir)
+
     console.log('✔ Successfully copied token images!')
   } catch (e) {
     console.log(`Error copying token images: ${e}`)

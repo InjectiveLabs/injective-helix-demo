@@ -169,7 +169,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppPanel :title="$t('Current Epoch')" card-wrapper-class="mt-6">
+  <AppPanel :title="$t('tradeAndEarn.currentEpoch')" card-wrapper-class="mt-6">
     <template v-if="currentEpochStartTimestamp > 0" #title-context>
       <span class="text-gray-200">
         {{ $t('tradeAndEarn.campaignEndingOn', { date: epochCountdown }) }}
@@ -188,7 +188,7 @@ onMounted(() => {
 
             <AppNumberEmp
               class="text-gray-450"
-              sm
+              is-sm
               prefix="≈"
               :number="injMaxCampaignRewardsInUsd"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
@@ -199,10 +199,10 @@ onMounted(() => {
 
           <template #title>
             <div class="flex items-center justify-center text-gray-450 text-xs">
-              {{ $t('max_campaign_rewards') }}
+              {{ $t('tradeAndEarn.maxCampaignRewards') }}
               <AppTooltip
                 class="ml-2 text-gray-450"
-                :content="$t('max_campaign_rewards_tooltip')"
+                :content="$t('tradeAndEarn.maxCampaignRewardsTooltip')"
               />
             </div>
           </template>
@@ -214,11 +214,11 @@ onMounted(() => {
               class="flex flex-wrap justify-center"
             >
               <AppNumberEmp :number="tradeRewardPointsFactored">
-                <span>{{ $t('pts') }}</span>
+                <span>{{ $t('tradeAndEarn.pts') }}</span>
               </AppNumberEmp>
               <span class="px-2 text-xl self-center">/</span>
               <AppNumberEmp :number="totalTradeRewardPointsFactored">
-                <span>{{ $t('pts') }}</span>
+                <span>{{ $t('tradeAndEarn.pts') }}</span>
               </AppNumberEmp>
             </div>
             <span v-else class="text-gray-450">&mdash;</span>
@@ -248,7 +248,7 @@ onMounted(() => {
             <span v-else>&mdash;</span>
             <AppNumberEmp
               v-if="walletStore.isUserWalletConnected"
-              sm
+              is-sm
               class="text-gray-450"
               prefix="≈"
               :number="estimatedRewardsInUsd"
@@ -260,11 +260,11 @@ onMounted(() => {
 
           <template #title>
             <div class="flex items-center justify-center text-xs text-gray-450">
-              {{ $t('est_rewards') }}
+              {{ $t('tradeAndEarn.estRewards') }}
               <AppTooltip
                 class="ml-2 text-gray-450"
                 :content="
-                  $t('est_rewards_tooltip', {
+                  $t('tradeAndEarn.estRewardsTooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                   })
                 "

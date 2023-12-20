@@ -24,7 +24,7 @@ const isOnChainTransaction = computed(
   () => isWithdraw.value || isTransfer.value
 )
 
-function handleModalClose() {
+function onModalClose() {
   resetForm()
 
   modalStore.closeModal(Modal.BridgeCompleted)
@@ -34,9 +34,9 @@ function handleModalClose() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    sm
+    is-sm
     data-cy="transfer-completed-modal"
-    @modal:closed="handleModalClose"
+    @modal:closed="onModalClose"
   >
     <template #title>
       <h3>
@@ -65,8 +65,8 @@ function handleModalClose() {
         <AppButton
           class="w-full font-semibold rounded bg-blue-500 text-blue-900"
           data-cy="transfer-completed-modal-ok-button"
-          lg
-          @click="handleModalClose"
+          is-lg
+          @click="onModalClose"
         >
           {{ $t('common.ok') }}
         </AppButton>

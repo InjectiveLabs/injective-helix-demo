@@ -23,7 +23,7 @@ defineProps({
   >
     <template #default="{ isActive }">
       <div class="flex cursor-pointer items-center gap-1" :class="$attrs.class">
-        <div class="space-y-1">
+        <div>
           <BaseIcon
             name="triangle"
             is-xs

@@ -1,34 +1,57 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import type { UseScrollReturn } from '@vueuse/core'
+import { vScroll } from '@vueuse/components'
 import { createPopperLite } from '@popperjs/core'
+import type { UseScrollReturn } from '@vueuse/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
   MarketType,
-  UiPriceLevel,
   ZERO_IN_BASE,
   UiSpotLimitOrder,
-  UiOrderbookSummary,
-  UiOrderbookPriceLevel,
   UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import { vScroll } from '@vueuse/components'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { getAggregationPrice } from '@/app/client/utils/orderbook'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
-import { OrderbookLayout, TradingLayout, UiMarketWithToken } from '@/types'
+import {
+  TradingLayout,
+  OrderbookLayout,
+  UiMarketWithToken,
+  UiAggregatedPriceLevel
+} from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   aggregation: {
     type: Number,
     required: true
+  },
+
+  midPrice: {
+    type: String,
+    required: true
+  },
+
+  aggregatedSellOrders: {
+    type: Object as PropType<
+      Record<string, { quantity: string; total: string }>
+    >,
+    required: true,
+    default: () => ({})
+  },
+
+  aggregatedBuyOrders: {
+    type: Object as PropType<
+      Record<string, { quantity: string; total: string }>
+    >,
+    required: true,
+    default: () => ({})
   },
 
   market: {
@@ -44,9 +67,6 @@ const subaccountOrders = computed<
 >(() =>
   isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
 )
-
-const buys = computed(() => (isSpot ? spotStore.buys : derivativeStore.buys))
-const sells = computed(() => (isSpot ? spotStore.sells : derivativeStore.sells))
 
 const autoScrollSellsLocked = ref(false)
 const autoScrollBuysLocked = ref(false)
@@ -84,15 +104,30 @@ const lastTradedPriceChange = computed(() =>
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
   }
 )
+
 const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
+
+const { valueToString: spotLastTradedPriceInUsdToString } =
+  useBigNumberFormatter(
+    computed(() =>
+      new BigNumberInBase(
+        tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+      ).times(spotLastTradedPrice.value)
+    ),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
+    }
+  )
 
 const userOrderbookLayout = computed(
   () => appStore.userState.preferences.orderbookLayout
@@ -113,159 +148,26 @@ const sellUserOrderPrices = computed(() =>
   }, [] as string[])
 )
 
-const midOrderbookPrice = computed(() => {
-  const [sell] = sells.value
-  const [buy] = buys.value
-  const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
-  const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
-  const sum = highestBuy.plus(lowestSell)
-
-  if (sum.lte(0)) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(sum.div(2)).toBase(props.market.quoteToken.decimals)
-})
-
-const aggregatedBuyOrders = computed(() => {
-  const orders = {} as Record<string, any>
-
-  buys.value.forEach((record: UiPriceLevel) => {
-    const price = new BigNumberInBase(
-      isSpot
-        ? new BigNumberInBase(record.price).toWei(
-            props.market.baseToken.decimals - props.market.quoteToken.decimals
-          )
-        : new BigNumberInWei(record.price).toBase(
-            props.market.quoteToken.decimals
-          )
-    )
-
-    const aggregatedPrice = getAggregationPrice({
-      price,
-      aggregation: props.aggregation,
-      isBuy: true
-    })
-    const aggregatedPriceKey = aggregatedPrice.toFormat()
-
-    orders[aggregatedPriceKey] = [
-      ...(orders[aggregatedPriceKey] || []),
-      {
-        ...record,
-        aggregatedPrice: aggregatedPrice.toFixed()
-      }
-    ]
-  })
-
-  return Object.entries(orders).map(([, orderGroup]) => {
-    const [firstOrder] = orderGroup
-
-    const quantity = orderGroup.reduce(
-      (sum: BigNumberInWei, order: UiPriceLevel) => {
-        return sum.plus(new BigNumberInWei(order.quantity))
-      },
-      new BigNumberInWei(0)
-    )
-
-    const notional = orderGroup.reduce(
-      (sum: BigNumberInWei, order: UiPriceLevel) => {
-        const notional = new BigNumberInWei(order.quantity)
-          .times(order.price)
-          .toBase(props.market.quoteToken.decimals)
-
-        return sum.plus(notional)
-      },
-      new BigNumberInBase(0)
-    )
-
-    const aggregatePrices = orderGroup.map(({ price }: UiPriceLevel) => price)
-
-    if (isSpot) {
-      return {
-        ...firstOrder,
-        aggregatePrices,
-        quantity
-      }
-    }
-
-    return {
-      ...firstOrder,
-      aggregatePrices,
-      notional,
-      quantity
-    }
-  })
-})
-
-const aggregatedSellOrders = computed(() => {
-  const orders = {} as Record<string, any>
-
-  sells.value.forEach((record: UiPriceLevel) => {
-    const price = new BigNumberInBase(
-      isSpot
-        ? new BigNumberInBase(record.price).toWei(
-            props.market.baseToken.decimals - props.market.quoteToken.decimals
-          )
-        : new BigNumberInWei(record.price).toBase(
-            props.market.quoteToken.decimals
-          )
-    )
-
-    const aggregatedPrice = getAggregationPrice({
-      price,
-      aggregation: props.aggregation,
-      isBuy: false
-    })
-    const aggregatedPriceKey = aggregatedPrice.toFormat()
-
-    orders[aggregatedPriceKey] = [
-      ...(orders[aggregatedPriceKey] || []),
-      {
-        ...record,
-        aggregatedPrice: aggregatedPrice.toFixed()
-      }
-    ]
-  })
-
-  return Object.entries(orders)
-    .reverse()
-    .map(([, orderGroup]) => {
-      const [firstOrder] = orderGroup
-
-      const quantity = orderGroup.reduce(
-        (sum: BigNumberInWei, order: UiPriceLevel) => {
-          return sum.plus(new BigNumberInWei(order.quantity))
-        },
-        new BigNumberInWei(0)
-      )
-
-      const aggregatePrices = orderGroup.map(({ price }: UiPriceLevel) => price)
-
-      return {
-        ...firstOrder,
-        aggregatePrices,
-        quantity
-      }
-    })
-})
-
 const buysTotalNotional = computed(() => {
   const threshold = new BigNumberInBase(1).minus(
     new BigNumberInBase(20).div(100)
   )
 
-  const filteredBuys = aggregatedBuyOrders.value
-    .filter((buy) => {
-      return new BigNumberInWei(buy.price)
-        .toBase(props.market.quoteToken.decimals)
-        .div(midOrderbookPrice.value)
-        .gte(threshold)
+  const filteredBuysWithoutLast = Object.entries(
+    props.aggregatedBuyOrders
+  ).slice(0, -1)
+
+  const filteredBuys = filteredBuysWithoutLast
+    .filter(([price]) => {
+      return new BigNumberInWei(price).div(props.midPrice).gte(threshold)
     })
     .sort((a, b) => {
-      const aNotional = new BigNumberInWei(a.quantity).times(a.price)
-      const bNotional = new BigNumberInWei(b.quantity).times(b.price)
+      const [, aQuantityAndTotal] = a
+      const [, bQuantityAndTotal] = b
 
-      return new BigNumberInBase(bNotional).minus(aNotional).toNumber()
+      return new BigNumberInBase(bQuantityAndTotal.total)
+        .minus(aQuantityAndTotal.total)
+        .toNumber()
     })
 
   if (filteredBuys.length === 0) {
@@ -273,10 +175,9 @@ const buysTotalNotional = computed(() => {
   }
 
   const [highestNotionalBuy] = filteredBuys
+  const [, highestNotionalBuyQuantityAndTotal] = highestNotionalBuy
 
-  return new BigNumberInWei(highestNotionalBuy.quantity)
-    .times(highestNotionalBuy.price)
-    .toBase(props.market.quoteToken.decimals)
+  return new BigNumberInWei(highestNotionalBuyQuantityAndTotal.total).toFixed()
 })
 
 const sellsHighestBaseQuantity = computed(() => {
@@ -284,60 +185,55 @@ const sellsHighestBaseQuantity = computed(() => {
     new BigNumberInBase(20).div(100)
   )
 
-  const filteredSells = aggregatedSellOrders.value
-    .filter((sell) => {
-      return midOrderbookPrice.value
-        .div(
-          new BigNumberInWei(sell.price).toBase(
-            props.market.quoteToken.decimals
-          )
-        )
-        .gte(threshold)
+  const filteredSellsWithoutLast = Object.entries(
+    props.aggregatedSellOrders
+  ).slice(0, -1)
+
+  const filteredSells = filteredSellsWithoutLast
+    .filter(([price]) => {
+      return new BigNumberInBase(props.midPrice).div(price).gte(threshold)
     })
     .sort((a, b) => {
-      return new BigNumberInBase(b.quantity).minus(a.quantity).toNumber()
+      const [, aTotalAndQuantity] = a
+      const [, bQuantityAndTotal] = b
+
+      return new BigNumberInBase(bQuantityAndTotal.quantity)
+        .minus(aTotalAndQuantity.quantity)
+        .toNumber()
     })
 
   if (filteredSells.length === 0) {
-    return ZERO_IN_BASE
+    return ZERO_IN_BASE.toFixed()
   }
 
   const [highestSell] = filteredSells
+  const [, highestSellQuantity] = highestSell
 
-  const highestSellQuantity = isSpot
-    ? new BigNumberInWei(highestSell.quantity).toBase(
-        props.market.baseToken.decimals
-      )
-    : new BigNumberInBase(highestSell.quantity)
-
-  return highestSellQuantity
+  return highestSellQuantity.quantity
 })
 
 const buysWithDepth = computed(() => {
-  const sortedAggregatedBuyOrders = [...aggregatedBuyOrders.value].sort(
-    (v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
-      const v1Price = new BigNumberInWei(v1.price)
-      const v2Price = new BigNumberInWei(v2.price)
-
-      return v2Price.minus(v1Price).toNumber()
+  return Object.entries(props.aggregatedBuyOrders).map(
+    ([price, quantityAndTotal]) => {
+      return {
+        price,
+        ...quantityAndTotal,
+        depth: new BigNumberInBase(quantityAndTotal.total)
+          .dividedBy(buysTotalNotional.value)
+          .times(100)
+          .toNumber()
+      } as UiAggregatedPriceLevel
     }
   )
-
-  return sortedAggregatedBuyOrders.map((record: UiPriceLevel) => {
-    const total = new BigNumberInWei(record.quantity)
-      .times(record.price)
-      .toBase(props.market.quoteToken.decimals)
-
-    return {
-      ...record,
-      total,
-      depth: total.dividedBy(buysTotalNotional.value).times(100).toNumber()
-    } as UiOrderbookPriceLevel
-  })
 })
 
-const buyOrdersSummary = computed<UiOrderbookSummary | undefined>(() => {
-  if (buysWithDepth.value.length === 0 || !buyHoverPosition.value) {
+const buyOrdersSummary = computed<
+  { quantity: string; total: string } | undefined
+>(() => {
+  if (
+    buysWithDepth.value.length === 0 ||
+    buyHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -345,62 +241,46 @@ const buyOrdersSummary = computed<UiOrderbookSummary | undefined>(() => {
     const buyOrdersSummary = buysWithDepth.value
       .slice(0, Number(buyHoverPosition.value) + 1)
       .reduce(computeOrderbookSummarySpot, {
-        quantity: new BigNumberInWei(0),
-        total: new BigNumberInBase(0)
+        quantity: new BigNumberInWei(0).toFixed(),
+        total: new BigNumberInBase(0).toFixed()
       })
 
     return {
       ...buyOrdersSummary,
-      quantity: buyOrdersSummary.quantity.toBase(
-        props.market.baseToken.decimals
-      )
+      quantity: new BigNumberInWei(buyOrdersSummary.quantity).toFixed()
     }
   }
 
   return buysWithDepth.value
     .slice(0, Number(buyHoverPosition.value) + 1)
     .reduce(computeOrderbookSummaryDerivative, {
-      quantity: new BigNumberInBase(0),
-      total: new BigNumberInBase(0)
+      quantity: new BigNumberInBase(0).toFixed(),
+      total: new BigNumberInBase(0).toFixed()
     })
 })
 
 const sellsWithDepth = computed(() => {
-  const sortedAggregatedSellOrders = [...aggregatedSellOrders.value].sort(
-    (v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
-      const v1Price = new BigNumberInWei(v1.price)
-      const v2Price = new BigNumberInWei(v2.price)
-
-      return v1Price.minus(v2Price).toNumber()
-    }
-  )
-
-  return sortedAggregatedSellOrders
-    .map((record: UiPriceLevel) => {
-      const baseQuantity = isSpot
-        ? new BigNumberInWei(record.quantity).toBase(
-            props.market.baseToken.decimals
-          )
-        : new BigNumberInWei(record.quantity)
-
-      const total = new BigNumberInWei(record.quantity)
-        .times(record.price)
-        .toBase(props.market.quoteToken.decimals)
-
+  return Object.entries(props.aggregatedSellOrders)
+    .map(([price, quantityAndTotal]) => {
       return {
-        ...record,
-        total,
-        depth: baseQuantity
+        price,
+        ...quantityAndTotal,
+        depth: new BigNumberInWei(quantityAndTotal.quantity)
           .dividedBy(sellsHighestBaseQuantity.value)
           .times(100)
           .toNumber()
-      } as UiOrderbookPriceLevel
+      } as UiAggregatedPriceLevel
     })
     .reverse()
 })
 
-const sellOrdersSummary = computed(() => {
-  if (sellsWithDepth.value.length === 0 || !sellHoverPosition.value) {
+const sellOrdersSummary = computed<
+  { quantity: string; total: string } | undefined
+>(() => {
+  if (
+    sellsWithDepth.value.length === 0 ||
+    sellHoverPosition.value === undefined
+  ) {
     return
   }
 
@@ -408,13 +288,11 @@ const sellOrdersSummary = computed(() => {
     const sellOrdersSummary = sellsWithDepth.value
       .slice(Number(sellHoverPosition.value))
       .reduce(computeOrderbookSummarySpot, {
-        quantity: new BigNumberInWei(0),
-        total: new BigNumberInBase(0)
+        quantity: new BigNumberInWei(0).toFixed(),
+        total: new BigNumberInBase(0).toFixed()
       })
 
-    const quantity = sellOrdersSummary.quantity.toBase(
-      props.market.baseToken.decimals
-    )
+    const quantity = new BigNumberInWei(sellOrdersSummary.quantity).toFixed()
 
     return {
       ...sellOrdersSummary,
@@ -425,17 +303,17 @@ const sellOrdersSummary = computed(() => {
   return sellsWithDepth.value
     .slice(Number(sellHoverPosition.value))
     .reduce(computeOrderbookSummaryDerivative, {
-      quantity: new BigNumberInBase(0),
-      total: new BigNumberInBase(0)
+      quantity: new BigNumberInBase(0).toFixed(),
+      total: new BigNumberInBase(0).toFixed()
     })
 })
 
 const orderBookSummary = computed(() => {
-  if (buyHoverPosition.value) {
+  if (buyHoverPosition.value !== undefined) {
     return buyOrdersSummary.value
   }
 
-  if (sellHoverPosition.value) {
+  if (sellHoverPosition.value !== undefined) {
     return sellOrdersSummary.value
   }
 
@@ -447,7 +325,7 @@ const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => ({
 }))
 
 watch(
-  () => props.aggregation,
+  () => props.aggregatedBuyOrders,
   () =>
     nextTick(() => {
       onScrollSells()
@@ -455,8 +333,14 @@ watch(
     })
 )
 
-watch(sells, () => nextTick(onScrollSells))
-watch(buys, () => nextTick(onScrollBuys))
+watch(
+  () => props.aggregatedSellOrders,
+  () =>
+    nextTick(() => {
+      onScrollSells()
+      onScrollBuys()
+    })
+)
 
 onMounted(() => {
   nextTick(() => {
@@ -487,7 +371,7 @@ function onScrollBuys() {
   }
 }
 
-function handleSellOrderHover(position?: number) {
+function onSellOrderHover(position?: number) {
   sellHoverPosition.value = position
 
   if (position !== undefined) {
@@ -518,7 +402,7 @@ function handleSellOrderHover(position?: number) {
   }
 }
 
-function handleBuyOrderHover(position?: number) {
+function onBuyOrderHover(position?: number) {
   buyHoverPosition.value = position
 
   if (position !== undefined) {
@@ -549,10 +433,13 @@ function handleBuyOrderHover(position?: number) {
 }
 
 function hidePopperOnScroll(state: UseScrollReturn) {
+  if (!orderbookSummaryRef.value) {
+    return
+  }
+
   if (
-    !buyHoverPosition.value ||
-    !sellHoverPosition.value ||
-    !orderbookSummaryRef.value
+    buyHoverPosition.value === undefined &&
+    sellHoverPosition.value === undefined
   ) {
     return
   }
@@ -585,9 +472,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           <PartialsTradingMarketOrderbookRecord
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${
-              sell.aggregatedPrice || sell.price
-            }-${aggregation}`"
+            :key="`order-book-sell-${sell.price}-${sell.quantity}`"
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
@@ -595,19 +480,15 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             }"
             v-bind="{
               market,
-              position: index,
               aggregation,
+              record: sell,
+              position: index,
               type: OrderSide.Sell,
               userOrders: sellUserOrderPrices,
-              record: sell
+              isLast: index === 0
             }"
-            :position="index"
-            :aggregation="aggregation"
-            :type="OrderSide.Sell"
-            :user-orders="sellUserOrderPrices"
-            :record="sell"
             data-cy="orderbook-sell-list-item"
-            @update:active-position="handleSellOrderHover"
+            @update:active-position="onSellOrderHover"
           />
         </ul>
       </div>
@@ -628,6 +509,19 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           {{ lastTradedPriceToFormat }}
         </span>
+
+        <span
+          v-if="isSpot"
+          :class="{
+            'text-red-500': lastTradedPriceChange === Change.Decrease,
+            'text-green-500': lastTradedPriceChange !== Change.Decrease
+          }"
+          class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
+          data-cy="orderbook-last-traded-price-text-content"
+        >
+          {{ lastTradedPriceToFormat }}
+        </span>
+
         <BaseIcon
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
@@ -642,16 +536,15 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             'ml-2 mr-4': !isSpot
           }"
         />
+
         <span
-          v-if="isSpot"
-          :class="{
-            'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-green-500': lastTradedPriceChange !== Change.Decrease
-          }"
-          class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
-          data-cy="orderbook-last-traded-price-text-content"
+          v-if="
+            isSpot &&
+            QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(market.quoteToken.denom)
+          "
+          class="text-xs font-bold text-gray-475 ml-1"
         >
-          {{ lastTradedPriceToFormat }}
+          ${{ spotLastTradedPriceInUsdToString }}
         </span>
 
         <AppTooltip
@@ -687,24 +580,23 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           <!-- TODO: test the dynamic ref assignment -->
           <PartialsTradingMarketOrderbookRecord
             v-for="(buy, index) in buysWithDepth"
-            :key="`order-book-buy-${
-              buy.aggregatedPrice || buy.price
-            }-${aggregation}`"
+            :key="`order-book-buy-${buy.price}-${buy.quantity}`"
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
               active: buyHoverPosition && index <= buyHoverPosition
             }"
             v-bind="{
-              aggregation,
               market,
-              position: index,
+              aggregation,
               record: buy,
+              position: index,
               type: OrderSide.Buy,
-              userOrders: buyUserOrderPrices
+              userOrders: buyUserOrderPrices,
+              isLast: index === buysWithDepth.length - 1
             }"
             data-cy="orderbook-buy-list-item"
-            @update:active-position="handleBuyOrderHover"
+            @update:active-position="onBuyOrderHover"
           />
         </ul>
       </div>

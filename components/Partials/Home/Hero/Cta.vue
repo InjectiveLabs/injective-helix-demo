@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
-import { getDefaultPerpetualMarketRouteParams } from '@/app/utils/market'
-import { DefaultMarket, TradeClickOrigin, Modal } from '@/types'
+import {
+  getDefaultFuturesMarket,
+  getDefaultPerpetualMarketRouteParams
+} from '@/app/utils/market'
+import { TradeClickOrigin, Modal } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
-function handleGetStartedClick() {
-  handleTradeClickedTrack()
+function onGetStartedClick() {
+  tradeClickedTrack()
 
   if (walletStore.isUserWalletConnected) {
     router.push(getDefaultPerpetualMarketRouteParams())
@@ -18,9 +21,9 @@ function handleGetStartedClick() {
   }
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
-    market: DefaultMarket.Perpetual,
+    market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander
   })
@@ -74,9 +77,9 @@ function handleTradeClickedTrack() {
       </div>
     </div>
     <AppButton
-      lg
+      is-lg
       class="bg-gray-750 text-white mt-8 font-semibold"
-      @click="handleGetStartedClick"
+      @click="onGetStartedClick"
     >
       {{ $t('home.startTradingNow') }}
     </AppButton>

@@ -35,6 +35,14 @@ export const cancelSubaccountOrderHistoryStream = () => {
   streamProvider.cancel(StreamType.DerivativesSubaccountOrderHistory)
 }
 
+export const cancelOrderbookUpdateStream = () => {
+  streamProvider.cancel(StreamType.DerivativesOrderbookUpdate)
+}
+
+export const cancelTradesStream = () => {
+  streamProvider.cancel(StreamType.DerivativesTrades)
+}
+
 export const streamOrderbookUpdate = ({
   marketId,
   callback

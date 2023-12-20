@@ -1,13 +1,21 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
-import { BridgeType, UiMarketWithToken, WalletConnectStatus } from '@/types'
+  BankBalanceIntegrityStrategy,
+  SubaccountBalanceIntegrityStrategy
+} from '@/app/client/streams/data-integrity/strategies'
+import {
+  MainPage,
+  BridgeType,
+  UiMarketWithToken,
+  WalletConnectStatus
+} from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -113,6 +121,13 @@ watch(
     setSubaccountStreams()
   }
 )
+
+useIntervalFn(() => {
+  Promise.all([
+    BankBalanceIntegrityStrategy.make().validate(),
+    SubaccountBalanceIntegrityStrategy.make().validate()
+  ])
+}, 30 * 1000)
 </script>
 
 <template>
@@ -137,7 +152,7 @@ watch(
         </div>
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
-          :to="{ name: 'account' }"
+          :to="{ name: MainPage.Account }"
           class="text-blue-500 text-2xs font-semibold"
         >
           {{ $t('marketPage.account') }}
@@ -162,7 +177,7 @@ watch(
 
               <BaseNuxtLink
                 :to="{
-                  name: 'bridge',
+                  name: MainPage.Bridge,
                   query: {
                     type: BridgeType.Deposit,
                     denom: isSpot
@@ -207,10 +222,6 @@ watch(
                   }}
                 </span>
                 <div class="flex gap-2">
-                  <PartialsCommonBalancesPeggyUsdcConvert
-                    v-if="market"
-                    :market="market"
-                  />
                   <span class="font-mono text-white">
                     {{ quoteTradingBalanceToFormat }}
                   </span>

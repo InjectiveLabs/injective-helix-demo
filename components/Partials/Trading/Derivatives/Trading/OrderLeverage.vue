@@ -49,7 +49,7 @@ const maxLeverageAvailable = computed(() => {
       .dp(0)
   )
 
-  const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
+  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
 
   const stepsLessThanMaxLeverage = steps.filter(
     (step) => step <= maxLeverage.toNumber()
@@ -102,11 +102,18 @@ function validateLeverage(value: string) {
 
     if (leverageToBigNumber.gte(maxLeverageAvailable.value)) {
       setValue(maxLeverageAvailable.value)
-    } else if (leverageToBigNumber.lt(1)) {
+    } else if (leverageToBigNumber.lt(0.1)) {
       resetField()
     }
   })
 }
+
+const onValidateLeverage = useDebounceFn((value) => {
+  /**
+   *Use debounce so we don't potentially reset the field until after they're done typing
+   **/
+  validateLeverage(value)
+}, 500)
 </script>
 
 <template>
@@ -120,7 +127,7 @@ function validateLeverage(value: string) {
     <div class="range-wrap flex items-center relative select-none gap-2">
       <input
         v-model="leverage"
-        min="1"
+        min="0.1"
         :max="maxLeverageAvailable.toString()"
         step="0.01"
         class="range"
@@ -130,12 +137,12 @@ function validateLeverage(value: string) {
       <div class="relative max-h-6">
         <AppInputNumeric
           v-model="leverage"
-          min="0"
+          min="0.1"
           step="0.01"
           :max="maxLeverageAvailable.toString()"
           class="leverage-input pr-4 h-1"
           data-cy="trading-page-leverage-input"
-          @update:modelValue="validateLeverage"
+          @update:modelValue="onValidateLeverage"
         />
         <span
           class="absolute top-0 right-0 text-xs text-gray-400 mt-1.5 mr-1.5"

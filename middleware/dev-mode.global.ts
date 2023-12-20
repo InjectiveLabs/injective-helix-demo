@@ -1,4 +1,4 @@
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
   const appStore = useAppStore()
@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware((to) => {
     }
   }
 
-  if (!appStore.devMode && toName.startsWith('trading-bots')) {
+  if (!appStore.devMode && toName === MainPage.Leaderboard) {
     return navigateTo('/')
   }
 })

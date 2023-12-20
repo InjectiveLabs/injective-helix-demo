@@ -14,6 +14,7 @@ enum SlippageDisplayOptions {
 const { t } = useLang()
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -77,7 +78,12 @@ const reduceOnlyValue = computed({
 
     setReduceOnlyValue(reduceOnly)
 
-    formValues.value[TradeField.Leverage] = LEVERAGE_FOR_REDUCE_ONLY
+    setFormValues(
+      {
+        [TradeField.Leverage]: LEVERAGE_FOR_REDUCE_ONLY
+      },
+      false
+    )
   }
 })
 
@@ -288,14 +294,13 @@ function toggleDrawer() {
             <AppInputNumeric
               id="focusOnInput"
               v-model="slippageTolerance"
-              transparent-bg
+              is-transparent-bg
               :wrapper-classes="wrapperClasses"
               :input-classes="inputClasses"
-              :disabled="!slippageIsToggable"
+              :is-disabled="!slippageIsToggable"
               :step="0.01"
               :max-decimals="2"
-              small
-              :show-prefix="showSlippageWarning || showSlippageError"
+              is-sm
               data-cy="trading-page-slippage-input"
               @blur="handleBlur"
             >
@@ -325,7 +330,7 @@ function toggleDrawer() {
       font-semibold
       text-2xs
     >
-      <BaseIcon name="exclamation-circle-fill" sm class="mt-0.25" />
+      <BaseIcon name="exclamation-circle-fill" is-sm class="mt-0.25" />
       <span>
         {{ slippageToleranceError[0] }}
       </span>

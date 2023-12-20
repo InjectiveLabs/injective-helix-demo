@@ -1,7 +1,11 @@
 import path from 'path'
 import { NitroConfig } from 'nitropack'
 import { Network } from '@injectivelabs/networks'
+import { HttpClient } from '@injectivelabs/utils'
+import { ENDPOINTS } from './../../app/utils/constants/setup'
 import { getRoutes } from './../../app/utils/constants/routes'
+import { GUILD_CONTRACT_ADDRESS } from './../../app/utils/constants'
+import { TradeSubPage } from './../../types/page'
 
 const VITE_ENV = process.env.VITE_ENV as string
 const VITE_NETWORK = process.env.VITE_NETWORK as Network
@@ -17,15 +21,40 @@ const {
   customStaticRoutes,
   binaryOptionsRoutes,
   upcomingMarketsRoutes,
-  gridTradingSpotRoutes
+  gridTradingSpotRoutes,
+  liquidityBotSpotRoutes
 } = ROUTES
 
 const resolvePagePath = (page: string) => {
   return path.resolve(__dirname, '..', '..', page)
 }
 
+const fetchGuildRoutes = async (): Promise<string[]> => {
+  // hardcode guild ids to balance unstable indexer api response
+  const GUILD_IDS = new Set(['ef3bc2', '25269b', '5f90cb', '50be68'])
+
+  const client = new HttpClient(
+    `${ENDPOINTS.campaign}/api/campaigns/v1/${GUILD_CONTRACT_ADDRESS}`
+  )
+
+  try {
+    const { data } = (await client.get('guilds')) as {
+      data: { guilds: { guildId: string }[] }
+    }
+
+    data.guilds || [].forEach(({ guildId }) => GUILD_IDS.add(guildId))
+
+    return Array.from(GUILD_IDS).map((guildId) => `/guild/${guildId}`)
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e)
+
+    return Array.from(GUILD_IDS).map((guildId) => `/guild/${guildId}`)
+  }
+}
+
 export default {
-  'nitro:config'(nitroConfig: NitroConfig) {
+  async 'nitro:config'(nitroConfig: NitroConfig) {
     if (
       nitroConfig.dev ||
       !nitroConfig.prerender ||
@@ -41,7 +70,9 @@ export default {
       ...futuresRoutes,
       ...spotRoutes,
       ...upcomingMarketsRoutes,
-      ...gridTradingSpotRoutes
+      ...gridTradingSpotRoutes,
+      ...liquidityBotSpotRoutes,
+      ...(await fetchGuildRoutes())
     ]
   },
 
@@ -60,18 +91,18 @@ export default {
         children: []
       },
       {
-        name: 'binary-options-binaryOption',
+        name: TradeSubPage.BinaryOption,
         path: '/binary-options/:binaryOption',
         file: resolvePagePath('pages/futures/[futures].vue'),
         children: []
       },
       {
-        name: 'derivative-derivative',
+        name: TradeSubPage.Derivatives,
         path: '/derivative/:derivative',
         file: resolvePagePath('pages/futures/[futures].vue')
       },
       {
-        name: 'perpetual-perpetual',
+        name: TradeSubPage.Perpetual,
         path: '/perpetual/:perpetual',
         file: resolvePagePath('pages/futures/[futures].vue')
       }

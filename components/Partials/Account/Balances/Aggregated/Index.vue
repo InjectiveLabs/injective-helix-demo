@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { usdcTokenDenom, usdcTokenDenoms } from '@/app/data/token'
 import { AccountBalance } from '@/types'
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
+  isUnrealizedPnLLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -18,7 +18,7 @@ const props = defineProps({
   }
 })
 
-const showUsdcBalances = ref(true)
+const isShowUsdcBalances = ref(true)
 
 const usdcBalances = computed(() =>
   props.balances.filter((balance) =>
@@ -27,7 +27,7 @@ const usdcBalances = computed(() =>
 )
 
 // default usdc balance to show on accounts page
-const peggyUsdcetBalance = computed(() => {
+const defaultUsdcBalance = computed(() => {
   return props.balances.find(
     (balance) => balance.denom === usdcTokenDenom.USDCet
   )
@@ -42,7 +42,7 @@ const hasPeggyUsdcBalance = computed(() => {
 })
 
 function toggleUsdcBalances() {
-  showUsdcBalances.value = !showUsdcBalances.value
+  isShowUsdcBalances.value = !isShowUsdcBalances.value
 }
 </script>
 
@@ -52,14 +52,14 @@ function toggleUsdcBalances() {
       <PartialsAccountBalancesAggregatedHeader
         v-bind="{
           ...$attrs,
-          hideBalances,
-          showUsdcBalances,
+          isHideBalances,
+          isShowUsdcBalances,
           aggregatedBalance
         }"
         @drawer:toggle="toggleUsdcBalances"
       />
 
-      <template v-if="showUsdcBalances">
+      <template v-if="isShowUsdcBalances">
         <PartialsAccountBalancesAggregatedRow
           v-for="(usdcBalance, index) in usdcBalances"
           :key="usdcBalance.token.denom"
@@ -68,9 +68,9 @@ function toggleUsdcBalances() {
           }"
           v-bind="{
             ...$attrs,
-            hideBalances,
+            isHideBalances,
             hasPeggyUsdcBalance,
-            isOpen: showUsdcBalances,
+            isOpen: isShowUsdcBalances,
             balance: usdcBalance,
             isHoldingSingleUsdcDenom: usdcBalances.length === 1
           }"
@@ -79,12 +79,12 @@ function toggleUsdcBalances() {
     </template>
 
     <PartialsAccountBalancesRow
-      v-else-if="peggyUsdcetBalance"
-      :key="peggyUsdcetBalance.denom"
+      v-else-if="defaultUsdcBalance"
+      :key="defaultUsdcBalance.denom"
       v-bind="{
         ...$attrs,
-        hideBalances,
-        balance: peggyUsdcetBalance
+        isHideBalances,
+        balance: defaultUsdcBalance
       }"
     />
   </tbody>

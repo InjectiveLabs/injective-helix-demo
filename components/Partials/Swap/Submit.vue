@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
+import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
+const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -42,6 +45,36 @@ const hasAmounts = computed(() => {
     new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || '').gt(
       0
     )
+  )
+})
+
+const restrictedTokenBasedOnUserGeoIP = computed(() => {
+  if (!GEO_IP_RESTRICTIONS_ENABLED) {
+    return
+  }
+
+  const disallowedDenom = [
+    formValues.value[SwapFormField.InputDenom],
+    formValues.value[SwapFormField.OutputDenom]
+  ].find((denom) => {
+    if (!denom) {
+      return false
+    }
+
+    return isCountryRestrictedForSpotMarket({
+      country:
+        appStore.userState.geoLocation.browserCountry ||
+        appStore.userState.geoLocation.country,
+      denomOrSymbol: denom
+    })
+  })
+
+  if (!disallowedDenom) {
+    return
+  }
+
+  return accountBalancesWithToken.value.find(
+    ({ denom }) => denom === disallowedDenom
   )
 })
 
@@ -120,7 +153,7 @@ function getResultQuantity() {
   emit('update:inputQuantity')
 }
 
-function handleConnect() {
+function onConnect() {
   modalStore.openModal(Modal.Connect)
 }
 
@@ -150,11 +183,24 @@ watch(
   <div>
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
-      lg
+      is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
-      @click="handleConnect"
+      @click="onConnect"
     >
       {{ $t('trade.swap.connect_wallet') }}
+    </AppButton>
+
+    <AppButton
+      v-else-if="restrictedTokenBasedOnUserGeoIP"
+      is-lg
+      is-disabled
+      class="w-full"
+    >
+      {{
+        $t('marketRestricted.swapCta', {
+          symbol: restrictedTokenBasedOnUserGeoIP.token.symbol
+        })
+      }}
     </AppButton>
 
     <AppButton
@@ -167,8 +213,8 @@ watch(
           rateExpired && hasAmounts && !props.isLoading && !hasErrors
       }"
       :classes="'border border-accent-500 text-accent-500  bg-opacity-50'"
-      xl
-      :disabled="isLoading || !!hasErrors || !hasAmounts"
+      is-xl
+      :is-disabled="isLoading || !!hasErrors || !hasAmounts"
       :is-loading="isLoading"
       @click="handlerFunction"
     >

@@ -27,7 +27,7 @@ const sortedTransactions = computed(() =>
 
 <template>
   <div class="w-full h-full">
-    <CommonTableWrapper break-md>
+    <CommonTableWrapper is-break-md>
       <table v-if="filteredTransactions.length > 0" class="table">
         <PartialsActivityViewsWalletHistoryCommonTableHeader />
         <tbody>

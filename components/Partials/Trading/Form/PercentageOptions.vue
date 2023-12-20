@@ -19,11 +19,12 @@ import {
 } from '@/app/utils/constants'
 
 const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
@@ -130,18 +131,7 @@ const balanceToUpdateDerivativesWithFees = computed(() => {
   )
 })
 
-watch(
-  () => props.feeRate,
-  () => {
-    if (!percentage.value) {
-      return
-    }
-
-    handlePercentageChange(percentage.value)
-  }
-)
-
-function handleReduceOnly() {
+function changeAmountFromPercentageForReduceOnly() {
   if (!props.maxReduceOnly) {
     return
   }
@@ -157,55 +147,67 @@ function handleReduceOnly() {
     totalQuantity
   )
 
-  formValues.value[TradeField.BaseAmount] = amount.toFixed(
-    props.market.quantityDecimals,
-    TRADE_FORM_QUANTITY_ROUNDING_MODE
-  )
+  setFormValues({
+    [TradeField.BaseAmount]: amount.toFixed(
+      props.market.quantityDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
+  })
 
   emit('update:amount', { isBaseAmount: true })
 }
 
-function handleDerivativePercentageChange() {
+function derivativePercentageChange() {
   // compare percent click amount to the max allowable quantity
   const field = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? TradeField.BaseAmount
     : TradeField.QuoteAmount
+
   const amount = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.maxAmountOnOrderbook.totalQuantity
     : balanceToUpdateDerivativesWithFees.value
+
   const decimals = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.market.quantityDecimals
     : props.market.priceDecimals
+
   const roundingMode = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? TRADE_FORM_QUANTITY_ROUNDING_MODE
     : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  formValues.value[field] = amount.toFixed(decimals, roundingMode)
+  setFormValues({
+    [field]: amount.toFixed(decimals, roundingMode)
+  })
 
   emit('update:amount', {
     isBaseAmount: derivativeAvailableBalanceGreaterThanOrderbook.value
   })
 }
 
-function handleSpotPercentageChange() {
+function spotPercentageChange() {
   // compare percent click amount to the max allowable quantity
   const field =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? TradeField.BaseAmount
       : TradeField.QuoteAmount
+
   const amount = spotAvailableBalanceGreaterThanOrderbook.value
     ? props.maxAmountOnOrderbook.totalQuantity
     : balanceToUpdateSpotWithFees.value
+
   const decimals =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? props.market.quantityDecimals
       : props.market.priceDecimals
+
   const roundingMode =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
       ? TRADE_FORM_QUANTITY_ROUNDING_MODE
       : TRADE_FORM_PRICE_ROUNDING_MODE
 
-  formValues.value[field] = amount.toFixed(decimals, roundingMode)
+  setFormValues({
+    [field]: amount.toFixed(decimals, roundingMode)
+  })
 
   emit('update:amount', {
     isBaseAmount:
@@ -213,19 +215,34 @@ function handleSpotPercentageChange() {
   })
 }
 
-function handlePercentageChange(percentage: number) {
+function onPercentageChange(percentage: number) {
+  changeFromPercentage(percentage)
+}
+
+function changeFromPercentage(percentage: number) {
   setProportionalPercentageValue(percentage)
 
-  if (props.orderTypeReduceOnly) {
-    return handleReduceOnly()
+  if (props.isOrderTypeReduceOnly) {
+    return changeAmountFromPercentageForReduceOnly()
   }
 
   if (!props.isSpot) {
-    return handleDerivativePercentageChange()
+    return derivativePercentageChange()
   }
 
-  return handleSpotPercentageChange()
+  return spotPercentageChange()
 }
+
+watch(
+  () => props.feeRate,
+  () => {
+    if (!percentage.value) {
+      return
+    }
+
+    changeFromPercentage(percentage.value)
+  }
+)
 
 watch(
   () => formValues.value[TradeField.BaseAmount],
@@ -234,10 +251,12 @@ watch(
       return
     }
 
-    formValues.value[TradeField.BaseAmount] = formatAmountToAllowableAmount(
-      formValues.value[TradeField.BaseAmount],
-      props.market.quantityTensMultiplier
-    )
+    setFormValues({
+      [TradeField.BaseAmount]: formatAmountToAllowableAmount(
+        formValues.value[TradeField.BaseAmount],
+        props.market.quantityTensMultiplier
+      )
+    })
 
     emit('update:amount', {
       isBaseAmount: true
@@ -253,7 +272,7 @@ watch(
       :key="`percentage-${index}`"
       :data-cy="`trading-page-percentage-selector-${percent}-span`"
       class="mr-1 cursor-pointer"
-      @click.stop="handlePercentageChange(percent)"
+      @click.stop="onPercentageChange(percent)"
     >
       {{ percent }}%
     </span>

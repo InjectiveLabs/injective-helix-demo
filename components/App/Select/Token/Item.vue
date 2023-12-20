@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import type { Token } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
-  sm: Boolean,
-  xl: Boolean,
-  showBalance: Boolean,
-  showTokenName: Boolean,
-  lgTokenIcon: Boolean,
+  isSm: Boolean,
+  isXl: Boolean,
+  isLoading: Boolean,
+  isLgTokenIcon: Boolean,
+  isShowTokenName: Boolean,
+  isBalanceVisible: Boolean,
 
   token: {
     type: Object as PropType<Token>,
@@ -25,11 +25,11 @@ const emit = defineEmits<{
 }>()
 
 const classes = computed(() => {
-  if (props.sm) {
+  if (props.isSm) {
     return 'text-sm'
   }
 
-  if (props.xl) {
+  if (props.isXl) {
     return 'text-xl'
   }
 
@@ -40,27 +40,27 @@ const { valueToString: balanceToString } = useBigNumberFormatter(
   computed(() => props.balance)
 )
 
-function handleClick() {
+function click() {
   emit('click', props.token.denom)
 }
 </script>
 
 <template>
-  <div class="flex items-center justify-between" @click="handleClick">
+  <div class="flex items-center justify-between" @click="click">
     <div class="flex items-center gap-2">
-      <CommonTokenIcon v-bind="{ token: token, lg: lgTokenIcon }" />
+      <CommonTokenIcon v-bind="{ token: token, isLg: isLgTokenIcon }" />
 
       <div class="flex flex-col max-w-2xs truncate" :class="classes">
-        <span :class="sm ? 'font-medium text-xs' : 'font-semibold text-xl'">
+        <span :class="isSm ? 'font-medium text-xs' : 'font-semibold text-xl'">
           {{ token.symbol }}
         </span>
 
-        <span v-if="showTokenName" class="text-gray-450">
+        <span v-if="isShowTokenName" class="text-gray-450">
           {{ token.name }}
         </span>
       </div>
     </div>
-
-    <div v-if="showBalance">{{ balanceToString }}</div>
+    <AppSpinner v-if="isLoading" class="relative" is-sm />
+    <div v-else-if="isBalanceVisible">{{ balanceToString }}</div>
   </div>
 </template>

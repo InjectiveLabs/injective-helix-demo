@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-const uuid = computed(() => {
-  return Math.random()
-})
+const uuid = computed(() => Math.random())
 </script>
 
 <template>

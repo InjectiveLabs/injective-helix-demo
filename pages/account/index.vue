@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PropType } from 'vue'
+
 import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import {
   AccountBalance,
@@ -15,7 +15,8 @@ import {
 } from '@/app/utils/constants'
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
+  isUnrealizedPnLLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -23,14 +24,14 @@ const props = defineProps({
   }
 })
 
-const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
-  useBalance()
 const searchQuery = ref('')
 const showMarginCurrencyOnly = ref(false)
-const hideSmallBalances = ref(false)
+const isHideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.Value)
 const isAscending = ref(false)
 
+const { aggregateBalanceByDenoms, getAccountBalancesWithTokenInBases } =
+  useBalance()
 const balances = computed(() => props.balances)
 const balancesInBase = computed(() =>
   getAccountBalancesWithTokenInBases(balances)
@@ -58,10 +59,10 @@ const balancesWithAggregation = computed<AccountBalanceWithAggregatedType[]>(
   }
 )
 
-const filteredBalances = computed(() => {
-  return balancesWithAggregation.value.filter((balance) => {
+const filteredBalances = computed(() =>
+  balancesWithAggregation.value.filter((balance) => {
     const isNotSmallBalance =
-      !hideSmallBalances.value ||
+      !isHideSmallBalances.value ||
       new BigNumberInBase(balance.accountTotalBalanceInUsd).gte(
         SMALL_BALANCE_THRESHOLD
       )
@@ -83,7 +84,7 @@ const filteredBalances = computed(() => {
 
     return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
   })
-})
+)
 
 const sortedBalances = computed(() => {
   const result = [...filteredBalances.value].sort(
@@ -144,8 +145,8 @@ const sortedBalances = computed(() => {
   ]
 })
 
-const sortedBalancesWithInjAggregation = computed(() => {
-  return sortedBalances.value.map((balance) => {
+const sortedBalancesWithInjAggregation = computed(() =>
+  sortedBalances.value.map((balance) => {
     if (balance.denom === INJ_DENOM) {
       return {
         ...balance,
@@ -155,7 +156,7 @@ const sortedBalancesWithInjAggregation = computed(() => {
 
     return balance
   })
-})
+)
 
 const usdcAggregationTypeBalances = computed(() =>
   balancesInBase.value.filter((balance) =>
@@ -169,12 +170,12 @@ const usdcAggregationTypeBalances = computed(() =>
     <PartialsAccountBalancesActions
       v-model:search="searchQuery"
       v-model:show-margin-currency-only="showMarginCurrencyOnly"
-      v-model:hide-small-balances="hideSmallBalances"
+      v-model:is-hide-small-balances="isHideSmallBalances"
     />
 
     <table class="w-full border-collapse hidden lg:table">
       <PartialsAccountBalancesHeader
-        v-bind="$attrs"
+        v-bind="{ ...$attrs, isUnrealizedPnLLoading }"
         v-model:sort-by="sortBy"
         v-model:isAscending="isAscending"
       />
@@ -186,7 +187,7 @@ const usdcAggregationTypeBalances = computed(() =>
           v-bind="{
             ...$attrs,
             balance,
-            hideBalances
+            isHideBalances
           }"
         />
 
@@ -195,7 +196,7 @@ const usdcAggregationTypeBalances = computed(() =>
           :key="`aggregated-${balance.denom}`"
           v-bind="{
             ...$attrs,
-            hideBalances,
+            isHideBalances,
             balances: usdcAggregationTypeBalances,
             aggregatedBalance: balance
           }"
@@ -207,7 +208,7 @@ const usdcAggregationTypeBalances = computed(() =>
           v-bind="{
             ...$attrs,
             balance,
-            hideBalances
+            isHideBalances
           }"
         />
       </template>
@@ -224,7 +225,7 @@ const usdcAggregationTypeBalances = computed(() =>
         :key="`mobile-${balance.denom}`"
         v-bind="$attrs"
         :balance="balance"
-        :hide-balances="hideBalances"
+        :is-hide-balances="isHideBalances"
       />
     </table>
 

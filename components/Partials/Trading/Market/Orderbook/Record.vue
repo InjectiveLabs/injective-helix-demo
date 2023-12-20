@@ -1,26 +1,20 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
-import {
-  Change,
-  MarketType,
-  UiOrderbookPriceLevel
-} from '@injectivelabs/sdk-ui-ts'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { Change } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   OrderBookPriceAndType,
   OrderBookQuantityAndType,
   OrderBookNotionalAndType,
-  UiMarketWithToken
+  UiMarketWithToken,
+  UiAggregatedPriceLevel
 } from '@/types'
 import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
+  isLast: Boolean,
+
   aggregation: {
     type: Number,
     required: true
@@ -36,11 +30,6 @@ const props = defineProps({
     type: String as PropType<OrderSide>
   },
 
-  userOrders: {
-    required: true,
-    type: Array as PropType<string[]>
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -48,7 +37,7 @@ const props = defineProps({
 
   record: {
     required: true,
-    type: Object as PropType<UiOrderbookPriceLevel>
+    type: Object as PropType<UiAggregatedPriceLevel>
   }
 })
 
@@ -56,31 +45,23 @@ const emit = defineEmits<{
   'update:active-position': [position?: number]
 }>()
 
-const isSpot = props.market.type === MarketType.Spot
-
 const element = ref()
 
-const existsInUserOrders = computed(() =>
-  props.userOrders.some((price) => {
-    if (!props.record.aggregatePrices) {
-      return false
-    }
+// const existsInUserOrders = computed(() => {
+//   const recordInBase = new BigNumberInBase(props.record.price)
+//     .toWei(props.market.quoteToken.decimals)
+//     .toFixed()
 
-    return props.record.aggregatePrices.includes(price)
-  })
-)
+//   return props.userOrders.some((price) => {
+//     if (!props.record.price) {
+//       return false
+//     }
+
+//     return recordInBase.includes(price)
+//   })
+// })
 
 const recordTypeBuy = computed(() => props.type === OrderSide.Buy)
-
-const total = computed(() => new BigNumberInBase(props.record.total || 0))
-
-const quantity = computed(() =>
-  isSpot
-    ? new BigNumberInWei(props.record.quantity).toBase(
-        props.market.baseToken.decimals
-      )
-    : new BigNumberInBase(props.record.quantity)
-)
 
 const depthWidth = computed(() => ({
   width: `${props.record.depth}%`
@@ -129,14 +110,14 @@ const aggregatedValue = computed(() => {
 })
 
 const aggregatedPriceInBigNumber = computed(
-  () => new BigNumberInBase(props.record.aggregatedPrice || 0)
+  () => new BigNumberInBase(props.record.price || 0)
 )
 
 function onPriceClick() {
-  if (props.record.aggregatedPrice) {
+  if (props.record.price) {
     useEventBus<OrderBookPriceAndType>(BusEvents.OrderbookPriceClick).emit({
       isBuy: recordTypeBuy.value,
-      price: props.record.aggregatedPrice
+      price: props.record.price
     })
   }
 }
@@ -144,23 +125,27 @@ function onPriceClick() {
 function onSizeClick() {
   useEventBus<OrderBookQuantityAndType>(BusEvents.OrderbookSizeClick).emit({
     isBuy: recordTypeBuy.value,
-    quantity: quantity.value.toFixed()
+    quantity: props.record.quantity
   })
 }
 
 function onNotionalClick() {
   useEventBus<OrderBookNotionalAndType>(BusEvents.OrderbookNotionalClick).emit({
     isBuy: recordTypeBuy.value,
-    quantity: quantity.value.toFixed(),
-    total: total.value.toFixed()
+    quantity: props.record.quantity,
+    total: props.record.total
   })
 }
 
-function handleMouseEnter() {
+function mouseEnter() {
+  if (props.isLast) {
+    return
+  }
+
   emit('update:active-position', props.position)
 }
 
-function handleMouseLeave() {
+function mouseLeave() {
   emit('update:active-position')
 }
 
@@ -173,8 +158,8 @@ defineExpose({
   <li
     ref="element"
     class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -186,33 +171,32 @@ defineExpose({
       class="w-1/3 text-xs px-2 flex items-center justify-end z-[8]"
       @click.stop="onPriceClick"
     >
-      <BaseIcon
+      <!--
+        <BaseIcon
         v-if="existsInUserOrders"
         name="arrow"
         data-cy="orderbook-record-own-order-icon"
         class="text-gray-300 rotate-180 mr-2 w-2 h-2"
       />
+      -->
       <span
-        class="block text-right font-mono"
+        class="text-right font-mono flex items-center"
         :class="{
           'text-green-500': recordTypeBuy,
           'text-red-500': !recordTypeBuy
         }"
       >
+        <span v-if="isLast && recordTypeBuy">&le;</span>
+        <span v-if="isLast && !recordTypeBuy">&ge;</span>
         <AppNumber
-          xs
-          :prefix="
-            aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
-              ? '<'
-              : ''
-          "
+          is-xs
           :decimals="aggregation < 0 ? 0 : aggregation"
           :number="
-            aggregatedValue.gt(record.aggregatedPrice || 0)
+            aggregatedValue.gt(record.price || 0)
               ? aggregatedValue
               : aggregatedPriceInBigNumber
           "
-          no-grouping
+          is-no-grouping
           data-cy="orderbook-record-price-text-content"
         />
       </span>
@@ -226,11 +210,11 @@ defineExpose({
         }"
       >
         <AppNumber
-          xs
+          is-xs
           :decimals="market.quantityDecimals"
-          :number="quantity"
+          :number-string="record.quantity"
           :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
-          no-grouping
+          is-no-grouping
           data-cy="orderbook-record-quantity-text-content"
         />
       </span>
@@ -240,10 +224,10 @@ defineExpose({
       @click.stop="onNotionalClick"
     >
       <AppNumber
-        xs
+        is-xs
         :decimals="market.priceDecimals"
-        :number="total"
-        no-grouping
+        :number-string="record.total"
+        is-no-grouping
         data-cy="orderbook-record-total-text-content"
       />
     </span>

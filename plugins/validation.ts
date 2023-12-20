@@ -1,9 +1,11 @@
 import { defineNuxtPlugin } from '#app'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
+import { NUMBER_REGEX, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { SpotGridTradingField } from '@/types'
 
 const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
 
@@ -11,7 +13,35 @@ export const errorMessages = {
   email: () => 'This field should be a valid email',
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
-  integer: (fieldName: string) => `${fieldName} must be > 0`
+  integer: (fieldName: string) => `${fieldName} must be > 0`,
+
+  [BridgingNetwork.Axelar]: () => 'This field is not a valid Cosmos address',
+  [BridgingNetwork.CosmosHub]: () => 'This field is not a valid Cosmos address',
+  [BridgingNetwork.Ethereum]: () =>
+    'This field is not a valid Ethereum address',
+  [BridgingNetwork.Evmos]: () => 'This field is not a valid Evmos address',
+  [BridgingNetwork.Moonbeam]: () =>
+    'This field is not a valid Moonbeam address',
+  [BridgingNetwork.Injective]: () =>
+    'This field is not a valid Injective address',
+  [BridgingNetwork.Osmosis]: () => 'This field is not a valid Osmosis address',
+  [BridgingNetwork.Persistence]: () =>
+    'This field is not a valid Persistence address',
+  [BridgingNetwork.Secret]: () =>
+    'This field is not a valid Secret Network address',
+  [BridgingNetwork.Noble]: () =>
+    'This field is not a valid Noble Network address',
+  [BridgingNetwork.Stride]: () => 'This field is not a valid Stride address',
+  [BridgingNetwork.Crescent]: () =>
+    'This field is not a valid Crescent address',
+  [BridgingNetwork.Sommelier]: () =>
+    'This field is not a valid Sommelier address',
+  [BridgingNetwork.Canto]: () => 'This field is not a valid Canto address',
+  [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
+  [BridgingNetwork.Oraichain]: () =>
+    'This field is not a valid Oraichain address',
+  [BridgingNetwork.Migaloo]: () => 'This field is not a valid Migaloo address',
+  [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
@@ -57,12 +87,24 @@ export const defineGlobalRules = () => {
           return 'amount is required'
         }
 
+        if (field.includes('-')) {
+          return `${field.replaceAll('-', ' ')} is required.`
+        }
+
         return `${formatFieldName(field)} is required.`
       }
 
       return true
     }
   )
+
+  defineRule('maxCharacter', (value: string, [max]: number[]) => {
+    if (value.length > max) {
+      return 'Exceeds max characters'
+    }
+
+    return true
+  })
 
   defineRule('injAddress', (value: string) => {
     try {
@@ -73,6 +115,29 @@ export const defineGlobalRules = () => {
       return errorMessages.injAddress()
     }
   })
+
+  defineRule(
+    'addressByNetwork',
+    (value: string, [network]: BridgingNetwork[]) => {
+      if (network === BridgingNetwork.Ethereum) {
+        if (!value.startsWith('0x')) {
+          return errorMessages[network]()
+        }
+      } else {
+        const isValidCosmosAddress =
+          network
+            .toLowerCase()
+            .startsWith(value.toLowerCase().substring(0, 3)) &&
+          new BigNumberInBase(value.length).gte(3)
+
+        if (!isValidCosmosAddress && errorMessages[network]) {
+          return errorMessages[network]()
+        }
+      }
+
+      return true
+    }
+  )
 
   defineRule('positiveNumber', (value: string) => {
     if (NUMBER_REGEX.test(value)) {
@@ -116,6 +181,24 @@ export const defineGlobalRules = () => {
     return true
   })
 
+  defineRule('invalidIfBetween', (value: string, [min, max]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
+    const maxInBigNumber = new BigNumberInBase(max)
+
+    const isBetween =
+      valueInBigNumber.lte(maxInBigNumber) &&
+      valueInBigNumber.gte(minInBigNumber)
+
+    if (isBetween) {
+      return `Price range must be outside of ${minInBigNumber.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )} - ${maxInBigNumber.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+    }
+
+    return true
+  })
+
   defineRule('requiredSgt', (value: string) => {
     if (!value) {
       return 'Field is required'
@@ -136,9 +219,10 @@ export const defineGlobalRules = () => {
 
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const minInBigNumber = new BigNumberInBase(min)
 
-    if (valueInBigNumber.lte(min)) {
-      return `Value should be greater than ${min}`
+    if (valueInBigNumber.lte(minInBigNumber)) {
+      return `Value should be greater than ${minInBigNumber.toFixed()}`
     }
 
     return true
@@ -146,9 +230,10 @@ export const defineGlobalRules = () => {
 
   defineRule('lessThanSgt', (value: string, [max]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
+    const maxInBigNumber = new BigNumberInBase(max)
 
-    if (valueInBigNumber.gte(max)) {
-      return `Value should be less than ${max}`
+    if (valueInBigNumber.gte(maxInBigNumber)) {
+      return `Value should be less than ${maxInBigNumber.toFixed()}`
     }
 
     return true
@@ -173,6 +258,115 @@ export const defineGlobalRules = () => {
 
     return true
   })
+
+  defineRule(
+    'minBaseAndQuoteAmountSgt',
+    (
+      _value: string,
+      [amountA, amountB, threshold, baseSymbol, quoteSymbol]: string[]
+    ) => {
+      const amountAInBigNumber = new BigNumberInBase(amountA)
+      const amountBInBigNumber = new BigNumberInBase(amountB)
+
+      const thresholdInBigNumber = new BigNumberInBase(threshold)
+
+      if (
+        amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
+      ) {
+        return `Min ${baseSymbol}+${quoteSymbol} value >= $${thresholdInBigNumber.toFixed(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return true
+    }
+  )
+
+  defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
+    if (!fieldValue && !value) {
+      return 'At least one field is required'
+    }
+
+    return true
+  })
+
+  defineRule(
+    'rangeSgt',
+    (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
+      const upperInBigNumber = new BigNumberInBase(upper)
+      const threshold = new BigNumberInBase(levels)
+        .times(minPriceTickSize)
+        .times(10)
+
+      if (upperInBigNumber.minus(lower).lt(threshold)) {
+        return 'The price range provided cannot support that many grids. Please lower the number of grids.'
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'rangeKavaSgt',
+    (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
+      const upperInBigNumber = new BigNumberInBase(upper)
+      const lowerInBigNumber = new BigNumberInBase(lower)
+      const levelsInBigNumber = new BigNumberInBase(levels)
+
+      const deltaPrice = upperInBigNumber
+        .minus(lowerInBigNumber)
+        .dividedBy(levelsInBigNumber)
+
+      if (deltaPrice.lt(minPriceTickSize)) {
+        return 'Invalid grid spacing'
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'singleSided',
+    (
+      _: string,
+      [lower, upper, currentPrice, field, threshold]: string[]
+    ): boolean | string => {
+      const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
+
+      const lowerThreshold = currentPriceInBigNumber.plus(
+        currentPriceInBigNumber.times(threshold)
+      )
+      const upperThreshold = currentPriceInBigNumber.minus(
+        currentPriceInBigNumber.times(threshold)
+      )
+
+      if (field === SpotGridTradingField.LowerPrice) {
+        if (
+          currentPriceInBigNumber.lt(lower) &&
+          currentPriceInBigNumber.lt(upper) &&
+          lowerThreshold.gt(lower)
+        ) {
+          return `Lower price level should be above ${lowerThreshold.toFixed(
+            2
+          )}`
+        }
+      }
+
+      if (field === SpotGridTradingField.UpperPrice) {
+        if (
+          currentPriceInBigNumber.gt(lower) &&
+          currentPriceInBigNumber.gt(upper) &&
+          upperThreshold.lt(upper)
+        ) {
+          return `Upper price level should be below ${upperThreshold.toFixed(
+            2
+          )}`
+        }
+      }
+
+      return true
+    }
+  )
 }
 
 export default defineNuxtPlugin(() => {

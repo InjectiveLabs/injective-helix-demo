@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 const trustedBy = [
   'trustedby/Pyth Logotype_Light.svg',
   'trustedby/wormhole_logo.svg',
