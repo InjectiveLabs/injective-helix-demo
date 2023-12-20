@@ -18,7 +18,10 @@ const props = defineProps({
 })
 
 const intervalOptions = [
-  { label: '30m', value: { countback: 30 * 40, resolution: 30 } },
+  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
+  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
+  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
+  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
   { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
   { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
   { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
@@ -26,15 +29,15 @@ const intervalOptions = [
   { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
 ]
 
-const interval = ref(intervalOptions[4])
-
-const chart = ref()
-
-const status = reactive(new Status(StatusType.Idle))
-
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
+
+const interval = ref(intervalOptions[4])
+
+const chart = ref()
+const status = reactive(new Status(StatusType.Idle))
+const { $onError } = useNuxtApp()
 
 const lastTradedPrice = computed(() => {
   return props.isSpot
@@ -46,10 +49,6 @@ const lastTradedPrice = computed(() => {
     : new BigNumberInWei(derivativeStore.trades[0]?.executionPrice || 0)
         .toBase(props.market.quoteToken.decimals)
         .toNumber()
-})
-
-onMounted(() => {
-  fetchMarketHistory()
 })
 
 const candlesticksData = computed<CandlestickData<Time>[]>(() => {
@@ -89,6 +88,14 @@ const volume = computed(() => {
   }))
 })
 
+const refetchInterval = computed(
+  () => interval.value.value.resolution * 60 * 1000
+)
+
+onMounted(() => {
+  fetchMarketHistory()
+})
+
 function fetchMarketHistory() {
   status.setLoading()
 
@@ -98,6 +105,7 @@ function fetchMarketHistory() {
       countback: interval.value.value.countback,
       resolution: interval.value.value.resolution
     })
+    .catch($onError)
     .finally(() => {
       status.setIdle()
     })
@@ -120,6 +128,16 @@ watch(lastTradedPrice, (lastTradedPrice) => {
     chart.value.updateCandlesticksData(data)
   }
 })
+
+useIntervalFn(() => {
+  exchangeStore
+    .getMarketsHistoryNew({
+      marketIds: [props.marketId],
+      countback: interval.value.value.countback,
+      resolution: interval.value.value.resolution
+    })
+    .catch($onError)
+}, refetchInterval.value)
 </script>
 
 <template>
