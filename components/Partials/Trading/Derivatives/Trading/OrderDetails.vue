@@ -8,7 +8,7 @@ import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -58,7 +58,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
     <AppDrawer>
       <template #header>
         <p class="flex justify-between text-sm">
-          <CommonTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" is-lg>
             <template v-if="tradingTypeMarket" #context>
               <AppTooltip
                 class="ml-2"
@@ -72,9 +72,6 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             >
               <span class="mr-1">≈</span>
               <slot name="total" />
-              <span class="text-gray-500 ml-1 break-normal">
-                {{ market.quoteToken.symbol }}
-              </span>
             </span>
           </CommonTextInfo>
         </p>
@@ -100,7 +97,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         </CommonTextInfo>
 
         <CommonTextInfo
-          v-if="!orderTypeReduceOnly && !isBinaryOption"
+          v-if="!isOrderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
@@ -124,7 +121,7 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         </CommonTextInfo>
 
         <CommonTextInfo
-          v-if="!orderTypeReduceOnly"
+          v-if="!isOrderTypeReduceOnly"
           :title="$t('trade.margin')"
           class="mt-2"
         >

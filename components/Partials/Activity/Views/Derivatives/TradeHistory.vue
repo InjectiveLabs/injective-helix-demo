@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { UiSpotTrade, UiDerivativeTrade } from '@injectivelabs/sdk-ui-ts'
 import { Modal } from '@/types'
@@ -18,7 +17,7 @@ const tradeDetails = ref(undefined as UiDerivativeTrade | undefined)
 
 const trades = computed(() => derivativeStore.subaccountTrades)
 
-function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
+function onShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
   tradeDetails.value = value as UiDerivativeTrade
 
   modalStore.openModal(Modal.MobileTradeDetails)
@@ -33,7 +32,7 @@ function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="trades.length === 0"
+        :is-empty="trades.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountTradeHistoryMobile
@@ -41,7 +40,7 @@ function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
           :key="`mobile-derivative-trade-${index}`"
           class="col-span-1"
           :trade="trade"
-          @show-trade-details="handleShowTradeDetails"
+          @show-trade-details="onShowTradeDetails"
         />
 
         <template #empty>
@@ -52,7 +51,7 @@ function handleShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="trades.length > 0" class="table">
           <PartialsCommonSubaccountTradeHistoryHeader />
           <tbody>

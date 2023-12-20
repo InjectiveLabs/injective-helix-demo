@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
-  showBalance: Boolean,
+  isBalanceVisible: Boolean,
 
   balances: {
     type: Array as PropType<BalanceWithToken[]>,
@@ -43,7 +42,7 @@ const filteredOptions = computed(() => {
 })
 
 const sortedBalances = computed(() => {
-  if (!props.showBalance) {
+  if (!props.isBalanceVisible) {
     return filteredOptions.value
   }
 
@@ -64,31 +63,32 @@ const sortedBalancesWithBalancesToBase = computed(() => {
   })
 })
 
-function handleClick(denom: string) {
+function onClick(denom: string) {
   emit('update:modelValue', denom)
   emit('close')
 }
 </script>
 
 <template>
-  <div class="max-h-xs px-4 pt-4 pb-4">
+  <div class="max-h-xs">
     <div class="mb-2 text-white">
-      <AppInput v-model="search" sm :placeholder="$t('common.search')" />
+      <AppInput v-model="search" is-sm :placeholder="$t('common.search')" />
     </div>
 
     <AppSelectTokenItem
       v-for="balance in sortedBalancesWithBalancesToBase"
       v-bind="{
-        sm: true,
-        lgTokenIcon: true,
-        showTokenName: true,
+        ...$attrs,
+        isSm: true,
+        isLgTokenIcon: true,
         token: balance.token,
-        balance: balance.balance,
-        showBalance: true
+        isBalanceVisible: true,
+        isTokenNameVisible: true,
+        balance: balance.balance
       }"
       :key="balance.denom"
       class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
-      @click="handleClick"
+      @click="onClick"
     />
   </div>
 </template>

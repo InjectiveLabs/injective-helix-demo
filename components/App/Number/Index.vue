@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -7,11 +6,11 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const slots = useSlots()
 
 const props = defineProps({
-  sm: Boolean,
-  xs: Boolean,
-  flex: Boolean,
-  dense: Boolean,
-  noGrouping: Boolean,
+  isSm: Boolean,
+  isXs: Boolean,
+  isFlex: Boolean,
+  isDense: Boolean,
+  isNoGrouping: Boolean,
   useNumberDecimals: Boolean,
 
   prefix: {
@@ -25,8 +24,15 @@ const props = defineProps({
   },
 
   number: {
-    required: true,
+    required: false,
+    default: new BigNumberInBase(0),
     type: Object as PropType<BigNumberInBase>
+  },
+
+  numberString: {
+    required: false,
+    default: '',
+    type: String
   },
 
   decimals: {
@@ -45,14 +51,18 @@ const props = defineProps({
   }
 })
 
+const actualNumber = computed(
+  () => new BigNumberInBase(props.numberString || props.number)
+)
+
 const actualDecimals = computed(() =>
   props.useNumberDecimals
-    ? getExactDecimalsFromNumber(props.number.toNumber())
+    ? getExactDecimalsFromNumber(actualNumber.value.toNumber())
     : props.decimals
 )
 
 const { valueToString: formattedNumberToString } = useBigNumberFormatter(
-  computed(() => props.number),
+  computed(() => actualNumber.value),
   {
     abbreviationFloor: props.abbreviationFloor,
     decimalPlaces: actualDecimals.value,
@@ -62,11 +72,11 @@ const { valueToString: formattedNumberToString } = useBigNumberFormatter(
 )
 
 const formattedNumber = computed(() => {
-  if (props.number.eq(0)) {
+  if (actualNumber.value.eq(0)) {
     return ['0.00']
   }
 
-  if (props.noGrouping) {
+  if (props.isNoGrouping) {
     return [formattedNumberToString.value]
   }
 
@@ -86,14 +96,14 @@ const formattedNumber = computed(() => {
 </script>
 
 <template>
-  <div :class="{ 'flex justify-start items-center gap-1': flex }">
+  <div :class="{ 'flex justify-start items-center gap-1': isFlex }">
     <span
       class="font-mono"
       :class="{
-        'text-xs': xs,
-        'text-sm': sm,
-        'inline-block': !flex,
-        'flex items-center': flex
+        'text-xs': isXs,
+        'text-sm': isSm,
+        'inline-block': !isFlex,
+        'flex items-center': isFlex
       }"
     >
       <div class="flex" :class="{ 'mr-1': slots.addon }">

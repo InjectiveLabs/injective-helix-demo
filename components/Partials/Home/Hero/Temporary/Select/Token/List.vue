@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
-  showBalance: Boolean,
-
   balances: {
     type: Array as PropType<BalanceWithToken[]>,
     default: () => []
@@ -42,19 +39,14 @@ const filteredOptions = computed(() => {
   })
 })
 
-const sortedBalances = computed(() => {
-  if (!props.showBalance) {
-    return filteredOptions.value
-  }
-
-  return filteredOptions.value.sort(
-    (b1: BalanceWithToken, b2: BalanceWithToken) =>
-      new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
+const sortedBalances = computed(() =>
+  filteredOptions.value.sort((b1: BalanceWithToken, b2: BalanceWithToken) =>
+    new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
   )
-})
+)
 
-const sortedBalancesWithBalancesToBase = computed(() => {
-  return sortedBalances.value.map((balance) => {
+const sortedBalancesWithBalancesToBase = computed(() =>
+  sortedBalances.value.map((balance) => {
     return {
       ...balance,
       balance: new BigNumberInWei(balance.balance)
@@ -62,9 +54,9 @@ const sortedBalancesWithBalancesToBase = computed(() => {
         .toFixed()
     }
   })
-})
+)
 
-function handleClick(denom: string) {
+function click(denom: string) {
   emit('update:modelValue', denom)
 
   emit('close')
@@ -74,22 +66,22 @@ function handleClick(denom: string) {
 <template>
   <div class="max-h-xs px-4 pt-4 pb-4">
     <div class="mb-2 text-white">
-      <AppInput v-model="search" sm :placeholder="$t('common.search')" />
+      <AppInput v-model="search" is-sm :placeholder="$t('common.search')" />
     </div>
 
     <PartialsHomeHeroTemporarySelectTokenItem
       v-for="balance in sortedBalancesWithBalancesToBase"
       v-bind="{
-        sm: true,
-        lgTokenIcon: true,
-        showTokenName: true,
+        isSm: true,
+        isLgTokenIcon: true,
+        isTokenNameVisible: true,
         token: balance.token,
         balance: balance.balance,
-        showBalance: true
+        isBalanceVisible: true
       }"
       :key="balance.denom"
       class="px-2 py-3 hover:bg-gray-300 cursor-pointer rounded"
-      @click="handleClick"
+      @click="click"
     />
   </div>
 </template>

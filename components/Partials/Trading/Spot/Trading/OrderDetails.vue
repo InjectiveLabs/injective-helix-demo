@@ -5,6 +5,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeForm, UiMarketWithToken } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
+
 defineProps({
   isBuy: Boolean,
 
@@ -32,7 +33,7 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
     <AppDrawer>
       <template #header>
         <p class="flex justify-between text-sm">
-          <CommonTextInfo :title="$t('trade.total')" lg>
+          <CommonTextInfo :title="$t('trade.total')" is-lg>
             <template v-if="tradingTypeMarket" #context>
               <AppTooltip
                 class="ml-2"
@@ -46,9 +47,6 @@ const { tradingTypeMarket } = useSpotFormFormatter(formValues)
             >
               <span class="mr-1">≈</span>
               <slot name="total" />
-              <span class="text-gray-500 ml-1 break-normal">
-                {{ market.quoteToken.symbol }}
-              </span>
             </span>
           </CommonTextInfo>
         </p>

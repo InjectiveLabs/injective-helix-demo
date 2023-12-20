@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
@@ -54,13 +53,13 @@ function pollMarkets() {
   ]).catch($onError)
 }
 
-useIntervalFn(pollMarkets, 15 * 1000, { immediate: true })
+useIntervalFn(pollMarkets, 60 * 1000, { immediate: true })
 </script>
 
 <template>
   <CommonCard
     class="col-span-6 lg:col-span-3 4xl:col-span-3 h-screen-excluding-header-and-market-info pointer-events-auto overflow-y-auto"
-    md
+    is-md
   >
     <AppHocLoading
       loader-class="relative"

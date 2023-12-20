@@ -96,17 +96,24 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const streamSubaccountOrders = (marketId?: string) => {
+export const streamSubaccountOrders = (
+  marketId?: string,
+  subaccountId?: string
+) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (
+    !walletStore.isUserWalletConnected ||
+    !accountStore.subaccountId ||
+    !subaccountId
+  ) {
     return
   }
 
   grpcStreamSubaccountOrders({
-    subaccountId: accountStore.subaccountId,
+    subaccountId: subaccountId || accountStore.subaccountId,
     marketId,
     callback: ({ order }) => {
       if (!order) {

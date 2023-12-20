@@ -189,21 +189,45 @@ export const useWalletStore = defineStore('wallet', {
       if (walletStore.addresses.length === 0 || walletStore.wallet !== wallet) {
         await connect({ wallet })
 
-        walletStore.$patch({
-          wallet,
-          addresses: await getAddresses()
-        })
-      } else {
         const addresses = await getAddresses()
+        const injectiveAddresses = addresses.map(getInjectiveAddress)
 
         walletStore.$patch({
           wallet,
-          addresses: [...walletStore.addresses, ...addresses]
+          addresses: injectiveAddresses
+        })
+      } else {
+        const addresses = await getAddresses()
+        const injectiveAddresses = addresses.map(getInjectiveAddress)
+
+        walletStore.$patch({
+          wallet,
+          addresses: [...walletStore.addresses, ...injectiveAddresses]
         })
       }
     },
 
     async connectLedger(address: string) {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(walletStore.wallet)
+
+      const addresses = [address]
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectLedgerLegacy(address: string) {
       const walletStore = useWalletStore()
 
       await walletStore.connectWallet(walletStore.wallet)
@@ -350,6 +374,27 @@ export const useWalletStore = defineStore('wallet', {
       await walletStore.onConnect()
     },
 
+    async connectNinji() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.Ninji)
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getEthereumAddress(injectiveAddress)
+
+      walletStore.$patch({
+        injectiveAddress,
+        addressConfirmation,
+        address: ethereumAddress,
+        addresses: injectiveAddresses,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
     async connectCosmostation() {
       const walletStore = useWalletStore()
 
@@ -460,16 +505,18 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async disconnect() {
-      const accountStore = useAccountStore()
       const spotStore = useSpotStore()
       const peggyStore = usePeggyStore()
+      const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
+      const campaignStore = useCampaignStore()
       const derivativeStore = useDerivativeStore()
-      const authZStore = useAuthZStore()
+      const gridStrategyStore = useGridStrategyStore()
 
-      await walletStrategy.disconnectWallet()
+      await walletStrategy.disconnect()
 
       walletStore.reset()
       spotStore.resetSubaccount()
@@ -480,6 +527,8 @@ export const useWalletStore = defineStore('wallet', {
       activityStore.$reset()
       positionStore.$reset()
       authZStore.$reset()
+      campaignStore.reset()
+      gridStrategyStore.$patch({ strategies: [] })
     },
 
     reset() {

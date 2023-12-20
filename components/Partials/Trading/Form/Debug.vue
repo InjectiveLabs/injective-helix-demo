@@ -86,7 +86,7 @@ const initialMarginRatio = computed(
   <AppDrawer>
     <template #header>
       <p class="flex justify-between text-sm">
-        <CommonTextInfo title="Debug" lg />
+        <CommonTextInfo title="Debug" is-lg />
       </p>
     </template>
 

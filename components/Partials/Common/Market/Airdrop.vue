@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
@@ -16,11 +15,9 @@ const props = defineProps({
   }
 })
 
-const promotion = computed(() => {
-  return marketPromotions.find(
-    (promotion) => promotion.market === props.market.slug
-  )
-})
+const promotion = computed(() =>
+  marketPromotions.find((promotion) => promotion.market === props.market.slug)
+)
 
 const showPromotion = computed(() => {
   if (!props.market || !promotion.value) {

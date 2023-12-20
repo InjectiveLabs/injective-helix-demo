@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, ActivityField, Modal, ActivityPage } from '@/types'
+import { ActivityForm, ActivityField, Modal, ActivitySubPage } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const formValues = useFormValues<ActivityForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
@@ -28,8 +28,6 @@ const props = defineProps({
     default: () => new Status(StatusType.Loading)
   }
 })
-
-const formValues = useFormValues<ActivityForm>()
 
 const actionStatus = reactive(new Status(StatusType.Idle))
 const selectedPosition = ref<UiPosition | undefined>(undefined)
@@ -76,7 +74,7 @@ function closePosition(position: UiPosition) {
   return positionStore.closePosition({ position, market })
 }
 
-function handleClosePositions() {
+function onClosePositions() {
   actionStatus.setLoading()
 
   const action =
@@ -96,7 +94,7 @@ function handleClosePositions() {
     })
 }
 
-function handleSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition) {
   selectedPosition.value = position
 
   modalStore.openModal(Modal.SharePosition)
@@ -112,7 +110,7 @@ function handleSharePosition(position: UiPosition) {
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           :is-loading="actionStatus.isLoading()"
           data-cy="activity-cancel-all-button"
-          @click="handleClosePositions"
+          @click="onClosePositions"
         >
           <span class="whitespace-nowrap">
             {{ $t('trade.closeAllPositions') }}
@@ -120,7 +118,7 @@ function handleSharePosition(position: UiPosition) {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.OpenPositions}`">
+      <Teleport :to="`#${ActivitySubPage.Positions}`">
         <span class="ml-1">({{ filteredPositions.length }})</span>
       </Teleport>
     </ClientOnly>
@@ -128,7 +126,7 @@ function handleSharePosition(position: UiPosition) {
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="filteredPositions.length === 0"
+        :is-empty="filteredPositions.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountPositionMobile
@@ -138,7 +136,7 @@ function handleSharePosition(position: UiPosition) {
           v-bind="{
             position
           }"
-          @share:position="handleSharePosition"
+          @share:position="onSharePosition"
         />
 
         <template #empty>
@@ -149,7 +147,7 @@ function handleSharePosition(position: UiPosition) {
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="filteredPositions.length > 0" class="table">
           <PartialsCommonSubaccountPositionHeader />
           <tbody>
@@ -157,7 +155,7 @@ function handleSharePosition(position: UiPosition) {
               v-for="(position, index) in filteredPositions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"
-              @share:position="handleSharePosition"
+              @share:position="onSharePosition"
             />
           </tbody>
         </table>

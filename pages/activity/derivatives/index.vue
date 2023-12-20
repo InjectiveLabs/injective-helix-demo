@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityField, ActivityPage } from '@/types'
+import { ActivityField, ActivitySubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -31,7 +31,7 @@ const filteredOrders = computed(() =>
   })
 )
 
-function handleCancelOrders() {
+function onCancelOrders() {
   actionStatus.setLoading()
 
   const action =
@@ -61,7 +61,7 @@ function handleCancelOrders() {
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           :is-loading="actionStatus.isLoading()"
           data-cy="activity-cancel-all-button"
-          @click="handleCancelOrders"
+          @click="onCancelOrders"
         >
           <span class="whitespace-nowrap">
             {{ $t('trade.cancelAllOrders') }}
@@ -69,7 +69,7 @@ function handleCancelOrders() {
         </AppButton>
       </Teleport>
 
-      <Teleport :to="`#${ActivityPage.DerivativeOpenOrders}`">
+      <Teleport :to="`#${ActivitySubPage.Derivatives}`">
         <span class="ml-1">({{ filteredOrders.length }})</span>
       </Teleport>
     </ClientOnly>
@@ -77,7 +77,7 @@ function handleCancelOrders() {
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="filteredOrders.length === 0"
+        :is-empty="filteredOrders.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountOrderMobile
@@ -96,7 +96,7 @@ function handleCancelOrders() {
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="filteredOrders.length > 0" class="table">
           <PartialsCommonSubaccountOrderHeader />
           <tbody>

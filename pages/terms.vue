@@ -5,42 +5,55 @@
         <span>Terms and Conditions</span>
       </h1>
       <p class="font-semibold mt-2">
-        <span>Last updated: 08.07.2023</span>
+        <span>Last updated: 11.10.2023</span>
       </p>
 
       <p class="mt-4">
-        NOTICE ON PROHIBITED USE &ndash; US AND OTHER RESTRICTED PERSONS:
+        NOTICE ON PROHIBITED USE &ndash; US, UK, AND OTHER RESTRICTED PERSONS
+      </p>
+
+      <p class="mt-4">
         HELIXAPP.COM AND ANY RELATED SERVICES ARE NOT OFFERED TO AND MAY NOT BE
         USED BY:
       </p>
 
       <p class="mt-4">
         PERSONS OR ENTITIES WHO RESIDE IN, ARE CITIZENS OF, ARE LOCATED IN, ARE
-        INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN THE UNITED STATES OF
-        AMERICA (COLLECTIVELY, &ldquo;US PERSONS&rdquo;) OR PERSONS OR ENTITIES
+        INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN ANY RESTRICTED
+        TERRITORY, AS DEFINED BELOW (EACH SUCH PERSON OR ENTITY FROM A
+        RESTRICTED TERRITORY, A &ldquo;RESTRICTED PERSON&rdquo;).
+      </p>
+
+      <p class="mt-4">
+        WITH RESPECT TO THE TRADING OF PERPETUAL CONTRACTS, PERSONS OR ENTITIES
         WHO RESIDE IN, ARE CITIZENS OF, ARE LOCATED IN, ARE INCORPORATED IN, OR
-        HAVE A REGISTERED OFFICE IN ANY RESTRICTED TERRITORY, AS DEFINED BELOW
-        (EACH SUCH PERSON OR ENTITY FROM A RESTRICTED TERRITORY, A
-        &ldquo;RESTRICTED PERSON&rdquo;).
+        HAVE A REGISTERED OFFICE IN THE UNITED STATES OF AMERICA (EACH SUCH
+        PERSON OR ENTITY FROM THE UNITED STATES OF AMERICA, A &ldquo;US
+        PERSON&rdquo;).
       </p>
 
       <p class="mt-4">
         PERSONS OR ENTITIES WHO RESIDE IN, ARE CITIZENS OF, ARE LOCATED IN, ARE
-        INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN THE UNITED KINGDOM,
-        UNLESS SUCH PERSONS OR ENTITIES ARE &ldquo;INVESTMENT
+        INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN THE UNITED KINGDOM (EACH
+        SUCH PERSON OR ENTITY FROM THE UNITED KINGDOM, A &ldquo;UK
+        PERSON&rdquo;), UNLESS SUCH PERSONS OR ENTITIES ARE &ldquo;INVESTMENT
         PROFESSIONALS&rdquo; AS DEFINED BY ARTICLE 19(5) OF THE UNITED
         KINGDOM&rsquo;S FINANCIAL SERVICES AND MARKETS ACT 2000 (FINANCIAL
         PROMOTION) ORDER 2005.
       </p>
 
       <p class="mt-4">
-        WE DO NOT MAKE EXCEPTIONS; THEREFORE, IF YOU ARE A US PERSON OR OTHER
-        RESTRICTED PERSON, THEN DO NOT ATTEMPT TO USE HELIXAPP.COM OR ANY
-        RELATED SERVICES. USE OF A VIRTUAL PRIVATE NETWORK (&ldquo;VPN&rdquo;)
-        IS PROHIBITED, UNLESS YOU CONSENT TO A BROWSER LOCATION CHECK WHEN
-        PROMPTED TO DO SO, ALLOWING US TO VERIFY THAT YOU ARE NOT LOCATED IN THE
-        UNITED STATES OR A RESTRICTED TERRITORY. USE OF ANY OTHER MEANS INTENDED
-        TO CIRCUMVENT THE RESTRICTIONS SET FORTH HEREIN IS STRICTLY PROHIBITED.
+        WE DO NOT MAKE EXCEPTIONS; THEREFORE, IF YOU ARE A RESTRICTED PERSON, A
+        US PERSON SEEKING TO TRADE PERPETUAL CONTRACTS, OR A UK PERSON WHO IS
+        NOT AN INVESTMENT PROFESSIONAL, THEN DO NOT ATTEMPT TO USE HELIXAPP.COM
+        OR ANY RELATED SERVICES. USE OF A VIRTUAL PRIVATE NETWORK
+        (&ldquo;VPN&rdquo;) IS PROHIBITED, UNLESS YOU CONSENT TO A BROWSER
+        LOCATION CHECK WHEN PROMPTED TO DO SO, ALLOWING US TO VERIFY THAT YOU
+        ARE NOT LOCATED IN THE UNITED STATES (WITH RESPECT TO THE TRADING OF
+        PERPETUAL CONTRACTS), THE UK (UNLESS YOU ARE AN INVESTMENT
+        PROFESSIONAL), OR A RESTRICTED TERRITORY. USE OF ANY OTHER MEANS
+        INTENDED TO CIRCUMVENT THE RESTRICTIONS SET FORTH HEREIN IS STRICTLY
+        PROHIBITED.
       </p>
 
       <p class="mt-4">
@@ -70,7 +83,7 @@
         and access to, the Site and the Services. By clicking &ldquo;I
         agree&rdquo; (or a similar language) to these Terms, acknowledging these
         Terms by other means, or otherwise accessing or using (or, following an
-        update to the terms, continuing using) the Site or the Services, you
+        update to the terms, continuing to use) the Site or the Services, you
         accept and agree to be bound by and to comply with these Terms,
         including, without limitation, the mandatory arbitration provision in
         Section 15. If you do not agree to these Terms, then you must not access
@@ -86,7 +99,7 @@
         that Injective does not provide brokerage, custody, exchange, execution,
         settlement, or clearing services of any kind and is not responsible for
         the brokerage, custody, exchange, execution, settlement, or clearing of
-        transaction.
+        transactions.
       </p>
 
       <p class="mt-12 font-semibold text-lg">
@@ -128,32 +141,33 @@
         <span>
           2.1.2. if you are entering into these Terms as an entity, then you
           must have the legal authority to accept these Terms on that
-          entity&rsquo;s behalf, in which case &ldquo;you&rdquo; (except as used
-          in this paragraph) will mean that entity;
-        </span>
-      </p>
-
-      <p class="mt-4"><span>2.1.3. you are not a US Person;</span></p>
-
-      <p class="mt-4">
-        <span>
-          2.1.4 &nbsp;if you are a resident of, citizen of, located in,
-          incorporated in, or have a registered office in the United Kingdom,
-          you are an &ldquo;Investment professional&rdquo; as defined by Article
-          19(5) of the United Kingdom&rsquo;s Financial Services and Markets Act
-          2000 (Financial Promotion) Order 2005.
+          entity&rsquo;s behalf, in which case &ldquo;you&rdquo; will mean that
+          entity;
         </span>
       </p>
 
       <p class="mt-4">
         <span>
-          2.1.5. you are not a resident, national, or agent of the United
-          States, Algeria, Antigua and Barbuda, Bangladesh, Belarus, Bolivia,
-          Burundi, Burma (Myanmar), China, Cote D&rsquo;Ivoire (Ivory Coast),
-          Crimea and Sevastopol, Cuba, Democratic Republic of Congo, Ecuador,
-          Iran, Iraq, Jordan, Liberia, Libya, Mali, Morocco, Nepal, North Korea,
-          Somalia, Sudan, Syria, Turkey, Venezuela, Yemen, Zimbabwe
-          (collectively, &ldquo;Restricted Territories&rdquo;);
+          2.1.3. with respect to the trading of perpetual contracts, you are not
+          a US Person;
+        </span>
+      </p>
+
+      <p class="mt-4">
+        <span>
+          2.1.4 &nbsp;if you are a UK Person, you are an &ldquo;Investment
+          professional&rdquo; as defined by Article 19(5) of the United
+          Kingdom&rsquo;s Financial Services and Markets Act 2000 (Financial
+          Promotion) Order 2005.
+        </span>
+      </p>
+
+      <p class="mt-4">
+        <span>
+          2.1.5. you are not a resident, national, or agent of Cuba, Iran, North
+          Korea, Syria, Russia, Belarus, or the Crimea, Donetsk, and Luhansk
+          regions of Ukraine (collectively, &ldquo;Restricted Territories&rdquo;
+          and each individually, a &ldquo;Restricted Territory&rdquo;);
         </span>
       </p>
 
@@ -171,8 +185,8 @@
 
       <p class="mt-4">
         <span>
-          2.1.7. you do intend to transact with any Restricted Person or
-          Sanctions List Person;
+          2.1.7. you do intend to transact with any Restricted Person,
+          Restricted Territory, or Sanctions Lists Persons;
         </span>
       </p>
 
@@ -180,11 +194,12 @@
         <span>
           2.1.8. you do not, and will not, use VPN software, unless you consent
           &nbsp;to a browser location check when prompted to do so, allowing us
-          to verify that you are not located in the United States or a
-          Restricted Territory, and you do not, and will not, use any other
-          privacy or anonymization tools or techniques, or other means, to
-          circumvent, or attempt to circumvent, any restrictions that apply to
-          the Services; and
+          to verify that you are not located in the United States (with respect
+          to the trading of perpetual contracts), the UK (unless you are an
+          Investment Professional), or a Restricted Territory, and you do not,
+          and will not, use any other privacy or anonymization tools or
+          techniques, or other means, to circumvent, or attempt to circumvent,
+          any restrictions that apply to the Services; and
         </span>
       </p>
 
@@ -315,16 +330,16 @@
           2.3. &nbsp;As a condition to accessing or using the Services, you
           acknowledge, understand, and agree that the Services are non-custodial
           (i.e., when you access or use the Services, you retain control over
-          those Digital Assets at all times). The private key associated with
-          the blockchain address or wallet from which you transfer Digital
-          Assets is the only private key that can control the Digital Assets you
-          transfer into the Injective-developed smart contracts.
+          your Digital Assets at all times). The private key associated with the
+          blockchain address or wallet from which you transfer Digital Assets is
+          the only private key that can control the Digital Assets you transfer
+          into the Injective-developed smart contracts.
         </span>
       </p>
 
       <p class="mt-8 font-semibold text-lg">2.4. &nbsp;AUCTIONS; SELLERS.</p>
       <p class="mt-4">
-        If you choose to use Helix to sell tokens at auction, you agree to to be
+        If you choose to use Helix to sell tokens at auction, you agree to be
         bound by these Terms. &nbsp;To the fullest extent permitted by
         Applicable Law, we owe no fiduciary duties or liabilities to you or any
         other party, and that to the extent any such duties or liabilities may
@@ -363,18 +378,18 @@
         <span>
           In connection with your use of the Services, you are required to pay
           all fees necessary for interacting with certain blockchain networks,
-          including, without limitation, the Ethereum and/or Injective
-          blockchain. Such fees may include &ldquo;gas&rdquo; costs, as well as
-          all other fees reflected on the Site at the time of your use of the
-          Services, including trading fees and network access fees. You
-          acknowledge and understand that Injective neither controls any of the
-          foregoing fees nor does it receive fees in connection with the
-          provision of the Services. An affiliate of Injective accesses and uses
-          the Services in the ordinary course of its Digital Asset trading
-          business and receives fees in connection therewith. Although we
-          attempt to provide accurate fee information, this information reflects
-          our estimates of fees, which may vary from the actual fees paid to
-          interact with the Injective, Ethereum, or other blockchains.
+          including, without limitation, the Injective blockchain. Such fees may
+          include &ldquo;gas&rdquo; costs, as well as all other fees reflected
+          on the Site at the time of your use of the Services, including trading
+          fees and network access fees. You acknowledge and understand that
+          Injective neither controls any of the foregoing fees nor does it
+          receive fees in connection with the provision of the Services. An
+          affiliate of Injective accesses and uses the Services in the ordinary
+          course of its Digital Asset trading business and receives fees in
+          connection therewith. Although we attempt to provide accurate fee
+          information, this information reflects our estimates of fees, which
+          may vary from the actual fees paid to interact with Injective or other
+          blockchains.
         </span>
       </p>
 
@@ -449,7 +464,9 @@
           limitation, through the use of a VPN, unless in conjunction with your
           use of a VPN, you consent &nbsp;to a browser location check when
           prompted to do so, allowing us to verify that you are not located in
-          the United States or a Restricted Territory;
+          the United States (with respect to the trading of perpetual
+          contracts), the UK (unless you are an investment professional), or a
+          Restricted Territory;
         </span>
       </p>
 
@@ -518,10 +535,7 @@
       <p class="mt-4">
         <span>
           The specific activities set forth in paragraphs 5.1 through 5.12 above
-          are representative, but not exhaustive, of Prohibited Uses. If you are
-          uncertain as to whether or not your use of the Services involves a
-          Prohibited Use or have other questions about how these requirements
-          apply to you, then please contact us at legal@injectivelabs.org.
+          are representative, but not exhaustive, of Prohibited Uses.
         </span>
       </p>
 
@@ -590,10 +604,10 @@
           7.3. Any of Injective&rsquo;s product or service names, logos, and
           other marks used on the Site or as a part of the Services, including
           Injective&rsquo;s name and logo, are trademarks owned by Injective,
-          its affiliates, or its applicable licensors. Unauthorized copying,
-          imitation, or use is prohibited, and these Terms do not grant you any
-          rights in those trademarks. You may not remove, obscure, or alter any
-          legal notices displayed in or along with the Services.
+          its affiliates, or its applicable licensors or assignees. Unauthorized
+          copying, imitation, or use is prohibited, and these Terms do not grant
+          you any rights in those trademarks. You may not remove, obscure, or
+          alter any legal notices displayed in or along with the Services.
         </span>
       </p>
 
@@ -648,13 +662,13 @@
           advances in code cracking or other technical advancements, such as the
           development of quantum computers, which may materially affect the
           Services); Digital Assets, including the usage and intricacies of
-          native Digital Assets, like ether (ETH); smart contract-based tokens,
-          such as those that follow the Ethereum Token Standard ; and systems
-          that interact with blockchain-based networks. Injective does not own
-          or control any of the underlying software through which blockchain
-          networks are formed. In general, the software underlying blockchain
-          networks, including the Ethereum and Injective blockchains, is open
-          source, such that anyone can use, copy, modify, and distribute it.
+          native Digital Assets; smart contract-based tokens, such as those that
+          are built on the Cosmos SDK; and systems that interact with
+          blockchain-based networks. Injective does not own or control any of
+          the underlying software through which blockchain networks are formed.
+          In general, the software underlying blockchain networks, including the
+          Injective blockchain, is open source, such that anyone can use, copy,
+          modify, and distribute it.
         </span>
       </p>
 
@@ -672,12 +686,12 @@
 
       <p class="mt-4">
         <span>
-          10.3. You understand that the Ethereum blockchain remains under
+          10.3. You understand that the Injective blockchain remains under
           development, which creates technological and security risks when using
           the Services in addition to uncertainty relating to Digital Assets and
           transactions therein. You acknowledge that the cost of transacting on
-          the Ethereum blockchain is variable and may increase at any time
-          causing impact to any activities taking place on the Ethereum
+          the Injective blockchain is variable and may increase at any time
+          causing impact to any activities taking place on the Injective
           blockchain, which may result in price fluctuations or increased costs
           when using the Services.
         </span>
@@ -706,25 +720,23 @@
 
       <p class="mt-4">
         <span>
-          10.5. Any use or interaction with the Services requires a
-          comprehensive understanding of applied cryptography and computer
-          science to appreciate the inherent risks, including those listed
-          above. You represent and warrant that you possess relevant knowledge
-          and skills. Any reference to a type of Digital Asset on the Site or
-          otherwise during the use of the Services does not indicate our
-          approval or disapproval of the technology on which the Digital Asset
-          relies, and should not be used as a substitute for your understanding
-          of the risks specific to each type of Digital Asset.
+          10.5. Any use or interaction with the Services requires an
+          understanding of applied cryptography and computer science to
+          appreciate the inherent risks, including those listed above. You
+          represent and warrant that you possess relevant knowledge and skills.
+          Any reference to a type of Digital Asset on the Site or otherwise
+          during the use of the Services does not indicate our approval or
+          disapproval of the technology on which the Digital Asset relies, and
+          should not be used as a substitute for your understanding of the risks
+          specific to each type of Digital Asset.
         </span>
       </p>
 
       <p class="mt-4">
         <span>
           10.6. Use of the Services, including, without limitation, for trading
-          Digital Assets, borrowing or supplying Digital Assets, trading on
-          margin, and entering into derivatives and swaps contracts, may carry
-          financial risk. Digital Assets, especially in connection with
-          derivatives and swaps contracts are, by their nature, highly
+          Digital Assets and entering into derivatives contracts, may carry
+          financial risk. Digital Assets are, by their nature, highly
           experimental, risky, and volatile. Transactions entered into in
           connection with the Services are irreversible and final and there are
           no refunds. You acknowledge and agree that you will access and use the
@@ -784,7 +796,7 @@
           applicable Indemnified Party) will have the right, in its sole
           discretion, to control any action or proceeding and to determine
           whether Injective wishes to settle, and if so, on what terms, and you
-          agree to corporate with Injective in the defense.
+          agree to cooperate with Injective in the defense.
         </span>
       </p>
 
@@ -801,7 +813,7 @@
           concerning your transactions using the Services and receives no fees
           therefrom. All transactions between users of Injective-developed
           open-source software are executed peer-to-peer directly between the
-          users&rsquo; Ethereum addresses through a smart contract.
+          users&rsquo; Injective addresses through a smart contract.
         </span>
       </p>
 
@@ -815,16 +827,45 @@
           Injective-developed open-source software do not constitute advice or a
           recommendation concerning any commodity, security, or other Digital
           Asset or instrument. Injective is not acting as an investment adviser
-          or commodity trading adviser to any person or entity.
+          or commodity trading adviser to any person or entity. The foregoing
+          applies to your use of grid trading. In offering grid trading,
+          Injective is not providing any investment advice or recommending any
+          particular trading strategy and/or trading parameter as appropriate
+          and/or suitable for you. You shall be solely responsible for
+          determining whether or not to make use of any grid trading strategy
+          and for selecting an appropriate feature, trading strategy and/or
+          parameters in light of your investment objectives, risk tolerance,
+          financial situation and needs. Injective makes no representation or
+          warranty as to the outcome of your use of grid trading and will not be
+          liable to you for any loss that might arise from or in connection with
+          your use of grid trading.
         </span>
+      </p>
+
+      <p class="mt-4">
+        If you choose to participate in Helix Guilds, you do so entirely at your
+        own discretion and your own risk. Any funds you use to participate in
+        Helix Guilds shall remain in your custody at all times. We will not take
+        custody of any such funds. Your funds will not be pooled with those of
+        any other user of the Site. As with all other aspects of trading on the
+        Site, you shall be solely responsible for determining whether or not to
+        participate in light of your investment objectives, risk tolerance,
+        financial situation and needs. Injective makes no representation or
+        warranty as to the outcome of your decision to participate in Helix
+        Guilds and will not be liable to you for any loss that might arise from
+        or in connection with your decision to participate in Helix Guilds. If
+        you qualify to select a name for a Helix Guild, you should exercise good
+        judgment in choosing a name that will not be offensive to the community.
+        By using Helix Guilds, you agree that potentially offensive Helix Guild
+        names set by users may be altered by the Site.
       </p>
 
       <p class="mt-4">
         <span>
           12.3. Injective does not own or control the underlying software
           protocols that are used in connection with margin positions or
-          derivatives or swap contracts. In general, the underlying protocols
-          are open source and anyone can use, copy, modify, and distribute them.
+          derivatives contracts. In general, the underlying protocols are open
+          source and anyone can use, copy, modify, and distribute them.
           Injective is not responsible for the operation of the underlying
           protocols, and Injective makes no guarantee of their functionality,
           security, or availability.
@@ -894,20 +935,22 @@
           other business or financial benefit) arising out of or in connection
           with the Site and the Services, any execution or settlement of a
           transaction, any performance or non-performance of the Services, your
-          Digital Assets, margin positions, derivative or swap contracts, or any
-          other product, service or other item provided by or on behalf of
-          Injective, whether under contract, tort (including negligence), civil
-          liability, statute, strict liability, breach of warranties, or under
-          any other theory of liability, and whether or not we have been advised
-          of, knew of or should have known of the possibility of such damages
-          and notwithstanding any failure of the essential purpose of these
-          Terms or any limited remedy hereunder nor is Injective in any way
-          responsible for the execution or settlement of transactions between
-          users of Injective-developed open-source software.
+          Digital Assets, margin positions, derivative contracts, or any other
+          product, service or other item provided by or on behalf of Injective,
+          whether under contract, tort (including negligence), civil liability,
+          statute, strict liability, breach of warranties, or under any other
+          theory of liability, and whether or not we have been advised of, knew
+          of or should have known of the possibility of such damages and
+          notwithstanding any failure of the essential purpose of these Terms or
+          any limited remedy hereunder, nor is Injective in any way responsible
+          for the execution or settlement of transactions between users of
+          Injective-developed open-source software.
         </span>
       </p>
 
-      <p class="mt-8 font-semibold text-lg"><span>14. MODIFICATION</span></p>
+      <p class="mt-8 font-semibold text-lg">
+        <span>14. LIMITATION OF LIABILITY</span>
+      </p>
 
       <p class="mt-4">
         <span>
@@ -917,9 +960,9 @@
           attorneys, agents, representatives, suppliers, or contractors) arising
           out of or in connection with the Site and the Services (and any of
           their content and functionality), any performance or nonperformance of
-          the Services, your Digital Assets, margin positions, derivatives or
-          swap contracts, or any other product, service or other item provided
-          by or on behalf of Injective, whether under contract, tort (including
+          the Services, your Digital Assets, margin positions, derivatives
+          contracts, or any other product, service or other item provided by or
+          on behalf of Injective, whether under contract, tort (including
           negligence), civil liability, statute, strict liability or other
           theory of liability exceed the amount of fees paid by you to Injective
           under these Terms, if any, in the twelve (12) month period immediately
@@ -1128,9 +1171,9 @@
 
       <p class="mt-4">
         <span>
-          17.8. You agree that, except as otherwise expressly provided in this
-          Agreement, there shall be no third-party beneficiaries to the
-          Agreement other than the Indemnified Parties.
+          17.8. You agree that, except as otherwise expressly provided in these
+          Terms, there shall be no third-party beneficiaries to the Terms other
+          than the Indemnified Parties.
         </span>
       </p>
 
@@ -1144,8 +1187,8 @@
           ordinary course of its Digital Asset trading business and receives
           fees in connection therewith, including through its participation in
           certain protocol-level market-marketing incentive programs made
-          available by the Injective Protocol community. However, neither we,
-          our affiliates, nor their employees have access to any unique trading
+          available by the Injective community. However, neither we, our
+          affiliates, nor their employees have access to any unique trading
           information related to the use of the Services that would provide any
           unique or unfair advantage over any other user of the Services.
         </span>

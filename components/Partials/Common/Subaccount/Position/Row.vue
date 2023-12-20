@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
-import { BusEvents, Modal } from '@/types'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
+import { BusEvents, Modal, TradeSubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
@@ -45,7 +44,7 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
+const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 const status = reactive(new Status())
 
 const reduceOnlyCurrentOrders = computed(() =>
@@ -80,7 +79,7 @@ function onAddMarginButtonClick() {
   modalStore.openModal(Modal.AddMarginToPosition)
 }
 
-function handleClosePosition() {
+function closePositionClicked() {
   if (!market.value) {
     return
   }
@@ -196,8 +195,8 @@ function sharePosition() {
       <AppNumber
         v-else
         v-bind="{
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: quantityDecimals,
           number: quantity
         }"
@@ -214,8 +213,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: price,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           data-cy="open-position-price-table-data"
@@ -223,8 +222,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: markPrice,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           class="text-gray-500 text-xs"
@@ -243,8 +242,8 @@ function sharePosition() {
         v-else
         v-bind="{
           number: liquidationPrice,
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: priceDecimals
         }"
         data-cy="open-position-liquidation-price-table-data"
@@ -274,7 +273,7 @@ function sharePosition() {
               <span class="mr-1">≈</span>
               <span>{{ pnl.gte(0) ? '+' : '' }}</span>
               <span
-                data-cy="postion-entry-pnl"
+                data-cy="position-entry-pnl"
                 :class="{
                   'text-green-500': pnl.gte(0),
                   'text-red-500': pnl.lt(0)
@@ -322,8 +321,8 @@ function sharePosition() {
         v-else
         v-bind="{
           number: notionalValue,
-          sm: isAccount,
-          xs: !isAccount,
+          isSm: isAccount,
+          isXs: !isAccount,
           decimals: priceDecimals
         }"
         data-cy="open-position-total-table-data"
@@ -350,8 +349,8 @@ function sharePosition() {
         <AppNumber
           v-bind="{
             number: margin,
-            sm: isAccount,
-            xs: !isAccount,
+            isSm: isAccount,
+            isXs: !isAccount,
             decimals: priceDecimals
           }"
           data-cy="open-position-margin-table-data"
@@ -401,7 +400,7 @@ function sharePosition() {
         v-if="!hideBalance"
         :status="status"
         data-cy="open-position-cancel-link"
-        @click="handleClosePosition"
+        @click="closePositionClicked"
       >
         <template #icon>
           <BaseIcon name="close" is-sm />

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { getSubaccountId } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from '@/types'
-import { getSubaccountIndex, isSgtSubaccountId } from '@/app/utils/helpers'
+import {
+  addBaseSubaccountIndexToAddress,
+  getSubaccountIndex,
+  isSgtSubaccountId
+} from '@/app/utils/helpers'
 
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
@@ -32,8 +36,8 @@ const newSubaccountId = computed(() =>
   getSubaccountId(walletStore.injectiveAddress, newSubaccountIdIndex.value)
 )
 
-const sourceOptions = computed(() => {
-  return subaccountsWithoutSgt.value
+const sourceOptions = computed(() =>
+  subaccountsWithoutSgt.value
     .sort((a, b) => a.localeCompare(b))
     .map((subaccountId) => {
       const subaccountIdIndex = getSubaccountIndex(subaccountId)
@@ -46,7 +50,7 @@ const sourceOptions = computed(() => {
         value: subaccountId
       }
     })
-})
+)
 
 const destinationOptions = computed(() => {
   const existingSubaccountIds = subaccountsWithoutSgt.value
@@ -70,8 +74,8 @@ const destinationOptions = computed(() => {
       display: t('bridge.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
-      value: getSubaccountId(
-        walletStore.injectiveAddress,
+      value: addBaseSubaccountIndexToAddress(
+        walletStore.address,
         newSubaccountIdIndex.value
       )
     }
@@ -84,7 +88,7 @@ onMounted(() => {
   setDstSubaccountIdValue(destinationOption.value)
 })
 
-function handleSrcSubaccountIdUpdate(subaccountId: string) {
+function onSourceSubaccountIdUpdate(subaccountId: string) {
   if (subaccountId === dstSubaccountId.value) {
     const updatedSubaccountId = Object.keys(
       accountStore.subaccountBalancesMap
@@ -98,7 +102,7 @@ function handleSrcSubaccountIdUpdate(subaccountId: string) {
   emit('update:subaccountId')
 }
 
-function handleDstSubaccountIdUpdate() {
+function onDestinationSubaccountIdUpdate() {
   emit('update:subaccountId')
 }
 </script>
@@ -110,17 +114,17 @@ function handleDstSubaccountIdUpdate() {
         v-model="srcSubaccountId"
         selected-class="h-12 bg-gray-1000"
         :options="sourceOptions"
-        @update:model-value="handleSrcSubaccountIdUpdate"
+        @update:model-value="onSourceSubaccountIdUpdate"
       >
         <template #selected-option="{ option }">
           <span>{{ option?.display }}</span>
         </template>
 
-        <template #option="{ option, active }">
+        <template #option="{ option, isActive }">
           <span
             :class="{
-              'font-bold text-gray-100': active,
-              'text-gray-300': !active
+              'font-bold text-gray-100': isActive,
+              'text-gray-300': !isActive
             }"
           >
             {{ option.display }}
@@ -144,16 +148,16 @@ function handleDstSubaccountIdUpdate() {
         v-model="dstSubaccountId"
         selected-class="h-12 bg-gray-1000"
         :options="destinationOptions"
-        @update:model-value="handleDstSubaccountIdUpdate"
+        @update:model-value="onDestinationSubaccountIdUpdate"
       >
         <template #selected-option="{ option }">
           <span>{{ option?.display }}</span>
         </template>
 
-        <template #option="{ option, active }">
+        <template #option="{ option, isActive }">
           <span
             v-if="option.value === newSubaccountId"
-            :class="{ 'font-bold text-gray-100': active }"
+            :class="{ 'font-bold text-gray-100': isActive }"
           >
             <span
               class="bg-blue-500 mr-2 font-semibold tracking-wide text-xs px-1 py-px rounded-sm"
@@ -162,7 +166,7 @@ function handleDstSubaccountIdUpdate() {
             </span>
             {{ option.display }}
           </span>
-          <span v-else :class="{ 'font-bold text-gray-100': active }">
+          <span v-else :class="{ 'font-bold text-gray-100': isActive }">
             {{ option.display }}
           </span>
         </template>

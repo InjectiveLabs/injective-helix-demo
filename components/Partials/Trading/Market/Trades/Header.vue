@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { UiMarketWithToken } from '@/types'
 
 defineProps({
@@ -13,7 +12,7 @@ defineProps({
 <template>
   <div class="h-8 w-full">
     <table class="table market-data">
-      <thead xs>
+      <thead>
         <tr>
           <th class="w-1/3 text-right">
             <span>{{ $t('trade.price') }}</span>

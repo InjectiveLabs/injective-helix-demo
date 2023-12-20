@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { Modal } from '@/types'
 
 const walletStore = useWalletStore()
 const { copy } = useClipboard()
@@ -15,7 +15,9 @@ defineProps({
   }
 })
 
-const showDropdown = ref(false)
+const modalStore = useModalStore()
+
+const isDropdownVisible = ref(false)
 
 const formattedInjectiveAddress = computed(() =>
   formatWalletAddress(walletStore.injectiveAddress)
@@ -24,18 +26,22 @@ const formattedAddress = computed(() =>
   formatWalletAddress(walletStore.address)
 )
 
-function handleToggleDropdown() {
-  showDropdown.value = !showDropdown.value
+function onToggleDropdown() {
+  isDropdownVisible.value = !isDropdownVisible.value
 }
 
-function copyAddress() {
+function onCopyAddress() {
   copy(walletStore.address)
   success({ title: t('connect.copiedAddress') })
 }
 
-function copyInjectiveAddress() {
+function onCopyInjectiveAddress() {
   copy(walletStore.injectiveAddress)
   success({ title: t('connect.copiedAddress') })
+}
+
+function openQrCodeModal() {
+  modalStore.openModal(Modal.QrCode)
 }
 </script>
 
@@ -49,17 +55,22 @@ function copyInjectiveAddress() {
         </p>
       </div>
       <div class="flex items-center gap-2">
+        <AssetQrCode
+          class="hover:text-blue-500 h-4 w-4"
+          @click="openQrCodeModal"
+        />
+
         <BaseIcon
           name="copy-filled"
           class="hover:text-blue-500 h-4 w-4"
-          @click.stop="copyInjectiveAddress"
+          @click.stop="onCopyInjectiveAddress"
         />
 
         <BaseIcon
           name="caret-down"
           class="h-6 w-6 transition duration-500 hover:text-blue-500"
-          :class="{ '-rotate-180': showDropdown }"
-          @click="handleToggleDropdown"
+          :class="{ '-rotate-180': isDropdownVisible }"
+          @click="onToggleDropdown"
         />
       </div>
     </div>
@@ -71,7 +82,7 @@ function copyInjectiveAddress() {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="showDropdown" class="ml-8 mt-4 flex flex-col gap-y-2">
+      <div v-if="isDropdownVisible" class="ml-8 mt-4 flex flex-col gap-y-2">
         <div class="flex items-center justify-between text-xs">
           <span class="font-semibold">
             {{ $t('connect.walletAddress') }}
@@ -82,7 +93,7 @@ function copyInjectiveAddress() {
             <BaseIcon
               name="copy-filled"
               class="hover:text-blue-500 h-4 w-4"
-              @click="copyAddress"
+              @click="onCopyAddress"
             />
           </div>
         </div>

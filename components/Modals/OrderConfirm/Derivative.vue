@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketWithToken,
@@ -118,7 +117,7 @@ function handleSkipTradeConfirmationModal() {
 <template>
   <AppModal
     :is-open="isModalOpen"
-    :sm="!!tradingType"
+    :is-sm="!!tradingType"
     data-cy="price-deviation-modal"
     @modal:closed="onModalClose"
   >

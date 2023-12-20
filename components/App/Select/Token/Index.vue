@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   BalanceWithToken,
   BalanceWithTokenAndPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   Modal,
   TradeField,
@@ -18,12 +18,13 @@ import {
 } from '@/app/utils/constants'
 
 const props = defineProps({
-  hideMax: Boolean,
-  showUsd: Boolean,
-  disabled: Boolean,
-  required: Boolean,
-  hideBalance: Boolean,
+  isMaxHidden: Boolean,
+  isUsdVisible: Boolean,
+  isDisabled: Boolean,
+  isRequired: Boolean,
+  isBalanceHidden: Boolean,
   shouldCheckBalance: Boolean,
+  isTokenSelectorDisabled: Boolean,
 
   denom: {
     type: String,
@@ -44,6 +45,12 @@ const props = defineProps({
   maxDecimals: {
     type: Number,
     default: 6
+  },
+
+  tensMultiplier: {
+    type: Number,
+    required: false,
+    default: undefined
   },
 
   additionalRules: {
@@ -85,9 +92,13 @@ const selectedTokenBalance = computed(() =>
     : '0'
 )
 
-const inputPlaceholder = computed(() =>
-  ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
-)
+const inputPlaceholder = computed(() => {
+  if (!props.tensMultiplier) {
+    return ONE_IN_BASE.shiftedBy(-props.maxDecimals).toFixed()
+  }
+
+  return ONE_IN_BASE.shiftedBy(props.tensMultiplier).toFixed()
+})
 
 const {
   valueToBigNumber,
@@ -107,11 +118,11 @@ const {
   dynamicRule: computed(() => {
     const rules = []
 
-    if (props.required) {
+    if (props.isRequired) {
       rules.push('required')
     }
 
-    if (props.required || props.shouldCheckBalance) {
+    if (props.isRequired || props.shouldCheckBalance) {
       rules.push(`insufficientBalance:${maxBalanceToFixed.value}`)
     }
 
@@ -161,11 +172,15 @@ function openTokenSelectorModal() {
     return
   }
 
+  if (props.isTokenSelectorDisabled) {
+    return
+  }
+
   modalStore.openModal(props.modal)
   emit('update:modal')
 }
 
-function handleAmountUpdate(amount: string) {
+function changeAmount(amount: string) {
   setAmountValue(amount)
 
   emit('update:amount', {
@@ -174,16 +189,25 @@ function handleAmountUpdate(amount: string) {
   })
 }
 
-function handleMax() {
+function changeMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
-const updateAmountDebounce = useDebounceFn((value) => {
+const onAmountChangeDebounced = useDebounceFn((value) => {
   /**
-   *Use debounce since AppNumericInput emits two update events
-   *And we only need the last one
+   * Use debounce since AppNumericInput emits two update events
+   * And we only need the last one
    **/
-  handleAmountUpdate(value)
+  if (!props.tensMultiplier) {
+    return changeAmount(value)
+  }
+
+  const allowableValue = formatAmountToAllowableAmount(
+    value,
+    props.tensMultiplier
+  )
+
+  changeAmount(allowableValue)
 }, props.debounce)
 </script>
 
@@ -197,7 +221,7 @@ export default {
   <div
     class="bg-gray-1000 rounded-xl py-4"
     :class="{
-      'border-red-500 border': amountErrors.length > 0 && required
+      'border-red-500 border': amountErrors.length > 0 && isRequired
     }"
   >
     <div
@@ -205,70 +229,89 @@ export default {
     >
       <slot />
 
-      <div v-if="selectedToken" class="text-right flex items-center gap-2">
-        <span
-          v-if="valueToBigNumber.gt(0) && !hideMax"
-          class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
-          @click="handleMax"
-        >
-          {{ $t('trade.max') }}
-        </span>
-        <p v-if="!hideBalance" class="text-xs text-blue-500">
-          <span>
-            {{ $t('trade.balance', { balance: maxBalanceToString }) }}
+      <slot
+        name="balance"
+        v-bind="{
+          changeMax,
+          selectedToken,
+          valueToBigNumber,
+          maxBalanceToString
+        }"
+      >
+        <div v-if="selectedToken" class="text-right flex items-center gap-2">
+          <span
+            v-if="valueToBigNumber.gt(0) && !isMaxHidden"
+            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
+            @click="changeMax"
+          >
+            {{ $t('trade.max') }}
           </span>
-        </p>
-      </div>
+          <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
+            <span>
+              {{ $t('trade.balance', { balance: maxBalanceToString }) }}
+            </span>
+          </p>
+        </div>
+      </slot>
     </div>
 
     <div class="px-4">
       <div class="flex justify-between">
         <AppInputNumeric
           v-model="amount"
-          sm
-          no-padding
-          transparent-bg
+          is-sm
+          is-no-padding
+          is-transparent-bg
           input-classes="p-0 text-xl font-bold"
           :max-decimals="maxDecimals"
+          :tens-multiplier="tensMultiplier"
           :placeholder="inputPlaceholder"
-          :disabled="disabled || !selectedToken"
-          @update:model-value="updateAmountDebounce"
+          :is-disabled="isDisabled || !selectedToken"
+          @update:model-value="onAmountChangeDebounced"
           @click.stop
         />
 
         <div class="flex items-center gap-2">
-          <div
-            class="flex items-center gap-2 p-1.5"
-            :class="{
-              'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
-                options.length > 1
-            }"
-            @click="openTokenSelectorModal"
+          <slot
+            name="token-item"
+            v-bind="{ openTokenSelectorModal, selectedToken }"
           >
-            <AppSelectTokenItem
-              v-if="selectedToken"
-              :class="{ 'cursor-default': disabled || options.length === 1 }"
-              v-bind="{
-                token: selectedToken.token
+            <div
+              class="flex items-center gap-2 p-1.5"
+              :class="{
+                'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
+                  options.length > 1
               }"
-            />
+              @click="openTokenSelectorModal"
+            >
+              <AppSelectTokenItem
+                v-if="selectedToken"
+                :class="{
+                  'cursor-default': isDisabled || options.length === 1
+                }"
+                v-bind="{
+                  token: selectedToken.token
+                }"
+              />
 
-            <div v-else-if="options.length > 0" class="whitespace-nowrap">
-              {{ $t('trade.swap.tokenSelector.selectToken') }}
+              <div v-else-if="options.length > 0" class="whitespace-nowrap">
+                {{ $t('trade.swap.tokenSelector.selectToken') }}
+              </div>
+
+              <BaseIcon
+                v-if="options.length > 1 || !selectedToken"
+                name="caret-down-slim"
+                is-sm
+              />
             </div>
-
-            <BaseIcon
-              v-if="options.length > 1 || !selectedToken"
-              name="caret-down-slim"
-              is-sm
-            />
-          </div>
+          </slot>
 
           <ModalsTokenSelector
             v-model="denomValue"
             v-bind="{
-              balances: options,
-              modal
+              modal,
+              ...$attrs,
+              balances: options
             }"
           />
         </div>
@@ -287,7 +330,7 @@ export default {
       </slot>
 
       <p
-        v-if="showUsd && selectedToken"
+        v-if="isUsdVisible && selectedToken"
         class="text-right text-sm text-gray-500 truncate"
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">

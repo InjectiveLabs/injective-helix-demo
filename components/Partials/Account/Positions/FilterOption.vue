@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { DropdownOptionWithToken } from '@/types'
 
 defineProps({
-  active: Boolean,
+  isActive: Boolean,
 
   option: {
     type: Object as PropType<DropdownOptionWithToken>,
@@ -18,8 +17,8 @@ defineProps({
     <span
       class="text-sm"
       :class="{
-        'text-white': !active,
-        'text-blue-500 group-hover:text-white': active
+        'text-white': !isActive,
+        'text-blue-500 group-hover:text-white': isActive
       }"
     >
       {{ option.display }}

@@ -1,5 +1,4 @@
-<script setup lang="ts">
-import { PropType } from 'vue'
+<script lang="ts" setup>
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import {
@@ -14,7 +13,7 @@ import {
 } from '@/app/utils/helpers'
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -70,7 +69,7 @@ const { valueToString: abbreviatedTotalBalanceToString } =
       : undefined
   })
 
-function handleClick() {
+function click() {
   accountStore.$patch({ subaccountId: props.subaccountId })
 }
 </script>
@@ -81,7 +80,7 @@ function handleClick() {
     :class="{
       'bg-white/10': isSelectedSubaccountId
     }"
-    @click="handleClick"
+    @click="click"
   >
     <div class="space-y-3">
       <h3 class="flex items-center">
@@ -93,7 +92,7 @@ function handleClick() {
       <p class="font-sans text-lg font-semibold text-white">
         $
         {{
-          hideBalances
+          isHideBalances
             ? HIDDEN_BALANCE_DISPLAY
             : abbreviatedTotalBalanceToString
         }}

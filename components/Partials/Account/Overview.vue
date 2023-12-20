@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
+  BTC_COIN_GECKO_ID,
   HIDDEN_BALANCE_DISPLAY,
-  UI_MINIMAL_ABBREVIATION_FLOOR,
-  BTC_COIN_GECKO_ID
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeType, Modal } from '@/types'
+import { AccountBalance, MainPage, BridgeType, Modal } from '@/types'
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
@@ -19,7 +19,7 @@ const exchangeStore = useExchangeStore()
 
 const props = defineProps({
   isLoading: Boolean,
-  hideBalances: Boolean
+  isHideBalances: Boolean
 })
 
 const emit = defineEmits<{
@@ -112,10 +112,10 @@ const { valueToString: abbreviatedTotalBalanceToString } =
   })
 
 function toggleHideBalances() {
-  emit('update:hide-balances', !props.hideBalances)
+  emit('update:hide-balances', !props.isHideBalances)
 }
 
-function handleTransferClick() {
+function onTransferClick() {
   modalStore.openModal(Modal.SubaccountTransfer)
 }
 </script>
@@ -125,10 +125,10 @@ function handleTransferClick() {
     <div
       class="flex justify-between md:items-center gap-4 flex-col md:flex-row"
     >
-      <AppSpinner v-if="isLoading" lg />
+      <AppSpinner v-if="isLoading" is-lg />
       <div v-else class="flex items-center justify-start gap-2">
         <span
-          v-if="!hideBalances"
+          v-if="!isHideBalances"
           class="text-white font-bold text-2xl md:text-3xl"
         >
           &dollar;
@@ -139,7 +139,7 @@ function handleTransferClick() {
           &dollar; {{ HIDDEN_BALANCE_DISPLAY }} USD
         </span>
 
-        <span v-if="!hideBalances" class="text-gray-450 md:text-lg">
+        <span v-if="!isHideBalances" class="text-gray-450 md:text-lg">
           &thickapprox;
           <span class="font-sans">{{ accountTotalBalanceInBtcToString }}</span>
           BTC
@@ -152,7 +152,7 @@ function handleTransferClick() {
           class="text-gray-450 hover:text-white cursor-pointer"
           @click="toggleHideBalances"
         >
-          <BaseIcon v-if="hideBalances" name="hide" class="w-4 h-4" />
+          <BaseIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
           <BaseIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
@@ -160,7 +160,7 @@ function handleTransferClick() {
       <div class="flex items-center justify-between md:justify-end sm:gap-4">
         <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: 'bridge', query: { type: BridgeType.Deposit } }"
+          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Deposit } }"
         >
           <AppButton class="bg-blue-500">
             <span class="text-blue-900 font-semibold">
@@ -171,7 +171,7 @@ function handleTransferClick() {
 
         <BaseNuxtLink
           v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: 'bridge', query: { type: BridgeType.Withdraw } }"
+          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Withdraw } }"
         >
           <AppButton class="border border-blue-500">
             <span class="text-blue-500 font-semibold">
@@ -185,9 +185,9 @@ function handleTransferClick() {
             appStore.isSubaccountManagementActive &&
             !walletStore.isAuthzWalletConnected
           "
-          :disabled="accountStore.isSgtSubaccount"
+          :is-disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
-          @click="handleTransferClick"
+          @click="onTransferClick"
         >
           <span class="text-blue-500 font-semibold">
             {{ $t('account.transfer') }}
@@ -199,7 +199,7 @@ function handleTransferClick() {
     <PartialsAccountSubaccountSelector
       v-if="!isLoading && appStore.isSubaccountManagementActive"
       v-bind="{
-        hideBalances
+        isHideBalances
       }"
     />
   </div>

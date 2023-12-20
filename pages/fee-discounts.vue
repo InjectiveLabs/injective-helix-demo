@@ -14,9 +14,6 @@ onMounted(() => {
     exchangeStore.fetchFeeDiscountAccountInfo(),
     paramStore.fetchAprParams()
   ])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -31,14 +28,14 @@ onMounted(() => {
         <div class="w-full mx-auto xl:w-4/5">
           <div class="mt-6">
             <h3 class="text-xl font-bold text-gray-200">
-              {{ $t(`fee_discounts.page_title`) }}
+              {{ $t(`feeDiscounts.page_title`) }}
             </h3>
             <div class="mt-6">
               <p class="text-sm font-normal mb-2">
-                {{ $t('fee_discounts.page_description') }}
+                {{ $t('feeDiscounts.page_description') }}
               </p>
               <p class="text-sm text-blue-500 font-normal">
-                {{ $t('fee_discounts.page_description_warning') }}
+                {{ $t('feeDiscounts.page_description_warning') }}
               </p>
             </div>
             <PartialsFeeDiscountsOverview class="my-8" />

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal, UiMarketWithToken } from '@/types'
 import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
+import { Modal, UiMarketWithToken } from '@/types'
+import { getDefaultFuturesMarket } from '@/app/utils/market'
 
 const modalStore = useModalStore()
 const route = useRoute()
@@ -30,7 +31,10 @@ function onLoad(pageMarket: UiMarketWithToken) {
 </script>
 
 <template>
-  <PartialsTradingLayout hardcoded-slug="btc-usdt-perp" @loaded="onLoad">
+  <PartialsTradingLayout
+    :hardcoded-slug="getDefaultFuturesMarket()"
+    @loaded="onLoad"
+  >
     <template #trading-form>
       <PartialsTradingDerivativesTradingForm v-if="market" :market="market" />
     </template>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { MaxAmountOnOrderbook } from '@/types'
@@ -10,7 +9,7 @@ const formErrors = useFormErrors()
 defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
   availableBalanceError: Boolean,
   markPriceThresholdError: Boolean,
   initialMinMarginRequirementError: Boolean,

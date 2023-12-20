@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiMarketHistory,
@@ -13,12 +12,12 @@ import {
   MARKETS_HISTORY_CHART_SEVEN_DAYS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Change, TradeClickOrigin } from '@/types'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
 import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { Change, MainPage, TradeClickOrigin } from '@/types'
 
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
@@ -123,7 +122,7 @@ const chartIsPositive = computed(() => {
 const marketRoute = computed(() => {
   const marketRoute = getMarketRoute(props.market)
 
-  return marketRoute || { name: 'markets' }
+  return marketRoute || { name: MainPage.Markets }
 })
 
 watch(
@@ -133,7 +132,7 @@ watch(
       return
     }
 
-    updateLastPriceChangeColor()
+    lastPriceChangeColor()
   }
 )
 
@@ -151,7 +150,7 @@ onMounted(() => {
     })
 })
 
-function updateLastPriceChangeColor() {
+function lastPriceChangeColor() {
   useDefaultLastTradedPriceColor.value = false
 
   setTimeout(() => {
@@ -159,7 +158,7 @@ function updateLastPriceChangeColor() {
   }, 3000)
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
@@ -173,7 +172,7 @@ function handleTradeClickedTrack() {
     <div
       class="grid grid-cols-12 items-center py-4 box-content"
       :class="{ 'gap-4': isHero }"
-      @click="handleTradeClickedTrack"
+      @click="tradeClickedTrack"
     >
       <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start gap-2">
@@ -248,7 +247,7 @@ function handleTradeClickedTrack() {
           'col-span-3': isHero
         }"
       >
-        <AppSpinner v-if="status.isLoading()" md />
+        <AppSpinner v-if="status.isLoading()" is-md />
 
         <BaseLineGraph
           v-if="chartData.length > 1"

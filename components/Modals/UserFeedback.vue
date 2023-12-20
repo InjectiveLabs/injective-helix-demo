@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AmplitudeEvent, Modal, SurveyTitle } from '@/types'
 import { amplitudeGenericTracker } from '@/app/providers/amplitude'
+import { AmplitudeEvent, Modal, SurveyTitle, TradeSubPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -23,52 +23,52 @@ function init() {
 
   setTimeout(() => {
     const disabledRoutes = [
-      'spot-spot',
-      'market-market',
-      'futures-futures',
-      'perpetual-perpetual',
-      'derivative-derivative',
-      'binary-options-binaryOption'
+      TradeSubPage.Spot,
+      TradeSubPage.Market,
+      TradeSubPage.Futures,
+      TradeSubPage.Perpetual,
+      TradeSubPage.Derivatives,
+      TradeSubPage.BinaryOption
     ]
 
-    if (!disabledRoutes.includes(route.name as string)) {
+    if (!disabledRoutes.includes(route.name as TradeSubPage)) {
       modalStore.openModal(Modal.UserFeedback)
     }
   }, DELAY_MODAL_DISPLAY_TIME)
 }
 
-function handleClose() {
+function onClose() {
   modalStore.closeModal(Modal.UserFeedback)
 }
 
-function updateUserFeedbackModalViewed() {
+function userFeedbackModalViewed() {
   appStore.setUserState({
     ...appStore.userState,
     modalsViewed: [...appStore.userState.modalsViewed, Modal.UserFeedback]
   })
 
-  handleClose()
+  onClose()
 }
 
-function handleTakeSurveyClickEvent() {
+function onTakeSurveyClickEvent() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.SurveyAccepted, {
     surveyTitle: SurveyTitle.HelixUserSurveyFeb23
   })
 
-  updateUserFeedbackModalViewed()
+  userFeedbackModalViewed()
 }
 
-function handleRejectSurveyClickEvent() {
+function onRejectSurveyClickEvent() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.SurveyRejected, {
     surveyTitle: SurveyTitle.HelixUserSurveyFeb23
   })
 
-  updateUserFeedbackModalViewed()
+  userFeedbackModalViewed()
 }
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="handleClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onClose">
     <div class="flex flex-col -mt-5 justify-center items-center">
       <div class="flex items-center justify-center cursor-pointer mb-6">
         <AssetLogo class="h-7 w-10 mr-2" alt="Helix" />
@@ -95,7 +95,7 @@ function handleRejectSurveyClickEvent() {
         class="whitespace-nowrap w-full bg-blue-500 text-blue-900 rounded mb-4"
         :to="url"
         target="_blank"
-        @click="handleTakeSurveyClickEvent"
+        @click="onTakeSurveyClickEvent"
       >
         <div
           class="flex items-center justify-center py-2 text-blue-900 font-semibold text-sm"
@@ -106,7 +106,7 @@ function handleRejectSurveyClickEvent() {
 
       <AppButton
         class="bg-transparent w-full hover:bg-gray-700 font-semibold text-sm"
-        @click="handleRejectSurveyClickEvent"
+        @click="onRejectSurveyClickEvent"
       >
         {{ $t('banners.userFeedback.notRightNow') }}
       </AppButton>

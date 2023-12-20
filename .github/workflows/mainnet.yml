@@ -65,7 +65,7 @@ jobs:
       - name: Using Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 18.x
 
       - name: Remove prev build
         run: yarn clean-up

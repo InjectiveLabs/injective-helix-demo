@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
@@ -20,7 +21,7 @@ const options = [
   }
 ] as BaseDropdownOption[]
 
-const path = ref<LedgerDerivationPathType | undefined>(undefined)
+const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
@@ -53,8 +54,20 @@ function fetchAddresses() {
 const connect = handleSubmit(() => {
   status.setLoading()
 
+  if (path.value === LedgerDerivationPathType.LedgerMew) {
+    return walletStore
+      .connectLedgerLegacy(getEthereumAddress(address.value))
+      .catch((e) => {
+        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+        $onError(e)
+      })
+      .finally(() => {
+        status.setIdle()
+      })
+  }
+
   walletStore
-    .connectLedger(address.value)
+    .connectLedger(getEthereumAddress(address.value))
     .catch((e) => {
       walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
@@ -80,7 +93,10 @@ const connect = handleSubmit(() => {
       v-if="fetchStatus.isLoading()"
       class="text-gray-400 text-xs my-2 flex items-center gap-2"
     >
-      <AppSpinner sm /> <span>{{ $t('connect.getAddressNote') }}</span>
+      <AppSpinner is-sm />
+      <span>
+        {{ $t('connect.getAddressNote') }}
+      </span>
     </p>
 
     <div
@@ -107,7 +123,7 @@ const connect = handleSubmit(() => {
 
       <AppSelectField
         v-model="address"
-        searchable
+        is-searchable
         :options="
           walletStore.addresses.map((address: string) => ({
             display: address,
@@ -126,9 +142,9 @@ const connect = handleSubmit(() => {
 
       <AppButton
         class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
-        :disabled="addressErrors.length > 0"
+        :is-disabled="addressErrors.length > 0"
         :is-loading="status.isLoading()"
-        lg
+        is-lg
         @click="connect"
       >
         {{ $t('connect.connect') }}

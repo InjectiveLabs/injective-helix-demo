@@ -12,7 +12,7 @@ const sortedTriggers = computed(() =>
   <div class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="sortedTriggers.length === 0"
+      :is-empty="sortedTriggers.length === 0"
       class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountTriggerMobile

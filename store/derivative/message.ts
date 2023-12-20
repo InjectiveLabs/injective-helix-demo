@@ -140,7 +140,7 @@ export const submitLimitOrder = async ({
 
   await appStore.queue()
   await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnAction()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const messageType =
@@ -209,7 +209,7 @@ export const submitStopLimitOrder = async ({
 
   await appStore.queue()
   await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnAction()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const messageType =
@@ -286,7 +286,7 @@ export const submitMarketOrder = async ({
 
   await appStore.queue()
   await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnAction()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const messageType =
@@ -355,7 +355,7 @@ export const submitStopMarketOrder = async ({
 
   await appStore.queue()
   await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnAction()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const messageType =

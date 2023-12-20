@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
@@ -10,7 +9,7 @@ import { AccountBalance, BusEvents, Modal } from '@/types'
 const modalStore = useModalStore()
 
 const props = defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -43,7 +42,7 @@ const {
   }
 )
 
-function handleOpenAssetDetailsModal() {
+function openAssetDetailsModal() {
   useEventBus<AccountBalance>(BusEvents.AssetDetailsModalPayload).emit(
     props.balance
   )
@@ -58,7 +57,7 @@ function handleOpenAssetDetailsModal() {
   <tr
     class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent overflow-hidden gap-2 transition-all"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
-    @click="handleOpenAssetDetailsModal"
+    @click="openAssetDetailsModal"
   >
     <td class="no-padding">
       <div class="flex flex-col py-4 pl-4">
@@ -84,7 +83,7 @@ function handleOpenAssetDetailsModal() {
       <div class="flex flex-col py-4">
         <div class="flex flex-col items-end gap-1">
           <div data-cy="wallet-balance-total-table-data">
-            <span v-if="hideBalances" class="font-mono text-sm text-right">
+            <span v-if="isHideBalances" class="font-mono text-sm text-right">
               {{ HIDDEN_BALANCE_DISPLAY }}
             </span>
 
@@ -99,9 +98,12 @@ function handleOpenAssetDetailsModal() {
           </div>
 
           <div>
-            <AppSpinner v-if="usdPriceStatus.isLoading()" md />
+            <AppSpinner v-if="usdPriceStatus.isLoading()" is-md />
 
-            <span v-else-if="hideBalances" class="font-mono text-sm text-right">
+            <span
+              v-else-if="isHideBalances"
+              class="font-mono text-sm text-right"
+            >
               {{ HIDDEN_BALANCE_DISPLAY }} USD
             </span>
 

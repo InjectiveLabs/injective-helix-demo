@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps({
-  sm: Boolean,
+  isSm: Boolean,
   isOpen: Boolean
 })
 
@@ -16,15 +16,15 @@ function handleToggle() {
 <template>
   <div
     :class="{
-      'pt-6': !sm,
-      'py-2 px-6': sm
+      'pt-6': !isSm,
+      'py-2 px-6': isSm
     }"
   >
     <dt class="text-lg">
       <button
         class="text-left w-full flex justify-between items-start text-gray-200"
         :class="{
-          'items-center': sm
+          'items-center': isSm
         }"
         :aria-expanded="isOpen"
         @click.stop="handleToggle"
@@ -37,8 +37,8 @@ function handleToggle() {
           <svg
             class="transform"
             :class="{
-              'h-6 w-6': !sm,
-              'h-4 w-4': sm,
+              'h-6 w-6': !isSm,
+              'h-4 w-4': isSm,
               'rotate-180': isOpen
             }"
             xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ function handleToggle() {
       v-show="isOpen"
       class="mt-2"
       :class="{
-        'pr-12': !sm
+        'pr-12': !isSm
       }"
     >
       <slot name="content" />

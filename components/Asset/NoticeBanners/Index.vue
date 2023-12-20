@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants/setup'
 import { NoticeBanner, Banner } from '@/types'
 

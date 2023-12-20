@@ -1,24 +1,25 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Change, TradeClickOrigin } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { stableCoinDenoms } from '@/app/data/token'
+import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
+import { Change, TradeClickOrigin, MarketStatus } from '@/types'
 
 const appStore = useAppStore()
+const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
@@ -49,6 +50,24 @@ const lastTradedPrice = computed(() => {
   return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
 })
 
+const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
+  computed(() => {
+    if (
+      !QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(props.market.quoteToken.denom)
+    ) {
+      return lastTradedPrice.value
+    }
+
+    return new BigNumberInBase(
+      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+    ).times(lastTradedPrice.value)
+  }),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
+  }
+)
+
 const isFavorite = computed(() =>
   appStore.favoriteMarkets.includes(props.market.marketId)
 )
@@ -65,8 +84,8 @@ const volumeInUsdToFormat = computed(() =>
   props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
 )
 
-const formatterOptions = computed(() => {
-  return stableCoinDenoms.includes(props.market.quoteToken.symbol)
+const formatterOptions = computed(() =>
+  stableCoinDenoms.includes(props.market.quoteToken.symbol)
     ? {
         decimalPlaces: 0,
         abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
@@ -75,7 +94,7 @@ const formatterOptions = computed(() => {
         abbreviationFloor: undefined,
         decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
       }
-})
+)
 
 const change = computed(() => {
   if (!props.summary || !props.summary.change) {
@@ -123,11 +142,11 @@ const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
   formatterOptions.value
 )
 
-function updateWatchList() {
+function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
 }
 
-function handleTradeClickedTrack() {
+function tradeClickedTrack() {
   amplitudeTradeTracker.navigateToTradePageTrackEvent({
     market: props.market.slug,
     marketType: props.market.subType,
@@ -144,8 +163,8 @@ function handleTradeClickedTrack() {
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center gap-4">
       <div
         class="3md:hidden text-blue-500 mr-3 cursor-pointer"
-        data-cy="markets-favourite-button"
-        @click="updateWatchList"
+        data-cy="markets-favorite-button"
+        @click="toggleFavoriteMarket"
       >
         <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
         <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
@@ -154,7 +173,7 @@ function handleTradeClickedTrack() {
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
         <div
           class="cursor-pointer flex items-center"
-          @click="handleTradeClickedTrack"
+          @click="tradeClickedTrack"
         >
           <CommonTokenIcon
             v-if="market.baseToken"
@@ -180,6 +199,10 @@ function handleTradeClickedTrack() {
             :market="market"
             class="visible sm:invisible lg:visible ml-auto"
           />
+          <PartialsCommonMarketInactive
+            v-if="market.marketStatus === MarketStatus.Paused"
+            class="visible sm:invisible lg:visible ml-auto"
+          />
         </div>
       </NuxtLink>
     </span>
@@ -188,7 +211,10 @@ function handleTradeClickedTrack() {
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
         <span
-          v-if="!lastTradedPrice.isNaN()"
+          v-if="
+            !lastTradedPrice.isNaN() ||
+            market.marketStatus !== MarketStatus.Paused
+          "
           class=""
           :class="{
             'text-green-500': lastPriceChange === Change.Increase,
@@ -212,16 +238,10 @@ function handleTradeClickedTrack() {
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <span
-        v-if="!lastTradedPrice.isNaN()"
-        :class="{
-          'text-green-500': lastPriceChange === Change.Increase,
-          'text-white': lastPriceChange === Change.NoChange,
-          'text-red-500': lastPriceChange === Change.Decrease
-        }"
-      >
-        {{ lastTradedPriceToFormat }}
-      </span>
+      <p v-if="!lastTradedPrice.isNaN()" class="flex items-center gap-2">
+        <span> {{ lastTradedPriceToFormat }}</span>
+        <span class="text-xs text-gray-500"> ${{ lastTradedPriceInUsd }} </span>
+      </p>
       <span v-else class="text-gray-400">&mdash;</span>
     </span>
 
@@ -264,7 +284,7 @@ function handleTradeClickedTrack() {
         class="text-blue-500 hover:text-blue-600 cursor-pointer"
         data-cy="markets-trade-link"
       >
-        <div @click.stop="handleTradeClickedTrack">
+        <div @click.stop="tradeClickedTrack">
           {{ $t('trade.trade') }}
         </div>
       </NuxtLink>
@@ -272,7 +292,7 @@ function handleTradeClickedTrack() {
       <div
         class="text-blue-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-blue-500 hover:bg-opacity-10"
         data-cy="markets-favorite-button"
-        @click="updateWatchList"
+        @click="toggleFavoriteMarket"
       >
         <BaseIcon
           v-if="isFavorite"

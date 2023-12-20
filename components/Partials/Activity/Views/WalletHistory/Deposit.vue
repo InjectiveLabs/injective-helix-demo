@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import {
@@ -109,7 +108,7 @@ const time = computed(() => {
     <td class="h-12 text-left cursor-pointer">
       <div class="flex items-center justify-start">
         <div v-if="transaction.token">
-          <CommonTokenIcon :token="transaction.token" md />
+          <CommonTokenIcon :token="transaction.token" is-md />
         </div>
         <div class="ml-3">
           <span
@@ -139,7 +138,7 @@ const time = computed(() => {
 
     <td class="h-12 text-left font-mono">
       <PartialsActivityViewsWalletHistoryCommonAddress
-        xs
+        is-xs
         :address="transaction.sender"
         data-cy="wallet-history-sender-table-data"
       >
@@ -149,7 +148,7 @@ const time = computed(() => {
 
     <td class="h-12 text-left font-mono">
       <PartialsActivityViewsWalletHistoryCommonAddress
-        xs
+        is-xs
         :address="transaction.receiver"
         data-cy="wallet-history-receiver-table-data"
       >

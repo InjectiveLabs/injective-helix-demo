@@ -25,7 +25,7 @@ const isLoading = computed<boolean>(
 )
 
 onMounted(() => {
-  useEventBus<string>(BusEvents.ShowLedgerConnect).on(handleLedgerConnect)
+  useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
 
   Promise.all([
     walletStore.isMetamaskInstalled(),
@@ -33,13 +33,13 @@ onMounted(() => {
   ]).finally(() => status.setIdle())
 })
 
-function handleLedgerConnect() {
+function connectLedger() {
   walletModalType.value = WalletModalType.Ledger
 
   modalStore.openModal(Modal.Connect)
 }
 
-function handleWalletConnect() {
+function onWalletConnect() {
   amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
@@ -49,11 +49,11 @@ function handleWalletConnect() {
   }
 }
 
-function handleModalClose() {
+function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
 
-function updateWalletModalType(type: WalletModalType) {
+function onWalletModalTypeChange(type: WalletModalType) {
   walletModalType.value = type
 }
 
@@ -69,7 +69,7 @@ watch(
 
 watch(isModalOpen, (newShowModalState) => {
   if (!newShowModalState) {
-    handleModalClose()
+    onCloseModal()
     walletModalType.value = WalletModalType.All
   }
 })
@@ -81,7 +81,7 @@ watch(isModalOpen, (newShowModalState) => {
   <AppButton
     v-else
     class="bg-blue-500 text-blue-900 font-semibold whitespace-nowrap"
-    @click="handleWalletConnect"
+    @click="onWalletConnect"
   >
     {{ $t('connect.connectWallet') }}
   </AppButton>
@@ -90,8 +90,8 @@ watch(isModalOpen, (newShowModalState) => {
     :is-open="isModalOpen"
     :is-loading="isLoading"
     :ignore="['.v-popper__popper']"
-    md
-    @modal:closed="handleModalClose"
+    is-md
+    @modal:closed="onCloseModal"
   >
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
@@ -115,8 +115,9 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletKeplr />
-      <LayoutWalletConnectWalletLedger @click="updateWalletModalType" />
-      <LayoutWalletConnectWalletTrezor @click="updateWalletModalType" />
+      <LayoutWalletConnectWalletNinji />
+      <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
+      <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />

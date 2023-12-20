@@ -2,6 +2,7 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   trade: {
+    get: 'Get',
     asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
@@ -153,6 +154,8 @@ export default {
     volume: 'Volume',
     volume_24h: 'Volume (24H)',
     total_market_volume_24h: 'Total Volume (24H)',
+    usd_value: 'USD Value',
+    usd_value_tooltip: 'The USD value based on the quote asset price',
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
     market_volume_24h: 'Volume (24h)',
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
@@ -317,10 +320,6 @@ export default {
       left: 'Left',
       right: 'Right'
     },
-    usdcLegacyBalanceDetected: 'Different version of USDC detected',
-    haveLegacyUSDC:
-      'You have USD Coin (Injective bridge) in your balance. This market only supports the USD Coin (Wormhole from Ethereum). Please go to the Accounts page to convert your USDC.',
-    viewUSDC: 'View USDC on Accounts ',
     swap: {
       to: 'To',
       fee: 'Fee',

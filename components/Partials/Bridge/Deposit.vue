@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
   BalanceWithTokenWithErc20Balance,
   BridgingNetwork,
@@ -55,10 +55,15 @@ const needsAllowanceSet = computed(() => {
 })
 
 onMounted(() => {
-  peggyStore.getErc20BalancesWithTokenAndPrice()
-  peggyStore.getErc20DenomBalanceAndAllowance(
-    formValues.value[BridgeField.Denom]
-  )
+  if (
+    formValues.value[BridgeField.BridgingNetwork] === BridgingNetwork.Ethereum
+  ) {
+    peggyStore.getErc20BalancesWithTokenAndPrice()
+
+    peggyStore.getErc20DenomBalanceAndAllowance(
+      formValues.value[BridgeField.Denom]
+    )
+  }
 })
 </script>
 
@@ -73,7 +78,7 @@ onMounted(() => {
     />
 
     <div v-else>
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

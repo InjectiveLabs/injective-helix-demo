@@ -31,8 +31,15 @@ onWalletConnected(() => {
 <template>
   <AppHocLoading :status="status" class="h-full">
     <div class="container">
-      <div class="w-full mx-auto xl:w-4/5 relative">
-        <PartialsTradeAndEarnCurrentEpoch class="mt-6" />
+      <div class="w-full mx-auto xl:w-4/5 relative mt-10">
+        <div class="space-y-2">
+          <h1 class="text-3xl font-bold">{{ $t('tradeAndEarn.title') }}</h1>
+          <div class="flex items-center space-x-2">
+            <p>{{ $t('tradeAndEarn.description') }}</p>
+          </div>
+        </div>
+
+        <PartialsTradeAndEarnCurrentEpoch class="mt-8" />
         <PartialsTradeAndEarnPendingRewards class="mt-12" />
         <PartialsTradeAndEarnMarketsInfo class="mt-12" />
       </div>

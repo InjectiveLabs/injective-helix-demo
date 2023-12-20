@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import { Modal, UiMarketWithToken } from '@/types'
+import { Modal, MainPage, UiMarketWithToken } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
@@ -28,7 +27,7 @@ const network = computed(() => {
 
 function closeModal() {
   modalStore.closeModal(Modal.MarketDeprecated)
-  router.push({ name: 'index' })
+  router.push({ name: MainPage.Index })
 }
 
 function onModalClose() {
@@ -37,7 +36,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketDeprecated.title') }}
@@ -73,8 +72,8 @@ function onModalClose() {
       </ul>
 
       <div class="mt-6 flex flex-col gap-4">
-        <NuxtLink :to="{ name: 'markets' }" class="">
-          <AppButton lg class="w-full text-blue-900 bg-blue-500">
+        <NuxtLink :to="{ name: MainPage.Markets }">
+          <AppButton is-lg class="w-full text-blue-900 bg-blue-500">
             <span class="font-semibold">
               {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>

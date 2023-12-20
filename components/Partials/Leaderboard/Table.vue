@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 
 defineProps({
@@ -44,7 +43,7 @@ const entries = computed(() => useLeaderboardStore().entries.slice(0, 6))
     </CommonTableHeader>
 
     <AppHocLoading :status="status">
-      <CommonTableBody :show-empty="entries.length === 0">
+      <CommonTableBody :is-empty="entries.length === 0">
         <PartialsLeaderboardRow
           v-for="(entry, index) in entries"
           :key="`leaderboard-row-${index}`"

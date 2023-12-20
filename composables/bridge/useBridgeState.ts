@@ -1,9 +1,15 @@
 import type { Ref } from 'vue'
-import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
+import {
+  BridgingNetwork,
+  CosmosNetworks,
+  KeplrNetworks
+} from '@injectivelabs/sdk-ui-ts'
 import { BridgeField, BridgeForm, BridgeType } from '@/types'
 import { networksMeta } from '@/app/data/bridge'
 
 export default function useBridgeState(formValues: Ref<BridgeForm>) {
+  const ibcStore = useIbcStore()
+
   const isWithdraw = computed(
     () => formValues.value[BridgeField.BridgeType] === BridgeType.Withdraw
   )
@@ -48,21 +54,29 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     )
   })
 
-  const destinationIsEthereum = computed(() => {
+  const isEthereumDestination = computed(() => {
     return destination.value === BridgingNetwork.Ethereum
   })
 
-  const destinationIsInjective = computed(() => {
+  const isInjectiveDestination = computed(() => {
     return destination.value === BridgingNetwork.Injective
   })
 
-  const originIsInjective = computed(() => {
+  const isInjectiveOrigin = computed(() => {
     return origin.value === BridgingNetwork.Injective
   })
 
-  const originIsEthereum = computed(() => {
+  const isEthereumOrigin = computed(() => {
     return origin.value === BridgingNetwork.Ethereum
   })
+
+  const isCosmosNetworkOrigin = computed(() =>
+    CosmosNetworks.includes(origin.value)
+  )
+
+  const isCosmosNetworkDestination = computed(() =>
+    CosmosNetworks.includes(destination.value)
+  )
 
   const isIbcTransfer = computed(() => {
     const cosmosNetworks = [
@@ -77,13 +91,11 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     )
   })
 
-  const networkIsSupported = computed(() => {
+  const isNetworkSupported = computed(() => {
     const notSupportedNetworks = [
-      ...KeplrNetworks,
       BridgingNetwork.Terra,
       BridgingNetwork.Axelar,
       BridgingNetwork.Moonbeam,
-      BridgingNetwork.Crescent,
       BridgingNetwork.Solana,
       BridgingNetwork.EthereumWh,
       BridgingNetwork.Arbitrum
@@ -94,17 +106,39 @@ export default function useBridgeState(formValues: Ref<BridgeForm>) {
     )
   })
 
+  const cosmosIbcChannelId = computed(() => {
+    if (!ibcStore.channel) {
+      return ''
+    }
+
+    return isInjectiveOrigin.value
+      ? ibcStore.channel.bToAChannelId
+      : ibcStore.channel.aToBChannelId
+  })
+
+  const cosmosIbcInjectiveChannelId = computed(() => {
+    if (!ibcStore.channel) {
+      return ''
+    }
+
+    return ibcStore.channel.bToAChannelId
+  })
+
   return {
     isDeposit,
     isWithdraw,
     isTransfer,
     isIbcTransfer,
-    originIsEthereum,
+    isEthereumOrigin,
     originNetworkMeta,
-    originIsInjective,
-    destinationIsEthereum,
-    networkIsSupported,
-    destinationIsInjective,
-    destinationNetworkMeta
+    isInjectiveOrigin,
+    isEthereumDestination,
+    isCosmosNetworkOrigin,
+    isNetworkSupported,
+    cosmosIbcChannelId,
+    isInjectiveDestination,
+    destinationNetworkMeta,
+    isCosmosNetworkDestination,
+    cosmosIbcInjectiveChannelId
   }
 }

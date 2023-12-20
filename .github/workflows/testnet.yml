@@ -29,12 +29,11 @@ jobs:
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
       ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: 'https://testnet.sentry.exchange.grpc-web.injective.network'
-      VITE_CHRONOS_API_ENDPOINT: 'https://testnet.sentry.exchange.grpc-web.injective.network'
-      VITE_EXPLORER_API_ENDPOINT: 'https://testnet.sentry.explorer.grpc-web.injective.network'
-      VITE_SENTRY_GRPC_ENDPOINT: 'https://testnet.sentry.chain.grpc-web.injective.network'
-      VITE_SENTRY_REST_ENDPOINT: 'https://testnet.sentry.tm.injective.network'
-      VITE_SENTRY_HTTP_ENDPOINT: 'https://testnet.sentry.tm.injective.network'
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
+      VITE_SENTRY_GRPC_ENDPOINT: ''
+      VITE_SENTRY_REST_ENDPOINT: ''
 
       ## Secret
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
@@ -60,7 +59,7 @@ jobs:
       - name: Using Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 18.x
 
       - name: Remove prev build
         run: yarn clean-up

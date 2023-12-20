@@ -1,6 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityForm, BusEvents, PaginationState } from '@/types'
+import {
+  ActivityField,
+  ActivityForm,
+  BusEvents,
+  PaginationState
+} from '@/types'
 import {
   executionOrderTypeToOrderExecutionTypes,
   executionOrderTypeToOrderTypes
@@ -21,13 +26,13 @@ onMounted(() => {
   useEventBus(BusEvents.ActivityFilterUpdate).on(fetchData)
 })
 
-function handleLimitChangeEvent(limit: number) {
+function onLimitChangeEvent(limit: number) {
   updateRouteQuery({
     limit: `${limit}`
   })
 }
 
-function handlePageChangeEvent(page: number) {
+function onPageChangeEvent(page: number) {
   updateRouteQuery({
     page: page > 1 ? `${page}` : undefined,
     limit: `${limit.value}`
@@ -37,28 +42,27 @@ function handlePageChangeEvent(page: number) {
 function fetchData() {
   status.setLoading()
 
-  const marketIds = derivativeStore.markets
-    .filter((m) =>
-      [
-        m.quoteToken.denom,
-        m.baseToken.denom,
-        m.quoteToken.symbol,
-        m.baseToken.symbol
-      ].some((denom) =>
-        denom
-          .toLowerCase()
-          .includes((formValues.value.Denom as string).toLowerCase())
-      )
-    )
-    .map((m) => m.marketId)
+  const marketIds = (
+    formValues.value[ActivityField.Denom]
+      ? derivativeStore.markets.filter((m) =>
+          [m.quoteToken.denom, m.baseToken.denom].some((denom) =>
+            denom
+              .toLowerCase()
+              .startsWith(formValues.value[ActivityField.Denom].toLowerCase())
+          )
+        )
+      : derivativeStore.markets
+  ).map((m) => m.marketId)
 
   const orderTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderTypes(formValues.value[ActivityField.Type])
 
   const executionTypes =
-    formValues.value.Type &&
-    executionOrderTypeToOrderExecutionTypes(formValues.value.Type)
+    formValues.value[ActivityField.Type] &&
+    executionOrderTypeToOrderExecutionTypes(
+      formValues.value[ActivityField.Type]
+    )
 
   Promise.all([
     derivativeStore.fetchSubaccountOrderHistory({
@@ -82,7 +86,7 @@ function fetchData() {
       }
 
       if (state === PaginationState.QueryMoreThanTotalPage) {
-        handlePageChangeEvent(totalPages.value)
+        onPageChangeEvent(totalPages.value)
       }
     })
     .finally(() => {
@@ -111,8 +115,8 @@ watch(
             limit,
             totalCount: derivativeStore.subaccountOrderHistoryCount
           }"
-          @update:limit="handleLimitChangeEvent"
-          @update:page="handlePageChangeEvent"
+          @update:limit="onLimitChangeEvent"
+          @update:page="onPageChangeEvent"
         />
       </div>
     </AppHocLoading>

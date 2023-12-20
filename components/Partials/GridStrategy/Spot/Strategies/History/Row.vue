@@ -1,14 +1,14 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-
-const walletStore = useWalletStore()
-const accountStore = useAccountStore()
-const gridStrategyStore = useGridStrategyStore()
+import { StopReason } from '@/types'
+import {
+  GST_AUTO_PRICE_THRESHOLD,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = defineProps({
   strategy: {
@@ -17,84 +17,32 @@ const props = defineProps({
   }
 })
 
-const market = computed(() => gridStrategyStore.spotMarket)
+const spotStore = useSpotStore()
+const gridStrategyStore = useGridStrategyStore()
+
+const emit = defineEmits<{
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+}>()
+
+const market = computed(
+  () =>
+    spotStore.markets.find(
+      ({ marketId }) => marketId === props.strategy.marketId
+    )!
+)
+
+const { pnl, percentagePnl, investment } = useActiveGridStrategy(
+  market,
+  computed(() => props.strategy)
+)
+
+const { lowerBound, upperBound } = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.strategy)
+)
 
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
-)
-
-const upperBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.upperBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const lowerBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.lowerBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const investment = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
-
-  const baseAmountInQuote = new BigNumberInWei(props.strategy.baseQuantity || 0)
-    .toBase(market.value?.baseToken.decimals)
-    .times(
-      new BigNumberInWei(props.strategy.executionPrice).toBase(
-        market.value.quoteToken.decimals
-      )
-    )
-
-  const quoteAmount = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  return baseAmountInQuote.plus(quoteAmount)
-})
-
-const pnl = computed(() => {
-  if (!market.value) return ZERO_IN_BASE
-
-  const creationQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const creationBaseQuantity = new BigNumberInWei(
-    props.strategy.baseQuantity
-  ).toBase(market.value?.baseToken.decimals)
-
-  const creationMidPrice = new BigNumberInWei(
-    props.strategy.executionPrice
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const completitionQuoteQuantity = new BigNumberInWei(
-    props.strategy.quoteDeposit
-  ).toBase(market.value?.quoteToken.decimals)
-  const completitionBaseQuantity = new BigNumberInWei(
-    props.strategy.baseDeposit
-  ).toBase(market.value?.baseToken.decimals)
-  const completitionMidPrice = new BigNumberInWei(
-    props.strategy.marketMidPrice
-  ).toBase(market.value?.quoteToken.decimals - market.value?.baseToken.decimals)
-
-  return completitionQuoteQuantity
-    .plus(completitionBaseQuantity.times(completitionMidPrice))
-    .minus(
-      creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
-    )
-})
-
-const percentagePnl = computed(() =>
-  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
 )
 
 const duration = computed(() =>
@@ -106,53 +54,54 @@ const duration = computed(() =>
 
 const { valueToString: upperBoundtoString } = useBigNumberFormatter(
   upperBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
   lowerBound,
-  { decimalPlaces: 2 }
+  {
+    decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
+      ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
 )
 
 const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
-  decimalPlaces: 2
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
 const { valueToString: investmentToString } = useBigNumberFormatter(
   investment,
-  { decimalPlaces: 2 }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 function onDetailsPage() {
-  accountStore.$patch({
-    subaccountId: addressAndMarketSlugToSubaccountId(
-      walletStore.address,
-      gridStrategyStore.spotMarket?.slug || 'inj-usdt'
-    )
-  })
+  emit('details:open', props.strategy, market.value)
 }
 </script>
 
 <template>
   <div
-    class="grid grid-cols-8 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
+    class="grid grid-cols-9 gap-2 even:bg-black odd:bg-gray-950 hover:bg-gray-800 p-4 text-xs"
   >
     <div class="flex items-center">
       <span>{{ createdAt }}</span>
     </div>
 
-    <div>
-      <div class="flex gap-2 items-center">
-        <div class="text-left">
-          <CommonTokenIcon
-            v-if="market?.baseToken"
-            v-bind="{ token: market?.baseToken }"
-          />
-        </div>
+    <div class="flex gap-2 items-center">
+      <div class="text-left">
+        <CommonTokenIcon
+          v-if="market?.baseToken"
+          v-bind="{ token: market?.baseToken }"
+        />
+      </div>
 
-        <div>
-          {{ market?.ticker }}
-        </div>
+      <div>
+        {{ market?.ticker }}
       </div>
     </div>
 
@@ -186,14 +135,35 @@ function onDetailsPage() {
 
     <div class="flex items-center justify-end">{{ duration }}</div>
 
+    <div class="flex items-center justify-end">
+      <span v-if="strategy.stopReason === StopReason.User">
+        {{ $t('sgt.user') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.StopLoss">
+        {{ $t('sgt.stopLoss') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.TakeProfit">
+        {{ $t('sgt.takeProfit') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.InsufficientFunds">
+        {{ $t('sgt.insufficientFunds') }}
+      </span>
+
+      <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
+        {{ $t('sgt.exceededMaxRetries') }}
+      </span>
+    </div>
+
     <div class="flex items-center justify-center">
-      <NuxtLink
-        class="underline hover:text-blue-500"
-        :to="{ name: 'activity-spot' }"
+      <div
+        class="underline hover:text-blue-500 cursor-pointer"
         @click="onDetailsPage"
       >
-        Details
-      </NuxtLink>
+        {{ $t('sgt.details') }}
+      </div>
     </div>
   </div>
 </template>

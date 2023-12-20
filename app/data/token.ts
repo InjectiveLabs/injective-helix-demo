@@ -1,10 +1,10 @@
-import { INJ_DENOM } from '@injectivelabs/utils'
 import {
   getChecksumAddress,
   CW20_ADAPTER_CONTRACT_BY_NETWORK
 } from '@injectivelabs/sdk-ts'
-import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { NETWORK } from '@/app/utils/constants'
 import { denomClient, tokenMetaUtils } from '@/app/Services'
 import { USDCSymbol } from '@/types'
@@ -16,6 +16,11 @@ export const injToken = {
   ...tokenMetaUtils.getMetaBySymbol('INJ'),
   usdPrice: 0
 } as TokenWithPrice
+
+export const usdtToken = {
+  ...(tokenMetaUtils.getMetaBySymbol('USDT') || {}),
+  denom: `peggy${tokenMetaUtils.getMetaBySymbol('USDT')?.erc20?.address}` || ''
+} as Token
 
 interface NetworkToSymbolMap {
   [key: string]: string
@@ -117,5 +122,15 @@ export const usdcTokenDenoms = [
   // usdcTokenDenom.USDCso
 ]
 
-export const stableCoinDenoms = ['USDT', 'USDC', 'USDCet', 'USDCso']
+export const stableCoinDenoms = [
+  'USDT',
+  'USDC',
+  'USDCet',
+  'USDCso',
+  'USDCnb',
+  'USDTkv'
+]
+export const KAVA_USDT_SYMBOL = 'USDTkv'
+export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
+export const SWAP_LOW_LIQUIDITY_SYMBOLS = ['GF', 'ORAI', 'SOMM', 'NEOK']

@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Token } from '@injectivelabs/token-metadata'
 import {
-  ActivityTab,
   ActivityForm,
   ActivityField,
+  ActivitySubPage,
   UiMarketWithToken
 } from '@/types'
 import { getDenomsFromToken } from '@/app/data/token'
@@ -14,7 +14,7 @@ const derivativeStore = useDerivativeStore()
 const formValues = useFormValues<ActivityForm>()
 
 const markets = computed<UiMarketWithToken[]>(() =>
-  [ActivityTab.Spot, ActivityTab.WalletHistory].some((page) =>
+  [ActivitySubPage.Spot, ActivitySubPage.WalletHistory].some((page) =>
     (route.name as string).startsWith(page)
   )
     ? spotStore.markets

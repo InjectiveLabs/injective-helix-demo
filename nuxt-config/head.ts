@@ -31,6 +31,7 @@ export default {
     {
       src: '/chart/charting_library/charting_library.js',
       body: 'true'
-    }
+    },
+    { innerHTML: 'var exports = {}' }
   ] as any
 }

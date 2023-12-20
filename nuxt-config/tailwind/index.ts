@@ -10,6 +10,7 @@ export const colors = {
   black: '#04070a',
   transparent: 'transparent',
   current: 'current-color',
+  primaryLight: 'rgba(0, 242, 254, 0.2)',
 
   gray: {
     100: '#F8F8F8',
@@ -47,6 +48,7 @@ export const colors = {
   },
 
   orange: {
+    400: '#F3A400',
     500: '#F7931A'
   },
 

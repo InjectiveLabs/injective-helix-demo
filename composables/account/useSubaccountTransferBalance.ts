@@ -1,7 +1,7 @@
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { SubaccountTransferField, SubaccountTransferForm } from '@/types'
-import { injToken } from '~/app/data/token'
+import { injToken } from '@/app/data/token'
 
 export function useSubaccountTransferBalance(
   formValues: Ref<SubaccountTransferForm>

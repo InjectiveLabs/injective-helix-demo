@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import { ViteConfig } from 'nuxt/schema'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from '@bangjelkoski/vite-plugin-node-polyfills'
-
 const buildSourceMap = process.env.BUILD_SOURCEMAP !== 'false'
 
 export default defineConfig({

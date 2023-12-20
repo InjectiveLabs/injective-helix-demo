@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { upcomingMarkets } from '@/app/data/market'
 import { getHubUrl } from '@/app/utils/helpers'
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
@@ -17,7 +17,7 @@ const isModalOpen = computed(() => modalStore.modals[Modal.MarketNew])
 
 function closeModal() {
   modalStore.closeModal(Modal.MarketNew)
-  router.push({ name: 'index' })
+  router.push({ name: MainPage.Index })
 }
 
 function onModalClose() {
@@ -26,7 +26,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" sm @modal:closed="onModalClose">
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3 class="text-base">
         {{ $t('marketNew.title') }}
@@ -49,7 +49,7 @@ function onModalClose() {
 
       <div class="mt-6 flex items-center justify-center">
         <NuxtLink :to="bridgeUrl" target="_blank">
-          <AppButton lg class="text-blue-900 bg-blue-500">
+          <AppButton is-lg class="text-blue-900 bg-blue-500">
             <div class="flex items-center justify-center">
               <span class="mr-2 font-semibold">
                 {{ $t('marketNew.depositNow') }}

@@ -2,14 +2,16 @@
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
+const tokenStore = useTokenStore()
 const formValues = useFormValues() as Ref<TradeForm>
 
 const props = defineProps({
   isBuy: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   executionPrice: {
     type: Object as PropType<BigNumberInBase>,
@@ -114,6 +116,18 @@ const { valueToString: notionalWithFeesToFormat } = useBigNumberFormatter(
   }
 )
 
+const { valueToString: notionalWithFeesInUsdToFormat } = useBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(
+      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+    ).times(props.notionalWithFees)
+  ),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
+  }
+)
+
 const minimumReceivedAmount = computed(() => {
   if (props.executionPrice.lte('0')) {
     return ZERO_IN_BASE
@@ -153,10 +167,23 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           executionPrice,
           liquidationPrice,
           minimumReceivedAmount,
-          orderTypeReduceOnly
+          isOrderTypeReduceOnly
         }"
       >
-        <template #total>{{ notionalWithFeesToFormat }}</template>
+        <template #total>
+          <span>{{ notionalWithFeesToFormat }}</span>
+          <span class="text-gray-500 ml-1 break-normal">
+            {{ market.quoteToken.symbol }}
+          </span>
+          <span
+            v-if="
+              QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(market.quoteToken.denom)
+            "
+            class="text-xs text-gray-500 ml-1"
+          >
+            ${{ notionalWithFeesInUsdToFormat }}
+          </span>
+        </template>
         <template #executionPrice>{{ executionPriceToFormat }}</template>
         <template #marketMinimumReceivedAmount>
           {{ minimumReceivedAmountToFormat }}
@@ -166,7 +193,6 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           <PartialsTradingOrderDetailsMakerTakerFeeRate
             v-bind="{
               market,
-              postOnly: formValues[TradeField.PostOnly],
               tradingType: formValues[TradeField.TradingType]
             }"
           />
@@ -177,9 +203,7 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
             v-bind="{
               fees,
               market,
-              notionalValue,
-              postOnly: formValues[TradeField.PostOnly],
-              tradingType: formValues[TradeField.TradingType]
+              notionalValue
             }"
           />
         </template>
@@ -194,9 +218,7 @@ const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
           <PartialsTradingOrderDetailsExpectedPoints
             v-bind="{
               fees,
-              market,
-              postOnly: formValues[TradeField.PostOnly],
-              tradingType: formValues[TradeField.TradingType]
+              market
             }"
           />
         </template>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { Modal, UiMarketWithToken, UiTrade } from '@/types'
 
@@ -25,7 +24,7 @@ const sortedTrades = computed(() =>
   trades.value.sort((t1, t2) => t2.executedAt - t1.executedAt)
 )
 
-function handleShowTradeDetails(trade: UiTrade) {
+function onShowTradeDetails(trade: UiTrade) {
   tradeDetails.value = trade
 
   modalStore.openModal(Modal.MobileTradeDetails)
@@ -36,7 +35,7 @@ function handleShowTradeDetails(trade: UiTrade) {
   <div class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="sortedTrades.length === 0"
+      :is-empty="sortedTrades.length === 0"
       class="sm:hidden max-h-lg"
     >
       <PartialsCommonSubaccountTradeHistoryMobile
@@ -45,7 +44,7 @@ function handleShowTradeDetails(trade: UiTrade) {
         class="col-span-1"
         :trade="trade"
         :is-spot="isSpot"
-        @showTradeDetails="handleShowTradeDetails"
+        @showTradeDetails="onShowTradeDetails"
       />
 
       <template #empty>

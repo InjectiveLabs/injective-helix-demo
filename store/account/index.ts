@@ -15,7 +15,11 @@ import {
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
-import { isSgtSubaccountId } from 'app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
+import {
+  getDefaultAccountBalances,
+  getNonDefaultSubaccountBalances
+} from '@/app/client/utils/account'
 
 type AccountStoreState = {
   subaccountId: string
@@ -76,8 +80,49 @@ export const useAccountStore = defineStore('account', {
     externalTransfer,
     streamBankBalance,
     streamSubaccountBalance,
+    cancelBankBalanceStream,
+    cancelSubaccountBalanceStream,
 
     async fetchAccountPortfolio() {
+      const accountStore = useAccountStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      const accountPortfolio =
+        await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
+          walletStore.authZOrInjectiveAddress
+        )
+
+      const defaultAccountBalances = getDefaultAccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
+      )
+
+      const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
+      )
+
+      const subaccountId =
+        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+
+      accountStore.$patch({
+        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
+          ? subaccountId
+          : walletStore.authZOrDefaultSubaccountId,
+        bankBalances: accountPortfolio.bankBalancesList || [],
+        positionsWithUpnl: [],
+        subaccountBalancesMap: {
+          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
+          ...nonDefaultSubaccounts
+        }
+      })
+    },
+
+    async fetchAccountPortfolioUnrealizedPnL() {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
@@ -90,53 +135,14 @@ export const useAccountStore = defineStore('account', {
           walletStore.authZOrInjectiveAddress
         )
 
-      const defaultAccountBalances = (
-        accountPortfolio.subaccountsList || []
-      ).reduce((accountBalances, balance) => {
-        if (balance.subaccountId === walletStore.authZOrDefaultSubaccountId) {
-          return [
-            ...accountBalances,
-            {
-              denom: balance.denom,
-              totalBalance: balance.deposit?.totalBalance || '0',
-              availableBalance: balance.deposit?.availableBalance || '0'
-            } as SubaccountBalance
-          ]
-        }
+      const defaultAccountBalances = getDefaultAccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
+      )
 
-        return accountBalances
-      }, [] as SubaccountBalance[])
-
-      const nonDefaultSubaccounts = accountPortfolio.subaccountsList.reduce(
-        (accountBalances, subaccountBalance) => {
-          if (
-            subaccountBalance.subaccountId ===
-            walletStore.authZOrDefaultSubaccountId
-          ) {
-            return accountBalances
-          }
-
-          const existingAccountBalances =
-            accountBalances[subaccountBalance.subaccountId] || []
-
-          const subaccountAvailableBalance =
-            subaccountBalance?.deposit?.availableBalance || '0'
-          const subaccountTotalBalance =
-            subaccountBalance?.deposit?.totalBalance || '0'
-
-          return {
-            ...accountBalances,
-            [subaccountBalance.subaccountId]: [
-              ...existingAccountBalances,
-              {
-                denom: subaccountBalance.denom,
-                totalBalance: subaccountTotalBalance,
-                availableBalance: subaccountAvailableBalance
-              }
-            ]
-          }
-        },
-        {} as Record<string, SubaccountBalance[]>
+      const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
+        accountPortfolio.subaccountsList,
+        walletStore.authZOrDefaultSubaccountId
       )
 
       const subaccountId =

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Change, UiMarketWithToken, UiMarketSummary } from '@/types'
@@ -8,7 +7,7 @@ import { metaTags } from '@/nuxt-config/meta'
 const { t } = useLang()
 
 const props = defineProps({
-  lg: Boolean,
+  isLg: Boolean,
   isStatsBar: Boolean,
   isCurrentMarket: Boolean,
 
@@ -102,12 +101,12 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
         (lastTradedPrice.isNaN() || lastTradedPrice.lte(0))
       "
     >
-      <AppSpinner xs />
+      <AppSpinner is-xs />
     </div>
     <div v-else class="flex flex-col items-end font-mono">
       <div
         class="flex items-center tracking-wide leading-none"
-        :class="{ 'text-xs': !lg }"
+        :class="{ 'text-xs': !isLg }"
       >
         <BaseIcon
           v-if="

@@ -1,13 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityTab } from '@/types'
+import { ActivitySubPage } from '@/types'
 
 defineProps({
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
-  }
+  isLoading: Boolean
 })
 
 const spotStore = useSpotStore()
@@ -20,22 +15,22 @@ const { t } = useLang()
 const tabs = computed(() => [
   {
     label: t('activity.positions'),
-    to: { name: ActivityTab.Positions },
+    to: { name: ActivitySubPage.Positions },
     count: positionStore.subaccountPositionsCount
   },
   {
     label: t('activity.derivativeOrders'),
-    to: { name: ActivityTab.Derivatives },
+    to: { name: ActivitySubPage.Derivatives },
     count: derivativeStore.subaccountOrdersCount
   },
   {
     label: t('activity.spotOrders'),
-    to: { name: ActivityTab.Spot },
+    to: { name: ActivitySubPage.Spot },
     count: spotStore.subaccountOrdersCount
   },
   {
     label: t('activity.walletHistory'),
-    to: { name: ActivityTab.WalletHistory }
+    to: { name: ActivitySubPage.WalletHistory }
   }
 ])
 
@@ -55,7 +50,7 @@ const tabsFiltered = computed(() =>
     <div class="flex lg:grid grid-cols-4 gap-4">
       <CommonCardLink
         v-for="tab in tabsFiltered"
-        v-bind="{ to: tab.to, isLoading: status.isLoading() }"
+        v-bind="{ to: tab.to, isLoading }"
         :key="`tab-${tab.label}`"
       >
         <span>{{ tab.label }}</span>

@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 
 export * from './setup'
+export * from './campaign'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -12,10 +13,13 @@ export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 export const UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS = 4
 export const UI_DEFAULT_TOKEN_ASSET_DECIMALS = 8
 export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
+export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
+export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
   -UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 export const MAX_QUOTE_DECIMALS = 3
+export const MAX_QUOTE_TENS_MULTIPLIER = 3
 export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
@@ -77,4 +81,20 @@ export const SYMBOL_DISPLAY_LENGTH = 3
 
 export const GST_MINIMUM_GRIDS = 3
 export const GST_MAXIMUM_GRIDS = 50
-export const GST_MIN_TRADING_SIZE = 0.5
+export const GST_MIN_TRADING_SIZE = 5
+export const GST_GRID_THRESHOLD = 10
+export const GST_DEFAULT_AUTO_GRIDS = 20
+export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
+export const GST_SINGLE_SIDED_THRESHOLD = 0.01
+export const GST_KAVA_SINGLE_SIDED_THRESHOLD = 0.005
+export const GST_STABLE_LOWER_PRICE = '0.999'
+export const GST_STABLE_UPPER_PRICE = '1.001'
+export const GST_STABLE_LOWER_PERCENTAGE = '0.99'
+export const GST_STABLE_UPPER_PERCENTAGE = '1.01'
+export const GST_STABLE_GRIDS = 3
+export const GST_AUTO_PRICE_THRESHOLD = 2
+
+export const GST_ROUTE = 'trading-bots-grid-spot'
+
+export const DEFAULT_LP_ROUND = '1'
+export const USDT_TOKEN_DECIMALS = 6

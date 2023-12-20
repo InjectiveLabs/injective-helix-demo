@@ -2,14 +2,14 @@
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UiPriceLevel,
   UiPosition,
+  UiPriceLevel,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  MaxAmountOnOrderbook,
-  TradeField,
   TradeForm,
+  TradeField,
+  MaxAmountOnOrderbook,
   UiMarketWithToken
 } from '@/types'
 
@@ -21,7 +21,7 @@ const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
   isBaseAmount: Boolean,
-  orderTypeReduceOnly: Boolean,
+  isOrderTypeReduceOnly: Boolean,
 
   baseAvailableBalance: {
     type: Object as PropType<BigNumberInBase> | undefined,
@@ -70,10 +70,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (
-    e: 'update:amount',
-    { amount, isBaseAmount }: { amount?: string; isBaseAmount: boolean }
-  ): void
+  'update:amount': [payload: { amount?: string; isBaseAmount: boolean }]
 }>()
 
 const {
@@ -106,7 +103,7 @@ const tradingTypeLimit = props.isSpot
   ? spotTradingTypeLimit
   : derivativeTradingTypeLimit
 
-function updateAmount({
+function onAmountUpdate({
   amount,
   isBaseAmount
 }: {
@@ -129,7 +126,7 @@ function updateAmount({
         priceStep,
         priceFieldName: TradeField.TriggerPrice
       }"
-      @update:amount="updateAmount"
+      @update:amount="onAmountUpdate"
     />
 
     <PartialsTradingFormInputsPrice
@@ -146,7 +143,7 @@ function updateAmount({
         tradingTypeStopLimit,
         priceFieldName: TradeField.LimitPrice
       }"
-      @update:amount="updateAmount"
+      @update:amount="onAmountUpdate"
     />
   </div>
   <div class="flex gap-3">
@@ -163,26 +160,26 @@ function updateAmount({
         orderbookOrders,
         baseAmountFieldName: TradeField.BaseAmount
       }"
-      @update:amount="updateAmount"
+      @update:amount="onAmountUpdate"
     />
     <div class="flex flex-1 flex-col items-end">
       <PartialsTradingFormPercentageOptions
         class="mb-2"
         v-bind="{
-          baseAvailableBalance,
           feeRate,
           isBuy,
           isSpot,
           market,
-          maxAmountOnOrderbook,
+          position,
           maxReduceOnly,
           orderbookOrders,
-          orderTypeReduceOnly,
-          position,
+          isOrderTypeReduceOnly,
+          maxAmountOnOrderbook,
+          baseAvailableBalance,
           quoteAvailableBalance,
           percentageFieldName: TradeField.ProportionalPercentage
         }"
-        @update:amount="updateAmount"
+        @update:amount="onAmountUpdate"
       />
       <PartialsTradingFormInputsQuoteAmount
         v-bind="{
@@ -192,7 +189,7 @@ function updateAmount({
           quoteAvailableBalance,
           quoteAmountFieldName: TradeField.QuoteAmount
         }"
-        @update:amount="updateAmount"
+        @update:amount="onAmountUpdate"
       />
     </div>
   </div>

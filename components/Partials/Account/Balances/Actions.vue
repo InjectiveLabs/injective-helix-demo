@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps({
-  hideSmallBalances: Boolean,
+  isHideSmallBalances: Boolean,
   showMarginCurrencyOnly: Boolean,
 
   searchQuery: {
@@ -12,14 +12,14 @@ const props = defineProps({
 const emit = defineEmits<{
   'update:search': [state: string]
   'update:subaccount': [state: string]
-  'update:hide-small-balances': [state: boolean]
+  'update:is-hide-small-balances': [state: boolean]
   'update:show-margin-currency-only': [state: boolean]
 }>()
 
 const hideSmallBalancesCheck = computed({
-  get: (): boolean => props.hideSmallBalances,
+  get: (): boolean => props.isHideSmallBalances,
   set: (type: boolean) => {
-    emit('update:hide-small-balances', type)
+    emit('update:is-hide-small-balances', type)
   }
 })
 
@@ -49,9 +49,9 @@ const search = computed({
         class="col-span-1 w-full"
         data-cy="markets-search-input"
         input-classes="placeholder-white"
-        dense
-        transparent-bg
-        show-prefix
+        is-dense
+        is-transparent-bg
+        is-prefix-visible
         :placeholder="$t('account.filterByAsset')"
       />
     </div>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
+
+const swapStore = useSwapStore()
 
 defineProps({
   status: {
@@ -8,8 +9,6 @@ defineProps({
     default: () => new Status()
   }
 })
-
-const swapStore = useSwapStore()
 </script>
 
 <template>
@@ -20,7 +19,7 @@ const swapStore = useSwapStore()
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="swapStore.swapHistory.length === 0"
+        :is-empty="swapStore.swapHistory.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountSwapHistoryMobile
@@ -37,7 +36,7 @@ const swapStore = useSwapStore()
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="swapStore.swapHistory.length > 0" class="table">
           <PartialsCommonSubaccountSwapHistoryHeader />
           <tbody>

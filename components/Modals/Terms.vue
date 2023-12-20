@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
 
-function handleConfirm() {
+function onConfirm() {
   closeModal()
 
   modalStore.openModal(Modal.Connect)
 }
 
-function handleCancel() {
+function onCancel() {
   closeModal()
 }
 
@@ -34,7 +34,7 @@ function closeModal() {
           <NuxtLink
             target="_blank"
             class="text-blue-500 hover:text-opacity-80"
-            :to="{ name: 'terms' }"
+            :to="{ name: MainPage.Terms }"
           >
             {{ $t('terms.termsAndCondition') }}
           </NuxtLink>
@@ -74,13 +74,13 @@ function closeModal() {
       <div class="mt-6 flex items-center justify-center gap-3">
         <AppButton
           class="bg-blue-500 text-blue-900 font-semibold"
-          @click="handleConfirm"
+          @click="onConfirm"
         >
           {{ $t('common.confirm') }}
         </AppButton>
         <AppButton
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-          @click="handleCancel"
+          @click="onCancel"
         >
           {{ $t('common.cancel') }}
         </AppButton>

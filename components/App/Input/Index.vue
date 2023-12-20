@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
-
 const slots = useSlots()
 
 const props = defineProps({
-  sm: Boolean,
-  valid: Boolean,
-  noPadding: Boolean,
-  transparentBg: Boolean,
+  isSm: Boolean,
+  isValid: Boolean,
+  isNoPadding: Boolean,
+  isTransparentBg: Boolean,
 
   errors: {
     type: Array as PropType<string[]>,
@@ -28,7 +26,7 @@ const props = defineProps({
 const wrapperClass = computed(() => {
   const result = ['shadow-none']
 
-  if (!props.transparentBg) {
+  if (!props.isTransparentBg) {
     result.push('input-wrapper')
   }
 
@@ -40,15 +38,15 @@ const wrapperClass = computed(() => {
 const inputClass = computed(() => {
   const result = []
 
-  if (!props.noPadding) {
+  if (!props.isNoPadding) {
     result.push('px-3')
   }
 
-  if (props.sm) {
+  if (props.isSm) {
     result.push('h-8')
   }
 
-  if (props.transparentBg) {
+  if (props.isTransparentBg) {
     result.push('input-bg-transparent')
   }
 
@@ -60,11 +58,11 @@ const inputClass = computed(() => {
 const classes = computed(() => {
   const result = ['w-full']
 
-  if (props.valid) {
+  if (props.isValid) {
     result.push('is-valid')
   }
 
-  if (!props.valid && props.errors.length > 0) {
+  if (!props.isValid && props.errors.length > 0) {
     result.push('is-invalid')
   }
 

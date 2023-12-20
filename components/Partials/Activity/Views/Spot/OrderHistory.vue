@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
+
+const spotStore = useSpotStore()
 
 defineProps({
   status: {
@@ -8,8 +9,6 @@ defineProps({
     default: () => new Status()
   }
 })
-
-const spotStore = useSpotStore()
 
 const orderHistory = computed(() => spotStore.subaccountOrderHistory)
 </script>
@@ -22,7 +21,7 @@ const orderHistory = computed(() => spotStore.subaccountOrderHistory)
     <div class="w-full h-full">
       <!-- mobile table -->
       <CommonTableBody
-        :show-empty="orderHistory.length === 0"
+        :is-empty="orderHistory.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <PartialsCommonSubaccountOrderHistoryMobile
@@ -41,7 +40,7 @@ const orderHistory = computed(() => spotStore.subaccountOrderHistory)
         </template>
       </CommonTableBody>
 
-      <CommonTableWrapper break-md class="hidden sm:block">
+      <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="orderHistory.length > 0" class="table">
           <PartialsCommonSubaccountOrderHistoryHeader />
           <tbody>

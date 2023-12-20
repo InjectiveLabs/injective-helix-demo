@@ -1,23 +1,21 @@
 <script lang="ts" setup>
 import {
-  getDefaultPerpetualMarketRouteParams,
-  getDefaultSpotMarketRouteParams
+  getDefaultSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
-import { IS_MAINNET } from '@/app/utils/constants'
-
-const appStore = useAppStore()
+import { MainPage, TradingBotsSubPage } from '@/types'
 
 const tradeMenuOpen = ref(false)
 const rewardsMenuOpen = ref(false)
 
-const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
+const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 
-function handleToggleTradeMenu() {
+function toggleTradeMenu() {
   tradeMenuOpen.value = !tradeMenuOpen.value
 }
 
-function handleToggleRewardsMenu() {
+function toggleRewardsMenu() {
   rewardsMenuOpen.value = !rewardsMenuOpen.value
 }
 </script>
@@ -26,8 +24,8 @@ function handleToggleRewardsMenu() {
   <div class="block lg:hidden">
     <AppAccordion
       :is-open="tradeMenuOpen"
-      sm
-      @panel:toggle="handleToggleTradeMenu"
+      is-sm
+      @panel:toggle="toggleTradeMenu"
     >
       <template #title>
         <div class="flex gap-0.5">
@@ -39,7 +37,7 @@ function handleToggleRewardsMenu() {
       </template>
 
       <template #content>
-        <LayoutNavItem :to="{ name: 'swap' }">
+        <LayoutNavItem :to="{ name: MainPage.Swap }">
           <div class="flex items-center gap-2 font-normal tracking-wide">
             <p>
               {{ $t('navigation.swap') }}
@@ -56,27 +54,20 @@ function handleToggleRewardsMenu() {
         </LayoutNavItem>
 
         <LayoutNavItem :to="defaultSpotMarketRoute">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.spot')
-          }}</span>
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.spot') }}
+          </span>
         </LayoutNavItem>
 
         <LayoutNavItem :to="defaultPerpetualMarketRoute">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.perpetual')
-          }}</span>
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.perpetual') }}
+          </span>
         </LayoutNavItem>
 
-        <!-- <LayoutNavItem :to="{ name: 'convert' }">
-          <span class="font-normal tracking-wide">{{
-            $t('navigation.convert')
-          }}</span>
-        </LayoutNavItem> -->
-
         <LayoutNavItem
-          v-if="appStore.devMode && !IS_MAINNET"
           :to="{
-            name: 'trading-bots-grid-spot-market',
+            name: TradingBotsSubPage.GridSpotMarket,
             params: { market: 'inj-usdt' }
           }"
         >
@@ -89,8 +80,8 @@ function handleToggleRewardsMenu() {
 
     <AppAccordion
       :is-open="rewardsMenuOpen"
-      sm
-      @panel:toggle="handleToggleRewardsMenu"
+      is-sm
+      @panel:toggle="toggleRewardsMenu"
     >
       <template #title>
         <div class="text-sm font-semibold">
@@ -100,10 +91,28 @@ function handleToggleRewardsMenu() {
 
       <template #content>
         <div>
-          <LayoutNavItem :to="{ name: 'trade-and-earn' }">
+          <LayoutNavItem :to="{ name: MainPage.TradeAndEarn }">
             <span class="font-normal tracking-wide">
               {{ $t('navigation.tradeAndEarn') }}
             </span>
+          </LayoutNavItem>
+
+          <LayoutNavItem :to="{ name: MainPage.LpRewards }">
+            <div class="flex gap-1">
+              <span class="font-normal tracking-wide">
+                {{ $t('navigation.lpRewards') }}
+              </span>
+              <div class="bg-blue-500 rounded-full w-2 h-2 block lg:hidden" />
+            </div>
+          </LayoutNavItem>
+
+          <LayoutNavItem :to="{ name: MainPage.Guilds }">
+            <div class="flex gap-1">
+              <span class="font-normal tracking-wide">
+                {{ $t('navigation.guilds') }}
+              </span>
+              <div class="bg-blue-500 rounded-full w-2 h-2 block lg:hidden" />
+            </div>
           </LayoutNavItem>
 
           <a

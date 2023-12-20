@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 defineProps({
-  active: Boolean
+  isActive: Boolean
 })
 
 const emit = defineEmits<{
   click: []
 }>()
 
-function handleClick() {
+function click() {
   emit('click')
 }
 </script>
 
 <template>
-  <button class="flex justify-start gap-2" @click.stop="handleClick">
+  <button class="flex justify-start gap-2" @click.stop="click">
     <div class="w-4 h-4 border border-white rounded-full p-[3px]">
-      <div v-if="active" class="w-full h-full bg-white rounded-full" />
+      <div v-if="isActive" class="w-full h-full bg-white rounded-full" />
     </div>
     <div class="flex flex-col gap-2 justify-center items-start">
       <slot name="label" />

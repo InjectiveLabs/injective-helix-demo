@@ -17,6 +17,7 @@ import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
 } from '../account/stream'
+import { spotCacheApi } from '@/app/providers/cache/SpotCacheApi'
 import {
   streamTrades,
   cancelTradesStream,
@@ -43,6 +44,7 @@ import {
   indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
+  IS_MAINNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -53,6 +55,7 @@ import {
   ActivityFetchOptions,
   UiSpotOrderbookWithSequence
 } from '@/types'
+import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -66,8 +69,6 @@ type SpotStoreState = {
   subaccountOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
-
-  usdcConversionModalMarkets: UiSpotMarketWithToken[]
 }
 
 const initialStateFactory = (): SpotStoreState => ({
@@ -81,9 +82,7 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
-  subaccountOrderHistoryCount: 0,
-
-  usdcConversionModalMarkets: []
+  subaccountOrderHistoryCount: 0
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -102,20 +101,17 @@ export const useSpotStore = defineStore('spot', {
         .map((m) => m.marketId),
 
     tradeableDenoms: (state) =>
-      [...state.usdcConversionModalMarkets, ...state.markets].reduce(
-        (denoms, market) => {
-          if (!denoms.includes(market.baseDenom)) {
-            denoms.push(market.baseDenom)
-          }
+      [...state.markets].reduce((denoms, market) => {
+        if (!denoms.includes(market.baseDenom)) {
+          denoms.push(market.baseDenom)
+        }
 
-          if (!denoms.includes(market.quoteDenom)) {
-            denoms.push(market.quoteDenom)
-          }
+        if (!denoms.includes(market.quoteDenom)) {
+          denoms.push(market.quoteDenom)
+        }
 
-          return denoms
-        },
-        [] as string[]
-      ),
+        return denoms
+      }, [] as string[]),
 
     marketsWithSummary: (state) =>
       state.markets
@@ -137,6 +133,10 @@ export const useSpotStore = defineStore('spot', {
     streamSubaccountOrderHistory,
 
     cancelOrder,
+    cancelSubaccountOrdersStream,
+    cancelSubaccountTradesStream,
+    cancelSubaccountOrdersHistoryStream,
+
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
@@ -145,9 +145,9 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
 
-      const markets = await indexerSpotApi.fetchMarkets()
-
+      const markets = await apiClient.fetchMarkets()
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets
       )
@@ -195,34 +195,11 @@ export const useSpotStore = defineStore('spot', {
         marketIdsFromQuery
       })
 
-      await spotStore.init()
-    },
-
-    async fetchUsdcConversionMarkets() {
-      const spotStore = useSpotStore()
-
-      const markets = await indexerSpotApi.fetchMarkets()
-
-      const marketsWithToken = await tokenService.toSpotMarketsWithToken(
-        markets
-      )
-      const uiMarkets =
-        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
-
-      const usdcConversionModalMarketsWithToken = uiMarkets
-        .filter((market) => {
-          return MARKETS_SLUGS.usdcConversionModalMarkets.includes(market.slug)
-        })
-        .sort((a, b) => {
-          return (
-            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(a.slug) -
-            MARKETS_SLUGS.usdcConversionModalMarkets.indexOf(b.slug)
-          )
-        })
-
-      spotStore.$patch({
-        usdcConversionModalMarkets: usdcConversionModalMarketsWithToken
-      })
+      if (marketIdsFromQuery.length === 0) {
+        await spotStore.initIfNotInit()
+      } else {
+        await spotStore.init()
+      }
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
@@ -251,12 +228,46 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    async fetchOrdersBySubaccount({
+      subaccountId,
+      marketIds
+    }: {
+      subaccountId: string
+      marketIds: string[]
+    }) {
+      const spotStore = useSpotStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.isUserWalletConnected || !subaccountId) {
+        return
+      }
+
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        subaccountId,
+        marketIds: marketIds || spotStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
+      })
+
+      spotStore.$patch({
+        subaccountOrders: orders,
+        subaccountOrdersCount: Math.min(
+          pagination.total,
+          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        )
+      })
+    },
+
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (
+        !walletStore.isUserWalletConnected ||
+        !(accountStore.subaccountId || options?.subaccountId)
+      ) {
         return
       }
 
@@ -264,7 +275,9 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId: accountStore.subaccountId,
+          subaccountId: options?.subaccountId
+            ? options?.subaccountId
+            : accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
@@ -328,6 +341,22 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    async fetchLastTrade({
+      marketId,
+      executionSide
+    }: {
+      marketId: string
+      executionSide?: TradeExecutionSide
+    }) {
+      const { trades } = await indexerSpotApi.fetchTrades({
+        marketIds: [marketId],
+        executionSide,
+        pagination: { limit: 1 }
+      })
+
+      return trades[0]
+    },
+
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
@@ -355,26 +384,58 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
-      const marketSummaries =
-        await indexerRestSpotChronosApi.fetchMarketsSummary()
+      try {
+        const marketSummaries = await apiClient.fetchMarketsSummary()
 
-      const marketsWithoutMarketSummaries = marketSummaries.filter(
-        ({ marketId }) =>
-          !markets.some((market) => market.marketId === marketId)
-      )
+        const marketsWithoutMarketSummaries = marketSummaries.filter(
+          ({ marketId }) =>
+            !markets.some((market) => market.marketId === marketId)
+        )
 
-      spotStore.$patch({
-        marketsSummary: [
-          ...marketSummaries.map(
-            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
-          ),
-          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-            zeroSpotMarketSummary(marketId)
-          )
-        ]
+        spotStore.$patch({
+          marketsSummary: [
+            ...marketSummaries.map(
+              UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+            ),
+            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+              zeroSpotMarketSummary(marketId)
+            )
+          ]
+        })
+
+        spotStore.getPricesFromMarketsSummary(marketSummaries)
+      } catch (e) {
+        // don't do anything for now
+      }
+    },
+
+    getPricesFromMarketsSummary(marketsSummary: UiSpotMarketSummary[]) {
+      const tokenStore = useTokenStore()
+
+      const priceMap = MARKET_IDS_WITHOUT_COINGECKO_ID.map((market) => {
+        const marketSummary = marketsSummary.find(
+          (m) => m.marketId === market.marketId
+        )!
+
+        const quoteMarketSummary = marketsSummary.find(
+          (marketSum) => marketSum.marketId === market.quoteMarket
+        )
+
+        const lastPrice = market.isUsdtQuote
+          ? marketSummary.price || 0
+          : (marketSummary.price || 0) * (quoteMarketSummary?.price || 0)
+
+        return {
+          [market.coingeckoId]: lastPrice
+        }
+      }).reduce((acc, curr) => ({ ...acc, ...curr }), {})
+
+      tokenStore.$patch({
+        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
       })
     },
 
@@ -384,6 +445,15 @@ export const useSpotStore = defineStore('spot', {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()
+    },
+
+    resetOrderbookAndTrades() {
+      const spotStore = useSpotStore()
+
+      spotStore.$patch({
+        trades: [],
+        orderbook: undefined
+      })
     },
 
     resetSubaccount() {

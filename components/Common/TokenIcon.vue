@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
 import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
-  sm: Boolean,
-  lg: Boolean,
-  xl: Boolean,
+  isSm: Boolean,
+  isLg: Boolean,
+  isXl: Boolean,
 
   token: {
     type: Object as PropType<Token | TokenWithPrice>,
@@ -19,15 +18,15 @@ const logoPath = computed(() =>
 )
 
 const sizeClasses = computed(() => {
-  if (props.sm) {
+  if (props.isSm) {
     return 'w-4 h-4 min-w-4'
   }
 
-  if (props.lg) {
+  if (props.isLg) {
     return 'w-8 h-8 min-w-8'
   }
 
-  if (props.xl) {
+  if (props.isXl) {
     return 'w-10 h-10 min-w-10'
   }
 

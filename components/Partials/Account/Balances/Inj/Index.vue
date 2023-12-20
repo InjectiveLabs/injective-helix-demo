@@ -1,12 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 const exchangeStore = useExchangeStore()
+const accountStore = useAccountStore()
 
 defineProps({
-  hideBalances: Boolean,
+  isHideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -14,7 +15,7 @@ defineProps({
   }
 })
 
-const showStaked = ref(false)
+const isShowStaked = ref(false)
 
 const hasStaked = computed(() => {
   if (
@@ -33,25 +34,29 @@ const hasStaked = computed(() => {
 
 onMounted(() => {
   if (hasStaked.value) {
-    showStaked.value = true
+    isShowStaked.value = true
   }
 })
+
+function toggleDrawer() {
+  isShowStaked.value = !isShowStaked.value
+}
 </script>
 
 <template>
-  <template v-if="hasStaked">
+  <template v-if="hasStaked && accountStore.isDefaultSubaccount">
     <PartialsAccountBalancesInjHeader
       v-bind="{
         ...$attrs,
         balance,
-        hideBalances,
-        showStaked
+        isHideBalances,
+        isShowStaked
       }"
-      @drawer:toggle="showStaked = !showStaked"
+      @drawer:toggle="toggleDrawer"
     />
     <PartialsAccountBalancesInjRowStaked
-      v-if="showStaked"
-      v-bind="{ hideBalances }"
+      v-if="isShowStaked"
+      v-bind="{ isHideBalances }"
     />
   </template>
   <template v-else>
@@ -59,7 +64,7 @@ onMounted(() => {
       v-bind="{
         ...$attrs,
         balance,
-        hideBalances
+        isHideBalances
       }"
     />
   </template>

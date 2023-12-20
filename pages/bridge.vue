@@ -1,38 +1,56 @@
-<script setup lang="ts">
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+<script lang="ts" setup>
+import { BridgingNetwork, CosmosNetworks } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TokenType } from '@injectivelabs/token-metadata'
+import { WalletException } from '@injectivelabs/exceptions'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { injToken } from '@/app/data/token'
 import { BridgeField, BridgeForm, BridgeType, Modal } from '@/types'
-import { getDenomAndTypeFromQuery } from '@/app/data/bridge'
-import { denomClient } from 'app/Services'
+import { getDenomAndTypeFromQuery, COSMOS_CHAIN_ID } from '@/app/data/bridge'
+import {
+  getBridgingNetworkFromDenom,
+  getNetworkDefaultToken
+} from '@/app/client/utils/bridge'
 
 definePageMeta({
   middleware: ['connected']
 })
 
 const route = useRoute()
+const ibcStore = useIbcStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
+const connectCosmosStatus = reactive(new Status(StatusType.Idle))
 
-const { values: formValues, resetForm } = useForm<BridgeForm>({
-  initialValues: {
-    [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
-    [BridgeField.BridgeType]: BridgeType.Deposit,
-    [BridgeField.Token]: injToken,
-    [BridgeField.Denom]: injToken.denom,
-    [BridgeField.Amount]: '',
-    [BridgeField.Memo]: '',
-    [BridgeField.Destination]: ''
-  },
-  keepValuesOnUnmount: true
+const { values: formValues, resetForm: resetFormValidation } =
+  useForm<BridgeForm>({
+    initialValues: {
+      [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
+      [BridgeField.Denom]: injToken.denom,
+      [BridgeField.Amount]: '',
+      [BridgeField.Memo]: '',
+      [BridgeField.Destination]: ''
+    },
+    keepValuesOnUnmount: true
+  })
+
+const { value: bridgeTypeValue } = useStringField({
+  name: BridgeField.BridgeType,
+  initialValue: BridgeType.Deposit
 })
 
+const setFormValues = useSetFormValues()
+
 const { isDeposit, isWithdraw, isTransfer } = useBridgeState(
+  computed(() => formValues)
+)
+
+const { balanceWithToken, supplyWithBalance } = useBridgeBalance(
   computed(() => formValues)
 )
 
@@ -45,64 +63,163 @@ onMounted(() => {
     .catch($onError)
     .finally(() => status.setIdle())
 
-  handlePreFillCosmosWallet()
-  handlePreFillFromQuery()
+  if (Object.keys(route.query).length === 0) {
+    preFillCosmosWallet()
+
+    return
+  }
+
+  preFillFromQuery()
 })
 
 onUnmounted(() => {
   accountStore.$reset()
+  ibcStore.reset()
 })
 
-function handlePreFillCosmosWallet() {
+function resetForm() {
+  resetFormValidation({
+    values: {
+      [BridgeField.BridgingNetwork]: isTransfer.value
+        ? BridgingNetwork.Injective
+        : formValues[BridgeField.BridgingNetwork],
+      [BridgeField.Denom]: formValues[BridgeField.Denom],
+      [BridgeField.Amount]: '',
+      [BridgeField.Memo]: '',
+      [BridgeField.BridgeType]: formValues[BridgeField.BridgeType],
+      [BridgeField.Destination]: formValues[BridgeField.Destination]
+    }
+  })
+}
+
+function preFillCosmosWallet() {
   if (walletStore.isCosmosWallet) {
-    formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+    setFormValues(
+      {
+        [BridgeField.BridgingNetwork]: BridgingNetwork.CosmosHub
+      },
+      false
+    )
+
+    onConnectCosmosIbc(formValues[BridgeField.BridgingNetwork])
   }
 }
 
-function handlePreFillFromQuery() {
+function onConnectCosmosIbc(network: BridgingNetwork) {
+  /** Ninji is not supported for other cosmos chains */
+  if (walletStore.wallet === Wallet.Ninji) {
+    return $onError(
+      new WalletException(new Error('Ninji is not supported for IBC'))
+    )
+  }
+
+  ibcStore.reset()
+  connectCosmosStatus.setLoading()
+
+  ibcStore
+    .connectWithBalances(COSMOS_CHAIN_ID[network])
+    .then(() => {
+      setFormValues(
+        {
+          [BridgeField.Denom]: getNetworkDefaultToken(
+            ibcStore.balancesWithToken,
+            balanceWithToken.value?.token
+          ).token.denom
+        },
+        false
+      )
+      resetForm()
+    })
+    .catch($onError)
+    .finally(() => {
+      connectCosmosStatus.setIdle()
+    })
+}
+
+function preFillFromQuery() {
   if (!route.query) {
     return
   }
 
   const { denom, bridgeType, tokenType } = getDenomAndTypeFromQuery(route.query)
-
-  formValues[BridgeField.BridgeType] = bridgeType
+  setFormValues(
+    {
+      [BridgeField.BridgeType]: bridgeType
+    },
+    false
+  )
 
   switch (true) {
     case tokenType === TokenType.Erc20 && denom.startsWith('peggy'):
-      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
-      formValues[BridgeField.Denom] = denom
+      setFormValues(
+        {
+          [BridgeField.BridgingNetwork]: BridgingNetwork.Ethereum,
+          [BridgeField.Denom]: getNetworkDefaultToken(
+            supplyWithBalance.value,
+            tokenStore.tradeableTokens.find((token) => token.denom === denom)
+          ).token.denom
+        },
+        false
+      )
       break
     case tokenType === TokenType.Ibc:
-      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.CosmosHub
+      setFormValues(
+        {
+          [BridgeField.BridgingNetwork]: getBridgingNetworkFromDenom(denom),
+          [BridgeField.Denom]: denom
+        },
+        false
+      )
+      onConnectCosmosIbc(formValues[BridgeField.BridgingNetwork])
       break
     case tokenType === TokenType.Cw20 || tokenType === TokenType.TokenFactory:
-      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.EthereumWh
+      setFormValues(
+        {
+          [BridgeField.BridgingNetwork]: BridgingNetwork.EthereumWh
+        },
+        false
+      )
       break
     case tokenType === TokenType.Spl:
-      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Solana
+      setFormValues(
+        {
+          [BridgeField.BridgingNetwork]: BridgingNetwork.Solana
+        },
+        false
+      )
       break
     default:
-      formValues[BridgeField.BridgingNetwork] = BridgingNetwork.Ethereum
-      formValues[BridgeField.Denom] = denom
-  }
+      setFormValues(
+        {
+          [BridgeField.BridgingNetwork]: walletStore.isCosmosWallet
+            ? BridgingNetwork.CosmosHub
+            : BridgingNetwork.Ethereum,
+          [BridgeField.Denom]: denom
+        },
+        false
+      )
 
-  const token = denomClient.getDenomTokenStatic(denom)
-
-  if (token) {
-    formValues[BridgeField.Token] = token
+      if (CosmosNetworks.includes(formValues[BridgeField.BridgingNetwork])) {
+        onConnectCosmosIbc(formValues[BridgeField.BridgingNetwork])
+      }
   }
 }
 
-function handleBridgeConfirmed() {
+function onBridgeConfirmed() {
   modalStore.closeModal(Modal.BridgeConfirm)
+  resetForm()
 }
 
 watch(
   () => formValues.BridgeType,
   (value) => {
     resetForm()
-    formValues.BridgeType = value
+    setFormValues(
+      {
+        [BridgeField.BridgeType]: value
+      },
+      false
+    )
   }
 )
 </script>
@@ -113,7 +230,7 @@ watch(
       <div>
         <div class="flex justify-start mb-6 gap-2">
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Deposit"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
@@ -128,7 +245,7 @@ watch(
           </AppSelectButton>
           <CommonSeparator />
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Withdraw"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
@@ -143,7 +260,7 @@ watch(
           </AppSelectButton>
           <CommonSeparator />
           <AppSelectButton
-            v-model="formValues[BridgeField.BridgeType]"
+            v-model="bridgeTypeValue"
             :value="BridgeType.Transfer"
             class="text-xs uppercase tracking-wide cursor-pointer"
             :class="[
@@ -160,7 +277,10 @@ watch(
       </div>
       <div class="p-6 bg-gray-850 rounded-lg">
         <AppHocLoading v-bind="{ status }">
-          <PartialsBridgeFormNetworkSelect>
+          <PartialsBridgeFormNetworkSelect
+            v-bind="{ isDisabled: connectCosmosStatus.isLoading() }"
+            @ibc:connect="onConnectCosmosIbc"
+          >
             <template #title>
               <span v-if="isDeposit">
                 {{ $t('bridge.selectOriginNetwork') }}
@@ -173,8 +293,11 @@ watch(
               </span>
             </template>
           </PartialsBridgeFormNetworkSelect>
-          <PartialsBridge />
-          <ModalsBridgeConfirm @form:submit="handleBridgeConfirmed" />
+          <PartialsBridge
+            v-bind="{ isConnecting: connectCosmosStatus.isLoading() }"
+            @ibc:connect="onConnectCosmosIbc"
+          />
+          <ModalsBridgeConfirm @form:submit="onBridgeConfirmed" />
           <ModalsBridgeCompleted />
         </AppHocLoading>
       </div>

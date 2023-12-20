@@ -1,7 +1,9 @@
 import type { Ref } from 'vue'
 import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { Route } from '@injectivelabs/sdk-ts'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS, usdtToken } from '@/app/data/token'
 
 const getBalanceWithToken = (
   swapDenom: string,
@@ -49,6 +51,18 @@ export function useSwapTokenSelector({
           return tokens
         }
 
+        /** Filter out illiquid markets */
+        if (
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+            inputTokenWithBalance?.token.symbol.toUpperCase()
+          ) ||
+          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+            outputTokenWithBalance?.token.symbol.toUpperCase()
+          )
+        ) {
+          return tokens
+        }
+
         const inputTokens = tokens[route.targetDenom]
           ? [...tokens[route.targetDenom], inputTokenWithBalance]
           : [inputTokenWithBalance]
@@ -82,16 +96,21 @@ export function useSwapTokenSelector({
 
   /**
    * Token selector output denom must be tradable to the input denom
-   * So we either keep the curently selected output denom or update to a default one
+   * So we either keep the currently selected output denom or update to a default one
    **/
   const selectorOutputDenom = computed(() => {
     const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(
       (token: BalanceWithTokenAndPrice) => token.denom === outputDenom.value
     )?.denom
-    const defaultOutputDenom =
-      tradableTokenMaps.value[inputDenom.value][0].denom
 
-    return selectedOutputDenom || defaultOutputDenom
+    if (tradableTokenMaps.value[inputDenom.value]) {
+      return usdtToken.denom
+    }
+
+    const defaultOutputDenom =
+      tradableTokenMaps.value[inputDenom.value][0]?.denom
+
+    return selectedOutputDenom || defaultOutputDenom || usdtToken.denom
   })
 
   /**
@@ -102,10 +121,15 @@ export function useSwapTokenSelector({
     const selectedInputDenom = tradableTokenMaps.value[outputDenom.value]?.find(
       (token: BalanceWithTokenAndPrice) => token.denom === inputDenom.value
     )?.denom
-    const defaultInputDenom =
-      tradableTokenMaps.value[outputDenom.value][0].denom
 
-    return selectedInputDenom || defaultInputDenom
+    if (!tradableTokenMaps.value[outputDenom.value]) {
+      return INJ_DENOM
+    }
+
+    const defaultInputDenom =
+      tradableTokenMaps.value[outputDenom.value][0]?.denom
+
+    return selectedInputDenom || defaultInputDenom || INJ_DENOM
   })
 
   return {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const isOpen = ref(true)
 
-function handleToggle() {
+function toggle() {
   isOpen.value = !isOpen.value
 }
 </script>
@@ -10,7 +10,7 @@ function handleToggle() {
   <div>
     <div
       class="group flex justify-end w-full cursor-pointer relative"
-      @click.stop="handleToggle"
+      @click.stop="toggle"
     >
       <div class="max-w-full flex-1 pr-5">
         <slot name="header" />

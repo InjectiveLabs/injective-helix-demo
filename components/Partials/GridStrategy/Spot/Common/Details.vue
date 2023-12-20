@@ -1,5 +1,6 @@
-<script setup lang="ts">
-import { addressAndMarketSlugToSubaccountId } from 'app/utils/helpers'
+<script lang="ts" setup>
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { ActivitySubPage } from '@/types'
 
 const router = useRouter()
 const walletStore = useWalletStore()
@@ -7,7 +8,7 @@ const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 
 function detailsPageChange() {
-  router.push({ name: 'activity-spot' })
+  router.push({ name: ActivitySubPage.Spot })
 
   accountStore.$patch({
     subaccountId: addressAndMarketSlugToSubaccountId(

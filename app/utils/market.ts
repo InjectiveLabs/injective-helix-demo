@@ -9,13 +9,13 @@ import {
   BigNumberInBase,
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
-import { ExpiryFuturesMarket, PriceLevel } from '@injectivelabs/sdk-ts'
 import {
-  DefaultMarket,
-  MarketCategoryType,
-  MarketQuoteType,
-  MarketRoute
-} from '@/types'
+  PriceLevel,
+  SpotMarket,
+  DerivativeMarket,
+  ExpiryFuturesMarket
+} from '@injectivelabs/sdk-ts'
+import { MarketStatus } from '../../types/exchange'
 import {
   upcomingMarkets,
   deprecatedMarkets,
@@ -23,13 +23,26 @@ import {
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory
 } from '@/app/data/market'
+import { IS_TESTNET } from '@/app/utils/constants'
+import {
+  MarketRoute,
+  TradeSubPage,
+  DefaultMarket,
+  MarketQuoteType,
+  MarketCategoryType,
+  TradingBotsSubPage
+} from '@/types'
+
+interface PriceLevelMap {
+  [price: string]: PriceLevel
+}
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
 ): MarketRoute => {
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
-      name: 'market-market',
+      name: TradeSubPage.Market,
       params: {
         market: market.slug
       }
@@ -38,7 +51,7 @@ export const getMarketRoute = (
 
   if (deprecatedMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
-      name: 'market-market',
+      name: TradeSubPage.Market,
       params: {
         market: market.slug
       }
@@ -48,7 +61,7 @@ export const getMarketRoute = (
   if (market.type === MarketType.Derivative) {
     if (market.subType === MarketType.BinaryOptions) {
       return {
-        name: 'binary-options-binaryOption',
+        name: TradeSubPage.BinaryOption,
         params: {
           binaryOption: market.slug
         }
@@ -57,7 +70,7 @@ export const getMarketRoute = (
 
     if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
       return {
-        name: 'futures-futures',
+        name: TradeSubPage.Futures,
         params: {
           futures: market.slug
         }
@@ -66,7 +79,7 @@ export const getMarketRoute = (
 
     /* Default derivative market route */
     return {
-      name: 'derivatives-derivative',
+      name: TradeSubPage.Derivatives,
       params: {
         derivative: market.slug
       }
@@ -75,7 +88,7 @@ export const getMarketRoute = (
 
   if (market.type === MarketType.Spot) {
     return {
-      name: 'spot-spot',
+      name: TradeSubPage.Spot,
       params: {
         spot: market.slug
       }
@@ -83,7 +96,7 @@ export const getMarketRoute = (
   }
 
   return {
-    name: 'market-market',
+    name: TradeSubPage.Market,
     params: {
       market: market.slug
     }
@@ -92,16 +105,16 @@ export const getMarketRoute = (
 
 export const getDefaultPerpetualMarketRouteParams = () => {
   return {
-    name: 'futures-futures',
+    name: TradeSubPage.Futures,
     params: {
-      futures: DefaultMarket.Perpetual
+      futures: getDefaultFuturesMarket()
     }
   }
 }
 
 export const getDefaultSpotMarketRouteParams = () => {
   return {
-    name: 'spot-spot',
+    name: TradeSubPage.Spot,
     params: {
       spot: DefaultMarket.Spot
     }
@@ -110,12 +123,15 @@ export const getDefaultSpotMarketRouteParams = () => {
 
 export const getDefaultGridSpotMarketRouteParams = () => {
   return {
-    name: 'trading-bots-grid-spot-market',
+    name: TradingBotsSubPage.GridSpotMarket,
     params: {
       market: DefaultMarket.Spot
     }
   }
 }
+
+export const getDefaultFuturesMarket = () =>
+  IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
@@ -125,19 +141,18 @@ export const marketIsPartOfCategory = (
     return true
   }
 
-  const marketHasIbcDenom =
-    market.baseToken.denom.startsWith('ibc') ||
-    market.quoteDenom.startsWith('ibc')
+  const isIbcBaseDenomMarket = market.baseToken.denom.startsWith('ibc')
 
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
-      marketHasIbcDenom || slugsToIncludeInCosmosCategory.includes(market.slug)
+      isIbcBaseDenomMarket ||
+      slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
-      !marketHasIbcDenom &&
+      !isIbcBaseDenomMarket &&
       slugsToIncludeInEthereumCategory.includes(market.slug)
     )
   }
@@ -157,10 +172,15 @@ export const marketIsQuotePair = (
     return true
   }
 
+  const usdtkvSymbolLowercased = MarketQuoteType.USDTkv.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
   const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
+
+  if (activeQuote === MarketQuoteType.USDTkv) {
+    return marketQuoteSymbol.includes(usdtkvSymbolLowercased)
+  }
 
   if (activeQuote === MarketQuoteType.USDT) {
     return marketQuoteSymbol.includes(usdtSymbolLowercased)
@@ -234,6 +254,16 @@ export const getFormattedMarketsHistoryChartData = (
   })
 }
 
+export const marketIsInactive = (market: DerivativeMarket) => {
+  const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
+
+  return INACTIVE_MARKET_TICKERS.includes(market.ticker)
+}
+
+export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
+  return market.marketStatus === MarketStatus.Active
+}
+
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   const now = Date.now() / 1000
   const secondsInADay = SECONDS_IN_A_DAY.toNumber()
@@ -257,7 +287,7 @@ export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   }
 
   return (
-    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
+    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay * 7 > now
   )
 }
 
@@ -270,26 +300,20 @@ export const updateOrderbookRecord = (
   currentRecords: PriceLevel[] = [],
   updatedRecords: PriceLevel[] = []
 ) => {
-  const newRecords = [...updatedRecords].reduce((records, record) => {
-    const existingRecord = currentRecords.find((r) => r.price === record.price)
+  const currentRecordsMap: PriceLevelMap = currentRecords.reduce(
+    (currentRecordsMap, record) => {
+      currentRecordsMap[record.price] = record
 
-    return existingRecord ? records : [...records, record]
-  }, [] as PriceLevel[])
+      return currentRecordsMap
+    },
+    {} as PriceLevelMap
+  )
 
-  const affectedRecords = [...currentRecords].map((record) => {
-    const updatedRecord = updatedRecords.find((r) => r.price === record.price)
-
-    if (!updatedRecord) {
-      return record
-    }
-
-    return {
-      ...record,
-      quantity: updatedRecord.quantity
-    }
+  updatedRecords.forEach((record) => {
+    currentRecordsMap[record.price] = record
   })
 
-  return [...newRecords, ...affectedRecords].filter((record) =>
+  return Object.values(currentRecordsMap).filter((record) =>
     new BigNumber(record.quantity).gt(0)
   )
 }

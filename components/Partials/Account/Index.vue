@@ -1,12 +1,8 @@
 <script lang="ts" setup>
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import {
-  INJ_COIN_GECKO_ID,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { BusEvents, Modal, USDCSymbol } from '@/types'
-import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
+import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
+import { BusEvents, MainPage, Modal, AccountSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -16,11 +12,10 @@ const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
-const hideBalances = ref(false)
+const isHideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
+const fetchPositionsStatus = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
-
-const usdcConvertMarket = ref<UiSpotMarketWithToken | undefined>(undefined)
 
 const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
@@ -28,7 +23,6 @@ onMounted(() => {
   initBalances()
 
   useEventBus(BusEvents.FundingRefresh).on(refreshBalances)
-  useEventBus<Token>(BusEvents.ConvertUsdc).on(setUsdcConvertMarket)
 })
 
 onBeforeUnmount(() => {
@@ -36,20 +30,8 @@ onBeforeUnmount(() => {
   spotStore.reset()
 })
 
-function setUsdcConvertMarket(token: Token) {
-  usdcConvertMarket.value = spotStore.usdcConversionModalMarkets.find(
-    (market) =>
-      market.baseToken.symbol === token.symbol &&
-      market.quoteToken.symbol === USDCSymbol.WormholeEthereum
-  )
-}
-
 function initBalances() {
-  Promise.all([
-    spotStore.fetchUsdcConversionMarkets(),
-    derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions()
-  ])
+  Promise.all([derivativeStore.streamSubaccountOrders()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -62,6 +44,13 @@ function initBalances() {
     derivativeStore.streamMarketsMarkPrices(),
     positionStore.streamSubaccountPositions()
   ])
+
+  Promise.all([
+    positionStore.fetchSubaccountPositions(),
+    accountStore.fetchAccountPortfolioUnrealizedPnL()
+  ]).finally(() => {
+    fetchPositionsStatus.setIdle()
+  })
 }
 
 function refreshBalances() {
@@ -81,8 +70,8 @@ function refreshUsdTokenPrice() {
     .finally(() => usdPriceStatus.setIdle())
 }
 
-function handleHideBalances(value: boolean) {
-  hideBalances.value = value
+function onHideBalances(value: boolean) {
+  isHideBalances.value = value
 }
 
 watch(
@@ -100,23 +89,30 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         {{ $t('account.accountOverview') }}
       </h2>
 
-      <span class="text-gray-450 text-lg mb-1">
+      <span class="text-gray-300 text-md my-1">
         {{ $t('account.netWorth') }}
       </span>
 
       <PartialsAccountOverview
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
-        v-bind="{ hideBalances }"
-        @update:hide-balances="handleHideBalances"
+        v-bind="{
+          isHideBalances
+        }"
+        @update:hide-balances="onHideBalances"
       />
 
       <div class="h-full-flex">
         <CommonTabMenu>
-          <CommonTabMenuLinkItem v-bind="{ to: { name: 'account' } }" is-index>
+          <CommonTabMenuLinkItem
+            v-bind="{ to: { name: MainPage.Account } }"
+            is-index
+          >
             {{ $t('account.tabs.balances') }}
           </CommonTabMenuLinkItem>
 
-          <CommonTabMenuLinkItem v-bind="{ to: { name: 'account-positions' } }">
+          <CommonTabMenuLinkItem
+            v-bind="{ to: { name: AccountSubPage.Positions } }"
+          >
             {{ $t('account.tabs.positions') }}
           </CommonTabMenuLinkItem>
         </CommonTabMenu>
@@ -124,9 +120,10 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         <AppHocLoading :status="status">
           <NuxtPage
             v-bind="{
+              usdPriceStatus,
+              isHideBalances,
               balances: currentSubaccountBalances,
-              hideBalances,
-              usdPriceStatus
+              isPositionsLoading: fetchPositionsStatus.isLoading()
             }"
           />
         </AppHocLoading>
@@ -140,10 +137,5 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
     <ModalsAddMargin />
     <ModalsCreateSubaccount />
     <ModalsSubaccountTransfer />
-    <ModalsConvertUsdc
-      v-if="usdcConvertMarket"
-      :balances="currentSubaccountBalances"
-      :market="usdcConvertMarket"
-    />
   </div>
 </template>

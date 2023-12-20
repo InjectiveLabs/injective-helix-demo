@@ -19,11 +19,11 @@ const {
 </script>
 
 <template>
-  <CommonTableRow dense>
+  <CommonTableRow is-dense>
     <div
       class="flex items-end justify-between col-span-2 text-xs leading-5 pb-1"
     >
-      <NuxtLink lg class="w-full text-white" :to="explorerLink" target="_blank">
+      <NuxtLink class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-end">
           <BaseIcon name="external-link" class="w-3 h-3" />
         </div>
@@ -38,7 +38,7 @@ const {
         <CommonTokenIcon
           v-if="sourceTokenWithBalance?.token && sourceTokenWithBalance?.token"
           :token="sourceTokenWithBalance?.token"
-          sm
+          is-sm
         />
       </span>
 
@@ -63,7 +63,7 @@ const {
             destinationTokenWithBalance?.token
           "
           :token="destinationTokenWithBalance?.token"
-          sm
+          is-sm
         />
       </span>
 

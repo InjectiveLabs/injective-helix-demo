@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Change, UiSpotMarketSummary } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, TradeSubPage } from '@/types'
 
 const props = defineProps({
   market: {
@@ -42,7 +41,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   <div
     class="rounded-lg bg-gray-750 p-4 flex flex-col gap-2"
     :to="{
-      name: 'spot-spot',
+      name: TradeSubPage.Spot,
       params: { spot: market.slug }
     }"
   >

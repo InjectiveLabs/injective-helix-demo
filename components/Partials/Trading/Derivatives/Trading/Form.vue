@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   Status,
   StatusType,
@@ -45,6 +44,7 @@ const {
   values: formValues,
   resetForm: resetFormValues
 } = useForm<TradeForm>()
+const setFormValues = useSetFormValues()
 
 const isBaseAmount = ref(true)
 const status = reactive(new Status(StatusType.Idle))
@@ -109,7 +109,7 @@ const {
   slippage,
   maxReduceOnly,
   maxAmountOnOrderbook,
-  updateAmountFromBase,
+  changeAmountFromBase,
   worstPriceWithSlippage
 } = useDerivativePrice({
   isBaseAmount,
@@ -145,7 +145,7 @@ const showReduceOnly = computed(() => {
   return !(longAndBuy || shortAndSell)
 })
 
-const orderTypeReduceOnly = computed(
+const isOrderTypeReduceOnly = computed(
   () => formValues[TradeField.ReduceOnly] && showReduceOnly.value
 )
 
@@ -361,7 +361,7 @@ const {
   isBuy,
   markPrice,
   executionPrice,
-  orderTypeReduceOnly,
+  isOrderTypeReduceOnly,
   notionalWithLeverage,
   quoteAvailableBalance,
   worstPriceWithSlippage,
@@ -376,7 +376,7 @@ watch(executionPrice, () => {
     return
   }
 
-  updateAmount({ isBaseAmount: isBaseAmount.value })
+  changeAmount({ isBaseAmount: isBaseAmount.value })
 })
 
 watch(
@@ -396,13 +396,18 @@ watch(
         TRADE_FORM_PRICE_ROUNDING_MODE
       )
 
-      formValues[TradeField.LimitPrice] = formattedPrice
+      setFormValues(
+        {
+          [TradeField.LimitPrice]: formattedPrice
+        },
+        false
+      )
     }
   },
   { immediate: true }
 )
 
-function updateAmount({
+function changeAmount({
   amount,
   isBaseAmount: isBaseAmountUpdate
 }: {
@@ -411,15 +416,16 @@ function updateAmount({
 }) {
   isBaseAmount.value = isBaseAmountUpdate
 
-  const amountToUpdate = updateAmountFromBase({
+  const amountToUpdate = changeAmountFromBase({
     amount,
     isBaseAmount: isBaseAmountUpdate
   })
 
   if (amountToUpdate) {
-    formValues[
-      isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount
-    ] = amountToUpdate
+    setFormValues({
+      [isBaseAmountUpdate ? TradeField.QuoteAmount : TradeField.BaseAmount]:
+        amountToUpdate
+    })
   }
 }
 
@@ -433,15 +439,15 @@ function submitLimitOrder() {
       quantity: baseAmount.value,
       margin: notionalWithLeverage.value,
       orderSide: orderTypeToSubmit.value,
-      reduceOnly: orderTypeReduceOnly.value
+      reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e.message)
+      attemptPlaceOrderTrack(e.message)
       $onError(e)
     })
     .finally(() => {
@@ -464,15 +470,15 @@ function submitStopLimitOrder() {
       triggerPrice: triggerPrice.value,
       margin: notionalWithLeverage.value,
       orderSide: orderTypeToSubmit.value,
-      reduceOnly: orderTypeReduceOnly.value
+      reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetFormValues()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      attemptPlaceOrderTrack(e)
       $onError(e)
     })
     .finally(() => {
@@ -488,17 +494,17 @@ function submitMarketOrder() {
       market: props.market,
       quantity: baseAmount.value,
       price: worstPriceWithSlippage.value,
-      reduceOnly: orderTypeReduceOnly.value,
+      reduceOnly: isOrderTypeReduceOnly.value,
       orderSide: formValues[TradeField.OrderSide],
       margin: notionalWithLeverageBasedOnWorstPrice.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      attemptPlaceOrderTrack(e)
       $onError(e)
     })
     .finally(() => {
@@ -520,16 +526,16 @@ function submitStopMarketOrder() {
       triggerPrice: triggerPrice.value,
       orderSide: orderTypeToSubmit.value,
       price: worstPriceWithSlippage.value,
-      reduceOnly: orderTypeReduceOnly.value,
+      reduceOnly: isOrderTypeReduceOnly.value,
       margin: notionalWithLeverageBasedOnWorstPrice.value
     })
     .then(() => {
-      handleAttemptPlaceOrderTrack()
+      attemptPlaceOrderTrack()
       success({ title: t('trade.order_placed') })
       resetForm()
     })
     .catch((e) => {
-      handleAttemptPlaceOrderTrack(e)
+      attemptPlaceOrderTrack(e)
       $onError(e)
     })
     .finally(() => {
@@ -552,7 +558,7 @@ function resetForm() {
   })
 }
 
-function handleRequestSubmit() {
+function onRequestSubmit() {
   if (highDeviation.value) {
     return modalStore.openModal(Modal.PriceDeviation)
   }
@@ -562,7 +568,7 @@ function handleRequestSubmit() {
     tradingTypeMarket.value ||
     tradingTypeLimit.value
   ) {
-    return handleSubmit()
+    return onSubmit()
   }
 
   if (
@@ -575,7 +581,7 @@ function handleRequestSubmit() {
   return modalStore.openModal(Modal.OrderConfirm)
 }
 
-function handleSubmit() {
+function onSubmit() {
   switch (formValues[TradeField.TradingType]) {
     case TradeExecutionType.LimitFill:
       return submitLimitOrder()
@@ -588,7 +594,7 @@ function handleSubmit() {
   }
 }
 
-function handleAttemptPlaceOrderTrack(errorMessage?: string) {
+function attemptPlaceOrderTrack(errorMessage?: string) {
   const slippageTolerance = tradingTypeMarket.value
     ? formValues[TradeField.SlippageTolerance]
     : ''
@@ -633,7 +639,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         executionPrice,
         showReduceOnly,
         lastTradedPrice,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         maxAmountOnOrderbook,
         availableBalanceError,
         quoteAvailableBalance,
@@ -641,7 +647,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         markPriceThresholdError,
         initialMinMarginRequirementError
       }"
-      @update:amount="updateAmount"
+      @update:amount="changeAmount"
     />
 
     <PartialsTradingFormDebug
@@ -669,7 +675,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         formValues,
         executionPrice,
         liquidationPrice,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         notionalValue: notionalWithLeverage,
         notionalWithFees: notionalWithLeverageAndFees
       }"
@@ -685,12 +691,12 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         executionPrice,
         maxOrdersError,
         hasTriggerPrice,
-        orderTypeReduceOnly,
+        isOrderTypeReduceOnly,
         availableBalanceError,
         markPriceThresholdError,
         initialMinMarginRequirementError
       }"
-      @submit:request="handleRequestSubmit"
+      @submit:request="onRequestSubmit"
     />
 
     <ModalsOrderConfirmDerivative
@@ -703,9 +709,9 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
         tradingType: formValues[TradeField.TradingType],
         price: tradingTypeStopLimit ? limitPrice : undefined
       }"
-      @order:confirmed="handleSubmit"
+      @order:confirmed="onSubmit"
     />
 
-    <ModalsPriceDeviation @order:confirmed="handleSubmit" />
+    <ModalsPriceDeviation @order:confirmed="onSubmit" />
   </div>
 </template>

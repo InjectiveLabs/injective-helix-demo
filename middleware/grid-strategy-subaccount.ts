@@ -1,13 +1,16 @@
+import { MainPage, ActivitySubPage, TradingBotsSubPage } from '@/types'
+
 export default defineNuxtRouteMiddleware((to) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
 
   const toName = to.name as string
-  const gridSpotStrategyRouteName = 'trading-bots-grid-spot-market'
+  const gridSpotStrategyRouteName = TradingBotsSubPage.GridSpotMarket
+
   const activityRouteNames = [
-    'activity',
-    'activity-positions',
-    'activity-derivatives'
+    MainPage.Activity,
+    ActivitySubPage.Positions,
+    ActivitySubPage.Derivatives
   ]
   const spotAndFuturesRouteNames = ['spot', 'futures']
 
@@ -30,7 +33,7 @@ export default defineNuxtRouteMiddleware((to) => {
         (route) => route.startsWith(toName) || route === toName
       )
     ) {
-      return navigateTo({ name: 'activity-spot' })
+      return navigateTo({ name: ActivitySubPage.Spot })
     }
   }
 })

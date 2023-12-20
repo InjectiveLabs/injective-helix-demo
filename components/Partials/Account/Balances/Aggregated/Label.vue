@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { AccountBalance } from '@/types'
 import { usdcTokenDenom } from '@/app/data/token'
 

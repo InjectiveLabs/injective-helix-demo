@@ -1,11 +1,18 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { AccountBalance, BridgeType, BusEvents, Modal } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import {
+  Modal,
+  MainPage,
+  BusEvents,
+  BridgeType,
+  TradeSubPage,
+  AccountBalance
+} from '@/types'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
@@ -77,23 +84,23 @@ watch(
   () => isModalOpen.value,
   (value: boolean) => {
     if (value) {
-      return handleOpen()
+      return open()
     }
 
-    handleClosed()
+    closed()
   }
 )
 
-function handleOpen() {
+function open() {
   scrollOffset.value = window.pageYOffset
   window.scrollTo(0, 0)
 }
 
-function handleClosed() {
+function closed() {
   window.scrollTo(0, scrollOffset.value)
 }
 
-function handleClose() {
+function closeModal() {
   modalStore.closeModal(Modal.AssetDetails)
   accountBalance.value = undefined
 }
@@ -112,7 +119,7 @@ function handleClose() {
           class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 flex flex-col h-full flex-grow"
         >
           <div class="flex items-center justify-start gap-2">
-            <div class="cursor-pointer" @click="handleClose">
+            <div class="cursor-pointer" @click="closeModal">
               <!-- TODO: ArrowLeft -->
               <BaseIcon name="arrow" class="w-4 h-4 text-white" />
             </div>
@@ -130,7 +137,7 @@ function handleClose() {
               <CommonTokenIcon
                 v-if="accountBalance && accountBalance.token"
                 :token="accountBalance.token"
-                sm
+                is-sm
               />
               <span class="tracking-wide font-bold text-sm">
                 {{ accountBalance.token.symbol }}
@@ -196,7 +203,7 @@ function handleClose() {
                   v-for="{ market, summary } in filteredMarketsWithSummary"
                   :key="market.slug"
                   :to="{
-                    name: 'spot-spot',
+                    name: TradeSubPage.Spot,
                     params: { spot: market.slug }
                   }"
                 >
@@ -219,7 +226,7 @@ function handleClose() {
             <BaseNuxtLink
               class="w-full"
               :to="{
-                name: 'bridge',
+                name: MainPage.Bridge,
                 query: {
                   type: BridgeType.Deposit,
                   denom: accountBalance.token.denom
@@ -238,7 +245,7 @@ function handleClose() {
             <BaseNuxtLink
               class="w-full"
               :to="{
-                name: 'bridge',
+                name: MainPage.Bridge,
                 query: {
                   type: BridgeType.Withdraw,
                   denom: accountBalance.token.denom

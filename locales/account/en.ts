@@ -4,7 +4,6 @@ export default {
   account: {
     accountOverview: 'Account Overview',
     available: 'Available',
-    convertUsdc: 'Convert USDC',
     fee: 'Fee',
     netWorth: 'Net Worth',
     deposit: 'Deposit',
@@ -76,8 +75,6 @@ export default {
     usdcPeggyToken: 'Injective Bridge from Ethereum',
     usdcWHEthereumToken: 'Wormhole from Ethereum',
     usdcWHSolanaToken: 'Wormhole from Solana',
-    whyConvert:
-      'Why convert? The USDC bridged from Ethereum using the Injective bridge is not the most widely adopted USD Coin on Injective, in terms of available markets. You will need to convert it to the USDCet to trade on Injective.',
     from: 'FROM',
     to: 'TO',
     injectiveBridge: 'Injective Bridge',
@@ -100,6 +97,7 @@ export default {
         'To activate it, you first need to transfer funds. Learn more about subaccounts in our',
         named('faq')
       ]),
-    subaccountTransfer: 'Subaccount Transfer'
+    subaccountTransfer: 'Subaccount Transfer',
+    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.'
   }
 }

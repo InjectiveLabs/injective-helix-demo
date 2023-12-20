@@ -68,7 +68,7 @@ const daysPassed = computed(() => {
         <span
           class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('fee_discounts.my_trading_volume') }}
+          {{ $t('feeDiscounts.my_trading_volume') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
@@ -84,7 +84,7 @@ const daysPassed = computed(() => {
     </div>
     <div class="mt-4">
       <span class="text-xs text-gray-400">
-        {{ $t('fee_discounts.in_past_days', { days: daysPassed }) }}
+        {{ $t('feeDiscounts.in_past_days', { days: daysPassed }) }}
       </span>
     </div>
   </div>

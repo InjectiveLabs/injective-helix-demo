@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-function handleOpenModal() {
+function openModal() {
   modalStore.openModal(Modal.InstitutionalForm)
 }
 </script>
@@ -18,7 +18,7 @@ function handleOpenModal() {
       <h2 class="text-4xl">{{ $t('institutional.talkToUs') }}</h2>
       <button
         class="bg-blue-500 text-white px-4 py-2 rounded-md"
-        @click="handleOpenModal"
+        @click="openModal"
       >
         {{ $t('institutional.getInTouch') }}
       </button>

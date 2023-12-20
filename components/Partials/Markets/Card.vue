@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
@@ -86,7 +85,7 @@ const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
           <CommonTokenIcon
             :token="market.baseToken"
             class="min-w-full h-auto rounded-full"
-            lg
+            is-lg
           />
         </div>
         <div class="flex flex-col">

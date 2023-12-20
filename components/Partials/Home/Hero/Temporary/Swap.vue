@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { ThrownException } from '@injectivelabs/exceptions'
-import { SwapForm, SwapFormField } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import { mapErrorToMessage } from '@/app/client/utils/swap'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { denomClient } from '@/app/Services'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { mapErrorToMessage } from '@/app/client/utils/swap'
+import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
 const swapStore = useSwapStore()
 const tokenStore = useTokenStore()
 const router = useRouter()
 const { resetForm, validate, values: formValues } = useForm<SwapForm>()
+const setFormValues = useSetFormValues()
 
 const { $onError } = useNuxtApp()
 
@@ -34,10 +35,22 @@ const hasOutputAmount = computed(() =>
 )
 
 onMounted(async () => {
-  /** W
-   * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
+  /**
+   * We hardcode only the denoms we need on page load for t
+   * he token selector animation as to not
+   * load the component faster as to improve UX
    **/
-  const symbolsTokensToPreload = ['INJ', 'ATOM', 'WETH', 'WMATIC', 'SOMM']
+  const symbolsTokensToPreload = [
+    'INJ',
+    'NEOK',
+    'SOL',
+    'ATOM',
+    'WETH',
+    'SOMM',
+    'ORAI',
+    'WMATIC',
+    'KAVA'
+  ]
   const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
   Promise.all([
@@ -45,11 +58,7 @@ onMounted(async () => {
       ...QUOTE_DENOMS_GECKO_IDS,
       ...tokens.map((token) => token?.coinGeckoId || '')
     ])
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+  ]).catch($onError)
 
   Promise.all([spotStore.init(), swapStore.fetchRoutes()])
     .then(async () => {
@@ -63,6 +72,9 @@ onMounted(async () => {
       ])
     })
     .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 function resetFormValues() {
@@ -71,10 +83,12 @@ function resetFormValues() {
 
   resetForm()
 
-  formValues[SwapFormField.InputAmount] = ''
-  formValues[SwapFormField.OutputAmount] = ''
-  formValues[SwapFormField.InputDenom] = inputDenom || ''
-  formValues[SwapFormField.OutputDenom] = outputDenom || ''
+  setFormValues({
+    [SwapFormField.InputAmount]: '',
+    [SwapFormField.OutputAmount]: '',
+    [SwapFormField.InputDenom]: inputDenom || '',
+    [SwapFormField.OutputDenom]: outputDenom || ''
+  })
 }
 
 async function getOutputQuantity() {
@@ -140,21 +154,29 @@ async function getInputQuantity() {
 
 function updateAmount() {
   if (swapStore.isInputEntered) {
-    formValues[SwapFormField.OutputAmount] = toBalanceInToken({
-      value: swapStore.outputQuantity.resultQuantity,
-      decimalPlaces: outputToken.value?.token.decimals || 0,
-      fixedDecimals: outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-      roundingMode: BigNumberInBase.ROUND_DOWN
-    })
+    setFormValues(
+      {
+        [SwapFormField.OutputAmount]: toBalanceInToken({
+          value: swapStore.outputQuantity.resultQuantity,
+          decimalPlaces: outputToken.value?.token.decimals || 0,
+          fixedDecimals:
+            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+          roundingMode: BigNumberInBase.ROUND_DOWN
+        })
+      },
+      false
+    )
 
     return
   }
 
-  formValues[SwapFormField.InputAmount] = toBalanceInToken({
-    value: swapStore.inputQuantity.resultQuantity,
-    decimalPlaces: inputToken.value?.token.decimals || 0,
-    fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-    roundingMode: BigNumberInBase.ROUND_UP
+  setFormValues({
+    [SwapFormField.InputAmount]: toBalanceInToken({
+      value: swapStore.inputQuantity.resultQuantity,
+      decimalPlaces: inputToken.value?.token.decimals || 0,
+      fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
+      roundingMode: BigNumberInBase.ROUND_UP
+    })
   })
 }
 
@@ -162,7 +184,7 @@ function resetQueryError() {
   queryError.value = ''
 }
 
-function handleNavigation() {
+function onNavigation() {
   /* isInputEntered tells us which input field the user has typed a value and hasUserInteraction is used to submit the toAmount by default if no interaction */
   const amount =
     !swapStore.isInputEntered || !hasUserInteraction.value
@@ -170,7 +192,7 @@ function handleNavigation() {
       : { fromAmount: formValues[SwapFormField.InputAmount] }
 
   router.push({
-    name: 'swap',
+    name: MainPage.Swap,
     query: {
       from: formValues[SwapFormField.InputDenom],
       to: formValues[SwapFormField.OutputDenom],
@@ -192,16 +214,16 @@ function handleNavigation() {
             }"
             @update:outputQuantity="getOutputQuantity"
             @update:inputQuantity="getInputQuantity"
-            @reset:queryError="resetQueryError"
-            @reset:form="resetFormValues"
+            @queryError:reset="resetQueryError"
+            @form:reset="resetFormValues"
           />
 
           <AppButton
             class="w-full bg-blue-500 font-semibold mt-4 text-white"
-            lg
-            @click="handleNavigation"
+            is-lg
+            @click="onNavigation"
           >
-            Get
+            {{ $t('trade.get') }}
             <span class="uppercase">
               {{ outputToken?.token.symbol || 'INJ' }}
             </span>

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 defineProps({
-  showStaked: Boolean,
-  hideBalances: Boolean,
+  isShowStaked: Boolean,
+  isHideBalances: Boolean,
 
   balance: {
     type: Object as PropType<AccountBalance>,
@@ -22,7 +21,7 @@ const emit = defineEmits<{
   'drawer:toggle': []
 }>()
 
-function handleDrawerToggle() {
+function toggleDrawer() {
   emit('drawer:toggle')
 }
 </script>
@@ -30,7 +29,7 @@ function handleDrawerToggle() {
 <template>
   <PartialsAccountBalancesRowWrapper
     v-bind="{
-      hideBalances,
+      isHideBalances,
       usdPriceStatus,
       balance
     }"
@@ -38,14 +37,14 @@ function handleDrawerToggle() {
     <template #tokenSymbol>
       <PartialsAccountBalancesRowTokenSymbol
         v-bind="{ balance }"
-        @click="handleDrawerToggle"
+        @click="toggleDrawer"
       >
         <template #symbolSuffix>
           <BaseIcon
             name="caret-down"
             class="h-6 w-6 transition duration-300 hover:text-blue-500"
             :class="{
-              'rotate-180': showStaked
+              'rotate-180': isShowStaked
             }"
           />
         </template>

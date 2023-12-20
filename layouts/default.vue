@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
+import { BusEvents, MainPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -19,11 +19,11 @@ const isOpenSidebar = ref(false)
 const container = computed(() => document.getElementById('pro'))
 
 const showFooter = computed(() =>
-  ROUTES.footerEnabledRoutes.includes(route.name as string)
+  ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
 )
 
 onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchSupplyTokenMeta()])
+  Promise.all([walletStore.init(), tokenStore.fetchTokens()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -33,7 +33,9 @@ onMounted(() => {
   Promise.all([
     appStore.init(),
     spotStore.initIfNotInit(),
+    spotStore.fetchMarketsSummary(),
     derivativeStore.initIfNotInit(),
+    derivativeStore.fetchMarketsSummary(),
     exchangeStore.initFeeDiscounts(),
     authzStore.fetchGrants()
   ])
@@ -103,6 +105,7 @@ function onCloseSideBar() {
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
                 <!-- <ModalsUserFeedback /> -->
+                <ModalsNewFeature />
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />

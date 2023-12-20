@@ -1,4 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { MainPage } from '@/types'
+
 const socialLinks = [
   { icon: 'discord-circle', link: 'https://discord.gg/injective' },
   { icon: 'twitter', link: 'https://twitter.com/Injective_' },
@@ -21,7 +23,7 @@ const socialLinks = [
 
         <div class="flex flex-col sm:flex-row items-center gap-8">
           <div class="space-x-4">
-            <NuxtLink target="_blank" :to="{ name: 'terms' }">
+            <NuxtLink target="_blank" :to="{ name: MainPage.Terms }">
               {{ $t('terms.termsAndCondition') }}
             </NuxtLink>
             <a href="https://injectivelabs.org/privacy" target="_blank">

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { isSgtSubaccountId } from 'app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { ActivitySubPage } from '@/types'
 
 const router = useRouter()
 const appStore = useAppStore()
 
 function onUpdateSubaccount(subaccountId: string) {
   if (isSgtSubaccountId(subaccountId)) {
-    router.replace({ name: 'activity-spot' })
+    router.replace({ name: ActivitySubPage.Spot })
   }
 }
 </script>
