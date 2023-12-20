@@ -123,7 +123,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
               usdPriceStatus,
               isHideBalances,
               balances: currentSubaccountBalances,
-              isUnrealizedPnLLoading: fetchPositionsStatus.isLoading()
+              isPositionsLoading: fetchPositionsStatus.isLoading()
             }"
           />
         </AppHocLoading>
