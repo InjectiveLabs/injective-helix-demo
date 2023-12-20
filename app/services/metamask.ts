@@ -1,7 +1,7 @@
 import { EthereumChainId } from '@injectivelabs/ts-types'
 import {
   ErrorType,
-  MetamaskException,
+  GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { UtilsWallets } from '@injectivelabs/wallet-ts'
@@ -22,7 +22,7 @@ export const validateMetamask = async (
   const metamaskIsLocked = addresses.length === 0
 
   if (metamaskIsLocked) {
-    throw new MetamaskException(
+    throw new GeneralException(
       new Error(
         'Your Metamask is currently locked. Please unlock your Metamask.'
       ),
@@ -38,7 +38,7 @@ export const validateMetamask = async (
     address && metamaskActiveAddress.toLowerCase() !== address.toLowerCase()
 
   if (metamaskActiveAddressDoesntMatchTheActiveAddress) {
-    throw new MetamaskException(
+    throw new GeneralException(
       new Error(
         'You are connected to the wrong address. Please logout and connect to Metamask again'
       ),
@@ -57,5 +57,27 @@ export const validateMetamask = async (
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     return await UtilsWallets.updateMetamaskNetwork(chainId)
+  }
+
+  const metamaskProvider = await UtilsWallets.getMetamaskProvider()
+
+  if (!metamaskProvider) {
+    throw new GeneralException(
+      new Error('You are connected to the wrong wallet. Please use Metamask.'),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
+    )
+  }
+
+  if (!metamaskProvider.isMetaMask || metamaskProvider.isPhantom) {
+    throw new GeneralException(
+      new Error('You are connected to the wrong wallet. Please use Metamask.'),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
+    )
   }
 }
