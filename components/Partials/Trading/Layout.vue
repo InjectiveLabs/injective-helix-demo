@@ -204,7 +204,7 @@ function onToggleMarketList() {
                       '-order-1': userTradingLayout === TradingLayout.Right
                     }"
                   >
-                    <CommonTradingChartWrapper
+                    <PartialsTradingLightTradingChartWrapper
                       v-if="isDesktop"
                       v-bind="{ marketId: market.marketId, isSpot, market }"
                     />

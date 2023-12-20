@@ -346,34 +346,6 @@ export const useExchangeStore = defineStore('exchange', {
       }
     },
 
-    async getMarketsHistoryReturn({
-      marketIds,
-      resolution,
-      countback
-    }: {
-      marketIds: string[]
-      resolution: number
-      countback: number
-    }) {
-      try {
-        const marketsHistory =
-          await indexerRestMarketChronosApi.fetchMarketsHistory({
-            marketIds,
-            resolution,
-            countback
-          })
-
-        const marketsHistoryToUiMarketsHistory =
-          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
-            marketsHistory
-          )
-
-        return marketsHistoryToUiMarketsHistory[0]
-      } catch (e) {
-        // don't do anything for now
-      }
-    },
-
     reset() {
       const exchangeStore = useExchangeStore()
 

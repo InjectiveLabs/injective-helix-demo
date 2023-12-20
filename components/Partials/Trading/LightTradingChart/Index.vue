@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import {
-  ChartOptions,
-  ColorType,
-  DeepPartial,
+  Time,
   IChartApi,
   LineStyle,
+  ColorType,
+  DeepPartial,
   createChart,
+  ChartOptions,
+  HistogramData,
   CandlestickData,
-  Time,
-  WhitespaceData,
-  HistogramData
+  WhitespaceData
 } from 'lightweight-charts'
+
+defineExpose({ fitContent, getChart, updateCandlesticksData })
 
 const props = defineProps({
   candlesticksData: {
@@ -25,11 +27,7 @@ const props = defineProps({
   }
 })
 
-const container = ref()
-const wrapper = ref()
-
 let chart: IChartApi
-
 let candlestickSeries: ReturnType<typeof chart.addCandlestickSeries>
 let volumeSeries: ReturnType<typeof chart.addHistogramSeries>
 
@@ -44,30 +42,40 @@ const chartOptions: DeepPartial<ChartOptions> = {
   }
 }
 
-const fitContent = () => {
-  if (!chart) return
+const container = ref()
+const wrapper = ref()
+
+function fitContent() {
+  if (!chart) {
+    return
+  }
+
   chart.timeScale().fitContent()
 }
 
-const getChart = () => {
+function getChart() {
   return chart
 }
 
-const updateCandlesticksData = (data: CandlestickData<Time>) => {
-  if (!candlestickSeries) return
+function updateCandlesticksData(data: CandlestickData<Time>) {
+  if (!candlestickSeries) {
+    return
+  }
 
   candlestickSeries.update(data)
 }
 
-defineExpose({ fitContent, getChart, updateCandlesticksData })
+function resizeHandler() {
+  if (!chart || !wrapper.value) {
+    return
+  }
 
-const resizeHandler = () => {
-  if (!chart || !wrapper.value) return
   const dimensions = wrapper.value.getBoundingClientRect()
+
   chart.resize(dimensions.width, dimensions.height)
 }
 
-onMounted(() => {
+function init() {
   chart = createChart(container.value!, chartOptions)
 
   candlestickSeries = chart.addCandlestickSeries()
@@ -92,20 +100,27 @@ onMounted(() => {
   }
 
   candlestickSeries.setData(props.candlesticksData)
+}
 
-  window.addEventListener('resize', resizeHandler)
-})
-
-onUnmounted(() => {
+function destroy() {
   if (chart) {
     chart.remove()
     chart = null!
   }
+
   if (candlestickSeries) {
     candlestickSeries = null!
   }
 
   window.removeEventListener('resize', resizeHandler)
+}
+
+onMounted(() => {
+  init()
+})
+
+onUnmounted(() => {
+  destroy()
 })
 
 watch(

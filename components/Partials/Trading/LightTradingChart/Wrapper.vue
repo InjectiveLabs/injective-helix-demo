@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
-import { UiMarketWithToken } from '~/types'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   isSpot: Boolean,
@@ -18,9 +18,6 @@ const props = defineProps({
 })
 
 const intervalOptions = [
-  // { label: '1m', value: { countback: 30 * 40, resolution: 1 } },
-  // { label: '5m', value: { countback: 30 * 40, resolution: 5 } },
-  // { label: '15m', value: { countback: 30 * 40, resolution: 15 } },
   { label: '30m', value: { countback: 30 * 40, resolution: 30 } },
   { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
   { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
@@ -40,17 +37,15 @@ const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
 
 const lastTradedPrice = computed(() => {
-  if (props.isSpot) {
-    return new BigNumberInWei(spotStore.trades[0]?.price || 0)
-      .toBase(
-        props.market.quoteToken.decimals - props.market.baseToken.decimals
-      )
-      .toNumber()
-  } else {
-    return new BigNumberInWei(derivativeStore.trades[0]?.executionPrice || 0)
-      .toBase(props.market.quoteToken.decimals)
-      .toNumber()
-  }
+  return props.isSpot
+    ? new BigNumberInWei(spotStore.trades[0]?.price || 0)
+        .toBase(
+          props.market.quoteToken.decimals - props.market.baseToken.decimals
+        )
+        .toNumber()
+    : new BigNumberInWei(derivativeStore.trades[0]?.executionPrice || 0)
+        .toBase(props.market.quoteToken.decimals)
+        .toNumber()
 })
 
 onMounted(() => {
@@ -110,6 +105,7 @@ function fetchMarketHistory() {
 
 function setInterval(index: number) {
   interval.value = intervalOptions[index]
+
   fetchMarketHistory()
 }
 
