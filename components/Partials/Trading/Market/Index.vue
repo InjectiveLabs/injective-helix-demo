@@ -167,7 +167,7 @@ watchDebounced(
           }"
         >
           <PartialsTradingMarketChart
-            v-show="activeType === FilterList.Charts"
+            v-if="activeType === FilterList.Charts"
             :market="market"
             class="lg:hidden"
           />
