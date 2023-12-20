@@ -139,7 +139,7 @@ watch(lastTradedPrice, (lastTradedPrice) => {
     </div>
 
     <AppHocLoading v-bind="{ status }" class="h-full">
-      <CommonTradingChart
+      <PartialsTradingLightTradingChart
         ref="chart"
         v-bind="{
           candlesticksData,

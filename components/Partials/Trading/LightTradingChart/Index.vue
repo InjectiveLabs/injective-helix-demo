@@ -135,8 +135,11 @@ watch(
 
 <template>
   <div>
-    <div ref="wrapper" class="h-[450px] md:h-[663px]">
-      <div ref="container" class="lw-chart border rounded-md z-20"></div>
+    <div ref="wrapper" class="h-[450px] md:h-[663px] rounded-sm">
+      <div
+        ref="container"
+        class="lw-chart border rounded-md z-20 bg-gray-1000"
+      ></div>
     </div>
   </div>
 </template>
