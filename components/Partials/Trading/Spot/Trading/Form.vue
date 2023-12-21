@@ -3,11 +3,11 @@ import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Modal, TradeForm, TradeField, OrderAttemptStatus } from '@/types'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -299,11 +299,10 @@ function attemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  amplitudeTradeTracker.submitPlaceOrderConfirmTrackEvent({
+  mixpanelEvents.placeOrderConfirm({
     status,
     postOnly,
     slippageTolerance,
-    error: errorMessage,
     market: props.market.slug,
     marketType: props.market.subType,
     amount: formValues[TradeField.BaseAmount],

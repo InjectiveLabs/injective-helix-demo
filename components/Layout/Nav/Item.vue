@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
 import { getDefaultFuturesMarket } from '@/app/utils/market'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const props = defineProps({
   isDense: Boolean
@@ -59,7 +59,7 @@ function onClick() {
 }
 
 function tradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelEvents.navigateToTradePage({
     market: market.value,
     marketType: marketType.value,
     origin: TradeClickOrigin.TopMenu

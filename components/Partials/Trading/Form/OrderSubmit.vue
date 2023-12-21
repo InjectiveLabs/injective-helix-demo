@@ -6,9 +6,9 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { MarketStatus, Modal, TradeField, TradeForm } from '@/types'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -150,7 +150,7 @@ function trackPlaceOrder() {
     ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
-  amplitudeTradeTracker.submitPlaceOrderAttemptTrackEvent({
+  mixpanelEvents.placeOrderAttempt({
     market: props.market.slug,
     marketType: props.market.subType,
     reduceOnly: props.isOrderTypeReduceOnly,

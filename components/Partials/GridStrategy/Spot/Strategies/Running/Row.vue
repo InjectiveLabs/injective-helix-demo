@@ -4,9 +4,7 @@ import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-
 import { backupPromiseCall } from '@/app/utils/async'
-import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   GST_AUTO_PRICE_THRESHOLD,
@@ -14,6 +12,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { TradingBotsSubPage } from '@/types'
+import { mixpanelEvents } from '~/app/providers/mixpanel/TrackingEvents'
 
 const props = defineProps({
   strategy: {
@@ -132,7 +131,7 @@ function onRemoveStrategy() {
     .finally(() => {
       status.setIdle()
 
-      amplitudeGridStrategyTracker.removeStrategy({
+      mixpanelEvents.removeStrategy({
         duration: duration.value,
         market: market.value?.slug || '',
         totalProfit: pnlToString.value

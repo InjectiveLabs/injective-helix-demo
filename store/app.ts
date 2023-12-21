@@ -30,11 +30,11 @@ import {
 import { todayInSeconds } from '@/app/utils/time'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { alchemyKey } from '@/app/wallet-strategy'
-import { amplitudeWalletTracker } from '@/app/providers/amplitude'
 import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 export interface UserBasedState {
   favoriteMarkets: string[]
@@ -223,7 +223,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      amplitudeWalletTracker.submitWalletSelectedTrackEvent({
+      mixpanelEvents.walletSelected({
         wallet: walletStore.wallet,
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country

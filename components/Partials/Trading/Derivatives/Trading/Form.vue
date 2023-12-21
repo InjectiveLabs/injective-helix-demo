@@ -29,7 +29,7 @@ import {
   calculateLiquidationPrice,
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -603,11 +603,10 @@ function attemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  amplitudeTradeTracker.submitPlaceOrderConfirmTrackEvent({
+  mixpanelEvents.placeOrderConfirm({
     status,
     postOnly,
     slippageTolerance,
-    error: errorMessage,
     market: props.market.slug,
     marketType: props.market.subType,
     amount: formValues[TradeField.BaseAmount],

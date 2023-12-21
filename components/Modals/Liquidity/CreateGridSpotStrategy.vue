@@ -2,8 +2,8 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
-import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const props = defineProps({
   isLiquidity: Boolean
@@ -115,7 +115,7 @@ function onCreateStrategy() {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
       status.setIdle()
 
-      amplitudeGridStrategyTracker.createStrategy({
+      mixpanelEvents.createStrategy({
         amountQuote:
           formValues.value[SpotGridTradingField.InvestmentAmount] || '',
         gridsNumber: formValues.value[SpotGridTradingField.Grids] || '',

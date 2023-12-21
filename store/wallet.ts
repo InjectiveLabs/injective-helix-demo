@@ -10,7 +10,7 @@ import { GeneralException } from '@injectivelabs/exceptions'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { walletStrategy } from '@/app/wallet-strategy'
-import { amplitudeWalletTracker } from '@/app/providers/amplitude'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -156,9 +156,9 @@ export const useWalletStore = defineStore('wallet', {
       await exchangeStore.initFeeDiscounts()
       await authZStore.fetchGrants()
 
-      amplitudeWalletTracker.submitWalletConnectedTrackEvent({
+      mixpanelEvents.login({
         wallet: walletStore.wallet,
-        address: walletStore.injectiveAddress,
+        injectiveAddress: walletStore.injectiveAddress,
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
 
@@ -517,6 +517,7 @@ export const useWalletStore = defineStore('wallet', {
       const gridStrategyStore = useGridStrategyStore()
 
       await walletStrategy.disconnect()
+      mixpanelEvents.logout()
 
       walletStore.reset()
       spotStore.resetSubaccount()

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultFuturesMarket,
   getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
 import { TradeClickOrigin, Modal } from '@/types'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -22,7 +22,7 @@ function onGetStartedClick() {
 }
 
 function tradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelEvents.navigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander
