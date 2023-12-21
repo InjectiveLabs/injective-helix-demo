@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-import { amplitudeGenericTracker } from '@/app/providers/amplitude'
-import {
-  Modal,
-  BusEvents,
-  AmplitudeEvent,
-  WalletModalType,
-  WalletConnectStatus
-} from '@/types'
+
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
+import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -40,7 +35,7 @@ function connectLedger() {
 }
 
 function onWalletConnect() {
-  amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
+  mixpanelEvents.connectClicked()
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
   getDefaultPerpetualMarketRouteParams,
@@ -12,6 +11,7 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
+import { mixpanelEvents } from '~/app/providers/mixpanel/TrackingEvents'
 
 const walletStore = useWalletStore()
 
@@ -19,7 +19,7 @@ const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function spotTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelEvents.navigateToTradePage({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
     origin: TradeClickOrigin.TopMenu
@@ -27,11 +27,15 @@ function spotTradeClickedTrack() {
 }
 
 function perpetualTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelEvents.navigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
+}
+
+function swapClickedTrack() {
+  mixpanelEvents.swapClicked()
 }
 </script>
 
@@ -64,6 +68,7 @@ function perpetualTradeClickedTrack() {
             :to="{ name: MainPage.Swap }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-swap-link"
+            @click="swapClickedTrack"
           >
             <div class="flex items-center gap-2.5">
               <p class="font-semibold text-base text-white">

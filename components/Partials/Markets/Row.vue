@@ -14,7 +14,7 @@ import {
 } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 import { stableCoinDenoms } from '@/app/data/token'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { Change, TradeClickOrigin, MarketStatus } from '@/types'
 
@@ -147,7 +147,7 @@ function toggleFavoriteMarket() {
 }
 
 function tradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelEvents.navigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage

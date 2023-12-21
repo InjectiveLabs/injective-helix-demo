@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { amplitudeSwapTracker } from '@/app/providers/amplitude'
+import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
@@ -128,16 +128,17 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      amplitudeSwapTracker.swap({
-        error: err,
-        fee: totalFee.value,
+      mixpanelEvents.swap({
+        fee: totalFee.value.toFixed(2),
         rate: summaryRef.value?.priceForDisplayToFormat,
         inputAmount: formValues[SwapFormField.InputAmount],
         outputAmount: formValues[SwapFormField.OutputAmount],
         outputToken: outputToken.value?.token.symbol,
         inputToken: inputToken.value?.token.symbol,
         minimumOutput: minimumOutput.value,
-        slippageTolerance: formValues[SwapFormField.Slippage]
+        slippageTolerance: formValues[SwapFormField.Slippage],
+        error: err ? err.message : '',
+        isSuccess: !err
       })
 
       if (!err) {
