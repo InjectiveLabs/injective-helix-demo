@@ -198,6 +198,14 @@ export const MARKET_IDS_WITHOUT_COINGECKO_ID: SymbolWithMarketId[] = [
     isUsdtQuote: false,
     quoteMarket:
       '0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0'
+  },
+  {
+    symbol: 'KUJI',
+    marketId:
+      '0x6922cf4383294c673971dd06aa4ae5ef47f65cb4f1ec1c2af4271c5e5ca67486',
+    coingeckoId: 'kuji',
+    isUsdtQuote: true,
+    quoteMarket: ''
   }
 ]
 
