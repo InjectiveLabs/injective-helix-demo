@@ -6,6 +6,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { BusEvents, Modal } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
@@ -19,7 +20,7 @@ const { handleSubmit, resetForm } = useForm()
 const { accountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
-const position = ref<UiPosition | undefined>(undefined)
+const position = ref<UiPosition | PositionV2 | undefined>(undefined)
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AddMarginToPosition] && !!position.value

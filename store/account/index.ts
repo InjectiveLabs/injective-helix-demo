@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
-import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 import {
   streamBankBalance,
@@ -24,14 +23,12 @@ import {
 type AccountStoreState = {
   subaccountId: string
   bankBalances: Coin[]
-  positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
-  positionsWithUpnl: [],
   subaccountBalancesMap: {}
 })
 
@@ -114,7 +111,6 @@ export const useAccountStore = defineStore('account', {
           ? subaccountId
           : walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
-        positionsWithUpnl: [],
         subaccountBalancesMap: {
           [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
@@ -153,7 +149,6 @@ export const useAccountStore = defineStore('account', {
           ? subaccountId
           : walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
-        positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {
           [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts

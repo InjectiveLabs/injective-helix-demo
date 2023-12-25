@@ -7,7 +7,6 @@ import { BusEvents, MainPage, Modal, AccountSubPage } from '@/types'
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -45,10 +44,7 @@ function initBalances() {
     positionStore.streamSubaccountPositions()
   ])
 
-  Promise.all([
-    positionStore.fetchSubaccountPositions(),
-    accountStore.fetchAccountPortfolioUnrealizedPnL()
-  ]).finally(() => {
+  Promise.all([positionStore.fetchPositions()]).finally(() => {
     fetchPositionsStatus.setIdle()
   })
 }
@@ -73,11 +69,6 @@ function refreshUsdTokenPrice() {
 function onHideBalances(value: boolean) {
   isHideBalances.value = value
 }
-
-watch(
-  () => accountStore.subaccountId,
-  () => positionStore.fetchSubaccountPositions()
-)
 
 useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>
