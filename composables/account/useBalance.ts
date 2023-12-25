@@ -1,6 +1,6 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { usePositionWithDenom } from '../exchange/usePosition'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { AccountBalance } from '@/types'
 
 const reduceAccountBalances = (
@@ -42,18 +42,17 @@ const reduceAccountBalances = (
 
 export function useBalance() {
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+  const positionStore = usePositionStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
   const aggregatedPortfolioBalances = computed(() => {
     return Object.keys(accountStore.subaccountBalancesMap).reduce(
       (balances, subaccountId) => {
-        const positionsForSubaccountWithDenom = accountStore.positionsWithUpnl
-          .filter(
-            (position) => position.position?.subaccountId === subaccountId
-          )
-          .map(usePositionWithDenom)
-          .filter((position) => position.denom)
+        const positionsForSubaccountWithDenom = positionStore.positions.filter(
+          (position) => position.subaccountId === subaccountId
+        )
 
         return {
           ...balances,
@@ -85,19 +84,23 @@ export function useBalance() {
               isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
             )
 
-            const positionWithPnlAndDenom =
-              positionsForSubaccountWithDenom.filter(
-                (position) => position.denom === denom
-              )
-            const unrealizedPnl = positionWithPnlAndDenom.reduce(
-              (total, position) =>
-                total.plus(
-                  new BigNumberInWei(position?.unrealizedPnl || '0').plus(
-                    position?.position?.margin || '0'
-                  )
-                ),
-              ZERO_IN_BASE
-            )
+            const unrealizedPnl = positionsForSubaccountWithDenom
+              .filter((position) => position.denom === denom)
+              .reduce((total, position) => {
+                const markPriceFromMap = new BigNumberInBase(
+                  derivativeStore.marketMarkPriceMap[position.marketId]
+                    ?.price || 0
+                ).toWei(token.decimals)
+                const markPrice = new BigNumberInBase(
+                  markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
+                )
+
+                return total.plus(
+                  new BigNumberInWei(position.quantity)
+                    .times(markPrice.minus(position.entryPrice))
+                    .times(position.direction === TradeDirection.Long ? 1 : -1)
+                )
+              }, ZERO_IN_BASE)
 
             const accountTotalBalance = isDefaultTradingAccount
               ? new BigNumberInWei(bankBalance)
@@ -156,23 +159,27 @@ export function useBalance() {
         isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
       )
 
-      const positionsForSubaccountWithDenom = accountStore.positionsWithUpnl
+      const positionsForSubaccountWithDenom = positionStore.positions
         .filter(
-          (position) =>
-            position.position?.subaccountId === accountStore.subaccountId
+          (position) => position.subaccountId === accountStore.subaccountId
         )
-        .map(usePositionWithDenom)
-        .filter((position) => position.denom)
-      const positionWithPnlAndDenom = positionsForSubaccountWithDenom.filter(
-        (position) => position.denom === denom
-      )
-      const unrealizedPnl = positionWithPnlAndDenom.reduce(
-        (total, position) =>
-          total.plus(
-            new BigNumberInWei(position?.unrealizedPnl || '0').plus(
-              position?.position?.margin || '0'
-            )
-          ),
+        .filter((position) => position.denom === denom)
+
+      const unrealizedPnl = positionsForSubaccountWithDenom.reduce(
+        (total, position) => {
+          const markPriceFromMap = new BigNumberInBase(
+            derivativeStore.marketMarkPriceMap[position.marketId]?.price || 0
+          ).toWei(token.decimals)
+          const markPrice = new BigNumberInBase(
+            markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
+          )
+
+          return total.plus(
+            new BigNumberInWei(position.quantity)
+              .times(markPrice.minus(position.entryPrice))
+              .times(position.direction === TradeDirection.Long ? 1 : -1)
+          )
+        },
         ZERO_IN_BASE
       )
 

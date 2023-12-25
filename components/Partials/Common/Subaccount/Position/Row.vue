@@ -2,6 +2,7 @@
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal, TradeSubPage } from '@/types'
@@ -20,12 +21,12 @@ const props = defineProps({
 
   position: {
     required: true,
-    type: Object as PropType<UiPosition>
+    type: Object as PropType<UiPosition | PositionV2>
   }
 })
 
 const emit = defineEmits<{
-  'share:position': [state: UiPosition]
+  'share:position': [state: UiPosition | PositionV2]
 }>()
 
 const {
@@ -74,7 +75,9 @@ const rowWrapperClass = computed(() => {
 })
 
 function onAddMarginButtonClick() {
-  useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
+  useEventBus<UiPosition | PositionV2>(BusEvents.AddMarginToPosition).emit(
+    props.position
+  )
 
   modalStore.openModal(Modal.AddMarginToPosition)
 }
