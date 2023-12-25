@@ -1,9 +1,10 @@
-import mixpanel from 'mixpanel-browser'
+import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { MixPanelAnalytics } from './index'
 import { MixPanelEvent, OrderAttemptStatus, TradeClickOrigin } from '@/types'
+import { MIXPANEL_KEY } from '@/app/utils/constants'
 
 export class MixPanelEvents extends MixPanelAnalytics {
   login({
@@ -155,4 +156,15 @@ export class MixPanelEvents extends MixPanelAnalytics {
   }
 }
 
-export const mixpanelEvents = new MixPanelEvents(mixpanel)
+const mixpanelNoop = {
+  init: () => {},
+  track: () => {},
+  identify: () => {},
+  people: {
+    increment: () => {}
+  }
+}
+
+export const mixpanelEvents = new MixPanelEvents(
+  MIXPANEL_KEY ? mixpanel : (mixpanelNoop as unknown as OverridedMixpanel)
+)
