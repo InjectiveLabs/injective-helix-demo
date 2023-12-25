@@ -160,6 +160,7 @@ const mixpanelNoop = {
   init: () => {},
   track: () => {},
   identify: () => {},
+  reset: () => {},
   people: {
     increment: () => {}
   }

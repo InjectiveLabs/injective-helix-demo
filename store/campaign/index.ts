@@ -131,9 +131,8 @@ export const useCampaignStore = defineStore('campaign', {
     }) {
       const campaignStore = useCampaignStore()
 
-      const campaignsWithSc = await awaitForAll(
-        campaignIds,
-        async (campaignId: string) => {
+      const campaignsWithSc = await Promise.all([
+        ...campaignIds.map(async (campaignId: string) => {
           const { campaign } = await indexerGrpcCampaignApi.fetchCampaign({
             campaignId,
             limit: pagination?.limit || 1,
@@ -145,8 +144,8 @@ export const useCampaignStore = defineStore('campaign', {
           )!
 
           return { ...campaign, ...campaignWithSc }
-        }
-      )
+        })
+      ])
 
       campaignStore.$patch({ campaignsWithSc })
     },
