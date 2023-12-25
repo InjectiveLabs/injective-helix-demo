@@ -2,15 +2,14 @@ import type { Ref } from 'vue'
 import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { PositionWithPnlAndDenom } from '@/types'
 
-export function useDerivativePosition(position: Ref<UiPosition>) {
+export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
@@ -195,36 +194,5 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     quantityDecimals,
     liquidationPrice,
     effectiveLeverage
-  }
-}
-
-export function usePositionWithDenom(
-  positionWithPnl: PositionsWithUPNL
-): PositionWithPnlAndDenom {
-  const derivativeStore = useDerivativeStore()
-
-  if (!positionWithPnl.position) {
-    return {
-      ...positionWithPnl,
-      denom: undefined
-    }
-  }
-
-  const market = derivativeStore.markets.find(
-    (m) => m.marketId === positionWithPnl.position!.marketId
-  )
-
-  if (!market) {
-    return {
-      ...positionWithPnl,
-      denom: undefined
-    }
-  }
-
-  const quoteDenom = market.quoteDenom
-
-  return {
-    ...positionWithPnl,
-    denom: quoteDenom
   }
 }

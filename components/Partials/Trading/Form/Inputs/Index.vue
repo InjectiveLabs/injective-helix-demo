@@ -6,6 +6,7 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   TradeForm,
   TradeField,
@@ -59,7 +60,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition> | undefined,
+    type: Object as PropType<UiPosition | PositionV2> | undefined,
     default: undefined
   },
 

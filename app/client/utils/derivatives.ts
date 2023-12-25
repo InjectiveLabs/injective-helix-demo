@@ -7,6 +7,7 @@ import {
   UiPerpetualMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  PositionV2,
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
@@ -119,7 +120,7 @@ export const calculateLiquidationPrice = ({
 }
 
 export const getRoundedLiquidationPrice = (
-  position: UiPosition,
+  position: UiPosition | PositionV2,
   market: UiDerivativeMarketWithToken
 ) => {
   const minTickPrice = derivativePriceToChainPrice({

@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { Modal } from '@/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
@@ -11,7 +12,7 @@ const { width } = useWindowSize()
 const props = defineProps({
   position: {
     required: true,
-    type: Object as PropType<UiPosition>
+    type: Object as PropType<UiPosition | PositionV2>
   }
 })
 

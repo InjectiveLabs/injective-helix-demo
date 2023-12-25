@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import {
+  UiPosition,
   MarketType,
-  UiDerivativeMarketWithToken,
-  UiPosition
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -17,7 +18,7 @@ const props = defineProps({
   }
 })
 
-const selectedPosition = ref<UiPosition | undefined>(undefined)
+const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
 
 const filteredPositions = computed(() => {
   const result = positionStore.subaccountPositions.filter((position) => {
@@ -47,7 +48,7 @@ onMounted(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
 })
 
-function onSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }

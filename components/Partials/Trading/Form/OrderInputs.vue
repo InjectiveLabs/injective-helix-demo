@@ -3,6 +3,7 @@ import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   BusEvents,
   TradeForm,
@@ -69,7 +70,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition> | undefined,
+    type: Object as PropType<UiPosition | PositionV2> | undefined,
     default: undefined
   },
 

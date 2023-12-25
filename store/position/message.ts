@@ -4,6 +4,7 @@ import {
   MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeMarketOrder,
   MsgIncreasePositionMargin,
+  PositionV2,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed,
   msgsOrMsgExecMsgs
@@ -24,7 +25,7 @@ export const closePosition = async ({
   position
 }: {
   market: UiDerivativeMarketWithToken
-  position: UiPosition
+  position: UiPosition | PositionV2
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -76,7 +77,9 @@ export const closePosition = async ({
   })
 }
 
-export const closeAllPosition = async (positions: UiPosition[]) => {
+export const closeAllPosition = async (
+  positions: Array<UiPosition | PositionV2>
+) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
   const accountStore = useAccountStore()
@@ -174,7 +177,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  position: UiPosition
+  position: UiPosition | PositionV2
   market?: UiDerivativeMarketWithToken
   reduceOnlyOrders: UiDerivativeLimitOrder[]
 }) => {

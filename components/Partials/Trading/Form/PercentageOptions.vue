@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import {
+  PositionV2,
+  formatAmountToAllowableAmount
+} from '@injectivelabs/sdk-ts'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -57,7 +60,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition> | undefined,
+    type: Object as PropType<UiPosition | PositionV2> | undefined,
     default: undefined
   },
 
