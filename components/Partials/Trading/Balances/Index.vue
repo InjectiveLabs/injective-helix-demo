@@ -87,7 +87,7 @@ const quoteTradingBalanceToFormat = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([accountStore.fetchAccountPortfolioBalances()])
     .then(() => {
       setSubaccountStreams()
     })

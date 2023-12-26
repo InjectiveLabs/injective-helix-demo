@@ -60,7 +60,7 @@ function fetchData({
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
       countback: 30
     }),
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamSubaccountBalance(subaccountId)
   ])
     .catch($onError)

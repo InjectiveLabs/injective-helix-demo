@@ -62,7 +62,7 @@ export const deposit = async ({
     ).toWei(balanceWithToken.token.decimals)
   })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => ibcStore.fetchBalances())
 }
 
@@ -142,6 +142,6 @@ export const withdraw = async ({
     msgs: message
   })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => ibcStore.fetchBalances())
 }

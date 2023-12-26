@@ -56,7 +56,7 @@ const { balanceWithToken, supplyWithBalance } = useBridgeBalance(
 
 onMounted(() => {
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamBankBalance(),
     accountStore.streamSubaccountBalance()
   ])
