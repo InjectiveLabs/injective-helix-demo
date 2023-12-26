@@ -77,7 +77,7 @@ function initRoutes() {
   Promise.all([
     spotStore.init(),
     swapStore.fetchRoutes(),
-    accountStore.fetchAccountPortfolio()
+    accountStore.fetchAccountPortfolioBalances()
   ])
     .then(async () => {
       await tokenStore.fetchTokensUsdPriceMap([
