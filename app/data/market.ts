@@ -114,7 +114,7 @@ export const upcomingMarkets = [
   //
 ] as Array<UiMarketWithToken>
 
-export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
+export const excludedExpiredOrSettledMarketSlugs = [] as string[]
 
 export const notLiquidMarkets = [
   {

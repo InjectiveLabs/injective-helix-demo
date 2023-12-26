@@ -1,36 +1,62 @@
 <script lang="ts" setup>
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  MarketType,
   ZERO_IN_BASE,
-  UiExpiryFuturesMarketWithToken,
-  MarketType
+  UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { format, fromUnixTime } from 'date-fns'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
+const derivativeStore = useDerivativeStore()
+
 const props = defineProps({
   market: {
-    type: Object as PropType<UiExpiryFuturesMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarketWithToken>,
     required: true
   }
 })
+
+const lastTradedPrice = computed(
+  () =>
+    new BigNumberInBase(
+      derivativeStore.marketsSummary.find(
+        ({ marketId }) => marketId === props.market.marketId
+      )?.lastPrice || 0
+    )
+)
 
 const settlementPrice = computed(() => {
   if (!props.market) {
     return ZERO_IN_BASE
   }
 
-  if (!props.market.expiryFuturesMarketInfo) {
+  if (props.market.type === MarketType.Spot) {
     return ZERO_IN_BASE
   }
 
-  if (!props.market.expiryFuturesMarketInfo.settlementPrice) {
+  if (props.market.subType === MarketType.BinaryOptions) {
+    return ZERO_IN_BASE
+  }
+
+  if (props.market.subType === MarketType.Perpetual) {
+    return lastTradedPrice.value
+  }
+
+  const expiryFuturesMarket = props.market as UiExpiryFuturesMarketWithToken
+
+  if (!expiryFuturesMarket.expiryFuturesMarketInfo) {
+    return ZERO_IN_BASE
+  }
+
+  if (!expiryFuturesMarket.expiryFuturesMarketInfo.settlementPrice) {
     return ZERO_IN_BASE
   }
 
   return new BigNumberInWei(
-    props.market.expiryFuturesMarketInfo.settlementPrice
-  ).toBase(props.market.quoteToken.decimals)
+    expiryFuturesMarket.expiryFuturesMarketInfo.settlementPrice
+  ).toBase(expiryFuturesMarket.quoteToken.decimals)
 })
 
 const { valueToString: settlementPriceToFormat } = useBigNumberFormatter(

@@ -145,8 +145,7 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj',
-  USDTkv = 'usdtkv'
+  INJ = 'inj'
 }
 
 export enum StreamType {
