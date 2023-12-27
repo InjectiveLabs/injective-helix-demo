@@ -147,5 +147,5 @@ export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-helix-v1-${NETWORK}`
+  `inj-helix-v2-${NETWORK}`
 )

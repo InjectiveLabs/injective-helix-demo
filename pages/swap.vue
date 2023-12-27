@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
@@ -128,7 +128,7 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelEvents.swap({
+      mixpanelAnalytics.swap({
         fee: totalFee.value.toFixed(2),
         rate: summaryRef.value?.priceForDisplayToFormat,
         inputAmount: formValues[SwapFormField.InputAmount],

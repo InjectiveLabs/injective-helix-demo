@@ -12,7 +12,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { TradingBotsSubPage } from '@/types'
-import { mixpanelEvents } from '~/app/providers/mixpanel/TrackingEvents'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const props = defineProps({
   strategy: {
@@ -131,7 +131,7 @@ function onRemoveStrategy() {
     .finally(() => {
       status.setIdle()
 
-      mixpanelEvents.removeStrategy({
+      mixpanelAnalytics.removeStrategy({
         duration: duration.value,
         market: market.value?.slug || '',
         totalProfit: pnlToString.value

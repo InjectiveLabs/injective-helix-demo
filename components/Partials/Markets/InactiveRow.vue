@@ -8,8 +8,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeClickOrigin, MarketStatus } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const appStore = useAppStore()
 
 const props = defineProps({
@@ -42,7 +41,7 @@ function toggleFavoriteMarket() {
 }
 
 function tradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.navigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage

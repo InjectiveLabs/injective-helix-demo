@@ -7,8 +7,7 @@ import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -299,7 +298,7 @@ function attemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  mixpanelEvents.placeOrderConfirm({
+  mixpanelAnalytics.placeOrderConfirm({
     status,
     postOnly,
     slippageTolerance,

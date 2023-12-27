@@ -18,8 +18,7 @@ import {
 } from '@/app/utils/market'
 
 import { Change, MainPage, TradeClickOrigin } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
@@ -160,7 +159,7 @@ function lastPriceChangeColor() {
 }
 
 function tradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.navigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.Lander

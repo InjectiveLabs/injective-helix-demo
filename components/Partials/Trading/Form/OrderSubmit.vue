@@ -8,8 +8,7 @@ import {
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { MarketStatus, Modal, TradeField, TradeForm } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -150,7 +149,7 @@ function trackPlaceOrder() {
     ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
-  mixpanelEvents.placeOrderAttempt({
+  mixpanelAnalytics.placeOrderAttempt({
     market: props.market.slug,
     marketType: props.market.subType,
     reduceOnly: props.isOrderTypeReduceOnly,

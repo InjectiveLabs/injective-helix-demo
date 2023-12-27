@@ -2,11 +2,19 @@ import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { MixPanelAnalytics } from './index'
 import { MixPanelEvent, OrderAttemptStatus, TradeClickOrigin } from '@/types'
 import { MIXPANEL_KEY } from '@/app/utils/constants'
 
-export class MixPanelEvents extends MixPanelAnalytics {
+export class MixPanelAnalytics {
+  mixpanelClient: OverridedMixpanel | undefined
+
+  mixpanelKey: string
+
+  constructor(mixpanelKey: string) {
+    this.mixpanelKey = mixpanelKey
+    this.mixpanelClient = undefined
+  }
+
   login({
     injectiveAddress,
     wallet,
@@ -16,23 +24,23 @@ export class MixPanelEvents extends MixPanelAnalytics {
     wallet: Wallet
     tierLevel: number
   }) {
-    this.mixpanel.identify(injectiveAddress)
+    this.getMixpanelClient().identify(injectiveAddress)
 
-    this.mixpanel.track(MixPanelEvent.Login, {
+    this.getMixpanelClient().track(MixPanelEvent.Login, {
       Wallet: wallet,
       TierLevel: tierLevel,
       Address: injectiveAddress
     })
 
-    this.mixpanel.people.increment({ Login: 1, [wallet]: 1 })
+    this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
   }
 
   logout() {
-    this.mixpanel.reset()
+    this.getMixpanelClient().reset()
   }
 
   connectClicked() {
-    this.mixpanel.track(MixPanelEvent.ConnectClicked)
+    this.getMixpanelClient().track(MixPanelEvent.ConnectClicked)
   }
 
   swap(props: {
@@ -47,12 +55,12 @@ export class MixPanelEvents extends MixPanelAnalytics {
     error?: string
     isSuccess: boolean
   }) {
-    this.mixpanel.track(MixPanelEvent.Swap, props)
+    this.getMixpanelClient().track(MixPanelEvent.Swap, props)
   }
 
   swapClicked() {
-    this.mixpanel.track(MixPanelEvent.SwapClicked)
-    this.mixpanel.people.increment('Swap Clicked')
+    this.getMixpanelClient().track(MixPanelEvent.SwapClicked)
+    this.getMixpanelClient().people.increment('Swap Clicked')
   }
 
   navigateToTradePage(props: {
@@ -60,7 +68,7 @@ export class MixPanelEvents extends MixPanelAnalytics {
     marketType: MarketType
     origin: TradeClickOrigin
   }) {
-    this.mixpanel.track(MixPanelEvent.TradeClicked, props)
+    this.getMixpanelClient().track(MixPanelEvent.TradeClicked, props)
   }
 
   walletSelected(props: {
@@ -68,15 +76,19 @@ export class MixPanelEvents extends MixPanelAnalytics {
     userCountryFromVpnApi: string
     userCountryFromBrowser?: string
   }) {
-    this.mixpanel.track(MixPanelEvent.WalletSelected, props)
+    this.getMixpanelClient().track(MixPanelEvent.WalletSelected, props)
   }
 
   surveyAccepted(surveyTitle: string) {
-    this.mixpanel.track(MixPanelEvent.SurveyAccepted, { surveyTitle })
+    this.getMixpanelClient().track(MixPanelEvent.SurveyAccepted, {
+      surveyTitle
+    })
   }
 
   surveyRejected(surveyTitle: string) {
-    this.mixpanel.track(MixPanelEvent.SurveyRejected, { surveyTitle })
+    this.getMixpanelClient().track(MixPanelEvent.SurveyRejected, {
+      surveyTitle
+    })
   }
 
   placeOrderAttempt(props: {
@@ -92,8 +104,8 @@ export class MixPanelEvents extends MixPanelAnalytics {
     limitPrice: string
     slippageTolerance: string
   }) {
-    this.mixpanel.track(MixPanelEvent.PlaceOrderAttempt, props)
-    this.mixpanel.people.increment('Place Order Attempts')
+    this.getMixpanelClient().track(MixPanelEvent.PlaceOrderAttempt, props)
+    this.getMixpanelClient().people.increment('Place Order Attempts')
   }
 
   placeOrderConfirm(props: {
@@ -110,8 +122,8 @@ export class MixPanelEvents extends MixPanelAnalytics {
     slippageTolerance: string
     status: OrderAttemptStatus
   }) {
-    this.mixpanel.track(MixPanelEvent.PlaceOrderConfirm, props)
-    this.mixpanel.people.increment('Place Order Confirms')
+    this.getMixpanelClient().track(MixPanelEvent.PlaceOrderConfirm, props)
+    this.getMixpanelClient().people.increment('Place Order Confirms')
   }
 
   createStrategy(props: {
@@ -132,8 +144,8 @@ export class MixPanelEvents extends MixPanelAnalytics {
       ? 'Create Liquidity Bot'
       : 'Create Strategies'
 
-    this.mixpanel.track(event, { ...props, isLiquidity: undefined })
-    this.mixpanel.people.increment(incrementEvent)
+    this.getMixpanelClient().track(event, { ...props, isLiquidity: undefined })
+    this.getMixpanelClient().people.increment(incrementEvent)
   }
 
   removeStrategy(props: {
@@ -151,21 +163,39 @@ export class MixPanelEvents extends MixPanelAnalytics {
       ? 'Remove Liquidity Bot'
       : 'Remove Strategies'
 
-    this.mixpanel.track(event, { ...props, isLiquidity: undefined })
-    this.mixpanel.people.increment(incrementEvent)
+    this.getMixpanelClient().track(event, { ...props, isLiquidity: undefined })
+    this.getMixpanelClient().people.increment(incrementEvent)
+  }
+
+  private getMixpanelClient() {
+    if (this.mixpanelClient) {
+      return this.mixpanelClient
+    }
+
+    if (!this.mixpanelKey) {
+      this.mixpanelClient = {
+        init: () => {},
+        track: () => {},
+        reset: () => {},
+        identify: () => {},
+        people: {
+          increment: () => {}
+        }
+      } as unknown as OverridedMixpanel
+
+      return this.mixpanelClient
+    }
+
+    this.mixpanelClient = mixpanel
+    this.mixpanelClient.init(this.mixpanelKey, {
+      persistence: 'localStorage',
+      debug: true,
+      batch_requests: false,
+      track_pageview: true
+    })
+
+    return this.mixpanelClient as OverridedMixpanel
   }
 }
 
-const mixpanelNoop = {
-  init: () => {},
-  track: () => {},
-  identify: () => {},
-  reset: () => {},
-  people: {
-    increment: () => {}
-  }
-}
-
-export const mixpanelEvents = new MixPanelEvents(
-  MIXPANEL_KEY ? mixpanel : (mixpanelNoop as unknown as OverridedMixpanel)
-)
+export const mixpanelAnalytics = new MixPanelAnalytics(MIXPANEL_KEY)
