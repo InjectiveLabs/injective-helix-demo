@@ -7,7 +7,8 @@ const modalStore = useModalStore()
 const isModalOpen = computed(
   () =>
     modalStore.modals[Modal.ScavengerHunt] &&
-    !appStore.userState.modalsViewed.includes(Modal.ScavengerHunt)
+    !appStore.userState.modalsViewed.includes(Modal.ScavengerHunt) &&
+    false
 )
 
 function closeModal() {
