@@ -77,7 +77,7 @@ export const useTokenStore = defineStore('token', {
         return
       }
 
-      const { supply } = await apiClient.fetchTotalSupply({ limit: 1000 })
+      const { supply } = await apiClient.fetchTotalSupply({ limit: 2000 })
 
       const supplyWithTokensOrUnknown = supply.map((coin) =>
         denomClient.getDenomTokenStaticOrUnknown(coin.denom)
