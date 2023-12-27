@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
@@ -54,22 +55,15 @@ onMounted(async () => {
   const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
 
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap([
-      ...QUOTE_DENOMS_GECKO_IDS,
-      ...tokens.map((token) => token?.coinGeckoId || '')
-    ])
+    tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),
+    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
   ]).catch($onError)
 
   Promise.all([spotStore.init(), swapStore.fetchRoutes()])
     .then(async () => {
-      const spotBaseCoinGeckoIds = spotStore.markets.map(
-        ({ baseToken }) => baseToken.coinGeckoId
-      )
+      const spotBaseTokens = spotStore.markets.map(({ baseToken }) => baseToken)
 
-      await tokenStore.fetchTokensUsdPriceMap([
-        ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotBaseCoinGeckoIds
-      ])
+      await tokenStore.getTokensUsdPriceMapFromToken(spotBaseTokens)
     })
     .catch($onError)
     .finally(() => {

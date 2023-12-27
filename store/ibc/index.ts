@@ -108,9 +108,7 @@ export const useIbcStore = defineStore('ibc', {
         ibcTokens: tokens
       })
 
-      await tokenStore.fetchTokensUsdPriceMap(
-        tokens.map((token) => token.coinGeckoId)
-      )
+      await tokenStore.getTokensUsdPriceMapFromToken(tokens)
     },
 
     async fetchBalances() {

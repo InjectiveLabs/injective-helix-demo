@@ -1,11 +1,6 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import {
-  NotLiquidMarket,
-  MarketPromotion,
-  UiMarketWithToken,
-  SymbolWithMarketId
-} from '@/types'
+import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -157,56 +152,5 @@ export const marketPromotions = [
     end: 1671836400000
   }
 ] as MarketPromotion[]
-
-export const TALIS_METADATA = {
-  symbol: 'TALIS',
-  coingeckoId: 'talis'
-}
-
-export const MARKET_IDS_WITHOUT_COINGECKO_ID: SymbolWithMarketId[] = [
-  {
-    symbol: 'TALIS',
-    marketId:
-      '0x21f3eed62ddc64458129c0dcbff32b3f54c92084db787eb5cf7c20e69a1de033',
-    coingeckoId: 'talis',
-    isUsdtQuote: true,
-    quoteMarket: ''
-  },
-  {
-    symbol: 'NINJA',
-    marketId:
-      '0xdf9317eac1739a23bc385e264afde5d480c0b3d2322660b5efd206071d4e70b7',
-    coingeckoId: 'ninja',
-    isUsdtQuote: false,
-    quoteMarket:
-      '0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0'
-  },
-  {
-    symbol: 'KIRA',
-    marketId:
-      '0x2d3b8d8833dda54a717adea9119134556848105fd6028e9a4a526e4e5a122a57',
-    coingeckoId: 'kira',
-    isUsdtQuote: false,
-    quoteMarket:
-      '0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0'
-  },
-  {
-    symbol: 'KATANA',
-    marketId:
-      '0x4bb3426a2d7ba80c244ef7eecfd7c4fd177d78e63ff40ba6235b1ae471e23cdb',
-    coingeckoId: 'katana',
-    isUsdtQuote: false,
-    quoteMarket:
-      '0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0'
-  },
-  {
-    symbol: 'KUJI',
-    marketId:
-      '0x6922cf4383294c673971dd06aa4ae5ef47f65cb4f1ec1c2af4271c5e5ca67486',
-    coingeckoId: 'kuji',
-    isUsdtQuote: true,
-    quoteMarket: ''
-  }
-]
 
 export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
