@@ -114,7 +114,7 @@ function onCreateStrategy() {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
       status.setIdle()
 
-      mixpanelAnalytics.createStrategy({
+      mixpanelAnalytics.trackCreateStrategy({
         amountQuote:
           formValues.value[SpotGridTradingField.InvestmentAmount] || '',
         gridsNumber: formValues.value[SpotGridTradingField.Grids] || '',

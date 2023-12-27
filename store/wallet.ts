@@ -156,7 +156,7 @@ export const useWalletStore = defineStore('wallet', {
       await exchangeStore.initFeeDiscounts()
       await authZStore.fetchGrants()
 
-      mixpanelAnalytics.login({
+      mixpanelAnalytics.trackLogin({
         wallet: walletStore.wallet,
         injectiveAddress: walletStore.injectiveAddress,
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
@@ -517,7 +517,7 @@ export const useWalletStore = defineStore('wallet', {
       const gridStrategyStore = useGridStrategyStore()
 
       await walletStrategy.disconnect()
-      mixpanelAnalytics.logout()
+      mixpanelAnalytics.trackLogout()
 
       walletStore.reset()
       spotStore.resetSubaccount()

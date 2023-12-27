@@ -222,7 +222,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      mixpanelAnalytics.walletSelected({
+      mixpanelAnalytics.trackWalletSelected({
         wallet: walletStore.wallet,
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country

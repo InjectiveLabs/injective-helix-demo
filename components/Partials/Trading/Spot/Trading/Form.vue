@@ -298,7 +298,7 @@ function attemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  mixpanelAnalytics.placeOrderConfirm({
+  mixpanelAnalytics.trackPlaceOrderConfirm({
     status,
     postOnly,
     slippageTolerance,

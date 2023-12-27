@@ -147,7 +147,7 @@ function toggleFavoriteMarket() {
 }
 
 function tradeClickedTrack() {
-  mixpanelAnalytics.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage

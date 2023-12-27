@@ -35,7 +35,7 @@ function connectLedger() {
 }
 
 function onWalletConnect() {
-  mixpanelAnalytics.connectClicked()
+  mixpanelAnalytics.trackConnectClicked()
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)

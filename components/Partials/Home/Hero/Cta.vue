@@ -21,7 +21,7 @@ function onGetStartedClick() {
 }
 
 function tradeClickedTrack() {
-  mixpanelAnalytics.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander
