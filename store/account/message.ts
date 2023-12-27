@@ -52,7 +52,7 @@ export const deposit = async ({
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const withdraw = async ({
@@ -96,7 +96,7 @@ export const withdraw = async ({
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const transfer = async ({
@@ -142,7 +142,7 @@ export const transfer = async ({
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const externalTransfer = async ({
@@ -191,5 +191,5 @@ export const externalTransfer = async ({
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }

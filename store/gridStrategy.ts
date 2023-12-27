@@ -206,7 +206,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       })
 
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
-      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
     },
 
     async removeStrategy(contractAddress?: string) {
@@ -259,7 +259,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       })
 
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
-      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
     }
   }
 })

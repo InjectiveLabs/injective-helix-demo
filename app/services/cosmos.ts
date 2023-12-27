@@ -271,6 +271,9 @@ export const transferToInjective = async ({
   originAddress: string
   destinationAddress: string
 }) => {
+  const cosmosChainWithIncreasedGasLimit = ['osmosis']
+  const cosmosChainIdIsWithIncreasedGasLimit =
+    cosmosChainWithIncreasedGasLimit.some((chain) => aChainId.includes(chain))
   const cosmosChainId = aChainId as CosmosChainId
   const cosmosWalletStrategy = new CosmosWalletStrategy({
     wallet,
@@ -298,7 +301,9 @@ export const transferToInjective = async ({
   const gasPrice = getGasPriceForChainId(cosmosChainId).toString()
   const stdFee = {
     ...getStdFeeForToken(token, gasPrice),
-    gas: DEFAULT_IBC_GAS_LIMIT.toString()
+    gas: new BigNumberInBase(DEFAULT_IBC_GAS_LIMIT)
+      .times(cosmosChainIdIsWithIncreasedGasLimit ? 1.5 : 1)
+      .toFixed()
   }
   const timestamp = makeTimeoutTimestampInNs()
 

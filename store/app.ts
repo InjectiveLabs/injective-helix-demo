@@ -34,8 +34,7 @@ import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 export interface UserBasedState {
   favoriteMarkets: string[]
   bannersViewed: NoticeBanner[]
@@ -223,7 +222,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      mixpanelEvents.walletSelected({
+      mixpanelAnalytics.trackWalletSelected({
         wallet: walletStore.wallet,
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country

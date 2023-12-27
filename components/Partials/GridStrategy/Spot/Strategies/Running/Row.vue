@@ -12,7 +12,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { TradingBotsSubPage } from '@/types'
-import { mixpanelEvents } from '~/app/providers/mixpanel/TrackingEvents'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const props = defineProps({
   strategy: {
@@ -124,14 +124,14 @@ function onRemoveStrategy() {
         description: t('sgt.strategyRemoved')
       })
 
-      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
     })
     .catch($onError)
     .finally(() => {
       status.setIdle()
 
-      mixpanelEvents.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: duration.value,
         market: market.value?.slug || '',
         totalProfit: pnlToString.value

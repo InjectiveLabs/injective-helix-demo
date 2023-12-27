@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Modal, SurveyTitle, TradeSubPage } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const route = useRoute()
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -51,13 +50,13 @@ function userFeedbackModalViewed() {
 }
 
 function onTakeSurveyClickEvent() {
-  mixpanelEvents.surveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
+  mixpanelAnalytics.trackSurveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }
 
 function onRejectSurveyClickEvent() {
-  mixpanelEvents.surveyRejected(SurveyTitle.HelixUserSurveyFeb23)
+  mixpanelAnalytics.trackSurveyRejected(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }

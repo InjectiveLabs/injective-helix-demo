@@ -14,7 +14,7 @@ const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamBankBalance(),
     accountStore.streamSubaccountBalance()
   ])

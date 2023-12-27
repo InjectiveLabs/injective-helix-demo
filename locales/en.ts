@@ -356,5 +356,10 @@ export default {
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
+  },
+
+  scavengerHunt: {
+    title: 'You found it! 🕵️‍♀️',
+    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
   }
 }

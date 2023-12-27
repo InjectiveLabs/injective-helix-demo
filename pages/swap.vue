@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
@@ -77,7 +77,7 @@ function initRoutes() {
   Promise.all([
     spotStore.init(),
     swapStore.fetchRoutes(),
-    accountStore.fetchAccountPortfolio()
+    accountStore.fetchAccountPortfolioBalances()
   ])
     .then(async () => {
       await Promise.all([
@@ -130,7 +130,7 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelEvents.swap({
+      mixpanelAnalytics.trackSwap({
         fee: totalFee.value.toFixed(2),
         rate: summaryRef.value?.priceForDisplayToFormat,
         inputAmount: formValues[SwapFormField.InputAmount],
@@ -316,6 +316,7 @@ function resetQueryError() {
         />
 
         <ModalsSwapSuccess v-bind="{ txHash }" />
+        <ModalsScavengerHunt />
       </div>
     </div>
   </AppHocLoading>

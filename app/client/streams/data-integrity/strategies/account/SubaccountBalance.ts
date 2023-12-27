@@ -87,7 +87,7 @@ export class SubaccountBalanceIntegrityStrategy
     const walletStore = useWalletStore()
 
     const accountPortfolio =
-      await indexerAccountPortfolioApi.fetchAccountPortfolio(
+      await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
         walletStore.authZOrInjectiveAddress
       )
 

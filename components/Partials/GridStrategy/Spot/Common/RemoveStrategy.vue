@@ -2,8 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 import { durationFormatter } from '@/app/utils/helpers'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const props = defineProps({
   isLiquidity: Boolean,
 
@@ -45,7 +44,7 @@ function removeStrategy() {
     .finally(() => {
       status.setIdle()
 
-      mixpanelEvents.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: durationFormatter(props.createdAt, Date.now()),
         market: gridStrategyStore.spotMarket?.slug || '',
         totalProfit: props.pnl,

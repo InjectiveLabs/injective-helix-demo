@@ -18,7 +18,7 @@ onWalletConnected(() => {
     accountStore.streamBankBalance(),
     campaignStore.fetchUserGuildInfo(),
     campaignStore.fetchGuildsByVolume(),
-    accountStore.fetchAccountPortfolio()
+    accountStore.fetchAccountPortfolioBalances()
   ])
     .catch($onError)
     .finally(() => status.setIdle())

@@ -2,8 +2,7 @@
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
 import { getDefaultFuturesMarket } from '@/app/utils/market'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const props = defineProps({
   isDense: Boolean
 })
@@ -59,7 +58,7 @@ function onClick() {
 }
 
 function tradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: market.value,
     marketType: marketType.value,
     origin: TradeClickOrigin.TopMenu
