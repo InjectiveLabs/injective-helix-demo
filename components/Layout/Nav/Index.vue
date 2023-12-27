@@ -11,7 +11,7 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
-import { mixpanelEvents } from '~/app/providers/mixpanel/TrackingEvents'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const walletStore = useWalletStore()
 
@@ -19,7 +19,7 @@ const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function spotTradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.navigateToTradePage({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
     origin: TradeClickOrigin.TopMenu
@@ -27,7 +27,7 @@ function spotTradeClickedTrack() {
 }
 
 function perpetualTradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.navigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
@@ -35,7 +35,7 @@ function perpetualTradeClickedTrack() {
 }
 
 function swapClickedTrack() {
-  mixpanelEvents.swapClicked()
+  mixpanelAnalytics.swapClicked()
 }
 </script>
 

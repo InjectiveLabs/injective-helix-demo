@@ -29,8 +29,7 @@ import {
   calculateLiquidationPrice,
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const appStore = useAppStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -603,7 +602,7 @@ function attemptPlaceOrderTrack(errorMessage?: string) {
     ? OrderAttemptStatus.Error
     : OrderAttemptStatus.Success
 
-  mixpanelEvents.placeOrderConfirm({
+  mixpanelAnalytics.placeOrderConfirm({
     status,
     postOnly,
     slippageTolerance,

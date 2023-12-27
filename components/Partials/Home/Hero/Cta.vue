@@ -5,8 +5,7 @@ import {
   getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
 import { TradeClickOrigin, Modal } from '@/types'
-import { mixpanelEvents } from '@/app/providers/mixpanel/TrackingEvents'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const router = useRouter()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -22,7 +21,7 @@ function onGetStartedClick() {
 }
 
 function tradeClickedTrack() {
-  mixpanelEvents.navigateToTradePage({
+  mixpanelAnalytics.navigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.Lander
