@@ -152,7 +152,7 @@ export const useWalletStore = defineStore('wallet', {
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await accountStore.fetchAccountPortfolio()
+      await accountStore.fetchAccountPortfolioBalances()
       await exchangeStore.initFeeDiscounts()
       await authZStore.fetchGrants()
 

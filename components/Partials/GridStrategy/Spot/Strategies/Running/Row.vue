@@ -124,7 +124,7 @@ function onRemoveStrategy() {
         description: t('sgt.strategyRemoved')
       })
 
-      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
     })
     .catch($onError)
