@@ -60,7 +60,7 @@ export function useBalance() {
             const isDefaultTradingAccount =
               walletStore.authZOrDefaultSubaccountId === subaccountId
             const denom = token.denom
-            const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
+            const usdPrice = tokenStore.tokenUsdPrice(token)
 
             const bankBalance = accountStore.balanceMap[token.denom] || '0'
 
@@ -136,7 +136,7 @@ export function useBalance() {
       const isDefaultTradingAccount =
         walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
       const denom = token.denom
-      const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
+      const usdPrice = tokenStore.tokenUsdPrice(token)
 
       const bankBalance = accountStore.balanceMap[token.denom] || '0'
 
@@ -263,7 +263,7 @@ export function useBalance() {
         balance: isDefaultTradingAccount
           ? accountBalance.bankBalance
           : accountBalance.availableBalance,
-        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token.coinGeckoId)
+        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token)
       }
     })
   })

@@ -21,8 +21,16 @@ const initialStateFactory = (): TokenStoreState => ({
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   getters: {
-    tokenUsdPrice: (state) => (coinGeckoId: string) => {
-      return state.tokenUsdPriceMap[coinGeckoId] || 0
+    tokenUsdPriceByCoinGeckoId: (state) => (coinGeckoId: string) => {
+      return state.tokenUsdPriceMap[coinGeckoId.toLowerCase()] || 0
+    },
+
+    tokenUsdPrice: (state) => (token: Token) => {
+      return (
+        state.tokenUsdPriceMap[token.coinGeckoId] ||
+        state.tokenUsdPriceMap[token.denom.toLowerCase()] ||
+        0
+      )
     },
 
     tradeableTokens: (state) => {

@@ -110,11 +110,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
@@ -154,11 +154,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol

@@ -53,9 +53,7 @@ const totalRewards = computed(() =>
           .multipliedBy(reward.amount || 0)
 
         const amountInUsd = token
-          ? new BigNumberInBase(amount).times(
-              tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-            )
+          ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
           : ZERO_IN_BASE
 
         return [...sum, { amount, amountInUsd }]
@@ -143,7 +141,7 @@ const volumeThisRound = computed(() => {
 
     const volumeInUsd = new BigNumberInWei(reward.score)
       .toBase(market.quoteToken.decimals || USDT_DECIMALS)
-      .times(tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId])
+      .times(tokenStore.tokenUsdPrice(market.quoteToken))
 
     return sum.plus(volumeInUsd)
   }, ZERO_IN_BASE)

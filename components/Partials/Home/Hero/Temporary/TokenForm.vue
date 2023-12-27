@@ -66,9 +66,9 @@ onMounted(() => {
     {
       [SwapFormField.InputDenom]: peggyUsdToken?.denom || route?.sourceDenom,
       [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || '',
-      [SwapFormField.InputAmount]: String(
-        tokenStore.tokenUsdPriceMap[injToken?.coinGeckoId || '']
-      ),
+      [SwapFormField.InputAmount]: injToken
+        ? String(tokenStore.tokenUsdPrice(injToken))
+        : '0',
       [SwapFormField.OutputAmount]: '1'
     },
     false

@@ -59,7 +59,7 @@ const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
     }
 
     return new BigNumberInBase(
-      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+      tokenStore.tokenUsdPrice(props.market.quoteToken)
     ).times(lastTradedPrice.value)
   }),
   {
