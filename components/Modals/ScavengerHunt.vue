@@ -10,7 +10,7 @@ const isModalOpen = computed(
     !appStore.userState.modalsViewed.includes(Modal.ScavengerHunt)
 )
 
-function onCloseModal() {
+function closeModal() {
   modalStore.closeModal(Modal.ScavengerHunt)
 
   appStore.setUserState({
@@ -18,10 +18,14 @@ function onCloseModal() {
     modalsViewed: [...appStore.userState.modalsViewed, Modal.ScavengerHunt]
   })
 }
+
+function onModalClose() {
+  closeModal()
+}
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm>
+  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <template #title>
       <h3>
         {{ $t('scavengerHunt.title') }}
@@ -35,7 +39,7 @@ function onCloseModal() {
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onCloseModal">
+        <AppButton class="bg-blue-500 text-blue-900" @click="onModalClose">
           {{ $t('common.close') }}
         </AppButton>
       </div>
