@@ -34,6 +34,7 @@ const explorerUrl = computed(() => {
 
 function closeModal() {
   modalStore.closeModal(Modal.SwapSuccess)
+  modalStore.openModal(Modal.ScavengerHunt)
 }
 
 function onModalClose() {
