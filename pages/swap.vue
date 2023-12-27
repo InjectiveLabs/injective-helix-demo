@@ -128,7 +128,7 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelAnalytics.swap({
+      mixpanelAnalytics.trackSwap({
         fee: totalFee.value.toFixed(2),
         rate: summaryRef.value?.priceForDisplayToFormat,
         inputAmount: formValues[SwapFormField.InputAmount],

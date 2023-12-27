@@ -19,7 +19,7 @@ const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function spotTradeClickedTrack() {
-  mixpanelAnalytics.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
     origin: TradeClickOrigin.TopMenu
@@ -27,7 +27,7 @@ function spotTradeClickedTrack() {
 }
 
 function perpetualTradeClickedTrack() {
-  mixpanelAnalytics.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
@@ -35,7 +35,7 @@ function perpetualTradeClickedTrack() {
 }
 
 function swapClickedTrack() {
-  mixpanelAnalytics.swapClicked()
+  mixpanelAnalytics.trackSwapClicked()
 }
 </script>
 

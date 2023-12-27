@@ -15,7 +15,7 @@ export class MixPanelAnalytics {
     this.mixpanelClient = undefined
   }
 
-  login({
+  trackLogin({
     injectiveAddress,
     wallet,
     tierLevel
@@ -35,15 +35,15 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
   }
 
-  logout() {
+  trackLogout() {
     this.getMixpanelClient().reset()
   }
 
-  connectClicked() {
+  trackConnectClicked() {
     this.getMixpanelClient().track(MixPanelEvent.ConnectClicked)
   }
 
-  swap(props: {
+  trackSwap(props: {
     fee: string
     rate: string | undefined
     inputAmount: string | undefined
@@ -58,12 +58,12 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().track(MixPanelEvent.Swap, props)
   }
 
-  swapClicked() {
+  trackSwapClicked() {
     this.getMixpanelClient().track(MixPanelEvent.SwapClicked)
     this.getMixpanelClient().people.increment('Swap Clicked')
   }
 
-  navigateToTradePage(props: {
+  trackNavigateToTradePage(props: {
     market: string
     marketType: MarketType
     origin: TradeClickOrigin
@@ -71,7 +71,7 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().track(MixPanelEvent.TradeClicked, props)
   }
 
-  walletSelected(props: {
+  trackWalletSelected(props: {
     wallet: Wallet
     userCountryFromVpnApi: string
     userCountryFromBrowser?: string
@@ -79,19 +79,19 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().track(MixPanelEvent.WalletSelected, props)
   }
 
-  surveyAccepted(surveyTitle: string) {
+  trackSurveyAccepted(surveyTitle: string) {
     this.getMixpanelClient().track(MixPanelEvent.SurveyAccepted, {
       surveyTitle
     })
   }
 
-  surveyRejected(surveyTitle: string) {
+  trackSurveyRejected(surveyTitle: string) {
     this.getMixpanelClient().track(MixPanelEvent.SurveyRejected, {
       surveyTitle
     })
   }
 
-  placeOrderAttempt(props: {
+  trackPlaceOrderAttempt(props: {
     amount: string
     market: string
     marketType: MarketType
@@ -108,7 +108,7 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().people.increment('Place Order Attempts')
   }
 
-  placeOrderConfirm(props: {
+  trackPlaceOrderConfirm(props: {
     amount: string
     market: string
     marketType: MarketType
@@ -126,7 +126,7 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().people.increment('Place Order Confirms')
   }
 
-  createStrategy(props: {
+  trackCreateStrategy(props: {
     lowerPrice: string
     upperPrice: string
     gridsNumber: string
@@ -148,7 +148,7 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().people.increment(incrementEvent)
   }
 
-  removeStrategy(props: {
+  trackRemoveStrategy(props: {
     error?: Error
     market: string
     totalProfit: string
@@ -189,7 +189,6 @@ export class MixPanelAnalytics {
     this.mixpanelClient = mixpanel
     this.mixpanelClient.init(this.mixpanelKey, {
       persistence: 'localStorage',
-      debug: true,
       batch_requests: false,
       track_pageview: true
     })

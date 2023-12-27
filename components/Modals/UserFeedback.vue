@@ -50,13 +50,13 @@ function userFeedbackModalViewed() {
 }
 
 function onTakeSurveyClickEvent() {
-  mixpanelAnalytics.surveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
+  mixpanelAnalytics.trackSurveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }
 
 function onRejectSurveyClickEvent() {
-  mixpanelAnalytics.surveyRejected(SurveyTitle.HelixUserSurveyFeb23)
+  mixpanelAnalytics.trackSurveyRejected(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }

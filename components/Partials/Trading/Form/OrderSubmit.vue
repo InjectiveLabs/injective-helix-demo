@@ -149,7 +149,7 @@ function trackPlaceOrder() {
     ? formValues.value[TradeField.SlippageTolerance]
     : ''
 
-  mixpanelAnalytics.placeOrderAttempt({
+  mixpanelAnalytics.trackPlaceOrderAttempt({
     market: props.market.slug,
     marketType: props.market.subType,
     reduceOnly: props.isOrderTypeReduceOnly,
