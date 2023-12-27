@@ -58,7 +58,7 @@ function onClick() {
 }
 
 function tradeClickedTrack() {
-  mixpanelAnalytics.navigateToTradePage({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: market.value,
     marketType: marketType.value,
     origin: TradeClickOrigin.TopMenu

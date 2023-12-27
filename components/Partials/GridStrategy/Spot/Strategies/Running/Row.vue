@@ -131,7 +131,7 @@ function onRemoveStrategy() {
     .finally(() => {
       status.setIdle()
 
-      mixpanelAnalytics.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: duration.value,
         market: market.value?.slug || '',
         totalProfit: pnlToString.value

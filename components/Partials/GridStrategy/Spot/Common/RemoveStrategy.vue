@@ -44,7 +44,7 @@ function removeStrategy() {
     .finally(() => {
       status.setIdle()
 
-      mixpanelAnalytics.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: durationFormatter(props.createdAt, Date.now()),
         market: gridStrategyStore.spotMarket?.slug || '',
         totalProfit: props.pnl,
