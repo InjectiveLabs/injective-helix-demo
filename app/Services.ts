@@ -136,7 +136,7 @@ export const tokenService = new TokenService({
   endpoints: ENDPOINTS
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
-export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
+export const tokenPrice = new TokenPrice(NETWORK, COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClientAsync(NETWORK, {
   endpoints: ENDPOINTS,
   alchemyRpcUrl: alchemyRpcEndpoint
