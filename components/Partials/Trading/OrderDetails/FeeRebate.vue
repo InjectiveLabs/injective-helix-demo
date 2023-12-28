@@ -2,6 +2,10 @@
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_MINIMAL_AMOUNT
+} from '@/app/utils/constants'
 
 const props = defineProps({
   notionalValue: {
@@ -38,7 +42,9 @@ const feeRebates = computed(() => {
 const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
   feeRebates,
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: feeRebates.value.lte(UI_MINIMAL_AMOUNT)
+      ? UI_DEFAULT_DISPLAY_DECIMALS
+      : props.market.priceDecimals
   }
 )
 </script>
@@ -46,11 +52,11 @@ const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
 <template>
   <CommonTextInfo
     v-if="marketHasNegativeMakerFee"
-    :title="$t('trade.est_fee_rebate')"
+    :title="$t('trade.estFeeRebate')"
     class="mt-2"
   >
     <template #context>
-      <AppTooltip class="ml-2" :content="$t('trade.est_fee_rebate_note')" />
+      <AppTooltip class="ml-2" :content="$t('trade.estFeeRebate_note')" />
     </template>
     <span
       v-if="feeRebates.gt(0)"
