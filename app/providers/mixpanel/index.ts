@@ -1,1 +1,1 @@
-export { mixpanelAnalytics } from './client'
+export * from './client'
