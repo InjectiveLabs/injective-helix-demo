@@ -11,6 +11,7 @@ export const getRoutes = (network: Network, env: string) => {
     'stinj-inj',
     'atom-usdt',
     'ninja-inj',
+    'autism-inj',
     'kira-inj',
     'katana-inj',
     'arb-usdt',

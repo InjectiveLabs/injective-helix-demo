@@ -15,6 +15,7 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'talis-usdt',
+  'autism-inj',
   'pyth-usdt',
   'kuji-usdt',
   'tia-usdt-perp',
