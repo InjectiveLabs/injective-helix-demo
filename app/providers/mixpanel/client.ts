@@ -2,7 +2,7 @@ import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { MIXPANEL_KEY } from '../../utils/constants'
+import { MIXPANEL_KEY } from '@/app/utils/constants/setup'
 import { MixPanelEvent, OrderAttemptStatus, TradeClickOrigin } from '@/types'
 
 export class MixPanelAnalytics {
