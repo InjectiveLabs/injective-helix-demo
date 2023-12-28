@@ -53,7 +53,7 @@ const status = reactive(new Status())
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeConfirm])
 
 const usdPrice = computed(() => {
-  return tokenStore.tokenUsdPrice(balanceWithToken.value.token)
+  return tokenStore.tokenUsdPrice(balanceWithToken.value?.token)
 })
 
 const balanceWithTokenAndPrice = computed(() => {

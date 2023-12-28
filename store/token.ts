@@ -26,9 +26,13 @@ export const useTokenStore = defineStore('token', {
     },
 
     tokenUsdPrice: (state) => (token?: Token) => {
+      if (!token) {
+        return 0
+      }
+
       return (
-        state.tokenUsdPriceMap[token?.coinGeckoId] ||
-        state.tokenUsdPriceMap[token?.denom.toLowerCase()] ||
+        state.tokenUsdPriceMap[token.coinGeckoId] ||
+        state.tokenUsdPriceMap[token.denom.toLowerCase()] ||
         0
       )
     },
