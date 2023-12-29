@@ -21,6 +21,7 @@ export default {
     liquidity: 'Liquidity',
     dashboard: 'Dashboard',
     round: 'Round {round}',
+    activeBots: 'Active Bots',
     allRewards: 'All Rewards',
     estRewards: 'Est. Rewards',
     rewardYield: 'Reward Yield',
