@@ -101,6 +101,7 @@ const sgtScAddress = computed(() => {
 
   const address = spotGridMarkets.find((sc) => sc.slug === slug)
     ?.contractAddress
+
   return address
 })
 
