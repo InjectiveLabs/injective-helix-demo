@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
@@ -10,6 +15,7 @@ import {
   LiquidityRewardsPage,
   TradingBotsSubPage
 } from '@/types'
+import { spotGridMarkets } from '~/app/data/grid-strategy'
 
 const props = defineProps({
   campaignWithSc: {
@@ -21,6 +27,10 @@ const props = defineProps({
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const { $onError } = useNuxtApp()
+
+const activeBots = ref<number>(0)
+const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
@@ -84,6 +94,30 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
   marketVolumeInUsd,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
+
+const sgtScAddress = computed(() => {
+  const campaignWords = props.campaignWithSc.campaignId.split('-')
+  const slug = campaignWords[2] + '-' + campaignWords[3]
+
+  const address = spotGridMarkets.find((sc) => sc.slug === slug)
+    ?.contractAddress
+  return address
+})
+
+onMounted(() => {
+  status.setLoading()
+
+  campaignStore
+    .fetchActiveStrategiesOnSmartContract(sgtScAddress.value)
+
+    .then((response) => {
+      activeBots.value = response
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 </script>
 
 <template>
@@ -130,6 +164,13 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
             </p>
           </div>
         </div>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <span v-if="status.isLoading()" class="text-gray-500">&mdash;</span>
+        <span v-else>{{ activeBots }}</span>
       </div>
     </td>
 
