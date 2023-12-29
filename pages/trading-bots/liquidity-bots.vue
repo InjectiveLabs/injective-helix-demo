@@ -22,9 +22,7 @@ function init() {
 
   Promise.all([
     spotStore.init(),
-    tokenStore.fetchTokensUsdPriceMap(
-      tokenStore.tokens.map((t) => t.coinGeckoId)
-    )
+    tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens)
   ])
     .then(() => {
       gridStrategyStore.$patch({

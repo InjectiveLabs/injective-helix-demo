@@ -18,9 +18,7 @@ onMounted(() => {
   Promise.all([
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
-    tokenStore.fetchTokensUsdPriceMap(
-      tokenStore.tokens.map(({ coinGeckoId }) => coinGeckoId)
-    ),
+    tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
     campaignStore.fetchCampaignsWithSc({ campaignIds })
   ])
     .catch($onError)

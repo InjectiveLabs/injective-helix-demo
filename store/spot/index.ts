@@ -55,7 +55,6 @@ import {
   ActivityFetchOptions,
   UiSpotOrderbookWithSequence
 } from '@/types'
-import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -406,37 +405,9 @@ export const useSpotStore = defineStore('spot', {
             )
           ]
         })
-
-        spotStore.getPricesFromMarketsSummary(marketSummaries)
       } catch (e) {
         // don't do anything for now
       }
-    },
-
-    getPricesFromMarketsSummary(marketsSummary: UiSpotMarketSummary[]) {
-      const tokenStore = useTokenStore()
-
-      const priceMap = MARKET_IDS_WITHOUT_COINGECKO_ID.map((market) => {
-        const marketSummary = marketsSummary.find(
-          (m) => m.marketId === market.marketId
-        )!
-
-        const quoteMarketSummary = marketsSummary.find(
-          (marketSum) => marketSum.marketId === market.quoteMarket
-        )
-
-        const lastPrice = market.isUsdtQuote
-          ? marketSummary.price || 0
-          : (marketSummary.price || 0) * (quoteMarketSummary?.price || 0)
-
-        return {
-          [market.coingeckoId]: lastPrice
-        }
-      }).reduce((acc, curr) => ({ ...acc, ...curr }), {})
-
-      tokenStore.$patch({
-        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
-      })
     },
 
     cancelSubaccountStream() {

@@ -96,9 +96,7 @@ const rewards = computed(() => {
     ).multipliedBy(reward.amount || 0)
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(
-          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-        )
+      ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {

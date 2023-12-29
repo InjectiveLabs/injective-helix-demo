@@ -5,7 +5,6 @@ import { bankApi, denomClient, tokenPrice } from '@/app/Services'
 import { IS_MAINNET } from '@/app/utils/constants/setup'
 import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
 import { TokenUsdPriceMap } from '@/types'
-import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type TokenStoreState = {
   tokens: Token[]
@@ -22,8 +21,20 @@ const initialStateFactory = (): TokenStoreState => ({
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   getters: {
-    tokenUsdPrice: (state) => (coinGeckoId: string) => {
-      return state.tokenUsdPriceMap[coinGeckoId] || 0
+    tokenUsdPriceByCoinGeckoId: (state) => (coinGeckoId: string) => {
+      return state.tokenUsdPriceMap[coinGeckoId.toLowerCase()] || 0
+    },
+
+    tokenUsdPrice: (state) => (token?: Token) => {
+      if (!token) {
+        return 0
+      }
+
+      return (
+        state.tokenUsdPriceMap[token.coinGeckoId] ||
+        state.tokenUsdPriceMap[token.denom.toLowerCase()] ||
+        0
+      )
     },
 
     tradeableTokens: (state) => {
@@ -87,24 +98,12 @@ export const useTokenStore = defineStore('token', {
         (token) => token.tokenType !== TokenType.Unknown
       )
 
-      const supplyWithTokenWithInjTokens = supplyWithToken.map((token) => {
-        const marketData = MARKET_IDS_WITHOUT_COINGECKO_ID.find(
-          (market) => market.symbol === token.symbol
-        )
-
-        if (marketData) {
-          return { ...token, coinGeckoId: marketData.coingeckoId }
-        } else {
-          return token
-        }
-      })
-
       const supplyWithUnknownTokens = supplyWithTokensOrUnknown.filter(
         (token) => token.tokenType === TokenType.Unknown
       )
 
       tokenStore.$patch({
-        tokens: supplyWithTokenWithInjTokens,
+        tokens: supplyWithToken,
         unknownTokens: supplyWithUnknownTokens
       })
     },
@@ -138,6 +137,35 @@ export const useTokenStore = defineStore('token', {
         tokens: [...tokenStore.tokens, ...tokensList],
         unknownTokens: unknownTokensWithoutAsset
       })
+    },
+
+    async getTokensUsdPriceMapFromToken(tokens: Token[]) {
+      const tokenStore = useTokenStore()
+
+      if (tokens.length === 0) {
+        return
+      }
+
+      const tokensWithoutCoinGeckoId = tokens
+        .filter((token) => !token.coinGeckoId)
+        .map((token) => token.denom.toLowerCase())
+      const tokensWithCoinGeckoId = tokens
+        .filter((token) => token.coinGeckoId)
+        .map((token) => token.coinGeckoId)
+
+      const tokenUsdPriceMapFromCoinGeckoId =
+        await tokenPrice.fetchUsdTokensPrice([
+          ...new Set(tokensWithCoinGeckoId.filter((id) => id))
+        ])
+      const tokenUsdPriceMapFromDenoms = await tokenPrice.fetchUsdDenomsPrice([
+        ...new Set(tokensWithoutCoinGeckoId.filter((denom) => denom))
+      ])
+
+      tokenStore.tokenUsdPriceMap = {
+        ...tokenUsdPriceMapFromCoinGeckoId,
+        ...tokenUsdPriceMapFromDenoms,
+        ...tokenStore.tokenUsdPriceMap
+      }
     },
 
     getTradeableTokensPriceMap() {

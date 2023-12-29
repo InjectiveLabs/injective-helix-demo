@@ -1826,7 +1826,7 @@
 
 "@injectivelabs/sdk-ts@1.14.5-beta.54", "@injectivelabs/sdk-ts@^1.14.5-beta.54":
   version "1.14.5-beta.54"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.14.5-beta.54.tgz#7dbf4713d86d9226b98c8221298c5e57390d4bfd"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.5-beta.54.tgz#7dbf4713d86d9226b98c8221298c5e57390d4bfd"
   integrity sha512-YMXo808t5Y+8Y3lYrcD0NWqJlT6OkmD/uFmyaYNFZnJpxCF3GVAWAQoUIlO/la/fiMBXynJTHTI1Hu7QIEzd3A==
   dependencies:
     "@apollo/client" "^3.5.8"
@@ -1869,7 +1869,7 @@
 
 "@injectivelabs/sdk-ui-ts@1.14.5-beta.61":
   version "1.14.5-beta.61"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.5-beta.61.tgz#05f2fae88d8e3c6e1dc98ce89e4647f8b492ce2a"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.5-beta.61.tgz#05f2fae88d8e3c6e1dc98ce89e4647f8b492ce2a"
   integrity sha512-dCC0QJWa3negC/LqaDTR3PrPIVAshBRPzersleegYiq9U2/DX14FMW+kIsUopmwT2agrZmHkFtuG8OTP3/Gfbg==
   dependencies:
     "@injectivelabs/contracts" "^1.14.5-beta.6"
@@ -1906,7 +1906,7 @@
 
 "@injectivelabs/token-metadata@1.14.5-beta.35", "@injectivelabs/token-metadata@^1.14.5-beta.35":
   version "1.14.5-beta.35"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-1.14.5-beta.35.tgz#ef7fc0f6d526981614b031db78b892d49d3a766b"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.5-beta.35.tgz#ef7fc0f6d526981614b031db78b892d49d3a766b"
   integrity sha512-D9R6YsJrLh4RTgCWzgkoCM0dlnYW4lDkItogZBhsa8hyumw+uO4ZDljqpmUmVYYdsOPyMVSQJqz3AGRTNweIhQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.5-beta.4"
@@ -1993,7 +1993,7 @@
 
 "@injectivelabs/wallet-ts@1.14.5-beta.60":
   version "1.14.5-beta.60"
-  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.5-beta.60.tgz#ae25f17540314218216c5442c7ee57a1ea3d2927"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.5-beta.60.tgz#ae25f17540314218216c5442c7ee57a1ea3d2927"
   integrity sha512-znbo3MTb7otEYT3++WHk6Y/GwGXzc/uLhMnRJrcN6KLd9eB4w7O525FxRP9w7EpZRqjSsV0Mz92KqXEaTU9lew==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"

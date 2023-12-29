@@ -80,9 +80,11 @@ function initRoutes() {
     accountStore.fetchAccountPortfolioBalances()
   ])
     .then(async () => {
-      await tokenStore.fetchTokensUsdPriceMap([
-        ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotStore.markets.map(({ baseToken }) => baseToken.coinGeckoId)
+      await Promise.all([
+        tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
+        tokenStore.getTokensUsdPriceMapFromToken(
+          spotStore.markets.map(({ baseToken }) => baseToken)
+        )
       ])
     })
     .catch($onError)
