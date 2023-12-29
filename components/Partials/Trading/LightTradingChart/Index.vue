@@ -9,7 +9,8 @@ import {
   ChartOptions,
   HistogramData,
   CandlestickData,
-  WhitespaceData
+  WhitespaceData,
+  CrosshairMode
 } from 'lightweight-charts'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
@@ -43,7 +44,14 @@ const chartOptions: DeepPartial<ChartOptions> = {
   grid: {
     horzLines: { style: LineStyle.Solid, color: '#ffffff10' },
     vertLines: { style: LineStyle.Dashed, color: '#ffffff10' }
-  }
+  },
+  crosshair: {
+    mode: CrosshairMode.Normal,
+    horzLine: {
+      labelBackgroundColor: '#333'
+    }
+  },
+  autoSize: true
 }
 
 const container = ref()
@@ -104,6 +112,12 @@ function init() {
   }
 
   candlestickSeries.setData(props.candlesticksData)
+
+  candlestickSeries.applyOptions({
+    priceFormat: {
+      minMove: 0.000001
+    }
+  })
 
   candlestickSeries.priceFormatter().format = (price) => {
     return price > 1
