@@ -84,7 +84,7 @@ export function useBalance() {
               isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
             )
 
-            const unrealizedPnl = positionsForSubaccountWithDenom
+            const unrealizedPnlAndMargin = positionsForSubaccountWithDenom
               .filter((position) => position.denom === denom)
               .reduce((total, position) => {
                 const markPriceFromMap = new BigNumberInBase(
@@ -95,24 +95,30 @@ export function useBalance() {
                   markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
                 )
 
-                return total.plus(
-                  new BigNumberInWei(position.quantity)
-                    .times(markPrice.minus(position.entryPrice))
-                    .times(position.direction === TradeDirection.Long ? 1 : -1)
-                )
+                return total
+                  .plus(position.margin)
+                  .plus(
+                    new BigNumberInWei(position.quantity)
+                      .times(markPrice.minus(position.entryPrice))
+                      .times(
+                        position.direction === TradeDirection.Long ? 1 : -1
+                      )
+                  )
               }, ZERO_IN_BASE)
 
             const accountTotalBalance = isDefaultTradingAccount
               ? new BigNumberInWei(bankBalance)
                   .plus(subaccountTotalBalance)
-                  .plus(unrealizedPnl)
-              : new BigNumberInWei(subaccountTotalBalance).plus(unrealizedPnl)
+                  .plus(unrealizedPnlAndMargin)
+              : new BigNumberInWei(subaccountTotalBalance).plus(
+                  unrealizedPnlAndMargin
+                )
             const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
             return {
               token,
               usdPrice,
-              unrealizedPnl: unrealizedPnl.toFixed(),
+              unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
               denom: token.denom,
               bankBalance: isDefaultTradingAccount ? bankBalance : '0',
               inOrderBalance: inOrderBalance.toFixed(),
@@ -165,7 +171,7 @@ export function useBalance() {
         )
         .filter((position) => position.denom === denom)
 
-      const unrealizedPnl = positionsForSubaccountWithDenom.reduce(
+      const unrealizedPnlAndMargin = positionsForSubaccountWithDenom.reduce(
         (total, position) => {
           const markPriceFromMap = new BigNumberInBase(
             derivativeStore.marketMarkPriceMap[position.marketId]?.price || 0
@@ -174,11 +180,13 @@ export function useBalance() {
             markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
           )
 
-          return total.plus(
-            new BigNumberInWei(position.quantity)
-              .times(markPrice.minus(position.entryPrice))
-              .times(position.direction === TradeDirection.Long ? 1 : -1)
-          )
+          return total
+            .plus(position.margin)
+            .plus(
+              new BigNumberInWei(position.quantity)
+                .times(markPrice.minus(position.entryPrice))
+                .times(position.direction === TradeDirection.Long ? 1 : -1)
+            )
         },
         ZERO_IN_BASE
       )
@@ -186,8 +194,10 @@ export function useBalance() {
       const accountTotalBalance = isDefaultTradingAccount
         ? new BigNumberInWei(bankBalance)
             .plus(subaccountTotalBalance)
-            .plus(unrealizedPnl)
-        : new BigNumberInWei(subaccountTotalBalance).plus(unrealizedPnl)
+            .plus(unrealizedPnlAndMargin)
+        : new BigNumberInWei(subaccountTotalBalance).plus(
+            unrealizedPnlAndMargin
+          )
       const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
       return {
@@ -195,7 +205,7 @@ export function useBalance() {
         usdPrice,
         denom: token.denom,
         bankBalance: isDefaultTradingAccount ? bankBalance : '0',
-        unrealizedPnl: unrealizedPnl.toFixed(),
+        unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
         inOrderBalance: inOrderBalance.toFixed(),
         availableMargin: availableMargin.toFixed(),
         availableBalance: isDefaultTradingAccount
