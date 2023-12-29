@@ -3,6 +3,7 @@
     <tr class="text-xs text-gray-400 uppercase">
       <th class="text-left">{{ $t('campaign.market') }}</th>
       <th class="text-left">{{ $t('campaign.rewards') }}</th>
+      <th>{{ $t('campaign.activeBots') }}</th>
       <th>{{ $t('campaign.volume') }}</th>
       <th></th>
     </tr>
