@@ -6,7 +6,8 @@ import {
   fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary
+  GuildCampaignSummary,
+  toUtf8
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
 import {
@@ -222,6 +223,21 @@ export const useCampaignStore = defineStore('campaign', {
       const userHasClaimed = fromBase64(response.data) as unknown as boolean
 
       return userHasClaimed
+    },
+
+    async fetchActiveStrategiesOnSmartContract(contractAddress?: string) {
+      if (!contractAddress) {
+        return 0
+      }
+
+      const response = (await chainGrpcWasmApi.fetchSmartContractState(
+        contractAddress,
+        toBase64({
+          total_strategies: {}
+        })
+      )) as unknown as { data: Uint8Array }
+
+      return toUtf8(response.data) as unknown as number
     },
 
     reset() {
