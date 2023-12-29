@@ -302,7 +302,7 @@ export const transferToInjective = async ({
   const stdFee = {
     ...getStdFeeForToken(token, gasPrice),
     gas: new BigNumberInBase(DEFAULT_IBC_GAS_LIMIT)
-      .times(cosmosChainIdIsWithIncreasedGasLimit ? 1.5 : 1)
+      .times(cosmosChainIdIsWithIncreasedGasLimit ? 2 : 1)
       .toFixed()
   }
   const timestamp = makeTimeoutTimestampInNs()
