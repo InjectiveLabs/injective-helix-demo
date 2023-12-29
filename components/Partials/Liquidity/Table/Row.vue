@@ -62,7 +62,7 @@ const totalRewardsInUsd = computed(() => {
     }
 
     const rewardInUsd = new BigNumberInBase(reward.amount).times(
-      tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+      tokenStore.tokenUsdPrice(token)
     )
 
     return total.plus(rewardInUsd)
@@ -79,9 +79,7 @@ const marketVolume = computed(() =>
 
 const marketVolumeInUsd = computed(() =>
   marketVolume.value.times(
-    market.value
-      ? tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId]
-      : 0
+    market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
   )
 )
 

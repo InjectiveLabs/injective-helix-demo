@@ -32,7 +32,7 @@ const totalRewardsThisRound = computed(() => {
       const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)!
 
       const rewardInUsd = new BigNumberInBase(reward.amount).times(
-        tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+        tokenStore.tokenUsdPrice(token)
       )
 
       return sum.plus(rewardInUsd)
@@ -51,7 +51,7 @@ const totalVolume = computed(() =>
 
       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
         .toBase(market.quoteToken.decimals)
-        .times(tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId])
+        .times(tokenStore.tokenUsdPrice(market.quoteToken))
       return totalScore.plus(campaignVolumeInUsd)
     }, ZERO_IN_BASE)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)

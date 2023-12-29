@@ -54,7 +54,7 @@ const stakedAmount = computed(() => {
 })
 
 const stakedAmountInUsd = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE
@@ -82,7 +82,7 @@ const shouldAbbreviateTotalBalance = computed(() =>
 )
 
 const accountTotalBalanceInBtc = computed(() => {
-  const btcUsdPrice = tokenStore.tokenUsdPrice(BTC_COIN_GECKO_ID)
+  const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
 
   if (!btcUsdPrice) {
     return ZERO_IN_BASE

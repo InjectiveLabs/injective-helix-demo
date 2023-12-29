@@ -42,7 +42,7 @@ const marketVolumeInUsd = computed(() =>
   market.value
     ? new BigNumberInWei(campaignUserInfo.value?.score || 0)
         .toBase(market.value.quoteToken.decimals)
-        .times(tokenStore.tokenUsdPriceMap[market.value.quoteToken.coinGeckoId])
+        .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
     : ZERO_IN_BASE
 )
 
@@ -71,9 +71,7 @@ const rewards = computed(() => {
     ).multipliedBy(reward.amount || 0)
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(
-          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-        )
+      ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {

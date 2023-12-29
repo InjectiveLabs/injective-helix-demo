@@ -18,7 +18,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     ...exchangeStore.deprecatedMarketsWithSummary
   ].map(({ market, summary }) => {
     const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
+      tokenStore.tokenUsdPrice(market.quoteToken)
     )
 
     return {

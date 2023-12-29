@@ -54,7 +54,7 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
       }
 
       const rewardInUsd = new BigNumberInBase(reward.amount).times(
-        tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+        tokenStore.tokenUsdPrice(token)
       )
 
       return total.plus(rewardInUsd)
@@ -67,7 +67,7 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(props.campaign.totalScore)
       .toBase(props.market.quoteToken.decimals)
-      .times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+      .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

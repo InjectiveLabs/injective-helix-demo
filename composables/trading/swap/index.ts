@@ -71,8 +71,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
             quantityTensMultiplier,
             token: baseToken,
             denom: baseToken.denom,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[baseToken?.coinGeckoId || ''] || 0
+            usdPrice: baseToken ? tokenStore.tokenUsdPrice(baseToken) : 0
           })
         }
 
@@ -83,8 +82,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
             token: quoteToken,
             denom: quoteToken.denom,
             quantityDecimals: MAX_QUOTE_DECIMALS,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[quoteToken?.coinGeckoId || ''] || 0
+            usdPrice: quoteToken ? tokenStore.tokenUsdPrice(quoteToken) : 0
           })
         }
 

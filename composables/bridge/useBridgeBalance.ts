@@ -36,7 +36,7 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
           token,
           denom: bankBalance.denom,
           balance: bankBalance.amount,
-          usdPrice: tokenStore.tokenUsdPrice(token?.coinGeckoId || '')
+          usdPrice: token ? tokenStore.tokenUsdPrice(token) : ''
         }
       })
       .filter(
