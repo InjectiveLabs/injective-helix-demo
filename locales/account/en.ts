@@ -5,7 +5,7 @@ export default {
     accountOverview: 'Account Overview',
     available: 'Available',
     fee: 'Fee',
-    netWorth: 'Net Worth',
+    netWorth: 'Tradeable Net Worth',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
