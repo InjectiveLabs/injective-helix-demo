@@ -414,7 +414,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
         rewards: [{ symbol: 'INJ', amount: '200' }]
       },
       {
-        campaignId: 'spot-grid-stinj-inj-5',
+        campaignId: 'spot-grid-stinj-inj-6',
         scAddress: '',
         marketSlug: 'stinj-inj',
         rewards: [{ symbol: 'INJ', amount: '100' }]
