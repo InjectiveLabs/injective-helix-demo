@@ -316,7 +316,6 @@ function resetQueryError() {
         />
 
         <ModalsSwapSuccess v-bind="{ txHash }" />
-        <ModalsScavengerHunt />
       </div>
     </div>
   </AppHocLoading>
