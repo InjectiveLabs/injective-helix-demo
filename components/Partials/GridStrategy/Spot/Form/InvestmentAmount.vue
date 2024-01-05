@@ -196,7 +196,8 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="investmentAmountValue"
         :is-disabled="isLowerBoundGtLastPrice"
-        class="text-right"
+        class="text-left"
+        placeholder="0.00"
         is-disabled-gray
       >
         <template #addon>
@@ -210,6 +211,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ market.quoteToken.symbol }}
           </p>
         </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
+        </template>
       </AppInputNumeric>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
@@ -220,7 +225,8 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <div>
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
-        class="text-right"
+        class="text-left"
+        placeholder="0.00"
         :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
@@ -234,6 +240,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ baseAmountToString }}
             {{ market.baseToken.symbol }}
           </p>
+        </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         </template>
       </AppInputNumeric>
 

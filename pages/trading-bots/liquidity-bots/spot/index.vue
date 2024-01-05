@@ -155,7 +155,10 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <PartialsLiquidityBotsSpotPlacingOrders
         v-else-if="activeStrategy"
-        v-bind="{ subaccountId }"
+        v-bind="{
+          subaccountId,
+          market: gridStrategyStore.spotMarket as UiSpotMarketWithToken
+        }"
       />
 
       <PartialsGridStrategySpotFormActiveStrategy

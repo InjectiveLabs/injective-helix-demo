@@ -184,6 +184,11 @@ export default {
         'Assets used by the bot will be transferred back to your main account.',
       review:
         "Review the performance of your past strategies in the 'Grid Trading History' tab."
+    },
+
+    advanced: {
+      sellBaseUponTermination: 'Sell {base} upon Termination',
+      sellAllOnStop: 'Sell all {symbol} on stop'
     }
   }
 }

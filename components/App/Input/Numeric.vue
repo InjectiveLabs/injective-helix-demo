@@ -131,6 +131,10 @@ export default {
               <slot name="addon" />
             </div>
           </BaseNumericInput>
+
+          <div v-if="slots.postfix" class="mx-3">
+            <slot name="postfix" />
+          </div>
         </div>
       </div>
     </div>

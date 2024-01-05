@@ -377,12 +377,21 @@ export enum InstitutionalFormField {
 
 export enum SpotGridTradingField {
   Grids = 'grids',
-  StopLoss = 'stopLoss',
+
+  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
+  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
+
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
+
+  SellBaseUponTermination = 'sellBaseUponTermination',
+  ExitType = 'exitType',
+
+  StopLoss = 'stopLoss',
   TakeProfit = 'takeProfit',
-  SellAllBase = 'sellAllBase',
+
   InvestmentType = 'investmentType',
+
   InvestmentAmount = 'investmentAmount',
   BaseInvestmentAmount = 'baseInvestmentAmount'
 }

@@ -6,7 +6,6 @@ import {
   GST_DEFAULT_PRICE_TICK_SIZE
 } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
-import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues()
@@ -23,47 +22,21 @@ const tickSize = computed(() =>
     : GST_DEFAULT_PRICE_TICK_SIZE
 )
 
-const marketUsesStableCoins = computed(() =>
-  [
-    gridStrategyStore.spotMarket?.baseToken.symbol,
-    gridStrategyStore.spotMarket?.quoteToken.symbol
-  ].some(
-    (symbol) =>
-      symbol &&
-      [
-        KAVA_USDT_SYMBOL.toLowerCase(),
-        STINJ_USDT_SYMBOL.toLowerCase()
-      ].includes(symbol.toLowerCase())
-  )
-)
-
 const { value: gridsValue, errorMessage } = useStringField({
   name: SpotGridTradingField.Grids,
   rule: '',
   dynamicRule: computed(() => {
     const rules = ['requiredSgt']
 
-    if (marketUsesStableCoins.value) {
-      const rangeKavaRule = `rangeKavaSgt:@${
-        SpotGridTradingField.LowerPrice
-      },@${SpotGridTradingField.UpperPrice},${
-        formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS
-      },${tickSize.value}`
-
-      rules.push(rangeKavaRule)
-    } else {
-      const rangeRule = `rangeSgt:@${SpotGridTradingField.LowerPrice},@${
-        SpotGridTradingField.UpperPrice
-      },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
-        tickSize.value
-      }`
-
-      rules.push(rangeRule)
-    }
+    const rangeKavaRule = `rangeKavaSgt:@${SpotGridTradingField.LowerPrice},@${
+      SpotGridTradingField.UpperPrice
+    },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
+      tickSize.value
+    }`
 
     const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
 
-    rules.push(betweenRule)
+    rules.push(betweenRule, rangeKavaRule)
 
     return rules.join('|')
   })
@@ -81,7 +54,7 @@ const { value: gridsValue, errorMessage } = useStringField({
       v-model="gridsValue"
       :max-decimals="0"
       :placeholder="`${GST_MINIMUM_GRIDS} - ${GST_MAXIMUM_GRIDS}`"
-      class="text-right"
+      class="text-left"
     />
 
     <p class="text-red-500 text-xs font-semibold pt-2">{{ errorMessage }}</p>

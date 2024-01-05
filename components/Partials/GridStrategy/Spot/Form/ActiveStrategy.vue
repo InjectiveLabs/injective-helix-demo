@@ -415,29 +415,6 @@ useIntervalFn(() => {
       </span>
     </div>
 
-    <!-- <div class="flex justify-between mb-2"> WE REMOVE THIS FOR NOW SINCE ADDITIONAL SUPPORT FROM SC IS NEEDED
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
-        <span>{{ $t('sgt.sellAllBaseOnStop') }}</span>
-        <AppTooltip
-          :content="
-            $t('sgt.sellAllBaseOnStopTooltip', {
-              symbol: market.baseToken.symbol
-            })
-          "
-        />
-      </p>
-
-      <p>
-        {{
-          $t(
-            activeStrategy.shouldExitWithQuoteOnly
-              ? 'sgt.enabled'
-              : 'sgt.disabled'
-          )
-        }}
-      </p>
-    </div> -->
-
     <PartialsGridStrategySpotFormEndBot
       v-bind="{ isLiquidity, strategy: activeStrategy }"
     />

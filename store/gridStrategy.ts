@@ -4,7 +4,9 @@ import {
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
   spotQuantityToChainQuantityToFixed,
-  TradingStrategy
+  TradingStrategy,
+  ExitConfig,
+  ExitType
 } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -86,18 +88,18 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       levels,
       lowerBound,
       upperBound,
-      shouldExitWithQuoteOnly,
       stopLoss,
-      takeProfit
+      takeProfit,
+      exitType
     }: {
       levels: number
       lowerBound: string
       upperBound: string
       quoteAmount?: string
       baseAmount?: string
-      shouldExitWithQuoteOnly?: boolean
-      takeProfit?: string
-      stopLoss?: string
+      takeProfit?: ExitConfig
+      stopLoss?: ExitConfig
+      exitType?: ExitType
     }) {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
@@ -160,20 +162,26 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         })
       }
 
-      const stopLossValue = stopLoss
-        ? spotPriceToChainPriceToFixed({
-            value: stopLoss,
-            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
-            quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-          })
+      const stopLossValue: ExitConfig | undefined = stopLoss
+        ? {
+            exitPrice: spotPriceToChainPriceToFixed({
+              value: stopLoss.exitPrice,
+              baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
+              quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+            }),
+            exitType: stopLoss.exitType
+          }
         : undefined
 
-      const takeProfitValue = takeProfit
-        ? spotPriceToChainPriceToFixed({
-            value: takeProfit,
-            baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
-            quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
-          })
+      const takeProfitValue: ExitConfig | undefined = takeProfit
+        ? {
+            exitPrice: spotPriceToChainPriceToFixed({
+              value: takeProfit.exitPrice,
+              baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
+              quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
+            }),
+            exitType: takeProfit.exitType
+          }
         : undefined
 
       const message = MsgExecuteContractCompat.fromJSON({
@@ -192,9 +200,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
             quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
           }),
-          shouldExitWithQuoteOnly,
           stopLoss: stopLossValue,
-          takeProfit: takeProfitValue
+          takeProfit: takeProfitValue,
+          exitType
         }),
 
         funds
