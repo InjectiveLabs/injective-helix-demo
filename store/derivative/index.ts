@@ -179,9 +179,11 @@ export const useDerivativeStore = defineStore('derivative', {
       const markets = (await apiClient.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
-      const recentlyExpiredMarkets = (await apiClient.fetchMarkets({
-        marketStatus: 'expired'
-      })) as Array<ExpiryFuturesMarket>
+      const recentlyExpiredMarkets = (
+        (await apiClient.fetchMarkets({
+          marketStatus: 'expired'
+        })) as Array<ExpiryFuturesMarket>
+      ).filter(marketIsInactive)
 
       const pausedMarkets = (
         (await apiClient.fetchMarkets({

@@ -17,8 +17,7 @@ import {
 import {
   upcomingMarkets,
   deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume,
-  excludedExpiredOrSettledMarketSlugs
+  olpSlugsToIncludeInLowVolume
 } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
@@ -49,10 +48,9 @@ const isLowVolumeMarketsVisible = ref(false)
 
 const recentlyExpiredMarkets = computed(() =>
   derivativeStore.markets.filter(
-    ({ slug, marketStatus }) =>
-      (marketStatus === MarketStatus.Expired ||
-        marketStatus === MarketStatus.Paused) &&
-      !excludedExpiredOrSettledMarketSlugs.includes(slug)
+    ({ marketStatus }) =>
+      marketStatus === MarketStatus.Expired ||
+      marketStatus === MarketStatus.Paused
   )
 )
 

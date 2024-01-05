@@ -7,9 +7,11 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { format, fromUnixTime } from 'date-fns'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
+import { toBalanceInToken } from '@/app/utils/formatters'
 
-const derivativeStore = useDerivativeStore()
+const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
@@ -18,14 +20,18 @@ const props = defineProps({
   }
 })
 
-const lastTradedPrice = computed(
-  () =>
-    new BigNumberInBase(
-      derivativeStore.marketsSummary.find(
-        ({ marketId }) => marketId === props.market.marketId
-      )?.lastPrice || 0
-    )
-)
+const lastTradedPrice = computed(() => {
+  const settledPerpMarket =
+    SETTLED_PERP_MARKETS_LAST_PRICE[props.market.slug as string]
+  const token = tokenStore.tokens.find(
+    ({ denom }) => denom === settledPerpMarket.denom
+  )
+
+  return toBalanceInToken({
+    value: settledPerpMarket.price,
+    decimalPlaces: token?.decimals || 0
+  })
+})
 
 const settlementPrice = computed(() => {
   if (!props.market) {
@@ -36,12 +42,12 @@ const settlementPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
-    return ZERO_IN_BASE
+  if (props.market.subType === MarketType.Perpetual) {
+    return new BigNumberInBase(lastTradedPrice.value)
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
-    return lastTradedPrice.value
+  if (props.market.subType === MarketType.BinaryOptions) {
+    return ZERO_IN_BASE
   }
 
   const expiryFuturesMarket = props.market as UiExpiryFuturesMarketWithToken
@@ -62,8 +68,10 @@ const settlementPrice = computed(() => {
 const { valueToString: settlementPriceToFormat } = useBigNumberFormatter(
   settlementPrice,
   {
-    decimalPlaces:
-      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+    decimalPlaces: Math.min(
+      props.market?.priceDecimals || 0,
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    )
   }
 )
 
@@ -131,13 +139,18 @@ const expiryAt = computed(() => {
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex flex-wrap items-center">
         <div class="w-full flex items-center">
-          <span v-if="!settlementPrice.isNaN()" class="">
+          <span v-if="!settlementPrice.isNaN() && !settlementPrice.isZero()">
             <span class="font-sans">{{ $t('markets.settledAt') }}</span>
             {{ settlementPriceToFormat }} {{ market.quoteToken.symbol }}
           </span>
           <span v-else class="text-gray-400">&mdash;</span>
         </div>
-        <div class="w-full text-gray-500 text-xs">{{ expiryAt }}</div>
+        <div
+          v-if="market.subType !== MarketType.Perpetual"
+          class="w-full text-gray-500 text-xs"
+        >
+          {{ expiryAt }}
+        </div>
       </div>
     </div>
 
@@ -146,13 +159,21 @@ const expiryAt = computed(() => {
       data-cy="markets-last-traded-price-table-data"
     >
       <div class="w-full flex items-center justify-end">
-        <span v-if="!settlementPrice.isNaN()">
+        <span
+          v-if="!settlementPrice.isNaN() && !settlementPrice.isZero()"
+          class="text-right"
+        >
           <span class="font-sans">{{ $t('markets.settledAt') }}</span>
           {{ settlementPriceToFormat }} {{ market.quoteToken.symbol }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="w-full text-gray-500 text-xs text-right">{{ expiryAt }}</div>
+      <div
+        v-if="market.subType !== MarketType.Perpetual"
+        class="w-full text-gray-500 text-xs text-right"
+      >
+        {{ expiryAt }}
+      </div>
     </span>
   </div>
 </template>
