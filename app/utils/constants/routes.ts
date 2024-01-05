@@ -9,6 +9,7 @@ export const getRoutes = (network: Network, env: string) => {
   const spot = [
     'inj-usdt',
     'stinj-inj',
+    'ninj-inj',
     'atom-usdt',
     'ninja-inj',
     'autism-inj',
