@@ -24,6 +24,7 @@ onWalletConnected(() => {
     error({ title: t('campaign.campaignNotFound') })
     navigateTo({ name: MainPage.Index })
   }
+
   Promise.all([
     tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
     campaignStore.fetchCampaign({

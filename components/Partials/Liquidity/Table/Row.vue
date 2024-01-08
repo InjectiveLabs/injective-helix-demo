@@ -6,116 +6,91 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
+import { GrpcCampaign } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import {
-  CampaignWithScAndData,
-  LiquidityRewardsPage,
-  TradingBotsSubPage
-} from '@/types'
-import { spotGridMarkets } from '~/app/data/grid-strategy'
+import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
-  campaignWithSc: {
-    type: Object as PropType<CampaignWithScAndData>,
+  campaign: {
+    type: Object as PropType<GrpcCampaign>,
     required: true
   }
 })
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const campaignStore = useCampaignStore()
-const { $onError } = useNuxtApp()
+// const campaignStore = useCampaignStore()
+// const { $onError } = useNuxtApp()
 
 const activeBots = ref<number>(0)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
-  spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
+  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const token = computed(() =>
+const baseToken = computed(() =>
   tokenStore.tokens.find(
     ({ symbol }) => market.value?.baseToken.symbol === symbol
   )
 )
 
 const rewardsWithToken = computed(() =>
-  props.campaignWithSc.rewards.map((reward) => ({
-    value: new BigNumberInBase(reward.amount).toFormat(
-      UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    ),
-    token: tokenStore.tokens.find(({ symbol }) => symbol === reward.symbol)
-  }))
-)
+  props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
-const totalRewardsInUsd = computed(() => {
-  return props.campaignWithSc.rewards.reduce((total, reward) => {
-    const token = tokenStore.tokens.find(
-      ({ symbol }) => symbol === reward.symbol
-    )
-
-    if (!token) {
-      return total
+    return {
+      value: new BigNumberInWei(reward.amount)
+        .toBase(token?.decimals)
+        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+      token
     }
-
-    const rewardInUsd = new BigNumberInBase(reward.amount).times(
-      tokenStore.tokenUsdPrice(token)
-    )
-
-    return total.plus(rewardInUsd)
-  }, ZERO_IN_BASE)
-})
+  })
+)
 
 const marketVolume = computed(() =>
-  new BigNumberInWei(
-    campaignStore.campaignsWithSc.find(
-      (c) => c.campaignId === props.campaignWithSc.campaignId
-    )?.totalScore || 0
-  ).toBase(market.value?.quoteToken.decimals || USDT_DECIMALS)
-)
-
-const marketVolumeInUsd = computed(() =>
-  marketVolume.value.times(
-    market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+  new BigNumberInWei(props.campaign.totalScore || 0).toBase(
+    market.value?.quoteToken.decimals || USDT_DECIMALS
   )
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  totalRewardsInUsd,
+  computed(() => {
+    return rewardsWithToken.value.reduce((total, reward) => {
+      return total.plus(
+        new BigNumberInBase(reward.value).times(
+          tokenStore.tokenUsdPrice(reward.token)
+        )
+      )
+    }, ZERO_IN_BASE)
+  }),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
 const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  marketVolumeInUsd,
+  computed(() =>
+    marketVolume.value.times(
+      market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+    )
+  ),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const sgtScAddress = computed(() => {
-  const campaignWords = props.campaignWithSc.campaignId.split('-')
-  const slug = campaignWords[2] + '-' + campaignWords[3]
-
-  const address = spotGridMarkets.find((sc) => sc.slug === slug)
-    ?.contractAddress
-
-  return address
-})
-
 onMounted(() => {
-  status.setLoading()
-
-  campaignStore
-    .fetchActiveStrategiesOnSmartContract(sgtScAddress.value)
-
-    .then((response) => {
-      activeBots.value = response
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+  // TODO-IVAN
+  // status.setLoading()
+  // campaignStore
+  //   .fetchActiveStrategiesOnSmartContract(props.campaign.contract)
+  //   .then((response) => {
+  //     activeBots.value = response
+  //   })
+  //   .catch($onError)
+  //   .finally(() => {
+  //     status.setIdle()
+  //   })
 })
 </script>
 
@@ -125,12 +100,12 @@ onMounted(() => {
       <NuxtLink
         :to="{
           name: TradingBotsSubPage.GridSpotMarket,
-          params: { market: campaignWithSc.marketSlug }
+          params: { market: market.slug }
         }"
         class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
       >
-        <div v-if="token">
-          <CommonTokenIcon v-bind="{ token }" />
+        <div v-if="baseToken">
+          <CommonTokenIcon v-bind="{ token: baseToken }" />
         </div>
         <div>
           <p class="text-sm font-bold">{{ market.ticker }}</p>
@@ -185,7 +160,7 @@ onMounted(() => {
           class="text-blue-500"
           :to="{
             name: LiquidityRewardsPage.CampaignDetails,
-            query: { campaign: campaignWithSc.campaignId }
+            query: { campaign: campaign.campaignId }
           }"
         >
           {{ $t('campaign.rewardsDetails') }}

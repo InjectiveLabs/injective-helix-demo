@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -13,13 +12,11 @@ const status = reactive(new Status(StatusType.Idle))
 onMounted(() => {
   status.setLoading()
 
-  const campaignIds = LP_CAMPAIGNS.map(({ campaignId }) => campaignId)
-
   Promise.all([
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
     tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
-    campaignStore.fetchCampaignsWithSc({ campaignIds })
+    campaignStore.fetchRound()
   ])
     .catch($onError)
     .finally(() => {

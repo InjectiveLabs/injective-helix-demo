@@ -7,7 +7,8 @@ import {
   GuildMember,
   CampaignUser,
   GuildCampaignSummary,
-  toUtf8
+  toUtf8,
+  GrpcCampaign
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
 import {
@@ -28,6 +29,8 @@ type CampaignStoreState = {
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
+  round: GrpcCampaign[]
+  accountRewards: any // TODO-IVAN
   campaign?: Campaign
   campaigns: Campaign[]
   campaignsWithSc: CampaignWithScAndData[]
@@ -52,6 +55,8 @@ const initialStateFactory = (): CampaignStoreState => ({
   campaignUsers: [],
   guildsByVolume: [],
   totalGuildMember: 0,
+  round: [],
+  accountRewards: undefined,
   campaign: undefined,
   campaigns: [],
   campaignsInfo: [],
@@ -238,6 +243,21 @@ export const useCampaignStore = defineStore('campaign', {
       )) as unknown as { data: Uint8Array }
 
       return toUtf8(response.data) as unknown as number
+    },
+
+    // TODO-IVAN
+    async fetchRound() {
+      const walletStore = useWalletStore()
+
+      const campaignStore = useCampaignStore()
+      const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
+        roundId: '',
+        accountAddress: walletStore.injectiveAddress
+      })
+
+      campaignStore.$patch({ round: campaigns })
+
+      return campaigns
     },
 
     reset() {
