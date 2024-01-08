@@ -187,8 +187,10 @@ export default {
     },
 
     advanced: {
-      sellBaseUponTermination: 'Sell {base} upon Termination',
-      sellAllOnStop: 'Sell all {symbol} on stop'
+      buySellBaseOnceBotStops: 'Buy/Sell {symbol} once bot stops',
+      sellAllOnStop: 'Sell all {symbol} on stop',
+      buyOnStop: 'Buy {symbol} on stop',
+      tpSl: 'TP/SL'
     }
   }
 }

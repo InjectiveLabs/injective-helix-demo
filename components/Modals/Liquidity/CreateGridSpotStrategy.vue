@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { ExitConfig, ExitType } from '@injectivelabs/sdk-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
@@ -92,34 +91,6 @@ function onCreateStrategy() {
 
   status.setLoading()
 
-  const stopLoss: ExitConfig | undefined = formValues.value[
-    SpotGridTradingField.StopLoss
-  ]
-    ? {
-        exitType: formValues.value[SpotGridTradingField.SellBaseOnStopLoss]
-          ? ExitType.Quote
-          : ExitType.Default,
-        exitPrice: formValues.value[SpotGridTradingField.StopLoss]
-      }
-    : undefined
-
-  const takeProfit: ExitConfig | undefined = formValues.value[
-    SpotGridTradingField.TakeProfit
-  ]
-    ? {
-        exitType: formValues.value[SpotGridTradingField.BuyBaseOnTakeProfit]
-          ? ExitType.Base
-          : ExitType.Default,
-        exitPrice: formValues.value[SpotGridTradingField.TakeProfit]
-      }
-    : undefined
-
-  const exitType: ExitType | undefined = formValues.value[
-    SpotGridTradingField.SellBaseUponTermination
-  ]
-    ? ExitType.Base
-    : ExitType.Default
-
   gridStrategyStore
     .createStrategy({
       levels: Number(formValues.value[SpotGridTradingField.Grids]),
@@ -127,9 +98,14 @@ function onCreateStrategy() {
       upperBound: formValues.value[SpotGridTradingField.UpperPrice],
       baseAmount: baseAmount.value,
       quoteAmount: quoteAmount.value,
-      stopLoss,
-      takeProfit,
-      exitType
+      isSettleInEnabled: formValues.value[SpotGridTradingField.SettleIn],
+      stopLoss: formValues.value[SpotGridTradingField.StopLoss],
+      takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
+      exitType: formValues.value[SpotGridTradingField.ExitType],
+      isSellBaseOnStopLossEnabled:
+        formValues.value[SpotGridTradingField.SellBaseOnStopLoss],
+      isBuyBaseOnTakeProfitEnabled:
+        formValues.value[SpotGridTradingField.BuyBaseOnTakeProfit]
     })
     .then(() => {
       success({

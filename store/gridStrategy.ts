@@ -90,16 +90,22 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       upperBound,
       stopLoss,
       takeProfit,
-      exitType
+      exitType,
+      isBuyBaseOnTakeProfitEnabled,
+      isSellBaseOnStopLossEnabled,
+      isSettleInEnabled
     }: {
       levels: number
       lowerBound: string
       upperBound: string
       quoteAmount?: string
       baseAmount?: string
-      takeProfit?: ExitConfig
-      stopLoss?: ExitConfig
+      takeProfit?: string
+      stopLoss?: string
       exitType?: ExitType
+      isSettleInEnabled?: Boolean
+      isSellBaseOnStopLossEnabled?: Boolean
+      isBuyBaseOnTakeProfitEnabled?: Boolean
     }) {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
@@ -165,22 +171,26 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       const stopLossValue: ExitConfig | undefined = stopLoss
         ? {
             exitPrice: spotPriceToChainPriceToFixed({
-              value: stopLoss.exitPrice,
+              value: stopLoss,
               baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
               quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
             }),
-            exitType: stopLoss.exitType
+            exitType: isSellBaseOnStopLossEnabled
+              ? ExitType.Quote
+              : ExitType.Default
           }
         : undefined
 
       const takeProfitValue: ExitConfig | undefined = takeProfit
         ? {
             exitPrice: spotPriceToChainPriceToFixed({
-              value: takeProfit.exitPrice,
+              value: takeProfit,
               baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
               quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
             }),
-            exitType: takeProfit.exitType
+            exitType: isBuyBaseOnTakeProfitEnabled
+              ? ExitType.Base
+              : ExitType.Default
           }
         : undefined
 
@@ -202,7 +212,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
           }),
           stopLoss: stopLossValue,
           takeProfit: takeProfitValue,
-          exitType
+          exitType: isSettleInEnabled
+            ? exitType || ExitType.Default
+            : ExitType.Default
         }),
 
         funds

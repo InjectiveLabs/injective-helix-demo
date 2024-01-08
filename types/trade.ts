@@ -101,7 +101,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
   [SpotGridTradingField.SellBaseOnStopLoss]: boolean
   [SpotGridTradingField.BuyBaseOnTakeProfit]: boolean
-  [SpotGridTradingField.SellBaseUponTermination]: boolean
+  [SpotGridTradingField.SettleIn]: boolean
   [SpotGridTradingField.ExitType]: ExitType
   [SpotGridTradingField.StopLoss]: string
   [SpotGridTradingField.TakeProfit]: string

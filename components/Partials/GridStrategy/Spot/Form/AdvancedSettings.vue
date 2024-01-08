@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { ExitType } from '@injectivelabs/sdk-ts'
 import { SpotGridTradingField } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 
-const isOpen = ref(false)
+const isAdvancedOpen = ref(false)
 const isTpSlOpen = ref(false)
 
 const market = computed(
@@ -22,8 +23,14 @@ const { value: takeProfitValue, errorMessage: takeProfitError } =
     rule: `greaterThanSgt:@${SpotGridTradingField.UpperPrice}`
   })
 
-const { value: SellBaseUponTerminationValue } = useBooleanField({
-  name: SpotGridTradingField.SellBaseUponTermination,
+const { value: exitTypeValue } = useStringField({
+  name: SpotGridTradingField.ExitType,
+  initialValue: ExitType.Quote,
+  rule: ''
+})
+
+const { value: settleInValue } = useBooleanField({
+  name: SpotGridTradingField.SettleIn,
   rule: ''
 })
 
@@ -38,15 +45,32 @@ const { value: BuyBaseOnTakeProfitValue } = useBooleanField({
 })
 
 function toggleAdvancedSettings() {
-  isOpen.value = !isOpen.value
+  isAdvancedOpen.value = !isAdvancedOpen.value
 }
 
-watch(isTpSlOpen, () => {
+const settleOptions = computed(() => [
+  {
+    label: 'trade.buy',
+    value: ExitType.Base,
+    token: market.value.baseToken
+  },
+  {
+    label: 'trade.sell',
+    value: ExitType.Quote,
+    token: market.value.quoteToken
+  }
+])
+
+function setExitType(value: ExitType) {
+  exitTypeValue.value = value
+}
+
+function resetTpSlFields() {
   SellBaseOnStopLossValue.value = false
   BuyBaseOnTakeProfitValue.value = false
   takeProfitValue.value = ''
   stopLossValue.value = ''
-})
+}
 </script>
 <template>
   <div
@@ -54,25 +78,64 @@ watch(isTpSlOpen, () => {
     @click="toggleAdvancedSettings"
   >
     <p class="font-semibold text-sm">{{ $t('sgt.advancedSettings') }}</p>
-    <div class="transition-all duration-300" :class="{ 'rotate-180': isOpen }">
+    <div
+      class="transition-all duration-300"
+      :class="{ 'rotate-180': isAdvancedOpen }"
+    >
       <BaseIcon name="chevron-down" is-md />
     </div>
   </div>
 
-  <div v-if="isOpen">
+  <div v-if="isAdvancedOpen">
     <div class="mb-6 space-y-2">
-      <div>
-        <AppCheckbox v-model="SellBaseUponTerminationValue">
+      <div class="flex justify-between items-center">
+        <AppCheckbox v-model="settleInValue">
           {{
-            $t('sgt.advanced.sellBaseUponTermination', {
-              base: market.baseToken.symbol
+            $t('sgt.advanced.buySellBaseOnceBotStops', {
+              symbol: market.baseToken.symbol
             })
           }}
         </AppCheckbox>
+
+        <BaseDropdown>
+          <template #default="{ isOpen }">
+            <button
+              class="text-blue-500 uppercase p-2 flex items-center space-x-2 rounded-md font-semibold tracking-wider text-xs"
+            >
+              <div>
+                {{
+                  exitTypeValue === ExitType.Base
+                    ? $t('trade.buy')
+                    : $t('trade.sell')
+                }}
+              </div>
+              <BaseIcon
+                name="chevron-down"
+                is-md
+                :class="{ 'rotate-180': isOpen }"
+              />
+            </button>
+          </template>
+
+          <template #content="{ close }">
+            <div class="bg-gray-800" @click="close">
+              <div
+                v-for="{ label, value } in settleOptions"
+                :key="value"
+                class="flex space-x-2 items-center text-white p-2 pr-4 text-xs font-semibold hover:bg-gray-700 cursor-pointer tracking-wider"
+                @click="setExitType(value)"
+              >
+                <p class="uppercase">{{ $t(label) }}</p>
+              </div>
+            </div>
+          </template>
+        </BaseDropdown>
       </div>
 
       <div>
-        <AppCheckbox v-model="isTpSlOpen"> TP/SL </AppCheckbox>
+        <AppCheckbox v-model="isTpSlOpen" @update:modelValue="resetTpSlFields">
+          {{ $t('sgt.advanced.tpSl') }}
+        </AppCheckbox>
       </div>
     </div>
 
@@ -123,7 +186,7 @@ watch(isTpSlOpen, () => {
           v-bind="{ isDisabled: !takeProfitValue }"
         >
           {{
-            $t('sgt.advanced.sellAllOnStop', {
+            $t('sgt.advanced.buyOnStop', {
               symbol: market.baseToken.symbol
             })
           }}
