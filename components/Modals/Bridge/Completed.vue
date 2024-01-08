@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
-import { NETWORK } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
+import { getExplorerUrl } from '@/app/utils/network'
 import { BridgeForm, Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -15,7 +14,7 @@ const resetForm = useResetForm()
 const { isDeposit, isTransfer, isWithdraw } = useBridgeState(formValues)
 
 const explorerUrl = computed(
-  () => `${getExplorerUrl(NETWORK)}/account/${walletStore.injectiveAddress}/`
+  () => `${getExplorerUrl()}/account/${walletStore.injectiveAddress}/`
 )
 
 const isModalOpen = computed(() => modalStore.modals[Modal.BridgeCompleted])

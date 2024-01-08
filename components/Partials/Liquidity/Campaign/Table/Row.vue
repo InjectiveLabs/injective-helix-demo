@@ -1,13 +1,8 @@
 <script lang="ts" setup>
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import {
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE,
-  getExplorerUrl
-} from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  NETWORK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -36,7 +31,7 @@ const props = defineProps({
 
 const tokenStore = useTokenStore()
 
-const explorerLink = `${getExplorerUrl(NETWORK)}/account/${
+const explorerLink = `${getExplorerUrl()}/account/${
   props.campaignUser.accountAddress
 }`
 

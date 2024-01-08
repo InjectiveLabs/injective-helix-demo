@@ -4,7 +4,7 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { MainPage, AccountBalance, BridgeType } from '@/types'
+import { AccountBalance } from '@/types'
 
 const accountStore = useAccountStore()
 
@@ -181,45 +181,39 @@ const {
         <slot name="action">
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
-          <BaseNuxtLink
-            :to="{
-              name: MainPage.Bridge,
-              query: {
-                type: BridgeType.Deposit,
+          <template v-if="accountStore.isDefaultSubaccount">
+            <PartialsAccountBridgeRedirection
+              v-bind="{
+                isDeposit: true,
                 denom: balance.token.denom
-              }
-            }"
-          >
-            <div
-              v-if="accountStore.isDefaultSubaccount"
-              class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-              data-cy="wallet-balance-deposit-link"
+              }"
             >
-              <span class="text-blue-500 text-sm font-medium">
-                {{ $t('account.deposit') }}
-              </span>
-            </div>
-          </BaseNuxtLink>
+              <div
+                class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+                data-cy="wallet-balance-deposit-link"
+              >
+                <span class="text-blue-500 text-sm font-medium">
+                  {{ $t('account.deposit') }}
+                </span>
+              </div>
+            </PartialsAccountBridgeRedirection>
 
-          <BaseNuxtLink
-            :to="{
-              name: MainPage.Bridge,
-              query: {
-                type: BridgeType.Withdraw,
+            <PartialsAccountBridgeRedirection
+              v-bind="{
+                isDeposit: true,
                 denom: balance.token.denom
-              }
-            }"
-          >
-            <div
-              v-if="accountStore.isDefaultSubaccount"
-              class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
-              data-cy="wallet-balance-withdraw-link"
+              }"
             >
-              <span class="text-blue-500 text-sm font-medium">
-                {{ $t('account.withdraw') }}
-              </span>
-            </div>
-          </BaseNuxtLink>
+              <div
+                class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+                data-cy="wallet-balance-withdraw-link"
+              >
+                <span class="text-blue-500 text-sm font-medium">
+                  {{ $t('account.withdraw') }}
+                </span>
+              </div>
+            </PartialsAccountBridgeRedirection>
+          </template>
         </slot>
       </div>
     </td>

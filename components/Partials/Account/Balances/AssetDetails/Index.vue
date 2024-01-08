@@ -5,14 +5,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
-  Modal,
-  MainPage,
-  BusEvents,
-  BridgeType,
-  TradeSubPage,
-  AccountBalance
-} from '@/types'
+import { Modal, BusEvents, TradeSubPage, AccountBalance } from '@/types'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
@@ -223,15 +216,12 @@ function closeModal() {
           </div>
 
           <div class="mt-auto flex justify-between gap-4">
-            <BaseNuxtLink
-              class="w-full"
-              :to="{
-                name: MainPage.Bridge,
-                query: {
-                  type: BridgeType.Deposit,
-                  denom: accountBalance.token.denom
-                }
+            <PartialsAccountBridgeRedirection
+              v-bind="{
+                isDeposit: true,
+                denom: accountBalance.token.denom
               }"
+              class="w-full"
             >
               <button
                 class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-blue-500 border-transparent border"
@@ -240,17 +230,13 @@ function closeModal() {
                   {{ $t('account.deposit') }}
                 </span>
               </button>
-            </BaseNuxtLink>
+            </PartialsAccountBridgeRedirection>
 
-            <BaseNuxtLink
-              class="w-full"
-              :to="{
-                name: MainPage.Bridge,
-                query: {
-                  type: BridgeType.Withdraw,
-                  denom: accountBalance.token.denom
-                }
+            <PartialsAccountBridgeRedirection
+              v-bind="{
+                denom: accountBalance.token.denom
               }"
+              class="w-full"
             >
               <button
                 class="w-full cursor-pointer h-10 flex justify-center items-center rounded-lg bg-transparent border-blue-500 border"
@@ -259,7 +245,7 @@ function closeModal() {
                   {{ $t('account.withdraw') }}
                 </span>
               </button>
-            </BaseNuxtLink>
+            </PartialsAccountBridgeRedirection>
           </div>
         </div>
       </div>

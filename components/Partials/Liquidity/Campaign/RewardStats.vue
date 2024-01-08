@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  NETWORK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'

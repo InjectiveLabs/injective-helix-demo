@@ -1,17 +1,16 @@
 import {
-  BankMsgSendTransaction,
+  TransferType,
   getInjectiveAddress,
-  TransferType
+  BankMsgSendTransaction
 } from '@injectivelabs/sdk-ts'
 import {
-  BridgeTransactionState,
   BridgingNetwork,
-  getBridgeTransactionType,
-  getExplorerUrl,
   UiBridgeTransaction,
-  UiSubaccountTransfer
+  UiSubaccountTransfer,
+  BridgeTransactionState,
+  getBridgeTransactionType
 } from '@injectivelabs/sdk-ui-ts'
-import { NETWORK } from '@/app/utils/constants'
+import { getExplorerUrl } from '@/app/utils/network'
 
 export class UiBridgeTransformer {
   static convertBankMsgSendTransactionToUiBridgeTransaction(
@@ -30,9 +29,7 @@ export class UiBridgeTransformer {
         BridgingNetwork.Injective,
         BridgingNetwork.Injective
       ),
-      explorerLink: `${getExplorerUrl(NETWORK)}/transaction/${
-        transaction.hash
-      }/`
+      explorerLink: `${getExplorerUrl()}/transaction/${transaction.hash}/`
     }
   }
 
@@ -66,7 +63,7 @@ export class UiBridgeTransformer {
         BridgingNetwork.Injective,
         BridgingNetwork.Injective
       ),
-      explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}/`
+      explorerLink: `${getExplorerUrl()}/account/${explorerAccount}/`
     }
   }
 }
