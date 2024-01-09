@@ -187,10 +187,12 @@ export default {
     },
 
     advanced: {
-      buySellBaseOnceBotStops: 'Buy/Sell {symbol} once bot stops',
+      tpSl: 'TP/SL',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      settleIn: 'When the bot stops, settle in',
       sellAllOnStop: 'Sell all {symbol} on stop',
-      buyOnStop: 'Buy {symbol} on stop',
-      tpSl: 'TP/SL'
+      buyOnStop: 'Buy {symbol} on stop'
     }
   }
 }

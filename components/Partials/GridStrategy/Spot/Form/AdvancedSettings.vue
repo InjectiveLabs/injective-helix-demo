@@ -48,14 +48,18 @@ function toggleAdvancedSettings() {
   isAdvancedOpen.value = !isAdvancedOpen.value
 }
 
+const settleInToken = computed(() =>
+  exitTypeValue.value === ExitType.Base
+    ? market.value.baseToken
+    : market.value.quoteToken
+)
+
 const settleOptions = computed(() => [
   {
-    label: 'trade.buy',
     value: ExitType.Base,
     token: market.value.baseToken
   },
   {
-    label: 'trade.sell',
     value: ExitType.Quote,
     token: market.value.quoteToken
   }
@@ -90,25 +94,17 @@ function resetTpSlFields() {
     <div class="mb-6 space-y-2">
       <div class="flex justify-between items-center">
         <AppCheckbox v-model="settleInValue">
-          {{
-            $t('sgt.advanced.buySellBaseOnceBotStops', {
-              symbol: market.baseToken.symbol
-            })
-          }}
+          {{ $t('sgt.advanced.settleIn') }}
         </AppCheckbox>
 
         <BaseDropdown>
           <template #default="{ isOpen }">
             <button
-              class="text-blue-500 uppercase p-2 flex items-center space-x-2 rounded-md font-semibold tracking-wider text-xs"
+              class="bg-gray-700 uppercase p-2 flex items-center space-x-2 rounded-md font-semibold tracking-wider text-xs"
             >
-              <div>
-                {{
-                  exitTypeValue === ExitType.Base
-                    ? $t('trade.buy')
-                    : $t('trade.sell')
-                }}
-              </div>
+              <CommonTokenIcon v-bind="{ token: settleInToken }" is-sm />
+              <p>{{ settleInToken.symbol }}</p>
+
               <BaseIcon
                 name="chevron-down"
                 is-md
@@ -120,12 +116,13 @@ function resetTpSlFields() {
           <template #content="{ close }">
             <div class="bg-gray-800" @click="close">
               <div
-                v-for="{ label, value } in settleOptions"
+                v-for="{ value, token } in settleOptions"
                 :key="value"
                 class="flex space-x-2 items-center text-white p-2 pr-4 text-xs font-semibold hover:bg-gray-700 cursor-pointer tracking-wider"
                 @click="setExitType(value)"
               >
-                <p class="uppercase">{{ $t(label) }}</p>
+                <CommonTokenIcon v-bind="{ token }" is-sm />
+                <p class="uppercase">{{ token.symbol }}</p>
               </div>
             </div>
           </template>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ExitType } from '@injectivelabs/sdk-ts'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
@@ -69,6 +70,22 @@ const quoteAmount = computed(() => {
   }
 
   return quoteAmount
+})
+
+const settleInToken = computed(() => {
+  if (formValues.value[SpotGridTradingField.SettleIn] === false) {
+    return undefined
+  }
+
+  if (formValues.value[SpotGridTradingField.ExitType] === ExitType.Base) {
+    return gridStrategyStore.spotMarket?.baseToken
+  }
+
+  if (formValues.value[SpotGridTradingField.ExitType] === ExitType.Quote) {
+    return gridStrategyStore.spotMarket?.quoteToken
+  }
+
+  return undefined
 })
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
@@ -263,6 +280,34 @@ function onCreateStrategy() {
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.TakeProfit] }} {{ quoteSymbol }}
           </p>
+        </div>
+
+        <div v-if="settleInToken" class="flex justify-between items-center">
+          <p class="text-gray-500">{{ $t('sgt.advanced.settleIn') }}</p>
+          <div class="font-semibold flex items-center space-x-2">
+            <CommonTokenIcon v-bind="{ token: settleInToken }" is-sm />
+            <p>{{ settleInToken.symbol }}</p>
+          </div>
+        </div>
+
+        <div
+          v-if="formValues[SpotGridTradingField.SellBaseOnStopLoss]"
+          class="flex justify-between items-center"
+        >
+          <p class="text-gray-500">
+            {{ $t('sgt.advanced.sellAllOnStop', { symbol: baseSymbol }) }}
+          </p>
+          <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
+        </div>
+
+        <div
+          v-if="formValues[SpotGridTradingField.BuyBaseOnTakeProfit]"
+          class="flex justify-between items-center"
+        >
+          <p class="text-gray-500">
+            {{ $t('sgt.advanced.buyOnStop', { symbol: baseSymbol }) }}
+          </p>
+          <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
         </div>
 
         <div class="flex my-6">
