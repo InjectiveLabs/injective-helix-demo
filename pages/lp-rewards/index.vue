@@ -8,8 +8,9 @@ const campaignStore = useCampaignStore()
 const round = useQueryRef('round', '')
 
 const roundId = computed(() => campaignStore.round[0].roundId)
-// const endDate = computed(() => campaignStore.round[0].endDate)
-// const StartDate = computed(() => campaignStore.round[0].startDate)
+const endDate = computed(() => Number(campaignStore.round[0].endDate))
+// const startDate = computed(() => Number(campaignStore.round[0].startDate))
+const lastUpdated = computed(() => Number(campaignStore.round[0].lastUpdated))
 
 onMounted(() => {
   if (!appStore.userState.modalsViewed.includes(Modal.LpRewards)) {
@@ -29,7 +30,9 @@ onMounted(() => {
       v-if="roundId"
       v-bind="{
         round: roundId,
-        roundCampaigns: campaignStore.round
+        roundCampaigns: campaignStore.round,
+        endDate,
+        lastUpdated
       }"
     />
     <PartialsLiquidityTabs class="mt-10 mb-4" />

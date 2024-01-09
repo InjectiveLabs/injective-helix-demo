@@ -251,7 +251,6 @@ export const useCampaignStore = defineStore('campaign', {
 
       const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        roundId: '',
         accountAddress: walletStore.injectiveAddress
       })
 

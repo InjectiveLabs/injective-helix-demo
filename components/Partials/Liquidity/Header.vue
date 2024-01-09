@@ -1,9 +1,10 @@
 <script setup lang="ts">
-// import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-// import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-// import { format, utcToZonedTime } from 'date-fns-tz'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { format, utcToZonedTime } from 'date-fns-tz'
 import { GrpcCampaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   round: {
@@ -14,57 +15,66 @@ const props = defineProps({
   roundCampaigns: {
     type: Array as PropType<GrpcCampaign[]>,
     required: true
+  },
+
+  endDate: {
+    type: Number,
+    required: true
+  },
+
+  lastUpdated: {
+    type: Number,
+    required: true
   }
 })
 
-// const spotStore = useSpotStore()
-// const tokenStore = useTokenStore()
+const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-// const totalRewardsThisRound = computed(() => {
-//   return props.campaignsWithScAndData.reduce((sum, campaign) => {
-//     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-//       const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)!
+const totalRewardsThisRound = computed(() => {
+  return props.roundCampaigns.reduce((sum, campaign) => {
+    const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
+      const token = tokenStore.tokens.find(
+        ({ denom }) => denom === reward.denom
+      )!
 
-//       const rewardInUsd = new BigNumberInBase(reward.amount).times(
-//         tokenStore.tokenUsdPrice(token)
-//       )
+      const rewardInUsd = new BigNumberInWei(reward.amount)
+        .toBase(token.decimals)
+        .times(tokenStore.tokenUsdPrice(token))
 
-//       return sum.plus(rewardInUsd)
-//     }, ZERO_IN_BASE)
+      return sum.plus(rewardInUsd)
+    }, ZERO_IN_BASE)
 
-//     return sum.plus(rewardsPerCampaign)
-//   }, ZERO_IN_BASE)
-// })
+    return sum.plus(rewardsPerCampaign)
+  }, ZERO_IN_BASE)
+})
 
-// const totalVolume = computed(() =>
-//   props.campaignsWithScAndData
-//     .reduce((totalScore, campaign) => {
-//       const market = spotStore.markets.find(
-//         ({ slug }) => slug === campaign.marketSlug
-//       )!
+const totalVolume = computed(() =>
+  props.roundCampaigns
+    .reduce((totalScore, campaign) => {
+      const market = spotStore.markets.find(
+        ({ marketId }) => marketId === campaign.marketId
+      )!
 
-//       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
-//         .toBase(market.quoteToken.decimals)
-//         .times(tokenStore.tokenUsdPrice(market.quoteToken))
-//       return totalScore.plus(campaignVolumeInUsd)
-//     }, ZERO_IN_BASE)
-//     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-// )
+      const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
+        .toBase(market.quoteToken.decimals)
+        .times(tokenStore.tokenUsdPrice(market.quoteToken))
+      return totalScore.plus(campaignVolumeInUsd)
+    }, ZERO_IN_BASE)
+    .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+)
 
-// const endDate = computed(() => {
-//   const utcDate = utcToZonedTime(
-//     Number(round.value?.endDate || 0) * 1000,
-//     'UTC'
-//   )
+const endDate = computed(() => {
+  const utcDate = utcToZonedTime(Number(props.endDate || 0), 'UTC')
 
-//   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
-// })
+  return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
+})
 
-// const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
-//   totalRewardsThisRound,
-//   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-// )
+const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
+  totalRewardsThisRound,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
 </script>
 
 <template>
@@ -106,20 +116,20 @@ const walletStore = useWalletStore()
             {{ $t('campaign.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
-            {{ 'totalRewardsThisRoundToString' }} USD
+            {{ totalRewardsThisRoundToString }} USD
           </p>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-gray-400">
             {{ $t('campaign.totalVolume') }}
           </h3>
-          <p class="text-xl font-semibold">{{ 'totalVolume' }} USD</p>
+          <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-gray-400">
             {{ $t('campaign.endTimeForRound', { round: props.round }) }}
           </h3>
-          <p class="text-xl font-semibold">{{ 'endDate' }} UTC</p>
+          <p class="text-xl font-semibold">{{ endDate }} UTC</p>
         </div>
       </div>
     </div>
