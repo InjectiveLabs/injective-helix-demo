@@ -111,8 +111,6 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
-
-const isRound6 = computed(() => round.value.round === 6)
 </script>
 
 <template>
@@ -159,14 +157,10 @@ const isRound6 = computed(() => round.value.round === 6)
         <PartialsLiquidityCommonClaimButton
           v-bind="{
             scAddress: campaignWithSc.scAddress,
-            isClaimable: isRound6 ? false : isClaimable,
+            isClaimable,
             campaignId: campaignWithSc.campaignId
           }"
         />
-
-        <div v-if="isRound6">
-          <p class="text-xs text-gray-500">(Claimable in less than 24hrs)</p>
-        </div>
       </div>
     </td>
   </tr>
