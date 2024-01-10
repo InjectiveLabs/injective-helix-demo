@@ -90,6 +90,7 @@ const formValues = useFormValues() as Ref<TradeForm>
 const setFormValues = useSetFormValues()
 
 const isSpot = props.market.type === MarketType.Spot
+let timeoutId: NodeJS.Timeout | undefined
 
 const isTensMultiplierMessageVisible = ref(false)
 
@@ -112,7 +113,6 @@ function updateAmount({
   amount?: string
   isBaseAmount: boolean
 }) {
-  isTensMultiplierMessageVisible.value = false
   emit('update:amount', { amount, isBaseAmount })
 }
 
@@ -161,6 +161,20 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
     updateAmount({ isBaseAmount: true })
   }
 }
+
+function updateTenstMultiplierMessage(isShown: boolean) {
+  if (isShown) {
+    isTensMultiplierMessageVisible.value = true
+    timeoutId = setTimeout(() => {
+      isTensMultiplierMessageVisible.value = false
+    }, 5000)
+  }
+
+  if (!isShown) {
+    clearTimeout(timeoutId)
+    isTensMultiplierMessageVisible.value = false
+  }
+}
 </script>
 
 <template>
@@ -182,7 +196,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
-      @update:show-tens-multiplier="isTensMultiplierMessageVisible = $event"
+      @update:show-tens-multiplier="updateTenstMultiplierMessage"
     />
 
     <p

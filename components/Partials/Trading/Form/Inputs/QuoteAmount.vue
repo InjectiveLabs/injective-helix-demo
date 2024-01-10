@@ -102,6 +102,7 @@ function onQuoteAmountBlur() {
     min="0"
     @update:modelValue="onQuoteAmountChange"
     @blur="onQuoteAmountBlur"
+    @click="$emit('update:show-tens-multiplier', false)"
   >
     <template #prefix>
       <span>≈</span>

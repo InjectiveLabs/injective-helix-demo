@@ -152,6 +152,7 @@ function onBaseAmountBlur(baseAmount = '') {
       min="0"
       @update:modelValue="onBaseAmountChange"
       @blur="onBaseAmountBlur"
+      @click="$emit('update:show-tens-multiplier', false)"
     >
       <template #context>
         <p class="text-xs font-semibold text-gray-200 mb-2">

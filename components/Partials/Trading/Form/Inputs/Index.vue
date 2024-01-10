@@ -164,7 +164,9 @@ function onAmountUpdate({
         baseAmountFieldName: TradeField.BaseAmount
       }"
       @update:amount="onAmountUpdate"
-      @update:show-tens-multiplier="$emit('update:show-tens-multiplier', true)"
+      @update:show-tens-multiplier="
+        $emit('update:show-tens-multiplier', $event)
+      "
     />
 
     <div class="flex flex-1 flex-col items-end">
@@ -196,7 +198,7 @@ function onAmountUpdate({
         }"
         @update:amount="onAmountUpdate"
         @update:show-tens-multiplier="
-          $emit('update:show-tens-multiplier', true)
+          $emit('update:show-tens-multiplier', $event)
         "
       />
     </div>
