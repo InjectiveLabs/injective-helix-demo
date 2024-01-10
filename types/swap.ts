@@ -3,8 +3,7 @@ import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 export interface TokenAndPriceAndDecimals
   extends Omit<BalanceWithTokenAndPrice, 'balance'> {
   quantityDecimals: number
-  priceTensMultiplier?: number
-  quantityTensMultiplier?: number
+  tensMultiplier?: number
 }
 
 export enum SwapFormField {

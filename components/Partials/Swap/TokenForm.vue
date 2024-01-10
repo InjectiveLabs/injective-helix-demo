@@ -201,7 +201,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
-            tensMultiplier: inputToken?.quantityTensMultiplier || undefined,
+            tensMultiplier: inputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @update:max="onMaxSelected"
@@ -240,7 +240,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
             maxDecimals: outputToken?.quantityDecimals || 0,
-            tensMultiplier: outputToken?.quantityTensMultiplier || undefined,
+            tensMultiplier: outputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @update:amount="getInputQuantity"
