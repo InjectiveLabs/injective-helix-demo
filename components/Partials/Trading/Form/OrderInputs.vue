@@ -162,7 +162,7 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
   }
 }
 
-function updateTenstMultiplierMessage(isShown: boolean) {
+function onShowTensMultiplier(isShown: boolean) {
   if (isShown) {
     isTensMultiplierMessageVisible.value = true
     timeoutId = setTimeout(() => {
@@ -196,7 +196,7 @@ function updateTenstMultiplierMessage(isShown: boolean) {
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
-      @update:show-tens-multiplier="updateTenstMultiplierMessage"
+      @update:show-tens-multiplier="onShowTensMultiplier"
     />
 
     <p

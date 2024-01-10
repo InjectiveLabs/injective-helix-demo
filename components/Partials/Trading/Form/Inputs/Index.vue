@@ -72,7 +72,6 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:amount': [payload: { amount?: string; isBaseAmount: boolean }]
-  'update:show-tens-multiplier': [payload: boolean]
 }>()
 
 const {
@@ -161,12 +160,10 @@ function onAmountUpdate({
         tradingTypeStopLimit,
         market,
         orderbookOrders,
-        baseAmountFieldName: TradeField.BaseAmount
+        baseAmountFieldName: TradeField.BaseAmount,
+        ...$attrs
       }"
       @update:amount="onAmountUpdate"
-      @update:show-tens-multiplier="
-        $emit('update:show-tens-multiplier', $event)
-      "
     />
 
     <div class="flex flex-1 flex-col items-end">
@@ -194,12 +191,10 @@ function onAmountUpdate({
           fees,
           market,
           quoteAvailableBalance,
-          quoteAmountFieldName: TradeField.QuoteAmount
+          quoteAmountFieldName: TradeField.QuoteAmount,
+          ...$attrs
         }"
         @update:amount="onAmountUpdate"
-        @update:show-tens-multiplier="
-          $emit('update:show-tens-multiplier', $event)
-        "
       />
     </div>
   </div>
