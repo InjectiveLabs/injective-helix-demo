@@ -147,6 +147,7 @@ function onAmountUpdate({
       @update:amount="onAmountUpdate"
     />
   </div>
+
   <div class="flex gap-3">
     <PartialsTradingFormInputsBaseAmount
       v-bind="{
