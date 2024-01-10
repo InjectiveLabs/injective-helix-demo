@@ -72,6 +72,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:amount': [payload: { amount?: string; isBaseAmount: boolean }]
+  'update:show-tens-multiplier': [payload: boolean]
 }>()
 
 const {
@@ -163,7 +164,9 @@ function onAmountUpdate({
         baseAmountFieldName: TradeField.BaseAmount
       }"
       @update:amount="onAmountUpdate"
+      @update:show-tens-multiplier="$emit('update:show-tens-multiplier', true)"
     />
+
     <div class="flex flex-1 flex-col items-end">
       <PartialsTradingFormPercentageOptions
         class="mb-2"
@@ -192,6 +195,9 @@ function onAmountUpdate({
           quoteAmountFieldName: TradeField.QuoteAmount
         }"
         @update:amount="onAmountUpdate"
+        @update:show-tens-multiplier="
+          $emit('update:show-tens-multiplier', true)
+        "
       />
     </div>
   </div>

@@ -16,9 +16,6 @@ import {
   OrderBookQuantityAndType
 } from '@/types'
 
-const formValues = useFormValues() as Ref<TradeForm>
-const setFormValues = useSetFormValues()
-
 const props = defineProps({
   isBuy: Boolean,
   isSpot: Boolean,
@@ -89,7 +86,12 @@ const emit = defineEmits<{
   'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
 }>()
 
+const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
+
 const isSpot = props.market.type === MarketType.Spot
+
+const isTensMultiplierMessageVisible = ref(false)
 
 onMounted(() => {
   useEventBus<OrderBookPriceAndType>(BusEvents.OrderbookPriceClick).on(
@@ -110,6 +112,7 @@ function updateAmount({
   amount?: string
   isBaseAmount: boolean
 }) {
+  isTensMultiplierMessageVisible.value = false
   emit('update:amount', { amount, isBaseAmount })
 }
 
@@ -179,7 +182,19 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
+      @update:show-tens-multiplier="isTensMultiplierMessageVisible = $event"
     />
+
+    <p
+      v-if="isTensMultiplierMessageVisible"
+      class="text-xs text-blue-300 mt-1.5"
+    >
+      {{
+        $t('trade.tensMultiplierRounded', {
+          minTickSize: 10 * market.quantityTensMultiplier
+        })
+      }}
+    </p>
 
     <PartialsTradingFormInputError
       v-bind="{
