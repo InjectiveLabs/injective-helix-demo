@@ -49,7 +49,7 @@ type ParamsStoreState = {
 
 const initialStateFactory = (): ParamsStoreState => ({
   inflation: '0',
-  currentBlockTime: 1.1, // approximate, in seconds
+  currentBlockTime: 0.9, // approximate, in seconds
   annualProvisions: '0',
   injSupply: {} as Coin,
   pool: {
