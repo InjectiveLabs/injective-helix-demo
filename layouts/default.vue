@@ -1,10 +1,15 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ROUTES } from '@/app/utils/constants'
-import { BusEvents, MainPage } from '@/types'
+import {
+  MAINNET_UPGRADE_BLOCK_HEIGHT,
+  POST_ONLY_MODE_BLOCK_THRESHOLD,
+  ROUTES
+} from '@/app/utils/constants'
+import { BusEvents, MainPage, Modal } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
+const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
@@ -32,6 +37,7 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
+    appStore.fetchBlockHeight(),
     spotStore.initIfNotInit(),
     spotStore.fetchMarketsSummary(),
     derivativeStore.initIfNotInit(),
@@ -58,6 +64,19 @@ function onCloseSideBar() {
     container.value?.classList.remove('overflow-y-hidden')
   }
 }
+
+watch(
+  () => appStore.blockHeight,
+  () => {
+    if (
+      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
+      appStore.blockHeight <=
+        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
+    ) {
+      modalStore.openModal(Modal.PostOnlyMode)
+    }
+  }
+)
 </script>
 
 <template>
@@ -106,6 +125,7 @@ function onCloseSideBar() {
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
                 <!-- <ModalsUserFeedback /> -->
                 <ModalsNewFeature />
+                <ModalsPostOnlyMode />
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />
