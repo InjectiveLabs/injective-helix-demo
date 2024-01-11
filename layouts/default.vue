@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  MAINNET_UPGRADE_BLOCK_HEIGHT,
-  POST_ONLY_MODE_BLOCK_THRESHOLD,
-  ROUTES
-} from '@/app/utils/constants'
-import { BusEvents, MainPage, Modal } from '@/types'
+import { ROUTES } from '@/app/utils/constants'
+import { BusEvents, MainPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
-const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
@@ -65,6 +60,8 @@ function onCloseSideBar() {
   }
 }
 
+/**
+ * Post only mode modal when we do chain upgrade
 watch(
   () => appStore.blockHeight,
   () => {
@@ -77,6 +74,7 @@ watch(
     }
   }
 )
+ */
 </script>
 
 <template>
