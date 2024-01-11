@@ -82,7 +82,8 @@ export enum Modal {
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   MarketRestricted = 'market-restricted',
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
-  ScavengerHunt = 'scavenger-hunt'
+  ScavengerHunt = 'scavenger-hunt',
+  PostOnlyMode = 'post-only-mode'
 }
 
 export enum Breakpoint {
@@ -353,7 +354,7 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  sheduledUpgradeMarch = 'sheduled-upgrade-march'
+  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
 }
 
 export enum SubaccountBalanceStreamType {

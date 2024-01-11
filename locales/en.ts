@@ -361,5 +361,11 @@ export default {
   scavengerHunt: {
     title: 'You found it! 🕵️‍♀️',
     description: 'The secret word for the Injective Scavenger Hunt is "brand".'
+  },
+
+  postOnlyMode: {
+    title: 'Post Only Mode!',
+    description:
+      'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
   }
 }
