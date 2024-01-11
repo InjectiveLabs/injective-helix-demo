@@ -119,7 +119,7 @@ export default {
             :class="inputClass"
             class="input"
             :disabled="isDisabled"
-            @input:blurred="onBlur"
+            @blur="onBlur"
           >
             />
 
