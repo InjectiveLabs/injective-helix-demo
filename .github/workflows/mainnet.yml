@@ -23,7 +23,7 @@ jobs:
       ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-      ## Flagsg
+      ## Flags
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
