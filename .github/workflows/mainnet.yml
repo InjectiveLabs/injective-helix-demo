@@ -23,10 +23,10 @@ jobs:
       ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-      ## Flags
-      VITE_MAINTENANCE_ENABLED: true
+      ## Flagsg
+      VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: true
-      VITE_BANNER_NOTICE_ENABLED: true
+      VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
