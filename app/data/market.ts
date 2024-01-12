@@ -9,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'app-inj',
   'ninj-inj',
   'talis-usdt',
   'pyth-usdt',
@@ -34,6 +35,7 @@ export const experimentalMarketsSlug = [
   'ethbtctrend-usdt',
   'steadyeth-usdt',
   'steadybtc-usdt',
+  'app-inj',
   'ninja-inj',
   'kira-inj',
   'katana-inj'
