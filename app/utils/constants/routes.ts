@@ -41,8 +41,8 @@ export const getRoutes = (network: Network, env: string) => {
     'whale-usdt',
     'sol-usdt',
     'kuji-usdt',
-    'talis-usdt',
-    'app-inj'
+    'talis-usdt'
+    // 'app-inj'
   ]
 
   const perpetuals = [
