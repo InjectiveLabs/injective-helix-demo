@@ -27,6 +27,7 @@ export const newMarketsSlug = [
 export const experimentalMarketsSlug = [
   'usdy-usdt',
   'ape-usdt',
+  'app-inj',
   'gf-usdt',
   'autism-inj',
   'tia-usdt-30nov2023',
@@ -63,6 +64,7 @@ export const slugsToIncludeInEthereumCategory = [
   'usdy-usdt',
   'inj-usdt',
   'arb-usdt',
+  'app-inj',
   'chz-usdcet',
   'usdt-usdcet',
   'ape-usdt',
