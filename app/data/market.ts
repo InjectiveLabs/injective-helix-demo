@@ -156,3 +156,5 @@ export const marketPromotions = [
 ] as MarketPromotion[]
 
 export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
+
+export const hiddenMarketsSlug = ['app-inj']

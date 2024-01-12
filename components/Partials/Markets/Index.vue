@@ -4,9 +4,9 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   marketIsActive,
   marketIsQuotePair,
-  marketIsPartOfCategory,
   marketIsPartOfType,
-  marketIsPartOfSearch
+  marketIsPartOfSearch,
+  marketIsPartOfCategory
 } from '@/app/utils/market'
 import {
   MarketStatus,
@@ -15,9 +15,10 @@ import {
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 import {
+  upcomingMarkets,
   deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume,
-  upcomingMarkets
+  hiddenMarketsSlug,
+  olpSlugsToIncludeInLowVolume
 } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
@@ -70,12 +71,14 @@ const filteredMarkets = computed(() =>
       const isLowVolumeMarket =
         isLowVolumeMarketsVisible.value ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+      const isNotPartOfHiddenSlugList = !hiddenMarketsSlug.includes(market.slug)
 
       return (
         isPartOfCategory &&
         isPartOfType &&
         isPartOfSearch &&
         isQuotePair &&
+        isNotPartOfHiddenSlugList &&
         (isLowVolumeMarket || isOLPMarket || search.value)
       )
     })
