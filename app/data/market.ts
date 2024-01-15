@@ -1,4 +1,5 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
+import { getIbcDenomFromSymbolOrName } from '@injectivelabs/token-metadata'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
@@ -19,9 +20,7 @@ export const newMarketsSlug = [
   'whale-usdt',
   'pyth-usdt-perp',
   'usdy-usdt',
-  'tia-usdt',
-  'btc-usdtkv-perp',
-  'eth-usdtkv-perp'
+  'tia-usdt'
 ]
 
 export const experimentalMarketsSlug = [
@@ -114,8 +113,6 @@ export const upcomingMarkets = [
   //
 ] as Array<UiMarketWithToken>
 
-export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
-
 export const notLiquidMarkets = [
   {
     slug: 'sol-usdcet',
@@ -160,3 +157,14 @@ export const marketPromotions = [
 ] as MarketPromotion[]
 
 export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
+
+export const SETTLED_PERP_MARKETS_LAST_PRICE = {
+  'eth-usdtkv-perp': {
+    price: '2286900022.869',
+    denom: getIbcDenomFromSymbolOrName('USDTkv') || ''
+  },
+  'btc-usdtkv-perp': {
+    price: '41780918457.309',
+    denom: getIbcDenomFromSymbolOrName('USDTkv') || ''
+  }
+} as { [key: string]: { price: string; denom: string } }
