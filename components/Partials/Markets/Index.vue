@@ -4,9 +4,9 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   marketIsActive,
   marketIsQuotePair,
-  marketIsPartOfCategory,
   marketIsPartOfType,
-  marketIsPartOfSearch
+  marketIsPartOfSearch,
+  marketIsPartOfCategory
 } from '@/app/utils/market'
 import {
   MarketStatus,
@@ -15,9 +15,9 @@ import {
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 import {
+  upcomingMarkets,
   deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume,
-  upcomingMarkets
+  olpSlugsToIncludeInLowVolume
 } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 

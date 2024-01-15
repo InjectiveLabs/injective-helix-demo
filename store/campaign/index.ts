@@ -20,7 +20,7 @@ import {
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
-import { chainGrpcWasmApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { wasmApi, indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { CampaignWithScAndData } from '@/types'
 
@@ -216,7 +216,7 @@ export const useCampaignStore = defineStore('campaign', {
         return false
       }
 
-      const response = (await chainGrpcWasmApi.fetchSmartContractState(
+      const response = (await wasmApi.fetchSmartContractState(
         contractAddress,
         toBase64({
           has_claimed: {
@@ -235,7 +235,7 @@ export const useCampaignStore = defineStore('campaign', {
         return 0
       }
 
-      const response = (await chainGrpcWasmApi.fetchSmartContractState(
+      const response = (await wasmApi.fetchSmartContractState(
         contractAddress,
         toBase64({
           total_strategies: {}

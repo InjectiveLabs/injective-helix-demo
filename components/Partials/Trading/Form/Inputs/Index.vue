@@ -147,6 +147,7 @@ function onAmountUpdate({
       @update:amount="onAmountUpdate"
     />
   </div>
+
   <div class="flex gap-3">
     <PartialsTradingFormInputsBaseAmount
       v-bind="{
@@ -159,10 +160,12 @@ function onAmountUpdate({
         tradingTypeStopLimit,
         market,
         orderbookOrders,
-        baseAmountFieldName: TradeField.BaseAmount
+        baseAmountFieldName: TradeField.BaseAmount,
+        ...$attrs
       }"
       @update:amount="onAmountUpdate"
     />
+
     <div class="flex flex-1 flex-col items-end">
       <PartialsTradingFormPercentageOptions
         class="mb-2"
@@ -188,7 +191,8 @@ function onAmountUpdate({
           fees,
           market,
           quoteAvailableBalance,
-          quoteAmountFieldName: TradeField.QuoteAmount
+          quoteAmountFieldName: TradeField.QuoteAmount,
+          ...$attrs
         }"
         @update:amount="onAmountUpdate"
       />

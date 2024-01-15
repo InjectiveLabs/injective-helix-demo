@@ -13,12 +13,12 @@ export default {
       howItWorks: 'How it works',
       faq: 'F.A.Q'
     },
+
     kado: {
       title: 'Onboard onto Injective instantly with fiat!',
       tryNow: 'Get started'
     },
-    'banner-sheduled-upgrade-march':
-      "A scheduled maintenance will take place around 16:00 UTC, 17 March 2023. Please note that you won't be able to place orders and manage positions during the downtime.",
+
     userFeedback: {
       loveFeedback: "We'd love to hear your feedback!",
       thankYouBeginning:
@@ -41,6 +41,9 @@ export default {
         'Helix is the first venue available to trade TALIS, the native token of Talis - the leading NFT marketplace in Cosmos. Explore ways to trade TALIS!',
       cta1: 'Go to TALIS/USDT',
       cta2: 'Swap TALIS'
-    }
+    },
+
+    'banner-scheduled-upgrade-january':
+      'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more '
   }
 }
