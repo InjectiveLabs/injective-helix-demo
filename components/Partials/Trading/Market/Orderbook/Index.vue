@@ -472,7 +472,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           <PartialsTradingMarketOrderbookRecord
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${sell.price}-${sell.quantity}`"
+            :key="`order-book-sell-${sell.price}-${sell.quantity}-${aggregation}`"
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
@@ -580,7 +580,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           <!-- TODO: test the dynamic ref assignment -->
           <PartialsTradingMarketOrderbookRecord
             v-for="(buy, index) in buysWithDepth"
-            :key="`order-book-buy-${buy.price}-${buy.quantity}`"
+            :key="`order-book-buy-${buy.price}-${buy.quantity}-${aggregation}`"
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
