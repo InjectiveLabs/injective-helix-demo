@@ -83,11 +83,12 @@ export function useSwapTokenSelector({
 
   const inputDenomOptions = computed(
     () =>
-      Object.keys(tradableTokenMaps.value).map((denom) => {
-        const tokenWithBalance = getBalanceWithToken(denom, balances.value)
-
-        return tokenWithBalance
-      }) as BalanceWithTokenAndPrice[]
+      Object.keys(tradableTokenMaps.value)
+        .map((denom) => getBalanceWithToken(denom, balances.value))
+        .filter(
+          (balanceWithToken) =>
+            balanceWithToken && balanceWithToken.denom !== outputDenom.value
+        ) as BalanceWithTokenAndPrice[]
   )
 
   const outputDenomOptions = computed(
