@@ -222,11 +222,11 @@ export const marketIsPartOfSearch = (
     return true
   }
 
-  return (
-    market.quoteToken.symbol.toLowerCase().includes(query) ||
-    market.baseToken.symbol.toLowerCase().includes(query) ||
-    market.ticker.toLowerCase().includes(query)
-  )
+  return [
+    market.baseToken.symbol,
+    market.quoteToken.symbol,
+    market.ticker
+  ].some((value) => (value || '').toLowerCase().includes(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
