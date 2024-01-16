@@ -273,8 +273,8 @@ function resetQueryError() {
           v-bind="{
             disabled: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
-          @update:outputQuantity="getOutputQuantity"
           @update:inputQuantity="getInputQuantity"
+          @update:outputQuantity="getOutputQuantity"
           @queryError:reset="resetQueryError"
           @form:reset="resetFormValues"
         />
