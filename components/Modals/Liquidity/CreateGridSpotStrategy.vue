@@ -310,7 +310,7 @@ function onCreateStrategy() {
           <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
         </div>
 
-        <div class="flex my-6">
+        <div class="flex py-6">
           <div class="mt-1 mx-2">
             <AppCheckbox v-model="hasAgreedToTerms" />
           </div>

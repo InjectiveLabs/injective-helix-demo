@@ -192,7 +192,10 @@ export default {
       disabled: 'Disabled',
       settleIn: 'When the bot stops, settle in',
       sellAllOnStop: 'Sell all {symbol} on stop',
-      buyOnStop: 'Buy {symbol} on stop'
+      buyOnStop: 'Buy {symbol} on stop',
+      buyBaseOnStop: 'Buy {symbol} on stop',
+      stopLossPrice: 'Stop Loss Price',
+      takeProfitPrice: 'Take Profit Price'
     }
   }
 }

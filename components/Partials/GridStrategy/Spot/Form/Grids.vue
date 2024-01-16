@@ -54,7 +54,6 @@ const { value: gridsValue, errorMessage } = useStringField({
       v-model="gridsValue"
       :max-decimals="0"
       :placeholder="`${GST_MINIMUM_GRIDS} - ${GST_MAXIMUM_GRIDS}`"
-      class="text-left"
     />
 
     <p class="text-red-500 text-xs font-semibold pt-2">{{ errorMessage }}</p>

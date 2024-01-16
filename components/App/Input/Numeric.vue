@@ -4,6 +4,7 @@ const slots = useSlots()
 const props = defineProps({
   isSm: Boolean,
   isValid: Boolean,
+  isRight: Boolean,
   isDisabled: Boolean,
   isNoPadding: Boolean,
   isDisabledGray: Boolean,
@@ -54,6 +55,10 @@ const inputClass = computed(() => {
 
   if (props.isTransparentBg) {
     result.push('input-bg-transparent')
+  }
+
+  if (props.isRight) {
+    result.push('text-right')
   }
 
   result.push(props.inputClasses)
