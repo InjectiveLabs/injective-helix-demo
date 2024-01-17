@@ -18,7 +18,7 @@ export default {
     showLowVol: 'Show low Vol.',
     emptyHeader: 'No markets found',
     preLaunchFutures: 'Pre Launch Futures',
-    expiredRecently: 'Expired recently',
+    expiredOrSettledRecently: 'Recently Expired/Settled',
     emptyHeaderFavorites: 'No favorited markets yet.',
     emptyDescription:
       'No results found. Search for markets available on Injective outside of Helix.',

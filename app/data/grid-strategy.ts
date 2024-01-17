@@ -66,22 +66,33 @@ if (IS_STAGING) {
 }
 
 const testnetSpotGridMarkets: SpotGridMarket[] = [
-  {
-    slug: 'inj-usdt',
-    contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
-  },
-  // OLD ATOM CONTRACT
+  // {
+  //   slug: 'inj-usdt',
+  //   contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
+  // },
   // {
   //   slug: 'atom-usdt',
   //   contractAddress: 'inj14yr8nj6tndmr4xyw9c66feqepv59revxsm7450'
   // },
+  // {
+  //   slug: 'atom-usdt',
+  //   contractAddress: 'inj1qzc20al6khfy5ta3m4fk0atct5k98tnny0t7he'
+  // },
+  // {
+  //   slug: 'tia-usdt',
+  //   contractAddress: 'inj18sl3ysva0czdgc2eqmqlrhfeu2v4l8vx4245ql'
+  // }
+  {
+    slug: 'inj-usdt',
+    contractAddress: 'inj17f8k8j2a457z0pfxw4ec43hz3qz5vug8p9kmq3'
+  },
   {
     slug: 'atom-usdt',
-    contractAddress: 'inj1qzc20al6khfy5ta3m4fk0atct5k98tnny0t7he'
+    contractAddress: 'inj107fsasqmcqs4ztmvxdhrxsekzyjxcz7xwafjw5'
   },
   {
     slug: 'tia-usdt',
-    contractAddress: 'inj18sl3ysva0czdgc2eqmqlrhfeu2v4l8vx4245ql'
+    contractAddress: 'inj1zvjssysvcqwpsyr6rqr658vy9qp9dp2halezd3'
   }
 
   // Add This Market Later

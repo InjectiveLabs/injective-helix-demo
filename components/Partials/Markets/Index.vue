@@ -46,8 +46,12 @@ const sortBy = ref(MarketHeaderType.Volume)
 const isAscending = ref(false)
 const isLowVolumeMarketsVisible = ref(false)
 
-const recentlyExpiredMarkets = computed(
-  () => derivativeStore.recentlyExpiredMarkets
+const recentlyExpiredMarkets = computed(() =>
+  derivativeStore.markets.filter(
+    ({ marketStatus }) =>
+      marketStatus === MarketStatus.Expired ||
+      marketStatus === MarketStatus.Paused
+  )
 )
 
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
@@ -364,7 +368,7 @@ function prefillFromQueryParams() {
     </div>
     <div v-if="recentlyExpiredMarkets.length > 0" class="mt-12">
       <h3 class="text-sm tracking-wider leading-6 mb-4">
-        {{ $t('markets.expiredRecently') }}
+        {{ $t('markets.expiredOrSettledRecently') }}
       </h3>
 
       <PartialsMarketsExpired :markets="recentlyExpiredMarkets" />

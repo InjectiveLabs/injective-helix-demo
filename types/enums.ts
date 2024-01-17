@@ -145,8 +145,7 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj',
-  USDTkv = 'usdtkv'
+  INJ = 'inj'
 }
 
 export enum StreamType {
@@ -378,13 +377,16 @@ export enum InstitutionalFormField {
 
 export enum SpotGridTradingField {
   Grids = 'grids',
+  SettleIn = 'SettleIn',
+  ExitType = 'exitType',
   StopLoss = 'stopLoss',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   TakeProfit = 'takeProfit',
-  SellAllBase = 'sellAllBase',
   InvestmentType = 'investmentType',
   InvestmentAmount = 'investmentAmount',
+  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
+  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
   BaseInvestmentAmount = 'baseInvestmentAmount'
 }
 
