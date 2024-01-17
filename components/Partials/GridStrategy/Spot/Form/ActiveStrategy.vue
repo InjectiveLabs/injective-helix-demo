@@ -449,7 +449,7 @@ useIntervalFn(() => {
 
           <span>
             <span
-              v-if="activeStrategy.stopLossConfig.exitType === ExitType.Quote"
+              v-if="activeStrategy.stopLossConfig.exitType === ExitType.Base"
             >
               {{ $t('sgt.advanced.enabled') }}
             </span>
@@ -504,7 +504,7 @@ useIntervalFn(() => {
 
           <span>
             <span
-              v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Base"
+              v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Quote"
             >
               {{ $t('sgt.advanced.enabled') }}
             </span>
