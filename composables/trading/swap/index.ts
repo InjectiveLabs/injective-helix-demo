@@ -67,20 +67,18 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
         if (!baseTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
             quantityDecimals,
-            priceTensMultiplier,
-            quantityTensMultiplier,
             token: baseToken,
             denom: baseToken.denom,
+            tensMultiplier: quantityTensMultiplier,
             usdPrice: baseToken ? tokenStore.tokenUsdPrice(baseToken) : 0
           })
         }
 
         if (!quoteTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
-            priceTensMultiplier,
-            quantityTensMultiplier,
             token: quoteToken,
             denom: quoteToken.denom,
+            tensMultiplier: priceTensMultiplier,
             quantityDecimals: MAX_QUOTE_DECIMALS,
             usdPrice: quoteToken ? tokenStore.tokenUsdPrice(quoteToken) : 0
           })
@@ -121,7 +119,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || 0)
         .times(slippageMultiplier)
         .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_DOWN),
-      outputToken.value?.quantityTensMultiplier || MAX_QUOTE_TENS_MULTIPLIER
+      outputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
     )
   })
 
@@ -135,7 +133,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0)
         .times(slippageMultiplier)
         .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_UP),
-      outputToken.value?.quantityTensMultiplier || MAX_QUOTE_TENS_MULTIPLIER
+      inputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
     )
   })
 
