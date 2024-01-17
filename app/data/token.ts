@@ -4,6 +4,7 @@ import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
 import { tokenMetaUtils } from '@/app/Services'
 import {
   getCw20FromSymbolOrNameAsString,
+  getIbcDenomFromSymbolOrNameAsString,
   getPeggyDenomFromSymbolOrNameAsString
 } from '@/app/utils/helper'
 import { USDCSymbol } from '@/types'
@@ -48,13 +49,11 @@ export const tokenToDecimalsOverrideMap = {
 }
 
 export const getDenomsFromToken = (token: Token): string[] => {
-  const cw20Denom = token.cw20
-    ? getCw20FromSymbolOrNameAsString(token.cw20.address)
-    : ''
-  const ibc20Denom = token.ibc ? `ibc/${token.ibc.hash}` : ''
-  const peggyDenom = token.erc20 ? `peggy${token.erc20.address}` : ''
+  const cw20Denom = getCw20FromSymbolOrNameAsString(token.symbol)
+  const ibcDenom = getIbcDenomFromSymbolOrNameAsString(token.symbol)
+  const peggyDenom = getPeggyDenomFromSymbolOrNameAsString(token.symbol)
 
-  const denoms = [cw20Denom, ibc20Denom, peggyDenom, token.denom].filter(
+  const denoms = [cw20Denom, ibcDenom, peggyDenom, token.denom].filter(
     (denom) => denom
   )
 

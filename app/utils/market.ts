@@ -223,9 +223,9 @@ export const marketIsPartOfSearch = (
   }
 
   return [
+    market.ticker,
     market.baseToken.symbol,
-    market.quoteToken.symbol,
-    market.ticker
+    market.quoteToken.symbol
   ].some((value) => (value || '').toLowerCase().includes(query))
 }
 
