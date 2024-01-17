@@ -36,6 +36,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
+  'update:show-tens-multiplier': [payload: boolean]
 }>()
 
 const { hasTriggerPrice, tradingTypeStopMarket } =
@@ -87,6 +88,8 @@ function onQuoteAmountBlur() {
   emit('update:amount', {
     isBaseAmount: true
   })
+
+  emit('update:show-tens-multiplier', true)
 }
 </script>
 
@@ -99,6 +102,7 @@ function onQuoteAmountBlur() {
     min="0"
     @update:modelValue="onQuoteAmountChange"
     @blur="onQuoteAmountBlur"
+    @click="$emit('update:show-tens-multiplier', false)"
   >
     <template #prefix>
       <span>≈</span>

@@ -9,6 +9,7 @@ export const getRoutes = (network: Network, env: string) => {
   const spot = [
     'inj-usdt',
     'stinj-inj',
+    'ninj-inj',
     'atom-usdt',
     'ninja-inj',
     'autism-inj',
@@ -40,7 +41,8 @@ export const getRoutes = (network: Network, env: string) => {
     'whale-usdt',
     'sol-usdt',
     'kuji-usdt',
-    'talis-usdt'
+    'talis-usdt',
+    'app-inj'
   ]
 
   const perpetuals = [

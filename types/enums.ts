@@ -82,7 +82,8 @@ export enum Modal {
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   MarketRestricted = 'market-restricted',
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
-  ScavengerHunt = 'scavenger-hunt'
+  ScavengerHunt = 'scavenger-hunt',
+  PostOnlyMode = 'post-only-mode'
 }
 
 export enum Breakpoint {
@@ -144,8 +145,7 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj',
-  USDTkv = 'usdtkv'
+  INJ = 'inj'
 }
 
 export enum StreamType {
@@ -353,7 +353,7 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  sheduledUpgradeMarch = 'sheduled-upgrade-march'
+  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
 }
 
 export enum SubaccountBalanceStreamType {

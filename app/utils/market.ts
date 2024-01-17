@@ -172,15 +172,10 @@ export const marketIsQuotePair = (
     return true
   }
 
-  const usdtkvSymbolLowercased = MarketQuoteType.USDTkv.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
   const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
-
-  if (activeQuote === MarketQuoteType.USDTkv) {
-    return marketQuoteSymbol.includes(usdtkvSymbolLowercased)
-  }
 
   if (activeQuote === MarketQuoteType.USDT) {
     return marketQuoteSymbol.includes(usdtSymbolLowercased)
@@ -227,11 +222,11 @@ export const marketIsPartOfSearch = (
     return true
   }
 
-  return (
-    market.quoteToken.symbol.toLowerCase().includes(query) ||
-    market.baseToken.symbol.toLowerCase().includes(query) ||
-    market.ticker.toLowerCase().includes(query)
-  )
+  return [
+    market.ticker,
+    market.baseToken.symbol,
+    market.quoteToken.symbol
+  ].some((value) => (value || '').toLowerCase().includes(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
@@ -255,9 +250,18 @@ export const getFormattedMarketsHistoryChartData = (
 }
 
 export const marketIsInactive = (market: DerivativeMarket) => {
-  const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
+  const HIDDEN_MARKET_TICKERS = [
+    'LUNA/UST PERP',
+    'STX/USDT PERP',
+    'BAYC/WETH PERP',
+    'OSMO/USDT PERP',
+    'ETH/USDT 19SEP22',
+    'BONK/USDT PERP',
+    '1000PEPE/USDT PERP',
+    'TIA/USDT-30NOV2023'
+  ]
 
-  return INACTIVE_MARKET_TICKERS.includes(market.ticker)
+  return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
 }
 
 export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {

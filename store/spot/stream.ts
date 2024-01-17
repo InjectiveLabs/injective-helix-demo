@@ -106,8 +106,7 @@ export const streamSubaccountOrders = (
 
   if (
     !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !subaccountId
+    (!accountStore.subaccountId && !subaccountId)
   ) {
     return
   }
