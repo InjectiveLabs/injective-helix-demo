@@ -3,7 +3,13 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { MIXPANEL_KEY } from '@/app/utils/constants/setup'
-import { MixPanelEvent, OrderAttemptStatus, TradeClickOrigin } from '@/types'
+import {
+  MixPanelEvent,
+  OrderAttemptStatus,
+  SpotGridTradingField,
+  SpotGridTradingForm,
+  TradeClickOrigin
+} from '@/types'
 
 export class MixPanelAnalytics {
   mixpanelClient: OverridedMixpanel | undefined
@@ -126,25 +132,34 @@ export class MixPanelAnalytics {
     this.getMixpanelClient().people.increment('Place Order Confirms')
   }
 
-  trackCreateStrategy(props: {
-    lowerPrice: string
-    upperPrice: string
-    gridsNumber: string
-    amountQuote: string
-    amountDenom?: string
-    marketPrice: string
+  trackCreateStrategy({
+    formValues,
+    isLiquidity,
+    market,
+    marketPrice
+  }: {
+    formValues: Partial<SpotGridTradingForm>
     market: string
-    isLiquidity?: boolean
+    marketPrice: string
+    isLiquidity: boolean
   }) {
-    const event = props.isLiquidity
+    const event = isLiquidity
       ? MixPanelEvent.CreateLiquidityBot
       : MixPanelEvent.CreateStrategy
 
-    const incrementEvent = props.isLiquidity
+    const incrementEvent = isLiquidity
       ? 'Create Liquidity Bot'
       : 'Create Strategies'
 
-    this.getMixpanelClient().track(event, { ...props, isLiquidity: undefined })
+    this.getMixpanelClient().track(event, {
+      amountQuote: formValues[SpotGridTradingField.InvestmentAmount] || '',
+      gridsNumber: formValues[SpotGridTradingField.Grids] || '',
+      lowerPrice: formValues[SpotGridTradingField.LowerPrice] || '',
+      upperPrice: formValues[SpotGridTradingField.UpperPrice] || '',
+      amountDenom: formValues[SpotGridTradingField.BaseInvestmentAmount],
+      market,
+      marketPrice
+    })
     this.getMixpanelClient().people.increment(incrementEvent)
   }
 

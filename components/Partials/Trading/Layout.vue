@@ -168,7 +168,6 @@ function onToggleMarketList() {
             <CommonCard v-if="!isGrid" is-no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
-
             <CommonCard
               is-no-padding
               class="px-6 py-4 rounded-xl relative grow"

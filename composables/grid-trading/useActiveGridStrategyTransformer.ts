@@ -72,13 +72,13 @@ export default function useActiveGridStrategyFormatter(
   )
 
   const takeProfit = computed(() =>
-    new BigNumberInWei(strategy.value.takeProfit || 0).toBase(
+    new BigNumberInWei(strategy.value.takeProfitConfig?.exitPrice ?? 0).toBase(
       market.value.quoteToken.decimals - market.value.baseToken.decimals
     )
   )
 
   const stopLoss = computed(() =>
-    new BigNumberInWei(strategy.value.stopLoss || 0).toBase(
+    new BigNumberInWei(strategy.value.stopLossConfig?.exitPrice || 0).toBase(
       market.value.quoteToken.decimals - market.value.baseToken.decimals
     )
   )
