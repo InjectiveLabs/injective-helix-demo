@@ -1,11 +1,21 @@
 <script lang="ts" setup>
-import { ThrownException } from '@injectivelabs/exceptions'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  Status,
+  INJ_DENOM,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
+import { ThrownException } from '@injectivelabs/exceptions'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
+import {
+  getCw20FromSymbolOrNameAsString,
+  getIbcDenomFromSymbolOrNameAsString,
+  getPeggyDenomFromSymbolOrNameAsString
+} from '@/app/utils/helper'
 import { denomClient } from '@/app/Services'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { mapErrorToMessage } from '@/app/client/utils/swap'
@@ -37,19 +47,21 @@ const hasOutputAmount = computed(() =>
 
 onMounted(async () => {
   /**
-   * We hardcode only the denoms we need on page load for t
-   * he token selector animation as to not
+   * We hardcode only the denoms we need on page load for
+   * the token selector animation as to not
    * load the component faster as to improve UX
    **/
-  const symbolsTokensToPreload = [
-    'INJ',
-    'SOL',
-    'ATOM',
-    'WETH',
-    'WMATIC',
-    'KAVA'
+
+  const tokensDenomToPreload = [
+    INJ_DENOM,
+    getCw20FromSymbolOrNameAsString('SOL'),
+    getIbcDenomFromSymbolOrNameAsString('ATOM'),
+    getPeggyDenomFromSymbolOrNameAsString('WETH'),
+    getCw20FromSymbolOrNameAsString('WMATIC'),
+    getIbcDenomFromSymbolOrNameAsString('KAVA')
   ]
-  const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
+
+  const tokens = await denomClient.getDenomsToken(tokensDenomToPreload)
 
   Promise.all([
     tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),
