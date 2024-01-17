@@ -70,6 +70,13 @@ const initialStateFactory = (): CampaignStoreState => ({
 
 export const useCampaignStore = defineStore('campaign', {
   state: (): CampaignStoreState => initialStateFactory(),
+  getters: {
+    latestRound(state) {
+      const latestRound = Math.max(...state.round.map(({ roundId }) => roundId))
+
+      return state.round.filter(({ roundId }) => roundId === latestRound)
+    }
+  },
   actions: {
     joinGuild,
     createGuild,
@@ -92,39 +99,21 @@ export const useCampaignStore = defineStore('campaign', {
       limit?: number
       campaignId: string
     }) {
+      const walletStore = useWalletStore()
       const campaignStore = useCampaignStore()
 
       const { campaign, paging, users } =
         await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
-          campaignId
+          campaignId,
+          accountAddress: walletStore.injectiveAddress
         })
 
       campaignStore.$patch({
         campaign,
         campaignUsers: users,
         totalUserCount: paging?.total || 0
-      })
-    },
-
-    async fetchCampaignOwnerInfo(campaignId: string) {
-      const walletStore = useWalletStore()
-      const campaignStore = useCampaignStore()
-
-      if (!walletStore.isUserWalletConnected) {
-        return
-      }
-
-      const { users } = await indexerGrpcCampaignApi.fetchCampaign({
-        limit: 1,
-        skip: '0',
-        campaignId,
-        accountAddress: walletStore.injectiveAddress
-      })
-
-      campaignStore.$patch({
-        ownerCampaignInfo: users[0]
       })
     },
 
@@ -172,7 +161,8 @@ export const useCampaignStore = defineStore('campaign', {
               limit: 1,
               skip: '0',
               campaignId: campaignWithSc.campaignId,
-              accountAddress: walletStore.injectiveAddress
+              accountAddress: walletStore.injectiveAddress,
+              contractAddress: 'inj160nrmcl4kcvzl2zp877l974u7htqzskuc8uywv'
             })
 
           return { user: users[0], campaign }
@@ -251,7 +241,8 @@ export const useCampaignStore = defineStore('campaign', {
 
       const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        accountAddress: walletStore.injectiveAddress
+        accountAddress: walletStore.injectiveAddress,
+        contractAddress: 'inj160nrmcl4kcvzl2zp877l974u7htqzskuc8uywv'
       })
 
       campaignStore.$patch({ round: campaigns })

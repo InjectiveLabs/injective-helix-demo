@@ -123,6 +123,7 @@ useIntervalFn(
         <div class="overflow-x-auto">
           <table class="w-full min-w-[742px]">
             <PartialsLiquidityCampaignTableHeader />
+
             <tbody v-if="market">
               <PartialsLiquidityCampaignTableRow
                 v-for="campaignUser in campaignStore.campaignUsers"
@@ -148,5 +149,11 @@ useIntervalFn(
         @update:page="onPageChange"
       />
     </div>
+
+    <Whiteboard>
+      <pre>
+        {{ campaignStore.campaign }}
+      </pre>
+    </Whiteboard>
   </AppHocLoading>
 </template>

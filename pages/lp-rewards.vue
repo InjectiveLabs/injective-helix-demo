@@ -28,12 +28,6 @@ onMounted(() => {
 <template>
   <div class="mb-40">
     <AppHocLoading v-bind="{ status }">
-      <Whiteboard>
-        <pre>
-          {{ campaignStore.round }}
-        </pre>
-      </Whiteboard>
-
       <NuxtPage />
     </AppHocLoading>
   </div>

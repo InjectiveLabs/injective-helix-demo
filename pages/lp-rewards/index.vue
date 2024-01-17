@@ -7,10 +7,15 @@ const campaignStore = useCampaignStore()
 
 const round = useQueryRef('round', '')
 
-const roundId = computed(() => campaignStore.round[0].roundId)
-const endDate = computed(() => Number(campaignStore.round[0].endDate))
-// const startDate = computed(() => Number(campaignStore.round[0].startDate))
-const lastUpdated = computed(() => Number(campaignStore.round[0].lastUpdated))
+const roundDetails = computed(() =>
+  campaignStore.latestRound[0]
+    ? {
+        roundId: campaignStore.latestRound[0].roundId,
+        endDate: Number(campaignStore.latestRound[0].endDate),
+        lastUpdated: Number(campaignStore.latestRound[0].lastUpdated)
+      }
+    : undefined
+)
 
 onMounted(() => {
   if (!appStore.userState.modalsViewed.includes(Modal.LpRewards)) {
@@ -27,12 +32,12 @@ onMounted(() => {
 <template>
   <div class="mx-auto max-w-7xl w-full px-4 space-y-8 py-10">
     <PartialsLiquidityHeader
-      v-if="roundId"
+      v-if="roundDetails"
       v-bind="{
-        round: roundId,
-        roundCampaigns: campaignStore.round,
-        endDate,
-        lastUpdated
+        round: roundDetails.roundId,
+        roundCampaigns: campaignStore.latestRound,
+        endDate: roundDetails.endDate,
+        lastUpdated: roundDetails.lastUpdated
       }"
     />
     <PartialsLiquidityTabs class="mt-10 mb-4" />
@@ -41,9 +46,9 @@ onMounted(() => {
       <table class="w-full min-w-2xl">
         <PartialsLiquidityTableHeader />
 
-        <tbody v-if="campaignStore.round" class="divide-y">
+        <tbody v-if="campaignStore.latestRound" class="divide-y">
           <PartialsLiquidityTableRow
-            v-for="campaign in campaignStore.round"
+            v-for="campaign in campaignStore.latestRound"
             :key="campaign.campaignId"
             v-bind="{ campaign }"
           />
