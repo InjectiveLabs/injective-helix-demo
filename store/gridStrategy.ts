@@ -207,9 +207,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
           }),
           stopLoss: stopLossValue,
           takeProfit: takeProfitValue,
-          exitType: isSettleInEnabled
-            ? exitType || ExitType.Default
-            : ExitType.Default
+          exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default
         }),
 
         funds
