@@ -109,21 +109,7 @@ function onCreateStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .createStrategy({
-      levels: Number(formValues.value[SpotGridTradingField.Grids]),
-      lowerBound: formValues.value[SpotGridTradingField.LowerPrice],
-      upperBound: formValues.value[SpotGridTradingField.UpperPrice],
-      baseAmount: baseAmount.value,
-      quoteAmount: quoteAmount.value,
-      isSettleInEnabled: formValues.value[SpotGridTradingField.SettleIn],
-      stopLoss: formValues.value[SpotGridTradingField.StopLoss],
-      takeProfit: formValues.value[SpotGridTradingField.TakeProfit],
-      exitType: formValues.value[SpotGridTradingField.ExitType],
-      isSellBaseOnStopLossEnabled:
-        formValues.value[SpotGridTradingField.SellBaseOnStopLoss],
-      isBuyBaseOnTakeProfitEnabled:
-        formValues.value[SpotGridTradingField.BuyBaseOnTakeProfit]
-    })
+    .createStrategy(formValues.value)
     .then(() => {
       success({
         title: t('sgt.success'),
@@ -136,13 +122,7 @@ function onCreateStrategy() {
       status.setIdle()
 
       mixpanelAnalytics.trackCreateStrategy({
-        amountQuote:
-          formValues.value[SpotGridTradingField.InvestmentAmount] || '',
-        gridsNumber: formValues.value[SpotGridTradingField.Grids] || '',
-        lowerPrice: formValues.value[SpotGridTradingField.LowerPrice] || '',
-        upperPrice: formValues.value[SpotGridTradingField.UpperPrice] || '',
-        amountDenom:
-          formValues.value[SpotGridTradingField.BaseInvestmentAmount],
+        formValues: formValues.value,
         market: gridStrategyStore.spotMarket?.slug || '',
         marketPrice: lastTradedPrice.value.toFixed(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS

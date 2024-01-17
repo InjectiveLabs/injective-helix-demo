@@ -517,6 +517,7 @@ useIntervalFn(() => {
     </div>
 
     <PartialsGridStrategySpotFormEndBot
+      v-if="activeStrategy.state === StrategyStatus.Active"
       v-bind="{ isLiquidity, strategy: activeStrategy }"
     />
   </div>
