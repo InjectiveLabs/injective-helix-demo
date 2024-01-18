@@ -16,7 +16,7 @@ import { msgBroadcastClient } from '@/app/Services'
 import { SpotGridTradingForm, SpotGridTradingField } from '@/types'
 
 export const createStrategy = async ({
-  [SpotGridTradingField.ExitType]: grids,
+  [SpotGridTradingField.Grids]: grids,
   [SpotGridTradingField.StopLoss]: stopLoss,
   [SpotGridTradingField.ExitType]: exitType,
   [SpotGridTradingField.UpperPrice]: upperPrice,
