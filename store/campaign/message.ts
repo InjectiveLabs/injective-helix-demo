@@ -7,7 +7,10 @@ import {
 } from '@/app/utils/constants'
 import { generateUniqueHash } from '@/app/utils/formatters'
 
-export const claimReward = async (contractAddress: string) => {
+export const claimReward = async (
+  contractAddress: string,
+  campaignId?: number
+) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
 
@@ -23,7 +26,9 @@ export const claimReward = async (contractAddress: string) => {
     contractAddress,
     exec: {
       action: 'claim_reward',
-      msg: {}
+      msg: {
+        campaign_id: campaignId
+      }
     }
   })
 

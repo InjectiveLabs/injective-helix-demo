@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
+  isClaimed: Boolean,
   isClaimable: Boolean,
 
   scAddress: {
@@ -22,28 +23,22 @@ const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const isClaimed = computed(() =>
-  campaignStore.claimedRewards.includes(props.campaignId)
-)
-
 function claimRewards() {
-  if (isClaimed.value || !props.isClaimable) {
+  if (props.isClaimed || !props.isClaimable) {
     return
   }
 
   status.setLoading()
 
   campaignStore
-    .claimReward(props.scAddress)
+    .claimReward(props.scAddress, Number(props.campaignId))
     .then(() => {
       success({
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
 
-      campaignStore.$patch({
-        claimedRewards: [...campaignStore.claimedRewards, props.campaignId]
-      })
+      campaignStore.fetchRound()
     })
     .catch($onError)
     .finally(() => {

@@ -23,6 +23,7 @@ import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import { wasmApi, indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { CampaignWithScAndData } from '@/types'
+import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -71,10 +72,14 @@ const initialStateFactory = (): CampaignStoreState => ({
 export const useCampaignStore = defineStore('campaign', {
   state: (): CampaignStoreState => initialStateFactory(),
   getters: {
-    latestRound(state) {
+    latestRoundCampaigns(state) {
       const latestRound = Math.max(...state.round.map(({ roundId }) => roundId))
 
       return state.round.filter(({ roundId }) => roundId === latestRound)
+    },
+
+    campaignsWithUserRewards(state) {
+      return state.round.filter(({ userScore }) => userScore)
     }
   },
   actions: {
@@ -162,7 +167,7 @@ export const useCampaignStore = defineStore('campaign', {
               skip: '0',
               campaignId: campaignWithSc.campaignId,
               accountAddress: walletStore.injectiveAddress,
-              contractAddress: 'inj160nrmcl4kcvzl2zp877l974u7htqzskuc8uywv'
+              contractAddress: ADMIN_UI_SMART_CONTRACT
             })
 
           return { user: users[0], campaign }
@@ -235,14 +240,14 @@ export const useCampaignStore = defineStore('campaign', {
       return toUtf8(response.data) as unknown as number
     },
 
-    // TODO-IVAN
-    async fetchRound() {
+    async fetchRound(roundId?: number) {
       const walletStore = useWalletStore()
 
       const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
         accountAddress: walletStore.injectiveAddress,
-        contractAddress: 'inj160nrmcl4kcvzl2zp877l974u7htqzskuc8uywv'
+        contractAddress: ADMIN_UI_SMART_CONTRACT,
+        toRoundId: roundId
       })
 
       campaignStore.$patch({ round: campaigns })

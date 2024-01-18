@@ -149,11 +149,5 @@ useIntervalFn(
         @update:page="onPageChange"
       />
     </div>
-
-    <Whiteboard>
-      <pre>
-        {{ campaignStore.campaign }}
-      </pre>
-    </Whiteboard>
   </AppHocLoading>
 </template>

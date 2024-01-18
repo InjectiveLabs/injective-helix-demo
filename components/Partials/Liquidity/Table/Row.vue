@@ -22,8 +22,8 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-// const campaignStore = useCampaignStore()
-// const { $onError } = useNuxtApp()
+const campaignStore = useCampaignStore()
+const { $onError } = useNuxtApp()
 
 const activeBots = ref<number>(0)
 const status = reactive(new Status(StatusType.Loading))
@@ -43,9 +43,7 @@ const rewardsWithToken = computed(() =>
     const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
     return {
-      value: new BigNumberInWei(reward.amount)
-        .toBase(token?.decimals)
-        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+      value: new BigNumberInWei(reward.amount).toBase(token?.decimals),
       token
     }
   })
@@ -58,15 +56,15 @@ const marketVolume = computed(() =>
 )
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() => {
-    return rewardsWithToken.value.reduce((total, reward) => {
+  computed(() =>
+    rewardsWithToken.value.reduce((total, reward) => {
       return total.plus(
         new BigNumberInBase(reward.value).times(
           tokenStore.tokenUsdPrice(reward.token)
         )
       )
     }, ZERO_IN_BASE)
-  }),
+  ),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -80,17 +78,16 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
 )
 
 onMounted(() => {
-  // TODO-IVAN
-  // status.setLoading()
-  // campaignStore
-  //   .fetchActiveStrategiesOnSmartContract(props.campaign.contract)
-  //   .then((response) => {
-  //     activeBots.value = response
-  //   })
-  //   .catch($onError)
-  //   .finally(() => {
-  //     status.setIdle()
-  //   })
+  status.setLoading()
+  campaignStore
+    .fetchActiveStrategiesOnSmartContract(props.campaign.contract)
+    .then((response) => {
+      activeBots.value = response
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 })
 </script>
 
@@ -134,7 +131,7 @@ onMounted(() => {
               v-bind="{ token: reward.token }"
             />
             <p class="text-xs text-gray-400">
-              {{ reward.value }} {{ reward?.token?.symbol }}
+              {{ reward.value.toFormat(2) }} {{ reward?.token?.symbol }}
             </p>
           </div>
         </div>

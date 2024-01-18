@@ -7,16 +7,19 @@ const campaignStore = useCampaignStore()
 
 const { $onError } = useNuxtApp()
 
+const round = useQueryRef('round', '')
 const status = reactive(new Status(StatusType.Idle))
 
 onMounted(() => {
   status.setLoading()
 
+  const roundId = round.value ? Number(round.value) : undefined
+
   Promise.all([
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
     tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
-    campaignStore.fetchRound()
+    campaignStore.fetchRound(roundId)
   ])
     .catch($onError)
     .finally(() => {
