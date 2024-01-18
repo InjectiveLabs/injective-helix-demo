@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'set:tab': [tab: GridStrategyType]
+  'update:tab': [tab: GridStrategyType]
 }>()
 
 const exchangeStore = useExchangeStore()
@@ -135,7 +135,7 @@ const { valueToString: profitPerGridToString } = useBigNumberFormatter(
 
 function copyToManual() {
   setValuesFromAuto()
-  emit('set:tab', GridStrategyType.Manual)
+  emit('update:tab', GridStrategyType.Manual)
 }
 
 function setValuesFromAuto() {

@@ -7,22 +7,22 @@ import {
 } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
+  GST_GRID_THRESHOLD,
+  GST_MIN_TRADING_SIZE,
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import {
+  spotGridMarkets,
+  gridStrategyAuthorizationMessageTypes
+} from '@/app/data/grid-strategy'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
   Modal,
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
-import {
-  spotGridMarkets,
-  gridStrategyAuthorizationMessageTypes
-} from '@/app/data/grid-strategy'
-import {
-  GST_DEFAULT_AUTO_GRIDS,
-  GST_GRID_THRESHOLD,
-  GST_MIN_TRADING_SIZE,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   isAuto: Boolean,
