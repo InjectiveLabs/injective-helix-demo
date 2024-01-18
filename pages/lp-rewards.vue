@@ -10,7 +10,7 @@ const { $onError } = useNuxtApp()
 const round = useQueryRef('round', '')
 const status = reactive(new Status(StatusType.Idle))
 
-onMounted(() => {
+onWalletConnected(() => {
   status.setLoading()
 
   const roundId = round.value ? Number(round.value) : undefined
