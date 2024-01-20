@@ -3,16 +3,13 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-function onTransferToMainSubaccountClick() {
+function onClick() {
   modalStore.openModal(Modal.TransferToMainSubaccount)
 }
 </script>
 
 <template>
-  <AppButton
-    class="border border-blue-500"
-    @click="onTransferToMainSubaccountClick"
-  >
+  <AppButton class="border border-blue-500" @click="onClick">
     <span class="text-blue-500 font-semibold">
       {{ $t('account.transferToMainSubaccount') }}
     </span>

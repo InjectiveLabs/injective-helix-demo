@@ -194,7 +194,7 @@ export const externalTransfer = async ({
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
-export const withdrawFromSubaccountToMain = async () => {
+export const withdrawToMain = async () => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -213,7 +213,7 @@ export const withdrawFromSubaccountToMain = async () => {
       injectiveAddress: walletStore.authZOrInjectiveAddress,
       subaccountId: accountStore.subaccountId,
       amount: {
-        amount: balance.totalBalance,
+        amount: new BigNumberInBase(balance.availableBalance).toFixed(0),
         denom: balance.denom
       }
     })

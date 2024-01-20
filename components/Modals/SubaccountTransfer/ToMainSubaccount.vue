@@ -9,10 +9,6 @@ const gridStrategyStore = useGridStrategyStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
 
-function onCloseModal() {
-  modalStore.closeModal(Modal.TransferToMainSubaccount)
-}
-
 const hasActiveStrategyForSubaccount = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
@@ -28,6 +24,23 @@ onWalletConnected(() => {
       status.setIdle()
     })
 })
+
+function transferToMainSubaccount() {
+  status.setLoading()
+
+  Promise.all([accountStore.withdrawToMain()])
+    .then(() => {
+      // modalStore.closeModal(Modal.TransferToMainSubaccount)
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function onCloseModal() {
+  modalStore.closeModal(Modal.TransferToMainSubaccount)
+}
 </script>
 
 <template>
@@ -84,6 +97,7 @@ onWalletConnected(() => {
             <AppButton
               is-lg
               class="w-full shadow-none select-none text-white border-blue-500 bg-blue-500"
+              @click="transferToMainSubaccount"
             >
               {{ $t('sgt.confirm') }}
             </AppButton>
