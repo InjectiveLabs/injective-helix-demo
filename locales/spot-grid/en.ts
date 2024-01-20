@@ -13,6 +13,7 @@ export default {
     market: 'Market',
     endBot: 'End Bot',
     manual: 'Manual',
+    cancel: 'Cancel',
     running: 'Running',
     lower: 'Lower',
     upper: 'Upper',

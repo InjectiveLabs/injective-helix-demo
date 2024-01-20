@@ -193,3 +193,40 @@ export const externalTransfer = async ({
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
+
+export const withdrawFromSubaccountToMain = async () => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+
+  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+    return
+  }
+
+  await appStore.queue()
+  await walletStore.validate()
+
+  const msgs = accountStore.subaccountBalancesMap[
+    accountStore.subaccountId
+  ].map((balance) =>
+    MsgWithdraw.fromJSON({
+      injectiveAddress: walletStore.authZOrInjectiveAddress,
+      subaccountId: accountStore.subaccountId,
+      amount: {
+        amount: balance.totalBalance,
+        denom: balance.denom
+      }
+    })
+  )
+
+  const actualMessage = walletStore.isAuthzWalletConnected
+    ? msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)
+    : msgs
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: actualMessage,
+    injectiveAddress: walletStore.injectiveAddress
+  })
+
+  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+}

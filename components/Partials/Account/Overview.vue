@@ -183,7 +183,8 @@ function onTransferClick() {
         <AppButton
           v-if="
             appStore.isSubaccountManagementActive &&
-            !walletStore.isAuthzWalletConnected
+            !walletStore.isAuthzWalletConnected &&
+            !accountStore.isSgtSubaccount
           "
           :is-disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
@@ -193,6 +194,8 @@ function onTransferClick() {
             {{ $t('account.transfer') }}
           </span>
         </AppButton>
+
+        <PartialsAccountTransferToMainSubAccount />
       </div>
     </div>
 

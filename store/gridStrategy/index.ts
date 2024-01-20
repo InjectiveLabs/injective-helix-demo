@@ -63,10 +63,6 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         return
       }
 
-      if (!gridStrategyStore.spotMarket) {
-        return
-      }
-
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         accountAddress: walletStore.injectiveAddress
       })

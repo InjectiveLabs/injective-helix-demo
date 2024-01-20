@@ -11,7 +11,8 @@ import {
   deposit,
   transfer,
   withdraw,
-  externalTransfer
+  externalTransfer,
+  withdrawFromSubaccountToMain
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
@@ -78,6 +79,7 @@ export const useAccountStore = defineStore('account', {
     streamBankBalance,
     streamSubaccountBalance,
     cancelBankBalanceStream,
+    withdrawFromSubaccountToMain,
     cancelSubaccountBalanceStream,
 
     async fetchAccountPortfolioBalances() {

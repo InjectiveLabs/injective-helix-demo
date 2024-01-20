@@ -2,7 +2,7 @@
 import {
   isSgtSubaccountId,
   getSubaccountIndex,
-  getMarketIdFromSubaccountId
+  getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 
 const accountStore = useAccountStore()
@@ -23,7 +23,7 @@ const subaccountSelectOptions = computed(() =>
           if (isSgtSubaccountId(value)) {
             return {
               value,
-              display: `SGT ${getMarketIdFromSubaccountId(value)}`
+              display: `SGT ${getMarketSlugFromSubaccountId(value)}`
             }
           }
 

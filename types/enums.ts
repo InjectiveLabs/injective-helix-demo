@@ -80,6 +80,7 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
+  TransferToMainSubaccount = 'transfer-to-main-subaccount',
   MarketRestricted = 'market-restricted',
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
   ScavengerHunt = 'scavenger-hunt',
