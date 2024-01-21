@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE,
   GST_GRID_THRESHOLD,
-  GST_DEFAULT_AUTO_GRIDS
+  GST_MIN_TRADING_SIZE,
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,

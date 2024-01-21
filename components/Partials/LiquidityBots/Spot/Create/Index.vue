@@ -10,30 +10,36 @@ useForm<SpotGridTradingForm>({
   initialValues: { investmentType: InvestmentTypeGst.Base }
 })
 
-const activeTab = ref(GridStrategyType.Auto)
+const gridStrategies = [GridStrategyType.Auto, GridStrategyType.Manual]
 
-function changeTab(tab: GridStrategyType) {
-  activeTab.value = tab
-}
+const activeTab = ref(GridStrategyType.Auto)
 </script>
 
 <template>
   <div>
     <div class="grid grid-cols-2 bg-black p-1 rounded-md text-sm my-6">
-      <button
-        class="rounded py-1.5 uppercase"
-        :class="{ 'bg-gray-800': activeTab === GridStrategyType.Auto }"
-        @click="changeTab(GridStrategyType.Auto)"
+      <AppSelectButton
+        v-for="strategy in gridStrategies"
+        :key="`grid-type-selector-${strategy}`"
+        v-model="activeTab"
+        :value="strategy"
       >
-        {{ $t('sgt.auto') }}
-      </button>
-      <button
-        class="rounded py-1.5 uppercase"
-        :class="{ 'bg-gray-800': activeTab === GridStrategyType.Manual }"
-        @click="changeTab(GridStrategyType.Manual)"
-      >
-        {{ $t('sgt.manual') }}
-      </button>
+        <template #default="{ isActive }">
+          <div
+            class="rounded py-1.5 uppercase text-center"
+            :class="{
+              'bg-gray-800': isActive
+            }"
+          >
+            <span v-if="strategy === GridStrategyType.Auto">
+              {{ $t('sgt.auto') }}
+            </span>
+            <span v-else>
+              {{ $t('sgt.manual') }}
+            </span>
+          </div>
+        </template>
+      </AppSelectButton>
     </div>
 
     <PartialsLiquidityBotsSpotCreateAuto

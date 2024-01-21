@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { ExitType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { ExitType } from '@injectivelabs/sdk-ts'
-import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
+
 const props = defineProps({
   isLiquidity: Boolean
 })
@@ -12,84 +13,67 @@ const props = defineProps({
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
 )
 
-const { success } = useNotifications()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
-
-const status = reactive(new Status(StatusType.Idle))
 const hasAgreedToTerms = ref(false)
+const status = reactive(new Status(StatusType.Idle))
 
-const profitPerGrid = computed(() => {
-  if (
-    !formValues.value[SpotGridTradingField.LowerPrice] ||
-    !formValues.value[SpotGridTradingField.UpperPrice] ||
-    !formValues.value[SpotGridTradingField.Grids] ||
-    !gridStrategyStore.spotMarket ||
-    Number(formValues.value[SpotGridTradingField.Grids]) === 0
-  ) {
-    return ZERO_IN_BASE
-  }
-
-  const priceDifference = new BigNumberInBase(
-    formValues.value[SpotGridTradingField.UpperPrice]
-  )
-    .minus(formValues.value[SpotGridTradingField.LowerPrice])
-    .dividedBy(formValues.value[SpotGridTradingField.Grids])
-
-  return priceDifference
-    .dividedBy(formValues.value[SpotGridTradingField.LowerPrice])
-    .times(100)
-})
-
-const quoteSymbol = computed(
-  () => gridStrategyStore.spotMarket?.quoteToken.symbol
-)
-const baseSymbol = computed(
-  () => gridStrategyStore.spotMarket?.baseToken.symbol
-)
+const baseToken = computed(() => gridStrategyStore.spotMarket?.baseToken)
+const quoteToken = computed(() => gridStrategyStore.spotMarket?.quoteToken)
 
 const baseAmount = computed(() => {
   const baseAmount = formValues.value[SpotGridTradingField.BaseInvestmentAmount]
 
-  if (!baseAmount || new BigNumberInBase(baseAmount).eq(0)) {
-    return undefined
-  }
-
-  return baseAmount
+  return new BigNumberInBase(baseAmount || 0).eq(0) ? undefined : baseAmount
 })
 
 const quoteAmount = computed(() => {
   const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
 
-  if (!quoteAmount || new BigNumberInBase(quoteAmount).eq(0)) {
-    return undefined
-  }
-
-  return quoteAmount
+  return new BigNumberInBase(quoteAmount || 0).eq(0) ? undefined : quoteAmount
 })
 
 const settleInToken = computed(() => {
   if (formValues.value[SpotGridTradingField.SettleIn] === false) {
-    return undefined
+    return
   }
 
   if (formValues.value[SpotGridTradingField.ExitType] === ExitType.Base) {
-    return gridStrategyStore.spotMarket?.baseToken
+    return baseToken.value
   }
 
   if (formValues.value[SpotGridTradingField.ExitType] === ExitType.Quote) {
-    return gridStrategyStore.spotMarket?.quoteToken
+    return quoteToken.value
   }
-
-  return undefined
 })
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
-  profitPerGrid,
+  computed(() => {
+    if (
+      !formValues.value[SpotGridTradingField.LowerPrice] ||
+      !formValues.value[SpotGridTradingField.UpperPrice] ||
+      !formValues.value[SpotGridTradingField.Grids] ||
+      !gridStrategyStore.spotMarket ||
+      Number(formValues.value[SpotGridTradingField.Grids]) === 0
+    ) {
+      return ZERO_IN_BASE
+    }
+
+    const priceDifference = new BigNumberInBase(
+      formValues.value[SpotGridTradingField.UpperPrice]
+    )
+      .minus(formValues.value[SpotGridTradingField.LowerPrice])
+      .dividedBy(formValues.value[SpotGridTradingField.Grids])
+
+    return priceDifference
+      .dividedBy(formValues.value[SpotGridTradingField.LowerPrice])
+      .times(100)
+  }),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -153,14 +137,14 @@ function onCreateStrategy() {
           <template #quoteAmount>
             <span class="font-semibold">
               {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-              {{ quoteSymbol }}
+              {{ quoteToken?.symbol }}
             </span>
           </template>
 
           <template #baseAmount>
             <span class="font-semibold">
               {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
-              {{ baseSymbol }}
+              {{ baseToken?.symbol }}
             </span>
           </template>
 
@@ -175,12 +159,12 @@ function onCreateStrategy() {
           <template #quoteAmount>
             <span v-if="quoteAmount" class="font-semibold">
               {{ quoteAmount }}
-              {{ quoteSymbol }}
+              {{ quoteToken?.symbol }}
             </span>
 
             <span v-else class="font-semibold">
               {{ baseAmount }}
-              {{ baseSymbol }}
+              {{ baseToken?.symbol }}
             </span>
           </template>
 
@@ -199,12 +183,12 @@ function onCreateStrategy() {
           <div class="flex flex-col items-end">
             <p v-if="quoteAmount" class="font-semibold">
               {{ formValues[SpotGridTradingField.InvestmentAmount] }}
-              {{ quoteSymbol }}
+              {{ quoteToken?.symbol }}
             </p>
 
             <p v-if="baseAmount" class="font-semibold">
               {{ formValues[SpotGridTradingField.BaseInvestmentAmount] }}
-              {{ baseSymbol }}
+              {{ baseToken?.symbol }}
             </p>
           </div>
         </div>
@@ -226,7 +210,7 @@ function onCreateStrategy() {
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.LowerPrice] }} -
             {{ formValues[SpotGridTradingField.UpperPrice] }}
-            {{ quoteSymbol }}
+            {{ quoteToken?.symbol }}
           </p>
         </div>
 
@@ -248,7 +232,8 @@ function onCreateStrategy() {
         >
           <p class="text-gray-500">{{ $t('sgt.stopLoss') }}</p>
           <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.StopLoss] }} {{ quoteSymbol }}
+            {{ formValues[SpotGridTradingField.StopLoss] }}
+            {{ quoteToken?.symbol }}
           </p>
         </div>
 
@@ -258,7 +243,8 @@ function onCreateStrategy() {
         >
           <p class="text-gray-500">{{ $t('sgt.takeProfit') }}</p>
           <p class="font-semibold">
-            {{ formValues[SpotGridTradingField.TakeProfit] }} {{ quoteSymbol }}
+            {{ formValues[SpotGridTradingField.TakeProfit] }}
+            {{ quoteToken?.symbol }}
           </p>
         </div>
 
@@ -275,7 +261,9 @@ function onCreateStrategy() {
           class="flex justify-between items-center"
         >
           <p class="text-gray-500">
-            {{ $t('sgt.advanced.sellAllOnStop', { symbol: baseSymbol }) }}
+            {{
+              $t('sgt.advanced.sellAllOnStop', { symbol: baseToken?.symbol })
+            }}
           </p>
           <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
         </div>
@@ -285,7 +273,7 @@ function onCreateStrategy() {
           class="flex justify-between items-center"
         >
           <p class="text-gray-500">
-            {{ $t('sgt.advanced.buyOnStop', { symbol: baseSymbol }) }}
+            {{ $t('sgt.advanced.buyOnStop', { symbol: baseToken?.symbol }) }}
           </p>
           <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
         </div>
