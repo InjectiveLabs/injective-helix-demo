@@ -13,7 +13,7 @@ import {
   getStdFeeForToken,
   DEFAULT_IBC_GAS_LIMIT
 } from '@injectivelabs/utils'
-import { CosmosChainId } from '@injectivelabs/ts-types'
+import { ChainId, CosmosChainId } from '@injectivelabs/ts-types'
 import {
   ErrorType,
   GeneralException,
@@ -280,7 +280,7 @@ export const transferToInjective = async ({
     chainId: cosmosChainId
   })
 
-  const endpoints = getEndpointsFromChainId(cosmosChainId)
+  const endpoints = { ...getEndpointsFromChainId(cosmosChainId), grpc: '' }
   const txRestClient = new TxRestClient(endpoints.rest)
   const tendermintRestApi = new ChainRestTendermintApi(ENDPOINTS.rest)
 
@@ -343,7 +343,8 @@ export const transferToInjective = async ({
 
       await keplrWallet.signAndBroadcastAminoUsingCosmjs(
         [msgTransferAmino.toAmino()],
-        stdFee
+        stdFee,
+        endpoints
       )
     }
   }
@@ -369,7 +370,8 @@ export const transferToInjective = async ({
   })
 
   const txResponse = await cosmosWalletStrategy.sendTransaction(
-    directSignResponse
+    directSignResponse,
+    { address: originAddress, chainId: aChainId as ChainId, endpoints }
   )
   const response = await txRestClient.fetchTxPoll(txResponse.txHash)
 

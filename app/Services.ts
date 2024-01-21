@@ -110,7 +110,7 @@ export const apolloConsumer = new ApolloConsumer(
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
-  networkEndpoints: ENDPOINTS,
+  endpoints: ENDPOINTS,
   feePayerPubKey: FEE_PAYER_PUB_KEY,
   simulateTx: true
 })
