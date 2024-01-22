@@ -85,6 +85,16 @@ export const slugsToIncludeInEthereumCategory = [
   'eth-usdtkv-perp'
 ]
 
+export const slugsToIncludeInInjectiveCategory = [
+  'inj-usdt',
+  'inj-usdt-perp',
+  'talis-usdt',
+  'stinj-inj',
+  'ninja-inj',
+  'kira-inj',
+  'katana-inj'
+]
+
 export const olpSlugsToIncludeInLowVolume = [
   'inj-usdt',
   'tia-usdt',

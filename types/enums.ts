@@ -138,6 +138,7 @@ export enum MarketCategoryType {
   All = 'all',
   Cosmos = 'cosmos',
   Ethereum = 'ethereum',
+  Injective = 'injective',
   Experimental = 'experimental'
 }
 
