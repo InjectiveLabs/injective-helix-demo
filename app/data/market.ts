@@ -10,6 +10,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'zro-usdt-perp',
   'app-inj',
   'ninj-inj',
   'talis-usdt',
