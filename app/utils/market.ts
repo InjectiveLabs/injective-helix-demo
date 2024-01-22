@@ -21,7 +21,8 @@ import {
   deprecatedMarkets,
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory
+  slugsToIncludeInEthereumCategory,
+  slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
@@ -155,6 +156,10 @@ export const marketIsPartOfCategory = (
       !isIbcBaseDenomMarket &&
       slugsToIncludeInEthereumCategory.includes(market.slug)
     )
+  }
+
+  if (activeCategory === MarketCategoryType.Injective) {
+    return slugsToIncludeInInjectiveCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Experimental) {
