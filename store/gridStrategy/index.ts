@@ -2,7 +2,11 @@ import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { indexerGrpcTradingApi } from '@/app/Services'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { createStrategy, removeStrategy } from '@/store/gridStrategy/message'
+import {
+  createStrategy,
+  removeStrategy,
+  removeStrategyForSubaccount
+} from '@/store/gridStrategy/message'
 import { StrategyStatus } from '@/types'
 
 type GridStrategyStoreState = {
@@ -30,6 +34,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   actions: {
     createStrategy,
     removeStrategy,
+    removeStrategyForSubaccount,
 
     async fetchStrategies() {
       const walletStore = useWalletStore()

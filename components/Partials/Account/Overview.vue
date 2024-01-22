@@ -195,7 +195,9 @@ function onTransferClick() {
           </span>
         </AppButton>
 
-        <PartialsAccountTransferToMainSubAccount />
+        <PartialsAccountTransferToMainSubAccount
+          v-if="accountStore.isSgtSubaccount"
+        />
       </div>
     </div>
 

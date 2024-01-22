@@ -202,3 +202,40 @@ export const removeStrategy = async (contractAddress?: string) => {
   backupPromiseCall(() => gridStrategyStore.fetchStrategies())
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
+
+export const removeStrategyForSubaccount = async (contractAddress?: string) => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  if (!walletStore.isUserWalletConnected) {
+    return
+  }
+  if (!contractAddress) {
+    return
+  }
+
+  await appStore.queue()
+  await walletStore.validate()
+
+  if (walletStore.isAuthzWalletConnected) {
+    throw new GeneralException(new Error('AuthZ not supported for this action'))
+  }
+
+  const message = MsgExecuteContractCompat.fromJSON({
+    contractAddress,
+    sender: walletStore.injectiveAddress,
+    execArgs: ExecArgRemoveGridStrategy.fromJSON({
+      subaccountId: accountStore.subaccountId
+    })
+  })
+
+  await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: message,
+    injectiveAddress: walletStore.injectiveAddress
+  })
+
+  backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+}

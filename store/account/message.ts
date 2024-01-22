@@ -206,18 +206,18 @@ export const withdrawToMain = async () => {
   await appStore.queue()
   await walletStore.validate()
 
-  const msgs = accountStore.subaccountBalancesMap[
-    accountStore.subaccountId
-  ].map((balance) =>
-    MsgWithdraw.fromJSON({
-      injectiveAddress: walletStore.authZOrInjectiveAddress,
-      subaccountId: accountStore.subaccountId,
-      amount: {
-        amount: new BigNumberInBase(balance.availableBalance).toFixed(0),
-        denom: balance.denom
-      }
-    })
-  )
+  const msgs = accountStore.subaccountBalancesMap[accountStore.subaccountId]
+    .filter((balance) => Number(balance.availableBalance).toFixed(0) !== '0')
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        subaccountId: accountStore.subaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(0),
+          denom: balance.denom
+        }
+      })
+    )
 
   const actualMessage = walletStore.isAuthzWalletConnected
     ? msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)

@@ -5,36 +5,37 @@ import { Modal } from '@/types'
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
+const { $onError } = useNuxtApp()
+const { success } = useNotifications()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
 
-const hasActiveStrategyForSubaccount = computed(() =>
+const activeStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )
 
-onWalletConnected(() => {
+function onEndBot() {
+  if (!activeStrategy.value) {
+    return
+  }
+
   status.setLoading()
 
-  Promise.all([gridStrategyStore.fetchAllStrategies()])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-})
-
-function transferToMainSubaccount() {
-  status.setLoading()
-
-  Promise.all([accountStore.withdrawToMain()])
+  Promise.all([
+    gridStrategyStore.removeStrategyForSubaccount(
+      activeStrategy.value.contractAddress
+    )
+  ])
     .then(() => {
-      // modalStore.closeModal(Modal.TransferToMainSubaccount)
+      success({ title: t('common.success') })
     })
     .catch($onError)
     .finally(() => {
       status.setIdle()
+      modalStore.closeModal(Modal.TransferToMainSubaccount)
     })
 }
 
@@ -50,60 +51,34 @@ function onCloseModal() {
     @modal:closed="onCloseModal"
   >
     <div>
-      <AppHocLoading v-bind="{ status }">
-        <div v-if="hasActiveStrategyForSubaccount">
-          <div class="flex justify-center pb-4">
-            <BaseIcon name="info" class="w-10 h-10 text-gray-500" />
-          </div>
-
-          <h3 class="mb-8 font-semibold">
-            This subaccount has a running SGT Strategy, if you want to transfer
-            your funds to main subaccount, you need to stop the bot.
-          </h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AppButton
-              is-lg
-              class="w-full shadow-none select-none text-red-500 border-red-500"
-            >
-              {{ $t('sgt.cancel') }}
-            </AppButton>
-
-            <AppButton
-              is-lg
-              class="w-full shadow-none select-none text-white-500 border-red-500 bg-red-500"
-            >
-              {{ $t('sgt.endBot') }}
-            </AppButton>
-          </div>
+      <div>
+        <div class="flex justify-center pb-4">
+          <BaseIcon name="info" class="w-10 h-10 text-gray-500" />
         </div>
 
-        <div v-else>
-          <div class="flex justify-center pb-4">
-            <BaseIcon name="info" class="w-10 h-10 text-gray-500" />
-          </div>
+        <h3 class="mb-8 font-semibold">
+          {{ $t('sgt.accountEndBot') }}
+        </h3>
 
-          <h3 class="mb-8 font-semibold">
-            This action will transfer all your funds to the main subaccount.
-          </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AppButton
+            is-lg
+            class="w-full shadow-none select-none text-red-500 border-red-500"
+            @click="onCloseModal"
+          >
+            {{ $t('sgt.cancel') }}
+          </AppButton>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AppButton
-              is-lg
-              class="w-full shadow-none select-none text-red-500 border-red-500"
-            >
-              {{ $t('sgt.cancel') }}
-            </AppButton>
-            <AppButton
-              is-lg
-              class="w-full shadow-none select-none text-white border-blue-500 bg-blue-500"
-              @click="transferToMainSubaccount"
-            >
-              {{ $t('sgt.confirm') }}
-            </AppButton>
-          </div>
+          <AppButton
+            v-bind="{ status }"
+            is-lg
+            class="w-full shadow-none select-none text-white-500 border-red-500 bg-red-500"
+            @click="onEndBot"
+          >
+            {{ $t('sgt.endBot') }}
+          </AppButton>
         </div>
-      </AppHocLoading>
+      </div>
     </div>
   </AppModal>
 </template>
