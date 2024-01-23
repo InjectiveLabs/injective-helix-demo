@@ -7,7 +7,7 @@ import {
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 import {
-  getMarketIdFromSubaccountId,
+  getMarketSlugFromSubaccountId,
   getSubaccountIndex,
   isSgtSubaccountId
 } from '@/app/utils/helpers'
@@ -55,7 +55,7 @@ const subaccountFormatted = computed(() => {
   }
 
   if (isSgtSubaccountId(props.subaccountId)) {
-    return `SGT ${getMarketIdFromSubaccountId(props.subaccountId)}`
+    return `SGT ${getMarketSlugFromSubaccountId(props.subaccountId)}`
   }
 
   return getSubaccountIndex(props.subaccountId).toString()
