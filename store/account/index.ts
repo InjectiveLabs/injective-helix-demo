@@ -11,6 +11,7 @@ import {
   deposit,
   transfer,
   withdraw,
+  withdrawToMain,
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
@@ -74,6 +75,7 @@ export const useAccountStore = defineStore('account', {
     deposit,
     transfer,
     withdraw,
+    withdrawToMain,
     externalTransfer,
     streamBankBalance,
     streamSubaccountBalance,

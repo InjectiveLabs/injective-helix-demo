@@ -39,7 +39,8 @@ export const experimentalMarketsSlug = [
   'app-inj',
   'ninja-inj',
   'kira-inj',
-  'katana-inj'
+  'katana-inj',
+  'ginger-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [

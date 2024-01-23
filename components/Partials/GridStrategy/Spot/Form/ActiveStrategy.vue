@@ -440,7 +440,7 @@ useIntervalFn(() => {
             <span>
               &mdash;
               {{
-                $t('sgt.advanced.buyBaseOnStop', {
+                $t('sgt.advanced.sellAllOnStop', {
                   symbol: market.baseToken.symbol
                 })
               }}
@@ -449,7 +449,7 @@ useIntervalFn(() => {
 
           <span>
             <span
-              v-if="activeStrategy.stopLossConfig.exitType === ExitType.Base"
+              v-if="activeStrategy.stopLossConfig.exitType === ExitType.Quote"
             >
               {{ $t('sgt.advanced.enabled') }}
             </span>
@@ -495,7 +495,7 @@ useIntervalFn(() => {
             <span>
               &mdash;
               {{
-                $t('sgt.advanced.sellAllOnStop', {
+                $t('sgt.advanced.buyBaseOnStop', {
                   symbol: market.baseToken.symbol
                 })
               }}
@@ -504,7 +504,7 @@ useIntervalFn(() => {
 
           <span>
             <span
-              v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Quote"
+              v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Base"
             >
               {{ $t('sgt.advanced.enabled') }}
             </span>

@@ -101,7 +101,7 @@ export const isSgtSubaccountId = (subaccountId: string) => {
   return subaccountIdIndex > MAX_ALLOWED_INDEX
 }
 
-export const getMarketIdFromSubaccountId = (subaccountId: string) => {
+export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId)) {
     return spotGridMarkets
       .find(
