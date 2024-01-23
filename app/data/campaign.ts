@@ -537,7 +537,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
       },
       {
         campaignId: 'spot-grid-whale-usdt-8',
-        scAddress: 'inj19j7kxl4456wh9fhzjnmtya3jzdlz76v8yw8nwux',
+        scAddress: 'inj19j7kxl4456wh9fhzjnmtya3jzdlz76v8yw8nwu',
         marketSlug: 'whale-usdt',
         rewards: [{ symbol: 'WHALE', amount: '31250' }]
       },
