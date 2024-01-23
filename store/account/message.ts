@@ -207,13 +207,16 @@ export const withdrawToMain = async () => {
   await walletStore.validate()
 
   const msgs = accountStore.subaccountBalancesMap[accountStore.subaccountId]
-    .filter((balance) => Number(balance.availableBalance).toFixed(0) !== '0')
+    .filter((balance) => new BigNumberInBase(balance.availableBalance).gt(0))
     .map((balance) =>
       MsgWithdraw.fromJSON({
         injectiveAddress: walletStore.authZOrInjectiveAddress,
         subaccountId: accountStore.subaccountId,
         amount: {
-          amount: new BigNumberInBase(balance.availableBalance).toFixed(0),
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
           denom: balance.denom
         }
       })
