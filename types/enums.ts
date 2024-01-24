@@ -140,6 +140,7 @@ export enum MarketCategoryType {
   Cosmos = 'cosmos',
   Ethereum = 'ethereum',
   Injective = 'injective',
+  Solana = 'solana',
   Experimental = 'experimental'
 }
 

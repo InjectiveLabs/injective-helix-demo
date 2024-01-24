@@ -20,6 +20,7 @@ import {
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
+  slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory,
   slugsToIncludeInInjectiveCategory
@@ -149,6 +150,10 @@ export const marketIsPartOfCategory = (
       isIbcBaseDenomMarket ||
       slugsToIncludeInCosmosCategory.includes(market.slug)
     )
+  }
+
+  if (activeCategory === MarketCategoryType.Solana) {
+    return slugsToIncludeInSolanaCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
