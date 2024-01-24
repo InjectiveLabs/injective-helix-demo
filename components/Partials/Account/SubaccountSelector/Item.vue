@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
@@ -63,11 +64,22 @@ const subaccountFormatted = computed(() => {
 
 const { valueToString: abbreviatedTotalBalanceToString } =
   useBigNumberFormatter(accountTotalBalanceInUsd, {
-    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
+    decimalPlaces: shouldAbbreviateTotalBalance.value
+      ? 0
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS,
     abbreviationFloor: shouldAbbreviateTotalBalance.value
       ? UI_MINIMAL_ABBREVIATION_FLOOR
       : undefined
   })
+
+const formattedTotalBalanceToString = computed(() => {
+  const minAmount = new BigNumberInBase(1).shiftedBy(
+    -UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  )
+  return accountTotalBalanceInUsd.value.gte(minAmount)
+    ? abbreviatedTotalBalanceToString.value
+    : `< ${minAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+})
 
 function click() {
   accountStore.$patch({ subaccountId: props.subaccountId })
@@ -94,7 +106,7 @@ function click() {
         {{
           isHideBalances
             ? HIDDEN_BALANCE_DISPLAY
-            : abbreviatedTotalBalanceToString
+            : formattedTotalBalanceToString
         }}
         USD
       </p>

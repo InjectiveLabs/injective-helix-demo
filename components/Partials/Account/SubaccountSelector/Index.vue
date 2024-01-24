@@ -1,18 +1,38 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { AccountBalance, Modal } from '@/types'
 
 defineProps({
   isHideBalances: Boolean
 })
 
-const walletStore = useWalletStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 
 function onCreateSubaccount() {
   modalStore.openModal(Modal.CreateSubaccount)
 }
+
+const filteredSubaccounts = computed(() =>
+  Object.entries(aggregatedPortfolioBalances.value).reduce(
+    (subaccounts, [subaccount, balances]) => {
+      const hasBalance = balances.some((balance) =>
+        new BigNumberInBase(balance.accountTotalBalance)
+          .dp(0, BigNumber.ROUND_DOWN)
+          .gt(0)
+      )
+
+      if (hasBalance || subaccount === walletStore.defaultSubaccountId) {
+        return { ...subaccounts, [subaccount]: balances }
+      }
+
+      return subaccounts
+    },
+    {} as Record<string, AccountBalance[]>
+  )
+)
 </script>
 
 <template>
@@ -21,7 +41,7 @@ function onCreateSubaccount() {
   >
     <PartialsAccountSubaccountSelectorItem
       v-for="[subaccountId, balances] in Object.entries(
-        aggregatedPortfolioBalances
+        filteredSubaccounts
       ).sort(([subaccountA], [subaccountB]) =>
         subaccountA.localeCompare(subaccountB)
       )"
