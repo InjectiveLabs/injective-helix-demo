@@ -27,7 +27,7 @@ const filteredSubaccounts = computed(() =>
               .gt(0)
           )
 
-          if (hasBalance) {
+          if (hasBalance || subaccount === walletStore.defaultSubaccountId) {
             return { ...subaccounts, [subaccount]: balances }
           }
 
