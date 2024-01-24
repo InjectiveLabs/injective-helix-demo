@@ -6,7 +6,6 @@ defineProps({
   isHideBalances: Boolean
 })
 
-const appStore = useAppStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
@@ -17,24 +16,22 @@ function onCreateSubaccount() {
 }
 
 const filteredSubaccounts = computed(() =>
-  appStore.userState.preferences.showSubaccountsWithDust
-    ? aggregatedPortfolioBalances.value
-    : Object.entries(aggregatedPortfolioBalances.value).reduce(
-        (subaccounts, [subaccount, balances]) => {
-          const hasBalance = balances.some((balance) =>
-            new BigNumberInBase(balance.accountTotalBalance)
-              .dp(0, BigNumber.ROUND_DOWN)
-              .gt(0)
-          )
-
-          if (hasBalance || subaccount === walletStore.defaultSubaccountId) {
-            return { ...subaccounts, [subaccount]: balances }
-          }
-
-          return subaccounts
-        },
-        {} as Record<string, AccountBalance[]>
+  Object.entries(aggregatedPortfolioBalances.value).reduce(
+    (subaccounts, [subaccount, balances]) => {
+      const hasBalance = balances.some((balance) =>
+        new BigNumberInBase(balance.accountTotalBalance)
+          .dp(0, BigNumber.ROUND_DOWN)
+          .gt(0)
       )
+
+      if (hasBalance || subaccount === walletStore.defaultSubaccountId) {
+        return { ...subaccounts, [subaccount]: balances }
+      }
+
+      return subaccounts
+    },
+    {} as Record<string, AccountBalance[]>
+  )
 )
 </script>
 

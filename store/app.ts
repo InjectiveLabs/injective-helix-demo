@@ -49,7 +49,6 @@ export interface UserBasedState {
     authZManagement: boolean
     subaccountManagement: boolean
     skipTradeConfirmationModal: boolean
-    showSubaccountsWithDust: boolean
   }
 }
 
@@ -103,8 +102,7 @@ const initialStateFactory = (): AppStoreState => ({
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
       subaccountManagement: false,
-      authZManagement: false,
-      showSubaccountsWithDust: false
+      authZManagement: false
     }
   }
 })
