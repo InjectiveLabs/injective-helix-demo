@@ -263,7 +263,9 @@ export const marketIsInactive = (market: DerivativeMarket) => {
     'ETH/USDT 19SEP22',
     'BONK/USDT PERP',
     '1000PEPE/USDT PERP',
-    'TIA/USDT-30NOV2023'
+    'TIA/USDT-30NOV2023',
+    'ETH/USDTkv PERP',
+    'BTC/USDTkv PERP'
   ]
 
   return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
