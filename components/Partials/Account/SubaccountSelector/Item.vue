@@ -76,12 +76,13 @@ const formattedTotalBalanceToString = computed(() => {
   const minAmount = new BigNumberInBase(1).shiftedBy(
     -UI_DEFAULT_MIN_DISPLAY_DECIMALS
   )
+
   return accountTotalBalanceInUsd.value.gte(minAmount)
     ? abbreviatedTotalBalanceToString.value
     : `< ${minAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
 })
 
-function click() {
+function selectSubaccount() {
   accountStore.$patch({ subaccountId: props.subaccountId })
 }
 </script>
@@ -92,7 +93,7 @@ function click() {
     :class="{
       'bg-white/10': isSelectedSubaccountId
     }"
-    @click="click"
+    @click="selectSubaccount"
   >
     <div class="space-y-3">
       <h3 class="flex items-center">
