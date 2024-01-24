@@ -35,6 +35,17 @@ function toggleAuthZManagement() {
     window.location.reload()
   }
 }
+
+function toggleShowSubaccountsWithDust() {
+  appStore.setUserState({
+    ...appStore.userState,
+    preferences: {
+      ...appStore.userState.preferences,
+      showSubaccountsWithDust:
+        !appStore.userState.preferences.showSubaccountsWithDust
+    }
+  })
+}
 </script>
 
 <template>
@@ -60,6 +71,14 @@ function toggleAuthZManagement() {
     >
       <span class="text-gray-300">
         {{ $t('proMode.authzManagement') }}
+      </span>
+    </AppCheckbox>
+    <AppCheckbox
+      :model-value="appStore.userState.preferences.showSubaccountsWithDust"
+      @input="toggleShowSubaccountsWithDust"
+    >
+      <span class="text-gray-300">
+        {{ $t('proMode.showSubaccountsWithDust') }}
       </span>
     </AppCheckbox>
   </div>

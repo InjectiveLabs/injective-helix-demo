@@ -350,7 +350,8 @@ export default {
   proMode: {
     proMode: 'Pro Mode',
     subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authZ management'
+    authzManagement: 'Enable authZ management',
+    showSubaccountsWithDust: 'Show subaccounts with dust amounts'
   },
 
   authZ: {
