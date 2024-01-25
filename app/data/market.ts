@@ -9,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'jup-usdt-perp',
   'zro-usdt-perp',
   'app-inj',
   'ninj-inj',
@@ -39,7 +40,8 @@ export const experimentalMarketsSlug = [
   'ninja-inj',
   'kira-inj',
   'katana-inj',
-  'ginger-inj'
+  'ginger-inj',
+  'jup-usdt-perp'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -92,7 +94,14 @@ export const slugsToIncludeInInjectiveCategory = [
   'stinj-inj',
   'ninja-inj',
   'kira-inj',
-  'katana-inj'
+  'katana-inj',
+  'ninj-inj'
+]
+
+export const slugsToIncludeInSolanaCategory = [
+  'jup-usdt-perp',
+  'pyth-usdt-perp',
+  'sol-usdt'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
