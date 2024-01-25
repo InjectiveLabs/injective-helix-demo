@@ -1,5 +1,4 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
-import { getIbcDenomFromSymbolOrName } from '@injectivelabs/token-metadata'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
@@ -10,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'jup-usdt-perp',
   'zro-usdt-perp',
   'app-inj',
   'ninj-inj',
@@ -40,7 +40,8 @@ export const experimentalMarketsSlug = [
   'ninja-inj',
   'kira-inj',
   'katana-inj',
-  'ginger-inj'
+  'ginger-inj',
+  'jup-usdt-perp'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -93,7 +94,14 @@ export const slugsToIncludeInInjectiveCategory = [
   'stinj-inj',
   'ninja-inj',
   'kira-inj',
-  'katana-inj'
+  'katana-inj',
+  'ninj-inj'
+]
+
+export const slugsToIncludeInSolanaCategory = [
+  'jup-usdt-perp',
+  'pyth-usdt-perp',
+  'sol-usdt'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
@@ -170,13 +178,6 @@ export const marketPromotions = [
 
 export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
 
-export const SETTLED_PERP_MARKETS_LAST_PRICE = {
-  'eth-usdtkv-perp': {
-    price: '2286900022.869',
-    denom: getIbcDenomFromSymbolOrName('USDTkv') || ''
-  },
-  'btc-usdtkv-perp': {
-    price: '41780918457.309',
-    denom: getIbcDenomFromSymbolOrName('USDTkv') || ''
-  }
-} as { [key: string]: { price: string; denom: string } }
+export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
+  [key: string]: { price?: string; denom?: string } | undefined
+}

@@ -84,9 +84,9 @@ export const stableCoinDenoms = [
   'USDCet',
   'USDCso',
   'USDCnb',
-  'USDTkv'
+  'USDT-Cosmos'
 ]
-export const KAVA_USDT_SYMBOL = 'USDTkv'
+export const KAVA_USDT_SYMBOL = 'USDT-Cosmos'
 export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
 export const SWAP_LOW_LIQUIDITY_SYMBOLS = ['GF', 'ORAI', 'SOMM', 'NEOK']
