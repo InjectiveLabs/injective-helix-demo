@@ -58,7 +58,7 @@ const totalVolume = computed(() =>
       )!
 
       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
-        .toBase(market.quoteToken.decimals)
+        .toBase(market.quoteToken?.decimals || 18)
         .times(tokenStore.tokenUsdPrice(market.quoteToken))
       return totalScore.plus(campaignVolumeInUsd)
     }, ZERO_IN_BASE)
