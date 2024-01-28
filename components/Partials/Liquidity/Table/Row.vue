@@ -12,6 +12,7 @@ import {
   USDT_DECIMALS
 } from '@/app/utils/constants'
 import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
 
 const props = defineProps({
   campaign: {
@@ -77,10 +78,22 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
+const sgtScAddress = computed(() => {
+  const market = spotStore.markets.find(
+    ({ marketId }) => marketId === props.campaign.marketId
+  )
+
+  const scAddress =
+    spotGridMarkets.find((sgt) => sgt.slug === market?.slug)?.contractAddress ||
+    ''
+
+  return scAddress
+})
+
 onMounted(() => {
   status.setLoading()
   campaignStore
-    .fetchActiveStrategiesOnSmartContract(props.campaign.contract)
+    .fetchActiveStrategiesOnSmartContract(sgtScAddress.value)
     .then((response) => {
       activeBots.value = response
     })
