@@ -227,7 +227,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
           </div>
 
           <div
-            class="bg-blue-500 text-white font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
+            class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
             @click="download"
           >
             <BaseIcon name="download" class="w-4 h-4 min-w-4" />

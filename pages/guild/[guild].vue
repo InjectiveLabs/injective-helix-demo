@@ -282,7 +282,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             <template v-if="walletStore.isUserWalletConnected">
               <AppButton
                 v-if="campaignStore.userGuildInfo"
-                class="bg-blue-500 text-white"
+                class="bg-blue-500 text-blue-900"
                 @click="onCopyInvitationLink"
               >
                 <div class="flex items-center gap-1">
@@ -303,7 +303,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 
               <AppButton
                 v-else
-                class="bg-blue-500 text-white"
+                class="bg-blue-500 text-blue-900"
                 :is-disabled="isMaxCap || campaignStore.userIsOptedOutOfReward"
                 @click="onJoinGuild"
               >

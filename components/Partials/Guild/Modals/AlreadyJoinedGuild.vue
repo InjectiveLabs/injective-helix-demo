@@ -32,7 +32,7 @@ function onCloseModal() {
 
       <div class="mt-8 flex items-center gap-4">
         <AppButton
-          class="w-full font-semibold bg-blue-500 text-white"
+          class="w-full font-semibold bg-blue-500 text-blue-900"
           v-bind="{
             isLg: true
           }"

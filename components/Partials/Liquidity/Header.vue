@@ -91,7 +91,7 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
-          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
+          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
           {{ $t('campaign.myRewards') }}
         </NuxtLink>
