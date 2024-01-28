@@ -53,7 +53,7 @@ function onCloseModal() {
             params: { spot: notLiquidMarket.redirectionSlug }
           }"
         >
-          <AppButton is-lg class="w-full text-white bg-blue-500">
+          <AppButton is-lg class="w-full bg-blue-500 text-blue-900">
             <span class="font-semibold uppercase">
               {{
                 $t('marketNotLiquid.cta', {

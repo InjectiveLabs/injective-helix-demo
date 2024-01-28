@@ -108,7 +108,7 @@ function onSubmit() {
 
       <div class="mt-8 flex items-center gap-4">
         <AppButton
-          class="w-full bg-blue-500 text-white font-semibold"
+          class="w-full bg-blue-500 text-blue-900 font-semibold"
           v-bind="{
             isLg: true
           }"

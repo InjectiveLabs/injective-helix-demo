@@ -186,7 +186,7 @@ function nextStep() {
         >
           <AppButton
             is-lg
-            class="w-full font-sembold shadow-none select-none text-blue-500 border-blue-500"
+            class="w-full font-semibold shadow-none select-none text-blue-500 border-blue-500"
             @click="onCloseModal"
           >
             {{ $t('sgt.skip') }}
@@ -194,7 +194,7 @@ function nextStep() {
 
           <AppButton
             is-lg
-            class="w-full font-sembold shadow-none select-none bg-blue-500 text-white"
+            class="w-full font-semibold shadow-none select-none bg-blue-500 text-blue-900"
             @click="nextStep"
           >
             <span v-if="step < STEPS">
