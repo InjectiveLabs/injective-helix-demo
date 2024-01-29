@@ -23,6 +23,11 @@ const props = defineProps({
 const lastTradedPrice = computed(() => {
   const settledPerpMarket =
     SETTLED_PERP_MARKETS_LAST_PRICE[props.market.slug as string]
+
+  if (!settledPerpMarket?.price) {
+    return
+  }
+
   const token = tokenStore.tokens.find(
     ({ denom }) => denom === settledPerpMarket.denom
   )
@@ -43,7 +48,7 @@ const settlementPrice = computed(() => {
   }
 
   if (props.market.subType === MarketType.Perpetual) {
-    return new BigNumberInBase(lastTradedPrice.value)
+    return new BigNumberInBase(lastTradedPrice.value || 0)
   }
 
   if (props.market.subType === MarketType.BinaryOptions) {

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 import {
-  getMarketIdFromSubaccountId,
+  getMarketSlugFromSubaccountId,
   getSubaccountIndex,
   isSgtSubaccountId
 } from '@/app/utils/helpers'
@@ -55,7 +56,7 @@ const subaccountFormatted = computed(() => {
   }
 
   if (isSgtSubaccountId(props.subaccountId)) {
-    return `SGT ${getMarketIdFromSubaccountId(props.subaccountId)}`
+    return `SGT ${getMarketSlugFromSubaccountId(props.subaccountId)}`
   }
 
   return getSubaccountIndex(props.subaccountId).toString()
@@ -63,13 +64,25 @@ const subaccountFormatted = computed(() => {
 
 const { valueToString: abbreviatedTotalBalanceToString } =
   useBigNumberFormatter(accountTotalBalanceInUsd, {
-    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
+    decimalPlaces: shouldAbbreviateTotalBalance.value
+      ? 0
+      : UI_DEFAULT_MIN_DISPLAY_DECIMALS,
     abbreviationFloor: shouldAbbreviateTotalBalance.value
       ? UI_MINIMAL_ABBREVIATION_FLOOR
       : undefined
   })
 
-function click() {
+const formattedTotalBalanceToString = computed(() => {
+  const minAmount = new BigNumberInBase(1).shiftedBy(
+    -UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  )
+
+  return accountTotalBalanceInUsd.value.gte(minAmount)
+    ? abbreviatedTotalBalanceToString.value
+    : `< ${minAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
+})
+
+function selectSubaccount() {
   accountStore.$patch({ subaccountId: props.subaccountId })
 }
 </script>
@@ -80,7 +93,7 @@ function click() {
     :class="{
       'bg-white/10': isSelectedSubaccountId
     }"
-    @click="click"
+    @click="selectSubaccount"
   >
     <div class="space-y-3">
       <h3 class="flex items-center">
@@ -94,7 +107,7 @@ function click() {
         {{
           isHideBalances
             ? HIDDEN_BALANCE_DISPLAY
-            : abbreviatedTotalBalanceToString
+            : formattedTotalBalanceToString
         }}
         USD
       </p>

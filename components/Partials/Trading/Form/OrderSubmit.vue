@@ -198,7 +198,7 @@ function onConnect() {
         'hover:text-red-900 bg-red-500 text-red-800':
           !isDisabled && !hasError && !isBuy
       }"
-      class="w-full font-sembold shadow-none"
+      class="w-full font-semibold shadow-none"
       data-cy="trading-page-execute-button"
       @click="onSubmit"
     >

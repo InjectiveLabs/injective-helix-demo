@@ -13,6 +13,7 @@ export default {
     market: 'Market',
     endBot: 'End Bot',
     manual: 'Manual',
+    cancel: 'Cancel',
     running: 'Running',
     lower: 'Lower',
     upper: 'Upper',
@@ -158,6 +159,8 @@ export default {
     setUpABot: 'Set up a bot',
     runABot: 'Run a bot',
     endABot: 'End a bot',
+    accountEndBot:
+      'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
 
     step1: {
       priceRange:

@@ -98,6 +98,7 @@ export default {
         named('faq')
       ]),
     subaccountTransfer: 'Subaccount Transfer',
-    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.'
+    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
+    transferToMainSubaccount: 'Transfer to Main Subaccount'
   }
 }

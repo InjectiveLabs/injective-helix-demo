@@ -42,11 +42,13 @@ export const getRoutes = (network: Network, env: string) => {
     'sol-usdt',
     'kuji-usdt',
     'talis-usdt',
-    'app-inj'
+    'app-inj',
+    'ginger-inj'
   ]
 
   const perpetuals = [
     'btc-usdt-perp',
+    'zro-usdt-perp',
     'inj-usdt-perp',
     'xrp-usdt-perp',
     'eth-usdt-perp',
@@ -60,7 +62,8 @@ export const getRoutes = (network: Network, env: string) => {
     'btc-usdtkv-perp',
     'eth-usdtkv-perp',
     'pyth-usdt-perp',
-    'tia-usdt-perp'
+    'tia-usdt-perp',
+    'jup-usdt-perp'
   ]
 
   const gridTradingSpot = [

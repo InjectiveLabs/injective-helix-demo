@@ -20,8 +20,10 @@ import {
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
+  slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory
+  slugsToIncludeInEthereumCategory,
+  slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
@@ -150,11 +152,19 @@ export const marketIsPartOfCategory = (
     )
   }
 
+  if (activeCategory === MarketCategoryType.Solana) {
+    return slugsToIncludeInSolanaCategory.includes(market.slug)
+  }
+
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
       !isIbcBaseDenomMarket &&
       slugsToIncludeInEthereumCategory.includes(market.slug)
     )
+  }
+
+  if (activeCategory === MarketCategoryType.Injective) {
+    return slugsToIncludeInInjectiveCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Experimental) {
@@ -258,7 +268,9 @@ export const marketIsInactive = (market: DerivativeMarket) => {
     'ETH/USDT 19SEP22',
     'BONK/USDT PERP',
     '1000PEPE/USDT PERP',
-    'TIA/USDT-30NOV2023'
+    'TIA/USDT-30NOV2023',
+    'ETH/USDTkv PERP',
+    'BTC/USDTkv PERP'
   ]
 
   return !HIDDEN_MARKET_TICKERS.includes(market.ticker)

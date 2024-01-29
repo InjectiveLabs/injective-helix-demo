@@ -58,6 +58,7 @@ const actionsThatSetAppStateToBusy = [
   'account/deposit',
   'account/transfer',
   'account/withdraw',
+  'account/withdrawToMain',
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
