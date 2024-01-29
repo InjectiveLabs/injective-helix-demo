@@ -6,7 +6,7 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { GrpcCampaign } from '@injectivelabs/sdk-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
@@ -16,7 +16,7 @@ import { spotGridMarkets } from '@/app/data/grid-strategy'
 
 const props = defineProps({
   campaign: {
-    type: Object as PropType<GrpcCampaign>,
+    type: Object as PropType<Campaign>,
     required: true
   }
 })

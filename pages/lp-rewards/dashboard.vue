@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GrpcCampaign } from '@injectivelabs/sdk-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
 
 const router = useRouter()
@@ -17,10 +17,10 @@ const campaignsByRound = computed(() => {
       campaigns[round].push(campaign)
       return campaigns
     },
-    {} as Record<number, GrpcCampaign[]>
+    {} as Record<number, Campaign[]>
   )
 
-  return Object.entries(campaignsMap)
+  return [...Object.entries(campaignsMap)].reverse()
 })
 
 const activeRound = computed(() =>
@@ -45,7 +45,7 @@ watch(
     <h3 class="text-lg font-semibold my-6">
       {{
         $t('campaign.myRewardsCount', {
-          rewards: campaignStore.ownerRewards.length
+          rewards: campaignStore.campaignsWithUserRewards.length
         })
       }}
     </h3>

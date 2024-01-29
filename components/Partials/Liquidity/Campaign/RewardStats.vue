@@ -1,10 +1,5 @@
 <script lang="ts" setup>
-import {
-  Status,
-  StatusType,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import {
@@ -15,9 +10,6 @@ import {
 import { toBalanceInToken } from '@/app/utils/formatters'
 
 const campaignStore = useCampaignStore()
-const { success, error } = useNotifications()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
 
 const props = defineProps({
   totalScore: {
@@ -39,11 +31,6 @@ const props = defineProps({
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const hasUserClaimed = ref(false)
-
-const claimStatus = reactive(new Status(StatusType.Idle))
-
-const isClaimable = computed(() => Date.now() > props.campaign.endDate)
 const ownerCampaignInfo = computed(() =>
   campaignStore.campaignUsers.find(
     (user) => user.accountAddress === walletStore.injectiveAddress
@@ -122,36 +109,6 @@ const rewardsFormatted = computed(() =>
     symbol: reward.symbol
   }))
 )
-
-function onClaimRewards() {
-  const scAddress = props.campaign.contract
-
-  claimStatus.setLoading()
-
-  campaignStore
-    .claimReward(scAddress)
-    .then(() => {
-      success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
-      })
-
-      hasUserClaimed.value = true
-    })
-    .catch((er) => {
-      if ((er.originalMessage as string).includes('has already claimed')) {
-        error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
-        })
-      } else {
-        $onError(er)
-      }
-    })
-    .finally(() => {
-      claimStatus.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -191,22 +148,11 @@ function onClaimRewards() {
           </div>
 
           <div>
-            <AppButton
-              class="border border-blue-500 mb-1"
+            <PartialsLiquidityCommonClaimButton
               v-bind="{
-                isXs: true,
-                status: claimStatus,
-                isDisabled: !isClaimable || hasUserClaimed
+                campaign: props.campaign
               }"
-              @click="onClaimRewards"
-            >
-              <div
-                class="font-semibold"
-                :class="{ 'text-blue-500': !hasUserClaimed }"
-              >
-                {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
-              </div>
-            </AppButton>
+            />
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { GrpcCampaign } from '@injectivelabs/sdk-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   campaigns: {
-    type: Array as PropType<GrpcCampaign[]>,
+    type: Array as PropType<Campaign[]>,
     required: true
   },
 

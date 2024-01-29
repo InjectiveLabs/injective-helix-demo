@@ -9,7 +9,7 @@ import { generateUniqueHash } from '@/app/utils/formatters'
 
 export const claimReward = async (
   contractAddress: string,
-  campaignId?: number
+  campaignId?: string
 ) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -27,7 +27,7 @@ export const claimReward = async (
     exec: {
       action: 'claim_reward',
       msg: {
-        campaign_id: campaignId
+        campaign_id: campaignId ? Number(campaignId) : undefined
       }
     }
   })

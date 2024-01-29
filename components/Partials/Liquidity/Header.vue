@@ -2,7 +2,7 @@
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { GrpcCampaign } from '@injectivelabs/sdk-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -13,7 +13,7 @@ const props = defineProps({
   },
 
   roundCampaigns: {
-    type: Array as PropType<GrpcCampaign[]>,
+    type: Array as PropType<Campaign[]>,
     required: true
   },
 

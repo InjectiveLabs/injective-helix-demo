@@ -7,8 +7,7 @@ import {
   GuildMember,
   CampaignUser,
   GuildCampaignSummary,
-  toUtf8,
-  GrpcCampaign
+  toUtf8
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
 import {
@@ -30,7 +29,7 @@ type CampaignStoreState = {
   guild?: Guild
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
-  round: GrpcCampaign[]
+  round: Campaign[]
   accountRewards: any // TODO-IVAN
   campaign?: Campaign
   campaigns: Campaign[]
@@ -251,8 +250,6 @@ export const useCampaignStore = defineStore('campaign', {
       })
 
       campaignStore.$patch({ round: campaigns })
-
-      return campaigns
     },
 
     reset() {

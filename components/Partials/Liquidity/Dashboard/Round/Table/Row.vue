@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { GrpcCampaign } from '@injectivelabs/sdk-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   campaign: {
-    type: Object as PropType<GrpcCampaign>,
+    type: Object as PropType<Campaign>,
     required: true
   }
 })
@@ -71,8 +71,6 @@ const totalAmountInUsd = computed(() =>
   )
 )
 
-const isClaimable = computed(() => Date.now() > Number(props.campaign.endDate))
-
 const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
   totalAmountInUsd,
   {
@@ -131,10 +129,7 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
       <div class="space-y-2">
         <PartialsLiquidityCommonClaimButton
           v-bind="{
-            scAddress: props.campaign.contract,
-            isClaimed: props.campaign.userClaimed,
-            campaignId: props.campaign.campaignId,
-            isClaimable
+            campaign: props.campaign
           }"
         />
       </div>

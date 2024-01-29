@@ -17,10 +17,17 @@ const totalRewards = computed(() =>
   campaignStore.campaignsWithUserRewards.reduce(
     (rewards, campaign) => {
       campaign.rewards.forEach((reward) => {
+        const userRewardPercentage =
+          Number(campaign.userScore) / Number(campaign.totalScore)
+
+        const userRewardAmount = new BigNumberInWei(reward.amount).times(
+          userRewardPercentage
+        )
+
         if (rewards[reward.denom]) {
-          rewards[reward.denom] = rewards[reward.denom].plus(reward.amount)
+          rewards[reward.denom] = rewards[reward.denom].plus(userRewardAmount)
         } else {
-          rewards[reward.denom] = new BigNumberInWei(reward.amount)
+          rewards[reward.denom] = userRewardAmount
         }
       })
 
@@ -48,10 +55,17 @@ const rewardsThisRound = computed(() =>
     .reduce(
       (rewards, campaign) => {
         campaign.rewards.forEach((reward) => {
+          const userRewardPercentage =
+            Number(campaign.userScore) / Number(campaign.totalScore)
+
+          const userRewardAmount = new BigNumberInWei(reward.amount).times(
+            userRewardPercentage
+          )
+
           if (rewards[reward.denom]) {
-            rewards[reward.denom] = rewards[reward.denom].plus(reward.amount)
+            rewards[reward.denom] = rewards[reward.denom].plus(userRewardAmount)
           } else {
-            rewards[reward.denom] = new BigNumberInWei(reward.amount)
+            rewards[reward.denom] = userRewardAmount
           }
         })
 
@@ -76,7 +90,7 @@ const rewardsThisRoundInUsd = computed(() =>
 const rewardsToClaim = computed(
   () =>
     campaignStore.campaignsWithUserRewards.filter(
-      ({ userClaimed }) => !userClaimed
+      ({ userClaimed, isClaimable }) => !userClaimed && isClaimable
     ).length
 )
 
@@ -90,7 +104,7 @@ const volumeThisRound = computed(() =>
       return sum
     }
 
-    const userVolumeInUsd = new BigNumberInWei(campaign.userScore)
+    const userVolumeInUsd = new BigNumberInWei(campaign.userScore || 0)
       .toBase(market?.quoteToken.decimals)
       .times(tokenStore.tokenUsdPrice(market.quoteToken))
 
