@@ -102,4 +102,4 @@ export const MAINNET_UPGRADE_BLOCK_HEIGHT = 57076000
 export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 
 export const ADMIN_UI_SMART_CONTRACT =
-  'inj1ck592qzmejf50a9yxgdtz6eyqckyhh8hmfafcw'
+  'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
