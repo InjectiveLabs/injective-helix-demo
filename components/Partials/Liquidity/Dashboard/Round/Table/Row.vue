@@ -2,8 +2,9 @@
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { LiquidityRewardsPage } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
   campaign: {
@@ -27,9 +28,12 @@ const token = computed(() =>
 
 const marketVolumeInUsd = computed(() =>
   market.value
-    ? new BigNumberInWei(props.campaign.userScore || 0)
-        .toBase(market.value.quoteToken.decimals)
-        .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+    ? new BigNumberInBase(
+        toBalanceInToken({
+          value: props.campaign.userScore || 0,
+          decimalPlaces: market.value.quoteToken.decimals
+        })
+      ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
     : ZERO_IN_BASE
 )
 
@@ -84,6 +88,8 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
+
+const isRound9 = computed(() => props.campaign.roundId === 9)
 </script>
 
 <template>
@@ -129,9 +135,13 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
       <div class="space-y-2">
         <PartialsLiquidityCommonClaimButton
           v-bind="{
-            campaign: props.campaign
+            campaign
           }"
         />
+        <p v-if="isRound9" class="text-gray-500 text-xs">
+          <!-- Last Hardcoded Disable -->
+          Available To Claim in less than 24hrs
+        </p>
       </div>
     </td>
   </tr>

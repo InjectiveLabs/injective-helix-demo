@@ -14,7 +14,9 @@ const campaignsByRound = computed(() => {
       if (!campaigns[round]) {
         campaigns[round] = []
       }
+
       campaigns[round].push(campaign)
+
       return campaigns
     },
     {} as Record<number, Campaign[]>

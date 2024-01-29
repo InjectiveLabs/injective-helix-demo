@@ -2,17 +2,17 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
+  activeRound: {
+    type: Number,
+    required: true
+  },
+
   campaigns: {
     type: Array as PropType<Campaign[]>,
     required: true
   },
 
   round: {
-    type: Number,
-    required: true
-  },
-
-  activeRound: {
     type: Number,
     required: true
   }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
@@ -25,9 +26,10 @@ const rewardsWithToken = computed(() => {
     const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
     return {
-      value: new BigNumberInWei(reward.amount)
-        .toBase(token?.decimals || 18)
-        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+      value: toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token?.decimals || 18
+      }),
       token: tokenStore.tokens.find(({ denom }) => denom === reward.denom)
     }
   })
@@ -44,9 +46,14 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
         return total
       }
 
-      const rewardInUsd = new BigNumberInWei(reward.amount)
-        .toBase(token.decimals)
-        .times(tokenStore.tokenUsdPrice(token))
+      const rewardInBase = toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token.decimals
+      })
+
+      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+        tokenStore.tokenUsdPrice(token)
+      )
 
       return total.plus(rewardInUsd)
     }, ZERO_IN_BASE)
@@ -56,9 +63,12 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
-    new BigNumberInWei(props.campaign.totalScore)
-      .toBase(props.market.quoteToken.decimals)
-      .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    new BigNumberInBase(
+      toBalanceInToken({
+        value: props.campaign.totalScore,
+        decimalPlaces: props.market.quoteToken.decimals
+      })
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -108,21 +118,16 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
           {{ totalRewardsInUsdToString }} USD
         </h3>
         <div class="flex items-center space-x-2">
-          <div
-            v-for="(reward, i) in rewardsWithToken"
-            :key="`${reward.token}-${reward.value}`"
-            class="flex items-center space-x-2"
-          >
-            <p v-if="i > 0">+</p>
-            <CommonTokenIcon
+          <template v-for="(reward, index) in rewardsWithToken" :key="index">
+            <PartialsLiquidityCommonTokenAmount
               v-if="reward.token"
-              is-sm
-              v-bind="{ token: reward.token }"
+              v-bind="{
+                amount: reward.value,
+                symbol: reward.token.symbol,
+                index
+              }"
             />
-            <p class="text-xs">
-              {{ reward.value }} {{ reward?.token?.symbol }}
-            </p>
-          </div>
+          </template>
         </div>
       </div>
 
