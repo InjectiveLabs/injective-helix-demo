@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
-  round: {
-    type: Number,
-    required: true
-  },
-
-  roundCampaigns: {
-    type: Array as PropType<Campaign[]>,
-    required: true
-  },
-
   endDate: {
     type: Number,
     required: true
@@ -25,6 +16,16 @@ const props = defineProps({
   lastUpdated: {
     type: Number,
     required: true
+  },
+
+  round: {
+    type: Number,
+    required: true
+  },
+
+  roundCampaigns: {
+    type: Array as PropType<Campaign[]>,
+    required: true
   }
 })
 
@@ -32,23 +33,28 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const totalRewardsThisRound = computed(() => {
-  return props.roundCampaigns.reduce((sum, campaign) => {
+const totalRewardsThisRound = computed(() =>
+  props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
       const token = tokenStore.tokens.find(
         ({ denom }) => denom === reward.denom
       )!
 
-      const rewardInUsd = new BigNumberInWei(reward.amount)
-        .toBase(token.decimals)
-        .times(tokenStore.tokenUsdPrice(token))
+      const rewardInBase = toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token.decimals
+      })
+
+      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+        tokenStore.tokenUsdPrice(token)
+      )
 
       return sum.plus(rewardInUsd)
     }, ZERO_IN_BASE)
 
     return sum.plus(rewardsPerCampaign)
   }, ZERO_IN_BASE)
-})
+)
 
 const totalVolume = computed(() =>
   props.roundCampaigns

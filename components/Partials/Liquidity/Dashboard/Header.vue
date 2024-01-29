@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { LiquidityRewardsPage } from '@/types'
-
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -35,18 +35,6 @@ const totalRewards = computed(() =>
     },
     {} as Record<string, BigNumberInWei>
   )
-)
-
-const totalRewardsInUsd = computed(() =>
-  Object.entries(totalRewards.value).reduce((sum, [denom, amount]) => {
-    const token = tokenStore.tokens.find((token) => token.denom === denom)
-
-    const amountInUsd = amount
-      .toBase(token?.decimals || 18)
-      .times(tokenStore.tokenUsdPrice(token))
-
-    return sum.plus(amountInUsd)
-  }, ZERO_IN_BASE)
 )
 
 const rewardsThisRound = computed(() =>
@@ -94,26 +82,20 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const volumeThisRound = computed(() =>
-  campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
-    const market = spotStore.markets.find(
-      (market) => market.marketId === campaign.marketId
-    )
-
-    if (!market) {
-      return sum
-    }
-
-    const userVolumeInUsd = new BigNumberInWei(campaign.userScore || 0)
-      .toBase(market?.quoteToken.decimals)
-      .times(tokenStore.tokenUsdPrice(market.quoteToken))
-
-    return sum.plus(userVolumeInUsd)
-  }, ZERO_IN_BASE)
-)
-
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() => totalRewardsInUsd.value.minus(rewardsThisRoundInUsd.value)),
+  computed(() =>
+    Object.entries(totalRewards.value)
+      .reduce((sum, [denom, amount]) => {
+        const token = tokenStore.tokens.find((token) => token.denom === denom)
+
+        const amountInUsd = amount
+          .toBase(token?.decimals || 18)
+          .times(tokenStore.tokenUsdPrice(token))
+
+        return sum.plus(amountInUsd)
+      }, ZERO_IN_BASE)
+      .minus(rewardsThisRoundInUsd.value)
+  ),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
@@ -123,7 +105,28 @@ const { valueToString: rewardsThisRoundInUsdToString } = useBigNumberFormatter(
 )
 
 const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
-  volumeThisRound,
+  computed(() =>
+    campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
+      const market = spotStore.markets.find(
+        (market) => market.marketId === campaign.marketId
+      )
+
+      if (!market) {
+        return sum
+      }
+
+      const userVolume = toBalanceInToken({
+        value: campaign.userScore || 0,
+        decimalPlaces: market.quoteToken.decimals
+      })
+
+      const userVolumeInUsd = new BigNumberInBase(userVolume).times(
+        tokenStore.tokenUsdPrice(market.quoteToken)
+      )
+
+      return sum.plus(userVolumeInUsd)
+    }, ZERO_IN_BASE)
+  ),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 </script>

@@ -8,6 +8,7 @@ const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
 
 const round = useQueryRef('round', '')
+
 const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {

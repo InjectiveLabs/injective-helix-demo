@@ -11,8 +11,9 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
-import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   campaign: {
@@ -44,7 +45,10 @@ const rewardsWithToken = computed(() =>
     const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
     return {
-      value: new BigNumberInWei(reward.amount).toBase(token?.decimals),
+      value: toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token?.decimals || 18
+      }),
       token
     }
   })
@@ -132,21 +136,16 @@ onMounted(() => {
           {{ totalRewardsInUsdToString }} USD
         </p>
         <div class="flex items-center space-x-2">
-          <div
-            v-for="(reward, i) in rewardsWithToken"
-            :key="`${reward.token}-${reward.value}`"
-            class="flex items-center space-x-2"
-          >
-            <p v-if="i > 0">+</p>
-            <CommonTokenIcon
+          <template v-for="(reward, index) in rewardsWithToken" :key="index">
+            <PartialsLiquidityCommonTokenAmount
               v-if="reward.token"
-              is-sm
-              v-bind="{ token: reward.token }"
+              v-bind="{
+                amount: reward.value,
+                symbol: reward.token.symbol,
+                index
+              }"
             />
-            <p class="text-xs text-gray-400">
-              {{ reward.value.toFormat(2) }} {{ reward?.token?.symbol }}
-            </p>
-          </div>
+          </template>
         </div>
       </div>
     </td>

@@ -35,7 +35,7 @@ import {
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { tendermintApi } from '~/app/Services'
+import { tendermintApi } from '@/app/Services'
 
 export interface UserBasedState {
   favoriteMarkets: string[]

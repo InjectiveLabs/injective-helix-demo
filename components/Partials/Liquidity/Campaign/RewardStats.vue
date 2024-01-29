@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import {
@@ -84,7 +84,10 @@ const rewards = computed(() => {
     const amount = new BigNumberInBase(
       estRewardsInPercentage.value
     ).multipliedBy(
-      new BigNumberInWei(reward.amount).toBase(token?.decimals) || 0
+      toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token?.decimals || 18
+      })
     )
 
     const amountInUsd = token
