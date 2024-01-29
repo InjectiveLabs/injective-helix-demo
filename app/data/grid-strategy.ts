@@ -102,5 +102,15 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   // }
 ]
 
-export const spotGridMarkets: SpotGridMarket[] =
-  IS_TESTNET || IS_DEVNET ? testnetSpotGridMarkets : mainnetSpotGridMarkets
+const devnetSpotGridMarkets: SpotGridMarket[] = [
+  {
+    slug: 'inj-usdt',
+    contractAddress: 'inj14hj2tavq8fpesdwxxcu44rty3hh90vhujaxlnz'
+  }
+]
+
+export const spotGridMarkets: SpotGridMarket[] = IS_TESTNET
+  ? testnetSpotGridMarkets
+  : IS_DEVNET
+  ? devnetSpotGridMarkets
+  : mainnetSpotGridMarkets

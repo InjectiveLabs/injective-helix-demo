@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -8,18 +7,19 @@ const campaignStore = useCampaignStore()
 
 const { $onError } = useNuxtApp()
 
+const round = useQueryRef('round', '')
 const status = reactive(new Status(StatusType.Idle))
 
-onMounted(() => {
+onWalletConnected(() => {
   status.setLoading()
 
-  const campaignIds = LP_CAMPAIGNS.map(({ campaignId }) => campaignId)
+  const roundId = round.value ? Number(round.value) : undefined
 
   Promise.all([
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
     tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
-    campaignStore.fetchCampaignsWithSc({ campaignIds })
+    campaignStore.fetchRound(roundId)
   ])
     .catch($onError)
     .finally(() => {
