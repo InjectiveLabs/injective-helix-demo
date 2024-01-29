@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
+import { Campaign } from '@injectivelabs/sdk-ts'
+import { LiquidityRewardsPage } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   round: {
@@ -12,8 +12,18 @@ const props = defineProps({
     required: true
   },
 
-  campaignsWithScAndData: {
-    type: Object as PropType<CampaignWithScAndData[]>,
+  roundCampaigns: {
+    type: Array as PropType<Campaign[]>,
+    required: true
+  },
+
+  endDate: {
+    type: Number,
+    required: true
+  },
+
+  lastUpdated: {
+    type: Number,
     required: true
   }
 })
@@ -22,18 +32,16 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const round = computed(() =>
-  CAMPAIGN_LP_ROUNDS.find(({ round }) => round === props.round)
-)
-
 const totalRewardsThisRound = computed(() => {
-  return props.campaignsWithScAndData.reduce((sum, campaign) => {
+  return props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-      const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)!
+      const token = tokenStore.tokens.find(
+        ({ denom }) => denom === reward.denom
+      )!
 
-      const rewardInUsd = new BigNumberInBase(reward.amount).times(
-        tokenStore.tokenUsdPrice(token)
-      )
+      const rewardInUsd = new BigNumberInWei(reward.amount)
+        .toBase(token.decimals)
+        .times(tokenStore.tokenUsdPrice(token))
 
       return sum.plus(rewardInUsd)
     }, ZERO_IN_BASE)
@@ -43,14 +51,14 @@ const totalRewardsThisRound = computed(() => {
 })
 
 const totalVolume = computed(() =>
-  props.campaignsWithScAndData
+  props.roundCampaigns
     .reduce((totalScore, campaign) => {
       const market = spotStore.markets.find(
-        ({ slug }) => slug === campaign.marketSlug
+        ({ marketId }) => marketId === campaign.marketId
       )!
 
       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
-        .toBase(market.quoteToken.decimals)
+        .toBase(market.quoteToken?.decimals || 18)
         .times(tokenStore.tokenUsdPrice(market.quoteToken))
       return totalScore.plus(campaignVolumeInUsd)
     }, ZERO_IN_BASE)
@@ -58,10 +66,7 @@ const totalVolume = computed(() =>
 )
 
 const endDate = computed(() => {
-  const utcDate = utcToZonedTime(
-    Number(round.value?.endDate || 0) * 1000,
-    'UTC'
-  )
+  const utcDate = utcToZonedTime(Number(props.endDate || 0), 'UTC')
 
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })

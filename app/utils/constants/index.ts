@@ -100,3 +100,6 @@ export const DEFAULT_LP_ROUND = '1'
 export const USDT_TOKEN_DECIMALS = 6
 export const MAINNET_UPGRADE_BLOCK_HEIGHT = 57076000
 export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
+
+export const ADMIN_UI_SMART_CONTRACT =
+  'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'

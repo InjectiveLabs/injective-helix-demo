@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  CampaignWithScAndData,
-  LiquidityRewardsPage,
-  UiMarketWithToken
-} from '@/types'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -25,37 +20,33 @@ const props = defineProps({
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const campaignWithScAndData = computed(() => {
-  const campaignWithSc = LP_CAMPAIGNS.find(
-    (c) => c.campaignId === props.campaign.campaignId
-  )!
-
-  return { ...campaignWithSc, ...props.campaign } as CampaignWithScAndData
-})
-
 const rewardsWithToken = computed(() => {
-  return campaignWithScAndData.value.rewards.map((reward) => ({
-    value: new BigNumberInBase(reward.amount).toFormat(
-      UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    ),
-    token: tokenStore.tokens.find(({ symbol }) => symbol === reward.symbol)
-  }))
+  return props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+
+    return {
+      value: new BigNumberInWei(reward.amount)
+        .toBase(token?.decimals || 18)
+        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS),
+      token: tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    }
+  })
 })
 
 const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
   computed(() => {
-    return campaignWithScAndData.value.rewards.reduce((total, reward) => {
+    return props.campaign.rewards.reduce((total, reward) => {
       const token = tokenStore.tokens.find(
-        ({ symbol }) => symbol === reward.symbol
+        ({ denom }) => denom === reward.denom
       )
 
       if (!token) {
         return total
       }
 
-      const rewardInUsd = new BigNumberInBase(reward.amount).times(
-        tokenStore.tokenUsdPrice(token)
-      )
+      const rewardInUsd = new BigNumberInWei(reward.amount)
+        .toBase(token.decimals)
+        .times(tokenStore.tokenUsdPrice(token))
 
       return total.plus(rewardInUsd)
     }, ZERO_IN_BASE)
