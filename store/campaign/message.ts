@@ -21,14 +21,14 @@ export const claimReward = async (
     return
   }
 
+  const msg = campaignId ? { campaign_id: Number(campaignId) } : {}
+
   const message = MsgExecuteContractCompat.fromJSON({
     sender: walletStore.injectiveAddress,
     contractAddress,
     exec: {
       action: 'claim_reward',
-      msg: {
-        campaign_id: campaignId ? Number(campaignId) : undefined
-      }
+      msg
     }
   })
 
