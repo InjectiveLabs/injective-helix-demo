@@ -30,7 +30,6 @@ type CampaignStoreState = {
   guildsByTVL: Guild[]
   guildsByVolume: Guild[]
   round: Campaign[]
-  accountRewards: any // TODO-IVAN
   campaign?: Campaign
   campaigns: Campaign[]
   campaignsWithSc: CampaignWithScAndData[]
@@ -56,7 +55,6 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildsByVolume: [],
   totalGuildMember: 0,
   round: [],
-  accountRewards: undefined,
   campaign: undefined,
   campaigns: [],
   campaignsInfo: [],

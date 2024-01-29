@@ -5,15 +5,19 @@ const appStore = useAppStore()
 const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
 
-const roundDetails = computed(() =>
-  campaignStore.latestRoundCampaigns[0]
-    ? {
-        roundId: campaignStore.latestRoundCampaigns[0].roundId,
-        endDate: Number(campaignStore.latestRoundCampaigns[0].endDate),
-        lastUpdated: Number(campaignStore.latestRoundCampaigns[0].lastUpdated)
-      }
-    : undefined
-)
+const roundDetails = computed(() => {
+  if (campaignStore.latestRoundCampaigns.length === 0) {
+    return undefined
+  }
+
+  const [latestRound] = campaignStore.latestRoundCampaigns
+
+  return {
+    roundId: latestRound.roundId,
+    endDate: Number(latestRound.endDate),
+    lastUpdated: Number(latestRound.lastUpdated)
+  }
+})
 
 onMounted(() => {
   if (!appStore.userState.modalsViewed.includes(Modal.LpRewards)) {
