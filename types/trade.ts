@@ -9,7 +9,7 @@ import {
   UiSpotTrade
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ExitType } from '@injectivelabs/sdk-ts'
+import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { TradeField, InvestmentTypeGst, SpotGridTradingField } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -105,6 +105,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.ExitType]: ExitType
   [SpotGridTradingField.StopLoss]: string
   [SpotGridTradingField.TakeProfit]: string
+  [SpotGridTradingField.StrategyType]: StrategyType
 }
 
 export type SpotGridMarket = {

@@ -26,7 +26,8 @@ export const createStrategy = async ({
   [SpotGridTradingField.InvestmentAmount]: quoteAmount,
   [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
   [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
-  [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled
+  [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
+  [SpotGridTradingField.StrategyType]: strategyType
 }: Partial<SpotGridTradingForm>) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -137,7 +138,8 @@ export const createStrategy = async ({
         baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
         quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
       }),
-      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default
+      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default,
+      strategyType
     }),
 
     funds
