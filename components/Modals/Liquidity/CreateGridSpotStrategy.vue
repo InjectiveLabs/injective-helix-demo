@@ -52,6 +52,10 @@ const settleInToken = computed(() => {
   }
 })
 
+const isGeometric = computed(
+  () => formValues.value[SpotGridTradingField.StrategyType] === 'geometric'
+)
+
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   computed(() => {
     if (
@@ -224,6 +228,15 @@ function onCreateStrategy() {
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
           <p class="font-semibold">{{ profitPerGridToString }} %</p>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
+
+          <p class="font-semibold">
+            <span v-if="isGeometric">{{ $t('sgt.geometric') }}</span>
+            <span v-else>{{ $t('sgt.arithmetic') }}</span>
+          </p>
         </div>
 
         <div

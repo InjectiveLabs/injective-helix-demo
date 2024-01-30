@@ -205,7 +205,10 @@ export const removeStrategy = async (contractAddress?: string) => {
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
-export const removeStrategyForSubaccount = async (contractAddress?: string) => {
+export const removeStrategyForSubaccount = async (
+  contractAddress?: string,
+  subaccountId?: string
+) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -214,6 +217,7 @@ export const removeStrategyForSubaccount = async (contractAddress?: string) => {
   if (!walletStore.isUserWalletConnected) {
     return
   }
+
   if (!contractAddress) {
     return
   }
@@ -229,7 +233,7 @@ export const removeStrategyForSubaccount = async (contractAddress?: string) => {
     contractAddress,
     sender: walletStore.injectiveAddress,
     execArgs: ExecArgRemoveGridStrategy.fromJSON({
-      subaccountId: accountStore.subaccountId
+      subaccountId: subaccountId || accountStore.subaccountId
     })
   })
 
