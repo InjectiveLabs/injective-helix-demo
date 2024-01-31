@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { ExitType, TradingStrategy } from '@injectivelabs/sdk-ts'
+import { ExitType, StrategyType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
   addressAndMarketSlugToSubaccountId,
   durationFormatter
@@ -88,6 +88,10 @@ const durationFormatted = computed(() =>
       ? now.value
       : props.activeStrategy.updatedAt
   )
+)
+
+const isGeometric = computed(
+  () => props.activeStrategy.strategyType === StrategyType.Geometric
 )
 
 const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
@@ -389,8 +393,12 @@ useIntervalFn(() => {
         <span>{{ $t('sgt.gridMode') }}</span>
         <AppTooltip :content="$t('sgt.gridModeTooltip')" />
       </span>
-      <span>
-        {{ $t(`sgt.${activeStrategy.strategyType}`) }}
+
+      <span v-if="isGeometric">
+        {{ $t('sgt.geometric') }}
+      </span>
+      <span v-else>
+        {{ $t('sgt.arithmetic') }}
       </span>
     </div>
 
