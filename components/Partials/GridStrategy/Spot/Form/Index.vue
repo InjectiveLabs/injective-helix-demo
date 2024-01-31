@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
+
 import {
   GridStrategyType,
   InvestmentTypeGst,
@@ -21,7 +22,9 @@ const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true,
-  initialValues: { investmentType: InvestmentTypeGst.BaseAndQuote }
+  initialValues: {
+    investmentType: InvestmentTypeGst.BaseAndQuote
+  }
 })
 
 const gridStrategies = [GridStrategyType.Auto, GridStrategyType.Manual]

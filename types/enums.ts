@@ -386,6 +386,7 @@ export enum SpotGridTradingField {
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   TakeProfit = 'takeProfit',
+  StrategyType = 'strategyType',
   InvestmentType = 'investmentType',
   InvestmentAmount = 'investmentAmount',
   SellBaseOnStopLoss = 'sellBaseOnStopLoss',

@@ -12,6 +12,8 @@ defineProps({
 </script>
 
 <template>
+  <PartialsGridStrategySpotFormStrategyType />
+
   <PartialsGridStrategySpotFormLowerUpperPrice v-bind="{ market }" />
 
   <div>

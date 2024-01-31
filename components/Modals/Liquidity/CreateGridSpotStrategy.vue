@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ExitType } from '@injectivelabs/sdk-ts'
+import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -51,6 +51,12 @@ const settleInToken = computed(() => {
     return quoteToken.value
   }
 })
+
+const isGeometric = computed(
+  () =>
+    formValues.value[SpotGridTradingField.StrategyType] ===
+    StrategyType.Geometric
+)
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(
   computed(() => {
@@ -201,11 +207,6 @@ function onCreateStrategy() {
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
-          <p class="font-semibold">{{ $t('sgt.arithmetic') }}</p>
-        </div>
-
-        <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.LowerPrice] }} -
@@ -224,6 +225,15 @@ function onCreateStrategy() {
         <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
           <p class="font-semibold">{{ profitPerGridToString }} %</p>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
+
+          <p class="font-semibold">
+            <span v-if="isGeometric">{{ $t('sgt.geometric') }}</span>
+            <span v-else>{{ $t('sgt.arithmetic') }}</span>
+          </p>
         </div>
 
         <div

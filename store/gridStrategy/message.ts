@@ -26,7 +26,8 @@ export const createStrategy = async ({
   [SpotGridTradingField.InvestmentAmount]: quoteAmount,
   [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
   [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
-  [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled
+  [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
+  [SpotGridTradingField.StrategyType]: strategyType
 }: Partial<SpotGridTradingForm>) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -137,7 +138,8 @@ export const createStrategy = async ({
         baseDecimals: gridStrategyStore.spotMarket.baseToken.decimals,
         quoteDecimals: gridStrategyStore.spotMarket.quoteToken.decimals
       }),
-      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default
+      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default,
+      strategyType
     }),
 
     funds
@@ -203,7 +205,10 @@ export const removeStrategy = async (contractAddress?: string) => {
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
-export const removeStrategyForSubaccount = async (contractAddress?: string) => {
+export const removeStrategyForSubaccount = async (
+  contractAddress?: string,
+  subaccountId?: string
+) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -212,6 +217,7 @@ export const removeStrategyForSubaccount = async (contractAddress?: string) => {
   if (!walletStore.isUserWalletConnected) {
     return
   }
+
   if (!contractAddress) {
     return
   }
@@ -227,7 +233,7 @@ export const removeStrategyForSubaccount = async (contractAddress?: string) => {
     contractAddress,
     sender: walletStore.injectiveAddress,
     execArgs: ExecArgRemoveGridStrategy.fromJSON({
-      subaccountId: accountStore.subaccountId
+      subaccountId: subaccountId || accountStore.subaccountId
     })
   })
 
