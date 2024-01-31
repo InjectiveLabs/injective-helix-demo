@@ -84,7 +84,7 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   // }
   {
     slug: 'inj-usdt',
-    contractAddress: 'inj17f8k8j2a457z0pfxw4ec43hz3qz5vug8p9kmq3'
+    contractAddress: 'inj1fs4mr4qsqwwsh4tps860tcvx2kfunfkwv5p750'
   },
   {
     slug: 'atom-usdt',

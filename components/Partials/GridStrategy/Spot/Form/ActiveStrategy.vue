@@ -384,6 +384,16 @@ useIntervalFn(() => {
       </span>
     </div>
 
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
+        <span>{{ $t('sgt.gridMode') }}</span>
+        <AppTooltip :content="$t('sgt.gridModeTooltip')" />
+      </span>
+      <span>
+        {{ $t(`sgt.${activeStrategy.strategyType}`) }}
+      </span>
+    </div>
+
     <div class="border-t border-gray-800 my-4" />
 
     <div class="pb-4">

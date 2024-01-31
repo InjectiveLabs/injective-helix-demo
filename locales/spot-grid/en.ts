@@ -30,9 +30,10 @@ export default {
     stopLoss: 'Stop Loss',
     gridMode: 'Grid Mode',
     available: 'Available',
+    geometric: 'Geometric',
     setValues: 'Set Values',
-    investment: 'Investment',
     arithmetic: 'Arithmetic',
+    investment: 'Investment',
     create: 'Create Strategy',
     lowerBound: 'Lower Bound',
     upperBound: 'Upper Bound',
@@ -150,6 +151,8 @@ export default {
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
     investmentTooltip:
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
+    gridModeTooltip:
+      'In arithmetic mode, the price between two consecutive grids has a constant difference. In geometric mode, the price between two consecutive grids has a constant ratio.',
     bannerTitle: 'Get started with Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
     automatesBuyingAndSelling:
