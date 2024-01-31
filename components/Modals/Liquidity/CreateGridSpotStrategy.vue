@@ -205,11 +205,6 @@ function onCreateStrategy() {
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
-          <p class="font-semibold">{{ $t('sgt.arithmetic') }}</p>
-        </div>
-
-        <div class="flex justify-between items-center">
           <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.LowerPrice] }} -
