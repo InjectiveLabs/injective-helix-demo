@@ -162,6 +162,10 @@ const isUpperBoundLtLastPrice = computed(() =>
   )
 )
 
+const isTiaOrInj = computed(() =>
+  ['tia', 'inj'].includes(props.market.baseToken.symbol.toLowerCase())
+)
+
 async function onCheckBalanceFees() {
   emit('strategy:create')
 
@@ -252,9 +256,11 @@ function onInvestmentTypeSet() {
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
           : 'bg-blue-500 text-blue-100'
       ]"
+      :is-disabled="isTiaOrInj"
       @click="onCheckBalanceFees"
     >
-      <span>{{ $t('sgt.create') }}</span>
+      <span v-if="isTiaOrInj">{{ $t('underMaintenance') }}</span>
+      <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
     <ModalsLiquiditySgtBalancedFees

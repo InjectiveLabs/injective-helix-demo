@@ -67,6 +67,7 @@ export default {
     [TimeDuration.Minute]: 'Minute',
     [TimeDuration.Second]: 'Second'
   },
+  underMaintenance: 'Under Maintenance',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
