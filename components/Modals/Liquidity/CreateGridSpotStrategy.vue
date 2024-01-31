@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ExitType } from '@injectivelabs/sdk-ts'
+import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -53,7 +53,9 @@ const settleInToken = computed(() => {
 })
 
 const isGeometric = computed(
-  () => formValues.value[SpotGridTradingField.StrategyType] === 'geometric'
+  () =>
+    formValues.value[SpotGridTradingField.StrategyType] ===
+    StrategyType.Geometric
 )
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

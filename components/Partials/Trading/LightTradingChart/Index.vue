@@ -120,7 +120,7 @@ function init() {
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    return price > 1
+    return price > 10
       ? price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
       : price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
   }
