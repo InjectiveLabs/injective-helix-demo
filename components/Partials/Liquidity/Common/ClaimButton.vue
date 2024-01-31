@@ -51,9 +51,6 @@ function claimRewards() {
       status.setIdle()
     })
 }
-
-// Last Hardcoded Disable
-const isRound9 = computed(() => props.campaign.roundId === 9)
 </script>
 
 <template>
@@ -63,7 +60,7 @@ const isRound9 = computed(() => props.campaign.roundId === 9)
       'bg-blue-500 border-blue-500 border':
         !campaign.userClaimed && campaign.isClaimable
     }"
-    :is-disabled="campaign.userClaimed || !campaign.isClaimable || isRound9"
+    :is-disabled="campaign.userClaimed || !campaign.isClaimable"
     @click="claimRewards"
   >
     <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
