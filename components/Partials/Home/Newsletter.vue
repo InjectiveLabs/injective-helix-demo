@@ -39,11 +39,12 @@ const subscribe = handleSubmit((values) => {
     <h1 class="text-3xl font-semibold">{{ $t('newsletter.title') }}</h1>
 
     <div class="max-w-[340px] xs:max-w-[360px] mt-6 mx-auto">
-      <div class="bg-gray-750 rounded-lg flex items-center">
+      <div class="bg-gray-750 rounded-lg flex">
         <AppInput
           v-model="value"
           :placeholder="$t('newsletter.emailAddress')"
           transparent-bg
+          class="p-3"
         >
         </AppInput>
 
