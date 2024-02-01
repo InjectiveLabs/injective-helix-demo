@@ -69,6 +69,23 @@ const candlesticksData = computed<CandlestickData<Time>[]>(() => {
   }))
 })
 
+const filteredCandlesticksData = computed(() => {
+  if (props.market.slug === 'avax-usdt-perp') {
+    return candlesticksData.value.filter(
+      (candlestick) => (candlestick.time as number) > 1706682360
+    )
+  }
+
+  return candlesticksData.value
+})
+
+const visuallyOptimizedCandlesticks = computed(() =>
+  filteredCandlesticksData.value.map((candlestick, i, array) => ({
+    ...candlestick,
+    open: i === 0 ? candlestick.open : array[i - 1].close
+  }))
+)
+
 const volume = computed(() => {
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.marketId
@@ -160,7 +177,7 @@ useIntervalFn(() => {
       <PartialsTradingLightTradingChart
         ref="chart"
         v-bind="{
-          candlesticksData,
+          candlesticksData: visuallyOptimizedCandlesticks,
           volumeData: volume
         }"
       />
