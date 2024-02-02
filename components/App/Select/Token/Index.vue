@@ -133,7 +133,7 @@ const {
 const denomValue = computed({
   get: (): string => props.denom || '',
   set: (denom?: string) => {
-    if (denom) {
+    if (denom && denom !== props.denom) {
       emit('update:denom', denom)
     }
   }
