@@ -13,7 +13,7 @@
             <PartialsHomeAnnouncements />
             <PartialsHomeMarkets class="mt-8 sm:mt-16" />
             <PartialsHomeWhyTrade />
-            <PartialsHomeGettingStarted />
+            <!-- <PartialsHomeGettingStarted />  REMOVE FOR NOW-->
           </div>
         </div>
       </div>
