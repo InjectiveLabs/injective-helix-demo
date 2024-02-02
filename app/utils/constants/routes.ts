@@ -59,6 +59,7 @@ export const getRoutes = (network: Network, env: string) => {
     'atom-usdt-perp',
     'sei-usdt-perp',
     'axl-usdt-perp',
+    'wif-usdt-perp',
     'btc-usdtkv-perp',
     'eth-usdtkv-perp',
     'pyth-usdt-perp',
