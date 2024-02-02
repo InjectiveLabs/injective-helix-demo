@@ -45,19 +45,16 @@ function tradeClickedTrack() {
     </p>
     <div class="grid grid-cols-12 gap-4 text-base 3xl:text-xl">
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon name="lightning-fill" class="text-gray-900 w-6 h-6 mr-3" />
+        <img src="/svg/bar-chart.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.fast') }}
+          {{ $t('home.infiniteMarkets') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon
-          name="bounding-box-circles"
-          class="text-gray-900 w-6 h-6 mr-3"
-        />
+        <img src="/svg/umbrella-fill.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.interoperable') }}
+          {{ $t('home.mevResistant') }}
         </span>
       </div>
 
@@ -69,18 +66,29 @@ function tradeClickedTrack() {
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon name="shield-lock-fill" class="text-gray-900 w-6 h-6 mr-3" />
+        <img src="/svg/bank2.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.secure') }}
+          {{ $t('home.InstitutionalGateways') }}
         </span>
       </div>
     </div>
-    <AppButton
-      is-lg
-      class="bg-gray-750 text-white mt-8 font-semibold"
-      @click="onGetStartedClick"
-    >
-      {{ $t('home.startTradingNow') }}
-    </AppButton>
+    <div class="space-x-2 pt-8 flex">
+      <button
+        is-lg
+        class="bg-gray-750 text-white font-semibold rounded-md px-4 py-2 hover:bg-gray-600"
+        @click="onGetStartedClick"
+      >
+        {{ $t('home.getStartedHome') }}
+      </button>
+
+      <NuxtLink
+        is-lg
+        class="hover:bg-gray-750/10 border-gray-750 border text-black px-4 py-2 rounded-md font-semibold"
+        is-primary
+        to="/institutional"
+      >
+        {{ $t('home.helixInstitutional') }}
+      </NuxtLink>
+    </div>
   </div>
 </template>

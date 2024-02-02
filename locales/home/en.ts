@@ -2,13 +2,30 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   home: {
-    title: 'The Premier Decentralized Crypto Exchange',
+    title: 'Open Finance Reimagined',
     subtitle:
-      'Trade unlimited cross-chain crypto assets and perpetual markets with market leading rebates*',
+      'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
     tradeNow: 'Trade Now',
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
+    infiniteMarkets: 'Infinite Markets',
+    mevResistant: 'MEV Resistant',
+    getStartedHome: 'Get Started',
+    infrastructure: 'The Premier On-Chain Exchange Infrastructure',
+    unprecedentedAccessToGlobalMarkets:
+      'Unprecedented Access to Global Markets',
+    engage:
+      'Engage with performant decentralized exchange primitives, tokenized assets, and sophisticated Web3 markets with a plug-and-play suite of products powering the future of finance.',
+    unifiedLiquidity: 'Unified Liquidity',
+    unifiedLiquidityDescription:
+      'Helix uniquely aggregates unparalleled institutional grade liquidity, enabling anyone to leverage capital efficient financial markets on the world’s first fully decentralized orderbook network.',
+    tailoredSolutionsForEveryNeed: 'Tailored Solutions for Every Need',
+    utilizeBespoke:
+      'Utilize bespoke on-chain gateways to seamlessly interact with leading financial institutions, tokenized assets and sophisticated structured products.',
+    helixInstitutional: 'Helix Institutional',
+    accessTheFuture: 'Access The Future of Open Finance',
+    InstitutionalGateways: 'Institutional Gateways',
     newlyAdded: 'Newly added',
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
@@ -75,6 +92,6 @@ export default {
     apiDocumentation: 'API Documentation',
     community: 'Community',
     helixProvides:
-      '*Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
+      'Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }

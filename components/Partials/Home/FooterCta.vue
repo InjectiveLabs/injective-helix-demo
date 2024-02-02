@@ -41,10 +41,10 @@ function tradeClickedTrack() {
         <h1
           class="text-2xl md:text-4xl 4xl:text-5xl font-bold tracking-wide text-center"
         >
-          {{ $t('home.startTradingNote') }}
+          {{ $t('home.accessTheFuture') }}
         </h1>
 
-        <div class="text-center">
+        <div class="text-center space-x-2">
           <AppButton
             is-lg
             class="mt-2 md:mt-10 bg-blue-500 text-blue-900 hover:bg-blue-600 hover:bg-opacity-100"
@@ -52,6 +52,14 @@ function tradeClickedTrack() {
           >
             {{ $t('home.tradeNow') }}
           </AppButton>
+          <NuxtLink to="/institutional">
+            <AppButton
+              is-lg
+              class="mt-2 md:mt-10 text-white border border-white hover:bg-opacity-100"
+            >
+              {{ $t('home.helixInstitutional') }}
+            </AppButton>
+          </NuxtLink>
         </div>
       </div>
     </div>
