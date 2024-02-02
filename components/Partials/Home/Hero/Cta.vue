@@ -45,17 +45,14 @@ function tradeClickedTrack() {
     </p>
     <div class="grid grid-cols-12 gap-4 text-base 3xl:text-xl">
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon name="lightning-fill" class="text-gray-900 w-6 h-6 mr-3" />
+        <img src="/svg/bar-chart.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
           {{ $t('home.infiniteMarkets') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon
-          name="bounding-box-circles"
-          class="text-gray-900 w-6 h-6 mr-3"
-        />
+        <img src="/svg/umbrella-fill.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
           {{ $t('home.mevResistant') }}
         </span>
@@ -69,7 +66,7 @@ function tradeClickedTrack() {
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
-        <BaseIcon name="shield-lock-fill" class="text-gray-900 w-6 h-6 mr-3" />
+        <img src="/svg/bank2.svg" class="w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
           {{ $t('home.InstitutionalGateways') }}
         </span>
