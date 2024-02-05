@@ -30,7 +30,7 @@ onMounted(() => {
         <CommonCardAnnouncement
           v-for="(announcement, index) in announcements"
           :key="`news-card-${index}`"
-          class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden"
+          class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden rounded-lg"
           v-bind="{ url: announcement.url }"
         >
           <template #date>{{ announcement.createdAt }}</template>
@@ -39,7 +39,7 @@ onMounted(() => {
             <img
               :src="announcement.featureImage"
               :alt="announcement.title"
-              class="object-center object-cover h-full md:h-fit 3xl:h-full block rounded-lg"
+              class="object-center max-[390px]:object-contain object-cover min-[390px]:h-full md:h-fit 3xl:h-full block rounded-lg"
             />
           </template>
         </CommonCardAnnouncement>
