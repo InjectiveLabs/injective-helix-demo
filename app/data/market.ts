@@ -9,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'sol-usdt-perp',
   'wif-usdt-perp',
   'avax-usdt-perp',
   'sui-usdt-perp',
