@@ -50,6 +50,7 @@ export const getRoutes = (network: Network, env: string) => {
     'btc-usdt-perp',
     'zro-usdt-perp',
     'sol-usdt-perp',
+    'op-usdt-perp',
     'inj-usdt-perp',
     'xrp-usdt-perp',
     'eth-usdt-perp',
