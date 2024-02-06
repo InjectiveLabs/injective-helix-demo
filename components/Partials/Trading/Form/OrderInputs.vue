@@ -205,7 +205,7 @@ function onShowTensMultiplier(isShown: boolean) {
     >
       {{
         $t('trade.tensMultiplierRounded', {
-          minTickSize: 10 * market.quantityTensMultiplier
+          minTickSize: 10 ** market.quantityTensMultiplier
         })
       }}
     </p>
