@@ -88,6 +88,8 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
+
+const isRound10 = computed(() => props.campaign.roundId === 10)
 </script>
 
 <template>
@@ -135,7 +137,11 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
           v-bind="{
             campaign
           }"
+          :force-disabled="isRound10"
         />
+        <p v-if="isRound10" class="text-xs text-gray-500">
+          (Available To Claim Soon)
+        </p>
       </div>
     </td>
   </tr>
