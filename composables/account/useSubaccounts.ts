@@ -4,20 +4,22 @@ import {
   isSgtSubaccountId
 } from '@/app/utils/helpers'
 
-export function useSubaccounts() {
-  const route = useRoute()
+export function useSubaccounts(
+  options: {
+    showLowBalance?: boolean
+    includeSgt?: boolean
+  } = { includeSgt: true, showLowBalance: false }
+) {
   const accountStore = useAccountStore()
   const { t } = useLang()
 
-  const isSpotOrFuturesRoute = computed(() =>
-    ['spot', 'futures'].some((r) => (route.name as string).startsWith(r))
-  )
+  const optionsToValue = toValue(options)
 
   const subaccountSelectOptions = computed(() =>
     accountStore.hasMultipleSubaccounts
       ? Object.keys(accountStore.subaccountBalancesMap)
           .filter((subaccountId) =>
-            isSpotOrFuturesRoute.value ? !isSgtSubaccountId(subaccountId) : true
+            optionsToValue.includeSgt ? true : !isSgtSubaccountId(subaccountId)
           )
           .map((value) => {
             if (getSubaccountIndex(value) === 0) {
