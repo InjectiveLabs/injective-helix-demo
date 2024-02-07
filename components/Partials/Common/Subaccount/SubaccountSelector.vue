@@ -1,61 +1,49 @@
 <script lang="ts" setup>
-import {
-  isSgtSubaccountId,
-  getSubaccountIndex,
-  getMarketSlugFromSubaccountId
-} from '@/app/utils/helpers'
-
-const route = useRoute()
 const accountStore = useAccountStore()
-const { t } = useLang()
+const { subaccount, subaccountSelectOptions } = useSubaccounts()
+// const emit = defineEmits<{
+//   'update:subaccount': [subaccount: string]
+// }>()
 
-const emit = defineEmits<{
-  'update:subaccount': [subaccount: string]
-}>()
+// const subaccountSelectOptions = computed(() =>
+//   accountStore.hasMultipleSubaccounts
+//     ? Object.keys(accountStore.subaccountBalancesMap)
+//         .filter((subaccountId) =>
+//           isSpotOrFuturesRoute.value ? !isSgtSubaccountId(subaccountId) : true
+//         )
+//         .map((value) => {
+//           if (getSubaccountIndex(value) === 0) {
+//             return { display: `${t('account.main')}`, value }
+//           }
 
-const isSpotOrFuturesRoute = computed(() =>
-  ['spot', 'futures'].some((r) => (route.name as string).startsWith(r))
-)
+//           if (isSgtSubaccountId(value)) {
+//             return {
+//               value,
+//               display: `SGT ${getMarketSlugFromSubaccountId(value)}`
+//             }
+//           }
 
-const subaccountSelectOptions = computed(() =>
-  accountStore.hasMultipleSubaccounts
-    ? Object.keys(accountStore.subaccountBalancesMap)
-        .filter((subaccountId) =>
-          isSpotOrFuturesRoute.value ? !isSgtSubaccountId(subaccountId) : true
-        )
-        .map((value) => {
-          if (getSubaccountIndex(value) === 0) {
-            return { display: `${t('account.main')}`, value }
-          }
+//           return {
+//             value,
+//             display: getSubaccountIndex(value).toString()
+//           }
+//         })
+//         .sort((a, b) => a.value.localeCompare(b.value))
+//     : []
+// )
 
-          if (isSgtSubaccountId(value)) {
-            return {
-              value,
-              display: `SGT ${getMarketSlugFromSubaccountId(value)}`
-            }
-          }
+// const subaccount = computed({
+//   get: (): string => accountStore.subaccountId,
+//   set: (value: string) => {
+//     accountStore.$patch({
+//       subaccountId: value
+//     })
 
-          return {
-            value,
-            display: getSubaccountIndex(value).toString()
-          }
-        })
-        .sort((a, b) => a.value.localeCompare(b.value))
-    : []
-)
-
-const subaccount = computed({
-  get: (): string => accountStore.subaccountId,
-  set: (value: string) => {
-    accountStore.$patch({
-      subaccountId: value
-    })
-
-    nextTick(() => {
-      emit('update:subaccount', value)
-    })
-  }
-})
+//     nextTick(() => {
+//       emit('update:subaccount', value)
+//     })
+//   }
+// })
 </script>
 
 <template>

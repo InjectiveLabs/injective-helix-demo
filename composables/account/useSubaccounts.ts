@@ -40,5 +40,14 @@ export function useSubaccounts() {
       : []
   )
 
-  return { subaccountSelectOptions }
+  const subaccount = computed({
+    get: (): string => accountStore.subaccountId,
+    set: (value: string) => {
+      accountStore.$patch({
+        subaccountId: value
+      })
+    }
+  })
+
+  return { subaccount, subaccountSelectOptions }
 }
