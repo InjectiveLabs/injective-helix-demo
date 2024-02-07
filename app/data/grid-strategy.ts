@@ -51,6 +51,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'talis-usdt',
     contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
+  },
+  {
+    slug: 'sol-usdt',
+    contractAddress: 'inj1a2xr74g9w78acf054jfwspzmgzy5flv5275642'
   }
 ]
 
