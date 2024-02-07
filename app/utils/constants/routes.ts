@@ -57,7 +57,6 @@ export const getRoutes = (network: Network, env: string) => {
     'xrp-usdt-perp',
     'eth-usdt-perp',
     'bonk-usdt-perp',
-    'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
     'atom-usdt-perp',

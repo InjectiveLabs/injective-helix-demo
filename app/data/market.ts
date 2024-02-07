@@ -54,7 +54,6 @@ export const slugsToIncludeInCosmosCategory = [
   'canto-usdt',
   'strd-usdt',
   'inj-usdt-perp',
-  'osmo-usdt-perp',
   'atom-usdt-perp',
   'sei-usdt-perp',
   'axl-usdt-perp',
@@ -100,7 +99,9 @@ export const slugsToIncludeInInjectiveCategory = [
   'kira-inj',
   'katana-inj',
   'ninj-inj',
-  'dojo-inj'
+  'dojo-inj',
+  'ginger-inj',
+  'autism-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
