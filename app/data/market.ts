@@ -40,7 +40,9 @@ export const experimentalMarketsSlug = [
   'kira-inj',
   'katana-inj',
   'ginger-inj',
-  'jup-usdt-perp'
+  'jup-usdt-perp',
+  'gyen-usdt',
+  'wif-usdt-perp'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -52,7 +54,6 @@ export const slugsToIncludeInCosmosCategory = [
   'canto-usdt',
   'strd-usdt',
   'inj-usdt-perp',
-  'osmo-usdt-perp',
   'atom-usdt-perp',
   'sei-usdt-perp',
   'axl-usdt-perp',
@@ -83,7 +84,10 @@ export const slugsToIncludeInEthereumCategory = [
   'eth-usdt-perp',
   'bnb-usdt-perp',
   'stx-usdt-perp',
-  'eth-usdtkv-perp'
+  'eth-usdtkv-perp',
+  'arb-usdt-perp',
+  'gyen-usdt',
+  'op-usdt-perp'
 ]
 
 export const slugsToIncludeInInjectiveCategory = [
@@ -94,13 +98,18 @@ export const slugsToIncludeInInjectiveCategory = [
   'ninja-inj',
   'kira-inj',
   'katana-inj',
-  'ninj-inj'
+  'ninj-inj',
+  'dojo-inj',
+  'ginger-inj',
+  'autism-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
   'jup-usdt-perp',
   'pyth-usdt-perp',
-  'sol-usdt'
+  'sol-usdt',
+  'sol-usdt-perp',
+  'wif-usdt-perp'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
