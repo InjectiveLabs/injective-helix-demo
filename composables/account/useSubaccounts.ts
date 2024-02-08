@@ -1,3 +1,4 @@
+import { ComputedRef } from 'vue'
 import {
   getMarketSlugFromSubaccountId,
   getSubaccountIndex,
@@ -5,21 +6,19 @@ import {
 } from '@/app/utils/helpers'
 
 export function useSubaccounts(
-  options: {
-    showLowBalance?: boolean
+  options: ComputedRef<{
     includeSgt?: boolean
-  } = { includeSgt: true, showLowBalance: false }
+    showLowBalance?: boolean
+  }> = computed(() => ({ includeSgt: false, showLowBalance: false }))
 ) {
   const accountStore = useAccountStore()
   const { t } = useLang()
 
-  const optionsToValue = toValue(options)
-
-  const subaccountSelectOptions = computed(() =>
+  const subaccountOptions = computed(() =>
     accountStore.hasMultipleSubaccounts
       ? Object.keys(accountStore.subaccountBalancesMap)
           .filter((subaccountId) =>
-            optionsToValue.includeSgt ? true : !isSgtSubaccountId(subaccountId)
+            options.value.includeSgt ? true : !isSgtSubaccountId(subaccountId)
           )
           .map((value) => {
             if (getSubaccountIndex(value) === 0) {
@@ -51,5 +50,5 @@ export function useSubaccounts(
     }
   })
 
-  return { subaccount, subaccountSelectOptions }
+  return { subaccount, subaccountOptions }
 }

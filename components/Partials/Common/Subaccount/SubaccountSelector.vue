@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 const accountStore = useAccountStore()
-const { subaccount, subaccountSelectOptions } = useSubaccounts()
 
-// const emit = defineEmits<{
-//   'update:subaccount': [subaccount: string]
-// }>()
+const { subaccount, subaccountOptions } = useSubaccounts()
 </script>
 
 <template>
   <div v-if="accountStore.hasMultipleSubaccounts" class="xl:ml-right xl:flex">
     <AppSelect
       v-model="subaccount"
-      :options="subaccountSelectOptions"
+      :options="subaccountOptions"
       class="self-end"
     >
       <template #default="{ selected }">
