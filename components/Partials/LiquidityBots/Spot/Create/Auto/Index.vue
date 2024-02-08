@@ -5,9 +5,11 @@ import {
   GST_STABLE_GRIDS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_AUTO_PRICE_THRESHOLD,
   GST_STABLE_LOWER_PERCENTAGE,
-  GST_STABLE_UPPER_PERCENTAGE
+  GST_STABLE_UPPER_PERCENTAGE,
+  UI_DEFAULT_PRICE_MAX_DECIMALS,
+  UI_DEFAULT_PRICE_MIN_DECIMALS,
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
   InvestmentTypeGst,
@@ -36,11 +38,17 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
 )
 
-const decimalPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-)
+const decimalPlaces = computed(() => {
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MIN_DECIMALS)) {
+    return UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MAX_DECIMALS)) {
+    return UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  }
+
+  return UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
+})
 
 const marketUsesStableCoins = computed(() =>
   [

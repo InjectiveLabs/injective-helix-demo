@@ -3,13 +3,15 @@ import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GridStrategyType, SpotGridTradingField } from '@/types'
 import {
-  GST_AUTO_PRICE_THRESHOLD,
   GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
   GST_STABLE_LOWER_PRICE,
   GST_STABLE_UPPER_PRICE,
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_MAX_DECIMALS,
+  UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 
@@ -29,11 +31,17 @@ const setFormValues = useSetFormValues()
 const gridStrategyStore = useGridStrategyStore()
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const decimalsPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-)
+const decimalPlaces = computed(() => {
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MIN_DECIMALS)) {
+    return UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MAX_DECIMALS)) {
+    return UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  }
+
+  return UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
+})
 
 const marketUsesStableCoins = computed(() =>
   [
@@ -70,8 +78,8 @@ const upperPrice = computed(() => {
   )
 
   return minUpperBound.gt(max)
-    ? minUpperBound.toFixed(decimalsPlaces.value)
-    : maxPlusPadding.toFixed(decimalsPlaces.value)
+    ? minUpperBound.toFixed(decimalPlaces.value)
+    : maxPlusPadding.toFixed(decimalPlaces.value)
 })
 
 const lowerPrice = computed(() => {
@@ -94,8 +102,8 @@ const lowerPrice = computed(() => {
   )
 
   return maxLowerBound.lt(min)
-    ? maxLowerBound.toFixed(decimalsPlaces.value)
-    : min.toFixed(decimalsPlaces.value)
+    ? maxLowerBound.toFixed(decimalPlaces.value)
+    : min.toFixed(decimalPlaces.value)
 })
 
 const grids = computed(() =>
@@ -120,12 +128,12 @@ const profitPerGrid = computed(() => {
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   upperPrice,
-  { decimalPlaces: decimalsPlaces.value }
+  { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   lowerPrice,
-  { decimalPlaces: decimalsPlaces.value }
+  { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
 const { valueToString: profitPerGridToString } = useBigNumberFormatter(

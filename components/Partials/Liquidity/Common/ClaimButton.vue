@@ -4,6 +4,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
+  forceDisabled: Boolean,
+
   campaign: {
     type: Object as PropType<Campaign>,
     required: true
@@ -60,7 +62,9 @@ function claimRewards() {
       'bg-blue-500 border-blue-500 border':
         !campaign.userClaimed && campaign.isClaimable
     }"
-    :is-disabled="campaign.userClaimed || !campaign.isClaimable"
+    :is-disabled="
+      campaign.userClaimed || !campaign.isClaimable || forceDisabled
+    "
     @click="claimRewards"
   >
     <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>

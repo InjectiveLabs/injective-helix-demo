@@ -96,7 +96,11 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <AppInputNumeric v-model="lowerPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="lowerPriceValue"
+          placeholder="0.00"
+          v-bind="{ maxDecimals: market.priceDecimals }"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
               {{ $t('sgt.lower') }}
@@ -116,7 +120,11 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
       </div>
 
       <div>
-        <AppInputNumeric v-model="upperPriceValue" placeholder="0.00">
+        <AppInputNumeric
+          v-model="upperPriceValue"
+          placeholder="0.00"
+          v-bind="{ maxDecimals: market.priceDecimals }"
+        >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
               {{ $t('sgt.upper') }}
