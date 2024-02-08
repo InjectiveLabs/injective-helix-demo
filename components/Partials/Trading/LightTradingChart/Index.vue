@@ -115,14 +115,19 @@ function init() {
 
   candlestickSeries.applyOptions({
     priceFormat: {
-      minMove: 0.000001
+      minMove: 0.000000001
     }
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    return price > 10
-      ? price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      : price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+    switch (true) {
+      case price > 10:
+        return price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      case price > 0.00001:
+        return price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+      default:
+        return price.toFixed(9)
+    }
   }
 }
 

@@ -124,6 +124,7 @@ watch(
           v-model="lowerPriceValue"
           placeholder="0.00"
           class="text-right"
+          v-bind="{ maxDecimals: market.priceDecimals }"
         >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
@@ -148,6 +149,7 @@ watch(
           v-model="upperPriceValue"
           placeholder="0.00"
           class="text-right"
+          v-bind="{ maxDecimals: market.priceDecimals }"
         >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">

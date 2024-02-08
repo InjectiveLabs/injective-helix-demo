@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { UiSpotOrderbookWithSequence } from '@/types'
 
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
@@ -48,6 +44,11 @@ const props = defineProps({
   orderbook: {
     type: Object as PropType<UiSpotOrderbookWithSequence>,
     default: undefined
+  },
+
+  decimalPlaces: {
+    type: Number,
+    required: true
   },
 
   market: {
@@ -126,12 +127,14 @@ const rulerValues = computed(() => {
 
     const normalizedValue = value / range
 
+    const priceValue = new BigNumberInBase(number)
+
+    const display = priceValue.lt(0.000001)
+      ? priceValue.toFormat(props.decimalPlaces)
+      : '0...' + priceValue.toFormat(props.decimalPlaces).slice(-6)
+
     return {
-      display: new BigNumberInBase(number).toFormat(
-        Number(props.currentPrice) > 1
-          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-      ),
+      display,
       value:
         lerp(
           HANDLE_WIDTH / 2,
@@ -174,8 +177,8 @@ const steps = computed(() => {
 })
 
 const orderbookVolumeQuantized = computed(() => {
-  const MIN = Math.floor(Number(props.min))
-  const MAX = Math.ceil(Number(props.max))
+  const MIN = Number(props.min)
+  const MAX = Number(props.max)
 
   const STEP = steps.value
 
@@ -395,13 +398,7 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="end"
         >
-          {{
-            Number(props.lower).toFixed(
-              Number(currentPrice) > 1
-                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-            )
-          }}
+          {{ Number(props.lower).toFixed(props.decimalPlaces) }}
         </text>
 
         <text
@@ -415,13 +412,7 @@ function generateEvenlySpacedNumbers(
           :y="35"
           text-anchor="start"
         >
-          {{
-            Number(props.upper).toFixed(
-              Number(currentPrice) > 1
-                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-                : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-            )
-          }}
+          {{ Number(props.upper).toFixed(props.decimalPlaces) }}
         </text>
       </g>
 

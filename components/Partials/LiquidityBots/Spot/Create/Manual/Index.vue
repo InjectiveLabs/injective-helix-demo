@@ -6,9 +6,9 @@ import {
   SpotGridTradingForm
 } from '@/types'
 import {
-  GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
 const spotStore = useSpotStore()
@@ -20,8 +20,8 @@ const setFormValues = useSetFormValues()
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
-const min = ref('0')
-const max = ref('10')
+const min = ref('')
+const max = ref('')
 const isAssetReBalancingChecked = ref(true)
 
 const { lastTradedPrice } = useSpotLastPrice(
@@ -31,26 +31,14 @@ const { lastTradedPrice } = useSpotLastPrice(
 const upperPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.UpperPrice] || '',
   set: (value) => {
-    setUpperPriceField(
-      Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-      )
-    )
+    setUpperPriceField(Number(value).toFixed(decimalPlaces.value))
   }
 })
 
 const lowerPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.LowerPrice] || '',
   set: (value) => {
-    setLowerPriceField(
-      Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-      )
-    )
+    setLowerPriceField(Number(value).toFixed(decimalPlaces.value))
   }
 })
 
@@ -60,11 +48,17 @@ const isBaseAndQuoteType = computed(
     InvestmentTypeGst.BaseAndQuote
 )
 
-const decimalPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-)
+const decimalPlaces = computed(() => {
+  if (lastTradedPrice.value.isGreaterThan(10)) {
+    return UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+
+  if (lastTradedPrice.value.isGreaterThan(0.00001)) {
+    return UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  }
+
+  return UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
+})
 
 onMounted(() => {
   if (lastTradedPrice.value.gt(0)) {
@@ -154,10 +148,14 @@ watch(isBaseAndQuoteType, (value) => {
     />
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
-      v-bind="{ market: gridStrategyStore.spotMarket as UiSpotMarketWithToken }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket as UiSpotMarketWithToken,
+        decimalPlaces
+      }"
     />
 
     <PartialsLiquidityBotsSpotCreateManualRangeInput
+      v-if="min && max"
       v-model:lower="lowerPriceValue"
       v-model:max="max"
       v-model:min="min"
@@ -165,7 +163,8 @@ watch(isBaseAndQuoteType, (value) => {
       v-bind="{
         currentPrice: lastTradedPrice.toFixed(),
         market: gridStrategyStore.spotMarket,
-        orderbook: spotStore.orderbook
+        orderbook: spotStore.orderbook,
+        decimalPlaces
       }"
     />
 

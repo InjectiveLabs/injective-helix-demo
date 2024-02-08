@@ -271,7 +271,7 @@ export const defineGlobalRules = () => {
       const thresholdInBigNumber = new BigNumberInBase(threshold)
 
       if (
-        amountAInBigNumber.plus(amountBInBigNumber).lte(thresholdInBigNumber)
+        amountAInBigNumber.plus(amountBInBigNumber).lt(thresholdInBigNumber)
       ) {
         return `Min ${baseSymbol}+${quoteSymbol} value >= $${thresholdInBigNumber.toFixed(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
