@@ -13,8 +13,11 @@ import {
   CrosshairMode
 } from 'lightweight-charts'
 import {
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_MAX_DECIMALS,
+  UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
@@ -115,14 +118,19 @@ function init() {
 
   candlestickSeries.applyOptions({
     priceFormat: {
-      minMove: 0.000001
+      minMove: 0.000000001
     }
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    return price > 10
-      ? price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      : price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+    switch (true) {
+      case price > UI_DEFAULT_PRICE_MIN_DECIMALS:
+        return price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      case price > UI_DEFAULT_PRICE_MAX_DECIMALS:
+        return price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+      default:
+        return price.toFixed(UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS)
+    }
   }
 }
 
