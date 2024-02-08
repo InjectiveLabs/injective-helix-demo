@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 const accountStore = useAccountStore()
 
-const { subaccount, subaccountOptions } = useSubaccounts()
+const { subaccount, subaccountOptions } = useSubaccounts(
+  computed(() => ({ showLowBalance: true }))
+)
 </script>
 
 <template>
