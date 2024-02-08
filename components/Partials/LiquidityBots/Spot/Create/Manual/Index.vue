@@ -8,7 +8,9 @@ import {
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_MAX_DECIMALS,
+  UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
 
 const spotStore = useSpotStore()
@@ -49,11 +51,11 @@ const isBaseAndQuoteType = computed(
 )
 
 const decimalPlaces = computed(() => {
-  if (lastTradedPrice.value.isGreaterThan(10)) {
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MIN_DECIMALS)) {
     return UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 
-  if (lastTradedPrice.value.isGreaterThan(0.00001)) {
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MAX_DECIMALS)) {
     return UI_DEFAULT_MAX_DISPLAY_DECIMALS
   }
 
