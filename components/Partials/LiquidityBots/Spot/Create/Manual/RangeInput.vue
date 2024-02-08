@@ -129,7 +129,7 @@ const rulerValues = computed(() => {
 
     const priceValue = new BigNumberInBase(number)
 
-    const display = priceValue.lt(0.000001)
+    const display = priceValue.gt(0.00001)
       ? priceValue.toFormat(props.decimalPlaces)
       : '0...' + priceValue.toFormat(props.decimalPlaces).slice(-6)
 
