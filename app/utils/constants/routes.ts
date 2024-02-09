@@ -45,7 +45,8 @@ export const getRoutes = (network: Network, env: string) => {
     'app-inj',
     'ginger-inj',
     'gyen-usdt',
-    'dojo-inj'
+    'dojo-inj',
+    'andr-usdt'
   ]
 
   const perpetuals = [
@@ -130,7 +131,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt', 'andr-usdt')
+    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
