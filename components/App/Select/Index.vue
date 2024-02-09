@@ -18,6 +18,11 @@ const props = defineProps({
   wrapperClass: {
     type: String,
     default: ''
+  },
+
+  contentClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -63,7 +68,10 @@ function select(option: BaseDropdownOption) {
     </template>
 
     <template #content="{ close }">
-      <div class="bg-gray-800 rounded-lg p-2 flex flex-col">
+      <div
+        class="bg-gray-800 rounded-lg p-2 flex flex-col"
+        :class="contentClass"
+      >
         <div
           v-for="(option, index) in options"
           :key="`${uuid}-selector-${index}`"

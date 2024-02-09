@@ -39,7 +39,8 @@ const options = computed<BaseDropdownOption[]>(() =>
       v-model="value"
       v-bind="{
         options,
-        wrapperClass: 'bg-black py-2 px-4 rounded-md'
+        wrapperClass: 'bg-black py-2 px-4 rounded-md',
+        contentClass: 'h-[320px] overflow-y-auto'
       }"
       start-placement
     >
