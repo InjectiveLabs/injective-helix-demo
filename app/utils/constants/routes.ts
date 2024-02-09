@@ -96,8 +96,7 @@ export const getRoutes = (network: Network, env: string) => {
     'strd-usdt',
     'orai-usdt',
     'ninj-inj',
-    'dojo-inj',
-    'ander-inj'
+    'dojo-inj'
   ]
 
   const binaryOptions: string[] = []
