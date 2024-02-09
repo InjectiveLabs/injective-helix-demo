@@ -95,11 +95,11 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'dojo-inj',
     contractAddress: 'inj1tyu3x9ejuhhavlfe9serz5qk4c7eyhd5f8xc7n'
-  },
-  {
-    slug: 'ander-inj',
-    contractAddress: 'inj1hux4jsukk767k2lfchufclka84dafh2ajyjurd'
   }
+  // {
+  //   slug: 'ander-inj',
+  //   contractAddress: 'inj1hux4jsukk767k2lfchufclka84dafh2ajyjurd'
+  // }
 ]
 
 if (IS_STAGING) {
