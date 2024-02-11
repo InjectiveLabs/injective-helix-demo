@@ -21,6 +21,8 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
+import { isOkxWalletInstalled } from '@/app/services/okx'
+import { isPhantomInstalled } from '@/app/services/phantom'
 
 type WalletStoreState = {
   wallet: Wallet
@@ -33,6 +35,8 @@ type WalletStoreState = {
 
   trustWalletInstalled: boolean
   metamaskInstalled: boolean
+  phantomInstalled: boolean
+  okxWalletInstalled: boolean
 
   walletConnectStatus: WalletConnectStatus
 
@@ -51,8 +55,12 @@ const initialStateFactory = (): WalletStoreState => ({
   defaultSubaccountId: '',
   addressConfirmation: '',
   wallet: Wallet.Metamask,
+
   metamaskInstalled: false,
   trustWalletInstalled: false,
+  okxWalletInstalled: false,
+  phantomInstalled: false,
+
   walletConnectStatus: WalletConnectStatus.idle,
 
   authZ: {
@@ -183,6 +191,22 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
+    async isOkxWalletInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        okxWalletInstalled: await isOkxWalletInstalled()
+      })
+    },
+
+    async isPhantomInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        phantomInstalled: await isPhantomInstalled()
+      })
+    },
+
     async getHWAddresses(wallet: Wallet) {
       const walletStore = useWalletStore()
 
@@ -292,6 +316,48 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       await walletStore.connectWallet(Wallet.TrustWallet)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectOkxWallet() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.OkxWallet)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectPhantom() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.Phantom)
 
       const addresses = await getAddresses()
       const [address] = addresses

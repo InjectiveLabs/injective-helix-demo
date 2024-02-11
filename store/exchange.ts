@@ -181,33 +181,35 @@ export const useExchangeStore = defineStore('exchange', {
       const tradingRewardsCampaign =
         await exchangeApi.fetchTradingRewardsCampaign()
 
-      if (tradingRewardsCampaign) {
-        const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
-          ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
-          : []
-        const quoteSymbolsList = (
-          (
-            await Promise.all(
-              quoteDenomsList.map(
-                async (denom) => await denomClient.getDenomToken(denom)
-              )
-            )
-          ).filter((token) => token) as Token[]
-        ).map((token) => token.symbol)
-
-        const tradingRewardCampaignInfo = {
-          ...tradingRewardsCampaign.tradingRewardCampaignInfo,
-          quoteSymbolsList
-        }
-        const tradingRewardsCampaignWithToken = {
-          ...tradingRewardsCampaign,
-          tradingRewardCampaignInfo
-        } as TradingRewardsCampaign
-
-        exchangeStore.$patch({
-          tradingRewardsCampaign: tradingRewardsCampaignWithToken
-        })
+      if (!tradingRewardsCampaign) {
+        return
       }
+
+      const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
+        : []
+      const quoteSymbolsList = (
+        (
+          await Promise.all(
+            quoteDenomsList.map(
+              async (denom) => await denomClient.getDenomToken(denom)
+            )
+          )
+        ).filter((token) => token) as Token[]
+      ).map((token) => token.symbol)
+
+      const tradingRewardCampaignInfo = {
+        ...tradingRewardsCampaign.tradingRewardCampaignInfo,
+        quoteSymbolsList
+      }
+      const tradingRewardsCampaignWithToken = {
+        ...tradingRewardsCampaign,
+        tradingRewardCampaignInfo
+      } as TradingRewardsCampaign
+
+      exchangeStore.$patch({
+        tradingRewardsCampaign: tradingRewardsCampaignWithToken
+      })
     },
 
     async fetchTradeRewardPoints() {
