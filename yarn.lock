@@ -1684,15 +1684,15 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.1.tgz#e5211452df060fa8522b55c7b3c0c4d1981cb044"
   integrity sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==
 
-"@injectivelabs/contracts@^1.14.6-beta.5":
-  version "1.14.6-beta.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.14.6-beta.5.tgz#1acb1440556258542bdc04541454bc98e32bd277"
-  integrity sha512-R8OtyMUAoKlFtdT9dn7eb7jYGRWPa6GkZHxNfyDVKr7WXYFbr6MsV+CvPLW4fCjlj/mVY0uOAY8fp2WyrnsNDQ==
+"@injectivelabs/contracts@^1.14.6-beta.6":
+  version "1.14.6-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.14.6-beta.6.tgz#5264b227c67aaa9c414a25c01be395bb14acba50"
+  integrity sha512-qly2U8OVuwOQf20zt6XnIaTqnmbZi5U98u7aG7k90htLU3cRrsWKqoE5f6mkCF7bh7cfFwjP6JDIiOtiqbT+mw==
   dependencies:
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
-    "@injectivelabs/networks" "^1.14.6-beta.5"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
+    "@injectivelabs/networks" "^1.14.6-beta.6"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     ethers "^5.7.2"
     link-module-alias "^1.2.0"
     shx "^0.3.3"
@@ -1735,6 +1735,17 @@
   version "1.14.6-beta.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.6-beta.3.tgz#40cce2f90adc9f91f0b1288b27ea7631ec991aa7"
   integrity sha512-Un1ToV+DlfNo/kbvwxVr1ru1i58YEODtmNYq2+JPG/VTw3eZR9/W36hCYqdkiW3a1r0toHP1Ssu9quZ6qNjgzw==
+  dependencies:
+    "@injectivelabs/grpc-web" "^0.0.1"
+    "@injectivelabs/ts-types" "^1.14.6-beta.2"
+    http-status-codes "^2.2.0"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/exceptions@^1.14.6-beta.4":
+  version "1.14.6-beta.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.6-beta.4.tgz#e8f9d0121eddbd3296d1af84e8de6fa4609e2c82"
+  integrity sha512-+BJDn/7cSIHDoYaa9xqIF869IYvWoaxqw+706V3QrQEawPW5H7pIUDDjzJAN6nNfEy3z6u+zPq88UC4KqIBBAQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
@@ -1790,14 +1801,14 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/networks@^1.14.6-beta.5":
-  version "1.14.6-beta.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.6-beta.5.tgz#9a2d214d9791f48adedc529e628862f6c387ed0c"
-  integrity sha512-xwtXeYH36DeMe1MMzQu2NsE06kd1vgJUeHbjrL5ZFAIHyONIOosYQucGZIhQrj6seogo4u0kVMgSR+nXwrN8fg==
+"@injectivelabs/networks@^1.14.6-beta.6":
+  version "1.14.6-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.6-beta.6.tgz#e462a2ceef437e258c5b5aef99ef9e42cc28900e"
+  integrity sha512-FAhFstPoA4JDUyArN9C1XdgzErq0HBV1197AOp/p05HQen9acGMykE5ItjMVmYUSlxsRn8agu81E62IOM/dmfQ==
   dependencies:
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -1821,10 +1832,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.6-beta.37", "@injectivelabs/sdk-ts@^1.14.6-beta.37":
-  version "1.14.6-beta.37"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.6-beta.37.tgz#6b443bcd9bf6ce85b73a2f15ea6c0e9796c1c7eb"
-  integrity sha512-Ch5VfaqaaQO7o4LpMuxCDu05RgVgBBshXcQF9Ha3z/l1RX+XnKGSi7RK0eYlOKihnVkTyTZtA4QDYAV6rbTcwA==
+"@injectivelabs/sdk-ts@1.14.6-beta.39", "@injectivelabs/sdk-ts@^1.14.6-beta.39":
+  version "1.14.6-beta.39"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.6-beta.39.tgz#dd6c4c061ea0601ea2c9960d8f5e86d9d1b69e8a"
+  integrity sha512-wj+RvomGNMnbDBbHe9TsKrJa/TYYEawjBgzdzxrLlB7qLPvUEE6N/Zq9iL44+HrEG47CgVNL+wifK91uP40ZzA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.32.2"
@@ -1835,17 +1846,17 @@
     "@ethersproject/bytes" "^5.7.0"
     "@injectivelabs/core-proto-ts" "^0.0.21"
     "@injectivelabs/dmm-proto-ts" "1.0.19"
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
     "@injectivelabs/indexer-proto-ts" "1.11.36"
     "@injectivelabs/mito-proto-ts" "1.0.59"
-    "@injectivelabs/networks" "^1.14.6-beta.5"
+    "@injectivelabs/networks" "^1.14.6-beta.6"
     "@injectivelabs/test-utils" "^1.14.3"
-    "@injectivelabs/token-metadata" "^1.14.6-beta.29"
+    "@injectivelabs/token-metadata" "^1.14.6-beta.31"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     "@metamask/eth-sig-util" "^4.0.0"
     axios "^0.27.2"
     bech32 "^2.0.0"
@@ -1864,19 +1875,19 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.6-beta.42":
-  version "1.14.6-beta.42"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.6-beta.42.tgz#d4bec06d6f8d3aeaa5c8c203cac5e09e19d697c3"
-  integrity sha512-rW5mRPmskZnuYCYfR5lF3+VFc1A5iSqwXO8mBup2Otb7VabJMGOla9tJWpH5TYeCsNDxGivCPfS+mayhZoANkg==
+"@injectivelabs/sdk-ui-ts@1.14.6-beta.44":
+  version "1.14.6-beta.44"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.6-beta.44.tgz#92c277320e03e29ef5eb727aaca493fae41a2ee8"
+  integrity sha512-JkmjJfxy9L27DjF3UYxdQwscJhqq3w773hovezVX4x1t+/GyYbKj2AIJrr27JzY4d15+sQC3//sB9a+NBrHjuQ==
   dependencies:
-    "@injectivelabs/contracts" "^1.14.6-beta.5"
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
-    "@injectivelabs/networks" "^1.14.6-beta.5"
-    "@injectivelabs/sdk-ts" "^1.14.6-beta.37"
-    "@injectivelabs/token-metadata" "^1.14.6-beta.29"
-    "@injectivelabs/token-utils" "^1.14.6-beta.4"
+    "@injectivelabs/contracts" "^1.14.6-beta.6"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
+    "@injectivelabs/networks" "^1.14.6-beta.6"
+    "@injectivelabs/sdk-ts" "^1.14.6-beta.39"
+    "@injectivelabs/token-metadata" "^1.14.6-beta.31"
+    "@injectivelabs/token-utils" "^1.14.6-beta.5"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     alchemy-sdk "^2.6.3"
     copyfiles "^2.4.1"
     link-module-alias "^1.2.0"
@@ -1901,15 +1912,15 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.14.6-beta.29", "@injectivelabs/token-metadata@^1.14.6-beta.29":
-  version "1.14.6-beta.29"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.6-beta.29.tgz#404b8cef6c8a13b680980d71fede65918c1b1e1b"
-  integrity sha512-p9F6AEBR3T4NcsjHWbgWrVyGmJ8fz2DmWI2XiwrbSa/+S/VjlDHLP/0B6kBfCZZH/NrACD8alocGm+GbL8NcvQ==
+"@injectivelabs/token-metadata@1.14.6-beta.31", "@injectivelabs/token-metadata@^1.14.6-beta.31":
+  version "1.14.6-beta.31"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.6-beta.31.tgz#881ae0fff5c2ac209a0bf88b2e7357d3127ffeab"
+  integrity sha512-vBxrLov47EcAKTRUy4uEPqGd32B+074uRJEk5k9wiL1tvk0VolqYMEEK83z+enEvBU77Mi5WjBrBt1PwJtVMGg==
   dependencies:
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
-    "@injectivelabs/networks" "^1.14.6-beta.5"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
+    "@injectivelabs/networks" "^1.14.6-beta.6"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
     jsonschema "^1.4.0"
@@ -1928,13 +1939,13 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-utils@^1.14.6-beta.4":
-  version "1.14.6-beta.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.14.6-beta.4.tgz#cda52dd7a404f419cdea10471b6aa551d0fc96a7"
-  integrity sha512-jrI8w/3z86p8lnbveyhu5pJ0tjxw0VNN73+DhaemCBNn6ZvyrQbQJQYs5xtFtVgfS5N5ywx/WGggtiegnrJKEQ==
+"@injectivelabs/token-utils@^1.14.6-beta.5":
+  version "1.14.6-beta.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.14.6-beta.5.tgz#3840262df590f60bb0cb258883dcfe735707e628"
+  integrity sha512-xT9/Og3VC0qo2CibHcI4yrSIk+h80QWqxL8R7jvnPli9/I/CXjsZePWKuBm5kQ29773Asckunpi2MeufyYq0ng==
   dependencies:
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -1973,12 +1984,12 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/utils@^1.14.6-beta.4":
-  version "1.14.6-beta.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.6-beta.4.tgz#310882613e0b6546c87adf9b58bd1b4d8c9e701d"
-  integrity sha512-PJD/5ILlP099v8PPQDASR/MYG/BCZsZaPmV0sDTh09FtgwxPx8f55vx0z2iUZgZ5MrftWrBEhjicK5uAca6tdw==
+"@injectivelabs/utils@^1.14.6-beta.5":
+  version "1.14.6-beta.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.6-beta.5.tgz#c0023b7ccfe330e9ae99e5363e7675aef1d2ba1c"
+  integrity sha512-RqMLzI6wHLH/G/EPk/O2h6GUGWqxLF9wsZMqpBiPE4junoHU+hJe9C7QohhQK1FB0w5BJcZy3PdTsAWhGrHZPg==
   dependencies:
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
@@ -1988,10 +1999,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.6-beta.42":
-  version "1.14.6-beta.42"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.6-beta.42.tgz#ffb5a1a10895f540f31afcca44a69158d5f1d0fd"
-  integrity sha512-fAHmR+dOqhc1Rg6dmSw1rC3HtsJzVYf9ISbI9mvX5c9M8Oys5HtY86/WXUc0K5U+UKlPnOPNSK07SlWASdQHOA==
+"@injectivelabs/wallet-ts@1.14.6-beta.44":
+  version "1.14.6-beta.44"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.6-beta.44.tgz#2dd650479396356ac41f60dfcdee0cdd6c257933"
+  integrity sha512-dBmiojZTdCc1GYCIZgn5C0MymmTr9YiykxRMcXg8uEWgfj5XqUFpUZVaxd4KjJGAQJqAXZiyYhoC30I7M6K6gw==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -1999,11 +2010,11 @@
     "@cosmostation/extension-client" "^0.1.15"
     "@ethereumjs/common" "^3.1.1"
     "@ethereumjs/tx" "^4.1.1"
-    "@injectivelabs/exceptions" "^1.14.6-beta.3"
-    "@injectivelabs/networks" "^1.14.6-beta.5"
-    "@injectivelabs/sdk-ts" "^1.14.6-beta.37"
+    "@injectivelabs/exceptions" "^1.14.6-beta.4"
+    "@injectivelabs/networks" "^1.14.6-beta.6"
+    "@injectivelabs/sdk-ts" "^1.14.6-beta.39"
     "@injectivelabs/ts-types" "^1.14.6-beta.2"
-    "@injectivelabs/utils" "^1.14.6-beta.4"
+    "@injectivelabs/utils" "^1.14.6-beta.5"
     "@keplr-wallet/cosmos" "^0.11.58"
     "@keplr-wallet/types" "^0.11.58"
     "@ledgerhq/hw-app-cosmos" "^6.29.0"

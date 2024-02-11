@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import {
-  getDefaultFuturesMarket,
-  getDefaultPerpetualMarketRouteParams
-} from '@/app/utils/market'
-import { TradeClickOrigin, Modal } from '@/types'
+import { getDefaultSpotMarketRouteParams } from '@/app/utils/market'
+import { TradeClickOrigin, Modal, DefaultMarket } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const router = useRouter()
 const modalStore = useModalStore()
@@ -14,7 +11,7 @@ function onGetStartedClick() {
   tradeClickedTrack()
 
   if (walletStore.isUserWalletConnected) {
-    router.push(getDefaultPerpetualMarketRouteParams())
+    router.push(getDefaultSpotMarketRouteParams())
   } else {
     modalStore.openModal(Modal.Connect)
   }
@@ -22,8 +19,8 @@ function onGetStartedClick() {
 
 function tradeClickedTrack() {
   mixpanelAnalytics.trackNavigateToTradePage({
-    market: getDefaultFuturesMarket(),
-    marketType: MarketType.Perpetual,
+    market: DefaultMarket.Spot,
+    marketType: MarketType.Spot,
     origin: TradeClickOrigin.Lander
   })
 }
