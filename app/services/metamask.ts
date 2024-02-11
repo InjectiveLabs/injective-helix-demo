@@ -70,4 +70,18 @@ export const validateMetamask = async (
       }
     )
   }
+
+  if (
+    metamaskProvider.isPhantom ||
+    metamaskProvider.isOkxWallet ||
+    metamaskProvider.isTrustWallet
+  ) {
+    throw new GeneralException(
+      new Error('You are connected to the wrong wallet. Please use Metamask.'),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
+    )
+  }
 }
