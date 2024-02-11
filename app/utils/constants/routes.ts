@@ -29,9 +29,9 @@ export const getRoutes = (network: Network, env: string) => {
     'evmos-usdt',
     'gf-usdt',
     'somm-usdt',
-    'ethbtctrend-usdt',
-    'steadyeth-usdt',
-    'steadybtc-usdt',
+    // 'ethbtctrend-usdt',
+    // 'steadyeth-usdt',
+    // 'steadybtc-usdt',
     'neok-usdt',
     'orai-usdt',
     'kava-usdt',
@@ -131,7 +131,9 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
+    // spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
+    /** limit to 40 markets max for querying activities */
+    spot.push('pyth-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 

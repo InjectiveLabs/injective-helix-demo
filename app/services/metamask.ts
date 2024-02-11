@@ -70,14 +70,4 @@ export const validateMetamask = async (
       }
     )
   }
-
-  if (!metamaskProvider.isMetaMask || metamaskProvider.isPhantom) {
-    throw new GeneralException(
-      new Error('You are connected to the wrong wallet. Please use Metamask.'),
-      {
-        code: UnspecifiedErrorCode,
-        type: ErrorType.WalletError
-      }
-    )
-  }
 }
