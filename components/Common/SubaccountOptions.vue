@@ -5,6 +5,7 @@ import {
   getSubaccountIndex,
   isSgtSubaccountId
 } from '@/app/utils/helpers'
+import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
 
 const props = defineProps({
   includeBotsSubaccounts: Boolean,
@@ -26,7 +27,9 @@ const subaccountOptions = computed(() =>
           const hasBalance = aggregatedPortfolioBalances.value[
             subaccountId
           ].some((balance) =>
-            new BigNumberInWei(balance.accountTotalBalance).gte(1)
+            new BigNumberInWei(balance.accountTotalBalance).gte(
+              DUST_AMOUNT_THRESHOLD
+            )
           )
 
           const includeLowBalance =
