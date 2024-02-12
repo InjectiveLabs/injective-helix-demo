@@ -9,9 +9,6 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
-const { subaccountOptions } = useSubaccounts(
-  computed(() => ({ includeBotsSubaccounts: true }))
-)
 
 function onCreateSubaccount() {
   modalStore.openModal(Modal.CreateSubaccount)
@@ -22,15 +19,19 @@ function onCreateSubaccount() {
   <div
     class="flex space-x-4 items-center mt-4 overflow-x-auto overflow-y-hidden"
   >
-    <PartialsAccountSubaccountSelectorItem
-      v-for="{ value: subaccountId } in subaccountOptions"
-      v-bind="{
-        balances: aggregatedPortfolioBalances[subaccountId],
-        subaccountId,
-        isHideBalances
-      }"
-      :key="`subaccount-${subaccountId}`"
-    />
+    <CommonSubaccountOptions>
+      <template #default="{ subaccountOptions }">
+        <PartialsAccountSubaccountSelectorItem
+          v-for="{ value: subaccountId } in subaccountOptions"
+          v-bind="{
+            balances: aggregatedPortfolioBalances[subaccountId],
+            subaccountId,
+            isHideBalances
+          }"
+          :key="`subaccount-${subaccountId}`"
+        />
+      </template>
+    </CommonSubaccountOptions>
 
     <div v-if="!walletStore.isAuthzWalletConnected">
       <BaseIcon
