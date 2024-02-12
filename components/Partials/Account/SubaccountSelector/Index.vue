@@ -19,7 +19,7 @@ function onCreateSubaccount() {
   <div
     class="flex space-x-4 items-center mt-4 overflow-x-auto overflow-y-hidden"
   >
-    <CommonSubaccountOptions>
+    <CommonSubaccountOptions v-bind="{ includeBotsSubaccounts: true }">
       <template #default="{ subaccountOptions }">
         <PartialsAccountSubaccountSelectorItem
           v-for="{ value: subaccountId } in subaccountOptions"
