@@ -269,9 +269,6 @@ watch(
 </script>
 
 <template>
-  <pre>
-    {{ maxAmountOnOrderbook }}
-  </pre>
   <div class="text-xs text-gray-400 flex items-center font-mono">
     <span
       v-for="(percent, index) in percentages"
