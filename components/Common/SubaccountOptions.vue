@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import {
   getMarketSlugFromSubaccountId,
   getSubaccountIndex,
@@ -20,21 +20,19 @@ const subaccountOptions = computed(() =>
   accountStore.hasMultipleSubaccounts
     ? Object.keys(aggregatedPortfolioBalances.value)
         .filter((subaccountId) => {
-          const includeBotsSubaccounts = props.includeBotsSubaccounts
-            ? true
-            : !isSgtSubaccountId(subaccountId)
+          const includeBotsSubaccounts =
+            props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
 
           const hasBalance = aggregatedPortfolioBalances.value[
             subaccountId
           ].some((balance) =>
-            new BigNumberInBase(balance.accountTotalBalance)
-              .dp(0, BigNumber.ROUND_DOWN)
-              .gt(0)
+            new BigNumberInWei(balance.accountTotalBalance).gte(1)
           )
 
-          const includeLowBalance = props.showLowBalance
-            ? true
-            : hasBalance || subaccountId === walletStore.defaultSubaccountId
+          const includeLowBalance =
+            props.showLowBalance ||
+            hasBalance ||
+            subaccountId === walletStore.defaultSubaccountId
 
           return includeBotsSubaccounts && includeLowBalance
         })
