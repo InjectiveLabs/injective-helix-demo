@@ -115,8 +115,7 @@ function onDetailsPage() {
 
     <div class="flex items-center justify-end font-semibold">
       <div class="break-words overflow-hidden">
-        {{ investmentToString }}
-        {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+        {{ investmentToString }} USD
       </div>
     </div>
 

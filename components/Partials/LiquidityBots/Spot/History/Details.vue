@@ -100,7 +100,7 @@ function onDetailsPage() {
 
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.totalAmount') }}</p>
-      <div>{{ investmentToString }} {{ market.quoteToken.symbol }}</div>
+      <div>{{ investmentToString }} USD</div>
     </div>
 
     <div class="border-t my-2" />

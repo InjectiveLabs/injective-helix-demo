@@ -11,6 +11,7 @@ export default function useActiveGridStrategy(
   const spotStore = useSpotStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const tokenStore = useTokenStore()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
 
@@ -35,7 +36,9 @@ export default function useActiveGridStrategy(
       strategy.value.quoteQuantity || 0
     ).toBase(market.value?.quoteToken.decimals)
 
-    return baseAmountInUsd.plus(quoteAmountInUsd)
+    return baseAmountInUsd
+      .plus(quoteAmountInUsd)
+      .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
   })
 
   const subaccountBalances = computed(

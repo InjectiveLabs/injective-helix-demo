@@ -269,9 +269,7 @@ useIntervalFn(() => {
 
       <span>
         {{ totalAmountToString }}
-        <span class="text-xs opacity-75 align-text-bottom ml-1">
-          {{ market?.quoteToken.symbol }}
-        </span>
+        <span class="text-xs opacity-75 align-text-bottom ml-1">USD</span>
       </span>
     </div>
 
@@ -300,6 +298,7 @@ useIntervalFn(() => {
           />
         </template>
       </p>
+
       <div class="text-right">
         <PartialsGridStrategySpotCommonDetailsPair
           v-if="activeStrategy.state === StrategyStatus.Active"

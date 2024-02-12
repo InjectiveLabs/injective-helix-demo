@@ -182,10 +182,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
-      <div>
-        {{ totalInvestmentToString }}
-        {{ market.quoteToken.symbol }}
-      </div>
+      <div>{{ totalInvestmentToString }} USD</div>
     </div>
 
     <div
