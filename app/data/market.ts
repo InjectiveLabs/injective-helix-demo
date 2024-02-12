@@ -104,7 +104,8 @@ export const slugsToIncludeInInjectiveCategory = [
   'dojo-inj',
   'ginger-inj',
   'autism-inj',
-  'andr-usdt'
+  'andr-usdt',
+  'hinj-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
