@@ -18,7 +18,7 @@ _Helix | The Premier Decentralized Spot and Derivatives Exchange_
 1. Clone the repository
 
 ```bash
-$ git clone git@github.com:InjectiveLabs/injective-dex.git
+$ git clone https://github.com/InjectiveLabs/injective-helix-demo.git
 $ cd injective-dex
 $ yarn
 ```
