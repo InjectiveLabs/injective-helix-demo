@@ -18,7 +18,6 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const gridStrategyStore = useGridStrategyStore()
 
 const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
@@ -95,22 +94,22 @@ function onDetailsPage() {
     <div class="flex gap-2 items-center">
       <div class="text-left">
         <CommonTokenIcon
-          v-if="market?.baseToken"
-          v-bind="{ token: market?.baseToken }"
+          v-if="market.baseToken"
+          v-bind="{ token: market.baseToken }"
         />
       </div>
 
       <div>
-        {{ market?.ticker }}
+        {{ market.ticker }}
       </div>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundtoString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundtoString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundtoString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end font-semibold">
@@ -126,7 +125,7 @@ function onDetailsPage() {
       <div class="break-words overflow-hidden">
         <div>
           {{ pnltoString }}
-          {{ gridStrategyStore.spotMarket?.quoteToken.symbol }}
+          {{ market.quoteToken.symbol }}
         </div>
         <div>{{ percentagePnl }} %</div>
       </div>
