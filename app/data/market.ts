@@ -20,8 +20,7 @@ export const newMarketsSlug = [
   'wif-usdt-perp',
   'avax-usdt-perp',
   'sui-usdt-perp',
-  'jup-usdt-perp',
-  'zro-usdt-perp'
+  'jup-usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
@@ -104,7 +103,9 @@ export const slugsToIncludeInInjectiveCategory = [
   'ninj-inj',
   'dojo-inj',
   'ginger-inj',
-  'autism-inj'
+  'autism-inj',
+  'andr-usdt',
+  'hinj-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [

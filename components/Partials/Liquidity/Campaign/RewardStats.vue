@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import {
@@ -8,8 +8,6 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
-
-const campaignStore = useCampaignStore()
 
 const props = defineProps({
   totalScore: {
@@ -28,47 +26,50 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const campaignStore = useCampaignStore()
 
-const ownerCampaignInfo = computed(() =>
-  campaignStore.campaignUsers.find(
-    (user) => user.accountAddress === walletStore.injectiveAddress
+const campaignWithReward = computed(() =>
+  campaignStore.campaignsWithUserRewards.find(
+    ({ campaignId }) => props.campaign.campaignId === campaignId
   )
 )
 
+const market = computed(() =>
+  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
+)
+
 const explorerLink = computed(() => {
-  if (!ownerCampaignInfo.value) {
+  if (!walletStore.address) {
     return
   }
 
-  return `${getExplorerUrl(NETWORK)}/account/${
-    ownerCampaignInfo.value.accountAddress
-  }`
+  return `${getExplorerUrl(NETWORK)}/account/${walletStore.address}`
 })
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() => {
-    if (!ownerCampaignInfo.value) {
+    if (!campaignWithReward.value || !market.value) {
       return 0
     }
 
-    return toBalanceInToken({
-      value: ownerCampaignInfo.value.score,
-      decimalPlaces: props.quoteDecimals
-    })
+    return new BigNumberInWei(campaignWithReward.value.userScore)
+      .toBase(props.quoteDecimals)
+      .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
   })
 )
 
 const estRewardsInPercentage = computed(() => {
   if (
-    !ownerCampaignInfo.value ||
+    !campaignWithReward.value ||
     new BigNumberInBase(props.totalScore).isZero()
   ) {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(ownerCampaignInfo.value.score).dividedBy(
+  return new BigNumberInBase(campaignWithReward.value.userScore).dividedBy(
     props.totalScore
   )
 })
@@ -115,50 +116,48 @@ const rewardsFormatted = computed(() =>
 </script>
 
 <template>
-  <div v-if="ownerCampaignInfo" class="bg-gray-850 rounded-md p-8">
-    <template v-if="ownerCampaignInfo">
-      <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
+  <div v-if="campaignWithReward" class="bg-gray-850 rounded-md p-8">
+    <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
-      <div class="flex">
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
-        >
-          <div>
-            <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
-            <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
-              <p class="text-blue-500 truncate">
-                {{ ownerCampaignInfo.accountAddress }}
+    <div class="flex">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
+      >
+        <div>
+          <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
+          <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
+            <p class="text-blue-500 truncate">
+              {{ walletStore.address }}
+            </p>
+          </NuxtLink>
+        </div>
+
+        <div>
+          <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
+          <p class="text-sm">{{ volumeInUsdToString }} USD</p>
+        </div>
+
+        <div>
+          <div class="text-xs uppercase pb-1 flex items-center space-x-2">
+            <p>{{ $t('campaign.rewards') }}</p>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-sm">
+              <p v-for="{ amount, symbol } in rewardsFormatted" :key="symbol">
+                {{ amount }} {{ symbol }}
               </p>
-            </NuxtLink>
-          </div>
-
-          <div>
-            <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
-            <p class="text-sm">{{ volumeInUsdToString }} USD</p>
-          </div>
-
-          <div>
-            <div class="text-xs uppercase pb-1 flex items-center space-x-2">
-              <p>{{ $t('campaign.rewards') }}</p>
             </div>
-            <div class="flex items-center justify-between gap-2">
-              <div class="text-sm">
-                <p v-for="{ amount, symbol } in rewardsFormatted" :key="symbol">
-                  {{ amount }} {{ symbol }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <PartialsLiquidityCommonClaimButton
-              v-bind="{
-                campaign: props.campaign
-              }"
-            />
           </div>
         </div>
+
+        <div>
+          <PartialsLiquidityCommonClaimButton
+            v-bind="{
+              campaign: props.campaign
+            }"
+          />
+        </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>

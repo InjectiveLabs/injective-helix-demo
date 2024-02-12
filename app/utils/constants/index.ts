@@ -84,6 +84,8 @@ export const TRADE_MAX_SUBACCOUNT_ARRAY_SIZE = 100
 export const MAX_SYMBOL_LENGTH = 6
 export const SYMBOL_DISPLAY_LENGTH = 3
 
+export const DUST_AMOUNT_THRESHOLD = 1
+
 export const GST_MINIMUM_GRIDS = 3
 export const GST_MAXIMUM_GRIDS = 100
 export const GST_MIN_TRADING_SIZE = 5

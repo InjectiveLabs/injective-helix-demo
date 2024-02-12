@@ -163,29 +163,26 @@ useIntervalFn(() => {
     <div class="flex gap-2 items-center">
       <div class="text-left">
         <CommonTokenIcon
-          v-if="market?.baseToken"
-          v-bind="{ token: market?.baseToken }"
+          v-if="market.baseToken"
+          v-bind="{ token: market.baseToken }"
         />
       </div>
 
       <div>
-        {{ market?.ticker }}
+        {{ market.ticker }}
       </div>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundToString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundToString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundToString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundToString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
-      <div>
-        {{ totalInvestmentToString }}
-        {{ market.quoteToken.symbol }}
-      </div>
+      <div>{{ totalInvestmentToString }} USD</div>
     </div>
 
     <div
