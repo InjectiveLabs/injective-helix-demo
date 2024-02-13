@@ -83,7 +83,7 @@ function fetchData() {
       }
     }),
     accountStore.streamBankBalance(),
-    gridStrategyStore.fetchStrategies(),
+    gridStrategyStore.fetchAllStrategies(),
     exchangeStore.getMarketsHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
