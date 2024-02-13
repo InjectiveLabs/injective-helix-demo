@@ -18,8 +18,8 @@ _Helix | The Premier Decentralized Spot and Derivatives Exchange_
 1. Clone the repository
 
 ```bash
-$ git clone git@github.com:InjectiveLabs/injective-dex.git
-$ cd injective-dex
+$ git clone https://github.com/InjectiveLabs/injective-helix-demo.git
+$ cd injective-helix-demo
 $ yarn
 ```
 
@@ -47,7 +47,7 @@ More details about how to deploy a Nuxt project can be found on their docs.
 
 We've migrated the `injective-helix` repo to Nuxt3 in January, 2023. To make the migration on your fork, there are couple of simple steps that you have to do:
 
-1. Pull the latest codebase from the `injective-dex` repo, `master` branch,
+1. Pull the latest codebase from the `injective-helix-demo` repo, `master` branch,
 2. Resolve merge conflicts on your fork, 
 3. Install the dependencies `yarn install`
 4. Clean up left overs from the previous deployments `yarn clean-up && rm -rf dist`
