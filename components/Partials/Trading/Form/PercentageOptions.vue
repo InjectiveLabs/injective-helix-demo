@@ -12,6 +12,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   MaxAmountOnOrderbook,
+  TradeExecutionType,
   TradeField,
   TradeForm,
   UiMarketWithToken
@@ -166,9 +167,15 @@ function derivativePercentageChange() {
     ? TradeField.BaseAmount
     : TradeField.QuoteAmount
 
-  const amount = derivativeAvailableBalanceGreaterThanOrderbook.value
-    ? props.maxAmountOnOrderbook.totalQuantity
-    : balanceToUpdateDerivativesWithFees.value
+  let amount
+
+  if (formValues.value[TradeField.TradingType] === TradeExecutionType.Market) {
+    amount = derivativeAvailableBalanceGreaterThanOrderbook.value
+      ? props.maxAmountOnOrderbook.totalQuantity
+      : balanceToUpdateDerivativesWithFees.value
+  } else {
+    amount = balanceToUpdateDerivativesWithFees.value
+  }
 
   const decimals = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.market.quantityDecimals
@@ -194,9 +201,15 @@ function spotPercentageChange() {
       ? TradeField.BaseAmount
       : TradeField.QuoteAmount
 
-  const amount = spotAvailableBalanceGreaterThanOrderbook.value
-    ? props.maxAmountOnOrderbook.totalQuantity
-    : balanceToUpdateSpotWithFees.value
+  let amount
+
+  if (formValues.value[TradeField.TradingType] === TradeExecutionType.Market) {
+    amount = spotAvailableBalanceGreaterThanOrderbook.value
+      ? props.maxAmountOnOrderbook.totalNotional
+      : balanceToUpdateSpotWithFees.value
+  } else {
+    amount = balanceToUpdateSpotWithFees.value
+  }
 
   const decimals =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy
