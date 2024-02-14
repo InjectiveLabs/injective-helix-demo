@@ -72,7 +72,8 @@ export const getRoutes = (network: Network, env: string) => {
     'avax-usdt-perp',
     'sui-usdt-perp',
     'arb-usdt-perp',
-    'osmo-usdt-perp'
+    'osmo-usdt-perp',
+    'link-usdt-perp'
   ]
 
   const gridTradingSpot = [
