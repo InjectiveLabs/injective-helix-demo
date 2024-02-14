@@ -146,6 +146,10 @@ function onDetailsPage() {
         <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
           {{ $t('sgt.exceededMaxRetries') }}
         </span>
+
+        <span v-if="strategy.stopReason === StopReason.Emergency">
+          {{ $t('sgt.marketConditionsNotSupported') }}
+        </span>
       </div>
     </div>
 

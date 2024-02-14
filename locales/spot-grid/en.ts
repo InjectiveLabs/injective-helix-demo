@@ -75,6 +75,7 @@ export default {
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    marketConditionsNotSupported: 'Market conditions not supported',
     autoModeHeader:
       'These parameters are generated automatically based on the last 30 days trading prices.',
     stopLossTooltip:
