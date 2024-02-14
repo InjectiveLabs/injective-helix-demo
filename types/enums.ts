@@ -420,6 +420,7 @@ export enum StrategyStatus {
 export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
+  Emergency = 'emergency',
   TakeProfit = 'take_profit',
   InsufficientFunds = 'insufficient_funds',
   ExceededMaxRetries = 'exceeded_max_retries'

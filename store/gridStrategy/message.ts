@@ -150,7 +150,7 @@ export const createStrategy = async ({
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+  backupPromiseCall(() => gridStrategyStore.fetchAllStrategies())
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
@@ -201,7 +201,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  backupPromiseCall(() => gridStrategyStore.fetchStrategies())
+  backupPromiseCall(() => gridStrategyStore.fetchAllStrategies())
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
