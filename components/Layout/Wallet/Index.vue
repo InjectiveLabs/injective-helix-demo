@@ -116,8 +116,8 @@ watch(isModalOpen, (newShowModalState) => {
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />
+      <LayoutWalletConnectWalletPhantom />
       <template v-if="IS_STAGING">
-        <LayoutWalletConnectWalletPhantom />
         <LayoutWalletConnectWalletOkxWallet />
       </template>
       <LayoutWalletConnectWalletLeap />
