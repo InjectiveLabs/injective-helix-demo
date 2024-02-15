@@ -90,8 +90,7 @@ export const slugsToIncludeInEthereumCategory = [
   'arb-usdt-perp',
   'gyen-usdt',
   'op-usdt-perp',
-  'link-usdt-perp',
-  'doge-usdt-perp'
+  'link-usdt-perp'
 ]
 
 export const slugsToIncludeInInjectiveCategory = [
