@@ -9,7 +9,7 @@ const { t } = useLang()
 const downloadOkxWalletLink = ref<any>(null)
 
 function connect() {
-  if (walletStore.trustWalletInstalled) {
+  if (walletStore.okxWalletInstalled) {
     walletStore
       .connectOkxWallet()
       .then(() => {
