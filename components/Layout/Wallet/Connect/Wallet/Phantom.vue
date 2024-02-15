@@ -9,7 +9,7 @@ const { t } = useLang()
 const downloadPhantomLink = ref<any>(null)
 
 function connect() {
-  if (walletStore.trustWalletInstalled) {
+  if (walletStore.phantomInstalled) {
     walletStore
       .connectPhantom()
       .then(() => {
@@ -33,6 +33,7 @@ function connect() {
 
     <template #title>
       {{ $t('connect.phantom') }}
+      <span class="text-2xs ml-2 text-primary-500">Beta</span>
     </template>
 
     <template #description>
