@@ -69,7 +69,7 @@ export default {
     useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
-    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
+    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} $',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     insufficientFunds: 'Insufficient Funds',
