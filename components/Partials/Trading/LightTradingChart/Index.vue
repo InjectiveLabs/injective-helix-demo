@@ -12,13 +12,6 @@ import {
   WhitespaceData,
   CrosshairMode
 } from 'lightweight-charts'
-import {
-  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_MAX_DECIMALS,
-  UI_DEFAULT_PRICE_MIN_DECIMALS
-} from '@/app/utils/constants'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
 
@@ -32,6 +25,11 @@ const props = defineProps({
     type: Object as PropType<(HistogramData<Time> | WhitespaceData<Time>)[]>,
     required: false,
     default: undefined
+  },
+
+  tickSize: {
+    type: Number,
+    required: true
   }
 })
 
@@ -59,6 +57,11 @@ const chartOptions: DeepPartial<ChartOptions> = {
 
 const container = ref()
 const wrapper = ref()
+
+const decimalPlaces = computed(() => {
+  if (Math.floor(props.tickSize) === props.tickSize) return 0
+  return props.tickSize.toString().split('.')[1].length || 0
+})
 
 function fitContent() {
   if (!chart) {
@@ -106,9 +109,16 @@ function init() {
   if (props.volumeData) {
     volumeSeries.setData(props.volumeData)
 
+    candlestickSeries.priceScale().applyOptions({
+      scaleMargins: {
+        top: 0.05,
+        bottom: 0.2
+      }
+    })
+
     chart.priceScale('').applyOptions({
       scaleMargins: {
-        top: 0.8,
+        top: 0.9,
         bottom: 0
       }
     })
@@ -118,19 +128,12 @@ function init() {
 
   candlestickSeries.applyOptions({
     priceFormat: {
-      minMove: 0.000000001
+      minMove: props.tickSize
     }
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    switch (true) {
-      case price > UI_DEFAULT_PRICE_MIN_DECIMALS:
-        return price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      case price > UI_DEFAULT_PRICE_MAX_DECIMALS:
-        return price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
-      default:
-        return price.toFixed(UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS)
-    }
+    return price.toFixed(decimalPlaces.value)
   }
 }
 
