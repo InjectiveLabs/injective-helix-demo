@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -157,6 +158,16 @@ watch(lastTradedPrice, (lastTradedPrice) => {
   }
 })
 
+const tickSize = computed(() =>
+  new BigNumberInWei(props.market.minPriceTickSize)
+    .toBase(
+      props.market.type === MarketType.Spot
+        ? props.market.quoteToken.decimals - props.market.baseToken.decimals
+        : props.market.quoteToken.decimals
+    )
+    .toNumber()
+)
+
 useIntervalFn(() => {
   exchangeStore
     .getMarketsHistoryNew({
@@ -189,7 +200,8 @@ useIntervalFn(() => {
         ref="chart"
         v-bind="{
           candlesticksData: visuallyOptimizedCandlesticks,
-          volumeData: volume
+          volumeData: volume,
+          tickSize
         }"
       />
     </AppHocLoading>
