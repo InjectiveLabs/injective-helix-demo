@@ -71,6 +71,7 @@ export enum Modal {
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
+  MarketNotOnHelix = 'market-not-on-helix',
   AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
   GridStrategyDetails = 'grid-strategy-details',
@@ -79,8 +80,11 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
+  TransferToMainSubaccount = 'transfer-to-main-subaccount',
   MarketRestricted = 'market-restricted',
-  NewFeature = 'new-feature'
+  NewFeatureTalisLaunch = 'new-feature-talis-launch',
+  ScavengerHunt = 'scavenger-hunt',
+  PostOnlyMode = 'post-only-mode'
 }
 
 export enum Breakpoint {
@@ -135,6 +139,8 @@ export enum MarketCategoryType {
   All = 'all',
   Cosmos = 'cosmos',
   Ethereum = 'ethereum',
+  Injective = 'injective',
+  Solana = 'solana',
   Experimental = 'experimental'
 }
 
@@ -142,8 +148,7 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj',
-  USDTkv = 'usdtkv'
+  INJ = 'inj'
 }
 
 export enum StreamType {
@@ -351,7 +356,7 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  sheduledUpgradeMarch = 'sheduled-upgrade-march'
+  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
 }
 
 export enum SubaccountBalanceStreamType {
@@ -375,13 +380,17 @@ export enum InstitutionalFormField {
 
 export enum SpotGridTradingField {
   Grids = 'grids',
+  SettleIn = 'SettleIn',
+  ExitType = 'exitType',
   StopLoss = 'stopLoss',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   TakeProfit = 'takeProfit',
-  SellAllBase = 'sellAllBase',
+  StrategyType = 'strategyType',
   InvestmentType = 'investmentType',
   InvestmentAmount = 'investmentAmount',
+  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
+  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
   BaseInvestmentAmount = 'baseInvestmentAmount'
 }
 
@@ -411,6 +420,7 @@ export enum StrategyStatus {
 export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
+  Emergency = 'emergency',
   TakeProfit = 'take_profit',
   InsufficientFunds = 'insufficient_funds',
   ExceededMaxRetries = 'exceeded_max_retries'

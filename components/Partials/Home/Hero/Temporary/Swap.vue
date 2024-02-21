@@ -1,10 +1,21 @@
 <script lang="ts" setup>
+import {
+  Status,
+  INJ_DENOM,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
+import { Token } from '@injectivelabs/token-metadata'
 import { ThrownException } from '@injectivelabs/exceptions'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
+import {
+  getCw20FromSymbolOrNameAsString,
+  getIbcDenomFromSymbolOrNameAsString,
+  getPeggyDenomFromSymbolOrNameAsString
+} from '@/app/utils/helper'
 import { denomClient } from '@/app/Services'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { mapErrorToMessage } from '@/app/client/utils/swap'
@@ -35,45 +46,38 @@ const hasOutputAmount = computed(() =>
 )
 
 onMounted(async () => {
-  /** W
-   * e hardcode only the denoms we need on page load for the token selector animation as to not load the component faster as to improve UX
+  /**
+   * We hardcode only the denoms we need on page load for
+   * the token selector animation as to not
+   * load the component faster as to improve UX
    **/
-  const symbolsTokensToPreload = [
-    'INJ',
-    'NEOK',
-    'SOL',
-    'ATOM',
-    'WETH',
-    'SOMM',
-    'ORAI',
-    'WMATIC',
-    'KAVA'
+
+  const tokensDenomToPreload = [
+    INJ_DENOM,
+    getCw20FromSymbolOrNameAsString('SOL'),
+    getIbcDenomFromSymbolOrNameAsString('ATOM'),
+    getPeggyDenomFromSymbolOrNameAsString('WETH'),
+    getCw20FromSymbolOrNameAsString('WMATIC'),
+    getIbcDenomFromSymbolOrNameAsString('KAVA')
   ]
-  const tokens = await denomClient.getDenomsToken(symbolsTokensToPreload)
+
+  const tokens = await denomClient.getDenomsToken(tokensDenomToPreload)
 
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap([
-      ...QUOTE_DENOMS_GECKO_IDS,
-      ...tokens.map((token) => token?.coinGeckoId || '')
-    ])
-  ])
+    tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),
+    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
+  ]).catch($onError)
+
+  Promise.all([spotStore.init(), swapStore.fetchRoutes()])
+    .then(async () => {
+      const spotBaseTokens = spotStore.markets.map(({ baseToken }) => baseToken)
+
+      await tokenStore.getTokensUsdPriceMapFromToken(spotBaseTokens)
+    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-
-  Promise.all([spotStore.init(), swapStore.fetchRoutes()])
-    .then(async () => {
-      const spotBaseCoinGeckoIds = spotStore.markets.map(
-        ({ baseToken }) => baseToken.coinGeckoId
-      )
-
-      await tokenStore.fetchTokensUsdPriceMap([
-        ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotBaseCoinGeckoIds
-      ])
-    })
-    .catch($onError)
 })
 
 function resetFormValues() {

@@ -63,9 +63,6 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
             >
               <span class="mr-1">≈</span>
               <slot name="total" />
-              <span class="text-gray-500 ml-1 break-normal">
-                {{ market.quoteToken.symbol }}
-              </span>
             </span>
           </CommonTextInfo>
         </p>

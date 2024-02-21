@@ -10,7 +10,7 @@ import { GeneralException } from '@injectivelabs/exceptions'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { walletStrategy } from '@/app/wallet-strategy'
-import { amplitudeWalletTracker } from '@/app/providers/amplitude'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -21,6 +21,8 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
+import { isOkxWalletInstalled } from '@/app/services/okx'
+import { isPhantomInstalled } from '@/app/services/phantom'
 
 type WalletStoreState = {
   wallet: Wallet
@@ -33,6 +35,8 @@ type WalletStoreState = {
 
   trustWalletInstalled: boolean
   metamaskInstalled: boolean
+  phantomInstalled: boolean
+  okxWalletInstalled: boolean
 
   walletConnectStatus: WalletConnectStatus
 
@@ -51,8 +55,12 @@ const initialStateFactory = (): WalletStoreState => ({
   defaultSubaccountId: '',
   addressConfirmation: '',
   wallet: Wallet.Metamask,
+
   metamaskInstalled: false,
   trustWalletInstalled: false,
+  okxWalletInstalled: false,
+  phantomInstalled: false,
+
   walletConnectStatus: WalletConnectStatus.idle,
 
   authZ: {
@@ -152,13 +160,13 @@ export const useWalletStore = defineStore('wallet', {
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await accountStore.fetchAccountPortfolio()
+      await accountStore.fetchAccountPortfolioBalances()
       await exchangeStore.initFeeDiscounts()
       await authZStore.fetchGrants()
 
-      amplitudeWalletTracker.submitWalletConnectedTrackEvent({
+      mixpanelAnalytics.trackLogin({
         wallet: walletStore.wallet,
-        address: walletStore.injectiveAddress,
+        injectiveAddress: walletStore.injectiveAddress,
         tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
       })
 
@@ -180,6 +188,22 @@ export const useWalletStore = defineStore('wallet', {
 
       walletStore.$patch({
         trustWalletInstalled: await isTrustWalletInstalled()
+      })
+    },
+
+    async isOkxWalletInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        okxWalletInstalled: await isOkxWalletInstalled()
+      })
+    },
+
+    async isPhantomInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        phantomInstalled: await isPhantomInstalled()
       })
     },
 
@@ -292,6 +316,48 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       await walletStore.connectWallet(Wallet.TrustWallet)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectOkxWallet() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.OkxWallet)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectPhantom() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.Phantom)
 
       const addresses = await getAddresses()
       const [address] = addresses
@@ -517,6 +583,7 @@ export const useWalletStore = defineStore('wallet', {
       const gridStrategyStore = useGridStrategyStore()
 
       await walletStrategy.disconnect()
+      mixpanelAnalytics.trackLogout()
 
       walletStore.reset()
       spotStore.resetSubaccount()

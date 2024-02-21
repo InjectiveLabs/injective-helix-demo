@@ -30,11 +30,6 @@ const props = defineProps({
     type: String as PropType<OrderSide>
   },
 
-  userOrders: {
-    required: true,
-    type: Array as PropType<string[]>
-  },
-
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -52,15 +47,19 @@ const emit = defineEmits<{
 
 const element = ref()
 
-const existsInUserOrders = computed(() =>
-  props.userOrders.some((price) => {
-    if (!props.record.price) {
-      return false
-    }
+// const existsInUserOrders = computed(() => {
+//   const recordInBase = new BigNumberInBase(props.record.price)
+//     .toWei(props.market.quoteToken.decimals)
+//     .toFixed()
 
-    return props.record.price.includes(price)
-  })
-)
+//   return props.userOrders.some((price) => {
+//     if (!props.record.price) {
+//       return false
+//     }
+
+//     return recordInBase.includes(price)
+//   })
+// })
 
 const recordTypeBuy = computed(() => props.type === OrderSide.Buy)
 
@@ -172,12 +171,14 @@ defineExpose({
       class="w-1/3 text-xs px-2 flex items-center justify-end z-[8]"
       @click.stop="onPriceClick"
     >
-      <BaseIcon
+      <!--
+        <BaseIcon
         v-if="existsInUserOrders"
         name="arrow"
         data-cy="orderbook-record-own-order-icon"
         class="text-gray-300 rotate-180 mr-2 w-2 h-2"
       />
+      -->
       <span
         class="text-right font-mono flex items-center"
         :class="{

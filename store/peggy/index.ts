@@ -178,9 +178,7 @@ export const usePeggyStore = defineStore('peggy', {
         ]
       })
 
-      await tokenStore.fetchTokensUsdPriceMap([
-        balanceWithToken.token.coinGeckoId
-      ])
+      await tokenStore.getTokensUsdPriceMapFromToken([balanceWithToken.token])
     },
 
     async getErc20DenomBalanceAndAllowance(denom: string) {

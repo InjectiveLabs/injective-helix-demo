@@ -20,7 +20,7 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolioBalances(),
     gridStrategyStore.fetchAllStrategies()
   ])
     .catch($onError)

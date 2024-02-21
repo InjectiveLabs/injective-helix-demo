@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { awaitForAll } from '@injectivelabs/utils'
 import { bankApi, denomClient, tokenPrice } from '@/app/Services'
+import { IS_MAINNET } from '@/app/utils/constants/setup'
+import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
@@ -19,8 +21,20 @@ const initialStateFactory = (): TokenStoreState => ({
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   getters: {
-    tokenUsdPrice: (state) => (coinGeckoId: string) => {
-      return state.tokenUsdPriceMap[coinGeckoId] || 0
+    tokenUsdPriceByCoinGeckoId: (state) => (coinGeckoId: string) => {
+      return state.tokenUsdPriceMap[coinGeckoId.toLowerCase()] || 0
+    },
+
+    tokenUsdPrice: (state) => (token?: Token) => {
+      if (!token) {
+        return 0
+      }
+
+      return (
+        state.tokenUsdPriceMap[token.coinGeckoId] ||
+        state.tokenUsdPriceMap[token.denom.toLowerCase()] ||
+        0
+      )
     },
 
     tradeableTokens: (state) => {
@@ -68,12 +82,13 @@ export const useTokenStore = defineStore('token', {
 
     async fetchTokens() {
       const tokenStore = useTokenStore()
+      const apiClient = IS_MAINNET ? baseCacheApi : bankApi
 
       if (tokenStore.tokens.length > 0) {
         return
       }
 
-      const { supply } = await bankApi.fetchTotalSupply({ limit: 1000 })
+      const { supply } = await apiClient.fetchTotalSupply({ limit: 2000 })
 
       const supplyWithTokensOrUnknown = supply.map((coin) =>
         denomClient.getDenomTokenStaticOrUnknown(coin.denom)
@@ -82,6 +97,7 @@ export const useTokenStore = defineStore('token', {
       const supplyWithToken = supplyWithTokensOrUnknown.filter(
         (token) => token.tokenType !== TokenType.Unknown
       )
+
       const supplyWithUnknownTokens = supplyWithTokensOrUnknown.filter(
         (token) => token.tokenType === TokenType.Unknown
       )
@@ -121,6 +137,35 @@ export const useTokenStore = defineStore('token', {
         tokens: [...tokenStore.tokens, ...tokensList],
         unknownTokens: unknownTokensWithoutAsset
       })
+    },
+
+    async getTokensUsdPriceMapFromToken(tokens: Token[]) {
+      const tokenStore = useTokenStore()
+
+      if (tokens.length === 0) {
+        return
+      }
+
+      const tokensWithoutCoinGeckoId = tokens
+        .filter((token) => !token.coinGeckoId)
+        .map((token) => token.denom.toLowerCase())
+      const tokensWithCoinGeckoId = tokens
+        .filter((token) => token.coinGeckoId)
+        .map((token) => token.coinGeckoId)
+
+      const tokenUsdPriceMapFromCoinGeckoId =
+        await tokenPrice.fetchUsdTokensPrice([
+          ...new Set(tokensWithCoinGeckoId.filter((id) => id))
+        ])
+      const tokenUsdPriceMapFromDenoms = await tokenPrice.fetchUsdDenomsPrice([
+        ...new Set(tokensWithoutCoinGeckoId.filter((denom) => denom))
+      ])
+
+      tokenStore.tokenUsdPriceMap = {
+        ...tokenUsdPriceMapFromCoinGeckoId,
+        ...tokenUsdPriceMapFromDenoms,
+        ...tokenStore.tokenUsdPriceMap
+      }
     },
 
     getTradeableTokensPriceMap() {

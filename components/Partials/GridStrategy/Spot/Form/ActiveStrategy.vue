@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { ExitType, StrategyType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
   addressAndMarketSlugToSubaccountId,
   durationFormatter
@@ -88,6 +88,10 @@ const durationFormatted = computed(() =>
       ? now.value
       : props.activeStrategy.updatedAt
   )
+)
+
+const isGeometric = computed(
+  () => props.activeStrategy.strategyType === StrategyType.Geometric
 )
 
 const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
@@ -230,6 +234,10 @@ useIntervalFn(() => {
             >
               ({{ $t('sgt.exceededMaxRetries') }})
             </span>
+
+            <span v-if="activeStrategy.stopReason === StopReason.Emergency">
+              {{ $t('sgt.marketConditionsNotSupported') }}
+            </span>
           </span>
         </p>
       </div>
@@ -265,9 +273,7 @@ useIntervalFn(() => {
 
       <span>
         {{ totalAmountToString }}
-        <span class="text-xs opacity-75 align-text-bottom ml-1">
-          {{ market?.quoteToken.symbol }}
-        </span>
+        <span class="text-xs opacity-75 align-text-bottom ml-1">USD</span>
       </span>
     </div>
 
@@ -296,6 +302,7 @@ useIntervalFn(() => {
           />
         </template>
       </p>
+
       <div class="text-right">
         <PartialsGridStrategySpotCommonDetailsPair
           v-if="activeStrategy.state === StrategyStatus.Active"
@@ -384,61 +391,154 @@ useIntervalFn(() => {
       </span>
     </div>
 
+    <div class="flex items-center justify-between mb-2 text-sm">
+      <span class="text-gray-400 flex items-center space-x-2">
+        <span>{{ $t('sgt.gridMode') }}</span>
+        <AppTooltip :content="$t('sgt.gridModeTooltip')" />
+      </span>
+
+      <span v-if="isGeometric">
+        {{ $t('sgt.geometric') }}
+      </span>
+      <span v-else>
+        {{ $t('sgt.arithmetic') }}
+      </span>
+    </div>
+
     <div class="border-t border-gray-800 my-4" />
 
-    <div class="flex justify-between mb-2 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.stopLoss') }}</span>
-        <AppTooltip :content="$t('sgt.stopLossTooltip')" />
-      </span>
-      <span v-if="stopLoss.eq(0)" class="text-xs opacity-75">&mdash;</span>
-      <span v-else>
-        {{ stopLossToString }}
-        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
-          market?.quoteToken.symbol
-        }}</span>
-      </span>
+    <div class="pb-4">
+      <div class="flex justify-between mb-4 text-sm">
+        <span class="text-gray-400 flex items-center space-x-2">
+          <span>{{ $t('sgt.advanced.settleIn') }}</span>
+        </span>
+
+        <span>
+          <span v-if="activeStrategy.exitType === ExitType.Quote">
+            {{ market.quoteToken.symbol }}
+          </span>
+          <span v-else-if="activeStrategy.exitType === ExitType.Base">
+            {{ market.baseToken.symbol }}
+          </span>
+          <span v-else>
+            {{ $t('sgt.advanced.disabled') }}
+          </span>
+        </span>
+      </div>
+
+      <div class="flex justify-between mb-2 text-sm">
+        <span class="text-gray-400 flex items-center space-x-2">
+          <span>{{ $t('sgt.stopLoss') }}</span>
+          <AppTooltip :content="$t('sgt.stopLossTooltip')" />
+        </span>
+
+        <span>
+          {{
+            activeStrategy.stopLossConfig
+              ? $t('sgt.enabled')
+              : $t('sgt.disabled')
+          }}
+        </span>
+      </div>
+
+      <div v-if="activeStrategy.stopLossConfig">
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-gray-400 flex items-center space-x-2">
+            <span> &mdash; {{ $t('sgt.advanced.stopLossPrice') }}</span>
+          </span>
+
+          <span>
+            <span>{{ stopLossToString }} </span>
+
+            <span class="ml-1">
+              {{ market?.quoteToken.symbol }}
+            </span>
+          </span>
+        </div>
+
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-gray-400 flex items-center space-x-2">
+            <span>
+              &mdash;
+              {{
+                $t('sgt.advanced.sellAllOnStop', {
+                  symbol: market.baseToken.symbol
+                })
+              }}
+            </span>
+          </span>
+
+          <span>
+            <span
+              v-if="activeStrategy.stopLossConfig.exitType === ExitType.Quote"
+            >
+              {{ $t('sgt.advanced.enabled') }}
+            </span>
+            <span v-else>
+              {{ $t('sgt.advanced.disabled') }}
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div class="flex justify-between mb-2 text-sm">
+        <span class="text-gray-400 flex items-center space-x-2">
+          <span>{{ $t('sgt.takeProfit') }}</span>
+          <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
+        </span>
+
+        <span>
+          {{
+            activeStrategy.takeProfitConfig
+              ? $t('sgt.enabled')
+              : $t('sgt.disabled')
+          }}
+        </span>
+      </div>
+
+      <div v-if="activeStrategy.takeProfitConfig">
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-gray-400 flex items-center space-x-2">
+            <span> &mdash; {{ $t('sgt.advanced.takeProfitPrice') }}</span>
+          </span>
+
+          <span>
+            <span> {{ takeProfitToString }}</span>
+
+            <span class="ml-1">
+              {{ market?.quoteToken.symbol }}
+            </span>
+          </span>
+        </div>
+
+        <div class="flex justify-between mb-2 text-sm">
+          <span class="text-gray-400 flex items-center space-x-2">
+            <span>
+              &mdash;
+              {{
+                $t('sgt.advanced.buyBaseOnStop', {
+                  symbol: market.baseToken.symbol
+                })
+              }}
+            </span>
+          </span>
+
+          <span>
+            <span
+              v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Base"
+            >
+              {{ $t('sgt.advanced.enabled') }}
+            </span>
+            <span v-else>
+              {{ $t('sgt.advanced.disabled') }}
+            </span>
+          </span>
+        </div>
+      </div>
     </div>
-
-    <div class="flex justify-between mb-4 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.takeProfit') }}</span>
-        <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
-      </span>
-
-      <span v-if="takeProfit.eq(0)" class="text-xs opacity-75">&mdash;</span>
-      <span v-else>
-        {{ takeProfitToString }}
-        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
-          market?.quoteToken.symbol
-        }}</span>
-      </span>
-    </div>
-
-    <!-- <div class="flex justify-between mb-2"> WE REMOVE THIS FOR NOW SINCE ADDITIONAL SUPPORT FROM SC IS NEEDED
-      <p class="text-gray-400 text-sm flex items-center space-x-2">
-        <span>{{ $t('sgt.sellAllBaseOnStop') }}</span>
-        <AppTooltip
-          :content="
-            $t('sgt.sellAllBaseOnStopTooltip', {
-              symbol: market.baseToken.symbol
-            })
-          "
-        />
-      </p>
-
-      <p>
-        {{
-          $t(
-            activeStrategy.shouldExitWithQuoteOnly
-              ? 'sgt.enabled'
-              : 'sgt.disabled'
-          )
-        }}
-      </p>
-    </div> -->
 
     <PartialsGridStrategySpotFormEndBot
+      v-if="activeStrategy.state === StrategyStatus.Active"
       v-bind="{ isLiquidity, strategy: activeStrategy }"
     />
   </div>

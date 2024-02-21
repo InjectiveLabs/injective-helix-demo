@@ -1,6 +1,11 @@
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ONE_IN_BASE, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import {
+  ONE_IN_BASE,
+  MAX_QUOTE_DECIMALS,
+  MAX_QUOTE_TENS_MULTIPLIER
+} from '@/app/utils/constants/index'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
 
 export function useSwap(formValues: Ref<Partial<SwapForm>>) {
@@ -36,7 +41,16 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     }
 
     return routeMarkets.value.reduce(
-      (tokenWithDecimals, { baseToken, quoteToken, quantityDecimals }) => {
+      (
+        tokenWithDecimals,
+        {
+          baseToken,
+          quoteToken,
+          quantityDecimals,
+          priceTensMultiplier,
+          quantityTensMultiplier
+        }
+      ) => {
         const tokens = [] as TokenAndPriceAndDecimals[]
 
         const { denom: baseDenom } = baseToken
@@ -52,21 +66,21 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
 
         if (!baseTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
-            token: baseToken,
             quantityDecimals,
+            token: baseToken,
             denom: baseToken.denom,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[baseToken?.coinGeckoId || ''] || 0
+            tensMultiplier: quantityTensMultiplier,
+            usdPrice: baseToken ? tokenStore.tokenUsdPrice(baseToken) : 0
           })
         }
 
         if (!quoteTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
             token: quoteToken,
-            quantityDecimals: MAX_QUOTE_DECIMALS,
             denom: quoteToken.denom,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[quoteToken?.coinGeckoId || ''] || 0
+            tensMultiplier: priceTensMultiplier,
+            quantityDecimals: MAX_QUOTE_DECIMALS,
+            usdPrice: quoteToken ? tokenStore.tokenUsdPrice(quoteToken) : 0
           })
         }
 
@@ -101,14 +115,12 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     ).div(100)
     const slippageMultiplier = ONE_IN_BASE.minus(slippageInBigNumber)
 
-    return new BigNumberInBase(
-      formValues.value[SwapFormField.OutputAmount] || 0
+    return formatAmountToAllowableAmount(
+      new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || 0)
+        .times(slippageMultiplier)
+        .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_DOWN),
+      outputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
     )
-      .times(slippageMultiplier)
-      .toFixed(
-        outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-        BigNumberInBase.ROUND_DOWN
-      )
   })
 
   const maximumInput = computed(() => {
@@ -117,12 +129,12 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     ).div(100)
     const slippageMultiplier = ONE_IN_BASE.plus(slippageInBigNumber)
 
-    return new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0)
-      .times(slippageMultiplier)
-      .toFixed(
-        outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-        BigNumberInBase.ROUND_UP
-      )
+    return formatAmountToAllowableAmount(
+      new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0)
+        .times(slippageMultiplier)
+        .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_UP),
+      inputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
+    )
   })
 
   const invalidInput = computed(() => {

@@ -245,7 +245,7 @@ watch(
 
       <div class="mt-8">
         <AppButton
-          class="w-full bg-blue-500 text-white font-semibold"
+          class="w-full bg-blue-500 text-blue-900 font-semibold"
           v-bind="{
             status,
             isLg: true,

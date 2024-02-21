@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { UiExpiryFuturesMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 
 defineProps({
   markets: {
-    type: Array as PropType<UiExpiryFuturesMarketWithToken[]>,
+    type: Array as PropType<UiDerivativeMarketWithToken[]>,
     required: true
   }
 })

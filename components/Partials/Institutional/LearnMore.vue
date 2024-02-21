@@ -17,7 +17,7 @@ function openModal() {
       <h2 class="text-4xl">{{ $t('institutional.learnMore') }}</h2>
       <h2 class="text-4xl">{{ $t('institutional.talkToUs') }}</h2>
       <button
-        class="bg-blue-500 text-white px-4 py-2 rounded-md"
+        class="bg-blue-500 text-blue-900 px-4 py-2 rounded-md"
         @click="openModal"
       >
         {{ $t('institutional.getInTouch') }}

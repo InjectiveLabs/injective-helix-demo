@@ -25,7 +25,7 @@ defineProps({
     />
 
     <span
-      class="tracking-1"
+      class="tracking-1 text-gray-100"
       :class="{ 'text-2xl': isSelected }"
       data-cy="network-selector-selected-option-text-content"
     >

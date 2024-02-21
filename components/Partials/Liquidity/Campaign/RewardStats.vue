@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import {
@@ -8,12 +8,6 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
-
-const campaignStore = useCampaignStore()
-const { success, error } = useNotifications()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
 
 const props = defineProps({
   totalScore: {
@@ -32,78 +26,78 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const walletStore = useWalletStore()
+const campaignStore = useCampaignStore()
 
-const hasUserClaimed = ref(false)
-const status = reactive(new Status(StatusType.Loading))
-const claimStatus = reactive(new Status(StatusType.Idle))
-
-const campaignWithSc = computed(() =>
-  LP_CAMPAIGNS.find(
+const campaignWithReward = computed(() =>
+  campaignStore.campaignsWithUserRewards.find(
     ({ campaignId }) => props.campaign.campaignId === campaignId
   )
 )
-const isClaimable = computed(() => Date.now() > props.campaign.endDate)
+
+const market = computed(() =>
+  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
+)
 
 const explorerLink = computed(() => {
-  if (!campaignStore.ownerCampaignInfo) {
+  if (!walletStore.address) {
     return
   }
 
-  return `${getExplorerUrl(NETWORK)}/account/${
-    campaignStore.ownerCampaignInfo.accountAddress
-  }`
+  return `${getExplorerUrl(NETWORK)}/account/${walletStore.address}`
 })
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() => {
-    if (!campaignStore.ownerCampaignInfo) {
+    if (!campaignWithReward.value || !market.value) {
       return 0
     }
 
-    return toBalanceInToken({
-      value: campaignStore.ownerCampaignInfo.score,
-      decimalPlaces: props.quoteDecimals
-    })
+    return new BigNumberInWei(campaignWithReward.value.userScore)
+      .toBase(props.quoteDecimals)
+      .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
   })
 )
 
 const estRewardsInPercentage = computed(() => {
   if (
-    !campaignStore.ownerCampaignInfo ||
+    !campaignWithReward.value ||
     new BigNumberInBase(props.totalScore).isZero()
   ) {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(campaignStore.ownerCampaignInfo.score).dividedBy(
+  return new BigNumberInBase(campaignWithReward.value.userScore).dividedBy(
     props.totalScore
   )
 })
 
 const rewards = computed(() => {
-  if (!campaignWithSc.value) {
+  if (!props.campaign.rewards) {
     return []
   }
 
-  return campaignWithSc.value.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(
-      ({ symbol }) => symbol === reward.symbol
-    )
+  return props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
     const amount = new BigNumberInBase(
       estRewardsInPercentage.value
-    ).multipliedBy(reward.amount || 0)
+    ).multipliedBy(
+      toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token?.decimals || 18
+      })
+    )
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(
-          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-        )
+      ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {
       amount,
-      symbol: reward.symbol,
+      symbol: token?.symbol || '',
       amountInUsd
     }
   })
@@ -119,130 +113,51 @@ const rewardsFormatted = computed(() =>
     symbol: reward.symbol
   }))
 )
-
-onWalletConnected(() => {
-  fetchOwnerInfo()
-})
-
-function fetchOwnerInfo() {
-  status.setLoading()
-
-  Promise.all([
-    campaignStore.fetchUserClaimedStatus(campaignWithSc.value?.scAddress || ''),
-    campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
-  ])
-    .then(([hasUserClaimedStatus]) => {
-      hasUserClaimed.value = hasUserClaimedStatus || false
-    })
-    .catch($onError)
-    .finally(() => status.setIdle())
-}
-
-function onClaimRewards() {
-  const scAddress = campaignWithSc.value?.scAddress
-
-  if (!scAddress) {
-    return
-  }
-
-  claimStatus.setLoading()
-
-  campaignStore
-    .claimReward(scAddress)
-    .then(() => {
-      success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
-      })
-
-      hasUserClaimed.value = true
-    })
-    .catch((er) => {
-      if ((er.originalMessage as string).includes('has already claimed')) {
-        error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
-        })
-      } else {
-        $onError(er)
-      }
-    })
-    .finally(() => {
-      claimStatus.setIdle()
-    })
-}
-
-useIntervalFn(() => {
-  campaignStore.fetchCampaignOwnerInfo(props.campaign.campaignId)
-}, 30 * 1000)
-
-watch(() => props.campaign.campaignId, fetchOwnerInfo)
 </script>
 
 <template>
-  <AppHocLoading :status="status">
-    <div
-      v-if="campaignStore.ownerCampaignInfo"
-      class="bg-gray-850 rounded-md p-8"
-    >
-      <template v-if="campaignStore.ownerCampaignInfo">
-        <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
+  <div v-if="campaignWithReward" class="bg-gray-850 rounded-md p-8">
+    <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
-        <div class="flex">
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
-          >
-            <div>
-              <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
-              <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
-                <p class="text-blue-500 truncate">
-                  {{ campaignStore.ownerCampaignInfo.accountAddress }}
-                </p>
-              </NuxtLink>
-            </div>
+    <div class="flex">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
+      >
+        <div>
+          <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
+          <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
+            <p class="text-blue-500 truncate">
+              {{ walletStore.address }}
+            </p>
+          </NuxtLink>
+        </div>
 
-            <div>
-              <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
-              <p class="text-sm">{{ volumeInUsdToString }} USD</p>
-            </div>
+        <div>
+          <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
+          <p class="text-sm">{{ volumeInUsdToString }} USD</p>
+        </div>
 
-            <div>
-              <div class="text-xs uppercase pb-1 flex items-center space-x-2">
-                <p>{{ $t('campaign.rewards') }}</p>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-sm">
-                  <p
-                    v-for="{ amount, symbol } in rewardsFormatted"
-                    :key="symbol"
-                  >
-                    {{ amount }} {{ symbol }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <AppButton
-                class="border border-blue-500 mb-1"
-                v-bind="{
-                  isXs: true,
-                  status: claimStatus,
-                  isDisabled: !isClaimable || hasUserClaimed
-                }"
-                @click="onClaimRewards"
-              >
-                <div
-                  class="font-semibold"
-                  :class="{ 'text-blue-500': !hasUserClaimed }"
-                >
-                  {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
-                </div>
-              </AppButton>
+        <div>
+          <div class="text-xs uppercase pb-1 flex items-center space-x-2">
+            <p>{{ $t('campaign.rewards') }}</p>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-sm">
+              <p v-for="{ amount, symbol } in rewardsFormatted" :key="symbol">
+                {{ amount }} {{ symbol }}
+              </p>
             </div>
           </div>
         </div>
-      </template>
+
+        <div>
+          <PartialsLiquidityCommonClaimButton
+            v-bind="{
+              campaign: props.campaign
+            }"
+          />
+        </div>
+      </div>
     </div>
-  </AppHocLoading>
+  </div>
 </template>

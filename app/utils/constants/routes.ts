@@ -9,14 +9,17 @@ export const getRoutes = (network: Network, env: string) => {
   const spot = [
     'inj-usdt',
     'stinj-inj',
+    'ninj-inj',
     'atom-usdt',
+    'ninja-inj',
+    'autism-inj',
+    'kira-inj',
+    'katana-inj',
     'arb-usdt',
     'chz-usdcet',
     'wmatic-usdt',
     'sol-usdcet',
     'canto-usdt',
-    'usdt-usdcet',
-    'usdc-usdcet',
     'ape-usdt',
     'cre-usdt',
     'link-usdt',
@@ -26,9 +29,9 @@ export const getRoutes = (network: Network, env: string) => {
     'evmos-usdt',
     'gf-usdt',
     'somm-usdt',
-    'ethbtctrend-usdt',
-    'steadyeth-usdt',
-    'steadybtc-usdt',
+    // 'ethbtctrend-usdt',
+    // 'steadyeth-usdt',
+    // 'steadybtc-usdt',
     'neok-usdt',
     'orai-usdt',
     'kava-usdt',
@@ -37,25 +40,41 @@ export const getRoutes = (network: Network, env: string) => {
     'usdy-usdt',
     'whale-usdt',
     'sol-usdt',
-    'kuji-usdt'
+    'kuji-usdt',
+    'talis-usdt',
+    'app-inj',
+    'ginger-inj',
+    'gyen-usdt',
+    'dojo-inj',
+    'andr-usdt',
+    'hinj-inj'
   ]
 
   const perpetuals = [
     'btc-usdt-perp',
+    'zro-usdt-perp',
+    'sol-usdt-perp',
+    'op-usdt-perp',
     'inj-usdt-perp',
     'xrp-usdt-perp',
     'eth-usdt-perp',
-    'bonk-usdt-perp',
-    'osmo-usdt-perp',
     'bnb-usdt-perp',
     'stx-usdt-perp',
     'atom-usdt-perp',
     'sei-usdt-perp',
     'axl-usdt-perp',
+    'wif-usdt-perp',
     'btc-usdtkv-perp',
     'eth-usdtkv-perp',
     'pyth-usdt-perp',
-    'tia-usdt-perp'
+    'tia-usdt-perp',
+    'jup-usdt-perp',
+    'avax-usdt-perp',
+    'sui-usdt-perp',
+    'arb-usdt-perp',
+    'osmo-usdt-perp',
+    'link-usdt-perp',
+    'doge-usdt-perp'
   ]
 
   const gridTradingSpot = [
@@ -66,7 +85,21 @@ export const getRoutes = (network: Network, env: string) => {
     'weth-usdt',
     'whale-usdt',
     'usdtkv-usdt',
-    'wmatic-usdt'
+    'wmatic-usdt',
+    'arb-usdt',
+    'kuji-usdt',
+    'talis-usdt',
+    'sol-usdt',
+    'ninja-inj',
+    'kira-inj',
+    'autism-inj',
+    'usdy-usdt',
+    'ginger-inj',
+    'app-inj',
+    'strd-usdt',
+    'orai-usdt',
+    'ninj-inj',
+    'dojo-inj'
   ]
 
   const binaryOptions: string[] = []
@@ -100,12 +133,11 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt', 'talis-usdt')
+    // spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
+    /** limit to 40 markets max for querying activities */
+    spot.push('pyth-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
-
-  // Redirection pairs
-  const spotMarketRedirectsSlugsPairs = { 'usdt-usdc': 'usdt-usdcet' }
 
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
@@ -138,9 +170,6 @@ export const getRoutes = (network: Network, env: string) => {
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
   const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-  const spotRedirectRoutes = Object.keys(spotMarketRedirectsSlugsPairs).map(
-    (s) => `/spot/${s}`
-  )
   const futures = [...perpetuals, ...expiryFutures]
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
   const binaryOptionsRoutes =
@@ -157,11 +186,10 @@ export const getRoutes = (network: Network, env: string) => {
       futures,
       binaryOptions,
       expiryFutures,
-      gridTradingSpot,
-      spotMarketRedirectsSlugsPairs
+      gridTradingSpot
     },
     ROUTES: {
-      spotRoutes: [...spotRoutes, ...spotRedirectRoutes],
+      spotRoutes: [...spotRoutes],
       futuresRoutes,
       customStaticRoutes,
       binaryOptionsRoutes,

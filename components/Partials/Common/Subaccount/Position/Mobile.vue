@@ -2,6 +2,7 @@
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
@@ -11,6 +12,15 @@ const modalStore = useModalStore()
 const { t } = useLang()
 const { error, success } = useNotifications()
 const { $onError } = useNuxtApp()
+
+const props = defineProps({
+  hideBalance: Boolean,
+
+  position: {
+    required: true,
+    type: Object as PropType<UiPosition | PositionV2>
+  }
+})
 
 const {
   pnl,
@@ -27,17 +37,8 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const props = defineProps({
-  hideBalance: Boolean,
-
-  position: {
-    required: true,
-    type: Object as PropType<UiPosition>
-  }
-})
-
 const emit = defineEmits<{
-  'share:position': [state: UiPosition]
+  'share:position': [state: UiPosition | PositionV2]
 }>()
 
 const status = reactive(new Status())
@@ -53,7 +54,9 @@ const hasReduceOnlyOrders = computed(
 )
 
 function addMargin() {
-  useEventBus<UiPosition>(BusEvents.AddMarginToPosition).emit(props.position)
+  useEventBus<UiPosition | PositionV2>(BusEvents.AddMarginToPosition).emit(
+    props.position
+  )
 
   modalStore.openModal(Modal.AddMarginToPosition)
 }

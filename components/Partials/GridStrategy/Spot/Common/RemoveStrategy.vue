@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 
-import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { durationFormatter } from '@/app/utils/helpers'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const props = defineProps({
   isLiquidity: Boolean,
 
@@ -45,7 +44,7 @@ function removeStrategy() {
     .finally(() => {
       status.setIdle()
 
-      amplitudeGridStrategyTracker.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: durationFormatter(props.createdAt, Date.now()),
         market: gridStrategyStore.spotMarket?.slug || '',
         totalProfit: props.pnl,

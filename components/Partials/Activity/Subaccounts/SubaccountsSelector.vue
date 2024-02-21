@@ -1,75 +1,46 @@
 <script lang="ts" setup>
-import {
-  isSgtSubaccountId,
-  getSubaccountIndex,
-  getMarketIdFromSubaccountId
-} from '@/app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { ActivitySubPage } from '@/types'
 
 const accountStore = useAccountStore()
-const { t } = useLang()
+const { subaccount } = useSubaccounts()
 
-const emit = defineEmits<{
-  'update:subaccount': [subaccount: string]
-}>()
+const router = useRouter()
 
-const subaccountSelectOptions = computed(() =>
-  accountStore.hasMultipleSubaccounts
-    ? Object.keys(accountStore.subaccountBalancesMap)
-        .map((value) => {
-          if (getSubaccountIndex(value) === 0) {
-            return { display: `${t('account.main')}`, value }
-          }
-
-          if (isSgtSubaccountId(value)) {
-            return {
-              value,
-              display: `SGT ${getMarketIdFromSubaccountId(value)}`
-            }
-          }
-
-          return {
-            value,
-            display: getSubaccountIndex(value).toString()
-          }
-        })
-        .sort((a, b) => a.value.localeCompare(b.value))
-    : []
-)
-
-const subaccount = computed({
-  get: (): string => accountStore.subaccountId,
-  set: (value: string) => {
-    accountStore.$patch({
-      subaccountId: value
-    })
-
-    nextTick(() => {
-      emit('update:subaccount', value)
-    })
+function onUpdateSubaccount(subaccountId: string) {
+  if (isSgtSubaccountId(subaccountId)) {
+    router.replace({ name: ActivitySubPage.Spot })
   }
-})
+}
 </script>
 
 <template>
   <div v-if="accountStore.hasMultipleSubaccounts" class="xl:ml-right xl:flex">
-    <AppSelect
-      v-model="subaccount"
-      :options="subaccountSelectOptions"
-      class="self-end"
-      :wrapper-class="`bg-white/10 px-4 py-2 rounded-lg`"
+    <CommonSubaccountOptions
+      v-bind="{ includeBotsSubaccounts: true, showLowBalance: true }"
     >
-      <template #default="{ selected }">
-        <span v-if="selected" class="text-md text-gray-300 font-semibold">
-          {{ $t('account.account') }}:
-          <span class="uppercase">{{ selected.display }}</span>
-        </span>
-      </template>
+      <template #default="{ subaccountOptions }">
+        <AppSelect
+          v-model="subaccount"
+          :options="subaccountOptions"
+          class="self-end"
+          :wrapper-class="`bg-white/10 px-4 py-2 rounded-lg`"
+          @update:model-value="onUpdateSubaccount"
+        >
+          <template #default="{ selected }">
+            <span v-if="selected" class="text-md text-gray-300 font-semibold">
+              {{ $t('account.account') }}:
+              <span class="uppercase">{{ selected.display }}</span>
+            </span>
+          </template>
 
-      <template #option="{ option }">
-        <span class="text-xs uppercase text-white">
-          {{ option.display }}
-        </span>
+          <template #option="{ option }">
+            <span class="text-xs uppercase text-white">
+              {{ option.display }}
+            </span>
+          </template>
+        </AppSelect>
       </template>
-    </AppSelect>
+    </CommonSubaccountOptions>
   </div>
 </template>

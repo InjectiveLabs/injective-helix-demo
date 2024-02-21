@@ -17,6 +17,7 @@ import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
 } from '../account/stream'
+import { spotCacheApi } from '@/app/providers/cache/SpotCacheApi'
 import {
   streamTrades,
   cancelTradesStream,
@@ -43,6 +44,7 @@ import {
   indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
+  IS_MAINNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -142,9 +144,9 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
 
-      const markets = await indexerSpotApi.fetchMarkets()
-
+      const markets = await apiClient.fetchMarkets()
       const marketsWithToken = await tokenService.toSpotMarketsWithToken(
         markets
       )
@@ -192,7 +194,11 @@ export const useSpotStore = defineStore('spot', {
         marketIdsFromQuery
       })
 
-      await spotStore.init()
+      if (marketIdsFromQuery.length === 0) {
+        await spotStore.initIfNotInit()
+      } else {
+        await spotStore.init()
+      }
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
@@ -377,27 +383,31 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
+      const apiClient = IS_MAINNET ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
-      const marketSummaries =
-        await indexerRestSpotChronosApi.fetchMarketsSummary()
+      try {
+        const marketSummaries = await apiClient.fetchMarketsSummary()
 
-      const marketsWithoutMarketSummaries = marketSummaries.filter(
-        ({ marketId }) =>
-          !markets.some((market) => market.marketId === marketId)
-      )
+        const marketsWithoutMarketSummaries = marketSummaries.filter(
+          ({ marketId }) =>
+            !markets.some((market) => market.marketId === marketId)
+        )
 
-      spotStore.$patch({
-        marketsSummary: [
-          ...marketSummaries.map(
-            UiMarketTransformer.convertMarketSummaryToUiMarketSummary
-          ),
-          ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-            zeroSpotMarketSummary(marketId)
-          )
-        ]
-      })
+        spotStore.$patch({
+          marketsSummary: [
+            ...marketSummaries.map(
+              UiMarketTransformer.convertMarketSummaryToUiMarketSummary
+            ),
+            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
+              zeroSpotMarketSummary(marketId)
+            )
+          ]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
     },
 
     cancelSubaccountStream() {
@@ -406,6 +416,15 @@ export const useSpotStore = defineStore('spot', {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()
+    },
+
+    resetOrderbookAndTrades() {
+      const spotStore = useSpotStore()
+
+      spotStore.$patch({
+        trades: [],
+        orderbook: undefined
+      })
     },
 
     resetSubaccount() {

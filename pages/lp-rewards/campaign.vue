@@ -24,6 +24,7 @@ onWalletConnected(() => {
     error({ title: t('campaign.campaignNotFound') })
     navigateTo({ name: MainPage.Index })
   }
+
   Promise.all([
     tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
     campaignStore.fetchCampaign({
@@ -122,6 +123,7 @@ useIntervalFn(
         <div class="overflow-x-auto">
           <table class="w-full min-w-[742px]">
             <PartialsLiquidityCampaignTableHeader />
+
             <tbody v-if="market">
               <PartialsLiquidityCampaignTableRow
                 v-for="campaignUser in campaignStore.campaignUsers"

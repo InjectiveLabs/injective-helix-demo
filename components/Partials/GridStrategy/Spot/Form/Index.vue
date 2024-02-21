@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
+
 import {
   GridStrategyType,
   InvestmentTypeGst,
@@ -19,11 +20,14 @@ defineProps({
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
-
 useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true,
-  initialValues: { investmentType: InvestmentTypeGst.BaseAndQuote }
+  initialValues: {
+    investmentType: InvestmentTypeGst.BaseAndQuote
+  }
 })
+
+const gridStrategies = [GridStrategyType.Auto, GridStrategyType.Manual]
 
 const activeTab = ref(GridStrategyType.Auto)
 
@@ -36,7 +40,7 @@ const activeStrategy = computed(
     )!
 )
 
-function changeTab(tab: GridStrategyType) {
+function onTabChange(tab: GridStrategyType) {
   activeTab.value = tab
 }
 
@@ -58,25 +62,28 @@ function openGettingStartedModal() {
           <div
             class="grid grid-cols-2 mb-4 border cursor-pointer font-semibold text-gray-500 bg-gray-900 overflow-hidden rounded-md select-none"
           >
-            <div
-              class="px-2 py-4 text-center"
-              :class="{
-                'bg-gray-800 text-white': activeTab === GridStrategyType.Auto
-              }"
-              @click="changeTab(GridStrategyType.Auto)"
+            <AppSelectButton
+              v-for="strategy in gridStrategies"
+              :key="`grid-type-selector-${strategy}`"
+              v-model="activeTab"
+              :value="strategy"
             >
-              {{ $t('sgt.auto') }}
-            </div>
-
-            <div
-              class="px-2 py-4 text-center"
-              :class="{
-                'bg-gray-800 text-white': activeTab === GridStrategyType.Manual
-              }"
-              @click="changeTab(GridStrategyType.Manual)"
-            >
-              {{ $t('sgt.manual') }}
-            </div>
+              <template #default="{ isActive }">
+                <div
+                  class="px-2 py-4 text-center"
+                  :class="{
+                    'bg-gray-800 text-white': isActive
+                  }"
+                >
+                  <span v-if="strategy === GridStrategyType.Auto">
+                    {{ $t('sgt.auto') }}
+                  </span>
+                  <span v-else>
+                    {{ $t('sgt.manual') }}
+                  </span>
+                </div>
+              </template>
+            </AppSelectButton>
           </div>
 
           <div
@@ -90,7 +97,7 @@ function openGettingStartedModal() {
           <PartialsGridStrategySpotFormAuto
             v-if="activeTab === GridStrategyType.Auto"
             v-bind="{ market }"
-            @set:tab="changeTab"
+            @update:tab="onTabChange"
           />
 
           <PartialsGridStrategySpotFormManual

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import {
+  PositionV2,
+  formatAmountToAllowableAmount
+} from '@injectivelabs/sdk-ts'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -9,6 +12,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   MaxAmountOnOrderbook,
+  TradeExecutionType,
   TradeField,
   TradeForm,
   UiMarketWithToken
@@ -57,7 +61,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition> | undefined,
+    type: Object as PropType<UiPosition | PositionV2> | undefined,
     default: undefined
   },
 
@@ -163,9 +167,15 @@ function derivativePercentageChange() {
     ? TradeField.BaseAmount
     : TradeField.QuoteAmount
 
-  const amount = derivativeAvailableBalanceGreaterThanOrderbook.value
-    ? props.maxAmountOnOrderbook.totalQuantity
-    : balanceToUpdateDerivativesWithFees.value
+  let amount
+
+  if (formValues.value[TradeField.TradingType] === TradeExecutionType.Market) {
+    amount = derivativeAvailableBalanceGreaterThanOrderbook.value
+      ? props.maxAmountOnOrderbook.totalQuantity
+      : balanceToUpdateDerivativesWithFees.value
+  } else {
+    amount = balanceToUpdateDerivativesWithFees.value
+  }
 
   const decimals = derivativeAvailableBalanceGreaterThanOrderbook.value
     ? props.market.quantityDecimals
@@ -191,9 +201,15 @@ function spotPercentageChange() {
       ? TradeField.BaseAmount
       : TradeField.QuoteAmount
 
-  const amount = spotAvailableBalanceGreaterThanOrderbook.value
-    ? props.maxAmountOnOrderbook.totalQuantity
-    : balanceToUpdateSpotWithFees.value
+  let amount
+
+  if (formValues.value[TradeField.TradingType] === TradeExecutionType.Market) {
+    amount = spotAvailableBalanceGreaterThanOrderbook.value
+      ? props.maxAmountOnOrderbook.totalNotional
+      : balanceToUpdateSpotWithFees.value
+  } else {
+    amount = balanceToUpdateSpotWithFees.value
+  }
 
   const decimals =
     spotAvailableBalanceGreaterThanOrderbook.value || !props.isBuy

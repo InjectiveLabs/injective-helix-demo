@@ -297,6 +297,13 @@ const hardcodedExcludedTradesByMarket = {
       }
     ]
   },
+
+  // KIRA/INJ
+  'factory/inj1xy3kvlr4q4wdd6lrelsrw2fk2ged0any44hhwq/KIRA/inj': {
+    excludeBefore: 1702858500000,
+    bars: []
+  },
+
   'BTC/USDT PERP': {
     excludeBefore: null,
     bars: [

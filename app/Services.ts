@@ -23,6 +23,7 @@ import {
   IndexerGrpcOracleApi,
   IndexerGrpcAccountApi,
   IndexerGrpcTradingApi,
+  ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
   IndexerGrpcExplorerApi,
   IndexerRestExplorerApi,
@@ -52,14 +53,14 @@ export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
 export const wasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
+export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
-export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
 export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.grpc)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
 export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
+export const tendermintApi = new ChainGrpcTendermintApi(ENDPOINTS.grpc)
+export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
 export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
-export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
-export const chainGrpcWasmApi = new ChainGrpcWasmApi(ENDPOINTS.grpc)
 
 export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
@@ -109,7 +110,7 @@ export const apolloConsumer = new ApolloConsumer(
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
   network: NETWORK,
-  networkEndpoints: ENDPOINTS,
+  endpoints: ENDPOINTS,
   feePayerPubKey: FEE_PAYER_PUB_KEY,
   simulateTx: true
 })
@@ -136,7 +137,7 @@ export const tokenService = new TokenService({
   endpoints: ENDPOINTS
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
-export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
+export const tokenPrice = new TokenPrice(NETWORK, COIN_GECKO_OPTIONS)
 export const denomClient = new DenomClientAsync(NETWORK, {
   endpoints: ENDPOINTS,
   alchemyRpcUrl: alchemyRpcEndpoint
@@ -147,5 +148,5 @@ export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-helix-v1-${NETWORK}`
+  `inj-helix-v2-${NETWORK}`
 )

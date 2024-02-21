@@ -110,11 +110,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
@@ -154,11 +154,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
@@ -210,7 +210,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
         v-model="investmentAmountValue"
         :is-disabled="isLowerBoundGtLastPrice"
         is-disabled-gray
-        class="text-right"
+        placeholder="0.00"
       >
         <template #addon>
           {{ market.quoteToken.symbol }}
@@ -222,6 +222,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ quoteAmountToString }}
             {{ market.quoteToken.symbol }}
           </p>
+        </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
         </template>
       </AppInputNumeric>
 
@@ -240,7 +244,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     >
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
-        class="text-right"
+        placeholder="0.00"
         :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
@@ -254,6 +258,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ baseAmountToString }}
             {{ market.baseToken.symbol }}
           </p>
+        </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         </template>
       </AppInputNumeric>
 

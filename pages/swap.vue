@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { amplitudeSwapTracker } from '@/app/providers/amplitude'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
@@ -77,12 +77,14 @@ function initRoutes() {
   Promise.all([
     spotStore.init(),
     swapStore.fetchRoutes(),
-    accountStore.fetchAccountPortfolio()
+    accountStore.fetchAccountPortfolioBalances()
   ])
     .then(async () => {
-      await tokenStore.fetchTokensUsdPriceMap([
-        ...QUOTE_DENOMS_GECKO_IDS,
-        ...spotStore.markets.map(({ baseToken }) => baseToken.coinGeckoId)
+      await Promise.all([
+        tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
+        tokenStore.getTokensUsdPriceMapFromToken(
+          spotStore.markets.map(({ baseToken }) => baseToken)
+        )
       ])
     })
     .catch($onError)
@@ -128,16 +130,17 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      amplitudeSwapTracker.swap({
-        error: err,
-        fee: totalFee.value,
+      mixpanelAnalytics.trackSwap({
+        fee: totalFee.value.toFixed(2),
         rate: summaryRef.value?.priceForDisplayToFormat,
         inputAmount: formValues[SwapFormField.InputAmount],
         outputAmount: formValues[SwapFormField.OutputAmount],
         outputToken: outputToken.value?.token.symbol,
         inputToken: inputToken.value?.token.symbol,
         minimumOutput: minimumOutput.value,
-        slippageTolerance: formValues[SwapFormField.Slippage]
+        slippageTolerance: formValues[SwapFormField.Slippage],
+        error: err ? err.message : '',
+        isSuccess: !err
       })
 
       if (!err) {
@@ -270,8 +273,8 @@ function resetQueryError() {
           v-bind="{
             disabled: fetchStatus.isLoading() || submitStatus.isLoading()
           }"
-          @update:outputQuantity="getOutputQuantity"
           @update:inputQuantity="getInputQuantity"
+          @update:outputQuantity="getOutputQuantity"
           @queryError:reset="resetQueryError"
           @form:reset="resetFormValues"
         />

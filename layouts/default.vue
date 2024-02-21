@@ -32,8 +32,11 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
+    appStore.fetchBlockHeight(),
     spotStore.initIfNotInit(),
+    spotStore.fetchMarketsSummary(),
     derivativeStore.initIfNotInit(),
+    derivativeStore.fetchMarketsSummary(),
     exchangeStore.initFeeDiscounts(),
     authzStore.fetchGrants()
   ])
@@ -56,6 +59,22 @@ function onCloseSideBar() {
     container.value?.classList.remove('overflow-y-hidden')
   }
 }
+
+/**
+ * Post only mode modal when we do chain upgrade
+watch(
+  () => appStore.blockHeight,
+  () => {
+    if (
+      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
+      appStore.blockHeight <=
+        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
+    ) {
+      modalStore.openModal(Modal.PostOnlyMode)
+    }
+  }
+)
+ */
 </script>
 
 <template>
@@ -103,7 +122,8 @@ function onCloseSideBar() {
 
                 <!-- hide survey for now but can be resurrected and modified for future surveys -->
                 <!-- <ModalsUserFeedback /> -->
-                <ModalsNewFeature />
+                <!-- <ModalsNewFeature /> -->
+                <ModalsPostOnlyMode />
                 <ModalsDevMode />
                 <AppConfetti />
                 <div id="modals" />

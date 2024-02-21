@@ -18,6 +18,10 @@ const emit = defineEmits<{
 
 const animationCount = ref(0)
 
+const SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST = [
+  'factory/inj1maeyvxfamtn8lfyxpjca8kuvauuf2qeu6gtxm3/Talis'
+]
+
 const { value: inputDenom } = useStringField({
   name: SwapFormField.InputDenom,
   initialValue: swapStore?.routes[0]?.sourceDenom
@@ -38,6 +42,16 @@ const {
   outputDenom,
   balances: accountBalancesWithToken
 })
+
+const outputIsDisabledBaseDenom = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.includes(outputDenom.value)
+)
+
+const shouldDisableQuoteToken = computed(() =>
+  SHOULD_DISABLE_QUOTE_BASE_DENOM_LIST.some((denom) =>
+    [inputDenom.value, outputDenom.value].includes(denom)
+  )
+)
 
 const { inputToken, outputToken, orderedRouteTokensAndDecimals } =
   useSwap(formValues)
@@ -179,13 +193,15 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
-            isUsdVisible: true,
+            isUsdVisible: !!inputToken?.token.coinGeckoId,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
+            tensMultiplier: inputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @update:max="onMaxSelected"
@@ -218,11 +234,13 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
-            isUsdVisible: true,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
+            isUsdVisible: !!outputToken?.token.coinGeckoId,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
             maxDecimals: outputToken?.quantityDecimals || 0,
+            tensMultiplier: outputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @update:amount="getInputQuantity"

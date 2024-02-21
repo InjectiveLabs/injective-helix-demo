@@ -16,9 +16,9 @@ import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
-import { Change, MainPage, TradeClickOrigin } from '@/types'
 
+import { Change, MainPage, TradeClickOrigin } from '@/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
@@ -159,7 +159,7 @@ function lastPriceChangeColor() {
 }
 
 function tradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.Lander

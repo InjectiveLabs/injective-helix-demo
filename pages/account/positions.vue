@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { AccountBalance, Modal } from '@/types'
 
 defineProps({
   isHideBalances: Boolean,
+  isPositionsLoading: Boolean,
 
   balances: {
     type: Array as PropType<AccountBalance[]>,
@@ -13,8 +15,8 @@ defineProps({
 })
 
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -33,7 +35,7 @@ const sideOptions = [
 
 const side = ref('')
 const marketDenom = ref('')
-const selectedPosition = ref<UiPosition | undefined>(undefined)
+const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
 
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
@@ -54,13 +56,17 @@ const marketIds = computed(() => {
 })
 
 const filteredPositions = computed(() =>
-  positionStore.subaccountPositions.filter((position) => {
+  positionStore.positions.filter((position) => {
     const positionMatchedSide = !side.value || position.direction === side.value
     const positionMatchedMarket =
       marketIds.value.length === 0 ||
       marketIds.value.includes(position.marketId)
 
-    return positionMatchedMarket && positionMatchedSide
+    return (
+      positionMatchedMarket &&
+      positionMatchedSide &&
+      position.subaccountId === accountStore.subaccountId
+    )
   })
 )
 
@@ -157,70 +163,65 @@ function closePosition() {
     .catch($onError)
 }
 
-function onSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }
-
-watch(
-  () => accountStore.subaccountId,
-  () => {
-    positionStore.fetchSubaccountPositions()
-  }
-)
 </script>
 
 <template>
-  <div class="relative overflow-auto">
-    <PartialsAccountPositionsActions
-      v-model:market-denom="marketDenom"
-      v-model:side="side"
-      :market-options="marketOptions"
-      :side-options="sideOptions"
-      @positions:close="onCloseAllPositions"
-    />
-
-    <table class="w-full border-collapse hidden md:table">
-      <PartialsCommonSubaccountPositionHeader is-account />
-
-      <PartialsCommonSubaccountPositionRow
-        v-for="(position, i) in filteredPositions"
-        :key="`position-${i}`"
-        v-bind="{
-          position,
-          isHideBalances
-        }"
-        is-account
-        @share:position="onSharePosition"
+  <AppHocLoading :is-loading="isPositionsLoading">
+    <div class="relative overflow-auto">
+      <PartialsAccountPositionsActions
+        v-model:market-denom="marketDenom"
+        v-model:side="side"
+        :market-options="marketOptions"
+        :side-options="sideOptions"
+        @positions:close="onCloseAllPositions"
       />
-    </table>
 
-    <table class="w-full border-collapse table md:hidden">
-      <PartialsCommonSubaccountPositionMobile
-        v-for="(position, i) in filteredPositions"
-        :key="`position-mobile-${i}`"
-        v-bind="{
-          position,
-          isHideBalances
-        }"
-        @share:position="onSharePosition"
+      <table class="w-full border-collapse hidden md:table">
+        <PartialsCommonSubaccountPositionHeader is-account />
+
+        <PartialsCommonSubaccountPositionRow
+          v-for="(position, i) in filteredPositions"
+          :key="`position-${i}`"
+          v-bind="{
+            position,
+            isHideBalances
+          }"
+          is-account
+          @share:position="onSharePosition"
+        />
+      </table>
+
+      <table class="w-full border-collapse table md:hidden">
+        <PartialsCommonSubaccountPositionMobile
+          v-for="(position, i) in filteredPositions"
+          :key="`position-mobile-${i}`"
+          v-bind="{
+            position,
+            isHideBalances
+          }"
+          @share:position="onSharePosition"
+        />
+      </table>
+
+      <CommonEmptyList
+        v-if="isEmpty"
+        class="min-h-3xs bg-gray-900"
+        data-cy="markets-no-data-table"
+        :message="$t('account.positions.empty')"
+      >
+        <span class="mt-2 text-xs text-gray-500">
+          {{ $t('account.positions.empty') }}
+        </span>
+      </CommonEmptyList>
+
+      <ModalsSharePosition
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
       />
-    </table>
-
-    <CommonEmptyList
-      v-if="isEmpty"
-      class="min-h-3xs bg-gray-900"
-      data-cy="markets-no-data-table"
-      :message="$t('account.positions.empty')"
-    >
-      <span class="mt-2 text-xs text-gray-500">
-        {{ $t('account.positions.empty') }}
-      </span>
-    </CommonEmptyList>
-
-    <ModalsSharePosition
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-    />
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

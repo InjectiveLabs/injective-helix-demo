@@ -246,7 +246,7 @@ function toggleDrawer() {
         <AppCheckbox
           v-if="!isSpot"
           v-model="reduceOnlyValue"
-          :disabled="reduceOnlyDisabled"
+          :is-disabled="reduceOnlyDisabled"
           :tooltip="reduceOnlyTooltip"
           data-cy="trading-page-reduce-only-checkbox"
         >

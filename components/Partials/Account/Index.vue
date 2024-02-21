@@ -2,18 +2,18 @@
 import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
-import { BusEvents, MainPage, Modal, AccountSubpage } from '@/types'
+import { BusEvents, MainPage, Modal, AccountSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const tokenStore = useTokenStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const isHideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
+const fetchPositionsStatus = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
 
 const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
@@ -30,10 +30,7 @@ onBeforeUnmount(() => {
 })
 
 function initBalances() {
-  Promise.all([
-    derivativeStore.streamSubaccountOrders(),
-    positionStore.fetchSubaccountPositions()
-  ])
+  Promise.all([derivativeStore.streamSubaccountOrders()])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -46,6 +43,10 @@ function initBalances() {
     derivativeStore.streamMarketsMarkPrices(),
     positionStore.streamSubaccountPositions()
   ])
+
+  Promise.all([positionStore.fetchPositions()]).finally(() => {
+    fetchPositionsStatus.setIdle()
+  })
 }
 
 function refreshBalances() {
@@ -69,11 +70,6 @@ function onHideBalances(value: boolean) {
   isHideBalances.value = value
 }
 
-watch(
-  () => accountStore.subaccountId,
-  () => positionStore.fetchSubaccountPositions()
-)
-
 useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
 </script>
 
@@ -84,13 +80,15 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         {{ $t('account.accountOverview') }}
       </h2>
 
-      <span class="text-gray-450 text-lg mb-1">
+      <span class="text-gray-300 text-md my-1">
         {{ $t('account.netWorth') }}
       </span>
 
       <PartialsAccountOverview
         :is-loading="status.isLoading() || usdPriceStatus.isLoading()"
-        v-bind="{ isHideBalances }"
+        v-bind="{
+          isHideBalances
+        }"
         @update:hide-balances="onHideBalances"
       />
 
@@ -104,7 +102,7 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
           </CommonTabMenuLinkItem>
 
           <CommonTabMenuLinkItem
-            v-bind="{ to: { name: AccountSubpage.Positions } }"
+            v-bind="{ to: { name: AccountSubPage.Positions } }"
           >
             {{ $t('account.tabs.positions') }}
           </CommonTabMenuLinkItem>
@@ -113,9 +111,10 @@ useIntervalFn(refreshUsdTokenPrice, 1000 * 30)
         <AppHocLoading :status="status">
           <NuxtPage
             v-bind="{
-              balances: currentSubaccountBalances,
+              usdPriceStatus,
               isHideBalances,
-              usdPriceStatus
+              balances: currentSubaccountBalances,
+              isPositionsLoading: fetchPositionsStatus.isLoading()
             }"
           />
         </AppHocLoading>

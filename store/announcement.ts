@@ -1,19 +1,14 @@
 import { defineStore } from 'pinia'
-import {
-  fetchAnnouncementsList,
-  fetchAnnouncementAttachment
-} from '@/app/services/announcements'
+import { fetchAnnouncementsList } from '@/app/services/announcements'
 import { UiAnnouncementTransformer } from '@/app/client/transformers/UiAnnouncementTransformer'
-import { Announcement, Attachment } from '@/app/client/types/announcements'
+import { Announcement } from '@/app/client/types/announcements'
 
 type AnnouncementStoreState = {
   announcements: Announcement[]
-  attachments: Attachment[]
 }
 
 const initialStateFactory = (): AnnouncementStoreState => ({
-  announcements: [],
-  attachments: []
+  announcements: []
 })
 
 export const useAnnouncementStore = defineStore('announcement', {
@@ -26,47 +21,18 @@ export const useAnnouncementStore = defineStore('announcement', {
 
       if (
         !announcements ||
-        !announcements.articles ||
-        announcements.articles.length === 0
+        !announcements.posts ||
+        announcements.posts.length === 0
       ) {
         return
       }
 
-      const uiAnnouncements = announcements.articles.map(
+      const uiAnnouncements = announcements.posts.map(
         UiAnnouncementTransformer.convertAnnouncementToUiAnnouncement
       )
 
       announcementStore.$patch({
         announcements: uiAnnouncements
-      })
-
-      await announcementStore.fetchAttachments()
-    },
-
-    async fetchAttachments() {
-      const announcementStore = useAnnouncementStore()
-
-      if (announcementStore.announcements.length === 0) {
-        return
-      }
-
-      const attachments = await Promise.all(
-        announcementStore.announcements.map(
-          ({ announcementId }: { announcementId: number }) =>
-            fetchAnnouncementAttachment(announcementId)
-        )
-      )
-
-      if (!attachments || attachments.length === 0) {
-        return
-      }
-
-      const uiAttachments = attachments.map(
-        UiAnnouncementTransformer.convertAttachmentToUiAttachment
-      ) as Attachment[]
-
-      announcementStore.$patch({
-        attachments: uiAttachments
       })
     }
   }

@@ -69,12 +69,19 @@ function onCloseModal() {
     @modal:closed="onCloseModal"
   >
     <div class="flex flex-col justify-center items-center max-h-modal">
-      <div w-full h-auto>
+      <div class="w-full h-auto">
         <slot name="image" />
+        <div class="absolute right-0 top-0 mt-2 mr-2">
+          <BaseIcon
+            name="close"
+            class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+            @click="onCloseModal"
+          />
+        </div>
       </div>
 
-      <div class="p-6 w-full text-center overflow-y-auto pb-10">
-        <div class="mb-4 font-bold leading-5">
+      <div class="p-6 w-full text-center overflow-y-auto">
+        <div class="mb-4 text-xl font-semibold leading-5">
           <slot name="title" />
         </div>
 
@@ -82,9 +89,18 @@ function onCloseModal() {
           <slot name="description" />
         </div>
 
+        <div
+          v-if="slots.countdown"
+          class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
+        >
+          <BaseIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
+          <slot name="countdown" />
+          <BaseIcon name="arrow" class="h-4 w-4 text-blue-500" />
+        </div>
+
         <NuxtLink
           v-if="slots.cta1"
-          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
+          class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route1"
           @click="onCloseModal"
         >
@@ -93,7 +109,7 @@ function onCloseModal() {
 
         <NuxtLink
           v-if="slots.cta2"
-          class="font-semibold whitespace-nowrap w-full text-sm text-white bg-blue-500 rounded p-3 block leading-4 mt-4"
+          class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route2"
           @click="onCloseModal"
         >
@@ -101,7 +117,8 @@ function onCloseModal() {
         </NuxtLink>
 
         <AppButton
-          class="flex items-center justify-center md:hidden font-semibold whitespace-nowrap w-full text-sm text-white bg-gray-700 rounded p-3 mt-4"
+          v-if="!(slots.cta1 || slots.cta2)"
+          class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >
           {{ $t('banners.newFeature.close') }}

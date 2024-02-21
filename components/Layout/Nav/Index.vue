@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
   getDefaultPerpetualMarketRouteParams,
@@ -12,6 +11,7 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const walletStore = useWalletStore()
 
@@ -19,7 +19,7 @@ const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function spotTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
     origin: TradeClickOrigin.TopMenu
@@ -27,11 +27,15 @@ function spotTradeClickedTrack() {
 }
 
 function perpetualTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
+}
+
+function swapClickedTrack() {
+  mixpanelAnalytics.trackSwapClicked()
 }
 </script>
 
@@ -64,6 +68,7 @@ function perpetualTradeClickedTrack() {
             :to="{ name: MainPage.Swap }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-swap-link"
+            @click="swapClickedTrack"
           >
             <div class="flex items-center gap-2.5">
               <p class="font-semibold text-base text-white">
@@ -201,12 +206,6 @@ function perpetualTradeClickedTrack() {
               <p class="font-semibold text-base text-white">
                 {{ $t('navigation.guilds') }}
               </p>
-
-              <div
-                class="bg-blue-500 text-gray-100 rounded-[4px] px-1.5 py-0.5 uppercase text-[8px]"
-              >
-                {{ $t('navigation.new') }}
-              </div>
             </div>
 
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">

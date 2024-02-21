@@ -3,18 +3,19 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
 import { notLiquidMarkets } from '@/app/data/market'
-import {
-  SpotTradeIntegrityStrategy,
-  SpotOrderbookIntegrityStrategy,
-  SpotSubaccountOrderIntegrityStrategy,
-  SpotSubaccountTradeIntegrityStrategy
-} from '@/app/client/streams/data-integrity/strategies'
+// import {
+//   SpotTradeIntegrityStrategy,
+//   SpotOrderbookIntegrityStrategy,
+//   SpotSubaccountOrderIntegrityStrategy,
+//   SpotSubaccountTradeIntegrityStrategy
+// } from '@/app/client/streams/data-integrity/strategies'
 
 definePageMeta({
-  middleware: ['markets', 'grid-strategy-subaccount']
+  middleware: ['grid-strategy-subaccount']
 })
 
 const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 
@@ -33,12 +34,15 @@ const notLiquidMarket = computed(() =>
   notLiquidMarkets.find((m) => m.slug === market.value?.slug)
 )
 
+const isMarketIdInQuery = computed(() => !!useQueryRef('marketId', '').value)
+
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
 
   Promise.all([
     spotStore.streamTrades(pageMarket.marketId),
-    spotStore.streamOrderbookUpdate(pageMarket.marketId)
+    spotStore.streamOrderbookUpdate(pageMarket.marketId),
+    tokenStore.fetchTokensUsdPriceMap([pageMarket.quoteToken.coinGeckoId])
   ]).catch($onError)
 
   market.value = pageMarket as UiSpotMarketWithToken
@@ -110,13 +114,14 @@ useIntervalFn(() => {
     return
   }
 
-  const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
+  // const args = filterByCurrentMarket.value ? [market.value.marketId] : undefined
 
   Promise.all([
-    SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
-    SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
-    SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
-    SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate()
+    // SpotSubaccountOrderIntegrityStrategy.make(args).validate(),
+    // SpotSubaccountTradeIntegrityStrategy.make(args).validate(),
+    // SpotTradeIntegrityStrategy.make(market.value.marketId).validate(),
+    // SpotOrderbookIntegrityStrategy.make(market.value.marketId).validate(),
+    tokenStore.fetchTokensUsdPriceMap([market.value.quoteToken.coinGeckoId])
   ])
 }, 30 * 1000)
 </script>
@@ -142,6 +147,7 @@ useIntervalFn(() => {
         v-if="notLiquidMarket"
         v-bind="{ notLiquidMarket }"
       />
+      <ModalsMarketNotOnHelix v-if="isMarketIdInQuery" />
       <ModalsMarketRestricted
         v-if="market"
         :key="market.marketId"

@@ -13,7 +13,7 @@ import {
   getStdFeeForToken,
   DEFAULT_IBC_GAS_LIMIT
 } from '@injectivelabs/utils'
-import { CosmosChainId } from '@injectivelabs/ts-types'
+import { ChainId, CosmosChainId } from '@injectivelabs/ts-types'
 import {
   ErrorType,
   GeneralException,
@@ -271,13 +271,16 @@ export const transferToInjective = async ({
   originAddress: string
   destinationAddress: string
 }) => {
+  const cosmosChainWithIncreasedGasLimit = ['osmosis']
+  const cosmosChainIdIsWithIncreasedGasLimit =
+    cosmosChainWithIncreasedGasLimit.some((chain) => aChainId.includes(chain))
   const cosmosChainId = aChainId as CosmosChainId
   const cosmosWalletStrategy = new CosmosWalletStrategy({
     wallet,
     chainId: cosmosChainId
   })
 
-  const endpoints = getEndpointsFromChainId(cosmosChainId)
+  const endpoints = { ...getEndpointsFromChainId(cosmosChainId), grpc: '' }
   const txRestClient = new TxRestClient(endpoints.rest)
   const tendermintRestApi = new ChainRestTendermintApi(ENDPOINTS.rest)
 
@@ -298,7 +301,9 @@ export const transferToInjective = async ({
   const gasPrice = getGasPriceForChainId(cosmosChainId).toString()
   const stdFee = {
     ...getStdFeeForToken(token, gasPrice),
-    gas: DEFAULT_IBC_GAS_LIMIT.toString()
+    gas: new BigNumberInBase(DEFAULT_IBC_GAS_LIMIT)
+      .times(cosmosChainIdIsWithIncreasedGasLimit ? 2 : 1)
+      .toFixed()
   }
   const timestamp = makeTimeoutTimestampInNs()
 
@@ -338,7 +343,8 @@ export const transferToInjective = async ({
 
       await keplrWallet.signAndBroadcastAminoUsingCosmjs(
         [msgTransferAmino.toAmino()],
-        stdFee
+        stdFee,
+        endpoints
       )
     }
   }
@@ -364,7 +370,8 @@ export const transferToInjective = async ({
   })
 
   const txResponse = await cosmosWalletStrategy.sendTransaction(
-    directSignResponse
+    directSignResponse,
+    { address: originAddress, chainId: aChainId as ChainId, endpoints }
   )
   const response = await txRestClient.fetchTxPoll(txResponse.txHash)
 

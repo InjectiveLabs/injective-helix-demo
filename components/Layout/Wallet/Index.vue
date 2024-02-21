@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-import { amplitudeGenericTracker } from '@/app/providers/amplitude'
-import {
-  Modal,
-  BusEvents,
-  AmplitudeEvent,
-  WalletModalType,
-  WalletConnectStatus
-} from '@/types'
+import { GEO_IP_RESTRICTIONS_ENABLED, IS_STAGING } from '@/app/utils/constants'
+
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -29,7 +24,9 @@ onMounted(() => {
 
   Promise.all([
     walletStore.isMetamaskInstalled(),
-    walletStore.isTrustWalletInstalled()
+    walletStore.isTrustWalletInstalled(),
+    walletStore.isPhantomInstalled(),
+    walletStore.isOkxWalletInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -40,7 +37,7 @@ function connectLedger() {
 }
 
 function onWalletConnect() {
-  amplitudeGenericTracker.trackEvent(AmplitudeEvent.ConnectClicked)
+  mixpanelAnalytics.trackConnectClicked()
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)
@@ -119,6 +116,10 @@ watch(isModalOpen, (newShowModalState) => {
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />
+      <LayoutWalletConnectWalletPhantom />
+      <template v-if="IS_STAGING">
+        <LayoutWalletConnectWalletOkxWallet />
+      </template>
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />

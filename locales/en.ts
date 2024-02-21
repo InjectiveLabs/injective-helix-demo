@@ -67,6 +67,7 @@ export default {
     [TimeDuration.Minute]: 'Minute',
     [TimeDuration.Second]: 'Second'
   },
+  underMaintenance: 'Under Maintenance',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
@@ -149,6 +150,13 @@ export default {
     beta: 'beta',
     description:
       'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
+  },
+
+  marketNotOnHelix: {
+    title: 'Experimental market',
+    cta: 'I Understand',
+    description:
+      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.'
   },
 
   marketNew: {
@@ -343,11 +351,23 @@ export default {
   proMode: {
     proMode: 'Pro Mode',
     subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authZ management'
+    authzManagement: 'Enable authZ management',
+    showSubaccountsWithDust: 'Show subaccounts with dust amounts'
   },
 
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
+  },
+
+  scavengerHunt: {
+    title: 'You found it! 🕵️‍♀️',
+    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
+  },
+
+  postOnlyMode: {
+    title: 'Post Only Mode!',
+    description:
+      'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
   }
 }

@@ -1,51 +1,54 @@
 <script setup lang="ts">
+import { Campaign } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
-  isClaimable: Boolean,
+  forceDisabled: Boolean,
 
-  scAddress: {
-    type: String,
-    required: true
-  },
-
-  campaignId: {
-    type: String,
+  campaign: {
+    type: Object as PropType<Campaign>,
     required: true
   }
 })
 
 const campaignStore = useCampaignStore()
-const { success } = useNotifications()
+const { success, error } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const isClaimed = computed(() =>
-  campaignStore.claimedRewards.includes(props.campaignId)
-)
-
 function claimRewards() {
-  if (isClaimed.value || !props.isClaimable) {
+  if (props.campaign.userClaimed || !props.campaign.isClaimable) {
     return
   }
 
   status.setLoading()
 
+  const campaignId =
+    Number(props.campaign.version) === 1 ? undefined : props.campaign.campaignId
+
   campaignStore
-    .claimReward(props.scAddress)
+    .claimReward(props.campaign.rewardContract, campaignId)
     .then(() => {
       success({
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
 
-      campaignStore.$patch({
-        claimedRewards: [...campaignStore.claimedRewards, props.campaignId]
-      })
+      backupPromiseCall(() => campaignStore.fetchRound())
     })
-    .catch($onError)
+    .catch((er) => {
+      if ((er.originalMessage as string).includes('has already claimed')) {
+        error({
+          title: t('campaign.error'),
+          description: t('campaign.errorAlreadyClaimed')
+        })
+      } else {
+        $onError(er)
+      }
+    })
     .finally(() => {
       status.setIdle()
     })
@@ -56,12 +59,15 @@ function claimRewards() {
   <AppButton
     v-bind="{ status }"
     :class="{
-      'bg-blue-500 border-blue-500 border': !isClaimed && isClaimable
+      'bg-blue-500 border-blue-500 border':
+        !campaign.userClaimed && campaign.isClaimable
     }"
-    :is-disabled="isClaimed || !isClaimable"
+    :is-disabled="
+      campaign.userClaimed || !campaign.isClaimable || forceDisabled
+    "
     @click="claimRewards"
   >
-    <span v-if="isClaimed">{{ $t('campaign.claimed') }}</span>
+    <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
     <span v-else>{{ $t('campaign.claim') }}</span>
   </AppButton>
 </template>

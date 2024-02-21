@@ -54,7 +54,7 @@ const stakedAmount = computed(() => {
 })
 
 const stakedAmountInUsd = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPrice(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE
@@ -82,7 +82,7 @@ const shouldAbbreviateTotalBalance = computed(() =>
 )
 
 const accountTotalBalanceInBtc = computed(() => {
-  const btcUsdPrice = tokenStore.tokenUsdPrice(BTC_COIN_GECKO_ID)
+  const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
 
   if (!btcUsdPrice) {
     return ZERO_IN_BASE
@@ -183,7 +183,8 @@ function onTransferClick() {
         <AppButton
           v-if="
             appStore.isSubaccountManagementActive &&
-            !walletStore.isAuthzWalletConnected
+            !walletStore.isAuthzWalletConnected &&
+            !accountStore.isSgtSubaccount
           "
           :is-disabled="accountStore.isSgtSubaccount"
           class="border border-blue-500"
@@ -193,6 +194,10 @@ function onTransferClick() {
             {{ $t('account.transfer') }}
           </span>
         </AppButton>
+
+        <PartialsAccountTransferToMainSubAccount
+          v-if="accountStore.isSgtSubaccount"
+        />
       </div>
     </div>
 

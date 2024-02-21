@@ -3,6 +3,7 @@ import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   BusEvents,
   TradeForm,
@@ -14,9 +15,6 @@ import {
   OrderBookNotionalAndType,
   OrderBookQuantityAndType
 } from '@/types'
-
-const formValues = useFormValues() as Ref<TradeForm>
-const setFormValues = useSetFormValues()
 
 const props = defineProps({
   isBuy: Boolean,
@@ -69,7 +67,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition> | undefined,
+    type: Object as PropType<UiPosition | PositionV2> | undefined,
     default: undefined
   },
 
@@ -88,7 +86,13 @@ const emit = defineEmits<{
   'update:amount': [props: { amount?: string; isBaseAmount: boolean }]
 }>()
 
+const formValues = useFormValues() as Ref<TradeForm>
+const setFormValues = useSetFormValues()
+
 const isSpot = props.market.type === MarketType.Spot
+let timeoutId: NodeJS.Timeout | undefined
+
+const isTensMultiplierMessageVisible = ref(false)
 
 onMounted(() => {
   useEventBus<OrderBookPriceAndType>(BusEvents.OrderbookPriceClick).on(
@@ -157,6 +161,20 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
     updateAmount({ isBaseAmount: true })
   }
 }
+
+function onShowTensMultiplier(isShown: boolean) {
+  if (isShown) {
+    isTensMultiplierMessageVisible.value = true
+    timeoutId = setTimeout(() => {
+      isTensMultiplierMessageVisible.value = false
+    }, 5000)
+  }
+
+  if (!isShown) {
+    clearTimeout(timeoutId)
+    isTensMultiplierMessageVisible.value = false
+  }
+}
 </script>
 
 <template>
@@ -178,7 +196,19 @@ function onOrderbookPriceClick(priceAndOrderSide: OrderBookPriceAndType) {
         quoteAvailableBalance
       }"
       @update:amount="updateAmount"
+      @update:show-tens-multiplier="onShowTensMultiplier"
     />
+
+    <p
+      v-if="isTensMultiplierMessageVisible"
+      class="text-xs text-blue-300 mt-1.5"
+    >
+      {{
+        $t('trade.tensMultiplierRounded', {
+          minTickSize: 10 ** market.quantityTensMultiplier
+        })
+      }}
+    </p>
 
     <PartialsTradingFormInputError
       v-bind="{

@@ -45,15 +45,10 @@ function fetchData() {
   const marketIds = (
     formValues.value[ActivityField.Denom]
       ? derivativeStore.markets.filter((m) =>
-          [
-            m.quoteToken.denom,
-            m.baseToken.denom,
-            m.quoteToken.symbol,
-            m.baseToken.symbol
-          ].some((denom) =>
+          [m.quoteToken.denom, m.baseToken.denom].some((denom) =>
             denom
               .toLowerCase()
-              .includes(formValues.value[ActivityField.Denom].toLowerCase())
+              .startsWith(formValues.value[ActivityField.Denom].toLowerCase())
           )
         )
       : derivativeStore.markets

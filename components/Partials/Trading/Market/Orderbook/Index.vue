@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { UseScrollReturn } from '@vueuse/core'
+import { vScroll } from '@vueuse/components'
 import { createPopperLite } from '@popperjs/core'
+import type { UseScrollReturn } from '@vueuse/core'
 import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   Change,
   MarketType,
@@ -10,19 +10,21 @@ import {
   UiSpotLimitOrder,
   UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import { vScroll } from '@vueuse/components'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
 import {
-  OrderbookLayout,
   TradingLayout,
-  UiAggregatedPriceLevel,
-  UiMarketWithToken
+  OrderbookLayout,
+  UiMarketWithToken,
+  UiAggregatedPriceLevel
 } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
@@ -102,15 +104,30 @@ const lastTradedPriceChange = computed(() =>
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    minimalDecimalPlaces: props.market.priceDecimals
   }
 )
+
 const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
+
+const { valueToString: spotLastTradedPriceInUsdToString } =
+  useBigNumberFormatter(
+    computed(() =>
+      new BigNumberInBase(
+        tokenStore.tokenUsdPrice(props.market.quoteToken)
+      ).times(spotLastTradedPrice.value)
+    ),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
+    }
+  )
 
 const userOrderbookLayout = computed(
   () => appStore.userState.preferences.orderbookLayout
@@ -455,7 +472,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           <PartialsTradingMarketOrderbookRecord
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${sell.price}-${sell.quantity}`"
+            :key="`order-book-sell-${sell.price}-${sell.quantity}-${aggregation}`"
             ref="sellRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
@@ -492,6 +509,19 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         >
           {{ lastTradedPriceToFormat }}
         </span>
+
+        <span
+          v-if="isSpot"
+          :class="{
+            'text-red-500': lastTradedPriceChange === Change.Decrease,
+            'text-green-500': lastTradedPriceChange !== Change.Decrease
+          }"
+          class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
+          data-cy="orderbook-last-traded-price-text-content"
+        >
+          {{ lastTradedPriceToFormat }}
+        </span>
+
         <BaseIcon
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
@@ -506,16 +536,15 @@ function hidePopperOnScroll(state: UseScrollReturn) {
             'ml-2 mr-4': !isSpot
           }"
         />
+
         <span
-          v-if="isSpot"
-          :class="{
-            'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-green-500': lastTradedPriceChange !== Change.Decrease
-          }"
-          class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
-          data-cy="orderbook-last-traded-price-text-content"
+          v-if="
+            isSpot &&
+            QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(market.quoteToken.denom)
+          "
+          class="text-xs font-bold text-gray-475 ml-1"
         >
-          {{ lastTradedPriceToFormat }}
+          ${{ spotLastTradedPriceInUsdToString }}
         </span>
 
         <AppTooltip
@@ -551,7 +580,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           <!-- TODO: test the dynamic ref assignment -->
           <PartialsTradingMarketOrderbookRecord
             v-for="(buy, index) in buysWithDepth"
-            :key="`order-book-buy-${buy.price}-${buy.quantity}`"
+            :key="`order-book-buy-${buy.price}-${buy.quantity}-${aggregation}`"
             ref="buyRecordListRef"
             class="bg-gray-750 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{

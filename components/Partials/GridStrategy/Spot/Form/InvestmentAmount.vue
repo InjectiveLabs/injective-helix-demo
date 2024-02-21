@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE,
   GST_GRID_THRESHOLD,
-  GST_DEFAULT_AUTO_GRIDS
+  GST_MIN_TRADING_SIZE,
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,
@@ -106,11 +105,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
@@ -140,11 +139,11 @@ const {
 
     const baseAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.baseToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       formValues.value[SpotGridTradingField.InvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
+    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       props.market.baseToken.symbol
@@ -196,7 +195,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       <AppInputNumeric
         v-model="investmentAmountValue"
         :is-disabled="isLowerBoundGtLastPrice"
-        class="text-right"
+        placeholder="0.00"
         is-disabled-gray
       >
         <template #addon>
@@ -210,6 +209,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ market.quoteToken.symbol }}
           </p>
         </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
+        </template>
       </AppInputNumeric>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
@@ -220,7 +223,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <div>
       <AppInputNumeric
         v-model="baseInvestmentAmountValue"
-        class="text-right"
+        placeholder="0.00"
         :is-disabled="isUpperBoundLtLastPrice"
         is-disabled-gray
       >
@@ -234,6 +237,10 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
             {{ baseAmountToString }}
             {{ market.baseToken.symbol }}
           </p>
+        </template>
+
+        <template #postfix>
+          <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         </template>
       </AppInputNumeric>
 

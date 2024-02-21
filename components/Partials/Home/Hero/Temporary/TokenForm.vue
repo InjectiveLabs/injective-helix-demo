@@ -66,9 +66,9 @@ onMounted(() => {
     {
       [SwapFormField.InputDenom]: peggyUsdToken?.denom || route?.sourceDenom,
       [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || '',
-      [SwapFormField.InputAmount]: String(
-        tokenStore.tokenUsdPriceMap[injToken?.coinGeckoId || '']
-      ),
+      [SwapFormField.InputAmount]: injToken
+        ? String(tokenStore.tokenUsdPrice(injToken))
+        : '0',
       [SwapFormField.OutputAmount]: '1'
     },
     false
@@ -100,21 +100,11 @@ function outputDenomChange(denom: string) {
   )
 
   if (!isUserInteraction.value) {
-    const neokMarket = spotStore.marketsWithSummary.find(
-      ({ market }) => market.baseToken.symbol.toLowerCase() === 'neok'
-    )
-
     const usdPrice = String(outputToken.value?.usdPrice || '')
-
-    /** Neok does not have a usd price, so we use lastTradePrice for display **/
-    const price =
-      outputToken.value?.denom !== neokMarket?.market.baseToken.denom
-        ? usdPrice
-        : neokMarket?.summary.price
 
     setFormValues(
       {
-        [SwapFormField.InputAmount]: price
+        [SwapFormField.InputAmount]: usdPrice
       },
       false
     )

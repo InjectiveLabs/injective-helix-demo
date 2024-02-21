@@ -87,7 +87,7 @@ const quoteTradingBalanceToFormat = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([accountStore.fetchAccountPortfolioBalances()])
     .then(() => {
       setSubaccountStreams()
     })
@@ -146,6 +146,7 @@ useIntervalFn(() => {
               )
             }}
           </p>
+
           <PartialsCommonSubaccountSelector
             v-if="appStore.isSubaccountManagementActive"
           />

@@ -5,6 +5,7 @@ export * from './campaign'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
+export const UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS = 9
 export const UI_DEFAULT_MAX_DISPLAY_DECIMALS = 6
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
@@ -13,12 +14,17 @@ export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 export const UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS = 4
 export const UI_DEFAULT_TOKEN_ASSET_DECIMALS = 8
 export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
+
+export const UI_DEFAULT_PRICE_MIN_DECIMALS = 10
+export const UI_DEFAULT_PRICE_MAX_DECIMALS = 0.00001
+
 export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
 export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
   -UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 export const MAX_QUOTE_DECIMALS = 3
+export const MAX_QUOTE_TENS_MULTIPLIER = 3
 export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
@@ -78,8 +84,10 @@ export const TRADE_MAX_SUBACCOUNT_ARRAY_SIZE = 100
 export const MAX_SYMBOL_LENGTH = 6
 export const SYMBOL_DISPLAY_LENGTH = 3
 
+export const DUST_AMOUNT_THRESHOLD = 1
+
 export const GST_MINIMUM_GRIDS = 3
-export const GST_MAXIMUM_GRIDS = 50
+export const GST_MAXIMUM_GRIDS = 100
 export const GST_MIN_TRADING_SIZE = 5
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 20
@@ -97,3 +105,8 @@ export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'
 export const USDT_TOKEN_DECIMALS = 6
+export const MAINNET_UPGRADE_BLOCK_HEIGHT = 57076000
+export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
+
+export const ADMIN_UI_SMART_CONTRACT =
+  'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'

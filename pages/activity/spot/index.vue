@@ -96,7 +96,7 @@ function onCancelOrders() {
 
       <CommonTableWrapper is-break-md class="hidden sm:block">
         <table v-if="filteredOrders.length > 0" class="table">
-          <PartialsCommonSubaccountOrderHeader />
+          <PartialsCommonSubaccountOrderHeader is-spot />
           <tbody>
             <PartialsCommonSubaccountOrderRow
               v-for="(order, index) in filteredOrders"

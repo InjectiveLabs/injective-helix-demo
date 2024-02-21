@@ -5,7 +5,7 @@ export default {
     accountOverview: 'Account Overview',
     available: 'Available',
     fee: 'Fee',
-    netWorth: 'Net Worth',
+    netWorth: 'Tradeable Net Worth',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
@@ -97,6 +97,8 @@ export default {
         'To activate it, you first need to transfer funds. Learn more about subaccounts in our',
         named('faq')
       ]),
-    subaccountTransfer: 'Subaccount Transfer'
+    subaccountTransfer: 'Subaccount Transfer',
+    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
+    transferToMainSubaccount: 'Transfer to Main Subaccount'
   }
 }

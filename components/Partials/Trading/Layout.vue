@@ -168,14 +168,14 @@ function onToggleMarketList() {
             <CommonCard v-if="!isGrid" is-no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
-
             <CommonCard
               is-no-padding
               class="px-6 py-4 rounded-xl relative grow"
             >
               <div
                 :class="{
-                  invisible: showMarketList
+                  invisible:
+                    showMarketList && userTradingLayout !== TradingLayout.Right
                 }"
               >
                 <slot name="trading-form" />
@@ -203,9 +203,9 @@ function onToggleMarketList() {
                       '-order-1': userTradingLayout === TradingLayout.Right
                     }"
                   >
-                    <PartialsTradingMarketChart
+                    <PartialsTradingLightTradingChartWrapper
                       v-if="isDesktop"
-                      :market="market"
+                      v-bind="{ marketId: market.marketId, isSpot, market }"
                     />
                   </div>
                 </div>

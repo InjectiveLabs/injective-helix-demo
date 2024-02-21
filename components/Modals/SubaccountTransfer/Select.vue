@@ -157,7 +157,8 @@ function onDestinationSubaccountIdUpdate() {
         <template #option="{ option, isActive }">
           <span
             v-if="option.value === newSubaccountId"
-            :class="{ 'font-bold text-gray-100': isActive }"
+            :class="{ 'font-bold': isActive }"
+            class="text-gray-100"
           >
             <span
               class="bg-blue-500 mr-2 font-semibold tracking-wide text-xs px-1 py-px rounded-sm"

@@ -40,6 +40,10 @@ const aggregation = ref(UI_DEFAULT_AGGREGATION_DECIMALS_STRING)
 onMounted(() => {
   const { marketId } = props.market
 
+  // reset state
+  spotStore.resetOrderbookAndTrades()
+  derivativeStore.resetOrderbookAndTrades()
+
   Promise.all(
     isSpot
       ? [
@@ -163,7 +167,7 @@ watchDebounced(
           }"
         >
           <PartialsTradingMarketChart
-            v-show="activeType === FilterList.Charts"
+            v-if="activeType === FilterList.Charts"
             :market="market"
             class="lg:hidden"
           />

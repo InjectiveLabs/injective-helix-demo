@@ -4,12 +4,13 @@ import { Modal, MainPage } from '@/types'
 
 const spotStore = useSpotStore()
 
-const TWITTER_URL = 'https://twitter.com/search?q=%24TIA&src=cashtag_click'
-const BLOG_POST_URL =
-  'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
+// const TWITTER_URL = 'https://twitter.com/search?q=%24TIA&src=cashtag_click'
+// const BLOG_POST_URL =
+//   'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
 
+const now = ref(Date.now())
 const market = computed(() => {
-  const MARKET_SLUG = 'tia-usdt'
+  const MARKET_SLUG = 'talis-usdt'
 
   return spotStore.markets.find(({ slug }) => slug === MARKET_SLUG)
 })
@@ -30,47 +31,31 @@ const swapRoute = computed(() => {
     query: {
       from: market.value?.quoteDenom,
       to: market.value?.baseDenom,
-      toAmount: '10'
+      toAmount: '100'
     }
   }
 })
+
+useIntervalFn(() => {
+  now.value = Date.now()
+}, 1000)
 </script>
 
 <template>
   <ModalsNewFeatureWrapper
-    v-bind="{ route1: marketRoute, route2: swapRoute }"
-    :modal="Modal.NewFeature"
+    v-bind="{ route1: marketRoute, route2: swapRoute, launchAt: '' }"
+    :modal="Modal.NewFeatureTalisLaunch"
   >
     <template #image>
-      <img src="/newFeatures/tia-campaign.webp" alt="Tia Spot Campaign" />
+      <img src="/newFeatures/talis-launch.webp" alt="Talis Launch" />
     </template>
 
     <template #title>
-      <i18n-t tag="div" keypath="banners.newFeature.title">
-        <template #link>
-          <NuxtLink
-            :to="TWITTER_URL"
-            target="_blank"
-            class="text-blue-500 hover:text-blue-400"
-          >
-            {{ $t('banners.newFeature.tia') }}
-          </NuxtLink>
-        </template>
-      </i18n-t>
+      <i18n-t tag="div" keypath="banners.newFeature.title"> </i18n-t>
     </template>
 
     <template #description>
-      <i18n-t tag="div" keypath="banners.newFeature.description1">
-        <template #link>
-          <NuxtLink
-            :to="BLOG_POST_URL"
-            target="_blank"
-            class="text-blue-500 hover:text-blue-400"
-          >
-            {{ $t('banners.newFeature.here') }}
-          </NuxtLink>
-        </template>
-      </i18n-t>
+      <i18n-t tag="div" keypath="banners.newFeature.description"> </i18n-t>
     </template>
 
     <template #cta1>

@@ -39,17 +39,17 @@ const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const { valueToString: upperPriceToString } = useBigNumberFormatter(
   computed(() => props.upperPrice),
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
 const { valueToString: lowerPriceToString } = useBigNumberFormatter(
   computed(() => props.lowerPrice),
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
 const { valueToString: currentPriceToString } = useBigNumberFormatter(
   lastTradedPrice,
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
 onMounted(() => {

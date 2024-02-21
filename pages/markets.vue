@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 
 const appStore = useAppStore()
@@ -17,7 +18,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     ...exchangeStore.deprecatedMarketsWithSummary
   ].map(({ market, summary }) => {
     const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPrice(market.quoteToken.coinGeckoId)
+      tokenStore.tokenUsdPrice(market.quoteToken)
     )
 
     return {
@@ -39,7 +40,10 @@ const marketsWithSummariesLoaded = computed(
 function getQuoteTokenPrice() {
   Promise.all([
     appStore.pollMarkets(),
-    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
+    tokenStore.fetchTokensUsdPriceMap([
+      ...QUOTE_DENOMS_GECKO_IDS,
+      INJ_COIN_GECKO_ID
+    ])
   ]).catch($onError)
 }
 

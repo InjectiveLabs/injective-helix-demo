@@ -47,6 +47,62 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'kuji-usdt',
     contractAddress: 'inj1zen7yh00gffkvsxcptqzaslu27msrw0ee933vf'
+  },
+  {
+    slug: 'talis-usdt',
+    contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
+  },
+  {
+    slug: 'sol-usdt',
+    contractAddress: 'inj1a2xr74g9w78acf054jfwspzmgzy5flv5275642'
+  },
+  {
+    slug: 'ninja-inj',
+    contractAddress: 'inj1rtl5y03d57f67v4rf7nqdkv9h80fxgfq2s3n82'
+  },
+  {
+    slug: 'kira-inj',
+    contractAddress: 'inj1y7a08ctmvcu72rldqfy92z72k8qfrg5ka5cs9w'
+  },
+  {
+    slug: 'autism-inj',
+    contractAddress: 'inj1l2hs0azs27vet7aqa54l9tpv0xufmp4acrarlj'
+  },
+  {
+    slug: 'usdy-usdt',
+    contractAddress: 'inj1vxt88736ufgt227vh8r8z9gl2f3a5806efqjx7'
+  },
+  {
+    slug: 'ginger-inj',
+    contractAddress: 'inj19dj6qj942vya4qpmj4j9r4cnchpqje5crgdswx'
+  },
+  {
+    slug: 'app-inj',
+    contractAddress: 'inj1ysm53zecga60lup2mt59uz0wax8vqsyr7vj2fp'
+  },
+  {
+    slug: 'strd-usdt',
+    contractAddress: 'inj15wyz4ezl4kjkz07qs2asgmr8n2ffmvkcug52tf'
+  },
+  {
+    slug: 'orai-usdt',
+    contractAddress: 'inj1qv2hhz3jge4fvungk79wqjnscfctajgpy67s0j'
+  },
+  {
+    slug: 'ninj-inj',
+    contractAddress: 'inj1p66szjh4lf7c9n8wz52mpr8d9cwdc70xxm4mgk'
+  },
+  {
+    slug: 'dojo-inj',
+    contractAddress: 'inj1tyu3x9ejuhhavlfe9serz5qk4c7eyhd5f8xc7n'
+  },
+  {
+    slug: 'andr-usdt',
+    contractAddress: 'inj1w4w0dtu3zrp550ah0p28u3xsqlzzrry9q3d7yk'
+  },
+  {
+    slug: 'hinj-inj',
+    contractAddress: 'inj1dxvlc5snn5y02nn82xdhnvwj3y09t9pnh6msf5'
   }
 ]
 
@@ -56,32 +112,39 @@ if (IS_STAGING) {
       {
         slug: 'pyth-usdt',
         contractAddress: 'inj1t8g6vuj3hyu6r9lrdmgttvzm9wqxztr0uhfgls'
-      },
-      {
-        slug: 'talis-usdt',
-        contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
       }
     ]
   )
 }
 
 const testnetSpotGridMarkets: SpotGridMarket[] = [
-  {
-    slug: 'inj-usdt',
-    contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
-  },
-  // OLD ATOM CONTRACT
+  // {
+  //   slug: 'inj-usdt',
+  //   contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
+  // },
   // {
   //   slug: 'atom-usdt',
   //   contractAddress: 'inj14yr8nj6tndmr4xyw9c66feqepv59revxsm7450'
   // },
+  // {
+  //   slug: 'atom-usdt',
+  //   contractAddress: 'inj1qzc20al6khfy5ta3m4fk0atct5k98tnny0t7he'
+  // },
+  // {
+  //   slug: 'tia-usdt',
+  //   contractAddress: 'inj18sl3ysva0czdgc2eqmqlrhfeu2v4l8vx4245ql'
+  // }
+  {
+    slug: 'inj-usdt',
+    contractAddress: 'inj1fs4mr4qsqwwsh4tps860tcvx2kfunfkwv5p750'
+  },
   {
     slug: 'atom-usdt',
-    contractAddress: 'inj1qzc20al6khfy5ta3m4fk0atct5k98tnny0t7he'
+    contractAddress: 'inj107fsasqmcqs4ztmvxdhrxsekzyjxcz7xwafjw5'
   },
   {
     slug: 'tia-usdt',
-    contractAddress: 'inj18sl3ysva0czdgc2eqmqlrhfeu2v4l8vx4245ql'
+    contractAddress: 'inj1zvjssysvcqwpsyr6rqr658vy9qp9dp2halezd3'
   }
 
   // Add This Market Later
@@ -91,5 +154,15 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   // }
 ]
 
-export const spotGridMarkets: SpotGridMarket[] =
-  IS_TESTNET || IS_DEVNET ? testnetSpotGridMarkets : mainnetSpotGridMarkets
+const devnetSpotGridMarkets: SpotGridMarket[] = [
+  {
+    slug: 'inj-usdt',
+    contractAddress: 'inj14hj2tavq8fpesdwxxcu44rty3hh90vhujaxlnz'
+  }
+]
+
+export const spotGridMarkets: SpotGridMarket[] = IS_TESTNET
+  ? testnetSpotGridMarkets
+  : IS_DEVNET
+  ? devnetSpotGridMarkets
+  : mainnetSpotGridMarkets

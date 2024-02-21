@@ -18,3 +18,11 @@ export interface UiAggregatedPriceLevel {
   total: string
   depth: number
 }
+
+export interface SymbolWithMarketId {
+  symbol: string
+  marketId: string
+  coingeckoId: string
+  isUsdtQuote: boolean
+  quoteMarket: string
+}

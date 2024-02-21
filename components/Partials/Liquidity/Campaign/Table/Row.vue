@@ -11,7 +11,6 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
 
 const props = defineProps({
   campaignUser: {
@@ -45,13 +44,7 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(props.campaignUser.score)
       .toBase(props.market.quoteToken.decimals)
-      .times(tokenStore.tokenUsdPriceMap[props.market.quoteToken.coinGeckoId])
-  )
-)
-
-const campaignWithSc = computed(() =>
-  LP_CAMPAIGNS.find(
-    ({ campaignId }) => campaignId === props.campaign.campaignId
+      .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   )
 )
 
@@ -66,28 +59,20 @@ const estRewardsInPercentage = computed(() => {
 })
 
 const rewards = computed(() => {
-  if (!campaignWithSc.value) {
-    return []
-  }
+  return props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
-  return campaignWithSc.value.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(
-      ({ symbol }) => symbol === reward.symbol
-    )
-
-    const amount = new BigNumberInBase(
-      estRewardsInPercentage.value
-    ).multipliedBy(reward.amount || 0)
+    const amount = new BigNumberInWei(reward.amount || 0)
+      .toBase(token?.decimals || 18)
+      .multipliedBy(estRewardsInPercentage.value)
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(
-          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-        )
+      ? amount.times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {
       amount,
-      symbol: reward.symbol,
+      symbol: token?.symbol || '',
       amountInUsd
     }
   })

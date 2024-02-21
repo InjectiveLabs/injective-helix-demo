@@ -130,7 +130,7 @@ function onSelectTokenClick() {
 }
 
 function balanceRefresh() {
-  return accountStore.fetchAccountPortfolio().then(() => {
+  return accountStore.fetchAccountPortfolioBalances().then(() => {
     if (isEthereumOrigin.value) {
       return peggyStore.updateErc20BalancesWithTokenAndPrice()
     }

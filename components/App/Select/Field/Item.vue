@@ -24,7 +24,7 @@ function click() {
 
 <template>
   <div
-    class="p-2 hover:bg-blue-500 rounded text-white text-sm font-semibold cursor-pointer group"
+    class="p-2 hover:bg-blue-500 rounded text-blue-900 text-sm font-semibold cursor-pointer group"
     @click="click"
   >
     <slot :is-active="isActive" />

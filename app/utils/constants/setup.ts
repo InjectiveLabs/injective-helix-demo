@@ -46,6 +46,7 @@ const env = {
 
   VITE_COINGECKO_KEY: import.meta.env.VITE_COINGECKO_KEY as string,
   VITE_AMPLITUDE_KEY: import.meta.env.VITE_AMPLITUDE_KEY as string,
+  VITE_MIXPANEL_KEY: import.meta.env.VITE_MIXPANEL_KEY as string,
   VITE_HOTJAR_KEY: import.meta.env.VITE_HOTJAR_KEY as string,
   VITE_GOOGLE_ANALYTICS_KEY: import.meta.env
     .VITE_GOOGLE_ANALYTICS_KEY as string,
@@ -80,6 +81,7 @@ const env = {
   VITE_NINJA_PASS_ENDPOINT: string
   VITE_COINGECKO_KEY: string
   VITE_AMPLITUDE_KEY: string
+  VITE_MIXPANEL_KEY: string
   VITE_GOOGLE_ANALYTICS_KEY: string
   VITE_HOTJAR_KEY: string
   VITE_BUGSNAG_KEY: string
@@ -148,8 +150,8 @@ export const ENDPOINTS = {
     env.VITE_SENTRY_HTTP_ENDPOINT ||
     endpoints.rest,
   indexer: env.VITE_INDEXER_API_ENDPOINT || endpoints.indexer,
-  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
-  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.indexer,
+  chronos: env.VITE_CHRONOS_API_ENDPOINT || endpoints.chronos,
+  explorer: env.VITE_CHRONOS_API_ENDPOINT || endpoints.explorer,
   campaign: CAMPAIGN_ENDPOINT
 }
 
@@ -167,6 +169,7 @@ export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
 export const HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
+export const MIXPANEL_KEY = env.VITE_MIXPANEL_KEY || ''
 export const GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''

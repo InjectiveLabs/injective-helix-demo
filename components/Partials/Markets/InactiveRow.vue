@@ -6,10 +6,9 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import { TradeClickOrigin, MarketStatus } from '@/types'
 import { getMarketRoute } from '@/app/utils/market'
-
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const appStore = useAppStore()
 
 const props = defineProps({
@@ -42,7 +41,7 @@ function toggleFavoriteMarket() {
 }
 
 function tradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: props.market.slug,
     marketType: props.market.subType,
     origin: TradeClickOrigin.MarketsPage
