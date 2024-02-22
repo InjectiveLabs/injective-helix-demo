@@ -123,7 +123,7 @@ export const customAggregations = {
 
   'INJ/USDT': {
     minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('1')
   },
 
