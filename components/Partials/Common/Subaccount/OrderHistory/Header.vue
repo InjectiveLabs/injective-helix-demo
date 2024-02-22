@@ -5,10 +5,10 @@
         <div class="flex items-center justify-start">
           <CommonHeaderTooltip
             v-bind="{
-              tooltip: $t('trade.timeTooltip', { type: 'order' })
+              tooltip: $t('trade.timeTooltipUpdated', { type: 'order' })
             }"
           >
-            {{ $t('trade.time') }}
+            {{ $t('trade.lastUpdated') }}
           </CommonHeaderTooltip>
         </div>
       </th>

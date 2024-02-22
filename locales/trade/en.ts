@@ -178,6 +178,8 @@ export default {
     time: 'Time',
     timeTooltip: ({ named }: I18nMessageFunction) =>
       `The time at which the ${named('type')} occurred.`,
+    timeTooltipUpdated: ({ named }: I18nMessageFunction) =>
+      `The time at which the ${named('type')} was updated.`,
     max: 'Max',
     orderbook: 'Orderbook',
     markets: 'Markets',
@@ -322,6 +324,7 @@ export default {
       left: 'Left',
       right: 'Right'
     },
+
     swap: {
       to: 'To',
       fee: 'Fee',
@@ -374,5 +377,6 @@ export default {
           'inputTokenSymbol'
         )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
     }
-  }
+  },
+  lastUpdated: 'Last Updated'
 }
