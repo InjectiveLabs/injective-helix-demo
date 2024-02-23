@@ -166,3 +166,5 @@ export const spotGridMarkets: SpotGridMarket[] = IS_TESTNET
   : IS_DEVNET
   ? devnetSpotGridMarkets
   : mainnetSpotGridMarkets
+
+export const MARKETS_WITH_LOW_TRADING_SIZE = ['dojo-inj', 'andr-usdt']

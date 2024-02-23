@@ -5,8 +5,10 @@ import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  GST_MIN_TRADING_SIZE_LOW
 } from '@/app/utils/constants'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 
 const props = defineProps({
@@ -50,8 +52,16 @@ const baseDenomAmount = computed(() =>
 )
 
 const gridThreshold = computed(() => {
+  const isLowTradingSize = MARKETS_WITH_LOW_TRADING_SIZE.includes(
+    props.market.slug
+  )
+
+  const tradingSize = isLowTradingSize
+    ? GST_MIN_TRADING_SIZE_LOW
+    : GST_MIN_TRADING_SIZE
+
   if (props.isAuto) {
-    return GST_DEFAULT_AUTO_GRIDS * GST_MIN_TRADING_SIZE
+    return GST_DEFAULT_AUTO_GRIDS * tradingSize
   }
 
   const isGridHigherThanGridThreshold =
@@ -62,7 +72,7 @@ const gridThreshold = computed(() => {
     isGridHigherThanGridThreshold
       ? Number(formValues.value[SpotGridTradingField.Grids])
       : GST_GRID_THRESHOLD
-  ).times(GST_MIN_TRADING_SIZE)
+  ).times(tradingSize)
 })
 
 const isLowerBoundGtLastPrice = computed(() =>
