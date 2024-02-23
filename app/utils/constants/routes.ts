@@ -74,7 +74,8 @@ export const getRoutes = (network: Network, env: string) => {
     'arb-usdt-perp',
     'osmo-usdt-perp',
     'link-usdt-perp',
-    'doge-usdt-perp'
+    'doge-usdt-perp',
+    'bonk-usdt-perp'
   ]
 
   const gridTradingSpot = [
@@ -99,7 +100,9 @@ export const getRoutes = (network: Network, env: string) => {
     'strd-usdt',
     'orai-usdt',
     'ninj-inj',
-    'dojo-inj'
+    'dojo-inj',
+    'andr-usdt',
+    'hinj-inj'
   ]
 
   const binaryOptions: string[] = []

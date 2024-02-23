@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   Time,
   IChartApi,
@@ -59,8 +60,7 @@ const container = ref()
 const wrapper = ref()
 
 const decimalPlaces = computed(() => {
-  if (Math.floor(props.tickSize) === props.tickSize) return 0
-  return props.tickSize.toString().split('.')[1].length || 0
+  return new BigNumberInBase(props.tickSize).dp() || 0
 })
 
 function fitContent() {
