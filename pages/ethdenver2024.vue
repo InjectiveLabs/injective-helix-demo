@@ -22,7 +22,10 @@ function register() {
   }
 
   httpClient
-    .post('eth-denver-2024', { address: walletStore.injectiveAddress })
+    .post('eth-denver-2024', {
+      address: walletStore.injectiveAddress,
+      type: 'helix'
+    })
     .then(async () => {
       await fetchIsRegistered()
       success({ title: 'You have successfully registered for the event' })
