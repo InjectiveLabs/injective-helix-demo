@@ -71,13 +71,13 @@ export const MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'lpRewards',
         description: 'lpRewardsSub',
-        to: '/trade-and-earn'
+        to: '/lp-rewards'
       },
       {
         type: MenuItemType.Link,
         label: 'guilds',
         description: 'guildsSub',
-        to: '/trade-and-earn'
+        to: '/guilds'
       },
       {
         type: MenuItemType.Link,
@@ -139,7 +139,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       {
         type: MenuItemType.Link,
         label: 'swaps',
-        to: '/portfolio/history/swaps'
+        to: '/portfolio/history/swap'
       },
       {
         type: MenuItemType.Link,
