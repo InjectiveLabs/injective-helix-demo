@@ -442,3 +442,8 @@ export enum TimeDuration {
   Minute = 'minute',
   Second = 'second'
 }
+
+export enum MenuItemType {
+  Link = 'link',
+  Dropdown = 'dropdown'
+}

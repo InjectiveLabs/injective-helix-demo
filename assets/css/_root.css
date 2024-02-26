@@ -30,11 +30,11 @@
 }
 
 html {
-  @apply bg-gray-1000;
+  @apply bg-brand-900;
 }
 
 body {
-  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-gray-1000;
+  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-brand-900;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
 }

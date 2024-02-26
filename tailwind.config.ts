@@ -60,7 +60,17 @@ export default {
       'top-bar-dark': '0px 1px 0px #2A2F41'
     },
 
-    colors,
+    colors: {
+      ...colors,
+      brand: {
+        800: '#202431',
+        900: '#14151A'
+      }
+    },
+
+    divideColor: {
+      DEFAULT: '#202431'
+    },
 
     screens: {
       xs: '480px',

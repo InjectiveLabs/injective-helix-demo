@@ -250,6 +250,7 @@ export default {
       'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
     spot: 'Spot',
     new: 'New',
+    markets: 'Markets',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT',

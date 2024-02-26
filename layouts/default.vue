@@ -60,9 +60,9 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen w-full">
+  <div>
     <AppHocLoading :status="status" class="h-full">
-      <LayoutTopbar />
+      <LayoutNavbar />
       <main>
         <NuxtPage />
       </main>

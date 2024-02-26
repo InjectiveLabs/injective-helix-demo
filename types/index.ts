@@ -9,7 +9,9 @@ import type { Token } from '@injectivelabs/token-metadata'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { NoticeBanner } from './enums'
+import { RouteLocationRaw } from 'vue-router'
+import { Component } from 'nuxt/schema'
+import { MenuItemType, NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
@@ -120,6 +122,22 @@ export interface AmplitudeTrackerUser {
   address: string
   tierLevel: number
 }
+type MenuItemBase = {
+  label: string
+  description?: string
+  icon?: Component
+}
+
+export type MenuItem =
+  | (MenuItemBase & {
+      type: MenuItemType.Link
+      to: RouteLocationRaw
+    })
+  | (MenuItemBase & {
+      type: MenuItemType.Dropdown
+      icon?: Component
+      items: MenuItem[]
+    })
 
 export * from './page'
 export * from './swap'

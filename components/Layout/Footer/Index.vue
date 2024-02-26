@@ -35,7 +35,7 @@ const learnList = [
 </script>
 
 <template>
-  <footer class="w-full py-16 bg-gray-1000 border-t border-t-gray-900">
+  <footer class="w-full py-16 bg-brand-900 border-t border-t-gray-900">
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
