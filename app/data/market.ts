@@ -10,6 +10,7 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'qunt-inj',
+  'talis-inj',
   'bonk-usdt-perp',
   'doge-usdt-perp',
   'link-usdt-perp',
@@ -19,8 +20,7 @@ export const newMarketsSlug = [
   'dojo-inj',
   'arb-usdt-perp',
   'gyen-usdt',
-  'op-usdt-perp',
-  'sol-usdt-perp'
+  'op-usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
