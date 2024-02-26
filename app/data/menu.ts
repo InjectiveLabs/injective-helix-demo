@@ -1,4 +1,11 @@
 import { MainPage, MenuItem, MenuItemType } from '@/types'
+import PieChart from '@/components/Asset/Menu/PieChart.vue'
+import BarChart from '@/components/Asset/Menu/BarChart.vue'
+import Clock from '@/components/Asset/Menu/Clock.vue'
+import Gear from '@/components/Asset/Menu/Gear.vue'
+import GraphUp from '@/components/Asset/Menu/GraphUp.vue'
+import Grid from '@/components/Asset/Menu/Grid.vue'
+import ListNested from '@/components/Asset/Menu/ListNested.vue'
 
 export const MENU_ITEMS: MenuItem[] = [
   { type: MenuItemType.Link, label: 'markets', to: { name: MainPage.Markets } },
@@ -82,4 +89,80 @@ export const MENU_ITEMS: MenuItem[] = [
   }
 ]
 
-export const USER_MENU_ITEMS: MenuItem[] = []
+export const USER_MENU_ITEMS: MenuItem[] = [
+  {
+    type: MenuItemType.Link,
+    label: 'portfolio',
+    to: '/portfolio',
+    icon: PieChart
+  },
+  {
+    type: MenuItemType.Link,
+    label: 'balances',
+    icon: BarChart,
+    to: '/portfolio/balances'
+  },
+  {
+    type: MenuItemType.Link,
+    label: 'positions',
+    icon: GraphUp,
+    to: '/portfolio/positions'
+  },
+  {
+    type: MenuItemType.Dropdown,
+    label: 'orders',
+    icon: ListNested,
+    items: [
+      { type: MenuItemType.Link, label: 'spot', to: '/portfolio/orders/spot' },
+      {
+        type: MenuItemType.Link,
+        label: 'derivative',
+        to: '/portfolio/orders/derivative'
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'spotGrid',
+        to: '/portfolio/orders/spot-grid'
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'derivativesGrid',
+        to: '/portfolio/orders/derivatives-grid'
+      }
+    ]
+  },
+  {
+    type: MenuItemType.Dropdown,
+    label: 'history',
+    icon: Clock,
+    items: [
+      {
+        type: MenuItemType.Link,
+        label: 'swaps',
+        to: '/portfolio/history/swaps'
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'wallet',
+        to: '/portfolio/history/wallet'
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'fundingPayments',
+        to: '/portfolio/history/funding-payments'
+      }
+    ]
+  },
+  {
+    type: MenuItemType.Link,
+    label: 'subaccounts',
+    icon: Grid,
+    to: '/portfolio/subaccounts'
+  },
+  {
+    type: MenuItemType.Link,
+    label: 'settings',
+    icon: Gear,
+    to: '/portfolio/settings'
+  }
+]

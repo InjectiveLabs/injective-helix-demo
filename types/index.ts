@@ -10,7 +10,7 @@ import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { RouteLocationRaw } from 'vue-router'
-import { Component } from 'nuxt/schema'
+import { Component } from 'vue'
 import { MenuItemType, NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 

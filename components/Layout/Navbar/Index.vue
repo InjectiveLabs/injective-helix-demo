@@ -3,12 +3,16 @@
 </script>
 
 <template>
-  <header>
-    <div class="flex divide-x border-b divide-white">
-      <NuxtLink to="/" class="px-6 flex justify-center items-center">
+  <header class="sticky top-0 w-full z-20 bg-brand-900 header-height">
+    <div class="flex border-b">
+      <NuxtLink to="/" class="px-6 border-r flex justify-center items-center">
         <AssetLogo class="h-6 lg:h-10 lg:w-10 aspect-square" alt="Helix" />
       </NuxtLink>
       <LayoutNavbarMenu />
+
+      <div class="flex-1" />
+
+      <LayoutNavbarMenuWallet />
     </div>
   </header>
 </template>

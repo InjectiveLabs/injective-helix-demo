@@ -83,3 +83,7 @@ body .vue-grid-item {
 .h-full-flex {
   @apply h-full flex flex-col grow;
 }
+
+.header-height {
+  @apply h-[52px];
+}

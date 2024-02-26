@@ -261,7 +261,19 @@ export default {
     tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
-    liquidityBotsDescription: 'Trade smarter with automated strategies'
+    liquidityBotsDescription: 'Trade smarter with automated strategies',
+    positions: 'Positions',
+    orders: 'Orders',
+    spotGrid: 'Spot Grid',
+    derivative: 'Derivative',
+    derivativeGrid: 'Derivative Grid',
+    swaps: 'Swaps',
+    wallet: 'Wallet',
+    fundingPayments: 'Funding Payments',
+    subaccounts: 'Subaccounts',
+    settings: 'Settings',
+    derivativesGrid: 'Derivatives Grid',
+    history: 'History'
   },
 
   feeDiscounts: {
