@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED, IS_STAGING } from '@/app/utils/constants'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
@@ -111,15 +111,13 @@ watch(isModalOpen, (newShowModalState) => {
       class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
     >
       <LayoutWalletConnectWalletMetamask />
+      <LayoutWalletConnectWalletOkxWallet />
       <LayoutWalletConnectWalletKeplr />
       <LayoutWalletConnectWalletNinji />
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />
       <LayoutWalletConnectWalletPhantom />
-      <template v-if="IS_STAGING">
-        <LayoutWalletConnectWalletOkxWallet />
-      </template>
       <LayoutWalletConnectWalletLeap />
       <LayoutWalletConnectWalletCosmostation />
       <LayoutWalletConnectWalletTorus />
