@@ -45,7 +45,7 @@ export const experimentalMarketsSlug = [
   'wif-usdt-perp',
   'bonk-usdt-perp',
   'qunt-inj',
-  'tails-inj'
+  'talis-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -111,7 +111,7 @@ export const slugsToIncludeInInjectiveCategory = [
   'andr-usdt',
   'hinj-inj',
   'qunt-inj',
-  'tails-inj'
+  'talis-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
