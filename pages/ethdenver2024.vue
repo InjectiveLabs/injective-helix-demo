@@ -1,5 +1,50 @@
 <script setup lang="ts">
-//
+import { HttpRestClient } from '@injectivelabs/utils'
+
+const walletStore = useWalletStore()
+const { error, success } = useNotifications()
+const { $onError } = useNuxtApp()
+
+definePageMeta({
+  middleware: ['connected']
+})
+
+const httpClient = new HttpRestClient('https://api.express.injective.dev')
+const isRegistered = ref(false)
+
+onMounted(() => {
+  fetchIsRegistered()
+})
+
+function register() {
+  if (isRegistered.value) {
+    return error({ title: 'You are already registered for the event' })
+  }
+
+  httpClient
+    .post('eth-denver-2024', { address: walletStore.injectiveAddress })
+    .then(async () => {
+      await fetchIsRegistered()
+      success({ title: 'You have successfully registered for the event' })
+    })
+    .catch($onError)
+}
+
+function fetchIsRegistered() {
+  return httpClient
+    .get<{
+      data: { result: { address: string; date: number }[] }
+    }>('eth-denver-2024')
+    .then((response) => {
+      const exists = (response?.data?.result || []).find(
+        (result) => result.address === walletStore.injectiveAddress
+      )
+
+      if (exists) {
+        isRegistered.value = true
+      }
+    })
+}
 </script>
 
 <template>
@@ -19,7 +64,7 @@
       <div class="bg-gray-800 rounded-xl p-8 space-y-4">
         <div class="flex justify-center items-center font-semibold space-x-2">
           <div
-            class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center"
+            class="bg-blue-500 text-blue-900 w-10 h-10 rounded-full flex items-center justify-center"
           >
             1
           </div>
@@ -27,14 +72,19 @@
         </div>
 
         <div class="flex justify-center">
-          <AppButton class="bg-blue-500 text-white border-blue-500">
-            {{ $t('ethdenver.register') }}
+          <AppButton
+            class="bg-blue-500 text-blue-900 border-blue-500"
+            v-bind="{ isDisabled: isRegistered }"
+            @click="register"
+          >
+            <span v-if="isRegistered">{{ $t('ethdenver.registered') }}</span>
+            <span v-else>{{ $t('ethdenver.register') }}</span>
           </AppButton>
         </div>
 
         <div class="flex justify-center items-center font-semibold space-x-2">
           <div
-            class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center"
+            class="bg-blue-500 text-blue-900 w-10 h-10 rounded-full flex items-center justify-center"
           >
             2
           </div>
@@ -44,7 +94,7 @@
         <div>
           <div class="flex justify-center">
             <NuxtLink to="/swap">
-              <AppButton class="bg-blue-500 text-white border-blue-500">
+              <AppButton class="bg-blue-500 text-blue-900 border-blue-500">
                 {{ $t('ethdenver.goToSwap') }}
               </AppButton>
             </NuxtLink>
@@ -53,7 +103,7 @@
 
         <div class="flex justify-center items-center font-semibold space-x-2">
           <div
-            class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center"
+            class="bg-blue-500 text-blue-900 w-10 h-10 rounded-full flex items-center justify-center"
           >
             3
           </div>
