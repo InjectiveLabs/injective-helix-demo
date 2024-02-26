@@ -180,14 +180,14 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div class="p-2 h-full">
-    <div class="pb-1 pt-2 flex justify-end">
+  <div class="flex flex-col flex-1">
+    <div class="flex justify-end border-b divide-x">
       <button
         v-for="(option, index) in intervalOptions"
         :key="option.label"
-        class="border py-1 text-xs border-gray-800 text-gray-500 w-9 text-center"
+        class="py-1 text-xs text-gray-500 w-9 text-center first:border-l h-8"
         :class="{
-          'bg-gray-700 text-white': option.label === interval.label
+          'bg-brand-800 text-white': option.label === interval.label
         }"
         @click="setInterval(index)"
       >
@@ -195,7 +195,7 @@ useIntervalFn(() => {
       </button>
     </div>
 
-    <AppHocLoading v-bind="{ status }" class="h-full">
+    <AppHocLoading v-bind="{ status }">
       <PartialsTradingLightTradingChart
         ref="chart"
         v-bind="{

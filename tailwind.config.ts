@@ -61,11 +61,7 @@ export default {
     },
 
     colors: {
-      ...colors,
-      brand: {
-        800: '#202431',
-        900: '#14151A'
-      }
+      ...colors
     },
 
     divideColor: {
@@ -124,8 +120,8 @@ export default {
       },
 
       fontFamily: {
-        sans: ['Proxima Nova', ...defaultTheme.fontFamily.sans],
-        mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono]
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        mono: ['Azeret Mono', ...defaultTheme.fontFamily.mono]
       },
 
       borderRadius: {
@@ -163,7 +159,8 @@ export default {
         ...extraSizings,
         footer: '2.5rem',
         orders: '10rem',
-        trades: '26rem'
+        trades: '26rem',
+        header: '56px'
       },
 
       minHeight: {

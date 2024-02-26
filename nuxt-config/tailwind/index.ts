@@ -80,5 +80,10 @@ export const colors = {
 
   primary: {
     500: '#00F2FE'
+  },
+
+  brand: {
+    800: '#202431',
+    900: '#14151A'
   }
 }

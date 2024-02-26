@@ -36,23 +36,21 @@ watch(isLoading, (isLoading, oldIsLoading) => {
 </script>
 
 <template>
-  <div>
-    <Suspense>
-      <div
-        v-if="isLoading"
-        class="h-full"
-        :class="{
-          'py-4': !noPadding
-        }"
-      >
+  <Suspense>
+    <div
+      v-if="isLoading"
+      class="h-full"
+      :class="{
+        'py-4': !noPadding
+      }"
+    >
+      <AppLoading :class="loaderClass" />
+    </div>
+    <slot v-else />
+    <template #fallback>
+      <div class="h-full">
         <AppLoading :class="loaderClass" />
       </div>
-      <slot v-else />
-      <template #fallback>
-        <div class="h-full">
-          <AppLoading :class="loaderClass" />
-        </div>
-      </template>
-    </Suspense>
-  </div>
+    </template>
+  </Suspense>
 </template>

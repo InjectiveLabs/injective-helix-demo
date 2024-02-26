@@ -1,11 +1,11 @@
-import path from 'path'
+// import path from 'path'
 import { NitroConfig } from 'nitropack'
 import { Network } from '@injectivelabs/networks'
 import { HttpClient } from '@injectivelabs/utils'
 import { ENDPOINTS } from './../../app/utils/constants/setup'
 import { getRoutes } from './../../app/utils/constants/routes'
 import { GUILD_CONTRACT_ADDRESS } from './../../app/utils/constants'
-import { TradeSubPage } from './../../types/page'
+// import { TradeSubPage } from './../../types/page'
 
 const VITE_ENV = process.env.VITE_ENV as string
 const VITE_NETWORK = process.env.VITE_NETWORK as Network
@@ -25,9 +25,9 @@ const {
   liquidityBotSpotRoutes
 } = ROUTES
 
-const resolvePagePath = (page: string) => {
-  return path.resolve(__dirname, '..', '..', page)
-}
+// const resolvePagePath = (page: string) => {
+//   return path.resolve(__dirname, '..', '..', page)
+// }
 
 const fetchGuildRoutes = async (): Promise<string[]> => {
   // hardcode guild ids to balance unstable indexer api response
@@ -74,40 +74,40 @@ export default {
       ...liquidityBotSpotRoutes,
       ...(await fetchGuildRoutes())
     ]
-  },
-
-  'pages:extend'(pages: any[]) {
-    const routes = [
-      {
-        name: 'futures',
-        path: '/futures',
-        file: resolvePagePath('pages/futures/[futures].vue'),
-        children: []
-      },
-      {
-        name: 'spot',
-        path: '/spot',
-        file: resolvePagePath('pages/spot/[spot].vue'),
-        children: []
-      },
-      {
-        name: TradeSubPage.BinaryOption,
-        path: '/binary-options/:binaryOption',
-        file: resolvePagePath('pages/futures/[futures].vue'),
-        children: []
-      },
-      {
-        name: TradeSubPage.Derivatives,
-        path: '/derivative/:derivative',
-        file: resolvePagePath('pages/futures/[futures].vue')
-      },
-      {
-        name: TradeSubPage.Perpetual,
-        path: '/perpetual/:perpetual',
-        file: resolvePagePath('pages/futures/[futures].vue')
-      }
-    ]
-
-    pages.push(...routes)
   }
+
+  // 'pages:extend'(pages: any[]) {
+  //   const routes = [
+  //     {
+  //       name: 'futures',
+  //       path: '/futures',
+  //       file: resolvePagePath('pages/futures/[futures].vue'),
+  //       children: []
+  //     },
+  //     {
+  //       name: 'spot',
+  //       path: '/spot',
+  //       file: resolvePagePath('pages/spot/[spot].vue'),
+  //       children: []
+  //     },
+  //     {
+  //       name: TradeSubPage.BinaryOption,
+  //       path: '/binary-options/:binaryOption',
+  //       file: resolvePagePath('pages/futures/[futures].vue'),
+  //       children: []
+  //     },
+  //     {
+  //       name: TradeSubPage.Derivatives,
+  //       path: '/derivative/:derivative',
+  //       file: resolvePagePath('pages/futures/[futures].vue')
+  //     },
+  //     {
+  //       name: TradeSubPage.Perpetual,
+  //       path: '/perpetual/:perpetual',
+  //       file: resolvePagePath('pages/futures/[futures].vue')
+  //     }
+  //   ]
+
+  //   pages.push(...routes)
+  // }
 }

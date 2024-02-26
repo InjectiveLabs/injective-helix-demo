@@ -8,7 +8,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
     Object.entries(from.query).sort().toString()
 
   const isSameRouteDifferentQuery = to.name === from.name && isDifferentQuery
-  const isActivityPage = (to.name as string).startsWith(MainPage.Activity)
+  const isActivityPage = ((to.name as string) || '').startsWith(
+    MainPage.Activity
+  )
 
   if (isSameRouteDifferentQuery || isActivityPage) {
     return
