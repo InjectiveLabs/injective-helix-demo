@@ -1,11 +1,11 @@
 import {
   Network,
   isDevnet,
+  isMainnet,
   isTestnet,
   getNetworkEndpoints,
-  isMainnet
+  getCw20SwapContractForNetwork
 } from '@injectivelabs/networks'
-import { CW20_SWAP_CONTRACT_BY_NETWORK } from '@injectivelabs/sdk-ts'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getRoutes } from './routes'
@@ -175,7 +175,7 @@ export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
-export const SWAP_CONTRACT_ADDRESS = CW20_SWAP_CONTRACT_BY_NETWORK[NETWORK]
+export const SWAP_CONTRACT_ADDRESS = getCw20SwapContractForNetwork(NETWORK)
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,
