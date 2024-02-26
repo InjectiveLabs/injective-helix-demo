@@ -7,6 +7,7 @@ export default {
     step2: 'Place more than 100 USDT worth of trades',
     step3: 'Results to be announced on March 5 2024',
     register: 'Register',
+    registered: 'Registered',
     goToSwap: 'Go to Swap',
     footer:
       '*Only applicable to users who have not used Helix prior Feb 23 2024'
