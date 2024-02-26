@@ -10,6 +10,7 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'qunt-inj',
+  'talis-inj',
   'bonk-usdt-perp',
   'doge-usdt-perp',
   'link-usdt-perp',
@@ -19,8 +20,7 @@ export const newMarketsSlug = [
   'dojo-inj',
   'arb-usdt-perp',
   'gyen-usdt',
-  'op-usdt-perp',
-  'sol-usdt-perp'
+  'op-usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
@@ -45,7 +45,7 @@ export const experimentalMarketsSlug = [
   'wif-usdt-perp',
   'bonk-usdt-perp',
   'qunt-inj',
-  'tails-inj'
+  'talis-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -111,7 +111,7 @@ export const slugsToIncludeInInjectiveCategory = [
   'andr-usdt',
   'hinj-inj',
   'qunt-inj',
-  'tails-inj'
+  'talis-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
