@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Portfolio</div>
+  <div>Spot grid Orders</div>
 </template>

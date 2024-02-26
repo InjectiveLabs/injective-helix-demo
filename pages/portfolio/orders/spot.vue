@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Portfolio</div>
+  <div>spot</div>
 </template>

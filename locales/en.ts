@@ -267,6 +267,8 @@ export default {
     spotGrid: 'Spot Grid',
     derivative: 'Derivative',
     derivativeGrid: 'Derivative Grid',
+    futures: 'Futures',
+    futuresGrid: 'Futures Grid',
     swaps: 'Swaps',
     wallet: 'Wallet',
     fundingPayments: 'Funding Payments',

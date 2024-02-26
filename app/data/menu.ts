@@ -116,8 +116,8 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       { type: MenuItemType.Link, label: 'spot', to: '/portfolio/orders/spot' },
       {
         type: MenuItemType.Link,
-        label: 'derivative',
-        to: '/portfolio/orders/derivative'
+        label: 'futures',
+        to: '/portfolio/orders/futures'
       },
       {
         type: MenuItemType.Link,
@@ -126,8 +126,8 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       },
       {
         type: MenuItemType.Link,
-        label: 'derivativesGrid',
-        to: '/portfolio/orders/derivatives-grid'
+        label: 'futuresGrid',
+        to: '/portfolio/orders/futures-grid'
       }
     ]
   },
