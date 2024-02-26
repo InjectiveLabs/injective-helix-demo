@@ -19,7 +19,7 @@ function toggle() {
   <NuxtLink
     v-if="item.type === MenuItemType.Link"
     :to="item.to"
-    class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent"
+    class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
   >
     <component :is="item.icon" v-if="item.icon" />
 
@@ -28,7 +28,7 @@ function toggle() {
 
   <template v-else>
     <div
-      class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent"
+      class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent text-sm"
       @click="toggle"
     >
       <component :is="item.icon" v-if="item.icon" />
