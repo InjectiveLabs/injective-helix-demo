@@ -180,12 +180,14 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-1">
-    <div class="flex justify-end border-b divide-x">
+  <div class="flex flex-col flex-1 relative">
+    <div
+      class="flex justify-end border-b border-r divide-x absolute left-0 top-0 z-50 bg-brand-900"
+    >
       <button
         v-for="(option, index) in intervalOptions"
         :key="option.label"
-        class="py-1 text-xs text-gray-500 w-9 text-center first:border-l h-8"
+        class="py-1 text-xs hover:bg-brand-800 text-gray-500 w-10 text-center h-10"
         :class="{
           'bg-brand-800 text-white': option.label === interval.label
         }"

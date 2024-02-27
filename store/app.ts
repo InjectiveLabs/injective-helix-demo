@@ -60,6 +60,7 @@ type AppStoreState = {
   chainId: ChainId
   gasPrice: string
   ethereumChainId: EthereumChainId
+  marketsOpen: boolean
 
   // Loading States
   state: AppState
@@ -79,6 +80,7 @@ const initialStateFactory = (): AppStoreState => ({
   chainId: CHAIN_ID,
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
+  marketsOpen: false,
 
   // Loading States
   state: AppState.Idle,

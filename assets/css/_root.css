@@ -30,7 +30,7 @@
 }
 
 html {
-  @apply bg-brand-900;
+  @apply bg-brand-900 overflow-x-hidden;
 }
 
 body {

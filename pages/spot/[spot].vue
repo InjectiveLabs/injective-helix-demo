@@ -6,5 +6,6 @@ const market = computed(() =>
 </script>
 
 <template>
-  <PartialsTradeLayout v-if="market" v-bind="{ market }"> </PartialsTradeLayout>
+  <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
+  </PartialsTradeLayout>
 </template>
