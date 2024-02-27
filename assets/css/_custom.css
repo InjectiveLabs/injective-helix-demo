@@ -125,3 +125,16 @@
 .-order-1 {
   order: -1;
 }
+
+@layer utilities {
+  .trade-layout-left {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 352px 363px 1fr;
+
+    grid-template-areas:
+      'stats stats stats'
+      'form orderbook chart'
+      'form orders orders';
+  }
+}

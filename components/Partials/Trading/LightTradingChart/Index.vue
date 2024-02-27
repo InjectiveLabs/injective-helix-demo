@@ -176,7 +176,7 @@ watch(
 
 <template>
   <div ref="wrapper" class="flex-1 relative">
-    <div ref="container" class="lw-chart absolute inset-0 z-20"></div>
+    <div ref="container" class="lw-chart absolute inset-0"></div>
   </div>
 </template>
 

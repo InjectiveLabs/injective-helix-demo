@@ -447,3 +447,9 @@ export enum MenuItemType {
   Link = 'link',
   Dropdown = 'dropdown'
 }
+
+export enum ChartViewOption {
+  Chart = 'chart',
+  Depth = 'depth',
+  Info = 'info'
+}

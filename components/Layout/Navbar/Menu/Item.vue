@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MenuItem, MenuItemType } from '~/types'
 
-const props = defineProps({
+defineProps({
   item: {
     type: Object as PropType<MenuItem>,
     required: true
@@ -40,7 +40,7 @@ function closeAllMenus() {
       <p class="font-semibold" :class="{ 'text-lg': level > 0 }">
         {{ $t(`navigation.${item.label}`) }}
       </p>
-      <p v-if="item.description" class="text-gray-400 font-normal">
+      <p v-if="item.description" class="text-gray-400 text-xs mt-1 font-normal">
         {{ $t(`navigation.${item.description}`) }}
       </p>
     </div>
@@ -60,7 +60,10 @@ function closeAllMenus() {
         <p class="font-semibold" :class="{ 'text-lg': level > 0 }">
           {{ $t(`navigation.${item.label}`) }}
         </p>
-        <p v-if="item.description" class="text-gray-400 font-normal">
+        <p
+          v-if="item.description"
+          class="text-gray-400 text-xs mt-1 font-normal"
+        >
           {{ $t(`navigation.${item.description}`) }}
         </p>
       </div>
