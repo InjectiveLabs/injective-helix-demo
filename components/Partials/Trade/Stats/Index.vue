@@ -12,6 +12,6 @@ defineProps({
 <template>
   <div class="h-header flex relative">
     <PartialsTradeStatsMarketSelector v-bind="{ market }" />
-    <PartialsTradeStatsInfo />
+    <PartialsTradeStatsInfo v-bind="{ market }" />
   </div>
 </template>

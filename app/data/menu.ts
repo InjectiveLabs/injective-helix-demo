@@ -55,7 +55,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
     label: 'liquidity',
-    to: '/trading-bots/liquidity-bots/spot/inj-usdt'
+    to: '/trading-bots/liquidity-bots/spot/'
   },
   {
     type: MenuItemType.Dropdown,

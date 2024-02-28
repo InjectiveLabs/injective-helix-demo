@@ -9,8 +9,6 @@ defineProps({
     required: true
   }
 })
-
-const appStore = useAppStore()
 </script>
 
 <template>
@@ -20,10 +18,7 @@ const appStore = useAppStore()
     </slot>
   </div>
 
-  <div
-    class="lg:trade-layout-left w-full min-h-[calc(100vh-122px)]"
-    :class="{ blur: appStore.marketsOpen }"
-  >
+  <div class="lg:trade-layout-left w-full min-h-[calc(100vh-122px)]">
     <div class="[grid-area:chart] lg:border-b">
       <slot name="chart">
         <PartialsTradeChart v-bind="{ market }" />

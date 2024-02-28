@@ -37,7 +37,7 @@ function closeAllMenus() {
     @click="closeAllMenus"
   >
     <div>
-      <p class="font-semibold" :class="{ 'text-lg': level > 0 }">
+      <p class="font-semibold" :class="{ 'font-normal text-lg': level > 0 }">
         {{ $t(`navigation.${item.label}`) }}
       </p>
       <p v-if="item.description" class="text-gray-400 text-xs mt-1 font-normal">
@@ -57,7 +57,7 @@ function closeAllMenus() {
   >
     <div class="py-2 px-6 flex">
       <div>
-        <p class="font-semibold" :class="{ 'text-lg': level > 0 }">
+        <p class="font-semibold" :class="{ 'font-normal text-lg': level > 0 }">
           {{ $t(`navigation.${item.label}`) }}
         </p>
         <p

@@ -182,7 +182,7 @@ useIntervalFn(() => {
 <template>
   <div class="flex flex-col flex-1 relative">
     <div
-      class="flex justify-end border-b border-r divide-x absolute left-0 top-0 z-50 bg-brand-900"
+      class="flex justify-end border-b border-r divide-x absolute left-0 top-0 z-20 bg-brand-900"
     >
       <button
         v-for="(option, index) in intervalOptions"

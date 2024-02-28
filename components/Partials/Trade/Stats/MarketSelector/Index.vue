@@ -23,7 +23,7 @@ function toggleOpen() {
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
     <div>
       <p class="uppercase tracking-wider font-bold text-sm">
-        {{ market.slug }}
+        {{ market.ticker }}
       </p>
       <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
     </div>
@@ -36,11 +36,24 @@ function toggleOpen() {
     </div>
   </div>
 
-  <div v-if="appStore.marketsOpen" class="absolute top-full w-full left-0 flex">
+  <Transition
+    enter-from-class="blur-xl opacity-0"
+    leave-to-class="blur-xl opacity-0"
+    enter-active-class="transition-all duration-300"
+    leave-active-class="transition-all duration-300"
+    mode="out-in"
+  >
     <div
-      class="basis-[800px] bg-brand-900 border p-4 rounded-md overflow-y-auto h-[calc(100vh-132px)]"
+      v-if="appStore.marketsOpen"
+      class="absolute backdrop-blur top-full z-30 w-full left-0 flex"
+      @click="toggleOpen"
     >
-      <PartialsTradeMarkets />
+      <div
+        class="basis-[800px] bg-brand-900 border p-4 overflow-y-auto h-[calc(100vh-132px)]"
+        @click.stop
+      >
+        <PartialsTradeMarkets />
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
