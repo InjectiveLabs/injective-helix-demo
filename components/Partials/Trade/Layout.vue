@@ -27,7 +27,7 @@ defineProps({
 
     <div class="[grid-area:orderbook] lg:border-r lg:border-b">
       <slot name="orderbook">
-        <div class="h-[620px]"></div>
+        <PartialsTradeOrderbook v-bind="{ market, isSpot }" />
       </slot>
     </div>
 

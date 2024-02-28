@@ -453,3 +453,8 @@ export enum ChartViewOption {
   Depth = 'depth',
   Info = 'info'
 }
+
+export enum OrderbookViewOption {
+  Orderbook = 'orderbook',
+  Trades = 'trades'
+}

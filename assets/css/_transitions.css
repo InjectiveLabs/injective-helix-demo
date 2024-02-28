@@ -111,7 +111,7 @@
 
 .slide-in-top-enter-from,
 .slide-in-top-leave-to {
-  @apply opacity-0 scale-95 origin-top;
+  @apply opacity-0;
 }
 
 .fade-enter-active,

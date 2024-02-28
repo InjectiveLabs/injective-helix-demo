@@ -51,7 +51,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 </script>
 
 <template>
-  <AppHocLoading :is-loading="!marketsWithSummariesLoaded" class="h-full">
+  <AppHocLoading :is-loading="!marketsWithSummariesLoaded">
     <div class="container">
       <PartialsMarketsNewMarkets :markets="marketsWithSummaryAndVolumeInUsd" />
       <PartialsMarkets :markets="marketsWithSummaryAndVolumeInUsd" />
