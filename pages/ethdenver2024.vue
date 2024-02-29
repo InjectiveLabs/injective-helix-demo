@@ -5,25 +5,37 @@ const walletStore = useWalletStore()
 const { error, success } = useNotifications()
 const { $onError } = useNuxtApp()
 
-definePageMeta({
-  middleware: ['connected']
-})
-
 const httpClient = new HttpRestClient('https://api.express.injective.dev')
 const isRegistered = ref(false)
+
+const { validate } = useForm<{ injectiveAddress: string }>({
+  initialValues: {
+    injectiveAddress: walletStore.injectiveAddress || ''
+  }
+})
+const { value: addressValue, errors } = useStringField({
+  name: 'injectiveAddress',
+  rule: 'required|injAddress'
+})
+const debouncedInput = refDebounced(addressValue, 500)
 
 onMounted(() => {
   fetchIsRegistered()
 })
 
-function register() {
+async function register() {
+  const { valid } = await validate()
+  if (!valid) {
+    return
+  }
+
   if (isRegistered.value) {
     return error({ title: 'You are already registered for the event' })
   }
 
   httpClient
     .post('eth-denver-2024', {
-      address: walletStore.injectiveAddress,
+      address: addressValue.value,
       type: 'helix'
     })
     .then(async () => {
@@ -40,14 +52,30 @@ function fetchIsRegistered() {
     }>('eth-denver-2024')
     .then((response) => {
       const exists = (response?.data?.result || []).find(
-        (result) => result.address === walletStore.injectiveAddress
+        (result) => result.address === addressValue.value
       )
 
       if (exists) {
         isRegistered.value = true
+      } else {
+        isRegistered.value = false
       }
     })
 }
+
+onWalletConnected(() => {
+  if (walletStore.injectiveAddress) {
+    addressValue.value = walletStore.injectiveAddress
+    fetchIsRegistered()
+  }
+})
+watch(debouncedInput, () => {
+  if (errors.value.length === 0) {
+    fetchIsRegistered()
+  } else {
+    isRegistered.value = false
+  }
+})
 </script>
 
 <template>
@@ -72,6 +100,18 @@ function fetchIsRegistered() {
             1
           </div>
           <p>{{ $t('ethdenver.step1') }}</p>
+        </div>
+
+        <div>
+          <AppInput
+            v-model="addressValue"
+            class="p-2"
+            placeholder="Injective Address: inj1..."
+          />
+
+          <p v-if="errors.length > 0" class="text-sm text-red-500 mt-2">
+            {{ errors[0] }}
+          </p>
         </div>
 
         <div class="flex justify-center">
