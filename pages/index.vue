@@ -5,7 +5,20 @@
     <AssetNoticeBanners />
     <AssetKadoBanner />
 
-    <div class="bg-white">
+    <div class="flex flex-col">
+      <AppHocLoading is-helix :is-loading="true" wrapper-class="h-[500px]" />
+
+      <div class="text-center flex flex-col items-center mb-20">
+        <div class="flex items-center space-x-4">
+          <AssetLogo class="h-16 w-16" />
+          <h1 class="font-semibold text-7xl">HELIX</h1>
+        </div>
+
+        <p class="text-gray-400">The Premiere Decentralized Exchange</p>
+      </div>
+    </div>
+
+    <!-- <div class="bg-white">
       <PartialsHomeHero />
       <div class="h-full w-full flex flex-wrap pb-4">
         <div class="container">
@@ -13,11 +26,11 @@
             <PartialsHomeAnnouncements />
             <PartialsHomeMarkets class="mt-8 sm:mt-16" />
             <PartialsHomeWhyTrade />
-            <!-- <PartialsHomeGettingStarted />  REMOVE FOR NOW-->
           </div>
         </div>
       </div>
       <PartialsHomeFooterCta />
     </div>
+     -->
   </div>
 </template>

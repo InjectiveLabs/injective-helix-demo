@@ -45,9 +45,8 @@ watch(isLoading, (isLoading, oldIsLoading) => {
   <Suspense>
     <div
       v-if="isLoading"
-      class="h-full"
       :class="[
-        wrapperClass,
+        wrapperClass || 'h-full',
         {
           'py-4': !noPadding
         }
