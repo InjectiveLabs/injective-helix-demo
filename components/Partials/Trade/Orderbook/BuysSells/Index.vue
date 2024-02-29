@@ -18,6 +18,13 @@ const orderbookStore = useOrderbookStore()
 const activeBuysIndex = ref(-1)
 const activeSellsIndex = ref(-1)
 
+const highestVolume = computed(() =>
+  Math.max(
+    +orderbookStore.buys[orderbookStore.buys.length - 1].totalVolume,
+    +orderbookStore.sells[orderbookStore.sells.length - 1].totalVolume
+  ).toString()
+)
+
 function setBuysIndex(index: number) {
   activeBuysIndex.value = index
 }
@@ -65,8 +72,7 @@ function setSellsIndex(index: number) {
           isActive: i <= activeSellsIndex,
           index: i,
           record,
-          highestVolume:
-            orderbookStore.sells[orderbookStore.sells.length - 1].totalVolume
+          highestVolume
         }"
         :key="i"
         @set:index="setSellsIndex"
@@ -94,8 +100,7 @@ function setSellsIndex(index: number) {
           isActive: i <= activeBuysIndex,
           index: i,
           record,
-          highestVolume:
-            orderbookStore.buys[orderbookStore.buys.length - 1].totalVolume
+          highestVolume
         }"
         :key="i"
         is-buy

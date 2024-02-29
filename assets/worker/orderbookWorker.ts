@@ -53,7 +53,9 @@ function formatRecords({
 
       const aggregatedPrice = aggregatePrice(price, aggregation, isBuy)
 
-      const quantity = new BigNumberInBase(record.quantity).toWei(-baseDecimals)
+      const quantity = new BigNumberInBase(record.quantity).toWei(
+        isSpot ? -baseDecimals : 0
+      )
 
       if (!acc[aggregatedPrice]) {
         acc[aggregatedPrice] = quantity

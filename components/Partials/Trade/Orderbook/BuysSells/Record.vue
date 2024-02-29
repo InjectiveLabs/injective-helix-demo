@@ -45,11 +45,11 @@ function setIndex() {
     </div>
 
     <div
-      class="absolute right-px transition-all rounded top-px bottom-px"
+      class="absolute right-px transition-all duration-500 rounded top-px bottom-px"
       :class="{
         'bg-red-700/50': isActive && !isBuy,
         'bg-red-500/10': !isActive && !isBuy,
-        'bg-green-800/60': isActive && isBuy,
+        'bg-green-700/60': isActive && isBuy,
         'bg-green-500/10': !isActive && isBuy
       }"
       :style="{

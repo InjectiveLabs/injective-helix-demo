@@ -10,13 +10,25 @@ defineProps({
 
 const appStore = useAppStore()
 
+const el = ref<HTMLElement | null>(null)
+const toggleEl = ref<HTMLElement | null>(null)
+
 function toggleOpen() {
   appStore.marketsOpen = !appStore.marketsOpen
 }
+
+onClickOutside(
+  el,
+  () => {
+    appStore.marketsOpen = false
+  },
+  { ignore: [toggleEl] }
+)
 </script>
 
 <template>
   <div
+    ref="toggleEl"
     class="flex basis-[clamp(360px,25%,400px)] items-center pr-4 border-r hover:bg-brand-800 cursor-pointer select-none"
     @click="toggleOpen"
   >
@@ -41,9 +53,9 @@ function toggleOpen() {
   <div
     v-if="appStore.marketsOpen"
     class="absolute backdrop-blur-sm top-full z-30 w-full left-0 flex"
-    @click="toggleOpen"
   >
     <div
+      ref="el"
       class="basis-[800px] bg-brand-900 border p-4 overflow-y-auto h-[calc(100vh-132px)]"
       @click.stop
     >
