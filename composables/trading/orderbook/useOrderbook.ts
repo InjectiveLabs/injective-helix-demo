@@ -18,6 +18,7 @@ export function useOrderbook(
   const orderbookStore = useOrderbookStore()
 
   const result = ref<any>('')
+  const aggregation = 1
 
   const worker = shallowRef<OrderbookWorker | null>(null)
 
@@ -52,7 +53,7 @@ export function useOrderbook(
         baseDecimals: market.value.baseToken.decimals,
         quoteDecimals: market.value.quoteToken.decimals,
         orderbook: data,
-        aggregation: 0
+        aggregation
       })
     })
   }
@@ -67,7 +68,7 @@ export function useOrderbook(
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals,
           orderbook: data,
-          aggregation: 0
+          aggregation
         })
       })
   }
@@ -86,7 +87,7 @@ export function useOrderbook(
           baseDecimals: market.baseToken.decimals,
           quoteDecimals: market.quoteToken.decimals,
           orderbook: data.orderbook!,
-          aggregation: 0
+          aggregation
         })
       }
     })
@@ -109,7 +110,7 @@ export function useOrderbook(
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals,
             orderbook: data.orderbook!,
-            aggregation: 0
+            aggregation
           })
         }
       }

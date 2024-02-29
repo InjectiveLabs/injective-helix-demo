@@ -16,7 +16,7 @@ const randomWidth3 = Math.floor(Math.random() * 50) + 30
 <template>
   <div
     :style="{ animationDelay: index * 50 + 'ms' }"
-    class="h-[16px] flex py-[2px] animate-pulse"
+    class="h-[16px] flex py-[2px] animate-pulse [animation-duration:1s]"
   >
     <div class="flex-1 shrink-0 flex justify-end">
       <div

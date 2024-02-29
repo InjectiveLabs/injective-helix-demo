@@ -23,7 +23,7 @@ function aggregatePrice(
   if (aggregation > 0) {
     return price.toFixed(
       aggregation,
-      isBuy ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR
+      isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL
     )
   } else {
     return price.div(10 ** -aggregation).toFixed(0)

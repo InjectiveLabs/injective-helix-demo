@@ -5,9 +5,11 @@ definePageMeta({
   middleware: ['orderbook']
 })
 
+const route = useRoute()
 const derivativeStore = useDerivativeStore()
+
 const market = computed(() =>
-  derivativeStore.markets.find((market) => market.slug === 'btc-usdt-perp')
+  derivativeStore.markets.find((market) => market.slug === route.params.slug)
 )
 
 useOrderbook(

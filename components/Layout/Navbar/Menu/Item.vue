@@ -47,7 +47,7 @@ function close() {
     @click="closeAllMenus"
   >
     <div>
-      <p class="font-semibold" :class="{ 'font-normal text-lg': level > 0 }">
+      <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
         {{ $t(`navigation.${item.label}`) }}
       </p>
       <p v-if="item.description" class="text-gray-400 text-xs mt-1 font-normal">
@@ -67,7 +67,7 @@ function close() {
   >
     <div class="py-2 px-6 flex">
       <div>
-        <p class="font-semibold" :class="{ 'font-normal text-lg': level > 0 }">
+        <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
           {{ $t(`navigation.${item.label}`) }}
         </p>
         <p
@@ -84,7 +84,10 @@ function close() {
     </div>
 
     <Transition
-      name="slide-in-top"
+      enter-active-class="transition-all duration-300 "
+      leave-active-class="transition-all duration-300"
+      enter-from-class="opacity-0 scale-95 origin-top"
+      :leave-to-class="`opacity-0 origin-top ${level === 0 ? 'scale-90' : ''}`"
       mode="out-in"
       @before-leave="isAnimating = true"
       @after-leave="isAnimating = false"

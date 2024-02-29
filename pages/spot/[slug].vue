@@ -5,9 +5,11 @@ definePageMeta({
   middleware: ['orderbook']
 })
 
+const route = useRoute()
 const spotStore = useSpotStore()
+
 const market = computed(() =>
-  spotStore.markets.find((market) => market.slug === 'inj-usdt')
+  spotStore.markets.find((market) => market.slug === route.params.slug)
 )
 
 useOrderbook(

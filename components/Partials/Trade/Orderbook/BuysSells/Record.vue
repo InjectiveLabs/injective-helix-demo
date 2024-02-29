@@ -32,7 +32,7 @@ function setIndex() {
 
 <template>
   <div
-    class="group flex text-xs text-right relative cursor-pointer select-none"
+    class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
@@ -45,11 +45,11 @@ function setIndex() {
     </div>
 
     <div
-      class="absolute top-px bottom-px right-px transition-all rounded"
+      class="absolute right-px transition-all rounded top-px bottom-px"
       :class="{
-        'bg-red-700/60': isActive && !isBuy,
+        'bg-red-700/50': isActive && !isBuy,
         'bg-red-500/10': !isActive && !isBuy,
-        'bg-green-800/90': isActive && isBuy,
+        'bg-green-800/60': isActive && isBuy,
         'bg-green-500/10': !isActive && isBuy
       }"
       :style="{
