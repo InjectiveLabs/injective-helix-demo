@@ -1,8 +1,10 @@
 export default {
   ethdenver: {
     banner: 'Injective x ETHDenver 2024',
-    title: 'Special campaign for new Helix users at ETHDenver',
-    subtitle: '10 USDT rebate for the first 100 users!',
+    title:
+      'Congratulations! You have won a 10 USDT rebate on Helix, the premier decentralized exchange built on Injective.',
+    subtitle:
+      'Place a trade worth $100 or more, and receive 10 USDT as a refund bonus.',
     step1: 'Join the campaign',
     step2: 'Place more than 100 USDT worth of trades',
     step3: 'Results to be announced on March 5 2024',
