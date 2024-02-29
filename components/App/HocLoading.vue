@@ -14,6 +14,11 @@ const props = defineProps({
   loaderClass: {
     type: String,
     default: 'relative'
+  },
+
+  wrapperClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -40,11 +45,16 @@ watch(isLoading, (isLoading, oldIsLoading) => {
     <div
       v-if="isLoading"
       class="h-full"
-      :class="{
-        'py-4': !noPadding
-      }"
+      :class="[
+        wrapperClass,
+        {
+          'py-4': !noPadding
+        }
+      ]"
     >
-      <AppLoading :class="loaderClass" />
+      <AssetHelixLoading />
+      <!-- <img src="/blob.gif" class="mx-auto w-20" /> -->
+      <!-- <AppLoading :class="loaderClass" /> -->
     </div>
     <slot v-else />
     <template #fallback>

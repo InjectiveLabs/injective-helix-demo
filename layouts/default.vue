@@ -61,7 +61,7 @@ watch(
 
 <template>
   <div class="relative">
-    <AppHocLoading :status="status">
+    <AppHocLoading wrapper-class="h-screen" :status="status">
       <LayoutNavbar />
       <main class="relative">
         <NuxtPage />
@@ -74,10 +74,10 @@ watch(
       <ModalsPostOnlyMode />
       <ModalsDevMode />
       <AppConfetti />
-    </AppHocLoading>
 
-    <LayoutFooter v-if="showFooter" />
-    <LayoutStatusBar />
+      <LayoutFooter v-if="showFooter" />
+      <LayoutStatusBar />
+    </AppHocLoading>
 
     <div id="modals" />
 
