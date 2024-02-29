@@ -5,6 +5,7 @@ const props = defineProps({
   isEmitting: Boolean,
   noPadding: Boolean,
   isLoading: Boolean,
+  isHelix: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -52,15 +53,17 @@ watch(isLoading, (isLoading, oldIsLoading) => {
         }
       ]"
     >
-      <AssetHelixLoading />
-      <!-- <img src="/blob.gif" class="mx-auto w-20" /> -->
-      <!-- <AppLoading :class="loaderClass" /> -->
+      <AssetHelixLoading v-if="isHelix" />
+      <AppLoading v-else :class="loaderClass" />
     </div>
+
     <slot v-else />
-    <template #fallback>
+
+    <!-- <template #fallback>
       <div class="h-full">
         <AppLoading :class="loaderClass" />
       </div>
-    </template>
+    </template> -->
+    <!-- </Suspense> -->
   </Suspense>
 </template>

@@ -197,7 +197,7 @@ useIntervalFn(() => {
       </button>
     </div>
 
-    <AppHocLoading v-bind="{ status }">
+    <AppHocLoading v-bind="{ status }" is-helix>
       <PartialsTradingLightTradingChart
         ref="chart"
         v-bind="{

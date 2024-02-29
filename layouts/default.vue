@@ -61,7 +61,7 @@ watch(
 
 <template>
   <div class="relative">
-    <AppHocLoading wrapper-class="h-screen" :status="status">
+    <AppHocLoading is-helix wrapper-class="h-screen" :status="status">
       <LayoutNavbar />
       <main class="relative">
         <NuxtPage />
