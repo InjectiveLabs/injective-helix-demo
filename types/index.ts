@@ -52,6 +52,7 @@ export interface MarketRoute {
     perpetual?: string
     binaryOption?: string
     spot?: string
+    slug?: string
   }
 }
 

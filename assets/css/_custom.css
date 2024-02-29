@@ -130,7 +130,7 @@
   .trade-layout-left {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: clamp(360px, 25%, 400px) clamp(300px, 25%, 360px) 1fr;
+    grid-template-columns: clamp(360px, 25%, 400px) clamp(300px, 25%, 320px) 1fr;
 
     grid-template-areas:
       'form orderbook chart'

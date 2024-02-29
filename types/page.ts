@@ -49,9 +49,9 @@ export enum TradingBotsSubPage {
 }
 
 export enum TradeSubPage {
-  Spot = 'spot-spot',
+  Spot = 'spot-slug',
   Market = 'market-market',
-  Futures = 'futures-futures',
+  Futures = 'futures-slug',
   Perpetual = 'perpetual-perpetual',
   Derivatives = 'derivatives-derivative',
   BinaryOption = 'binary-options-binaryOption'

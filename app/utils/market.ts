@@ -74,7 +74,7 @@ export const getMarketRoute = (
       return {
         name: TradeSubPage.Futures,
         params: {
-          futures: market.slug
+          slug: market.slug
         }
       }
     }
@@ -92,7 +92,7 @@ export const getMarketRoute = (
     return {
       name: TradeSubPage.Spot,
       params: {
-        spot: market.slug
+        slug: market.slug
       }
     }
   }
