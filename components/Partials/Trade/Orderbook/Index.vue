@@ -14,7 +14,7 @@ const activeTab = ref(OrderbookViewOption.Orderbook)
 </script>
 
 <template>
-  <div>
+  <div class="pb-2">
     <div class="h-header border-b flex">
       <AppButtonSelect
         v-for="value in Object.values(OrderbookViewOption)"

@@ -25,6 +25,7 @@ function toggleOpen() {
       <p class="uppercase tracking-wider font-bold text-sm">
         {{ market.ticker }}
       </p>
+
       <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
     </div>
 
@@ -32,28 +33,21 @@ function toggleOpen() {
       <div class="ml-10 mr-4 text-sm">
         {{ $t('trade.allMarkets') }}
       </div>
+
       <BaseIcon name="chevron" is-sm class="-rotate-90" />
     </div>
   </div>
 
-  <Transition
-    enter-from-class="blur-xl opacity-0"
-    leave-to-class="blur-xl opacity-0"
-    enter-active-class="transition-all duration-300"
-    leave-active-class="transition-all duration-300"
-    mode="out-in"
+  <div
+    v-if="appStore.marketsOpen"
+    class="absolute backdrop-blur-sm top-full z-30 w-full left-0 flex"
+    @click="toggleOpen"
   >
     <div
-      v-if="appStore.marketsOpen"
-      class="absolute backdrop-blur top-full z-30 w-full left-0 flex"
-      @click="toggleOpen"
+      class="basis-[800px] bg-brand-900 border p-4 overflow-y-auto h-[calc(100vh-132px)]"
+      @click.stop
     >
-      <div
-        class="basis-[800px] bg-brand-900 border p-4 overflow-y-auto h-[calc(100vh-132px)]"
-        @click.stop
-      >
-        <PartialsTradeMarkets />
-      </div>
+      <PartialsTradeMarkets />
     </div>
-  </Transition>
+  </div>
 </template>

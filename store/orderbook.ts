@@ -1,6 +1,8 @@
+import { OrderbookFormattedRecord } from '@/types/worker'
+
 type OrderbookStoreState = {
-  buys: any[]
-  sells: any[]
+  buys: OrderbookFormattedRecord[]
+  sells: OrderbookFormattedRecord[]
   isSpot: boolean
 }
 

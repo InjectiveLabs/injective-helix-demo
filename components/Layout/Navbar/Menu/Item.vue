@@ -18,10 +18,20 @@ const emit = defineEmits<{
 }>()
 
 const isOpen = ref(false)
+const isAnimating = ref(false)
 
 function closeAllMenus() {
   isOpen.value = false
   emit('menu:close')
+}
+
+function open() {
+  if (isAnimating.value) return
+  isOpen.value = true
+}
+
+function close() {
+  isOpen.value = false
 }
 </script>
 
@@ -52,8 +62,8 @@ function closeAllMenus() {
     :class="{
       'rounded-lg': level === 0
     }"
-    @mouseenter="isOpen = true"
-    @mouseleave="isOpen = false"
+    @mouseenter="open"
+    @mouseleave="close"
   >
     <div class="py-2 px-6 flex">
       <div>
@@ -73,7 +83,12 @@ function closeAllMenus() {
       </div>
     </div>
 
-    <Transition name="slide-in-top" mode="out-in">
+    <Transition
+      name="slide-in-top"
+      mode="out-in"
+      @before-leave="isAnimating = true"
+      @after-leave="isAnimating = false"
+    >
       <div
         v-if="isOpen"
         class="absolute"

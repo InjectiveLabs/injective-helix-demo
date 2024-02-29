@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { UiMarketWithToken } from '@/types'
+
+definePageMeta({
+  middleware: ['orderbook']
+})
+
 const spotStore = useSpotStore()
 const market = computed(() =>
   spotStore.markets.find((market) => market.slug === 'inj-usdt')
 )
 
-const result = useOrderbook(
-  computed(() => market.value),
+useOrderbook(
+  computed(() => market.value as UiMarketWithToken),
   true
 )
 </script>
@@ -13,7 +19,9 @@ const result = useOrderbook(
 <template>
   <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
     <template #form>
-      {{ result }}
+      <pre class="text-xs">
+        Form
+      </pre>
     </template>
   </PartialsTradeLayout>
 </template>
