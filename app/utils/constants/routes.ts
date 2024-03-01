@@ -43,6 +43,7 @@ export const getRoutes = (network: Network, env: string) => {
     'kuji-usdt',
     'talis-usdt',
     'app-inj',
+    'usde-usdt',
     'ginger-inj',
     'gyen-usdt',
     'dojo-inj',
