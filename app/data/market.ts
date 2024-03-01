@@ -26,6 +26,7 @@ export const newMarketsSlug = [
 export const experimentalMarketsSlug = [
   'usdy-usdt',
   'ape-usdt',
+  'usde-usdt',
   'app-inj',
   'gf-usdt',
   'autism-inj',
