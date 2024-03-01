@@ -376,7 +376,8 @@ export default {
         `You have swapped ${named('inputAmount')} ${named(
           'inputTokenSymbol'
         )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
-    }
-  },
-  lastUpdated: 'Last Updated'
+    },
+
+    lastUpdated: 'Last Updated'
+  }
 }
