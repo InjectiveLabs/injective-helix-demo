@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -77,14 +78,20 @@ const filteredCandlesticksData = computed(() => {
   }
 
   if (props.market.slug === 'zro-usdt-perp') {
-    const pastIncidentDate = 1707782400
+    const pastIncidentDate = 1708611555
 
     return candlesticksData.value.filter((candlestick) => {
       const isDuringTimePeriod = (candlestick.time as number) < pastIncidentDate
-      const isHighExceedsThreshold = candlestick.high > 90000
+      const isHighExceedsThreshold = candlestick.high > 9000
 
       return !(isDuringTimePeriod && isHighExceedsThreshold)
     })
+  }
+
+  if (props.market.slug === 'qunt-inj') {
+    return candlesticksData.value.filter(
+      (candlestick) => (candlestick.time as number) > 1708960440
+    )
   }
 
   return candlesticksData.value
@@ -157,6 +164,16 @@ watch(lastTradedPrice, (lastTradedPrice) => {
   }
 })
 
+const tickSize = computed(() =>
+  new BigNumberInWei(props.market.minPriceTickSize)
+    .toBase(
+      props.market.type === MarketType.Spot
+        ? props.market.quoteToken.decimals - props.market.baseToken.decimals
+        : props.market.quoteToken.decimals
+    )
+    .toNumber()
+)
+
 useIntervalFn(() => {
   exchangeStore
     .getMarketsHistoryNew({
@@ -189,7 +206,8 @@ useIntervalFn(() => {
         ref="chart"
         v-bind="{
           candlesticksData: visuallyOptimizedCandlesticks,
-          volumeData: volume
+          volumeData: volume,
+          tickSize
         }"
       />
     </AppHocLoading>

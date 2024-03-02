@@ -9,6 +9,9 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'qunt-inj',
+  'talis-inj',
+  'bonk-usdt-perp',
   'doge-usdt-perp',
   'link-usdt-perp',
   'hinj-inj',
@@ -17,15 +20,13 @@ export const newMarketsSlug = [
   'dojo-inj',
   'arb-usdt-perp',
   'gyen-usdt',
-  'op-usdt-perp',
-  'sol-usdt-perp',
-  'wif-usdt-perp',
-  'avax-usdt-perp'
+  'op-usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
   'usdy-usdt',
   'ape-usdt',
+  'usde-usdt',
   'app-inj',
   'gf-usdt',
   'autism-inj',
@@ -42,7 +43,10 @@ export const experimentalMarketsSlug = [
   'ginger-inj',
   'jup-usdt-perp',
   'gyen-usdt',
-  'wif-usdt-perp'
+  'wif-usdt-perp',
+  'bonk-usdt-perp',
+  'qunt-inj',
+  'talis-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -106,7 +110,9 @@ export const slugsToIncludeInInjectiveCategory = [
   'ginger-inj',
   'autism-inj',
   'andr-usdt',
-  'hinj-inj'
+  'hinj-inj',
+  'qunt-inj',
+  'talis-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
@@ -114,7 +120,8 @@ export const slugsToIncludeInSolanaCategory = [
   'pyth-usdt-perp',
   'sol-usdt',
   'sol-usdt-perp',
-  'wif-usdt-perp'
+  'wif-usdt-perp',
+  'bonk-usdt-perp'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [

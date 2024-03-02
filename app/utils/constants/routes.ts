@@ -43,11 +43,14 @@ export const getRoutes = (network: Network, env: string) => {
     'kuji-usdt',
     'talis-usdt',
     'app-inj',
+    // 'usde-usdt',
     'ginger-inj',
     'gyen-usdt',
     'dojo-inj',
     'andr-usdt',
-    'hinj-inj'
+    'hinj-inj',
+    'qunt-inj',
+    'talis-inj'
   ]
 
   const perpetuals = [
@@ -74,7 +77,8 @@ export const getRoutes = (network: Network, env: string) => {
     'arb-usdt-perp',
     'osmo-usdt-perp',
     'link-usdt-perp',
-    'doge-usdt-perp'
+    'doge-usdt-perp',
+    'bonk-usdt-perp'
   ]
 
   const gridTradingSpot = [
@@ -99,7 +103,9 @@ export const getRoutes = (network: Network, env: string) => {
     'strd-usdt',
     'orai-usdt',
     'ninj-inj',
-    'dojo-inj'
+    'dojo-inj',
+    'andr-usdt',
+    'hinj-inj'
   ]
 
   const binaryOptions: string[] = []
@@ -143,7 +149,8 @@ export const getRoutes = (network: Network, env: string) => {
   const walletConnectedRequiredRouteNames = [
     MainPage.Bridge,
     MainPage.Account,
-    MainPage.Activity
+    MainPage.Activity,
+    MainPage.EthDenver2024
   ]
 
   // Layout routes
@@ -157,7 +164,7 @@ export const getRoutes = (network: Network, env: string) => {
     LiquidityRewardsPage.CampaignDetails
   ]
 
-  const customStaticRoutes: string[] = []
+  const customStaticRoutes: string[] = [`/${MainPage.EthDenver2024}`]
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 

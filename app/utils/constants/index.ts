@@ -89,6 +89,7 @@ export const DUST_AMOUNT_THRESHOLD = 1
 export const GST_MINIMUM_GRIDS = 3
 export const GST_MAXIMUM_GRIDS = 100
 export const GST_MIN_TRADING_SIZE = 5
+export const GST_MIN_TRADING_SIZE_LOW = 1
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 20
 export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
