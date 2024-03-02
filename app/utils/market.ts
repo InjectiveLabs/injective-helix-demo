@@ -32,7 +32,8 @@ import {
   DefaultMarket,
   MarketQuoteType,
   MarketCategoryType,
-  TradingBotsSubPage
+  TradingBotsSubPage,
+  MarketTypeOption
 } from '@/types'
 
 interface PriceLevelMap {
@@ -207,19 +208,21 @@ export const marketIsPartOfType = ({
   market,
   favoriteMarkets
 }: {
-  activeType: MarketType
+  activeType: MarketTypeOption
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   favoriteMarkets: string[]
 }): boolean => {
-  if (activeType.trim() === '') {
+  if (activeType === MarketTypeOption.All) {
     return true
   }
 
-  if (activeType === MarketType.Favorite) {
+  if (activeType === MarketTypeOption.Favorites) {
     return favoriteMarkets.includes(market.marketId)
   }
 
-  return [market.type, market.subType].includes(activeType as MarketType)
+  return [market.type, market.subType].includes(
+    activeType as unknown as MarketType
+  )
 }
 
 export const marketIsPartOfSearch = (
@@ -354,3 +357,5 @@ export const combineOrderbookRecords = ({
       : new BigNumberInBase(a.price).minus(b.price).toNumber()
   })
 }
+
+// IVAN

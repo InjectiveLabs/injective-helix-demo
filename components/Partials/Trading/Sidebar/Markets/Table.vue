@@ -2,7 +2,11 @@
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
-import { UiMarketWithToken, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import {
+  UiMarketWithToken,
+  UiMarketAndSummaryWithVolumeInUsd,
+  MarketTypeOption
+} from '@/types'
 import { GST_ROUTE, LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
 
@@ -47,7 +51,7 @@ const filteredMarkets = computed(() =>
       const isPartOfType = marketIsPartOfType({
         market,
         favoriteMarkets: appStore.favoriteMarkets,
-        activeType: activeType.value as MarketType
+        activeType: activeType.value as MarketTypeOption
       })
       const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
       const isLowVolumeMarket =

@@ -12,7 +12,8 @@ import {
   MarketStatus,
   MarketQuoteType,
   MarketCategoryType,
-  UiMarketAndSummaryWithVolumeInUsd
+  UiMarketAndSummaryWithVolumeInUsd,
+  MarketTypeOption
 } from '@/types'
 import {
   upcomingMarkets,
@@ -67,7 +68,7 @@ const filteredMarkets = computed(() =>
       const isPartOfType = marketIsPartOfType({
         market,
         favoriteMarkets: favoriteMarkets.value,
-        activeType: activeType.value as MarketType
+        activeType: activeType.value as MarketTypeOption
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
       const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)

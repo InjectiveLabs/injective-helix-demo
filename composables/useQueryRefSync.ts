@@ -1,10 +1,19 @@
-export default function useQueryRef<T>(name: string, defaultValue: T) {
+export default function useQueryRefSync(name: string, defaultValue: string) {
   const route = useRoute()
   const router = useRouter()
 
+  const valueRef = ref(defaultValue)
+
   const value = computed({
-    get: () => (route.query[name] as T) || defaultValue,
+    get: () => (route.query[name] as string) || defaultValue,
     set: (value) => {
+      valueRef.value = value
+    }
+  })
+
+  watch(
+    value,
+    (value) => {
       router.push({
         name: route.name!,
         params: route.params,
@@ -13,8 +22,9 @@ export default function useQueryRef<T>(name: string, defaultValue: T) {
           [name]: value === defaultValue ? undefined : (value as string)
         }
       })
-    }
-  })
+    },
+    { flush: 'sync' }
+  )
 
   return value
 }

@@ -24,6 +24,10 @@ onClickOutside(
   },
   { ignore: [toggleEl] }
 )
+
+function closeMarketSection() {
+  appStore.marketsOpen = false
+}
 </script>
 
 <template>
@@ -52,11 +56,12 @@ onClickOutside(
 
   <div
     v-if="appStore.marketsOpen"
-    class="absolute backdrop-blur-sm top-full z-30 w-full left-0 flex"
+    class="absolute backdrop-blur-sm top-full z-30 w-screen left-0 flex"
+    @keydown.escape="closeMarketSection"
   >
     <div
       ref="el"
-      class="basis-[800px] bg-brand-900 border p-4 overflow-y-auto h-[calc(100vh-132px)]"
+      class="basis-[800px] min-w-0 overflow-y-auto bg-brand-900 border h-[calc(100vh-132px)]"
       @click.stop
     >
       <PartialsTradeMarkets />

@@ -58,6 +58,7 @@ function close() {
 
   <div
     v-else
+    tabindex="0"
     class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm hover:cursor-pointer select-none relative z-50"
     :class="{
       'rounded-lg': level === 0

@@ -137,4 +137,8 @@
       'form orderbook chart'
       'form orders orders';
   }
+
+  .focus-ring {
+    @apply ring-0 focus-within:ring-2 transition-all duration-300;
+  }
 }

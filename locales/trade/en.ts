@@ -156,6 +156,7 @@ export default {
     market_change: 'Change',
     market_change_24h: 'Change (24h)',
     volume: 'Volume',
+    volumeUsd: 'Volume (USD)',
     volume_24h: 'Volume (24H)',
     total_market_volume_24h: 'Total Volume (24H)',
     usd_value: 'USD Value',

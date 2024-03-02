@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>This is the Markets</div>
+  <PartialsMarketsCommonMarkets />
 </template>

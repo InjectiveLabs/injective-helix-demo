@@ -1,3 +1,5 @@
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+
 export enum Change {
   New = 'new',
   NoChange = 'no-change',
@@ -457,4 +459,17 @@ export enum ChartViewOption {
 export enum OrderbookViewOption {
   Orderbook = 'orderbook',
   Trades = 'trades'
+}
+
+export enum MarketHeaderType {
+  Market = 'market',
+  Change = 'change',
+  Volume = 'volume'
+}
+
+export enum MarketTypeOption {
+  All = 'all',
+  Favorites = 'favorites',
+  Spot = MarketType.Spot,
+  Derivative = MarketType.Derivative
 }
