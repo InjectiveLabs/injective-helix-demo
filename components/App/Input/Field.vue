@@ -1,5 +1,51 @@
 <script setup lang="ts">
-//
+import { useIMask } from 'vue-imask'
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
+
+  decimals: {
+    type: Number,
+    default: 18
+  }
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+
+const { typed, el } = useIMask(
+  computed(() => ({
+    mask: 'num',
+    lazy: false,
+    blocks: {
+      num: {
+        // nested masks are available!
+        mask: Number,
+        thousandsSeparator: ',',
+        radix: '.',
+        mapToRadix: ['.', ','],
+        scale: props.decimals,
+        // eslint-disable-next-line
+        max: 9999999999999999999
+      }
+    }
+  }))
+)
+
+watch(typed, (value) => {
+  emit('update:modelValue', value)
+})
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    typed.value = value
+  }
+)
 </script>
 
 <template>
@@ -11,8 +57,9 @@
     </div>
 
     <input
+      ref="el"
       type="text"
-      class="bg-transparent p-2 flex-1 focus:outline-none font-mono"
+      class="bg-transparent p-2 flex-1 focus:outline-none font-mono text-right"
       v-bind="$attrs"
     />
 
