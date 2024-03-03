@@ -68,6 +68,11 @@ jobs:
         with:
           node-version: 18.x
 
+      - name: Setup libudev-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install libudev-dev
+
       - name: Remove prev build
         run: yarn clean-up
 
