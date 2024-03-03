@@ -59,17 +59,17 @@ function toggleFavorite() {
     }"
     class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white"
   >
-    <div
-      :class="{
-        '!text-green-500': appStore.favoriteMarkets.includes(market.marketId)
-      }"
-      class="pr-2 w-8 text-gray-700 hover:text-green-700"
-      @click.stop.prevent="toggleFavorite"
-    >
-      <BaseIcon name="star" />
-    </div>
-
     <div class="flex items-center flex-[2] truncate min-w-0">
+      <div
+        :class="{
+          '!text-green-500': appStore.favoriteMarkets.includes(market.marketId)
+        }"
+        class="pr-2 w-8 text-gray-700 hover:text-green-700"
+        @click.stop.prevent="toggleFavorite"
+      >
+        <BaseIcon name="star" />
+      </div>
+
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
 
       <div

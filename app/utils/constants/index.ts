@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -115,3 +116,15 @@ export const ADMIN_UI_SMART_CONTRACT =
 export const ORDERBOOK_ROW_HEIGHT = 16
 export const ORDERBOOK_ROWS = 20
 export const ORDERBOOK_HEADER_HEIGHT = 56
+
+export const intervalOptions: IntervalOption[] = [
+  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
+  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
+  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
+  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
+  { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
+  { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
+  { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
+  { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
+  { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
+]

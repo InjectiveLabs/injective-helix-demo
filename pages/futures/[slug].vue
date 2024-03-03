@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
-
 definePageMeta({
   middleware: ['orderbook']
 })
@@ -13,7 +11,7 @@ const market = computed(() =>
 )
 
 useOrderbook(
-  computed(() => market.value as UiMarketWithToken),
+  computed(() => market.value),
   false
 )
 </script>

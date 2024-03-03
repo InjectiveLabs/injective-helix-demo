@@ -36,6 +36,17 @@ export default {
   ],
   mode: 'jit',
 
+  plugins: [
+    ({ addUtilities, theme }: any) => {
+      addUtilities({
+        '.error-message': {
+          fontSize: theme('fontSize.xs'),
+          color: theme('colors.red.500')
+        }
+      })
+    }
+  ],
+
   theme: {
     container: {
       center: true,

@@ -33,7 +33,7 @@ function closeMarketSection() {
 <template>
   <div
     ref="toggleEl"
-    class="flex basis-[clamp(360px,25%,400px)] items-center pr-4 border-r hover:bg-brand-800 cursor-pointer select-none"
+    class="flex basis-[clamp(360px,25%,400px)] items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none"
     @click="toggleOpen"
   >
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />

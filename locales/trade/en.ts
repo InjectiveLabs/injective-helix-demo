@@ -185,6 +185,8 @@ export default {
       `The time at which the ${named('type')} was updated.`,
     max: 'Max',
     orderbook: 'Orderbook',
+    standard: 'Standard',
+    'trading-bots': 'Trading Bots',
     markets: 'Markets',
     availableMargin: 'Available Margin',
     availableMarginTooltip: 'The available margin you can add to this position',

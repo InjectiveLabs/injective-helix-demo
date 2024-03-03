@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
+import { spotMarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -13,17 +13,17 @@ const market = computed(() =>
 )
 
 useOrderbook(
-  computed(() => market.value as UiMarketWithToken),
+  computed(() => market.value),
   true
 )
+
+provide(spotMarketKey, market)
 </script>
 
 <template>
   <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
     <template #form>
-      <pre class="text-xs">
-        Form
-      </pre>
+      <PartialsTradeSpotForm />
     </template>
   </PartialsTradeLayout>
 </template>

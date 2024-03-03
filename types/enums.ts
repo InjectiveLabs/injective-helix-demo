@@ -473,3 +473,8 @@ export enum MarketTypeOption {
   Spot = MarketType.Spot,
   Derivative = MarketType.Derivative
 }
+
+export enum TradingInterface {
+  Standard = 'standard',
+  TradingBots = 'trading-bots'
+}

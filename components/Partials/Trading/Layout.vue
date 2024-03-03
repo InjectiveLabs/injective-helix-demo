@@ -205,7 +205,12 @@ function onToggleMarketList() {
                   >
                     <PartialsTradingLightTradingChartWrapper
                       v-if="isDesktop"
-                      v-bind="{ marketId: market.marketId, isSpot, market }"
+                      v-bind="{
+                        marketId: market.marketId,
+                        isSpot,
+                        market,
+                        interval: 4
+                      }"
                     />
                   </div>
                 </div>

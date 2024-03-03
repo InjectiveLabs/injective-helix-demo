@@ -1,10 +1,10 @@
 import { ComputedRef } from 'nuxt/dist/app/compat/capi'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
-import { spotMarketStream } from '~/app/client/streams/spot'
+import { spotMarketStream } from '@/app/client/streams/spot'
+import { derivativesMarketStream } from '@/app/client/streams/derivatives'
 import { indexerDerivativesApi, indexerSpotApi } from '~/app/Services'
 import { UiMarketWithToken } from '@/types'
-import { derivativesMarketStream } from '~/app/client/streams/derivatives'
 import { OrderbookWorkerMessage, WorkerMessageType } from '@/types/worker'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
@@ -12,12 +12,11 @@ interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
 }
 
 export function useOrderbook(
-  market: ComputedRef<UiMarketWithToken>,
+  market: ComputedRef<UiMarketWithToken | undefined>,
   isSpot: boolean
 ) {
   const orderbookStore = useOrderbookStore()
 
-  const result = ref<any>('')
   const aggregation = 3
 
   const worker = shallowRef<OrderbookWorker | null>(null)
@@ -27,7 +26,6 @@ export function useOrderbook(
       worker.value = new OrderbookWorker()
 
       worker.value.onmessage = (event) => {
-        result.value = event.data
         orderbookStore.$patch({
           buys: event.data.buys,
           sells: event.data.sells
@@ -46,7 +44,15 @@ export function useOrderbook(
     | undefined
 
   function fetchSpotOrderbook() {
+    if (!market.value) {
+      return
+    }
+
     indexerSpotApi.fetchOrderbookV2(market.value.marketId).then((data) => {
+      if (!market.value) {
+        return
+      }
+
       worker.value?.postMessage({
         isSpot: true,
         type: WorkerMessageType.Fetch,
@@ -59,9 +65,17 @@ export function useOrderbook(
   }
 
   function fetchDerivativeOrderbook() {
+    if (!market.value) {
+      return
+    }
+
     indexerDerivativesApi
       .fetchOrderbookV2(market.value.marketId)
       .then((data) => {
+        if (!market.value) {
+          return
+        }
+
         worker.value?.postMessage({
           isSpot: false,
           type: WorkerMessageType.Fetch,
@@ -122,7 +136,7 @@ export function useOrderbook(
   watch(
     [market, worker],
     ([market, worker]) => {
-      if (!worker) {
+      if (!worker || !market) {
         return
       }
 
@@ -144,5 +158,7 @@ export function useOrderbook(
     derivativesStream?.unsubscribe()
   })
 
-  return result
+  onUnmounted(() => {
+    orderbookStore.$reset()
+  })
 }

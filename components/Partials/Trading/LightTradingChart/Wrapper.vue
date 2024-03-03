@@ -3,6 +3,7 @@ import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
+import { intervalOptions } from '@/app/utils/constants'
 
 const props = defineProps({
   isSpot: Boolean,
@@ -15,26 +16,17 @@ const props = defineProps({
   marketId: {
     type: String as PropType<string>,
     required: true
+  },
+
+  interval: {
+    type: Number,
+    required: true
   }
 })
-
-const intervalOptions = [
-  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
-  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
-  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
-  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
-  { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
-  { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
-  { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
-  { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
-  { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
-]
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
-
-const interval = ref(intervalOptions[4])
 
 const chart = ref()
 const status = reactive(new Status(StatusType.Idle))
@@ -118,7 +110,7 @@ const volume = computed(() => {
 })
 
 const refetchInterval = computed(
-  () => interval.value.value.resolution * 60 * 1000
+  () => intervalOptions[props.interval].value.resolution * 60 * 1000
 )
 
 onMounted(() => {
@@ -131,8 +123,8 @@ function fetchMarketHistory() {
   exchangeStore
     .getMarketsHistoryNew({
       marketIds: [props.marketId],
-      countback: interval.value.value.countback,
-      resolution: interval.value.value.resolution
+      countback: intervalOptions[props.interval].value.countback,
+      resolution: intervalOptions[props.interval].value.resolution
     })
     .catch($onError)
     .finally(() => {
@@ -140,11 +132,12 @@ function fetchMarketHistory() {
     })
 }
 
-function setInterval(index: number) {
-  interval.value = intervalOptions[index]
-
-  fetchMarketHistory()
-}
+watch(
+  () => intervalOptions[props.interval],
+  () => {
+    fetchMarketHistory()
+  }
+)
 
 watch(lastTradedPrice, (lastTradedPrice) => {
   if (chart.value) {
@@ -172,31 +165,15 @@ useIntervalFn(() => {
   exchangeStore
     .getMarketsHistoryNew({
       marketIds: [props.marketId],
-      countback: interval.value.value.countback,
-      resolution: interval.value.value.resolution
+      countback: intervalOptions[props.interval].value.countback,
+      resolution: intervalOptions[props.interval].value.resolution
     })
     .catch($onError)
 }, refetchInterval)
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 relative">
-    <div
-      class="flex justify-end border-b border-r divide-x absolute left-0 top-0 z-20 bg-brand-900"
-    >
-      <button
-        v-for="(option, index) in intervalOptions"
-        :key="option.label"
-        class="py-1 text-xs hover:bg-brand-800 text-gray-500 w-10 text-center h-10"
-        :class="{
-          'bg-brand-800 text-white': option.label === interval.label
-        }"
-        @click="setInterval(index)"
-      >
-        {{ option.label }}
-      </button>
-    </div>
-
+  <div class="relative flex flex-col flex-1">
     <AppHocLoading v-bind="{ status }" is-helix>
       <PartialsTradingLightTradingChart
         ref="chart"
