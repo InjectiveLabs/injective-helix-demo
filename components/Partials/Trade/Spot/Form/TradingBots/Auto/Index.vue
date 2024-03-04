@@ -5,7 +5,7 @@
 <template>
   <div>
     <PartialsTradeSpotFormTradingBotsAutoParams />
-    <PartialsTradeSpotFormTradingBotsCommonInvestmentFields />
+    <PartialsTradeSpotFormTradingBotsCommonInvestmentFields is-auto />
     <PartialsTradeSpotFormTradingBotsCommonCreateStrategy />
   </div>
 </template>

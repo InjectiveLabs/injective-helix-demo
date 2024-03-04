@@ -138,6 +138,17 @@
       'form orders orders';
   }
 
+  .trade-layout-right {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr clamp(300px, 25%, 320px) clamp(360px, 25%, 400px);
+
+    grid-template-areas:
+      'chart orderbook form'
+      'chart orderbook form'
+      'orders orders form';
+  }
+
   .focus-ring {
     @apply ring-0 focus-within:ring-[3px];
   }

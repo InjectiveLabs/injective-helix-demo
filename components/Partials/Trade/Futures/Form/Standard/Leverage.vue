@@ -1,5 +1,55 @@
 <script setup lang="ts">
-const leverage = ref('1')
+import { useIMask } from 'vue-imask'
+import { FactoryOpts } from 'imask'
+
+const leverage = ref('0')
+
+const { el, typed } = useIMask(
+  computed(
+    () =>
+      ({
+        mask: 'num',
+        lazy: false,
+        blocks: {
+          num: {
+            mask: Number,
+            thousandsSeparator: ',',
+            radix: '.',
+            mapToRadix: ['.', ','],
+            scale: 2,
+            lazy: false,
+            min: 0,
+            max: 10,
+            autofix: true
+          }
+        }
+      }) as FactoryOpts
+  )
+)
+
+const leverageModel = computed({
+  get: () => leverage.value || '0',
+  set: (value) => {
+    leverage.value = value
+    typed.value = value
+  }
+})
+
+watch(
+  () => typed.value,
+  (value) => {
+    leverage.value = value
+  }
+)
+
+function onBlur() {
+  typed.value = leverage.value || '0'
+}
+
+function onEnter(ev: Event) {
+  const target = ev.target as HTMLInputElement
+  target.blur()
+}
 </script>
 
 <template>
@@ -11,10 +61,10 @@ const leverage = ref('1')
       />
 
       <input
-        v-model="leverage"
+        v-model="leverageModel"
         min="0"
-        max="10"
-        step="0.1"
+        :max="10"
+        step="0.01"
         type="range"
         class="range w-full"
       />
@@ -22,9 +72,12 @@ const leverage = ref('1')
 
     <label class="field-style flex px-3 basis-20 min-w-0 h-12">
       <input
-        v-model="leverage"
+        ref="el"
+        :value="leverage"
         type="text"
         class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
+        @keydown.enter="onEnter"
+        @blur="onBlur"
       />
       <span class="flex items-center pl-2">x</span>
     </label>

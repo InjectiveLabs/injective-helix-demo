@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { spotMarketKey } from '@/types'
 
+defineProps({
+  isAuto: Boolean
+})
+
 const market = inject(spotMarketKey)
 </script>
 
@@ -8,7 +12,12 @@ const market = inject(spotMarketKey)
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
       <CommonHeaderTooltip v-bind="{ tooltip: $t('sgt.investmentTooltip') }">
-        {{ $t('sgt.amount') }}
+        <span v-if="!isAuto" class="text-white font-semibold text-xs">
+          3.
+        </span>
+        <span class="text-white font-semibold text-xs">
+          {{ $t('sgt.amount') }}
+        </span>
       </CommonHeaderTooltip>
 
       <div

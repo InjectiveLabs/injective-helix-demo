@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
+import type { FactoryOpts } from 'imask'
 
 const props = defineProps({
   modelValue: {
@@ -10,6 +11,17 @@ const props = defineProps({
   decimals: {
     type: Number,
     default: 18
+  },
+
+  max: {
+    type: Number,
+    // eslint-disable-next-line
+    default: 9999999999999999999
+  },
+
+  min: {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -18,22 +30,25 @@ const emit = defineEmits<{
 }>()
 
 const { typed, el } = useIMask(
-  computed(() => ({
-    mask: 'num',
-    lazy: false,
-    blocks: {
-      num: {
-        // nested masks are available!
-        mask: Number,
-        thousandsSeparator: ',',
-        radix: '.',
-        mapToRadix: ['.', ','],
-        scale: props.decimals,
-        // eslint-disable-next-line
-        max: 9999999999999999999
-      }
-    }
-  }))
+  computed(
+    () =>
+      ({
+        mask: 'num',
+        lazy: false,
+        blocks: {
+          num: {
+            // nested masks are available!
+            mask: Number,
+            thousandsSeparator: ',',
+            radix: '.',
+            mapToRadix: ['.', ','],
+            scale: props.decimals,
+
+            max: props.max
+          }
+        }
+      }) as FactoryOpts
+  )
 )
 
 watch(typed, (value) => {
