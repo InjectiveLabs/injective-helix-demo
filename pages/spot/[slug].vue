@@ -25,5 +25,9 @@ provide(spotMarketKey, market)
     <template #form>
       <PartialsTradeSpotForm />
     </template>
+
+    <template #orders>
+      <PartialsTradeSpotOrders />
+    </template>
   </PartialsTradeLayout>
 </template>

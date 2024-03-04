@@ -31,14 +31,14 @@ const market = inject(spotMarketKey)
       </div>
     </div>
 
-    <AppInputField placeholder=" 0.00">
+    <AppInputField placeholder=" 0.00" :max="3243">
       <template #right>
         <span>{{ market.baseToken.symbol }}</span>
       </template>
 
       <template #bottom>
         <div class="text-right text-xs text-gray-500">
-          {{ $t('sgt.available') }}: 20.00
+          {{ $t('sgt.available') }}: 3,243.00
         </div>
       </template>
     </AppInputField>

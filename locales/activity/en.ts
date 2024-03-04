@@ -18,6 +18,8 @@ export default {
     openPositions: 'Open positions',
     fundingPayments: 'Funding Payments',
     derivativeOrders: 'Derivative Orders',
+    activeStrategies: 'Active strategies',
+    removedStrategies: 'Removed strategies',
     common: {
       type: 'Type'
     }

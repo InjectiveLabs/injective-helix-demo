@@ -20,7 +20,7 @@ export default {
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
-    history: 'history',
+    history: 'History',
     enabled: 'Enabled',
     removed: 'Removed',
     lowerPrice: 'Lower Price',

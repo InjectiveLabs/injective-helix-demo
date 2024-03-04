@@ -46,6 +46,11 @@ export default {
         '.field-label': {
           fontSize: theme('fontSize.xs'),
           fontWeight: theme('fontWeight.semibold')
+        },
+        '.tab-field': {
+          fontSize: theme('fontSize.sm'),
+          fontWeight: theme('fontWeight.bold'),
+          color: theme('colors.gray.600')
         }
       })
     }

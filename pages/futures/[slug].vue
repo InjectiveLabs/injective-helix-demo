@@ -25,5 +25,9 @@ provide(derivativeMarketKey, market)
     <template #form>
       <PartialsTradeFuturesForm />
     </template>
+
+    <template #orders>
+      <PartialsTradeFuturesOrders />
+    </template>
   </PartialsTradeLayout>
 </template>

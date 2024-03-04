@@ -72,7 +72,7 @@ onUnmounted(() => {
       </div>
 
       <AppHocLoading v-bind="{ status }">
-        <div class="p-6 bg-brand-800 rounded-md">
+        <div class="p-6 bg-brand-875 border-brand-800 border rounded-md">
           <NuxtPage />
         </div>
       </AppHocLoading>

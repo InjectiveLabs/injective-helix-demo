@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Futures Trading</div>
+  <div>Hello, Injective</div>
 </template>

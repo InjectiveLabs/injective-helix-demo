@@ -9,6 +9,7 @@ const spotStore = useSpotStore()
 const authzStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -57,6 +58,18 @@ watch(
   }
 )
  */
+
+watch(
+  () => accountStore.subaccountId,
+  (subaccountId) => {
+    accountStore.cancelSubaccountBalanceStream()
+    accountStore.cancelBankBalanceStream()
+
+    accountStore.fetchAccountPortfolioBalances()
+    accountStore.streamSubaccountBalance(subaccountId)
+    accountStore.streamBankBalance()
+  }
+)
 </script>
 
 <template>

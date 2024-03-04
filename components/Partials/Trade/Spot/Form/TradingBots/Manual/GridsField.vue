@@ -6,7 +6,7 @@
   <div class="mb-4">
     <div class="space-y-2">
       <p class="field-label">2 .{{ $t('sgt.numberOfGrids') }}</p>
-      <AppInputField placeholder="3-100" />
+      <AppInputField autofix :min="3" :max="100" placeholder="3-100" />
     </div>
   </div>
 </template>

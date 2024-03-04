@@ -485,3 +485,27 @@ export enum TradingInterface {
   Standard = 'standard',
   TradingBots = 'trading-bots'
 }
+
+export enum SpotOrdersStandardView {
+  OpenOrders = 'openOrders',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory'
+}
+
+export enum PerpOrdersStandardView {
+  OpenPositions = 'openPositions',
+  OpenOrders = 'openOrders',
+  Triggers = 'triggers',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory'
+}
+
+export enum PerpOrdersTradingBotsView {
+  ActiveStrategies = 'activeStrategies',
+  RemovedStrategies = 'removedStrategies',
+  OpenPositions = 'openPositions',
+  OpenOrders = 'openOrders',
+  Triggers = 'triggers',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory'
+}

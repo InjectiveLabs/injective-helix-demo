@@ -3,6 +3,8 @@ import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
 
 const props = defineProps({
+  autofix: Boolean,
+
   modelValue: {
     type: String,
     default: ''
@@ -43,8 +45,9 @@ const { typed, el } = useIMask(
             radix: '.',
             mapToRadix: ['.', ','],
             scale: props.decimals,
-
-            max: props.max
+            autofix: props.autofix,
+            max: props.max,
+            min: props.min
           }
         }
       }) as FactoryOpts
