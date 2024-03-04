@@ -6,7 +6,14 @@ import {
 } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
-defineProps({
+const SECTION_HEIGHT =
+  2 * ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + ORDERBOOK_HEADER_HEIGHT + 8
+
+const NUMBER_OF_ROWS =
+  ORDERBOOK_ROWS * 2 +
+  Math.floor(ORDERBOOK_HEADER_HEIGHT / ORDERBOOK_ROW_HEIGHT)
+
+const props = defineProps({
   isSpot: Boolean,
 
   market: {
@@ -15,12 +22,16 @@ defineProps({
   }
 })
 
-const SECTION_HEIGHT =
-  2 * ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + ORDERBOOK_HEADER_HEIGHT + 8
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
-const NUMBER_OF_ROWS =
-  ORDERBOOK_ROWS * 2 +
-  Math.floor(ORDERBOOK_HEADER_HEIGHT / ORDERBOOK_ROW_HEIGHT)
+const trades = computed(() => {
+  if (props.isSpot) {
+    return spotStore.trades.slice(0, NUMBER_OF_ROWS)
+  }
+
+  return derivativeStore.trades.slice(0, NUMBER_OF_ROWS)
+})
 </script>
 
 <template>
@@ -42,7 +53,27 @@ const NUMBER_OF_ROWS =
     </div>
 
     <div :style="{ height: SECTION_HEIGHT + 'px' }">
-      <p v-for="i in NUMBER_OF_ROWS" :key="i" class="text-xs">Rows</p>
+      <template v-if="trades.length === 0">
+        <PartialsTradeOrderbookBuysSellsSkeletonRecord
+          v-for="index in NUMBER_OF_ROWS"
+          :key="index"
+          v-bind="{ index }"
+          is-buy
+        />
+      </template>
+
+      <template v-else>
+        <PartialsTradeOrderbookTradesRow
+          v-for="trade in trades"
+          :key="trade.tradeId"
+          class="text-xs"
+          v-bind="{
+            market,
+            isSpot,
+            trade
+          }"
+        />
+      </template>
     </div>
   </div>
 </template>
