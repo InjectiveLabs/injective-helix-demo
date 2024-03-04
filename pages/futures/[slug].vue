@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { derivativeMarketKey } from '@/types'
+
 definePageMeta({
   middleware: ['orderbook']
 })
@@ -14,14 +16,14 @@ useOrderbook(
   computed(() => market.value),
   false
 )
+
+provide(derivativeMarketKey, market)
 </script>
 
 <template>
   <PartialsTradeLayout v-if="market" v-bind="{ market }">
     <template #form>
-      <pre class="text-xs">
-        Form
-      </pre>
+      <PartialsTradeFuturesForm />
     </template>
   </PartialsTradeLayout>
 </template>

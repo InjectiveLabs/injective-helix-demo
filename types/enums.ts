@@ -121,6 +121,13 @@ export enum TradeTypes {
   Market = 'market'
 }
 
+export enum DerivativeTradeTypes {
+  Limit = 'limit',
+  Market = 'market',
+  StopLimit = 'stop-limit',
+  StopMarket = 'stop-market'
+}
+
 export enum TradeSelectorType {
   Type = 'type',
   TypeAllDerivatives = 'type-all-derivatives',

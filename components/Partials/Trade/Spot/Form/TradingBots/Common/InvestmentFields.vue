@@ -22,7 +22,7 @@ const market = inject(spotMarketKey)
       </div>
     </div>
 
-    <AppInputField>
+    <AppInputField placeholder=" 0.00">
       <template #right>
         <span>{{ market.baseToken.symbol }}</span>
       </template>
@@ -34,7 +34,7 @@ const market = inject(spotMarketKey)
       </template>
     </AppInputField>
 
-    <AppInputField>
+    <AppInputField placeholder=" 0.00">
       <template #right>
         <span>{{ market.quoteToken.symbol }}</span>
       </template>
