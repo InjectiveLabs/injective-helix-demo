@@ -8,7 +8,7 @@ const market = inject(spotMarketKey)
 
 <template>
   <div v-if="market" class="space-y-2">
-    <p class="text-xs font-semibold">Total</p>
+    <p class="field-label">{{ $t('trade.total') }}</p>
 
     <AppInputField v-model="total" placeholder="0.00">
       <template #right>

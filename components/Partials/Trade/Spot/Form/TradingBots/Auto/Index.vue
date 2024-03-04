@@ -3,5 +3,9 @@
 </script>
 
 <template>
-  <div>Auto</div>
+  <div>
+    <PartialsTradeSpotFormTradingBotsAutoParams />
+    <PartialsTradeSpotFormTradingBotsCommonInvestmentFields />
+    <PartialsTradeSpotFormTradingBotsCommonCreateStrategy />
+  </div>
 </template>

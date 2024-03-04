@@ -25,14 +25,14 @@ defineProps({
       </slot>
     </div>
 
-    <div class="[grid-area:orderbook] lg:border-r lg:border-b">
+    <div class="[grid-area:form] lg:border-r max-lg:border-t">
+      <slot name="form" />
+    </div>
+
+    <div class="[grid-area:orderbook] lg:border-r lg:border-b max-lg:border-t">
       <slot name="orderbook">
         <PartialsTradeOrderbook v-bind="{ market, isSpot }" />
       </slot>
-    </div>
-
-    <div class="[grid-area:form] lg:border-r">
-      <slot name="form" />
     </div>
 
     <div class="[grid-area:orders]">

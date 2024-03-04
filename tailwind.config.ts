@@ -42,6 +42,10 @@ export default {
         '.error-message': {
           fontSize: theme('fontSize.xs'),
           color: theme('colors.red.500')
+        },
+        '.field-label': {
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.semibold')
         }
       })
     }

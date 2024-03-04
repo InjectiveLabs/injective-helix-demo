@@ -10,6 +10,8 @@ defineProps({
 
 const appStore = useAppStore()
 
+const isLocked = useScrollLock(document.documentElement)
+
 const el = ref<HTMLElement | null>(null)
 const toggleEl = ref<HTMLElement | null>(null)
 
@@ -20,7 +22,7 @@ function toggleOpen() {
 onClickOutside(
   el,
   () => {
-    appStore.marketsOpen = false
+    closeMarketSection()
   },
   { ignore: [toggleEl] }
 )
@@ -28,6 +30,13 @@ onClickOutside(
 function closeMarketSection() {
   appStore.marketsOpen = false
 }
+
+watch(
+  () => appStore.marketsOpen,
+  (isOpen) => {
+    isLocked.value = isOpen
+  }
+)
 </script>
 
 <template>

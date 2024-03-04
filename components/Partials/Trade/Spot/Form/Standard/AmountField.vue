@@ -8,7 +8,7 @@ const market = inject(spotMarketKey)
 
 <template>
   <div class="space-y-2">
-    <p class="text-xs font-semibold">Amount</p>
+    <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField v-model="amount" placeholder="0.00">
       <template #right>

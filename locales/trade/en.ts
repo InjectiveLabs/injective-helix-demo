@@ -24,6 +24,7 @@ export default {
     price: 'Price',
     trigger_price: 'Trigger Price',
     limit_price: 'Limit Price',
+    limitPrice: 'Limit Price',
     amount: 'Amount',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',

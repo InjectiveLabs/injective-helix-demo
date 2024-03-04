@@ -3,5 +3,10 @@
 </script>
 
 <template>
-  <div>Manual</div>
+  <div class="pt-4">
+    <PartialsTradeSpotFormTradingBotsManualPriceRangeFields />
+    <PartialsTradeSpotFormTradingBotsManualGridsField />
+    <PartialsTradeSpotFormTradingBotsCommonInvestmentFields />
+    <PartialsTradeSpotFormTradingBotsCommonCreateStrategy />
+  </div>
 </template>

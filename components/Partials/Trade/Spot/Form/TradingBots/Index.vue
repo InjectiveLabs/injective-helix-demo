@@ -12,7 +12,7 @@ const strategyType = ref(GridStrategyType.Auto)
         :key="type"
         v-bind="{ value: type }"
         v-model="strategyType"
-        class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm"
+        class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm font-medium"
         active-classes="text-white !border-blue-400"
       >
         {{ $t(`sgt.${type}`) }}
@@ -23,7 +23,6 @@ const strategyType = ref(GridStrategyType.Auto)
       <PartialsTradeSpotFormTradingBotsAuto
         v-if="strategyType === GridStrategyType.Auto"
       />
-
       <PartialsTradeSpotFormTradingBotsManual v-else />
     </div>
   </div>
