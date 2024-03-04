@@ -9,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'whale-inj',
   'qunt-inj',
   'talis-inj',
   'bonk-usdt-perp',
@@ -19,8 +20,7 @@ export const newMarketsSlug = [
   'osmo-usdt-perp',
   'dojo-inj',
   'arb-usdt-perp',
-  'gyen-usdt',
-  'op-usdt-perp'
+  'gyen-usdt'
 ]
 
 export const experimentalMarketsSlug = [
@@ -65,7 +65,8 @@ export const slugsToIncludeInCosmosCategory = [
   'tia-usdt-perp',
   'talis-usdt',
   'osmo-usdt-perp',
-  'andr-usdt'
+  'andr-usdt',
+  'whale-inj'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
