@@ -63,7 +63,7 @@ function setInterval(index: string) {
     />
 
     <PartialsTradingMarketChart
-      v-if="view === ChartViewOption.ProChart"
+      v-else-if="view === ChartViewOption.ProChart"
       v-bind="{ market }"
     />
 
