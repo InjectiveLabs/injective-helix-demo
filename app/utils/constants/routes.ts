@@ -43,11 +43,15 @@ export const getRoutes = (network: Network, env: string) => {
     'kuji-usdt',
     'talis-usdt',
     'app-inj',
+    // 'usde-usdt',
     'ginger-inj',
     'gyen-usdt',
     'dojo-inj',
     'andr-usdt',
-    'hinj-inj'
+    'hinj-inj',
+    'qunt-inj',
+    'talis-inj',
+    'whale-inj'
   ]
 
   const perpetuals = [
@@ -146,7 +150,8 @@ export const getRoutes = (network: Network, env: string) => {
   const walletConnectedRequiredRouteNames = [
     MainPage.Bridge,
     MainPage.Account,
-    MainPage.Activity
+    MainPage.Activity,
+    MainPage.EthDenver2024
   ]
 
   // Layout routes
@@ -160,7 +165,7 @@ export const getRoutes = (network: Network, env: string) => {
     LiquidityRewardsPage.CampaignDetails
   ]
 
-  const customStaticRoutes: string[] = []
+  const customStaticRoutes: string[] = [`/${MainPage.EthDenver2024}`]
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 

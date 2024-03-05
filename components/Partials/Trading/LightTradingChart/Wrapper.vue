@@ -80,6 +80,12 @@ const filteredCandlesticksData = computed(() => {
     })
   }
 
+  if (props.market.slug === 'qunt-inj') {
+    return candlesticksData.value.filter(
+      (candlestick) => (candlestick.time as number) > 1708960440
+    )
+  }
+
   return candlesticksData.value
 })
 

@@ -9,6 +9,9 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'whale-inj',
+  'qunt-inj',
+  'talis-inj',
   'bonk-usdt-perp',
   'doge-usdt-perp',
   'link-usdt-perp',
@@ -17,15 +20,13 @@ export const newMarketsSlug = [
   'osmo-usdt-perp',
   'dojo-inj',
   'arb-usdt-perp',
-  'gyen-usdt',
-  'op-usdt-perp',
-  'sol-usdt-perp',
-  'wif-usdt-perp'
+  'gyen-usdt'
 ]
 
 export const experimentalMarketsSlug = [
   'usdy-usdt',
   'ape-usdt',
+  'usde-usdt',
   'app-inj',
   'gf-usdt',
   'autism-inj',
@@ -43,7 +44,9 @@ export const experimentalMarketsSlug = [
   'jup-usdt-perp',
   'gyen-usdt',
   'wif-usdt-perp',
-  'bonk-usdt-perp'
+  'bonk-usdt-perp',
+  'qunt-inj',
+  'talis-inj'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
@@ -62,7 +65,8 @@ export const slugsToIncludeInCosmosCategory = [
   'tia-usdt-perp',
   'talis-usdt',
   'osmo-usdt-perp',
-  'andr-usdt'
+  'andr-usdt',
+  'whale-inj'
 ]
 
 export const slugsToIncludeInEthereumCategory = [
@@ -107,7 +111,9 @@ export const slugsToIncludeInInjectiveCategory = [
   'ginger-inj',
   'autism-inj',
   'andr-usdt',
-  'hinj-inj'
+  'hinj-inj',
+  'qunt-inj',
+  'talis-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [

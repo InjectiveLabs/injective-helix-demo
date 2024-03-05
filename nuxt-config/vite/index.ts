@@ -33,7 +33,8 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    exclude: ['fsevents']
+    exclude: ['fsevents'],
+    include: []
   }
 }) as ViteConfig
 
