@@ -6,7 +6,8 @@
     <AssetKadoBanner />
 
     <div class="flex flex-col">
-      <AppHocLoading is-helix :is-loading="true" wrapper-class="h-[500px]" />
+      <AppHocLoading is-helix is-loading wrapper-class="h-[500px]" />
+      <!-- <AssetHelixLogoLoading class="mb-20" /> -->
 
       <div class="text-center flex flex-col items-center mb-20">
         <div class="flex items-center space-x-4">

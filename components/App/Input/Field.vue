@@ -39,9 +39,8 @@ const { typed, el } = useIMask(
         lazy: false,
         blocks: {
           num: {
-            // nested masks are available!
             mask: Number,
-            thousandsSeparator: ',',
+            thousandsSeparator: '',
             radix: '.',
             mapToRadix: ['.', ','],
             scale: props.decimals,
@@ -82,7 +81,7 @@ watch(
       <input
         ref="el"
         type="text"
-        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono text-right"
+        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
         v-bind="$attrs"
       />
 

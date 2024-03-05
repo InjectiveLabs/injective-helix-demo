@@ -48,11 +48,12 @@ watch(isLoading, (isLoading, oldIsLoading) => {
       :class="[
         wrapperClass || 'h-full',
         {
-          'py-4': !noPadding
+          'py-4': !noPadding,
+          'flex items-center justify-center': props.isHelix
         }
       ]"
     >
-      <AssetHelixLoading v-if="isHelix" />
+      <AssetHelixLogoLoading v-if="isHelix" />
       <AppLoading v-else :class="loaderClass" />
     </div>
 

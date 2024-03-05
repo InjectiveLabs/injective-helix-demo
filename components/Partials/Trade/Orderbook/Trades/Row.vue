@@ -54,7 +54,7 @@ const time = computed(() =>
 
 <template>
   <div
-    class="flex font-mono !text-[11px] leading-4 text-right hover:bg-brand-800 cursor-pointer"
+    class="flex font-mono leading-4 !text-[11px] text-right hover:bg-brand-800 cursor-pointer"
   >
     <div
       class="flex-1 min-w-0 truncate px-1"
