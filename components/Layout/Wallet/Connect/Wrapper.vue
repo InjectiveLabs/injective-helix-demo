@@ -1,8 +1,8 @@
 <template>
-  <li class="block hover:bg-gray-800 cursor-pointer px-6">
+  <li class="block hover:bg-gray-800 rounded-md cursor-pointer px-6">
     <div class="flex items-center py-4">
       <div class="min-w-0 flex-1 flex items-center">
-        <div class="flex-shrink-0 mr-2 text-gray-200">
+        <div class="flex-shrink-0 basis-[32px] mr-2 text-gray-200">
           <slot name="logo"></slot>
         </div>
         <div

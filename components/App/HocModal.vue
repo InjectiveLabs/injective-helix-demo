@@ -34,14 +34,16 @@ function closeModal() {
       @click="closeModal"
     >
       <div
-        class="max-md:h-[100dvh] bg-brand-900 rounded-md border md:max-w-[600px] w-full flex flex-col"
+        class="max-md:h-[100dvh] bg-brand-900 p-4 rounded-md border md:max-w-[600px] w-full flex flex-col"
         @click.stop
       >
-        <div class="md:hidden p-4 flex justify-end">
-          <BaseIcon name="close" @click="closeModal" />
-        </div>
+        <div class="h-full overflow-y-auto">
+          <div class="md:hidden p-4 flex justify-end">
+            <BaseIcon name="close" @click="closeModal" />
+          </div>
 
-        <slot />
+          <slot />
+        </div>
       </div>
     </div>
   </Teleport>

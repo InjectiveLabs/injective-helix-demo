@@ -18,10 +18,6 @@ import { MenuItemType } from '@/types'
       />
     </div>
 
-    <button
-      class="px-6 py-2 rounded-lg bg-blue-500 text-white text-sm font-semibold"
-    >
-      Connect Wallet
-    </button>
+    <LayoutWallet />
   </div>
 </template>

@@ -83,12 +83,10 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppModal
+  <AppHocModal
     :is-open="isModalOpen"
     :is-loading="isLoading"
-    :ignore="['.v-popper__popper']"
-    is-md
-    @modal:closed="onCloseModal"
+    @modal:close="onCloseModal"
   >
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
@@ -102,26 +100,28 @@ watch(isModalOpen, (newShowModalState) => {
       </h3>
     </template>
 
-    <LayoutWalletLedger v-if="walletModalType === WalletModalType.Ledger" />
-    <LayoutWalletTrezor
-      v-else-if="walletModalType === WalletModalType.Trezor"
-    />
-    <ul
-      v-else
-      class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
-    >
-      <LayoutWalletConnectWalletMetamask />
-      <LayoutWalletConnectWalletOkxWallet />
-      <LayoutWalletConnectWalletKeplr />
-      <LayoutWalletConnectWalletNinji />
-      <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
-      <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
-      <LayoutWalletConnectWalletTrustWallet />
-      <LayoutWalletConnectWalletPhantom />
-      <LayoutWalletConnectWalletLeap />
-      <LayoutWalletConnectWalletCosmostation />
-      <LayoutWalletConnectWalletTorus />
-    </ul>
-  </AppModal>
+    <div class="p-4">
+      <LayoutWalletLedger v-if="walletModalType === WalletModalType.Ledger" />
+      <LayoutWalletTrezor
+        v-else-if="walletModalType === WalletModalType.Trezor"
+      />
+      <ul
+        v-else
+        class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
+      >
+        <LayoutWalletConnectWalletMetamask />
+        <LayoutWalletConnectWalletOkxWallet />
+        <LayoutWalletConnectWalletKeplr />
+        <LayoutWalletConnectWalletNinji />
+        <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
+        <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
+        <LayoutWalletConnectWalletTrustWallet />
+        <LayoutWalletConnectWalletPhantom />
+        <LayoutWalletConnectWalletLeap />
+        <LayoutWalletConnectWalletCosmostation />
+        <LayoutWalletConnectWalletTorus />
+      </ul>
+    </div>
+  </AppHocModal>
   <ModalsTerms />
 </template>

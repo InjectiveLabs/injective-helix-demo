@@ -23,13 +23,13 @@ function disconnect() {
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center wallet-menu">
     <BaseHoverMenu
-      popper-class="min-w-[310px] sm:min-w-[356px] bg-gray-850 shadow-dropdown rounded-lg"
+      popper-class="min-w-[310px] sm:min-w-[356px] bg-brand-900 border border-brand-800 shadow-dropdown rounded-md"
     >
       <template #default="{ toggle }">
         <div
-          class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
+          class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
           @click="toggle"
         >
           <BaseIcon name="user" class="w-4 h-4 lg:mr-2" />
@@ -40,7 +40,9 @@ function disconnect() {
       </template>
 
       <template #content>
-        <div class="flex flex-col gap-4 rounded-lg p-4 bg-gray-850">
+        <div
+          class="flex flex-col gap-4 rounded-lg bg-brand-900 border border-brand-800"
+        >
           <div class="rounded-lg bg-gray-1000">
             <div class="flex flex-col py-3 px-4">
               <div class="flex justify-between pb-2">

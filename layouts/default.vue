@@ -100,7 +100,8 @@ watch(
       <template #notification="{ notification }">
         <BaseNotification
           :notification="notification"
-          class="pointer-events-auto bg-gray-800"
+          class="pointer-events-auto bg-brand-900"
+          wrapper-class="bg-brand-900 border-brand-700 border"
         >
           <template #close="{ closeNotification }">
             <BaseIcon
