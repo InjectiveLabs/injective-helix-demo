@@ -21,8 +21,8 @@ function setInterval(index: string) {
 
 <template>
   <div class="flex max-lg:h-[500px] h-full flex-col">
-    <div class="border-b flex lg:flex-row justify-between">
-      <div class="flex flex-1 shrink-0 h-header">
+    <div class="flex lg:flex-row justify-between">
+      <div class="flex h-header flex-1 shrink-0 border-b">
         <AppButtonSelect
           v-for="label in viewOptions"
           :key="label"
@@ -36,7 +36,7 @@ function setInterval(index: string) {
       </div>
     </div>
 
-    <div class="border-b flex">
+    <div v-if="view === ChartViewOption.Chart" class="border-b flex">
       <AppButtonSelect
         v-for="(_, index) in intervalOptions"
         :key="index"
@@ -60,6 +60,11 @@ function setInterval(index: string) {
         isSpot: true,
         interval
       }"
+    />
+
+    <PartialsTradingMarketChart
+      v-if="view === ChartViewOption.ProChart"
+      v-bind="{ market }"
     />
 
     <PartialsTradeChartDepth v-else-if="view === ChartViewOption.Depth" />

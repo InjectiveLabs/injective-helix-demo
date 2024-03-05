@@ -459,6 +459,7 @@ export enum MenuItemType {
 
 export enum ChartViewOption {
   Chart = 'chart',
+  ProChart = 'pro-chart',
   Depth = 'depth',
   Info = 'info'
 }

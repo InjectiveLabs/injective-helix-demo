@@ -32,7 +32,7 @@ export default function ({
     interval: interval as ResolutionString,
     container: containerId,
     timeframe: '1M',
-    toolbar_bg: colors.gray[950],
+    toolbar_bg: colors.brand[900],
     height: 100,
     width: 100,
     datafeed: new Datafeed(datafeedEndpoint, 4000),
@@ -70,11 +70,11 @@ export default function ({
     ],
     client_id: 'injective.helix',
     loading_screen: {
-      backgroundColor: colors.gray[950],
+      backgroundColor: colors.brand[900],
       foregroundColor: colors.gray[400]
     },
     overrides: {
-      'paneProperties.background': colors.gray[950],
+      'paneProperties.background': colors.brand[900],
       'paneProperties.backgroundType': 'solid',
       'paneProperties.vertGridProperties.color': colors.gray[700],
       'paneProperties.horzGridProperties.color': colors.gray[700],
@@ -148,7 +148,7 @@ export default function ({
       'scalesProperties.fontSize': 12,
       'scalesProperties.showSymbolLabels': false,
       'scalesProperties.showStudyLastValue': false,
-      'symbolWatermarkProperties.color': colors.gray[800],
+      'symbolWatermarkProperties.color': colors.brand[900],
       volumePaneSize: 'medium'
     },
     studies_overrides: {

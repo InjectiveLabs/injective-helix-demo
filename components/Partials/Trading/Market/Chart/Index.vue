@@ -40,24 +40,17 @@ function onReady() {
 </script>
 
 <template>
-  <div
-    class="bg-gray-1000 lg:rounded-l-xl lg:shadow-sm h-full overflow-hidden relative"
-  >
-    <AppLoading v-if="status.isLoading()" />
-    <div
-      ref="trading-view-wrap"
-      class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"
-    >
-      <ClientOnly>
-        <PartialsTradingMarketChartTradingView
-          v-show="status.isNotLoading()"
-          ref="trading-view"
-          :interval="interval"
-          :symbol="symbol"
-          :datafeed-endpoint="datafeedEndpoint"
-          @ready="onReady"
-        />
-      </ClientOnly>
-    </div>
+  <div ref="trading-view-wrap" class="h-full relative">
+    <AppHocLoading v-bind="{ status }" is-helix />
+    <ClientOnly>
+      <PartialsTradingMarketChartTradingView
+        v-show="status.isNotLoading()"
+        ref="trading-view"
+        :interval="interval"
+        :symbol="symbol"
+        :datafeed-endpoint="datafeedEndpoint"
+        @ready="onReady"
+      />
+    </ClientOnly>
   </div>
 </template>

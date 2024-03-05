@@ -25,7 +25,7 @@ function disconnect() {
 <template>
   <div class="flex items-center wallet-menu">
     <BaseHoverMenu
-      popper-class="min-w-[310px] sm:min-w-[356px] bg-brand-900 border border-brand-800 shadow-dropdown rounded-md"
+      popper-class="min-w-[310px] sm:min-w-[356px]  shadow-dropdown rounded-md"
     >
       <template #default="{ toggle }">
         <div

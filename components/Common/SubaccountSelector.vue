@@ -14,23 +14,23 @@ function changeSubaccount(subaccountId: string) {
 <template>
   <CommonSubaccountOptions v-bind="{ includeBotsSubaccounts, showLowBalance }">
     <template #default="{ subaccountOptions, activeSubaccountLabel }">
-      <BaseDropdown class="flex items-center" placement="bottom-start">
+      <BaseDropdown :distance="0" class="flex" placement="bottom-start">
         <template #default="{ isOpen }">
           <slot v-bind="{ isOpen, activeSubaccountLabel }" />
         </template>
 
         <template #content="{ close }">
           <div
-            class="bg-brand-900 border border-brand-700 text-white rounded-md overflow-hidden"
+            class="bg-brand-900 border border-brand-700 text-white overflow-hidden"
             @click="close"
           >
             <div
               v-for="subaccountId in subaccountOptions"
               :key="subaccountId.value"
-              class="px-2 py-4 hover:bg-brand-800 text-sm font-semibold cursor-pointer"
+              class="px-6 py-4 hover:bg-brand-800 text-sm font-semibold cursor-pointer"
               @click="changeSubaccount(subaccountId.value)"
             >
-              Subaccount: {{ subaccountId.display }}
+              {{ $t('account.subaccount') }}: {{ subaccountId.display }}
             </div>
           </div>
         </template>
