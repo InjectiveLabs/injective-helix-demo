@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <PartialsTradeChartDepthChart />
+  <div>Hello, Injective</div>
 </template>

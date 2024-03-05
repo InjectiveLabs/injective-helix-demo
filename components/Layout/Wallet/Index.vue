@@ -15,9 +15,9 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-const isLoading = computed<boolean>(
-  () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
-)
+// const isLoading = computed<boolean>(
+//   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
+// )
 
 onMounted(() => {
   useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
@@ -83,11 +83,7 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppHocModal
-    :is-open="isModalOpen"
-    :is-loading="isLoading"
-    @modal:close="onCloseModal"
-  >
+  <AppHocModal :is-open="isModalOpen" @modal:close="onCloseModal">
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
         {{ $t('connect.connectUsingTrezor') }}

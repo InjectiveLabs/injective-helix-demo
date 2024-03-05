@@ -67,7 +67,7 @@ watch(
 
 <template>
   <label
-    class="flex flex-col focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4"
+    class="block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4"
   >
     <div v-if="$slots.top">
       <slot name="top" />

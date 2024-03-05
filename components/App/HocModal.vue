@@ -30,7 +30,7 @@ function closeModal() {
   <Teleport to="body">
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black/50 z-50 md:grid md:place-items-center md:p-4"
+      class="fixed backdrop-blur-sm inset-0 bg-black/50 z-50 md:grid md:place-items-center md:p-4"
       @click="closeModal"
     >
       <div

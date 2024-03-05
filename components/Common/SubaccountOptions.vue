@@ -59,8 +59,15 @@ const subaccountOptions = computed(() =>
         .sort((a, b) => a.value.localeCompare(b.value))
     : []
 )
+
+const activeSubaccountLabel = computed(
+  () =>
+    subaccountOptions.value.find(
+      (option) => option.value === accountStore.subaccountId
+    )?.display
+)
 </script>
 
 <template>
-  <slot v-bind="{ subaccountOptions }" />
+  <slot v-bind="{ subaccountOptions, activeSubaccountLabel }" />
 </template>

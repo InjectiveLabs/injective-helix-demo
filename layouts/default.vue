@@ -68,7 +68,8 @@ watch(
     accountStore.fetchAccountPortfolioBalances()
     accountStore.streamSubaccountBalance(subaccountId)
     accountStore.streamBankBalance()
-  }
+  },
+  { immediate: true }
 )
 </script>
 

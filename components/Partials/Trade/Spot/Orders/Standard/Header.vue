@@ -6,6 +6,27 @@ const view = ref(SpotOrdersStandardView.OpenOrders)
 
 <template>
   <div class="h-header border-b flex">
+    <CommonSubaccountSelector show-low-balance>
+      <template #default="{ isOpen, activeSubaccountLabel }">
+        <button class="flex items-center space-x-2 px-4">
+          <span
+            class="text-sm font-semibold px-4 bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
+          >
+            {{ $t('account.subaccount') }}: {{ activeSubaccountLabel }}
+          </span>
+
+          <div
+            class="transition-all duration-300 text-gray-500"
+            :class="{ 'rotate-180': isOpen }"
+          >
+            <BaseIcon name="chevron-down" is-sm />
+          </div>
+        </button>
+      </template>
+    </CommonSubaccountSelector>
+
+    <div class="border-r" />
+
     <AppButtonSelect
       v-for="value in Object.values(SpotOrdersStandardView)"
       :key="value"
