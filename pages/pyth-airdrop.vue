@@ -1,17 +1,41 @@
 <script setup lang="ts">
-import { Modal } from '~/types'
+import {
+  Coin,
+  MsgExecuteContractCompat,
+  fromBase64,
+  toBase64
+} from '@injectivelabs/sdk-ts'
+import { ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { Modal } from '@/types'
+import { msgBroadcastClient, wasmApi } from '@/app/Services'
+
+const REWARDS_CONTRACT = 'inj135qvnawxk6llfchya2fve7cw4aukmg0xfz9ea7'
+const CAMPAING_ID = 1
+const PYTH_DECIMALS = 6
+
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const { $onError } = useNuxtApp()
+const { success } = useNotifications()
+const { t } = useLang()
+
+const status = reactive(new Status(StatusType.Idle))
+const claimStatus = reactive(new Status(StatusType.Idle))
 
 useForm<{ address: string }>()
 
-const { value: address, errorMessage } = useStringField({
+const {
+  value: address,
+  errorMessage,
+  validate
+} = useStringField({
   name: 'address',
   rule: 'required|injAddress'
 })
 
-const amount = ref(200)
+const amount = ref(ZERO_IN_WEI)
 const isClaimed = ref(false)
 const sucessfulyClaimed = ref(false)
 
@@ -24,13 +48,114 @@ watch(
   () => {
     if (walletStore.isUserWalletConnected) {
       address.value = walletStore.injectiveAddress
+      checkClaimStatus()
+    } else {
+      isClaimed.value = false
+      amount.value = ZERO_IN_WEI
     }
   },
   { immediate: true }
 )
 
+const { valueToString: amountToString } = useBigNumberFormatter(
+  computed(() => amount.value.toBase(token.value?.decimals || PYTH_DECIMALS))
+)
+
+async function checkClaim() {
+  const response = (await wasmApi.fetchSmartContractState(
+    REWARDS_CONTRACT,
+    toBase64({
+      user_has_claimed: {
+        campaign_id: CAMPAING_ID,
+        user: address.value
+      }
+    })
+  )) as unknown as { data: string }
+
+  const userHasClaimed = fromBase64(response.data) as unknown as boolean
+
+  return userHasClaimed
+}
+
+async function fetchUserRewards() {
+  const response = (await wasmApi.fetchSmartContractState(
+    REWARDS_CONTRACT,
+    toBase64({
+      user_reward: {
+        campaign_id: CAMPAING_ID,
+        user: address.value
+      }
+    })
+  )) as unknown as { data: string }
+
+  const userReward = fromBase64(response.data) as unknown as Coin[]
+
+  return userReward[0].amount
+}
+
 function connect() {
   modalStore.openModal(Modal.Connect)
+}
+
+async function checkClaimStatus() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
+  status.setLoading()
+
+  try {
+    isClaimed.value = await checkClaim()
+    amount.value = new BigNumberInWei(await fetchUserRewards())
+  } catch (error) {
+    $onError(error as any)
+  } finally {
+    status.setIdle()
+  }
+}
+
+const claimReward = async () => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+
+  await appStore.queue()
+  await walletStore.validate()
+
+  if (!walletStore.address) {
+    return
+  }
+
+  const message = MsgExecuteContractCompat.fromJSON({
+    sender: walletStore.injectiveAddress,
+    contractAddress: REWARDS_CONTRACT,
+    exec: {
+      action: 'claim_reward',
+      msg: { campaign_id: CAMPAING_ID }
+    }
+  })
+
+  const tx = await msgBroadcastClient.broadcastWithFeeDelegation({
+    msgs: [message],
+    injectiveAddress: walletStore.injectiveAddress
+  })
+
+  return tx
+}
+
+function onClaimRewards() {
+  claimStatus.setLoading()
+
+  claimReward()
+    .then(() => {
+      sucessfulyClaimed.value = true
+      success({ title: t('common.success') })
+    })
+    .catch($onError)
+    .finally(() => {
+      claimStatus.setIdle()
+    })
 }
 </script>
 
@@ -65,7 +190,12 @@ function connect() {
             />
 
             <div class="flex items-center" @click.stop>
-              <AppButton class="bg-blue-500 text-black">
+              <AppButton
+                class="bg-blue-500 text-black"
+                :is-disabled="!!errorMessage || status.isLoading()"
+                v-bind="{ status }"
+                @click="checkClaimStatus"
+              >
                 {{ $t('pyth.check') }}
               </AppButton>
             </div>
@@ -73,29 +203,35 @@ function connect() {
           <p class="text-red-500">{{ errorMessage }}</p>
         </div>
 
-        <div v-if="isClaimed" class="text-center text-xl mb-8">
-          <p>{{ $t('pyth.alreadyClaimed') }}</p>
-        </div>
-
-        <div v-if="amount === 0" class="text-center text-xl mb-8">
-          {{ $t('pyth.notEligible') }}
-        </div>
-
-        <div v-if="amount > 0">
-          <div class="text-center text-green-500 text-xl mb-8">
-            {{ $t('pyth.congrats', { amount }) }}
+        <AppHocLoading v-bind="{ status }">
+          <div v-if="isClaimed" class="text-center text-xl mb-8">
+            <p>{{ $t('pyth.alreadyClaimed') }}</p>
           </div>
 
-          <div class="flex justify-center mb-8">
-            <AppButton class="bg-blue-500 text-black">
-              {{ $t('pyth.claim', { amount }) }}
-            </AppButton>
+          <div v-if="amount.eq(0)" class="text-center text-xl mb-8">
+            {{ $t('pyth.notEligible') }}
           </div>
-        </div>
 
-        <div v-if="sucessfulyClaimed" class="text-center text-xl mb-8">
-          {{ $t('pyth.claimed', { amount }) }}
-        </div>
+          <div v-if="amount.gt(0)">
+            <div class="text-center text-green-500 text-xl mb-8">
+              {{ $t('pyth.congrats', { amount: amountToString }) }}
+            </div>
+
+            <div class="flex justify-center mb-8">
+              <AppButton
+                v-bind="{ status: claimStatus }"
+                class="bg-blue-500 text-black"
+                @click="onClaimRewards"
+              >
+                {{ $t('pyth.claim', { amount: amountToString }) }}
+              </AppButton>
+            </div>
+          </div>
+
+          <div v-if="sucessfulyClaimed" class="text-center text-xl mb-8">
+            {{ $t('pyth.claimed', { amount: amountToString }) }}
+          </div>
+        </AppHocLoading>
       </div>
     </div>
   </div>
