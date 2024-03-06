@@ -117,7 +117,7 @@ function onRemoveStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy(props.strategy.contractAddress)
+    .removeStrategyForSubaccount(props.strategy.subaccountId)
     .then(() => {
       success({
         title: t('sgt.success'),
