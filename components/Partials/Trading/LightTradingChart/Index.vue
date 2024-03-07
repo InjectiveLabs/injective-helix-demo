@@ -140,7 +140,7 @@ function init() {
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    return price.toFixed(decimalPlaces.value)
+    return new BigNumberInBase(price).toFixed(decimalPlaces.value)
   }
 
   window.addEventListener('resize', resizeHandler)
