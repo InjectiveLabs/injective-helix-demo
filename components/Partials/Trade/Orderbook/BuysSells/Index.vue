@@ -20,8 +20,12 @@ const activeSellsIndex = ref(-1)
 
 const highestVolume = computed(() =>
   Math.max(
-    +orderbookStore.buys[orderbookStore.buys.length - 1].totalVolume,
-    +orderbookStore.sells[orderbookStore.sells.length - 1].totalVolume
+    Number(
+      orderbookStore.buys[orderbookStore.buys.length - 1]?.totalVolume || 0
+    ),
+    Number(
+      orderbookStore.sells[orderbookStore.sells.length - 1]?.totalVolume || 0
+    )
   ).toString()
 )
 

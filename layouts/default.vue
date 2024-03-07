@@ -30,6 +30,11 @@ onMounted(() => {
     spotStore.fetchMarketsSummary(),
     exchangeStore.initFeeDiscounts()
   ])
+    .then(() => {
+      tokenStore.fetchTokensUsdPriceMap(
+        tokenStore.tokens.map((token) => token.coinGeckoId)
+      )
+    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

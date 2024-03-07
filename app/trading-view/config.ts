@@ -31,7 +31,7 @@ export default function ({
     autosize: true,
     interval: interval as ResolutionString,
     container: containerId,
-    timeframe: '1M',
+    timeframe: '3M',
     toolbar_bg: colors.brand[900],
     height: 100,
     width: 100,

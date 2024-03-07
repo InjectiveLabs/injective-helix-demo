@@ -62,12 +62,10 @@ function setIndex() {
       class="flex-1 min-w-0 truncate px-1 relative"
       :class="[isBuy ? 'text-green-500' : 'text-red-500']"
     >
-      <!-- {{ priceToString }} -->
       {{ props.record.price }}
     </div>
 
     <div :key="record.price" class="flex-1 min-w-0 truncate px-1 relative">
-      <!-- {{ quantityToString }} -->
       {{ props.record.quantity }}
     </div>
 
@@ -75,7 +73,6 @@ function setIndex() {
       :key="record.price + record.quantity"
       class="flex-1 min-w-0 truncate px-1 relative"
     >
-      <!-- {{ volumeToString }} -->
       {{ props.record.volume }}
     </div>
   </div>

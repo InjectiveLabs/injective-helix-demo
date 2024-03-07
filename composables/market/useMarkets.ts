@@ -139,12 +139,13 @@ export default function useMarkets() {
             .toNumber()
         }
 
-        if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
-          return m1.market.ticker.localeCompare(m2.market.ticker)
-        }
+        // if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
+        //   return m1.market.ticker.localeCompare(m2.market.ticker)
+        // }
 
         // default: sort by volume
         return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+        // return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
       }
     )
 

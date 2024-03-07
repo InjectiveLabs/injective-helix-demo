@@ -63,9 +63,9 @@ const {
 
     <div class="divide-y">
       <PartialsMarketsCommonMarketsRow
-        v-for="{ market, summary } in sortedMarkets"
+        v-for="{ market, summary, volumeInUsd } in sortedMarkets"
         :key="market.marketId"
-        v-bind="{ market, summary }"
+        v-bind="{ market, summary, volumeInUsd }"
       />
     </div>
   </div>

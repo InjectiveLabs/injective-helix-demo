@@ -12,6 +12,11 @@ const props = defineProps({
   summary: {
     type: Object as PropType<UiMarketSummary>,
     required: true
+  },
+
+  volumeInUsd: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
   }
 })
 
@@ -22,7 +27,7 @@ const lastPriceToString = computed(() =>
 )
 
 const { valueToString: volumeToString } = useBigNumberFormatter(
-  computed(() => new BigNumberInBase(props.summary.volume))
+  computed(() => props.volumeInUsd)
 )
 
 const priceChangeClasses = computed(() => {
