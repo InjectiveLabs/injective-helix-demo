@@ -37,6 +37,8 @@ const defaultChartOptions = {
 }
 
 const props = defineProps({
+  shouldFitContentOnResize: Boolean,
+
   type: {
     type: String,
     default: 'area'
@@ -114,6 +116,10 @@ const resizeHandler = () => {
   if (!chart || !chartContainer.value) return
   const dimensions = chartContainer.value.getBoundingClientRect()
   chart.resize(dimensions.width, dimensions.height)
+
+  if (props.shouldFitContentOnResize) {
+    chart.timeScale().fitContent()
+  }
 }
 
 // Creates the chart series and sets the data.

@@ -36,7 +36,8 @@ const data = ref(randomData())
           visible: true,
           borderColor: 'transparent'
         },
-        height: 200
+        height: 200,
+        shouldFitContentOnResize: true
       }"
     />
   </div>
