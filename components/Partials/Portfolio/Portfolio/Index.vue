@@ -5,7 +5,7 @@
 <template>
   <div class="p-4">
     <h1 class="portfolio-title">Portfolio</h1>
-    <div class="grid grid-cols-2 gap-10 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
       <div v-for="i in 3" :key="i" class="border border-brand-800 p-4">
         <div class="space-y-2">
           <p class="text-gray-400">Portfolio Value</p>

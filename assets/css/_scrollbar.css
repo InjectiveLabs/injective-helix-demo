@@ -1,7 +1,7 @@
 /* Works on Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.gray.700') theme('colors.gray.800');
+  scrollbar-color: theme('colors.gray.800') theme('colors.brand.900');
 }
 
 /* Works on Chrome, Edge, and Safari */
@@ -11,7 +11,7 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: theme('colors.gray.900');
+  background: theme('colors.brand.900');
 }
 
 *::-webkit-scrollbar-thumb {
@@ -23,4 +23,10 @@
 .hide-scrollbar::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;
+}
+
+body,
+html {
+  scrollbar-gutter: stable both;
+  width: 100vw;
 }

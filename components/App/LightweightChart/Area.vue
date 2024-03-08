@@ -15,6 +15,26 @@ import {
   Time,
   AreaData
 } from 'lightweight-charts'
+import { mergeObjects } from '@/app/utils/helpers'
+
+const defaultChartOptions = {
+  crosshair: {
+    mode: CrosshairMode.Normal
+  },
+  layout: {
+    background: {
+      color: 'transparent'
+    }
+  },
+  grid: {
+    horzLines: {
+      visible: false
+    },
+    vertLines: {
+      visible: false
+    }
+  }
+}
 
 const props = defineProps({
   type: {
@@ -34,25 +54,7 @@ const props = defineProps({
 
   chartOptions: {
     type: Object as PropType<DeepPartial<TimeChartOptions>>,
-    default: () =>
-      ({
-        crosshair: {
-          mode: CrosshairMode.Normal
-        },
-        layout: {
-          background: {
-            color: 'transparent'
-          }
-        },
-        grid: {
-          horzLines: {
-            visible: false
-          },
-          vertLines: {
-            visible: false
-          }
-        }
-      }) as DeepPartial<TimeChartOptions>
+    default: () => ({}) as DeepPartial<TimeChartOptions>
   },
 
   seriesOptions: {
@@ -127,7 +129,7 @@ const addSeriesAndData = (_props: typeof props) => {
 onMounted(() => {
   // Create the Lightweight Charts Instance using the container ref.
   chart = createChart(chartContainer.value, {
-    ...props.chartOptions,
+    ...mergeObjects(props.chartOptions, defaultChartOptions),
     height: props.height,
     width: props.width
   })
@@ -194,8 +196,11 @@ watch(
 
 watch(
   () => props.data,
-  (newData) => {
-    if (!series) return
+  (newData: any) => {
+    if (!series) {
+      return
+    }
+
     series.setData(newData)
   }
 )
@@ -203,15 +208,25 @@ watch(
 watch(
   () => props.chartOptions,
   (newOptions) => {
-    if (!chart) return
-    chart.applyOptions(newOptions)
+    if (!chart) {
+      return
+    }
+
+    chart.applyOptions({
+      ...mergeObjects(newOptions, defaultChartOptions),
+      height: props.height,
+      width: props.width
+    })
   }
 )
 
 watch(
   () => props.seriesOptions,
   (newOptions) => {
-    if (!series) return
+    if (!series) {
+      return
+    }
+
     series.applyOptions(newOptions)
   }
 )
@@ -219,15 +234,21 @@ watch(
 watch(
   () => props.priceScaleOptions,
   (newOptions) => {
-    if (!chart) return
-    chart.priceScale().applyOptions(newOptions)
+    if (!chart) {
+      return
+    }
+
+    chart.priceScale('right').applyOptions(newOptions)
   }
 )
 
 watch(
   () => props.timeScaleOptions,
   (newOptions) => {
-    if (!chart) return
+    if (!chart) {
+      return
+    }
+
     chart.timeScale().applyOptions(newOptions)
   }
 )

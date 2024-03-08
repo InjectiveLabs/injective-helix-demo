@@ -184,3 +184,27 @@ export const pricesToEma = (priceArray: number[], smoothing: number) => {
     }
   }, [] as number[])
 }
+
+export function mergeObjects<T extends Record<any, any>>(
+  target: T,
+  source: any
+): T {
+  if (typeof target !== 'object' || typeof source !== 'object') {
+    return target
+  }
+
+  for (const key in source) {
+    if (source[key] !== undefined) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        if (target[key] === undefined) {
+          Object.assign(target, { [key]: {} })
+        }
+        mergeObjects(target[key], source[key])
+      } else {
+        Object.assign(target, { [key]: source[key] })
+      }
+    }
+  }
+
+  return target
+}

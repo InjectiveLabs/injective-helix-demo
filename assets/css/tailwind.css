@@ -15,7 +15,7 @@
 @import './_table.css';
 @import './_tabs.css';
 @import './_slider.css';
-/* @import './_scrollbar.css'; */
+@import './_scrollbar.css';
 @import './_dropdown.css';
 
 @import './_lists.css';

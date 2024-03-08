@@ -2,11 +2,14 @@
 import { LineType } from 'lightweight-charts'
 
 const randomData = () => {
-  const data = []
-  for (let i = 0; i < 30; i++) {
+  const data: { value: number; time: number }[] = []
+  for (let i = 0; i < 400; i++) {
     data.push({
-      value: Math.floor(Math.random() * 100),
-      time: new Date().getTime() + i * 1000
+      value:
+        i === 0
+          ? Math.floor(Math.random() * 100)
+          : data[i - 1].value + Math.random() * 10 - 5,
+      time: new Date().getTime() / 1000 + i * 1000
     })
   }
   return data
@@ -19,14 +22,19 @@ const data = ref(randomData())
   <div>
     <AppLightweightChartArea
       v-bind="{
+        chartOptions: {
+          handleScale: false,
+          handleScroll: false
+        },
         seriesOptions: {
-          lineColor: '#0EE29B',
+          lineColor: '#0EE29Baa',
           lineType: LineType.Curved,
-          lineWidth: 1
+          lineWidth: 2
         },
         data,
         priceScaleOptions: {
-          visible: false
+          visible: true,
+          borderColor: 'transparent'
         },
         height: 200
       }"
