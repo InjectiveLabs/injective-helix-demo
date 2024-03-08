@@ -53,6 +53,10 @@ const chartOptions: DeepPartial<ChartOptions> = {
       labelBackgroundColor: '#333'
     }
   },
+  timeScale: {
+    visible: true,
+    timeVisible: true
+  },
   autoSize: true
 }
 

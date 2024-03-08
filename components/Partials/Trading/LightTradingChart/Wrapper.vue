@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
-import { CandlestickData, HistogramData, Time } from 'lightweight-charts'
+import { CandlestickData, Time } from 'lightweight-charts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
@@ -52,7 +52,7 @@ const lastTradedPrice = computed(() => {
         .toNumber()
 })
 
-const candlesticksData = computed<CandlestickData<Time>[]>(() => {
+const candlesticksData = computed(() => {
   const marketHistory = exchangeStore.marketsHistory.find(
     (market) => market.marketId === props.marketId
   )
@@ -61,12 +61,13 @@ const candlesticksData = computed<CandlestickData<Time>[]>(() => {
     return []
   }
 
-  return marketHistory.time.map<CandlestickData<Time>>((time, index) => ({
+  return marketHistory.time.map((time, index) => ({
     time: time as Time,
     open: marketHistory.openPrice[index],
     high: marketHistory.highPrice[index],
     low: marketHistory.lowPrice[index],
-    close: marketHistory.closePrice[index]
+    close: marketHistory.closePrice[index],
+    volume: marketHistory.volume[index]
   }))
 })
 
@@ -94,6 +95,21 @@ const filteredCandlesticksData = computed(() => {
     )
   }
 
+  if (props.market.slug === 'w-usdt-perp') {
+    return candlesticksData.value.filter((candlestick) => {
+      if ((candlestick.time as number) < 1708603140) {
+        return (
+          candlestick.high < 2 &&
+          candlestick.open < 2 &&
+          candlestick.close < 2 &&
+          candlestick.low < 2
+        )
+      }
+
+      return true
+    })
+  }
+
   return candlesticksData.value
 })
 
@@ -113,11 +129,12 @@ const volume = computed(() => {
     return []
   }
 
-  return marketHistory.time.map<HistogramData<Time>>((time, index) => ({
-    time: time as Time,
-    value: marketHistory.volume[index],
+  return visuallyOptimizedCandlesticks.value.map((value, index) => ({
+    time: value.time as Time,
+    value: value.volume,
     color:
-      marketHistory.openPrice[index] > marketHistory.closePrice[index]
+      visuallyOptimizedCandlesticks.value[index].open >
+      visuallyOptimizedCandlesticks.value[index].close
         ? '#ef535066'
         : '#26a69a66'
   }))
@@ -205,7 +222,8 @@ useIntervalFn(() => {
       <PartialsTradingLightTradingChart
         ref="chart"
         v-bind="{
-          candlesticksData: visuallyOptimizedCandlesticks,
+          candlesticksData:
+            visuallyOptimizedCandlesticks as CandlestickData<Time>[],
           volumeData: volume,
           tickSize
         }"
