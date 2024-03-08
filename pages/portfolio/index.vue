@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <div>Portfolio</div>
+  <div>
+    <PartialsPortfolioPortfolio />
+  </div>
 </template>

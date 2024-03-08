@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { SpotOrdersStandardView } from '@/types'
 
+const walletStore = useWalletStore()
+
 const view = ref(SpotOrdersStandardView.OpenOrders)
 </script>
 
 <template>
   <div class="h-header border-b flex">
-    <CommonSubaccountSelector show-low-balance>
+    <CommonSubaccountSelector
+      v-if="walletStore.isUserWalletConnected"
+      show-low-balance
+    >
       <template #default="{ isOpen, activeSubaccountLabel }">
-        <button class="flex items-center space-x-2 px-4">
+        <button
+          v-show="activeSubaccountLabel"
+          class="flex items-center space-x-2 px-4 border-r"
+        >
           <span
             class="text-sm font-semibold px-4 bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
           >
@@ -24,8 +32,6 @@ const view = ref(SpotOrdersStandardView.OpenOrders)
         </button>
       </template>
     </CommonSubaccountSelector>
-
-    <div class="border-r" />
 
     <AppButtonSelect
       v-for="value in Object.values(SpotOrdersStandardView)"

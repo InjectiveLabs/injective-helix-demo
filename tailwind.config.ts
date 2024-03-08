@@ -51,6 +51,10 @@ export default {
           fontSize: theme('fontSize.sm'),
           fontWeight: theme('fontWeight.bold'),
           color: theme('colors.gray.600')
+        },
+        '.portfolio-title': {
+          fontSize: theme('fontSize.2xl'),
+          fontWeight: theme('fontWeight.bold')
         }
       })
     }
