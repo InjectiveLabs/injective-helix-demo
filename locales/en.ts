@@ -9,6 +9,7 @@ import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
 import ethdenver from './ethdenver/en'
+import portfolio from './portfolio/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import tradeAndEarn from './tradeAndEarn/en'
@@ -28,6 +29,7 @@ export default {
   ...banners,
   ...campaign,
   ...ethdenver,
+  ...portfolio,
   ...activities,
   ...activities,
   ...leaderboard,

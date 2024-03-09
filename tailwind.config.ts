@@ -37,7 +37,7 @@ export default {
   mode: 'jit',
 
   plugins: [
-    ({ addUtilities, theme }: any) => {
+    ({ addUtilities, addComponents, theme }: any) => {
       addUtilities({
         '.error-message': {
           fontSize: theme('fontSize.xs'),
@@ -45,7 +45,7 @@ export default {
         },
         '.field-label': {
           fontSize: theme('fontSize.xs'),
-          fontWeight: theme('fontWeight.semibold')
+          fontWeight: theme('fontWeight.medium')
         },
         '.tab-field': {
           fontSize: theme('fontSize.sm'),
@@ -55,6 +55,116 @@ export default {
         '.portfolio-title': {
           fontSize: theme('fontSize.2xl'),
           fontWeight: theme('fontWeight.bold')
+        }
+      })
+
+      addComponents({
+        // Primary
+        '.btn-primary': {
+          color: theme('colors.white'),
+          backgroundColor: theme('colors.blue.500'),
+          border: `1px solid ${theme('colors.blue.500')}`
+        },
+
+        '.btn-primary:hover': {
+          backgroundColor: `${theme('colors.blue.500')}BB`,
+          border: `1px solid ${theme('colors.blue.500')}BB`
+        },
+
+        '.btn-primary:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.blue.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-primary-outline': {
+          color: theme('colors.gray-200'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.blue.500')}`
+        },
+
+        '.btn-primary-outline:hover': {
+          color: theme('colors.white'),
+          backgroundColor: `${theme('colors.red.500')}33`
+        },
+
+        '.btn-primary-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.blue.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        // Danger
+        '.btn-danger': {
+          color: theme('colors.white'),
+          backgroundColor: theme('colors.red.500'),
+          border: `1px solid ${theme('colors.red.500')}`
+        },
+
+        '.btn-danger:hover': {
+          backgroundColor: `${theme('colors.red.500')}BB`,
+          border: `1px solid ${theme('colors.red.500')}BB`
+        },
+
+        '.btn-danger:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-danger-outline': {
+          color: theme('colors.white'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.red.500')}`
+        },
+
+        '.btn-danger-outline:hover': {
+          backgroundColor: `${theme('colors.red.500')}33`
+        },
+
+        '.btn-danger-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-xs': {
+          padding: `${theme('padding.1')} ${theme('padding.4')}`,
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md')
+        },
+
+        '.btn-sm': {
+          padding: `${theme('padding.1')} ${theme('padding.6')}`,
+          fontSize: theme('fontSize.sm'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md')
+        },
+
+        '.btn': {
+          padding: `${theme('padding.1')} ${theme('padding.6')}`,
+          fontSize: theme('fontSize.base'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md')
+        },
+
+        '.btn-md': {
+          padding: `${theme('padding.1')} ${theme('padding.8')}`,
+          fontSize: theme('fontSize.base'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md')
+        },
+
+        '.btn-lg': {
+          padding: `${theme('padding.1')} ${theme('padding.8')}`,
+          fontSize: theme('fontSize.xl'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md')
         }
       })
     }
