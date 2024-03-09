@@ -2,12 +2,17 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 type Size = 'xs' | 'sm' | 'md' | 'lg'
-type Variant = 'primary' | 'primary-outline' | 'danger' | 'danger-outline'
+type Variant =
+  | 'primary'
+  | 'primary-outline'
+  | 'danger'
+  | 'danger-outline'
+  | 'danger-ghost'
 
 defineProps({
   size: {
     type: String as PropType<Size>,
-    default: 'md'
+    default: ''
   },
 
   variant: {
@@ -25,7 +30,7 @@ defineProps({
 <template>
   <button
     class="flex items-center justify-center"
-    :class="['btn-' + size, 'btn-' + variant]"
+    :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant]"
     v-bind="$attrs"
   >
     <span v-if="status.isLoading()">&#8202;</span>

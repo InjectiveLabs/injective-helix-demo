@@ -154,6 +154,15 @@ onMounted(() => {
     chart.timeScale().applyOptions(props.timeScaleOptions)
   }
 
+  if (series) {
+    series.priceFormatter().format = (price) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(price)
+    }
+  }
+
   chart.timeScale().fitContent()
 
   if (props.autosize) {

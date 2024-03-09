@@ -32,7 +32,15 @@ export default {
     'text-red-500',
     'text-orange-400',
     'text-green-400',
-    'text-primary-500'
+    'text-primary-500',
+    'btn-sm',
+    'btn-md',
+    'btn-lg',
+    'btn-primary',
+    'btn-primary-outline',
+    'btn-danger',
+    'btn-danger-outline',
+    'btn-danger-ghost'
   ],
   mode: 'jit',
 
@@ -132,39 +140,61 @@ export default {
           cursor: 'not-allowed'
         },
 
+        '.btn-danger-ghost': {
+          color: theme('colors.red.500'),
+          backgroundColor: `${theme('colors.red.500')}33`,
+          border: `1px solid transparent`
+        },
+
+        '.btn-danger-ghost:hover': {
+          backgroundColor: `${theme('colors.red.500')}55`
+        },
+
+        '.btn-danger-ghost:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
         '.btn-xs': {
-          padding: `${theme('padding.1')} ${theme('padding.4')}`,
+          padding: `${theme('padding.1')} ${theme('padding.2')}`,
           fontSize: theme('fontSize.xs'),
           fontWeight: theme('fontWeight.medium'),
-          borderRadius: theme('borderRadius.md')
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
         },
 
         '.btn-sm': {
-          padding: `${theme('padding.1')} ${theme('padding.6')}`,
-          fontSize: theme('fontSize.sm'),
+          padding: `${theme('padding.1')} ${theme('padding.3')}`,
+          fontSize: theme('fontSize.xs'),
           fontWeight: theme('fontWeight.medium'),
-          borderRadius: theme('borderRadius.md')
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
         },
 
         '.btn': {
-          padding: `${theme('padding.1')} ${theme('padding.6')}`,
-          fontSize: theme('fontSize.base'),
+          padding: `${theme('padding.2')} ${theme('padding.6')}`,
+          fontSize: theme('fontSize.sm'),
           fontWeight: theme('fontWeight.medium'),
-          borderRadius: theme('borderRadius.md')
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
         },
 
         '.btn-md': {
-          padding: `${theme('padding.1')} ${theme('padding.8')}`,
+          padding: `${theme('padding.2')} ${theme('padding.8')}`,
           fontSize: theme('fontSize.base'),
           fontWeight: theme('fontWeight.medium'),
-          borderRadius: theme('borderRadius.md')
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
         },
 
         '.btn-lg': {
           padding: `${theme('padding.1')} ${theme('padding.8')}`,
           fontSize: theme('fontSize.xl'),
           fontWeight: theme('fontWeight.medium'),
-          borderRadius: theme('borderRadius.md')
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
         }
       })
     }

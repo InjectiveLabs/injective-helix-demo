@@ -2,7 +2,7 @@
 const number = ref(41412)
 
 useIntervalFn(() => {
-  number.value = Math.random() * 50000 + 200000
+  number.value = Math.random() * 150000 + 50000
 }, 2000)
 </script>
 
@@ -15,13 +15,22 @@ useIntervalFn(() => {
       <div class="flex items-center space-x-4">
         <p class="text-2xl font-semibold flex items-center space-x-2">
           <span>$</span>
-          <CommonNumberCounter v-bind="{ value: number }" />
+          <CommonNumberCounter v-bind="{ value: number }" :size="24" />
         </p>
+
         <button class="text-gray-500">
           <BaseIcon name="hide" />
         </button>
       </div>
-      <p class="text-gray-400 text-sm">≈ 0.2407 BTC</p>
+      <!-- <p class="text-gray-400 text-sm">≈ 0.2407 BTC</p> -->
+      <p class="text-gray-400 text-sm flex items-center space-x-2">
+        <span>≈</span>
+        <CommonNumberCounter
+          :decimals="4"
+          v-bind="{ value: number / 61000, size: 14 }"
+        />
+        <span class="pb-[2px]">BTC</span>
+      </p>
     </div>
 
     <div class="flex items-center space-x-2">

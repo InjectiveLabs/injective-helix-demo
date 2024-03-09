@@ -8,14 +8,16 @@ const props = defineProps({
   size: {
     type: Number,
     default: 16
+  },
+
+  decimals: {
+    type: Number,
+    default: 2
   }
 })
 
 function getStringFromNumber(number: number) {
-  const numberFormatted = new Intl.NumberFormat('en-us', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(number)
+  const numberFormatted = number.toFixed(props.decimals)
 
   const [roundedNumber, fractionNumbers] = numberFormatted.split('.')
 
@@ -31,7 +33,10 @@ function getStringFromNumber(number: number) {
     newArray.push(0)
   }
 
-  return newArray.reverse().join('') + '.' + fractionNumbers
+  const result =
+    newArray.reverse().join('') + '.' + '0'.repeat(fractionNumbers.length)
+
+  return result
 }
 
 const number = ref(0)
@@ -42,8 +47,8 @@ const paddingH = 10
 
 const numberFormatted = computed(() =>
   new Intl.NumberFormat('en-us', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    minimumFractionDigits: props.decimals,
+    maximumFractionDigits: props.decimals
   }).format(number.value)
 )
 
@@ -88,9 +93,10 @@ watch(
             }px)`,
             lineHeight: `${size + paddingH}px`,
             height: `${size + paddingH}px`,
-            width: `${[',', '.'].includes(char) ? size / 1.5 : size}px`
+            width: `${[',', '.'].includes(char) ? size / 3 : size / 1.45}px`,
+            fontSize: `${size}px`
           }"
-          class="transition-all duration-1000 ease-in-out font-sans"
+          class="transition-all duration-1000 ease-in-out font-sans text-center"
         >
           {{ character }}
         </div>

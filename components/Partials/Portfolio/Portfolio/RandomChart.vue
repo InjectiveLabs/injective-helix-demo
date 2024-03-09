@@ -24,7 +24,12 @@ const data = ref(randomData())
       v-bind="{
         chartOptions: {
           handleScale: false,
-          handleScroll: false
+          handleScroll: false,
+          crosshair: {
+            horzLine: {
+              visible: false
+            }
+          }
         },
         seriesOptions: {
           lineColor: '#0EE29Baa',
@@ -33,7 +38,7 @@ const data = ref(randomData())
         },
         data,
         priceScaleOptions: {
-          visible: true,
+          visible: false,
           borderColor: 'transparent'
         },
         height: 200,
