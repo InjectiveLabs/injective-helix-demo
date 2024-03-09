@@ -8,8 +8,8 @@
       <p class="text-gray-400 text-sm">
         {{ $t('portfolio.balances.netWorth') }}
       </p>
-      <div class="flex items-center space-x-2">
-        <p class="text-2xl font-semibold">$ 14,442.00</p>
+      <div class="flex items-center space-x-4">
+        <p class="text-2xl font-semibold">$ 5,232.00</p>
         <button class="text-gray-500">
           <BaseIcon name="hide" />
         </button>
