@@ -7,6 +7,8 @@
     <h2 class="portfolio-title">{{ $t('navigation.balances') }}</h2>
     <div class="mt-8">
       <PartialsPortfolioBalancesHeader />
+
+      <div class="pt-10"></div>
     </div>
   </div>
 </template>

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-//
+const number = ref(41412)
+
+useIntervalFn(() => {
+  number.value = Math.random() * 50000 + 200000
+}, 2000)
 </script>
 
 <template>
@@ -9,7 +13,10 @@
         {{ $t('portfolio.balances.netWorth') }}
       </p>
       <div class="flex items-center space-x-4">
-        <p class="text-2xl font-semibold">$ 5,232.00</p>
+        <p class="text-2xl font-semibold flex items-center space-x-2">
+          <span>$</span>
+          <CommonNumberCounter v-bind="{ value: number }" />
+        </p>
         <button class="text-gray-500">
           <BaseIcon name="hide" />
         </button>
