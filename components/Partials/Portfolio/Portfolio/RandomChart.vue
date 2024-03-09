@@ -7,7 +7,7 @@ const randomData = () => {
     data.push({
       value:
         i === 0
-          ? Math.floor(Math.random() * 100)
+          ? Math.floor(Math.random() * 100) + 100000
           : data[i - 1].value + Math.random() * 10 - 5,
       time: new Date().getTime() / 1000 + i * 1000
     })
