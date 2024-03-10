@@ -108,7 +108,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.StrategyType]: StrategyType
 }
 
-export type SpotGridMarket = {
+export type GridMarket = {
   slug: string
   contractAddress: string
 }

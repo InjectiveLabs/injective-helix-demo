@@ -9,7 +9,7 @@ import { intervalToDuration } from 'date-fns'
 import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 import { hexToString, stringToHex } from './converters'
 import { UiMarketWithToken } from '@/types'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -94,16 +94,31 @@ export const addressAndMarketSlugToSubaccountId = (
 }
 
 export const isSgtSubaccountId = (subaccountId: string) => {
-  const MAX_ALLOWED_INDEX = 1000 /** TODO */
-  const subaccountIdPrefix = subaccountId.slice(42).replace(/^0+/, '')
-  const subaccountIdIndex = parseInt(subaccountIdPrefix, 16)
+  const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
 
-  return subaccountIdIndex > MAX_ALLOWED_INDEX
+  const slug = hexToString(subaccountHex)
+
+  return spotGridMarkets.find((m) => m.slug === slug)?.slug
+}
+
+export const isPgtSubaccountId = (subaccountId: string) => {
+  const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
+
+  const slug = hexToString(subaccountHex)
+
+  return perpGridMarkets.find((m) => m.slug.replace('-perp', '-p') === slug)
+    ?.slug
 }
 
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
-  if (isSgtSubaccountId(subaccountId)) {
-    return spotGridMarkets
+  if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
+    return [
+      ...spotGridMarkets,
+      ...perpGridMarkets.map((m) => ({
+        ...m,
+        slug: m.slug.replace('-perp', '-p')
+      }))
+    ]
       .find(
         (m) =>
           m.slug.toLowerCase() ===
@@ -113,6 +128,26 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   }
 
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
+}
+
+export const getSubaccountLabel = (subaccountId: string): string => {
+  const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
+
+  const subaccountIndex = parseInt(subaccountHex, 16)
+
+  if (subaccountHex === '') {
+    return 'Main'
+  }
+
+  if (isSgtSubaccountId(subaccountId)) {
+    return `SGT ${getMarketSlugFromSubaccountId(subaccountId)}`
+  }
+
+  if (isPgtSubaccountId(subaccountId)) {
+    return `PGT ${getMarketSlugFromSubaccountId(subaccountId)}`
+  }
+
+  return subaccountIndex.toString()
 }
 
 export const getSgtContractAddressFromSlug = (slug: string = '') =>
