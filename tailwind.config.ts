@@ -40,7 +40,9 @@ export default {
     'btn-primary-outline',
     'btn-danger',
     'btn-danger-outline',
-    'btn-danger-ghost'
+    'btn-danger-ghost',
+    'btn-success',
+    'btn-success-outline'
   ],
   mode: 'jit',
 
@@ -63,13 +65,17 @@ export default {
         '.portfolio-title': {
           fontSize: theme('fontSize.2xl'),
           fontWeight: theme('fontWeight.bold')
+        },
+        '.table-label': {
+          fontSize: theme('fontSize.xs'),
+          color: theme('colors.gray.400')
         }
       })
 
       addComponents({
         // Primary
         '.btn-primary': {
-          color: theme('colors.white'),
+          color: theme('colors.black'),
           backgroundColor: theme('colors.blue.500'),
           border: `1px solid ${theme('colors.blue.500')}`
         },
@@ -94,13 +100,49 @@ export default {
 
         '.btn-primary-outline:hover': {
           color: theme('colors.white'),
-          backgroundColor: `${theme('colors.red.500')}33`
+          backgroundColor: `${theme('colors.blue.500')}33`
         },
 
         '.btn-primary-outline:disabled': {
           backgroundColor: 'transparent',
           color: theme('colors.gray.400'),
           border: `1px solid ${theme('colors.blue.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-success': {
+          color: theme('colors.black'),
+          backgroundColor: theme('colors.green.500'),
+          border: `1px solid ${theme('colors.green.500')}`
+        },
+
+        '.btn-success:hover': {
+          backgroundColor: `${theme('colors.green.500')}BB`,
+          border: `1px solid ${theme('colors.green.500')}BB`
+        },
+
+        '.btn-success:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.green.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-success-outline': {
+          color: theme('colors.gray-200'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.green.500')}`
+        },
+
+        '.btn-success-outline:hover': {
+          color: theme('colors.white'),
+          backgroundColor: `${theme('colors.green.500')}33`
+        },
+
+        '.btn-success-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.green.500')}`,
           cursor: 'not-allowed'
         },
 

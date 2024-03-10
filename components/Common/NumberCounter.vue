@@ -96,7 +96,7 @@ watch(
             width: `${[',', '.'].includes(char) ? size / 3 : size / 1.45}px`,
             fontSize: `${size}px`
           }"
-          class="transition-all duration-1000 ease-in-out font-sans text-center"
+          class="transition-all duration-[1s] font-sans text-center ease-in-out"
         >
           {{ character }}
         </div>

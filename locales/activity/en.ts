@@ -3,6 +3,7 @@ export default {
     funds: 'Funds',
     activity: 'Activity',
     triggers: 'Triggers',
+    spotGrid: 'Spot Grid',
     positions: 'Positions',
     activities: 'Activities',
     spotOrders: 'Spot Orders',

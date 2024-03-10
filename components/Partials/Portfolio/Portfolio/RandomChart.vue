@@ -8,7 +8,7 @@ const randomData = () => {
       value:
         i === 0
           ? Math.floor(Math.random() * 100) + 100000
-          : data[i - 1].value + Math.random() * 10 - 5,
+          : data[i - 1].value + Math.random() * 10000 - 5000,
       time: new Date().getTime() / 1000 + i * 1000
     })
   }

@@ -8,6 +8,8 @@ type Variant =
   | 'danger'
   | 'danger-outline'
   | 'danger-ghost'
+  | 'success'
+  | 'success-outline'
 
 defineProps({
   size: {
@@ -29,7 +31,7 @@ defineProps({
 
 <template>
   <button
-    class="flex items-center justify-center"
+    class="flex items-center justify-center focus-ring transition-all"
     :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant]"
     v-bind="$attrs"
   >
