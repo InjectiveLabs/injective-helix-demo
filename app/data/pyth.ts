@@ -9,7 +9,7 @@ In addition to your agreement to the Helix Terms and Conditions, you also agree 
 
 Helix Terms and Conditions
 
-Last updated: 03.0611.10.20243
+Last updated: 03.06.2024
 
 NOTICE ON PROHIBITED USE – US, UK, AND OTHER RESTRICTED PERSONS
 
@@ -49,7 +49,7 @@ We reserve the right, in our sole discretion, to modify these Terms from time to
 
 2.1.6. you are not a member of any sanctions list or equivalent maintained by the United States government, the United Kingdom government, the European Union, or the United Nations, including without limitation the US Office of Foreign Asset Control Specifically Designated Nationals and Blocked Persons List, available at https://home.treasury.gov/policy-issues/financial-sanctions/specially-designated-nationals-and-blocked-persons-list-sdn-human-readable-lists (collectively, “Sanctions Lists Persons”);
 
-2.1.7. you do intend to transact with any Restricted Person, Restricted Territory, or Sanctions Lists Persons;
+2.1.7. you do not intend to transact with any Restricted Person, Restricted Territory, or Sanctions Lists Persons;
 
 2.1.8. you do not, and will not, use VPN software, unless you consent  to a browser location check when prompted to do so, allowing us to verify that you are not located in the United States (with respect to the trading of perpetual contracts), the UK (unless you are an Investment Professional), or a Restricted Territory, and you do not, and will not, use any other privacy or anonymization tools or techniques, or other means, to circumvent, or attempt to circumvent, any restrictions that apply to the Services; and
 
