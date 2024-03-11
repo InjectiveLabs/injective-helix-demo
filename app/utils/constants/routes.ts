@@ -51,7 +51,8 @@ export const getRoutes = (network: Network, env: string) => {
     'hinj-inj',
     'qunt-inj',
     'talis-inj',
-    'whale-inj'
+    'whale-inj',
+    'andr-inj'
   ]
 
   const perpetuals = [
