@@ -41,7 +41,7 @@
     "@injectivelabs/utils": "1.14.11-beta.0",
     "@injectivelabs/networks": "1.14.11-beta.1",
     "@injectivelabs/sdk-ts": "1.14.11-beta.8",
-    "@injectivelabs/sdk-ui-ts": "1.14.11-beta.9",
+    "@injectivelabs/sdk-ui-ts": "1.14.11-beta.10",
     "@injectivelabs/token-metadata": "1.14.11-beta.6",
     "@injectivelabs/wallet-ts": "1.14.11-beta.10",
     "@nuxtjs/dotenv": "^1.4.1",
