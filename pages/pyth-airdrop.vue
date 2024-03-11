@@ -15,6 +15,7 @@ const REWARDS_CONTRACT = 'inj135qvnawxk6llfchya2fve7cw4aukmg0xfz9ea7'
 const CAMPAING_ID = 1
 const PYTH_DECIMALS = 6
 
+const router = useRouter()
 const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -48,13 +49,14 @@ const token = computed(() =>
 
 watch(
   () => walletStore.isUserWalletConnected,
-  () => {
+  (newValue, prevValue) => {
     if (walletStore.isUserWalletConnected) {
       address.value = walletStore.injectiveAddress
       checkClaimStatus()
-    } else {
-      isClaimed.value = false
-      amount.value = ZERO_IN_WEI
+    }
+
+    if (prevValue && !newValue) {
+      router.push('/')
     }
   },
   { immediate: true }
@@ -154,7 +156,7 @@ function onClaimRewards() {
     .then(() => {
       sucessfulyClaimed.value = true
       isClaimed.value = true
-      success({ title: t('common.success') })
+      success({ title: t('pyth.successNotification') })
 
       confetti()
     })

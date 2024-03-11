@@ -12,6 +12,7 @@ export default {
     exploreDeFiOpportunities: 'Explore DeFi Opportunities',
     tradeOnHelix: 'Trade on Helix',
     automatedTradingVaultOnMito: 'Automated Trading Vault on Mito',
-    tosHeader: 'Pyth Airdrop Terms of Use'
+    tosHeader: 'Pyth Airdrop Terms of Use',
+    successNotification: 'You have successfully claimed your PYTH Airdrop'
   }
 }
