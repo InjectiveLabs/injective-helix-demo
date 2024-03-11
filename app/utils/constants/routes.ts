@@ -43,7 +43,7 @@ export const getRoutes = (network: Network, env: string) => {
     'kuji-usdt',
     'talis-usdt',
     'app-inj',
-    // 'usde-usdt',
+    'usde-usdt',
     'ginger-inj',
     'gyen-usdt',
     'dojo-inj',
@@ -52,7 +52,8 @@ export const getRoutes = (network: Network, env: string) => {
     'qunt-inj',
     'talis-inj',
     'whale-inj',
-    'pyth-inj'
+    'pyth-inj',
+    'andr-inj'
   ]
 
   const perpetuals = [
@@ -143,7 +144,7 @@ export const getRoutes = (network: Network, env: string) => {
   if (IS_STAGING) {
     // spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
     /** limit to 40 markets max for querying activities */
-    spot.push('pyth-usdt')
+    spot.push('pyth-usdt', 'pyth-inj')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
