@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
-import { pythTos } from '~/app/data/pyth-tos'
+import { termsOfUse } from '@/app/data/pyth'
 
 const modalStore = useModalStore()
 const router = useRouter()
@@ -20,6 +20,11 @@ function closeModal() {
   modalStore.closeModal(Modal.PythAirdrop)
 }
 
+function onModalClose() {
+  closeModal()
+  router.push('/')
+}
+
 function onCancel() {
   closeModal()
   router.push('/')
@@ -27,7 +32,7 @@ function onCancel() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" @modal:closed="onCancel">
+  <AppModal :is-open="isModalOpen" @modal:closed="onModalClose">
     <template #title>
       <h3>
         {{ $t('pyth.tosHeader') }}
@@ -40,7 +45,7 @@ function onCancel() {
           <pre
             class="whitespace-break-spaces font-sans max-h-56 overflow-y-auto font-normal"
           >
-            {{ pythTos }}
+            {{ termsOfUse }}
           </pre>
         </li>
       </ul>

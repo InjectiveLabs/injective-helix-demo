@@ -142,9 +142,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    // spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
-    /** limit to 40 markets max for querying activities */
-    spot.push('pyth-usdt', 'pyth-inj')
+    // spot.push('pyth-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 

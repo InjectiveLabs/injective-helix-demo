@@ -1,4 +1,4 @@
-export const pythTos = `
+export const termsOfUse = `
 Pyth Airdrop Terms and Conditions
 
 Last updated: March 6, 2024
