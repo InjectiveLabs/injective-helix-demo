@@ -11,6 +11,14 @@ import { create } from 'canvas-confetti'
 import { Modal } from '@/types'
 import { msgBroadcastClient, wasmApi } from '@/app/Services'
 
+definePageMeta({
+  middleware: [
+    () => {
+      return navigateTo('/')
+    }
+  ]
+})
+
 const REWARDS_CONTRACT = 'inj135qvnawxk6llfchya2fve7cw4aukmg0xfz9ea7'
 const CAMPAING_ID = 1
 const PYTH_DECIMALS = 6

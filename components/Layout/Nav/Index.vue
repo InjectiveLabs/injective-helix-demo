@@ -199,6 +199,7 @@ function swapClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
+            v-if="false"
             :to="{ name: MainPage.PythAirdrop }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
