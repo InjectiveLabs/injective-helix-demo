@@ -96,18 +96,9 @@ const filteredCandlesticksData = computed(() => {
   }
 
   if (props.market.slug === 'w-usdt-perp') {
-    return candlesticksData.value.filter((candlestick) => {
-      if ((candlestick.time as number) < 1708603140) {
-        return (
-          candlestick.high < 2 &&
-          candlestick.open < 2 &&
-          candlestick.close < 2 &&
-          candlestick.low < 2
-        )
-      }
-
-      return true
-    })
+    return candlesticksData.value.filter(
+      ({ time }) => Number(time) > 1709852400
+    )
   }
 
   return candlesticksData.value

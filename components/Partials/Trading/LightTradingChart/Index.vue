@@ -133,7 +133,9 @@ function init() {
   candlestickSeries.applyOptions({
     priceFormat: {
       minMove: props.tickSize
-    }
+    },
+    upColor: '#0EdB81',
+    downColor: '#F6465D'
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
