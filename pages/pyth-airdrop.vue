@@ -277,7 +277,8 @@ onMounted(() => {
 
           <NuxtLink
             class="flex hover:text-blue-500 items-center space-x-2"
-            to="#"
+            target="_blank"
+            to="https://mito.fi/vault/inj1r4pjz70l4ytk06dfparzd6na5qqjeq09fkxdt4/"
           >
             <img class="h-6 w-6" src="/svg/favicon-mito.svg" />
             <p class="flex-1 px-2">
