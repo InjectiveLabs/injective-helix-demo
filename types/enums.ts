@@ -51,6 +51,7 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  PythAirdrop = 'pyth-airdrop',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',

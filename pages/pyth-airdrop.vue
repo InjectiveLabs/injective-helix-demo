@@ -7,6 +7,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { create } from 'canvas-confetti'
 import { Modal } from '@/types'
 import { msgBroadcastClient, wasmApi } from '@/app/Services'
 
@@ -38,6 +39,8 @@ const {
 const amount = ref(ZERO_IN_WEI)
 const isClaimed = ref(false)
 const sucessfulyClaimed = ref(false)
+
+const hasAggreed = ref(false)
 
 const token = computed(() =>
   tokenStore.tokens.find((token) => token.symbol === 'PYTH')
@@ -150,13 +153,33 @@ function onClaimRewards() {
   claimReward()
     .then(() => {
       sucessfulyClaimed.value = true
+      isClaimed.value = true
       success({ title: t('common.success') })
+
+      confetti()
     })
     .catch($onError)
     .finally(() => {
       claimStatus.setIdle()
     })
 }
+
+function confetti() {
+  const confetti = create(
+    document.getElementById('confetti-pyth') as HTMLCanvasElement,
+    { resize: true }
+  )
+
+  confetti({
+    particleCount: 200,
+    spread: 160,
+    origin: { x: 0.5, y: 0.5 }
+  })
+}
+
+onMounted(() => {
+  modalStore.openModal(Modal.PythAirdrop)
+})
 </script>
 
 <template>
@@ -192,7 +215,7 @@ function onClaimRewards() {
             <div class="flex items-center" @click.stop>
               <AppButton
                 class="bg-blue-500 text-black"
-                :is-disabled="!!errorMessage || status.isLoading()"
+                :is-disabled="!!errorMessage || status.isLoading() || isClaimed"
                 v-bind="{ status }"
                 @click="checkClaimStatus"
               >
@@ -204,7 +227,10 @@ function onClaimRewards() {
         </div>
 
         <AppHocLoading v-bind="{ status }">
-          <div v-if="isClaimed" class="text-center text-xl mb-8">
+          <div
+            v-if="isClaimed && !sucessfulyClaimed"
+            class="text-center text-xl mb-8"
+          >
             <p>{{ $t('pyth.alreadyClaimed') }}</p>
           </div>
 
@@ -212,7 +238,7 @@ function onClaimRewards() {
             {{ $t('pyth.notEligible') }}
           </div>
 
-          <div v-if="amount.gt(0)">
+          <div v-if="amount.gt(0) && !isClaimed">
             <div class="text-center text-green-500 text-xl mb-8">
               {{ $t('pyth.congrats', { amount: amountToString }) }}
             </div>
@@ -232,7 +258,39 @@ function onClaimRewards() {
             {{ $t('pyth.claimed', { amount: amountToString }) }}
           </div>
         </AppHocLoading>
+
+        <div
+          v-if="isClaimed"
+          class="p-4 bg-gray-800 rounded-md space-y-4 relative"
+        >
+          <p class="text-lg font-semibold">
+            {{ $t('pyth.exploreDeFiOpportunities') }}
+          </p>
+          <NuxtLink
+            class="flex hover:text-blue-500 items-center"
+            to="/spot/pyth-inj"
+          >
+            <img class="h-6 w-6" src="/logo.svg" />
+            <p class="flex-1 px-2">{{ $t('pyth.tradeOnHelix') }}</p>
+            <span class="text-blue-500">PYTH/INJ</span>
+          </NuxtLink>
+
+          <NuxtLink class="flex hover:text-blue-500 items-center" to="#">
+            <img class="h-6 w-6" src="/logo.svg" />
+            <p class="flex-1 px-2">
+              {{ $t('pyth.automatedTradingVaultOnMito') }}
+            </p>
+            <span class="text-blue-500">PYTH/INJ Vault</span>
+          </NuxtLink>
+        </div>
       </div>
     </div>
+
+    <ModalsPythAirdrop @terms:accept="hasAggreed = true" />
+
+    <canvas
+      id="confetti-pyth"
+      class="fixed w-full inset-0 pointer-events-none z-[1000]"
+    />
   </div>
 </template>
