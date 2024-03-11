@@ -27,7 +27,7 @@ function onCancel() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="onCancel">
     <template #title>
       <h3>
         {{ $t('pyth.tosHeader') }}

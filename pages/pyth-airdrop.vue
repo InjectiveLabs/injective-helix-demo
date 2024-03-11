@@ -184,7 +184,7 @@ onMounted(() => {
 
 <template>
   <div class="pt-8 lg:pt-16">
-    <div class="max-w-lg mx-auto">
+    <div v-if="hasAggreed" class="max-w-lg mx-auto">
       <div class="flex items-center justify-center space-x-4 mb-8">
         <CommonTokenIcon v-if="token" v-bind="{ token }" is-lg />
         <h2 class="text-3xl font-bold">{{ $t('pyth.pythAirdrop') }}</h2>
@@ -267,7 +267,7 @@ onMounted(() => {
             {{ $t('pyth.exploreDeFiOpportunities') }}
           </p>
           <NuxtLink
-            class="flex hover:text-blue-500 items-center"
+            class="flex hover:text-blue-500 items-center space-x-2"
             to="/spot/pyth-inj"
           >
             <img class="h-6 w-6" src="/logo.svg" />
@@ -275,8 +275,11 @@ onMounted(() => {
             <span class="text-blue-500">PYTH/INJ</span>
           </NuxtLink>
 
-          <NuxtLink class="flex hover:text-blue-500 items-center" to="#">
-            <img class="h-6 w-6" src="/logo.svg" />
+          <NuxtLink
+            class="flex hover:text-blue-500 items-center space-x-2"
+            to="#"
+          >
+            <img class="h-6 w-6" src="/svg/favicon-mito.svg" />
             <p class="flex-1 px-2">
               {{ $t('pyth.automatedTradingVaultOnMito') }}
             </p>
