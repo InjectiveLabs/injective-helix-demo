@@ -9,7 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
-  'pyth-inj',
+  // 'pyth-inj',
   'andr-inj',
   'usde-usdt',
   'whale-inj',
