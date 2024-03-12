@@ -52,7 +52,7 @@ export const getRoutes = (network: Network, env: string) => {
     'qunt-inj',
     'talis-inj',
     'whale-inj',
-    'pyth-inj',
+    // 'pyth-inj',
     'andr-inj'
   ]
 
