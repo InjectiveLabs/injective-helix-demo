@@ -29,6 +29,9 @@ const data = ref(randomData())
             horzLine: {
               visible: false
             }
+          },
+          layout: {
+            textColor: 'white'
           }
         },
         seriesOptions: {
@@ -37,10 +40,19 @@ const data = ref(randomData())
           lineWidth: 2
         },
         data,
+        timeScaleOptions: {
+          tickMarkFormatter: (time: number) => {
+            const date = new Date(time * 1000)
+            return date.toLocaleDateString('en-US', {
+              dateStyle: 'short'
+            })
+          }
+        },
         priceScaleOptions: {
           visible: false,
           borderColor: 'transparent'
         },
+
         height: 200,
         shouldFitContentOnResize: true
       }"

@@ -152,22 +152,25 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
-    async onConnect() {
-      const accountStore = useAccountStore()
+    onConnect() {
+      // const accountStore = useAccountStore()
       const walletStore = useWalletStore()
-      const authZStore = useAuthZStore()
-      const exchangeStore = useExchangeStore()
+      const accountStore = useAccountStore()
+      // const exchangeStore = useExchangeStore()
 
       useEventBus(BusEvents.WalletConnected).emit()
 
-      await accountStore.fetchAccountPortfolioBalances()
-      await exchangeStore.initFeeDiscounts()
-      await authZStore.fetchGrants()
+      // TODO
+      // await accountStore.fetchAccountPortfolioBalances()
 
-      mixpanelAnalytics.trackLogin({
-        wallet: walletStore.wallet,
-        injectiveAddress: walletStore.injectiveAddress,
-        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+      // mixpanelAnalytics.trackLogin({
+      //   wallet: walletStore.wallet,
+      //   injectiveAddress: walletStore.injectiveAddress,
+      //   tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+      // })
+
+      accountStore.$patch({
+        subaccountId: walletStore.defaultSubaccountId
       })
 
       walletStore.$patch({
@@ -576,6 +579,7 @@ export const useWalletStore = defineStore('wallet', {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
+      const exchangeStore = useExchangeStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
       const campaignStore = useCampaignStore()
@@ -589,6 +593,7 @@ export const useWalletStore = defineStore('wallet', {
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
 
+      exchangeStore.$patch({ feeDiscountAccountInfo: undefined })
       accountStore.$reset()
       peggyStore.$reset()
       activityStore.$reset()

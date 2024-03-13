@@ -1,5 +1,12 @@
 <script setup lang="ts">
-//
+import { Status, StatusType } from '@injectivelabs/utils'
+
+defineProps({
+  portfolioStatus: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Loading)
+  }
+})
 </script>
 
 <template>
@@ -12,10 +19,10 @@
       </div>
     </div>
 
-    <div class="flex-1">
-      <div class="h-[300vh]">
-        <NuxtPage />
-      </div>
+    <div class="flex-1 relative">
+      <!-- <AppHocLoading is-helix v-bind="{ status: portfolioStatus }"> -->
+      <NuxtPage />
+      <!-- </AppHocLoading> -->
     </div>
   </div>
 </template>

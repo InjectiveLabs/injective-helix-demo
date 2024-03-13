@@ -1,5 +1,29 @@
 <script setup lang="ts">
-//
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+
+const accountStore = useAccountStore()
+
+const { aggregatedPortfolioBalances } = useBalance()
+
+const { valueToString: accountTotalBalanceInUsdToString } =
+  useBigNumberFormatter(
+    computed(
+      () =>
+        aggregatedPortfolioBalances.value[accountStore.subaccountId]?.reduce(
+          (total, balance) =>
+            total.plus(
+              new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+                balance.token.decimals
+              )
+            ),
+          ZERO_IN_BASE
+        ) || ZERO_IN_BASE
+    ),
+    {
+      decimalPlaces: 2
+    }
+  )
 </script>
 
 <template>
@@ -8,7 +32,12 @@
 
     <div class="flex divide-x border-r flex-1">
       <div class="flex items-center">
-        <p class="text-sm text-gray-300 px-4">Total: $10,208.25</p>
+        <p class="text-sm text-gray-300 px-4 flex items-center space-x-2">
+          <span>Total: </span>
+          <CommonSkeletonSubaccountAmount>
+            <span>${{ accountTotalBalanceInUsdToString }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </p>
       </div>
 
       <label class="flex px-4 flex-1">

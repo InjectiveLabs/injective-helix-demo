@@ -12,9 +12,9 @@ const isLockedDoc = useScrollLock(document.documentElement)
 
 watch(
   () => props.isOpen,
-  (value) => {
-    isLocked.value = value
-    isLockedDoc.value = value
+  (isOpen) => {
+    isLocked.value = isOpen
+    isLockedDoc.value = isOpen
   },
   {
     immediate: true

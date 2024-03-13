@@ -49,6 +49,7 @@ export interface UserBasedState {
     authZManagement: boolean
     subaccountManagement: boolean
     skipTradeConfirmationModal: boolean
+    isHideBalances: boolean
   }
 }
 
@@ -104,7 +105,8 @@ const initialStateFactory = (): AppStoreState => ({
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
       subaccountManagement: false,
-      authZManagement: false
+      authZManagement: false,
+      isHideBalances: false
     }
   }
 })
@@ -296,6 +298,18 @@ export const useAppStore = defineStore('app', {
         userState: {
           ...appStore.userState,
           favoriteMarkets
+        }
+      })
+    },
+
+    toggleHideBalances() {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          isHideBalances: !appStore.userState.preferences.isHideBalances
         }
       })
     },

@@ -41,6 +41,7 @@ function setIndex() {
     >
       <div class="text-xs">
         {{ record.totalVolume }}
+        {{ record.volume }}
       </div>
     </div>
 

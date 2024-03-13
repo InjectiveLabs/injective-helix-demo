@@ -1,52 +1,23 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { MainPage } from '@/types'
+import { MainPage, portfolioStatusKey } from '@/types'
 
 const route = useRoute()
-const appStore = useAppStore()
-const spotStore = useSpotStore()
-const authzStore = useAuthZStore()
-const tokenStore = useTokenStore()
+const authZStore = useAuthZStore()
+
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
+
 const { $onError } = useNuxtApp()
 
-const status = reactive(new Status(StatusType.Loading))
+const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
 )
-
-onMounted(() => {
-  Promise.all([
-    walletStore.init(),
-    tokenStore.fetchTokens(),
-    spotStore.initIfNotInit(),
-    derivativeStore.initIfNotInit(),
-    derivativeStore.fetchMarketsSummary(),
-    spotStore.fetchMarketsSummary(),
-    exchangeStore.initFeeDiscounts()
-  ])
-    .then(() => {
-      tokenStore.fetchTokensUsdPriceMap(
-        tokenStore.tokens.map((token) => token.coinGeckoId)
-      )
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-
-  // Actions that should't block the app from loading
-  Promise.all([
-    appStore.init(),
-    appStore.fetchBlockHeight(),
-    authzStore.fetchGrants()
-  ])
-})
 
 /**
  * Post only mode modal when we do chain upgrade
@@ -65,38 +36,61 @@ watch(
  */
 
 watch(
-  () => accountStore.subaccountId,
-  (subaccountId) => {
-    accountStore.cancelSubaccountBalanceStream()
-    accountStore.cancelBankBalanceStream()
+  () => walletStore.isUserWalletConnected,
+  (isConnected) => {
+    if (!isConnected) {
+      return
+    }
 
-    accountStore.fetchAccountPortfolioBalances()
-    accountStore.streamSubaccountBalance(subaccountId)
-    accountStore.streamBankBalance()
+    portfolioStatus.setLoading()
+    fetchUserPortfolio()
+      .catch($onError)
+      .finally(() => {
+        portfolioStatus.setIdle()
+      })
   },
   { immediate: true }
 )
+
+watch(() => accountStore.subaccountId, fetchUserPortfolio)
+
+function fetchUserPortfolio() {
+  return Promise.all([
+    accountStore.cancelSubaccountBalanceStream(),
+    accountStore.cancelBankBalanceStream(),
+
+    exchangeStore.initFeeDiscounts(),
+    authZStore.fetchGrants(),
+
+    accountStore.streamSubaccountBalance(),
+    accountStore.streamBankBalance(),
+    positionStore.streamSubaccountPositions(),
+
+    accountStore.fetchAccountPortfolioBalances(),
+    positionStore.fetchPositions()
+  ])
+}
+
+provide(portfolioStatusKey, portfolioStatus)
 </script>
 
 <template>
   <div class="relative">
-    <AppHocLoading is-helix wrapper-class="h-screen" :status="status">
-      <LayoutNavbar />
-      <main class="relative">
-        <NuxtPage />
-      </main>
+    <LayoutNavbar />
+    <main class="relative">
+      <NuxtPage v-bind="{ portfolioStatus }" />
+    </main>
 
-      <ModalsNinjaPassWinner />
-      <!-- hide survey for now but can be resurrected and modified for future surveys -->
-      <!-- <ModalsUserFeedback /> -->
-      <!-- <ModalsNewFeature /> -->
-      <ModalsPostOnlyMode />
-      <ModalsDevMode />
-      <AppConfetti />
+    <ModalsNinjaPassWinner />
+    <!-- hide survey for now but can be resurrected and modified for future surveys -->
+    <!-- <ModalsUserFeedback /> -->
+    <!-- <ModalsNewFeature /> -->
+    <ModalsPostOnlyMode />
+    <ModalsDevMode />
+    <AppConfetti />
 
-      <LayoutFooter v-if="showFooter" />
-      <LayoutStatusBar />
-    </AppHocLoading>
+    <LayoutFooter v-if="showFooter" />
+    <LayoutStatusBar />
 
     <div id="modals" />
 
