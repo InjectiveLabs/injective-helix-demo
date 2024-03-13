@@ -85,11 +85,9 @@ export function useBridgeBalance(formValues: Ref<BridgeForm>) {
 
     const filteredSupplyWithTokenForBridge = tokenStore.tradeableTokens
       .filter((token) => !token.ibc)
-      .filter(({ denom, symbol }) => {
+      .filter(({ denom }) => {
         const isPartOfHardcodedDenoms =
-          !tokenDenomPerNetwork ||
-          tokenDenomPerNetwork.denoms.includes(denom) ||
-          tokenDenomPerNetwork.symbols.includes(symbol)
+          !tokenDenomPerNetwork || tokenDenomPerNetwork.denoms.includes(denom)
 
         return isPartOfHardcodedDenoms
       })

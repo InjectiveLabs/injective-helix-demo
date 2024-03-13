@@ -153,10 +153,10 @@ export const isTokenWormholeToken = (token: Token) => {
         network === BridgingNetwork.EthereumWh ||
         network === BridgingNetwork.Solana
     )
-    .map((config) => config.symbols)
+    .map((config) => config.denoms)
 
-  const isWormholeToken = wormholeSymbols?.find((symbol) =>
-    symbol.includes(token.symbol)
+  const isWormholeToken = wormholeSymbols?.find((denom) =>
+    denom.includes(token.denom)
   )
 
   return !!isWormholeToken
