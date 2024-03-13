@@ -45,7 +45,7 @@ const { balanceWithToken } = useBridgeBalance(formValues)
 
 const { emit: emitFundingRefresh } = useEventBus<void>(BusEvents.FundingRefresh)
 
-const ETH_BRIDGE_FEE_IN_USD = 20
+const ETH_BRIDGE_FEE_IN_USD = 50
 const IBC_BRIDGE_FEE_IN_USD = 0
 
 const status = reactive(new Status())
