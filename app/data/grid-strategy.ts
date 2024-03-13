@@ -103,6 +103,14 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'hinj-inj',
     contractAddress: 'inj1dxvlc5snn5y02nn82xdhnvwj3y09t9pnh6msf5'
+  },
+  {
+    slug: 'usde-usdt',
+    contractAddress: 'inj1ar6vmwfft83gzhqrl62r9l93tlclup8ss0suam'
+  },
+  {
+    slug: 'usdc-usdt',
+    contractAddress: 'inj16ppjvumwvlur8e6r8le39j7wjrrh8dnjevx72h'
   }
 ]
 
