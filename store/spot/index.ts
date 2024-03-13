@@ -156,6 +156,13 @@ export const useSpotStore = defineStore('spot', {
 
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
+          const AXL_USDC_MARKETID =
+            '0x4807e9ac33c565b4278fb9d288bd79546abbf5a368dfc73f160fe9caa37a70b1'
+
+          if (market.marketId === AXL_USDC_MARKETID) {
+            return false
+          }
+
           return (
             MARKETS_SLUGS.spot.includes(market.slug) ||
             spotStore.marketIdsFromQuery.includes(market.marketId)

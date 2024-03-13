@@ -53,7 +53,9 @@ export const getRoutes = (network: Network, env: string) => {
     'talis-inj',
     'whale-inj',
     // 'pyth-inj',
-    'andr-inj'
+    'andr-inj',
+    'usdc-usdt'
+    // 'usdcnb-usdt'
   ]
 
   const perpetuals = [
@@ -124,7 +126,6 @@ export const getRoutes = (network: Network, env: string) => {
     spot.push('zen-inj')
     spot.push('projx-inj')
     spot.push('wbtc-usdt')
-    spot.push('usdc-usdt')
     spot.push('demo-usdt')
 
     perpetuals.push(
