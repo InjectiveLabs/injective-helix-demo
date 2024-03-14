@@ -3,8 +3,7 @@ import {
   isDevnet,
   isMainnet,
   isTestnet,
-  getNetworkEndpoints,
-  getCw20SwapContractForNetwork
+  getNetworkEndpoints
 } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -175,7 +174,13 @@ export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
-export const SWAP_CONTRACT_ADDRESS = getCw20SwapContractForNetwork(NETWORK)
+export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
+  ? 'inj177yh38g3ctu7cemxpa3c2kvwh2yslfxfmfa66h'
+  : IS_TESTNET
+  ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
+  : IS_STAGING
+  ? 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
+  : 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,
