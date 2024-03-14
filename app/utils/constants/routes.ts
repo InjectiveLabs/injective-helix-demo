@@ -54,7 +54,8 @@ export const getRoutes = (network: Network, env: string) => {
     'whale-inj',
     // 'pyth-inj',
     'andr-inj',
-    'usdc-usdt'
+    'usdc-usdt',
+    'hdro-inj'
     // 'usdcnb-usdt'
   ]
 
