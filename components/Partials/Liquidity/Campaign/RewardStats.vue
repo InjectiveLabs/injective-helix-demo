@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
-import { getExplorerUrl, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Campaign } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { getExplorerUrl } from '@/app/utils/network'
 
 const props = defineProps({
   totalScore: {
@@ -51,7 +46,7 @@ const explorerLink = computed(() => {
     return
   }
 
-  return `${getExplorerUrl(NETWORK)}/account/${walletStore.address}`
+  return `${getExplorerUrl()}/account/${walletStore.address}`
 })
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(

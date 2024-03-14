@@ -6,6 +6,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { getExplorerUrl } from '@/app/utils/network'
 
 const props = defineProps({
   campaignUser: {
