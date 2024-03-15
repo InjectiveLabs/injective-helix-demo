@@ -107,18 +107,22 @@ export function useSwapTokenSelector({
    * So we either keep the currently selected output denom or update to a default one
    **/
   const selectorOutputDenom = computed(() => {
+    const hasRouteToUsdt = tradableTokenMaps.value[inputDenom.value]?.find(
+      ({ denom }) => denom === usdtToken.denom
+    )
+
+    if (hasRouteToUsdt) {
+      return usdtToken.denom
+    }
+
     const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(
       (token: BalanceWithTokenAndPrice) => token.denom === outputDenom.value
     )?.denom
 
-    if (tradableTokenMaps.value[inputDenom.value]) {
-      return usdtToken.denom
-    }
-
     const defaultOutputDenom =
       tradableTokenMaps.value[inputDenom.value][0]?.denom
 
-    return selectedOutputDenom || defaultOutputDenom || usdtToken.denom
+    return selectedOutputDenom || defaultOutputDenom
   })
 
   /**
