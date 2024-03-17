@@ -5,7 +5,7 @@ import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
-import pyth from './pyth/en'
+import airdrop from './airdrop/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
@@ -20,7 +20,7 @@ import { I18nMessageFunction, TimeDuration } from '@/types'
 export default {
   ...sgt,
   ...home,
-  ...pyth,
+  ...airdrop,
   ...guild,
   ...trade,
   ...market,
@@ -265,8 +265,8 @@ export default {
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
     liquidityBotsDescription: 'Trade smarter with automated strategies',
-    pyth: 'PYTH Airdrop Claim',
-    pythDescription: 'Check Airdrop Eligibility and Claim Tokens'
+    airdrop: 'PYTH Airdrop Claim',
+    airdropDescription: 'Check Airdrop Eligibility and Claim Tokens'
   },
 
   feeDiscounts: {
