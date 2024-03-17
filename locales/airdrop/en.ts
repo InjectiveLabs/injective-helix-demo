@@ -32,6 +32,9 @@ export default {
       `${named('asset')} Airdrop Terms of Use`,
     successNotification: ({ named }: I18nMessageFunction) =>
       `You have successfully claimed your ${named('asset')} Airdrop`,
-    tweet: 'Tweet to enable claim'
+    tweet: 'Tweet to enable claim',
+    tweetId: 'Enter your tweet URL',
+    verify: 'Verify',
+    tweetVerified: 'Your Tweet has been verified!'
   }
 }

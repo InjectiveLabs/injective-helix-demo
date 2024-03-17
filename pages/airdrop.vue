@@ -31,19 +31,31 @@ const amount = ref(ZERO_IN_WEI)
 const hasUserClaimed = ref(false)
 const hasAgreedToTerms = ref(false)
 const hasTweeted = ref(false)
+const hasTweetBeenVerified = ref(false)
 
 const status = reactive(new Status(StatusType.Idle))
 const claimStatus = reactive(new Status(StatusType.Idle))
+const tweetVerifyStatus = reactive(new Status(StatusType.Idle))
 
-useForm<{ address: string }>()
+useForm<{ address: string; tweetId: string }>()
 
 const {
   value: address,
-  errorMessage,
-  validate
+  errorMessage: addressErrorMessage,
+  validate: addressValidate
 } = useStringField({
   name: 'address',
   rule: 'required|injAddress'
+})
+
+const {
+  value: tweetId,
+  errorMessage: tweetIdErrorMessage,
+  validate: tweetIdValidate
+} = useStringField({
+  name: 'tweetId',
+  // eslint-disable-next-line no-useless-escape
+  rule: `required|regex:^https?:\\\/\\\/twitter\\.com\\\/(?:#!\\\/)?(\\w+)\\\/status(es)?\\\/(\\d+)$`
 })
 
 const token = computed(() =>
@@ -70,7 +82,7 @@ watch(
 )
 
 async function checkClaimStatus() {
-  const { valid } = await validate()
+  const { valid } = await addressValidate()
 
   if (!valid) {
     return
@@ -166,6 +178,26 @@ function tweet() {
       ',top=' +
       top
   )
+
+  setTimeout(() => {
+    hasTweeted.value = true
+  }, 2000)
+}
+
+async function verifyTweet() {
+  const { valid } = await tweetIdValidate()
+
+  if (!valid) {
+    return
+  }
+
+  tweetVerifyStatus.setLoading()
+
+  setTimeout(() => {
+    hasTweetBeenVerified.value = true
+    success({ title: t('airdrop.tweetVerified') })
+    tweetVerifyStatus.setIdle()
+  }, 10000)
 }
 
 onMounted(() => {
@@ -209,7 +241,7 @@ onMounted(() => {
               <AppButton
                 class="bg-blue-500 text-blue-900"
                 :is-disabled="
-                  !!errorMessage || status.isLoading() || hasUserClaimed
+                  !!addressErrorMessage || status.isLoading() || hasUserClaimed
                 "
                 v-bind="{ status }"
                 @click="checkClaimStatus"
@@ -218,7 +250,7 @@ onMounted(() => {
               </AppButton>
             </div>
           </label>
-          <p class="text-red-500">{{ errorMessage }}</p>
+          <p class="text-red-500">{{ addressErrorMessage }}</p>
         </div>
 
         <AppHocLoading v-bind="{ status }">
@@ -293,9 +325,38 @@ onMounted(() => {
                 class="flex justify-center mb-8"
                 @click="tweet"
               >
-                <AppButton class="bg-blue-500 text-blue-900" @click="tweet">
+                <AppButton
+                  class="bg-blue-500 text-blue-900"
+                  v-bind="{ status }"
+                  @click="tweet"
+                >
                   {{ $t('airdrop.tweet') }}
                 </AppButton>
+              </div>
+
+              <div v-else-if="hasTweeted && !hasTweetBeenVerified" class="mb-8">
+                <label class="border rounded-md p-2 flex">
+                  <input
+                    v-model="tweetId"
+                    type="text"
+                    class="bg-transparent focus:outline-none flex-1 p-2"
+                    :placeholder="$t('airdrop.tweetId')"
+                  />
+
+                  <div class="flex items-center" @click.stop>
+                    <AppButton
+                      class="bg-blue-500 text-blue-900"
+                      :is-disabled="
+                        !!tweetIdErrorMessage || tweetVerifyStatus.isLoading()
+                      "
+                      v-bind="{ status: tweetVerifyStatus }"
+                      @click="verifyTweet"
+                    >
+                      {{ $t('airdrop.verify') }}
+                    </AppButton>
+                  </div>
+                </label>
+                <p class="text-red-500">{{ tweetIdErrorMessage }}</p>
               </div>
 
               <div v-else class="flex justify-center mb-8">
