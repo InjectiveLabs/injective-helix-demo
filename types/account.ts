@@ -8,3 +8,17 @@ export type SubaccountTransferForm = {
   [SubaccountTransferField.Denom]: string
   [SubaccountTransferField.Token]: Token
 }
+
+export interface UiSubaccountTransaction {
+  amount: string
+  denom: string
+  receiver: string
+  sender: string
+  explorerLink: string
+  timestamp: number
+}
+
+export interface UiSubaccountTransactionWithToken
+  extends UiSubaccountTransaction {
+  token: Token
+}
