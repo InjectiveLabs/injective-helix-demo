@@ -10,7 +10,7 @@ export enum MainPage {
   LpRewards = 'lp-rewards',
   Leaderboard = 'leaderboard',
   Maintenance = 'maintenance',
-  PythAirdrop = 'pyth-airdrop',
+  Airdrop = 'airdrop',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',

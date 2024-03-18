@@ -147,6 +147,16 @@ export const defineGlobalRules = () => {
     return errorMessages.positiveNumber()
   })
 
+  defineRule('regex', (value: string, params: [string | RegExp]): boolean => {
+    let regex = params[0]
+
+    if (typeof regex === 'string') {
+      regex = new RegExp(regex)
+    }
+
+    return regex.exec(value) !== null
+  })
+
   defineRule('positiveNumber', (value: string) => {
     if (NUMBER_REGEX.test(value)) {
       return true
