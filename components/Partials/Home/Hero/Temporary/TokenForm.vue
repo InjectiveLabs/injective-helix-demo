@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { usdtToken } from '@/app/data/token'
 import { SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()
@@ -10,13 +11,12 @@ const setFormValues = useSetFormValues()
 const { accountBalancesWithToken } = useBalance()
 
 const props = defineProps({
-  isDisabled: Boolean,
+  isInputEntered: Boolean,
   hasUserInteraction: Boolean
 })
 
 const emit = defineEmits<{
   'form:reset': []
-  'queryError:reset': []
   'update:inputQuantity': []
   'update:outputQuantity': []
   'update:hasUserInteraction': [state: boolean]
@@ -131,30 +131,20 @@ function swap() {
     false
   )
 
-  animationCount.value = animationCount.value + 1
+  animationCount.value++
+  emit('update:hasUserInteraction', true)
 
-  setTimeout(() => {
-    /**
-     * We check whether user entered a value in the top or bottom input field
-     * Since they will want to retain that value when swapping
-     * Then, we query swap SC for the opposing input field's value
-     **/
-    if (!swapStore.isInputEntered || isUserInteraction.value) {
-      setFormValues({
-        [SwapFormField.InputAmount]: outputAmount || ''
-      })
-
-      getOutputQuantity()
-    } else {
-      setFormValues({
-        [SwapFormField.OutputAmount]: inputAmount || ''
-      })
-
-      getInputQuantity()
-    }
-
-    emit('update:hasUserInteraction', true)
-  }, 50)
+  setTimeout(
+    () =>
+      setFormValues(
+        {
+          [SwapFormField.InputAmount]: outputAmount,
+          [SwapFormField.OutputAmount]: inputAmount
+        },
+        false
+      ),
+    50
+  )
 }
 
 async function getOutputQuantity() {
@@ -167,7 +157,6 @@ async function getOutputQuantity() {
 
   await nextTick()
 
-  emit('queryError:reset')
   emit('update:outputQuantity')
   emit('update:hasUserInteraction', true)
 }
@@ -179,7 +168,6 @@ async function getInputQuantity() {
 
   await nextTick()
 
-  emit('queryError:reset')
   emit('update:inputQuantity')
   emit('update:hasUserInteraction', true)
 }
@@ -192,12 +180,13 @@ async function getInputQuantity() {
         <PartialsHomeHeroTemporarySelectToken
           v-model:is-user-interaction="isUserInteraction"
           v-bind="{
-            disabled: isDisabled,
-            denom: inputDenom,
+            ...$attrs,
             debounce: 600,
+            denom: inputDenom,
             options: inputDenomOptions,
+            amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
-            amountFieldName: SwapFormField.InputAmount
+            isDisabled: inputToken?.denom === usdtToken.denom
           }"
           @update:denom="inputDenomChange"
           @update:amount="getOutputQuantity"
@@ -220,12 +209,13 @@ async function getInputQuantity() {
         <PartialsHomeHeroTemporarySelectToken
           v-model:is-user-interaction="isUserInteraction"
           v-bind="{
-            disabled: isDisabled,
-            denom: outputDenom,
+            ...$attrs,
             debounce: 600,
+            denom: outputDenom,
             options: outputDenomOptions,
+            amountFieldName: SwapFormField.OutputAmount,
             maxDecimals: outputToken?.quantityDecimals || 0,
-            amountFieldName: SwapFormField.OutputAmount
+            isDisabled: outputToken?.denom === usdtToken.denom
           }"
           @update:denom="outputDenomChange"
           @update:amount="getInputQuantity"
