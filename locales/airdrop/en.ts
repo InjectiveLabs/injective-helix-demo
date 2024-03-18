@@ -12,9 +12,13 @@ export default {
         'asset'
       )}.`,
     tweetMessage: ({ named }: I18nMessageFunction) =>
-      `I'm eligible to claim ${named('amount')} ${named(
+      `I have just received the first exclusive $${named(
         'asset'
-      )} airdrop from Helix.`,
+      )} airdrop reserved for the most active @HelixApp_ users 🧬🚀
+
+You can check your eligibility directly on the Helix app and claim your airdrop now! 
+      
+Powered by @injective`,
     claim: ({ named }: I18nMessageFunction) =>
       `Claim ${named('amount')} ${named('asset')}`,
     claimed: ({ interpolate, named }: I18nMessageFunction) =>

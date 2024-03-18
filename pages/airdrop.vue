@@ -163,7 +163,7 @@ function tweet() {
     })
   )}&url=${encodeURIComponent(
     `https://helixapp.com/airdrop`
-  )}&hashtags=HelixAirdrop,PythNetwork#&related=HelixApp_`
+  )}&hashtags=Helix,Pyth,Injective#&related=HelixApp_`
 
   window.open(
     url,
@@ -277,32 +277,6 @@ onMounted(() => {
                 </span>
               </template>
             </i18n-t>
-
-            <div class="p-4 bg-gray-800 rounded-md space-y-4 relative">
-              <p class="text-lg font-semibold">
-                {{ $t('airdrop.exploreDeFiOpportunities') }}
-              </p>
-              <NuxtLink
-                class="flex hover:text-blue-500 items-center space-x-2"
-                :to="AIRDROP_MARKET_SLUG"
-              >
-                <img class="h-6 w-6" src="/logo.svg" />
-                <p class="flex-1 px-2">{{ $t('airdrop.tradeOnHelix') }}</p>
-                <span class="text-blue-500">{{ AIRDROP_MARKET }}</span>
-              </NuxtLink>
-
-              <NuxtLink
-                class="flex hover:text-blue-500 items-center space-x-2"
-                target="_blank"
-                :to="MITO_VAULT"
-              >
-                <img class="h-6 w-6" src="/svg/favicon-mito.svg" />
-                <p class="flex-1 px-2">
-                  {{ $t('airdrop.automatedTradingVaultOnMito') }}
-                </p>
-                <span class="text-blue-500">{{ AIRDROP_MARKET }} Vault</span>
-              </NuxtLink>
-            </div>
           </div>
 
           <div v-else>
@@ -374,6 +348,32 @@ onMounted(() => {
                 </AppButton>
               </div>
             </div>
+          </div>
+
+          <div class="p-4 bg-gray-800 rounded-md space-y-4 relative">
+            <p class="text-lg font-semibold">
+              {{ $t('airdrop.exploreDeFiOpportunities') }}
+            </p>
+            <NuxtLink
+              class="flex hover:text-blue-500 items-center space-x-2"
+              :to="AIRDROP_MARKET_SLUG"
+            >
+              <img class="h-6 w-6" src="/logo.svg" />
+              <p class="flex-1 px-2">{{ $t('airdrop.tradeOnHelix') }}</p>
+              <span class="text-blue-500">{{ AIRDROP_MARKET }}</span>
+            </NuxtLink>
+
+            <NuxtLink
+              class="flex hover:text-blue-500 items-center space-x-2"
+              target="_blank"
+              :to="MITO_VAULT"
+            >
+              <img class="h-6 w-6" src="/svg/favicon-mito.svg" />
+              <p class="flex-1 px-2">
+                {{ $t('airdrop.automatedTradingVaultOnMito') }}
+              </p>
+              <span class="text-blue-500">{{ AIRDROP_MARKET }} Vault</span>
+            </NuxtLink>
           </div>
         </AppHocLoading>
       </div>

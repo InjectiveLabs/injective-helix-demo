@@ -87,7 +87,8 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'airdrop/claim'
 ]
 
 const persistState = (
