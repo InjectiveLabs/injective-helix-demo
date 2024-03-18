@@ -55,8 +55,9 @@ export const getRoutes = (network: Network, env: string) => {
     // 'pyth-inj',
     'andr-inj',
     'usdc-usdt',
-    'hdro-inj'
-    // 'usdcnb-usdt'
+    'hdro-inj',
+    // 'usdcnb-usdt',
+    'zig-inj'
   ]
 
   const perpetuals = [
