@@ -1,7 +1,6 @@
 import home from './home/en'
 import trade from './trade/en'
 import guild from './guild/en'
-import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
@@ -23,7 +22,6 @@ export default {
   ...guild,
   ...trade,
   ...market,
-  ...bridge,
   ...wallet,
   ...account,
   ...banners,
@@ -213,8 +211,7 @@ export default {
       ]),
     terraDescription:
       'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
-    exploreOtherMarkets: 'Explore Other Markets',
-    injectiveBridge: 'Injective Bridge'
+    exploreOtherMarkets: 'Explore Other Markets'
   },
 
   navigation: {

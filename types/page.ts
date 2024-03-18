@@ -3,7 +3,6 @@ export enum MainPage {
   Terms = 'terms',
   Index = 'index',
   Guilds = 'guilds',
-  Bridge = 'bridge',
   Account = 'account',
   Markets = 'markets',
   Activity = 'activity',

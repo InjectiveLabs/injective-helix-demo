@@ -160,7 +160,6 @@ export const getRoutes = (network: Network, env: string) => {
 
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
-    MainPage.Bridge,
     MainPage.Account,
     MainPage.Activity
   ]
