@@ -7,7 +7,7 @@ import { Modal } from '@/types'
 definePageMeta({
   middleware: [
     () => {
-      // return navigateTo('/')
+      return navigateTo('/')
     }
   ]
 })
@@ -94,7 +94,6 @@ async function checkClaimStatus() {
     hasUserClaimed.value = await airdropStore.fetchUserClaimStatus(
       address.value
     )
-    hasUserClaimed.value = false
     amount.value = await airdropStore.fetchUserEligibleAirdrop(address.value)
   } catch (error) {
     $onError(error as any)
@@ -161,8 +160,6 @@ function tweet() {
       amount: amountToString.value,
       asset: AIRDROP_ASSET
     })
-  )}&url=${encodeURIComponent(
-    `https://helixapp.com/airdrop`
   )}&hashtags=Helix,Pyth,Injective#&related=HelixApp_`
 
   window.open(
@@ -197,7 +194,7 @@ async function verifyTweet() {
     hasTweetBeenVerified.value = true
     success({ title: t('airdrop.tweetVerified') })
     tweetVerifyStatus.setIdle()
-  }, 10000)
+  }, 6000)
 }
 
 onMounted(() => {
@@ -261,7 +258,7 @@ onMounted(() => {
               class="text-center text-xl mb-8 flex items-center gap-2 justify-center"
             >
               <template #amount>
-                <span class="font-bold text-primary-500">{{
+                <span class="font-bold text-blue-500">{{
                   amountToString
                 }}</span>
               </template>

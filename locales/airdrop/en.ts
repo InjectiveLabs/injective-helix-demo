@@ -16,9 +16,11 @@ export default {
         'asset'
       )} airdrop reserved for the most active @HelixApp_ users 🧬🚀
 
-You can check your eligibility directly on the Helix app and claim your airdrop now! 
+You can check your eligibility directly on Helix and claim your airdrop now! 
       
-Powered by @injective`,
+Powered by @injective
+
+https://helixapp.com/airdrop`,
     claim: ({ named }: I18nMessageFunction) =>
       `Claim ${named('amount')} ${named('asset')}`,
     claimed: ({ interpolate, named }: I18nMessageFunction) =>
