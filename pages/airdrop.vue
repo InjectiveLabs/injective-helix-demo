@@ -44,6 +44,7 @@ const {
 
 const {
   value: tweetId,
+  setValue: setTweetIdValue,
   errorMessage: tweetIdErrorMessage,
   validate: tweetIdValidate
 } = useStringField({
@@ -90,12 +91,24 @@ async function checkClaimStatus() {
     hasUserClaimed.value = await airdropStore.fetchUserClaimStatus(
       address.value
     )
+    hasUserClaimed.value = false
+    hasTweeted.value = false
     amount.value = await airdropStore.fetchUserEligibleAirdrop(address.value)
   } catch (error) {
     $onError(error as any)
   } finally {
     status.setIdle()
   }
+}
+
+function onSetTweetId(_payload: Event) {
+  if (!tweetId.value) {
+    return
+  }
+
+  const tweetIdWithoutQueryString = tweetId.value.split('?')[0]
+
+  setTweetIdValue(tweetIdWithoutQueryString)
 }
 
 function onClaimAirdrop() {
@@ -312,6 +325,7 @@ onMounted(() => {
                     type="text"
                     class="bg-transparent focus:outline-none flex-1 p-2"
                     :placeholder="$t('airdrop.tweetId')"
+                    @input="onSetTweetId"
                   />
 
                   <div class="flex items-center" @click.stop>
