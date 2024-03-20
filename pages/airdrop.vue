@@ -91,8 +91,6 @@ async function checkClaimStatus() {
     hasUserClaimed.value = await airdropStore.fetchUserClaimStatus(
       address.value
     )
-    hasUserClaimed.value = false
-    hasTweeted.value = false
     amount.value = await airdropStore.fetchUserEligibleAirdrop(address.value)
   } catch (error) {
     $onError(error as any)
