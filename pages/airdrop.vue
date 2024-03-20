@@ -207,7 +207,6 @@ onMounted(() => {
       </div>
 
       <p class="text-xl mb-8 text-center">
-        {{ amountToString }}
         {{ $t('airdrop.title') }}
       </p>
 
