@@ -381,7 +381,11 @@ onMounted(() => {
             >
               <img class="h-6 w-6" src="/svg/favicon-mito.svg" />
               <p class="flex-1 px-2">
-                {{ $t('airdrop.automatedTradingVaultOnMito') }}
+                {{
+                  $t('airdrop.automatedTradingVaultOnMito', {
+                    asset: AIRDROP_ASSET
+                  })
+                }}
               </p>
               <span class="text-blue-500">{{ AIRDROP_MARKET }} Vault</span>
             </NuxtLink>
