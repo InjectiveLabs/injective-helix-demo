@@ -383,7 +383,10 @@ onMounted(() => {
       </div>
     </div>
 
-    <ModalsAirdropTerms @terms:accept="hasAgreedToTerms = true" />
+    <ModalsAirdropTerms
+      v-bind="{ asset: AIRDROP_ASSET }"
+      @terms:accept="hasAgreedToTerms = true"
+    />
 
     <canvas
       id="confetti-airdrop"
