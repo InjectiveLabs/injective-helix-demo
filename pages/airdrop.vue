@@ -18,6 +18,8 @@ const AIRDROP_MARKET = 'PYTH/INJ'
 const AIRDROP_MARKET_SLUG = 'pyth-inj'
 const MITO_VAULT =
   'https://mito.fi/vault/inj1r4pjz70l4ytk06dfparzd6na5qqjeq09fkxdt4/'
+const ANNOUNCEMENT_BLOG =
+  'https://blog.helixapp.com/pyth-genesis-airdrop-for-helix-users/'
 
 const amount = ref(ZERO_IN_WEI)
 const hasUserClaimed = ref(false)
@@ -364,6 +366,17 @@ onMounted(() => {
                 {{ $t('airdrop.automatedTradingVaultOnMito') }}
               </p>
               <span class="text-blue-500">{{ AIRDROP_MARKET }} Vault</span>
+            </NuxtLink>
+            <NuxtLink
+              class="flex hover:text-blue-500 items-center space-x-2"
+              target="_blank"
+              :to="ANNOUNCEMENT_BLOG"
+            >
+              <img class="h-6 w-6" src="/logo.svg" />
+              <p class="flex-1 px-2">
+                {{ $t('airdrop.announcementBlog') }}
+              </p>
+              <span class="text-blue-500"> Learn more </span>
             </NuxtLink>
           </div>
         </AppHocLoading>

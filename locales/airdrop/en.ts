@@ -34,6 +34,7 @@ https://helixapp.com/airdrop`,
     exploreDeFiOpportunities: 'Explore DeFi Opportunities',
     tradeOnHelix: 'Trade on Helix',
     automatedTradingVaultOnMito: 'Automated Trading Vault on Mito',
+    announcementBlog: 'Announcement Blog',
     tosHeader: ({ named }: I18nMessageFunction) =>
       `${named('asset')} Airdrop Terms of Use`,
     successNotification: ({ named }: I18nMessageFunction) =>
