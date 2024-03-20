@@ -49,7 +49,7 @@ const {
 } = useStringField({
   name: 'tweetId',
   // eslint-disable-next-line no-useless-escape
-  rule: `required|regex:^https?:\\\/\\\/twitter\\.com\\\/(?:#!\\\/)?(\\w+)\\\/status(es)?\\\/(\\d+)$`
+  rule: `required|regex:^https?:\\\/\\\/([^\s]+)\\.com\\\/(?:#!\\\/)?(\\w+)\\\/status(es)?\\\/(\\d+)$`
 })
 
 const token = computed(() =>
@@ -349,7 +349,7 @@ onMounted(() => {
             </p>
             <NuxtLink
               class="flex hover:text-blue-500 items-center space-x-2"
-              :to="AIRDROP_MARKET_SLUG"
+              :to="`/spot/${AIRDROP_MARKET_SLUG}`"
             >
               <img class="h-6 w-6" src="/logo.svg" />
               <p class="flex-1 px-2">{{ $t('airdrop.tradeOnHelix') }}</p>
