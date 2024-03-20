@@ -105,7 +105,11 @@ function onClaimAirdrop() {
     .claim()
     .then(() => {
       hasUserClaimed.value = true
-      success({ title: t('airdrop.successNotification') })
+      success({
+        title: t('airdrop.successNotification', {
+          asset: AIRDROP_ASSET
+        })
+      })
       confetti()
     })
     .catch($onError)
@@ -254,9 +258,9 @@ onMounted(() => {
               class="text-center text-xl mb-8 flex items-center gap-2 justify-center"
             >
               <template #amount>
-                <span class="font-bold text-blue-500">{{
-                  amountToString
-                }}</span>
+                <span class="font-bold text-blue-500">
+                  {{ amountToString }}
+                </span>
               </template>
               <template #asset>
                 <span class="flex items-center">
