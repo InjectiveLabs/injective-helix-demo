@@ -2,14 +2,21 @@
 import { Modal } from '@/types'
 import { termsOfUse } from '@/app/data/airdrop'
 
-const modalStore = useModalStore()
-const router = useRouter()
-
-const isModalOpen = computed(() => modalStore.modals[Modal.AirdropTerms])
+defineProps({
+  asset: {
+    type: String,
+    required: true
+  }
+})
 
 const emit = defineEmits<{
   'terms:accept': []
 }>()
+
+const modalStore = useModalStore()
+const router = useRouter()
+
+const isModalOpen = computed(() => modalStore.modals[Modal.AirdropTerms])
 
 function onConfirm() {
   emit('terms:accept')
@@ -35,7 +42,7 @@ function onCancel() {
   <AppModal :is-open="isModalOpen" @modal:closed="onModalClose">
     <template #title>
       <h3>
-        {{ $t('airdrop.tosHeader') }}
+        {{ $t('airdrop.tosHeader', { asset }) }}
       </h3>
     </template>
 
