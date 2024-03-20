@@ -33,7 +33,8 @@ https://helixapp.com/airdrop`,
     alreadyClaimed: 'You have already claimed.',
     exploreDeFiOpportunities: 'Explore DeFi Opportunities',
     tradeOnHelix: 'Trade on Helix',
-    automatedTradingVaultOnMito: 'Automated Trading Vault on Mito',
+    automatedTradingVaultOnMito: ({ named }: I18nMessageFunction) =>
+      `Earn the highest APY for ${named('asset')}`,
     announcementBlog: 'Announcement Blog',
     tosHeader: ({ named }: I18nMessageFunction) =>
       `${named('asset')} Airdrop Terms of Use`,
