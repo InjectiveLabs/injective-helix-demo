@@ -20,7 +20,7 @@ const props = defineProps({
 const redirectionLink = computed(() => {
   let link = `${getBridgeUrl()}?address=${
     walletStore.injectiveAddress
-  }&wallet=${walletStore.wallet}`
+  }&wallet=${walletStore.wallet}&origin=helix`
 
   if (props.denom) {
     link = `${link}&denom=${props.denom}`
