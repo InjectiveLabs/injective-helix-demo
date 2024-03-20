@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
-import { termsOfUse } from '@/app/data/pyth'
+import { termsOfUse } from '@/app/data/airdrop'
 
 const modalStore = useModalStore()
 const router = useRouter()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.PythAirdrop])
+const isModalOpen = computed(() => modalStore.modals[Modal.AirdropTerms])
 
 const emit = defineEmits<{
   'terms:accept': []
@@ -17,7 +17,7 @@ function onConfirm() {
 }
 
 function closeModal() {
-  modalStore.closeModal(Modal.PythAirdrop)
+  modalStore.closeModal(Modal.AirdropTerms)
 }
 
 function onModalClose() {
@@ -35,7 +35,7 @@ function onCancel() {
   <AppModal :is-open="isModalOpen" @modal:closed="onModalClose">
     <template #title>
       <h3>
-        {{ $t('pyth.tosHeader') }}
+        {{ $t('airdrop.tosHeader') }}
       </h3>
     </template>
 
