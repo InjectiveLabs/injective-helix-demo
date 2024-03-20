@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumber, Status, StatusType } from '@injectivelabs/utils'
 import { create } from 'canvas-confetti'
 import { Modal } from '@/types'
-
-definePageMeta({
-  middleware: [
-    () => {
-      return navigateTo('/')
-    }
-  ]
-})
 
 const router = useRouter()
 const airdropStore = useAirdropStore()
@@ -63,7 +55,9 @@ const token = computed(() =>
 )
 
 const { valueToString: amountToString } = useBigNumberFormatter(
-  computed(() => amount.value.toBase(token.value?.decimals))
+  computed(() =>
+    amount.value.toBase(token.value?.decimals).toFixed(2, BigNumber.ROUND_DOWN)
+  )
 )
 
 watch(
@@ -213,6 +207,7 @@ onMounted(() => {
       </div>
 
       <p class="text-xl mb-8 text-center">
+        {{ amountToString }}
         {{ $t('airdrop.title') }}
       </p>
 
