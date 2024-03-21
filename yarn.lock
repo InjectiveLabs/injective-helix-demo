@@ -1908,10 +1908,10 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/mito-proto-ts@1.0.62":
-  version "1.0.62"
-  resolved "https://registry.npmjs.org/@injectivelabs/mito-proto-ts/-/mito-proto-ts-1.0.62.tgz#45fc0746af7d1b283625816caeb9fff9887e050f"
-  integrity sha512-WtoO80Y597nZiAuE4H+L208I0i3ByWytR+HqABdCaA26uJ7F1LhXw8YXxh3pP9z0LAeW31T+N7bwtOMlVR4riA==
+"@injectivelabs/mito-proto-ts@1.0.63":
+  version "1.0.63"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/mito-proto-ts/-/mito-proto-ts-1.0.63.tgz#9c6922d0b05eafd4eb52a532f1173b25c0d4e20c"
+  integrity sha512-Ucl78V2/n7IxTH4Lma7RrLXclti702GP2uWtiWWiaKxK3SJT8vqNN69z2MkmIZLMgpY3iX6Mb5xxXG5/mKhTsQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     google-protobuf "^3.14.0"
@@ -1949,10 +1949,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.11-beta.15", "@injectivelabs/sdk-ts@^1.14.11-beta.15":
-  version "1.14.11-beta.15"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.15.tgz#3aadd66cec1deac57d6027a9faf45a33070c0462"
-  integrity sha512-SPSohfElNQapG+RwhQbZvXfUDA14sT9wuvTbVrG2gzJO/XwTVZPQrnK/roh9HojPEoqQE1nEAkGx1Ns17jsOvQ==
+"@injectivelabs/sdk-ts@1.14.11-beta.20", "@injectivelabs/sdk-ts@^1.14.11-beta.20":
+  version "1.14.11-beta.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.20.tgz#4fb591858d420440002f9188f659ab18e6d6ae88"
+  integrity sha512-Wj+Jw4HrdJixV6IN21rFhjXS10rRsGbsFbuJWQjGaKIFRtgDdWFEjabDZWIg7xa2EkWW2VEYfvMt+GDtSEw5YQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.32.2"
@@ -1968,10 +1968,10 @@
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
     "@injectivelabs/indexer-proto-ts" "1.11.38"
-    "@injectivelabs/mito-proto-ts" "1.0.62"
+    "@injectivelabs/mito-proto-ts" "1.0.63"
     "@injectivelabs/networks" "^1.14.11-beta.2"
     "@injectivelabs/test-utils" "^1.14.5-beta.0"
-    "@injectivelabs/token-metadata" "^1.14.11-beta.11"
+    "@injectivelabs/token-metadata" "^1.14.11-beta.15"
     "@injectivelabs/ts-types" "^1.14.11-beta.0"
     "@injectivelabs/utils" "^1.14.11-beta.1"
     "@metamask/eth-sig-util" "^4.0.0"
@@ -1992,16 +1992,16 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.11-beta.20":
-  version "1.14.11-beta.20"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.20.tgz#7e87bf71242918e515841cce2793386fd6037c39"
-  integrity sha512-V+ZMiGNzYGH/yKXQgJxVWdhF82oomPgvtWNlDiJTM7bl5LT6uS2D1DfZCwOY9i1CYum0o8LOkwLljYGtxbiumQ==
+"@injectivelabs/sdk-ui-ts@1.14.11-beta.27":
+  version "1.14.11-beta.27"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.27.tgz#13051a9f9c68b11829d9956d2da041abd1cbbc6f"
+  integrity sha512-hfIzsKzLroVoNUUB+6RzBtsmE7XbKwDN+t1FWFFRHo7KYoOEKZEj2Ui13u1mSHTapVW+4E4O7dsBqat+goggKg==
   dependencies:
     "@injectivelabs/contracts" "^1.14.11-beta.2"
     "@injectivelabs/exceptions" "^1.14.11-beta.1"
     "@injectivelabs/networks" "^1.14.11-beta.2"
-    "@injectivelabs/sdk-ts" "^1.14.11-beta.15"
-    "@injectivelabs/token-metadata" "^1.14.11-beta.11"
+    "@injectivelabs/sdk-ts" "^1.14.11-beta.20"
+    "@injectivelabs/token-metadata" "^1.14.11-beta.15"
     "@injectivelabs/token-utils" "^1.14.11-beta.1"
     "@injectivelabs/ts-types" "^1.14.11-beta.0"
     "@injectivelabs/utils" "^1.14.11-beta.1"
@@ -2029,10 +2029,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.14.11-beta.11", "@injectivelabs/token-metadata@^1.14.11-beta.11":
-  version "1.14.11-beta.11"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.11-beta.11.tgz#5e7be9964e6a6c70bdfa9f88fb8f646df95bc6ea"
-  integrity sha512-RjAJJbtggZyw5wTa3B3dVpIHMNqusFxgUcT3LKqXYl+nQEvKvTIDZO6uUEZLrPiZOe+1p4sFkmTejHkXAIrn0w==
+"@injectivelabs/token-metadata@1.14.11-beta.15", "@injectivelabs/token-metadata@^1.14.11-beta.15":
+  version "1.14.11-beta.15"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.11-beta.15.tgz#912152c92a7e632c2f43cb48320ba0239b7d5c9c"
+  integrity sha512-GuPY7OfAMqZd+zPa6XaRlvEynhO/r5X00yzg1LDqVXPKp88opxAYr9nr4OrDhILXlOuX5C1PAtdChxgOrCNnkg==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.11-beta.1"
     "@injectivelabs/networks" "^1.14.11-beta.2"
@@ -2091,10 +2091,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.11-beta.18":
-  version "1.14.11-beta.18"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.18.tgz#72a531b593a9e66d6305e535e4212e4a22b606fd"
-  integrity sha512-fcNntRqtKZHXY15BP/f7BXCAinH/isxr+SmCscJl9cVY5Lee+9t/Ek3Ki6Rc9X4i1torKrtBBODnSsaRJgN/aA==
+"@injectivelabs/wallet-ts@1.14.11-beta.24":
+  version "1.14.11-beta.24"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.24.tgz#23de57e84c7a04e72f004493274ef228fb964873"
+  integrity sha512-zyJIqcia92IaA8nAflGXdT7TST11Nxo+yWLzpjxX7fR0VAevdkSM1oThtQ/NzIF+lp8qpjvAj08waX/Zi6kEOA==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2104,12 +2104,12 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.14.11-beta.1"
     "@injectivelabs/networks" "^1.14.11-beta.2"
-    "@injectivelabs/sdk-ts" "^1.14.11-beta.15"
+    "@injectivelabs/sdk-ts" "^1.14.11-beta.20"
     "@injectivelabs/ts-types" "^1.14.11-beta.0"
     "@injectivelabs/utils" "^1.14.11-beta.1"
     "@keplr-wallet/cosmos" "^0.12.71"
     "@keplr-wallet/types" "^0.12.71"
-    "@ledgerhq/hw-app-cosmos" "^6.29.4"
+    "@ledgerhq/hw-app-cosmos" "^6.29.5"
     "@ledgerhq/hw-app-eth" "6.35.6"
     "@ledgerhq/hw-transport" "6.30.4"
     "@ledgerhq/hw-transport-webhid" "6.28.4"
@@ -2720,6 +2720,16 @@
     rxjs "^7.8.1"
     semver "^7.3.5"
 
+"@ledgerhq/devices@^8.2.2":
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-8.2.2.tgz#d6d758182d690ad66e14f88426c448e8c54d259d"
+  integrity sha512-SKahGA4p0mZ3ovypOJ2wa5mUvUkArE3HBrwWKYf+cRs+t/Licp3OJfhj+DHIxP3AfyH2xR6CFFWECYHeKwGsDQ==
+  dependencies:
+    "@ledgerhq/errors" "^6.16.3"
+    "@ledgerhq/logs" "^6.12.0"
+    rxjs "^7.8.1"
+    semver "^7.3.5"
+
 "@ledgerhq/domain-service@^1.1.18":
   version "1.1.18"
   resolved "https://registry.npmjs.org/@ledgerhq/domain-service/-/domain-service-1.1.18.tgz#634d4e82e8b83a26847f7b61eaf425467b1a5366"
@@ -2743,6 +2753,11 @@
   resolved "https://registry.npmjs.org/@ledgerhq/errors/-/errors-6.16.2.tgz#cf3939dc92ed0871aa7fdd45e6d13446a1eaeccd"
   integrity sha512-jFpohaSW+p1Obp3NDT9QSByEtT3gtBZIjVNu8m25gnrH5zdtfPVlPwH6UiuS50s+2dHQyehV8hF+IfreKDWAZA==
 
+"@ledgerhq/errors@^6.16.3":
+  version "6.16.3"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.16.3.tgz#646f68cc7e6e8d5126bce1ca06140c5ad963bee8"
+  integrity sha512-3w7/SJVXOPa9mpzyll7VKoKnGwDD3BzWgN1Nom8byR40DiQvOKjHX+kKQausCedTHVNBn9euzPCNsftZ9+mxfw==
+
 "@ledgerhq/evm-tools@^1.0.16":
   version "1.0.16"
   resolved "https://registry.npmjs.org/@ledgerhq/evm-tools/-/evm-tools-1.0.16.tgz#b0a1d59a4871adb728aa65406466f1257e639504"
@@ -2754,13 +2769,13 @@
     crypto-js "4.2.0"
     ethers "5.7.2"
 
-"@ledgerhq/hw-app-cosmos@^6.29.4":
-  version "6.29.4"
-  resolved "https://registry.npmjs.org/@ledgerhq/hw-app-cosmos/-/hw-app-cosmos-6.29.4.tgz#6d5ba45a3433698be50cc117dd4fdd1cd7aeb2c7"
-  integrity sha512-idqreCj1GKwIfmikiLfxd1OnywXa1k7OALOCuqa1ZOw4YNT6k24ATRqaAxxeL4aW4AanwMS+8Dz6hQEe9JUyEg==
+"@ledgerhq/hw-app-cosmos@^6.29.5":
+  version "6.29.5"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-cosmos/-/hw-app-cosmos-6.29.5.tgz#87a76a1a0c969986223b78c84372965efa935e09"
+  integrity sha512-NcfrS5pE3kQt6mBizOm9rK7+3XtWZ7LrWkO4Iz6giHkkJShnDCVFdJHxtxbhQ+6XRCADn7W75YrwnOsX5E0WbQ==
   dependencies:
-    "@ledgerhq/errors" "^6.16.2"
-    "@ledgerhq/hw-transport" "^6.30.4"
+    "@ledgerhq/errors" "^6.16.3"
+    "@ledgerhq/hw-transport" "^6.30.5"
     bip32-path "^0.4.2"
 
 "@ledgerhq/hw-app-eth@6.35.6":
@@ -2847,6 +2862,16 @@
     "@ledgerhq/devices" "^8.0.8"
     "@ledgerhq/errors" "^6.15.0"
     "@ledgerhq/logs" "^6.11.0"
+    events "^3.3.0"
+
+"@ledgerhq/hw-transport@^6.30.5":
+  version "6.30.5"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.30.5.tgz#841c9e4bb3849536db110ca2894d693d55bf54fd"
+  integrity sha512-JMl//7BgPBvWxrWyMu82jj6JEYtsQyOyhYtonWNgtxn6KUZWht3gU4gxmLpeIRr+DiS7e50mW7m3GA+EudZmmA==
+  dependencies:
+    "@ledgerhq/devices" "^8.2.2"
+    "@ledgerhq/errors" "^6.16.3"
+    "@ledgerhq/logs" "^6.12.0"
     events "^3.3.0"
 
 "@ledgerhq/live-env@^1.0.1":
