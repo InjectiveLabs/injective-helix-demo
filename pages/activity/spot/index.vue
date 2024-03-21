@@ -84,7 +84,7 @@ function onCancelOrders() {
       </Teleport>
     </ClientOnly>
 
-    <CommonLegacyWormholeBanner v-if="legacyWormholeOrders.length > 0">
+    <PartialsLegacyWormholeBanner v-if="legacyWormholeOrders.length > 0">
       <template #default="{ isExpanded, affectedMarkets }">
         <div class="flex flex-col">
           <i18n-t
@@ -96,7 +96,7 @@ function onCancelOrders() {
               <span class="font-bold">{{ $t('common.legacy.attention') }}</span>
             </template>
             <template #learnMore>
-              <CommonLegacyWormholeLearnMore />
+              <PartialsLegacyWormholeLearnMore />
             </template>
           </i18n-t>
 
@@ -124,7 +124,7 @@ function onCancelOrders() {
           }"
         />
       </template>
-    </CommonLegacyWormholeBanner>
+    </PartialsLegacyWormholeBanner>
 
     <div class="w-full h-full">
       <!-- mobile table -->

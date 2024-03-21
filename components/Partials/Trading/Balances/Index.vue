@@ -212,7 +212,7 @@ useIntervalFn(() => {
                       })
                     }}
                   </span>
-                  <CommonLegacyWormholeTooltip
+                  <PartialsLegacyWormholeTooltip
                     v-if="
                       legacyWHMarketDenom && availableMarginToBigNumber.gt(0)
                     "

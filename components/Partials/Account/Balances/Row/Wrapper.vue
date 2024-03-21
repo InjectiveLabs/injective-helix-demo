@@ -89,7 +89,7 @@ const legacyWHMarketDenom = computed(() =>
         <div class="relative">
           <PartialsAccountBalancesRowTokenSymbol v-bind="{ balance }" />
 
-          <CommonLegacyWormholeTags
+          <PartialsLegacyWormholeTags
             v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
             is-action-required
             class="absolute -right-1 top-0.5"
@@ -128,7 +128,7 @@ const legacyWHMarketDenom = computed(() =>
           v-else-if="inOrderBalanceInBigNumber.gt(0)"
           class="font-mono text-sm text-right flex items-center justify-center gap-1"
         >
-          <CommonLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
+          <PartialsLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
           <span>
             {{ inOrderBalanceInString }}
           </span>
@@ -205,9 +205,9 @@ const legacyWHMarketDenom = computed(() =>
           <template
             v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
           >
-            <CommonLegacyWormholeButton is-migration>
+            <PartialsLegacyWormholeButton is-migration>
               {{ $t('common.legacy.migrate') }}
-            </CommonLegacyWormholeButton>
+            </PartialsLegacyWormholeButton>
             <div />
           </template>
           <template v-else-if="accountStore.isDefaultSubaccount">

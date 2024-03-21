@@ -112,7 +112,7 @@ onUnmounted(() => {
     </template>
   </PartialsTradingLayout>
 
-  <CommonLegacyWormholeBanner v-if="legacyWHMarketDenom">
+  <PartialsLegacyWormholeBanner v-if="legacyWHMarketDenom">
     <template #default>
       <div class="inline-block lg:space-x-2">
         <span>
@@ -120,7 +120,7 @@ onUnmounted(() => {
         </span>
 
         <span>
-          <CommonLegacyWormholeButton
+          <PartialsLegacyWormholeButton
             v-bind="{
               denom: legacyWHMarketDenom,
               to: {
@@ -136,7 +136,7 @@ onUnmounted(() => {
     </template>
 
     <template #add-on>
-      <CommonLegacyWormholeLearnMore />
+      <PartialsLegacyWormholeLearnMore />
     </template>
-  </CommonLegacyWormholeBanner>
+  </PartialsLegacyWormholeBanner>
 </template>

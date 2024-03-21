@@ -103,7 +103,7 @@ function onCancelOrder() {
             {{ market.ticker }}
           </span>
         </div>
-        <CommonLegacyWormholeTooltip
+        <PartialsLegacyWormholeTooltip
           v-if="legacyWHMarketDenom"
           class="ml-1.5"
         />

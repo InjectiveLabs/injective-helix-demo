@@ -52,8 +52,8 @@ const legacyWHBankAssets = computed(() =>
     .map(({ denom }) => denom)
 )
 
-const legacyWHSubaccountAssets = computed(() => {
-  const assets = Object.values(accountStore.subaccountBalancesMap)
+const legacyWHSubaccountAssets = computed(() =>
+  Object.values(accountStore.subaccountBalancesMap)
     .flat()
     .filter(
       ({ denom, totalBalance }) =>
@@ -61,9 +61,7 @@ const legacyWHSubaccountAssets = computed(() => {
         legacyWHMarketDenom.value === denom
     )
     .map(({ denom }) => denom)
-
-  return assets
-})
+)
 
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
@@ -188,7 +186,7 @@ useIntervalFn(() => {
     </template>
   </PartialsTradingLayout>
 
-  <CommonLegacyWormholeBanner
+  <PartialsLegacyWormholeBanner
     v-if="
       legacyWHMarketDenom &&
       (legacyWHBankAssets.length > 0 || legacyWHSubaccountAssets.length > 0)
@@ -201,7 +199,7 @@ useIntervalFn(() => {
         </span>
 
         <span>
-          <CommonLegacyWormholeButton
+          <PartialsLegacyWormholeButton
             v-bind="{
               denom: legacyWHMarketDenom,
               to: {
@@ -217,7 +215,7 @@ useIntervalFn(() => {
     </template>
 
     <template #add-on>
-      <CommonLegacyWormholeLearnMore />
+      <PartialsLegacyWormholeLearnMore />
     </template>
-  </CommonLegacyWormholeBanner>
+  </PartialsLegacyWormholeBanner>
 </template>

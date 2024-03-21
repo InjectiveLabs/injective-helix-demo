@@ -101,7 +101,7 @@ function onCancelOrder() {
             {{ leverage.toFormat(2) }}x
           </span>
 
-          <CommonLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
+          <PartialsLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
         </div>
 
         <PartialsCommonCancelButton

@@ -24,8 +24,8 @@ const legacyWHBankAssets = computed(() =>
     .map(({ denom }) => denom)
 )
 
-const legacyWHSubaccountAssets = computed(() => {
-  const assets = Object.values(accountStore.subaccountBalancesMap)
+const legacyWHSubaccountAssets = computed(() =>
+  Object.values(accountStore.subaccountBalancesMap)
     .flat()
     .filter(
       ({ denom, totalBalance }) =>
@@ -33,9 +33,7 @@ const legacyWHSubaccountAssets = computed(() => {
         legacyWHDenoms.find((legacyDenom) => legacyDenom === denom)
     )
     .map(({ denom }) => denom)
-
-  return assets
-})
+)
 
 onMounted(() => {
   Promise.all([
@@ -65,7 +63,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
         <PartialsAccount />
       </div>
 
-      <CommonLegacyWormholeBanner
+      <PartialsLegacyWormholeBanner
         v-if="
           legacyWHBankAssets.length > 0 || legacyWHSubaccountAssets.length > 0
         "
@@ -89,11 +87,11 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
                   }}</span>
                 </template>
                 <template #learnMore>
-                  <CommonLegacyWormholeLearnMore />
+                  <PartialsLegacyWormholeLearnMore />
                 </template>
               </i18n-t>
 
-              <CommonLegacyWormholeMigrateButton
+              <PartialsLegacyWormholeMigrateButton
                 v-if="legacyWHSubaccountAssets.length === 0"
               >
                 <div class="flex items-center justify-center gap-1">
@@ -106,7 +104,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
                     class="font-bold w-3 h-3 min-w-3 rotate-180"
                   />
                 </div>
-              </CommonLegacyWormholeMigrateButton>
+              </PartialsLegacyWormholeMigrateButton>
             </div>
 
             <div v-if="isExpanded" class="flex flex-col">
@@ -136,7 +134,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
             }"
           />
         </template>
-      </CommonLegacyWormholeBanner>
+      </PartialsLegacyWormholeBanner>
     </div>
   </AppHocLoading>
 </template>

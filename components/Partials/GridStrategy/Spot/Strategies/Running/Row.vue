@@ -179,7 +179,7 @@ useIntervalFn(() => {
         {{ market.ticker }}
       </div>
 
-      <CommonLegacyWormholeTooltip v-if="legacyWHMarketDenom" class="-ml-1" />
+      <PartialsLegacyWormholeTooltip v-if="legacyWHMarketDenom" class="-ml-1" />
     </div>
 
     <div class="flex items-center justify-end">

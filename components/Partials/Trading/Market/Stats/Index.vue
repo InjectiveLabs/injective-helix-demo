@@ -73,7 +73,7 @@ function tokenClick() {
             </p>
           </div>
 
-          <CommonLegacyWormholeTags v-if="legacyWHMarketDenom" is-legacy />
+          <PartialsLegacyWormholeTags v-if="legacyWHMarketDenom" is-legacy />
 
           <PartialsCommonMarketAirdrop :market="market" />
         </div>

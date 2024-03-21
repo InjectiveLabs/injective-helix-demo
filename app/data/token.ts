@@ -91,6 +91,7 @@ export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
 export const SWAP_LOW_LIQUIDITY_SYMBOLS = ['GF', 'ORAI', 'SOMM', 'NEOK']
 
+// todo: update this when token-metadata updates
 export const legacyWHDenoms = [
   getCw20FromSymbolOrNameAsString('SOL'),
   getCw20FromSymbolOrNameAsString('ARB'),

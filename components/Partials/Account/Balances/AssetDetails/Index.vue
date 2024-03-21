@@ -224,7 +224,7 @@ function closeModal() {
             </div>
           </div>
 
-          <CommonLegacyWormholeButton
+          <PartialsLegacyWormholeButton
             v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
             is-migration
             class="flex justify-center"
@@ -232,7 +232,7 @@ function closeModal() {
             <span>
               {{ $t('common.legacy.migrate') }}
             </span>
-          </CommonLegacyWormholeButton>
+          </PartialsLegacyWormholeButton>
 
           <div v-else class="mt-auto flex justify-between gap-4">
             <PartialsAccountBridgeRedirection

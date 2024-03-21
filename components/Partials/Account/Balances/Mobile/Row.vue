@@ -83,7 +83,7 @@ function openAssetDetailsModal() {
             </span>
           </div>
 
-          <CommonLegacyWormholeTags
+          <PartialsLegacyWormholeTags
             v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
             is-action-required
           />

@@ -199,7 +199,7 @@ function tradeClickedTrack() {
               {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
             </span>
           </div>
-          <CommonLegacyWormholeTags
+          <PartialsLegacyWormholeTags
             v-if="legacyWHMarketDenom"
             is-legacy
             class="ml-2 block sm:hidden md:block"

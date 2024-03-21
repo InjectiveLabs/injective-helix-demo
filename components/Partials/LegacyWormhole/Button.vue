@@ -31,7 +31,7 @@ const link = computed(() => {
 <template>
   <NuxtLink
     :to="link"
-    :target="isMigration ? '_blank' : '_self'"
+    :target="isMigration ? '_blank' : undefined"
     class="inline-block bg-orange-300 rounded-[4px] px-1.5 text-gray-925 font-semibold leading-6 text-sm"
   >
     <slot>
