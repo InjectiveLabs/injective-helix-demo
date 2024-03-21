@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal, UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { legacyWHDenoms } from '@/app/data/token'
+import { getNewMarketSlugFromWHDenom } from '@/app/utils/market'
+import { Modal, TradingBotsSubPage, UiMarketWithToken } from '@/types'
 
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
@@ -23,6 +25,10 @@ const isWelcomeBannerViewed = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() => gridStrategyStore.spotMarket)
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (market.value?.baseDenom || ''))
+)
 
 function onLoad(pageMarket: UiMarketWithToken) {
   Promise.all([
@@ -105,4 +111,32 @@ onUnmounted(() => {
       <ModalsLiquiditySgtBanner />
     </template>
   </PartialsTradingLayout>
+
+  <CommonLegacyWormholeBanner v-if="legacyWHMarketDenom">
+    <template #default>
+      <div class="inline-block lg:space-x-2">
+        <span>
+          {{ $t('common.legacy.marketIsMigrating') }}
+        </span>
+
+        <span>
+          <CommonLegacyWormholeButton
+            v-bind="{
+              denom: legacyWHMarketDenom,
+              to: {
+                name: TradingBotsSubPage.GridSpotMarket,
+                params: {
+                  market: getNewMarketSlugFromWHDenom(legacyWHMarketDenom)
+                }
+              }
+            }"
+          />
+        </span>
+      </div>
+    </template>
+
+    <template #add-on>
+      <CommonLegacyWormholeLearnMore />
+    </template>
+  </CommonLegacyWormholeBanner>
 </template>

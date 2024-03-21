@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { legacyWHDenoms } from '@/app/data/token'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
-defineProps({
+const props = defineProps({
   expanded: Boolean,
   isGrid: Boolean,
 
@@ -15,6 +16,10 @@ defineProps({
     required: true
   }
 })
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (props.market.baseToken.denom || ''))
+)
 
 const emit = defineEmits<{
   'marketsList:toggle': []
@@ -67,6 +72,8 @@ function tokenClick() {
               {{ market.baseToken.name }}
             </p>
           </div>
+
+          <CommonLegacyWormholeTags v-if="legacyWHMarketDenom" is-legacy />
 
           <PartialsCommonMarketAirdrop :market="market" />
         </div>

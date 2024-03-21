@@ -4,6 +4,7 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { legacyWHDenoms } from '@/app/data/token'
 import { AccountBalance, BusEvents, Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -42,6 +43,12 @@ const {
   }
 )
 
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find(
+    (denom) => denom === (props.balance.token.denom as string)
+  )
+)
+
 function openAssetDetailsModal() {
   useEventBus<AccountBalance>(BusEvents.AssetDetailsModalPayload).emit(
     props.balance
@@ -75,6 +82,11 @@ function openAssetDetailsModal() {
               {{ balance.token.name }}
             </span>
           </div>
+
+          <CommonLegacyWormholeTags
+            v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
+            is-action-required
+          />
         </div>
       </div>
     </td>

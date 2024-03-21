@@ -6,13 +6,14 @@ import { format, formatDistance } from 'date-fns'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { backupPromiseCall } from '@/app/utils/async'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { legacyWHDenoms } from '@/app/data/token'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { TradingBotsSubPage } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -42,6 +43,12 @@ const market = computed(
     spotStore.markets.find(
       ({ marketId }) => marketId === props.strategy.marketId
     )!
+)
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find(
+    (denom) => denom === (market.value?.baseToken.denom || '')
+  )
 )
 
 const { pnl, percentagePnl } = useActiveGridStrategy(
@@ -171,6 +178,8 @@ useIntervalFn(() => {
       <div>
         {{ market.ticker }}
       </div>
+
+      <CommonLegacyWormholeTooltip v-if="legacyWHMarketDenom" class="-ml-1" />
     </div>
 
     <div class="flex items-center justify-end">

@@ -65,7 +65,27 @@ export default {
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
     [TimeDuration.Minute]: 'Minute',
-    [TimeDuration.Second]: 'Second'
+    [TimeDuration.Second]: 'Second',
+    legacy: {
+      title: 'Legacy',
+      migrate: 'Migrate',
+      attention: 'Attention: ',
+      actionRequired: 'Action Required',
+      learnMore: 'Learn more',
+      affectedMarkets: 'Affected markets and tokens: ',
+      goToTokenMigrationPage: 'Go to token migration page',
+      marketIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please visit the updated listing here: ',
+      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          named('attention'),
+          'Helix will be migrating all Wormhole-wrapped assets to Injective native tokens. Please ensure any open limit orders or active spot grid trading bots related to these markets are cancelled, and migrated to the new pair for each asset. ',
+          named('learnMore'),
+          '.'
+        ]),
+      goToNewMarket: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} market`
+    }
   },
   underMaintenance: 'Under Maintenance',
   welcome_to_ip:
