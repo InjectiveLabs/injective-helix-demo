@@ -28,7 +28,7 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapper @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/bitget" class="w-8 h-8" />
+      <BaseIcon name="wallet/BitGet" class="w-8 h-8" />
     </template>
 
     <template #title>
