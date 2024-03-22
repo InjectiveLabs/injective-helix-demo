@@ -2064,10 +2064,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.12.47-alpha.2":
-  version "1.12.47-alpha.2"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.47-alpha.2.tgz#7b4e4baa6a7a0a59f7e69848e6760da4c0fcc12f"
-  integrity sha512-An4vZOZ0k+AvhcSbbH8j0LqhUnD2SogLjGOmkwGrQTdgF05CQv5oqfPNghB5/iKyfC1g8dQGUjEx7nWGgSW6YQ==
+"@injectivelabs/ui-shared@1.12.47-alpha.3":
+  version "1.12.47-alpha.3"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.47-alpha.3.tgz#f2b97f03ed56488020543e8327776c497937501a"
+  integrity sha512-RwMTVaqtWoPYgDyTt2B4C4FAgK0rRjwA1+dhYIKvH8TLa3oRAMb9bzEzudXsU8F+ItSFtX+sIe00lyu3zskHdw==
   dependencies:
     "@nuxt/kit" "3.5.3"
     "@types/qrcode" "^1.5.5"
