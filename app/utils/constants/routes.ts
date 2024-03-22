@@ -113,7 +113,14 @@ export const getRoutes = (network: Network, env: string) => {
     'ninj-inj',
     'dojo-inj',
     'andr-usdt',
-    'hinj-inj'
+    'hinj-inj',
+    'dojo-inj',
+    'andr-usdt',
+    'hinj-inj',
+    'usde-usdt',
+    'usdc-usdt',
+    'pyth-inj',
+    'nonja-inj'
   ]
 
   const binaryOptions: string[] = []
@@ -190,6 +197,11 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
   )
+
+  const gridTradingSpotHistoryRoutes = gridTradingSpot.map(
+    (s) => `/trading-bots/grid/spot/${s}/history`
+  )
+
   const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
 
   return {
@@ -207,7 +219,10 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
-      gridTradingSpotRoutes,
+      gridTradingSpotRoutes: [
+        ...gridTradingSpotRoutes,
+        ...gridTradingSpotHistoryRoutes
+      ],
       liquidityBotSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,
