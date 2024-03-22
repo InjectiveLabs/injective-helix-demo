@@ -146,7 +146,7 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    // spot.push('pyth-usdt')
+    spot.push('solgw-usdt', 'arbgw-usdt', 'wmaticgw-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
