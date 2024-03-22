@@ -6,12 +6,12 @@ const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
-const downloadPhantomLink = ref<any>(null)
+const downloadBitGetLink = ref<any>(null)
 
 function connect() {
-  if (walletStore.phantomInstalled) {
+  if (walletStore.bitGetInstalled) {
     walletStore
-      .connectPhantom()
+      .connectBitGet()
       .then(() => {
         success({ title: t('connect.successfullyConnected') })
       })
@@ -19,8 +19,8 @@ function connect() {
         walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
       })
-  } else if (downloadPhantomLink.value && downloadPhantomLink.value.$el) {
-    downloadPhantomLink.value.$el.click()
+  } else if (downloadBitGetLink.value && downloadBitGetLink.value.$el) {
+    downloadBitGetLink.value.$el.click()
   }
 }
 </script>
@@ -28,24 +28,23 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapper @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/phantom" class="w-8 h-8" />
+      <BaseIcon name="wallet/bitget" class="w-8 h-8" />
     </template>
 
     <template #title>
-      {{ $t('connect.phantom') }}
-      <span class="text-2xs ml-2 text-primary-500">Beta</span>
+      {{ $t('connect.bitGet') }}
     </template>
 
     <template #description>
-      <span data-cy="connect-wallet-popup-phantom-wallet-button">
+      <span data-cy="connect-wallet-popup-bitget-button">
         {{ $t('connect.connectUsingBrowser') }}
       </span>
     </template>
 
-    <template v-if="!walletStore.phantomInstalled" #icon>
+    <template v-if="!walletStore.bitGetInstalled" #icon>
       <NuxtLink
-        ref="downloadPhantomLink"
-        to="https://phantom.app/download"
+        ref="downloadBitGetLink"
+        to="https://web3.bitget.com/en/wallet-download"
         target="_blank"
         rel="noreferrer"
       >

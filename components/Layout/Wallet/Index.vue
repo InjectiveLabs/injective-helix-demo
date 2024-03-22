@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
+import { GEO_IP_RESTRICTIONS_ENABLED, IS_STAGING } from '@/app/utils/constants'
 
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
@@ -26,7 +26,8 @@ onMounted(() => {
     walletStore.isMetamaskInstalled(),
     walletStore.isTrustWalletInstalled(),
     walletStore.isPhantomInstalled(),
-    walletStore.isOkxWalletInstalled()
+    walletStore.isOkxWalletInstalled(),
+    walletStore.isBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -112,6 +113,9 @@ watch(isModalOpen, (newShowModalState) => {
     >
       <LayoutWalletConnectWalletMetamask />
       <LayoutWalletConnectWalletOkxWallet />
+      <template v-if="IS_STAGING">
+        <LayoutWalletConnectWalletBitGet />
+      </template>
       <LayoutWalletConnectWalletKeplr />
       <LayoutWalletConnectWalletNinji />
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />

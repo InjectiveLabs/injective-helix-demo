@@ -56,7 +56,8 @@ export default {
     trustWallet: 'Trust Wallet',
     ninji: 'Ninji',
     phantom: 'Phantom',
-    okxWallet: 'OKX Wallet'
+    okxWallet: 'OKX Wallet',
+    bitGet: 'BitGet'
   },
 
   memo: {
