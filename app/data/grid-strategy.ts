@@ -111,7 +111,20 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'usdc-usdt',
     contractAddress: 'inj16ppjvumwvlur8e6r8le39j7wjrrh8dnjevx72h'
+  },
+  {
+    slug: 'pyth-inj',
+    contractAddress: 'inj1ed5cscyx60ds595cs39h7grv2hjfmphaftje0n'
+  },
+  {
+    slug: 'nonja-inj',
+    contractAddress: 'inj1m4grapgrypgycfv8v0sq2kwgswj9vgjwdvx79u'
   }
+  // Add this when market goes live
+  // {
+  //   slug: 'lvn-inj',
+  //   contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
+  // }
 ]
 
 if (IS_STAGING) {
