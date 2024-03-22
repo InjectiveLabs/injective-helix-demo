@@ -1992,10 +1992,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.11-beta.30":
-  version "1.14.11-beta.30"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.30.tgz#6756bcc9162667de725afdc4bce918b21ea9302c"
-  integrity sha512-6kQ8OqJ2+kUpvZYDP/jznlhbph514Ts0JfLprgJZLSt9gJWLL09M1L4uahckmytOelIQhVo1iKsM27in/PQfPg==
+"@injectivelabs/sdk-ui-ts@1.14.11-beta.31":
+  version "1.14.11-beta.31"
+  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.31.tgz#33b638cf0ae8fac137e1881277c9cc7025f82cd2"
+  integrity sha512-7gZf+v2LhSe0VF99SOQiNtYM7TNMUkVkdjnVBpAo+5MSAzxg3EyDWd7KiUltY8+zocvsBuHUdIEB+s3wso/pMA==
   dependencies:
     "@injectivelabs/contracts" "^1.14.11-beta.4"
     "@injectivelabs/exceptions" "^1.14.11-beta.3"
@@ -2064,10 +2064,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ui-shared@1.12.46":
-  version "1.12.46"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.46.tgz#9d037b2654258297da2c3a5402ca3efc896ee2ec"
-  integrity sha512-BXctiFq/m2wmOFQUI26GFdM+dnu8/mynDLbvo8z8007Xo0nf1fpus6pTkBGE/jXKt8GTd5fQacD/20GsfYaUKw==
+"@injectivelabs/ui-shared@1.12.47-alpha.2":
+  version "1.12.47-alpha.2"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.12.47-alpha.2.tgz#7b4e4baa6a7a0a59f7e69848e6760da4c0fcc12f"
+  integrity sha512-An4vZOZ0k+AvhcSbbH8j0LqhUnD2SogLjGOmkwGrQTdgF05CQv5oqfPNghB5/iKyfC1g8dQGUjEx7nWGgSW6YQ==
   dependencies:
     "@nuxt/kit" "3.5.3"
     "@types/qrcode" "^1.5.5"
@@ -2091,10 +2091,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.11-beta.27":
-  version "1.14.11-beta.27"
-  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.27.tgz#318538be1b944ed8f4cd8221c388478345000ff1"
-  integrity sha512-Ai7dpnll0HhJhcEArrPMl1omywULLEZwQG4PClf/CdUf5+PMqAMoPubOkoUuux4jSxiLfcWmfIjRP4Z8VGC2XQ==
+"@injectivelabs/wallet-ts@1.14.11-beta.29":
+  version "1.14.11-beta.29"
+  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.29.tgz#cbf4d9f8c0a7339fd44a40417baac10857b3614a"
+  integrity sha512-5Z8GF5ApDy0IRQ5cH2/JJsYdhYdn58667duvJ5mATS4LUV8Uotrdj24pntEGXdsv37Ogkoi08u11xdc0yUzKfQ==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
