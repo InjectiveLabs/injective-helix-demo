@@ -4,7 +4,10 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import { legacyWHDenoms } from '@/app/data/token'
-import { getNewMarketSlugFromWHDenom } from '@/app/utils/market'
+import {
+  getNewMarketSlugFromWHDenom,
+  getNewMarketTickerFromWHDenom
+} from '@/app/utils/market'
 import { Modal, TradingBotsSubPage, UiMarketWithToken } from '@/types'
 
 definePageMeta({
@@ -116,13 +119,12 @@ onUnmounted(() => {
     <template #default>
       <div class="inline-block lg:space-x-2">
         <span>
-          {{ $t('common.legacy.marketIsMigrating') }}
+          {{ $t('common.legacy.spotGridIsMigrating') }}
         </span>
 
         <span>
           <PartialsLegacyWormholeButton
             v-bind="{
-              denom: legacyWHMarketDenom,
               to: {
                 name: TradingBotsSubPage.GridSpotMarket,
                 params: {
@@ -130,7 +132,21 @@ onUnmounted(() => {
                 }
               }
             }"
-          />
+          >
+            <div class="flex justify-center items-center">
+              <span>
+                {{
+                  $t('common.legacy.goToNewSGT', {
+                    market: getNewMarketTickerFromWHDenom(
+                      legacyWHMarketDenom || ''
+                    )
+                  })
+                }}
+              </span>
+
+              <BaseIcon name="arrow" class="ml-1 w-3 h-3 min-w-3 rotate-180" />
+            </div>
+          </PartialsLegacyWormholeButton>
         </span>
       </div>
     </template>

@@ -67,20 +67,13 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
         v-if="
           legacyWHBankAssets.length > 0 || legacyWHSubaccountAssets.length > 0
         "
-        v-bind="{ isDisabled: legacyWHSubaccountAssets.length === 0 }"
       >
-        <template #default="{ isExpanded, affectedMarkets }">
+        <template #default>
           <div class="flex flex-col">
             <div
-              class="flex flex-col sm:flex-row justify-center items-center max-w-[1200px] gap-4"
+              class="flex flex-col lg:flex-row justify-center items-center gap-4"
             >
-              <i18n-t
-                keypath="common.legacy.attentionBanner"
-                tag="p"
-                :class="{
-                  truncate: !isExpanded && legacyWHSubaccountAssets.length > 0
-                }"
-              >
+              <i18n-t keypath="common.legacy.attentionBanner" tag="p">
                 <template #attention>
                   <span class="font-bold">{{
                     $t('common.legacy.attention')
@@ -91,8 +84,9 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
                 </template>
               </i18n-t>
 
-              <PartialsLegacyWormholeMigrateButton
+              <PartialsLegacyWormholeButton
                 v-if="legacyWHSubaccountAssets.length === 0"
+                is-migration
               >
                 <div class="flex items-center justify-center gap-1">
                   <span class="whitespace-nowrap">
@@ -104,35 +98,9 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
                     class="font-bold w-3 h-3 min-w-3 rotate-180"
                   />
                 </div>
-              </PartialsLegacyWormholeMigrateButton>
-            </div>
-
-            <div v-if="isExpanded" class="flex flex-col">
-              <span>
-                {{ $t('common.legacy.affectedMarkets') }}
-              </span>
-              <div
-                v-for="{ ticker, marketId } in affectedMarkets"
-                :key="marketId"
-              >
-                {{ `- ${ticker}` }}
-              </div>
+              </PartialsLegacyWormholeButton>
             </div>
           </div>
-        </template>
-
-        <template
-          v-if="legacyWHSubaccountAssets.length > 0"
-          #add-on="{ isExpanded }"
-        >
-          <BaseIcon
-            name="caret-thin"
-            class="font-normal min-w-[12px] w-[12px] h-[12px] mt-1.5 transition-transform duration-300"
-            :class="{
-              'rotate-90': isExpanded,
-              '-rotate-90': !isExpanded
-            }"
-          />
         </template>
       </PartialsLegacyWormholeBanner>
     </div>

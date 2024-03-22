@@ -75,16 +75,20 @@ export default {
       affectedMarkets: 'Affected markets and tokens: ',
       goToTokenMigrationPage: 'Go to token migration page',
       marketIsMigrating:
-        'Attention: This market will be migrating to the latest native issuance of this asset. Please visit the updated listing here: ',
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
+      spotGridIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
       attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
           named('attention'),
-          'Helix will be migrating all Wormhole-wrapped assets to Injective native tokens. Please ensure any open limit orders or active spot grid trading bots related to these markets are cancelled, and migrated to the new pair for each asset. ',
+          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
           named('learnMore'),
           '.'
         ]),
       goToNewMarket: ({ named }: I18nMessageFunction) =>
-        `Go to new ${named('market')} market`
+        `Go to new ${named('market')} market`,
+      goToNewSGT: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} spot grid`
     }
   },
   underMaintenance: 'Under Maintenance',

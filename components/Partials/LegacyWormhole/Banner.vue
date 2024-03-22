@@ -1,41 +1,28 @@
 <script lang="ts" setup>
-import { legacyWHDenoms } from '@/app/data/token'
+const isVisible = ref(true)
 
-const spotStore = useSpotStore()
-
-const props = defineProps({
-  isDisabled: Boolean
-})
-
-const isExpanded = ref(false)
-
-const affectedMarkets = computed(() =>
-  spotStore.markets.filter((market) =>
-    legacyWHDenoms.includes(market.baseToken.denom)
-  )
-)
-
-function onToggleExpanded() {
-  if (props.isDisabled) {
-    return
-  }
-
-  isExpanded.value = !isExpanded.value
+function onClose() {
+  isVisible.value = false
 }
 </script>
 
 <template>
-  <ClientOnly>
+  <ClientOnly v-if="isVisible">
     <Teleport to="#legacy-wormhole-banner">
       <div
         class="w-full py-3 px-4 text-gray-925 font-medium bg-orange-200 flex justify-between items-start text-sm leading-6"
-        @click="onToggleExpanded"
       >
         <div class="w-full">
-          <slot v-bind="{ isExpanded, affectedMarkets }" />
+          <slot />
         </div>
 
-        <slot v-if="$slots['add-on']" v-bind="{ isExpanded }" name="add-on" />
+        <slot v-if="$slots['add-on']" name="add-on" />
+
+        <BaseIcon
+          name="close"
+          class="w-4 h-4 min-w-4 font-normal mt-1 ml-4"
+          @click="onClose"
+        />
       </div>
     </Teleport>
   </ClientOnly>

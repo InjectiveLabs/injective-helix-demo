@@ -85,13 +85,10 @@ function onCancelOrders() {
     </ClientOnly>
 
     <PartialsLegacyWormholeBanner v-if="legacyWormholeOrders.length > 0">
-      <template #default="{ isExpanded, affectedMarkets }">
+      <template #default>
         <div class="flex flex-col">
-          <i18n-t
-            keypath="common.legacy.attentionBanner"
-            tag="p"
-            :class="{ truncate: !isExpanded }"
-          >
+          <i18n-t keypath="common.legacy.attentionBanner" tag="p">
+            >
             <template #attention>
               <span class="font-bold">{{ $t('common.legacy.attention') }}</span>
             </template>
@@ -99,30 +96,7 @@ function onCancelOrders() {
               <PartialsLegacyWormholeLearnMore />
             </template>
           </i18n-t>
-
-          <div v-if="isExpanded" class="flex flex-col">
-            <span>
-              {{ $t('common.legacy.affectedMarkets') }}
-            </span>
-            <div
-              v-for="{ ticker, marketId } in affectedMarkets"
-              :key="marketId"
-            >
-              {{ `- ${ticker}` }}
-            </div>
-          </div>
         </div>
-      </template>
-
-      <template #add-on="{ isExpanded }">
-        <BaseIcon
-          name="caret-thin"
-          class="font-normal min-w-[12px] w-[12px] h-[12px] mt-1.5 transition-transform duration-300"
-          :class="{
-            'rotate-90': isExpanded,
-            '-rotate-90': !isExpanded
-          }"
-        />
       </template>
     </PartialsLegacyWormholeBanner>
 

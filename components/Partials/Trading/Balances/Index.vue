@@ -10,7 +10,6 @@ import {
   BankBalanceIntegrityStrategy,
   SubaccountBalanceIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
-import { legacyWHDenoms } from '@/app/data/token'
 import { MainPage, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
 const appStore = useAppStore()
@@ -29,10 +28,6 @@ const isSpot = props.market.type === MarketType.Spot
 const status = reactive(new Status(StatusType.Loading))
 
 const { accountBalancesWithToken } = useBalance()
-
-const legacyWHMarketDenom = computed(() =>
-  legacyWHDenoms.find((denom) => denom === (props.market.baseToken.denom || ''))
-)
 
 const baseTradingBalance = computed(() => {
   if (!isSpot) {
@@ -84,10 +79,6 @@ const quoteTradingBalanceToFormat = computed(() =>
   new BigNumberInWei(quoteTradingBalance.value?.availableMargin || '0')
     .toBase(props.market.quoteToken.decimals)
     .toFormat(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-)
-
-const { valueToBigNumber: availableMarginToBigNumber } = useBigNumberFormatter(
-  computed(() => baseTradingBalance.value?.availableMargin)
 )
 
 onMounted(() => {
@@ -204,19 +195,12 @@ useIntervalFn(() => {
                 v-if="isSpot"
                 class="flex justify-between items-center text-xs mb-4"
               >
-                <span class="flex gap-1">
-                  <span class="text-gray-500">
-                    {{
-                      $t('trade.available_asset', {
-                        asset: market.baseToken.symbol
-                      })
-                    }}
-                  </span>
-                  <PartialsLegacyWormholeTooltip
-                    v-if="
-                      legacyWHMarketDenom && availableMarginToBigNumber.gt(0)
-                    "
-                  />
+                <span class="text-gray-500">
+                  {{
+                    $t('trade.available_asset', {
+                      asset: market.baseToken.symbol
+                    })
+                  }}
                 </span>
 
                 <span class="font-mono text-white">

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 defineProps({
   isLegacy: Boolean,
-  isMigrate: Boolean,
   isActionRequired: Boolean
 })
 </script>
@@ -27,12 +26,5 @@ defineProps({
         {{ $t('common.legacy.actionRequired') }}
       </span>
     </div>
-
-    <NuxtLink
-      v-else-if="isMigrate"
-      class="px-1.5 text-gray-925 leading-6 text-sm"
-    >
-      {{ $t('common.legacy.migrate') }}
-    </NuxtLink>
   </div>
 </template>

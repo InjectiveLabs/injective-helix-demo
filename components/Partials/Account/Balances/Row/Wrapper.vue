@@ -126,12 +126,9 @@ const legacyWHMarketDenom = computed(() =>
 
         <span
           v-else-if="inOrderBalanceInBigNumber.gt(0)"
-          class="font-mono text-sm text-right flex items-center justify-center gap-1"
+          class="font-mono text-sm text-right"
         >
-          <PartialsLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
-          <span>
-            {{ inOrderBalanceInString }}
-          </span>
+          {{ inOrderBalanceInString }}
         </span>
 
         <span v-else> &mdash; </span>

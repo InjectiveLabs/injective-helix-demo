@@ -103,9 +103,10 @@ function onCancelOrder() {
             {{ market.ticker }}
           </span>
         </div>
-        <PartialsLegacyWormholeTooltip
+        <PartialsLegacyWormholeTags
           v-if="legacyWHMarketDenom"
           class="ml-1.5"
+          is-legacy
         />
       </NuxtLink>
     </td>

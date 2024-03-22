@@ -6,7 +6,6 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
-import { legacyWHDenoms } from '@/app/data/token'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -48,12 +47,6 @@ const marketRoute = computed(() => {
 
   return getMarketRoute(market.value)
 })
-
-const legacyWHMarketDenom = computed(() =>
-  legacyWHDenoms.find(
-    (denom) => denom === (market.value?.baseToken.denom || '')
-  )
-)
 
 function onCancelOrder() {
   status.setLoading()
@@ -100,8 +93,6 @@ function onCancelOrder() {
           <span v-if="leverage.gte(0)" class="font-mono">
             {{ leverage.toFormat(2) }}x
           </span>
-
-          <PartialsLegacyWormholeTooltip v-if="legacyWHMarketDenom" />
         </div>
 
         <PartialsCommonCancelButton
