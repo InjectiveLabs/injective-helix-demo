@@ -199,11 +199,17 @@ function tradeClickedTrack() {
               {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
             </span>
           </div>
-          <PartialsLegacyWormholeTags
-            v-if="legacyWHMarketDenom"
-            is-legacy
-            class="ml-2 block sm:hidden md:block"
-          />
+          <template v-if="legacyWHMarketDenom">
+            <PartialsLegacyWormholeTags
+              is-legacy
+              class="large:ml-2 hidden lg:block"
+            />
+            <PartialsLegacyWormholeTags
+              is-tooltip
+              class="large:ml-2 block lg:hidden"
+            />
+          </template>
+
           <PartialsCommonMarketAirdrop
             :market="market"
             class="visible sm:invisible lg:visible ml-auto"

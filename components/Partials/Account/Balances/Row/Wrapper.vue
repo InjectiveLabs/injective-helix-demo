@@ -92,7 +92,7 @@ const legacyWHMarketDenom = computed(() =>
           <PartialsLegacyWormholeTags
             v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
             is-action-required
-            class="absolute -right-1 top-0.5"
+            class="absolute -right-12 top-0.5"
           />
         </div>
       </slot>
