@@ -205,7 +205,7 @@ useIntervalFn(() => {
               to: {
                 name: TradeSubPage.Spot,
                 params: {
-                  market: getNewMarketSlugFromWHDenom(legacyWHMarketDenom)
+                  spot: getNewMarketSlugFromWHDenom(legacyWHMarketDenom)
                 }
               }
             }"
