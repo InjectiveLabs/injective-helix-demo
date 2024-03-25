@@ -9,7 +9,6 @@ import airdrop from './airdrop/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
-import ethdenver from './ethdenver/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import tradeAndEarn from './tradeAndEarn/en'
@@ -29,7 +28,6 @@ export default {
   ...account,
   ...banners,
   ...campaign,
-  ...ethdenver,
   ...activities,
   ...activities,
   ...leaderboard,
