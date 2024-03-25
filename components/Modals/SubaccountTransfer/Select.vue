@@ -45,8 +45,8 @@ const sourceOptions = computed(() =>
       return {
         display:
           subaccountIdIndex === 0
-            ? t('bridge.mainSubaccount')
-            : t('bridge.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('account.mainSubaccount')
+            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
         value: subaccountId
       }
     })
@@ -62,8 +62,8 @@ const destinationOptions = computed(() => {
       return {
         display:
           subaccountIdIndex === 0
-            ? t('bridge.mainSubaccount')
-            : t('bridge.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('account.mainSubaccount')
+            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
         value: subaccountId
       }
     })
@@ -71,7 +71,7 @@ const destinationOptions = computed(() => {
   return [
     ...existingSubaccountIds,
     {
-      display: t('bridge.subaccountId', {
+      display: t('account.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
       value: addBaseSubaccountIndexToAddress(

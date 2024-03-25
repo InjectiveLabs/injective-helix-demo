@@ -8,7 +8,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { AccountBalance, MainPage, BridgeType, Modal } from '@/types'
+import { AccountBalance, Modal } from '@/types'
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
@@ -158,27 +158,23 @@ function onTransferClick() {
       </div>
 
       <div class="flex items-center justify-between md:justify-end sm:gap-4">
-        <BaseNuxtLink
-          v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Deposit } }"
-        >
-          <AppButton class="bg-blue-500">
-            <span class="text-blue-900 font-semibold">
-              {{ $t('account.deposit') }}
-            </span>
-          </AppButton>
-        </BaseNuxtLink>
+        <template v-if="!isLoading && accountStore.isDefaultSubaccount">
+          <PartialsAccountBridgeRedirection is-deposit>
+            <AppButton class="bg-blue-500">
+              <span class="text-blue-900 font-semibold">
+                {{ $t('account.deposit') }}
+              </span>
+            </AppButton>
+          </PartialsAccountBridgeRedirection>
 
-        <BaseNuxtLink
-          v-if="!isLoading && accountStore.isDefaultSubaccount"
-          :to="{ name: MainPage.Bridge, query: { type: BridgeType.Withdraw } }"
-        >
-          <AppButton class="border border-blue-500">
-            <span class="text-blue-500 font-semibold">
-              {{ $t('account.withdraw') }}
-            </span>
-          </AppButton>
-        </BaseNuxtLink>
+          <PartialsAccountBridgeRedirection>
+            <AppButton class="border border-blue-500">
+              <span class="text-blue-500 font-semibold">
+                {{ $t('account.withdraw') }}
+              </span>
+            </AppButton>
+          </PartialsAccountBridgeRedirection>
+        </template>
 
         <AppButton
           v-if="

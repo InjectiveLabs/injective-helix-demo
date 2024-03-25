@@ -8,7 +8,6 @@ import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   Modal,
   TradeField,
-  BridgeField,
   SwapFormField,
   SubaccountTransferField
 } from '@/types'
@@ -60,7 +59,7 @@ const props = defineProps({
 
   amountFieldName: {
     type: String as PropType<
-      TradeField | BridgeField | SubaccountTransferField | SwapFormField
+      TradeField | SubaccountTransferField | SwapFormField
     >,
     default: TradeField.BaseAmount
   },

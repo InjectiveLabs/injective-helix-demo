@@ -5,6 +5,7 @@ import {
   UiSpotLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
+import { legacyWHDenoms } from '@/app/data/token'
 import { TradeSubPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -54,6 +55,12 @@ const marketRoute = computed(() => {
   return getMarketRoute(market.value)
 })
 
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find(
+    (denom) => denom === (market.value?.baseToken.denom || '')
+  )
+)
+
 function onCancelOrder() {
   status.setLoading()
 
@@ -96,6 +103,11 @@ function onCancelOrder() {
             {{ market.ticker }}
           </span>
         </div>
+        <PartialsLegacyWormholeTags
+          v-if="legacyWHMarketDenom"
+          class="ml-1.5"
+          is-legacy
+        />
       </NuxtLink>
     </td>
 

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { NETWORK } from '@/app/utils/constants'
+import { getExplorerUrl } from '@/app/utils/network'
 
 const props = defineProps({
   rank: {
@@ -28,7 +27,7 @@ const props = defineProps({
 const avatarSrc = ref('')
 
 const explorerUrl = computed(
-  () => `${getExplorerUrl(NETWORK)}/account/${props.address}/?tab=transactions`
+  () => `${getExplorerUrl()}/account/${props.address}/?tab=transactions`
 )
 
 const percentage = computed(() => Number(props.percentage))

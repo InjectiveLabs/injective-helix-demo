@@ -13,7 +13,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
-import { stableCoinDenoms } from '@/app/data/token'
+import { stableCoinDenoms, legacyWHDenoms } from '@/app/data/token'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { Change, TradeClickOrigin, MarketStatus } from '@/types'
@@ -49,6 +49,10 @@ const lastTradedPrice = computed(() => {
 
   return new BigNumberInBase(props.summary.lastPrice || props.summary.price)
 })
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (props.market.baseToken.denom || ''))
+)
 
 const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
   computed(() => {
@@ -180,7 +184,7 @@ function tradeClickedTrack() {
             :token="market.baseToken"
             class="mr-3 hidden 3md:block"
           />
-          <div class="flex flex-col w-full overflow-hidden">
+          <div class="flex flex-col overflow-hidden">
             <span
               class="tracking-wider font-bold mb-1 overflow-hidden overflow-ellipsis items-start"
               :title="market.ticker"
@@ -195,6 +199,17 @@ function tradeClickedTrack() {
               {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
             </span>
           </div>
+          <template v-if="legacyWHMarketDenom">
+            <PartialsLegacyWormholeTags
+              is-legacy
+              class="large:ml-2 hidden lg:block"
+            />
+            <PartialsLegacyWormholeTags
+              is-tooltip
+              class="large:ml-2 block lg:hidden"
+            />
+          </template>
+
           <PartialsCommonMarketAirdrop
             :market="market"
             class="visible sm:invisible lg:visible ml-auto"

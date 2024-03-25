@@ -25,6 +25,7 @@ import {
   slugsToIncludeInEthereumCategory,
   slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
+import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MarketRoute,
@@ -353,4 +354,26 @@ export const combineOrderbookRecords = ({
       ? new BigNumberInBase(b.price).minus(a.price).toNumber()
       : new BigNumberInBase(a.price).minus(b.price).toNumber()
   })
+}
+
+export const getNewMarketSlugFromWHDenom = (denom: string) => {
+  switch (denom) {
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
+      return 'sol-usdt'
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
+      return 'arb-usdt'
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
+      return 'wmatic-usdt'
+  }
+}
+
+export const getNewMarketTickerFromWHDenom = (denom: string) => {
+  switch (denom) {
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
+      return 'SOL/USDT'
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
+      return 'ARB/USDT'
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
+      return 'WMATIC/USDT'
+  }
 }

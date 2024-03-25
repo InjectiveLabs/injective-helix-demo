@@ -7,14 +7,6 @@ const tabs = [
   {
     label: t('walletHistory.transfers.transfers'),
     value: ActivitySubPage.WalletHistory
-  },
-  {
-    label: t('walletHistory.deposits'),
-    value: ActivitySubPage.WalletHistoryDeposits
-  },
-  {
-    label: t('walletHistory.withdrawals'),
-    value: ActivitySubPage.WalletHistoryWithdrawals
   }
 ]
 </script>

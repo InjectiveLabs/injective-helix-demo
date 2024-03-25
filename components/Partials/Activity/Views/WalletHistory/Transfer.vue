@@ -1,22 +1,20 @@
 <script lang="ts" setup>
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import {
-  UiBridgeTransactionWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   DATE_TIME_DISPLAY,
   BIG_NUMBER_ROUND_HALF_UP_MODE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiSubaccountTransactionWithToken } from '@/types'
 
 const { t } = useLang()
 
 const props = defineProps({
   transaction: {
     required: true,
-    type: Object as PropType<UiBridgeTransactionWithToken>
+    type: Object as PropType<UiSubaccountTransactionWithToken>
   }
 })
 

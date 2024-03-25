@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
-  NETWORK,
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
+import { getExplorerUrl } from '@/app/utils/network'
 import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
@@ -93,9 +92,7 @@ const explorerLink = computed(() => {
     return
   }
 
-  return `${getExplorerUrl(NETWORK)}/account/${
-    campaignStore.guild.masterAddress
-  }`
+  return `${getExplorerUrl()}/account/${campaignStore.guild.masterAddress}`
 })
 
 const guildInvitationHash = computed(() =>

@@ -113,6 +113,7 @@ watch(
                       showFooter ? 'flex-auto' : 'flex-1'
                     ]"
                   >
+                    <div id="legacy-wormhole-banner" />
                     <NuxtPage />
                   </div>
                   <LayoutFooter v-if="showFooter" />
