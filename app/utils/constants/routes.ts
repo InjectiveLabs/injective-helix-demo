@@ -177,7 +177,7 @@ export const getRoutes = (network: Network, env: string) => {
     LiquidityRewardsPage.CampaignDetails
   ]
 
-  const customStaticRoutes: string[] = [`/${MainPage.EthDenver2024}`]
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 
