@@ -5,6 +5,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { legacyWHDenoms } from '@/app/data/token'
 import { Modal, BusEvents, TradeSubPage, AccountBalance } from '@/types'
 
 const modalStore = useModalStore()
@@ -16,6 +17,12 @@ const accountBalance = ref<AccountBalance | undefined>(undefined)
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AssetDetails] && !!accountBalance.value
+)
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find(
+    (denom) => denom === (accountBalance.value?.token.denom || '')
+  )
 )
 
 const filteredMarketsWithSummary = computed(() => {
@@ -57,13 +64,15 @@ const { valueToString: accountTotalBalanceToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: accountTotalBalanceInUsdToString } =
-  useBigNumberFormatter(
-    computed(() => accountBalance.value?.accountTotalBalanceInUsd || '0'),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const {
+  valueToString: accountTotalBalanceInUsdToString,
+  valueToBigNumber: accountTotalBalanceInBigNumber
+} = useBigNumberFormatter(
+  computed(() => accountBalance.value?.accountTotalBalanceInUsd || '0'),
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
 
 onMounted(() => {
   useEventBus<AccountBalance>(BusEvents.AssetDetailsModalPayload).on(
@@ -215,7 +224,17 @@ function closeModal() {
             </div>
           </div>
 
-          <div class="mt-auto flex justify-between gap-4">
+          <PartialsLegacyWormholeButton
+            v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
+            is-migration
+            class="flex justify-center"
+          >
+            <span>
+              {{ $t('common.legacy.migrate') }}
+            </span>
+          </PartialsLegacyWormholeButton>
+
+          <div v-else class="mt-auto flex justify-between gap-4">
             <PartialsAccountBridgeRedirection
               v-bind="{
                 isDeposit: true,

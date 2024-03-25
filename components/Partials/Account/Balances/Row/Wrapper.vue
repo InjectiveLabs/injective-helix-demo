@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { legacyWHDenoms } from '@/app/data/token'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -72,6 +73,10 @@ const {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (props.balance.token.denom || ''))
+)
 </script>
 
 <template>
@@ -81,7 +86,15 @@ const {
   >
     <td class="pl-4 w-56">
       <slot name="tokenSymbol">
-        <PartialsAccountBalancesRowTokenSymbol v-bind="{ balance }" />
+        <div class="relative">
+          <PartialsAccountBalancesRowTokenSymbol v-bind="{ balance }" />
+
+          <PartialsLegacyWormholeTags
+            v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
+            is-action-required
+            class="absolute -right-12 top-0.5"
+          />
+        </div>
       </slot>
     </td>
 
@@ -177,11 +190,24 @@ const {
 
     <td v-if="isHideActions" />
     <td v-else class="pr-4">
-      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
+      <div
+        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
+        :class="{
+          '-mr-4 ': legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)
+        }"
+      >
         <slot name="action">
           <PartialsAccountBalancesRowTradeLink :balance="balance" />
 
-          <template v-if="accountStore.isDefaultSubaccount">
+          <template
+            v-if="legacyWHMarketDenom && accountTotalBalanceInBigNumber.gt(0)"
+          >
+            <PartialsLegacyWormholeButton is-migration>
+              {{ $t('common.legacy.migrate') }}
+            </PartialsLegacyWormholeButton>
+            <div />
+          </template>
+          <template v-else-if="accountStore.isDefaultSubaccount">
             <PartialsAccountBridgeRedirection
               v-bind="{
                 isDeposit: true,

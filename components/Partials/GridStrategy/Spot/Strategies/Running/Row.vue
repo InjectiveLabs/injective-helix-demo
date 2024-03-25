@@ -11,8 +11,8 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { TradingBotsSubPage } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {

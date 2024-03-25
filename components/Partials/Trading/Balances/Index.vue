@@ -202,6 +202,7 @@ useIntervalFn(() => {
                     })
                   }}
                 </span>
+
                 <span class="font-mono text-white">
                   {{ baseTradingBalanceToFormat }}
                 </span>
