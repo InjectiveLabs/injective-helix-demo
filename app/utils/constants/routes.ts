@@ -162,8 +162,7 @@ export const getRoutes = (network: Network, env: string) => {
   const walletConnectedRequiredRouteNames = [
     MainPage.Bridge,
     MainPage.Account,
-    MainPage.Activity,
-    MainPage.EthDenver2024
+    MainPage.Activity
   ]
 
   // Layout routes
@@ -177,7 +176,7 @@ export const getRoutes = (network: Network, env: string) => {
     LiquidityRewardsPage.CampaignDetails
   ]
 
-  const customStaticRoutes: string[] = [`/${MainPage.EthDenver2024}`]
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 

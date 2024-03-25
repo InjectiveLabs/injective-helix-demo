@@ -119,12 +119,11 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'nonja-inj',
     contractAddress: 'inj1m4grapgrypgycfv8v0sq2kwgswj9vgjwdvx79u'
+  },
+  {
+    slug: 'lvn-inj',
+    contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
   }
-  // Add this when market goes live
-  // {
-  //   slug: 'lvn-inj',
-  //   contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
-  // }
 ]
 
 if (IS_STAGING) {

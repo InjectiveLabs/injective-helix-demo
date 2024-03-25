@@ -167,7 +167,14 @@ function onDestinationSubaccountIdUpdate() {
             </span>
             {{ option.display }}
           </span>
-          <span v-else :class="{ 'font-bold text-gray-100': isActive }">
+
+          <span
+            v-else
+            class="text-gray-100"
+            :class="{
+              'font-bold text-gray-100': isActive
+            }"
+          >
             {{ option.display }}
           </span>
         </template>
