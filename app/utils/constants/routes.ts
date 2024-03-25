@@ -162,8 +162,7 @@ export const getRoutes = (network: Network, env: string) => {
   const walletConnectedRequiredRouteNames = [
     MainPage.Bridge,
     MainPage.Account,
-    MainPage.Activity,
-    MainPage.EthDenver2024
+    MainPage.Activity
   ]
 
   // Layout routes
