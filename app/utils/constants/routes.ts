@@ -59,7 +59,10 @@ export const getRoutes = (network: Network, env: string) => {
     // 'usdcnb-usdt',
     'zig-inj',
     'nonja-inj',
-    'lvn-inj'
+    'lvn-inj',
+    'sollegacy-usdt',
+    'arblegacy-usdt',
+    'wmaticlegacy-usdt'
   ]
 
   const perpetuals = [
@@ -121,7 +124,10 @@ export const getRoutes = (network: Network, env: string) => {
     'usde-usdt',
     'usdc-usdt',
     'pyth-inj',
-    'nonja-inj'
+    'nonja-inj',
+    'sollegacy-usdt',
+    'arblegacy-usdt',
+    'wmaticlegacy-usdt'
   ]
 
   const binaryOptions: string[] = []

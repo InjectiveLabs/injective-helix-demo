@@ -357,25 +357,23 @@ export const combineOrderbookRecords = ({
 }
 
 export const getNewMarketSlugFromWHDenom = (denom: string) => {
-  // todo: update the symbols to legacy after token-metadata updates
   switch (denom) {
-    case getCw20FromSymbolOrNameAsString('SOL'):
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
       return 'sol-usdt'
-    case getCw20FromSymbolOrNameAsString('ARB'):
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
       return 'arb-usdt'
-    case getCw20FromSymbolOrNameAsString('WMATIC'):
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
       return 'wmatic-usdt'
   }
 }
 
 export const getNewMarketTickerFromWHDenom = (denom: string) => {
-  // todo: update the symbols to legacy after token-metadata updates
   switch (denom) {
-    case getCw20FromSymbolOrNameAsString('SOL'):
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
       return 'SOL/USDT'
-    case getCw20FromSymbolOrNameAsString('ARB'):
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
       return 'ARB/USDT'
-    case getCw20FromSymbolOrNameAsString('WMATIC'):
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
       return 'WMATIC/USDT'
   }
 }

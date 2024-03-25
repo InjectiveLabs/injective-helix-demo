@@ -37,11 +37,11 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
     contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
   },
   {
-    slug: 'wmatic-usdt',
+    slug: 'wmaticlegacy-usdt',
     contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
   },
   {
-    slug: 'arb-usdt',
+    slug: 'arblegacy-usdt',
     contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
   },
   {
@@ -53,7 +53,7 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
     contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
   },
   {
-    slug: 'sol-usdt',
+    slug: 'sollegacy-usdt',
     contractAddress: 'inj1a2xr74g9w78acf054jfwspzmgzy5flv5275642'
   },
   {
@@ -124,6 +124,23 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
     slug: 'lvn-inj',
     contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
   }
+  // Add this when market goes live
+  // {
+  //   slug: 'lvn-inj',
+  //   contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
+  // },
+  // {
+  //   slug: 'wmatic-usdt',
+  //   contractAddress: 'todo'
+  // },
+  // {
+  //   slug: 'arb-usdt',
+  //   contractAddress: 'todo'
+  // },
+  // {
+  //   slug: 'sol-usdt',
+  //   contractAddress: 'todo'
+  // }
 ]
 
 if (IS_STAGING) {

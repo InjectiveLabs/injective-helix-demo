@@ -26,7 +26,10 @@ defineProps({
       class="inline-flex py-0.5 px-1 justify-center items-center gap-0.5"
     >
       <span>
-        <BaseIcon name="circle-info" class="text-black w-4 h-4 min-w-4" />
+        <BaseIcon
+          name="exclamation-circle-fill"
+          class="text-black w-4 h-4 min-w-4"
+        />
       </span>
 
       <span class="text-black leading-3 uppercase text-[10px]">
