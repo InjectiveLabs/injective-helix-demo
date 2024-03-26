@@ -226,7 +226,7 @@ const legacyWHMarketDenom = computed(() =>
 
             <PartialsAccountBridgeRedirection
               v-bind="{
-                isDeposit: true,
+                isDeposit: false,
                 denom: balance.token.denom
               }"
             >

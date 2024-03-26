@@ -28,7 +28,7 @@ defineProps({
       <span>
         <BaseIcon
           name="exclamation-circle-fill"
-          class="text-black w-4 h-4 min-w-4"
+          class="text-black w-4 h-4 min-w-4 cursor-normal"
         />
       </span>
 

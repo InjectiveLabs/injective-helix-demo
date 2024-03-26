@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-// todo: update this when get blog post. also put link directly on the :to and kill the const
-const WORMHOLE_MIGRATION_BLOG = 'https://helixapp.com'
+const WORMHOLE_MIGRATION_BLOG =
+  'https://blog.injective.com/injective-bridge-ionic-upgrade'
 </script>
 
 <template>
   <NuxtLink
     :to="WORMHOLE_MIGRATION_BLOG"
     target="_blank"
-    class="hover:text-gray-200 underline whitespace-nowrap"
+    class="hover:text-gray-500 underline whitespace-nowrap"
   >
     {{ $t('common.legacy.learnMore') }}
   </NuxtLink>
