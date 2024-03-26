@@ -10,16 +10,20 @@ import {
   Modal,
   InvestmentTypeGst,
   SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  MainPage
 } from '@/types'
 import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
   GST_DEFAULT_AUTO_GRIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
+  LEGACY_MARKETIDS,
+  LEGACY_MARKET_TO_CURRENT_MARKETID_MAP,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
@@ -37,6 +41,7 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -44,6 +49,7 @@ const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const setFormValues = useSetFormValues()
 const validate = useValidateForm()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -239,23 +245,98 @@ function onInvestmentTypeSet() {
 
   onCreateStrategy()
 }
+
+const hasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.market.marketId]
+  )
+)
+
+const isLegacyMarket = computed(
+  () =>
+    !!LEGACY_MARKETIDS.find((marketId) => marketId === props.market.marketId)
+)
+
+const newMarketSlug = computed(
+  () =>
+    spotStore.markets.find(
+      (market) =>
+        market.marketId ===
+        LEGACY_MARKET_TO_CURRENT_MARKETID_MAP[props.market.marketId]
+    )?.slug || ''
+)
+
+function removeLegacyStrategy() {
+  if (!hasActiveLegacyStrategy.value) {
+    return
+  }
+
+  status.setLoading()
+
+  gridStrategyStore
+    .removeStrategyForSubaccount(
+      hasActiveLegacyStrategy.value.contractAddress,
+      hasActiveLegacyStrategy.value.subaccountId
+    )
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function reload() {
+  setTimeout(() => {
+    window.location.reload()
+  }, 50)
+}
 </script>
 
 <template>
   <div>
     <AppButton
-      :status="status"
-      is-lg
+      v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
       class="w-full shadow-none select-none"
+      :status="status"
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
           : 'bg-blue-500 text-blue-900'
       ]"
+      is-lg
       @click="onCheckBalanceFees"
     >
       <span>{{ $t('sgt.create') }}</span>
     </AppButton>
+
+    <p v-if="hasActiveLegacyStrategy" class="text-xs text-red-500 mt-4">
+      {{ $t('sgt.endLegacyBotText') }}
+    </p>
+
+    <AppButton
+      v-if="hasActiveLegacyStrategy"
+      class="bg-red-500 text-black w-full mt-4"
+      v-bind="{ status }"
+      @click="removeLegacyStrategy"
+    >
+      {{ $t('sgt.endBot') }}
+    </AppButton>
+
+    <NuxtLink
+      :to="{
+        name: MainPage.TradingBotsLiquidityBotsSpot,
+        query: { market: newMarketSlug }
+      }"
+      @click="reload"
+    >
+      <AppButton
+        v-if="isLegacyMarket"
+        class="text-xs bg-blue-500 text-blue-100 mt-4 w-full"
+      >
+        {{ $t('sgt.goToNewMarket') }}
+      </AppButton>
+    </NuxtLink>
 
     <ModalsLiquiditySgtBalancedFees
       v-bind="{
