@@ -1,9 +1,17 @@
 <script lang="ts" setup>
 import { MarketFilterType } from '@/types'
 
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
+const MARKETS_LIMIT = 10
 const FilterList = [MarketFilterType.Volume, MarketFilterType.New]
 
 const activeType = ref(MarketFilterType.Volume)
+
+const hasMarkets = computed(
+  () => derivativeStore.markets.length && spotStore.markets.length
+)
 </script>
 
 <template>
@@ -36,6 +44,12 @@ const activeType = ref(MarketFilterType.Volume)
       </div>
     </template>
 
-    <PartialsHomeCommonMarkets :filter-type="activeType" :limit="10" />
+    <PartialsHomeCommonMarkets
+      v-if="hasMarkets"
+      v-bind="{
+        limit: MARKETS_LIMIT,
+        filterType: activeType
+      }"
+    />
   </AppPanelLight>
 </template>

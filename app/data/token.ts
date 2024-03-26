@@ -96,3 +96,13 @@ export const legacyWHDenoms = [
   getCw20FromSymbolOrNameAsString('ARBlegacy'),
   getCw20FromSymbolOrNameAsString('WMATIClegacy')
 ]
+
+export const tokensDenomToPreloadHomepageSwap = [
+  INJ_DENOM,
+  // getIbcDenomFromSymbolOrNameAsString('SOL', TokenSource.Solana),
+  getIbcDenomFromSymbolOrNameAsString('ATOM'),
+  getPeggyDenomFromSymbolOrNameAsString('WETH'),
+  // getIbcDenomFromSymbolOrNameAsString('PYTH', TokenSource.Solana),
+  // getIbcDenomFromSymbolOrNameAsString('WMATIC', TokenSource.Polygon),
+  getIbcDenomFromSymbolOrNameAsString('KAVA')
+]

@@ -7,6 +7,7 @@ import {
   MAX_QUOTE_TENS_MULTIPLIER
 } from '@/app/utils/constants/index'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+import { usdtToken, injToken } from '@/app/data/token'
 
 export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   const swapStore = useSwapStore()
@@ -161,6 +162,44 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     minimumOutput,
     inputToken,
     outputToken,
+    orderedRouteTokensAndDecimals
+  }
+}
+
+export function useSwapHomepage(formValues: Ref<Partial<SwapForm>>) {
+  const {
+    invalidInput,
+    maximumInput,
+    minimumOutput,
+    inputToken,
+    outputToken,
+    orderedRouteTokensAndDecimals
+  } = useSwap(formValues)
+
+  return {
+    invalidInput,
+    maximumInput,
+    minimumOutput,
+    inputToken: computed(
+      () =>
+        inputToken.value ||
+        ({
+          token: usdtToken,
+          denom: usdtToken.denom,
+          usdPrice: 0,
+          quantityDecimals: 3
+        } as TokenAndPriceAndDecimals)
+    ),
+    outputToken: computed(
+      () =>
+        outputToken.value ||
+        ({
+          token: injToken,
+          denom: injToken.denom,
+          usdPrice: 0,
+          quantityDecimals: 3
+        } as TokenAndPriceAndDecimals)
+    ),
     orderedRouteTokensAndDecimals
   }
 }

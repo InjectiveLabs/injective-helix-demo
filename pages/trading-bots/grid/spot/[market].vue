@@ -64,7 +64,7 @@ function fetchData({
     authZStore.fetchGrants(),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchAllStrategies(),
-    exchangeStore.getMarketsHistory({
+    exchangeStore.fetchMarketHistory({
       marketIds: [market.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
       countback: 30

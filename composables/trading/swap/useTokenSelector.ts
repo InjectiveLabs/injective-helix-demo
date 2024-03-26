@@ -7,6 +7,7 @@ import { AccountBalance } from '@/types'
 import {
   SWAP_LOW_LIQUIDITY_SYMBOLS,
   injToken,
+  tokensDenomToPreloadHomepageSwap,
   usdtToken
 } from '@/app/data/token'
 
@@ -193,7 +194,9 @@ export function useSwapTokenSelectorHomepage({
   const outputDenomOptionsHomepage = computed(() => {
     return outputDenomOptions.value
       ? outputDenomOptions.value.filter(
-          ({ denom }) => denom !== usdtToken.denom
+          ({ denom }) =>
+            denom !== usdtToken.denom &&
+            tokensDenomToPreloadHomepageSwap.includes(denom)
         )
       : [getBalanceWithTokenHomepage(injToken)]
   })

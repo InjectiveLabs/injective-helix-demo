@@ -31,7 +31,7 @@ const { value: outputDenom } = useStringField({
   name: SwapFormField.OutputDenom
 })
 
-const { inputToken, outputToken } = useSwap(formValues)
+const { inputToken, outputToken } = useSwapHomepage(formValues)
 
 const {
   inputDenomOptions,
@@ -81,9 +81,15 @@ function inputDenomChange(denom: string) {
 }
 
 function outputDenomChange(denom: string) {
+  const denomExistsInOptions = outputDenomOptions.value.some(
+    (option) => option.denom === denom
+  )
+
   setFormValues(
     {
-      [SwapFormField.OutputDenom]: denom,
+      [SwapFormField.OutputDenom]: denomExistsInOptions
+        ? denom
+        : injToken.denom,
       [SwapFormField.InputDenom]: selectorInputDenom.value
     },
     false
@@ -172,7 +178,7 @@ async function getInputQuantity() {
           v-bind="{
             ...$attrs,
             debounce: 600,
-            denom: inputDenom,
+            denom: inputDenom || usdtToken.denom,
             options: inputDenomOptions,
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
@@ -203,11 +209,10 @@ async function getInputQuantity() {
           v-bind="{
             ...$attrs,
             debounce: 600,
-            denom: outputDenom,
+            denom: outputDenom || injToken.denom,
             options: outputDenomOptions,
             amountFieldName: SwapFormField.OutputAmount,
-            maxDecimals: outputToken?.quantityDecimals || 0,
-            isDisabled: outputToken?.denom === usdtToken.denom
+            maxDecimals: outputToken?.quantityDecimals || 0
           }"
           @update:denom="outputDenomChange"
           @update:amount="getInputQuantity"

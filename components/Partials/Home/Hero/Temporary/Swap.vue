@@ -1,21 +1,12 @@
 <script lang="ts" setup>
-import {
-  Status,
-  INJ_DENOM,
-  StatusType,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import type { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import {
-  getIbcDenomFromSymbolOrNameAsString,
-  getPeggyDenomFromSymbolOrNameAsString
-} from '@/app/utils/helper'
 import { denomClient } from '@/app/Services'
-import { usdtToken } from '@/app/data/token'
+import { tokensDenomToPreloadHomepageSwap, usdtToken } from '@/app/data/token'
 import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
@@ -31,7 +22,7 @@ const status = reactive(new Status(StatusType.Loading))
 const hasUserInteraction = ref(false)
 const isInputEntered = ref(true)
 
-const { outputToken, inputToken } = useSwap(computed(() => formValues))
+const { outputToken, inputToken } = useSwapHomepage(computed(() => formValues))
 
 const hasInputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.InputAmount]).gt(0)
@@ -48,17 +39,7 @@ onMounted(() => {
    * load the component faster as to improve UX
    **/
 
-  const tokensDenomToPreload = [
-    INJ_DENOM,
-    // getIbcDenomFromSymbolOrNameAsString('SOL', TokenSource.Solana),
-    getIbcDenomFromSymbolOrNameAsString('ATOM'),
-    getPeggyDenomFromSymbolOrNameAsString('WETH'),
-    // getIbcDenomFromSymbolOrNameAsString('PYTH', TokenSource.Solana),
-    // getIbcDenomFromSymbolOrNameAsString('WMATIC', TokenSource.Polygon),
-    getIbcDenomFromSymbolOrNameAsString('KAVA')
-  ]
-
-  const tokens = tokensDenomToPreload.map((denom) =>
+  const tokens = tokensDenomToPreloadHomepageSwap.map((denom) =>
     denomClient.getDenomTokenStaticOrUnknown(denom)
   )
 
