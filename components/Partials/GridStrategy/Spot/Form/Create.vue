@@ -11,7 +11,10 @@ import {
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
+  LEGACY_MARKETIDS,
+  LEGACY_MARKET_TO_CURRENT_MARKETID_MAP
 } from '@/app/utils/constants'
 import {
   spotGridMarkets,
@@ -23,7 +26,8 @@ import {
   Modal,
   InvestmentTypeGst,
   SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  TradingBotsSubPage
 } from '@/types'
 
 const props = defineProps({
@@ -39,6 +43,7 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -46,6 +51,7 @@ const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const setFormValues = useSetFormValues()
 const validate = useValidateForm()
+const { $onError } = useNuxtApp()
 
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
@@ -249,23 +255,92 @@ function onInvestmentTypeSet() {
 
   onCreateStrategy()
 }
+
+const hasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.market.marketId]
+  )
+)
+
+const isLegacyMarket = computed(
+  () =>
+    !!LEGACY_MARKETIDS.find((marketId) => marketId === props.market.marketId)
+)
+
+const newMarketSlug = computed(
+  () =>
+    spotStore.markets.find(
+      (market) =>
+        market.marketId ===
+        LEGACY_MARKET_TO_CURRENT_MARKETID_MAP[props.market.marketId]
+    )?.slug || ''
+)
+
+function removeLegacyStrategy() {
+  if (!hasActiveLegacyStrategy.value) {
+    return
+  }
+
+  status.setLoading()
+
+  gridStrategyStore
+    .removeStrategyForSubaccount(
+      hasActiveLegacyStrategy.value.contractAddress,
+      hasActiveLegacyStrategy.value.subaccountId
+    )
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
   <div>
     <AppButton
-      :status="status"
-      is-lg
+      v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
+      :is-disabled="hasActiveLegacyStrategy || isLegacyMarket"
       class="w-full shadow-none select-none"
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
           : 'bg-blue-500 text-blue-100'
       ]"
+      :status="status"
+      is-lg
       @click="onCheckBalanceFees"
     >
       <span>{{ $t('sgt.create') }}</span>
     </AppButton>
+
+    <p v-if="hasActiveLegacyStrategy" class="text-xs text-red-500 mt-4">
+      {{ $t('sgt.endLegacyBotText') }}
+    </p>
+
+    <AppButton
+      v-if="hasActiveLegacyStrategy"
+      class="bg-red-500 text-black w-full mt-4"
+      v-bind="{ status }"
+      @click="removeLegacyStrategy"
+    >
+      {{ $t('sgt.endBot') }}
+    </AppButton>
+
+    <NuxtLink
+      :to="{
+        name: TradingBotsSubPage.GridSpotMarket,
+        params: { market: newMarketSlug }
+      }"
+    >
+      <AppButton
+        v-if="isLegacyMarket"
+        class="text-xs bg-blue-500 text-blue-100 mt-4 w-full"
+      >
+        {{ $t('sgt.goToNewMarket') }}
+      </AppButton>
+    </NuxtLink>
 
     <ModalsLiquiditySgtBalancedFees
       v-bind="{

@@ -123,24 +123,19 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'lvn-inj',
     contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
+  },
+  {
+    slug: 'wmatic-usdt',
+    contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
+  },
+  {
+    slug: 'arb-usdt',
+    contractAddress: 'inj1ajsrqtj0kqelna3q74s80uq74d47aqezrjh9mk'
+  },
+  {
+    slug: 'sol-usdt',
+    contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
   }
-  // Add this when market goes live
-  // {
-  //   slug: 'lvn-inj',
-  //   contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
-  // },
-  // {
-  //   slug: 'wmatic-usdt',
-  //   contractAddress: 'todo'
-  // },
-  // {
-  //   slug: 'arb-usdt',
-  //   contractAddress: 'todo'
-  // },
-  // {
-  //   slug: 'sol-usdt',
-  //   contractAddress: 'todo'
-  // }
 ]
 
 if (IS_STAGING) {
