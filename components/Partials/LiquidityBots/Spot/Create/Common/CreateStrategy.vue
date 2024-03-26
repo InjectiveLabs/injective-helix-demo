@@ -41,6 +41,7 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
+const router = useRouter()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
@@ -286,10 +287,25 @@ function removeLegacyStrategy() {
     })
 }
 
-function reload() {
-  setTimeout(() => {
-    window.location.reload()
-  }, 50)
+function goToNewMarket() {
+  const newMarket = spotStore.markets.find(
+    (market) =>
+      market.marketId ===
+      LEGACY_MARKET_TO_CURRENT_MARKETID_MAP[props.market.marketId]
+  )
+
+  if (!newMarket) {
+    return
+  }
+
+  router.push({
+    name: MainPage.TradingBotsLiquidityBotsSpot,
+    query: { market: newMarketSlug.value }
+  })
+
+  gridStrategyStore.$patch({
+    spotMarket: newMarket
+  })
 }
 </script>
 
@@ -323,20 +339,13 @@ function reload() {
       {{ $t('sgt.endBot') }}
     </AppButton>
 
-    <NuxtLink
-      :to="{
-        name: MainPage.TradingBotsLiquidityBotsSpot,
-        query: { market: newMarketSlug }
-      }"
-      @click="reload"
+    <AppButton
+      v-if="isLegacyMarket"
+      class="text-xs bg-blue-500 text-blue-100 mt-4 w-full"
+      @click="goToNewMarket"
     >
-      <AppButton
-        v-if="isLegacyMarket"
-        class="text-xs bg-blue-500 text-blue-100 mt-4 w-full"
-      >
-        {{ $t('sgt.goToNewMarket') }}
-      </AppButton>
-    </NuxtLink>
+      {{ $t('sgt.goToNewMarket') }}
+    </AppButton>
 
     <ModalsLiquiditySgtBalancedFees
       v-bind="{

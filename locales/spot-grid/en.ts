@@ -77,6 +77,8 @@ export default {
     initialInvestment: 'Initial Investment',
     endLegacyBotText:
       "Before creating a new bot, you'll need to deactivate your currently active bot in the legacy market.",
+    legacyBotWarning:
+      "Warning: You're missing out on LP rewards! Stop your legacy market strategy and create a new one on the new market to start earning.",
     goToNewMarket: 'Go To New Market',
     marketConditionsNotSupported: 'Market conditions not supported',
     autoModeHeader:
