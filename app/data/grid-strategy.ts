@@ -126,7 +126,7 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   },
   {
     slug: 'wmatic-usdt',
-    contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
+    contractAddress: 'inj1c0hep6h443x5uulj4tpkfpkm985qdjagxrznda'
   },
   {
     slug: 'arb-usdt',
