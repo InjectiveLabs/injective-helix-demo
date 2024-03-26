@@ -5,13 +5,12 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
 import {
-  getCw20FromSymbolOrNameAsString,
   getIbcDenomFromSymbolOrNameAsString,
   getPeggyDenomFromSymbolOrNameAsString
 } from '@/app/utils/helper'
@@ -42,7 +41,7 @@ const hasOutputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.OutputAmount]).gt(0)
 )
 
-onMounted(async () => {
+onMounted(() => {
   /**
    * We hardcode only the denoms we need on page load for
    * the token selector animation as to not
@@ -51,14 +50,17 @@ onMounted(async () => {
 
   const tokensDenomToPreload = [
     INJ_DENOM,
-    getCw20FromSymbolOrNameAsString('SOL'),
+    // getIbcDenomFromSymbolOrNameAsString('SOL', TokenSource.Solana),
     getIbcDenomFromSymbolOrNameAsString('ATOM'),
     getPeggyDenomFromSymbolOrNameAsString('WETH'),
-    getCw20FromSymbolOrNameAsString('WMATIC'),
+    // getIbcDenomFromSymbolOrNameAsString('PYTH', TokenSource.Solana),
+    // getIbcDenomFromSymbolOrNameAsString('WMATIC', TokenSource.Polygon),
     getIbcDenomFromSymbolOrNameAsString('KAVA')
   ]
 
-  const tokens = await denomClient.getDenomsToken(tokensDenomToPreload)
+  const tokens = tokensDenomToPreload.map((denom) =>
+    denomClient.getDenomTokenStaticOrUnknown(denom)
+  )
 
   Promise.all([
     tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),

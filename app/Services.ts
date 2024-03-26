@@ -1,8 +1,8 @@
 import { LocalStorage } from '@injectivelabs/utils'
 import {
   TokenPrice,
-  TokenService,
-  DenomClientAsync
+  DenomClientAsync,
+  TokenServiceStatic
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ChainGrpcGovApi,
@@ -106,7 +106,7 @@ export const msgBroadcastClient = new MsgBroadcaster({
 })
 
 // Token Services
-export const tokenService = new TokenService({
+export const tokenServiceStatic = new TokenServiceStatic({
   chainId: CHAIN_ID,
   network: NETWORK,
   endpoints: ENDPOINTS
