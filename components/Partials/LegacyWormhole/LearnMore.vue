@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const WORMHOLE_MIGRATION_BLOG =
-  'https://blog.injective.com/injective-bridge-ionic-upgrade'
+  'https://blog.injective.com/the-next-generation-injective-bridge-ionic-upgrade'
 </script>
 
 <template>
