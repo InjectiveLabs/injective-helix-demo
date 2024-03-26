@@ -28,10 +28,10 @@ import {
   cancelSubaccountBalanceStream
 } from '../account/stream'
 import {
-  indexerRestDerivativesChronosApi,
-  tokenService,
   indexerOracleApi,
-  indexerDerivativesApi
+  tokenServiceStatic,
+  indexerDerivativesApi,
+  indexerRestDerivativesChronosApi
 } from '../../app/Services'
 import {
   cancelOrder,
@@ -191,14 +191,14 @@ export const useDerivativeStore = defineStore('derivative', {
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
 
-      const marketsWithToken = await tokenService.toDerivativeMarketsWithToken([
+      const marketsWithToken = tokenServiceStatic.toDerivativeMarketsWithToken([
         ...markets,
         ...pausedMarkets,
         ...recentlyExpiredMarkets
       ])
 
       const recentlyExpiredMarketsWithToken =
-        await tokenService.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
+        tokenServiceStatic.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
 
       const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
       const expiryFuturesMarkets = marketsWithToken.filter(
@@ -221,7 +221,7 @@ export const useDerivativeStore = defineStore('derivative', {
         ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
-        await tokenService.toBinaryOptionsMarketsWithToken(binaryOptionsMarkets)
+        tokenServiceStatic.toBinaryOptionsMarketsWithToken(binaryOptionsMarkets)
       const uiBinaryOptionsMarkets =
         UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
           binaryOptionsMarketsWithToken
@@ -515,7 +515,7 @@ export const useDerivativeStore = defineStore('derivative', {
       )) as PerpetualMarket | ExpiryFuturesMarket
 
       const updatedMarketWithToken =
-        await tokenService.toDerivativeMarketsWithToken([updatedMarket])
+        tokenServiceStatic.toDerivativeMarketsWithToken([updatedMarket])
 
       const marketIndex = derivativeStore.markets.findIndex(
         (m) => m.marketId === marketId

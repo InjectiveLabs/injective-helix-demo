@@ -143,7 +143,7 @@ function fetchMarketHistory() {
   status.setLoading()
 
   exchangeStore
-    .getMarketsHistoryNew({
+    .fetchMarketHistoryNew({
       marketIds: [props.marketId],
       countback: interval.value.value.countback,
       resolution: interval.value.value.resolution
@@ -184,7 +184,7 @@ const tickSize = computed(() =>
 
 useIntervalFn(() => {
   exchangeStore
-    .getMarketsHistoryNew({
+    .fetchMarketHistoryNew({
       marketIds: [props.marketId],
       countback: interval.value.value.countback,
       resolution: interval.value.value.resolution

@@ -604,7 +604,6 @@ export const useWalletStore = defineStore('wallet', {
 
     async disconnect() {
       const spotStore = useSpotStore()
-      const peggyStore = usePeggyStore()
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
@@ -622,7 +621,6 @@ export const useWalletStore = defineStore('wallet', {
       derivativeStore.resetSubaccount()
 
       accountStore.$reset()
-      peggyStore.$reset()
       activityStore.$reset()
       positionStore.$reset()
       authZStore.$reset()

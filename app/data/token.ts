@@ -90,3 +90,19 @@ export const KAVA_USDT_SYMBOL = 'USDTkv'
 export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
 export const SWAP_LOW_LIQUIDITY_SYMBOLS = ['GF', 'ORAI', 'SOMM', 'NEOK']
+
+export const legacyWHDenoms = [
+  getCw20FromSymbolOrNameAsString('SOLlegacy'),
+  getCw20FromSymbolOrNameAsString('ARBlegacy'),
+  getCw20FromSymbolOrNameAsString('WMATIClegacy')
+]
+
+export const tokensDenomToPreloadHomepageSwap = [
+  INJ_DENOM,
+  // getIbcDenomFromSymbolOrNameAsString('SOL', TokenSource.Solana),
+  getIbcDenomFromSymbolOrNameAsString('ATOM'),
+  getPeggyDenomFromSymbolOrNameAsString('WETH'),
+  // getIbcDenomFromSymbolOrNameAsString('PYTH', TokenSource.Solana),
+  // getIbcDenomFromSymbolOrNameAsString('WMATIC', TokenSource.Polygon),
+  getIbcDenomFromSymbolOrNameAsString('KAVA')
+]

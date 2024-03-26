@@ -6,9 +6,12 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
+import { legacyWHDenoms } from '@/app/data/token'
+import { ActivitySubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
+const route = useRoute()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
@@ -47,6 +50,12 @@ const marketRoute = computed(() => {
 
   return getMarketRoute(market.value)
 })
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find(
+    (denom) => denom === (market.value?.baseToken.denom || '')
+  )
+)
 
 function onCancelOrder() {
   status.setLoading()
@@ -93,6 +102,11 @@ function onCancelOrder() {
           <span v-if="leverage.gte(0)" class="font-mono">
             {{ leverage.toFormat(2) }}x
           </span>
+
+          <PartialsLegacyWormholeTags
+            v-if="legacyWHMarketDenom && route.name === ActivitySubPage.Spot"
+            is-tooltip
+          />
         </div>
 
         <PartialsCommonCancelButton

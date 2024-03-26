@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { legacyWHDenoms } from '@/app/data/token'
 import { ActivityForm, ActivitySubPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -26,6 +27,17 @@ const filteredOrders = computed(() =>
     const orderMatchesSide =
       !formValues.value.Side || formValues.value.Side === order.orderSide
     return orderMatchesDenom && orderMatchesSide
+  })
+)
+
+const legacyWormholeOrders = computed(() =>
+  spotStore.markets.filter(({ baseToken, marketId }) => {
+    const order = filteredOrders.value.find(
+      (order) => order.marketId === marketId
+    )
+    const isLegacyMarket = legacyWHDenoms.includes(baseToken.denom)
+
+    return order && isLegacyMarket
   })
 )
 
@@ -71,6 +83,22 @@ function onCancelOrders() {
         <span class="ml-1">({{ filteredOrders.length }})</span>
       </Teleport>
     </ClientOnly>
+
+    <PartialsLegacyWormholeBanner v-if="legacyWormholeOrders.length > 0">
+      <template #default>
+        <div class="flex flex-col">
+          <i18n-t keypath="common.legacy.attentionBanner" tag="p">
+            >
+            <template #attention>
+              <span class="font-bold">{{ $t('common.legacy.attention') }}</span>
+            </template>
+            <template #learnMore>
+              <PartialsLegacyWormholeLearnMore />
+            </template>
+          </i18n-t>
+        </div>
+      </template>
+    </PartialsLegacyWormholeBanner>
 
     <div class="w-full h-full">
       <!-- mobile table -->

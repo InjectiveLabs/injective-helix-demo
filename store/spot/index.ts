@@ -39,8 +39,8 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import {
-  tokenService,
   indexerSpotApi,
+  tokenServiceStatic,
   indexerRestSpotChronosApi
 } from '@/app/Services'
 import {
@@ -147,9 +147,8 @@ export const useSpotStore = defineStore('spot', {
       const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
 
       const markets = await apiClient.fetchMarkets()
-      const marketsWithToken = await tokenService.toSpotMarketsWithToken(
-        markets
-      )
+      const marketsWithToken =
+        tokenServiceStatic.toSpotMarketsWithToken(markets)
 
       const uiMarkets =
         UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)

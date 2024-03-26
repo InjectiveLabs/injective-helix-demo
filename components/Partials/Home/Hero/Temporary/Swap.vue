@@ -1,22 +1,12 @@
 <script lang="ts" setup>
-import {
-  Status,
-  INJ_DENOM,
-  StatusType,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import {
-  getCw20FromSymbolOrNameAsString,
-  getIbcDenomFromSymbolOrNameAsString,
-  getPeggyDenomFromSymbolOrNameAsString
-} from '@/app/utils/helper'
 import { denomClient } from '@/app/Services'
-import { usdtToken } from '@/app/data/token'
+import { tokensDenomToPreloadHomepageSwap, usdtToken } from '@/app/data/token'
 import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
@@ -32,7 +22,7 @@ const status = reactive(new Status(StatusType.Loading))
 const hasUserInteraction = ref(false)
 const isInputEntered = ref(true)
 
-const { outputToken, inputToken } = useSwap(computed(() => formValues))
+const { outputToken, inputToken } = useSwapHomepage(computed(() => formValues))
 
 const hasInputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.InputAmount]).gt(0)
@@ -42,23 +32,16 @@ const hasOutputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.OutputAmount]).gt(0)
 )
 
-onMounted(async () => {
+onMounted(() => {
   /**
    * We hardcode only the denoms we need on page load for
    * the token selector animation as to not
    * load the component faster as to improve UX
    **/
 
-  const tokensDenomToPreload = [
-    INJ_DENOM,
-    getCw20FromSymbolOrNameAsString('SOL'),
-    getIbcDenomFromSymbolOrNameAsString('ATOM'),
-    getPeggyDenomFromSymbolOrNameAsString('WETH'),
-    getCw20FromSymbolOrNameAsString('WMATIC'),
-    getIbcDenomFromSymbolOrNameAsString('KAVA')
-  ]
-
-  const tokens = await denomClient.getDenomsToken(tokensDenomToPreload)
+  const tokens = tokensDenomToPreloadHomepageSwap.map((denom) =>
+    denomClient.getDenomTokenStaticOrUnknown(denom)
+  )
 
   Promise.all([
     tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { usdtToken } from '@/app/data/token'
+import { usdtToken, injToken } from '@/app/data/token'
 import { SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()
 const tokenStore = useTokenStore()
-const spotStore = useSpotStore()
 const formValues = useFormValues<SwapForm>()
 const setFormValues = useSetFormValues()
 
@@ -32,14 +31,14 @@ const { value: outputDenom } = useStringField({
   name: SwapFormField.OutputDenom
 })
 
-const { inputToken, outputToken } = useSwap(formValues)
+const { inputToken, outputToken } = useSwapHomepage(formValues)
 
 const {
   inputDenomOptions,
   outputDenomOptions,
   selectorOutputDenom,
   selectorInputDenom
-} = useSwapTokenSelector({
+} = useSwapTokenSelectorHomepage({
   inputDenom,
   outputDenom,
   balances: accountBalancesWithToken
@@ -55,20 +54,11 @@ const isUserInteraction = computed({
 onMounted(() => {
   const [route] = swapStore.routes
 
-  const injToken = spotStore.markets.find(
-    ({ baseToken }) => baseToken.symbol.toLowerCase() === 'inj'
-  )?.baseToken
-  const peggyUsdToken = spotStore.markets.find(
-    ({ quoteToken }) => quoteToken.symbol.toLowerCase() === 'usdt'
-  )?.quoteToken
-
   setFormValues(
     {
-      [SwapFormField.InputDenom]: peggyUsdToken?.denom || route?.sourceDenom,
-      [SwapFormField.OutputDenom]: injToken?.denom || route?.targetDenom || '',
-      [SwapFormField.InputAmount]: injToken
-        ? String(tokenStore.tokenUsdPrice(injToken))
-        : '0',
+      [SwapFormField.InputDenom]: usdtToken.denom || route?.sourceDenom,
+      [SwapFormField.OutputDenom]: injToken.denom || route?.targetDenom || '',
+      [SwapFormField.InputAmount]: String(tokenStore.tokenUsdPrice(injToken)),
       [SwapFormField.OutputAmount]: '1'
     },
     false
@@ -91,9 +81,15 @@ function inputDenomChange(denom: string) {
 }
 
 function outputDenomChange(denom: string) {
+  const denomExistsInOptions = outputDenomOptions.value.some(
+    (option) => option.denom === denom
+  )
+
   setFormValues(
     {
-      [SwapFormField.OutputDenom]: denom,
+      [SwapFormField.OutputDenom]: denomExistsInOptions
+        ? denom
+        : injToken.denom,
       [SwapFormField.InputDenom]: selectorInputDenom.value
     },
     false
@@ -131,7 +127,7 @@ function swap() {
     false
   )
 
-  animationCount.value++
+  animationCount.value += 1
   emit('update:hasUserInteraction', true)
 
   setTimeout(
@@ -182,11 +178,13 @@ async function getInputQuantity() {
           v-bind="{
             ...$attrs,
             debounce: 600,
-            denom: inputDenom,
+            denom: inputDenom || usdtToken.denom,
             options: inputDenomOptions,
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
-            isDisabled: inputToken?.denom === usdtToken.denom
+            isDisabled: [usdtToken.denom, injToken.denom].includes(
+              inputToken?.denom || ''
+            )
           }"
           @update:denom="inputDenomChange"
           @update:amount="getOutputQuantity"
@@ -211,11 +209,10 @@ async function getInputQuantity() {
           v-bind="{
             ...$attrs,
             debounce: 600,
-            denom: outputDenom,
+            denom: outputDenom || injToken.denom,
             options: outputDenomOptions,
             amountFieldName: SwapFormField.OutputAmount,
-            maxDecimals: outputToken?.quantityDecimals || 0,
-            isDisabled: outputToken?.denom === usdtToken.denom
+            maxDecimals: outputToken?.quantityDecimals || 0
           }"
           @update:denom="outputDenomChange"
           @update:amount="getInputQuantity"
