@@ -39,6 +39,7 @@ export class MixPanelAnalytics {
     })
 
     this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
+    this.getMixpanelClient().people.set({ wallet })
   }
 
   trackLogout() {
