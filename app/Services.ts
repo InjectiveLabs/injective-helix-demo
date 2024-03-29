@@ -1,15 +1,10 @@
 import { LocalStorage } from '@injectivelabs/utils'
 import {
   TokenPrice,
-  Web3Client,
-  Web3Composer,
-  TokenService,
   DenomClientAsync,
-  UiBridgeTransformer,
-  peggyGraphQlEndpointForNetwork
+  TokenServiceStatic
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  ApolloConsumer,
   ChainGrpcGovApi,
   ChainGrpcBankApi,
   ChainGrpcWasmApi,
@@ -36,14 +31,13 @@ import {
   IndexerRestLeaderboardChronosApi,
   IndexerRestDerivativesChronosApi
 } from '@injectivelabs/sdk-ts'
-import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
+import { MsgBroadcaster } from '@injectivelabs/wallet-ts'
 import { TokenMetaUtilsFactory } from '@injectivelabs/token-metadata'
 import {
   NETWORK,
   CHAIN_ID,
   ENDPOINTS,
   FEE_PAYER_PUB_KEY,
-  ETHEREUM_CHAIN_ID,
   COIN_GECKO_OPTIONS
 } from '@/app/utils/constants'
 import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
@@ -102,10 +96,6 @@ export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
 )
 export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexer)
 
-export const apolloConsumer = new ApolloConsumer(
-  peggyGraphQlEndpointForNetwork(NETWORK)
-)
-
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcaster({
   walletStrategy,
@@ -115,23 +105,8 @@ export const msgBroadcastClient = new MsgBroadcaster({
   simulateTx: true
 })
 
-export const web3Client = new Web3Client({
-  network: NETWORK,
-  rpc: alchemyRpcEndpoint
-})
-export const web3Composer = new Web3Composer({
-  network: NETWORK,
-  rpc: alchemyRpcEndpoint,
-  ethereumChainId: ETHEREUM_CHAIN_ID
-})
-export const web3Broadcaster = new Web3Broadcaster({
-  walletStrategy,
-  network: NETWORK,
-  ethereumChainId: ETHEREUM_CHAIN_ID
-})
-
 // Token Services
-export const tokenService = new TokenService({
+export const tokenServiceStatic = new TokenServiceStatic({
   chainId: CHAIN_ID,
   network: NETWORK,
   endpoints: ENDPOINTS
@@ -142,9 +117,6 @@ export const denomClient = new DenomClientAsync(NETWORK, {
   endpoints: ENDPOINTS,
   alchemyRpcUrl: alchemyRpcEndpoint
 })
-
-// UI Services
-export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(

@@ -269,7 +269,7 @@ export const useExchangeStore = defineStore('exchange', {
       })
     },
 
-    async getMarketsHistory({
+    async fetchMarketHistory({
       marketIds,
       resolution,
       countback
@@ -316,7 +316,46 @@ export const useExchangeStore = defineStore('exchange', {
       }
     },
 
-    async getMarketsHistoryNew({
+    async fetchMarketsHistory({
+      marketIds,
+      resolution,
+      countback
+    }: {
+      marketIds: string[]
+      resolution: number
+      countback: number
+    }) {
+      const exchangeStore = useExchangeStore()
+
+      if (exchangeStore.marketsHistory.length > 0 || marketIds.length === 0) {
+        return
+      }
+
+      try {
+        const marketsHistory =
+          await indexerRestMarketChronosApi.fetchMarketsHistory({
+            marketIds,
+            resolution,
+            countback
+          })
+
+        const marketsHistoryToUiMarketsHistory =
+          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
+            marketsHistory
+          )
+
+        exchangeStore.$patch({
+          marketsHistory: [
+            ...exchangeStore.marketsHistory,
+            ...marketsHistoryToUiMarketsHistory
+          ]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
+    },
+
+    async fetchMarketHistoryNew({
       marketIds,
       resolution,
       countback

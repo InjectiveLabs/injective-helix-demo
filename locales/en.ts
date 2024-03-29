@@ -1,14 +1,13 @@
 import home from './home/en'
 import trade from './trade/en'
 import guild from './guild/en'
-import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
+import airdrop from './airdrop/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
-import ethdenver from './ethdenver/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import tradeAndEarn from './tradeAndEarn/en'
@@ -19,15 +18,14 @@ import { I18nMessageFunction, TimeDuration } from '@/types'
 export default {
   ...sgt,
   ...home,
+  ...airdrop,
   ...guild,
   ...trade,
   ...market,
-  ...bridge,
   ...wallet,
   ...account,
   ...banners,
   ...campaign,
-  ...ethdenver,
   ...activities,
   ...activities,
   ...leaderboard,
@@ -67,7 +65,31 @@ export default {
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
     [TimeDuration.Minute]: 'Minute',
-    [TimeDuration.Second]: 'Second'
+    [TimeDuration.Second]: 'Second',
+    legacy: {
+      title: 'Legacy',
+      migrate: 'Migrate',
+      attention: 'Attention: ',
+      actionRequired: 'Action Required',
+      learnMore: 'Learn more',
+      affectedMarkets: 'Affected markets and tokens: ',
+      goToTokenMigrationPage: 'Go to token migration page',
+      marketIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
+      spotGridIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
+      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          named('attention'),
+          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
+          named('learnMore'),
+          '.'
+        ]),
+      goToNewMarket: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} market`,
+      goToNewSGT: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} spot grid`
+    }
   },
   underMaintenance: 'Under Maintenance',
   welcome_to_ip:
@@ -213,8 +235,7 @@ export default {
       ]),
     terraDescription:
       'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
-    exploreOtherMarkets: 'Explore Other Markets',
-    injectiveBridge: 'Injective Bridge'
+    exploreOtherMarkets: 'Explore Other Markets'
   },
 
   navigation: {
@@ -262,7 +283,9 @@ export default {
     tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
-    liquidityBotsDescription: 'Trade smarter with automated strategies'
+    liquidityBotsDescription: 'Trade smarter with automated strategies',
+    airdrop: 'PYTH Airdrop Claim',
+    airdropDescription: 'Check Airdrop Eligibility and Claim Tokens'
   },
 
   feeDiscounts: {

@@ -37,11 +37,11 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
     contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
   },
   {
-    slug: 'wmatic-usdt',
+    slug: 'wmaticlegacy-usdt',
     contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
   },
   {
-    slug: 'arb-usdt',
+    slug: 'arblegacy-usdt',
     contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
   },
   {
@@ -53,7 +53,7 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
     contractAddress: 'inj144w02j59yh5jwf6ufe6pf3uasckw7cca833r6r'
   },
   {
-    slug: 'sol-usdt',
+    slug: 'sollegacy-usdt',
     contractAddress: 'inj1a2xr74g9w78acf054jfwspzmgzy5flv5275642'
   },
   {
@@ -103,6 +103,38 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'hinj-inj',
     contractAddress: 'inj1dxvlc5snn5y02nn82xdhnvwj3y09t9pnh6msf5'
+  },
+  {
+    slug: 'usde-usdt',
+    contractAddress: 'inj1ar6vmwfft83gzhqrl62r9l93tlclup8ss0suam'
+  },
+  {
+    slug: 'usdc-usdt',
+    contractAddress: 'inj16ppjvumwvlur8e6r8le39j7wjrrh8dnjevx72h'
+  },
+  {
+    slug: 'pyth-inj',
+    contractAddress: 'inj1ed5cscyx60ds595cs39h7grv2hjfmphaftje0n'
+  },
+  {
+    slug: 'nonja-inj',
+    contractAddress: 'inj1m4grapgrypgycfv8v0sq2kwgswj9vgjwdvx79u'
+  },
+  {
+    slug: 'lvn-inj',
+    contractAddress: 'inj17gnmkq67ppalhyas08lmwzrjtdl5y5qpumncsm'
+  },
+  {
+    slug: 'wmatic-usdt',
+    contractAddress: 'inj1c0hep6h443x5uulj4tpkfpkm985qdjagxrznda'
+  },
+  {
+    slug: 'arb-usdt',
+    contractAddress: 'inj1ajsrqtj0kqelna3q74s80uq74d47aqezrjh9mk'
+  },
+  {
+    slug: 'sol-usdt',
+    contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
   }
 ]
 

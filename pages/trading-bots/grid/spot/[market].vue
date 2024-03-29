@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal, UiMarketWithToken } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { legacyWHDenoms } from '@/app/data/token'
+import {
+  getNewMarketSlugFromWHDenom,
+  getNewMarketTickerFromWHDenom
+} from '@/app/utils/market'
+import { Modal, TradingBotsSubPage, UiMarketWithToken } from '@/types'
 
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
@@ -23,6 +28,10 @@ const isWelcomeBannerViewed = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() => gridStrategyStore.spotMarket)
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (market.value?.baseDenom || ''))
+)
 
 function onLoad(pageMarket: UiMarketWithToken) {
   Promise.all([
@@ -55,7 +64,7 @@ function fetchData({
     authZStore.fetchGrants(),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchAllStrategies(),
-    exchangeStore.getMarketsHistory({
+    exchangeStore.fetchMarketHistory({
       marketIds: [market.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR * 24,
       countback: 30
@@ -105,4 +114,45 @@ onUnmounted(() => {
       <ModalsLiquiditySgtBanner />
     </template>
   </PartialsTradingLayout>
+
+  <PartialsLegacyWormholeBanner v-if="legacyWHMarketDenom">
+    <template #default>
+      <div class="inline-block lg:space-x-2">
+        <span>
+          {{ $t('common.legacy.spotGridIsMigrating') }}
+        </span>
+
+        <span>
+          <PartialsLegacyWormholeButton
+            v-bind="{
+              to: {
+                name: TradingBotsSubPage.GridSpotMarket,
+                params: {
+                  market: getNewMarketSlugFromWHDenom(legacyWHMarketDenom)
+                }
+              }
+            }"
+          >
+            <div class="flex justify-center items-center">
+              <span>
+                {{
+                  $t('common.legacy.goToNewSGT', {
+                    market: getNewMarketTickerFromWHDenom(
+                      legacyWHMarketDenom || ''
+                    )
+                  })
+                }}
+              </span>
+
+              <BaseIcon name="arrow" class="ml-1 w-3 h-3 min-w-3 rotate-180" />
+            </div>
+          </PartialsLegacyWormholeButton>
+        </span>
+      </div>
+    </template>
+
+    <template #add-on>
+      <PartialsLegacyWormholeLearnMore />
+    </template>
+  </PartialsLegacyWormholeBanner>
 </template>

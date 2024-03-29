@@ -26,7 +26,8 @@ onMounted(() => {
     walletStore.isMetamaskInstalled(),
     walletStore.isTrustWalletInstalled(),
     walletStore.isPhantomInstalled(),
-    walletStore.isOkxWalletInstalled()
+    walletStore.isOkxWalletInstalled(),
+    walletStore.isBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -114,6 +115,7 @@ watch(isModalOpen, (newShowModalState) => {
       <LayoutWalletConnectWalletOkxWallet />
       <LayoutWalletConnectWalletKeplr />
       <LayoutWalletConnectWalletNinji />
+      <LayoutWalletConnectWalletBitGet />
       <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
       <LayoutWalletConnectWalletTrustWallet />

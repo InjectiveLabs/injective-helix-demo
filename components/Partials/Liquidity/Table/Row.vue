@@ -8,6 +8,7 @@ import {
 } from '@injectivelabs/utils'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import {
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   USDT_DECIMALS
 } from '@/app/utils/constants'
@@ -24,6 +25,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const gridStrategyStore = useGridStrategyStore()
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
 
@@ -94,6 +96,14 @@ const sgtScAddress = computed(() => {
   return scAddress
 })
 
+const userHasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.campaign.marketId]
+  )
+)
+
 onMounted(() => {
   status.setLoading()
   campaignStore
@@ -111,23 +121,32 @@ onMounted(() => {
 <template>
   <tr v-if="market" class="text-right text-sm">
     <td class="text-left">
-      <NuxtLink
-        :to="{
-          name: TradingBotsSubPage.GridSpotMarket,
-          params: { market: market.slug }
-        }"
-        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
-      >
-        <div v-if="baseToken">
-          <CommonTokenIcon v-bind="{ token: baseToken }" />
-        </div>
-        <div>
-          <p class="text-sm font-bold">{{ market.ticker }}</p>
-          <p class="text-xs text-gray-500">
-            {{ market.baseToken.name }}
-          </p>
-        </div>
-      </NuxtLink>
+      <div class="flex items-center space-x-2">
+        <NuxtLink
+          :to="{
+            name: TradingBotsSubPage.GridSpotMarket,
+            params: { market: market.slug }
+          }"
+          class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+        >
+          <div v-if="baseToken">
+            <CommonTokenIcon v-bind="{ token: baseToken }" />
+          </div>
+          <div>
+            <p class="text-sm font-bold">{{ market.ticker }}</p>
+            <p class="text-xs text-gray-500">
+              {{ market.baseToken.name }}
+            </p>
+          </div>
+        </NuxtLink>
+
+        <AppTooltip
+          v-if="userHasActiveLegacyStrategy"
+          is-warning
+          :content="$t('sgt.legacyBotWarning')"
+          is-lg
+        />
+      </div>
     </td>
 
     <td class="text-left">

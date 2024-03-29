@@ -39,6 +39,7 @@ export class MixPanelAnalytics {
     })
 
     this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
+    this.getMixpanelClient().people.set({ wallet })
   }
 
   trackLogout() {
@@ -205,7 +206,8 @@ export class MixPanelAnalytics {
     this.mixpanelClient.init(this.mixpanelKey, {
       persistence: 'localStorage',
       batch_requests: false,
-      track_pageview: true
+      track_pageview: true,
+      ignore_dnt: true
     })
 
     return this.mixpanelClient as OverridedMixpanel

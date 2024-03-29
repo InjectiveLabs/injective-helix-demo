@@ -22,6 +22,7 @@ import {
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
 import { isOkxWalletInstalled } from '@/app/services/okx'
+import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
 
 type WalletStoreState = {
@@ -37,6 +38,7 @@ type WalletStoreState = {
   metamaskInstalled: boolean
   phantomInstalled: boolean
   okxWalletInstalled: boolean
+  bitGetInstalled: boolean
 
   walletConnectStatus: WalletConnectStatus
 
@@ -60,6 +62,7 @@ const initialStateFactory = (): WalletStoreState => ({
   trustWalletInstalled: false,
   okxWalletInstalled: false,
   phantomInstalled: false,
+  bitGetInstalled: false,
 
   walletConnectStatus: WalletConnectStatus.idle,
 
@@ -207,6 +210,14 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
+    async isBitGetInstalled() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        bitGetInstalled: await isBitGetInstalled()
+      })
+    },
+
     async getHWAddresses(wallet: Wallet) {
       const walletStore = useWalletStore()
 
@@ -337,6 +348,27 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       await walletStore.connectWallet(Wallet.OkxWallet)
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      walletStore.$patch({
+        address,
+        addresses,
+        injectiveAddress,
+        addressConfirmation,
+        defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      await walletStore.onConnect()
+    },
+
+    async connectBitGet() {
+      const walletStore = useWalletStore()
+
+      await walletStore.connectWallet(Wallet.BitGet)
 
       const addresses = await getAddresses()
       const [address] = addresses
@@ -572,7 +604,6 @@ export const useWalletStore = defineStore('wallet', {
 
     async disconnect() {
       const spotStore = useSpotStore()
-      const peggyStore = usePeggyStore()
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
@@ -590,7 +621,6 @@ export const useWalletStore = defineStore('wallet', {
       derivativeStore.resetSubaccount()
 
       accountStore.$reset()
-      peggyStore.$reset()
       activityStore.$reset()
       positionStore.$reset()
       authZStore.$reset()

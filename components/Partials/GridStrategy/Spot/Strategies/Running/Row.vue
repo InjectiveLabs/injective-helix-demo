@@ -11,8 +11,8 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { TradingBotsSubPage } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -117,7 +117,7 @@ function onRemoveStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy(props.strategy.contractAddress)
+    .removeStrategyForSubaccount(props.strategy.subaccountId)
     .then(() => {
       success({
         title: t('sgt.success'),

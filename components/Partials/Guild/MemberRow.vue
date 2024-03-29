@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { getExplorerUrl } from '@/app/utils/network'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { NETWORK, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
+import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
 
@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 const explorerLink = computed(
-  () => `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
+  () => `${getExplorerUrl()}/account/${props.member.address}`
 )
 
 const { valueToString: tvlScorePercentageToString } = useBigNumberFormatter(

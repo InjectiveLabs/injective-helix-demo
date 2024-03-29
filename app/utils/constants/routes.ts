@@ -43,14 +43,26 @@ export const getRoutes = (network: Network, env: string) => {
     'kuji-usdt',
     'talis-usdt',
     'app-inj',
-    // 'usde-usdt',
+    'usde-usdt',
     'ginger-inj',
     'gyen-usdt',
     'dojo-inj',
     'andr-usdt',
     'hinj-inj',
     'qunt-inj',
-    'talis-inj'
+    'talis-inj',
+    'whale-inj',
+    'pyth-inj',
+    'andr-inj',
+    'usdc-usdt',
+    'hdro-inj',
+    // 'usdcnb-usdt',
+    'zig-inj',
+    'nonja-inj',
+    'lvn-inj',
+    'sollegacy-usdt',
+    'arblegacy-usdt',
+    'wmaticlegacy-usdt'
   ]
 
   const perpetuals = [
@@ -105,7 +117,17 @@ export const getRoutes = (network: Network, env: string) => {
     'ninj-inj',
     'dojo-inj',
     'andr-usdt',
-    'hinj-inj'
+    'hinj-inj',
+    'dojo-inj',
+    'andr-usdt',
+    'hinj-inj',
+    'usde-usdt',
+    'usdc-usdt',
+    'pyth-inj',
+    'nonja-inj',
+    'sollegacy-usdt',
+    'arblegacy-usdt',
+    'wmaticlegacy-usdt'
   ]
 
   const binaryOptions: string[] = []
@@ -121,7 +143,6 @@ export const getRoutes = (network: Network, env: string) => {
     spot.push('zen-inj')
     spot.push('projx-inj')
     spot.push('wbtc-usdt')
-    spot.push('usdc-usdt')
     spot.push('demo-usdt')
 
     perpetuals.push(
@@ -139,18 +160,14 @@ export const getRoutes = (network: Network, env: string) => {
   }
 
   if (IS_STAGING) {
-    // spot.push('ldo-usdcet', 'usdtkv-usdt', 'pyth-usdt')
-    /** limit to 40 markets max for querying activities */
-    spot.push('pyth-usdt')
+    spot.push('solgw-usdt', 'arbgw-usdt', 'wmaticgw-usdt')
     perpetuals.push('btc-usdtkv-perp', 'eth-usdtkv-perp')
   }
 
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
-    MainPage.Bridge,
     MainPage.Account,
-    MainPage.Activity,
-    MainPage.EthDenver2024
+    MainPage.Activity
   ]
 
   // Layout routes
@@ -164,7 +181,7 @@ export const getRoutes = (network: Network, env: string) => {
     LiquidityRewardsPage.CampaignDetails
   ]
 
-  const customStaticRoutes: string[] = [`/${MainPage.EthDenver2024}`]
+  const customStaticRoutes: string[] = []
   const upcomingMarketsRoutes: string[] = []
   // const deprecatedMarketsRoutes = []
 
@@ -185,6 +202,11 @@ export const getRoutes = (network: Network, env: string) => {
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
   )
+
+  const gridTradingSpotHistoryRoutes = gridTradingSpot.map(
+    (s) => `/trading-bots/grid/spot/${s}/history`
+  )
+
   const liquidityBotSpotRoutes = [`/trading-bots/liquidity-bots/spot/`]
 
   return {
@@ -202,7 +224,10 @@ export const getRoutes = (network: Network, env: string) => {
       binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
-      gridTradingSpotRoutes,
+      gridTradingSpotRoutes: [
+        ...gridTradingSpotRoutes,
+        ...gridTradingSpotHistoryRoutes
+      ],
       liquidityBotSpotRoutes,
       upcomingMarketsRoutes,
       derivativeMarketRouteNames,

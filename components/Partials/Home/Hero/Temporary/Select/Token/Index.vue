@@ -11,6 +11,7 @@ const formValues = useFormValues<SwapForm>()
 
 const props = defineProps({
   isDisabled: Boolean,
+  isLoading: Boolean,
   isUserInteraction: Boolean,
 
   denom: {
@@ -49,6 +50,7 @@ const emit = defineEmits<{
   'update:max': [{ amount: string }]
   'update:amount': [{ amount: string }]
   'update:isUserInteraction': [state: boolean]
+  'update:isInputEntered': [state: boolean]
 }>()
 
 const currentDenomIndex = ref(0)
@@ -125,6 +127,11 @@ function changeAmount(amount: string) {
 
 function modifyIsUserInteraction() {
   emit('update:isUserInteraction', true)
+
+  emit(
+    'update:isInputEntered',
+    props.amountFieldName === SwapFormField.InputAmount
+  )
 }
 
 const amountChangeDebounce = useDebounceFn((value) => {
@@ -189,7 +196,7 @@ export default {
     <BaseDropdown
       id="temporaryDropdown"
       class="w-full mb-2"
-      :disabled="isDisabled || options.length <= 1"
+      :disabled="isLoading || isDisabled || options.length <= 1"
       :distance="amountErrors.length > 0 ? 44 : 24"
       :flip="false"
       :auto-size="true"
@@ -211,14 +218,17 @@ export default {
                 input-classes="p-0 text-xl font-bold text-gray-600"
                 :max-decimals="maxDecimals"
                 :placeholder="inputPlaceholder"
-                :is-disabled="isDisabled || !selectedToken"
+                :is-disabled="isLoading || !selectedToken"
                 @update:model-value="amountChangeDebounce"
                 @click.stop="modifyIsUserInteraction"
               />
             </Transition>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div
+            class="flex items-center gap-2"
+            :class="{ 'cursor-auto': isLoading || isDisabled }"
+          >
             <Transition name="fade-down" mode="out-in">
               <PartialsHomeHeroTemporarySelectTokenItem
                 v-if="selectedToken"
@@ -227,7 +237,12 @@ export default {
               />
             </Transition>
 
-            <BaseIcon class="text-gray-600" name="caret-down-slim" is-sm />
+            <BaseIcon
+              v-if="!isDisabled && !isLoading"
+              class="text-gray-600"
+              name="caret-down-slim"
+              is-sm
+            />
           </div>
         </div>
       </div>

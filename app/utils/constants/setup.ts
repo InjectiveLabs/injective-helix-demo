@@ -3,8 +3,7 @@ import {
   isDevnet,
   isMainnet,
   isTestnet,
-  getNetworkEndpoints,
-  getCw20SwapContractForNetwork
+  getNetworkEndpoints
 } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -52,7 +51,7 @@ const env = {
     .VITE_GOOGLE_ANALYTICS_KEY as string,
   VITE_BUGSNAG_KEY: import.meta.env.VITE_BUGSNAG_KEY as string | undefined,
   VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY,
-  VITE_ALCHEMY_GOERLI_KEY: import.meta.env.VITE_ALCHEMY_GOERLI_KEY,
+  VITE_ALCHEMY_SEPOLIA_KEY: import.meta.env.VITE_ALCHEMY_SEPOLIA_KEY,
   VITE_SHEETDB_BEARER_TOKEN: import.meta.env.VITE_SHEETDB_BEARER_TOKEN as
     | string
     | undefined,
@@ -86,7 +85,7 @@ const env = {
   VITE_HOTJAR_KEY: string
   VITE_BUGSNAG_KEY: string
   VITE_ALCHEMY_KEY: string
-  VITE_ALCHEMY_GOERLI_KEY: string
+  VITE_ALCHEMY_SEPOLIA_KEY: string
   VITE_SHEETDB_BEARER_TOKEN: string
   VITE_NEWSLETTER_API: string
   VITE_FEE_RECIPIENT: string
@@ -112,7 +111,7 @@ export const ETHEREUM_CHAIN_ID: EthereumChainId = env.VITE_ETHEREUM_CHAIN_ID
   ? parseInt(env.VITE_ETHEREUM_CHAIN_ID.toString())
   : parseInt(
       (IS_TESTNET || IS_DEVNET
-        ? EthereumChainId.Goerli
+        ? EthereumChainId.Sepolia
         : EthereumChainId.Mainnet
       ).toString()
     )
@@ -165,7 +164,7 @@ export const FEE_PAYER_PUB_KEY = (env.VITE_FEE_PAYER_PUB_KEY || '') as string
 export const BANNER_NOTICE_ENABLED = env.VITE_BANNER_NOTICE_ENABLED === 'true'
 
 export const NEWSLETTER_API = env.VITE_NEWSLETTER_API || ''
-export const ALCHEMY_GOERLI_KEY = env.VITE_ALCHEMY_GOERLI_KEY || ''
+export const ALCHEMY_SEPOLIA_KEY = env.VITE_ALCHEMY_SEPOLIA_KEY || ''
 export const HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
@@ -175,7 +174,13 @@ export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
-export const SWAP_CONTRACT_ADDRESS = getCw20SwapContractForNetwork(NETWORK)
+export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
+  ? 'inj177yh38g3ctu7cemxpa3c2kvwh2yslfxfmfa66h'
+  : IS_TESTNET
+  ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
+  : IS_STAGING
+  ? 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
+  : 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
 
 export const COIN_GECKO_OPTIONS = {
   apiKey: env.VITE_COINGECKO_KEY as string,

@@ -53,6 +53,10 @@ const chartOptions: DeepPartial<ChartOptions> = {
       labelBackgroundColor: '#333'
     }
   },
+  timeScale: {
+    visible: true,
+    timeVisible: true
+  },
   autoSize: true
 }
 
@@ -129,7 +133,9 @@ function init() {
   candlestickSeries.applyOptions({
     priceFormat: {
       minMove: props.tickSize
-    }
+    },
+    upColor: '#0EdB81',
+    downColor: '#F6465D'
   })
 
   candlestickSeries.priceFormatter().format = (price) => {

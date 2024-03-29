@@ -1,18 +1,14 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
 
+const activityStore = useActivityStore()
+
 defineProps({
   status: {
     type: Object as PropType<Status>,
     default: () => new Status()
   }
 })
-
-const bridgeStore = useBridgeStore()
-
-const transactions = computed(
-  () => bridgeStore.subaccountTransferBridgeTransactions
-)
 </script>
 
 <template>
@@ -22,11 +18,14 @@ const transactions = computed(
   >
     <div class="w-full h-full">
       <CommonTableWrapper is-break-md>
-        <table v-if="transactions.length > 0" class="table">
+        <table
+          v-if="activityStore.subaccountTransfers.length > 0"
+          class="table"
+        >
           <PartialsActivityViewsWalletHistoryCommonTableHeader />
           <tbody>
             <PartialsActivityViewsWalletHistoryTransfer
-              v-for="(transaction, index) in transactions"
+              v-for="(transaction, index) in activityStore.subaccountTransfers"
               :key="`transfers-${index}`"
               :transaction="transaction"
             />

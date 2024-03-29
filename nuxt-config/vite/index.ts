@@ -6,8 +6,8 @@ const buildSourceMap = process.env.BUILD_SOURCEMAP !== 'false'
 
 export default defineConfig({
   define: {
-    'process.env': JSON.stringify({}),
-    'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
+    // 'process.env': JSON.stringify({}),
+    // 'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
   },
   plugins: [tsconfigPaths(), nodePolyfills({ protocolImports: true })],
 
