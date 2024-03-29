@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@funken-studio/sitemap-nuxt-3": "^4.0.4",
-    "@injectivelabs/ui-shared": "1.12.47-alpha.4",
+    "@injectivelabs/ui-shared": "1.12.47-alpha.5",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
     "@injectivelabs/ts-types": "1.14.11-beta.1",
     "@injectivelabs/exceptions": "1.14.11-beta.3",
