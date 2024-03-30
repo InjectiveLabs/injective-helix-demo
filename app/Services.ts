@@ -2,7 +2,8 @@ import { LocalStorage } from '@injectivelabs/utils'
 import {
   TokenPrice,
   DenomClientAsync,
-  TokenServiceStatic
+  TokenServiceStatic,
+  TokenService
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ChainGrpcGovApi,
@@ -110,6 +111,12 @@ export const tokenServiceStatic = new TokenServiceStatic({
   chainId: CHAIN_ID,
   network: NETWORK,
   endpoints: ENDPOINTS
+})
+export const tokenService = new TokenService({
+  chainId: CHAIN_ID,
+  network: NETWORK,
+  endpoints: ENDPOINTS,
+  alchemyRpcUrl: alchemyRpcEndpoint
 })
 export const tokenMetaUtils = TokenMetaUtilsFactory.make(NETWORK)
 export const tokenPrice = new TokenPrice(NETWORK, COIN_GECKO_OPTIONS)

@@ -9,10 +9,10 @@ export enum MainPage {
   LpRewards = 'lp-rewards',
   Leaderboard = 'leaderboard',
   Maintenance = 'maintenance',
-  Airdrop = 'airdrop',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
+  Airdrop = 'airdrop',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
