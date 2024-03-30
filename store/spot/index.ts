@@ -143,6 +143,7 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
+      const tokenStore = useTokenStore()
 
       const markets = await spotCacheApi.fetchMarkets()
       const marketsWithToken =
@@ -180,6 +181,10 @@ export const useSpotStore = defineStore('spot', {
       })
 
       await spotStore.fetchMarketsSummary()
+      await tokenStore.appendUnknownTokensList([
+        ...marketsFromQueryWithToken.map((m) => m.baseToken),
+        ...marketsFromQueryWithToken.map((m) => m.quoteToken)
+      ])
     },
 
     async initIfNotInit() {

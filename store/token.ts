@@ -137,6 +137,33 @@ export const useTokenStore = defineStore('token', {
       })
     },
 
+    /**
+     * Used to append unknown token metadata
+     * from external/internal API sources
+     * for particular set of tokens (account page/single asset page)
+     **/
+    appendUnknownTokensList(tokens: Token[]) {
+      const tokenStore = useTokenStore()
+
+      const tokenDenoms = tokens.map((t) => t.denom)
+      const unknownTokens = tokenStore.unknownTokens.filter((asset) =>
+        tokenDenoms.includes(asset.denom)
+      )
+
+      if (!unknownTokens.length) {
+        return
+      }
+
+      const unknownTokensWithoutAsset = tokenStore.unknownTokens.filter(
+        (token) => !tokenDenoms.includes(token.denom)
+      )
+
+      tokenStore.$patch({
+        tokens: [...tokenStore.tokens, ...tokens],
+        unknownTokens: unknownTokensWithoutAsset
+      })
+    },
+
     async getTokensUsdPriceMapFromToken(tokens: Token[]) {
       const tokenStore = useTokenStore()
 
