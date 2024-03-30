@@ -30,8 +30,7 @@ import {
 import {
   indexerOracleApi,
   tokenServiceStatic,
-  indexerDerivativesApi,
-  indexerRestDerivativesChronosApi
+  indexerDerivativesApi
 } from '../../app/Services'
 import {
   cancelOrder,
@@ -72,7 +71,6 @@ import {
   ActivityFetchOptions,
   UiDerivativeOrderbookWithSequence
 } from '@/types'
-import { IS_MAINNET } from '@/app/utils/constants/setup'
 import { derivativeCacheApi } from '@/app/providers/cache/DerivativeCacheApi'
 
 type DerivativeStoreState = {
@@ -174,19 +172,18 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async init() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_MAINNET ? derivativeCacheApi : indexerDerivativesApi
 
-      const markets = (await apiClient.fetchMarkets()) as Array<
+      const markets = (await derivativeCacheApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
       const recentlyExpiredMarkets = (
-        (await apiClient.fetchMarkets({
+        (await derivativeCacheApi.fetchMarkets({
           marketStatus: 'expired'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
 
       const pausedMarkets = (
-        (await apiClient.fetchMarkets({
+        (await derivativeCacheApi.fetchMarkets({
           marketStatus: 'paused'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
@@ -475,14 +472,10 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchMarketsSummary() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_MAINNET
-        ? derivativeCacheApi
-        : indexerRestDerivativesChronosApi
-
       const { markets } = derivativeStore
 
       try {
-        const marketSummaries = await apiClient.fetchMarketsSummary()
+        const marketSummaries = await derivativeCacheApi.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>

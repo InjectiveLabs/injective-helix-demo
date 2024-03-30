@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { awaitForAll } from '@injectivelabs/utils'
-import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { IS_MAINNET } from '@/app/utils/constants/setup'
+import { denomClient, tokenPrice } from '@/app/Services'
 import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
 import { TokenUsdPriceMap } from '@/types'
 
@@ -82,13 +81,12 @@ export const useTokenStore = defineStore('token', {
 
     async fetchTokens() {
       const tokenStore = useTokenStore()
-      const apiClient = IS_MAINNET ? baseCacheApi : bankApi
 
       if (tokenStore.tokens.length > 0) {
         return
       }
 
-      const { supply } = await apiClient.fetchTotalSupply({ limit: 2000 })
+      const { supply } = await baseCacheApi.fetchTotalSupply()
 
       const supplyWithTokensOrUnknown = supply.map((coin) =>
         denomClient.getDenomTokenStaticOrUnknown(coin.denom)

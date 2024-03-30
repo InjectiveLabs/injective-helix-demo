@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents, MainPage } from '@/types'
+import { BusEvents, MainPage, TradeSubPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -32,14 +32,19 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
-    appStore.fetchBlockHeight(),
-    spotStore.initIfNotInit(),
-    spotStore.fetchMarketsSummary(),
-    derivativeStore.initIfNotInit(),
-    derivativeStore.fetchMarketsSummary(),
+    // appStore.fetchBlockHeight(),
     exchangeStore.initFeeDiscounts(),
     authzStore.fetchGrants()
   ])
+
+  // Load market details (only for non trading pages)
+  if (
+    !Object.values(TradeSubPage).some((page) =>
+      page.includes(route.name as TradeSubPage)
+    )
+  ) {
+    Promise.all([spotStore.initIfNotInit(), derivativeStore.initIfNotInit()])
+  }
 
   Promise.all([authzStore.fetchGrants()]).then(() => {})
 
