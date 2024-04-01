@@ -57,10 +57,11 @@ const chartOptions: DeepPartial<ChartOptions> = {
       labelBackgroundColor: '#333'
     }
   },
-  autoSize: true,
   timeScale: {
+    visible: true,
     timeVisible: true
-  }
+  },
+  autoSize: true
 }
 
 const container = ref()
@@ -137,7 +138,6 @@ function init() {
     priceFormat: {
       minMove: props.tickSize
     },
-
     upColor: '#0EdB81',
     downColor: '#F6465D'
   })

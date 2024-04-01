@@ -4,6 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const gridStrategyStore = useGridStrategyStore()
 
 const { $onError } = useNuxtApp()
 
@@ -20,7 +21,8 @@ onWalletConnected(() => {
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
     tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
-    campaignStore.fetchRound(roundId)
+    campaignStore.fetchRound(roundId),
+    gridStrategyStore.fetchAllStrategies()
   ])
     .catch($onError)
     .finally(() => {

@@ -128,3 +128,30 @@ export const intervalOptions: IntervalOption[] = [
   { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
   { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
 ]
+export const LEGACY_MARKETIDS = [
+  '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
+  '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
+  '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
+]
+
+export const CURRENT_MARKET_TO_LEGACY_MARKETID_MAP = {
+  // SOL - SOLlegacy
+  '0xd9089235d2c1b07261cbb2071f4f5a7f92fa1eca940e3cad88bb671c288a972f':
+    '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
+  // WMATIC - WMATIClegacy
+  '0x8cd25fdc0d7aad678eb998248f3d1771a2d27c964a7630e6ffa5406de7ea54c1':
+    '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
+  // ARB - ARBlegacy
+  '0x1c2e5b1b4b1269ff893b4817a478fba6095a89a3e5ce0cccfcafa72b3941eeb6':
+    '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
+} as Record<string, string>
+
+export const LEGACY_MARKET_TO_CURRENT_MARKETID_MAP = Object.entries(
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
+).reduce(
+  (acc, [current, legacy]) => {
+    acc[legacy] = current
+    return acc
+  },
+  {} as Record<string, string>
+)

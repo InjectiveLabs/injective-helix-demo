@@ -41,10 +41,9 @@ import {
 import {
   tokenService,
   indexerSpotApi,
-  indexerRestSpotChronosApi
+  tokenServiceStatic
 } from '@/app/Services'
 import {
-  IS_MAINNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -144,15 +143,24 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
-      const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
+      const tokenStore = useTokenStore()
 
-      const markets = await apiClient.fetchMarkets()
-      const marketsWithToken = await tokenService.toSpotMarketsWithToken(
-        markets
+      const markets = await spotCacheApi.fetchMarkets()
+      const marketsWithToken =
+        tokenServiceStatic.toSpotMarketsWithToken(markets)
+      const marketsFromQuery = markets.filter((market) =>
+        spotStore.marketIdsFromQuery.includes(market.marketId)
       )
+      const marketsFromQueryWithToken =
+        await tokenService.toSpotMarketsWithToken(marketsFromQuery)
 
-      const uiMarkets =
-        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+      const marketsWithTokenAndQuery = [
+        ...marketsWithToken,
+        ...marketsFromQueryWithToken
+      ]
+      const uiMarkets = UiSpotTransformer.spotMarketsToUiSpotMarkets(
+        marketsWithTokenAndQuery
+      )
 
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
@@ -173,6 +181,10 @@ export const useSpotStore = defineStore('spot', {
       })
 
       await spotStore.fetchMarketsSummary()
+      await tokenStore.appendUnknownTokensList([
+        ...marketsFromQueryWithToken.map((m) => m.baseToken),
+        ...marketsFromQueryWithToken.map((m) => m.quoteToken)
+      ])
     },
 
     async initIfNotInit() {
@@ -383,12 +395,11 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
-      const apiClient = IS_MAINNET ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
       try {
-        const marketSummaries = await apiClient.fetchMarketsSummary()
+        const marketSummaries = await spotCacheApi.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>

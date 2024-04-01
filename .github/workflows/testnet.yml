@@ -17,7 +17,7 @@ jobs:
       VITE_NETWORK: testnetSentry
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
-      VITE_ETHEREUM_CHAIN_ID: 5
+      VITE_ETHEREUM_CHAIN_ID: 11155111
       SOURCE_DIR: .output/public
       DEST_DIR: www
 
@@ -40,7 +40,7 @@ jobs:
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
-      VITE_ALCHEMY_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
+      VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
 

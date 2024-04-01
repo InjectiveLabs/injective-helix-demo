@@ -42,7 +42,6 @@ export enum Icon {
 export enum Modal {
   Terms = 'terms',
   QrCode = 'qrcode',
-  Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
   SgtBanner = 'sgt-banner',
@@ -53,17 +52,16 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  AirdropTerms = 'airdrop-terms',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   GasFeeRebate = 'gas-fee-rebate',
-  BridgeConfirm = 'bridge-confirm',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
   SgtBalancedFees = 'sgtBalancedFees',
-  BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
@@ -108,12 +106,6 @@ export enum AppState {
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'
-}
-
-export enum BridgeType {
-  Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
-  Transfer = 'Transfer'
 }
 
 export enum TradeTypes {
@@ -284,16 +276,6 @@ export enum ActivityField {
   Page = 'Page',
   Side = 'Side',
   Type = 'Type'
-}
-
-export enum BridgeField {
-  Amount = 'Amount',
-  BridgeType = 'BridgeType',
-  BridgingNetwork = 'BridgingNetwork',
-  Denom = 'Denom',
-  Destination = 'Destination',
-  Memo = 'Memo',
-  Token = 'Token'
 }
 
 export enum SubaccountTransferField {

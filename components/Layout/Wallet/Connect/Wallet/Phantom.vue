@@ -45,7 +45,7 @@ function connect() {
     <template v-if="!walletStore.phantomInstalled" #icon>
       <NuxtLink
         ref="downloadPhantomLink"
-        to="https://www.okx.com/web3"
+        to="https://phantom.app/download"
         target="_blank"
         rel="noreferrer"
       >

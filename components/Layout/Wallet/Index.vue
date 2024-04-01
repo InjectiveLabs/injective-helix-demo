@@ -26,7 +26,8 @@ onMounted(() => {
     walletStore.isMetamaskInstalled(),
     walletStore.isTrustWalletInstalled(),
     walletStore.isPhantomInstalled(),
-    walletStore.isOkxWalletInstalled()
+    walletStore.isOkxWalletInstalled(),
+    walletStore.isBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
 

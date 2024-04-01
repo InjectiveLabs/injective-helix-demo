@@ -9,18 +9,18 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'lvn-inj',
+  'nonja-inj',
+  'pyth-inj',
+  'zig-inj',
+  'hdro-inj',
+  'usdc-usdt',
+  'andr-inj',
+  'usde-usdt',
   'whale-inj',
   'qunt-inj',
   'talis-inj',
-  'bonk-usdt-perp',
-  'doge-usdt-perp',
-  'link-usdt-perp',
-  'hinj-inj',
-  'andr-usdt',
-  'osmo-usdt-perp',
-  'dojo-inj',
-  'arb-usdt-perp',
-  'gyen-usdt'
+  'bonk-usdt-perp'
 ]
 
 export const experimentalMarketsSlug = [
@@ -113,7 +113,11 @@ export const slugsToIncludeInInjectiveCategory = [
   'andr-usdt',
   'hinj-inj',
   'qunt-inj',
-  'talis-inj'
+  'talis-inj',
+  'hdro-inj',
+  'pyth-inj',
+  'nonja-inj',
+  'lvn-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
@@ -126,6 +130,7 @@ export const slugsToIncludeInSolanaCategory = [
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
+  'hdro-inj',
   'inj-usdt',
   'tia-usdt',
   'xrp-usdt-perp',

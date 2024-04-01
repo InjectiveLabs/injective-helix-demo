@@ -36,23 +36,21 @@ function click() {
 
 <template>
   <div class="flex items-center justify-between" @click="click">
-    <Transition name="fade-down" mode="out-in">
-      <div class="flex items-center gap-2">
-        <CommonTokenIcon v-bind="{ token: token, isLg: isLgTokenIcon }" />
+    <div class="flex items-center gap-2">
+      <CommonTokenIcon v-bind="{ token: token, isLg: isLgTokenIcon }" />
 
-        <div
-          class="flex flex-col max-w-2xs truncate text-gray-600 font-semibold"
-          :class="classes"
-        >
-          <span>
-            {{ token.symbol }}
-          </span>
+      <div
+        class="flex flex-col max-w-2xs truncate text-gray-600 font-semibold"
+        :class="classes"
+      >
+        <span>
+          {{ token.symbol }}
+        </span>
 
-          <span v-if="isTokenNameVisible">
-            {{ token.name }}
-          </span>
-        </div>
+        <span v-if="isTokenNameVisible">
+          {{ token.name }}
+        </span>
       </div>
-    </Transition>
+    </div>
   </div>
 </template>

@@ -7,20 +7,15 @@ import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  MARKETS_HISTORY_CHART_ONE_HOUR,
-  MARKETS_HISTORY_CHART_SEVEN_DAYS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
-
 import { Change, MainPage, TradeClickOrigin } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+
 const exchangeStore = useExchangeStore()
-const { $onError } = useNuxtApp()
 
 const props = defineProps({
   isHero: Boolean,
@@ -35,10 +30,14 @@ const props = defineProps({
   summary: {
     type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
     default: undefined
+  },
+
+  status: {
+    type: Object as PropType<Status>,
+    default: new Status(StatusType.Idle)
   }
 })
 
-const status = reactive(new Status(StatusType.Loading))
 const useDefaultLastTradedPriceColor = ref(true)
 
 const lastTradedPriceTextColorClass = computed(() => {
@@ -135,20 +134,6 @@ watch(
     lastPriceChangeColor()
   }
 )
-
-onMounted(() => {
-  Promise.all([
-    exchangeStore.getMarketsHistory({
-      marketIds: [props.market.marketId],
-      resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
-      countback: MARKETS_HISTORY_CHART_SEVEN_DAYS
-    })
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-})
 
 function lastPriceChangeColor() {
   useDefaultLastTradedPriceColor.value = false
@@ -247,7 +232,7 @@ function tradeClickedTrack() {
           'col-span-3': isHero
         }"
       >
-        <AppSpinner v-if="status.isLoading()" is-md />
+        <AppSpinner v-if="status.isLoading()" is-sm />
 
         <BaseLineGraph
           v-if="chartData.length > 1"

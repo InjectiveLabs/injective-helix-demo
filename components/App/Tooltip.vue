@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 defineProps({
   isLg: Boolean,
+  isWarning: Boolean,
 
   content: {
     type: String,
@@ -19,8 +20,12 @@ defineProps({
     <slot>
       <BaseIcon
         name="circle-info"
-        class="text-gray-500"
-        :class="{ 'w-4 h-4 min-w-4': isLg, 'w-3 h-3 min-w-3': !isLg }"
+        :class="{
+          'w-4 h-4 min-w-4': isLg,
+          'w-3 h-3 min-w-3': !isLg,
+          'text-gray-500': !isWarning,
+          'text-orange-200': isWarning
+        }"
       />
     </slot>
 

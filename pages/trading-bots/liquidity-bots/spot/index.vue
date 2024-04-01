@@ -84,7 +84,7 @@ function fetchData() {
     }),
     accountStore.streamBankBalance(),
     gridStrategyStore.fetchAllStrategies(),
-    exchangeStore.getMarketsHistory({
+    exchangeStore.fetchMarketHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
       countback: 30 * 24

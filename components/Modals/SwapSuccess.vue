@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
-import { NETWORK } from '@/app/utils/constants'
-import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
+import { getExplorerUrl } from '@/app/utils/network'
 import { confettiOptions } from '@/app/utils/vendor'
+import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
+import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -29,7 +28,7 @@ const explorerUrl = computed(() => {
     return undefined
   }
 
-  return `${getExplorerUrl(NETWORK)}/transaction/${props.txHash}`
+  return `${getExplorerUrl()}/transaction/${props.txHash}`
 })
 
 function closeModal() {

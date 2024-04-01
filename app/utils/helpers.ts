@@ -84,11 +84,21 @@ export function getMinQuantityTickSize(
     : ''
 }
 
+const getProperSlug = (slug: string): string => {
+  const edgeCaseSlugs = {
+    'wmaticlegacy-usdt': 'wmatic-usdt',
+    'arblegacy-usdt': 'arb-usdt',
+    'sollegacy-usdt': 'sol-usdt'
+  } as { [key: string]: string }
+
+  return edgeCaseSlugs[slug] || slug
+}
+
 export const addressAndMarketSlugToSubaccountId = (
   ethAddress: string,
   slug: string
 ) => {
-  const marketHex = stringToHex(slug)
+  const marketHex = stringToHex(getProperSlug(slug))
 
   return `${ethAddress}${'0'.repeat(66 - 42 - marketHex.length)}${marketHex}`
 }

@@ -100,6 +100,13 @@ export default {
       ]),
     subaccountTransfer: 'Subaccount Transfer',
     unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
-    transferToMainSubaccount: 'Transfer to Main Subaccount'
+    transferToMainSubaccount: 'Transfer to Main Subaccount',
+    amount: 'Amount',
+    noAssetToTransfer:
+      "You don't have any assets to transfer from this subaccount.",
+    transferToSubaccountSuccess: 'Subaccount transfer successful',
+    mainSubaccount: 'Main Subaccount',
+    subaccountId: ({ named }: I18nMessageFunction) =>
+      `Subaccount ${named('subaccountId')}`
   }
 }

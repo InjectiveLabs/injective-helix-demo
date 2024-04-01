@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { TokenType, type Token } from '@injectivelabs/token-metadata'
 import { awaitForAll } from '@injectivelabs/utils'
-import { bankApi, denomClient, tokenPrice } from '@/app/Services'
-import { IS_MAINNET } from '@/app/utils/constants/setup'
+import { denomClient, tokenPrice } from '@/app/Services'
 import { baseCacheApi } from '@/app/providers/cache/BaseCacheApi'
 import { TokenUsdPriceMap } from '@/types'
 
@@ -82,13 +81,12 @@ export const useTokenStore = defineStore('token', {
 
     async fetchTokens() {
       const tokenStore = useTokenStore()
-      const apiClient = IS_MAINNET ? baseCacheApi : bankApi
 
       if (tokenStore.tokens.length > 0) {
         return
       }
 
-      const { supply } = await apiClient.fetchTotalSupply({ limit: 2000 })
+      const { supply } = await baseCacheApi.fetchTotalSupply()
 
       const supplyWithTokensOrUnknown = supply.map((coin) =>
         denomClient.getDenomTokenStaticOrUnknown(coin.denom)
@@ -135,6 +133,33 @@ export const useTokenStore = defineStore('token', {
 
       tokenStore.$patch({
         tokens: [...tokenStore.tokens, ...tokensList],
+        unknownTokens: unknownTokensWithoutAsset
+      })
+    },
+
+    /**
+     * Used to append unknown token metadata
+     * from external/internal API sources
+     * for particular set of tokens (account page/single asset page)
+     **/
+    appendUnknownTokensList(tokens: Token[]) {
+      const tokenStore = useTokenStore()
+
+      const tokenDenoms = tokens.map((t) => t.denom)
+      const unknownTokens = tokenStore.unknownTokens.filter((asset) =>
+        tokenDenoms.includes(asset.denom)
+      )
+
+      if (!unknownTokens.length) {
+        return
+      }
+
+      const unknownTokensWithoutAsset = tokenStore.unknownTokens.filter(
+        (token) => !tokenDenoms.includes(token.denom)
+      )
+
+      tokenStore.$patch({
+        tokens: [...tokenStore.tokens, ...tokens],
         unknownTokens: unknownTokensWithoutAsset
       })
     },

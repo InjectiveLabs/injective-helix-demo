@@ -1,24 +1,12 @@
 <script lang="ts" setup>
-import {
-  Status,
-  INJ_DENOM,
-  StatusType,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { Token } from '@injectivelabs/token-metadata'
-import { ThrownException } from '@injectivelabs/exceptions'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import {
-  getCw20FromSymbolOrNameAsString,
-  getIbcDenomFromSymbolOrNameAsString,
-  getPeggyDenomFromSymbolOrNameAsString
-} from '@/app/utils/helper'
 import { denomClient } from '@/app/Services'
-import { toBalanceInToken } from '@/app/utils/formatters'
-import { mapErrorToMessage } from '@/app/client/utils/swap'
+import { tokensDenomToPreloadHomepageSwap, usdtToken } from '@/app/data/token'
 import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
@@ -31,11 +19,10 @@ const setFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-const fetchStatus = reactive(new Status(StatusType.Idle))
-const queryError = ref('')
 const hasUserInteraction = ref(false)
+const isInputEntered = ref(true)
 
-const { outputToken, inputToken } = useSwap(computed(() => formValues))
+const { outputToken, inputToken } = useSwapHomepage(computed(() => formValues))
 
 const hasInputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.InputAmount]).gt(0)
@@ -45,23 +32,16 @@ const hasOutputAmount = computed(() =>
   new BigNumberInBase(formValues[SwapFormField.OutputAmount]).gt(0)
 )
 
-onMounted(async () => {
+onMounted(() => {
   /**
    * We hardcode only the denoms we need on page load for
    * the token selector animation as to not
    * load the component faster as to improve UX
    **/
 
-  const tokensDenomToPreload = [
-    INJ_DENOM,
-    getCw20FromSymbolOrNameAsString('SOL'),
-    getIbcDenomFromSymbolOrNameAsString('ATOM'),
-    getPeggyDenomFromSymbolOrNameAsString('WETH'),
-    getCw20FromSymbolOrNameAsString('WMATIC'),
-    getIbcDenomFromSymbolOrNameAsString('KAVA')
-  ]
-
-  const tokens = await denomClient.getDenomsToken(tokensDenomToPreload)
+  const tokens = tokensDenomToPreloadHomepageSwap.map((denom) =>
+    denomClient.getDenomTokenStaticOrUnknown(denom)
+  )
 
   Promise.all([
     tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),
@@ -95,8 +75,6 @@ function resetFormValues() {
 }
 
 async function getOutputQuantity() {
-  fetchStatus.setLoading()
-
   const { valid } = await validate()
 
   if (
@@ -105,28 +83,13 @@ async function getOutputQuantity() {
     !outputToken.value ||
     !hasInputAmount.value
   ) {
-    return fetchStatus.setIdle()
+    return
   }
 
-  swapStore
-    .fetchOutputQuantity({
-      inputAmount: formValues[SwapFormField.InputAmount],
-      outputToken: outputToken.value,
-      inputToken: inputToken.value
-    })
-    .then(() => {
-      updateAmount()
-    })
-    .catch((e: ThrownException) => {
-      queryError.value = mapErrorToMessage(e.message)
-      $onError(e)
-    })
-    .finally(() => fetchStatus.setIdle())
+  updateAmount()
 }
 
 async function getInputQuantity() {
-  fetchStatus.setLoading()
-
   const { valid } = await validate()
 
   if (
@@ -135,37 +98,29 @@ async function getInputQuantity() {
     !outputToken.value ||
     !hasOutputAmount.value
   ) {
-    return fetchStatus.setIdle()
+    return
   }
 
-  swapStore
-    .fetchInputQuantity({
-      outputAmount: formValues[SwapFormField.OutputAmount],
-      outputToken: outputToken.value,
-      inputToken: inputToken.value
-    })
-    .then(() => {
-      updateAmount()
-    })
-    .catch((e: ThrownException) => {
-      queryError.value = mapErrorToMessage(e.message)
-
-      $onError(e)
-    })
-    .finally(() => fetchStatus.setIdle())
+  updateAmount()
 }
 
 function updateAmount() {
-  if (swapStore.isInputEntered) {
+  const isUsdtInputDenom =
+    formValues[SwapFormField.InputDenom] === usdtToken.denom
+
+  if (isInputEntered.value) {
+    const outputAmount = isUsdtInputDenom
+      ? new BigNumberInBase(formValues[SwapFormField.InputAmount]).div(
+          outputToken.value?.usdPrice || 0
+        )
+      : new BigNumberInBase(formValues[SwapFormField.InputAmount]).times(
+          inputToken.value?.usdPrice || 0
+        )
     setFormValues(
       {
-        [SwapFormField.OutputAmount]: toBalanceInToken({
-          value: swapStore.outputQuantity.resultQuantity,
-          decimalPlaces: outputToken.value?.token.decimals || 0,
-          fixedDecimals:
-            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-          roundingMode: BigNumberInBase.ROUND_DOWN
-        })
+        [SwapFormField.OutputAmount]: outputAmount.toFixed(
+          outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
+        )
       },
       false
     )
@@ -173,24 +128,25 @@ function updateAmount() {
     return
   }
 
-  setFormValues({
-    [SwapFormField.InputAmount]: toBalanceInToken({
-      value: swapStore.inputQuantity.resultQuantity,
-      decimalPlaces: inputToken.value?.token.decimals || 0,
-      fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-      roundingMode: BigNumberInBase.ROUND_UP
-    })
-  })
-}
+  const inputAmount = isUsdtInputDenom
+    ? new BigNumberInBase(formValues[SwapFormField.OutputAmount]).times(
+        outputToken.value?.usdPrice || 0
+      )
+    : new BigNumberInBase(formValues[SwapFormField.OutputAmount]).div(
+        inputToken.value?.usdPrice || 0
+      )
 
-function resetQueryError() {
-  queryError.value = ''
+  setFormValues({
+    [SwapFormField.InputAmount]: inputAmount.toFixed(
+      outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
+    )
+  })
 }
 
 function onNavigation() {
   /* isInputEntered tells us which input field the user has typed a value and hasUserInteraction is used to submit the toAmount by default if no interaction */
   const amount =
-    !swapStore.isInputEntered || !hasUserInteraction.value
+    !isInputEntered.value || !hasUserInteraction.value
       ? { toAmount: formValues[SwapFormField.OutputAmount] }
       : { fromAmount: formValues[SwapFormField.InputAmount] }
 
@@ -212,12 +168,12 @@ function onNavigation() {
         <div class="overflow-auto p-6">
           <PartialsHomeHeroTemporaryTokenForm
             v-model:has-user-interaction="hasUserInteraction"
+            v-model:is-input-entered="isInputEntered"
             v-bind="{
-              disabled: status.isLoading()
+              isLoading: status.isLoading()
             }"
             @update:outputQuantity="getOutputQuantity"
             @update:inputQuantity="getInputQuantity"
-            @queryError:reset="resetQueryError"
             @form:reset="resetFormValues"
           />
 

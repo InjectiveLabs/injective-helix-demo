@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   MarketFilterType,
   UiMarketAndSummary,
   UiMarketWithToken
 } from '@/types'
 import { deprecatedMarkets, newMarketsSlug } from '@/app/data/market'
+import {
+  MARKETS_HISTORY_CHART_ONE_HOUR,
+  MARKETS_HISTORY_CHART_SEVEN_DAYS
+} from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
+const { $onError } = useNuxtApp()
 
 const props = defineProps({
   isHero: Boolean,
@@ -25,6 +30,8 @@ const props = defineProps({
     default: MarketFilterType.Volume
   }
 })
+
+const status = reactive(new Status(StatusType.Loading))
 
 const markets = computed(() => [
   ...derivativeStore.markets,
@@ -97,6 +104,20 @@ const categorizedMarketsList = computed(() =>
   props.isHero ? heroMarketsList.value : marketsList.value
 )
 
+onMounted(() => {
+  Promise.all([
+    exchangeStore.fetchMarketsHistory({
+      marketIds: categorizedMarketsList.value.map((m) => m.market.marketId),
+      resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
+      countback: MARKETS_HISTORY_CHART_SEVEN_DAYS
+    })
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+
 useIntervalFn(() => appStore.pollMarkets(), 5 * 1000)
 </script>
 
@@ -109,9 +130,12 @@ useIntervalFn(() => appStore.pollMarkets(), 5 * 1000)
         <PartialsHomeCommonMarketsRow
           v-for="{ market, summary } in categorizedMarketsList"
           :key="`market-${market.marketId}`"
-          :market="market"
-          :summary="summary"
-          :is-hero="isHero"
+          v-bind="{
+            market,
+            status,
+            summary,
+            isHero: props.isHero
+          }"
           class="border-b border-gray-300 last-of-type:border-b-0"
         />
       </div>

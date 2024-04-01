@@ -3,7 +3,6 @@ export enum MainPage {
   Terms = 'terms',
   Index = 'index',
   Guilds = 'guilds',
-  Bridge = 'bridge',
   Account = 'account',
   Markets = 'markets',
   Activity = 'activity',
@@ -13,7 +12,7 @@ export enum MainPage {
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
-  EthDenver2024 = 'ethdenver2024',
+  Airdrop = 'airdrop',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
@@ -28,11 +27,9 @@ export enum ActivitySubPage {
   SpotOrderHistory = 'activity-spot-order-history',
   SpotTradeHistory = 'activity-spot-trade-history',
   DerivativesTriggers = 'activity-derivatives-triggers',
-  WalletHistoryDeposits = 'activity-wallet-history-deposits',
   DerivativesOrderHistory = 'activity-derivatives-order-history',
   DerivativesTradeHistory = 'activity-derivatives-trade-history',
-  PositionsFundingPayments = 'activity-positions-funding-payments',
-  WalletHistoryWithdrawals = 'activity-wallet-history-withdrawals'
+  PositionsFundingPayments = 'activity-positions-funding-payments'
 }
 
 export enum CampaignSubPage {

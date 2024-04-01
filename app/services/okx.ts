@@ -65,7 +65,9 @@ export const validateOkxWallet = async (
 
   if (!okxProvider) {
     throw new GeneralException(
-      new Error('You are connected to the wrong wallet. Please use Metamask.'),
+      new Error(
+        'You are connected to the wrong wallet. Please use Okx Wallet.'
+      ),
       {
         code: UnspecifiedErrorCode,
         type: ErrorType.WalletError
