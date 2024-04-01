@@ -36,11 +36,13 @@ watch(
  */
 
 watch(
-  () => walletStore.isUserWalletConnected,
-  (isConnected) => {
-    if (!isConnected) {
+  () => walletStore.authZOrInjectiveAddress,
+  (injAddress) => {
+    if (!injAddress) {
       return
     }
+
+    accountStore.$reset()
 
     portfolioStatus.setLoading()
     fetchUserPortfolio()
@@ -52,23 +54,34 @@ watch(
   { immediate: true }
 )
 
-watch(() => accountStore.subaccountId, fetchUserPortfolio)
+watch(
+  () => accountStore.subaccountId,
+  (subaccount) => {
+    if (!subaccount) {
+      return
+    }
+
+    fetchSubaccountStream()
+  }
+)
 
 function fetchUserPortfolio() {
   return Promise.all([
-    accountStore.cancelSubaccountBalanceStream(),
-    accountStore.cancelBankBalanceStream(),
-
     exchangeStore.initFeeDiscounts(),
     authZStore.fetchGrants(),
-
-    accountStore.streamSubaccountBalance(),
-    accountStore.streamBankBalance(),
-    positionStore.streamSubaccountPositions(),
 
     accountStore.fetchAccountPortfolioBalances(),
     positionStore.fetchPositions()
   ])
+}
+
+function fetchSubaccountStream() {
+  accountStore.cancelSubaccountBalanceStream()
+  accountStore.cancelBankBalanceStream()
+
+  accountStore.streamSubaccountBalance()
+  accountStore.streamBankBalance()
+  positionStore.streamSubaccountPositions()
 }
 
 provide(portfolioStatusKey, portfolioStatus)

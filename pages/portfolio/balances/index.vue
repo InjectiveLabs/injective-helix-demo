@@ -11,8 +11,6 @@
       <PartialsPortfolioBalancesHeader class="p-4" />
 
       <PartialsPortfolioBalancesSubaccount class="mt-12" />
-
-      <div class="pt-10"></div>
     </div>
   </div>
 </template>

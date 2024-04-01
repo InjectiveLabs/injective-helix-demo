@@ -510,3 +510,28 @@ export enum PerpOrdersTradingBotsView {
   OrderHistory = 'orderHistory',
   TradeHistory = 'tradeHistory'
 }
+
+export enum PositionsFilterField {
+  Market = 'market',
+  Side = 'side'
+}
+
+export enum SpotOpenOrdersFilterField {
+  Market = 'market',
+  Side = 'side'
+}
+
+export enum SpotOrderHistoryFilterField {
+  Market = 'market',
+  Side = 'side',
+  Type = 'type'
+}
+
+export enum OrderTypeFilter {
+  Market = 'market',
+  Limit = 'limit',
+  StopLossLimit = 'stopLossLimit',
+  StopLossMarket = 'stopLossMarket',
+  TakeProfitLimit = 'takeProfitLimit',
+  TakeProfitMarket = 'takeProfitMarket'
+}

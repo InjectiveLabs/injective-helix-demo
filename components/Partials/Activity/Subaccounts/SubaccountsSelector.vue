@@ -15,7 +15,7 @@ function onUpdateSubaccount(subaccountId: string) {
 </script>
 
 <template>
-  <div v-if="accountStore.hasMultipleSubaccounts" class="xl:ml-right xl:flex">
+  <div v-if="accountStore.hasMultipleSubaccounts" class="xl:flex">
     <CommonSubaccountOptions
       v-bind="{ includeBotsSubaccounts: true, showLowBalance: true }"
     >

@@ -2,9 +2,46 @@
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei } from '@injectivelabs/utils'
 
-const accountStore = useAccountStore()
+const props = defineProps({
+  search: {
+    type: String,
+    default: ''
+  },
 
+  showMarginCurrencyOnly: {
+    type: Boolean,
+    default: false
+  },
+
+  hideSmallBalances: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits<{
+  'update:search': [value: string]
+  'update:showMarginCurrencyOnly': [value: boolean]
+  'update:hideSmallBalances': [value: boolean]
+}>()
+
+const accountStore = useAccountStore()
 const { aggregatedPortfolioBalances } = useBalance()
+
+const search = computed({
+  get: () => props.search,
+  set: (value: string) => emit('update:search', value)
+})
+
+const showMarginCurrencyOnly = computed({
+  get: () => props.showMarginCurrencyOnly,
+  set: (value: boolean) => emit('update:showMarginCurrencyOnly', value)
+})
+
+const hideSmallBalances = computed({
+  get: () => props.hideSmallBalances,
+  set: (value: boolean) => emit('update:hideSmallBalances', value)
+})
 
 const { valueToString: accountTotalBalanceInUsdToString } =
   useBigNumberFormatter(
@@ -45,17 +82,22 @@ const { valueToString: accountTotalBalanceInUsdToString } =
           <BaseIcon name="search" class="text-gray-500" />
         </div>
         <input
+          v-model="search"
           class="p-2 bg-transparent focus:outline-none flex-1"
           placeholder="Filter by asset"
         />
       </label>
 
       <div class="flex items-center px-4">
-        <AppCheckbox> Show Margin Currency Only </AppCheckbox>
+        <AppCheckbox v-model="showMarginCurrencyOnly">
+          Show Margin Currency Only
+        </AppCheckbox>
       </div>
 
       <div class="flex items-center px-4">
-        <AppCheckbox> Hide Small Balances </AppCheckbox>
+        <AppCheckbox v-model="hideSmallBalances">
+          Hide Small Balances
+        </AppCheckbox>
       </div>
     </div>
   </div>

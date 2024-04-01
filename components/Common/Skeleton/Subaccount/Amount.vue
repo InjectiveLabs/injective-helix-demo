@@ -43,12 +43,12 @@ const tokensStatus = inject(tokensStatusKey, new Status(StatusType.Loading))
   <div
     v-else-if="portfolioStatus.isLoading() || tokensStatus.isLoading()"
     :style="{ height: size + 'px', gap: spacing + 'px' }"
-    class="flex p-1 bg-brand-850 rounded-md animate-pulse"
+    class="flex p-1 bg-brand-800 rounded-md animate-pulse"
   >
     <div
       v-for="i in length"
       :key="i"
-      class="bg-gray-700 rounded-sm animate-pulse [animation-duration:1s]"
+      class="rounded-sm animate-pulse [animation-duration:1s]"
       :style="{ animationDelay: `${i * 0.1}s`, width: `${width}px` }"
     />
   </div>

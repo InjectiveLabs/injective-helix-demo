@@ -6,6 +6,15 @@ defineProps({
 })
 
 const market = inject(spotMarketKey)
+
+useForm()
+
+const { value } = useStringField({
+  name: 'email',
+  initialValue: ''
+})
+
+// const value = ref('1231')
 </script>
 
 <template>
@@ -31,7 +40,7 @@ const market = inject(spotMarketKey)
       </div>
     </div>
 
-    <AppInputField placeholder="0.00">
+    <AppInputField v-model="value" placeholder="0.00">
       <template #right>
         <span>{{ market.baseToken.symbol }}</span>
       </template>
@@ -43,7 +52,7 @@ const market = inject(spotMarketKey)
       </template>
     </AppInputField>
 
-    <AppInputField placeholder="0.00">
+    <AppInputField v-model="value" placeholder="0.00">
       <template #right>
         <span>{{ market.quoteToken.symbol }}</span>
       </template>
@@ -57,7 +66,7 @@ const market = inject(spotMarketKey)
 
     <div>
       <div class="flex justify-between items-center">
-        <CommonHeaderTooltip v-bind="{ tooltip: $t('todo') }">
+        <CommonHeaderTooltip v-bind="{ tooltip: 'todo' }">
           <span class="text-gray-500">
             {{ $t('sgt.minInvestmentAmount') }}
           </span>
@@ -66,7 +75,7 @@ const market = inject(spotMarketKey)
       </div>
 
       <div class="flex justify-between items-center">
-        <CommonHeaderTooltip v-bind="{ tooltip: $t('todo') }">
+        <CommonHeaderTooltip v-bind="{ tooltip: 'todo' }">
           <span class="text-gray-500">
             {{
               $t('sgt.totalBaseAndQuote', {

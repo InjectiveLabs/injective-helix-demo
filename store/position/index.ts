@@ -45,12 +45,14 @@ export const usePositionStore = defineStore('position', {
     streamSubaccountPositions,
 
     async fetchPositions() {
-      const positionStore = usePositionStore()
-      const accountStore = useAccountStore()
       const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (
+        !walletStore.isUserWalletConnected ||
+        !walletStore.authZOrInjectiveAddress
+      ) {
         return
       }
 

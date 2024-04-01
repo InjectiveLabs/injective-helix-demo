@@ -5,6 +5,7 @@ import {
   useResetForm,
   useFormErrors,
   useFormValues,
+  useIsFormDirty,
   useValidateForm,
   useSetFormValues,
   useSetFieldValue
@@ -17,6 +18,7 @@ export {
   useResetForm,
   useFormErrors,
   useFormValues,
+  useIsFormDirty,
   useValidateForm,
   useSetFormValues,
   useSetFieldValue

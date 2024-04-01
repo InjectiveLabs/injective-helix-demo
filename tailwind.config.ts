@@ -62,6 +62,16 @@ export default {
           fontWeight: theme('fontWeight.bold'),
           color: theme('colors.gray.600')
         },
+        '.tab-label': {
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium'),
+          color: theme('colors.gray.300'),
+          userSelect: 'none',
+          cursor: 'pointer'
+        },
+        '.tab-label:hover': {
+          backgroundColor: theme('colors.brand.800')
+        },
         '.portfolio-title': {
           fontSize: theme('fontSize.2xl'),
           fontWeight: theme('fontWeight.bold')

@@ -28,7 +28,7 @@ defineProps({
     <div
       v-for="i in length"
       :key="i"
-      class="w-2 bg-gray-600 rounded-sm animate-pulse [animation-duration:1s]"
+      class="w-2 bg-transparent rounded-sm animate-pulse [animation-duration:1s]"
       :style="{ animationDelay: `${i * 0.1}s` }"
     />
   </div>

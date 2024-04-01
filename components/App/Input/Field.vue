@@ -50,18 +50,24 @@ const { typed, el } = useIMask(
           }
         }
       }) as FactoryOpts
-  )
+  ),
+  {
+    onAccept: () => {
+      if (props.modelValue !== typed.value) {
+        emit('update:modelValue', typed.value)
+      }
+    }
+  }
 )
-
-watch(typed, (value) => {
-  emit('update:modelValue', value)
-})
 
 watch(
   () => props.modelValue,
   (value) => {
-    typed.value = value
-  }
+    nextTick(() => {
+      typed.value = value
+    })
+  },
+  { immediate: true }
 )
 </script>
 

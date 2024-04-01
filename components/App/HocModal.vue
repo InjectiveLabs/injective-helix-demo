@@ -28,16 +28,21 @@ function closeModal() {
 
 <template>
   <Teleport to="body">
-    <div
-      v-if="isOpen"
-      class="fixed backdrop-blur-sm inset-0 bg-black/50 z-50 md:grid md:place-items-center md:p-4"
-      @click="closeModal"
+    <Transition
+      enter-active-class="transition duration-300 ease-in-out"
+      leave-active-class="transition duration-300 ease-in-out"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
     >
       <div
-        class="max-md:h-[100dvh] bg-brand-900 p-4 rounded-md border md:max-w-[600px] w-full flex flex-col"
-        @click.stop
+        v-if="isOpen"
+        class="fixed backdrop-blur-sm inset-0 bg-black/50 z-50 md:grid md:place-items-center md:p-4"
+        @click="closeModal"
       >
-        <div class="h-full overflow-y-auto">
+        <div
+          class="overflow-y-auto max-md:h-[100dvh] md:max-h-[90dvh] bg-brand-900 rounded-md border md:max-w-[600px] w-full flex flex-col"
+          @click.stop
+        >
           <div class="md:hidden p-4 flex justify-end">
             <BaseIcon name="close" @click="closeModal" />
           </div>
@@ -45,6 +50,6 @@ function closeModal() {
           <slot />
         </div>
       </div>
-    </div>
+    </Transition>
   </Teleport>
 </template>

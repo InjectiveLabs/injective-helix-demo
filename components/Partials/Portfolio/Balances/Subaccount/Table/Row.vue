@@ -66,10 +66,13 @@ const {
   <div class="flex p-2">
     <div
       v-if="balance.token"
-      class="flex-[2] flex items-center space-x-2 shrink-0 p-2"
+      class="flex-[2] flex items-center space-x-4 shrink-0 p-2"
     >
       <CommonTokenIcon v-bind="{ token: balance.token }" />
-      <p>{{ balance.token.symbol }}</p>
+      <div>
+        <p class="font-medium">{{ balance.token.symbol }}</p>
+        <p class="text-xs text-gray-500">{{ balance.token.name }}</p>
+      </div>
     </div>
 
     <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">

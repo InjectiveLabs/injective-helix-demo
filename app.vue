@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { tokensStatusKey } from './types'
 
+const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -13,11 +14,15 @@ const status = reactive(new Status(StatusType.Loading))
 const tokenStatus = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
+  const queryMarketId = route.query.marketId as string | undefined
+
   Promise.all([
     walletStore.init(),
     tokenStore.fetchTokens(),
-    spotStore.initIfNotInit(),
-    derivativeStore.initIfNotInit(),
+    // spotStore.initIfNotInit(),
+    spotStore.initFromTradingPage(queryMarketId ? [queryMarketId] : []),
+    // derivativeStore.initIfNotInit(),
+    derivativeStore.initFromTradingPage(queryMarketId ? [queryMarketId] : []),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()
   ])
