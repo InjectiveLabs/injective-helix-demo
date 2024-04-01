@@ -111,38 +111,6 @@ function outputDenomChange(denom: string) {
   emit('form:reset')
 }
 
-function swap() {
-  const {
-    [SwapFormField.InputDenom]: inputDenom,
-    [SwapFormField.OutputDenom]: outputDenom,
-    [SwapFormField.InputAmount]: inputAmount,
-    [SwapFormField.OutputAmount]: outputAmount
-  } = formValues.value
-
-  setFormValues(
-    {
-      [SwapFormField.InputDenom]: outputDenom,
-      [SwapFormField.OutputDenom]: inputDenom
-    },
-    false
-  )
-
-  animationCount.value += 1
-  emit('update:hasUserInteraction', true)
-
-  setTimeout(
-    () =>
-      setFormValues(
-        {
-          [SwapFormField.InputAmount]: outputAmount,
-          [SwapFormField.OutputAmount]: inputAmount
-        },
-        false
-      ),
-    50
-  )
-}
-
 async function getOutputQuantity() {
   setFormValues(
     {
@@ -198,7 +166,6 @@ async function getInputQuantity() {
       <BaseIcon
         name="arrow"
         class="mx-auto min-w-6 w-6 h-6 -rotate-90 text-black"
-        @click="swap"
       />
     </div>
 
