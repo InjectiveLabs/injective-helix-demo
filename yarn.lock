@@ -1992,10 +1992,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.11-beta.46":
-  version "1.14.11-beta.46"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.46.tgz#fc074c304036468b2193abc23ef2f3cc34a57022"
-  integrity sha512-COM8Aff1cerM41JVDHnTkCKojQHVc749qa09sakFTAorKZRzF+mSyyYurf9fHuPtO9PQ0KxDd1qxwpTiP08XkQ==
+"@injectivelabs/sdk-ui-ts@1.14.11-beta.47":
+  version "1.14.11-beta.47"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.47.tgz#26cda020261cf0cfa7706a175c866ac6e0e8b273"
+  integrity sha512-IVGX+yonL4UdtGgiK9DC4eBpblR5XKuWA9qN4IKwAFOyNc5aag1cypCEXD82DjEkRkxJ+IoZ/QagI8dM11u3uQ==
   dependencies:
     "@injectivelabs/contracts" "^1.14.11-beta.4"
     "@injectivelabs/exceptions" "^1.14.11-beta.3"
@@ -2091,10 +2091,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.11-beta.42":
-  version "1.14.11-beta.42"
-  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.42.tgz#d5f58cfa6884524062c56fa4c91b9c99c006753a"
-  integrity sha512-Ccq65Bc+CoWMStsrbd8dghFr82bvM3yAF2B5QwElQ6Nj6SFFvYCt5hhhpsjC+W8MGiqyNp3/AzS9G51NfU0rwA==
+"@injectivelabs/wallet-ts@1.14.11-beta.43":
+  version "1.14.11-beta.43"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.43.tgz#9ae49178b831eadd6392fac287b04a4e1716a645"
+  integrity sha512-vJfJMBJtUlE8tXi+YFc4fBabFeknBLfzvJV2CPdVKYS+/Ky9sPWJBPgi1RbiwXVQoEsoQ2aPkCGiB4LsZJ3aGw==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"

@@ -18,7 +18,7 @@ export const connect = ({
 }
 
 export const getAddresses = async (): Promise<string[]> => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
 
   if (addresses.length === 0) {
     throw new WalletException(
