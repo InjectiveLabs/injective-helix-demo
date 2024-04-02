@@ -135,6 +135,10 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'sol-usdt',
     contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
+  },
+  {
+    slug: 'ena-usdt',
+    contractAddress: 'inj1egqme2lvzds7klc34c3ur6ujm9pyxxv0z5jx0f'
   }
 ]
 
