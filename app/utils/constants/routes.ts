@@ -61,8 +61,6 @@ export const getRoutes = (network: Network, env: string) => {
     'nonja-inj',
     'lvn-inj',
     'sollegacy-usdt',
-    'arblegacy-usdt',
-    'wmaticlegacy-usdt',
     'ena-usdt'
   ]
 
@@ -127,8 +125,6 @@ export const getRoutes = (network: Network, env: string) => {
     'pyth-inj',
     'nonja-inj',
     'sollegacy-usdt',
-    'arblegacy-usdt',
-    'wmaticlegacy-usdt',
     'ena-usdt'
   ]
 
