@@ -109,8 +109,7 @@ export const msgBroadcastClient = new MsgBroadcaster({
 // Token Services
 export const tokenServiceStatic = new TokenServiceStatic({
   chainId: CHAIN_ID,
-  network: NETWORK,
-  endpoints: ENDPOINTS
+  network: NETWORK
 })
 export const tokenService = new TokenService({
   chainId: CHAIN_ID,
