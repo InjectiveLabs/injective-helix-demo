@@ -18,7 +18,7 @@ export const validateMetamask = async (
   address: string,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const metamaskIsLocked = addresses.length === 0
 
   if (metamaskIsLocked) {
