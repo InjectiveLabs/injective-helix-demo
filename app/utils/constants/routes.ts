@@ -62,7 +62,7 @@ export const getRoutes = (network: Network, env: string) => {
     'lvn-inj',
     'sollegacy-usdt',
     'ena-usdt',
-    // 'w-usdt'
+    'w-usdt',
     'bonus-usdt'
   ]
 
