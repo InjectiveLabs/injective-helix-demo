@@ -9,6 +9,8 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'bonus-usdt',
+  // 'w-usdt',
   'ena-usdt',
   'lvn-inj',
   'nonja-inj',
@@ -19,8 +21,7 @@ export const newMarketsSlug = [
   'andr-inj',
   'usde-usdt',
   'whale-inj',
-  'qunt-inj',
-  'talis-inj'
+  'qunt-inj'
 ]
 
 export const experimentalMarketsSlug = [
@@ -96,7 +97,9 @@ export const slugsToIncludeInEthereumCategory = [
   'gyen-usdt',
   'op-usdt-perp',
   'link-usdt-perp',
-  'ena-usdt'
+  'ena-usdt',
+  'w-usdt',
+  'bonus-usdt'
 ]
 
 export const slugsToIncludeInInjectiveCategory = [
@@ -127,7 +130,8 @@ export const slugsToIncludeInSolanaCategory = [
   'sol-usdt',
   'sol-usdt-perp',
   'wif-usdt-perp',
-  'bonk-usdt-perp'
+  'bonk-usdt-perp',
+  'w-usdt'
 ]
 
 export const olpSlugsToIncludeInLowVolume = [
