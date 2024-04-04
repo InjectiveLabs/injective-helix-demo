@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { writeFileSync } from 'node:fs'
 import { HttpClient } from '@injectivelabs/utils'
 import {
@@ -48,9 +49,11 @@ export const fetchMarketCategorySlugs = async (): Promise<any> => {
     }
 
     writeFileSync('app/data/category.json', JSON.stringify(slugs, null, '\t'))
+
+    console.log('✅✅✅ fetchMarketCategorySlugs')
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log('fetchMarketCategorySlugs', err)
+    throw err
   }
 }
 
@@ -67,8 +70,9 @@ export const fetchExpiryFuturesMarketSlugs = async (): Promise<any> => {
     }
 
     writeFileSync('app/data/expiry.json', JSON.stringify(slugs, null, '\t'))
+
+    console.log('✅✅✅ fetchExpiryFuturesMarketSlugs')
   } catch (err: any) {
-    // eslint-disable-next-line no-console
     console.error('fetchExpiryFuturesMarketSlugs')
     throw err
   }
@@ -87,8 +91,9 @@ export const fetchDerivativeMarketSlugs = async (): Promise<any> => {
     }
 
     writeFileSync('app/data/derivative.json', JSON.stringify(slugs, null, '\t'))
+
+    console.log('✅✅✅ fetchDerivativeMarketSlugs')
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error('fetchDerivativeMarketSlugs', err)
     throw err
   }
@@ -107,8 +112,9 @@ export const fetchSpotMarketSlugs = async (): Promise<any> => {
     }
 
     writeFileSync('app/data/spot.json', JSON.stringify(slugs, null, '\t'))
+
+    console.log('✅✅✅ fetchSpotMarketSlugs')
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error('fetchSpotMarketSlugs', err)
     throw err
   }
