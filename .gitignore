@@ -107,3 +107,6 @@ tsconfig.tsbuildinfo
 
 # testing
 auto-imports.d.ts
+
+# json files
+app/data/*.json

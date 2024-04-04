@@ -199,6 +199,6 @@ export const PROXY_DETECTION_ENABLED = !!PROXY_DETECTION_API_KEY
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 
-const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
+const { ROUTES, MARKETS_SLUGS } = getRoutes()
 
 export { ROUTES, MARKETS_SLUGS }
