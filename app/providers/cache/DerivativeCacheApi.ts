@@ -14,9 +14,9 @@ import { IS_MAINNET } from '@/app/utils/constants'
 export class DerivativeCacheApi extends BaseCacheApi {
   async fetchMarkets(props?: { marketStatus?: string }) {
     const fetchFromExchange = async () => {
-      const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
-        PerpetualMarket | ExpiryFuturesMarket
-      >
+      const markets = (await indexerDerivativesApi.fetchMarkets({
+        marketStatus: props?.marketStatus
+      })) as Array<PerpetualMarket | ExpiryFuturesMarket>
 
       return markets
     }

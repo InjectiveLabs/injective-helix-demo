@@ -4,6 +4,12 @@ export default {
       netWorth: 'Net Worth'
     },
 
+    subaccounts: {
+      name: 'Subaccount Name',
+      address: 'Subaccount Address',
+      totalValue: 'Total Value (USD)'
+    },
+
     settings: {
       title: 'Settings',
       authz: {

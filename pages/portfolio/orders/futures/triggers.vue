@@ -72,7 +72,7 @@ watch(() => [accountStore.subaccountId], fetchDerivativeTriggers, {
     <CommonSkeletonRow
       v-if="status.isLoading()"
       :rows="10"
-      :columns="8"
+      :columns="9"
       :height="57"
     />
 

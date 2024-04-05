@@ -1,5 +1,6 @@
 export default {
   activity: {
+    swaps: 'Swaps',
     funds: 'Funds',
     activity: 'Activity',
     triggers: 'Triggers',

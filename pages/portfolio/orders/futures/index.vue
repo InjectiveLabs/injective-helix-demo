@@ -47,7 +47,12 @@ watch(() => [accountStore.subaccountId], fetchDerivativeOpenOrders, {
     <PartialsPortfolioOrdersFuturesOpenOrdersTabs />
     <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader />
 
-    <CommonSkeletonRow v-if="status.isLoading()" :height="57" :rows="10" />
+    <CommonSkeletonRow
+      v-if="status.isLoading()"
+      :height="57"
+      :rows="10"
+      :columns="8"
+    />
 
     <template v-else>
       <PartialsPortfolioOrdersFuturesOpenOrdersTableRow

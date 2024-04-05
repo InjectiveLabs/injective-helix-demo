@@ -1,0 +1,57 @@
+<script setup lang="ts">
+import { Token } from '@injectivelabs/token-metadata'
+
+const props = defineProps({
+  tokens: {
+    type: Array as PropType<Token[]>,
+    required: true
+  }
+})
+
+const emit = defineEmits<{
+  'set:token': [token: Token]
+}>()
+
+const search = ref('')
+
+const tokensFiltered = computed(() => {
+  return props.tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase().includes(search.value.toLowerCase()) ||
+      token.name.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
+
+onMounted(() => {
+  document.getElementById('search-token')?.focus()
+})
+
+function setToken(token: Token) {
+  emit('set:token', token)
+}
+</script>
+
+<template>
+  <div class="flex flex-1 flex-col overflow-hidden">
+    <div class="flex p-2 border-b">
+      <div class="flex items-center p-2">
+        <BaseIcon name="search" />
+      </div>
+
+      <input
+        id="search-token"
+        v-model="search"
+        type="text"
+        class="bg-transparent focus:outline-none p-2 rounded-md"
+        placeholder="Search..."
+        autocomplete="false"
+      />
+    </div>
+
+    <div class="overflow-y-auto flex-1 md:max-h-[400px]">
+      <div v-for="token in tokensFiltered" :key="token.denom">
+        <CommonTokenSelectorItem v-bind="{ token }" @set:token="setToken" />
+      </div>
+    </div>
+  </div>
+</template>
