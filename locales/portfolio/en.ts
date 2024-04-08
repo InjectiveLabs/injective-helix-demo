@@ -15,7 +15,9 @@ export default {
       authz: {
         title: 'AuthZ Management',
         description:
-          'Grant other wallet address full/partial permissions to make trades on their behalf'
+          'Grant other wallet address full/partial permissions to make trades on their behalf',
+        grantee: 'Grantee',
+        granter: 'Granter'
       }
     }
   }

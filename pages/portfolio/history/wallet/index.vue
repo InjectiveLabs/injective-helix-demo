@@ -80,7 +80,7 @@ async function handleLimitChange(limit: number) {
       <CommonSkeletonRow
         v-if="status.isLoading()"
         :rows="10"
-        :columns="5"
+        :columns="6"
         :height="57"
       />
 

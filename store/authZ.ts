@@ -36,7 +36,21 @@ export const useAuthZStore = defineStore('authZ', {
           ...state.granterGrants.map((grant) => grant.grantee)
         ])
       ]
-    }
+    },
+
+    grantsByAddress: (state) =>
+      Object.entries(
+        state.granterGrants.reduce(
+          (addressMap, grant) => {
+            const address = grant.grantee
+            const grants = addressMap[address] || []
+            grants.push(grant)
+            addressMap[address] = grants
+            return addressMap
+          },
+          {} as Record<string, GrantAuthorization[]>
+        )
+      )
   },
   actions: {
     async fetchGrants() {

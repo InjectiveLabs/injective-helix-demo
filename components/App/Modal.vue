@@ -59,7 +59,7 @@ watchDebounced(
 
 <template>
   <BaseModalWrapper
-    class="relative mx-auto sm:rounded-lg bg-gray-850 max-sm:h-full max-sm:max-w-full max-sm:w-full"
+    class="relative mx-auto sm:rounded-lg bg-brand-900 border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full"
     :class="classes"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
     v-bind="$attrs"
