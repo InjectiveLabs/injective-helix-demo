@@ -9,6 +9,7 @@ export interface UnTradableMarket {
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'xiii-inj',
   'w-usdt',
   'bonus-usdt',
   'ena-usdt',
@@ -19,8 +20,7 @@ export const newMarketsSlug = [
   'hdro-inj',
   'usdc-usdt',
   'andr-inj',
-  'usde-usdt',
-  'whale-inj'
+  'usde-usdt'
 ]
 
 export const experimentalMarketsSlug = [
@@ -120,7 +120,8 @@ export const slugsToIncludeInInjectiveCategory = [
   'hdro-inj',
   'pyth-inj',
   'nonja-inj',
-  'lvn-inj'
+  'lvn-inj',
+  'xiii-inj'
 ]
 
 export const slugsToIncludeInSolanaCategory = [
