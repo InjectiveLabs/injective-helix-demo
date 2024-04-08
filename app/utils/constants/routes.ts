@@ -63,7 +63,8 @@ export const getRoutes = (network: Network, env: string) => {
     'sollegacy-usdt',
     'ena-usdt',
     'w-usdt',
-    'bonus-usdt'
+    'bonus-usdt',
+    'xiii-inj'
   ]
 
   const perpetuals = [
