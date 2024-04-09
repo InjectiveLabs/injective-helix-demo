@@ -179,8 +179,15 @@ export default {
   marketNotOnHelix: {
     title: 'Experimental market',
     cta: 'I Understand',
+    termsAndCondition: 'Terms and Conditions',
     description:
-      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.'
+      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
+    description2: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix ',
+        named('link'),
+        ' as to any use you make of Helix'
+      ])
   },
 
   marketNew: {

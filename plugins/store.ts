@@ -23,6 +23,7 @@ const stateToPersist = {
       },
       preferences: {
         skipTradeConfirmationModal: false,
+        skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,

@@ -17,6 +17,7 @@ definePageMeta({
   middleware: ['grid-strategy-subaccount']
 })
 
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -174,7 +175,12 @@ useIntervalFn(() => {
         v-if="notLiquidMarket"
         v-bind="{ notLiquidMarket }"
       />
-      <ModalsMarketNotOnHelix v-if="isMarketIdInQuery" />
+      <ModalsMarketNotOnHelix
+        v-if="
+          isMarketIdInQuery &&
+          !appStore.userState.preferences.skipExperimentalConfirmationModal
+        "
+      />
       <ModalsMarketRestricted
         v-if="market"
         :key="market.marketId"
