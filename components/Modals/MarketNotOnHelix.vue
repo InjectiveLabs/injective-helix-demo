@@ -4,6 +4,8 @@ import { Modal, MainPage } from '@/types'
 const appStore = useAppStore()
 const modalStore = useModalStore()
 
+const isDoNoShowConfirmationAgain = ref(false)
+
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketNotOnHelix])
 
 onMounted(() => {
@@ -14,11 +16,18 @@ function onCloseModal() {
   modalStore.closeModal(Modal.MarketNotOnHelix)
 }
 
-function handleSkipConfirmationModal() {
-  appStore.setUserState({
-    ...appStore.userState,
-    skipExperimentalCOnfirmationModal: true
-  })
+function onSubmit() {
+  onCloseModal()
+
+  if (isDoNoShowConfirmationAgain.value) {
+    appStore.setUserState({
+      ...appStore.userState,
+      preferences: {
+        ...appStore.userState.preferences,
+        skipExperimentalCOnfirmationModal: true
+      }
+    })
+  }
 }
 </script>
 
@@ -48,17 +57,13 @@ function handleSkipConfirmationModal() {
       </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onCloseModal">
+        <AppButton class="bg-blue-500 text-blue-900" @click="onSubmit">
           {{ $t('marketNotOnHelix.cta') }}
         </AppButton>
       </div>
 
       <div class="flex">
-        <AppCheckbox
-          :model-value="false"
-          class="mx-auto"
-          @input="handleSkipConfirmationModal"
-        >
+        <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
           <slot class="text-xs">
             {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}
           </slot>
