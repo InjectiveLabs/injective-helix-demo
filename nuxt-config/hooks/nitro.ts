@@ -1,20 +1,16 @@
 // import path from 'path'
 import { NitroConfig } from 'nitropack'
-import { Network } from '@injectivelabs/networks'
 import { HttpClient } from '@injectivelabs/utils'
 import { ENDPOINTS } from './../../app/utils/constants/setup'
 import { getRoutes } from './../../app/utils/constants/routes'
 import { GUILD_CONTRACT_ADDRESS } from './../../app/utils/constants'
 // import { TradeSubPage } from './../../types/page'
 
-const VITE_ENV = process.env.VITE_ENV as string
-const VITE_NETWORK = process.env.VITE_NETWORK as Network
-
 /**
  * We can't import from constants because the nitro build will fail
  * so we have to get them based on the process env
  **/
-const { ROUTES } = getRoutes(VITE_NETWORK, VITE_ENV)
+const { ROUTES } = getRoutes()
 const {
   spotRoutes,
   futuresRoutes,

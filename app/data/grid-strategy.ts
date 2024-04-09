@@ -37,14 +37,6 @@ const mainnetSpotGridMarkets: GridMarket[] = [
     contractAddress: 'inj1ej7je29ugdqg3ynrza2w30gf5r5rch37rhz53h'
   },
   {
-    slug: 'wmaticlegacy-usdt',
-    contractAddress: 'inj1zlufv9jjugee9ejm5grqdk4ja09e7vv6ewv0yx'
-  },
-  {
-    slug: 'arblegacy-usdt',
-    contractAddress: 'inj18srw6ktk67sez2m2k20hgsftp8gj5xmzz8a6u7'
-  },
-  {
     slug: 'kuji-usdt',
     contractAddress: 'inj1zen7yh00gffkvsxcptqzaslu27msrw0ee933vf'
   },
@@ -135,6 +127,10 @@ const mainnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'sol-usdt',
     contractAddress: 'inj1y7qyd8wpkfwx4jd2tx78ln5mwhmr9kql8mdmpr'
+  },
+  {
+    slug: 'ena-usdt',
+    contractAddress: 'inj1egqme2lvzds7klc34c3ur6ujm9pyxxv0z5jx0f'
   }
 ]
 

@@ -19,7 +19,7 @@ export const validateBitGet = async (
   address: AccountAddress,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const bitGetIsLocked = addresses.length === 0
 
   if (bitGetIsLocked) {

@@ -14,7 +14,7 @@ export const isPhantomInstalled = async (): Promise<boolean> => {
 }
 
 export const validatePhantom = async (address: string) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const trustWalletIsLocked = addresses.length === 0
 
   if (trustWalletIsLocked) {

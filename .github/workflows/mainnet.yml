@@ -1,6 +1,7 @@
 name: Helix Mainnet Deployments
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master

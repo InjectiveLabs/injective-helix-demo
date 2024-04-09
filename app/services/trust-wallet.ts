@@ -18,7 +18,7 @@ export const validateTrustWallet = async (
   address: string,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const trustWalletIsLocked = addresses.length === 0
 
   if (trustWalletIsLocked) {

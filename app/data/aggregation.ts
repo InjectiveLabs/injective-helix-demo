@@ -413,5 +413,11 @@ export const customAggregations = {
     minTick: getDecimalPlaceFromValue('0.00001'),
     default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.01')
+  },
+
+  'ANDR/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>
