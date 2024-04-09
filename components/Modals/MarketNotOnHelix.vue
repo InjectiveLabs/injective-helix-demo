@@ -24,7 +24,7 @@ function onSubmit() {
       ...appStore.userState,
       preferences: {
         ...appStore.userState.preferences,
-        skipExperimentalCOnfirmationModal: true
+        skipExperimentalConfirmationModal: true
       }
     })
   }

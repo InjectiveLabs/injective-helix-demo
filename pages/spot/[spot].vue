@@ -178,7 +178,7 @@ useIntervalFn(() => {
       <ModalsMarketNotOnHelix
         v-if="
           isMarketIdInQuery &&
-          !appStore.userState.preferences.skipExperimentalCOnfirmationModal
+          !appStore.userState.preferences.skipExperimentalConfirmationModal
         "
       />
       <ModalsMarketRestricted

@@ -49,7 +49,7 @@ export interface UserBasedState {
     authZManagement: boolean
     subaccountManagement: boolean
     skipTradeConfirmationModal: boolean
-    skipExperimentalCOnfirmationModal: boolean
+    skipExperimentalConfirmationModal: boolean
   }
 }
 
@@ -100,7 +100,7 @@ const initialStateFactory = (): AppStoreState => ({
     },
     preferences: {
       skipTradeConfirmationModal: false,
-      skipExperimentalCOnfirmationModal: false,
+      skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
       subaccountManagement: false,
