@@ -156,6 +156,10 @@
   .field-style {
     @apply focus-within:focus-ring focus:outline-none transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
   }
+
+  .input-style {
+    @apply block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
+  }
 }
 
 input[type='range'] {

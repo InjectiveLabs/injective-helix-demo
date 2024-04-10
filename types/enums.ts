@@ -48,6 +48,7 @@ export enum Modal {
   MarketNew = 'market-new',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
+  AddGrantee = 'add-grantee',
   BidConfirm = 'bid-confirm',
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',

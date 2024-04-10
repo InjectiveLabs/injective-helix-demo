@@ -91,6 +91,8 @@ provide(portfolioStatusKey, portfolioStatus)
   <div class="relative">
     <LayoutNavbar />
     <main class="relative">
+      <LayoutAuthZBanner v-if="walletStore.isAuthzWalletConnected" />
+
       <NuxtPage v-bind="{ portfolioStatus }" />
     </main>
 

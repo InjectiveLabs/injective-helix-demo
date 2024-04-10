@@ -8,7 +8,7 @@ const authZStore = useAuthZStore()
 
     <div class="divide-y border-t">
       <PartialsPortfolioSettingsAuthzGranteeTableRow
-        v-for="[grantee, grants] in authZStore.grantsByAddress"
+        v-for="[grantee, grants] in authZStore.granterGrantsByAddress"
         :key="grantee"
         v-bind="{ grantee, grants }"
       />

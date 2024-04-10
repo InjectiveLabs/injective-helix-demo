@@ -17,7 +17,8 @@ export default {
         description:
           'Grant other wallet address full/partial permissions to make trades on their behalf',
         grantee: 'Grantee',
-        granter: 'Granter'
+        granter: 'Granter',
+        addNewGrantee: 'Add new grantee address'
       }
     }
   }

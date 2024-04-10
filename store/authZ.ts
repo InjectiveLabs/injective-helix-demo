@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { MsgGrant } from '@injectivelabs/sdk-ts'
-import { GeneralException } from '@injectivelabs/exceptions'
 import { authZApi, msgBroadcastClient } from '@/app/Services'
 import { GrantAuthorization } from '@/types/authZ'
 
@@ -38,11 +37,25 @@ export const useAuthZStore = defineStore('authZ', {
       ]
     },
 
-    grantsByAddress: (state) =>
+    granterGrantsByAddress: (state) =>
       Object.entries(
         state.granterGrants.reduce(
           (addressMap, grant) => {
             const address = grant.grantee
+            const grants = addressMap[address] || []
+            grants.push(grant)
+            addressMap[address] = grants
+            return addressMap
+          },
+          {} as Record<string, GrantAuthorization[]>
+        )
+      ),
+
+    granteeGrantsByAddress: (state) =>
+      Object.entries(
+        state.granteeGrants.reduce(
+          (addressMap, grant) => {
+            const address = grant.granter
             const grants = addressMap[address] || []
             grants.push(grant)
             addressMap[address] = grants
@@ -81,28 +94,26 @@ export const useAuthZStore = defineStore('authZ', {
       grantee: string
       messageTypes: string[]
     }) {
+      const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.injectiveAddress) {
         return
       }
 
-      if (walletStore.isAuthzWalletConnected) {
-        throw new GeneralException(
-          new Error('AuthZ not supported for this action')
-        )
-      }
+      await appStore.queue()
+      await walletStore.validate()
 
       const msgs = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
-          messageType,
+          messageType: `/${messageType}`,
           grantee,
           granter: walletStore.injectiveAddress
         })
       )
 
       const response = await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs,
+        msgs: [...(msgs as any)],
         injectiveAddress: walletStore.injectiveAddress
       })
 
