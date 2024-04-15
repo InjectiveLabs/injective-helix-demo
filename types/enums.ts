@@ -114,6 +114,11 @@ export enum TradeTypes {
   Market = 'market'
 }
 
+export enum SpotTradeDirection {
+  Buy = 'buy',
+  Sell = 'sell'
+}
+
 export enum DerivativeTradeTypes {
   Limit = 'limit',
   Market = 'market',
@@ -517,4 +522,13 @@ export enum OrderTypeFilter {
   StopLossMarket = 'stopLossMarket',
   TakeProfitLimit = 'takeProfitLimit',
   TakeProfitMarket = 'takeProfitMarket'
+}
+
+export enum SpotTradeFormField {
+  Type = 'type',
+  Side = 'side',
+  Price = 'price',
+  Total = 'total',
+  Quantity = 'quantity',
+  PostOnly = 'postOnly'
 }

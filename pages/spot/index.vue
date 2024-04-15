@@ -24,7 +24,7 @@ provide(spotMarketKey, market)
 
 onMounted(() => {
   if (!market.value) {
-    return
+    return navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
   }
 
   status.setLoading()
@@ -35,12 +35,12 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
+
+  spotStore.streamTrades(market.value.marketId)
 })
 
-onMounted(() => {
-  if (!market.value) {
-    navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
-  }
+onUnmounted(() => {
+  spotStore.cancelTradesStream()
 })
 </script>
 

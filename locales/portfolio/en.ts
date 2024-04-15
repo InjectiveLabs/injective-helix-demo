@@ -19,6 +19,10 @@ export default {
         grantee: 'Grantee',
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address'
+      },
+      preferences: {
+        title: 'Preferences',
+        description: 'Customize your trading experience'
       }
     }
   }

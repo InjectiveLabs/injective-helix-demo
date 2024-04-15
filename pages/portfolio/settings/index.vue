@@ -4,6 +4,11 @@ const settingsOptions = [
     label: 'portfolio.settings.authz.title',
     description: 'portfolio.settings.authz.description',
     to: { name: 'portfolio-settings-authz' }
+  },
+  {
+    label: 'portfolio.settings.preferences.title',
+    description: 'portfolio.settings.preferences.description',
+    to: { name: 'portfolio-settings-preferences' }
   }
 ]
 </script>

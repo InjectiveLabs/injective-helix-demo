@@ -27,7 +27,9 @@ const stateToPersist = {
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
-        authZManagement: false
+        authZManagement: false,
+        isHideBalances: false,
+        thousandsSeparator: false
       }
     }
   },

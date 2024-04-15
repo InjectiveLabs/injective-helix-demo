@@ -84,7 +84,7 @@ function setSellsIndex(index: number) {
     </div>
 
     <div class="h-header border-y my-1 flex items-center text-center">
-      <CommonHeadlessMarketSummary v-bind="{ market }">
+      <CommonHeadlessMarketSummary v-bind="{ market, isCurrentMarket: true }">
         <template #default="{ lastTradedPrice }">
           <div class="flex-1">
             {{ lastTradedPrice }}

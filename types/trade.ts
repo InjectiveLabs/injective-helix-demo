@@ -10,7 +10,14 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
-import { TradeField, InvestmentTypeGst, SpotGridTradingField } from '../types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import {
+  TradeField,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  TradeTypes,
+  SpotTradeFormField
+} from '../types'
 
 export type TradeForm = Record<TradeField, any>
 
@@ -116,4 +123,13 @@ export type GridMarket = {
 export type NotLiquidMarket = {
   slug: string
   redirectionSlug: string
+}
+
+export type SpotTradeForm = {
+  [SpotTradeFormField.Type]: TradeTypes
+  [SpotTradeFormField.Side]: OrderSide
+  [SpotTradeFormField.Price]: string
+  [SpotTradeFormField.Total]: string
+  [SpotTradeFormField.Quantity]: string
+  [SpotTradeFormField.PostOnly]: boolean
 }

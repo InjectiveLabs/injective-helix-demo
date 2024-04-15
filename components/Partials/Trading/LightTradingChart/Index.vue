@@ -35,6 +35,10 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  'chart:ready': []
+}>()
+
 let chart: IChartApi
 let candlestickSeries: ReturnType<typeof chart.addCandlestickSeries>
 let volumeSeries: ReturnType<typeof chart.addHistogramSeries>
@@ -164,6 +168,7 @@ function destroy() {
 
 onMounted(() => {
   init()
+  emit('chart:ready')
 })
 
 onUnmounted(() => {

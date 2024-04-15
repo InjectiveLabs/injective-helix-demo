@@ -31,7 +31,13 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const { typed, el } = useIMask(
+const appStore = useAppStore()
+
+const thousandsSeparator = computed(() =>
+  appStore.userState.preferences.thousandsSeparator ? ',' : ''
+)
+
+const { el, typed } = useIMask(
   computed(
     () =>
       ({
@@ -40,7 +46,7 @@ const { typed, el } = useIMask(
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: '',
+            thousandsSeparator: thousandsSeparator.value,
             radix: '.',
             mapToRadix: ['.', ','],
             scale: props.decimals,
@@ -88,6 +94,7 @@ watch(
         ref="el"
         type="text"
         class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
+        :class="thousandsSeparator ? 'text-right' : ''"
         v-bind="$attrs"
       />
 

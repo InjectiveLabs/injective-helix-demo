@@ -409,10 +409,10 @@
     "@babel/helper-plugin-utils" "^7.22.5"
     "@babel/plugin-syntax-typescript" "^7.23.3"
 
-"@babel/runtime-corejs3@^7.23.9":
-  version "7.24.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.24.0.tgz#34243e29e369a762dd2a356fee65c3767973828a"
-  integrity sha512-HxiRMOncx3ly6f3fcZ1GVKf+/EROcI9qwPgmij8Czqy6Okm/0T37T4y2ZIlLUuEUFjtM7NRsfdCO8Y3tAiJZew==
+"@babel/runtime-corejs3@^7.24.4":
+  version "7.24.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.24.4.tgz#b9ebe728087cfbb22bbaccc6f9a70d69834124a0"
+  integrity sha512-VOQOexSilscN24VEY810G/PqtpFvx/z6UqDIjIWbDe2368HhDLkYN5TYwaEz/+eRCUkhJ2WaNLLmQAlxzfWj4w==
   dependencies:
     core-js-pure "^3.30.2"
     regenerator-runtime "^0.14.0"
@@ -11089,12 +11089,12 @@ image-meta@^0.2.0:
   resolved "https://registry.yarnpkg.com/image-meta/-/image-meta-0.2.0.tgz#ea28d05d52f5ad35f75b14f46278a44d626f48bc"
   integrity sha512-ZBGjl0ZMEMeOC3Ns0wUF/5UdUmr3qQhBSCniT0LxOgGGIRHiNFOkMtIHB7EOznRU47V2AxPgiVP+s+0/UCU0Hg==
 
-imask@^7.5.0:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/imask/-/imask-7.5.0.tgz#dc191f3297794ecc9afc62041816a2909a8d36bd"
-  integrity sha512-eoTEnw67KAamB1zsiYtU35s0Fj1XYZ8mN2q3ZDGO4ot4FtPmBpw9S6kOTj0kaOILdsEA6ZhNtH2TAMXe/NChmQ==
+imask@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/imask/-/imask-7.6.0.tgz#ed071748cfdf6b12ac153f69878e08c4333df984"
+  integrity sha512-6EHsq1q7v5+M4Vas2MGrs2oRpxPRWPwPDiL0HmG1ikBI/0hOwvkxRhVRFQnWIlZcTG7R8iw0az5V+z868qnQ9A==
   dependencies:
-    "@babel/runtime-corejs3" "^7.23.9"
+    "@babel/runtime-corejs3" "^7.24.4"
 
 import-fresh@^3.0.0, import-fresh@^3.1.0, import-fresh@^3.2.1, import-fresh@^3.3.0:
   version "3.3.0"
@@ -18049,12 +18049,12 @@ vue-i18n@9.3.0-beta.22:
     "@intlify/vue-devtools" "9.3.0-beta.22"
     "@vue/devtools-api" "^6.5.0"
 
-vue-imask@^7.5.0:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/vue-imask/-/vue-imask-7.5.0.tgz#c0dd2078a8ffd7f2f6919c27a4b7dbd888246a5f"
-  integrity sha512-aCmzw1jOwtBlzFdNaIbA34WDgMQ9agZ6TqsXyKmhPhleqaouHVwWQssuWWm8bqJIyaQqmfJBLSH3++N945Myvw==
+vue-imask@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/vue-imask/-/vue-imask-7.6.0.tgz#e24fe69e899fb91256298be560242377298b63c5"
+  integrity sha512-c32XC1EFYbfqCwsYmTrXxTQdtraB5Rkdv0dlJ82CXRxFtqQUTK2zKCgaPsoD/HdF8WwCM3kiKjSmpgYmli2rzg==
   dependencies:
-    imask "^7.5.0"
+    imask "^7.6.0"
     vue-demi "^0.14.7"
 
 vue-jest@^4.0.0-0:

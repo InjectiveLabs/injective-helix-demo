@@ -140,6 +140,7 @@ function fetchMarketHistory() {
       countback: intervalOptions[props.interval].value.countback,
       resolution: intervalOptions[props.interval].value.resolution
     })
+    .then(updateLastBarWithLastTradedPrice)
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -153,17 +154,7 @@ watch(
   }
 )
 
-watch(lastTradedPrice, (lastTradedPrice) => {
-  if (chart.value) {
-    const data = {
-      ...candlesticksData.value[candlesticksData.value.length - 1]
-    }
-
-    data.close = lastTradedPrice
-
-    chart.value.updateCandlesticksData(data)
-  }
-})
+watch(lastTradedPrice, updateLastBarWithLastTradedPrice)
 
 const tickSize = computed(() =>
   new BigNumberInWei(props.market.minPriceTickSize)
@@ -174,6 +165,18 @@ const tickSize = computed(() =>
     )
     .toNumber()
 )
+
+function updateLastBarWithLastTradedPrice() {
+  if (chart.value) {
+    const data = {
+      ...candlesticksData.value[candlesticksData.value.length - 1]
+    }
+
+    data.close = lastTradedPrice.value
+
+    chart.value.updateCandlesticksData(data)
+  }
+}
 
 useIntervalFn(() => {
   exchangeStore
@@ -197,6 +200,7 @@ useIntervalFn(() => {
           volumeData: volume,
           tickSize
         }"
+        @chart:ready="updateLastBarWithLastTradedPrice"
       />
     </AppHocLoading>
   </div>

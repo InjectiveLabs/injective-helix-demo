@@ -50,6 +50,7 @@ export interface UserBasedState {
     subaccountManagement: boolean
     skipTradeConfirmationModal: boolean
     isHideBalances: boolean
+    thousandsSeparator: boolean
   }
 }
 
@@ -106,7 +107,8 @@ const initialStateFactory = (): AppStoreState => ({
       tradingLayout: TradingLayout.Left,
       subaccountManagement: false,
       authZManagement: false,
-      isHideBalances: false
+      isHideBalances: false,
+      thousandsSeparator: false
     }
   }
 })

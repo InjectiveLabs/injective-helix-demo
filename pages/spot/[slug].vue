@@ -35,6 +35,12 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
+
+  spotStore.streamTrades(market.value.marketId)
+})
+
+onUnmounted(() => {
+  spotStore.cancelTradesStream()
 })
 </script>
 

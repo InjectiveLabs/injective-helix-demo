@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
-import { TradeTypes } from '@/types'
+import { TradeTypes, SpotTradeFormField } from '@/types'
 
-const orderType = ref(TradeTypes.Limit)
-const orderSide = ref(OrderSide.Buy)
+const { value: orderTypeValue } = useStringField({
+  name: SpotTradeFormField.Type,
+  initialValue: TradeTypes.Limit
+})
+
+const { value: orderSideValue } = useStringField({
+  name: SpotTradeFormField.Side,
+  initialValue: OrderSide.Buy
+})
 </script>
 
 <template>
@@ -13,7 +20,7 @@ const orderSide = ref(OrderSide.Buy)
         v-for="value in Object.values(TradeTypes)"
         :key="value"
         v-bind="{ value }"
-        v-model="orderType"
+        v-model="orderTypeValue"
         class="text-sm font-semibold text-gray-600 px-4 py-2"
         active-classes="border-b border-blue-500 text-white"
       >
@@ -26,7 +33,7 @@ const orderSide = ref(OrderSide.Buy)
         v-for="side in [OrderSide.Buy, OrderSide.Sell]"
         :key="side"
         v-bind="{ value: side }"
-        v-model="orderSide"
+        v-model="orderSideValue"
         class="flex-1 p-2 border border-transparent rounded-md text-sm"
         :class="side === OrderSide.Buy ? 'text-green-500' : 'text-red-500'"
         :active-classes="
@@ -39,7 +46,7 @@ const orderSide = ref(OrderSide.Buy)
 
     <div class="py-4 space-y-4">
       <PartialsTradeSpotFormStandardLimitPriceField
-        v-if="orderType === TradeTypes.Limit"
+        v-if="orderTypeValue === TradeTypes.Limit"
       />
       <PartialsTradeSpotFormStandardAmountField />
       <PartialsTradeSpotFormStandardTotalField />
