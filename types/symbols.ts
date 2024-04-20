@@ -3,19 +3,23 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Status } from '@injectivelabs/utils'
+import { ShallowRef } from 'nuxt/dist/app/compat/capi'
 import { OrderbookWorkerMessage } from './worker'
 
 export const orderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
-  Omit<Worker, 'postMessage'> & {
-    postMessage(message: OrderbookWorkerMessage): void
-  }
+  ShallowRef<
+    | (Omit<Worker, 'postMessage'> & {
+        postMessage(message: OrderbookWorkerMessage): void
+      })
+    | null
+  >
 >
 
-export const spotMarketKey = Symbol('Market') as InjectionKey<
+export const spotMarketKey = Symbol('SpotMarket') as InjectionKey<
   ComputedRef<UiSpotMarketWithToken | undefined>
 >
 
-export const derivativeMarketKey = Symbol('Market') as InjectionKey<
+export const derivativeMarketKey = Symbol('DerivativeMarket') as InjectionKey<
   ComputedRef<UiDerivativeMarketWithToken | undefined>
 >
 

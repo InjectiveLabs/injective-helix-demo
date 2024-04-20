@@ -5,10 +5,14 @@ import {
   SpotTradeForm,
   SpotTradeFormField,
   TradeTypes,
+  orderbookWorkerKey,
   spotMarketKey
 } from '@/types'
 
+import { WorkerMessageType } from '~/types/worker'
+
 const market = inject(spotMarketKey)
+const worker = inject(orderbookWorkerKey)
 
 const el = ref(null)
 
@@ -31,7 +35,7 @@ const value = computed({
     amountValue.value = value
 
     // If the value is empty, set the total amount to empty
-    if (value === '') {
+    if (value === '' && focused.value) {
       setTotalAmount('')
       return
     }
@@ -50,6 +54,26 @@ const value = computed({
     }
   }
 })
+
+watch(
+  () => [value.value, spotFormValues.value[SpotTradeFormField.Type]],
+  ([quantity, type]) => {
+    if (type !== TradeTypes.Market) {
+      return
+    }
+
+    worker?.value?.postMessage({
+      type: WorkerMessageType.WorstPrice,
+      data: {
+        quantity: quantity || '',
+        baseDecimals: 1,
+        isBuy: true,
+        isSpot: true,
+        quoteDecimals: 1
+      }
+    })
+  }
+)
 </script>
 
 <template>

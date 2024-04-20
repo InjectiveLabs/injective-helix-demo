@@ -4,7 +4,7 @@ import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import { spotMarketStream } from '@/app/client/streams/spot'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
 import { indexerDerivativesApi, indexerSpotApi } from '~/app/Services'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, orderbookWorkerKey } from '@/types'
 import {
   OrderbookWorkerMessage,
   OrderbookWorkerResult,
@@ -38,6 +38,10 @@ export function useOrderbook(
             buys: data.data.buys,
             sells: data.data.sells
           })
+        }
+
+        if (data.messageType === WorkerMessageResponseType.WorstPrice) {
+          orderbookStore.worstPrice = data.data.worstPrice
         }
       }
     } else {
@@ -150,12 +154,17 @@ export function useOrderbook(
     fetchDerivativeOrderbook()
   }
 
+  provide(orderbookWorkerKey, worker)
+
   watch(
     [market, worker],
     ([market, worker]) => {
       if (!worker || !market) {
         return
       }
+
+      spotStream?.unsubscribe()
+      derivativesStream?.unsubscribe()
 
       if (isSpot) {
         fetchAndStreamSpot(market)
@@ -173,9 +182,7 @@ export function useOrderbook(
 
     spotStream?.unsubscribe()
     derivativesStream?.unsubscribe()
-  })
 
-  onUnmounted(() => {
     orderbookStore.$reset()
   })
 }

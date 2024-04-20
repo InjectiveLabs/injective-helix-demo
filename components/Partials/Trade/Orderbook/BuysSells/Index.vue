@@ -39,10 +39,6 @@ function setSellsIndex(index: number) {
 </script>
 
 <template>
-  <Whiteboard>
-    {{ orderbookStore.worstPrice }}
-  </Whiteboard>
-
   <div>
     <div class="flex justify-between pt-2 px-2">
       <p class="text-xs space-x-1.5 flex-1 text-right">

@@ -153,10 +153,23 @@ self.addEventListener(
       } as OrderbookWorkerResult)
     }
 
+    function sendWorstPrice(worstPrice: string) {
+      self.postMessage({
+        messageType: WorkerMessageResponseType.WorstPrice,
+        data: {
+          worstPrice
+        }
+      } as OrderbookWorkerResult)
+    }
+
     switch (type) {
+      case WorkerMessageType.WorstPrice:
+        sendWorstPrice(data.quantity)
+        break
+
       case WorkerMessageType.Fetch:
-        buys = data.orderbook.buys
-        sells = data.orderbook.sells
+        buys = data.orderbook.buys.slice(0, 5000)
+        sells = data.orderbook.sells.slice(0, 5000)
         sendReplaceOrderbook()
         break
 
@@ -175,6 +188,10 @@ self.addEventListener(
         break
     }
 
-    // console.log('[WORKER]', { buys: buys.length, sells: sells.length })
+    // console.log('[WORKER]', {
+    //   buys: buys.length,
+    //   sells: sells.length,
+    //   total: buys.length + sells.length
+    // })
   }
 )

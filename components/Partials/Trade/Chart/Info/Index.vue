@@ -6,8 +6,8 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { spotMarketKey, derivativeMarketKey, isSpotKey } from '@/types'
 
-const spotMarket = inject(spotMarketKey)
-const derivativeMarket = inject(derivativeMarketKey) as
+const spotMarket = inject(spotMarketKey, undefined)
+const derivativeMarket = inject(derivativeMarketKey, undefined) as
   | ComputedRef<UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken>
   | undefined
 const isSpot = inject(isSpotKey)
