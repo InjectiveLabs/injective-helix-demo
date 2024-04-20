@@ -3,6 +3,8 @@ import { ChartViewOption, UiMarketWithToken } from '@/types'
 import { intervalOptions } from '@/app/utils/constants'
 
 defineProps({
+  isSpot: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -57,7 +59,7 @@ function setInterval(index: string) {
       v-bind="{
         market: market as UiMarketWithToken,
         marketId: market.marketId,
-        isSpot: true,
+        isSpot,
         interval
       }"
     />

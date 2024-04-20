@@ -23,7 +23,16 @@ export default {
     emptyDescription:
       'No results found. Search for markets available on Injective outside of Helix.',
     emptyDescriptionFavorites: 'Your starred markets will be shown here.',
-    inactive: 'Inactive'
+    inactive: 'Inactive',
+    themes: {
+      memes: 'Memes',
+      l1l2: 'L1/L2',
+      infrastructure: 'Infrastructure',
+      'defi-dex': 'DeFi/DEX',
+      nft: 'NFT/Gaming',
+      'liquid-staking': 'Liquid Staking',
+      stablecoins: 'Stablecoins'
+    }
   },
 
   marketPage: {

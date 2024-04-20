@@ -28,7 +28,7 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapper @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/okx-wallet" class="w-8 h-8" />
+      <BaseIcon name="wallet/okx-wallet" class="w-8 h-8 bg-white rounded-lg" />
     </template>
 
     <template #title>

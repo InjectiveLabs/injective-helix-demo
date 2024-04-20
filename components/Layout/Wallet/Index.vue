@@ -84,7 +84,7 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppHocModal :is-open="isModalOpen" @modal:close="onCloseModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="onCloseModal">
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
         {{ $t('connect.connectUsingTrezor') }}
@@ -102,23 +102,28 @@ watch(isModalOpen, (newShowModalState) => {
       <LayoutWalletTrezor
         v-else-if="walletModalType === WalletModalType.Trezor"
       />
+
       <ul
         v-else
-        class="divide-y divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
+        class="divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
       >
+        <p class="text-gray-400 font-semibold text-sm">Popular</p>
         <LayoutWalletConnectWalletMetamask />
         <LayoutWalletConnectWalletOkxWallet />
         <LayoutWalletConnectWalletKeplr />
-        <LayoutWalletConnectWalletNinji />
-        <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
-        <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
-        <LayoutWalletConnectWalletTrustWallet />
-        <LayoutWalletConnectWalletPhantom />
-        <LayoutWalletConnectWalletLeap />
-        <LayoutWalletConnectWalletCosmostation />
-        <LayoutWalletConnectWalletTorus />
+        <p class="text-gray-400 font-semibold text-sm mt-4">Other Wallets</p>
+        <div class="grid grid-cols-4">
+          <LayoutWalletConnectWalletNinji />
+          <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
+          <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
+          <LayoutWalletConnectWalletTrustWallet />
+          <LayoutWalletConnectWalletPhantom />
+          <LayoutWalletConnectWalletLeap />
+          <LayoutWalletConnectWalletCosmostation />
+          <LayoutWalletConnectWalletTorus />
+        </div>
       </ul>
     </div>
-  </AppHocModal>
+  </AppModal>
   <ModalsTerms />
 </template>

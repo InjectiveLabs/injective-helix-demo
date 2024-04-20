@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const {
+  sortBy,
   search,
   activeType,
+  isAscending,
   sortedMarkets,
   activeCategory,
   activeTypeOptions,
@@ -58,7 +60,11 @@ const {
         </div>
       </div>
 
-      <PartialsMarketsCommonMarketsHeader />
+      <PartialsMarketsCommonMarketsHeader
+        v-bind="{ sortBy, isAscending }"
+        @update:is-ascending="isAscending = $event"
+        @update:sort-by="sortBy = $event"
+      />
     </div>
 
     <div class="divide-y">

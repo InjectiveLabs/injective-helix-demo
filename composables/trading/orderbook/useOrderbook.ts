@@ -5,7 +5,12 @@ import { spotMarketStream } from '@/app/client/streams/spot'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
 import { indexerDerivativesApi, indexerSpotApi } from '~/app/Services'
 import { UiMarketWithToken } from '@/types'
-import { OrderbookWorkerMessage, WorkerMessageType } from '@/types/worker'
+import {
+  OrderbookWorkerMessage,
+  OrderbookWorkerResult,
+  WorkerMessageResponseType,
+  WorkerMessageType
+} from '@/types/worker'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
   postMessage(message: OrderbookWorkerMessage): void
@@ -26,10 +31,14 @@ export function useOrderbook(
       worker.value = new OrderbookWorker()
 
       worker.value.onmessage = (event) => {
-        orderbookStore.$patch({
-          buys: event.data.buys,
-          sells: event.data.sells
-        })
+        const data = event.data as OrderbookWorkerResult
+
+        if (data.messageType === WorkerMessageResponseType.ReplaceOrderbook) {
+          orderbookStore.$patch({
+            buys: data.data.buys,
+            sells: data.data.sells
+          })
+        }
       }
     } else {
       // console.error('Web worker is not supported')
@@ -54,12 +63,14 @@ export function useOrderbook(
       }
 
       worker.value?.postMessage({
-        isSpot: true,
         type: WorkerMessageType.Fetch,
-        baseDecimals: market.value.baseToken.decimals,
-        quoteDecimals: market.value.quoteToken.decimals,
-        orderbook: data,
-        aggregation
+        data: {
+          isSpot: true,
+          baseDecimals: market.value.baseToken.decimals,
+          quoteDecimals: market.value.quoteToken.decimals,
+          orderbook: data,
+          aggregation
+        }
       })
     })
   }
@@ -77,12 +88,14 @@ export function useOrderbook(
         }
 
         worker.value?.postMessage({
-          isSpot: false,
           type: WorkerMessageType.Fetch,
-          baseDecimals: market.value.baseToken.decimals,
-          quoteDecimals: market.value.quoteToken.decimals,
-          orderbook: data,
-          aggregation
+          data: {
+            isSpot: false,
+            baseDecimals: market.value.baseToken.decimals,
+            quoteDecimals: market.value.quoteToken.decimals,
+            orderbook: data,
+            aggregation
+          }
         })
       })
   }
@@ -96,12 +109,14 @@ export function useOrderbook(
       marketIds: [market.marketId],
       callback: (data) => {
         worker.value?.postMessage({
-          isSpot: true,
           type: WorkerMessageType.Stream,
-          baseDecimals: market.baseToken.decimals,
-          quoteDecimals: market.quoteToken.decimals,
-          orderbook: data.orderbook!,
-          aggregation
+          data: {
+            isSpot: true,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals,
+            orderbook: data.orderbook!,
+            aggregation
+          }
         })
       }
     })
@@ -119,12 +134,14 @@ export function useOrderbook(
         marketIds: [market.marketId],
         callback: (data) => {
           worker.value?.postMessage({
-            isSpot: false,
             type: WorkerMessageType.Stream,
-            baseDecimals: market.baseToken.decimals,
-            quoteDecimals: market.quoteToken.decimals,
-            orderbook: data.orderbook!,
-            aggregation
+            data: {
+              isSpot: false,
+              baseDecimals: market.baseToken.decimals,
+              quoteDecimals: market.quoteToken.decimals,
+              orderbook: data.orderbook!,
+              aggregation
+            }
           })
         }
       }

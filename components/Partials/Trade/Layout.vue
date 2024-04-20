@@ -23,7 +23,7 @@ defineProps({
   >
     <div class="[grid-area:chart]">
       <slot name="chart">
-        <PartialsTradeChart v-bind="{ market }" />
+        <PartialsTradeChart v-bind="{ market, isSpot }" />
       </slot>
     </div>
 

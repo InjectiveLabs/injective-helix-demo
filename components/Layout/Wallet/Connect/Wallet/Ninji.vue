@@ -28,7 +28,7 @@ function connect() {
 </script>
 
 <template>
-  <LayoutWalletConnectWrapper @click="connect">
+  <LayoutWalletConnectWrapperMini @click="connect">
     <template #logo>
       <BaseIcon name="wallet/ninji" class="w-8 h-8" />
     </template>
@@ -54,5 +54,5 @@ function connect() {
         <BaseIcon name="download" class="h-5 w-5 hover:text-blue-500" />
       </NuxtLink>
     </template>
-  </LayoutWalletConnectWrapper>
+  </LayoutWalletConnectWrapperMini>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { derivativeMarketKey } from '@/types'
+import { derivativeMarketKey, isSpotKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -21,6 +21,7 @@ useOrderbook(
 )
 
 provide(derivativeMarketKey, market)
+provide(isSpotKey, false)
 
 onMounted(() => {
   if (!market.value) {
@@ -35,7 +36,30 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
+
+  streamDerivativeData()
 })
+
+onUnmounted(() => {
+  cancelDerivativeStream()
+  derivativeStore.reset()
+})
+
+function streamDerivativeData() {
+  if (!market.value) {
+    return
+  }
+
+  cancelDerivativeStream()
+
+  derivativeStore.streamTrades(market.value.marketId)
+  derivativeStore.streamMarketsMarkPrices()
+}
+
+function cancelDerivativeStream() {
+  derivativeStore.cancelTradesStream()
+  derivativeStore.cancelMarketsMarkPrices()
+}
 </script>
 
 <template>

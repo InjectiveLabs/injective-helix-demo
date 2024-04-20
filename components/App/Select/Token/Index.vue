@@ -218,7 +218,7 @@ export default {
 
 <template>
   <div
-    class="bg-gray-1000 rounded-xl py-4"
+    class="bg-brand-875 border border-brand-700 rounded-xl py-4"
     :class="{
       'border-red-500 border': amountErrors.length > 0 && isRequired
     }"

@@ -114,7 +114,7 @@ export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
 
 export const ORDERBOOK_ROW_HEIGHT = 16
-export const ORDERBOOK_ROWS = 20
+export const ORDERBOOK_ROWS = 15
 export const ORDERBOOK_HEADER_HEIGHT = 56
 
 export const intervalOptions: IntervalOption[] = [

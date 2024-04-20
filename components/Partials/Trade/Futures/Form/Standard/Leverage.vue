@@ -70,7 +70,7 @@ function onEnter(ev: Event) {
       />
     </div>
 
-    <label class="field-style flex px-3 basis-20 min-w-0 h-12">
+    <label class="field-style flex px-3 basis-24 min-w-0 h-12">
       <input
         ref="el"
         :value="leverage"
@@ -79,7 +79,7 @@ function onEnter(ev: Event) {
         @keydown.enter="onEnter"
         @blur="onBlur"
       />
-      <span class="flex items-center pl-2">x</span>
+      <span class="flex items-center pl-2 select-none">&times;</span>
     </label>
   </div>
 </template>

@@ -33,4 +33,9 @@ const filteredPosition = computed(() =>
     :key="`${position.marketId}-${position.subaccountId}`"
     v-bind="{ position }"
   />
+
+  <CommonEmptyList
+    v-if="filteredPosition.length === 0"
+    :message="'No Positions Open'"
+  />
 </template>

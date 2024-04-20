@@ -125,6 +125,12 @@ export default function useMarkets() {
           return 1
         }
 
+        if (sortBy.value === MarketHeaderType.Price) {
+          return new BigNumberInBase(m2.summary.price || 0).comparedTo(
+            m1.summary.price || 0
+          )
+        }
+
         if (sortBy.value === MarketHeaderType.Market) {
           return m2.market.ticker.localeCompare(m1.market.ticker)
         }

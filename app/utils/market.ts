@@ -23,7 +23,8 @@ import {
   slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory,
-  slugsToIncludeInInjectiveCategory
+  slugsToIncludeInInjectiveCategory,
+  newMarketsSlug
 } from '@/app/data/market'
 import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import { IS_TESTNET } from '@/app/utils/constants'
@@ -213,12 +214,19 @@ export const marketIsPartOfType = ({
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   favoriteMarkets: string[]
 }): boolean => {
-  if (activeType === MarketTypeOption.All) {
+  if (
+    activeType === MarketTypeOption.All ||
+    activeType === MarketTypeOption.Themes
+  ) {
     return true
   }
 
   if (activeType === MarketTypeOption.Favorites) {
     return favoriteMarkets.includes(market.marketId)
+  }
+
+  if (activeType === MarketTypeOption.NewListings) {
+    return newMarketsSlug.includes(market.slug)
   }
 
   return [market.type, market.subType].includes(
@@ -239,7 +247,9 @@ export const marketIsPartOfSearch = (
   return [
     market.ticker,
     market.baseToken.symbol,
-    market.quoteToken.symbol
+    market.quoteToken.symbol,
+    market.baseToken.name,
+    market.quoteToken.name
   ].some((value) => (value || '').toLowerCase().includes(query))
 }
 

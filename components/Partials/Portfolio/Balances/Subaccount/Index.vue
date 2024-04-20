@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance } from '~/types'
+import { AccountBalance } from '@/types'
 
 const { accountBalancesWithToken } = useBalance()
 

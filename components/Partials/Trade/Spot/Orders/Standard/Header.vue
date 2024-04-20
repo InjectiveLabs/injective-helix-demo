@@ -1,7 +1,37 @@
 <script setup lang="ts">
 import { SpotOrdersStandardView } from '@/types'
 
-const view = ref(SpotOrdersStandardView.OpenOrders)
+const props = defineProps({
+  modelValue: {
+    type: String as PropType<SpotOrdersStandardView>,
+    required: true
+  }
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: SpotOrdersStandardView]
+}>()
+
+const walletStore = useWalletStore()
+
+const view = useVModel(props, 'modelValue', emit)
+
+const filteredOptions = computed(() =>
+  Object.values(SpotOrdersStandardView).filter(
+    (value) =>
+      walletStore.isUserWalletConnected ||
+      value !== SpotOrdersStandardView.Balances
+  )
+)
+
+watch(
+  () => walletStore.isUserWalletConnected,
+  (isConnected) => {
+    if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
+      view.value = SpotOrdersStandardView.OpenOrders
+    }
+  }
+)
 </script>
 
 <template>
@@ -9,7 +39,7 @@ const view = ref(SpotOrdersStandardView.OpenOrders)
     <CommonSubaccountTabSelector />
 
     <AppButtonSelect
-      v-for="value in Object.values(SpotOrdersStandardView)"
+      v-for="value in filteredOptions"
       :key="value"
       v-model="view"
       v-bind="{ value }"

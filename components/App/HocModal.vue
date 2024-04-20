@@ -36,11 +36,11 @@ function closeModal() {
     >
       <div
         v-if="isOpen"
-        class="fixed backdrop-blur-sm inset-0 bg-gray-900/70 z-50 md:grid md:place-items-center md:p-4"
+        class="fixed backdrop-blur inset-0 bg-gray-900/20 z-50 md:grid md:place-items-center md:p-4"
         @click="closeModal"
       >
         <div
-          class="overflow-y-auto max-md:h-[100dvh] md:max-h-[90dvh] bg-brand-900 rounded-md border border-brand-700 md:max-w-[600px] w-full flex flex-col"
+          class="overflow-y-auto max-md:h-[100dvh] md:max-h-[90dvh] bg-gray-900/80 rounded-md border border-brand-700 md:max-w-[600px] w-full flex flex-col"
           @click.stop
         >
           <div class="md:hidden p-4 flex justify-end">

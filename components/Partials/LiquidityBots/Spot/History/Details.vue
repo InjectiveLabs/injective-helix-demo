@@ -77,7 +77,7 @@ function onDetailsPage() {
 
 <template>
   <div class="text-sm space-y-2 pt-2">
-    <div class="flex justify-between items-center">
+    <div v-if="market" class="flex justify-between items-center">
       <p>{{ $t('sgt.market') }}</p>
 
       <div class="flex items-center space-x-2">
@@ -154,11 +154,7 @@ function onDetailsPage() {
     </div>
 
     <div class="flex items-center justify-center">
-      <AppButton
-        class="text-blue-500 border-blue-500"
-        is-sm
-        @click="onDetailsPage"
-      >
+      <AppButton variant="primary" is-sm @click="onDetailsPage">
         <span class="text-sm font-medium">
           {{ $t('sgt.details') }}
         </span>

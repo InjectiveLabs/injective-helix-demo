@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
-import { TradeTypes, SpotTradeFormField } from '@/types'
+import { TradeTypes, SpotTradeFormField, SpotTradeForm } from '@/types'
+
+const { values } = useForm<SpotTradeForm>()
 
 const { value: orderTypeValue } = useStringField({
   name: SpotTradeFormField.Type,
@@ -15,6 +17,10 @@ const { value: orderSideValue } = useStringField({
 
 <template>
   <div class="p-4">
+    <pre class="text-xs">
+      {{ values }}
+    </pre>
+
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(TradeTypes)"

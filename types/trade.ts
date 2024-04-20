@@ -130,6 +130,8 @@ export type SpotTradeForm = {
   [SpotTradeFormField.Side]: OrderSide
   [SpotTradeFormField.Price]: string
   [SpotTradeFormField.Total]: string
+  [SpotTradeFormField.Slippage]: string
   [SpotTradeFormField.Quantity]: string
   [SpotTradeFormField.PostOnly]: boolean
+  [SpotTradeFormField.IsSlippageOn]: boolean
 }

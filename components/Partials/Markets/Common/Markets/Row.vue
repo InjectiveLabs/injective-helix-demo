@@ -4,6 +4,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketSummary, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
+  isMarketsPage: Boolean,
+
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
@@ -62,7 +64,7 @@ function toggleFavorite() {
       name: `${market.type === MarketType.Spot ? 'spot' : 'futures'}-slug`,
       params: { slug: market.slug }
     }"
-    class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white"
+    class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white odd:bg-brand-875/30"
   >
     <div class="flex items-center flex-[2] truncate min-w-0">
       <div
@@ -77,17 +79,17 @@ function toggleFavorite() {
 
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
 
-      <div
-        class="pl-2 text-sm table-cell font-semibold tracking-wide text-white truncate"
-      >
-        {{ market.ticker }}
+      <div class="pl-2 text-sm font-semibold tracking-wide text-white truncate">
+        <div>
+          {{ market.ticker }}
+        </div>
+        <div v-if="isMarketsPage" class="text-xs font-normal text-gray-500">
+          {{ market.baseToken.name }}
+        </div>
       </div>
     </div>
 
-    <div
-      :class="priceChangeClasses"
-      class="flex items-center flex-1 truncate min-w-0 font-mono text-xs"
-    >
+    <div class="flex items-center flex-1 truncate min-w-0 font-mono text-xs">
       {{ lastPriceToString }}
     </div>
 

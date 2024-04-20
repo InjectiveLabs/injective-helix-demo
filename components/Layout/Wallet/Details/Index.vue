@@ -41,10 +41,10 @@ function disconnect() {
 
       <template #content>
         <div
-          class="flex flex-col gap-4 rounded-lg bg-brand-900 border border-brand-800"
+          class="flex flex-col gap-4 rounded-lg bg-brand-900 backdrop-blur-sm border border-brand-800"
         >
-          <div class="rounded-lg bg-gray-1000">
-            <div class="flex flex-col py-3 px-4">
+          <div class="rounded-lg">
+            <div class="flex flex-col py-3 px-4 border-b">
               <div class="flex justify-between pb-2">
                 <span class="text-sm font-semibold text-gray-200">
                   {{ $t('navigation.myAccount') }}
@@ -59,6 +59,28 @@ function disconnect() {
               <LayoutWalletDetailsConnectedWallet
                 :wallet="walletStore.wallet"
               />
+            </div>
+
+            <div class="text-white p-4">
+              <p class="text-xs text-gray-400">
+                {{ $t('portfolio.totalValue') }}
+              </p>
+
+              <CommonHeadlessTotalBalance>
+                <template #default="{ accountTotalBalanceInUsdToString }">
+                  <p class="text-2xl font-semibold my-2">
+                    ${{ accountTotalBalanceInUsdToString }}
+                  </p>
+                </template>
+              </CommonHeadlessTotalBalance>
+
+              <div class="mt-6">
+                <AppButton class="w-full" size="sm">Deposit</AppButton>
+              </div>
+
+              <div>
+                <LayoutWalletDetailsBalances />
+              </div>
             </div>
           </div>
         </div>

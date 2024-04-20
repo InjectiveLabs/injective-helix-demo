@@ -83,3 +83,23 @@ export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
 export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
   [key: string]: { price?: string; denom?: string } | undefined
 }
+
+export enum MarketTheme {
+  Memes = 'memes',
+  L1L2 = 'l1l2',
+  Infrastructure = 'infrastructure',
+  DefiDex = 'defi-dex',
+  NFT = 'nft',
+  LiquidStaking = 'liquid-staking',
+  Stablecoins = 'stablecoins'
+}
+
+export const MARKET_THEMES_SLUGS = {
+  [MarketTheme.Memes]: ['ninja-inj', 'nonja-inj'],
+  [MarketTheme.L1L2]: ['weth-usdt', 'btc-usdt-perp', 'inj-usdt'],
+  [MarketTheme.Infrastructure]: ['pyth-usdt-perp'],
+  [MarketTheme.DefiDex]: ['sol-usdt'],
+  [MarketTheme.NFT]: ['talis-inj'],
+  [MarketTheme.LiquidStaking]: ['hdro-inj', 'hinj/inj'],
+  [MarketTheme.Stablecoins]: ['usdc-usdt', 'usde-usdt']
+}

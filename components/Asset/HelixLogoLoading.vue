@@ -5,7 +5,7 @@
 <template>
   <div>
     <svg
-      class="w-32 mx-auto"
+      class="w-32 mx-auto z-0"
       viewBox="0 -20 64 68"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

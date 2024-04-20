@@ -11,7 +11,7 @@ function showLedgerModal() {
 </script>
 
 <template>
-  <LayoutWalletConnectWrapper @click="showLedgerModal">
+  <LayoutWalletConnectWrapperMini @click="showLedgerModal">
     <template #logo>
       <BaseIcon name="wallet/ledger" class="w-8 h-8" />
     </template>
@@ -25,5 +25,5 @@ function showLedgerModal() {
         {{ $t('connect.connectUsingHardware') }}
       </span>
     </template>
-  </LayoutWalletConnectWrapper>
+  </LayoutWalletConnectWrapperMini>
 </template>

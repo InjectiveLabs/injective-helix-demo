@@ -1,6 +1,6 @@
-<script lang="ts" setup>
-import { newMarketsSlug } from '@/app/data/market'
+<script setup lang="ts">
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { newMarketsSlug } from '@/app/data/market'
 
 const props = defineProps({
   markets: {
@@ -9,62 +9,51 @@ const props = defineProps({
   }
 })
 
+const hotMarkets = computed(() =>
+  props.markets
+    .filter(({ market }) =>
+      ['inj-usdt', 'btc-usdt-perp', 'weth-usdt'].includes(market.slug)
+    )
+    .slice(0, 3)
+)
+
 const newMarkets = computed(
   () =>
     newMarketsSlug
       .map((slug) =>
-        props.markets.find(
-          (market) => market.market.slug.toLowerCase() === slug.toLowerCase()
-        )
+        props.markets.find((market) => market.market.slug === slug)
       )
-      .filter(
-        (market) => market?.market && market?.summary
-      ) as UiMarketAndSummaryWithVolumeInUsd[]
+      .filter((market) => market)
+      .slice(0, 3) as UiMarketAndSummaryWithVolumeInUsd[]
 )
+
+const highestGainers = computed(() =>
+  [...props.markets]
+    .sort((a, b) => Number(b.summary.change) - Number(a.summary.change))
+    .slice(0, 3)
+)
+
+const categories = computed(() => [
+  { title: `🔥 Hot Markets`, markets: hotMarkets.value },
+  { title: `🐤 New Markets`, markets: newMarkets.value },
+  { title: `🚀 Top Gainers`, markets: highestGainers.value }
+])
 </script>
 
 <template>
-  <div class="w-full mx-auto xl:w-4/5 relative">
-    <div class="bg-cover bg-center">
-      <div class="mt-6">
-        <div class="flex justify-between items-center mb-4">
-          <h3
-            class="text-xl tracking-wider leading-6 font-bold hidden md:block"
-          >
-            {{ $t('markets.newMarkets') }}
-          </h3>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div
+      v-for="category in categories"
+      :key="category.title"
+      class="border border-brand-700 bg-brand-875/50 p-4 rounded-lg space-y-2"
+    >
+      <h3 class="mb-4 text-gray-300 font-semibold p-2">{{ category.title }}</h3>
 
-          <div id="new-markets-navigate" class="hidden md:block" />
-        </div>
-
-        <AppHorizontalScrollView
-          class="md:hidden"
-          v-bind="{ isCarousel: true }"
-        >
-          <template
-            v-for="(newMarket, index) in newMarkets"
-            :key="`${newMarket.market.marketId}-${index}`"
-          >
-            <PartialsMarketsCard
-              v-if="newMarket && newMarket.summary"
-              class="flex-0-full col-span-4"
-              data-cy="market-card-whats-new"
-              v-bind="{
-                market: newMarket.market,
-                summary: newMarket.summary,
-                volumeInUsd: newMarket.volumeInUsd
-              }"
-            >
-              {{ $t('markets.whatsNew') }}
-            </PartialsMarketsCard>
-          </template>
-        </AppHorizontalScrollView>
-
-        <PartialsMarketsNewMarketsCarousel
-          class="hidden md:block"
-          v-bind="{ markets: newMarkets }"
-        />
-      </div>
+      <PartialsMarketsNewMarketsRow
+        v-for="market in category.markets"
+        v-bind="{ market }"
+        :key="market.market.marketId"
+      />
     </div>
   </div>
 </template>

@@ -460,14 +460,17 @@ export enum OrderbookViewOption {
 export enum MarketHeaderType {
   Market = 'market',
   Change = 'change',
-  Volume = 'volume'
+  Volume = 'volume',
+  Price = 'price'
 }
 
 export enum MarketTypeOption {
   All = 'all',
   Favorites = 'favorites',
   Spot = MarketType.Spot,
-  Derivative = MarketType.Derivative
+  Derivative = MarketType.Derivative,
+  NewListings = 'new-listings',
+  Themes = 'themes'
 }
 
 export enum TradingInterface {
@@ -476,12 +479,14 @@ export enum TradingInterface {
 }
 
 export enum SpotOrdersStandardView {
+  Balances = 'balances',
   OpenOrders = 'openOrders',
   OrderHistory = 'orderHistory',
   TradeHistory = 'tradeHistory'
 }
 
 export enum PerpOrdersStandardView {
+  Balances = 'balances',
   OpenPositions = 'openPositions',
   OpenOrders = 'openOrders',
   Triggers = 'triggers',
@@ -530,5 +535,7 @@ export enum SpotTradeFormField {
   Price = 'price',
   Total = 'total',
   Quantity = 'quantity',
-  PostOnly = 'postOnly'
+  PostOnly = 'postOnly',
+  Slippage = 'slippage',
+  IsSlippageOn = 'isSlippageOn'
 }

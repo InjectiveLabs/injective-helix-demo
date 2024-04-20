@@ -9,6 +9,11 @@ const settingsOptions = [
     label: 'portfolio.settings.preferences.title',
     description: 'portfolio.settings.preferences.description',
     to: { name: 'portfolio-settings-preferences' }
+  },
+  {
+    label: 'portfolio.settings.autoSign.title',
+    description: 'portfolio.settings.autoSign.description',
+    to: { name: 'portfolio-settings-autosign' }
   }
 ]
 </script>

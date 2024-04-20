@@ -1,5 +1,6 @@
 export default {
   portfolio: {
+    totalValue: 'Total Value',
     balances: {
       netWorth: 'Net Worth'
     },
@@ -12,6 +13,7 @@ export default {
 
     settings: {
       title: 'Settings',
+
       authz: {
         title: 'AuthZ Management',
         description:
@@ -20,9 +22,15 @@ export default {
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address'
       },
+
       preferences: {
         title: 'Preferences',
         description: 'Customize your trading experience'
+      },
+
+      autoSign: {
+        title: 'Auto-Sign',
+        description: 'Automatically sign transactions'
       }
     }
   }

@@ -219,10 +219,10 @@ function onMaxSelected({ amount }: { amount: string }) {
       </div>
     </Transition>
 
-    <div class="my-4">
+    <div>
       <BaseIcon
         name="arrow"
-        class="mx-auto min-w-6 w-6 h-6 -rotate-90"
+        class="mx-auto min-w-6 w-10 h-10 -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-20 relative hover:scale-110 transition-transform"
         @click="swap"
       />
     </div>

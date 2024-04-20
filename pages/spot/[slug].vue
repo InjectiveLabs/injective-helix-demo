@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { spotMarketKey } from '@/types'
+import { isSpotKey, spotMarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -21,6 +21,7 @@ useOrderbook(
 )
 
 provide(spotMarketKey, market)
+provide(isSpotKey, true)
 
 onMounted(() => {
   if (!market.value) {
@@ -41,6 +42,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   spotStore.cancelTradesStream()
+  spotStore.reset()
 })
 </script>
 

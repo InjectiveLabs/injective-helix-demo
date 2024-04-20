@@ -82,7 +82,7 @@ const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
                 </span>
               </div>
 
-              <CommonTokenIcon :token="market.baseToken" is-sm />
+              <CommonTokenIcon v-if="market" :token="market.baseToken" is-sm />
             </div>
           </div>
 

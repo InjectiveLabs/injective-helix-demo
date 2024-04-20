@@ -24,24 +24,23 @@ const props = defineProps({
   }
 })
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
 
 const chart = ref()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
 
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
+const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
+
 const lastTradedPrice = computed(() => {
   return props.isSpot
-    ? new BigNumberInWei(spotStore.trades[0]?.price || 0)
-        .toBase(
-          props.market.quoteToken.decimals - props.market.baseToken.decimals
-        )
-        .toNumber()
-    : new BigNumberInWei(derivativeStore.trades[0]?.executionPrice || 0)
-        .toBase(props.market.quoteToken.decimals)
-        .toNumber()
+    ? spotLastTradedPrice.value
+    : derivativeLastTradedPrice.value
 })
 
 const candlesticksData = computed(() => {
@@ -154,7 +153,7 @@ watch(
   }
 )
 
-watch(lastTradedPrice, updateLastBarWithLastTradedPrice)
+watch(() => lastTradedPrice.value, updateLastBarWithLastTradedPrice)
 
 const tickSize = computed(() =>
   new BigNumberInWei(props.market.minPriceTickSize)
@@ -167,12 +166,16 @@ const tickSize = computed(() =>
 )
 
 function updateLastBarWithLastTradedPrice() {
-  if (chart.value) {
+  if (
+    chart.value &&
+    candlesticksData.value.length > 0 &&
+    !lastTradedPrice.value.eq(0)
+  ) {
     const data = {
       ...candlesticksData.value[candlesticksData.value.length - 1]
     }
 
-    data.close = lastTradedPrice.value
+    data.close = lastTradedPrice.value.toNumber()
 
     chart.value.updateCandlesticksData(data)
   }

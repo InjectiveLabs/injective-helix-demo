@@ -3,10 +3,7 @@ import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import {
-  MAX_QUOTE_DECIMALS,
-  QUOTE_DENOMS_GECKO_IDS
-} from '@/app/utils/constants'
+import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
@@ -17,7 +14,6 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 
@@ -74,19 +70,15 @@ onWalletConnected(() => {
 })
 
 function initRoutes() {
-  Promise.all([
-    spotStore.init(),
-    swapStore.fetchRoutes(),
-    accountStore.fetchAccountPortfolioBalances()
-  ])
-    .then(async () => {
-      await Promise.all([
-        tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
-        tokenStore.getTokensUsdPriceMapFromToken(
-          spotStore.markets.map(({ baseToken }) => baseToken)
-        )
-      ])
-    })
+  Promise.all([swapStore.fetchRoutes()])
+    // .then(async () => {
+    //   await Promise.all([
+    //     tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
+    //     tokenStore.getTokensUsdPriceMapFromToken(
+    //       spotStore.markets.map(({ baseToken }) => baseToken)
+    //     )
+    //   ])
+    // })
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
 }
@@ -256,67 +248,71 @@ function resetQueryError() {
 </script>
 
 <template>
-  <AppHocLoading :status="status" class="h-full container">
-    <div
-      class="w-full px-4 max-w-xl mx-auto h-full overflow-auto flex items-center justify-center"
-    >
-      <div class="bg-gray-850 rounded-lg mx-auto p-6 h-fit w-full">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="font-bold text-lg">
-            {{ $t('trade.swap.swap') }}
-          </h3>
+  <div>
+    <AppHocLoading :status="status" wrapper-class="mt-20">
+      <div class="max-w-xl mx-auto w-full lg:mt-20">
+        <div
+          class="w-full border border-brand-800 rounded-lg px-4 mx-auto h-full overflow-auto flex items-center justify-center"
+        >
+          <div class="rounded-lg mx-auto p-6 h-fit w-full">
+            <div class="mb-4 flex items-center justify-between">
+              <h3 class="font-bold text-lg">
+                {{ $t('trade.swap.swap') }}
+              </h3>
 
-          <PartialsSwapSlippageSelector />
-        </div>
+              <PartialsSwapSlippageSelector />
+            </div>
 
-        <PartialsSwapTokenForm
-          v-bind="{
-            disabled: fetchStatus.isLoading() || submitStatus.isLoading()
-          }"
-          @update:inputQuantity="getInputQuantity"
-          @update:outputQuantity="getOutputQuantity"
-          @queryError:reset="resetQueryError"
-          @form:reset="resetFormValues"
-        />
+            <PartialsSwapTokenForm
+              v-bind="{
+                disabled: fetchStatus.isLoading() || submitStatus.isLoading()
+              }"
+              @update:inputQuantity="getInputQuantity"
+              @update:outputQuantity="getOutputQuantity"
+              @queryError:reset="resetQueryError"
+              @form:reset="resetFormValues"
+            />
 
-        <PartialsSwapSummary
-          v-if="
-            (!showErrorState &&
-              orderedRouteTokensAndDecimals.length > 0 &&
-              outputToken) ||
-            status.isLoading()
-          "
-          ref="summaryRef"
-          class="mx-4 mt-4 mb-6"
-          v-bind="{
-            minimumOutput,
-            isLoading: status.isLoading() || fetchStatus.isLoading()
-          }"
-        />
-        <div v-else class="flex flex-col items-center text-gray-700 my-8">
-          <BaseIcon name="cloud-slash" class="h-10 w-10" />
+            <PartialsSwapSummary
+              v-if="
+                (!showErrorState &&
+                  orderedRouteTokensAndDecimals.length > 0 &&
+                  outputToken) ||
+                status.isLoading()
+              "
+              ref="summaryRef"
+              class="mx-4 mt-4 mb-6"
+              v-bind="{
+                minimumOutput,
+                isLoading: status.isLoading() || fetchStatus.isLoading()
+              }"
+            />
+            <div v-else class="flex flex-col items-center text-gray-700 my-8">
+              <BaseIcon name="cloud-slash" class="h-10 w-10" />
 
-          <div>
-            {{ $t('trade.swap.somethingWentWrong') }}
+              <div>
+                {{ $t('trade.swap.somethingWentWrong') }}
+              </div>
+              <div>
+                {{ $t('trade.swap.pleaseTryAgain') }}
+              </div>
+            </div>
+
+            <PartialsSwapSubmit
+              v-bind="{
+                queryError,
+                showErrorState,
+                isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
+              }"
+              @submit="submit"
+              @update:outputQuantity="getOutputQuantity"
+              @update:inputQuantity="getInputQuantity"
+            />
+
+            <ModalsSwapSuccess v-bind="{ txHash }" />
           </div>
-          <div>
-            {{ $t('trade.swap.pleaseTryAgain') }}
-          </div>
         </div>
-
-        <PartialsSwapSubmit
-          v-bind="{
-            queryError,
-            showErrorState,
-            isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
-          }"
-          @submit="submit"
-          @update:outputQuantity="getOutputQuantity"
-          @update:inputQuantity="getInputQuantity"
-        />
-
-        <ModalsSwapSuccess v-bind="{ txHash }" />
       </div>
-    </div>
-  </AppHocLoading>
+    </AppHocLoading>
+  </div>
 </template>

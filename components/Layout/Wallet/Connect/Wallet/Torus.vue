@@ -20,7 +20,7 @@ function connect() {
 </script>
 
 <template>
-  <LayoutWalletConnectWrapper @click="connect">
+  <LayoutWalletConnectWrapperMini @click="connect">
     <template #logo>
       <BaseIcon name="wallet/torus" class="w-8 h-8" />
     </template>
@@ -43,5 +43,5 @@ function connect() {
         <BaseIcon name="social/discord" is-md />
       </div>
     </template>
-  </LayoutWalletConnectWrapper>
+  </LayoutWalletConnectWrapperMini>
 </template>

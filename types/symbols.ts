@@ -3,6 +3,13 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Status } from '@injectivelabs/utils'
+import { OrderbookWorkerMessage } from './worker'
+
+export const orderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
+  Omit<Worker, 'postMessage'> & {
+    postMessage(message: OrderbookWorkerMessage): void
+  }
+>
 
 export const spotMarketKey = Symbol('Market') as InjectionKey<
   ComputedRef<UiSpotMarketWithToken | undefined>
@@ -17,3 +24,5 @@ export const portfolioStatusKey = Symbol(
 ) as InjectionKey<Status>
 
 export const tokensStatusKey = Symbol('TokensStatus') as InjectionKey<Status>
+
+export const isSpotKey = Symbol('isSpot') as InjectionKey<boolean>

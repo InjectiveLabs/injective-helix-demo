@@ -41,6 +41,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   spotStore.cancelTradesStream()
+  spotStore.reset()
 })
 </script>
 

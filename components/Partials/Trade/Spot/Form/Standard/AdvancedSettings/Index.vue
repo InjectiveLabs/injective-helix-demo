@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { SpotTradeFormField } from '~/types'
+import { SpotTradeForm, SpotTradeFormField, TradeTypes } from '@/types'
+
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(false)
-
-function toggle() {
-  isOpen.value = !isOpen.value
-}
 
 const { value: postOnlyValue } = useBooleanField({
   name: SpotTradeFormField.PostOnly,
   initialValue: false
 })
+
+function toggle() {
+  isOpen.value = !isOpen.value
+}
 </script>
 
 <template>
@@ -26,8 +28,14 @@ const { value: postOnlyValue } = useBooleanField({
     </div>
 
     <AppCollapse v-bind="{ isOpen }">
-      <div class="py-4">
-        <AppCheckbox v-model="postOnlyValue">Post Only</AppCheckbox>
+      <div class="space-y-2 py-2">
+        <div>
+          <AppCheckbox v-model="postOnlyValue">Post Only</AppCheckbox>
+        </div>
+
+        <PartialsTradeSpotFormStandardAdvancedSettingsSlippage
+          v-if="spotFormValues[SpotTradeFormField.Type] === TradeTypes.Market"
+        />
       </div>
     </AppCollapse>
   </div>

@@ -22,14 +22,30 @@ const initialStateFactory = (): GridStrategyStoreState => ({
 export const useGridStrategyStore = defineStore('gridStrategy', {
   state: () => initialStateFactory(),
   getters: {
-    activeStrategies: (state) =>
-      state.strategies.filter(
-        (strategy) => strategy.state === StrategyStatus.Active
-      ),
-    removedStrategies: (state) =>
-      state.strategies.filter(
-        (strategy) => strategy.state === StrategyStatus.Removed
+    activeStrategies: (state) => {
+      const spotStore = useSpotStore()
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Active &&
+          strategy.marketType === 'spot' &&
+          spotStore.markets.some(
+            ({ marketId }) => strategy.marketId === marketId
+          )
       )
+    },
+    removedStrategies: (state) => {
+      const spotStore = useSpotStore()
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          strategy.marketType === 'spot' &&
+          spotStore.markets.some(
+            ({ marketId }) => strategy.marketId === marketId
+          )
+      )
+    }
   },
   actions: {
     createStrategy,

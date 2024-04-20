@@ -7,6 +7,8 @@ import {
 import {
   OrderbookFormattedRecord,
   OrderbookWorkerMessage,
+  OrderbookWorkerResult,
+  WorkerMessageResponseType,
   WorkerMessageType
 } from '@/types/worker'
 import { combineOrderbookRecords } from '@/app/utils/market'
@@ -21,10 +23,9 @@ function aggregatePrice(
   isBuy: boolean
 ): string {
   if (aggregation > 0) {
-    return price.toFixed(
-      aggregation,
-      isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL
-    )
+    return price
+      .dp(aggregation, isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
+      .toFixed(aggregation)
   } else {
     return price.div(10 ** -aggregation).toFixed(0)
   }
@@ -116,54 +117,64 @@ function formatRecords({
 
 self.addEventListener(
   'message',
-  ({ data }: MessageEvent<OrderbookWorkerMessage>) => {
-    const {
-      baseDecimals,
-      isSpot,
-      orderbook,
-      quoteDecimals,
-      type,
-      aggregation
-    } = data
+  (event: MessageEvent<OrderbookWorkerMessage>) => {
+    const { data, type } = event.data
+
+    function sendReplaceOrderbook() {
+      if (
+        type !== WorkerMessageType.Fetch &&
+        type !== WorkerMessageType.Stream
+      ) {
+        return
+      }
+
+      const { baseDecimals, isSpot, quoteDecimals, aggregation } = data
+
+      self.postMessage({
+        messageType: WorkerMessageResponseType.ReplaceOrderbook,
+        data: {
+          buys: formatRecords({
+            records: buys,
+            aggregation,
+            baseDecimals,
+            isBuy: true,
+            isSpot,
+            quoteDecimals
+          }).slice(0, ORDERBOOK_ROWS),
+          sells: formatRecords({
+            records: sells,
+            aggregation,
+            baseDecimals,
+            isBuy: false,
+            isSpot,
+            quoteDecimals
+          }).slice(0, ORDERBOOK_ROWS)
+        }
+      } as OrderbookWorkerResult)
+    }
 
     switch (type) {
       case WorkerMessageType.Fetch:
-        buys = orderbook.buys
-        sells = orderbook.sells
+        buys = data.orderbook.buys
+        sells = data.orderbook.sells
+        sendReplaceOrderbook()
         break
+
       case WorkerMessageType.Stream:
         buys = combineOrderbookRecords({
           currentRecords: buys,
-          updatedRecords: orderbook.buys,
+          updatedRecords: data.orderbook.buys,
           isBuy: true
         })
         sells = combineOrderbookRecords({
           currentRecords: sells,
-          updatedRecords: orderbook.sells,
+          updatedRecords: data.orderbook.sells,
           isBuy: false
         })
+        sendReplaceOrderbook()
         break
     }
 
     // console.log('[WORKER]', { buys: buys.length, sells: sells.length })
-
-    self.postMessage({
-      buys: formatRecords({
-        records: buys,
-        aggregation,
-        baseDecimals,
-        isBuy: true,
-        isSpot,
-        quoteDecimals
-      }).slice(0, ORDERBOOK_ROWS),
-      sells: formatRecords({
-        records: sells,
-        aggregation,
-        baseDecimals,
-        isBuy: false,
-        isSpot,
-        quoteDecimals
-      }).slice(0, ORDERBOOK_ROWS)
-    })
   }
 )

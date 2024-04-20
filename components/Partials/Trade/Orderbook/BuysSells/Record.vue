@@ -39,9 +39,13 @@ function setIndex() {
     <div
       class="absolute hidden group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
-      <div class="text-xs">
-        {{ record.totalVolume }}
-        {{ record.volume }}
+      <div class="text-xs font-sans whitespace-nowrap">
+        <p>
+          Total Volume: <span class="font-mono">{{ record.totalVolume }}</span>
+        </p>
+        <p>
+          Volume: <span class="font-mono">{{ record.volume }}</span>
+        </p>
       </div>
     </div>
 

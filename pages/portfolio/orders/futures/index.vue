@@ -60,6 +60,11 @@ watch(() => [accountStore.subaccountId], fetchDerivativeOpenOrders, {
         :key="`${order.orderHash}-${order.cid}`"
         v-bind="{ order }"
       />
+
+      <CommonEmptyList
+        v-if="filteredOrders.length === 0"
+        :message="'No Open Orders'"
+      />
     </template>
   </div>
 </template>

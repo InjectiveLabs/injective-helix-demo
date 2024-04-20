@@ -3,7 +3,13 @@ import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
 
 const props = defineProps({
+  noStyle: Boolean,
   autofix: Boolean,
+
+  wrapperClass: {
+    type: String,
+    default: ''
+  },
 
   modelValue: {
     type: String,
@@ -79,7 +85,11 @@ watch(
 
 <template>
   <label
-    class="block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4"
+    :class="
+      noStyle
+        ? wrapperClass
+        : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4'
+    "
   >
     <div v-if="$slots.top">
       <slot name="top" />

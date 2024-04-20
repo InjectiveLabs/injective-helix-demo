@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SpotTradeFormField, spotMarketKey } from '@/types'
+import {
+  SpotTradeForm,
+  SpotTradeFormField,
+  TradeTypes,
+  spotMarketKey
+} from '@/types'
 
 const market = inject(spotMarketKey)
 
 const el = ref(null)
 
 const { focused } = useFocusWithin(el)
-
+const spotFormValues = useFormValues<SpotTradeForm>()
 const setQuantityAmount = useSetFieldValue(SpotTradeFormField.Quantity)
 
 const { value: totalValue, errorMessage } = useStringField({
@@ -35,9 +40,17 @@ const value = computed({
     // If the input is focused, calculate the quantity amount
 
     if (focused.value) {
-      setQuantityAmount(
-        new BigNumberInBase(value).div(lastTradedPrice.value).toFixed(3)
-      )
+      if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Market) {
+        setQuantityAmount(
+          new BigNumberInBase(value).div(lastTradedPrice.value).toFixed(3)
+        )
+      } else if (spotFormValues.value[SpotTradeFormField.Price]) {
+        setQuantityAmount(
+          new BigNumberInBase(value)
+            .div(spotFormValues.value[SpotTradeFormField.Price])
+            .toFixed(3)
+        )
+      }
     }
   }
 })

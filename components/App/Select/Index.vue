@@ -69,7 +69,7 @@ function select(option: BaseDropdownOption) {
 
     <template #content="{ close }">
       <div
-        class="bg-gray-800 rounded-lg p-2 flex flex-col"
+        class="bg-brand-900 border border-brand-800 rounded-lg p-2 flex flex-col"
         :class="contentClass"
       >
         <div
