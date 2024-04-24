@@ -8,20 +8,15 @@ definePageMeta({
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const status = reactive(new Status(StatusType.Loading))
 const { $onError } = useNuxtApp()
+
+useSpotOrderbook(computed(() => market.value))
+
+const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   spotStore.markets.find((market) => market.slug === route.params.slug)
 )
-
-useOrderbook(
-  computed(() => market.value),
-  true
-)
-
-provide(spotMarketKey, market)
-provide(isSpotKey, true)
 
 onMounted(() => {
   if (!market.value) {
@@ -44,6 +39,9 @@ onUnmounted(() => {
   spotStore.cancelTradesStream()
   spotStore.reset()
 })
+
+provide(spotMarketKey, market)
+provide(isSpotKey, true)
 </script>
 
 <template>

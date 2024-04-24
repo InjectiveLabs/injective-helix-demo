@@ -28,8 +28,6 @@ const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 const isLowVolumeMarketsVisible = ref(false)
 
-onMounted(() => getQuoteTokenPrice())
-
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
     ...spotStore.marketsWithSummary,
@@ -83,6 +81,8 @@ const filteredMarkets = computed(() =>
     })
     .filter((market) => marketIsActive(market.market))
 )
+
+onMounted(() => getQuoteTokenPrice())
 
 function getQuoteTokenPrice() {
   Promise.all([

@@ -16,6 +16,22 @@ interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
   postMessage(message: OrderbookWorkerMessage): void
 }
 
+export function useDerivativeOrderbook(
+  market: ComputedRef<UiMarketWithToken | undefined>
+) {
+  const isSpot = false
+
+  return useOrderbook(market, isSpot)
+}
+
+export function useSpotOrderbook(
+  market: ComputedRef<UiMarketWithToken | undefined>
+) {
+  const isSpot = true
+
+  return useOrderbook(market, isSpot)
+}
+
 export function useOrderbook(
   market: ComputedRef<UiMarketWithToken | undefined>,
   isSpot: boolean

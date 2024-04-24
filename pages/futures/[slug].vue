@@ -8,20 +8,15 @@ definePageMeta({
 
 const route = useRoute()
 const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Loading))
 const { $onError } = useNuxtApp()
+
+useDerivativeOrderbook(computed(() => market.value))
+
+const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   derivativeStore.markets.find((market) => market.slug === route.params.slug)
 )
-
-useOrderbook(
-  computed(() => market.value),
-  false
-)
-
-provide(derivativeMarketKey, market)
-provide(isSpotKey, false)
 
 onMounted(() => {
   if (!market.value) {
@@ -60,6 +55,9 @@ function cancelDerivativeStream() {
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
 }
+
+provide(derivativeMarketKey, market)
+provide(isSpotKey, false)
 </script>
 
 <template>
