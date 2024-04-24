@@ -100,7 +100,7 @@ function onDetailsPage() {
 
     <div class="flex justify-between items-center">
       <p>{{ $t('sgt.totalAmount') }}</p>
-      <div>{{ investmentToString }} {{ market.quoteToken.symbol }}</div>
+      <div>{{ investmentToString }} USD</div>
     </div>
 
     <div class="border-t my-2" />
@@ -145,6 +145,10 @@ function onDetailsPage() {
 
         <span v-if="strategy.stopReason === StopReason.ExceededMaxRetries">
           {{ $t('sgt.exceededMaxRetries') }}
+        </span>
+
+        <span v-if="strategy.stopReason === StopReason.Emergency">
+          {{ $t('sgt.marketConditionsNotSupported') }}
         </span>
       </div>
     </div>

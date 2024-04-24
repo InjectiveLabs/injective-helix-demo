@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { ActivityFetchOptions, UiMarketWithToken } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { notLiquidMarkets } from '@/app/data/market'
+import { legacyWHDenoms } from '@/app/data/token'
+import { getNewMarketSlugFromWHDenom } from '@/app/utils/market'
 // import {
 //   SpotTradeIntegrityStrategy,
 //   SpotOrderbookIntegrityStrategy,
@@ -10,10 +11,13 @@ import { notLiquidMarkets } from '@/app/data/market'
 //   SpotSubaccountTradeIntegrityStrategy
 // } from '@/app/client/streams/data-integrity/strategies'
 
+import { ActivityFetchOptions, UiMarketWithToken, TradeSubPage } from '@/types'
+
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
 })
 
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -35,6 +39,30 @@ const notLiquidMarket = computed(() =>
 )
 
 const isMarketIdInQuery = computed(() => !!useQueryRef('marketId', '').value)
+
+const legacyWHMarketDenom = computed(() =>
+  legacyWHDenoms.find((denom) => denom === (market.value?.baseDenom || ''))
+)
+
+const legacyWHBankAssets = computed(() =>
+  accountStore.bankBalances
+    .filter(
+      ({ denom, amount }) =>
+        new BigNumberInBase(amount).gt(0) && legacyWHMarketDenom.value === denom
+    )
+    .map(({ denom }) => denom)
+)
+
+const legacyWHSubaccountAssets = computed(() =>
+  Object.values(accountStore.subaccountBalancesMap)
+    .flat()
+    .filter(
+      ({ denom, totalBalance }) =>
+        new BigNumberInBase(totalBalance).gt(0) &&
+        legacyWHMarketDenom.value === denom
+    )
+    .map(({ denom }) => denom)
+)
 
 function onLoad(pageMarket: UiMarketWithToken) {
   filterByCurrentMarket.value = false
@@ -147,7 +175,12 @@ useIntervalFn(() => {
         v-if="notLiquidMarket"
         v-bind="{ notLiquidMarket }"
       />
-      <ModalsMarketNotOnHelix v-if="isMarketIdInQuery" />
+      <ModalsMarketNotOnHelix
+        v-if="
+          isMarketIdInQuery &&
+          !appStore.userState.preferences.skipExperimentalConfirmationModal
+        "
+      />
       <ModalsMarketRestricted
         v-if="market"
         :key="market.marketId"
@@ -158,4 +191,37 @@ useIntervalFn(() => {
       />
     </template>
   </PartialsTradingLayout>
+
+  <PartialsLegacyWormholeBanner
+    v-if="
+      legacyWHMarketDenom &&
+      (legacyWHBankAssets.length > 0 || legacyWHSubaccountAssets.length > 0)
+    "
+  >
+    <template #default>
+      <div class="inline-block lg:space-x-2">
+        <span>
+          {{ $t('common.legacy.marketIsMigrating') }}
+        </span>
+
+        <span>
+          <PartialsLegacyWormholeButton
+            v-bind="{
+              denom: legacyWHMarketDenom,
+              to: {
+                name: TradeSubPage.Spot,
+                params: {
+                  spot: getNewMarketSlugFromWHDenom(legacyWHMarketDenom)
+                }
+              }
+            }"
+          />
+        </span>
+      </div>
+    </template>
+
+    <template #add-on>
+      <PartialsLegacyWormholeLearnMore />
+    </template>
+  </PartialsLegacyWormholeBanner>
 </template>

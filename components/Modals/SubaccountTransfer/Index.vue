@@ -85,7 +85,7 @@ function nonDefaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('bridge.transferToSubaccountSuccess') })
+      success({ title: t('account.transferToSubaccountSuccess') })
       resetForm()
     })
     .catch($onError)
@@ -105,7 +105,7 @@ function defaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('bridge.transferToSubaccountSuccess') })
+      success({ title: t('account.transferToSubaccountSuccess') })
       resetForm()
     })
     .catch($onError)
@@ -125,7 +125,7 @@ function defaultSubaccountWithdraw() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('bridge.transferToSubaccountSuccess') })
+      success({ title: t('account.transferToSubaccountSuccess') })
       resetForm()
     })
     .catch($onError)
@@ -214,11 +214,11 @@ function closeModal() {
               @update:max="onAmountChange"
               @update:denom="onTokenChange"
             >
-              <span> {{ $t('bridge.amount') }} </span>
+              <span> {{ $t('account.amount') }} </span>
             </AppSelectToken>
           </div>
           <div v-else class="mt-6 text-center text-gray-300 text-sm">
-            {{ t('bridge.noAssetToTransfer') }}
+            {{ t('account.noAssetToTransfer') }}
           </div>
         </div>
         <AppButton

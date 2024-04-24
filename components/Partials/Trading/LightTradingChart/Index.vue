@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   Time,
   IChartApi,
@@ -9,12 +10,9 @@ import {
   ChartOptions,
   HistogramData,
   CandlestickData,
-  WhitespaceData
+  WhitespaceData,
+  CrosshairMode
 } from 'lightweight-charts'
-import {
-  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
 
@@ -28,6 +26,11 @@ const props = defineProps({
     type: Object as PropType<(HistogramData<Time> | WhitespaceData<Time>)[]>,
     required: false,
     default: undefined
+  },
+
+  tickSize: {
+    type: Number,
+    required: true
   }
 })
 
@@ -43,11 +46,26 @@ const chartOptions: DeepPartial<ChartOptions> = {
   grid: {
     horzLines: { style: LineStyle.Solid, color: '#ffffff10' },
     vertLines: { style: LineStyle.Dashed, color: '#ffffff10' }
-  }
+  },
+  crosshair: {
+    mode: CrosshairMode.Normal,
+    horzLine: {
+      labelBackgroundColor: '#333'
+    }
+  },
+  timeScale: {
+    visible: true,
+    timeVisible: true
+  },
+  autoSize: true
 }
 
 const container = ref()
 const wrapper = ref()
+
+const decimalPlaces = computed(() => {
+  return new BigNumberInBase(props.tickSize).dp() || 0
+})
 
 function fitContent() {
   if (!chart) {
@@ -95,9 +113,16 @@ function init() {
   if (props.volumeData) {
     volumeSeries.setData(props.volumeData)
 
+    candlestickSeries.priceScale().applyOptions({
+      scaleMargins: {
+        top: 0.05,
+        bottom: 0.2
+      }
+    })
+
     chart.priceScale('').applyOptions({
       scaleMargins: {
-        top: 0.8,
+        top: 0.9,
         bottom: 0
       }
     })
@@ -105,10 +130,16 @@ function init() {
 
   candlestickSeries.setData(props.candlesticksData)
 
+  candlestickSeries.applyOptions({
+    priceFormat: {
+      minMove: props.tickSize
+    },
+    upColor: '#0EdB81',
+    downColor: '#F6465D'
+  })
+
   candlestickSeries.priceFormatter().format = (price) => {
-    return price > 1
-      ? price.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      : price.toFixed(UI_DEFAULT_MAX_DISPLAY_DECIMALS)
+    return price.toFixed(decimalPlaces.value)
   }
 }
 

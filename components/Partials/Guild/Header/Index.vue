@@ -136,7 +136,7 @@ function onConnectWallet() {
         </h2>
 
         <NuxtLink :to="GUILD_ZENDESK_LINK" target="_blank">
-          <AppButton class="bg-blue-500 text-white">
+          <AppButton class="bg-blue-500 text-blue-900">
             <div class="flex items-center gap-1">
               <span>{{ $t('guild.campaignRules') }}</span>
             </div>
@@ -165,7 +165,7 @@ function onConnectWallet() {
           <div>
             <AppButton
               v-if="!walletStore.isUserWalletConnected"
-              class="bg-blue-500 text-white min-w-3xs mt-10"
+              class="bg-blue-500 text-blue-900 min-w-3xs mt-10"
               @click="onConnectWallet"
             >
               <span class="text-sm">{{ $t('connect.connectWallet') }}</span>
@@ -173,7 +173,7 @@ function onConnectWallet() {
 
             <AppButton
               v-else
-              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
               :is-disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
@@ -201,7 +201,7 @@ function onConnectWallet() {
 
           <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
             <AppButton
-              class="bg-blue-500 text-white min-w-3xs mt-10 text-sm"
+              class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
               :is-disabled="isCampaignOver"
             >
               <span v-if="isCampaignOver" class="text-gray-600">

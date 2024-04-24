@@ -41,10 +41,9 @@ import {
 import {
   tokenService,
   indexerSpotApi,
-  indexerRestSpotChronosApi
+  tokenServiceStatic
 } from '@/app/Services'
 import {
-  IS_MAINNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -55,7 +54,6 @@ import {
   ActivityFetchOptions,
   UiSpotOrderbookWithSequence
 } from '@/types'
-import { MARKET_IDS_WITHOUT_COINGECKO_ID } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarketWithToken[]
@@ -145,15 +143,24 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
-      const apiClient = IS_MAINNET ? spotCacheApi : indexerSpotApi
+      const tokenStore = useTokenStore()
 
-      const markets = await apiClient.fetchMarkets()
-      const marketsWithToken = await tokenService.toSpotMarketsWithToken(
-        markets
+      const markets = await spotCacheApi.fetchMarkets()
+      const marketsWithToken =
+        tokenServiceStatic.toSpotMarketsWithToken(markets)
+      const marketsFromQuery = markets.filter((market) =>
+        spotStore.marketIdsFromQuery.includes(market.marketId)
       )
+      const marketsFromQueryWithToken =
+        await tokenService.toSpotMarketsWithToken(marketsFromQuery)
 
-      const uiMarkets =
-        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+      const marketsWithTokenAndQuery = [
+        ...marketsWithToken,
+        ...marketsFromQueryWithToken
+      ]
+      const uiMarkets = UiSpotTransformer.spotMarketsToUiSpotMarkets(
+        marketsWithTokenAndQuery
+      )
 
       const uiMarketsWithToken = uiMarkets
         .filter((market) => {
@@ -174,6 +181,10 @@ export const useSpotStore = defineStore('spot', {
       })
 
       await spotStore.fetchMarketsSummary()
+      await tokenStore.appendUnknownTokensList([
+        ...marketsFromQueryWithToken.map((m) => m.baseToken),
+        ...marketsFromQueryWithToken.map((m) => m.quoteToken)
+      ])
     },
 
     async initIfNotInit() {
@@ -384,12 +395,11 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
-      const apiClient = IS_MAINNET ? spotCacheApi : indexerRestSpotChronosApi
 
       const { markets } = spotStore
 
       try {
-        const marketSummaries = await apiClient.fetchMarketsSummary()
+        const marketSummaries = await spotCacheApi.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>
@@ -406,37 +416,9 @@ export const useSpotStore = defineStore('spot', {
             )
           ]
         })
-
-        spotStore.getPricesFromMarketsSummary(marketSummaries)
       } catch (e) {
         // don't do anything for now
       }
-    },
-
-    getPricesFromMarketsSummary(marketsSummary: UiSpotMarketSummary[]) {
-      const tokenStore = useTokenStore()
-
-      const priceMap = MARKET_IDS_WITHOUT_COINGECKO_ID.map((market) => {
-        const marketSummary = marketsSummary.find(
-          (m) => m.marketId === market.marketId
-        )!
-
-        const quoteMarketSummary = marketsSummary.find(
-          (marketSum) => marketSum.marketId === market.quoteMarket
-        )
-
-        const lastPrice = market.isUsdtQuote
-          ? marketSummary.price || 0
-          : (marketSummary.price || 0) * (quoteMarketSummary?.price || 0)
-
-        return {
-          [market.coingeckoId]: lastPrice
-        }
-      }).reduce((acc, curr) => ({ ...acc, ...curr }), {})
-
-      tokenStore.$patch({
-        tokenUsdPriceMap: { ...tokenStore.tokenUsdPriceMap, ...priceMap }
-      })
     },
 
     cancelSubaccountStream() {

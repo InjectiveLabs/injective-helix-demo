@@ -50,11 +50,6 @@ const learnList = [
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
-        <div
-          class="hidden text-sm opacity-75 lg:block mt-6 italic max-w-[450px]"
-        >
-          {{ $t('footer.helixProvides') }}
-        </div>
       </div>
 
       <div class="3md:col-span-2">

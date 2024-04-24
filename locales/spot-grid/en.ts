@@ -13,6 +13,7 @@ export default {
     market: 'Market',
     endBot: 'End Bot',
     manual: 'Manual',
+    cancel: 'Cancel',
     running: 'Running',
     lower: 'Lower',
     upper: 'Upper',
@@ -29,9 +30,10 @@ export default {
     stopLoss: 'Stop Loss',
     gridMode: 'Grid Mode',
     available: 'Available',
+    geometric: 'Geometric',
     setValues: 'Set Values',
-    investment: 'Investment',
     arithmetic: 'Arithmetic',
+    investment: 'Investment',
     create: 'Create Strategy',
     lowerBound: 'Lower Bound',
     upperBound: 'Upper Bound',
@@ -67,12 +69,18 @@ export default {
     useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
-    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} {quote}',
+    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} $',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    endLegacyBotText:
+      "Before creating a new bot, you'll need to deactivate your currently active bot in the legacy market.",
+    legacyBotWarning:
+      "Warning: You're missing out on LP rewards! Stop your legacy market strategy and create a new one on the new market to start earning.",
+    goToNewMarket: 'Go To New Market',
+    marketConditionsNotSupported: 'Market conditions not supported',
     autoModeHeader:
       'These parameters are generated automatically based on the last 30 days trading prices.',
     stopLossTooltip:
@@ -149,6 +157,8 @@ export default {
     yourStrategyIsOnTheMove: `Your strategy is on the move! Find all the details under the chart at the bottom right corner. If you're on a smaller screen, a quick scroll down might be needed to see everything.`,
     investmentTooltip:
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
+    gridModeTooltip:
+      'In arithmetic mode, the price between two consecutive grids has a constant difference. In geometric mode, the price between two consecutive grids has a constant ratio.',
     bannerTitle: 'Get started with Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
     automatesBuyingAndSelling:
@@ -158,6 +168,8 @@ export default {
     setUpABot: 'Set up a bot',
     runABot: 'Run a bot',
     endABot: 'End a bot',
+    accountEndBot:
+      'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
 
     step1: {
       priceRange:
@@ -184,6 +196,18 @@ export default {
         'Assets used by the bot will be transferred back to your main account.',
       review:
         "Review the performance of your past strategies in the 'Grid Trading History' tab."
+    },
+
+    advanced: {
+      tpSl: 'TP/SL',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      settleIn: 'When the bot stops, settle in',
+      sellAllOnStop: 'Sell all {symbol} on stop',
+      buyOnStop: 'Buy {symbol} on stop',
+      buyBaseOnStop: 'Buy {symbol} on stop',
+      stopLossPrice: 'Stop Loss Price',
+      takeProfitPrice: 'Take Profit Price'
     }
   }
 }

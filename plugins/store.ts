@@ -23,6 +23,7 @@ const stateToPersist = {
       },
       preferences: {
         skipTradeConfirmationModal: false,
+        skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
@@ -58,6 +59,7 @@ const actionsThatSetAppStateToBusy = [
   'account/deposit',
   'account/transfer',
   'account/withdraw',
+  'account/withdrawToMain',
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
@@ -86,7 +88,8 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'airdrop/claim'
 ]
 
 const persistState = (

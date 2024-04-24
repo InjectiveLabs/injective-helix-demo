@@ -2,6 +2,7 @@
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ActivityForm, ActivityField, Modal, ActivitySubPage } from '@/types'
 
 const modalStore = useModalStore()
@@ -30,7 +31,7 @@ const props = defineProps({
 })
 
 const actionStatus = reactive(new Status(StatusType.Idle))
-const selectedPosition = ref<UiPosition | undefined>(undefined)
+const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
 
 const markets = computed(() =>
   derivativeStore.markets
@@ -94,7 +95,7 @@ function onClosePositions() {
     })
 }
 
-function onSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition | PositionV2) {
   selectedPosition.value = position
 
   modalStore.openModal(Modal.SharePosition)

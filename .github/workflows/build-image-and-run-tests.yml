@@ -77,7 +77,7 @@ jobs:
           build-args: |
             HELIX_FEE_RECIPIENT=${{ secrets.VITE_FEE_RECIPIENT }}
             VITE_ALCHEMY_KOVAN_KEY=${{ secrets.VITE_ALCHEMY_KOVAN_KEY }}
-            VITE_ALCHEMY_GOERLI_KEY=${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
+            VITE_ALCHEMY_SEPOLIA_KEY=${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
       - name: Upload HELIX artifact
         uses: actions/upload-artifact@v2
         with:
@@ -123,7 +123,7 @@ jobs:
     needs: build
     env:
       HELIX_IMAGE_TAG: $GIT_BRANCH_NAME
-      EXCHANGE_ALCHEMY_API_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
+      EXCHANGE_ALCHEMY_API_SEPOLIA_KEY: ${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
       EXCHANGE_FEE_PAYER_PK: ${{ secrets.VITE_CI_EXCHANGE_FEE_PAYER_PK }}
       CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
       CYPRESS_BUILD_ID: '$GIT_BRANCH_NAME-${{ github.sha }}-${{ github.run_attempt }}'

@@ -5,7 +5,7 @@ export default {
     accountOverview: 'Account Overview',
     available: 'Available',
     fee: 'Fee',
-    netWorth: 'Net Worth',
+    netWorth: 'Tradeable Net Worth',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
@@ -98,6 +98,14 @@ export default {
         named('faq')
       ]),
     subaccountTransfer: 'Subaccount Transfer',
-    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.'
+    unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
+    transferToMainSubaccount: 'Transfer to Main Subaccount',
+    amount: 'Amount',
+    noAssetToTransfer:
+      "You don't have any assets to transfer from this subaccount.",
+    transferToSubaccountSuccess: 'Subaccount transfer successful',
+    mainSubaccount: 'Main Subaccount',
+    subaccountId: ({ named }: I18nMessageFunction) =>
+      `Subaccount ${named('subaccountId')}`
   }
 }

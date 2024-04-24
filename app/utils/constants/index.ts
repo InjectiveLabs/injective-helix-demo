@@ -5,6 +5,7 @@ export * from './campaign'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
+export const UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS = 9
 export const UI_DEFAULT_MAX_DISPLAY_DECIMALS = 6
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
@@ -13,6 +14,10 @@ export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 export const UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS = 4
 export const UI_DEFAULT_TOKEN_ASSET_DECIMALS = 8
 export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
+
+export const UI_DEFAULT_PRICE_MIN_DECIMALS = 10
+export const UI_DEFAULT_PRICE_MAX_DECIMALS = 0.00001
+
 export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
 export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
@@ -79,9 +84,12 @@ export const TRADE_MAX_SUBACCOUNT_ARRAY_SIZE = 100
 export const MAX_SYMBOL_LENGTH = 6
 export const SYMBOL_DISPLAY_LENGTH = 3
 
+export const DUST_AMOUNT_THRESHOLD = 1
+
 export const GST_MINIMUM_GRIDS = 3
-export const GST_MAXIMUM_GRIDS = 50
+export const GST_MAXIMUM_GRIDS = 100
 export const GST_MIN_TRADING_SIZE = 5
+export const GST_MIN_TRADING_SIZE_LOW = 1
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 20
 export const GST_DEFAULT_PRICE_TICK_SIZE = '0.001'
@@ -98,3 +106,36 @@ export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'
 export const USDT_TOKEN_DECIMALS = 6
+export const MAINNET_UPGRADE_BLOCK_HEIGHT = 57076000
+export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
+
+export const ADMIN_UI_SMART_CONTRACT =
+  'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
+
+export const LEGACY_MARKETIDS = [
+  '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
+  '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
+  '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
+]
+
+export const CURRENT_MARKET_TO_LEGACY_MARKETID_MAP = {
+  // SOL - SOLlegacy
+  '0xd9089235d2c1b07261cbb2071f4f5a7f92fa1eca940e3cad88bb671c288a972f':
+    '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
+  // WMATIC - WMATIClegacy
+  '0x8cd25fdc0d7aad678eb998248f3d1771a2d27c964a7630e6ffa5406de7ea54c1':
+    '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
+  // ARB - ARBlegacy
+  '0x1c2e5b1b4b1269ff893b4817a478fba6095a89a3e5ce0cccfcafa72b3941eeb6':
+    '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
+} as Record<string, string>
+
+export const LEGACY_MARKET_TO_CURRENT_MARKETID_MAP = Object.entries(
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
+).reduce(
+  (acc, [current, legacy]) => {
+    acc[legacy] = current
+    return acc
+  },
+  {} as Record<string, string>
+)

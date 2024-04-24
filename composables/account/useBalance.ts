@@ -1,6 +1,6 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { usePositionWithDenom } from '../exchange/usePosition'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { AccountBalance } from '@/types'
 
 const reduceAccountBalances = (
@@ -42,18 +42,17 @@ const reduceAccountBalances = (
 
 export function useBalance() {
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+  const positionStore = usePositionStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
   const aggregatedPortfolioBalances = computed(() => {
     return Object.keys(accountStore.subaccountBalancesMap).reduce(
       (balances, subaccountId) => {
-        const positionsForSubaccountWithDenom = accountStore.positionsWithUpnl
-          .filter(
-            (position) => position.position?.subaccountId === subaccountId
-          )
-          .map(usePositionWithDenom)
-          .filter((position) => position.denom)
+        const positionsForSubaccountWithDenom = positionStore.positions.filter(
+          (position) => position.subaccountId === subaccountId
+        )
 
         return {
           ...balances,
@@ -61,7 +60,7 @@ export function useBalance() {
             const isDefaultTradingAccount =
               walletStore.authZOrDefaultSubaccountId === subaccountId
             const denom = token.denom
-            const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
+            const usdPrice = tokenStore.tokenUsdPrice(token)
 
             const bankBalance = accountStore.balanceMap[token.denom] || '0'
 
@@ -85,31 +84,41 @@ export function useBalance() {
               isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
             )
 
-            const positionWithPnlAndDenom =
-              positionsForSubaccountWithDenom.filter(
-                (position) => position.denom === denom
-              )
-            const unrealizedPnl = positionWithPnlAndDenom.reduce(
-              (total, position) =>
-                total.plus(
-                  new BigNumberInWei(position?.unrealizedPnl || '0').plus(
-                    position?.position?.margin || '0'
+            const unrealizedPnlAndMargin = positionsForSubaccountWithDenom
+              .filter((position) => position.denom === denom)
+              .reduce((total, position) => {
+                const markPriceFromMap = new BigNumberInBase(
+                  derivativeStore.marketMarkPriceMap[position.marketId]
+                    ?.price || 0
+                ).toWei(token.decimals)
+                const markPrice = new BigNumberInBase(
+                  markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
+                )
+
+                return total
+                  .plus(position.margin)
+                  .plus(
+                    new BigNumberInWei(position.quantity)
+                      .times(markPrice.minus(position.entryPrice))
+                      .times(
+                        position.direction === TradeDirection.Long ? 1 : -1
+                      )
                   )
-                ),
-              ZERO_IN_BASE
-            )
+              }, ZERO_IN_BASE)
 
             const accountTotalBalance = isDefaultTradingAccount
               ? new BigNumberInWei(bankBalance)
                   .plus(subaccountTotalBalance)
-                  .plus(unrealizedPnl)
-              : new BigNumberInWei(subaccountTotalBalance).plus(unrealizedPnl)
+                  .plus(unrealizedPnlAndMargin)
+              : new BigNumberInWei(subaccountTotalBalance).plus(
+                  unrealizedPnlAndMargin
+                )
             const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
             return {
               token,
               usdPrice,
-              unrealizedPnl: unrealizedPnl.toFixed(),
+              unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
               denom: token.denom,
               bankBalance: isDefaultTradingAccount ? bankBalance : '0',
               inOrderBalance: inOrderBalance.toFixed(),
@@ -133,7 +142,7 @@ export function useBalance() {
       const isDefaultTradingAccount =
         walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
       const denom = token.denom
-      const usdPrice = tokenStore.tokenUsdPrice(token.coinGeckoId)
+      const usdPrice = tokenStore.tokenUsdPrice(token)
 
       const bankBalance = accountStore.balanceMap[token.denom] || '0'
 
@@ -156,31 +165,39 @@ export function useBalance() {
         isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
       )
 
-      const positionsForSubaccountWithDenom = accountStore.positionsWithUpnl
+      const positionsForSubaccountWithDenom = positionStore.positions
         .filter(
-          (position) =>
-            position.position?.subaccountId === accountStore.subaccountId
+          (position) => position.subaccountId === accountStore.subaccountId
         )
-        .map(usePositionWithDenom)
-        .filter((position) => position.denom)
-      const positionWithPnlAndDenom = positionsForSubaccountWithDenom.filter(
-        (position) => position.denom === denom
-      )
-      const unrealizedPnl = positionWithPnlAndDenom.reduce(
-        (total, position) =>
-          total.plus(
-            new BigNumberInWei(position?.unrealizedPnl || '0').plus(
-              position?.position?.margin || '0'
+        .filter((position) => position.denom === denom)
+
+      const unrealizedPnlAndMargin = positionsForSubaccountWithDenom.reduce(
+        (total, position) => {
+          const markPriceFromMap = new BigNumberInBase(
+            derivativeStore.marketMarkPriceMap[position.marketId]?.price || 0
+          ).toWei(token.decimals)
+          const markPrice = new BigNumberInBase(
+            markPriceFromMap.gt(0) ? markPriceFromMap : position.markPrice
+          )
+
+          return total
+            .plus(position.margin)
+            .plus(
+              new BigNumberInWei(position.quantity)
+                .times(markPrice.minus(position.entryPrice))
+                .times(position.direction === TradeDirection.Long ? 1 : -1)
             )
-          ),
+        },
         ZERO_IN_BASE
       )
 
       const accountTotalBalance = isDefaultTradingAccount
         ? new BigNumberInWei(bankBalance)
             .plus(subaccountTotalBalance)
-            .plus(unrealizedPnl)
-        : new BigNumberInWei(subaccountTotalBalance).plus(unrealizedPnl)
+            .plus(unrealizedPnlAndMargin)
+        : new BigNumberInWei(subaccountTotalBalance).plus(
+            unrealizedPnlAndMargin
+          )
       const accountTotalBalanceInUsd = accountTotalBalance.times(usdPrice)
 
       return {
@@ -188,7 +205,7 @@ export function useBalance() {
         usdPrice,
         denom: token.denom,
         bankBalance: isDefaultTradingAccount ? bankBalance : '0',
-        unrealizedPnl: unrealizedPnl.toFixed(),
+        unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
         inOrderBalance: inOrderBalance.toFixed(),
         availableMargin: availableMargin.toFixed(),
         availableBalance: isDefaultTradingAccount
@@ -256,7 +273,7 @@ export function useBalance() {
         balance: isDefaultTradingAccount
           ? accountBalance.bankBalance
           : accountBalance.availableBalance,
-        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token.coinGeckoId)
+        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token)
       }
     })
   })

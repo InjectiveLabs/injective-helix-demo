@@ -28,9 +28,8 @@ import {
   cancelSubaccountBalanceStream
 } from '../account/stream'
 import {
-  indexerRestDerivativesChronosApi,
-  tokenService,
   indexerOracleApi,
+  tokenServiceStatic,
   indexerDerivativesApi
 } from '../../app/Services'
 import {
@@ -72,7 +71,6 @@ import {
   ActivityFetchOptions,
   UiDerivativeOrderbookWithSequence
 } from '@/types'
-import { IS_MAINNET } from '@/app/utils/constants/setup'
 import { derivativeCacheApi } from '@/app/providers/cache/DerivativeCacheApi'
 
 type DerivativeStoreState = {
@@ -174,29 +172,30 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async init() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_MAINNET ? derivativeCacheApi : indexerDerivativesApi
 
-      const markets = (await apiClient.fetchMarkets()) as Array<
+      const markets = (await derivativeCacheApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
-      const recentlyExpiredMarkets = (await apiClient.fetchMarkets({
-        marketStatus: 'expired'
-      })) as Array<ExpiryFuturesMarket>
+      const recentlyExpiredMarkets = (
+        (await derivativeCacheApi.fetchMarkets({
+          marketStatus: 'expired'
+        })) as Array<ExpiryFuturesMarket>
+      ).filter(marketIsInactive)
 
       const pausedMarkets = (
-        (await apiClient.fetchMarkets({
+        (await derivativeCacheApi.fetchMarkets({
           marketStatus: 'paused'
         })) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
 
-      const marketsWithToken = await tokenService.toDerivativeMarketsWithToken([
+      const marketsWithToken = tokenServiceStatic.toDerivativeMarketsWithToken([
         ...markets,
         ...pausedMarkets,
         ...recentlyExpiredMarkets
       ])
 
       const recentlyExpiredMarketsWithToken =
-        await tokenService.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
+        tokenServiceStatic.toDerivativeMarketsWithToken(recentlyExpiredMarkets)
 
       const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
       const expiryFuturesMarkets = marketsWithToken.filter(
@@ -219,7 +218,7 @@ export const useDerivativeStore = defineStore('derivative', {
         ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
-        await tokenService.toBinaryOptionsMarketsWithToken(binaryOptionsMarkets)
+        tokenServiceStatic.toBinaryOptionsMarketsWithToken(binaryOptionsMarkets)
       const uiBinaryOptionsMarkets =
         UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
           binaryOptionsMarketsWithToken
@@ -473,14 +472,10 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchMarketsSummary() {
       const derivativeStore = useDerivativeStore()
-      const apiClient = IS_MAINNET
-        ? derivativeCacheApi
-        : indexerRestDerivativesChronosApi
-
       const { markets } = derivativeStore
 
       try {
-        const marketSummaries = await apiClient.fetchMarketsSummary()
+        const marketSummaries = await derivativeCacheApi.fetchMarketsSummary()
 
         const marketsWithoutMarketSummaries = marketSummaries.filter(
           ({ marketId }) =>
@@ -513,7 +508,7 @@ export const useDerivativeStore = defineStore('derivative', {
       )) as PerpetualMarket | ExpiryFuturesMarket
 
       const updatedMarketWithToken =
-        await tokenService.toDerivativeMarketsWithToken([updatedMarket])
+        tokenServiceStatic.toDerivativeMarketsWithToken([updatedMarket])
 
       const marketIndex = derivativeStore.markets.findIndex(
         (m) => m.marketId === marketId

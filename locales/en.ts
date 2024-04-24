@@ -1,10 +1,10 @@
 import home from './home/en'
 import trade from './trade/en'
 import guild from './guild/en'
-import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
+import airdrop from './airdrop/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
@@ -18,10 +18,10 @@ import { I18nMessageFunction, TimeDuration } from '@/types'
 export default {
   ...sgt,
   ...home,
+  ...airdrop,
   ...guild,
   ...trade,
   ...market,
-  ...bridge,
   ...wallet,
   ...account,
   ...banners,
@@ -65,8 +65,33 @@ export default {
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
     [TimeDuration.Minute]: 'Minute',
-    [TimeDuration.Second]: 'Second'
+    [TimeDuration.Second]: 'Second',
+    legacy: {
+      title: 'Legacy',
+      migrate: 'Migrate',
+      attention: 'Attention: ',
+      actionRequired: 'Action Required',
+      learnMore: 'Learn more',
+      affectedMarkets: 'Affected markets and tokens: ',
+      goToTokenMigrationPage: 'Go to token migration page',
+      marketIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
+      spotGridIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
+      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          named('attention'),
+          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
+          named('learnMore'),
+          '.'
+        ]),
+      goToNewMarket: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} market`,
+      goToNewSGT: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} spot grid`
+    }
   },
+  underMaintenance: 'Under Maintenance',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
@@ -154,8 +179,15 @@ export default {
   marketNotOnHelix: {
     title: 'Experimental market',
     cta: 'I Understand',
+    termsAndCondition: 'Terms and Conditions',
     description:
-      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.'
+      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
+    description2: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix ',
+        named('link'),
+        ' as to any use you make of Helix'
+      ])
   },
 
   marketNew: {
@@ -210,8 +242,7 @@ export default {
       ]),
     terraDescription:
       'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
-    exploreOtherMarkets: 'Explore Other Markets',
-    injectiveBridge: 'Injective Bridge'
+    exploreOtherMarkets: 'Explore Other Markets'
   },
 
   navigation: {
@@ -259,7 +290,9 @@ export default {
     tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
-    liquidityBotsDescription: 'Trade smarter with automated strategies'
+    liquidityBotsDescription: 'Trade smarter with automated strategies',
+    airdrop: 'PYTH Airdrop Claim',
+    airdropDescription: 'Check Airdrop Eligibility and Claim Tokens'
   },
 
   feeDiscounts: {
@@ -350,11 +383,23 @@ export default {
   proMode: {
     proMode: 'Pro Mode',
     subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authZ management'
+    authzManagement: 'Enable authZ management',
+    showSubaccountsWithDust: 'Show subaccounts with dust amounts'
   },
 
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
+  },
+
+  scavengerHunt: {
+    title: 'You found it! 🕵️‍♀️',
+    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
+  },
+
+  postOnlyMode: {
+    title: 'Post Only Mode!',
+    description:
+      'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
   }
 }

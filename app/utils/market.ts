@@ -20,9 +20,12 @@ import {
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
+  slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory
+  slugsToIncludeInEthereumCategory,
+  slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
+import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MarketRoute,
@@ -150,11 +153,19 @@ export const marketIsPartOfCategory = (
     )
   }
 
+  if (activeCategory === MarketCategoryType.Solana) {
+    return slugsToIncludeInSolanaCategory.includes(market.slug)
+  }
+
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
       !isIbcBaseDenomMarket &&
       slugsToIncludeInEthereumCategory.includes(market.slug)
     )
+  }
+
+  if (activeCategory === MarketCategoryType.Injective) {
+    return slugsToIncludeInInjectiveCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Experimental) {
@@ -172,15 +183,10 @@ export const marketIsQuotePair = (
     return true
   }
 
-  const usdtkvSymbolLowercased = MarketQuoteType.USDTkv.toLowerCase()
   const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
   const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
   const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
   const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
-
-  if (activeQuote === MarketQuoteType.USDTkv) {
-    return marketQuoteSymbol.includes(usdtkvSymbolLowercased)
-  }
 
   if (activeQuote === MarketQuoteType.USDT) {
     return marketQuoteSymbol.includes(usdtSymbolLowercased)
@@ -227,11 +233,11 @@ export const marketIsPartOfSearch = (
     return true
   }
 
-  return (
-    market.quoteToken.symbol.toLowerCase().includes(query) ||
-    market.baseToken.symbol.toLowerCase().includes(query) ||
-    market.ticker.toLowerCase().includes(query)
-  )
+  return [
+    market.ticker,
+    market.baseToken.symbol,
+    market.quoteToken.symbol
+  ].some((value) => (value || '').toLowerCase().includes(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
@@ -255,9 +261,20 @@ export const getFormattedMarketsHistoryChartData = (
 }
 
 export const marketIsInactive = (market: DerivativeMarket) => {
-  const INACTIVE_MARKET_TICKERS = ['SEI/USDT PERP']
+  const HIDDEN_MARKET_TICKERS = [
+    'LUNA/UST PERP',
+    'STX/USDT PERP',
+    'BAYC/WETH PERP',
+    'OSMO/USDT PERP',
+    'ETH/USDT 19SEP22',
+    'BONK/USDT PERP',
+    '1000PEPE/USDT PERP',
+    'TIA/USDT-30NOV2023',
+    'ETH/USDTkv PERP',
+    'BTC/USDTkv PERP'
+  ]
 
-  return INACTIVE_MARKET_TICKERS.includes(market.ticker)
+  return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
 }
 
 export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
@@ -337,4 +354,26 @@ export const combineOrderbookRecords = ({
       ? new BigNumberInBase(b.price).minus(a.price).toNumber()
       : new BigNumberInBase(a.price).minus(b.price).toNumber()
   })
+}
+
+export const getNewMarketSlugFromWHDenom = (denom: string) => {
+  switch (denom) {
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
+      return 'sol-usdt'
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
+      return 'arb-usdt'
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
+      return 'wmatic-usdt'
+  }
+}
+
+export const getNewMarketTickerFromWHDenom = (denom: string) => {
+  switch (denom) {
+    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
+      return 'SOL/USDT'
+    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
+      return 'ARB/USDT'
+    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
+      return 'WMATIC/USDT'
+  }
 }

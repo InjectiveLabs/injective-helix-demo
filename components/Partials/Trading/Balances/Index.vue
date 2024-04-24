@@ -10,12 +10,7 @@ import {
   BankBalanceIntegrityStrategy,
   SubaccountBalanceIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
-import {
-  MainPage,
-  BridgeType,
-  UiMarketWithToken,
-  WalletConnectStatus
-} from '@/types'
+import { MainPage, UiMarketWithToken, WalletConnectStatus } from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -87,7 +82,7 @@ const quoteTradingBalanceToFormat = computed(() =>
 )
 
 onMounted(() => {
-  Promise.all([accountStore.fetchAccountPortfolio()])
+  Promise.all([accountStore.fetchAccountPortfolioBalances()])
     .then(() => {
       setSubaccountStreams()
     })
@@ -146,6 +141,7 @@ useIntervalFn(() => {
               )
             }}
           </p>
+
           <PartialsCommonSubaccountSelector
             v-if="appStore.isSubaccountManagementActive"
           />
@@ -175,16 +171,14 @@ useIntervalFn(() => {
                 {{ $t('marketPage.noTradingBalance') }}
               </p>
 
-              <BaseNuxtLink
-                :to="{
-                  name: MainPage.Bridge,
-                  query: {
-                    type: BridgeType.Deposit,
-                    denom: isSpot
-                      ? props.market.baseToken.denom
-                      : props.market.quoteToken.denom
-                  }
+              <PartialsAccountBridgeRedirection
+                v-bind="{
+                  isDeposit: true,
+                  denom: isSpot
+                    ? props.market.baseToken.denom
+                    : props.market.quoteToken.denom
                 }"
+                class="w-full"
               >
                 <AppButton
                   class="w-full rounded bg-blue-500 text-blue-900 mt-4"
@@ -193,7 +187,7 @@ useIntervalFn(() => {
                     {{ $t('common.deposit') }}
                   </span>
                 </AppButton>
-              </BaseNuxtLink>
+              </PartialsAccountBridgeRedirection>
             </div>
 
             <div v-else>
@@ -208,6 +202,7 @@ useIntervalFn(() => {
                     })
                   }}
                 </span>
+
                 <span class="font-mono text-white">
                   {{ baseTradingBalanceToFormat }}
                 </span>

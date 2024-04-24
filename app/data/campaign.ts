@@ -248,7 +248,7 @@ const mainnetCampaignRounds: CampaignRound[] = [
     campaigns: [
       {
         campaignId: 'spot-grid-tia-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1us5053c0qhkml9g09uw68znu5qjnrc5twezalq',
         marketSlug: 'tia-usdt',
         rewards: [
           { symbol: 'INJ', amount: '125' },
@@ -257,57 +257,407 @@ const mainnetCampaignRounds: CampaignRound[] = [
       },
       {
         campaignId: 'spot-grid-whale-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1t225czs5qxcercheqq8jvwdny0u6tpac5dd8rz',
         marketSlug: 'whale-usdt',
         rewards: [{ symbol: 'WHALE', amount: '31250' }]
       },
       {
         campaignId: 'spot-grid-weth-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1l3xq2dr3sh8suehcps8gjrr34f7cxntcguyah9',
         marketSlug: 'weth-usdt',
         rewards: [{ symbol: 'INJ', amount: '250' }]
       },
       {
         campaignId: 'spot-grid-atom-usdt-4',
-        scAddress: '',
+        scAddress: 'inj17wr8puse0null2z0htt8d07mzlcs30rdmel07p',
         marketSlug: 'atom-usdt',
         rewards: [{ symbol: 'INJ', amount: '250' }]
       },
       {
         campaignId: 'spot-grid-stinj-inj-4',
-        scAddress: '',
+        scAddress: 'inj1880x6ram5h6l2h3pvg96wr7y7wwyvv0537qepy',
         marketSlug: 'stinj-inj',
         rewards: [{ symbol: 'INJ', amount: '125' }]
       },
       {
         campaignId: 'spot-grid-wmatic-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1envp2rznjn458tzc8chxt9fpel4zfpzpqzs3ye',
         marketSlug: 'wmatic-usdt',
         rewards: [{ symbol: 'INJ', amount: '125' }]
       },
       {
         campaignId: 'spot-grid-usdtkv-usdt-4',
-        scAddress: '',
+        scAddress: 'inj12rx2g07vqzqmepnfeuux5trnla9k4mxjnr47ew',
         marketSlug: 'usdtkv-usdt',
         rewards: [{ symbol: 'KAVA', amount: '1500' }]
       },
       {
         campaignId: 'spot-grid-arb-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1xa4gx7jjunj7na5razw4ze5jjmjyx8srzdrttn',
         marketSlug: 'arb-usdt',
         rewards: [{ symbol: 'INJ', amount: '125' }]
       },
       {
         campaignId: 'spot-grid-kuji-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1r7ukgglucxmtznqxcksqnq8qkynulszlshlc09',
         marketSlug: 'kuji-usdt',
         rewards: [{ symbol: 'INJ', amount: '50' }]
       },
       {
         campaignId: 'spot-grid-talis-usdt-4',
-        scAddress: '',
+        scAddress: 'inj1e45j2utxsw70cynql7ngfurn69trhuyskuqj7c',
         marketSlug: 'talis-usdt',
         rewards: [{ symbol: 'TALIS', amount: '50000' }]
+      }
+    ]
+  },
+  {
+    round: 5,
+    startDate: 1703548800,
+    endDate: 1704153600,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-5',
+        scAddress: 'inj1y5z9vj37rdspphrjycc0afxy3ujawtnmp76036',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '100' },
+          { symbol: 'TIA', amount: '150' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-5',
+        scAddress: 'inj1leeuzc4czy4esv8tklfvvsakpmksvnrls6w06e',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '31250' }]
+      },
+      {
+        campaignId: 'spot-grid-weth-usdt-5',
+        scAddress: 'inj1xsuje2e0ls3j2rqy0j7d3pjrgmkmwrwnf4eug2',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-5',
+        scAddress: 'inj1mm6l0jftes5awe0cgnqyaljedpea8csgwdk78z',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-5',
+        scAddress: 'inj155ka6a08tkx32ryskwm00vkqx4cnuhh09kf9ll',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-5',
+        scAddress: 'inj1jshaauthrdqpljd39fgvrzh2k2tadgfc3wl0p9',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-5',
+        scAddress: 'inj1jklp7rqqpzu7usqrpqqurzkrnuwz7ysx4zkp7t',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-5',
+        scAddress: 'inj10ndrn48cdaqxtht5n7uzc0gxc4rvr5dle83t4l',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-5',
+        scAddress: 'inj18tdes9vljghxc2vm5jvdx99srsdkq2agemd5fl',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-5',
+        scAddress: 'inj1dh03rkcaswp9u2acj9wk0yx5tpyfgvq25787lc',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '25000' }]
+      }
+    ]
+  },
+  {
+    round: 6,
+    startDate: 1704153600,
+    endDate: 1704758400,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-6',
+        scAddress: 'inj1ty3cm5m40c9jfndnnxh5nllpttuxe2dwwg6g4r',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '100' },
+          { symbol: 'TIA', amount: '150' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-6',
+        scAddress: 'inj125qeu2qwwm2fxsn3y6w5l2pp5mjtn8j65r3vx7',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '31250' }]
+      },
+      {
+        campaignId: 'spot-grid-weth-usdt-6',
+        scAddress: 'inj1d952x8e0syu42q2wq8qktmjp5vwpulgr2hsws9',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-6',
+        scAddress: 'inj14ukch5vt2l5ppen8w4cftmk45tgnlmsanyss2m',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-6',
+        scAddress: 'inj1ftaw8gnr94m5tgsvpmdfujrupd45j6mr9hcekv',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-6',
+        scAddress: 'inj1l30hca0wlj3d7crnujdz4nlphelff4kaa6ks49',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-6',
+        scAddress: 'inj15vpafum2z6zqzs9dhuwfyvynpa8k5gc5072qjj',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-6',
+        scAddress: 'inj16y0km3sezpnaq6euean26vp4gn3jyyl0met8rg',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-6',
+        scAddress: 'inj19u4m22efg0yskuvtrsq49uqrvjqa8uv8xzel0l',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-6',
+        scAddress: 'inj1xa4vle8wprndh06fqa277zkz4g9mp8rx62x6wd',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '25000' }]
+      }
+    ]
+  },
+  {
+    round: 7,
+    startDate: 1704758400,
+    endDate: 1705363200,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-7',
+        scAddress: 'inj1k7f6wlqs8suzkf63d3qa8m63tte6lz9s8qqmys',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '100' },
+          { symbol: 'TIA', amount: '150' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-7',
+        scAddress: 'inj1m4kw2h2d9ngukazenmsm4j4d46aqv47zkehj35',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '31250' }]
+      },
+      {
+        campaignId: 'spot-grid-weth-usdt-7',
+        scAddress: 'inj1g4edcezaekjzm7hen6d9zx3e644y4pkwc8eg4p',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-7',
+        scAddress: 'inj1dpldr7wg2wddrkp28pdaqulac8l52wwlwmsdlh',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-7',
+        scAddress: 'inj1y3elqnp6u74nh0dp4d60dpcxqlutsw3hzy6lq3',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-7',
+        scAddress: 'inj1d2qdsvg6pe4fl4wqqahzyxg0n370nxuh7wy3rz',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-7',
+        scAddress: 'inj1vj08nhqymy9atd42gdl54z4u6vmj9gh7qgjqqm',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-7',
+        scAddress: 'inj1f8hflpkjww35jn7yeqp7hzu9sv2rl9999qdgxc',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-7',
+        scAddress: 'inj10w434g0ad84jtejy6lq3acpfpjh0jpczs58e07',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-7',
+        scAddress: 'inj1ps5vzdg5tdcppdljzytfrdu5n4dj4m3nqfczkq',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '25000' }]
+      }
+    ]
+  },
+  {
+    round: 8,
+    startDate: 1705363200,
+    endDate: 1705968000,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-8',
+        scAddress: 'inj1zzsncs559yra9vzrm7r5ut5kkvgc6jj635pt5w',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '100' },
+          { symbol: 'TIA', amount: '150' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-8',
+        scAddress: 'inj19j7kxl4456wh9fhzjnmtya3jzdlz76v8yw8nwu',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '31250' }]
+      },
+      {
+        campaignId: 'spot-grid-weth-usdt-8',
+        scAddress: 'inj1k6wgn5annnxa07xjca3tnhz9zfrp57zlrqu3c5',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-8',
+        scAddress: 'inj1p0ex8uk8rtafndkzp68rpmjl6yhq6fm3n4j29c',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-8',
+        scAddress: 'inj144lxmu9200r6gnwyrq9kta6mamjnwxtpp323yd',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-8',
+        scAddress: 'inj1s9qax6uzneqpfy342dxlpzg7auhykzcdxrs2sv',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-8',
+        scAddress: 'inj1kdjrtqj4dn4rkg98rzyqersq0v0npxcedy73ht',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-8',
+        scAddress: 'inj1cdj8s5zku2f28r6343hd3a62k4qtfgypq8zuvj',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-8',
+        scAddress: 'inj1d3ka7dz2l3zfupayjm79hyjv8aleplzzn7027w',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-8',
+        scAddress: 'inj1xmrs24ktl87jef4znr2szy57nhw2fx2r2hcuz3',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '25000' }]
+      }
+    ]
+  },
+  {
+    round: 9,
+    startDate: 1705968000,
+    endDate: 1706572800,
+    campaigns: [
+      {
+        campaignId: 'spot-grid-tia-usdt-9',
+        scAddress: '',
+        marketSlug: 'tia-usdt',
+        rewards: [
+          { symbol: 'INJ', amount: '100' },
+          { symbol: 'TIA', amount: '150' }
+        ]
+      },
+      {
+        campaignId: 'spot-grid-whale-usdt-9',
+        scAddress: '',
+        marketSlug: 'whale-usdt',
+        rewards: [{ symbol: 'WHALE', amount: '31250' }]
+      },
+      {
+        campaignId: 'spot-grid-weth-usdt-9',
+        scAddress: '',
+        marketSlug: 'weth-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-atom-usdt-9',
+        scAddress: '',
+        marketSlug: 'atom-usdt',
+        rewards: [{ symbol: 'INJ', amount: '200' }]
+      },
+      {
+        campaignId: 'spot-grid-stinj-inj-9',
+        scAddress: '',
+        marketSlug: 'stinj-inj',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-wmatic-usdt-9',
+        scAddress: '',
+        marketSlug: 'wmatic-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-usdtkv-usdt-9',
+        scAddress: '',
+        marketSlug: 'usdtkv-usdt',
+        rewards: [{ symbol: 'KAVA', amount: '1500' }]
+      },
+      {
+        campaignId: 'spot-grid-arb-usdt-9',
+        scAddress: '',
+        marketSlug: 'arb-usdt',
+        rewards: [{ symbol: 'INJ', amount: '100' }]
+      },
+      {
+        campaignId: 'spot-grid-kuji-usdt-9',
+        scAddress: '',
+        marketSlug: 'kuji-usdt',
+        rewards: [{ symbol: 'INJ', amount: '50' }]
+      },
+      {
+        campaignId: 'spot-grid-talis-usdt-9',
+        scAddress: '',
+        marketSlug: 'talis-usdt',
+        rewards: [{ symbol: 'TALIS', amount: '25000' }]
       }
     ]
   }

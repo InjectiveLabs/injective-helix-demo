@@ -1,25 +1,19 @@
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { format } from 'date-fns'
 import { type Token } from '@injectivelabs/token-metadata'
 import {
   toBalanceInToken,
   convertCoinToBalancesWithToken
 } from '@/app/utils/formatters'
-import {
-  NETWORK,
-  MAX_QUOTE_DECIMALS,
-  DATE_TIME_DISPLAY
-} from '@/app/utils/constants'
+import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import { getExplorerUrl } from '@/app/utils/network'
 
 export function useSwapHistory(swap: Ref<AtomicSwap>) {
   const tokenStore = useTokenStore()
 
   const time = format(swap.value.executedAt, DATE_TIME_DISPLAY)
-  const explorerLink = `${getExplorerUrl(NETWORK)}/transaction/${
-    swap.value.txHash
-  }`
+  const explorerLink = `${getExplorerUrl()}/transaction/${swap.value.txHash}`
 
   const destinationTokenWithBalance = computed(() => {
     if (!swap.value.destinationCoin) {

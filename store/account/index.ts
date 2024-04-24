@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { Coin } from '@injectivelabs/ts-types'
-import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
 import { indexerAccountPortfolioApi } from '@/app/Services'
 import {
   streamBankBalance,
@@ -12,6 +11,7 @@ import {
   deposit,
   transfer,
   withdraw,
+  withdrawToMain,
   externalTransfer
 } from '@/store/account/message'
 import { SubaccountBalance } from '@/types'
@@ -24,14 +24,12 @@ import {
 type AccountStoreState = {
   subaccountId: string
   bankBalances: Coin[]
-  positionsWithUpnl: PositionsWithUPNL[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   subaccountId: '',
-  positionsWithUpnl: [],
   subaccountBalancesMap: {}
 })
 
@@ -77,13 +75,14 @@ export const useAccountStore = defineStore('account', {
     deposit,
     transfer,
     withdraw,
+    withdrawToMain,
     externalTransfer,
     streamBankBalance,
     streamSubaccountBalance,
     cancelBankBalanceStream,
     cancelSubaccountBalanceStream,
 
-    async fetchAccountPortfolio() {
+    async fetchAccountPortfolioBalances() {
       const accountStore = useAccountStore()
       const walletStore = useWalletStore()
 
@@ -114,46 +113,6 @@ export const useAccountStore = defineStore('account', {
           ? subaccountId
           : walletStore.authZOrDefaultSubaccountId,
         bankBalances: accountPortfolio.bankBalancesList || [],
-        positionsWithUpnl: [],
-        subaccountBalancesMap: {
-          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
-          ...nonDefaultSubaccounts
-        }
-      })
-    },
-
-    async fetchAccountPortfolioUnrealizedPnL() {
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
-
-      if (!walletStore.isUserWalletConnected) {
-        return
-      }
-
-      const accountPortfolio =
-        await indexerAccountPortfolioApi.fetchAccountPortfolio(
-          walletStore.authZOrInjectiveAddress
-        )
-
-      const defaultAccountBalances = getDefaultAccountBalances(
-        accountPortfolio.subaccountsList,
-        walletStore.authZOrDefaultSubaccountId
-      )
-
-      const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
-        accountPortfolio.subaccountsList,
-        walletStore.authZOrDefaultSubaccountId
-      )
-
-      const subaccountId =
-        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
-
-      accountStore.$patch({
-        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
-          ? subaccountId
-          : walletStore.authZOrDefaultSubaccountId,
-        bankBalances: accountPortfolio.bankBalancesList || [],
-        positionsWithUpnl: accountPortfolio.positionsWithUpnlList || [],
         subaccountBalancesMap: {
           [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts

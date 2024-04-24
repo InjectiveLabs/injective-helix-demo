@@ -7,7 +7,10 @@ import {
 } from '@/app/utils/constants'
 import { generateUniqueHash } from '@/app/utils/formatters'
 
-export const claimReward = async (contractAddress: string) => {
+export const claimReward = async (
+  contractAddress: string,
+  campaignId?: string
+) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
 
@@ -18,12 +21,14 @@ export const claimReward = async (contractAddress: string) => {
     return
   }
 
+  const msg = campaignId ? { campaign_id: Number(campaignId) } : {}
+
   const message = MsgExecuteContractCompat.fromJSON({
     sender: walletStore.injectiveAddress,
     contractAddress,
     exec: {
       action: 'claim_reward',
-      msg: {}
+      msg
     }
   })
 

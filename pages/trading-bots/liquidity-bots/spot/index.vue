@@ -83,13 +83,13 @@ function fetchData() {
       }
     }),
     accountStore.streamBankBalance(),
-    gridStrategyStore.fetchStrategies(),
-    exchangeStore.getMarketsHistory({
+    gridStrategyStore.fetchAllStrategies(),
+    exchangeStore.fetchMarketHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
       countback: 30 * 24
     }),
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamSubaccountBalance(subaccountId)
   ])
     .catch($onError)
@@ -155,7 +155,10 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <PartialsLiquidityBotsSpotPlacingOrders
         v-else-if="activeStrategy"
-        v-bind="{ subaccountId }"
+        v-bind="{
+          subaccountId,
+          market: gridStrategyStore.spotMarket as UiSpotMarketWithToken
+        }"
       />
 
       <PartialsGridStrategySpotFormActiveStrategy

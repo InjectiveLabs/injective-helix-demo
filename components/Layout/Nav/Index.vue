@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { amplitudeTradeTracker } from '@/app/providers/amplitude'
 import {
   getDefaultSpotMarketRouteParams,
   getDefaultPerpetualMarketRouteParams,
@@ -12,6 +11,7 @@ import {
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const walletStore = useWalletStore()
 
@@ -19,7 +19,7 @@ const defaultPerpetualMarketRoute = getDefaultPerpetualMarketRouteParams()
 const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 
 function spotTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: DefaultMarket.Spot,
     marketType: MarketType.Spot,
     origin: TradeClickOrigin.TopMenu
@@ -27,11 +27,15 @@ function spotTradeClickedTrack() {
 }
 
 function perpetualTradeClickedTrack() {
-  amplitudeTradeTracker.navigateToTradePageTrackEvent({
+  mixpanelAnalytics.trackNavigateToTradePage({
     market: getDefaultFuturesMarket(),
     marketType: MarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
+}
+
+function swapClickedTrack() {
+  mixpanelAnalytics.trackSwapClicked()
 }
 </script>
 
@@ -64,6 +68,7 @@ function perpetualTradeClickedTrack() {
             :to="{ name: MainPage.Swap }"
             class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-swap-link"
+            @click="swapClickedTrack"
           >
             <div class="flex items-center gap-2.5">
               <p class="font-semibold text-base text-white">
@@ -194,12 +199,12 @@ function perpetualTradeClickedTrack() {
           </NuxtLink>
 
           <NuxtLink
-            :to="{ name: MainPage.Guilds }"
+            :to="{ name: MainPage.Airdrop }"
             class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
             <div class="flex items-center gap-2.5">
               <p class="font-semibold text-base text-white">
-                {{ $t('navigation.guilds') }}
+                {{ $t('navigation.airdrop') }}
               </p>
 
               <div
@@ -207,6 +212,21 @@ function perpetualTradeClickedTrack() {
               >
                 {{ $t('navigation.new') }}
               </div>
+            </div>
+
+            <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
+              {{ $t('navigation.airdropDescription') }}
+            </p>
+          </NuxtLink>
+
+          <NuxtLink
+            :to="{ name: MainPage.Guilds }"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
+          >
+            <div class="flex items-center gap-2.5">
+              <p class="font-semibold text-base text-white">
+                {{ $t('navigation.guilds') }}
+              </p>
             </div>
 
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">

@@ -37,6 +37,8 @@ export default {
         'maxRewards'
       )} INJ or the equivalent amount of INJ staked, whichever is higher`,
     stake_total_to_receive_full_amount: ({ named }: I18nMessageFunction) =>
-      `Stake total of ${named('total')} INJ to receive the full amount`
+      `Stake total of ${named('total')} INJ to receive the full amount`,
+    sunset:
+      'Thank you for participating in Trade & Earn! Stay tuned for upcoming programs designed to reward Helix users.'
   }
 }

@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-
 import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
-import {
-  AccountBalance,
-  AccountBalanceWithAggregatedType,
-  AggregatedBalanceType,
-  BalanceHeaderType
-} from '@/types'
 import { usdcTokenDenoms } from '@/app/data/token'
 import {
   QUOTE_DENOMS_GECKO_IDS,
   SMALL_BALANCE_THRESHOLD
 } from '@/app/utils/constants'
+import {
+  AccountBalance,
+  BalanceHeaderType,
+  AggregatedBalanceType,
+  AccountBalanceWithAggregatedType
+} from '@/types'
 
 const props = defineProps({
   isHideBalances: Boolean,

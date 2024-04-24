@@ -119,7 +119,7 @@ const { valueToString: notionalWithFeesToFormat } = useBigNumberFormatter(
 const { valueToString: notionalWithFeesInUsdToFormat } = useBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(
-      tokenStore.tokenUsdPrice(props.market.quoteToken.coinGeckoId)
+      tokenStore.tokenUsdPrice(props.market.quoteToken)
     ).times(props.notionalWithFees)
   ),
   {

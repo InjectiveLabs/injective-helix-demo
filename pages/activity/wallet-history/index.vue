@@ -3,13 +3,13 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { ActivityForm, BusEvents, PaginationState } from '@/types'
 
 const route = useRoute()
-const bridgeStore = useBridgeStore()
+const activityStore = useActivityStore()
 
 const formValues = useFormValues<ActivityForm>()
 
 const { limit, page, skip, updateRouteQuery, getPaginationState, totalPages } =
   usePagination({
-    totalCount: toRef(bridgeStore, 'subaccountTransferBridgeTransactionsCount')
+    totalCount: toRef(activityStore, 'subaccountTransferTransactionsCount')
   })
 
 const status = reactive(new Status(StatusType.Loading))
@@ -21,7 +21,7 @@ onMounted(() => {
 function fetchData() {
   status.setLoading()
 
-  bridgeStore
+  activityStore
     .fetchSubaccountTransfers({
       pagination: {
         limit: limit.value,
@@ -78,7 +78,7 @@ watch(
         v-bind="{
           page,
           limit,
-          totalCount: bridgeStore.subaccountTransferBridgeTransactionsCount
+          totalCount: activityStore.subaccountTransferTransactionsCount
         }"
         @update:limit="onLimitChangeEvent"
         @update:page="onPageChangeEvent"

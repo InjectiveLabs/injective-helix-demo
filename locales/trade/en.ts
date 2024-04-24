@@ -9,6 +9,8 @@ export default {
     all: 'All',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
+    tensMultiplierRounded:
+      'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',
     chart: 'Chart',
     pair: 'Pair',
@@ -125,8 +127,8 @@ export default {
       'Mark Price: The oracle price for the base asset.',
     funding_rate_tooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
-    est_fee_rebate: 'Est. Fee Rebate',
-    est_fee_rebate_note:
+    estFeeRebate: 'Est. Fee Rebate',
+    estFeeRebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
     funding_fee: 'Funding fee',
     funding_rate: 'Funding Rate',
@@ -161,6 +163,7 @@ export default {
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
     search_market: 'Search Market',
     search_markets: 'Search Markets',
+    marketNotFound: 'Market not found',
     favorites: 'Favorites',
     spot: 'Spot',
     asset: 'Asset',
@@ -176,6 +179,8 @@ export default {
     time: 'Time',
     timeTooltip: ({ named }: I18nMessageFunction) =>
       `The time at which the ${named('type')} occurred.`,
+    timeTooltipUpdated: ({ named }: I18nMessageFunction) =>
+      `The time at which the ${named('type')} was updated.`,
     max: 'Max',
     orderbook: 'Orderbook',
     markets: 'Markets',
@@ -320,6 +325,7 @@ export default {
       left: 'Left',
       right: 'Right'
     },
+
     swap: {
       to: 'To',
       fee: 'Fee',
@@ -371,6 +377,8 @@ export default {
         `You have swapped ${named('inputAmount')} ${named(
           'inputTokenSymbol'
         )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
-    }
+    },
+
+    lastUpdated: 'Last Updated'
   }
 }

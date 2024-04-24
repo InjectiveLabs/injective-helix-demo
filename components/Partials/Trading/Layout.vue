@@ -24,6 +24,8 @@ const derivativeStore = useDerivativeStore()
 const { params, query } = useRoute()
 const { $onError } = useNuxtApp()
 const { lg: isDesktop } = useBreakpoints(breakpointsTailwind)
+const { t } = useLang()
+const { error } = useNotifications()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -106,6 +108,10 @@ function init() {
           ? getDefaultSpotMarketRouteParams()
           : getDefaultPerpetualMarketRouteParams()
 
+        error({
+          title: t('trade.marketNotFound')
+        })
+
         router.push(defaultRoute)
       } else {
         market.value = marketBySlugOrMarketId
@@ -168,7 +174,6 @@ function onToggleMarketList() {
             <CommonCard v-if="!isGrid" is-no-padding>
               <PartialsTradingBalances :market="market" />
             </CommonCard>
-
             <CommonCard
               is-no-padding
               class="px-6 py-4 rounded-xl relative grow"

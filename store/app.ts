@@ -30,11 +30,12 @@ import {
 import { todayInSeconds } from '@/app/utils/time'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { alchemyKey } from '@/app/wallet-strategy'
-import { amplitudeWalletTracker } from '@/app/providers/amplitude'
 import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { tendermintApi } from '@/app/Services'
 
 export interface UserBasedState {
   favoriteMarkets: string[]
@@ -48,10 +49,13 @@ export interface UserBasedState {
     authZManagement: boolean
     subaccountManagement: boolean
     skipTradeConfirmationModal: boolean
+    skipExperimentalConfirmationModal: boolean
   }
 }
 
 type AppStoreState = {
+  blockHeight: number
+
   // App Settings
   locale: Locale
   chainId: ChainId
@@ -69,6 +73,8 @@ type AppStoreState = {
 }
 
 const initialStateFactory = (): AppStoreState => ({
+  blockHeight: 0,
+
   // App Settings
   locale: english,
   chainId: CHAIN_ID,
@@ -94,6 +100,7 @@ const initialStateFactory = (): AppStoreState => ({
     },
     preferences: {
       skipTradeConfirmationModal: false,
+      skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
       tradingLayout: TradingLayout.Left,
       subaccountManagement: false,
@@ -122,6 +129,15 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       await appStore.fetchGeoLocation()
+    },
+
+    async fetchBlockHeight() {
+      const appStore = useAppStore()
+      const latestBlock = await tendermintApi.fetchLatestBlock()
+
+      appStore.$patch({
+        blockHeight: Number(latestBlock?.header?.height || 0)
+      })
     },
 
     async fetchGasPrice() {
@@ -223,7 +239,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      amplitudeWalletTracker.submitWalletSelectedTrackEvent({
+      mixpanelAnalytics.trackWalletSelected({
         wallet: walletStore.wallet,
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country

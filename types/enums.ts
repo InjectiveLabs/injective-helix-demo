@@ -40,7 +40,6 @@ export enum Icon {
 export enum Modal {
   Terms = 'terms',
   QrCode = 'qrcode',
-  Bridge = 'bridge',
   Connect = 'connect',
   DevMode = 'dev-mode',
   SgtBanner = 'sgt-banner',
@@ -51,17 +50,16 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  AirdropTerms = 'airdrop-terms',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   GasFeeRebate = 'gas-fee-rebate',
-  BridgeConfirm = 'bridge-confirm',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   PriceDeviation = 'price-deviation',
   SgtBalancedFees = 'sgtBalancedFees',
-  BridgeCompleted = 'bridge-completed',
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketDeprecated = 'market-deprecated',
@@ -80,8 +78,11 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
+  TransferToMainSubaccount = 'transfer-to-main-subaccount',
   MarketRestricted = 'market-restricted',
-  NewFeatureTalisLaunch = 'new-feature-talis-launch'
+  NewFeatureTalisLaunch = 'new-feature-talis-launch',
+  ScavengerHunt = 'scavenger-hunt',
+  PostOnlyMode = 'post-only-mode'
 }
 
 export enum Breakpoint {
@@ -103,12 +104,6 @@ export enum AppState {
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'
-}
-
-export enum BridgeType {
-  Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
-  Transfer = 'Transfer'
 }
 
 export enum TradeTypes {
@@ -136,6 +131,8 @@ export enum MarketCategoryType {
   All = 'all',
   Cosmos = 'cosmos',
   Ethereum = 'ethereum',
+  Injective = 'injective',
+  Solana = 'solana',
   Experimental = 'experimental'
 }
 
@@ -143,8 +140,7 @@ export enum MarketQuoteType {
   All = 'all',
   USDT = 'usdt',
   USDC = 'usdc',
-  INJ = 'inj',
-  USDTkv = 'usdtkv'
+  INJ = 'inj'
 }
 
 export enum StreamType {
@@ -273,16 +269,6 @@ export enum ActivityField {
   Type = 'Type'
 }
 
-export enum BridgeField {
-  Amount = 'Amount',
-  BridgeType = 'BridgeType',
-  BridgingNetwork = 'BridgingNetwork',
-  Denom = 'Denom',
-  Destination = 'Destination',
-  Memo = 'Memo',
-  Token = 'Token'
-}
-
 export enum SubaccountTransferField {
   Amount = 'Amount',
   SrcSubaccountId = 'SrcSubaccountId',
@@ -352,7 +338,7 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  sheduledUpgradeMarch = 'sheduled-upgrade-march'
+  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
 }
 
 export enum SubaccountBalanceStreamType {
@@ -376,13 +362,17 @@ export enum InstitutionalFormField {
 
 export enum SpotGridTradingField {
   Grids = 'grids',
+  SettleIn = 'SettleIn',
+  ExitType = 'exitType',
   StopLoss = 'stopLoss',
   LowerPrice = 'lowerPrice',
   UpperPrice = 'upperPrice',
   TakeProfit = 'takeProfit',
-  SellAllBase = 'sellAllBase',
+  StrategyType = 'strategyType',
   InvestmentType = 'investmentType',
   InvestmentAmount = 'investmentAmount',
+  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
+  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
   BaseInvestmentAmount = 'baseInvestmentAmount'
 }
 
@@ -412,6 +402,7 @@ export enum StrategyStatus {
 export enum StopReason {
   User = 'user',
   StopLoss = 'stop_loss',
+  Emergency = 'emergency',
   TakeProfit = 'take_profit',
   InsufficientFunds = 'insufficient_funds',
   ExceededMaxRetries = 'exceeded_max_retries'

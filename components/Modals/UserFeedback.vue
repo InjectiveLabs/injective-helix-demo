@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { amplitudeGenericTracker } from '@/app/providers/amplitude'
-import { AmplitudeEvent, Modal, SurveyTitle, TradeSubPage } from '@/types'
-
+import { Modal, SurveyTitle, TradeSubPage } from '@/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 const route = useRoute()
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -51,17 +50,13 @@ function userFeedbackModalViewed() {
 }
 
 function onTakeSurveyClickEvent() {
-  amplitudeGenericTracker.trackEvent(AmplitudeEvent.SurveyAccepted, {
-    surveyTitle: SurveyTitle.HelixUserSurveyFeb23
-  })
+  mixpanelAnalytics.trackSurveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }
 
 function onRejectSurveyClickEvent() {
-  amplitudeGenericTracker.trackEvent(AmplitudeEvent.SurveyRejected, {
-    surveyTitle: SurveyTitle.HelixUserSurveyFeb23
-  })
+  mixpanelAnalytics.trackSurveyRejected(SurveyTitle.HelixUserSurveyFeb23)
 
   userFeedbackModalViewed()
 }

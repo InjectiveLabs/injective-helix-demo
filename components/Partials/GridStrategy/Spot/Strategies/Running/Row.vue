@@ -4,15 +4,14 @@ import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-
 import { backupPromiseCall } from '@/app/utils/async'
-import { amplitudeGridStrategyTracker } from '@/app/providers/amplitude/GridStrategyTracker'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
@@ -118,21 +117,21 @@ function onRemoveStrategy() {
   status.setLoading()
 
   gridStrategyStore
-    .removeStrategy(props.strategy.contractAddress)
+    .removeStrategyForSubaccount(props.strategy.subaccountId)
     .then(() => {
       success({
         title: t('sgt.success'),
         description: t('sgt.strategyRemoved')
       })
 
-      backupPromiseCall(() => accountStore.fetchAccountPortfolio())
+      backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
       backupPromiseCall(() => gridStrategyStore.fetchStrategies())
     })
     .catch($onError)
     .finally(() => {
       status.setIdle()
 
-      amplitudeGridStrategyTracker.removeStrategy({
+      mixpanelAnalytics.trackRemoveStrategy({
         duration: duration.value,
         market: market.value?.slug || '',
         totalProfit: pnlToString.value
@@ -164,29 +163,26 @@ useIntervalFn(() => {
     <div class="flex gap-2 items-center">
       <div class="text-left">
         <CommonTokenIcon
-          v-if="market?.baseToken"
-          v-bind="{ token: market?.baseToken }"
+          v-if="market.baseToken"
+          v-bind="{ token: market.baseToken }"
         />
       </div>
 
       <div>
-        {{ market?.ticker }}
+        {{ market.ticker }}
       </div>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ lowerBoundToString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ lowerBoundToString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end">
-      <span>{{ upperBoundToString }} {{ market?.quoteToken.symbol }}</span>
+      <span>{{ upperBoundToString }} {{ market.quoteToken.symbol }}</span>
     </div>
 
     <div class="flex items-center justify-end break-words font-semibold">
-      <div>
-        {{ totalInvestmentToString }}
-        {{ market.quoteToken.symbol }}
-      </div>
+      <div>{{ totalInvestmentToString }} USD</div>
     </div>
 
     <div

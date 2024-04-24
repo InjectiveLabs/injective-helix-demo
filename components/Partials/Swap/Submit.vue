@@ -207,7 +207,7 @@ watch(
       v-else
       class="mb-2 w-full text-gray-525 text-opacity-100"
       :class="{
-        'bg-blue-500 text-white ':
+        'bg-blue-500 text-blue-900 ':
           swapTimeRemaining && !isLoading && !hasErrors && !queryError,
         'bg-gray-475 text-white':
           rateExpired && hasAmounts && !props.isLoading && !hasErrors

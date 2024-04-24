@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { upcomingMarkets } from '@/app/data/market'
-import { getHubUrl } from '@/app/utils/helpers'
+import { getBridgeUrl } from '@/app/utils/network'
 import { Modal, MainPage } from '@/types'
 
 const modalStore = useModalStore()
@@ -10,9 +10,7 @@ const [upcomingMarket] = upcomingMarkets
 const baseTokenSymbol = upcomingMarket.baseToken.symbol
 const quoteTokenSymbol = upcomingMarket.quoteToken.symbol
 
-const bridgeUrl = computed(
-  () => `${getHubUrl()}/bridge/?token=${baseTokenSymbol}`
-)
+const bridgeUrl = computed(() => `${getBridgeUrl()}/?denom=${baseTokenSymbol}`)
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketNew])
 
 function closeModal() {

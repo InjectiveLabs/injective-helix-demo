@@ -8,7 +8,6 @@ import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   Modal,
   TradeField,
-  BridgeField,
   SwapFormField,
   SubaccountTransferField
 } from '@/types'
@@ -60,7 +59,7 @@ const props = defineProps({
 
   amountFieldName: {
     type: String as PropType<
-      TradeField | BridgeField | SubaccountTransferField | SwapFormField
+      TradeField | SubaccountTransferField | SwapFormField
     >,
     default: TradeField.BaseAmount
   },
@@ -133,7 +132,7 @@ const {
 const denomValue = computed({
   get: (): string => props.denom || '',
   set: (denom?: string) => {
-    if (denom) {
+    if (denom && denom !== props.denom) {
       emit('update:denom', denom)
     }
   }

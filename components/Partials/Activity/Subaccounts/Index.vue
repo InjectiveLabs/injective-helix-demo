@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { isSgtSubaccountId } from '@/app/utils/helpers'
-import { ActivitySubPage } from '@/types'
-
-const router = useRouter()
 const appStore = useAppStore()
-
-function onUpdateSubaccount(subaccountId: string) {
-  if (isSgtSubaccountId(subaccountId)) {
-    router.replace({ name: ActivitySubPage.Spot })
-  }
-}
 </script>
 
 <template>
@@ -20,7 +10,6 @@ function onUpdateSubaccount(subaccountId: string) {
 
     <PartialsActivitySubaccountsSelector
       v-if="appStore.isSubaccountManagementActive"
-      @update:subaccount="onUpdateSubaccount"
     />
   </div>
 </template>

@@ -5,8 +5,8 @@ defineProps({
   isHideBalances: Boolean
 })
 
-const walletStore = useWalletStore()
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -19,19 +19,19 @@ function onCreateSubaccount() {
   <div
     class="flex space-x-4 items-center mt-4 overflow-x-auto overflow-y-hidden"
   >
-    <PartialsAccountSubaccountSelectorItem
-      v-for="[subaccountId, balances] in Object.entries(
-        aggregatedPortfolioBalances
-      ).sort(([subaccountA], [subaccountB]) =>
-        subaccountA.localeCompare(subaccountB)
-      )"
-      v-bind="{
-        balances,
-        subaccountId,
-        isHideBalances
-      }"
-      :key="`subaccount-${subaccountId}`"
-    />
+    <CommonSubaccountOptions v-bind="{ includeBotsSubaccounts: true }">
+      <template #default="{ subaccountOptions }">
+        <PartialsAccountSubaccountSelectorItem
+          v-for="{ value: subaccountId } in subaccountOptions"
+          v-bind="{
+            balances: aggregatedPortfolioBalances[subaccountId],
+            subaccountId,
+            isHideBalances
+          }"
+          :key="`subaccount-${subaccountId}`"
+        />
+      </template>
+    </CommonSubaccountOptions>
 
     <div v-if="!walletStore.isAuthzWalletConnected">
       <BaseIcon

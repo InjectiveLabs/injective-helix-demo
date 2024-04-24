@@ -39,6 +39,7 @@ jobs:
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_STAGING_FEE_PAYER_PUB_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
       VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
+      VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
@@ -65,6 +66,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
+
+      - name: Setup libudev-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install libudev-dev
 
       - name: Remove prev build
         run: yarn clean-up

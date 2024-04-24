@@ -54,7 +54,10 @@ export default {
     leap: 'Leap',
     cosmostation: 'Cosmostation',
     trustWallet: 'Trust Wallet',
-    ninji: 'Ninji'
+    ninji: 'Ninji',
+    phantom: 'Phantom',
+    okxWallet: 'OKX Wallet',
+    bitGet: 'Bitget Wallet'
   },
 
   memo: {

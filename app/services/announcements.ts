@@ -1,28 +1,13 @@
 import { HttpClient } from '@injectivelabs/utils'
 
-const httpClient = new HttpClient(
-  'https://helixapp.zendesk.com/api/v2/help_center/en-us'
-)
+const httpClient = new HttpClient('https://helix-blog.ghost.io/ghost/api')
 
 export const fetchAnnouncementsList = async () => {
   try {
-    const { data } = (await httpClient.get(
-      'articles?sort_by=created_at&sort_order=desc&label_names=announcement'
-    )) as {
-      data: any
-    }
+    const HELIX_BLOG_SUFFIX =
+      '/content/posts/?include=tags&filter=tags%3Ahash-homepage&order=published_at%20desc&key=fe734918d0197c95302f62ee55'
 
-    return data
-  } catch (e: unknown) {
-    // silently throw error
-  }
-}
-
-export const fetchAnnouncementAttachment = async (announcementId: number) => {
-  try {
-    const { data } = (await httpClient.get(
-      `articles/${announcementId}/attachments`
-    )) as {
+    const { data } = (await httpClient.get(HELIX_BLOG_SUFFIX)) as {
       data: any
     }
 

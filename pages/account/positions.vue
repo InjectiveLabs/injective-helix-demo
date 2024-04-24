@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { AccountBalance, Modal } from '@/types'
 
 defineProps({
@@ -14,8 +15,8 @@ defineProps({
 })
 
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -34,7 +35,7 @@ const sideOptions = [
 
 const side = ref('')
 const marketDenom = ref('')
-const selectedPosition = ref<UiPosition | undefined>(undefined)
+const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
 
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
@@ -55,13 +56,17 @@ const marketIds = computed(() => {
 })
 
 const filteredPositions = computed(() =>
-  positionStore.subaccountPositions.filter((position) => {
+  positionStore.positions.filter((position) => {
     const positionMatchedSide = !side.value || position.direction === side.value
     const positionMatchedMarket =
       marketIds.value.length === 0 ||
       marketIds.value.includes(position.marketId)
 
-    return positionMatchedMarket && positionMatchedSide
+    return (
+      positionMatchedMarket &&
+      positionMatchedSide &&
+      position.subaccountId === accountStore.subaccountId
+    )
   })
 )
 
@@ -158,17 +163,10 @@ function closePosition() {
     .catch($onError)
 }
 
-function onSharePosition(position: UiPosition) {
+function onSharePosition(position: UiPosition | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }
-
-watch(
-  () => accountStore.subaccountId,
-  () => {
-    positionStore.fetchSubaccountPositions()
-  }
-)
 </script>
 
 <template>
