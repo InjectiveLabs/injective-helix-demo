@@ -29,6 +29,14 @@ onMounted(() => {
     })
   }
 })
+
+const filteredCampaigns = computed(() =>
+  campaignStore.latestRoundCampaigns.filter(
+    (campaign) =>
+      campaign.marketId !==
+      '0xe6dd9895b169e2ca0087fcb8e8013805d06c3ed8ffc01ccaa31c710eef14a984' // DOJO/INJ
+  )
+)
 </script>
 
 <template>
@@ -48,9 +56,9 @@ onMounted(() => {
       <table class="w-full min-w-2xl">
         <PartialsLiquidityTableHeader />
 
-        <tbody v-if="campaignStore.latestRoundCampaigns" class="divide-y">
+        <tbody v-if="filteredCampaigns" class="divide-y">
           <PartialsLiquidityTableRow
-            v-for="campaign in campaignStore.latestRoundCampaigns"
+            v-for="campaign in filteredCampaigns"
             :key="campaign.campaignId"
             v-bind="{ campaign }"
           />
