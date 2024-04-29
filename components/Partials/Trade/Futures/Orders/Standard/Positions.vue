@@ -3,7 +3,7 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 
 const filteredPosition = computed(() =>
-  positionStore.positions.filter((position) => {
+  positionStore.subaccountPositions.filter((position) => {
     const isPartOfSubaccount =
       position.subaccountId === accountStore.subaccountId
 
@@ -17,7 +17,7 @@ const filteredPosition = computed(() =>
     <PartialsPortfolioPositionsTableHeader />
     <PartialsPortfolioPositionsTableRow
       v-for="position in filteredPosition"
-      :key="`${position.marketId}-${position.subaccountId}`"
+      :key="`${position.marketId}-${position.subaccountId}-${position.entryPrice}`"
       v-bind="{ position }"
     />
 

@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import { GridStrategyTabs } from '@/types'
 
-const view = ref(GridStrategyTabs.Running)
+const props = defineProps({
+  modelValue: {
+    type: String,
+    required: true
+  }
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [string]
+}>()
+
+const view = useVModel(props, 'modelValue', emit)
 </script>
 
 <template>

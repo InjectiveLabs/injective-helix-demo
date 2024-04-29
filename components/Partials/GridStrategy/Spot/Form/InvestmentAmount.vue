@@ -106,7 +106,7 @@ const {
   errorMessage: quoteErrorMessage,
   setValue: setInvestmentAmount
 } = useStringField({
-  name: SpotGridTradingField.InvestmentAmount,
+  name: SpotGridTradingField.QuoteInvestmentAmount,
   rule: '',
   dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
@@ -118,7 +118,7 @@ const {
     ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
-      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
     ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
@@ -143,7 +143,7 @@ const {
   name: SpotGridTradingField.BaseInvestmentAmount,
   rule: '',
   dynamicRule: computed(() => {
-    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
+    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.QuoteInvestmentAmount}`
 
     const insuficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
 
@@ -152,7 +152,7 @@ const {
     ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
-      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
     ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${

@@ -62,6 +62,9 @@ watch(
     }
 
     fetchSubaccountStream()
+  },
+  {
+    immediate: true
   }
 )
 
@@ -71,6 +74,7 @@ function fetchUserPortfolio() {
     authZStore.fetchGrants(),
 
     accountStore.fetchAccountPortfolioBalances(),
+
     positionStore.fetchPositions()
   ])
 }
@@ -78,6 +82,7 @@ function fetchUserPortfolio() {
 function fetchSubaccountStream() {
   accountStore.cancelSubaccountBalanceStream()
   accountStore.cancelBankBalanceStream()
+  positionStore.cancelSubaccountPositionsStream()
 
   accountStore.streamSubaccountBalance()
   accountStore.streamBankBalance()

@@ -30,7 +30,7 @@ export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
-export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%
+export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(0.05) // 5%
 export const BIGGER_PRICE_WARNING_DEVIATION = new BigNumber(30) // 30%
 export const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = new BigNumber(10) // 10%
 export const DEFAULT_SLIPPAGE = new BigNumber(0.5) // +0.5% slippage
@@ -133,6 +133,10 @@ export const LEGACY_MARKETIDS = [
   '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
   '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
 ]
+
+export const SGT_STABLE_COINS = ['USDTkv', 'STINJ'].map((symbol) =>
+  symbol.toLowerCase()
+)
 
 export const CURRENT_MARKET_TO_LEGACY_MARKETID_MAP = {
   // SOL - SOLlegacy

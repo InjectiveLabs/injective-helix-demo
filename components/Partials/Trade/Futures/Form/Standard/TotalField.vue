@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { derivativeMarketKey } from '@/types'
+import { DerivativesTradeFormField, derivativeMarketKey } from '@/types'
 
-const total = ref('')
+const { value: total, errorMessage } = useStringField({
+  name: DerivativesTradeFormField.Total,
+  initialValue: ''
+})
 
 const market = inject(derivativeMarketKey)
 </script>
@@ -18,6 +21,6 @@ const market = inject(derivativeMarketKey)
       </template>
     </AppInputField>
 
-    <div v-if="false" class="error-message">Error Messagee</div>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>

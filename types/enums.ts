@@ -385,17 +385,18 @@ export enum SpotGridTradingField {
   TakeProfit = 'takeProfit',
   StrategyType = 'strategyType',
   InvestmentType = 'investmentType',
-  InvestmentAmount = 'investmentAmount',
+  QuoteInvestmentAmount = 'quoteInvestmentAmount',
   SellBaseOnStopLoss = 'sellBaseOnStopLoss',
   BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
-  BaseInvestmentAmount = 'baseInvestmentAmount'
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  IsAssetRebalanceOn = 'isAssetRebalanceOn'
 }
 
 export enum SpotGridMessages {
-  MsgCreateSpotLimitOrder = '/injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
-  MsgCreateSpotMarketOrder = '/injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
-  MsgWithdraw = '/injective.exchange.v1beta1.MsgWithdraw',
-  MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
+  MsgCreateSpotLimitOrder = 'injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = 'injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
+  MsgWithdraw = 'injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = 'injective.exchange.v1beta1.MsgBatchUpdateOrders'
 }
 
 export enum GridStrategyTabs {
@@ -537,5 +538,19 @@ export enum SpotTradeFormField {
   Quantity = 'quantity',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
+  IsSlippageOn = 'isSlippageOn'
+}
+
+export enum DerivativesTradeFormField {
+  Type = 'type',
+  Side = 'side',
+  Total = 'total',
+  Quantity = 'quantity',
+  Leverage = 'leverage',
+  PostOnly = 'postOnly',
+  Slippage = 'slippage',
+  LimitPrice = 'limitPrice',
+  ReduceOnly = 'reduceOnly',
+  TriggerPrice = 'triggerPrice',
   IsSlippageOn = 'isSlippageOn'
 }

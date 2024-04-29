@@ -2,7 +2,7 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { TradeTypes, SpotTradeFormField, SpotTradeForm } from '@/types'
 
-const { values } = useForm<SpotTradeForm>()
+useForm<SpotTradeForm>()
 
 const { value: orderTypeValue } = useStringField({
   name: SpotTradeFormField.Type,
@@ -13,14 +13,18 @@ const { value: orderSideValue } = useStringField({
   name: SpotTradeFormField.Side,
   initialValue: OrderSide.Buy
 })
+
+const {
+  worstPrice,
+  totalWorstPrice,
+  hasEnoughLiquidity,
+  worstPriceWithSlippage,
+  totalWorstPriceWithSlippageAndFees
+} = useSpotWorstPrice()
 </script>
 
 <template>
   <div class="p-4">
-    <pre class="text-xs">
-      {{ values }}
-    </pre>
-
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(TradeTypes)"
@@ -54,14 +58,33 @@ const { value: orderSideValue } = useStringField({
       <PartialsTradeSpotFormStandardLimitPriceField
         v-if="orderTypeValue === TradeTypes.Limit"
       />
-      <PartialsTradeSpotFormStandardAmountField />
+
+      <PartialsTradeSpotFormStandardAmountField
+        v-bind="{ totalWorstPriceWithSlippageAndFees, worstPrice }"
+      />
+
       <PartialsTradeSpotFormStandardTotalField />
     </div>
 
     <PartialsTradeSpotFormStandardAdvancedSettings class="my-4" />
 
+    <PartialsTradeSpotFormStandardDetails
+      v-bind="{
+        worstPrice,
+        totalWorstPrice,
+        worstPriceWithSlippage,
+        totalWorstPriceWithSlippageAndFees,
+        hasEnoughLiquidity
+      }"
+    />
+
     <div>
-      <PartialsTradeSpotFormStandardCreateOrder />
+      <PartialsTradeSpotFormStandardCreateOrder
+        v-bind="{
+          worstPrice,
+          worstPriceWithSlippage
+        }"
+      />
     </div>
   </div>
 </template>

@@ -1,7 +1,18 @@
 <script setup lang="ts">
-//
+const gridStrategyStore = useGridStrategyStore()
+
+onMounted(() => {
+  gridStrategyStore.fetchAllStrategies()
+})
 </script>
 
 <template>
-  <div>history</div>
+  <div class="divide-y border-y">
+    <PartialsTradeSpotOrdersTradingBotsHistoryTableHeader />
+    <PartialsTradeSpotOrdersTradingBotsHistoryTableRow
+      v-for="strategy in gridStrategyStore.removedStrategies"
+      v-bind="{ strategy }"
+      :key="strategy.createdAt"
+    />
+  </div>
 </template>

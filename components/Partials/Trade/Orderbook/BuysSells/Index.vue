@@ -21,10 +21,18 @@ const activeSellsIndex = ref(-1)
 const highestVolume = computed(() =>
   Math.max(
     Number(
-      orderbookStore.buys[orderbookStore.buys.length - 1]?.totalVolume || 0
+      orderbookStore.buys[
+        (orderbookStore.buys.length > ORDERBOOK_ROWS
+          ? ORDERBOOK_ROWS
+          : orderbookStore.buys.length) - 1
+      ]?.totalVolume || 0
     ),
     Number(
-      orderbookStore.sells[orderbookStore.sells.length - 1]?.totalVolume || 0
+      orderbookStore.sells[
+        (orderbookStore.sells.length > ORDERBOOK_ROWS
+          ? ORDERBOOK_ROWS
+          : orderbookStore.sells.length) - 1
+      ]?.totalVolume || 0
     )
   ).toString()
 )
@@ -71,7 +79,7 @@ function setSellsIndex(index: number) {
       </template>
 
       <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.sells"
+        v-for="(record, i) in orderbookStore.sells.slice(0, ORDERBOOK_ROWS)"
         v-bind="{
           isActive: i <= activeSellsIndex,
           index: i,
@@ -83,14 +91,10 @@ function setSellsIndex(index: number) {
       />
     </div>
 
-    <div class="h-header border-y my-1 flex items-center text-center">
-      <CommonHeadlessMarketSummary v-bind="{ market, isCurrentMarket: true }">
-        <template #default="{ lastTradedPrice }">
-          <div class="flex-1">
-            {{ lastTradedPrice }}
-          </div>
-        </template>
-      </CommonHeadlessMarketSummary>
+    <div class="h-header border-y my-1 flex">
+      <PartialsTradeOrderbookBuysSellsMidMarkPrice
+        v-bind="{ market, isSpot }"
+      />
     </div>
 
     <div
@@ -107,7 +111,7 @@ function setSellsIndex(index: number) {
       </template>
 
       <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.buys"
+        v-for="(record, i) in orderbookStore.buys.slice(0, ORDERBOOK_ROWS)"
         v-bind="{
           isActive: i <= activeBuysIndex,
           index: i,

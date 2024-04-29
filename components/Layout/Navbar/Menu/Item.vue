@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MenuItem, MenuItemType } from '~/types'
+import { MenuItem, MenuItemType } from '@/types'
 
 defineProps({
   item: {

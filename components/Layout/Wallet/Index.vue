@@ -84,7 +84,7 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppModal :is-open="isModalOpen" @modal:closed="onCloseModal">
+  <AppHocModal :is-open="isModalOpen" @modal:close="onCloseModal">
     <template #title>
       <h3 v-if="walletModalType === WalletModalType.Trezor">
         {{ $t('connect.connectUsingTrezor') }}
@@ -124,6 +124,6 @@ watch(isModalOpen, (newShowModalState) => {
         </div>
       </ul>
     </div>
-  </AppModal>
+  </AppHocModal>
   <ModalsTerms />
 </template>

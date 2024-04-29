@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { GrantAuthorization } from '@injectivelabs/sdk-ts'
 
-defineProps({
+import { Status, StatusType } from '@injectivelabs/utils'
+
+const props = defineProps({
   grantee: {
     type: String,
     required: true
@@ -13,10 +15,28 @@ defineProps({
   }
 })
 
+const authZStore = useAuthZStore()
+
 const isOpen = ref(false)
+const status = reactive(new Status(StatusType.Idle))
+const { $onError } = useNuxtApp()
 
 function toggle() {
   isOpen.value = !isOpen.value
+}
+
+function revokeAll() {
+  status.setLoading()
+
+  authZStore
+    .revokeAuthorization({
+      grantee: props.grantee,
+      messageTypes: props.grants.map(
+        (grant) => (grant.authorization as unknown as string).split('/')[1]
+      )
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
 }
 </script>
 
@@ -40,7 +60,14 @@ function toggle() {
     </div>
 
     <div class="flex-1 flex items-center p-2" @click.stop>
-      <AppButton :variant="'danger-ghost'" size="sm">Revoke All</AppButton>
+      <AppButton
+        v-bind="{ status }"
+        :variant="'danger-ghost'"
+        size="sm"
+        @click="revokeAll"
+      >
+        Revoke All
+      </AppButton>
     </div>
   </div>
 

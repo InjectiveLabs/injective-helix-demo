@@ -12,7 +12,8 @@ export type OrderbookFormattedRecord = {
 export enum WorkerMessageType {
   Fetch = 'fetch',
   Stream = 'stream',
-  WorstPrice = 'worstPrice'
+  WorstPrice = 'worstPrice',
+  Aggregation = 'aggregation'
 }
 
 type sendFetchOrStreamType = {
@@ -37,7 +38,20 @@ type sendWorstPriceType = {
   }
 }
 
-export type OrderbookWorkerMessage = sendFetchOrStreamType | sendWorstPriceType
+type sendAggregation = {
+  type: WorkerMessageType.Aggregation
+  data: {
+    isSpot: boolean
+    baseDecimals: number
+    quoteDecimals: number
+    aggregation: number
+  }
+}
+
+export type OrderbookWorkerMessage =
+  | sendFetchOrStreamType
+  | sendWorstPriceType
+  | sendAggregation
 
 // Receive Message
 

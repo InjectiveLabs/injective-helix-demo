@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { derivativeMarketKey, isSpotKey } from '@/types'
+import { derivativeMarketKey, isSpotKey, marketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -21,6 +21,7 @@ useOrderbook(
 )
 
 provide(derivativeMarketKey, market)
+provide(marketKey, market)
 provide(isSpotKey, false)
 
 onMounted(() => {
@@ -30,8 +31,10 @@ onMounted(() => {
 
   status.setLoading()
 
-  derivativeStore
-    .fetchTrades({ marketId: market.value.marketId })
+  Promise.all([
+    derivativeStore.fetchTrades({ marketId: market.value.marketId }),
+    derivativeStore.getMarketMarkPrice(market.value)
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()

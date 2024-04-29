@@ -4,7 +4,7 @@ import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import { spotMarketStream } from '@/app/client/streams/spot'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
 import { indexerDerivativesApi, indexerSpotApi } from '~/app/Services'
-import { UiMarketWithToken, orderbookWorkerKey } from '@/types'
+import { UiMarketWithToken, aggregationKey, orderbookWorkerKey } from '@/types'
 import {
   OrderbookWorkerMessage,
   OrderbookWorkerResult,
@@ -22,7 +22,7 @@ export function useOrderbook(
 ) {
   const orderbookStore = useOrderbookStore()
 
-  const aggregation = 3
+  const aggregation = ref(market.value?.priceDecimals || 0)
 
   const worker = shallowRef<OrderbookWorker | null>(null)
 
@@ -73,7 +73,7 @@ export function useOrderbook(
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals,
           orderbook: data,
-          aggregation
+          aggregation: aggregation.value
         }
       })
     })
@@ -98,7 +98,7 @@ export function useOrderbook(
             baseDecimals: market.value.baseToken.decimals,
             quoteDecimals: market.value.quoteToken.decimals,
             orderbook: data,
-            aggregation
+            aggregation: aggregation.value
           }
         })
       })
@@ -119,7 +119,7 @@ export function useOrderbook(
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals,
             orderbook: data.orderbook!,
-            aggregation
+            aggregation: aggregation.value
           }
         })
       }
@@ -144,7 +144,7 @@ export function useOrderbook(
               baseDecimals: market.baseToken.decimals,
               quoteDecimals: market.quoteToken.decimals,
               orderbook: data.orderbook!,
-              aggregation
+              aggregation: aggregation.value
             }
           })
         }
@@ -155,6 +155,19 @@ export function useOrderbook(
   }
 
   provide(orderbookWorkerKey, worker)
+  provide(aggregationKey, aggregation)
+
+  watch(aggregation, () => {
+    worker.value?.postMessage({
+      type: WorkerMessageType.Aggregation,
+      data: {
+        isSpot,
+        baseDecimals: market.value?.baseToken.decimals || 0,
+        quoteDecimals: market.value?.quoteToken.decimals || 0,
+        aggregation: aggregation.value
+      }
+    })
+  })
 
   watch(
     [market, worker],

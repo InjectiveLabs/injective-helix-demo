@@ -1,7 +1,22 @@
 <script setup lang="ts">
-import { GridStrategyType } from '@/types'
+import {
+  GridStrategyType,
+  InvestmentTypeGst,
+  SpotGridTradingForm
+} from '@/types'
 
 const strategyType = ref(GridStrategyType.Auto)
+
+useForm<SpotGridTradingForm>({
+  initialValues: {
+    investmentType: InvestmentTypeGst.BaseAndQuote
+  },
+  keepValuesOnUnmount: true
+})
+
+function updateType(type: GridStrategyType) {
+  strategyType.value = type
+}
 </script>
 
 <template>
@@ -22,7 +37,9 @@ const strategyType = ref(GridStrategyType.Auto)
     <div>
       <PartialsTradeSpotFormTradingBotsAuto
         v-if="strategyType === GridStrategyType.Auto"
+        @update:tab="updateType"
       />
+
       <PartialsTradeSpotFormTradingBotsManual v-else />
     </div>
   </div>

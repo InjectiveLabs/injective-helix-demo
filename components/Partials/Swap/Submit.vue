@@ -219,7 +219,7 @@ watch(
       @click="handlerFunction"
     >
       <div class="max-auto w-full">
-        <Transition name="fade">
+        <Transition name="fade" mode="out-in">
           <span v-if="!isLoading && swapStore.isInputEntered && invalidInput">
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>

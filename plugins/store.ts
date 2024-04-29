@@ -51,6 +51,12 @@ const stateToPersist = {
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+
+    autoSign: {
+      pk: '',
+      injAddress: '',
+      expiration: ''
     }
   }
 } as Record<string, Record<string, any>>

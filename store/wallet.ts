@@ -3,9 +3,11 @@ import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   getEthereumAddress,
   getInjectiveAddress,
-  getDefaultSubaccountId
+  getDefaultSubaccountId,
+  PrivateKey,
+  MsgGrant
 } from '@injectivelabs/sdk-ts'
-import { CosmosChainId } from '@injectivelabs/ts-types'
+import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
@@ -24,6 +26,7 @@ import { GrantDirection } from '@/types/authZ'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
+import { msgBroadcastClient } from '~/app/Services'
 
 type WalletStoreState = {
   wallet: Wallet
@@ -48,6 +51,12 @@ type WalletStoreState = {
     injectiveAddress: string
     defaultSubaccountId: string
   }
+
+  autoSign?: {
+    pk: string
+    injAddress: string
+    expiration: number
+  }
 }
 
 const initialStateFactory = (): WalletStoreState => ({
@@ -71,7 +80,9 @@ const initialStateFactory = (): WalletStoreState => ({
     direction: GrantDirection.Grantee,
     injectiveAddress: '',
     defaultSubaccountId: ''
-  }
+  },
+
+  autoSign: undefined
 })
 
 export const useWalletStore = defineStore('wallet', {
@@ -126,6 +137,8 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       await connect({ wallet: walletStore.wallet })
+
+      walletStore.initAutoSign()
     },
 
     async connectWallet(wallet: Wallet) {
@@ -665,6 +678,47 @@ export const useWalletStore = defineStore('wallet', {
           direction: GrantDirection.Grantee
         }
       })
+    },
+
+    async connectAutoSign() {
+      const walletStore = useWalletStore()
+
+      const { privateKey } = PrivateKey.generate()
+      const pk = privateKey.toPrivateKeyHex()
+      const injAddress = privateKey.toBech32()
+
+      const authZMsgs = Object.values(MsgType).map((messageType) =>
+        MsgGrant.fromJSON({
+          messageType: `/${messageType}`,
+          grantee: injAddress,
+          granter: walletStore.injectiveAddress,
+          expiryInSeconds: Date.now() / 1000 + 60 * 60
+        })
+      )
+
+      await msgBroadcastClient.broadcastWithFeeDelegation({
+        msgs: authZMsgs,
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      walletStore.$patch({
+        autoSign: {
+          injAddress,
+          pk,
+          expiration: Date.now() + 1000 * 60 * 60
+        }
+      })
+
+      walletStore.initAutoSign()
+    },
+
+    initAutoSign() {
+      const walletStore = useWalletStore()
+
+      if (walletStore.autoSign) {
+        walletStrategy.setWallet(Wallet.PrivateKey)
+        walletStrategy.setOptions({ privateKey: walletStore.autoSign.pk })
+      }
     }
   }
 })

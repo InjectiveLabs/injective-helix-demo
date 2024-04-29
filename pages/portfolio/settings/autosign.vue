@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//
+const walletStore = useWalletStore()
 </script>
 
 <template>
@@ -21,7 +21,9 @@
           (Authorization) which we store in local storage so we can auto-sign
           the transaction without exposing your private key
         </p>
-        <AppButton variant="success">Enable Auto-Sign</AppButton>
+        <AppButton variant="success" @click="walletStore.connectAutoSign">
+          Enable Auto-Sign
+        </AppButton>
       </div>
     </div>
   </div>

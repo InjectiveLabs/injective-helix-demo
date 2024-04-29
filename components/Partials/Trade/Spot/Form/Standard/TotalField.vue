@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   SpotTradeForm,
   SpotTradeFormField,
   TradeTypes,
   spotMarketKey
 } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const market = inject(spotMarketKey)
 
@@ -15,16 +17,50 @@ const el = ref(null)
 const { focused } = useFocusWithin(el)
 const spotFormValues = useFormValues<SpotTradeForm>()
 const setQuantityAmount = useSetFieldValue(SpotTradeFormField.Quantity)
-
-const { value: totalValue, errorMessage } = useStringField({
-  name: SpotTradeFormField.Total,
-  initialValue: '',
-  rule: ''
-})
+const { accountBalancesWithToken } = useBalance()
 
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => market?.value as UiSpotMarketWithToken)
 )
+
+const isBuy = computed(() => {
+  return spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+})
+
+const {
+  valueToString: quoteBalanceToString,
+  valueToFixed: quoteBalanceToFixed
+} = useBigNumberFormatter(
+  computed(() => {
+    const balance = accountBalancesWithToken.value.find(
+      (balance) => balance.token.denom === market?.value?.quoteToken.denom
+    )
+
+    return new BigNumberInWei(balance?.accountTotalBalance || 0).toBase(
+      balance?.token.decimals || 0
+    )
+  }),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const { value: totalValue, errorMessage } = useStringField({
+  name: SpotTradeFormField.Total,
+  initialValue: '',
+  rule: '',
+  dynamicRule: computed(() => {
+    const rules = []
+
+    const insufficientBalance = `insufficientSgt:${quoteBalanceToFixed.value}`
+
+    if (isBuy.value) {
+      rules.push(insufficientBalance)
+    }
+
+    return rules.join('|')
+  })
+})
 
 const value = computed({
   get: () => totalValue.value,
@@ -42,13 +78,15 @@ const value = computed({
     if (focused.value) {
       if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Market) {
         setQuantityAmount(
-          new BigNumberInBase(value).div(lastTradedPrice.value).toFixed(3)
+          new BigNumberInBase(value)
+            .div(lastTradedPrice.value)
+            .toFixed(market?.value?.quantityDecimals || 0)
         )
       } else if (spotFormValues.value[SpotTradeFormField.Price]) {
         setQuantityAmount(
           new BigNumberInBase(value)
             .div(spotFormValues.value[SpotTradeFormField.Price])
-            .toFixed(3)
+            .toFixed(market?.value?.quantityDecimals || 0)
         )
       }
     }
@@ -60,7 +98,13 @@ const value = computed({
   <div v-if="market" ref="el" class="space-y-2">
     <p class="field-label">{{ $t('trade.total') }}</p>
 
-    <AppInputField v-model="value" placeholder="0.00">
+    <AppInputField
+      v-model="value"
+      placeholder="0.00"
+      v-bind="{
+        decimals: market?.priceDecimals || 0
+      }"
+    >
       <template #left>
         <span>&thickapprox;</span>
       </template>
@@ -69,6 +113,12 @@ const value = computed({
         <span class="text-sm">
           {{ market.quoteToken.symbol }}
         </span>
+      </template>
+
+      <template #bottom>
+        <p class="text-xs text-right text-gray-500">
+          {{ $t('sgt.available') }}: {{ quoteBalanceToString }}
+        </p>
       </template>
     </AppInputField>
 

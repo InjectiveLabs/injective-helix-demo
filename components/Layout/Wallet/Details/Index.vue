@@ -32,7 +32,10 @@ function disconnect() {
           class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
           @click="toggle"
         >
-          <BaseIcon name="user" class="w-4 h-4 lg:mr-2" />
+          <BaseIcon
+            name="user"
+            class="lg:mr-2 w-8 h-8 p-1 rounded-md hover:bg-brand-800"
+          />
           <span class="hidden lg:block font-mono">
             {{ formattedInjectiveAddress }}
           </span>

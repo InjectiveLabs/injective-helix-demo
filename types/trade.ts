@@ -16,7 +16,9 @@ import {
   InvestmentTypeGst,
   SpotGridTradingField,
   TradeTypes,
-  SpotTradeFormField
+  SpotTradeFormField,
+  DerivativesTradeFormField,
+  DerivativeTradeTypes
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -102,8 +104,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.Grids]: string
   [SpotGridTradingField.LowerPrice]: string
   [SpotGridTradingField.UpperPrice]: string
-  [SpotGridTradingField.InvestmentAmount]: string
-  [SpotGridTradingField.BaseInvestmentAmount]: string
+  [SpotGridTradingField.QuoteInvestmentAmount]: string
   [SpotGridTradingField.BaseInvestmentAmount]: string
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
   [SpotGridTradingField.SellBaseOnStopLoss]: boolean
@@ -113,6 +114,7 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.StopLoss]: string
   [SpotGridTradingField.TakeProfit]: string
   [SpotGridTradingField.StrategyType]: StrategyType
+  [SpotGridTradingField.IsAssetRebalanceOn]: boolean
 }
 
 export type GridMarket = {
@@ -134,4 +136,18 @@ export type SpotTradeForm = {
   [SpotTradeFormField.Quantity]: string
   [SpotTradeFormField.PostOnly]: boolean
   [SpotTradeFormField.IsSlippageOn]: boolean
+}
+
+export type DerivativesTradeForm = {
+  [DerivativesTradeFormField.Total]: string
+  [DerivativesTradeFormField.Side]: OrderSide
+  [DerivativesTradeFormField.Quantity]: string
+  [DerivativesTradeFormField.Slippage]: string
+  [DerivativesTradeFormField.Leverage]: string
+  [DerivativesTradeFormField.PostOnly]: boolean
+  [DerivativesTradeFormField.LimitPrice]: string
+  [DerivativesTradeFormField.ReduceOnly]: boolean
+  [DerivativesTradeFormField.TriggerPrice]: string
+  [DerivativesTradeFormField.IsSlippageOn]: boolean
+  [DerivativesTradeFormField.Type]: DerivativeTradeTypes
 }

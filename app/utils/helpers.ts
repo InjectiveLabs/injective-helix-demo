@@ -10,6 +10,7 @@ import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 import { hexToString, stringToHex } from './converters'
 import { UiMarketWithToken } from '@/types'
 import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
+import { OrderbookFormattedRecord } from '~/types/worker'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -252,4 +253,83 @@ export function mergeObjects<T extends Record<any, any>>(
   }
 
   return target
+}
+
+/**
+ * Quantizes a number to a specified precision.
+ *
+ * @param number - The number to quantize.
+ * @param precision - The precision to quantize the number to.
+ * @returns The quantized number.
+ */
+export function quantizeNumber(
+  number: number,
+  tensMultiplier: number
+): BigNumberInBase {
+  const divideBy = new BigNumberInBase(10).exponentiatedBy(tensMultiplier)
+
+  return new BigNumberInBase(
+    new BigNumberInBase(number).dividedBy(divideBy).dp(0).times(divideBy)
+  )
+}
+
+export function calculateWorstPrice(
+  quantity: string,
+  records: OrderbookFormattedRecord[]
+) {
+  let remainingQuantity = Number(quantity || '0')
+
+  let worstPrice = '0'
+  let price = 0
+  let hasEnoughLiquidity = false
+
+  for (const record of records) {
+    if (remainingQuantity - Number(record.quantity) <= 0) {
+      worstPrice = record.price
+      price += remainingQuantity * Number(record.price)
+
+      hasEnoughLiquidity = true
+      break
+    }
+
+    remainingQuantity -= Number(record.quantity)
+    price += Number(record.quantity) * Number(record.price)
+  }
+
+  // if (!hasEnoughLiquidity) {
+  //   worstPrice = records[records.length - 1].price
+  // }
+
+  return {
+    totalPrice: price.toString(),
+    worstPrice,
+    hasEnoughLiquidity
+  }
+}
+export function calculateWorstQuantity(
+  price: string,
+  records: OrderbookFormattedRecord[]
+) {
+  let remainingPrice = Number(price || '0')
+
+  let worstQuantity = '0'
+  let quantity = 0
+
+  for (const record of records) {
+    if (remainingPrice - Number(record.price) * Number(record.quantity) < 0) {
+      worstQuantity = record.quantity
+
+      quantity += remainingPrice / Number(record.price)
+      break
+    }
+
+    remainingPrice -= Number(record.price) * Number(record.quantity)
+    quantity += Number(record.quantity)
+  }
+
+  return {
+    quantity,
+    worstQuantity,
+    hasEnoughLiquidity: true
+  }
 }

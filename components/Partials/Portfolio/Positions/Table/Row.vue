@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { Position, TradeDirection } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   position: {
-    type: Object as PropType<PositionV2>,
+    type: Object as PropType<Position>,
     required: true
   }
 })
 
 const tokenStore = useTokenStore()
+const positionStore = usePositionStore()
+const { $onError } = useNuxtApp()
 
 const {
   pnl,
@@ -26,6 +29,9 @@ const {
   quantityDecimals,
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
+
+const marketCloseStatus = reactive(new Status(StatusType.Idle))
+// const limitCloseStatus = reactive(new Status(StatusType.Idle))
 
 const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
   decimalPlaces: quantityDecimals.value
@@ -64,6 +70,21 @@ const { valueToString: percentagePnlToString } = useBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
+
+function closePosition() {
+  marketCloseStatus.setLoading()
+
+  positionStore
+    .closePositionAndReduceOnlyOrders({
+      position: props.position,
+      market: market.value,
+      reduceOnlyOrders: []
+    })
+    .catch($onError)
+    .finally(() => {
+      marketCloseStatus.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -118,8 +139,21 @@ const { valueToString: percentagePnlToString } = useBigNumberFormatter(
     <div class="flex-1 flex items-center p-2">
       {{ effectiveLeverage.toFormat(2) }}x
     </div>
-    <div class="flex-1 flex items-center p-2">
-      <AppButton size="sm" variant="danger-ghost"> Close </AppButton>
+
+    <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">
+      <AppButton
+        v-bind="{ status: marketCloseStatus }"
+        size="sm"
+        variant="danger-ghost"
+        class="basis-16 shrink-0"
+        @click="closePosition"
+      >
+        Market
+      </AppButton>
+      <AppButton size="sm" variant="danger-ghost"> Limit </AppButton>
+
+      <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Qty" />
+      <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Price" />
     </div>
   </div>
 </template>
