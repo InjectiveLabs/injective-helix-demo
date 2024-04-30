@@ -53,7 +53,6 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
-  AirdropTerms = 'airdrop-terms',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
