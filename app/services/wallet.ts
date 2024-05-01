@@ -60,5 +60,5 @@ export const getAddresses = async (): Promise<string[]> => {
 }
 
 export const confirm = async (address: string) => {
-  return await walletStrategy.confirm(address)
+  return await walletStrategy.getSessionOrConfirm(address)
 }
