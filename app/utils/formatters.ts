@@ -1,12 +1,11 @@
 import keccak256 from 'keccak256'
 import {
   BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/sdk-ts'
-import { type Token } from '@injectivelabs/token-metadata'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedBalanceWithToken } from '@shared/types'
 import { TimeDuration } from '@/types'
 
 BigNumber.config({
@@ -102,12 +101,10 @@ export const toBalanceInToken = ({
 
 export const convertCoinToBalancesWithToken = (
   coin: Coin
-): BalanceWithToken | undefined => {
+): SharedBalanceWithToken | undefined => {
   const tokenStore = useTokenStore()
 
-  const meta = tokenStore.tokens.find(
-    (token: Token) => token.denom === coin.denom
-  )
+  const meta = tokenStore.tokenByDenomOrSymbol(coin.denom)
 
   if (!meta) {
     return

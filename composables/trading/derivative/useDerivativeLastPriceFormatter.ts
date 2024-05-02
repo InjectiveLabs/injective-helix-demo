@@ -1,12 +1,10 @@
-import { Ref } from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  Change,
-  UiDerivativeMarketWithToken,
-  UiDerivativeTrade,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING
-} from '@injectivelabs/sdk-ui-ts'
+  SharedMarketChange,
+  SharedUiDerivativeTrade,
+  SharedUiDerivativeMarket
+} from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
 
 export function useDerivativeLastPrice(
@@ -14,7 +12,7 @@ export function useDerivativeLastPrice(
 ) {
   const derivateStore = useDerivativeStore()
 
-  const latestTrade = computed<UiDerivativeTrade | undefined>(() => {
+  const latestTrade = computed<SharedUiDerivativeTrade | undefined>(() => {
     if (derivateStore.trades.length === 0) {
       return undefined
     }
@@ -42,7 +40,7 @@ export function useDerivativeLastPrice(
     const [secondLastTrade] = derivateStore.trades.filter(
       (trade) =>
         !new BigNumberInBase(trade.executionPrice).eq(
-          (latestTrade.value as UiDerivativeTrade).executionPrice
+          (latestTrade.value as SharedUiDerivativeTrade).executionPrice
         )
     )
 
@@ -66,23 +64,23 @@ export function useDerivativeLastPrice(
     )
 
     if (changeInPercentageInBigNumber.eq(0)) {
-      return Change.NoChange
+      return SharedMarketChange.NoChange
     }
 
     return changeInPercentageInBigNumber.gt(0)
-      ? Change.Increase
-      : Change.Decrease
+      ? SharedMarketChange.Increase
+      : SharedMarketChange.Decrease
   })
 
   const marketMarkPrice = computed(() => {
     if (!market.value) {
-      return ZERO_TO_STRING
+      return '0'
     }
 
     const markPriceNotScaled =
       derivateStore.marketMarkPriceMap[market.value.marketId]?.price || '0'
 
-    const derivativeMarket = market.value as UiDerivativeMarketWithToken
+    const derivativeMarket = market.value as SharedUiDerivativeMarket
 
     if (!derivativeMarket.oracleScaleFactor) {
       return markPriceNotScaled

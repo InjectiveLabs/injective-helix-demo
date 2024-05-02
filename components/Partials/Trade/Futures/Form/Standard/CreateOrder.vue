@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiDerivativeMarket } from '@shared/types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { calculateMargin } from '@/app/client/utils/derivatives'
 import {
+  derivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  derivativeMarketKey
+  DerivativesTradeFormField
 } from '@/types'
-import { calculateMargin } from '~/app/client/utils/derivatives'
 
 const derivativeMarket = inject(
   derivativeMarketKey
-) as Ref<UiDerivativeMarketWithToken>
+) as Ref<SharedUiDerivativeMarket>
 
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Loading))

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
-import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { TradeSubPage } from '@/types'
 
@@ -13,7 +13,7 @@ const { success } = useNotifications()
 const props = defineProps({
   trigger: {
     required: true,
-    type: Object as PropType<UiDerivativeOrderHistory>
+    type: Object as PropType<DerivativeOrderHistory>
   }
 })
 

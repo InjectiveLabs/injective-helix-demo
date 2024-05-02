@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 

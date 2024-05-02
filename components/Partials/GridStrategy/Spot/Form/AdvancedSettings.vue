@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { ExitType } from '@injectivelabs/sdk-ts'
 import { SpotGridTradingField } from '@/types'
 
@@ -9,7 +9,7 @@ const isAdvancedOpen = ref(false)
 const isTpSlOpen = ref(false)
 
 const market = computed(
-  () => gridStrategyStore.spotMarket as UiSpotMarketWithToken
+  () => gridStrategyStore.spotMarket as SharedUiSpotMarket
 )
 
 const { value: stopLossValue, errorMessage: stopLossError } = useStringField({

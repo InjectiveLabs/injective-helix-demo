@@ -1,13 +1,13 @@
 import {
+  msgsOrMsgExecMsgs,
   ExecArgSwapMinOutput,
   ExecArgSwapExactOutput,
   MsgExecuteContractCompat,
-  spotQuantityToChainQuantityToFixed,
-  msgsOrMsgExecMsgs
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
-import { msgBroadcastClient } from '@/app/Services'
+import { msgBroadcaster } from '@shared/WalletService'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
 
 export const submitAtomicOrder = async ({
   formValues,
@@ -62,7 +62,7 @@ export const submitAtomicOrder = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
+  const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -123,7 +123,7 @@ export const submitAtomicOrderExactOutput = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
+  const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })

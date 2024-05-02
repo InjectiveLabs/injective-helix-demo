@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  GridStrategyType,
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  UiMarketWithToken,
-  spotMarketKey
-} from '@/types'
-import {
-  GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
+  SGT_STABLE_COINS,
+  GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_LOWER_PERCENTAGE,
   GST_STABLE_UPPER_PERCENTAGE,
-  SGT_STABLE_COINS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { pricesToEma } from '@/app/utils/helpers'
+import {
+  spotMarketKey,
+  GridStrategyType,
+  InvestmentTypeGst,
+  UiMarketWithToken,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const emit = defineEmits<{
   'update:tab': [GridStrategyType]

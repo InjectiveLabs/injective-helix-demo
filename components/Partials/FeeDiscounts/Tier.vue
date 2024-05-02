@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   FeeDiscountTierInfo,
-  getExactDecimalsFromNumber,
-  cosmosSdkDecToBigNumber
+  cosmosSdkDecToBigNumber,
+  getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({

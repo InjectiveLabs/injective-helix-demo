@@ -10,6 +10,7 @@ import {
   toUtf8
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
+import { wasmApi } from '@shared/Service'
 import {
   pollGuildDetails,
   fetchGuildsByTVL,
@@ -19,7 +20,7 @@ import {
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
-import { wasmApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { CampaignWithScAndData } from '@/types'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'

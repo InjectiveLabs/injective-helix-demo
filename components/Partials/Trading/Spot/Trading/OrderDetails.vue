@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeForm, UiMarketWithToken } from '@/types'
 

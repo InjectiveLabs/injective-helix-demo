@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { SharedUiMarketSummary } from '@shared/types'
 import { legacyWHDenoms } from '@/app/data/token'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   expanded: Boolean,
@@ -12,7 +13,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   }
 })

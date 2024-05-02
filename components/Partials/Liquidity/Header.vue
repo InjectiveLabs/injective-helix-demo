@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { format, utcToZonedTime } from 'date-fns-tz'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({

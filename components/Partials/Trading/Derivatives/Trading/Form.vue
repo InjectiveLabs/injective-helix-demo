@@ -5,21 +5,9 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import {
-  MarketType,
-  ZERO_IN_BASE,
-  UiPerpetualMarketWithToken,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
 import { TradeDirection, OrderSide, OrderState } from '@injectivelabs/ts-types'
-import {
-  Modal,
-  TradeForm,
-  TradeField,
-  TradeExecutionType,
-  OrderAttemptStatus
-} from '@/types'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
@@ -30,6 +18,14 @@ import {
   calculateBinaryOptionsMargin
 } from '@/app/client/utils/derivatives'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import {
+  Modal,
+  TradeForm,
+  TradeField,
+  TradeExecutionType,
+  OrderAttemptStatus
+} from '@/types'
+
 const appStore = useAppStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -50,7 +46,7 @@ const status = reactive(new Status(StatusType.Idle))
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiDerivativeMarket>,
     required: true
   }
 })
@@ -202,7 +198,7 @@ const notionalWithLeverage = computed(() => {
       ? worstPriceWithSlippage.value.toFixed()
       : executionPrice.value.toFixed()
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
         price,
@@ -238,7 +234,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
         price: worstPriceWithSlippage.value.toFixed(),
@@ -328,13 +324,11 @@ const liquidationPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ZERO_IN_BASE
   }
 
-  const derivativeMarket = props.market as
-    | UiPerpetualMarketWithToken
-    | UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiDerivativeMarket
 
   const price =
     tradingTypeMarket.value || tradingTypeStopMarket.value
@@ -367,7 +361,7 @@ const {
   notionalWithLeverageAndFees,
   notionalWithLeverageBasedOnWorstPrice,
   formValues: computed(() => formValues),
-  market: computed(() => props.market as UiDerivativeMarketWithToken)
+  market: computed(() => props.market as SharedUiDerivativeMarket)
 })
 
 watch(executionPrice, () => {

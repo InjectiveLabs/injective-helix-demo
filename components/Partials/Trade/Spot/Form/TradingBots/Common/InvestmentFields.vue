@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   InvestmentTypeGst,
@@ -19,7 +19,7 @@ const props = defineProps({
   isAuto: Boolean
 })
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+const market = inject(spotMarketKey) as Ref<SharedUiSpotMarket>
 
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()

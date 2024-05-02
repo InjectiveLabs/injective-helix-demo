@@ -1,5 +1,5 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { indexerRestExplorerApi } from '@/app/Services'
+import { indexerRestExplorerApi } from '@shared/Service'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
 type Attribute = {

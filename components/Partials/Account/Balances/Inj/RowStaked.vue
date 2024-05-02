@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -31,7 +32,9 @@ const stakedAmount = computed(() => {
 })
 
 const stakedAmountInUsd = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(
+    injToken.coinGeckoId
+  )
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE

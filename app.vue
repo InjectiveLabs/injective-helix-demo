@@ -18,10 +18,9 @@ onMounted(() => {
 
   Promise.all([
     walletStore.init(),
-    tokenStore.fetchTokens(),
     // spotStore.initIfNotInit(),
-    spotStore.initFromTradingPage(queryMarketId ? [queryMarketId] : []),
     // derivativeStore.initIfNotInit(),
+    spotStore.initFromTradingPage(queryMarketId ? [queryMarketId] : []),
     derivativeStore.initFromTradingPage(queryMarketId ? [queryMarketId] : []),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()

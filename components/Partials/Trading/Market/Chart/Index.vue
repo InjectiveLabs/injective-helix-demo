@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType, SharedUiSpotMarket } from '@shared/types'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
 import { UiMarketWithToken } from '@/types'
 
@@ -11,7 +11,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 const interval = '1D'
 
 const status = reactive(new Status(StatusType.Loading))
@@ -21,8 +21,8 @@ const symbol = computed(() => {
     return props.market.ticker
   }
 
-  const spotTicker = `${(props.market as UiSpotMarketWithToken).baseDenom}/${
-    (props.market as UiSpotMarketWithToken).quoteDenom
+  const spotTicker = `${(props.market as SharedUiSpotMarket).baseDenom}/${
+    (props.market as SharedUiSpotMarket).quoteDenom
   }`
 
   return spotTicker.replaceAll('ibc/', 'ibc@')
@@ -30,7 +30,7 @@ const symbol = computed(() => {
 
 const datafeedEndpoint = computed(() =>
   getChronosDatafeedEndpoint(
-    props.market.type === MarketType.Derivative ? 'derivative' : 'spot'
+    props.market.type === SharedMarketType.Derivative ? 'derivative' : 'spot'
   )
 )
 

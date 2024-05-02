@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
+import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { BusEvents, MainPage, Modal, AccountSubPage } from '@/types'
@@ -55,8 +55,8 @@ function refreshBalances() {
 
 function refreshUsdTokenPrice() {
   const coinGeckoIdsList = [
-    INJ_COIN_GECKO_ID,
     BTC_COIN_GECKO_ID,
+    injToken.coinGeckoId,
     ...currentSubaccountBalances.value.map((b) => b.token.coinGeckoId)
   ]
 

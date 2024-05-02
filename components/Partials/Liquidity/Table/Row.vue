@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
+import { usdtToken } from '@shared/data/token'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_DECIMALS
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
 } from '@/app/utils/constants'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { toBalanceInToken } from '@/app/utils/formatters'
@@ -25,8 +25,8 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const gridStrategyStore = useGridStrategyStore()
 const campaignStore = useCampaignStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const activeBots = ref<number>(0)
@@ -58,7 +58,7 @@ const rewardsWithToken = computed(() =>
 
 const marketVolume = computed(() =>
   new BigNumberInWei(props.campaign.totalScore || 0).toBase(
-    market.value?.quoteToken.decimals || USDT_DECIMALS
+    market.value?.quoteToken.decimals || usdtToken.decimals
   )
 )
 

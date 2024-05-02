@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { format, formatDistance } from 'date-fns'
 import { StopReason } from '@/types'
 import {
@@ -20,7 +20,7 @@ const props = defineProps({
 const spotStore = useSpotStore()
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: SharedUiSpotMarket]
 }>()
 
 const market = computed(

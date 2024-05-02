@@ -1,34 +1,30 @@
 import { defineStore } from 'pinia'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
-  INJ_DENOM
-} from '@injectivelabs/utils'
-import { Coin } from '@injectivelabs/ts-types'
-import {
   Pool,
-  MinModuleParams as MintModuleParams,
-  StakingModuleParams,
-  InsuranceModuleParams,
-  ExchangeModuleParams,
   BankModuleParams,
-  OracleModuleParams,
   PeggyModuleParams,
+  OracleModuleParams,
+  StakingModuleParams,
+  ExchangeModuleParams,
   GovModuleStateParams,
-  DistributionModuleParams
+  InsuranceModuleParams,
+  DistributionModuleParams,
+  MinModuleParams as MintModuleParams
 } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { Coin } from '@injectivelabs/ts-types'
+import { INJ_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   bankApi,
   mintApi,
-  stakingApi,
-  distributionApi,
-  governanceApi,
-  insuranceApi,
-  exchangeApi,
+  peggyApi,
   oracleApi,
-  peggyApi
-} from '@/app/Services'
+  stakingApi,
+  exchangeApi,
+  governanceApi,
+  distributionApi,
+  insuranceFundsApi
+} from '@shared/Service'
 
 type ParamsStoreState = {
   inflation: string
@@ -185,7 +181,7 @@ export const useParamStore = defineStore('param', {
       const paramStore = useParamStore()
 
       paramStore.$patch({
-        insuranceParams: await insuranceApi.fetchModuleParams()
+        insuranceParams: await insuranceFundsApi.fetchModuleParams()
       })
     },
 

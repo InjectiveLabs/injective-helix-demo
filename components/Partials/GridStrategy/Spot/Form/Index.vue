@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 
 import {
@@ -12,7 +12,7 @@ import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
+import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   order: {
-    type: Object as PropType<UiSpotLimitOrder>,
+    type: Object as PropType<SpotLimitOrder>,
     required: true
   }
 })

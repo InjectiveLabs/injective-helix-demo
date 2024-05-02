@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
@@ -20,7 +20,7 @@ const setQuantityAmount = useSetFieldValue(SpotTradeFormField.Quantity)
 const { accountBalancesWithToken } = useBalance()
 
 const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => market?.value as UiSpotMarketWithToken)
+  computed(() => market?.value as SharedUiSpotMarket)
 )
 
 const isBuy = computed(() => {

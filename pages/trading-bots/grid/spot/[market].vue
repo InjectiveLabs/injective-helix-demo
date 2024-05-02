@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { legacyWHDenoms } from '@/app/data/token'
 import {
   getNewMarketSlugFromWHDenom,
   getNewMarketTickerFromWHDenom
 } from '@/app/utils/market'
+import { legacyWHDenoms } from '@/app/data/token'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { Modal, TradingBotsSubPage, UiMarketWithToken } from '@/types'
 
 definePageMeta({
@@ -40,7 +40,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
   ]).catch($onError)
 
   gridStrategyStore.$patch({
-    spotMarket: pageMarket as UiSpotMarketWithToken
+    spotMarket: pageMarket as SharedUiSpotMarket
   })
 
   fetchData({

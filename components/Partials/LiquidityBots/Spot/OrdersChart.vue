@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { OrderSide, OrderState } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import ApexChart, { ApexOptions } from 'apexcharts'
@@ -24,7 +24,7 @@ type OrderAnnotation = {
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

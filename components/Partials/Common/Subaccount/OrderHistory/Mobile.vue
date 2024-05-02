@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import {
-  UiSpotOrderHistory,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
+import { SpotOrderHistory, DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
 const props = defineProps({
@@ -10,7 +7,7 @@ const props = defineProps({
 
   order: {
     required: true,
-    type: Object as PropType<UiSpotOrderHistory | UiDerivativeOrderHistory>
+    type: Object as PropType<SpotOrderHistory | DerivativeOrderHistory>
   }
 })
 

@@ -1,16 +1,11 @@
 <script lang="ts" setup>
-import {
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import { isWithinInterval } from 'date-fns'
 import { marketPromotions } from '@/app/data/market'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   }
 })

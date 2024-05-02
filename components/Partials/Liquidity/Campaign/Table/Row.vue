@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -25,7 +26,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

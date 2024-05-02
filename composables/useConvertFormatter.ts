@@ -1,4 +1,4 @@
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import type { Token } from '@injectivelabs/token-metadata'
 import { OrderSide } from '@injectivelabs/ts-types'
 
@@ -16,10 +16,7 @@ export default function useConvertFormatter() {
           [reversedSlug]: { orderType: OrderSide.Buy, market }
         }
       },
-      {} as Record<
-        string,
-        { orderType: OrderSide; market: UiSpotMarketWithToken }
-      >
+      {} as Record<string, { orderType: OrderSide; market: SharedUiSpotMarket }>
     )
   })
 

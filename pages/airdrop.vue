@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ZERO_IN_WEI } from '@injectivelabs/sdk-ui-ts'
-import { BigNumber, Status, StatusType } from '@injectivelabs/utils'
 import { create } from 'canvas-confetti'
+import { ZERO_IN_WEI } from '@shared/utils/constant'
+import { BigNumber, Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const router = useRouter()

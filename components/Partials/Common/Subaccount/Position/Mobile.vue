@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
@@ -18,7 +17,7 @@ const props = defineProps({
 
   position: {
     required: true,
-    type: Object as PropType<UiPosition | PositionV2>
+    type: Object as PropType<Position | PositionV2>
   }
 })
 
@@ -38,7 +37,7 @@ const {
 } = useDerivativePosition(computed(() => props.position))
 
 const emit = defineEmits<{
-  'share:position': [state: UiPosition | PositionV2]
+  'share:position': [state: Position | PositionV2]
 }>()
 
 const status = reactive(new Status())
@@ -54,7 +53,7 @@ const hasReduceOnlyOrders = computed(
 )
 
 function addMargin() {
-  useEventBus<UiPosition | PositionV2>(BusEvents.AddMarginToPosition).emit(
+  useEventBus<Position | PositionV2>(BusEvents.AddMarginToPosition).emit(
     props.position
   )
 

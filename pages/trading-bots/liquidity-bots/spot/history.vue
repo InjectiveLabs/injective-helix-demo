@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { Modal, MainPage } from '@/types'
 
 const router = useRouter()
@@ -13,7 +13,7 @@ const { $onError } = useNuxtApp()
 
 const active = ref('')
 const selectedStrategy = ref<TradingStrategy>()
-const selectedMarket = ref<UiSpotMarketWithToken>()
+const selectedMarket = ref<SharedUiSpotMarket>()
 const status = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
@@ -41,7 +41,7 @@ watch(
 
 function setMarketAndStrategy(
   strategy: TradingStrategy,
-  market: UiSpotMarketWithToken
+  market: SharedUiSpotMarket
 ) {
   selectedStrategy.value = strategy
   selectedMarket.value = market

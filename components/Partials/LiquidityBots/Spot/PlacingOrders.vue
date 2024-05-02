@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 
 const props = defineProps({
   subaccountId: {
@@ -8,7 +8,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

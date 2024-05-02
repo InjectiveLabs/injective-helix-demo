@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { MainPage } from '@/types'
 
 const route = useRoute()
@@ -26,7 +26,7 @@ onWalletConnected(() => {
   }
 
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
+    tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
     campaignStore.fetchCampaign({
       skip: 0,
       limit: limit.value,
@@ -88,7 +88,7 @@ function onPageChange(value: number) {
 }
 
 useIntervalFn(
-  () => tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
+  () => tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
   30 * 1000
 )
 </script>

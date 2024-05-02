@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
@@ -54,7 +54,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const {
   baseAmount: derivativeBaseAmount,

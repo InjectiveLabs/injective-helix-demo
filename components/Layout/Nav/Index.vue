@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import {
+  getDefaultFuturesMarket,
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams,
-  getDefaultFuturesMarket
+  getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   MainPage,
   DefaultMarket,
   TradeClickOrigin,
   TradingBotsSubPage
 } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const walletStore = useWalletStore()
 
@@ -21,7 +21,7 @@ const defaultSpotMarketRoute = getDefaultSpotMarketRouteParams()
 function spotTradeClickedTrack() {
   mixpanelAnalytics.trackNavigateToTradePage({
     market: DefaultMarket.Spot,
-    marketType: MarketType.Spot,
+    marketType: SharedMarketType.Spot,
     origin: TradeClickOrigin.TopMenu
   })
 }
@@ -29,7 +29,7 @@ function spotTradeClickedTrack() {
 function perpetualTradeClickedTrack() {
   mixpanelAnalytics.trackNavigateToTradePage({
     market: getDefaultFuturesMarket(),
-    marketType: MarketType.Perpetual,
+    marketType: SharedMarketType.Perpetual,
     origin: TradeClickOrigin.TopMenu
   })
 }

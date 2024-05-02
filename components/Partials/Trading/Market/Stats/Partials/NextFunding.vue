@@ -1,21 +1,18 @@
 <script lang="ts" setup>
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
-import {
-  UiDerivativeMarketWithToken,
-  UiPerpetualMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedUiDerivativeMarket } from '@shared/types'
 
 const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiDerivativeMarket>,
     required: true
   }
 })
 
 const isPerpetualMarket = computed(
-  () => (props.market as UiPerpetualMarketWithToken).isPerpetual
+  () => (props.market as SharedUiDerivativeMarket).isPerpetual
 )
 
 const now = ref(0)

@@ -1,16 +1,15 @@
-import { ComputedRef } from 'nuxt/dist/app/compat/capi'
+import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
+import {
+  WorkerMessageType,
+  OrderbookWorkerResult,
+  OrderbookWorkerMessage,
+  WorkerMessageResponseType
+} from '@/types/worker'
+import { spotMarketStream } from '@/app/client/streams/spot'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
-import { spotMarketStream } from '@/app/client/streams/spot'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
-import { indexerDerivativesApi, indexerSpotApi } from '~/app/Services'
 import { UiMarketWithToken, aggregationKey, orderbookWorkerKey } from '@/types'
-import {
-  OrderbookWorkerMessage,
-  OrderbookWorkerResult,
-  WorkerMessageResponseType,
-  WorkerMessageType
-} from '@/types/worker'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
   postMessage(message: OrderbookWorkerMessage): void

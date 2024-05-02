@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
-import {
-  UiSpotMarketWithToken,
-  UiDerivativeMarketWithToken,
-  MarketType
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { MarketStatus, Modal, TradeField, TradeForm } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import {
+  Modal,
+  TradeForm,
+  TradeField,
+  MarketStatus,
+  UiMarketWithToken
+} from '@/types'
+
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues() as Ref<TradeForm>
@@ -33,9 +35,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<
-      UiSpotMarketWithToken | UiDerivativeMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   },
 
@@ -50,7 +50,7 @@ const emit = defineEmits<{
   'form:submit': []
 }>()
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const hasError = computed(() => {
   if (

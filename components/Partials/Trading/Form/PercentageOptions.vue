@@ -1,26 +1,23 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  Position,
   PositionV2,
   formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
+import { SharedUiPriceLevel } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  ZERO_IN_BASE,
-  UiPriceLevel,
-  UiPosition
-} from '@injectivelabs/sdk-ui-ts'
-import {
-  MaxAmountOnOrderbook,
-  TradeExecutionType,
-  TradeField,
-  TradeForm,
-  UiMarketWithToken
-} from '@/types'
-import {
-  TRADE_FORM_QUANTITY_ROUNDING_MODE,
-  TRADE_FORM_PRICE_ROUNDING_MODE
+  TRADE_FORM_PRICE_ROUNDING_MODE,
+  TRADE_FORM_QUANTITY_ROUNDING_MODE
 } from '@/app/utils/constants'
+import {
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  TradeExecutionType,
+  MaxAmountOnOrderbook
+} from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
 const setFormValues = useSetFormValues()
@@ -56,12 +53,12 @@ const props = defineProps({
   },
 
   orderbookOrders: {
-    type: Array as PropType<UiPriceLevel[]>,
+    type: Array as PropType<SharedUiPriceLevel[]>,
     required: true
   },
 
   position: {
-    type: Object as PropType<UiPosition | PositionV2> | undefined,
+    type: Object as PropType<Position | PositionV2> | undefined,
     default: undefined
   },
 

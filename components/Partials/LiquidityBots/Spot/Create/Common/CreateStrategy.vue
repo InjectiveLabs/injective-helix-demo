@@ -5,34 +5,35 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  Modal,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField,
-  MainPage
-} from '@/types'
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
-  GST_DEFAULT_AUTO_GRIDS,
+  LEGACY_MARKETIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
-  LEGACY_MARKETIDS,
-  LEGACY_MARKET_TO_CURRENT_MARKETID_MAP,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
+  LEGACY_MARKET_TO_CURRENT_MARKETID_MAP
 } from '@/app/utils/constants'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  Modal,
+  MainPage,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

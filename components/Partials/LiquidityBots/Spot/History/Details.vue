@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { formatDistance } from 'date-fns'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: SharedUiSpotMarket]
 }>()
 
 const market = computed(

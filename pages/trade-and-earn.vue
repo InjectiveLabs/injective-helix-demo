@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
+import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
@@ -15,7 +15,7 @@ onWalletConnected(() => {
     .initTradeAndEarn()
     .then(() => {
       Promise.all([
-        tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
+        tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
         exchangeStore.fetchParams(),
         exchangeStore.fetchTradingRewardsCampaign()
       ])

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const { $onError } = useNuxtApp()
@@ -17,7 +17,7 @@ const props = defineProps({
   filterByCurrentMarket: Boolean,
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   },
 

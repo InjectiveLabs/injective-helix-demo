@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { Change, MarketType } from '@injectivelabs/sdk-ui-ts'
+import {
+  SharedMarketType,
+  SharedMarketChange,
+  SharedUiMarketSummary
+} from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketSummary, UiMarketWithToken } from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   isMarketsPage: Boolean,
@@ -12,7 +16,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   },
 
@@ -33,11 +37,11 @@ const { valueToString: volumeToString } = useBigNumberFormatter(
 )
 
 const priceChangeClasses = computed(() => {
-  if (props.summary.lastPriceChange === Change.NoChange) {
+  if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
     return 'text-gray-350'
   }
 
-  return props.summary.lastPriceChange === Change.Increase
+  return props.summary.lastPriceChange === SharedMarketChange.Increase
     ? 'text-green-500'
     : 'text-red-500'
 })
@@ -61,7 +65,9 @@ function toggleFavorite() {
 <template>
   <NuxtLink
     :to="{
-      name: `${market.type === MarketType.Spot ? 'spot' : 'futures'}-slug`,
+      name: `${
+        market.type === SharedMarketType.Spot ? 'spot' : 'futures'
+      }-slug`,
       params: { slug: market.slug }
     }"
     class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white odd:bg-brand-875/30"

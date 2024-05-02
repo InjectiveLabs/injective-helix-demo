@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal, TradeForm, TradeField, OrderAttemptStatus } from '@/types'
+import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import {
   DEBUG_CALCULATION,
   TRADE_FORM_PRICE_ROUNDING_MODE
 } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { Modal, TradeForm, TradeField, OrderAttemptStatus } from '@/types'
+
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -24,7 +26,7 @@ const setFormValues = useSetFormValues()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })
@@ -69,7 +71,7 @@ const orderTypeToSubmit = computed(() => {
 const baseAvailableBalance = computed(() => {
   const baseBalance = accountBalancesWithToken.value.find(
     (balance) =>
-      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
+      balance.denom === (props.market as SharedUiSpotMarket).baseDenom
   )
 
   return new BigNumberInWei(baseBalance?.availableMargin || '0').toBase(

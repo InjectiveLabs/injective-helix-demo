@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Change, MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedMarketChange, SharedMarketType } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const props = defineProps({
   theme: {
@@ -31,19 +32,21 @@ const topGainerMarket = computed(
 const priceChangeClasses = computed(() => {
   if (
     !topGainerMarket.value ||
-    topGainerMarket.value.summary.lastPriceChange === Change.NoChange
+    topGainerMarket.value.summary.lastPriceChange ===
+      SharedMarketChange.NoChange
   ) {
     return 'text-gray-350'
   }
 
-  return topGainerMarket.value.summary.lastPriceChange === Change.Increase
+  return topGainerMarket.value.summary.lastPriceChange ===
+    SharedMarketChange.Increase
     ? 'text-green-500'
     : 'text-red-500'
 })
 
 const to = computed(() => ({
   name:
-    topGainerMarket.value.market.type === MarketType.Spot
+    topGainerMarket.value.market.type === SharedMarketType.Spot
       ? 'spot-slug'
       : 'futures-slug',
   params: {

@@ -1,11 +1,11 @@
 import { Wallet, WalletStrategy } from '@injectivelabs/wallet-ts'
 import {
-  ALCHEMY_SEPOLIA_KEY,
-  ALCHEMY_KEY,
   CHAIN_ID,
-  ETHEREUM_CHAIN_ID,
   IS_DEVNET,
-  IS_TESTNET
+  IS_TESTNET,
+  ALCHEMY_KEY,
+  ETHEREUM_CHAIN_ID,
+  ALCHEMY_SEPOLIA_KEY
 } from '@/app/utils/constants'
 
 export const alchemyRpcEndpoint =

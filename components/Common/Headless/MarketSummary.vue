@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { Change, MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-
+import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { stableCoinDenoms } from '@/app/data/token'
-
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -26,7 +25,7 @@ const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
   computed(() => props.market)
 )
 
-const isSpot = computed(() => props.market.type === MarketType.Spot)
+const isSpot = computed(() => props.market.type === SharedMarketType.Spot)
 
 const summary = computed(() => {
   if (isSpot.value) {
@@ -70,10 +69,12 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
 
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
-  return change.value.gt(0) ? Change.Increase : Change.Decrease
+  return change.value.gt(0)
+    ? SharedMarketChange.Increase
+    : SharedMarketChange.Decrease
 })
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(

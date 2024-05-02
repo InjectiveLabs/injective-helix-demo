@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
+import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   USDT_DECIMALS,
@@ -45,7 +46,9 @@ const pendingTradeRewardsPoints = computed(() => {
 })
 
 const injUsdPrice = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(
+    injToken.coinGeckoId
+  )
 
   return injUsdPrice || ZERO_IN_BASE
 })

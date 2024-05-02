@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { GeneralException } from '@injectivelabs/exceptions'
-import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import { ActivityForm, ActivityField, Modal, ActivitySubPage } from '@/types'
 
 const modalStore = useModalStore()
@@ -31,7 +30,7 @@ const props = defineProps({
 })
 
 const actionStatus = reactive(new Status(StatusType.Idle))
-const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const markets = computed(() =>
   derivativeStore.markets
@@ -55,7 +54,7 @@ const filteredPositions = computed(() =>
   })
 )
 
-function closePosition(position: UiPosition) {
+function closePosition(position: Position) {
   const market = derivativeStore.markets.find(
     (m) => m.marketId === position.marketId
   )
@@ -95,7 +94,7 @@ function onClosePositions() {
     })
 }
 
-function onSharePosition(position: UiPosition | PositionV2) {
+function onSharePosition(position: Position | PositionV2) {
   selectedPosition.value = position
 
   modalStore.openModal(Modal.SharePosition)

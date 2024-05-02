@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { getDefaultSpotMarketRouteParams } from '@/app/utils/market'
-import { TradeClickOrigin, Modal, DefaultMarket } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradeClickOrigin, Modal, DefaultMarket } from '@/types'
+
 const router = useRouter()
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
@@ -20,7 +21,7 @@ function onGetStartedClick() {
 function tradeClickedTrack() {
   mixpanelAnalytics.trackNavigateToTradePage({
     market: DefaultMarket.Spot,
-    marketType: MarketType.Spot,
+    marketType: SharedMarketType.Spot,
     origin: TradeClickOrigin.Lander
   })
 }

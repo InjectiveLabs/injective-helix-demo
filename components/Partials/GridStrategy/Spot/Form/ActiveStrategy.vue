@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType, TradingStrategy } from '@injectivelabs/sdk-ts'
-import {
-  addressAndMarketSlugToSubaccountId,
-  durationFormatter
-} from '@/app/utils/helpers'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import {
+  durationFormatter,
+  addressAndMarketSlugToSubaccountId
+} from '@/app/utils/helpers'
 import { StopReason, StrategyStatus } from '@/types'
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

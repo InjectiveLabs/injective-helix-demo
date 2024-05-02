@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedUiDerivativeMarket } from '@shared/types'
 import { Modal, TradeExecutionType } from '@/types'
 
 const props = defineProps({
@@ -16,7 +14,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiDerivativeMarket>,
     required: true
   },
 

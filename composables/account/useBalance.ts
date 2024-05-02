@@ -1,6 +1,6 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 const reduceAccountBalances = (

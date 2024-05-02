@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   cosmosSdkDecToBigNumber,
   getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  TradeField,
   TradeForm,
+  TradeField,
   UiMarketWithToken,
   TradeExecutionType
 } from '@/types'

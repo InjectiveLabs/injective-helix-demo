@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { OrderState } from '@injectivelabs/ts-types'
 
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
@@ -36,7 +36,7 @@ const activeStrategy = computed(
 const subaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
     walletStore.address,
-    (gridStrategyStore.spotMarket as UiSpotMarketWithToken).slug
+    (gridStrategyStore.spotMarket as SharedUiSpotMarket).slug
   )
 )
 
@@ -157,7 +157,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
         v-else-if="activeStrategy"
         v-bind="{
           subaccountId,
-          market: gridStrategyStore.spotMarket as UiSpotMarketWithToken
+          market: gridStrategyStore.spotMarket as SharedUiSpotMarket
         }"
       />
 

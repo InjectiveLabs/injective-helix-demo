@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   isSm: Boolean,
@@ -8,7 +8,7 @@ const props = defineProps({
   isLgTokenIcon: Boolean,
 
   token: {
-    type: Object as PropType<Token>,
+    type: Object as PropType<TokenStatic>,
     required: true
   }
 })

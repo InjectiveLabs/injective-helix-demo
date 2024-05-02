@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { BigNumber } from '@injectivelabs/utils'
-import {
-  UiExpiryFuturesMarketWithToken,
-  UiPerpetualMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedUiDerivativeMarket } from '@shared/types'
 import { spotMarketKey, derivativeMarketKey, isSpotKey } from '@/types'
 
 const spotMarket = inject(spotMarketKey, undefined)
 const derivativeMarket = inject(derivativeMarketKey, undefined) as
-  | ComputedRef<UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken>
+  | ComputedRef<SharedUiDerivativeMarket>
   | undefined
 const isSpot = inject(isSpotKey)
 

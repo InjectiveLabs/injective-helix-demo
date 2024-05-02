@@ -1,18 +1,14 @@
-import type { Ref } from 'vue'
-import {
-  ZERO_IN_BASE,
-  UiPriceLevel,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SharedUiPriceLevel, SharedUiDerivativeMarket } from '@shared/types'
 import {
   ONE_IN_BASE,
   TRADE_FORM_QUANTITY_ROUNDING_MODE
 } from '@/app/utils/constants'
 import {
-  calculateAveragePrice,
-  calculateWorstPrice
+  calculateWorstPrice,
+  calculateAveragePrice
 } from '@/app/client/utils/orderbook'
 import { TradeExecutionType, TradeField, TradeForm } from '@/types'
 
@@ -23,7 +19,7 @@ export function useDerivativePrice({
 }: {
   formValues: Ref<TradeForm>
   isBaseAmount: Ref<boolean>
-  market: Ref<UiDerivativeMarketWithToken>
+  market: Ref<SharedUiDerivativeMarket>
 }) {
   const derivativeStore = useDerivativeStore()
   const positionStore = usePositionStore()
@@ -36,7 +32,7 @@ export function useDerivativePrice({
     () =>
       (isBuy.value
         ? derivativeStore.sells
-        : derivativeStore.buys) as UiPriceLevel[]
+        : derivativeStore.buys) as SharedUiPriceLevel[]
   )
 
   const amountForCalculation = computed(() => {

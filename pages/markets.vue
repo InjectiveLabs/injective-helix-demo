@@ -1,19 +1,19 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
-import {
-  LOW_VOLUME_MARKET_THRESHOLD,
-  QUOTE_DENOMS_GECKO_IDS
-} from '@/app/utils/constants'
-import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
 import {
   marketIsActive,
-  marketIsPartOfCategory,
-  marketIsPartOfSearch,
+  marketIsQuotePair,
   marketIsPartOfType,
-  marketIsQuotePair
-} from '~/app/utils/market'
-import { olpSlugsToIncludeInLowVolume } from '~/app/data/market'
+  marketIsPartOfSearch,
+  marketIsPartOfCategory
+} from '@/app/utils/market'
+import {
+  QUOTE_DENOMS_GECKO_IDS,
+  LOW_VOLUME_MARKET_THRESHOLD
+} from '@/app/utils/constants'
+import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
+import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -89,7 +89,7 @@ function getQuoteTokenPrice() {
     appStore.pollMarkets(),
     tokenStore.fetchTokensUsdPriceMap([
       ...QUOTE_DENOMS_GECKO_IDS,
-      INJ_COIN_GECKO_ID
+      injToken.coinGeckoId
     ])
   ]).catch($onError)
 }

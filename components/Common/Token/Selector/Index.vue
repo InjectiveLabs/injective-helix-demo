@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   tokens: {
-    type: Array as PropType<Token[]>,
+    type: Array as PropType<TokenStatic[]>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  'set:token': [token: Token]
+  'set:token': [token: TokenStatic]
 }>()
 
 const search = ref('')
@@ -26,7 +26,7 @@ onMounted(() => {
   document.getElementById('search-token')?.focus()
 })
 
-function setToken(token: Token) {
+function setToken(token: TokenStatic) {
   emit('set:token', token)
 }
 </script>

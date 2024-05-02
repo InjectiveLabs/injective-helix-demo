@@ -1,9 +1,5 @@
-import type { Ref } from 'vue'
-import {
-  UiPriceLevel,
-  ZERO_IN_BASE,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedUiPriceLevel, SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
@@ -21,7 +17,7 @@ export function useSpotPrice({
   formValues,
   isBaseAmount
 }: {
-  market: Ref<UiSpotMarketWithToken | undefined>
+  market: Ref<SharedUiSpotMarket | undefined>
   formValues: Ref<TradeForm>
   isBaseAmount: Ref<boolean>
 }) {
@@ -31,7 +27,7 @@ export function useSpotPrice({
     return formValues.value[TradeField.OrderSide] === OrderSide.Buy
   })
 
-  const orderbookOrders = computed<UiPriceLevel[] | undefined>(() =>
+  const orderbookOrders = computed<SharedUiPriceLevel[] | undefined>(() =>
     isBuy.value ? spotStore.sells : spotStore.buys
   )
 

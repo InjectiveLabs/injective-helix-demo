@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  sharedToBalanceInToken,
+  sharedToBalanceInTokenInBase
+} from '@shared/utils/formatter'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -26,9 +29,9 @@ const rewardsWithToken = computed(() => {
     const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
 
     return {
-      value: toBalanceInToken({
+      value: sharedToBalanceInToken({
         value: reward.amount,
-        decimalPlaces: token?.decimals || 18
+        decimalPlaces: token?.decimals
       }),
       token: tokenStore.tokens.find(({ denom }) => denom === reward.denom)
     }
@@ -46,7 +49,7 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
         return total
       }
 
-      const rewardInBase = toBalanceInToken({
+      const rewardInBase = sharedToBalanceInToken({
         value: reward.amount,
         decimalPlaces: token.decimals
       })
@@ -63,12 +66,10 @@ const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
 
 const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
   computed(() =>
-    new BigNumberInBase(
-      toBalanceInToken({
-        value: props.campaign.totalScore,
-        decimalPlaces: props.market.quoteToken.decimals
-      })
-    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    sharedToBalanceInTokenInBase({
+      value: props.campaign.totalScore,
+      decimalPlaces: props.market.quoteToken.decimals
+    }).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

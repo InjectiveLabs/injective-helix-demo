@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
   BIG_NUMBER_ROUND_HALF_UP_MODE,

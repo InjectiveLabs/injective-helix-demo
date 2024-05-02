@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
 import { getMarketRoute } from '@/app/utils/market'
+import { UiTrade } from '@/types'
 
 const props = defineProps({
   isSpot: Boolean,
 
   trade: {
     required: true,
-    type: Object as PropType<UiSpotTrade | UiDerivativeTrade>
+    type: Object as PropType<UiTrade>
   }
 })
 

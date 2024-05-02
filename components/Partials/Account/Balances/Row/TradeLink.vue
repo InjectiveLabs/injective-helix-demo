@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { AccountBalance } from '@/types'
 
@@ -12,7 +12,7 @@ const props = defineProps({
   }
 })
 
-const filteredMarkets = computed<UiSpotMarketWithToken[]>(() =>
+const filteredMarkets = computed<SharedUiSpotMarket[]>(() =>
   spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||

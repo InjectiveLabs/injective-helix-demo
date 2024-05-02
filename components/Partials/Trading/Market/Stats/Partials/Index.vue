@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+import {
+  SharedMarketType,
+  SharedUiMarketSummary,
+  SharedUiDerivativeMarket,
+  SharedUiExpiryFuturesMarket,
+  SharedUiBinaryOptionsMarket
+} from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistance, format } from 'date-fns'
-import {
-  MarketType,
-  ZERO_IN_BASE,
-  BIG_NUMBER_ROUND_DOWN_MODE,
-  UiDerivativeMarketWithToken,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import { stableCoinDenoms } from '@/app/data/token'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 const tokenStore = useTokenStore()
 
@@ -22,7 +22,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   }
 })
@@ -40,7 +40,7 @@ const {
   valueToBigNumber: markPriceToBigNumber
 } = useBigNumberFormatter(
   computed(() => {
-    if (props.market.type === MarketType.Spot) {
+    if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
     }
 
@@ -83,19 +83,19 @@ const {
 
 const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
   computed(() => {
-    if (props.market.type === MarketType.Spot) {
+    if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
     }
 
-    if (props.market.subType === MarketType.BinaryOptions) {
+    if (props.market.subType === SharedMarketType.BinaryOptions) {
       return ZERO_IN_BASE
     }
 
-    if (props.market.subType === MarketType.Futures) {
+    if (props.market.subType === SharedMarketType.Futures) {
       return ZERO_IN_BASE
     }
 
-    const derivativeMarket = props.market as UiPerpetualMarketWithToken
+    const derivativeMarket = props.market as SharedUiDerivativeMarket
 
     if (
       !derivativeMarket.perpetualMarketFunding ||
@@ -119,23 +119,23 @@ const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
 
 const { valueToBigNumber: fundingRate } = useBigNumberFormatter(
   computed(() => {
-    if (props.market.type === MarketType.Spot) {
+    if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
     }
 
-    if (props.market.subType === MarketType.BinaryOptions) {
+    if (props.market.subType === SharedMarketType.BinaryOptions) {
       return ZERO_IN_BASE
     }
 
-    if (props.market.subType === MarketType.Futures) {
+    if (props.market.subType === SharedMarketType.Futures) {
       return ZERO_IN_BASE
     }
 
-    const derivativeMarket = props.market as UiPerpetualMarketWithToken
+    const derivativeMarket = props.market as SharedUiDerivativeMarket
 
     if (
-      !derivativeMarket.perpetualMarketFunding ||
       !derivativeMarket.isPerpetual ||
+      !derivativeMarket.perpetualMarketFunding ||
       !derivativeMarket.perpetualMarketInfo
     ) {
       return ZERO_IN_BASE
@@ -194,19 +194,19 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
   )
 
 const expiryAt = computed(() => {
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ''
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return ''
   }
 
-  const derivativeMarket = props.market as UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiExpiryFuturesMarket
   const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
   if (!expiryFuturesMarketInfo) {
@@ -224,19 +224,19 @@ const expiryAt = computed(() => {
 })
 
 const isExpired = computed(() => {
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return true
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return true
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return true
   }
 
-  const derivativeMarket = props.market as UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiExpiryFuturesMarket
   const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
   if (!expiryFuturesMarketInfo) {
@@ -251,19 +251,19 @@ const isExpired = computed(() => {
 })
 
 const timeToExpiry = computed(() => {
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ''
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return ''
   }
 
-  const derivativeMarket = props.market as UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiExpiryFuturesMarket
   const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
   if (!expiryFuturesMarketInfo) {
@@ -287,7 +287,7 @@ const timeToExpiry = computed(() => {
 })
 
 watch(isExpired, (hasExpired) => {
-  if (props.market.subType === MarketType.Futures && hasExpired) {
+  if (props.market.subType === SharedMarketType.Futures && hasExpired) {
     window.location.reload()
   }
 })
@@ -303,7 +303,7 @@ useIntervalFn(() => {
       class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-hidden text-xs"
     >
       <CommonMarketInfo
-        v-if="market.type === MarketType.Derivative"
+        v-if="market.type === SharedMarketType.Derivative"
         :title="$t('trade.mark_price')"
         :tooltip="$t('trade.mark_price_tooltip')"
       >
@@ -371,8 +371,8 @@ useIntervalFn(() => {
       </CommonMarketInfo>
       <CommonMarketInfo
         v-if="
-          market.type === MarketType.Derivative &&
-          market.subType === MarketType.Perpetual
+          market.type === SharedMarketType.Derivative &&
+          market.subType === SharedMarketType.Perpetual
         "
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
@@ -387,22 +387,22 @@ useIntervalFn(() => {
           >
             {{
               (fundingRate.gt(0) ? '+' : '') +
-              fundingRate.toFormat(5, BIG_NUMBER_ROUND_DOWN_MODE)
+              fundingRate.toFormat(5, BigNumberInBase.ROUND_DOWN)
             }}%
           </span>
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </CommonMarketInfo>
       <PartialsTradingMarketStatsPartialsNextFunding
-        v-if="market.subType === MarketType.Perpetual"
-        :market="market as UiDerivativeMarketWithToken"
+        v-if="market.subType === SharedMarketType.Perpetual"
+        v-bind="{ market: market as SharedUiDerivativeMarket }"
       />
       <PartialsTradingMarketStatsPartialsSettlement
-        v-if="market.subType === MarketType.BinaryOptions"
-        :market="market as UiDerivativeMarketWithToken"
+        v-if="market.subType === SharedMarketType.BinaryOptions"
+        v-bind="{ market: market as unknown as SharedUiBinaryOptionsMarket }"
       />
       <CommonMarketInfo
-        v-if="market.subType === MarketType.Futures && timeToExpiry"
+        v-if="market.subType === SharedMarketType.Futures && timeToExpiry"
         :title="$t('trade.time_to_expiry')"
       >
         <span v-if="!isExpired" class="lg:text-right font-mono block">
@@ -411,7 +411,7 @@ useIntervalFn(() => {
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </CommonMarketInfo>
       <CommonMarketInfo
-        v-if="market.subType === MarketType.Futures && expiryAt"
+        v-if="market.subType === SharedMarketType.Futures && expiryAt"
         :title="
           $t('trade.expiry_time_with_timezone', { timezone: userTimezone })
         "

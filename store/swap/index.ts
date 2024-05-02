@@ -4,18 +4,18 @@ import {
   AtomicSwap,
   QueryAllRoutes,
   QuantityAndFees,
-  SwapQueryTransformer,
-  QueryOutputQuantity,
   QueryInputQuantity,
+  QueryOutputQuantity,
+  SwapQueryTransformer,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { indexerSpotApi, wasmApi } from '@/app/Services'
+import { indexerSpotApi, wasmApi } from '@shared/Service'
 import {
   submitAtomicOrder,
   submitAtomicOrderExactOutput
 } from '@/store/swap/message'
-import { TokenAndPriceAndDecimals } from '@/types'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { TokenAndPriceAndDecimals } from '@/types'
 
 type SwapStoreState = {
   routes: Route[]

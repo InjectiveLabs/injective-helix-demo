@@ -1,8 +1,13 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import {
+  SharedMarketType,
+  SharedMarketChange,
+  SharedUiMarketSummary
+} from '@shared/types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { Change, UiMarketWithToken, UiMarketSummary } from '@/types'
 import { metaTags } from '@/nuxt-config/meta'
+import { UiMarketWithToken } from '@/types'
 
 const { t } = useLang()
 
@@ -17,7 +22,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   }
 })
@@ -32,7 +37,7 @@ const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
   computed(() => props.market)
 )
 
-const isSpot = computed(() => props.market.type === MarketType.Spot)
+const isSpot = computed(() => props.market.type === SharedMarketType.Spot)
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
@@ -48,10 +53,12 @@ const lastTradedPrice = computed(() => {
 
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
-  return change.value.gt(0) ? Change.Increase : Change.Decrease
+  return change.value.gt(0)
+    ? SharedMarketChange.Increase
+    : SharedMarketChange.Decrease
 })
 
 const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
@@ -75,9 +82,9 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
 
 watch(lastTradedPriceToFormat, (newPrice: string) => {
   const marketTypePrefix = [
-    MarketType.Derivative,
-    MarketType.Futures,
-    MarketType.Perpetual
+    SharedMarketType.Derivative,
+    SharedMarketType.Futures,
+    SharedMarketType.Perpetual
   ].includes(props.market.type)
     ? `| ${t('trade.futures')}`
     : ''
@@ -110,23 +117,28 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
       >
         <BaseIcon
           v-if="
-            [Change.Increase, Change.Decrease].includes(percentageChangeStatus)
+            [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
+              percentageChangeStatus
+            )
           "
           name="arrow"
           class="w-3 h-3 mr-1"
           :class="{
             'text-green-500 rotate-90':
-              percentageChangeStatus === Change.Increase,
+              percentageChangeStatus === SharedMarketChange.Increase,
             'text-red-500 -rotate-90':
-              percentageChangeStatus === Change.Decrease
+              percentageChangeStatus === SharedMarketChange.Decrease
           }"
         />
         <span
           data-cy="markets-last-traded-price-table-data"
           :class="{
-            'text-green-500': percentageChangeStatus === Change.Increase,
-            'text-white': percentageChangeStatus === Change.NoChange,
-            'text-red-500': percentageChangeStatus === Change.Decrease
+            'text-green-500':
+              percentageChangeStatus === SharedMarketChange.Increase,
+            'text-white':
+              percentageChangeStatus === SharedMarketChange.NoChange,
+            'text-red-500':
+              percentageChangeStatus === SharedMarketChange.Decrease
           }"
         >
           {{ lastTradedPriceToFormat }}
@@ -136,9 +148,12 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
       <div v-if="!change.isNaN()" class="mt-1 text-xs">
         <span
           :class="{
-            'text-green-500': percentageChangeStatus === Change.Increase,
-            'text-white': percentageChangeStatus === Change.NoChange,
-            'text-red-500': percentageChangeStatus === Change.Decrease
+            'text-green-500':
+              percentageChangeStatus === SharedMarketChange.Increase,
+            'text-white':
+              percentageChangeStatus === SharedMarketChange.NoChange,
+            'text-red-500':
+              percentageChangeStatus === SharedMarketChange.Decrease
           }"
           data-cy="markets-change_24h-table-data"
         >

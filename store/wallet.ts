@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   getEthereumAddress,
   getInjectiveAddress,
@@ -7,26 +6,27 @@ import {
   PrivateKey,
   MsgGrant
 } from '@injectivelabs/sdk-ts'
-import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
+import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { confirm, connect, getAddresses } from '@/app/services/wallet'
-import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
-import { walletStrategy } from '@/app/wallet-strategy'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
+import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
-import { BusEvents, WalletConnectStatus } from '@/types'
 import {
   validateTrustWallet,
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
+import { walletStrategy } from '@/app/wallet-strategy'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
-import { msgBroadcastClient } from '~/app/Services'
+import { confirm, connect, getAddresses } from '@/app/services/wallet'
+import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
+import { BusEvents, WalletConnectStatus } from '@/types'
 
 type WalletStoreState = {
   wallet: Wallet
@@ -696,7 +696,7 @@ export const useWalletStore = defineStore('wallet', {
         })
       )
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: authZMsgs,
         injectiveAddress: walletStore.injectiveAddress
       })

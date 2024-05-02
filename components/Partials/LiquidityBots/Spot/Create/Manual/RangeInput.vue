@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import {
+  SharedUiSpotMarket,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { UiSpotOrderbookWithSequence } from '@/types'
 
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
@@ -42,7 +44,7 @@ const props = defineProps({
   },
 
   orderbook: {
-    type: Object as PropType<UiSpotOrderbookWithSequence>,
+    type: Object as PropType<SharedUiOrderbookWithSequence>,
     default: undefined
   },
 
@@ -52,7 +54,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     default: undefined
   }
 })

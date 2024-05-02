@@ -1,12 +1,3 @@
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-
-export enum Change {
-  New = 'new',
-  NoChange = 'no-change',
-  Increase = 'increase',
-  Decrease = 'decrease'
-}
-
 export enum WalletConnectStatus {
   connecting = 'Connecting',
   disconnected = 'Disconnected',
@@ -468,8 +459,8 @@ export enum MarketHeaderType {
 export enum MarketTypeOption {
   All = 'all',
   Favorites = 'favorites',
-  Spot = MarketType.Spot,
-  Derivative = MarketType.Derivative,
+  Spot = 'spot',
+  Derivative = 'derivatives',
   NewListings = 'new-listings',
   Themes = 'themes'
 }

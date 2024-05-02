@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
-import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
+import { SharedUiSpotTrade } from '@shared/types'
+import { Modal, UiTrade } from '@/types'
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
@@ -13,12 +13,12 @@ defineProps({
   }
 })
 
-const tradeDetails = ref(undefined as UiSpotTrade | undefined)
+const tradeDetails = ref(undefined as UiTrade | undefined)
 
 const trades = computed(() => spotStore.subaccountTrades)
 
-function onShowTradeDetails(value: UiSpotTrade | UiDerivativeTrade) {
-  tradeDetails.value = value as UiSpotTrade
+function onShowTradeDetails(value: UiTrade) {
+  tradeDetails.value = value as SharedUiSpotTrade
 
   modalStore.openModal(Modal.MobileTradeDetails)
 }

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  UiDerivativeLimitOrder,
-  UiSpotLimitOrder
-} from '@injectivelabs/sdk-ui-ts'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { legacyWHDenoms } from '@/app/data/token'
 import { TradeSubPage } from '@/types'
@@ -21,7 +18,7 @@ const props = defineProps({
 
   order: {
     required: true,
-    type: Object as PropType<UiDerivativeLimitOrder | UiSpotLimitOrder>
+    type: Object as PropType<DerivativeLimitOrder | SpotLimitOrder>
   }
 })
 
@@ -66,7 +63,7 @@ function onCancelOrder() {
 
   if (props.isSpot) {
     return spotStore
-      .cancelOrder(props.order as UiSpotLimitOrder)
+      .cancelOrder(props.order as SpotLimitOrder)
       .then(() => {
         success({ title: t('trade.order_success_canceling') })
       })
@@ -77,7 +74,7 @@ function onCancelOrder() {
   }
 
   derivativeStore
-    .cancelOrder(props.order as UiDerivativeLimitOrder)
+    .cancelOrder(props.order as DerivativeLimitOrder)
     .then(() => {
       success({ title: t('trade.order_success_canceling') })
     })

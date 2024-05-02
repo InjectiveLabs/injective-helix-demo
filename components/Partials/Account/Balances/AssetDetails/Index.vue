@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
@@ -32,7 +32,7 @@ const filteredMarketsWithSummary = computed(() => {
     }
 
     return (
-      (market as UiSpotMarketWithToken).baseDenom ===
+      (market as SharedUiSpotMarket).baseDenom ===
         accountBalance.value.token.denom ||
       market.quoteDenom === accountBalance.value.token.denom
     )

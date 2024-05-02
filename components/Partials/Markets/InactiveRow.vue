@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { TradeClickOrigin, MarketStatus } from '@/types'
+import { SharedMarketStatus, SharedUiMarketSummary } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradeClickOrigin, UiMarketWithToken } from '@/types'
+
 const appStore = useAppStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   },
 
   summary: {
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     default: undefined
   },
 
@@ -87,7 +81,7 @@ function tradeClickedTrack() {
             </span>
           </div>
           <PartialsCommonMarketInactive
-            v-if="market.marketStatus === MarketStatus.Paused"
+            v-if="market.marketStatus === SharedMarketStatus.Paused"
             class="visible sm:invisible lg:visible ml-auto"
           />
         </div>

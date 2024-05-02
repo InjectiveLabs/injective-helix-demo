@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import { SharedBalanceWithToken } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
   isBalanceVisible: Boolean,
 
   balances: {
-    type: Array as PropType<BalanceWithToken[]>,
+    type: Array as PropType<SharedBalanceWithToken[]>,
     default: () => []
   },
 
@@ -47,7 +47,7 @@ const sortedBalances = computed(() => {
   }
 
   return filteredOptions.value.sort(
-    (b1: BalanceWithToken, b2: BalanceWithToken) =>
+    (b1: SharedBalanceWithToken, b2: SharedBalanceWithToken) =>
       new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
   )
 })

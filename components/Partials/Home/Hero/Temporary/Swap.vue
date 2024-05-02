@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import { usdtToken } from '@shared/data/token'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
 import {
   MAX_QUOTE_DECIMALS,
   QUOTE_DENOMS_GECKO_IDS
 } from '@/app/utils/constants'
-import { denomClient } from '@/app/Services'
-import { tokensDenomToPreloadHomepageSwap, usdtToken } from '@/app/data/token'
+import { tokensDenomToPreloadHomepageSwap } from '@/app/data/token'
 import { MainPage, SwapForm, SwapFormField } from '@/types'
 
 const spotStore = useSpotStore()
@@ -40,11 +40,11 @@ onMounted(() => {
    **/
 
   const tokens = tokensDenomToPreloadHomepageSwap.map((denom) =>
-    denomClient.getDenomTokenStaticOrUnknown(denom)
+    tokenStore.tokenByDenomOrSymbol(denom)
   )
 
   Promise.all([
-    tokenStore.getTokensUsdPriceMapFromToken(tokens as Token[]),
+    tokenStore.getTokensUsdPriceMapFromToken(tokens as TokenStatic[]),
     tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS)
   ]).catch($onError)
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { PropType } from 'nuxt/dist/app/compat/capi'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -13,7 +13,7 @@ defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     default: undefined
   }
 })

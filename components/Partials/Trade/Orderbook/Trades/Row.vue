@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import { UiMarketWithToken, UiTrade } from '@/types'
 
 const props = defineProps({
@@ -22,21 +22,23 @@ const props = defineProps({
 const price = computed(() =>
   props.isSpot
     ? new BigNumberInBase(
-        new BigNumberInBase((props.trade as UiSpotTrade).price).toWei(
+        new BigNumberInBase((props.trade as SharedUiSpotTrade).price).toWei(
           props.market.baseToken.decimals - props.market.quoteToken.decimals
         )
       )
     : new BigNumberInWei(
-        (props.trade as UiDerivativeTrade).executionPrice
+        (props.trade as SharedUiDerivativeTrade).executionPrice
       ).toBase(props.market.quoteToken.decimals)
 )
 
 const quantity = computed(() =>
   props.isSpot
-    ? new BigNumberInWei((props.trade as UiSpotTrade).quantity).toBase(
+    ? new BigNumberInWei((props.trade as SharedUiSpotTrade).quantity).toBase(
         props.market.baseToken.decimals
       )
-    : new BigNumberInBase((props.trade as UiDerivativeTrade).executionQuantity)
+    : new BigNumberInBase(
+        (props.trade as SharedUiDerivativeTrade).executionQuantity
+      )
 )
 
 const { valueToFixed: priceToFormat } = useBigNumberFormatter(price, {

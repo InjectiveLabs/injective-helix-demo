@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiDerivativeMarket } from '@shared/types'
 
 import { Modal, MainPage } from '@/types'
 
@@ -8,7 +8,7 @@ const router = useRouter()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiDerivativeMarket>,
     default: undefined
   }
 })

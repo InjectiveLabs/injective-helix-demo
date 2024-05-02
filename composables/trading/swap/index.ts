@@ -1,5 +1,6 @@
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { usdtToken, injToken } from '@shared/data/token'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ONE_IN_BASE,
@@ -7,7 +8,6 @@ import {
   MAX_QUOTE_TENS_MULTIPLIER
 } from '@/app/utils/constants/index'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
-import { usdtToken, injToken } from '@/app/data/token'
 
 export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   const swapStore = useSwapStore()
@@ -33,7 +33,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       .map((routeMarketId) =>
         spotStore.markets.find(({ marketId }) => marketId === routeMarketId)
       )
-      .filter((market) => market) as UiSpotMarketWithToken[]
+      .filter((market) => market) as SharedUiSpotMarket[]
   })
 
   const routeTokensAndDecimals = computed(() => {

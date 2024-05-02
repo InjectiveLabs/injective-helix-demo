@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -115,12 +115,12 @@ const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
         return sum
       }
 
-      const userVolume = toBalanceInToken({
+      const userVolume = sharedToBalanceInTokenInBase({
         value: campaign.userScore || 0,
         decimalPlaces: market.quoteToken.decimals
       })
 
-      const userVolumeInUsd = new BigNumberInBase(userVolume).times(
+      const userVolumeInUsd = userVolume.times(
         tokenStore.tokenUsdPrice(market.quoteToken)
       )
 

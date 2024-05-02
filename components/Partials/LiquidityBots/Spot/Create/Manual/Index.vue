@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,
@@ -151,7 +151,7 @@ watch(isBaseAndQuoteType, (value) => {
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
       v-bind="{
-        market: gridStrategyStore.spotMarket as UiSpotMarketWithToken,
+        market: gridStrategyStore.spotMarket as SharedUiSpotMarket,
         decimalPlaces
       }"
     />

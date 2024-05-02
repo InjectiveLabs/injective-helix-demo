@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { SharedUiMarketSummary } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_MINIMAL_ABBREVIATION_FLOOR,
@@ -6,12 +7,7 @@ import {
 } from '@/app/utils/constants'
 import { stableCoinDenoms } from '@/app/data/token'
 import { getMarketRoute } from '@/app/utils/market'
-import {
-  MainPage,
-  UiMarketSummary,
-  UiMarketWithToken,
-  TradingBotsSubPage
-} from '@/types'
+import { MainPage, UiMarketWithToken, TradingBotsSubPage } from '@/types'
 
 const appStore = useAppStore()
 
@@ -24,7 +20,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   },
 

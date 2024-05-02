@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiDerivativeLimitOrder } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   order: {
     required: true,
-    type: Object as PropType<UiDerivativeLimitOrder>
+    type: Object as PropType<DerivativeLimitOrder>
   }
 })
 

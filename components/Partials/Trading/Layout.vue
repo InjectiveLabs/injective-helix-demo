@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { breakpointsTailwind } from '@vueuse/core'
+import { SharedUiMarketSummary } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { betaMarketSlugs } from '@/app/data/market'
 import {
   getDefaultSpotMarketRouteParams,
-  getDefaultPerpetualMarketRouteParams,
-  getDefaultGridSpotMarketRouteParams
+  getDefaultGridSpotMarketRouteParams,
+  getDefaultPerpetualMarketRouteParams
 } from '@/app/utils/market'
-import {
-  Modal,
-  TradingLayout,
-  UiMarketWithToken,
-  UiMarketSummary
-} from '@/types'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { Modal, TradingLayout, UiMarketWithToken } from '@/types'
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -51,7 +47,7 @@ const market = ref<UiMarketWithToken | undefined>(undefined)
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
 
 const summary = computed(() => {
-  const marketSummaries: UiMarketSummary[] = props.isSpot
+  const marketSummaries: SharedUiMarketSummary[] = props.isSpot
     ? spotStore.marketsSummary
     : derivativeStore.marketsSummary
 

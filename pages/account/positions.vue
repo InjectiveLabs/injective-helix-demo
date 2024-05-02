@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedBalanceWithToken } from '@shared/types'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { AccountBalance, Modal } from '@/types'
 
 defineProps({
@@ -35,7 +35,7 @@ const sideOptions = [
 
 const side = ref('')
 const marketDenom = ref('')
-const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
@@ -76,16 +76,16 @@ const supportedTokens = computed(() => {
       balance: '',
       denom: market.baseToken.denom,
       token: market.baseToken
-    } as BalanceWithToken
+    } as SharedBalanceWithToken
 
     const quoteToken = {
       balance: '',
       denom: market.quoteDenom,
       token: market.quoteToken
-    } as BalanceWithToken
+    } as SharedBalanceWithToken
 
     return [...tokens, baseToken, quoteToken]
-  }, [] as BalanceWithToken[])
+  }, [] as SharedBalanceWithToken[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()
@@ -163,7 +163,7 @@ function closePosition() {
     .catch($onError)
 }
 
-function onSharePosition(position: UiPosition | PositionV2) {
+function onSharePosition(position: Position | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }

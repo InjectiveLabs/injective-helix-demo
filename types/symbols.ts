@@ -1,7 +1,4 @@
-import {
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket, SharedUiDerivativeMarket } from '@shared/types'
 import { Status } from '@injectivelabs/utils'
 import { ShallowRef } from 'nuxt/dist/app/compat/capi'
 import { OrderbookWorkerMessage } from './worker'
@@ -17,10 +14,10 @@ export const orderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
 >
 
 export const spotMarketKey = Symbol('SpotMarket') as InjectionKey<
-  ComputedRef<UiSpotMarketWithToken | undefined>
+  ComputedRef<SharedUiSpotMarket | undefined>
 >
 export const derivativeMarketKey = Symbol('DerivativeMarket') as InjectionKey<
-  ComputedRef<UiDerivativeMarketWithToken | undefined>
+  ComputedRef<SharedUiDerivativeMarket | undefined>
 >
 export const marketKey = Symbol('Market') as InjectionKey<
   ComputedRef<UiMarketWithToken | undefined>

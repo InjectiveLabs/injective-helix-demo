@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  MarketType,
-  ZERO_IN_BASE,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+  SharedMarketType,
+  SharedUiDerivativeMarket,
+  SharedUiExpiryFuturesMarket
+} from '@shared/types'
 import { format, fromUnixTime } from 'date-fns'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
@@ -15,7 +15,7 @@ const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiDerivativeMarket>,
     required: true
   }
 })
@@ -43,19 +43,19 @@ const settlementPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ZERO_IN_BASE
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return new BigNumberInBase(lastTradedPrice.value || 0)
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ZERO_IN_BASE
   }
 
-  const expiryFuturesMarket = props.market as UiExpiryFuturesMarketWithToken
+  const expiryFuturesMarket = props.market as SharedUiExpiryFuturesMarket
 
   if (!expiryFuturesMarket.expiryFuturesMarketInfo) {
     return ZERO_IN_BASE
@@ -85,19 +85,19 @@ const expiryAt = computed(() => {
     return ''
   }
 
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ''
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return ''
   }
 
-  const derivativeMarket = props.market as UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiExpiryFuturesMarket
   const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
   if (!expiryFuturesMarketInfo) {
@@ -151,7 +151,7 @@ const expiryAt = computed(() => {
           <span v-else class="text-gray-400">&mdash;</span>
         </div>
         <div
-          v-if="market.subType !== MarketType.Perpetual"
+          v-if="market.subType !== SharedMarketType.Perpetual"
           class="w-full text-gray-500 text-xs"
         >
           {{ expiryAt }}
@@ -174,7 +174,7 @@ const expiryAt = computed(() => {
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
       <div
-        v-if="market.subType !== MarketType.Perpetual"
+        v-if="market.subType !== SharedMarketType.Perpetual"
         class="w-full text-gray-500 text-xs text-right"
       >
         {{ expiryAt }}

@@ -1,16 +1,12 @@
-import { PointsMultiplier } from '@injectivelabs/sdk-ts'
-import {
-  UiSpotOrderbook,
-  UiDerivativeOrderbook,
-  SubaccountBalanceWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { RouteLocationRaw } from 'vue-router'
 import { Component } from 'vue'
+import { RouteLocationRaw } from 'vue-router'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { PointsMultiplier } from '@injectivelabs/sdk-ts'
+import { TokenStatic } from '@injectivelabs/token-metadata'
+import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { SharedSubaccountBalanceWithToken } from '@shared/types'
 import { MenuItemType, NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
@@ -35,7 +31,7 @@ export interface GeoLocation {
 }
 
 export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
-  extends Omit<SubaccountBalanceWithToken, 'totalBalance'> {
+  extends Omit<SharedSubaccountBalanceWithToken, 'totalBalance'> {
   inOrderBalance: BigNumberInBase
   margin: BigNumberInBase
   pnlInUsd: BigNumberInBase
@@ -93,16 +89,7 @@ export interface DropdownOption extends BaseDropdownOption {
 }
 
 export interface DropdownOptionWithToken extends BaseDropdownOption {
-  token?: Token
-}
-
-export interface UiSpotOrderbookWithSequence extends UiSpotOrderbook {
-  sequence: number
-}
-
-export interface UiDerivativeOrderbookWithSequence
-  extends UiDerivativeOrderbook {
-  sequence: number
+  token?: TokenStatic
 }
 
 export interface Banner {

@@ -4,9 +4,10 @@ import {
   fromBase64,
   MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
+import { wasmApi } from '@shared/Service'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { msgBroadcastClient, wasmApi } from '@/app/Services'
+import { msgBroadcaster } from '@shared/WalletService'
 
 const REWARDS_CONTRACT = 'inj135qvnawxk6llfchya2fve7cw4aukmg0xfz9ea7'
 const CAMPAIGN_ID = 1
@@ -72,7 +73,7 @@ export const useAirdropStore = defineStore('airdrop', {
         }
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: [message],
         injectiveAddress: walletStore.injectiveAddress
       })

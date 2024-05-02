@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { Modal, UiMarketWithToken, UiTrade } from '@/types'
 
 const derivativeStore = useDerivativeStore()
@@ -13,7 +13,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 const tradeDetails = ref(undefined as UiTrade | undefined)
 
 const trades = computed(() =>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   order: {
-    type: Object as PropType<UiSpotOrderHistory>,
+    type: Object as PropType<SpotOrderHistory>,
     required: true
   }
 })

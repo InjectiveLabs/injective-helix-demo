@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {
-  BalanceWithToken,
-  BalanceWithTokenAndPrice
-} from '@injectivelabs/sdk-ui-ts'
+  SharedBalanceWithToken,
+  SharedBalanceWithTokenAndPrice
+} from '@shared/types'
 import { SwapForm, SwapFormField } from '@/types'
 import { ONE_IN_BASE } from '@/app/utils/constants'
 
@@ -40,7 +40,9 @@ const props = defineProps({
   },
 
   options: {
-    type: Array as PropType<BalanceWithToken[] | BalanceWithTokenAndPrice[]>,
+    type: Array as PropType<
+      SharedBalanceWithToken[] | SharedBalanceWithTokenAndPrice[]
+    >,
     default: () => []
   }
 })

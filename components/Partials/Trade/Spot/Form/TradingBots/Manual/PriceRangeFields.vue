@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import {
   InvestmentTypeGst,
   SpotGridTradingField,
@@ -13,7 +13,7 @@ import {
 } from '@/app/utils/constants'
 
 const spotGridFormValues = useFormValues<SpotGridTradingForm>()
-const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+const market = inject(spotMarketKey) as Ref<SharedUiSpotMarket>
 
 const { lastTradedPrice } = useSpotLastPrice(market)
 

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
@@ -17,7 +18,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as SharedUiSpotMarket)
 )
 
 const hasAgreedToTerms = ref(false)

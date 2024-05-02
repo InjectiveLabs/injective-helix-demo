@@ -1,12 +1,12 @@
-import { UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
+import { indexerSpotApi } from '@shared/Service'
+import { SharedUiSpotTrade } from '@shared/types'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerSpotApi } from '@/app/Services'
 
 export class SpotTradeIntegrityStrategy
   extends BaseDataIntegrityStrategy<string>
-  implements ConcreteDataIntegrityStrategy<string, UiSpotTrade>
+  implements ConcreteDataIntegrityStrategy<string, SharedUiSpotTrade>
 {
   static make(marketId: string): SpotTradeIntegrityStrategy {
     return new SpotTradeIntegrityStrategy(marketId)
@@ -35,8 +35,8 @@ export class SpotTradeIntegrityStrategy
   }
 
   verifyData(
-    existingTrades: UiSpotTrade[],
-    latestTrades: UiSpotTrade[]
+    existingTrades: SharedUiSpotTrade[],
+    latestTrades: SharedUiSpotTrade[]
   ): boolean {
     const [lastTradeFromStream] = existingTrades
     const [latestTradeFromFetch] = latestTrades

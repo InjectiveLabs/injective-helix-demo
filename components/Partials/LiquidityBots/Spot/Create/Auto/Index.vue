@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
@@ -25,7 +25,7 @@ const gridStrategyStore = useGridStrategyStore()
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as SharedUiSpotMarket)
 )
 
 const LOWER_BOUND_PERCENTAGE = 0.94
@@ -35,7 +35,7 @@ const SMOOTHING = 3
 const isAssetRebalancingChecked = ref(true)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as SharedUiSpotMarket)
 )
 
 const decimalPlaces = computed(() => {

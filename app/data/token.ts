@@ -1,7 +1,6 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
-import { tokenMetaUtils } from '@/app/Services'
+import { Network } from '@shared/types'
+import type { Token } from '@injectivelabs/token-metadata'
 import {
   getCw20FromSymbolOrNameAsString,
   getIbcDenomFromSymbolOrNameAsString,
@@ -9,33 +8,22 @@ import {
 } from '@/app/utils/helper'
 import { USDCSymbol } from '@/types'
 
-export const injToken = {
-  denom: INJ_DENOM,
-  ...tokenMetaUtils.getMetaBySymbol('INJ'),
-  usdPrice: 0
-} as TokenWithPrice
-
-export const usdtToken = {
-  ...(tokenMetaUtils.getMetaBySymbol('USDT') || {}),
-  denom: `peggy${tokenMetaUtils.getMetaBySymbol('USDT')?.erc20?.address}` || ''
-} as Token
-
 interface NetworkToSymbolMap {
   [key: string]: string
 }
 
 export const networkToSymbolMap = {
-  [BridgingNetwork.Ethereum]: 'ETH',
-  [BridgingNetwork.Axelar]: 'AXL',
-  [BridgingNetwork.CosmosHub]: 'ATOM',
-  [BridgingNetwork.Crescent]: 'CRE',
-  [BridgingNetwork.Evmos]: 'EVMOS',
-  [BridgingNetwork.Moonbeam]: 'AXL',
-  [BridgingNetwork.Osmosis]: 'OSMO',
-  [BridgingNetwork.Persistence]: 'XPRT',
-  [BridgingNetwork.Secret]: 'SCRT',
-  [BridgingNetwork.Stride]: 'STRD',
-  [BridgingNetwork.Arbitrum]: 'ARB'
+  [Network.Ethereum]: 'ETH',
+  [Network.Axelar]: 'AXL',
+  [Network.CosmosHub]: 'ATOM',
+  [Network.Crescent]: 'CRE',
+  [Network.Evmos]: 'EVMOS',
+  // [Network.Moonbeam]: 'AXL',
+  [Network.Osmosis]: 'OSMO',
+  [Network.Persistence]: 'XPRT',
+  [Network.Secret]: 'SCRT',
+  [Network.Stride]: 'STRD',
+  [Network.Arbitrum]: 'ARB'
 } as NetworkToSymbolMap
 
 export const TokenSymbols = {

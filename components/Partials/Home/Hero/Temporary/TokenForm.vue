@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { usdtToken, injToken } from '@/app/data/token'
+import { usdtToken, injToken } from '@shared/data/token'
 import { SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()

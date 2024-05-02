@@ -5,10 +5,10 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import { BusEvents, Modal } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BusEvents, Modal } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -20,7 +20,7 @@ const { handleSubmit, resetForm } = useForm()
 const { accountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
-const position = ref<UiPosition | PositionV2 | undefined>(undefined)
+const position = ref<Position | PositionV2 | undefined>(undefined)
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AddMarginToPosition] && !!position.value
@@ -52,7 +52,7 @@ const quoteBalance = computed(() => {
 
 onMounted(() => {
   // todo: refactor this to pass position from parent component
-  useEventBus<UiPosition>(BusEvents.AddMarginToPosition).on(
+  useEventBus<Position>(BusEvents.AddMarginToPosition).on(
     (p) => (position.value = p)
   )
 })

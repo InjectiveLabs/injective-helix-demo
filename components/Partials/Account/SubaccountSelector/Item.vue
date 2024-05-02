@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_MINIMAL_ABBREVIATION_FLOOR
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance } from '@/types'
 import {
-  getMarketSlugFromSubaccountId,
+  isSgtSubaccountId,
   getSubaccountIndex,
-  isSgtSubaccountId
+  getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
+import { AccountBalance } from '@/types'
 
 const props = defineProps({
   isHideBalances: Boolean,

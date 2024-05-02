@@ -5,7 +5,8 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
@@ -34,7 +35,7 @@ const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<SharedUiSpotMarket>,
     required: true
   }
 })

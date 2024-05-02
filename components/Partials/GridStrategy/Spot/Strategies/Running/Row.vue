@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { PropType } from 'nuxt/dist/app/compat/capi'
-import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiSpotMarket } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: SharedUiSpotMarket]
 }>()
 
 const spotStore = useSpotStore()
