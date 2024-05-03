@@ -55,7 +55,7 @@ function openQrCodeModal() {
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <AssetQrCode
+        <AssetQRCode
           class="hover:text-blue-500 h-4 w-4"
           @click="openQrCodeModal"
         />

@@ -90,6 +90,6 @@ function disconnect() {
       </template>
     </BaseHoverMenu>
 
-    <ModalsQrCode />
+    <ModalsQRCode />
   </div>
 </template>

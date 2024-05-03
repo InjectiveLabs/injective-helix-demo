@@ -2651,7 +2651,12 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@ledgerhq/errors@^6.10.0", "@ledgerhq/errors@^6.16.2", "@ledgerhq/errors@^6.16.4":
+"@ledgerhq/errors@^6.10.0", "@ledgerhq/errors@^6.16.2":
+  version "6.16.3"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.16.3.tgz#646f68cc7e6e8d5126bce1ca06140c5ad963bee8"
+  integrity sha512-3w7/SJVXOPa9mpzyll7VKoKnGwDD3BzWgN1Nom8byR40DiQvOKjHX+kKQausCedTHVNBn9euzPCNsftZ9+mxfw==
+
+"@ledgerhq/errors@^6.16.4":
   version "6.16.4"
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.16.4.tgz#a38baffe8b096d9fff3ad839cadb55704c8d8e7b"
   integrity sha512-M57yFaLYSN+fZCX0E0zUqOmrV6eipK+s5RhijHoUNlHUqrsvUz7iRQgpd5gRgHB5VkIjav7KdaZjKiWGcHovaQ==
@@ -6186,7 +6191,7 @@
     "@vueuse/shared" "10.9.0"
     vue-demi ">=0.14.7"
 
-"@vueuse/integrations@^10.9.0":
+"@vueuse/integrations@^10.7.1", "@vueuse/integrations@^10.9.0":
   version "10.9.0"
   resolved "https://registry.yarnpkg.com/@vueuse/integrations/-/integrations-10.9.0.tgz#2b1a9556215ad3c1f96d39cbfbef102cf6e0ec05"
   integrity sha512-acK+A01AYdWSvL4BZmCoJAcyHJ6EqhmkQEXbQLwev1MY7NBnS+hcEMx/BzVoR9zKI+UqEPMD9u6PsyAuiTRT4Q==
@@ -10443,6 +10448,14 @@ floating-vue@2.0.0-beta.24:
   version "2.0.0-beta.24"
   resolved "https://registry.yarnpkg.com/floating-vue/-/floating-vue-2.0.0-beta.24.tgz#ad4775c55581f8a3c219cf614d8e24a6ae4846e0"
   integrity sha512-URSzP6YXaF4u1oZ9XGL8Sn8puuM7ivp5jkOUrpy5Q1mfo9BfGppJOn+ierTmsSUfJEeHBae8KT7r5DeI3vQIEw==
+  dependencies:
+    "@floating-ui/dom" "~1.1.1"
+    vue-resize "^2.0.0-alpha.1"
+
+floating-vue@^2.0.0-beta.24:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/floating-vue/-/floating-vue-2.0.0.tgz#1b14d019366386cc1906346191d2fa15dbdfa38b"
+  integrity sha512-YSffLYOjoaaPPBZc7VQR2qMCQ7xeXuh7i8a2u8WOdSmkjTtKtZpj2aaJnLtZRHmehrMHyCgtSxLu8jFNNX2sVw==
   dependencies:
     "@floating-ui/dom" "~1.1.1"
     vue-resize "^2.0.0-alpha.1"
