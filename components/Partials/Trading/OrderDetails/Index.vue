@@ -101,7 +101,7 @@ const orderDetailsComponent = defineAsyncComponent<Record<string, unknown>>(
   }
 )
 
-const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
+const { valueToString: executionPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.executionPrice),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -109,24 +109,25 @@ const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: notionalWithFeesToFormat } = useBigNumberFormatter(
+const { valueToString: notionalWithFeesToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalWithFees),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: notionalWithFeesInUsdToFormat } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(
-      tokenStore.tokenUsdPrice(props.market.quoteToken)
-    ).times(props.notionalWithFees)
-  ),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    minimalDecimalPlaces: props.market.priceDecimals
-  }
-)
+const { valueToString: notionalWithFeesInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      new BigNumberInBase(
+        tokenStore.tokenUsdPrice(props.market.quoteToken)
+      ).times(props.notionalWithFees)
+    ),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
+    }
+  )
 
 const minimumReceivedAmount = computed(() => {
   if (props.executionPrice.lte('0')) {
@@ -145,14 +146,15 @@ const minimumReceivedAmount = computed(() => {
   return props.isBuy ? minimumReceivedQuoteAmount : minimumReceivedBaseAmount
 })
 
-const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
-  computed(() => minimumReceivedAmount.value || 0),
-  {
-    decimalPlaces: props.isBuy
-      ? props.market.quantityDecimals
-      : props.market.priceDecimals
-  }
-)
+const { valueToString: minimumReceivedAmountToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => minimumReceivedAmount.value || 0),
+    {
+      decimalPlaces: props.isBuy
+        ? props.market.quantityDecimals
+        : props.market.priceDecimals
+    }
+  )
 </script>
 
 <template>

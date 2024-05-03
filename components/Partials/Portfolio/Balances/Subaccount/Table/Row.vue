@@ -10,7 +10,7 @@ const props = defineProps({
   }
 })
 
-const { valueToString: availableAmountToString } = useBigNumberFormatter(
+const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.availableMargin).toBase(
       props.balance.token.decimals
@@ -19,7 +19,7 @@ const { valueToString: availableAmountToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
+const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
       props.balance.token.decimals
@@ -28,7 +28,7 @@ const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountToString } = useBigNumberFormatter(
+const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
       props.balance.token.decimals
@@ -40,7 +40,7 @@ const { valueToString: totalAmountToString } = useBigNumberFormatter(
 const {
   valueToString: reservedToString,
   valueToBigNumber: reservedToBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.inOrderBalance).toBase(
       props.balance.token.decimals
@@ -52,7 +52,7 @@ const {
 const {
   valueToString: unrealizedPnlToString,
   valueToBigNumber: unrealizedToBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.unrealizedPnl).toBase(
       props.balance.token.decimals

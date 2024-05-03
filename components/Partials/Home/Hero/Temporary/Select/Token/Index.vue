@@ -239,7 +239,7 @@ export default {
               />
             </Transition>
 
-            <BaseIcon
+            <SharedIcon
               v-if="!isDisabled && !isLoading"
               class="text-gray-600"
               name="caret-down-slim"

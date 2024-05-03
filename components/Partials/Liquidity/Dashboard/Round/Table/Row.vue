@@ -75,19 +75,17 @@ const totalAmountInUsd = computed(() =>
   )
 )
 
-const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
+const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
   totalAmountInUsd,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  marketVolumeInUsd,
-  {
+const { valueToString: marketVolumeInUsdToString } =
+  useSharedBigNumberFormatter(marketVolumeInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+  })
 </script>
 
 <template>

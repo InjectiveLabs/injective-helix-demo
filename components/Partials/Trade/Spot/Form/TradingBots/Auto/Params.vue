@@ -157,7 +157,7 @@ const grids = computed(() =>
   marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
 )
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   computed(() => {
     if (!lowerPrice.value || !upperPrice.value || !grids.value) {
       return ZERO_IN_BASE

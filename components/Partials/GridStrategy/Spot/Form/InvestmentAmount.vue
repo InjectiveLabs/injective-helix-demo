@@ -87,14 +87,14 @@ const isUpperBoundLtLastPrice = computed(() =>
   )
 )
 
-const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
   quoteDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: baseAmountToString } = useBigNumberFormatter(
+const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   baseDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

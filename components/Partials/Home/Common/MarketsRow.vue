@@ -51,7 +51,7 @@ const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary?.price || 0)
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -62,7 +62,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 
 const change = computed(() => new BigNumberInBase(props.summary?.change || 0))
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2,
   minimalDecimalPlaces: 4
 })
@@ -187,7 +187,7 @@ function tradeClickedTrack() {
           class="w-full text-gray-900 font-medium text-sm font-mono text-right"
         >
           <div class="flex align-center justify-end">
-            <BaseIcon
+            <SharedIcon
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               name="arrow"
               class="w-3 h-3 mr-1 mt-1"

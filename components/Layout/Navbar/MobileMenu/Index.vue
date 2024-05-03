@@ -35,7 +35,7 @@ watch(
       class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
       @click="open"
     >
-      <BaseIcon name="menu" />
+      <SharedIcon name="menu" />
     </button>
   </div>
 
@@ -53,7 +53,7 @@ watch(
           <div class="h-[100dvh] max-w-sm overflow-y-auto">
             <div class="p-4 border-b flex justify-between items-center">
               <AssetLogo class="mx-3" />
-              <BaseIcon name="close" @click="close" />
+              <SharedIcon name="close" @click="close" />
             </div>
 
             <div>

@@ -70,7 +70,7 @@ const settlementPrice = computed(() => {
   ).toBase(expiryFuturesMarket.quoteToken.decimals)
 })
 
-const { valueToString: settlementPriceToFormat } = useBigNumberFormatter(
+const { valueToString: settlementPriceToFormat } = useSharedBigNumberFormatter(
   settlementPrice,
   {
     decimalPlaces: Math.min(

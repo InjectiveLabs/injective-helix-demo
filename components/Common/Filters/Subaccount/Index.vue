@@ -54,7 +54,7 @@ function changeSubaccount(subaccountId: string) {
           </div>
 
           <span class="transition-all" :class="{ 'rotate-180': isOpen }">
-            <BaseIcon name="chevron-down" is-sm />
+            <SharedIcon name="chevron-down" is-sm />
           </span>
         </button>
       </template>

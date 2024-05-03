@@ -37,7 +37,7 @@ const settingsOptions = [
         </div>
 
         <div class="flex items-center p-4">
-          <BaseIcon name="chevron" is-sm class="rotate-180" />
+          <SharedIcon name="chevron" is-sm class="rotate-180" />
         </div>
       </NuxtLink>
     </div>

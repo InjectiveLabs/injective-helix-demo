@@ -144,7 +144,10 @@ onUnmounted(() => {
                 }}
               </span>
 
-              <BaseIcon name="arrow" class="ml-1 w-3 h-3 min-w-3 rotate-180" />
+              <SharedIcon
+                name="arrow"
+                class="ml-1 w-3 h-3 min-w-3 rotate-180"
+              />
             </div>
           </PartialsLegacyWormholeButton>
         </span>

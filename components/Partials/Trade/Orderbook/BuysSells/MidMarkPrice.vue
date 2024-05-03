@@ -32,14 +32,14 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
-const { valueToString: lastTradedPriceToString } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: markPriceToString } = useBigNumberFormatter(
+const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
@@ -52,7 +52,7 @@ const { valueToString: markPriceToString } = useBigNumberFormatter(
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">
-      <BaseIcon
+      <SharedIcon
         v-if="
           [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
             lastTradedPriceChange

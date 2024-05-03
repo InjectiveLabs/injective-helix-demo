@@ -63,7 +63,7 @@ const subaccountFormatted = computed(() => {
 })
 
 const { valueToString: abbreviatedTotalBalanceToString } =
-  useBigNumberFormatter(accountTotalBalanceInUsd, {
+  useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: shouldAbbreviateTotalBalance.value
       ? 0
       : UI_DEFAULT_MIN_DISPLAY_DECIMALS,

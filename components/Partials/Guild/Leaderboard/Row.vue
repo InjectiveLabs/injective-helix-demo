@@ -36,7 +36,7 @@ const startDate = computed(() => {
   return format(props.summary.startTime, 'MMM dd')
 })
 
-const { valueToString: tvlScoreToString } = useBigNumberFormatter(
+const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.guild.tvlScore,
@@ -45,7 +45,7 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   )
 )
 
-const { valueToString: volumeScoreToString } = useBigNumberFormatter(
+const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.guild.volumeScore,

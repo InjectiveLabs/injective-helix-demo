@@ -24,19 +24,22 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
+
+const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: feeToString } = useBigNumberFormatter(fee, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 </script>

@@ -1,20 +1,19 @@
 <script lang="ts" setup>
 import { SharedUiSpotMarket } from '@shared/types'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE,
   GST_GRID_THRESHOLD,
+  GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,
@@ -92,14 +91,14 @@ const isUpperBoundLtLastPrice = computed(() =>
   )
 )
 
-const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
   quoteDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: baseAmountToString } = useBigNumberFormatter(
+const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   baseDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

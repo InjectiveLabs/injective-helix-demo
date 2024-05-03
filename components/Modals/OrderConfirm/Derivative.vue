@@ -72,19 +72,19 @@ const markPriceIncrease = computed(() => {
   )
 })
 
-const { valueToString: amountToFormat } = useBigNumberFormatter(
+const { valueToString: amountToFormat } = useSharedBigNumberFormatter(
   computed(() => props.amount),
   {
     decimalPlaces: props.market.quantityDecimals
   }
 )
 
-const { valueToString: priceToFormat } = useBigNumberFormatter(
+const { valueToString: priceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.price),
   { decimalPlaces: props.market.priceDecimals }
 )
 
-const { valueToString: triggerPriceToFormat } = useBigNumberFormatter(
+const { valueToString: triggerPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.triggerPrice),
   {
     decimalPlaces: props.market.priceDecimals

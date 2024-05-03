@@ -10,7 +10,7 @@ const props = defineProps({
   }
 })
 
-const { valueToString: totalAmountToString } = useBigNumberFormatter(
+const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
       props.balance.token.decimals
@@ -19,7 +19,7 @@ const { valueToString: totalAmountToString } = useBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
+const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
       props.balance.token.decimals

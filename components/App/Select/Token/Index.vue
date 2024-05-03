@@ -105,7 +105,7 @@ const {
   valueToBigNumber,
   valueToFixed: maxBalanceToFixed,
   valueToString: maxBalanceToString
-} = useBigNumberFormatter(selectedTokenBalance, {
+} = useSharedBigNumberFormatter(selectedTokenBalance, {
   decimalPlaces: props.maxDecimals
 })
 
@@ -301,7 +301,7 @@ export default {
                 {{ $t('trade.swap.tokenSelector.selectToken') }}
               </div>
 
-              <BaseIcon
+              <SharedIcon
                 v-if="options.length > 1 || !selectedToken"
                 name="caret-down-slim"
                 is-sm

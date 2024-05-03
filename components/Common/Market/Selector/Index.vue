@@ -38,7 +38,7 @@ function setMarket(market: UiMarketWithToken) {
   <div class="flex flex-1 flex-col overflow-hidden">
     <div class="flex p-2 border-b">
       <div class="flex items-center p-2">
-        <BaseIcon name="search" />
+        <SharedIcon name="search" />
       </div>
 
       <input

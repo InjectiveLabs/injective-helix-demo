@@ -124,7 +124,7 @@ provide(portfolioStatusKey, portfolioStatus)
           wrapper-class="bg-brand-900 border-brand-700 border"
         >
           <template #close="{ closeNotification }">
-            <BaseIcon
+            <SharedIcon
               name="close-bold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
               @click="closeNotification"

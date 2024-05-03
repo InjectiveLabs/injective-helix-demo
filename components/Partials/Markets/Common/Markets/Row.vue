@@ -32,7 +32,7 @@ const lastPriceToString = computed(() =>
   new BigNumberInBase(props.summary.lastPrice || 0).toFormat()
 )
 
-const { valueToString: volumeToString } = useBigNumberFormatter(
+const { valueToString: volumeToString } = useSharedBigNumberFormatter(
   computed(() => props.volumeInUsd)
 )
 
@@ -80,7 +80,7 @@ function toggleFavorite() {
         class="pr-2 w-8 text-gray-700 hover:text-green-700"
         @click.stop.prevent="toggleFavorite"
       >
-        <BaseIcon name="star" />
+        <SharedIcon name="star" />
       </div>
 
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />

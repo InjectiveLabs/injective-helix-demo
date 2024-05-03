@@ -38,33 +38,34 @@ const rewardsWithToken = computed(() => {
   })
 })
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() => {
-    return props.campaign.rewards.reduce((total, reward) => {
-      const token = tokenStore.tokens.find(
-        ({ denom }) => denom === reward.denom
-      )
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      return props.campaign.rewards.reduce((total, reward) => {
+        const token = tokenStore.tokens.find(
+          ({ denom }) => denom === reward.denom
+        )
 
-      if (!token) {
-        return total
-      }
+        if (!token) {
+          return total
+        }
 
-      const rewardInBase = sharedToBalanceInToken({
-        value: reward.amount,
-        decimalPlaces: token.decimals
-      })
+        const rewardInBase = sharedToBalanceInToken({
+          value: reward.amount,
+          decimalPlaces: token.decimals
+        })
 
-      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
-        tokenStore.tokenUsdPrice(token)
-      )
+        const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+          tokenStore.tokenUsdPrice(token)
+        )
 
-      return total.plus(rewardInUsd)
-    }, ZERO_IN_BASE)
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+        return total.plus(rewardInUsd)
+      }, ZERO_IN_BASE)
+    }),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.campaign.totalScore,
@@ -84,7 +85,7 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <BaseIcon name="arrow" />
+        <SharedIcon name="arrow" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>

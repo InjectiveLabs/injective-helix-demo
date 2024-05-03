@@ -94,7 +94,7 @@ const isUpperBoundLtLastPrice = computed(() =>
 const {
   valueToString: quoteDenomAmountToString,
   valueToBigNumber: quoteDenomAmount
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
       quoteDenomBalance.value?.token.decimals
@@ -106,7 +106,7 @@ const {
 const {
   valueToString: baseDenomAmountToString,
   valueToBigNumber: baseDenomAmount
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
       baseDenomBalance.value?.token.decimals

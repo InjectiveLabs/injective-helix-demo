@@ -172,10 +172,10 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
-        <BaseIcon name="plus" is-xs />
+        <SharedIcon name="plus" is-xs />
       </button>
       <button class="border px-2 rounded-md" @click="zoomOut">
-        <BaseIcon name="minus" is-xs />
+        <SharedIcon name="minus" is-xs />
       </button>
     </div>
 

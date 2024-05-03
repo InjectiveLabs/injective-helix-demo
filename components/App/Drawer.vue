@@ -16,7 +16,7 @@ function toggle() {
         <slot name="header" />
       </div>
       <div class="absolute right-0 top-0">
-        <BaseIcon
+        <SharedIcon
           name="caret-down"
           class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
           :class="{

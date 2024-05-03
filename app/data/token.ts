@@ -1,6 +1,6 @@
 import { INJ_DENOM } from '@injectivelabs/utils'
 import { Network } from '@shared/types'
-import type { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import {
   getCw20FromSymbolOrNameAsString,
   getIbcDenomFromSymbolOrNameAsString,
@@ -36,7 +36,7 @@ export const tokenToDecimalsOverrideMap = {
   [TokenSymbols.WETH]: 5
 }
 
-export const getDenomsFromToken = (token: Token): string[] => {
+export const getDenomsFromToken = (token: TokenStatic): string[] => {
   const cw20Denom = getCw20FromSymbolOrNameAsString(token.symbol)
   const ibcDenom = getIbcDenomFromSymbolOrNameAsString(token.symbol)
   const peggyDenom = getPeggyDenomFromSymbolOrNameAsString(token.symbol)

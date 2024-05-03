@@ -62,27 +62,29 @@ const marketVolume = computed(() =>
   )
 )
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    rewardsWithToken.value.reduce((total, reward) => {
-      return total.plus(
-        new BigNumberInBase(reward.value).times(
-          tokenStore.tokenUsdPrice(reward.token)
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      rewardsWithToken.value.reduce((total, reward) => {
+        return total.plus(
+          new BigNumberInBase(reward.value).times(
+            tokenStore.tokenUsdPrice(reward.token)
+          )
         )
-      )
-    }, ZERO_IN_BASE)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+      }, ZERO_IN_BASE)
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    marketVolume.value.times(
-      market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
-    )
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: marketVolumeInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      marketVolume.value.times(
+        market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+      )
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
 const sgtScAddress = computed(() => {
   const market = spotStore.markets.find(

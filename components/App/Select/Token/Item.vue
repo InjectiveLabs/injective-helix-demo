@@ -36,7 +36,7 @@ const classes = computed(() => {
   return 'text-base'
 })
 
-const { valueToString: balanceToString } = useBigNumberFormatter(
+const { valueToString: balanceToString } = useSharedBigNumberFormatter(
   computed(() => props.balance)
 )
 

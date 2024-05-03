@@ -52,7 +52,7 @@ const lastTradedPrice = computed(() => {
 })
 
 const { valueToString: volumeToFormat, valueToBigNumber: volume } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE
@@ -77,7 +77,7 @@ const percentageChangeStatus = computed(() => {
     : SharedMarketChange.Decrease
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -86,7 +86,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value || !summary.value.change) {
         return ZERO_IN_BASE
@@ -97,7 +97,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
   )
 
 const { valueToString: highToFormat, valueToBigNumber: high } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE
@@ -111,7 +111,7 @@ const { valueToString: highToFormat, valueToBigNumber: high } =
   )
 
 const { valueToString: lowToFormat, valueToBigNumber: low } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE

@@ -30,7 +30,7 @@ const isBuy = computed(() => {
 const {
   valueToString: quoteBalanceToString,
   valueToFixed: quoteBalanceToFixed
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => {
     const balance = accountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market?.value?.quoteToken.denom

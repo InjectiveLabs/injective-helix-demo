@@ -51,7 +51,7 @@ const legacyWHMarketDenom = computed(() =>
   legacyWHDenoms.find((denom) => denom === (props.market.baseToken.denom || ''))
 )
 
-const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceInUsd } = useSharedBigNumberFormatter(
   computed(() => {
     if (
       !QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(props.market.quoteToken.denom)
@@ -117,12 +117,12 @@ const lastPriceChange = computed(() => {
   return props.summary.lastPriceChange
 })
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2,
   minimalDecimalPlaces: 4
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -131,17 +131,18 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: quoteVolumeToFormat } = useBigNumberFormatter(
+const { valueToString: quoteVolumeToFormat } = useSharedBigNumberFormatter(
   quoteVolume,
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
-  computed(() => props.volumeInUsd),
-  formatterOptions.value
-)
+const { valueToString: abbreviatedVolumeInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => props.volumeInUsd),
+    formatterOptions.value
+  )
 
 function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
@@ -167,8 +168,8 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
-        <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
@@ -306,13 +307,13 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon
+        <SharedIcon
           v-if="isFavorite"
           name="star"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <BaseIcon
+        <SharedIcon
           v-else
           name="star-border"
           class="min-w-5 w-5 h-5"

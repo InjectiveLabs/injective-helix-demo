@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 import { SharedUiSpotMarket } from '@shared/types'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()

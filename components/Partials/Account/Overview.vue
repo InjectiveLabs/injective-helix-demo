@@ -107,7 +107,7 @@ const accountTotalBalanceInBtcToString = computed(() => {
 })
 
 const { valueToString: abbreviatedTotalBalanceToString } =
-  useBigNumberFormatter(accountTotalBalanceInUsd, {
+  useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
     abbreviationFloor: shouldAbbreviateTotalBalance.value
       ? UI_MINIMAL_ABBREVIATION_FLOOR
@@ -155,8 +155,8 @@ function onTransferClick() {
           class="text-gray-450 hover:text-white cursor-pointer"
           @click="toggleHideBalances"
         >
-          <BaseIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
-          <BaseIcon v-else name="show" class="w-4 h-4" />
+          <SharedIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
+          <SharedIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
 

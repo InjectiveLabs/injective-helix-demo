@@ -25,11 +25,11 @@ const spotMarket = inject(spotMarketKey)
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
-const { valueToString: totalToString } = useBigNumberFormatter(
+const { valueToString: totalToString } = useSharedBigNumberFormatter(
   computed(() => props.totalWorstPriceWithSlippageAndFees)
 )
 
-const { valueToString: quantityToString } = useBigNumberFormatter(
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(spotFormValues.value.quantity || 0))
 )
 
@@ -48,7 +48,7 @@ function toggle() {
     >
       <p class="text-sm font-semibold select-none">Details</p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <BaseIcon name="chevron-down" is-sm />
+        <SharedIcon name="chevron-down" is-sm />
       </div>
     </div>
 

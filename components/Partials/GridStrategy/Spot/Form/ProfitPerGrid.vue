@@ -28,7 +28,7 @@ const profitPerGrid = computed(() => {
     .times(100)
 })
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: 2 }
 )

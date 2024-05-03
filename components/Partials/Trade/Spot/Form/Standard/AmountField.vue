@@ -64,7 +64,7 @@ const highDeviation = computed(() => {
 })
 
 const { valueToString: baseBalanceToString, valueToFixed: baseBalanceToFixed } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       const balance = accountBalancesWithToken.value.find(
         (balance) => balance.token.denom === market?.value?.baseToken.denom

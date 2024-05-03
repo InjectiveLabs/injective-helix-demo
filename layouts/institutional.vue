@@ -13,7 +13,7 @@
           class="pointer-events-auto bg-gray-800"
         >
           <template #close="{ closeNotification }">
-            <BaseIcon
+            <SharedIcon
               name="close-bold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
               @click="closeNotification"

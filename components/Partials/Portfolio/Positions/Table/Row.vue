@@ -33,11 +33,14 @@ const {
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
 // const limitCloseStatus = reactive(new Status(StatusType.Idle))
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
-  decimalPlaces: quantityDecimals.value
-})
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
 
-const { valueToString: quantityInUsdToString } = useBigNumberFormatter(
+const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
     quantity.value
       .times(markPrice.value)
@@ -48,23 +51,26 @@ const { valueToString: quantityInUsdToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: markPriceToString } = useBigNumberFormatter(markPrice, {
-  decimalPlaces: priceDecimals.value
-})
+const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
+  markPrice,
+  {
+    decimalPlaces: priceDecimals.value
+  }
+)
 
-const { valueToString: marginToString } = useBigNumberFormatter(margin, {
+const { valueToString: marginToString } = useSharedBigNumberFormatter(margin, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: percentagePnlToString } = useBigNumberFormatter(
+const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
   percentagePnl,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

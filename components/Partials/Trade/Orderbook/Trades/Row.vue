@@ -41,13 +41,16 @@ const quantity = computed(() =>
       )
 )
 
-const { valueToFixed: priceToFormat } = useBigNumberFormatter(price, {
+const { valueToFixed: priceToFormat } = useSharedBigNumberFormatter(price, {
   decimalPlaces: props.market.priceDecimals
 })
 
-const { valueToFixed: quantityToFormat } = useBigNumberFormatter(quantity, {
-  decimalPlaces: props.market.quantityDecimals
-})
+const { valueToFixed: quantityToFormat } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: props.market.quantityDecimals
+  }
+)
 
 const time = computed(() =>
   props.trade.executedAt ? format(props.trade.executedAt, 'HH:mm:ss') : ''

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 import { SharedUiSpotMarket } from '@shared/types'
-import { Modal } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal } from '@/types'
 
 const props = defineProps({
   baseAmount: {
@@ -34,17 +33,17 @@ const emit = defineEmits<{
 
 const modalStore = useModalStore()
 
-const { valueToString: baseAmountToString } = useBigNumberFormatter(
+const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.baseAmount),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.quoteAmount),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: marginToString } = useBigNumberFormatter(
+const { valueToString: marginToString } = useSharedBigNumberFormatter(
   computed(() => props.margin),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

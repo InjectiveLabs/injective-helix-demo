@@ -13,7 +13,7 @@ const granters = computed(() => [
       popper-class="min-w-3xs sm:min-w-2xs bg-gray-850 shadow-dropdown rounded-lg"
     >
       <template #default="{ toggle }">
-        <BaseIcon
+        <SharedIcon
           name="spy"
           class="w-4 h-4"
           :class="{

@@ -9,7 +9,7 @@ defineProps({
   isCampaignStarted: Boolean
 })
 
-const { valueToString: tvlScoreToString } = useBigNumberFormatter(
+const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.totalTvl || 0,
@@ -18,7 +18,7 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   )
 )
 
-const { valueToString: volumeScoreToString } = useBigNumberFormatter(
+const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.volumeScore || 0,
@@ -39,7 +39,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
           {{ $t('guild.leaderboard.table.members') }}
         </p>
         <div class="flex items-center gap-2 mt-3">
-          <BaseIcon name="user-filled" class="h-5 w-5 min-w-5" />
+          <SharedIcon name="user-filled" class="h-5 w-5 min-w-5" />
           <span>
             {{ campaignStore.totalGuildMember }} / {{ GUILD_MAX_CAP }}
           </span>
@@ -53,7 +53,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         <div class="flex items-center gap-2 mt-3">
           <span v-if="!isCampaignStarted"> &mdash; </span>
           <template v-else>
-            <BaseIcon
+            <SharedIcon
               v-if="campaignStore.guild.rankByTvl === 1"
               name="trophy-filled"
               class="h-5 w-5 min-w-5"
@@ -70,7 +70,7 @@ const { valueToString: volumeScoreToString } = useBigNumberFormatter(
         <div class="flex items-center gap-2 mt-3">
           <span v-if="!isCampaignStarted"> &mdash; </span>
           <template v-else>
-            <BaseIcon
+            <SharedIcon
               v-if="campaignStore.guild.rankByVolume === 1"
               name="trophy-filled"
               class="h-5 w-5 min-w-5"

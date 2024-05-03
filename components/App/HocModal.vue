@@ -44,7 +44,7 @@ function closeModal() {
           @click.stop
         >
           <div class="md:hidden p-4 flex justify-end">
-            <BaseIcon name="close" @click="closeModal" />
+            <SharedIcon name="close" @click="closeModal" />
           </div>
 
           <slot />

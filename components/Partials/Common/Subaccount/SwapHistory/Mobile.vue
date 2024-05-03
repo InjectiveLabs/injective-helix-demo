@@ -25,7 +25,7 @@ const {
     >
       <NuxtLink class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-end">
-          <BaseIcon name="external-link" class="w-3 h-3" />
+          <SharedIcon name="external-link" class="w-3 h-3" />
         </div>
       </NuxtLink>
     </div>

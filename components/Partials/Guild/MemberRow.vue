@@ -25,21 +25,23 @@ const explorerLink = computed(
   () => `${getExplorerUrl()}/account/${props.member.address}`
 )
 
-const { valueToString: tvlScorePercentageToString } = useBigNumberFormatter(
-  computed(() => props.member.tvlScorePercentage),
-  {
-    roundingMode: BigNumber.ROUND_DOWN
-  }
-)
+const { valueToString: tvlScorePercentageToString } =
+  useSharedBigNumberFormatter(
+    computed(() => props.member.tvlScorePercentage),
+    {
+      roundingMode: BigNumber.ROUND_DOWN
+    }
+  )
 
-const { valueToString: volumeScorePercentageToString } = useBigNumberFormatter(
-  computed(() => props.member.volumeScorePercentage),
-  {
-    roundingMode: BigNumber.ROUND_DOWN
-  }
-)
+const { valueToString: volumeScorePercentageToString } =
+  useSharedBigNumberFormatter(
+    computed(() => props.member.volumeScorePercentage),
+    {
+      roundingMode: BigNumber.ROUND_DOWN
+    }
+  )
 
-const { valueToString: tvlScoreToString } = useBigNumberFormatter(
+const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.member.tvlScore,
@@ -48,7 +50,7 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   )
 )
 
-const { valueToString: volumeScoreToString } = useBigNumberFormatter(
+const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.member.volumeScore,

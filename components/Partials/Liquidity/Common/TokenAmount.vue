@@ -22,7 +22,9 @@ const token = computed(() =>
   tokenStore.tokens.find(({ symbol }) => symbol === props.symbol)
 )
 
-const { valueToString } = useBigNumberFormatter(computed(() => props.amount))
+const { valueToString } = useSharedBigNumberFormatter(
+  computed(() => props.amount)
+)
 </script>
 
 <template>

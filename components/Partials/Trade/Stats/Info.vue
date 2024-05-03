@@ -34,7 +34,7 @@ defineProps({
                 percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <BaseIcon
+            <SharedIcon
               v-if="
                 [
                   SharedMarketChange.Increase,

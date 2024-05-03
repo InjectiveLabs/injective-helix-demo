@@ -26,7 +26,7 @@ const props = defineProps({
 const {
   valueToString: accountTotalBalanceInUsdInString,
   valueToBigNumber: accountTotalBalanceInUsdInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.accountTotalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
@@ -36,7 +36,7 @@ const {
 const {
   valueToString: accountTotalBalanceInString,
   valueToBigNumber: accountTotalBalanceInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.accountTotalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS

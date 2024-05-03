@@ -115,7 +115,7 @@ const learnList = [
             href="https://discord.com/invite/injective"
             target="_blank"
           >
-            <BaseIcon name="discord-circle" />
+            <SharedIcon name="discord-circle" />
           </a>
 
           <a
@@ -123,7 +123,7 @@ const learnList = [
             href="https://twitter.com/helixapp_"
             target="_blank"
           >
-            <BaseIcon name="twitter-circle" />
+            <SharedIcon name="twitter-circle" />
           </a>
 
           <a
@@ -131,7 +131,7 @@ const learnList = [
             href="https://t.me/helixapp"
             target="_blank"
           >
-            <BaseIcon name="telegram-circle" />
+            <SharedIcon name="telegram-circle" />
           </a>
         </div>
       </div>

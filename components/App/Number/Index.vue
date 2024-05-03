@@ -61,7 +61,7 @@ const actualDecimals = computed(() =>
     : props.decimals
 )
 
-const { valueToString: formattedNumberToString } = useBigNumberFormatter(
+const { valueToString: formattedNumberToString } = useSharedBigNumberFormatter(
   computed(() => actualNumber.value),
   {
     abbreviationFloor: props.abbreviationFloor,

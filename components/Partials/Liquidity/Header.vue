@@ -77,10 +77,10 @@ const endDate = computed(() => {
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
 
-const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
-  totalRewardsThisRound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: totalRewardsThisRoundToString } =
+  useSharedBigNumberFormatter(totalRewardsThisRound, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 </script>
 
 <template>

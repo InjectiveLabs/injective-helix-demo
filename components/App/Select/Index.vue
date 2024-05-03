@@ -54,7 +54,7 @@ function select(option: BaseDropdownOption) {
         <slot :selected="selectedOption" />
 
         <slot name="icon" :is-open="isOpen">
-          <BaseIcon
+          <SharedIcon
             name="chevron-down"
             class="h-3 w-3 min-w-3 fill-current"
             :class="{

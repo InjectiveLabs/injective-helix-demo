@@ -42,7 +42,7 @@ function handleIsAscending(value: boolean) {
               {{ $t('trade.markets') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <BaseIcon is-sm name="triangle" />
+              <SharedIcon is-sm name="triangle" />
             </div>
           </div>
         </template>
@@ -65,7 +65,7 @@ function handleIsAscending(value: boolean) {
               {{ $t('trade.price') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <BaseIcon is-sm name="triangle" />
+              <SharedIcon is-sm name="triangle" />
             </div>
           </div>
         </template>
@@ -86,7 +86,7 @@ function handleIsAscending(value: boolean) {
           <div class="flex items-center space-x-2 cursor-pointer">
             <div>24h Change</div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <BaseIcon is-sm name="triangle" />
+              <SharedIcon is-sm name="triangle" />
             </div>
           </div>
         </template>
@@ -107,7 +107,7 @@ function handleIsAscending(value: boolean) {
           <div class="flex items-center space-x-2 cursor-pointer">
             <div>{{ $t('trade.volumeUsd') }}</div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <BaseIcon is-sm name="triangle" />
+              <SharedIcon is-sm name="triangle" />
             </div>
           </div>
         </template>

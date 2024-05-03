@@ -54,8 +54,8 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
-        <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
@@ -126,13 +126,13 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon
+        <SharedIcon
           v-if="isFavorite"
           name="star"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <BaseIcon
+        <SharedIcon
           v-else
           name="star-border"
           class="min-w-5 w-5 h-5"

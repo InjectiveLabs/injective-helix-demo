@@ -32,9 +32,12 @@ const balance = computed(() =>
   )
 )
 
-const { valueToString: balanceToString } = useBigNumberFormatter(balance, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
+const { valueToString: balanceToString } = useSharedBigNumberFormatter(
+  balance,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
 </script>
 
 <template>

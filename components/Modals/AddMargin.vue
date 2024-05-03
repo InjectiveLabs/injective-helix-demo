@@ -61,7 +61,7 @@ const {
   valueToBigNumber: availableMargin,
   valueToFixed: availableMarginToFixed,
   valueToString: availableMarginToString
-} = useBigNumberFormatter(quoteBalance, {
+} = useSharedBigNumberFormatter(quoteBalance, {
   decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 })
 

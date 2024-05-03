@@ -76,11 +76,11 @@ const accountTotalBalanceInBtc = computed(() => {
 })
 
 const { valueToString: accountTotalBalanceInUsdToString } =
-  useBigNumberFormatter(accountTotalBalanceInUsd, {
+  useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   })
 const { valueToString: accountTotalBalanceInBtcToString } =
-  useBigNumberFormatter(accountTotalBalanceInBtc, {
+  useSharedBigNumberFormatter(accountTotalBalanceInBtc, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   })
 </script>

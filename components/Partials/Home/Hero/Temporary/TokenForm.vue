@@ -163,7 +163,7 @@ async function getInputQuantity() {
     </Transition>
 
     <div class="my-4">
-      <BaseIcon
+      <SharedIcon
         name="arrow"
         class="mx-auto min-w-6 w-6 h-6 -rotate-90 text-black"
       />

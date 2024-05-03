@@ -40,7 +40,7 @@ function toggleDrawer() {
         @click="toggleDrawer"
       >
         <template #symbolSuffix>
-          <BaseIcon
+          <SharedIcon
             name="caret-down"
             class="h-6 w-6 transition duration-300 hover:text-blue-500"
             :class="{

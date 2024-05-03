@@ -37,7 +37,7 @@ const explorerLink = `${getExplorerUrl()}/account/${
   props.campaignUser.accountAddress
 }`
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(props.campaignUser.score)
       .toBase(props.market.quoteToken.decimals)

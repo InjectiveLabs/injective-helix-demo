@@ -53,10 +53,11 @@ const formatterOptions = computed(() =>
       }
 )
 
-const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
-  computed(() => props.volumeInUsd),
-  formatterOptions.value
-)
+const { valueToString: abbreviatedVolumeInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => props.volumeInUsd),
+    formatterOptions.value
+  )
 
 function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
@@ -73,13 +74,13 @@ function toggleFavoriteMarket() {
       data-cy="markets-favorite-button"
       @click="toggleFavoriteMarket"
     >
-      <BaseIcon
+      <SharedIcon
         v-if="isFavorite"
         name="star"
         class="min-w-5 w-5 h-5"
         data-cy="markets-is-favorite-icon"
       />
-      <BaseIcon v-else name="star-border" class="min-w-5 w-5 h-5" />
+      <SharedIcon v-else name="star-border" class="min-w-5 w-5 h-5" />
     </div>
 
     <NuxtLink

@@ -37,17 +37,17 @@ const isOpen = ref(false)
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const { valueToString: upperPriceToString } = useBigNumberFormatter(
+const { valueToString: upperPriceToString } = useSharedBigNumberFormatter(
   computed(() => props.upperPrice),
   { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+const { valueToString: lowerPriceToString } = useSharedBigNumberFormatter(
   computed(() => props.lowerPrice),
   { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: currentPriceToString } = useBigNumberFormatter(
+const { valueToString: currentPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
@@ -81,7 +81,7 @@ function toggleAdvancedSettings() {
         class="transition-all duration-300"
         :class="{ 'rotate-180': isOpen }"
       >
-        <BaseIcon name="chevron-down" is-md />
+        <SharedIcon name="chevron-down" is-md />
       </div>
     </div>
 

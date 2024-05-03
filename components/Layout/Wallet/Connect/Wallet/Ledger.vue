@@ -13,7 +13,7 @@ function showLedgerModal() {
 <template>
   <LayoutWalletConnectWrapperMini @click="showLedgerModal">
     <template #logo>
-      <BaseIcon name="wallet/ledger" class="w-8 h-8" />
+      <SharedIcon name="wallet/ledger" class="w-8 h-8" />
     </template>
 
     <template #title>

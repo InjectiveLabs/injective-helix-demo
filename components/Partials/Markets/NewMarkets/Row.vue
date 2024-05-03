@@ -10,15 +10,15 @@ const props = defineProps({
   }
 })
 
-const { valueToString: priceToString } = useBigNumberFormatter(
-  computed(() => props.market.summary.lastPrice),
+const { valueToString: priceToString } = useSharedBigNumberFormatter(
+  computed(() => props.market.summary.lastPrice || 0),
   {
     decimalPlaces: props.market.market.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
 )
 
-const { valueToString: priceChangeToString } = useBigNumberFormatter(
+const { valueToString: priceChangeToString } = useSharedBigNumberFormatter(
   computed(() => props.market.summary.change),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

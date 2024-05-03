@@ -43,19 +43,17 @@ const stakedAmountInUsd = computed(() => {
   return stakedAmount.value.times(injUsdPrice)
 })
 
-const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
+const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
   stakedAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: stakedAmountInUsdToFormat } = useBigNumberFormatter(
-  stakedAmountInUsd,
-  {
+const { valueToString: stakedAmountInUsdToFormat } =
+  useSharedBigNumberFormatter(stakedAmountInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+  })
 </script>
 
 <template>

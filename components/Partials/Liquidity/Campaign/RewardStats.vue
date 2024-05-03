@@ -49,7 +49,7 @@ const explorerLink = computed(() => {
   return `${getExplorerUrl()}/account/${walletStore.address}`
 })
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() => {
     if (!campaignWithReward.value || !market.value) {
       return 0

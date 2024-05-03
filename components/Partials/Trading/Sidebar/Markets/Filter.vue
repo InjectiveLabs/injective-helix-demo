@@ -74,7 +74,7 @@ const isLowVolumeMarketsVisibleValue = computed({
                     : 'text-gray-500 hover:text-gray-200'
                 ]"
               >
-                <BaseIcon
+                <SharedIcon
                   v-if="marketType === SharedMarketType.Favorite"
                   name="star"
                   class="min-w-4 h-4 w-4"

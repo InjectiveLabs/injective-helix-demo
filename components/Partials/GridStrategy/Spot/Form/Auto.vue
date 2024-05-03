@@ -127,17 +127,17 @@ const profitPerGrid = computed(() => {
   return priceDifference.dividedBy(lowerPrice.value).times(100)
 })
 
-const { valueToString: upperPriceToString } = useBigNumberFormatter(
+const { valueToString: upperPriceToString } = useSharedBigNumberFormatter(
   upperPrice,
   { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+const { valueToString: lowerPriceToString } = useSharedBigNumberFormatter(
   lowerPrice,
   { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

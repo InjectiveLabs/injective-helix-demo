@@ -28,7 +28,7 @@ defineProps({
     >
       <div v-if="!slots.illustration" class="flex justify-between">
         <slot name="date" />
-        <BaseIcon name="arrow" class="text-blue-500 rotate-180 h-5 w-5" />
+        <SharedIcon name="arrow" class="text-blue-500 rotate-180 h-5 w-5" />
       </div>
       <div v-if="!slots.illustration" class="font-semibold">
         <slot name="title" />

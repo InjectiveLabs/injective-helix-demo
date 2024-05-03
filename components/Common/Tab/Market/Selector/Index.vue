@@ -47,7 +47,7 @@ const activeMarket = computed(() =>
 
     <div class="flex items-center pl-2">
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <BaseIcon name="chevron-down" is-sm />
+        <SharedIcon name="chevron-down" is-sm />
       </div>
     </div>
   </div>

@@ -28,7 +28,10 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapper @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/okx-wallet" class="w-8 h-8 bg-white rounded-lg" />
+      <SharedIcon
+        name="wallet/okx-wallet"
+        class="w-8 h-8 bg-white rounded-lg"
+      />
     </template>
 
     <template #title>
@@ -48,7 +51,7 @@ function connect() {
         target="_blank"
         rel="noreferrer"
       >
-        <BaseIcon name="download" class="h-5 w-5 hover:text-blue-500" />
+        <SharedIcon name="download" class="h-5 w-5 hover:text-blue-500" />
       </NuxtLink>
     </template>
   </LayoutWalletConnectWrapper>

@@ -39,7 +39,7 @@ const socialLinks = [
               :href="link.link"
               target="_blank"
             >
-              <BaseIcon :name="link.icon" class="w-4 h-4" />
+              <SharedIcon :name="link.icon" class="w-4 h-4" />
             </a>
           </div>
         </div>

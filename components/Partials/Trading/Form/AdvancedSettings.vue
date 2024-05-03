@@ -234,7 +234,7 @@ function toggleDrawer() {
         {{ $t('trade.advanced_settings') }}
       </span>
       <div class="flex items-stretch">
-        <BaseIcon
+        <SharedIcon
           name="caret-down"
           class="text-gray-500 group-hover:text-gray-200 rotate-180 self-center w-4 h-4"
           :class="{ 'rotate-0': !drawerIsOpen }"
@@ -277,7 +277,7 @@ function toggleDrawer() {
             @click="toggleToSlippageInput()"
           >
             <div class="text-sm">{{ slippageTolerance }}%</div>
-            <BaseIcon
+            <SharedIcon
               name="caret-down"
               class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
               data-cy="trading-page-slippage-toggle-icon"
@@ -330,7 +330,7 @@ function toggleDrawer() {
       font-semibold
       text-2xs
     >
-      <BaseIcon name="exclamation-circle-fill" is-sm class="mt-0.25" />
+      <SharedIcon name="exclamation-circle-fill" is-sm class="mt-0.25" />
       <span>
         {{ slippageToleranceError[0] }}
       </span>

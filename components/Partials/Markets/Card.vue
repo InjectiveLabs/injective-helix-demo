@@ -41,14 +41,14 @@ const change = computed(() => {
   return new BigNumberInBase(props.summary.change)
 })
 
-const { valueToString: volumeInUsdToFormat } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
   computed(() => props.volumeInUsd),
   {
     decimalPlaces: 2
   }
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -57,7 +57,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2
 })
 </script>

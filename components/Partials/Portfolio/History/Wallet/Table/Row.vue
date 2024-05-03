@@ -58,7 +58,7 @@ const time = computed(() => {
   return format(props.transaction.timestamp, DATE_TIME_DISPLAY)
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(amount, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 </script>

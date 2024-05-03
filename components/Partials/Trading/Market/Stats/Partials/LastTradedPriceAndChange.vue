@@ -61,7 +61,7 @@ const percentageChangeStatus = computed(() => {
     : SharedMarketChange.Decrease
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -70,7 +70,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!props.summary || !props.summary.change) {
         return ZERO_IN_BASE
@@ -115,7 +115,7 @@ useTimeoutFn(() => status.setIdle(), 3 * 1000)
         class="flex items-center tracking-wide leading-none"
         :class="{ 'text-xs': !isLg }"
       >
-        <BaseIcon
+        <SharedIcon
           v-if="
             [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
               percentageChangeStatus

@@ -1,5 +1,5 @@
 import { SharedUiSpotMarket } from '@shared/types'
-import type { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import { OrderSide } from '@injectivelabs/ts-types'
 
 export default function useConvertFormatter() {
@@ -30,7 +30,7 @@ export default function useConvertFormatter() {
       return quoteTokenExistOnTokensList
         ? tokens
         : [market.quoteToken, ...tokens]
-    }, [] as Token[])
+    }, [] as TokenStatic[])
   )
 
   const tradableTokensMap = computed(() => {
@@ -59,7 +59,7 @@ export default function useConvertFormatter() {
           [market.baseDenom]: quoteToken
         }
       },
-      {} as Record<string, Token[]>
+      {} as Record<string, TokenStatic[]>
     )
   })
 

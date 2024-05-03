@@ -63,7 +63,7 @@ defineProps({
           "
           @click="onPrevEvent"
         >
-          <BaseIcon name="caret-thin" class="h-auto w-3" />
+          <SharedIcon name="caret-thin" class="h-auto w-3" />
         </span>
 
         <div class="mx-3 flex items-center gap-0.5 text-sm font-semibold">
@@ -95,7 +95,7 @@ defineProps({
           "
           @click="onNextEvent"
         >
-          <BaseIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
+          <SharedIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
         </span>
       </div>
     </template>

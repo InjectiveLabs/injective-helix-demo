@@ -93,7 +93,7 @@ const {
     <td class="h-12 text-right pr-3 text-xs">
       <NuxtLink class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-center">
-          <BaseIcon name="external-link" class="w-3 h-3" />
+          <SharedIcon name="external-link" class="w-3 h-3" />
         </div>
       </NuxtLink>
     </td>

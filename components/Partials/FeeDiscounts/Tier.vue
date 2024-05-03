@@ -80,25 +80,25 @@ const takerFeeDiscount = computed(() => {
   return takerDiscountRate
 })
 
-const { valueToString: makerFeeDiscountToFormat } = useBigNumberFormatter(
+const { valueToString: makerFeeDiscountToFormat } = useSharedBigNumberFormatter(
   makerFeeDiscount,
   {
     decimalPlaces: getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
   }
 )
 
-const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
+const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
   stakedAmount,
   {
     decimalPlaces: 0
   }
 )
 
-const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
   decimalPlaces: 0
 })
 
-const { valueToString: takerFeeDiscountToFormat } = useBigNumberFormatter(
+const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
   takerFeeDiscount,
   {
     decimalPlaces: getExactDecimalsFromNumber(takerFeeDiscount.value.toNumber())

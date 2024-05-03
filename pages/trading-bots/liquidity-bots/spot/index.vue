@@ -136,7 +136,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <div>
         <button @click="isBannerOpen = false">
-          <BaseIcon name="close" />
+          <SharedIcon name="close" />
         </button>
       </div>
     </div>

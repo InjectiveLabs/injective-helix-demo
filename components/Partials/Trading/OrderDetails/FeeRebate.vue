@@ -39,7 +39,7 @@ const feeRebates = computed(() => {
   ).times(0.6 /* Only 60% of the fees are getting returned */)
 })
 
-const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
+const { valueToString: feeRebatesToFormat } = useSharedBigNumberFormatter(
   feeRebates,
   {
     decimalPlaces: feeRebates.value.lte(UI_MINIMAL_AMOUNT)

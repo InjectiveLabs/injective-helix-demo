@@ -10,7 +10,7 @@ const props = defineProps({
   }
 })
 
-const { valueToString: rewardToString } = useBigNumberFormatter(
+const { valueToString: rewardToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.reward.amount,

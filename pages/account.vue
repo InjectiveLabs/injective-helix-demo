@@ -93,7 +93,7 @@ useIntervalFn(appStore.pollMarkets, 1000 * 10)
                     {{ $t('common.legacy.goToTokenMigrationPage') }}
                   </span>
 
-                  <BaseIcon
+                  <SharedIcon
                     name="arrow"
                     class="font-bold w-3 h-3 min-w-3 rotate-180"
                   />

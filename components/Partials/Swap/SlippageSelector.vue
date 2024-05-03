@@ -58,7 +58,7 @@ function checkForInvalidSlippageValue() {
     >
       <template #default>
         <div>
-          <BaseIcon
+          <SharedIcon
             name="gear"
             class="h-5 w-5"
             :class="[
@@ -118,7 +118,10 @@ function checkForInvalidSlippageValue() {
               @blur="checkForInvalidSlippageValue"
             >
               <template v-if="slippageError" #prefix>
-                <BaseIcon name="warn" class="min-w-4 text-orange-500 h-4 w-4" />
+                <SharedIcon
+                  name="warn"
+                  class="min-w-4 text-orange-500 h-4 w-4"
+                />
               </template>
 
               <template #addon>

@@ -151,7 +151,7 @@ function fillRouteQueryParams(params: Record<string, string>) {
               v-if="filterType === FilterList[SharedMarketType.Favorite]"
               class="flex items-center"
             >
-              <BaseIcon name="star-border" class="mr-1" />
+              <SharedIcon name="star-border" class="mr-1" />
               <span>{{ $t('trade.favorites') }}</span>
             </span>
 

@@ -80,7 +80,7 @@ watchDebounced(
           </div>
 
           <div v-if="!isHideCloseButton">
-            <BaseIcon
+            <SharedIcon
               name="close"
               class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
               @click="close"

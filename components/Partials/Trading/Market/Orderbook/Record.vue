@@ -174,7 +174,7 @@ defineExpose({
       @click.stop="onPriceClick"
     >
       <!--
-        <BaseIcon
+        <SharedIcon
         v-if="existsInUserOrders"
         name="arrow"
         data-cy="orderbook-record-own-order-icon"

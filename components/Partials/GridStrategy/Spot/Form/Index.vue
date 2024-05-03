@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { SharedUiSpotMarket } from '@shared/types'
-import { PropType } from 'nuxt/dist/app/compat/capi'
 
 import {
   GridStrategyType,

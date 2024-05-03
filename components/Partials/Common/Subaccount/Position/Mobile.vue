@@ -160,7 +160,7 @@ function sharePosition() {
           <span>{{ effectiveLeverage.toFormat(2) }}x</span>
         </div>
 
-        <BaseIcon
+        <SharedIcon
           name="share"
           class="text-gray-500 hover:text-gray-400 w-3 h-3 min-w-3"
           @click="sharePosition"
@@ -175,7 +175,7 @@ function sharePosition() {
         @click="closePositionClicked"
       >
         <template #icon>
-          <BaseIcon name="close" is-sm />
+          <SharedIcon name="close" is-sm />
         </template>
       </PartialsCommonCancelButton>
     </div>

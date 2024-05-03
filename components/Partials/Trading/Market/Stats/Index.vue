@@ -62,7 +62,7 @@ function tokenClick() {
                 {{ market.ticker }}
               </span>
 
-              <BaseIcon
+              <SharedIcon
                 name="chevron"
                 class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"

@@ -35,7 +35,7 @@ const emit = defineEmits<{
         <slot v-bind="{ isOpen }" />
         <div class="flex items-center pl-2">
           <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-            <BaseIcon is-sm name="chevron-down" />
+            <SharedIcon is-sm name="chevron-down" />
           </div>
         </div>
       </div>

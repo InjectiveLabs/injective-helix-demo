@@ -27,13 +27,13 @@ const appStore = useAppStore()
           class="text-gray-500 flex justify-center cursor-pointer"
           @click="appStore.toggleHideBalances"
         >
-          <BaseIcon
+          <SharedIcon
             v-if="appStore.userState.preferences.isHideBalances"
             name="hide"
             class="w-8 h-5 -translate-x-[2px]"
           />
 
-          <BaseIcon v-else name="show" class="w-7" />
+          <SharedIcon v-else name="show" class="w-7" />
         </button>
       </div>
 

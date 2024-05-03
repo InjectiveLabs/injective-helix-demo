@@ -101,7 +101,7 @@ const { pause, isActive } = useIntervalFn(() => {
             :class="{ 'opacity-20': currentMarketsBatch === 0 }"
             @click="goToPrevious"
           >
-            <BaseIcon name="caret-thin" class="h-4 w-4 text-white" />
+            <SharedIcon name="caret-thin" class="h-4 w-4 text-white" />
           </div>
 
           <div
@@ -111,7 +111,10 @@ const { pause, isActive } = useIntervalFn(() => {
             }"
             @click="goToNext"
           >
-            <BaseIcon name="caret-thin" class="h-4 w-4 rotate-180 text-white" />
+            <SharedIcon
+              name="caret-thin"
+              class="h-4 w-4 rotate-180 text-white"
+            />
           </div>
         </div>
       </Teleport>

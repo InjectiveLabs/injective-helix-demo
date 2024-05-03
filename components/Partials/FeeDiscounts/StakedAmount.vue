@@ -7,7 +7,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const paramStore = useParamStore()
 const exchangeStore = useExchangeStore()
 
-const { valueToString: aprToFormat } = useBigNumberFormatter(
+const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
   computed(() => paramStore.apr.times(100)),
   {
     decimalPlaces: 2
@@ -29,7 +29,7 @@ const stakedAmount = computed(() => {
   )
 })
 
-const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
+const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
   stakedAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

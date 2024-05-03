@@ -43,7 +43,7 @@ const duration = computed(() =>
   )
 )
 
-const { valueToString: upperBoundToString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useSharedBigNumberFormatter(
   upperBound,
   {
     decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -52,7 +52,7 @@ const { valueToString: upperBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: lowerBoundToString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useSharedBigNumberFormatter(
   lowerBound,
   {
     decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -61,11 +61,11 @@ const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: investmentToString } = useBigNumberFormatter(
+const { valueToString: investmentToString } = useSharedBigNumberFormatter(
   investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

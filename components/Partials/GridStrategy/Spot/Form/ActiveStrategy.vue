@@ -94,54 +94,54 @@ const isGeometric = computed(
   () => props.activeStrategy.strategyType === StrategyType.Geometric
 )
 
-const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
-  computed(() => {
-    if (!subaccountBalances.value) {
-      return ZERO_IN_BASE
-    }
-    return new BigNumberInWei(
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value.baseDenom
-      )?.totalBalance || 0
-    ).toBase(market.value.baseToken.decimals)
-  })
-)
+const { valueToString: currentBaseBalanceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (!subaccountBalances.value) {
+        return ZERO_IN_BASE
+      }
+      return new BigNumberInWei(
+        subaccountBalances.value.find(
+          (balance) => balance.denom === market.value.baseDenom
+        )?.totalBalance || 0
+      ).toBase(market.value.baseToken.decimals)
+    })
+  )
 
-const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
-  computed(() => {
-    if (!subaccountBalances.value) {
-      return ZERO_IN_BASE
-    }
-    return new BigNumberInWei(
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value.quoteDenom
-      )?.accountTotalBalance || 0
-    ).toBase(market.value.quoteToken.decimals)
-  })
-)
+const { valueToString: currentQuoteBalanceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (!subaccountBalances.value) {
+        return ZERO_IN_BASE
+      }
+      return new BigNumberInWei(
+        subaccountBalances.value.find(
+          (balance) => balance.denom === market.value.quoteDenom
+        )?.accountTotalBalance || 0
+      ).toBase(market.value.quoteToken.decimals)
+    })
+  )
 
-const { valueToString: stopBaseQuantityToString } = useBigNumberFormatter(
+const { valueToString: stopBaseQuantityToString } = useSharedBigNumberFormatter(
   stopBaseQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: stopQuoteQuantityToString } = useBigNumberFormatter(
-  stopQuoteQuantity,
-  {
+const { valueToString: stopQuoteQuantityToString } =
+  useSharedBigNumberFormatter(stopQuoteQuantity, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+  })
 
-const { valueToString: totalAmountToString } = useBigNumberFormatter(
+const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   props.activeStrategy.state === StrategyStatus.Active
     ? accountTotalBalanceInUsd
     : investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: upperBoundToString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useSharedBigNumberFormatter(
   upperBound,
   {
     decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -150,7 +150,7 @@ const { valueToString: upperBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: lowerBoundToString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useSharedBigNumberFormatter(
   lowerBound,
   {
     decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -159,31 +159,32 @@ const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: creationExecutionPriceToString } = useBigNumberFormatter(
-  creationExecutionPrice,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: creationExecutionPriceToString } =
+  useSharedBigNumberFormatter(creationExecutionPrice, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 
-const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: creationBaseQuantityToString } = useBigNumberFormatter(
-  subscriptionBaseQuantity,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
-const { valueToString: creationQuoteQuantityToString } = useBigNumberFormatter(
-  subscriptionQuoteQuantity,
+const { valueToString: creationBaseQuantityToString } =
+  useSharedBigNumberFormatter(subscriptionBaseQuantity, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
+const { valueToString: creationQuoteQuantityToString } =
+  useSharedBigNumberFormatter(subscriptionQuoteQuantity, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
+
+const { valueToString: stopLossToString } = useSharedBigNumberFormatter(
+  stopLoss,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: stopLossToString } = useBigNumberFormatter(stopLoss, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
-
-const { valueToString: takeProfitToString } = useBigNumberFormatter(
+const { valueToString: takeProfitToString } = useSharedBigNumberFormatter(
   takeProfit,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

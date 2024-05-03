@@ -82,29 +82,30 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    Object.entries(totalRewards.value)
-      .reduce((sum, [denom, amount]) => {
-        const token = tokenStore.tokens.find((token) => token.denom === denom)
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      Object.entries(totalRewards.value)
+        .reduce((sum, [denom, amount]) => {
+          const token = tokenStore.tokens.find((token) => token.denom === denom)
 
-        const amountInUsd = amount
-          .toBase(token?.decimals || 18)
-          .times(tokenStore.tokenUsdPrice(token))
+          const amountInUsd = amount
+            .toBase(token?.decimals || 18)
+            .times(tokenStore.tokenUsdPrice(token))
 
-        return sum.plus(amountInUsd)
-      }, ZERO_IN_BASE)
-      .minus(rewardsThisRoundInUsd.value)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+          return sum.plus(amountInUsd)
+        }, ZERO_IN_BASE)
+        .minus(rewardsThisRoundInUsd.value)
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: rewardsThisRoundInUsdToString } = useBigNumberFormatter(
-  rewardsThisRoundInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: rewardsThisRoundInUsdToString } =
+  useSharedBigNumberFormatter(rewardsThisRoundInUsd, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 
-const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
+const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
   computed(() =>
     campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
       const market = spotStore.markets.find(
@@ -138,7 +139,7 @@ const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <BaseIcon name="arrow" />
+        <SharedIcon name="arrow" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>

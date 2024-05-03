@@ -61,7 +61,7 @@ export const withdraw = async ({
   subaccountId
 }: {
   amount: BigNumberInBase
-  token: Token
+  token: TokenStatic
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()

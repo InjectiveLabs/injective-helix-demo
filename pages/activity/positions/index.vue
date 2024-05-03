@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import {
   ActivityForm,
   ActivityField,
@@ -28,7 +28,7 @@ const tokens = computed(() => {
 
   const tokens = markets.value.reduce((tokens, market) => {
     return [...tokens, market.baseToken, market.quoteToken]
-  }, [] as Token[])
+  }, [] as TokenStatic[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()

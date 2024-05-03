@@ -18,7 +18,7 @@ const {
         <div class="border-b py-2">
           <label class="flex rounded p-1">
             <div class="flex items-center text-gray-500">
-              <BaseIcon name="search" />
+              <SharedIcon name="search" />
             </div>
 
             <input

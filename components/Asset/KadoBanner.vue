@@ -24,7 +24,7 @@ const url = computed(() => {
           {{ $t('banners.kado.tryNow') }}
         </span>
 
-        <BaseIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
+        <SharedIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
       </div>
     </NuxtLink>
   </div>

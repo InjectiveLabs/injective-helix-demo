@@ -29,19 +29,22 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
+
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: triggerPriceToString } = useBigNumberFormatter(
+const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
   triggerPrice,
   {
     decimalPlaces: quantityDecimals.value

@@ -83,7 +83,7 @@ function showNinjaPassModal() {
           class="flex px-0 w-10 items-center justify-center"
           @click="showNinjaPassModal"
         >
-          <BaseIcon name="gift" class="text-white w-4 h-4" />
+          <SharedIcon name="gift" class="text-white w-4 h-4" />
         </LayoutNavItemDummy>
 
         <LayoutNavItem
@@ -126,8 +126,8 @@ function showNinjaPassModal() {
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
       @click.stop="toggleSidebar"
     >
-      <BaseIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
-      <BaseIcon v-else name="menu" class="w-6 h-6" />
+      <SharedIcon v-if="isSidebarOpen" name="close" class="w-6 h-6" />
+      <SharedIcon v-else name="menu" class="w-6 h-6" />
     </button>
   </header>
 </template>

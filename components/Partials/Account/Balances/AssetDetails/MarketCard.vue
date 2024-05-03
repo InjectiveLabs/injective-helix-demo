@@ -26,9 +26,9 @@ const lastPriceChange = computed(
   () => props.summary.lastPriceChange || SharedMarketChange.NoChange
 )
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change)
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change)
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:

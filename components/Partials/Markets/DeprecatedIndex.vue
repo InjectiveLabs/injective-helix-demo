@@ -352,7 +352,7 @@ function prefillFromQueryParams() {
             "
           >
             <template #icon>
-              <BaseIcon name="star-border" class="text-gray-500 w-8 h-8" />
+              <SharedIcon name="star-border" class="text-gray-500 w-8 h-8" />
             </template>
 
             <span

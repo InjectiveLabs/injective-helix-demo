@@ -18,7 +18,7 @@ function onClose() {
 
         <slot v-if="$slots['add-on']" name="add-on" />
 
-        <BaseIcon
+        <SharedIcon
           name="close"
           class="w-4 h-4 min-w-4 font-normal mt-1 ml-4"
           @click="onClose"

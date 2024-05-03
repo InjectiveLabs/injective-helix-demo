@@ -60,7 +60,7 @@ const isGeometric = computed(
     StrategyType.Geometric
 )
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   computed(() => {
     if (
       !formValues.value[SpotGridTradingField.LowerPrice] ||

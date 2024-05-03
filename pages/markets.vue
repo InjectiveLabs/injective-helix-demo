@@ -135,7 +135,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
               />
 
               <div class="flex items-center pr-3">
-                <BaseIcon name="search" class="text-gray-500" />
+                <SharedIcon name="search" class="text-gray-500" />
               </div>
             </label>
           </div>

@@ -15,7 +15,7 @@ const props = defineProps({
   }
 })
 
-const { valueToString: averagePriceToString } = useBigNumberFormatter(
+const { valueToString: averagePriceToString } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(props.summary.total).dividedBy(props.summary.quantity)
   ),

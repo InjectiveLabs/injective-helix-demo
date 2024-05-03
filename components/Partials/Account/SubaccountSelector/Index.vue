@@ -34,7 +34,7 @@ function onCreateSubaccount() {
     </CommonSubaccountOptions>
 
     <div v-if="!walletStore.isAuthzWalletConnected">
-      <BaseIcon
+      <SharedIcon
         name="circle-plus"
         class="w-8 h-8 text-blue-500 cursor-pointer hover:text-opacity-80"
         @click="onCreateSubaccount"

@@ -6,7 +6,7 @@ const walletStore = useWalletStore()
   <div>
     <div class="flex items-center p-4">
       <NuxtLink :to="{ name: 'portfolio-settings' }" class="pr-4">
-        <BaseIcon name="chevron" />
+        <SharedIcon name="chevron" />
       </NuxtLink>
 
       <h3 class="portfolio-title">

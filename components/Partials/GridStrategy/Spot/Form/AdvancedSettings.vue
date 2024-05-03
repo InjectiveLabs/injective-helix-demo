@@ -86,7 +86,7 @@ function resetTpSlFields() {
       class="transition-all duration-300"
       :class="{ 'rotate-180': isAdvancedOpen }"
     >
-      <BaseIcon name="chevron-down" is-md />
+      <SharedIcon name="chevron-down" is-md />
     </div>
   </div>
 
@@ -105,7 +105,7 @@ function resetTpSlFields() {
               <CommonTokenIcon v-bind="{ token: settleInToken }" is-sm />
               <p>{{ settleInToken.symbol }}</p>
 
-              <BaseIcon
+              <SharedIcon
                 name="chevron-down"
                 is-md
                 :class="{ 'rotate-180': isOpen }"

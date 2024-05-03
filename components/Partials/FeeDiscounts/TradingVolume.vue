@@ -30,7 +30,7 @@ const shouldAbbreviateVolume = computed(() =>
   volume.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
 
-const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
   decimalPlaces: shouldAbbreviateVolume.value ? 0 : 2,
   abbreviationFloor: shouldAbbreviateVolume.value
     ? UI_MINIMAL_ABBREVIATION_FLOOR

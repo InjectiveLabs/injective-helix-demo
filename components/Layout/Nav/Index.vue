@@ -241,7 +241,7 @@ function swapClickedTrack() {
           >
             <p class="font-semibold text-base text-white flex items-center">
               <span>{{ $t('navigation.openLiquidityProgram') }}</span>
-              <BaseIcon name="external-link" arrow class="w-auto h-3 ml-2" />
+              <SharedIcon name="external-link" arrow class="w-auto h-3 ml-2" />
             </p>
             <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
               {{ $t('navigation.openLiquidityProgramDescription') }}

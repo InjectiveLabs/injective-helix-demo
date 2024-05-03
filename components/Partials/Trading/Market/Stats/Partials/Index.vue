@@ -38,7 +38,7 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const {
   valueToString: markPriceToFormat,
   valueToBigNumber: markPriceToBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => {
     if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
@@ -53,7 +53,7 @@ const {
 )
 
 const { valueToString: highToFormat, valueToBigNumber: high } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
         return ZERO_IN_BASE
@@ -69,7 +69,7 @@ const { valueToString: highToFormat, valueToBigNumber: high } =
 const {
   valueToString: spotLastTradedPriceInUsdToString,
   valueToBigNumber: spotLastTradedPriceInUsdToBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(
       tokenStore.tokenUsdPrice(props.market.quoteToken)
@@ -81,7 +81,7 @@ const {
   }
 )
 
-const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
+const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
   computed(() => {
     if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
@@ -117,7 +117,7 @@ const { valueToBigNumber: tWapEst } = useBigNumberFormatter(
   })
 )
 
-const { valueToBigNumber: fundingRate } = useBigNumberFormatter(
+const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
   computed(() => {
     if (props.market.type === SharedMarketType.Spot) {
       return ZERO_IN_BASE
@@ -163,7 +163,7 @@ const { valueToBigNumber: fundingRate } = useBigNumberFormatter(
 )
 
 const { valueToString: lowToFormat, valueToBigNumber: low } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
         return ZERO_IN_BASE
@@ -178,7 +178,7 @@ const { valueToString: lowToFormat, valueToBigNumber: low } =
   )
 
 const { valueToString: volumeToFormat, valueToBigNumber: volume } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
         return ZERO_IN_BASE

@@ -95,7 +95,7 @@ const lastTradedPriceChange = computed(() =>
     : derivativeLastTradedPriceChange.value
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.market.priceDecimals,
@@ -103,7 +103,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: markPriceToFormat } = useBigNumberFormatter(
+const { valueToString: markPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
@@ -111,7 +111,7 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: spotLastTradedPriceInUsdToString } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() =>
       new BigNumberInBase(
         tokenStore.tokenUsdPrice(props.market.quoteToken)
@@ -520,7 +520,7 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <BaseIcon
+        <SharedIcon
           v-if="
             [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
               lastTradedPriceChange

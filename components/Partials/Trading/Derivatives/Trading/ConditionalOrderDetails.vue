@@ -26,14 +26,14 @@ const isBinaryOption = computed(
   () => props.market.subType === SharedMarketType.BinaryOptions
 )
 
-const { valueToString: notionalValueToFormat } = useBigNumberFormatter(
+const { valueToString: notionalValueToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalValue),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
+const { valueToString: liquidationPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.liquidationPrice),
   {
     decimalPlaces: props.market.priceDecimals,

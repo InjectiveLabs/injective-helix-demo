@@ -47,7 +47,7 @@ defineProps({
           class="flex items-center hover:text-blue-200"
         >
           <span>{{ $t('liquidity.seeRewards') }}</span>
-          <div class="rotate-180 ml-1"><BaseIcon name="arrow" is-sm /></div>
+          <div class="rotate-180 ml-1"><SharedIcon name="arrow" is-sm /></div>
         </NuxtLink>
       </div>
 

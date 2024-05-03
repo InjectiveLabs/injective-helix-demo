@@ -201,7 +201,7 @@ function onUpdate() {
           @click="onClearFilters"
         >
           <div class="items-center flex gap-1">
-            <BaseIcon name="close" is-md />
+            <SharedIcon name="close" is-md />
             <span>{{ $t('filters.clearAll') }}</span>
           </div>
         </AppButton>

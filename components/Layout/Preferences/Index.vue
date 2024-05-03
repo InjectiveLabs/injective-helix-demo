@@ -21,7 +21,7 @@ const isTradingRoute = computed(() =>
           id="layout-preferences-button"
           class="w-6 h-6 cursor-pointer group flex justify-center items-center"
         >
-          <BaseIcon
+          <SharedIcon
             name="sliders"
             class="text-gray-450 group-hover:text-white w-4 h-4"
           />

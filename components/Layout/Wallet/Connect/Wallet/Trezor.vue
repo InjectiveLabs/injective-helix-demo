@@ -13,7 +13,7 @@ function showTrezorModal() {
 <template>
   <LayoutWalletConnectWrapperMini @click="showTrezorModal">
     <template #logo>
-      <BaseIcon name="wallet/trezor" class="w-8 h-8" />
+      <SharedIcon name="wallet/trezor" class="w-8 h-8" />
     </template>
 
     <template #title>

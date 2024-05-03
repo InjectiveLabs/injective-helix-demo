@@ -61,7 +61,7 @@ const hasReward = computed(() =>
   props.rewards.some(({ amount }) => new BigNumberInBase(amount).gt(0))
 )
 
-const { valueToString: scoreToString } = useBigNumberFormatter(
+const { valueToString: scoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.score,
@@ -70,7 +70,7 @@ const { valueToString: scoreToString } = useBigNumberFormatter(
   )
 )
 
-const { valueToString: percentageToString } = useBigNumberFormatter(
+const { valueToString: percentageToString } = useSharedBigNumberFormatter(
   computed(() => props.percentage),
   {
     roundingMode: BigNumber.ROUND_DOWN
