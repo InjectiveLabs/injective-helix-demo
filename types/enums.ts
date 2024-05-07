@@ -533,11 +533,18 @@ export enum SpotTradeFormField {
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  Total = 'total',
-  Quantity = 'quantity',
+  // Total = 'total',
+  // Quantity = 'quantity',
+  Amount = 'amount',
+  AmountOption = 'amountOption',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   IsSlippageOn = 'isSlippageOn'
+}
+
+export enum SpotAmountOption {
+  Base = 'base',
+  Quote = 'quote'
 }
 
 export enum DerivativesTradeFormField {

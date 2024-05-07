@@ -18,7 +18,8 @@ import {
   TradeTypes,
   SpotTradeFormField,
   DerivativesTradeFormField,
-  DerivativeTradeTypes
+  DerivativeTradeTypes,
+  SpotAmountOption
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -131,11 +132,13 @@ export type SpotTradeForm = {
   [SpotTradeFormField.Type]: TradeTypes
   [SpotTradeFormField.Side]: OrderSide
   [SpotTradeFormField.Price]: string
-  [SpotTradeFormField.Total]: string
   [SpotTradeFormField.Slippage]: string
-  [SpotTradeFormField.Quantity]: string
   [SpotTradeFormField.PostOnly]: boolean
   [SpotTradeFormField.IsSlippageOn]: boolean
+  [SpotTradeFormField.Amount]: string
+  [SpotTradeFormField.AmountOption]: SpotAmountOption
+  // [SpotTradeFormField.Quantity]: string
+  // [SpotTradeFormField.Total]: string
 }
 
 export type DerivativesTradeForm = {

@@ -20,7 +20,5 @@ import { MenuItemType } from '@/types'
     </div>
 
     <LayoutWallet />
-
-    <LayoutNavbarMobileMenu />
   </div>
 </template>

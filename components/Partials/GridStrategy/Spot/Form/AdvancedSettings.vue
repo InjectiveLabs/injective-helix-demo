@@ -83,7 +83,7 @@ function resetTpSlFields() {
   >
     <p class="font-semibold text-sm">{{ $t('sgt.advancedSettings') }}</p>
     <div
-      class="transition-all duration-300"
+      class="transition-all duration-300 select-none"
       :class="{ 'rotate-180': isAdvancedOpen }"
     >
       <BaseIcon name="chevron-down" is-md />

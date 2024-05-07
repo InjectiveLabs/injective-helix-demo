@@ -21,8 +21,19 @@ const walletStore = useWalletStore()
           (Authorization) which we store in local storage so we can auto-sign
           the transaction without exposing your private key
         </p>
-        <AppButton variant="success" @click="walletStore.connectAutoSign">
+        <AppButton
+          v-if="!walletStore.autoSign"
+          variant="success"
+          @click="walletStore.connectAutoSign"
+        >
           Enable Auto-Sign
+        </AppButton>
+        <AppButton
+          v-else
+          variant="danger"
+          @click="walletStore.disconnectAutoSign"
+        >
+          Disconnect Auto-Sign
         </AppButton>
       </div>
     </div>

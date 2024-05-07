@@ -1,21 +1,33 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SpotTradeForm, spotMarketKey } from '~/types'
+import { spotMarketKey } from '@/types'
 
 const props = defineProps({
-  hasEnoughLiquidity: Boolean,
-
-  totalWorstPrice: {
+  total: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
-
-  worstPriceWithSlippage: {
+  quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
-
-  totalWorstPriceWithSlippageAndFees: {
+  feeAmount: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+  worstPrice: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+  totalWithFee: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+  feePercentage: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+  slippagePercentage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
@@ -23,17 +35,18 @@ const props = defineProps({
 
 const spotMarket = inject(spotMarketKey)
 
-const spotFormValues = useFormValues<SpotTradeForm>()
-
 const { valueToString: totalToString } = useBigNumberFormatter(
-  computed(() => props.totalWorstPriceWithSlippageAndFees)
+  computed(() => props.totalWithFee)
 )
 
 const { valueToString: quantityToString } = useBigNumberFormatter(
-  computed(() => new BigNumberInBase(spotFormValues.value.quantity || 0))
+  computed(() => props.quantity),
+  {
+    decimalPlaces: spotMarket?.value?.quantityDecimals
+  }
 )
 
-const isOpen = ref(false)
+const isOpen = ref(true)
 
 function toggle() {
   isOpen.value = !isOpen.value

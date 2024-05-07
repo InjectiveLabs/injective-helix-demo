@@ -712,6 +712,14 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.initAutoSign()
     },
 
+    disconnectAutoSign() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        autoSign: undefined
+      })
+    },
+
     initAutoSign() {
       const walletStore = useWalletStore()
 

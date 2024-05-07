@@ -30,7 +30,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center pr-2 lg:hidden">
     <button
       class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
       @click="open"

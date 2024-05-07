@@ -9,11 +9,12 @@ import {
 } from '@/types'
 
 const props = defineProps({
-  worstPrice: {
+  quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
-  worstPriceWithSlippage: {
+
+  worstPrice: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
@@ -71,9 +72,7 @@ function submitLimitOrder() {
     spotFormValues.value[SpotTradeFormField.Price] || 0
   )
 
-  const quantity = new BigNumberInBase(
-    spotFormValues.value[SpotTradeFormField.Quantity] || 0
-  )
+  const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
     .submitLimitOrder({
@@ -101,16 +100,14 @@ function submitMarketOrder() {
 
   status.setLoading()
 
-  const quantity = new BigNumberInBase(
-    spotFormValues.value[SpotTradeFormField.Quantity] || 0
-  )
+  const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
     .submitMarketOrder({
       isBuy: isBuy.value,
       market: market.value,
       quantity,
-      price: props.worstPriceWithSlippage
+      price: props.worstPrice
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
