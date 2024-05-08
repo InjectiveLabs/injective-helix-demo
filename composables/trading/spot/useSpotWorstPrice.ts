@@ -64,6 +64,7 @@ export function useSpotWorstPrice() {
   const quantity = computed(() => {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
     const price = spotFormValues.value[SpotTradeFormField.Price] || 0
+
     let quantity = new BigNumberInBase(0)
 
     if (isLimitOrder.value && isBaseOrder.value) {
@@ -89,16 +90,18 @@ export function useSpotWorstPrice() {
     }
 
     if (!isLimitOrder.value && !isBaseOrder.value) {
-      const quantityAfterFees = new BigNumberInBase(
+      const totalAfterFees = new BigNumberInBase(
         spotFormValues.value[SpotTradeFormField.Amount] || 0
       ).div(feePercentage.value)
 
-      quantity = quantityAfterFees.div(
-        calculateTotalQuantity(
-          quantityAfterFees.toFixed(),
-          records
-        ).worstPrice.times(slippagePercentage.value)
-      )
+      const worstPrice = calculateTotalQuantity(
+        totalAfterFees.toFixed(),
+        records
+      ).worstPrice
+
+      const worstPriceWithSlippage = worstPrice.times(slippagePercentage.value)
+
+      quantity = totalAfterFees.div(worstPriceWithSlippage)
     }
 
     return quantizeNumber(quantity, market.value.quantityTensMultiplier)

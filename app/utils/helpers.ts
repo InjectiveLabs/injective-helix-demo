@@ -320,6 +320,7 @@ export function calculateTotalQuantity(
     if (remainingTotal - Number(record.volume) >= 0) {
       remainingTotal -= Number(record.volume)
       totalQuantity += Number(record.quantity)
+      worstPrice = record.price
     } else {
       totalQuantity += remainingTotal / Number(record.price)
       worstPrice = record.price

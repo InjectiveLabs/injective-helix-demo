@@ -83,8 +83,9 @@ function toggle() {
         <div class="flex items-center text-lg">
           <p class="text-gray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
+
           <p class="font-mono space-x-2">
-            <span>{{ totalToString }} </span>
+            <span>&asymp;{{ totalToString }} </span>
             <span class="text-gray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
@@ -103,10 +104,23 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.amount') }}</p>
+          <p class="text-gray-400">
+            {{ spotMarket.quoteToken.symbol }} {{ $t('trade.amount') }}
+          </p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span>{{ total.toFormat(2) }} </span>
+            <span>{{ total.toFormat(spotMarket.priceDecimals) }} </span>
+            <span class="text-gray-400">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div class="flex items-center text-xs font-medium">
+          <p class="text-gray-400">{{ $t('trade.price') }}</p>
+          <div class="border-t flex-1 mx-2" />
+          <p class="font-mono space-x-2">
+            <span>{{ worstPrice.toFormat(spotMarket.priceDecimals) }} </span>
             <span class="text-gray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>

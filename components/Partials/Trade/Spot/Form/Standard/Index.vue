@@ -27,20 +27,6 @@ const {
 
 <template>
   <div class="p-4">
-    <!-- <Whiteboard>
-      {{
-        {
-          total,
-          totalWithFee,
-          quantity,
-          feeAmount,
-          worstPrice,
-          feePercentage,
-          slippagePercentage
-        }
-      }}
-    </Whiteboard> -->
-
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(TradeTypes)"
