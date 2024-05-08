@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { spotMarketKey } from '@/types'
+import {
+  SpotTradeForm,
+  SpotTradeFormField,
+  TradeTypes,
+  spotMarketKey
+} from '@/types'
 
 const props = defineProps({
   total: {
@@ -35,6 +40,10 @@ const props = defineProps({
 
 const spotMarket = inject(spotMarketKey)
 
+const spotFormValues = useFormValues<SpotTradeForm>()
+
+const isOpen = ref(true)
+
 const { valueToString: totalToString } = useBigNumberFormatter(
   computed(() => props.totalWithFee)
 )
@@ -46,7 +55,11 @@ const { valueToString: quantityToString } = useBigNumberFormatter(
   }
 )
 
-const isOpen = ref(true)
+const isLimitAndPostOnly = computed(
+  () =>
+    spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit &&
+    spotFormValues.value.postOnly
+)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -68,7 +81,7 @@ function toggle() {
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
         <div class="flex items-center text-lg">
-          <p class="text-gray-400">{{ $t('trade.total') }}</p>
+          <p class="text-gray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span>{{ totalToString }} </span>
@@ -90,6 +103,20 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
+          <p class="text-gray-400">{{ $t('trade.amount') }}</p>
+          <div class="border-t flex-1 mx-2" />
+          <p class="font-mono space-x-2">
+            <span>{{ total.toFormat(2) }} </span>
+            <span class="text-gray-400">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div
+          v-if="!isLimitAndPostOnly"
+          class="flex items-center text-xs font-medium"
+        >
           <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p v-if="spotMarket" class="font-mono">
@@ -97,6 +124,24 @@ function toggle() {
             {{ +spotMarket.takerFeeRate * 100 }}%
           </p>
         </div>
+
+        <template v-else>
+          <div class="flex items-center text-xs font-medium">
+            <p class="text-gray-400">{{ $t('trade.maker_rate') }}</p>
+            <div class="border-t flex-1 mx-2" />
+            <p v-if="spotMarket" class="font-mono">
+              {{ +spotMarket.makerFeeRate * 100 }}%
+            </p>
+          </div>
+
+          <div class="flex items-center text-xs font-medium">
+            <p class="text-gray-400">{{ $t('trade.estFeeRebate') }}</p>
+            <div class="border-t flex-1 mx-2" />
+            <p v-if="spotMarket" class="font-mono">
+              {{ feeAmount.abs().toFixed(spotMarket.priceDecimals) }} USDT
+            </p>
+          </div>
+        </template>
       </div>
     </AppCollapse>
   </div>

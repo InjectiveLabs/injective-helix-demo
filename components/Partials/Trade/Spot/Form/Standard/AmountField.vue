@@ -24,6 +24,12 @@ const options = [
     value: SpotAmountOption.Quote
   }
 ]
+
+const decimals = computed(() => {
+  return typeValue.value === SpotAmountOption.Base
+    ? market.value.quantityDecimals
+    : market.value.priceDecimals
+})
 </script>
 
 <template>
@@ -32,7 +38,11 @@ const options = [
       <p class="field-label">{{ $t('trade.amount') }}</p>
     </div>
 
-    <AppInputField v-model="amountValue" placeholder="0.00">
+    <AppInputField
+      v-bind="{ decimals }"
+      v-model="amountValue"
+      placeholder="0.00"
+    >
       <template #right>
         <AppSelect
           v-model="typeValue"
