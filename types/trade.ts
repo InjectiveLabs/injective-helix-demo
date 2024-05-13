@@ -16,6 +16,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   TradeField,
   TradeTypes,
+  TradeAmountOption,
   InvestmentTypeGst,
   SpotTradeFormField,
   DerivativeTradeTypes,
@@ -136,17 +137,21 @@ export type SpotTradeForm = {
   [SpotTradeFormField.Type]: TradeTypes
   [SpotTradeFormField.Side]: OrderSide
   [SpotTradeFormField.Price]: string
-  [SpotTradeFormField.Total]: string
   [SpotTradeFormField.Slippage]: string
-  [SpotTradeFormField.Quantity]: string
   [SpotTradeFormField.PostOnly]: boolean
   [SpotTradeFormField.IsSlippageOn]: boolean
+  [SpotTradeFormField.Amount]: string
+  [SpotTradeFormField.AmountOption]: TradeAmountOption
+  // [SpotTradeFormField.Quantity]: string
+  // [SpotTradeFormField.Total]: string
 }
 
 export type DerivativesTradeForm = {
-  [DerivativesTradeFormField.Total]: string
   [DerivativesTradeFormField.Side]: OrderSide
-  [DerivativesTradeFormField.Quantity]: string
+  [DerivativesTradeFormField.Amount]: string
+  [SpotTradeFormField.AmountOption]: TradeAmountOption
+  // [DerivativesTradeFormField.Total]: string
+  // [DerivativesTradeFormField.Quantity]: string
   [DerivativesTradeFormField.Slippage]: string
   [DerivativesTradeFormField.Leverage]: string
   [DerivativesTradeFormField.PostOnly]: boolean

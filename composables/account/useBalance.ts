@@ -2,6 +2,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
+import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 
 const reduceAccountBalances = (
   accountBalance1: AccountBalance,
@@ -62,7 +63,15 @@ export function useBalance() {
             const denom = token.denom
             const usdPrice = tokenStore.tokenUsdPrice(token)
 
-            const bankBalance = accountStore.balanceMap[token.denom] || '0'
+            const bankBalanceWithoutCw20 =
+              accountStore.balancesMap[token.denom] || '0'
+
+            const cw20Address = getCw20AddressFromDenom(token.denom)
+            const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
+
+            const bankBalance = new BigNumberInWei(bankBalanceWithoutCw20)
+              .plus(cw20Balance)
+              .toFixed()
 
             const subaccountBalances =
               accountStore.subaccountBalancesMap[subaccountId]
@@ -144,7 +153,15 @@ export function useBalance() {
       const denom = token.denom
       const usdPrice = tokenStore.tokenUsdPrice(token)
 
-      const bankBalance = accountStore.balanceMap[token.denom] || '0'
+      const bankBalanceWithoutCw20 =
+        accountStore.balancesMap[token.denom] || '0'
+
+      const cw20Address = getCw20AddressFromDenom(token.denom)
+      const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
+
+      const bankBalance = new BigNumberInWei(bankBalanceWithoutCw20)
+        .plus(cw20Balance)
+        .toFixed()
 
       const subaccountBalances =
         accountStore.subaccountBalancesMap[accountStore.subaccountId]

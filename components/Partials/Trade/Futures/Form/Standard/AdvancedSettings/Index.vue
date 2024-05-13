@@ -5,7 +5,7 @@ import {
   DerivativesTradeForm
 } from '@/types'
 
-const spotFormValues = useFormValues<DerivativesTradeForm>()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const isOpen = ref(false)
 
@@ -15,7 +15,7 @@ function toggle() {
 </script>
 
 <template>
-  <div>
+  <div class="mb-2">
     <div
       class="flex justify-between items-center cursor-pointer py-2"
       @click="toggle"
@@ -27,10 +27,10 @@ function toggle() {
     </div>
 
     <AppCollapse v-bind="{ isOpen }">
-      <div class="space-y-2 py-2">
+      <div class="py-2">
         <PartialsTradeFuturesFormStandardAdvancedSettingsPostOnly
           v-if="
-            spotFormValues[DerivativesTradeFormField.Type] ===
+            derivativeFormValues[DerivativesTradeFormField.Type] ===
             DerivativeTradeTypes.Limit
           "
         />
@@ -42,7 +42,7 @@ function toggle() {
               DerivativeTradeTypes.Market,
               DerivativeTradeTypes.StopMarket
             ].includes(
-              spotFormValues[
+              derivativeFormValues[
                 DerivativesTradeFormField.Type
               ] as DerivativeTradeTypes
             )

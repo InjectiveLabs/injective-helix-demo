@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
   order: {
@@ -8,6 +9,11 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
+const { success } = useNotifications()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
+
 const {
   isBuy,
   price,
@@ -15,6 +21,7 @@ const {
   market,
   quantity,
   priceDecimals,
+  orderFillable,
   filledQuantity,
   quantityDecimals,
   unfilledQuantity,
@@ -24,7 +31,9 @@ const {
   computed(() => true)
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const status = reactive(new Status(StatusType.Idle))
+
+const { valueToString: priceToString } = useBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
@@ -52,6 +61,20 @@ const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
     decimalPlaces: quantityDecimals.value
   }
 )
+
+function cancelOrder() {
+  status.setLoading()
+
+  spotStore
+    .cancelOrder(props.order as SpotLimitOrder)
+    .then(() => {
+      success({ title: t('trade.order_success_canceling') })
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -92,6 +115,14 @@ const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
       <div v-if="market" class="space-y-1">
         <p>$ {{ totalToString }}</p>
       </div>
+    </div>
+
+    <div class="flex-1 p-2 items-center">
+      <PartialsCommonCancelButton
+        v-if="orderFillable"
+        v-bind="{ status }"
+        @click="cancelOrder"
+      />
     </div>
   </div>
 </template>

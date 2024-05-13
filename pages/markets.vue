@@ -21,8 +21,6 @@ const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 
-onMounted(() => getQuoteTokenPrice())
-
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
     ...spotStore.marketsWithSummary,
@@ -43,12 +41,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
 )
 
 const favoriteMarkets = computed(() => appStore.favoriteMarkets)
-
-const marketsWithSummariesLoaded = computed(
-  () =>
-    spotStore.marketsWithSummary.some(({ summary }) => summary) &&
-    derivativeStore.marketsWithSummary.some(({ summary }) => summary)
-)
 
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
@@ -73,6 +65,8 @@ const filteredMarkets = computed(() =>
     .filter((market) => marketIsActive(market.market))
 )
 
+onMounted(() => getQuoteTokenPrice())
+
 function getQuoteTokenPrice() {
   Promise.all([appStore.pollMarkets()]).catch($onError)
 }
@@ -82,73 +76,69 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 
 <template>
   <div>
-    <AppHocLoading :is-loading="!marketsWithSummariesLoaded">
-      <div class="container py-10">
-        <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
+    <div class="container py-10">
+      <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
 
-        <PartialsMarketsNewMarkets
-          v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
-          class="my-10"
-        />
+      <PartialsMarketsNewMarkets
+        v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
+        class="my-10"
+      />
 
-        <div
-          class="border-b border-brand-700 my-4 flex justify-between items-end"
-        >
-          <div class="flex">
-            <AppButtonSelect
-              v-for="value in Object.values(MarketTypeOption)"
-              :key="value"
-              v-model="type"
-              v-bind="{ value }"
-              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium"
-              active-classes="border-blue-500 !text-blue-500"
-            >
-              {{ value }}
-            </AppButtonSelect>
-          </div>
-
-          <div class="flex py-2">
-            <label
-              class="flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
-            >
-              <input
-                v-model="search"
-                type="text"
-                class="focus:outline-none bg-transparent p-1 px-3"
-              />
-
-              <div class="flex items-center pr-3">
-                <SharedIcon name="search" class="text-gray-500" />
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <div class="my-4 flex space-x-2">
+      <div
+        class="border-b border-brand-700 my-4 flex justify-between items-end"
+      >
+        <div class="flex">
           <AppButtonSelect
-            v-for="value in Object.values(MarketCategoryType)"
+            v-for="value in Object.values(MarketTypeOption)"
             :key="value"
-            v-model="category"
+            v-model="type"
             v-bind="{ value }"
-            class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
-            active-classes="text-white !bg-brand-700"
+            class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium"
+            active-classes="border-blue-500 !text-blue-500"
           >
             {{ value }}
           </AppButtonSelect>
         </div>
 
-        <pre>{{ filteredMarkets.length }}</pre>
+        <div class="flex py-2">
+          <label
+            class="flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
+          >
+            <input
+              v-model="search"
+              type="text"
+              class="focus:outline-none bg-transparent p-1 px-3"
+            />
 
-        <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
-        <PartialsMarkets
-          v-if="type !== MarketTypeOption.Themes"
-          is-markets-page
-          v-bind="{ markets: filteredMarkets }"
-        />
-
-        <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
-        <!-- </div> -->
+            <div class="flex items-center pr-3">
+              <BaseIcon name="search" class="text-gray-500" />
+            </div>
+          </label>
+        </div>
       </div>
-    </AppHocLoading>
+
+      <div class="my-4 flex space-x-2">
+        <AppButtonSelect
+          v-for="value in Object.values(MarketCategoryType)"
+          :key="value"
+          v-model="category"
+          v-bind="{ value }"
+          class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
+          active-classes="text-white !bg-brand-700"
+        >
+          {{ value }}
+        </AppButtonSelect>
+      </div>
+
+      <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
+      <PartialsMarkets
+        v-if="type !== MarketTypeOption.Themes"
+        is-markets-page
+        v-bind="{ markets: filteredMarkets }"
+      />
+
+      <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
+      <!-- </div> -->
+    </div>
   </div>
 </template>

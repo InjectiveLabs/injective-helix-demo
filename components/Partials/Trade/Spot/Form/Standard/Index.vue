@@ -15,11 +15,13 @@ const { value: orderSideValue } = useStringField({
 })
 
 const {
+  total,
+  quantity,
+  feeAmount,
   worstPrice,
-  totalWorstPrice,
-  hasEnoughLiquidity,
-  worstPriceWithSlippage,
-  totalWorstPriceWithSlippageAndFees
+  totalWithFee,
+  feePercentage,
+  slippagePercentage
 } = useSpotWorstPrice()
 </script>
 
@@ -59,30 +61,28 @@ const {
         v-if="orderTypeValue === TradeTypes.Limit"
       />
 
-      <PartialsTradeSpotFormStandardAmountField
-        v-bind="{ totalWorstPriceWithSlippageAndFees, worstPrice }"
-      />
-
-      <PartialsTradeSpotFormStandardTotalField />
+      <PartialsTradeSpotFormStandardAmountField />
     </div>
 
     <PartialsTradeSpotFormStandardAdvancedSettings class="my-4" />
 
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
+        total,
+        totalWithFee,
+        quantity,
+        feeAmount,
         worstPrice,
-        totalWorstPrice,
-        worstPriceWithSlippage,
-        totalWorstPriceWithSlippageAndFees,
-        hasEnoughLiquidity
+        feePercentage,
+        slippagePercentage
       }"
     />
 
     <div>
       <PartialsTradeSpotFormStandardCreateOrder
         v-bind="{
-          worstPrice,
-          worstPriceWithSlippage
+          quantity,
+          worstPrice
         }"
       />
     </div>

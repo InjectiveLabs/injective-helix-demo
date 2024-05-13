@@ -109,7 +109,7 @@ const initialStateFactory = (): AppStoreState => ({
       subaccountManagement: false,
       authZManagement: false,
       isHideBalances: false,
-      thousandsSeparator: false
+      thousandsSeparator: true
     }
   }
 })

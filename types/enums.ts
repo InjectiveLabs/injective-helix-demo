@@ -44,7 +44,6 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
-  AirdropTerms = 'airdrop-terms',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
@@ -525,18 +524,27 @@ export enum SpotTradeFormField {
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  Total = 'total',
-  Quantity = 'quantity',
+  // Total = 'total',
+  // Quantity = 'quantity',
+  Amount = 'amount',
+  AmountOption = 'amountOption',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   IsSlippageOn = 'isSlippageOn'
 }
 
+export enum TradeAmountOption {
+  Base = 'base',
+  Quote = 'quote'
+}
+
 export enum DerivativesTradeFormField {
   Type = 'type',
   Side = 'side',
-  Total = 'total',
-  Quantity = 'quantity',
+  Amount = 'amount',
+  AmountOption = 'amountOption',
+  // Total = 'total',
+  // Quantity = 'quantity',
   Leverage = 'leverage',
   PostOnly = 'postOnly',
   Slippage = 'slippage',

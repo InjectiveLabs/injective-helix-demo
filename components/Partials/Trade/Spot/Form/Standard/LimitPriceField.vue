@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { SpotTradeForm, SpotTradeFormField, spotMarketKey } from '@/types'
+import { SpotTradeFormField, spotMarketKey } from '@/types'
 
 const { value: limitValue, errorMessage } = useStringField({
   name: SpotTradeFormField.Price,
@@ -12,10 +11,10 @@ const market = inject(spotMarketKey)
 const el = ref(null)
 
 const { focused } = useFocusWithin(el)
-const spotFormValues = useFormValues<SpotTradeForm>()
+// const spotFormValues = useFormValues<SpotTradeForm>()
 
-const setQuantity = useSetFieldValue(SpotTradeFormField.Quantity)
-const setTotalAmount = useSetFieldValue(SpotTradeFormField.Total)
+// const setQuantity = useSetFieldValue(SpotTradeFormField.Quantity)
+// const setTotalAmount = useSetFieldValue(SpotTradeFormField.Total)
 
 const value = computed({
   get: () => limitValue.value,
@@ -24,24 +23,22 @@ const value = computed({
 
     if (focused.effect) {
       // If the value is empty, set the total amount to empty
-      if (value === '') {
-        setTotalAmount('')
-        return
-      }
-
-      if (spotFormValues.value[SpotTradeFormField.Quantity]) {
-        setTotalAmount(
-          new BigNumberInBase(value)
-            .times(spotFormValues.value[SpotTradeFormField.Quantity])
-            .toFixed(3)
-        )
-      } else if (spotFormValues.value[SpotTradeFormField.Total]) {
-        setQuantity(
-          new BigNumberInBase(spotFormValues.value[SpotTradeFormField.Total])
-            .div(value)
-            .toFixed(3)
-        )
-      }
+      // if (value === '') {
+      //   setTotalAmount('')
+      // }
+      // if (spotFormValues.value[SpotTradeFormField.Quantity]) {
+      //   setTotalAmount(
+      //     new BigNumberInBase(value)
+      //       .times(spotFormValues.value[SpotTradeFormField.Quantity])
+      //       .toFixed(3)
+      //   )
+      // } else if (spotFormValues.value[SpotTradeFormField.Total]) {
+      //   setQuantity(
+      //     new BigNumberInBase(spotFormValues.value[SpotTradeFormField.Total])
+      //       .div(value)
+      //       .toFixed(3)
+      //   )
+      // }
     }
   }
 })

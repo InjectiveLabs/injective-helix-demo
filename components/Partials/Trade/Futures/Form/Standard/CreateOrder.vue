@@ -43,7 +43,7 @@ const limitPrice = computed(
 const baseAmount = computed(
   () =>
     new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.Quantity] || 0
+      0 // TODO
     )
 )
 
@@ -56,21 +56,21 @@ const isBuy = computed(
     derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
 )
 
-const isMarketOrStopMarketOrder = computed(() =>
-  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
-)
+// const isMarketOrStopMarketOrder = computed(() =>
+//   [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+//     derivativeFormValues.value[
+//       DerivativesTradeFormField.Type
+//     ] as DerivativeTradeTypes
+//   )
+// )
 
-const executionPrice = computed(() =>
-  isMarketOrStopMarketOrder.value
-    ? lastTradedPrice.value
-    : new BigNumberInBase(
-        derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
-      )
-)
+// const executionPrice = computed(() =>
+//   isMarketOrStopMarketOrder.value
+//     ? lastTradedPrice.value
+//     : new BigNumberInBase(
+//         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+//       )
+// )
 
 const worstPriceWithSlippage = computed(() =>
   isBuy.value
@@ -79,21 +79,9 @@ const worstPriceWithSlippage = computed(() =>
 )
 
 const notionalWithLeverage = computed(() => {
-  // if (props.market.subType === MarketType.BinaryOptions) {
-  //   return new BigNumberInBase(
-  //     calculateBinaryOptionsMargin({
-  //       price,
-  //       orderSide: formValues[TradeField.OrderSide],
-  //       quantity: formValues[TradeField.BaseAmount],
-  //       quoteTokenDecimals: props.market.quoteToken.decimals,
-  //       tensMultiplier: props.market.quantityTensMultiplier
-  //     }).toFixed()
-  //   )
-  // }
-
   return new BigNumberInBase(
     calculateMargin({
-      price: derivativeFormValues.value[DerivativesTradeFormField.Total] || '0',
+      price: '0', // TODO
       quantity: baseAmount.value.toFixed(),
       quoteTokenDecimals: derivativeMarket.value.quoteToken.decimals,
       tensMultiplier: derivativeMarket.value.quantityTensMultiplier,
@@ -142,6 +130,7 @@ const orderTypeToSubmit = computed(() => {
 
 async function submitLimitOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -171,6 +160,7 @@ async function submitLimitOrder() {
 
 async function submitStopLimitOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -205,6 +195,7 @@ async function submitStopLimitOrder() {
 
 async function submitMarketOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -236,6 +227,7 @@ async function submitMarketOrder() {
 
 async function submitStopMarketOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -285,9 +277,6 @@ function onSubmit() {
 <template>
   <div>
     <div>
-      <Whiteboard>
-        {{ executionPrice }}
-      </Whiteboard>
       <AppButton
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"

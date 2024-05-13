@@ -1,12 +1,19 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
-  SpotTradeForm,
-  SpotTradeFormField,
+  calculateTotalQuantity,
+  calculateWorstPrice,
+  quantizeNumber
+} from '@/app/utils/helpers'
+import {
   TradeTypes,
-  spotMarketKey
+  UiSpotMarket,
+  SpotTradeForm,
+  spotMarketKey,
+  TradeAmountOption,
+  SpotTradeFormField
 } from '@/types'
-import { calculateWorstPrice, quantizeNumber } from '~/app/utils/helpers'
 
 export function useSpotWorstPrice() {
   const spotFormValues = useFormValues<SpotTradeForm>()
@@ -20,125 +27,127 @@ export function useSpotWorstPrice() {
     () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
   )
 
-  const market = inject(spotMarketKey)
+  const isBaseOrder = computed(
+    () =>
+      spotFormValues.value[SpotTradeFormField.AmountOption] ===
+      TradeAmountOption.Base
+  )
 
-  // const worstPriceAndLiquidity = computed(() => {
-  //   let quantity = Number(
-  //     spotFormValues.value[SpotTradeFormField.Quantity] || '0'
-  //   )
+  const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
-  //   const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+  const feePercentage = computed(() => {
+    const feePercentage =
+      isLimitOrder.value && spotFormValues.value[SpotTradeFormField.PostOnly]
+        ? market.value.makerFeeRate
+        : market.value.takerFeeRate
 
-  //   if (!records.length || quantity <= 0) {
-  //     return {
-  //       hasEnoughLiquidity: true,
-  //       worstPrice: '0'
-  //     }
-  //   }
+    const fee = isBuy.value
+      ? new BigNumberInBase(1).plus(feePercentage)
+      : new BigNumberInBase(1).minus(feePercentage)
 
-  //   let worstPrice
+    return fee
+  })
 
-  //   for (const record of records) {
-  //     // if (isBuy.value) {
-  //     quantity -= Number(record.quantity)
-  //     worstPrice = record.price
-  //     if (quantity < 0) {
-  //       break
-  //     }
-  //   }
+  const slippagePercentage = computed(() => {
+    const slippagePercentage = new BigNumberInBase(
+      spotFormValues.value[SpotTradeFormField.IsSlippageOn]
+        ? spotFormValues.value[SpotTradeFormField.Slippage] || 0
+        : 0
+    ).div(100)
 
-  //   return {
-  //     hasEnoughLiquidity: quantity <= 0,
-  //     worstPrice: worstPrice || '0'
-  //   }
-  // })
+    const slippage = isBuy.value
+      ? new BigNumberInBase(1).plus(slippagePercentage)
+      : new BigNumberInBase(1).minus(slippagePercentage)
 
-  const worstPriceAndLiquidity = computed(() => {
+    return slippage
+  })
+
+  const quantity = computed(() => {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+    const price = spotFormValues.value[SpotTradeFormField.Price] || 0
 
-    if (isLimitOrder.value) {
-      const price = new BigNumberInBase(
-        spotFormValues.value[SpotTradeFormField.Price] || '0'
-      )
-      const totalPrice = price.times(
-        spotFormValues.value[SpotTradeFormField.Quantity] || '0'
-      )
+    let quantity = new BigNumberInBase(0)
 
-      return { totalPrice, worstPrice: price, hasEnoughLiquidity: true }
+    if (isBaseOrder.value) {
+      quantity = new BigNumberInBase(
+        spotFormValues.value[SpotTradeFormField.Amount] || 0
+      )
     }
 
-    return calculateWorstPrice(
-      spotFormValues.value[SpotTradeFormField.Quantity] || '0',
-      records
-    )
+    if (isLimitOrder.value) {
+      quantity = price
+        ? new BigNumberInBase(
+            spotFormValues.value[SpotTradeFormField.Amount] || 0
+          )
+            .div(feePercentage.value)
+            .div(price)
+        : ZERO_IN_BASE
+    }
+
+    if (!isLimitOrder.value) {
+      const totalAfterFees = new BigNumberInBase(
+        spotFormValues.value[SpotTradeFormField.Amount] || 0
+      ).div(feePercentage.value)
+
+      const worstPrice = calculateTotalQuantity(
+        totalAfterFees.toFixed(),
+        records
+      ).worstPrice
+
+      const worstPriceWithSlippage = worstPrice.times(slippagePercentage.value)
+
+      quantity = totalAfterFees.div(worstPriceWithSlippage)
+    }
+
+    return quantizeNumber(quantity, market.value.quantityTensMultiplier)
   })
 
-  const totalWorstPrice = computed(
-    () =>
-      new BigNumberInBase(
-        new BigNumberInBase(worstPriceAndLiquidity.value.totalPrice).dp(
-          market?.value?.priceDecimals || 0
-        )
+  const worstPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return quantizeNumber(
+        new BigNumberInBase(
+          spotFormValues.value[SpotTradeFormField.Price] || 0
+        ),
+        market.value.priceTensMultiplier
       )
-  )
+    }
 
-  const worstPrice = computed(
-    () => new BigNumberInBase(worstPriceAndLiquidity.value.worstPrice)
-  )
-
-  const hasEnoughLiquidity = computed(
-    () => worstPriceAndLiquidity.value.hasEnoughLiquidity
-  )
-
-  const worstPriceWithSlippage = computed(() => {
-    const slippage = Number(
-      spotFormValues.value[SpotTradeFormField.Slippage] || 0
-    )
-
-    const percentage = isBuy.value ? 1 + slippage / 100 : 1 - slippage / 100
-
-    return new BigNumberInBase(
-      quantizeNumber(
-        Number(worstPrice.value) * percentage,
-        market?.value?.priceTensMultiplier || 0
-      )
-    )
-  })
-
-  const totalWorstPriceWithSlippage = computed(() => {
-    const slippage = Number(
-      spotFormValues.value[SpotTradeFormField.Slippage] || 0
-    )
-
-    const percentage = isBuy.value ? 1 + slippage / 100 : 1 - slippage / 100
-
-    return new BigNumberInBase(
-      quantizeNumber(
-        Number(totalWorstPrice.value) * percentage,
-        market?.value?.priceTensMultiplier || 0
-      )
-    )
-  })
-
-  const totalWorstPriceWithSlippageAndFees = computed(() => {
-    const price = totalWorstPriceWithSlippage.value
-
-    const takerFee = Number(market?.value?.takerFeeRate || 0)
-
-    const percentage = isBuy.value ? 1 + takerFee : 1 - takerFee
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
     return quantizeNumber(
-      price.times(percentage).toNumber(),
-      market?.value?.priceTensMultiplier || 0
+      calculateWorstPrice(quantity.value.toString(), records).worstPrice.times(
+        slippagePercentage.value
+      ),
+      market.value.priceTensMultiplier
     )
+  })
+
+  const total = computed(() => {
+    if (isLimitOrder.value) {
+      const price = spotFormValues.value[SpotTradeFormField.Price] || 0
+
+      return quantity.value.times(price) // .times(feePercentage.value)
+    }
+
+    return new BigNumberInBase(worstPrice.value).times(quantity.value)
+    // .times(feePercentage.value)
+  })
+
+  const feeAmount = computed(() => {
+    return total.value.times(feePercentage.value.minus(1))
+  })
+
+  const totalWithFee = computed(() => {
+    return total.value.plus(feeAmount.value)
   })
 
   return {
-    isLimitOrder,
-    totalWorstPrice,
+    total,
+    quantity,
+    feeAmount,
     worstPrice,
-    worstPriceWithSlippage,
-    totalWorstPriceWithSlippageAndFees,
-    hasEnoughLiquidity
+    totalWithFee,
+    feePercentage,
+    slippagePercentage
   }
 }

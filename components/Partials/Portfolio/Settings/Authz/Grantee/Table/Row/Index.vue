@@ -31,9 +31,11 @@ function revokeAll() {
   authZStore
     .revokeAuthorization({
       grantee: props.grantee,
-      messageTypes: props.grants.map(
-        (grant) => (grant.authorization as unknown as string).split('/')[1]
-      )
+      messageTypes: props.grants
+        .filter((grant) => grant.authorization)
+        .map(
+          (grant) => (grant.authorization as unknown as string).split('/')[1]
+        )
     })
     .catch($onError)
     .finally(() => status.setIdle())

@@ -269,13 +269,16 @@ export function mergeObjects<T extends Record<any, any>>(
  * @returns The quantized number.
  */
 export function quantizeNumber(
-  number: number,
+  number: number | BigNumberInBase,
   tensMultiplier: number
 ): BigNumberInBase {
   const divideBy = new BigNumberInBase(10).exponentiatedBy(tensMultiplier)
 
   return new BigNumberInBase(
-    new BigNumberInBase(number).dividedBy(divideBy).dp(0).times(divideBy)
+    new BigNumberInBase(number)
+      .dividedBy(divideBy)
+      .dp(0, BigNumber.ROUND_DOWN)
+      .times(divideBy)
   )
 }
 
@@ -302,41 +305,40 @@ export function calculateWorstPrice(
     price += Number(record.quantity) * Number(record.price)
   }
 
-  // if (!hasEnoughLiquidity) {
-  //   worstPrice = records[records.length - 1].price
-  // }
-
   return {
-    totalPrice: price.toString(),
-    worstPrice,
+    totalPrice: new BigNumberInBase(price),
+    worstPrice: new BigNumberInBase(worstPrice),
     hasEnoughLiquidity
   }
 }
-export function calculateWorstQuantity(
-  price: string,
+
+export function calculateTotalQuantity(
+  total: string,
   records: OrderbookFormattedRecord[]
 ) {
-  let remainingPrice = Number(price || '0')
+  let remainingTotal = Number(total || '0')
 
-  let worstQuantity = '0'
-  let quantity = 0
+  let totalQuantity = 0
+  let worstPrice = '0'
+  let hasEnoughLiquidity = false
 
   for (const record of records) {
-    if (remainingPrice - Number(record.price) * Number(record.quantity) < 0) {
-      worstQuantity = record.quantity
-
-      quantity += remainingPrice / Number(record.price)
+    if (remainingTotal - Number(record.volume) >= 0) {
+      remainingTotal -= Number(record.volume)
+      totalQuantity += Number(record.quantity)
+      worstPrice = record.price
+    } else {
+      totalQuantity += remainingTotal / Number(record.price)
+      worstPrice = record.price
+      hasEnoughLiquidity = true
       break
     }
-
-    remainingPrice -= Number(record.price) * Number(record.quantity)
-    quantity += Number(record.quantity)
   }
 
   return {
-    quantity,
-    worstQuantity,
-    hasEnoughLiquidity: true
+    totalQuantity: new BigNumberInBase(totalQuantity),
+    hasEnoughLiquidity,
+    worstPrice: new BigNumberInBase(worstPrice)
   }
 }
 
@@ -352,4 +354,10 @@ export const getToken = async (
   const asyncToken = await sharedTokenClient.queryToken(denomOrSymbol)
 
   return asyncToken
+}
+
+export const getCw20AddressFromDenom = (denom: string) => {
+  const [address] = denom.split('/').reverse()
+
+  return address
 }

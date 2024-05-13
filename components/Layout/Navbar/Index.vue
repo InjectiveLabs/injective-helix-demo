@@ -13,6 +13,7 @@
       <div class="flex-1" />
 
       <LayoutNavbarMenuWallet />
+      <LayoutNavbarMobileMenu />
     </div>
   </header>
 </template>

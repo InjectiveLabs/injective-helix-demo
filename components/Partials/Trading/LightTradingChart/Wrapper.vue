@@ -92,6 +92,12 @@ const filteredCandlesticksData = computed(() => {
     )
   }
 
+  if (props.market.slug === 'black-inj') {
+    return candlesticksData.value.filter(
+      ({ time }) => Number(time) > 1713546300
+    )
+  }
+
   return candlesticksData.value
 })
 
