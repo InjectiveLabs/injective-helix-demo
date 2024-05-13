@@ -2,7 +2,6 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
 const gridStrategyStore = useGridStrategyStore()
 
@@ -20,7 +19,6 @@ onWalletConnected(() => {
   Promise.all([
     spotStore.init(),
     spotStore.fetchMarketsSummary(),
-    tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens),
     campaignStore.fetchRound(roundId),
     gridStrategyStore.fetchAllStrategies()
   ])

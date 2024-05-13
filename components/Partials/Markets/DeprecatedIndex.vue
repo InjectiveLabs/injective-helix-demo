@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   marketIsActive,
   marketIsQuotePair,
@@ -9,18 +9,18 @@ import {
   marketIsPartOfCategory
 } from '@/app/utils/market'
 import {
+  upcomingMarkets,
+  deprecatedMarkets,
+  olpSlugsToIncludeInLowVolume
+} from '@/app/data/market'
+import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
+import {
   MarketStatus,
   MarketQuoteType,
   MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd,
   MarketTypeOption
 } from '@/types'
-import {
-  upcomingMarkets,
-  deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume
-} from '@/app/data/market'
-import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 
 enum MarketHeaderType {
   Market = 'market',
@@ -183,7 +183,7 @@ function prefillFromQueryParams() {
     typeof query.type === 'string'
       ? query.type.trim().toLowerCase()
       : query.type
-  ) as MarketType
+  ) as SharedMarketType
 
   if (quote && Object.values(MarketQuoteType).includes(quote)) {
     activeQuote.value = quote
@@ -193,16 +193,19 @@ function prefillFromQueryParams() {
     activeCategory.value = category
   }
 
-  if (type && MarketType.Favorite.toLowerCase() === type) {
-    activeType.value = MarketType.Favorite
+  if (type && SharedMarketType.Favorite.toLowerCase() === type) {
+    activeType.value = SharedMarketType.Favorite
   }
 
-  if (type && MarketType.Spot.toLowerCase() === type) {
-    activeType.value = MarketType.Spot
+  if (type && SharedMarketType.Spot.toLowerCase() === type) {
+    activeType.value = SharedMarketType.Spot
   }
 
-  if (type && [MarketType.Perpetual.toLowerCase(), 'perp'].includes(type)) {
-    activeType.value = MarketType.Perpetual
+  if (
+    type &&
+    [SharedMarketType.Perpetual.toLowerCase(), 'perp'].includes(type)
+  ) {
+    activeType.value = SharedMarketType.Perpetual
   }
 }
 </script>
@@ -343,17 +346,17 @@ function prefillFromQueryParams() {
             class="min-h-3xs"
             data-cy="markets-no-data-table"
             :message="
-              activeType === MarketType.Favorite
+              activeType === SharedMarketType.Favorite
                 ? $t('markets.emptyHeaderFavorites')
                 : $t('markets.emptyHeader')
             "
           >
             <template #icon>
-              <BaseIcon name="star-border" class="text-gray-500 w-8 h-8" />
+              <SharedIcon name="star-border" class="text-gray-500 w-8 h-8" />
             </template>
 
             <span
-              v-if="activeType === MarketType.Favorite"
+              v-if="activeType === SharedMarketType.Favorite"
               class="mt-2 text-sm text-gray-500"
             >
               {{ $t('markets.emptyDescriptionFavorites') }}

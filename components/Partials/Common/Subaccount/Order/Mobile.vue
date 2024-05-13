@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
-import {
-  UiSpotLimitOrder,
-  UiDerivativeLimitOrder
-} from '@injectivelabs/sdk-ui-ts'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getMarketRoute } from '@/app/utils/market'
 import { legacyWHDenoms } from '@/app/data/token'
@@ -21,7 +18,7 @@ const props = defineProps({
 
   order: {
     required: true,
-    type: Object as PropType<UiSpotLimitOrder | UiDerivativeLimitOrder>
+    type: Object as PropType<SpotLimitOrder | DerivativeLimitOrder>
   }
 })
 
@@ -61,8 +58,8 @@ function onCancelOrder() {
   status.setLoading()
 
   const action = props.isSpot
-    ? () => spotStore.cancelOrder(props.order as UiSpotLimitOrder)
-    : () => derivativeStore.cancelOrder(props.order as UiDerivativeLimitOrder)
+    ? () => spotStore.cancelOrder(props.order as SpotLimitOrder)
+    : () => derivativeStore.cancelOrder(props.order as DerivativeLimitOrder)
 
   action()
     .then(() => {

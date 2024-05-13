@@ -23,7 +23,7 @@
       </div>
       <div>
         <slot name="icon">
-          <BaseIcon name="caret-down" class="-rotate-90 h-5 w-5 text-white" />
+          <SharedIcon name="caret-down" class="-rotate-90 h-5 w-5 text-white" />
         </slot>
       </div>
     </div>

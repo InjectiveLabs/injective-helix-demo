@@ -80,7 +80,7 @@ function toggle() {
     >
       <p class="text-sm font-semibold select-none">Details</p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <BaseIcon name="chevron-down" is-sm />
+        <SharedIcon name="chevron-down" is-sm />
       </div>
     </div>
 

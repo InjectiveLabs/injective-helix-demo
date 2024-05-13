@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { format, formatDistance } from 'date-fns'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { StrategyStatus } from '@/types'
 

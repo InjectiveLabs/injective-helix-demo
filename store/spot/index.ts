@@ -5,19 +5,25 @@ import {
   TradeExecutionType
 } from '@injectivelabs/ts-types'
 import {
-  UiSpotTrade,
-  UiSpotLimitOrder,
-  UiSpotTransformer,
-  UiSpotOrderHistory,
-  UiSpotMarketSummary,
-  zeroSpotMarketSummary,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+  toUiSpotMarket,
+  toUiMarketSummary,
+  toZeroUiMarketSummary
+} from '@shared/transformer/market'
+import {
+  SharedUiSpotTrade,
+  SharedUiMarketSummary,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
+import { spotCacheApi, indexerSpotApi } from '@shared/Service'
+import {
+  SpotLimitOrder,
+  SpotMarket,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
 import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
-} from '../account/stream'
-import { spotCacheApi } from '@/app/providers/cache/SpotCacheApi'
+} from '@/store/account/stream'
 import {
   streamTrades,
   cancelTradesStream,
@@ -39,33 +45,23 @@ import {
   submitStopMarketOrder
 } from '@/store/spot/message'
 import {
-  tokenService,
-  indexerSpotApi,
-  tokenServiceStatic
-} from '@/app/Services'
-import {
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
-import { UiMarketTransformer } from '@/app/client/transformers/UiMarketTransformer'
-import {
-  UiMarketAndSummary,
-  ActivityFetchOptions,
-  UiSpotOrderbookWithSequence
-} from '@/types'
+import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
 type SpotStoreState = {
-  markets: UiSpotMarketWithToken[]
+  markets: UiSpotMarket[]
   marketIdsFromQuery: string[]
-  marketsSummary: UiSpotMarketSummary[]
-  orderbook?: UiSpotOrderbookWithSequence
-  trades: UiSpotTrade[]
-  subaccountTrades: UiSpotTrade[]
+  marketsSummary: SharedUiMarketSummary[]
+  orderbook?: SharedUiOrderbookWithSequence
+  trades: SharedUiSpotTrade[]
+  subaccountTrades: SharedUiSpotTrade[]
   subaccountTradesCount: number
-  subaccountOrders: UiSpotLimitOrder[]
+  subaccountOrders: SpotLimitOrder[]
   subaccountOrdersCount: number
-  subaccountOrderHistory: UiSpotOrderHistory[]
+  subaccountOrderHistory: SpotOrderHistory[]
   subaccountOrderHistoryCount: number
 }
 
@@ -77,9 +73,9 @@ const initialStateFactory = (): SpotStoreState => ({
   trades: [],
   subaccountTrades: [],
   subaccountTradesCount: 0,
-  subaccountOrders: [] as UiSpotLimitOrder[],
+  subaccountOrders: [] as SpotLimitOrder[],
   subaccountOrdersCount: 0,
-  subaccountOrderHistory: [] as UiSpotOrderHistory[],
+  subaccountOrderHistory: [] as SpotOrderHistory[],
   subaccountOrderHistoryCount: 0
 })
 
@@ -143,48 +139,9 @@ export const useSpotStore = defineStore('spot', {
 
     async init() {
       const spotStore = useSpotStore()
-      const tokenStore = useTokenStore()
 
-      const markets = await spotCacheApi.fetchMarkets()
-      const marketsWithToken =
-        tokenServiceStatic.toSpotMarketsWithToken(markets)
-      const marketsFromQuery = markets.filter((market) =>
-        spotStore.marketIdsFromQuery.includes(market.marketId)
-      )
-      const marketsFromQueryWithToken =
-        await tokenService.toSpotMarketsWithToken(marketsFromQuery)
-
-      const marketsWithTokenAndQuery = [
-        ...marketsWithToken,
-        ...marketsFromQueryWithToken
-      ]
-      const uiMarkets = UiSpotTransformer.spotMarketsToUiSpotMarkets(
-        marketsWithTokenAndQuery
-      )
-
-      const uiMarketsWithToken = uiMarkets
-        .filter((market) => {
-          return (
-            MARKETS_SLUGS.spot.includes(market.slug) ||
-            spotStore.marketIdsFromQuery.includes(market.marketId)
-          )
-        })
-        .sort((a, b) => {
-          return (
-            MARKETS_SLUGS.spot.indexOf(a.slug) -
-            MARKETS_SLUGS.spot.indexOf(b.slug)
-          )
-        })
-
-      spotStore.$patch({
-        markets: uiMarketsWithToken
-      })
-
+      await spotStore.fetchMarkets()
       await spotStore.fetchMarketsSummary()
-      await tokenStore.appendUnknownTokensList([
-        ...marketsFromQueryWithToken.map((m) => m.baseToken),
-        ...marketsFromQueryWithToken.map((m) => m.quoteToken)
-      ])
     },
 
     async initIfNotInit() {
@@ -199,24 +156,99 @@ export const useSpotStore = defineStore('spot', {
       }
     },
 
-    async initFromTradingPage(marketIdsFromQuery: string[] = []) {
+    async initFromTradingPage(marketIdFromQuery?: string) {
       const spotStore = useSpotStore()
 
+      if (!marketIdFromQuery) {
+        await spotStore.initIfNotInit()
+
+        return
+      }
+
       spotStore.$patch({
-        marketIdsFromQuery
+        marketIdsFromQuery: [...spotStore.marketIdsFromQuery, marketIdFromQuery]
       })
 
-      if (marketIdsFromQuery.length === 0) {
-        await spotStore.initIfNotInit()
-      } else {
-        await spotStore.init()
+      await spotStore.init()
+    },
+
+    async fetchMarkets() {
+      const spotStore = useSpotStore()
+      const tokenStore = useTokenStore()
+
+      const markets = await spotCacheApi.fetchMarkets()
+
+      const marketsFromQuery = spotStore.marketIdsFromQuery
+        .map((marketId) => markets.find((m) => m.marketId === marketId))
+        .filter((market) => market) as SpotMarket[]
+
+      if (marketsFromQuery.length !== 0) {
+        await tokenStore.appendUnknownTokensList([
+          ...marketsFromQuery.map((m) => m.baseDenom),
+          ...marketsFromQuery.map((m) => m.quoteDenom)
+        ])
       }
+
+      const uiMarkets = markets
+        .map((market) => {
+          const baseToken = tokenStore.tokenByDenomOrSymbol(market.baseDenom)
+          const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
+
+          if (!baseToken || !quoteToken) {
+            return undefined
+          }
+
+          const formattedMarket = toUiSpotMarket({
+            market,
+            baseToken,
+            quoteToken
+          })
+
+          return {
+            ...formattedMarket,
+            isVerified: MARKETS_SLUGS.spot.includes(formattedMarket.slug)
+          }
+        })
+        .filter((market) => market) as UiSpotMarket[]
+
+      spotStore.$patch({
+        markets: uiMarkets.sort((spotA, spotB) => {
+          const spotAIndex = MARKETS_SLUGS.spot.indexOf(spotA.slug) || 1
+          const spotBIndex = MARKETS_SLUGS.spot.indexOf(spotB.slug) || 1
+
+          return spotAIndex - spotBIndex
+        })
+      })
+    },
+
+    async fetchMarketsSummary() {
+      const spotStore = useSpotStore()
+
+      if (spotStore.marketsSummary.length > 0) {
+        return
+      }
+
+      const marketsSummaries = (await spotCacheApi.fetchMarketsSummary()) || []
+
+      const uiMarketSummaries = marketsSummaries.map((marketSummary) => {
+        const marketExistInStore = spotStore.markets.some(
+          (market) => market.marketId === marketSummary.marketId
+        )
+
+        return marketExistInStore
+          ? toUiMarketSummary(marketSummary)
+          : toZeroUiMarketSummary(marketSummary.marketId)
+      })
+
+      spotStore.$patch({
+        marketsSummary: uiMarketSummaries
+      })
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
-      const accountStore = useAccountStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
 
       if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
         return
@@ -391,34 +423,6 @@ export const useSpotStore = defineStore('spot', {
         subaccountTrades: trades,
         subaccountTradesCount: pagination.total
       })
-    },
-
-    async fetchMarketsSummary() {
-      const spotStore = useSpotStore()
-
-      const { markets } = spotStore
-
-      try {
-        const marketSummaries = await spotCacheApi.fetchMarketsSummary()
-
-        const marketsWithoutMarketSummaries = marketSummaries.filter(
-          ({ marketId }) =>
-            !markets.some((market) => market.marketId === marketId)
-        )
-
-        spotStore.$patch({
-          marketsSummary: [
-            ...marketSummaries.map(
-              UiMarketTransformer.convertMarketSummaryToUiMarketSummary
-            ),
-            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-              zeroSpotMarketSummary(marketId)
-            )
-          ]
-        })
-      } catch (e) {
-        // don't do anything for now
-      }
     },
 
     cancelSubaccountStream() {

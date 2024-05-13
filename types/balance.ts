@@ -1,5 +1,5 @@
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { PositionsWithUPNL } from '@injectivelabs/sdk-ts'
+import { SharedBalanceInUsdWithTokenAndPrice } from '@shared/types'
 import { AggregatedBalanceType } from '@/types/enums'
 
 export interface SubaccountBalance {
@@ -8,7 +8,10 @@ export interface SubaccountBalance {
   totalBalance: string
 }
 
-export type AccountBalance = Omit<BalanceWithTokenAndPrice, 'balance'> & {
+export type AccountBalance = Omit<
+  SharedBalanceInUsdWithTokenAndPrice,
+  'balance'
+> & {
   // Bank balance
   bankBalance: string
   // the available balance for the subaccount, defaults to 0 for the default subaccount

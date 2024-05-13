@@ -40,7 +40,7 @@ function toggle() {
 
       <div class="flex-1">{{ $t(`navigation.${item.label}`) }}</div>
 
-      <BaseIcon
+      <SharedIcon
         name="chevron"
         class="transition-all"
         :class="{

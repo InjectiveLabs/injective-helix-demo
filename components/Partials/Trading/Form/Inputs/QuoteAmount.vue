@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'

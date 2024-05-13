@@ -49,14 +49,14 @@ function connectToGrantee() {
       {{ formatWalletAddress(granterOrGrantee) }}
     </span>
     <span v-if="isCurrentlySelected">
-      <BaseIcon
+      <SharedIcon
         name="close"
         class="text-gray-200 hover:text-blue-500 h-3 w-3"
         @click="resetAuthZ"
       />
     </span>
     <span v-else>
-      <BaseIcon
+      <SharedIcon
         name="spy"
         class="text-gray-200 hover:text-blue-500 h-3 w-3"
         @click="connectToGrantee"

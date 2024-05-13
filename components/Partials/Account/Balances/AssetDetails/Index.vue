@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { legacyWHDenoms } from '@/app/data/token'
-import { Modal, BusEvents, TradeSubPage, AccountBalance } from '@/types'
+import {
+  Modal,
+  BusEvents,
+  UiSpotMarket,
+  TradeSubPage,
+  AccountBalance
+} from '@/types'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
@@ -32,8 +37,7 @@ const filteredMarketsWithSummary = computed(() => {
     }
 
     return (
-      (market as UiSpotMarketWithToken).baseDenom ===
-        accountBalance.value.token.denom ||
+      (market as UiSpotMarket).baseDenom === accountBalance.value.token.denom ||
       market.quoteDenom === accountBalance.value.token.denom
     )
   })
@@ -43,31 +47,32 @@ const availableMargin = computed(() => {
   return new BigNumberInBase(accountBalance.value?.availableMargin || 0)
 })
 
-const { valueToString: availableMarginToString } = useBigNumberFormatter(
+const { valueToString: availableMarginToString } = useSharedBigNumberFormatter(
   availableMargin,
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: inOrderBalanceToString } = useBigNumberFormatter(
+const { valueToString: inOrderBalanceToString } = useSharedBigNumberFormatter(
   computed(() => accountBalance.value?.inOrderBalance || '0'),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: accountTotalBalanceToString } = useBigNumberFormatter(
-  computed(() => accountBalance.value?.accountTotalBalance || '0'),
-  {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-  }
-)
+const { valueToString: accountTotalBalanceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => accountBalance.value?.accountTotalBalance || '0'),
+    {
+      decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+    }
+  )
 
 const {
   valueToString: accountTotalBalanceInUsdToString,
   valueToBigNumber: accountTotalBalanceInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => accountBalance.value?.accountTotalBalanceInUsd || '0'),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -123,7 +128,7 @@ function closeModal() {
           <div class="flex items-center justify-start gap-2">
             <div class="cursor-pointer" @click="closeModal">
               <!-- TODO: ArrowLeft -->
-              <BaseIcon name="arrow" class="w-4 h-4 text-white" />
+              <SharedIcon name="arrow" class="w-4 h-4 text-white" />
             </div>
 
             <span class="font-bold text-sm">

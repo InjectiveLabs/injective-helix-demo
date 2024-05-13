@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   BusEvents,
   TradeForm,
@@ -67,7 +67,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition | PositionV2> | undefined,
+    type: Object as PropType<Position | PositionV2> | undefined,
     default: undefined
   },
 
@@ -89,7 +89,7 @@ const emit = defineEmits<{
 const formValues = useFormValues() as Ref<TradeForm>
 const setFormValues = useSetFormValues()
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 let timeoutId: NodeJS.Timeout | undefined
 
 const isTensMultiplierMessageVisible = ref(false)
@@ -229,7 +229,7 @@ function onShowTensMultiplier(isShown: boolean) {
       v-show="
         !isOrderTypeReduceOnly &&
         !isSpot &&
-        market.subType !== MarketType.BinaryOptions
+        market.subType !== SharedMarketType.BinaryOptions
       "
       class="mt-6"
       v-bind="{

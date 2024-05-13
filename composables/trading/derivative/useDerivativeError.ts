@@ -1,20 +1,18 @@
-import type { Ref } from 'vue'
-import {
-  MarketType,
-  ZERO_IN_BASE,
-  UiPriceLevel,
-  UiPerpetualMarketWithToken,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SharedMarketType, SharedUiPriceLevel } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '@/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '@/app/data/market'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
+import {
+  TradeField,
+  TradeForm,
+  UiDerivativeMarket,
+  TradeExecutionType
+} from '@/types'
 
 export function useDerivativeError({
   isBuy,
@@ -33,7 +31,7 @@ export function useDerivativeError({
   markPrice: Ref<string>
   formValues: Ref<TradeForm>
   executionPrice: Ref<BigNumberInBase>
-  market: Ref<UiDerivativeMarketWithToken>
+  market: Ref<UiDerivativeMarket>
   isOrderTypeReduceOnly: Ref<BigNumberInBase>
   notionalWithLeverage: Ref<BigNumberInBase>
   quoteAvailableBalance: Ref<BigNumberInBase>
@@ -120,7 +118,7 @@ export function useDerivativeError({
       return undefined
     }
 
-    if (market.value.subType === MarketType.BinaryOptions) {
+    if (market.value.subType === SharedMarketType.BinaryOptions) {
       return
     }
 
@@ -128,11 +126,8 @@ export function useDerivativeError({
       return undefined
     }
 
-    const initialMarginRatio = (
-      market.value as
-        | UiPerpetualMarketWithToken
-        | UiExpiryFuturesMarketWithToken
-    ).initialMarginRatio
+    const initialMarginRatio = (market.value as UiDerivativeMarket)
+      .initialMarginRatio
 
     const price = tradingTypeStopMarket.value
       ? worstPriceWithSlippage.value
@@ -164,7 +159,7 @@ export function useDerivativeError({
       return undefined
     }
 
-    if (market.value.subType === MarketType.BinaryOptions) {
+    if (market.value.subType === SharedMarketType.BinaryOptions) {
       return undefined
     }
 
@@ -177,9 +172,7 @@ export function useDerivativeError({
       ? notionalWithLeverage.value
       : notionalWithLeverageBasedOnWorstPrice.value
 
-    const marketWithType = market.value as
-      | UiPerpetualMarketWithToken
-      | UiExpiryFuturesMarketWithToken
+    const marketWithType = market.value as UiDerivativeMarket
 
     const markPriceInBigNumber = new BigNumberInBase(markPrice.value)
 
@@ -236,7 +229,7 @@ export function useDerivativeError({
     () =>
       (isBuy.value
         ? derivativeStore.sells
-        : derivativeStore.buys) as UiPriceLevel[]
+        : derivativeStore.buys) as SharedUiPriceLevel[]
   )
 
   const filteredConditionalOrders = computed(() =>

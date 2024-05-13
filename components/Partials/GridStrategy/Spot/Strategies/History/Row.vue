@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { PropType } from 'nuxt/dist/app/compat/capi'
-import type { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { format, formatDistance } from 'date-fns'
-import { StopReason } from '@/types'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiSpotMarket, StopReason } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -20,7 +18,7 @@ const props = defineProps({
 const spotStore = useSpotStore()
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarket]
 }>()
 
 const market = computed(
@@ -51,7 +49,7 @@ const duration = computed(() =>
   )
 )
 
-const { valueToString: upperBoundtoString } = useBigNumberFormatter(
+const { valueToString: upperBoundtoString } = useSharedBigNumberFormatter(
   upperBound,
   {
     decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -60,7 +58,7 @@ const { valueToString: upperBoundtoString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
+const { valueToString: lowerBoundtoString } = useSharedBigNumberFormatter(
   lowerBound,
   {
     decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -69,11 +67,11 @@ const { valueToString: lowerBoundtoString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: pnltoString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnltoString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: investmentToString } = useBigNumberFormatter(
+const { valueToString: investmentToString } = useSharedBigNumberFormatter(
   investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

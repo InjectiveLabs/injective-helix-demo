@@ -32,7 +32,7 @@ function disconnect() {
           class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
           @click="toggle"
         >
-          <BaseIcon
+          <SharedIcon
             name="user"
             class="lg:mr-2 w-8 h-8 p-1 rounded-md hover:bg-brand-800"
           />
@@ -90,6 +90,6 @@ function disconnect() {
       </template>
     </BaseHoverMenu>
 
-    <ModalsQrCode />
+    <ModalsQRCode />
   </div>
 </template>

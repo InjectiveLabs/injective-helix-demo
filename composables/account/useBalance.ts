@@ -1,6 +1,6 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 
@@ -42,11 +42,11 @@ const reduceAccountBalances = (
 }
 
 export function useBalance() {
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-  const positionStore = usePositionStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const positionStore = usePositionStore()
+  const derivativeStore = useDerivativeStore()
 
   const aggregatedPortfolioBalances = computed(() => {
     return Object.keys(accountStore.subaccountBalancesMap).reduce(

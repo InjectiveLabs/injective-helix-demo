@@ -1,5 +1,5 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { indexerRestExplorerApi } from '@/app/Services'
+import { indexerRestExplorerApi } from '@shared/Service'
 import { toBalanceInToken } from '@/app/utils/formatters'
 
 type Attribute = {
@@ -43,10 +43,8 @@ export const getSwapAmountAndTokenFromTxHash = async (
     return
   }
 
-  const inputToken = tokenStore.tokens.find(({ denom }) => denom === inputDenom)
-  const outputToken = tokenStore.tokens.find(
-    ({ denom }) => denom === outputDenom
-  )
+  const inputToken = tokenStore.tokenByDenomOrSymbol(inputDenom)
+  const outputToken = tokenStore.tokenByDenomOrSymbol(outputDenom)
 
   if (!inputToken || !outputToken) {
     return

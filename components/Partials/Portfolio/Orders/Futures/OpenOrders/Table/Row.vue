@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiDerivativeLimitOrder } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   order: {
     required: true,
-    type: Object as PropType<UiDerivativeLimitOrder>
+    type: Object as PropType<DerivativeLimitOrder>
   }
 })
 
@@ -26,29 +26,32 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
-  decimalPlaces: quantityDecimals.value
-})
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
 
-const { valueToString: filledQuantityToString } = useBigNumberFormatter(
+const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
   filledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: unfilledQuantityToString } = useBigNumberFormatter(
+const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
   unfilledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 </script>

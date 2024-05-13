@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
-import { UiSubaccountTransactionWithToken } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
+import { UiSubaccountTransactionWithToken } from '@/types'
 
 const props = defineProps({
   transaction: {
@@ -58,7 +58,7 @@ const time = computed(() => {
   return format(props.transaction.timestamp, DATE_TIME_DISPLAY)
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(amount, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 </script>

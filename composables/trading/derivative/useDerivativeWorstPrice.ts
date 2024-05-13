@@ -1,10 +1,8 @@
-import {
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
@@ -17,7 +15,7 @@ export function useDerivativeWorstPrice() {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
   const orderbookStore = useOrderbookStore()
 
-  const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarketWithToken>
+  const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
   const isBuy = computed(
     () =>

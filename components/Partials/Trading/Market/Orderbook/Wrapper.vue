@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { getAggregationPrice } from '@/app/client/utils/orderbook'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-import { getAggregationPrice } from '@/app/client/utils/orderbook'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -21,7 +22,7 @@ const props = defineProps({
 })
 
 const MAX_DECIMALS_FOR_AGGREGATION_KEY = 9
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const buys = computed(() => (isSpot ? spotStore.buys : derivativeStore.buys))
 const sells = computed(() => (isSpot ? spotStore.sells : derivativeStore.sells))

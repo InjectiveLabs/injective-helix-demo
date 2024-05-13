@@ -1,15 +1,11 @@
-import {
-  MarketType,
-  UiPerpetualMarketWithToken,
-  UiBinaryOptionsMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType, SharedUiBinaryOptionsMarket } from '@shared/types'
+import { indexerOracleApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { MarketMarkPriceMap } from '@/types'
-import { indexerOracleApi } from '@/app/Services'
+import { MarketMarkPriceMap, UiDerivativeMarket } from '@/types'
 
 export class DerivativeOraclePriceIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
@@ -74,21 +70,21 @@ export class DerivativeOraclePriceIntegrityStrategy
     }
 
     const derivativeStore = useDerivativeStore()
-    const markets = derivativeStore.markets.filter((market) =>
-      marketIds.includes(market.marketId)
-    )
+    const markets = [
+      ...derivativeStore.markets,
+      ...derivativeStore.binaryOptionsMarkets
+    ].filter((market) => marketIds.includes(market.marketId))
 
     const pricePromises = markets.map((market) =>
-      (market.subType !== MarketType.BinaryOptions
+      (market.subType !== SharedMarketType.BinaryOptions
         ? indexerOracleApi.fetchOraclePrice({
             oracleType: market.oracleType,
-            baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-            quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote
+            baseSymbol: (market as UiDerivativeMarket).oracleBase,
+            quoteSymbol: (market as UiDerivativeMarket).oracleQuote
           })
         : indexerOracleApi.fetchOraclePriceNoThrow({
-            baseSymbol: (market as UiBinaryOptionsMarketWithToken).oracleSymbol,
-            quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
-              .oracleProvider,
+            baseSymbol: (market as SharedUiBinaryOptionsMarket).oracleSymbol,
+            quoteSymbol: (market as SharedUiBinaryOptionsMarket).oracleProvider,
             oracleType: market.oracleType
           })
       ).then((oraclePrice) => ({

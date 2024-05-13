@@ -1,16 +1,14 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { indexerGrpcTradingApi } from '@/app/Services'
-
 import {
   createStrategy,
   removeStrategy,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
-import { StrategyStatus } from '@/types'
+import { indexerGrpcTradingApi } from '@/app/Services'
+import { UiSpotMarket, StrategyStatus } from '@/types'
 
 type GridStrategyStoreState = {
-  spotMarket: UiSpotMarketWithToken | undefined
+  spotMarket: UiSpotMarket | undefined
   strategies: TradingStrategy[]
 }
 

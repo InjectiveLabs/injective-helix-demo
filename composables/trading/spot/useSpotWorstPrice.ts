@@ -1,18 +1,19 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  SpotTradeFormField,
-  TradeAmountOption,
-  SpotTradeForm,
-  spotMarketKey,
-  TradeTypes
-} from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   calculateTotalQuantity,
   calculateWorstPrice,
   quantizeNumber
 } from '@/app/utils/helpers'
+import {
+  TradeTypes,
+  UiSpotMarket,
+  SpotTradeForm,
+  spotMarketKey,
+  TradeAmountOption,
+  SpotTradeFormField
+} from '@/types'
 
 export function useSpotWorstPrice() {
   const spotFormValues = useFormValues<SpotTradeForm>()
@@ -32,7 +33,7 @@ export function useSpotWorstPrice() {
       TradeAmountOption.Base
   )
 
-  const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+  const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
   const feePercentage = computed(() => {
     const feePercentage =

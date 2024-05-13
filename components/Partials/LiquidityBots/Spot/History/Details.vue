@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { formatDistance } from 'date-fns'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { StopReason } from '@/types'
+import { StopReason, UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 
@@ -19,7 +18,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: UiSpotMarketWithToken]
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarket]
 }>()
 
 const market = computed(
@@ -43,7 +42,7 @@ const duration = computed(() =>
   )
 )
 
-const { valueToString: upperBoundToString } = useBigNumberFormatter(
+const { valueToString: upperBoundToString } = useSharedBigNumberFormatter(
   upperBound,
   {
     decimalPlaces: upperBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -52,7 +51,7 @@ const { valueToString: upperBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: lowerBoundToString } = useBigNumberFormatter(
+const { valueToString: lowerBoundToString } = useSharedBigNumberFormatter(
   lowerBound,
   {
     decimalPlaces: lowerBound.value.lt(GST_AUTO_PRICE_THRESHOLD)
@@ -61,11 +60,11 @@ const { valueToString: lowerBoundToString } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: investmentToString } = useBigNumberFormatter(
+const { valueToString: investmentToString } = useSharedBigNumberFormatter(
   investment,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

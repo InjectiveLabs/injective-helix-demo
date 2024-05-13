@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import {
-  ZERO_IN_BASE,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+  SharedMarketChange,
+  SharedMarketStatus,
+  SharedUiMarketSummary
+} from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
@@ -13,24 +12,22 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
-import { stableCoinDenoms, legacyWHDenoms } from '@/app/data/token'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
-import { Change, TradeClickOrigin, MarketStatus } from '@/types'
+import { stableCoinDenoms, legacyWHDenoms } from '@/app/data/token'
+import { UiMarketWithToken, TradeClickOrigin } from '@/types'
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   },
 
   summary: {
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     default: undefined
   },
 
@@ -54,7 +51,7 @@ const legacyWHMarketDenom = computed(() =>
   legacyWHDenoms.find((denom) => denom === (props.market.baseToken.denom || ''))
 )
 
-const { valueToString: lastTradedPriceInUsd } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceInUsd } = useSharedBigNumberFormatter(
   computed(() => {
     if (
       !QUOTE_DENOMS_TO_SHOW_USD_VALUE.includes(props.market.quoteToken.denom)
@@ -110,22 +107,22 @@ const change = computed(() => {
 
 const lastPriceChange = computed(() => {
   if (!props.summary) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
   if (!props.summary.lastPriceChange) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
   return props.summary.lastPriceChange
 })
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2,
   minimalDecimalPlaces: 4
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -134,17 +131,18 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: quoteVolumeToFormat } = useBigNumberFormatter(
+const { valueToString: quoteVolumeToFormat } = useSharedBigNumberFormatter(
   quoteVolume,
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
-  computed(() => props.volumeInUsd),
-  formatterOptions.value
-)
+const { valueToString: abbreviatedVolumeInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => props.volumeInUsd),
+    formatterOptions.value
+  )
 
 function toggleFavoriteMarket() {
   appStore.toggleFavoriteMarket(props.market.marketId)
@@ -170,8 +168,8 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
-        <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
@@ -215,7 +213,7 @@ function tradeClickedTrack() {
             class="visible sm:invisible lg:visible ml-auto"
           />
           <PartialsCommonMarketInactive
-            v-if="market.marketStatus === MarketStatus.Paused"
+            v-if="market.marketStatus === SharedMarketStatus.Paused"
             class="visible sm:invisible lg:visible ml-auto"
           />
         </div>
@@ -228,13 +226,13 @@ function tradeClickedTrack() {
         <span
           v-if="
             !lastTradedPrice.isNaN() ||
-            market.marketStatus !== MarketStatus.Paused
+            market.marketStatus !== SharedMarketStatus.Paused
           "
           class=""
           :class="{
-            'text-green-500': lastPriceChange === Change.Increase,
-            'text-white': lastPriceChange === Change.NoChange,
-            'text-red-500': lastPriceChange === Change.Decrease
+            'text-green-500': lastPriceChange === SharedMarketChange.Increase,
+            'text-white': lastPriceChange === SharedMarketChange.NoChange,
+            'text-red-500': lastPriceChange === SharedMarketChange.Decrease
           }"
         >
           {{ lastTradedPriceToFormat }}
@@ -309,13 +307,13 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon
+        <SharedIcon
           v-if="isFavorite"
           name="star"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <BaseIcon
+        <SharedIcon
           v-else
           name="star-border"
           class="min-w-5 w-5 h-5"

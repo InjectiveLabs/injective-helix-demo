@@ -16,7 +16,7 @@ const linkOptions = [
     <div class="p-4">
       <div class="flex items-center">
         <NuxtLink :to="{ name: 'portfolio-settings' }" class="pr-4">
-          <BaseIcon name="chevron" />
+          <SharedIcon name="chevron" />
         </NuxtLink>
 
         <h3 class="portfolio-title">

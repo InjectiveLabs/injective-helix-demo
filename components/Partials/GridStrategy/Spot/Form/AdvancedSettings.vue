@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { ExitType } from '@injectivelabs/sdk-ts'
-import { SpotGridTradingField } from '@/types'
+import { UiSpotMarket, SpotGridTradingField } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 
 const isAdvancedOpen = ref(false)
 const isTpSlOpen = ref(false)
 
-const market = computed(
-  () => gridStrategyStore.spotMarket as UiSpotMarketWithToken
-)
+const market = computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
 
 const { value: stopLossValue, errorMessage: stopLossError } = useStringField({
   name: SpotGridTradingField.StopLoss,
@@ -86,7 +83,7 @@ function resetTpSlFields() {
       class="transition-all duration-300 select-none"
       :class="{ 'rotate-180': isAdvancedOpen }"
     >
-      <BaseIcon name="chevron-down" is-md />
+      <SharedIcon name="chevron-down" is-md />
     </div>
   </div>
 
@@ -105,7 +102,7 @@ function resetTpSlFields() {
               <CommonTokenIcon v-bind="{ token: settleInToken }" is-sm />
               <p>{{ settleInToken.symbol }}</p>
 
-              <BaseIcon
+              <SharedIcon
                 name="chevron-down"
                 is-md
                 :class="{ 'rotate-180': isOpen }"

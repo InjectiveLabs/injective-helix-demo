@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
 import {
   BusEvents,
@@ -46,7 +46,7 @@ const tokens = computed(() => {
 
   const tokens = markets.value.reduce((tokens, market) => {
     return [...tokens, market.baseToken, market.quoteToken]
-  }, [] as Token[])
+  }, [] as TokenStatic[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()
@@ -201,7 +201,7 @@ function onUpdate() {
           @click="onClearFilters"
         >
           <div class="items-center flex gap-1">
-            <BaseIcon name="close" is-md />
+            <SharedIcon name="close" is-md />
             <span>{{ $t('filters.clearAll') }}</span>
           </div>
         </AppButton>

@@ -1,21 +1,18 @@
 <script lang="ts" setup>
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  MarketType,
-  ZERO_IN_BASE,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import { format, fromUnixTime } from 'date-fns'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { SharedMarketType, SharedUiExpiryFuturesMarket } from '@shared/types'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiDerivativeMarket } from '@/types'
 
 const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })
@@ -28,9 +25,9 @@ const lastTradedPrice = computed(() => {
     return
   }
 
-  const token = tokenStore.tokens.find(
-    ({ denom }) => denom === settledPerpMarket.denom
-  )
+  const token = settledPerpMarket.denom
+    ? tokenStore.tokenByDenomOrSymbol(settledPerpMarket.denom)
+    : undefined
 
   return toBalanceInToken({
     value: settledPerpMarket.price,
@@ -43,19 +40,19 @@ const settlementPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ZERO_IN_BASE
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return new BigNumberInBase(lastTradedPrice.value || 0)
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ZERO_IN_BASE
   }
 
-  const expiryFuturesMarket = props.market as UiExpiryFuturesMarketWithToken
+  const expiryFuturesMarket = props.market as SharedUiExpiryFuturesMarket
 
   if (!expiryFuturesMarket.expiryFuturesMarketInfo) {
     return ZERO_IN_BASE
@@ -70,7 +67,7 @@ const settlementPrice = computed(() => {
   ).toBase(expiryFuturesMarket.quoteToken.decimals)
 })
 
-const { valueToString: settlementPriceToFormat } = useBigNumberFormatter(
+const { valueToString: settlementPriceToFormat } = useSharedBigNumberFormatter(
   settlementPrice,
   {
     decimalPlaces: Math.min(
@@ -85,19 +82,19 @@ const expiryAt = computed(() => {
     return ''
   }
 
-  if (props.market.type === MarketType.Spot) {
+  if (props.market.type === SharedMarketType.Spot) {
     return ''
   }
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 
-  if (props.market.subType === MarketType.Perpetual) {
+  if (props.market.subType === SharedMarketType.Perpetual) {
     return ''
   }
 
-  const derivativeMarket = props.market as UiExpiryFuturesMarketWithToken
+  const derivativeMarket = props.market as SharedUiExpiryFuturesMarket
   const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
   if (!expiryFuturesMarketInfo) {
@@ -151,7 +148,7 @@ const expiryAt = computed(() => {
           <span v-else class="text-gray-400">&mdash;</span>
         </div>
         <div
-          v-if="market.subType !== MarketType.Perpetual"
+          v-if="market.subType !== SharedMarketType.Perpetual"
           class="w-full text-gray-500 text-xs"
         >
           {{ expiryAt }}
@@ -174,7 +171,7 @@ const expiryAt = computed(() => {
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
       <div
-        v-if="market.subType !== MarketType.Perpetual"
+        v-if="market.subType !== SharedMarketType.Perpetual"
         class="w-full text-gray-500 text-xs text-right"
       >
         {{ expiryAt }}

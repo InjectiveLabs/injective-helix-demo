@@ -1,8 +1,9 @@
 import { defineNuxtPlugin } from '#app'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { NUMBER_REGEX, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { Network } from '@shared/types'
 import { defineRule } from 'vee-validate'
+import { NUMBER_REGEX } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
@@ -15,33 +16,24 @@ export const errorMessages = {
   positiveNumber: () => 'This field is not a valid number',
   integer: (fieldName: string) => `${fieldName} must be > 0`,
 
-  [BridgingNetwork.Axelar]: () => 'This field is not a valid Cosmos address',
-  [BridgingNetwork.CosmosHub]: () => 'This field is not a valid Cosmos address',
-  [BridgingNetwork.Ethereum]: () =>
-    'This field is not a valid Ethereum address',
-  [BridgingNetwork.Evmos]: () => 'This field is not a valid Evmos address',
-  [BridgingNetwork.Moonbeam]: () =>
-    'This field is not a valid Moonbeam address',
-  [BridgingNetwork.Injective]: () =>
-    'This field is not a valid Injective address',
-  [BridgingNetwork.Osmosis]: () => 'This field is not a valid Osmosis address',
-  [BridgingNetwork.Persistence]: () =>
-    'This field is not a valid Persistence address',
-  [BridgingNetwork.Secret]: () =>
-    'This field is not a valid Secret Network address',
-  [BridgingNetwork.Noble]: () =>
-    'This field is not a valid Noble Network address',
-  [BridgingNetwork.Stride]: () => 'This field is not a valid Stride address',
-  [BridgingNetwork.Crescent]: () =>
-    'This field is not a valid Crescent address',
-  [BridgingNetwork.Sommelier]: () =>
-    'This field is not a valid Sommelier address',
-  [BridgingNetwork.Canto]: () => 'This field is not a valid Canto address',
-  [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
-  [BridgingNetwork.Oraichain]: () =>
-    'This field is not a valid Oraichain address',
-  [BridgingNetwork.Migaloo]: () => 'This field is not a valid Migaloo address',
-  [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
+  [Network.Axelar]: () => 'This field is not a valid Cosmos address',
+  [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
+  [Network.Ethereum]: () => 'This field is not a valid Ethereum address',
+  [Network.Evmos]: () => 'This field is not a valid Evmos address',
+  // [Network.Moonbeam]: () => 'This field is not a valid Moonbeam address',
+  [Network.Injective]: () => 'This field is not a valid Injective address',
+  [Network.Osmosis]: () => 'This field is not a valid Osmosis address',
+  [Network.Persistence]: () => 'This field is not a valid Persistence address',
+  [Network.Secret]: () => 'This field is not a valid Secret Network address',
+  [Network.Noble]: () => 'This field is not a valid Noble Network address',
+  [Network.Stride]: () => 'This field is not a valid Stride address',
+  [Network.Crescent]: () => 'This field is not a valid Crescent address',
+  [Network.Sommelier]: () => 'This field is not a valid Sommelier address',
+  [Network.Canto]: () => 'This field is not a valid Canto address',
+  [Network.Kava]: () => 'This field is not a valid Kava address',
+  [Network.Oraichain]: () => 'This field is not a valid Oraichain address',
+  [Network.Migaloo]: () => 'This field is not a valid Migaloo address',
+  [Network.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
@@ -116,28 +108,23 @@ export const defineGlobalRules = () => {
     }
   })
 
-  defineRule(
-    'addressByNetwork',
-    (value: string, [network]: BridgingNetwork[]) => {
-      if (network === BridgingNetwork.Ethereum) {
-        if (!value.startsWith('0x')) {
-          return errorMessages[network]()
-        }
-      } else {
-        const isValidCosmosAddress =
-          network
-            .toLowerCase()
-            .startsWith(value.toLowerCase().substring(0, 3)) &&
-          new BigNumberInBase(value.length).gte(3)
-
-        if (!isValidCosmosAddress && errorMessages[network]) {
-          return errorMessages[network]()
-        }
+  defineRule('addressByNetwork', (value: string, [network]: Network[]) => {
+    if (network === Network.Ethereum) {
+      if (!value.startsWith('0x')) {
+        return errorMessages[network]()
       }
+    } else {
+      const isValidCosmosAddress =
+        network.toLowerCase().startsWith(value.toLowerCase().substring(0, 3)) &&
+        new BigNumberInBase(value.length).gte(3)
 
-      return true
+      if (!isValidCosmosAddress && errorMessages[network]) {
+        return errorMessages[network]()
+      }
     }
-  )
+
+    return true
+  })
 
   defineRule('positiveNumber', (value: string) => {
     if (NUMBER_REGEX.test(value)) {

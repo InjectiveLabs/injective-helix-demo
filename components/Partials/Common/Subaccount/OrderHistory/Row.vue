@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import {
-  UiDerivativeOrderHistory,
-  UiSpotOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
+import { SpotOrderHistory, DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 
 const props = defineProps({
@@ -10,7 +7,7 @@ const props = defineProps({
 
   order: {
     required: true,
-    type: Object as PropType<UiDerivativeOrderHistory | UiSpotOrderHistory>
+    type: Object as PropType<SpotOrderHistory | DerivativeOrderHistory>
   }
 })
 
@@ -137,7 +134,7 @@ const marketRoute = computed(() => {
     </td>
 
     <td class="h-12 flex items-center justify-end gap-1">
-      <template v-if="(order as UiDerivativeOrderHistory).isConditional">
+      <template v-if="(order as DerivativeOrderHistory).isConditional">
         <span class="text-gray-500 text-xs font-semibold">
           {{ $t('trade.mark_price') }}
         </span>

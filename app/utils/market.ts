@@ -1,10 +1,4 @@
 import {
-  MarketType,
-  UiMarketHistory,
-  UiSpotMarketWithToken,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
   BigNumber,
   BigNumberInBase,
   BigNumberInWei,
@@ -18,9 +12,13 @@ import {
   MsgExecuteContractCompat,
   ExecArgCW20Send
 } from '@injectivelabs/sdk-ts'
+import {
+  SharedMarketType,
+  SharedMarketStatus,
+  SharedUiMarketHistory
+} from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import { MarketStatus } from '../../types/exchange'
 import {
   upcomingMarkets,
   deprecatedMarkets,
@@ -31,13 +29,15 @@ import {
   slugsToIncludeInInjectiveCategory,
   newMarketsSlug
 } from '@/app/data/market'
-import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
+import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import {
   MarketRoute,
+  UiSpotMarket,
   TradeSubPage,
   DefaultMarket,
   MarketQuoteType,
+  UiMarketWithToken,
   MarketCategoryType,
   TradingBotsSubPage,
   MarketTypeOption
@@ -47,9 +47,7 @@ interface PriceLevelMap {
   [price: string]: PriceLevel
 }
 
-export const getMarketRoute = (
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): MarketRoute => {
+export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: TradeSubPage.Market,
@@ -68,8 +66,8 @@ export const getMarketRoute = (
     }
   }
 
-  if (market.type === MarketType.Derivative) {
-    if (market.subType === MarketType.BinaryOptions) {
+  if (market.type === SharedMarketType.Derivative) {
+    if (market.subType === SharedMarketType.BinaryOptions) {
       return {
         name: TradeSubPage.BinaryOption,
         params: {
@@ -78,7 +76,11 @@ export const getMarketRoute = (
       }
     }
 
-    if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
+    if (
+      [SharedMarketType.Perpetual, SharedMarketType.Futures].includes(
+        market.subType
+      )
+    ) {
       return {
         name: TradeSubPage.Futures,
         params: {
@@ -96,7 +98,7 @@ export const getMarketRoute = (
     }
   }
 
-  if (market.type === MarketType.Spot) {
+  if (market.type === SharedMarketType.Spot) {
     return {
       name: TradeSubPage.Spot,
       params: {
@@ -145,7 +147,7 @@ export const getDefaultFuturesMarket = () =>
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   if (activeCategory === MarketCategoryType.All) {
     return true
@@ -184,7 +186,7 @@ export const marketIsPartOfCategory = (
 
 export const marketIsQuotePair = (
   activeQuote: MarketQuoteType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   if (activeQuote === MarketQuoteType.All) {
     return true
@@ -216,7 +218,7 @@ export const marketIsPartOfType = ({
   favoriteMarkets
 }: {
   activeType: MarketTypeOption
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
   favoriteMarkets: string[]
 }): boolean => {
   if (
@@ -235,13 +237,13 @@ export const marketIsPartOfType = ({
   }
 
   return [market.type, market.subType].includes(
-    activeType as unknown as MarketType
+    activeType as unknown as SharedMarketType
   )
 }
 
 export const marketIsPartOfSearch = (
   search: string,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   const query = search.trim().toLowerCase()
 
@@ -259,7 +261,7 @@ export const marketIsPartOfSearch = (
 }
 
 export const getFormattedMarketsHistoryChartData = (
-  marketsHistory: UiMarketHistory
+  marketsHistory: SharedUiMarketHistory
 ) => {
   return marketsHistory.time.map((time, index, times) => {
     const totalPrice =
@@ -296,7 +298,7 @@ export const marketIsInactive = (market: DerivativeMarket) => {
 }
 
 export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
-  return market.marketStatus === MarketStatus.Active
+  return market.marketStatus === SharedMarketStatus.Active
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
@@ -414,12 +416,12 @@ export const convertCw20ToBankBalance = ({
   cw20BalancesMap
 }: {
   injectiveAddress: string
-  market: UiSpotMarketWithToken
+  market: UiSpotMarket
   order: {
     price: string
     orderSide: OrderSide
     quantity: string
-    market: UiSpotMarketWithToken
+    market: UiSpotMarket
   }
   bankBalancesMap: Record<string, string>
   cw20BalancesMap: Record<string, string>

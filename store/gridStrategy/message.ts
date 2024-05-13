@@ -1,25 +1,28 @@
 import {
+  Msgs,
   ExitType,
+  MsgGrant,
   ExitConfig,
   MsgExecuteContractCompat,
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
-  spotQuantityToChainQuantityToFixed,
-  MsgGrant,
-  Msgs
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { GeneralException } from '@injectivelabs/exceptions'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { backupPromiseCall } from '@/app/utils/async'
+import { msgBroadcaster } from '@shared/WalletService'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
-  gridStrategyAuthorizationMessageTypes,
-  spotGridMarkets
+  spotGridMarkets,
+  gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
+import { backupPromiseCall } from '@/app/utils/async'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { msgBroadcastClient } from '@/app/Services'
-import { SpotGridTradingForm, SpotGridTradingField } from '@/types'
+import {
+  UiSpotMarket,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 export const createStrategy = async (
   {
@@ -36,7 +39,7 @@ export const createStrategy = async (
     [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
     [SpotGridTradingField.StrategyType]: strategyType
   }: Partial<SpotGridTradingForm>,
-  market?: UiSpotMarketWithToken
+  market?: UiSpotMarket
 ) => {
   const appStore = useAppStore()
   const authZStore = useAuthZStore()
@@ -181,7 +184,7 @@ export const createStrategy = async (
   // we need to add it after the authz messages
   msgs.push(message)
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -233,7 +236,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     })
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -274,7 +277,7 @@ export const removeStrategyForSubaccount = async (
     })
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })

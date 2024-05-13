@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -12,6 +6,12 @@ import {
   UI_DEFAULT_PRICE_MAX_DECIMALS,
   UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
@@ -151,7 +151,7 @@ watch(isBaseAndQuoteType, (value) => {
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
       v-bind="{
-        market: gridStrategyStore.spotMarket as UiSpotMarketWithToken,
+        market: gridStrategyStore.spotMarket as UiSpotMarket,
         decimalPlaces
       }"
     />
@@ -172,10 +172,10 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
-        <BaseIcon name="plus" is-xs />
+        <SharedIcon name="plus" is-xs />
       </button>
       <button class="border px-2 rounded-md" @click="zoomOut">
-        <BaseIcon name="minus" is-xs />
+        <SharedIcon name="minus" is-xs />
       </button>
     </div>
 

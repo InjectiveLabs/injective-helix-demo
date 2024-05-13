@@ -60,7 +60,7 @@ const tabsFiltered = computed(() =>
         </template>
 
         <template v-else #icon>
-          <BaseIcon name="wallet" class="w-3 md:w-3.5 h-auto" />
+          <SharedIcon name="wallet" class="w-3 md:w-3.5 h-auto" />
         </template>
       </CommonCardLink>
     </div>

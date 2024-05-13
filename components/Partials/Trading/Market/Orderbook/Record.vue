@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { Change } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketChange } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 import {
   BusEvents,
-  OrderBookPriceAndType,
-  OrderBookQuantityAndType,
-  OrderBookNotionalAndType,
   UiMarketWithToken,
-  UiAggregatedPriceLevel
+  OrderBookPriceAndType,
+  UiAggregatedPriceLevel,
+  OrderBookQuantityAndType,
+  OrderBookNotionalAndType
 } from '@/types'
-import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
   isLast: Boolean,
@@ -69,13 +69,13 @@ const depthWidth = computed(() => ({
 
 const newRecordClass = computed(() => {
   switch (quantityChange.value) {
-    case Change.NoChange:
+    case SharedMarketChange.NoChange:
       return ''
-    case Change.New:
+    case SharedMarketChange.New:
       return recordTypeBuy.value ? 'green-record-bg' : 'red-record-bg'
-    case Change.Increase:
+    case SharedMarketChange.Increase:
       return 'green-record-bg'
-    case Change.Decrease:
+    case SharedMarketChange.Decrease:
       return 'red-record-bg'
     default:
       return ''
@@ -89,18 +89,20 @@ const quantityChange = computed(() => {
   const quantityBN = new BigNumber(quantity)
 
   if (oldQuantityBN.isNaN()) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
   if (oldQuantityBN.eq(0)) {
-    return Change.New
+    return SharedMarketChange.New
   }
 
   if (oldQuantityBN.eq(quantityBN)) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
-  return oldQuantityBN.gte(quantityBN) ? Change.Decrease : Change.Increase
+  return oldQuantityBN.gte(quantityBN)
+    ? SharedMarketChange.Decrease
+    : SharedMarketChange.Increase
 })
 
 const aggregatedValue = computed(() => {
@@ -172,7 +174,7 @@ defineExpose({
       @click.stop="onPriceClick"
     >
       <!--
-        <BaseIcon
+        <SharedIcon
         v-if="existsInUserOrders"
         name="arrow"
         data-cy="orderbook-record-own-order-icon"
@@ -205,8 +207,8 @@ defineExpose({
       <span
         class="block text-right font-mono"
         :class="{
-          'text-red-500': quantityChange === Change.Decrease,
-          'text-green-500': quantityChange === Change.Increase
+          'text-red-500': quantityChange === SharedMarketChange.Decrease,
+          'text-green-500': quantityChange === SharedMarketChange.Increase
         }"
       >
         <AppNumber

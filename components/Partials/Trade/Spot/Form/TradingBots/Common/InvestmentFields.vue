@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  spotMarketKey
-} from '@/types'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_MIN_TRADING_SIZE_LOW
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  spotMarketKey,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean
 })
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -94,7 +94,7 @@ const isUpperBoundLtLastPrice = computed(() =>
 const {
   valueToString: quoteDenomAmountToString,
   valueToBigNumber: quoteDenomAmount
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
       quoteDenomBalance.value?.token.decimals
@@ -106,7 +106,7 @@ const {
 const {
   valueToString: baseDenomAmountToString,
   valueToBigNumber: baseDenomAmount
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
       baseDenomBalance.value?.token.decimals

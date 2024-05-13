@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { TradeClickOrigin, MarketStatus } from '@/types'
+import { SharedMarketStatus, SharedUiMarketSummary } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { TradeClickOrigin, UiMarketWithToken } from '@/types'
+
 const appStore = useAppStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   },
 
   summary: {
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     default: undefined
   },
 
@@ -60,8 +54,8 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
-        <BaseIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-if="isFavorite" name="star" class="min-w-6 w-6 h-6" />
+        <SharedIcon v-else name="star-border" class="min-w-6 w-6 h-6" />
       </div>
 
       <NuxtLink :to="marketRoute" class="w-full cursor-pointer">
@@ -87,7 +81,7 @@ function tradeClickedTrack() {
             </span>
           </div>
           <PartialsCommonMarketInactive
-            v-if="market.marketStatus === MarketStatus.Paused"
+            v-if="market.marketStatus === SharedMarketStatus.Paused"
             class="visible sm:invisible lg:visible ml-auto"
           />
         </div>
@@ -132,13 +126,13 @@ function tradeClickedTrack() {
         data-cy="markets-favorite-button"
         @click="toggleFavoriteMarket"
       >
-        <BaseIcon
+        <SharedIcon
           v-if="isFavorite"
           name="star"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <BaseIcon
+        <SharedIcon
           v-else
           name="star-border"
           class="min-w-5 w-5 h-5"

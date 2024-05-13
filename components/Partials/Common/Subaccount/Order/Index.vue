@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { UiMarketWithToken } from '@/types'
 
 const spotStore = useSpotStore()
@@ -12,7 +12,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const store = computed(() => (isSpot ? spotStore : derivativeStore))
 

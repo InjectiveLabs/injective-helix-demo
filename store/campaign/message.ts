@@ -1,10 +1,10 @@
+import { msgBroadcaster } from '@shared/WalletService'
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
-import { msgBroadcastClient } from '@/app/Services'
-import { delayPromiseCall } from '@/app/utils/async'
 import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_CONTRACT_ADDRESS
 } from '@/app/utils/constants'
+import { delayPromiseCall } from '@/app/utils/async'
 import { generateUniqueHash } from '@/app/utils/formatters'
 
 export const claimReward = async (
@@ -32,7 +32,7 @@ export const claimReward = async (
     }
   })
 
-  const tx = await msgBroadcastClient.broadcastWithFeeDelegation({
+  const tx = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: [message],
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -73,7 +73,7 @@ export const createGuild = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -113,7 +113,7 @@ export const joinGuild = async ({
     }
   })
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: message,
     injectiveAddress: walletStore.injectiveAddress
   })

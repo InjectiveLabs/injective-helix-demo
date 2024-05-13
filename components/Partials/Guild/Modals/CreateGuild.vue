@@ -40,12 +40,12 @@ const { value: thumbnail, errors: thumbnailErrors } = useStringField({
   name: THUMBNAIL_FIELD
 })
 
-const { valueToString: minAmountToString } = useBigNumberFormatter(
+const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
   computed(() => GUILD_MIN_AMOUNT)
 )
 
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       const balance = accountBalancesWithToken.value.find(
         ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
@@ -205,13 +205,13 @@ watch(
         </span>
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
-          <BaseIcon
+          <SharedIcon
             v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
             name="check-circle"
             class="text-green-500"
             is-sm
           />
-          <BaseIcon
+          <SharedIcon
             v-else
             name="warning-circle"
             class="text-orange-400"

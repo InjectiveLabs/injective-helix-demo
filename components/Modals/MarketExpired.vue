@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     default: undefined
   }
 })

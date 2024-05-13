@@ -1,25 +1,27 @@
 import {
-  UiDerivativeLimitOrder,
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiDerivativeOrderHistory,
-  UiDerivativeTrade,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiSpotTrade
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
+  SharedUiSpotTrade,
+  SharedUiSpotMarket,
+  SharedUiMarketSummary,
+  SharedUiDerivativeTrade,
+  SharedUiDerivativeMarket
+} from '@shared/types'
+import {
+  ExitType,
+  StrategyType,
+  DerivativeLimitOrder,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   TradeField,
-  InvestmentTypeGst,
-  SpotGridTradingField,
   TradeTypes,
+  TradeAmountOption,
+  InvestmentTypeGst,
   SpotTradeFormField,
-  DerivativesTradeFormField,
   DerivativeTradeTypes,
-  TradeAmountOption
+  SpotGridTradingField,
+  DerivativesTradeFormField
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -29,22 +31,25 @@ export type TradeFormValue = {
   value: string | number | boolean
 }
 
-export type UiMarketWithToken =
-  | UiDerivativeMarketWithToken
-  | UiSpotMarketWithToken
+export interface UiSpotMarket extends SharedUiSpotMarket {
+  isVerified: boolean
+}
+
+export interface UiDerivativeMarket extends SharedUiDerivativeMarket {
+  isVerified: boolean
+}
+
+export type UiMarketWithToken = UiSpotMarket | UiDerivativeMarket
 
 export type CurrentMarket = UiMarketWithToken | undefined
 
-export type UiMarketSummary = UiDerivativeMarketSummary | UiSpotMarketSummary
-export type UiTrade = UiDerivativeTrade | UiSpotTrade
+export type UiTrade = SharedUiSpotTrade | SharedUiDerivativeTrade
 
-export type UIDerivativeOrder =
-  | UiDerivativeOrderHistory
-  | UiDerivativeLimitOrder
+export type UIDerivativeOrder = DerivativeLimitOrder | DerivativeOrderHistory
 
 export interface UiMarketAndSummary {
   market: UiMarketWithToken
-  summary: UiMarketSummary
+  summary: SharedUiMarketSummary
 }
 
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {

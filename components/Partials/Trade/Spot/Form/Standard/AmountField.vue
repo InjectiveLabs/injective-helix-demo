@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { TradeAmountOption, SpotTradeFormField, spotMarketKey } from '@/types'
+import {
+  UiSpotMarket,
+  spotMarketKey,
+  TradeAmountOption,
+  SpotTradeFormField
+} from '@/types'
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,

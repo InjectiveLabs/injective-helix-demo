@@ -1,18 +1,14 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
+import { Modal, UiSpotMarket } from '@/types'
 
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const selectedStrategy = ref<TradingStrategy>()
-const selectedMarket = ref<UiSpotMarketWithToken>()
+const selectedMarket = ref<UiSpotMarket>()
 
-function setMarketAndStrategy(
-  strategy: TradingStrategy,
-  market: UiSpotMarketWithToken
-) {
+function setMarketAndStrategy(strategy: TradingStrategy, market: UiSpotMarket) {
   selectedStrategy.value = strategy
   selectedMarket.value = market
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { SharedUiMarketSummary } from '@shared/types'
 import { legacyWHDenoms } from '@/app/data/token'
-import { UiMarketWithToken, UiMarketSummary } from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   expanded: Boolean,
@@ -12,7 +13,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   }
 })
@@ -61,7 +62,7 @@ function tokenClick() {
                 {{ market.ticker }}
               </span>
 
-              <BaseIcon
+              <SharedIcon
                 name="chevron"
                 class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"

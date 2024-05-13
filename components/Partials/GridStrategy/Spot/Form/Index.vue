@@ -1,18 +1,16 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
-
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 import {
+  Modal,
+  UiSpotMarket,
   GridStrategyType,
   InvestmentTypeGst,
-  Modal,
   SpotGridTradingForm
 } from '@/types'
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

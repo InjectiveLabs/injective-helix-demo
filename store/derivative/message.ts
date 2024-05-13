@@ -1,10 +1,3 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  MarketType,
-  ZERO_TO_STRING,
-  orderSideToOrderType,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import {
   msgsOrMsgExecMsgs,
   MsgCancelDerivativeOrder,
@@ -16,13 +9,16 @@ import {
   MsgBatchCancelBinaryOptionsOrders,
   MsgCreateBinaryOptionsMarketOrder,
   derivativePriceToChainPriceToFixed,
-  derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed
+  derivativeMarginToChainMarginToFixed
 } from '@injectivelabs/sdk-ts'
+import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { msgBroadcaster } from '@shared/WalletService'
+import { sharedToBalanceInWei } from '@shared/utils/formatter'
+import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
-import { msgBroadcastClient } from '@/app/Services'
-import { UIDerivativeOrder } from '@/types'
+import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
@@ -46,7 +42,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
   }
 
   const messageType =
-    market && market.subType === MarketType.BinaryOptions
+    market && market.subType === SharedMarketType.BinaryOptions
       ? MsgCancelBinaryOptionsOrder
       : MsgCancelDerivativeOrder
 
@@ -61,7 +57,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -85,7 +81,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
       (m) => m.marketId === order.marketId
     )
     const messageType =
-      market && market.subType === MarketType.BinaryOptions
+      market && market.subType === SharedMarketType.BinaryOptions
         ? MsgBatchCancelBinaryOptionsOrders
         : MsgBatchCancelDerivativeOrders
 
@@ -105,7 +101,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     ? msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
     : messages
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -124,7 +120,7 @@ export const submitLimitOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   orderSide: OrderSide
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -144,7 +140,7 @@ export const submitLimitOrder = async ({
   await walletStore.validate()
 
   const messageType =
-    market.subType === MarketType.BinaryOptions
+    market.subType === SharedMarketType.BinaryOptions
       ? MsgCreateBinaryOptionsLimitOrder
       : MsgCreateDerivativeLimitOrder
 
@@ -153,15 +149,15 @@ export const submitLimitOrder = async ({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
-      value: price,
+      value: price.toFixed(),
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: sharedToBalanceInWei({ value: quantity.toFixed() }).toFixed(),
     margin: reduceOnly
-      ? ZERO_TO_STRING
+      ? '0'
       : derivativeMarginToChainMarginToFixed({
-          value: margin,
+          value: margin.toFixed(),
           quoteDecimals: market.quoteToken.decimals
         }),
     marketId: market.marketId,
@@ -172,7 +168,7 @@ export const submitLimitOrder = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -193,7 +189,7 @@ export const submitStopLimitOrder = async ({
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   orderSide: OrderSide
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -213,25 +209,26 @@ export const submitStopLimitOrder = async ({
   await walletStore.validate()
 
   const messageType =
-    market.subType === MarketType.BinaryOptions
+    market.subType === SharedMarketType.BinaryOptions
       ? MsgCreateBinaryOptionsLimitOrder
       : MsgCreateDerivativeLimitOrder
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
-    value: triggerPrice,
+    value: triggerPrice.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
   const msgPrice = derivativePriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
-    value: quantity
-  })
+  const msgQuantity = sharedToBalanceInWei({
+    value: quantity.toFixed()
+  }).toFixed()
+
   const msgMargin = reduceOnly
-    ? ZERO_TO_STRING
+    ? '0'
     : derivativeMarginToChainMarginToFixed({
-        value: margin,
+        value: margin.toFixed(),
         quoteDecimals: market.quoteToken.decimals
       })
 
@@ -251,7 +248,7 @@ export const submitStopLimitOrder = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -270,7 +267,7 @@ export const submitMarketOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   orderSide: OrderSide
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -290,7 +287,7 @@ export const submitMarketOrder = async ({
   await walletStore.validate()
 
   const messageType =
-    market && market.subType === MarketType.BinaryOptions
+    market && market.subType === SharedMarketType.BinaryOptions
       ? MsgCreateBinaryOptionsMarketOrder
       : MsgCreateDerivativeMarketOrder
 
@@ -299,15 +296,15 @@ export const submitMarketOrder = async ({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
-      value: price,
+      value: price.toFixed(),
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: sharedToBalanceInWei({ value: quantity.toFixed() }).toFixed(),
     margin: reduceOnly
-      ? ZERO_TO_STRING
+      ? '0'
       : derivativeMarginToChainMarginToFixed({
-          value: margin,
+          value: margin.toFixed(),
           quoteDecimals: market.quoteToken.decimals
         }),
     marketId: market.marketId,
@@ -318,7 +315,7 @@ export const submitMarketOrder = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -339,7 +336,7 @@ export const submitStopMarketOrder = async ({
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   orderSide: OrderSide
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -359,25 +356,26 @@ export const submitStopMarketOrder = async ({
   await walletStore.validate()
 
   const messageType =
-    market.subType === MarketType.BinaryOptions
+    market.subType === SharedMarketType.BinaryOptions
       ? MsgCreateBinaryOptionsMarketOrder
       : MsgCreateDerivativeMarketOrder
 
   const msgPrice = derivativePriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
-    value: triggerPrice,
+    value: triggerPrice.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
-    value: quantity
-  })
+  const msgQuantity = sharedToBalanceInWei({
+    value: quantity.toFixed()
+  }).toFixed()
+
   const msgMargin = reduceOnly
-    ? ZERO_TO_STRING
+    ? '0'
     : derivativeMarginToChainMarginToFixed({
-        value: margin,
+        value: margin.toFixed(),
         quoteDecimals: market.quoteToken.decimals
       })
 
@@ -397,7 +395,7 @@ export const submitStopMarketOrder = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   TradeForm,
@@ -58,14 +58,14 @@ const feeReturned = computed(() => {
   )
 })
 
-const { valueToString: feesToFormat } = useBigNumberFormatter(
+const { valueToString: feesToFormat } = useSharedBigNumberFormatter(
   computed(() => props.fees),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
+const { valueToString: feeReturnedToFormat } = useSharedBigNumberFormatter(
   feeReturned,
   {
     decimalPlaces: props.market.priceDecimals
@@ -105,7 +105,10 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
             })
           "
         >
-          <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
+          <SharedIcon
+            name="check-circle"
+            class="text-blue-500 w-3 h-3 min-w-3"
+          />
         </AppTooltip>
       </div>
     </template>
@@ -123,7 +126,10 @@ const { valueToString: feeReturnedToFormat } = useBigNumberFormatter(
             })
           "
         >
-          <BaseIcon name="check-circle" class="text-blue-500 w-3 h-3 min-w-3" />
+          <SharedIcon
+            name="check-circle"
+            class="text-blue-500 w-3 h-3 min-w-3"
+          />
         </AppTooltip>
       </div>
     </template>

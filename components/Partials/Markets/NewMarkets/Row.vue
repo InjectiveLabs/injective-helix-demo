@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { Change, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const props = defineProps({
   market: {
@@ -10,15 +10,15 @@ const props = defineProps({
   }
 })
 
-const { valueToString: priceToString } = useBigNumberFormatter(
-  computed(() => props.market.summary.lastPrice),
+const { valueToString: priceToString } = useSharedBigNumberFormatter(
+  computed(() => props.market.summary.lastPrice || 0),
   {
     decimalPlaces: props.market.market.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
 )
 
-const { valueToString: priceChangeToString } = useBigNumberFormatter(
+const { valueToString: priceChangeToString } = useSharedBigNumberFormatter(
   computed(() => props.market.summary.change),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -26,17 +26,17 @@ const { valueToString: priceChangeToString } = useBigNumberFormatter(
 )
 
 const to = computed(() =>
-  props.market.market.type === MarketType.Spot
+  props.market.market.type === SharedMarketType.Spot
     ? { name: 'spot-slug', params: { slug: props.market.market.slug } }
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
 
 const priceChangeClasses = computed(() => {
-  if (props.market.summary.lastPriceChange === Change.NoChange) {
+  if (props.market.summary.lastPriceChange === SharedMarketChange.NoChange) {
     return 'text-gray-350'
   }
 
-  return props.market.summary.lastPriceChange === Change.Increase
+  return props.market.summary.lastPriceChange === SharedMarketChange.Increase
     ? 'text-green-500'
     : 'text-red-500'
 })

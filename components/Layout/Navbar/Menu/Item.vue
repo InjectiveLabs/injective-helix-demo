@@ -80,7 +80,7 @@ function close() {
       </div>
 
       <div v-if="level > 0" class="flex items-center">
-        <BaseIcon name="chevron" class="rotate-180" is-sm />
+        <SharedIcon name="chevron" class="rotate-180" is-sm />
       </div>
     </div>
 

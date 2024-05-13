@@ -5,12 +5,17 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import {
   BankBalanceIntegrityStrategy,
   SubaccountBalanceIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
-import { MainPage, UiMarketWithToken, WalletConnectStatus } from '@/types'
+import {
+  MainPage,
+  UiSpotMarket,
+  UiMarketWithToken,
+  WalletConnectStatus
+} from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -24,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 const status = reactive(new Status(StatusType.Loading))
 
 const { accountBalancesWithToken } = useBalance()
@@ -35,8 +40,7 @@ const baseTradingBalance = computed(() => {
   }
 
   return accountBalancesWithToken.value.find(
-    (balance) =>
-      balance.denom === (props.market as UiSpotMarketWithToken).baseDenom
+    (balance) => balance.denom === (props.market as UiSpotMarket).baseDenom
   )
 })
 
@@ -59,7 +63,7 @@ const hasTradingAccountBalances = computed(() => {
     quoteTradingBalance.value?.availableMargin || 0
   ).toBase(props.market.quoteToken.decimals)
 
-  if (props.market.type === MarketType.Derivative) {
+  if (props.market.type === SharedMarketType.Derivative) {
     return quoteTradingBalanceInBase.gt(minOrderPrice)
   }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { SharedMarketType } from '@shared/types'
 import { CandlestickData, Time } from 'lightweight-charts'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { UiMarketWithToken } from '@/types'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { intervalOptions } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   isSpot: Boolean,
@@ -164,7 +164,7 @@ watch(() => lastTradedPrice.value, updateLastBarWithLastTradedPrice)
 const tickSize = computed(() =>
   new BigNumberInWei(props.market.minPriceTickSize)
     .toBase(
-      props.market.type === MarketType.Spot
+      props.market.type === SharedMarketType.Spot
         ? props.market.quoteToken.decimals - props.market.baseToken.decimals
         : props.market.quoteToken.decimals
     )

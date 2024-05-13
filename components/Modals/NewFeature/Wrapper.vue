@@ -72,7 +72,7 @@ function onCloseModal() {
       <div class="w-full h-auto">
         <slot name="image" />
         <div class="absolute right-0 top-0 mt-2 mr-2">
-          <BaseIcon
+          <SharedIcon
             name="close"
             class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
             @click="onCloseModal"
@@ -93,9 +93,9 @@ function onCloseModal() {
           v-if="slots.countdown"
           class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
         >
-          <BaseIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
+          <SharedIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
           <slot name="countdown" />
-          <BaseIcon name="arrow" class="h-4 w-4 text-blue-500" />
+          <SharedIcon name="arrow" class="h-4 w-4 text-blue-500" />
         </div>
 
         <NuxtLink

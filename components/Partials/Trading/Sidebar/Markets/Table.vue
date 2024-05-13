@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketIsPartOfType, marketIsPartOfSearch } from '@/app/utils/market'
-import {
-  UiMarketWithToken,
-  UiMarketAndSummaryWithVolumeInUsd,
-  MarketTypeOption
-} from '@/types'
 import { GST_ROUTE, LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
+import {
+  MarketTypeOption,
+  UiMarketWithToken,
+  UiMarketAndSummaryWithVolumeInUsd
+} from '@/types'
 
 enum SortableKeys {
   Market = 'market',
@@ -37,7 +37,11 @@ const route = useRoute()
 const isSpot = (route.name as string).startsWith(GST_ROUTE)
 
 const activeType = ref(
-  props.isGrid ? (isSpot ? MarketType.Spot : MarketType.Futures) : ''
+  props.isGrid
+    ? isSpot
+      ? SharedMarketType.Spot
+      : SharedMarketType.Futures
+    : ''
 )
 const search = ref('')
 const isAscending = ref(false)
@@ -187,17 +191,17 @@ const sortedMarkets = computed(() => {
           class="min-h-3xs bg-gray-900"
           data-cy="markets-no-data-table"
           :message="
-            activeType === MarketType.Favorite
+            activeType === SharedMarketType.Favorite
               ? $t('markets.emptyHeaderFavorites')
               : $t('markets.emptyHeader')
           "
         >
           <template #icon>
-            <BaseIcon name="star-border" class="text-gray-500 w-8 h-8" />
+            <SharedIcon name="star-border" class="text-gray-500 w-8 h-8" />
           </template>
 
           <span
-            v-if="activeType === MarketType.Favorite"
+            v-if="activeType === SharedMarketType.Favorite"
             class="mt-1 text-2xs text-gray-500 text-center"
           >
             {{ $t('markets.emptyDescriptionFavorites') }}

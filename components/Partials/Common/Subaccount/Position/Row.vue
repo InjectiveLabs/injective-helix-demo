@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal, TradeSubPage } from '@/types'
@@ -21,12 +20,12 @@ const props = defineProps({
 
   position: {
     required: true,
-    type: Object as PropType<UiPosition | PositionV2>
+    type: Object as PropType<Position | PositionV2>
   }
 })
 
 const emit = defineEmits<{
-  'share:position': [state: UiPosition | PositionV2]
+  'share:position': [state: Position | PositionV2]
 }>()
 
 const {
@@ -75,7 +74,7 @@ const rowWrapperClass = computed(() => {
 })
 
 function onAddMarginButtonClick() {
-  useEventBus<UiPosition | PositionV2>(BusEvents.AddMarginToPosition).emit(
+  useEventBus<Position | PositionV2>(BusEvents.AddMarginToPosition).emit(
     props.position
   )
 
@@ -295,7 +294,7 @@ function sharePosition() {
             </span>
           </div>
 
-          <BaseIcon
+          <SharedIcon
             name="share"
             class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
             @click="sharePosition"
@@ -366,7 +365,7 @@ function sharePosition() {
           class="cursor-pointer flex items-center justify-center rounded-full bg-opacity-10 hover:bg-opacity-30 hover:text-blue-500 text-gray-500 min-w-4 w-4 h-4 border border-gray-500 hover:border-blue-500 ml-1"
           @click.stop="onAddMarginButtonClick"
         >
-          <BaseIcon name="plus" is-xs />
+          <SharedIcon name="plus" is-xs />
         </div>
       </div>
     </td>
@@ -406,7 +405,7 @@ function sharePosition() {
         @click="closePositionClicked"
       >
         <template #icon>
-          <BaseIcon name="close" is-sm />
+          <SharedIcon name="close" is-sm />
         </template>
       </PartialsCommonCancelButton>
     </td>

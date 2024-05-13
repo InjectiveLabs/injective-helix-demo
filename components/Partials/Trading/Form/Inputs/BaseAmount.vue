@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
-import { UiPriceLevel, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SharedUiPriceLevel } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { getMinQuantityTickSize } from '@/app/utils/helpers'
+import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
 import {
   TradeForm,
   TradeField,
   UiMarketWithToken,
   TradeExecutionType
 } from '@/types'
-import { SYMBOL_DISPLAY_LENGTH, MAX_SYMBOL_LENGTH } from '@/app/utils/constants'
-import { getMinQuantityTickSize } from '@/app/utils/helpers'
 
 const formValues = useFormValues() as Ref<TradeForm>
 const setFormValues = useSetFormValues()
@@ -40,7 +40,7 @@ const props = defineProps({
   },
 
   orderbookOrders: {
-    type: Array as PropType<UiPriceLevel[]>,
+    type: Array as PropType<SharedUiPriceLevel[]>,
     required: true
   }
 })

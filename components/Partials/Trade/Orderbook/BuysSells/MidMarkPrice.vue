@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Change, UiMarketWithToken } from '~/types'
+import { SharedMarketChange } from '@shared/types'
+import { UiMarketWithToken } from '~/types'
 
 const props = defineProps({
   isSpot: Boolean,
@@ -31,14 +32,14 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
-const { valueToString: lastTradedPriceToString } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: markPriceToString } = useBigNumberFormatter(
+const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
@@ -51,22 +52,28 @@ const { valueToString: markPriceToString } = useBigNumberFormatter(
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">
-      <BaseIcon
+      <SharedIcon
         v-if="
-          [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
+          [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
+            lastTradedPriceChange
+          )
         "
         name="arrow"
         class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
         :class="{
-          'text-red-500 -rotate-90': lastTradedPriceChange === Change.Decrease,
-          'text-green-500 rotate-90': lastTradedPriceChange === Change.Increase
+          'text-red-500 -rotate-90':
+            lastTradedPriceChange === SharedMarketChange.Decrease,
+          'text-green-500 rotate-90':
+            lastTradedPriceChange === SharedMarketChange.Increase
         }"
       />
       <span
         class="text-xl font-semibold"
         :class="{
-          'text-red-500 ': lastTradedPriceChange === Change.Decrease,
-          'text-green-500 ': lastTradedPriceChange === Change.Increase
+          'text-red-500 ':
+            lastTradedPriceChange === SharedMarketChange.Decrease,
+          'text-green-500 ':
+            lastTradedPriceChange === SharedMarketChange.Increase
         }"
       >
         {{ lastTradedPriceToString }}

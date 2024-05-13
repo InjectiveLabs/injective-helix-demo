@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
-const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -15,7 +13,6 @@ onWalletConnected(() => {
     .initTradeAndEarn()
     .then(() => {
       Promise.all([
-        tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
         exchangeStore.fetchParams(),
         exchangeStore.fetchTradingRewardsCampaign()
       ])

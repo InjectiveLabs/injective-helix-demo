@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 
@@ -28,7 +28,7 @@ const profitPerGrid = computed(() => {
     .times(100)
 })
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: 2 }
 )

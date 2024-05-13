@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 
 const props = defineProps({
   isGrid: Boolean,
@@ -23,10 +23,10 @@ const emit = defineEmits<{
 }>()
 
 const filterList = [
-  MarketType.Favorite,
+  SharedMarketType.Favorite,
   '',
-  MarketType.Spot,
-  MarketType.Derivative
+  SharedMarketType.Spot,
+  SharedMarketType.Derivative
 ]
 
 const activeTypeValue = computed({
@@ -74,17 +74,17 @@ const isLowVolumeMarketsVisibleValue = computed({
                     : 'text-gray-500 hover:text-gray-200'
                 ]"
               >
-                <BaseIcon
-                  v-if="marketType === MarketType.Favorite"
+                <SharedIcon
+                  v-if="marketType === SharedMarketType.Favorite"
                   name="star"
                   class="min-w-4 h-4 w-4"
                 />
 
-                <span v-else-if="marketType === MarketType.Derivative">
+                <span v-else-if="marketType === SharedMarketType.Derivative">
                   {{ $t('trade.futures') }}
                 </span>
 
-                <span v-else-if="marketType === MarketType.Spot">
+                <span v-else-if="marketType === SharedMarketType.Spot">
                   {{ $t('trade.spots') }}
                 </span>
 

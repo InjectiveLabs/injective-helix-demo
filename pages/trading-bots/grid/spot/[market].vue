@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { legacyWHDenoms } from '@/app/data/token'
 import {
   getNewMarketSlugFromWHDenom,
   getNewMarketTickerFromWHDenom
 } from '@/app/utils/market'
-import { Modal, TradingBotsSubPage, UiMarketWithToken } from '@/types'
+import { legacyWHDenoms } from '@/app/data/token'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  Modal,
+  UiSpotMarket,
+  TradingBotsSubPage,
+  UiMarketWithToken
+} from '@/types'
 
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
@@ -40,7 +44,7 @@ function onLoad(pageMarket: UiMarketWithToken) {
   ]).catch($onError)
 
   gridStrategyStore.$patch({
-    spotMarket: pageMarket as UiSpotMarketWithToken
+    spotMarket: pageMarket as UiSpotMarket
   })
 
   fetchData({
@@ -144,7 +148,10 @@ onUnmounted(() => {
                 }}
               </span>
 
-              <BaseIcon name="arrow" class="ml-1 w-3 h-3 min-w-3 rotate-180" />
+              <SharedIcon
+                name="arrow"
+                class="ml-1 w-3 h-3 min-w-3 rotate-180"
+              />
             </div>
           </PartialsLegacyWormholeButton>
         </span>

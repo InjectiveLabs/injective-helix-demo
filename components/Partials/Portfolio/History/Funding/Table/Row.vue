@@ -13,7 +13,7 @@ const { market, time, total } = useFundingPayment(
   computed(() => props.fundingPayment)
 )
 
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
 })
 </script>

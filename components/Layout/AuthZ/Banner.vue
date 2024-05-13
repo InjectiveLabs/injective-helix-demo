@@ -5,7 +5,7 @@ const walletStore = useWalletStore()
 <template>
   <div class="bg-[#5B5B5F] flex items-center justify-between p-2">
     <div class="flex items-center space-x-2">
-      <BaseIcon name="show" />
+      <SharedIcon name="show" />
       <p class="text-xs">
         Connected As {{ walletStore.authZOrInjectiveAddress }}
       </p>

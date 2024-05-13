@@ -22,7 +22,7 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapperMini @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/torus" class="w-8 h-8" />
+      <SharedIcon name="wallet/torus" class="w-8 h-8" />
     </template>
 
     <template #title>
@@ -37,10 +37,10 @@ function connect() {
 
     <template #addon>
       <div class="grid grid-cols-4 gap-4 text-white">
-        <BaseIcon name="social/google" is-md />
-        <BaseIcon name="social/facebook" is-md />
-        <BaseIcon name="social/twitter" is-md />
-        <BaseIcon name="social/discord" is-md />
+        <SharedIcon name="social/google" is-md />
+        <SharedIcon name="social/facebook" is-md />
+        <SharedIcon name="social/twitter" is-md />
+        <SharedIcon name="social/discord" is-md />
       </div>
     </template>
   </LayoutWalletConnectWrapperMini>

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
+import { SharedMarketType } from '@shared/types'
 import { getDefaultFuturesMarket } from '@/app/utils/market'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { BusEvents, DefaultMarket, TradeClickOrigin } from '@/types'
+
 const props = defineProps({
   isDense: Boolean
 })
@@ -46,7 +47,7 @@ const market = computed(() =>
 )
 
 const marketType = computed(() =>
-  spotMarket ? MarketType.Spot : MarketType.Perpetual
+  spotMarket ? SharedMarketType.Spot : SharedMarketType.Perpetual
 )
 
 function onClick() {

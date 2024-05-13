@@ -22,7 +22,7 @@ const walletStore = useWalletStore()
           class="transition-all duration-300 text-gray-500"
           :class="{ 'rotate-180': isOpen }"
         >
-          <BaseIcon name="chevron-down" is-sm />
+          <SharedIcon name="chevron-down" is-sm />
         </div>
       </button>
     </template>

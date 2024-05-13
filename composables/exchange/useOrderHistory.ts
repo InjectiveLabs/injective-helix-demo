@@ -1,26 +1,21 @@
-import type { Ref } from 'vue'
-import {
-  ZERO_IN_BASE,
-  UiSpotOrderHistory,
-  UiSpotMarketWithToken,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { UiMarketWithToken } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SpotOrderHistory, DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrderHistory(
-  order: Ref<UiDerivativeOrderHistory | UiSpotOrderHistory>,
+  order: Ref<DerivativeOrderHistory | SpotOrderHistory>,
   isSpot: Ref<boolean>
 ) {
   const derivativeStore = useDerivativeStore()
@@ -45,7 +40,7 @@ export function useOrderHistory(
     }
 
     return (
-      (order.value as UiDerivativeOrderHistory).isReduceOnly ||
+      (order.value as DerivativeOrderHistory).isReduceOnly ||
       margin.value.isZero()
     )
   })
@@ -84,7 +79,7 @@ export function useOrderHistory(
     }
 
     return new BigNumberInWei(
-      (order.value as UiDerivativeOrderHistory).triggerPrice
+      (order.value as DerivativeOrderHistory).triggerPrice
     ).toBase(market.value.quoteToken.decimals)
   })
 
@@ -94,7 +89,7 @@ export function useOrderHistory(
     }
 
     return new BigNumberInWei(
-      (order.value as UiDerivativeOrderHistory).margin
+      (order.value as DerivativeOrderHistory).margin
     ).toBase(market.value.quoteToken.decimals)
   })
 
@@ -105,7 +100,7 @@ export function useOrderHistory(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.quantity).toBase(
-          (market.value as UiSpotMarketWithToken).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.quantity)
   })
@@ -147,7 +142,7 @@ export function useOrderHistory(
   })
 
   const isStopLoss = computed(() => {
-    const derivativeOrder = order.value as UiDerivativeOrderHistory
+    const derivativeOrder = order.value as DerivativeOrderHistory
 
     return (
       derivativeOrder.orderType === OrderSide.StopBuy ||
@@ -156,7 +151,7 @@ export function useOrderHistory(
   })
 
   const isTakeProfit = computed(() => {
-    const derivativeOrder = order.value as UiDerivativeOrderHistory
+    const derivativeOrder = order.value as DerivativeOrderHistory
 
     return (
       derivativeOrder.orderType === OrderSide.TakeBuy ||

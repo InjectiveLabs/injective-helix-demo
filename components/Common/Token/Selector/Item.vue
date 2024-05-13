@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   token: {
-    type: Object as PropType<Token>,
+    type: Object as PropType<TokenStatic>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  'set:token': [token: Token]
+  'set:token': [token: TokenStatic]
 }>()
 
 function setToken() {

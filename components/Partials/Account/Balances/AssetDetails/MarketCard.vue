@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Change, UiSpotMarketSummary } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken, TradeSubPage } from '@/types'
@@ -11,7 +11,7 @@ const props = defineProps({
   },
 
   summary: {
-    type: Object as PropType<UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   }
 })
@@ -23,12 +23,12 @@ const lastTradedPrice = computed(
 const change = computed(() => new BigNumberInBase(props.summary.change || 0))
 
 const lastPriceChange = computed(
-  () => props.summary.lastPriceChange || Change.NoChange
+  () => props.summary.lastPriceChange || SharedMarketChange.NoChange
 )
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change)
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change)
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -54,9 +54,9 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
         v-if="!lastTradedPrice.isNaN()"
         class="font-mono text-sm"
         :class="{
-          'text-green-500': lastPriceChange === Change.Increase,
-          'text-gray-350': lastPriceChange === Change.NoChange,
-          'text-red-500': lastPriceChange === Change.Decrease
+          'text-green-500': lastPriceChange === SharedMarketChange.Increase,
+          'text-gray-350': lastPriceChange === SharedMarketChange.NoChange,
+          'text-red-500': lastPriceChange === SharedMarketChange.Decrease
         }"
       >
         {{ lastTradedPriceToFormat }}

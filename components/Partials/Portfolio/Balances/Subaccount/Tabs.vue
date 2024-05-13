@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei } from '@injectivelabs/utils'
 
 const props = defineProps({
@@ -44,7 +44,7 @@ const hideSmallBalances = computed({
 })
 
 const { valueToString: accountTotalBalanceInUsdToString } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(
       () =>
         aggregatedPortfolioBalances.value[accountStore.subaccountId]?.reduce(
@@ -79,7 +79,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 
       <label class="flex px-4 flex-1">
         <div class="flex items-center">
-          <BaseIcon name="search" class="text-gray-500" />
+          <SharedIcon name="search" class="text-gray-500" />
         </div>
         <input
           v-model="search"

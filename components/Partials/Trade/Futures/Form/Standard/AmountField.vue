@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
+  UiDerivativeMarket,
   TradeAmountOption,
   DerivativesTradeFormField,
   derivativeMarketKey
 } from '@/types'
 
-const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarketWithToken>
+const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,

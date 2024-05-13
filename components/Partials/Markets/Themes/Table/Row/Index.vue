@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Change, MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedMarketChange, SharedMarketType } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const props = defineProps({
   theme: {
@@ -31,19 +32,21 @@ const topGainerMarket = computed(
 const priceChangeClasses = computed(() => {
   if (
     !topGainerMarket.value ||
-    topGainerMarket.value.summary.lastPriceChange === Change.NoChange
+    topGainerMarket.value.summary.lastPriceChange ===
+      SharedMarketChange.NoChange
   ) {
     return 'text-gray-350'
   }
 
-  return topGainerMarket.value.summary.lastPriceChange === Change.Increase
+  return topGainerMarket.value.summary.lastPriceChange ===
+    SharedMarketChange.Increase
     ? 'text-green-500'
     : 'text-red-500'
 })
 
 const to = computed(() => ({
   name:
-    topGainerMarket.value.market.type === MarketType.Spot
+    topGainerMarket.value.market.type === SharedMarketType.Spot
       ? 'spot-slug'
       : 'futures-slug',
   params: {
@@ -51,7 +54,7 @@ const to = computed(() => ({
   }
 }))
 
-const { valueToString: totalVolumeToString } = useBigNumberFormatter(
+const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
   computed(() =>
     props.markets.reduce((sum, market) => {
       return sum.plus(market.volumeInUsd)
@@ -68,7 +71,7 @@ const { valueToString: totalVolumeToString } = useBigNumberFormatter(
     <div class="flex-1 flex select-none cursor-pointer p-2" @click="toggleOpen">
       <div class="flex items-center space-x-2 py-2">
         <div :class="{ '-rotate-90': !isOpen }">
-          <BaseIcon name="triangle" is-sm />
+          <SharedIcon name="triangle" is-sm />
         </div>
         <div class="font-semibold">{{ $t(`markets.themes.${theme}`) }}</div>
       </div>

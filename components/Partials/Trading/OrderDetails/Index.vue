@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
@@ -54,7 +54,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const {
   baseAmount: derivativeBaseAmount,
@@ -101,7 +101,7 @@ const orderDetailsComponent = defineAsyncComponent<Record<string, unknown>>(
   }
 )
 
-const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
+const { valueToString: executionPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.executionPrice),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -109,24 +109,25 @@ const { valueToString: executionPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: notionalWithFeesToFormat } = useBigNumberFormatter(
+const { valueToString: notionalWithFeesToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalWithFees),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: notionalWithFeesInUsdToFormat } = useBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(
-      tokenStore.tokenUsdPrice(props.market.quoteToken)
-    ).times(props.notionalWithFees)
-  ),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    minimalDecimalPlaces: props.market.priceDecimals
-  }
-)
+const { valueToString: notionalWithFeesInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      new BigNumberInBase(
+        tokenStore.tokenUsdPrice(props.market.quoteToken)
+      ).times(props.notionalWithFees)
+    ),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
+    }
+  )
 
 const minimumReceivedAmount = computed(() => {
   if (props.executionPrice.lte('0')) {
@@ -145,14 +146,15 @@ const minimumReceivedAmount = computed(() => {
   return props.isBuy ? minimumReceivedQuoteAmount : minimumReceivedBaseAmount
 })
 
-const { valueToString: minimumReceivedAmountToFormat } = useBigNumberFormatter(
-  computed(() => minimumReceivedAmount.value || 0),
-  {
-    decimalPlaces: props.isBuy
-      ? props.market.quantityDecimals
-      : props.market.priceDecimals
-  }
-)
+const { valueToString: minimumReceivedAmountToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => minimumReceivedAmount.value || 0),
+    {
+      decimalPlaces: props.isBuy
+        ? props.market.quantityDecimals
+        : props.market.priceDecimals
+    }
+  )
 </script>
 
 <template>

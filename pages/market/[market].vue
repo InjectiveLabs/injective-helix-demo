@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
-import { Modal, UiMarketWithToken } from '@/types'
 import { getDefaultFuturesMarket } from '@/app/utils/market'
+import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
+import { Modal, UiMarketWithToken, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const route = useRoute()
@@ -17,10 +16,10 @@ const deprecatedMarket = deprecatedMarkets.find(
   (m) => m.slug === routeParamMarket
 )
 
-const market = ref<UiDerivativeMarketWithToken | undefined>(undefined)
+const market = ref<UiDerivativeMarket | undefined>(undefined)
 
 function onLoad(pageMarket: UiMarketWithToken) {
-  market.value = pageMarket as UiDerivativeMarketWithToken
+  market.value = pageMarket as UiDerivativeMarket
 
   if (marketIsNew) {
     modalStore.openModal(Modal.MarketNew)

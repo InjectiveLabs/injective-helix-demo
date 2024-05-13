@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { GridStrategyType, SpotGridTradingField } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
@@ -14,10 +13,11 @@ import {
   UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
+import { UiSpotMarket, GridStrategyType, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -126,17 +126,17 @@ const profitPerGrid = computed(() => {
   return priceDifference.dividedBy(lowerPrice.value).times(100)
 })
 
-const { valueToString: upperPriceToString } = useBigNumberFormatter(
+const { valueToString: upperPriceToString } = useSharedBigNumberFormatter(
   upperPrice,
   { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+const { valueToString: lowerPriceToString } = useSharedBigNumberFormatter(
   lowerPrice,
   { decimalPlaces: decimalPlaces.value, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   profitPerGrid,
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )

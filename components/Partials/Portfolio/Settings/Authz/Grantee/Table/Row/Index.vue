@@ -55,7 +55,7 @@ function revokeAll() {
       @click="toggle"
     >
       <span class="transition-transform" :class="{ 'rotate-180': isOpen }">
-        <BaseIcon name="chevron-down" is-sm />
+        <SharedIcon name="chevron-down" is-sm />
       </span>
 
       <span> View Granted Functions </span>

@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { UiLeaderboardEntry } from '@injectivelabs/sdk-ui-ts'
+import { ChronosLeaderboardEntry } from '@injectivelabs/sdk-ts'
 import { indexerRestLeaderboardChronosApi } from '@/app/Services'
 
 type LeaderboardStoreState = {
-  entries: UiLeaderboardEntry[]
+  entries: ChronosLeaderboardEntry[]
   lastUpdatedAt: number
 }
 

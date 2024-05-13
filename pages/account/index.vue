@@ -1,11 +1,8 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
 import { usdcTokenDenoms } from '@/app/data/token'
-import {
-  QUOTE_DENOMS_GECKO_IDS,
-  SMALL_BALANCE_THRESHOLD
-} from '@/app/utils/constants'
+import { SMALL_BALANCE_THRESHOLD } from '@/app/utils/constants'
 import {
   AccountBalance,
   BalanceHeaderType,
@@ -66,9 +63,8 @@ const filteredBalances = computed(() =>
         SMALL_BALANCE_THRESHOLD
       )
 
-    const isMarginCurrency =
-      !showMarginCurrencyOnly.value ||
-      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
+    const isMarginCurrency = !showMarginCurrencyOnly.value
+    //  || QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId) ???
 
     const tokenNameMatch = balance.token.name
       .toLowerCase()
@@ -131,10 +127,12 @@ const sortedBalances = computed(() => {
 
   const sortedBalances = isAscending.value ? result.reverse() : result
 
-  const injBalance = sortedBalances.find(({ denom }) => denom === INJ_DENOM)
+  const injBalance = sortedBalances.find(
+    ({ denom }) => denom === injToken.denom
+  )
 
   const sortedBalancesWithoutInjBalance = sortedBalances.filter(
-    ({ denom }) => denom !== INJ_DENOM
+    ({ denom }) => denom !== injToken.denom
   )
 
   // always sort INJ on top
@@ -146,7 +144,7 @@ const sortedBalances = computed(() => {
 
 const sortedBalancesWithInjAggregation = computed(() =>
   sortedBalances.value.map((balance) => {
-    if (balance.denom === INJ_DENOM) {
+    if (balance.denom === injToken.denom) {
       return {
         ...balance,
         type: AggregatedBalanceType.Inj

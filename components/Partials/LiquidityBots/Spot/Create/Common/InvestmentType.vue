@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

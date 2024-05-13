@@ -59,7 +59,7 @@ watch(
         {{ $t('trade.allMarkets') }}
       </div>
 
-      <BaseIcon name="chevron" is-sm class="-rotate-90" />
+      <SharedIcon name="chevron" is-sm class="-rotate-90" />
     </div>
   </div>
 

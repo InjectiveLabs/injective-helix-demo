@@ -3,14 +3,20 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { intervalToDuration } from 'date-fns'
-import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
-import { hexToString, stringToHex } from './converters'
-import { UiMarketWithToken } from '@/types'
+import { sharedTokenClient } from '@shared/Service'
+import { TokenStatic } from '@injectivelabs/token-metadata'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import {
+  NETWORK,
+  ENDPOINTS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import { tokenFactoryStatic } from '@/app/Services'
+import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
-import { OrderbookFormattedRecord } from '~/types/worker'
+import { OrderbookFormattedRecord } from '@/types/worker'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -76,7 +82,7 @@ export function getMinQuantityTickSize(
     return market.minQuantityTickSize
   }
 
-  const spotMarket = market as UiSpotMarketWithToken
+  const spotMarket = market as UiSpotMarket
 
   return market.quoteToken && spotMarket.baseToken
     ? new BigNumberInWei(market.minQuantityTickSize)
@@ -174,7 +180,7 @@ export function getMinPriceTickSize(
       .toFixed()
   }
 
-  const spotMarket = market as UiSpotMarketWithToken
+  const spotMarket = market as UiSpotMarket
 
   return spotMarket.baseToken
     ? new BigNumberInWei(market.minPriceTickSize)
@@ -334,6 +340,20 @@ export function calculateTotalQuantity(
     hasEnoughLiquidity,
     worstPrice: new BigNumberInBase(worstPrice)
   }
+}
+
+export const getToken = async (
+  denomOrSymbol: string
+): Promise<TokenStatic | undefined> => {
+  const token = tokenFactoryStatic.toToken(denomOrSymbol)
+
+  if (token) {
+    return token
+  }
+
+  const asyncToken = await sharedTokenClient.queryToken(denomOrSymbol)
+
+  return asyncToken
 }
 
 export const getCw20AddressFromDenom = (denom: string) => {

@@ -83,7 +83,7 @@ function toggleFilters() {
           {{ $t('account.filters') }}
         </span>
 
-        <BaseIcon
+        <SharedIcon
           name="filter"
           class="w-4 h-4"
           :class="{

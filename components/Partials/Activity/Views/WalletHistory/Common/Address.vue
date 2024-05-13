@@ -32,7 +32,7 @@ function copyAddress() {
       class="cursor-pointer text-gray-500 pl-2 pt-1 hover:text-blue-500"
       @click="copyAddress"
     >
-      <BaseIcon name="copy-plain" class="w-4 h-4" />
+      <SharedIcon name="copy-plain" class="w-4 h-4" />
     </div>
   </div>
 </template>

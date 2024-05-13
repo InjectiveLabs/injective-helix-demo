@@ -27,7 +27,7 @@ const props = defineProps({
 const {
   valueToString: accountTotalBalanceInUsdInString,
   valueToBigNumber: accountTotalBalanceInUsdInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.accountTotalBalanceInUsd),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
@@ -37,7 +37,7 @@ const {
 const {
   valueToString: accountTotalBalanceInString,
   valueToBigNumber: accountTotalBalanceInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.accountTotalBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
@@ -47,7 +47,7 @@ const {
 const {
   valueToString: availableMarginInString,
   valueToBigNumber: availableMarginInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(props.balance.availableMargin)),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
@@ -57,7 +57,7 @@ const {
 const {
   valueToString: inOrderBalanceInString,
   valueToBigNumber: inOrderBalanceInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.inOrderBalance),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
@@ -67,7 +67,7 @@ const {
 const {
   valueToString: unrealizedPnlInString,
   valueToBigNumber: unrealizedPnlInBigNumber
-} = useBigNumberFormatter(
+} = useSharedBigNumberFormatter(
   computed(() => props.balance.unrealizedPnl),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS

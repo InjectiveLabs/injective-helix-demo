@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketWithToken } from '@/types'
 import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_MINIMAL_AMOUNT
+  UI_MINIMAL_AMOUNT,
+  UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   notionalValue: {
@@ -39,7 +39,7 @@ const feeRebates = computed(() => {
   ).times(0.6 /* Only 60% of the fees are getting returned */)
 })
 
-const { valueToString: feeRebatesToFormat } = useBigNumberFormatter(
+const { valueToString: feeRebatesToFormat } = useSharedBigNumberFormatter(
   feeRebates,
   {
     decimalPlaces: feeRebates.value.lte(UI_MINIMAL_AMOUNT)

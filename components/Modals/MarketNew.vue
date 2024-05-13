@@ -52,7 +52,7 @@ function onModalClose() {
               <span class="mr-2 font-semibold">
                 {{ $t('marketNew.depositNow') }}
               </span>
-              <BaseIcon name="external-link" class="w-3 h-3" />
+              <SharedIcon name="external-link" class="w-3 h-3" />
             </div>
           </AppButton>
         </NuxtLink>

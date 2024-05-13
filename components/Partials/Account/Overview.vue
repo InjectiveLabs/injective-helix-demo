@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   BTC_COIN_GECKO_ID,
   HIDDEN_BALANCE_DISPLAY,
@@ -54,7 +55,7 @@ const stakedAmount = computed(() => {
 })
 
 const stakedAmountInUsd = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE
@@ -104,7 +105,7 @@ const accountTotalBalanceInBtcToString = computed(() => {
 })
 
 const { valueToString: abbreviatedTotalBalanceToString } =
-  useBigNumberFormatter(accountTotalBalanceInUsd, {
+  useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
     abbreviationFloor: shouldAbbreviateTotalBalance.value
       ? UI_MINIMAL_ABBREVIATION_FLOOR
@@ -152,8 +153,8 @@ function onTransferClick() {
           class="text-gray-450 hover:text-white cursor-pointer"
           @click="toggleHideBalances"
         >
-          <BaseIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
-          <BaseIcon v-else name="show" class="w-4 h-4" />
+          <SharedIcon v-if="isHideBalances" name="hide" class="w-4 h-4" />
+          <SharedIcon v-else name="show" class="w-4 h-4" />
         </div>
       </div>
 

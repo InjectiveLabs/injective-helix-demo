@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Change, UiMarketWithToken } from '@/types'
+import { SharedMarketChange } from '@shared/types'
+import { UiMarketWithToken } from '@/types'
 
 defineProps({
   market: {
@@ -27,21 +28,26 @@ defineProps({
           <div
             class="flex items-center"
             :class="{
-              'text-green-500': percentageChangeStatus === Change.Increase,
-              'text-red-500 ': percentageChangeStatus === Change.Decrease
+              'text-green-500':
+                percentageChangeStatus === SharedMarketChange.Increase,
+              'text-red-500 ':
+                percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <BaseIcon
+            <SharedIcon
               v-if="
-                [Change.Increase, Change.Decrease].includes(
-                  percentageChangeStatus
-                )
+                [
+                  SharedMarketChange.Increase,
+                  SharedMarketChange.Decrease
+                ].includes(percentageChangeStatus)
               "
               name="arrow"
               class="w-3 h-3 mr-1"
               :class="{
-                ' rotate-90': percentageChangeStatus === Change.Increase,
-                ' -rotate-90': percentageChangeStatus === Change.Decrease
+                ' rotate-90':
+                  percentageChangeStatus === SharedMarketChange.Increase,
+                ' -rotate-90':
+                  percentageChangeStatus === SharedMarketChange.Decrease
               }"
             />
 
@@ -55,9 +61,12 @@ defineProps({
               <span
                 class="leading-none"
                 :class="{
-                  'text-green-500': percentageChangeStatus === Change.Increase,
-                  'text-white': percentageChangeStatus === Change.NoChange,
-                  'text-red-500': percentageChangeStatus === Change.Decrease
+                  'text-green-500':
+                    percentageChangeStatus === SharedMarketChange.Increase,
+                  'text-white':
+                    percentageChangeStatus === SharedMarketChange.NoChange,
+                  'text-red-500':
+                    percentageChangeStatus === SharedMarketChange.Decrease
                 }"
               >
                 {{ changeToFormat }}%

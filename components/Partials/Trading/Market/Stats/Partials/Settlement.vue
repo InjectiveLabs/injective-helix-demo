@@ -1,21 +1,18 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import {
-  UiDerivativeMarketWithToken,
-  UiBinaryOptionsMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedUiBinaryOptionsMarket } from '@shared/types'
 import { OLP_TIME_STAMP_FORMAT } from '@/app/utils/constants'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<SharedUiBinaryOptionsMarket>,
     required: true
   }
 })
 
 const expiredAt = computed(() =>
   format(
-    (props.market as UiBinaryOptionsMarketWithToken).settlementTimestamp * 1000,
+    (props.market as SharedUiBinaryOptionsMarket).settlementTimestamp * 1000,
     OLP_TIME_STAMP_FORMAT
   )
 )

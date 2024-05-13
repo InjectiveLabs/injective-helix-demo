@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken,
-  UiPerpetualMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
-import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
+  TradeForm,
+  TradeField,
+  UiSpotMarket,
+  UiMarketWithToken,
+  UiDerivativeMarket
+} from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -57,7 +57,7 @@ const {
 } = useSpotPrice({
   formValues,
   isBaseAmount: computed(() => props.isBaseAmount),
-  market: computed(() => props.market as UiSpotMarketWithToken)
+  market: computed(() => props.market as UiSpotMarket)
 })
 
 const {
@@ -70,15 +70,15 @@ const {
 } = useDerivativePrice({
   formValues,
   isBaseAmount: computed(() => props.isBaseAmount),
-  market: computed(() => props.market as UiDerivativeMarketWithToken)
+  market: computed(() => props.market as UiDerivativeMarket)
 })
 
 const maintenanceMarginRatio = computed(
-  () => (props.market as UiPerpetualMarketWithToken).maintenanceMarginRatio
+  () => (props.market as UiDerivativeMarket).maintenanceMarginRatio
 )
 
 const initialMarginRatio = computed(
-  () => (props.market as UiPerpetualMarketWithToken).initialMarginRatio
+  () => (props.market as UiDerivativeMarket).initialMarginRatio
 )
 </script>
 

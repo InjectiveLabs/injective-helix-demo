@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { MaxAmountOnOrderbook } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { MaxAmountOnOrderbook } from '@/types'
 
 const formErrors = useFormErrors()
 

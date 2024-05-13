@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { Ref, PropType } from 'vue'
+import { SharedUiPriceLevel } from '@shared/types'
 import { formatPriceToAllowablePrice } from '@injectivelabs/sdk-ts'
-import { UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 import {
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE
 } from '@/app/utils/constants'
+import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
 
 const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
@@ -28,7 +27,7 @@ const props = defineProps({
   },
 
   orderbookOrders: {
-    type: Array as PropType<UiPriceLevel[]>,
+    type: Array as PropType<SharedUiPriceLevel[]>,
     default: () => []
   },
 

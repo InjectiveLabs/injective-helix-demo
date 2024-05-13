@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { Coin } from '@injectivelabs/ts-types'
 import {
-  indexerAccountPortfolioApi,
-  indexerRestExplorerApi
-} from '@/app/Services'
+  indexerRestExplorerApi,
+  indexerAccountPortfolioApi
+} from '@shared/Service'
+import { Coin } from '@injectivelabs/ts-types'
 import {
   streamBankBalance,
   streamSubaccountBalance,

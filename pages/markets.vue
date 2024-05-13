@@ -1,19 +1,13 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
-import {
-  LOW_VOLUME_MARKET_THRESHOLD,
-  QUOTE_DENOMS_GECKO_IDS
-} from '@/app/utils/constants'
-import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
 import {
   marketIsActive,
-  marketIsPartOfCategory,
-  marketIsPartOfSearch,
+  marketIsQuotePair,
   marketIsPartOfType,
-  marketIsQuotePair
-} from '~/app/utils/market'
-import { olpSlugsToIncludeInLowVolume } from '~/app/data/market'
+  marketIsPartOfSearch,
+  marketIsPartOfCategory
+} from '@/app/utils/market'
+import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -26,7 +20,6 @@ const search = ref('')
 const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
-const isLowVolumeMarketsVisible = ref(false)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
@@ -51,7 +44,7 @@ const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
-    .filter(({ market, volumeInUsd }) => {
+    .filter(({ market }) => {
       const isPartOfCategory = marketIsPartOfCategory(category.value, market)
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
@@ -60,17 +53,13 @@ const filteredMarkets = computed(() =>
         activeType: type.value
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-      const isLowVolumeMarket =
-        isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
       return (
+        market.isVerified &&
         isPartOfCategory &&
         isPartOfType &&
         isPartOfSearch &&
-        isQuotePair &&
-        (isLowVolumeMarket || isOLPMarket || search.value)
+        isQuotePair
       )
     })
     .filter((market) => marketIsActive(market.market))
@@ -79,13 +68,7 @@ const filteredMarkets = computed(() =>
 onMounted(() => getQuoteTokenPrice())
 
 function getQuoteTokenPrice() {
-  Promise.all([
-    appStore.pollMarkets(),
-    tokenStore.fetchTokensUsdPriceMap([
-      ...QUOTE_DENOMS_GECKO_IDS,
-      INJ_COIN_GECKO_ID
-    ])
-  ]).catch($onError)
+  Promise.all([appStore.pollMarkets()]).catch($onError)
 }
 
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)

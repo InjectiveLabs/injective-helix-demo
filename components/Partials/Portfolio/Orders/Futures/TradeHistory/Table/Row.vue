@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { UiDerivativeTrade } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
 
 const props = defineProps({
   trade: {
     required: true,
-    type: Object as PropType<UiDerivativeTrade>
+    type: Object as PropType<SharedUiDerivativeTrade>
   }
 })
 
@@ -24,19 +24,22 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
+
+const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: feeToString } = useBigNumberFormatter(fee, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 </script>

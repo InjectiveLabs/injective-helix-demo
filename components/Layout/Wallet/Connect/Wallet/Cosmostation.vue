@@ -33,7 +33,7 @@ function connect() {
 <template>
   <LayoutWalletConnectWrapperMini @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/cosmostation" class="w-8 h-8" />
+      <SharedIcon name="wallet/cosmostation" class="w-8 h-8" />
     </template>
 
     <template #title>
@@ -53,7 +53,7 @@ function connect() {
         target="_blank"
         rel="noreferrer"
       >
-        <BaseIcon name="download" class="h-5 w-5 hover:text-blue-500" />
+        <SharedIcon name="download" class="h-5 w-5 hover:text-blue-500" />
       </NuxtLink>
     </template>
   </LayoutWalletConnectWrapperMini>

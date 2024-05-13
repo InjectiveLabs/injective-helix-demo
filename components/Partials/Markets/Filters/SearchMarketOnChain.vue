@@ -52,7 +52,7 @@ function searchMarketsOnChain() {
       @click="searchMarketsOnChain"
     >
       {{ $t('markets.emptyDescription') }}
-      <BaseIcon name="search" class="text-primary-500 w-8 h-8 ml-2" />
+      <SharedIcon name="search" class="text-primary-500 w-8 h-8 ml-2" />
     </span>
   </AppHocLoading>
 </template>

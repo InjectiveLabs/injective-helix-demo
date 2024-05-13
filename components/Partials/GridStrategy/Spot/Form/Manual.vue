@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarket } from '@/types'
 
 const walletStore = useWalletStore()
 
 defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

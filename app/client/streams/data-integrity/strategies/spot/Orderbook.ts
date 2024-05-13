@@ -1,11 +1,12 @@
+import { indexerSpotApi } from '@shared/Service'
+import { SharedUiOrderbookWithSequence } from '@shared/types'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerSpotApi } from '@/app/Services'
-import { UiSpotOrderbookWithSequence } from '@/types'
 
 export class SpotOrderbookIntegrityStrategy
   extends BaseDataIntegrityStrategy<string>
-  implements ConcreteDataIntegrityStrategy<string, UiSpotOrderbookWithSequence>
+  implements
+    ConcreteDataIntegrityStrategy<string, SharedUiOrderbookWithSequence>
 {
   constructor(public args: string) {
     super(args)
@@ -35,7 +36,7 @@ export class SpotOrderbookIntegrityStrategy
     const isDataValid =
       Object.keys(existingOrderbook).length > 0 &&
       this.verifyData(
-        existingOrderbook as UiSpotOrderbookWithSequence,
+        existingOrderbook as SharedUiOrderbookWithSequence,
         latestOrderbook
       )
 
@@ -47,8 +48,8 @@ export class SpotOrderbookIntegrityStrategy
   }
 
   verifyData(
-    existingOrderbook: UiSpotOrderbookWithSequence,
-    latestOrderbook: UiSpotOrderbookWithSequence
+    existingOrderbook: SharedUiOrderbookWithSequence,
+    latestOrderbook: SharedUiOrderbookWithSequence
   ): boolean {
     /**
      * Returns true if the existing orderbook is up-to-date or more recent
@@ -56,7 +57,7 @@ export class SpotOrderbookIntegrityStrategy
     return existingOrderbook.sequence >= latestOrderbook.sequence
   }
 
-  async fetchData(): Promise<UiSpotOrderbookWithSequence | undefined> {
+  async fetchData(): Promise<SharedUiOrderbookWithSequence | undefined> {
     const { args: marketId } = this
 
     if (!marketId) {

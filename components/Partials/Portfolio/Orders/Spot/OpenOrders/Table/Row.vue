@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
-
+import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
   order: {
-    type: Object as PropType<UiSpotLimitOrder>,
+    type: Object as PropType<SpotLimitOrder>,
     required: true
   }
 })
@@ -38,22 +37,25 @@ const { valueToString: priceToString } = useBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
+
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: filledQuantityToString } = useBigNumberFormatter(
+const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
   filledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: unfilledQuantityToString } = useBigNumberFormatter(
+const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
   unfilledQuantity,
   {
     decimalPlaces: quantityDecimals.value
@@ -64,7 +66,7 @@ function cancelOrder() {
   status.setLoading()
 
   spotStore
-    .cancelOrder(props.order as UiSpotLimitOrder)
+    .cancelOrder(props.order as SpotLimitOrder)
     .then(() => {
       success({ title: t('trade.order_success_canceling') })
     })

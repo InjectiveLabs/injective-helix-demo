@@ -1,15 +1,15 @@
-import type { Ref } from 'vue'
-import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
+export function useDerivativePosition(position: Ref<Position | PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
@@ -83,7 +83,7 @@ export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
       return false
     }
 
-    return market.value.subType === MarketType.BinaryOptions
+    return market.value.subType === SharedMarketType.BinaryOptions
   })
 
   const priceDecimals = computed(() => {

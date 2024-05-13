@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { SharedUiSpotTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   trade: {
     required: true,
-    type: Object as PropType<UiSpotTrade>
+    type: Object as PropType<SharedUiSpotTrade>
   }
 })
 
@@ -25,19 +25,22 @@ const {
   computed(() => true)
 )
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: quantityToString } = useBigNumberFormatter(quantity, {
-  decimalPlaces: quantityDecimals.value
-})
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  quantity,
+  {
+    decimalPlaces: quantityDecimals.value
+  }
+)
 
-const { valueToString: feeToString } = useBigNumberFormatter(fee, {
+const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
   decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(total, {
+const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 })
 </script>

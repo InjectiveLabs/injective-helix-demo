@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import {
-  UiPosition,
-  MarketType,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal } from '@/types'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { SharedMarketType } from '@shared/types'
+import { Modal, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -13,12 +9,12 @@ const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })
 
-const selectedPosition = ref<UiPosition | PositionV2 | undefined>(undefined)
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const filteredPositions = computed(() => {
   const result = positionStore.subaccountPositions.filter((position) => {
@@ -27,7 +23,7 @@ const filteredPositions = computed(() => {
     )
   })
 
-  if (props.market.subType === MarketType.BinaryOptions) {
+  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return result.filter((position) =>
       derivativeStore.binaryOptionsMarkets.some(
         (market) => market.marketId === position.marketId
@@ -39,7 +35,7 @@ const filteredPositions = computed(() => {
 })
 
 const sortedPositions = computed(() => {
-  return [...filteredPositions.value].sort((p1: UiPosition, p2: UiPosition) => {
+  return [...filteredPositions.value].sort((p1: Position, p2: Position) => {
     return p1.ticker.localeCompare(p2.ticker)
   })
 })
@@ -48,7 +44,7 @@ onMounted(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
 })
 
-function onSharePosition(position: UiPosition | PositionV2) {
+function onSharePosition(position: Position | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }

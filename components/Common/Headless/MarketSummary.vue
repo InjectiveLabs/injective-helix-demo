@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { Change, MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-
+import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { stableCoinDenoms } from '@/app/data/token'
-
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -26,7 +25,7 @@ const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
   computed(() => props.market)
 )
 
-const isSpot = computed(() => props.market.type === MarketType.Spot)
+const isSpot = computed(() => props.market.type === SharedMarketType.Spot)
 
 const summary = computed(() => {
   if (isSpot.value) {
@@ -53,7 +52,7 @@ const lastTradedPrice = computed(() => {
 })
 
 const { valueToString: volumeToFormat, valueToBigNumber: volume } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE
@@ -70,13 +69,15 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
 
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
-  return change.value.gt(0) ? Change.Increase : Change.Decrease
+  return change.value.gt(0)
+    ? SharedMarketChange.Increase
+    : SharedMarketChange.Decrease
 })
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -85,7 +86,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value || !summary.value.change) {
         return ZERO_IN_BASE
@@ -96,7 +97,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
   )
 
 const { valueToString: highToFormat, valueToBigNumber: high } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE
@@ -110,7 +111,7 @@ const { valueToString: highToFormat, valueToBigNumber: high } =
   )
 
 const { valueToString: lowToFormat, valueToBigNumber: low } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
         return ZERO_IN_BASE

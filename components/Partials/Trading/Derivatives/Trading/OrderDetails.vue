@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { TradeForm, UiMarketWithToken } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
+import { TradeForm, UiMarketWithToken } from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -34,17 +33,17 @@ const props = defineProps({
 const { tradingTypeMarket } = useDerivativeFormFormatter(formValues)
 
 const isBinaryOption = computed(
-  () => props.market.subType === MarketType.BinaryOptions
+  () => props.market.subType === SharedMarketType.BinaryOptions
 )
 
-const { valueToString: notionalValueToFormat } = useBigNumberFormatter(
+const { valueToString: notionalValueToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalValue),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
+const { valueToString: liquidationPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.liquidationPrice),
   {
     decimalPlaces: props.market.priceDecimals,

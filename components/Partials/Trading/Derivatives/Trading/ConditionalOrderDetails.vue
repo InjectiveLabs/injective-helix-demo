@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import {
-  MarketType,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
+import { UiDerivativeMarket } from '@/types'
 
 const props = defineProps({
   isOrderTypeReduceOnly: Boolean,
@@ -15,7 +13,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   },
 
@@ -26,17 +24,17 @@ const props = defineProps({
 })
 
 const isBinaryOption = computed(
-  () => props.market.subType === MarketType.BinaryOptions
+  () => props.market.subType === SharedMarketType.BinaryOptions
 )
 
-const { valueToString: notionalValueToFormat } = useBigNumberFormatter(
+const { valueToString: notionalValueToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalValue),
   {
     decimalPlaces: props.market.priceDecimals
   }
 )
 
-const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
+const { valueToString: liquidationPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.liquidationPrice),
   {
     decimalPlaces: props.market.priceDecimals,

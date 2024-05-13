@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { UiMarketWithToken, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const props = defineProps({
@@ -17,11 +17,15 @@ const props = defineProps({
 })
 
 const expiryFuturesMarkets = computed(() =>
-  props.markets.filter(({ market }) => market.subType === MarketType.Futures)
+  props.markets.filter(
+    ({ market }) => market.subType === SharedMarketType.Futures
+  )
 )
 
 const spotAndPerpetualMarkets = computed(() =>
-  props.markets.filter(({ market }) => market.subType !== MarketType.Futures)
+  props.markets.filter(
+    ({ market }) => market.subType !== SharedMarketType.Futures
+  )
 )
 </script>
 

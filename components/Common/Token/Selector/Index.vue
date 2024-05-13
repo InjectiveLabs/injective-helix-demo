@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 
 const props = defineProps({
   tokens: {
-    type: Array as PropType<Token[]>,
+    type: Array as PropType<TokenStatic[]>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  'set:token': [token: Token]
+  'set:token': [token: TokenStatic]
 }>()
 
 const search = ref('')
@@ -26,7 +26,7 @@ onMounted(() => {
   document.getElementById('search-token')?.focus()
 })
 
-function setToken(token: Token) {
+function setToken(token: TokenStatic) {
   emit('set:token', token)
 }
 </script>
@@ -35,7 +35,7 @@ function setToken(token: Token) {
   <div class="flex flex-1 flex-col overflow-hidden">
     <div class="flex p-2 border-b">
       <div class="flex items-center p-2">
-        <BaseIcon name="search" />
+        <SharedIcon name="search" />
       </div>
 
       <input
@@ -49,7 +49,10 @@ function setToken(token: Token) {
     </div>
 
     <div class="overflow-y-auto flex-1 md:max-h-[400px]">
-      <div v-for="token in tokensFiltered" :key="token.denom">
+      <div
+        v-for="token in tokensFiltered"
+        :key="`${token.denom}-${token.symbol}`"
+      >
         <CommonTokenSelectorItem v-bind="{ token }" @set:token="setToken" />
       </div>
     </div>

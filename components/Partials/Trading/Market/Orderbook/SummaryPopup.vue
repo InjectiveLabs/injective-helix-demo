@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import {
-  UiSpotMarketWithToken,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   summary: {
@@ -13,14 +10,12 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   }
 })
 
-const { valueToString: averagePriceToString } = useBigNumberFormatter(
+const { valueToString: averagePriceToString } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(props.summary.total).dividedBy(props.summary.quantity)
   ),

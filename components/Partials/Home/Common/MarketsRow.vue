@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  UiMarketHistory,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+  SharedMarketChange,
+  SharedUiMarketHistory,
+  SharedUiMarketSummary
+} from '@shared/types'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '@/app/utils/market'
-import { Change, MainPage, TradeClickOrigin } from '@/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { MainPage, UiMarketWithToken, TradeClickOrigin } from '@/types'
 
 const exchangeStore = useExchangeStore()
 
@@ -22,13 +20,11 @@ const props = defineProps({
 
   market: {
     required: true,
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >
+    type: Object as PropType<UiMarketWithToken>
   },
 
   summary: {
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     default: undefined
   },
 
@@ -46,8 +42,8 @@ const lastTradedPriceTextColorClass = computed(() => {
   }
 
   return {
-    'text-green-700': lastPriceChange.value !== Change.Decrease,
-    'text-red-500': lastPriceChange.value === Change.Decrease
+    'text-green-700': lastPriceChange.value !== SharedMarketChange.Decrease,
+    'text-red-500': lastPriceChange.value === SharedMarketChange.Decrease
   }
 })
 
@@ -55,7 +51,7 @@ const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary?.price || 0)
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -66,18 +62,18 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
 
 const change = computed(() => new BigNumberInBase(props.summary?.change || 0))
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2,
   minimalDecimalPlaces: 4
 })
 
 const lastPriceChange = computed(() => {
   if (!props.market || !props.summary) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
   if (!props.summary.lastPriceChange) {
-    return Change.NoChange
+    return SharedMarketChange.NoChange
   }
 
   return props.summary.lastPriceChange
@@ -89,7 +85,7 @@ const chartData = computed(() => {
   }
 
   const matchingMarket = exchangeStore.marketsHistory.find(
-    (marketHistory: UiMarketHistory) => {
+    (marketHistory: SharedUiMarketHistory) => {
       return marketHistory.marketId === props.market.marketId
     }
   )
@@ -127,7 +123,7 @@ const marketRoute = computed(() => {
 watch(
   () => lastPriceChange,
   (status) => {
-    if (status.value === Change.NoChange) {
+    if (status.value === SharedMarketChange.NoChange) {
       return
     }
 
@@ -191,13 +187,15 @@ function tradeClickedTrack() {
           class="w-full text-gray-900 font-medium text-sm font-mono text-right"
         >
           <div class="flex align-center justify-end">
-            <BaseIcon
+            <SharedIcon
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               name="arrow"
               class="w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-700 rotate-90': lastPriceChange === Change.Increase,
-                'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+                'text-green-700 rotate-90':
+                  lastPriceChange === SharedMarketChange.Increase,
+                'text-red-500 -rotate-90':
+                  lastPriceChange === SharedMarketChange.Decrease
               }"
             />
             <span

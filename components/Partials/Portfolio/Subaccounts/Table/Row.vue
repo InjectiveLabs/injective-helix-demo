@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   subaccount: {
@@ -32,9 +32,12 @@ const balance = computed(() =>
   )
 )
 
-const { valueToString: balanceToString } = useBigNumberFormatter(balance, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
+const { valueToString: balanceToString } = useSharedBigNumberFormatter(
+  balance,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
 </script>
 
 <template>

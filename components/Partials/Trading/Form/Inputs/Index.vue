@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import { PropType, Ref } from 'vue'
+import { SharedUiPriceLevel } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiPosition,
-  UiPriceLevel,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   TradeForm,
   TradeField,
@@ -60,7 +56,7 @@ const props = defineProps({
   },
 
   position: {
-    type: Object as PropType<UiPosition | PositionV2> | undefined,
+    type: Object as PropType<Position | PositionV2> | undefined,
     default: undefined
   },
 
@@ -93,7 +89,7 @@ const priceStep = computed(() =>
   new BigNumberInBase(1).shiftedBy(-props.market.priceDecimals).toFixed()
 )
 
-const orderbookOrders = computed<UiPriceLevel[]>(() => {
+const orderbookOrders = computed<SharedUiPriceLevel[]>(() => {
   const buys = props.isSpot ? spotStore.buys : derivativeStore.buys
   const sells = props.isSpot ? spotStore.sells : derivativeStore.sells
 

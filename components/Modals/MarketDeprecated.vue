@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { Network } from '@shared/types'
 import { Modal, MainPage, UiMarketWithToken } from '@/types'
 
 const modalStore = useModalStore()
@@ -19,10 +19,10 @@ const symbol = computed(() => props.market.baseToken.symbol)
 const network = computed(() => {
   // todo: expand conditions as required
   if (props.market.slug === 'huahua-usdt') {
-    return BridgingNetwork.Chihuahua
+    return Network.Chihuahua
   }
 
-  return BridgingNetwork.Injective
+  return Network.Injective
 })
 
 function closeModal() {

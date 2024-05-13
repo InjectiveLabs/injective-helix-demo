@@ -33,7 +33,7 @@ const explorerUrl = computed(
 const percentage = computed(() => Number(props.percentage))
 const volumeInBase = computed(() => new BigNumberInBase(props.volume))
 
-const { valueToString: volumeInBaseToFormat } = useBigNumberFormatter(
+const { valueToString: volumeInBaseToFormat } = useSharedBigNumberFormatter(
   volumeInBase,
   {
     decimalPlaces: 2

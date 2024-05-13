@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { SpotGridTradingField, SpotGridTradingForm } from '@/types'
 import {
   GST_SINGLE_SIDED_THRESHOLD,
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
+import {
+  UiSpotMarket,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

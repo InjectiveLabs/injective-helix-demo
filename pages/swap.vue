@@ -71,14 +71,6 @@ onWalletConnected(() => {
 
 function initRoutes() {
   Promise.all([swapStore.fetchRoutes()])
-    // .then(async () => {
-    //   await Promise.all([
-    //     tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
-    //     tokenStore.getTokensUsdPriceMapFromToken(
-    //       spotStore.markets.map(({ baseToken }) => baseToken)
-    //     )
-    //   ])
-    // })
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
 }
@@ -288,7 +280,7 @@ function resetQueryError() {
               }"
             />
             <div v-else class="flex flex-col items-center text-gray-700 my-8">
-              <BaseIcon name="cloud-slash" class="h-10 w-10" />
+              <SharedIcon name="cloud-slash" class="h-10 w-10" />
 
               <div>
                 {{ $t('trade.swap.somethingWentWrong') }}

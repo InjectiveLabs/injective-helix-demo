@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import {
   ActivityForm,
   ActivityField,
   ActivitySubPage,
   UiMarketWithToken
 } from '@/types'
-import { getDenomsFromToken } from '@/app/data/token'
 
 const route = useRoute()
 const spotStore = useSpotStore()
@@ -28,7 +27,7 @@ const tokens = computed(() => {
 
   const tokens = markets.value.reduce((tokens, market) => {
     return [...tokens, market.baseToken, market.quoteToken]
-  }, [] as Token[])
+  }, [] as TokenStatic[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()
@@ -52,7 +51,7 @@ const selectedDenoms = computed(() => {
     return []
   }
 
-  return getDenomsFromToken(selectedToken.value)
+  return [selectedToken.value.denom]
 })
 </script>
 

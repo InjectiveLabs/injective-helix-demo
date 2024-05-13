@@ -2,16 +2,12 @@
 import { vScroll } from '@vueuse/components'
 import { createPopperLite } from '@popperjs/core'
 import type { UseScrollReturn } from '@vueuse/core'
-import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
-import {
-  Change,
-  MarketType,
-  ZERO_IN_BASE,
-  UiSpotLimitOrder,
-  UiDerivativeLimitOrder
-} from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { Instance, OptionsGeneric } from '@popperjs/core/lib/types'
+import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
 import { computeOrderbookSummary as computeOrderbookSummarySpot } from '@/app/client/utils/spot'
 import { computeOrderbookSummary as computeOrderbookSummaryDerivative } from '@/app/client/utils/derivatives'
@@ -60,12 +56,10 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
-const subaccountOrders = computed<
-  Array<UiSpotLimitOrder | UiDerivativeLimitOrder>
->(() =>
-  isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders
+const subaccountOrders = computed<Array<SpotLimitOrder | DerivativeLimitOrder>>(
+  () => (isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders)
 )
 
 const autoScrollSellsLocked = ref(false)
@@ -101,7 +95,7 @@ const lastTradedPriceChange = computed(() =>
     : derivativeLastTradedPriceChange.value
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.market.priceDecimals,
@@ -109,7 +103,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: markPriceToFormat } = useBigNumberFormatter(
+const { valueToString: markPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals
@@ -117,7 +111,7 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
 )
 
 const { valueToString: spotLastTradedPriceInUsdToString } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() =>
       new BigNumberInBase(
         tokenStore.tokenUsdPrice(props.market.quoteToken)
@@ -501,8 +495,10 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         <span
           v-if="!isSpot"
           :class="{
-            'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-green-500': lastTradedPriceChange !== Change.Decrease
+            'text-red-500':
+              lastTradedPriceChange === SharedMarketChange.Decrease,
+            'text-green-500':
+              lastTradedPriceChange !== SharedMarketChange.Decrease
           }"
           data-cy="orderbook-last-traded-price-text-content"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
@@ -513,8 +509,10 @@ function hidePopperOnScroll(state: UseScrollReturn) {
         <span
           v-if="isSpot"
           :class="{
-            'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-green-500': lastTradedPriceChange !== Change.Decrease
+            'text-red-500':
+              lastTradedPriceChange === SharedMarketChange.Decrease,
+            'text-green-500':
+              lastTradedPriceChange !== SharedMarketChange.Decrease
           }"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
           data-cy="orderbook-last-traded-price-text-content"
@@ -522,17 +520,19 @@ function hidePopperOnScroll(state: UseScrollReturn) {
           {{ lastTradedPriceToFormat }}
         </span>
 
-        <BaseIcon
+        <SharedIcon
           v-if="
-            [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
+            [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
+              lastTradedPriceChange
+            )
           "
           name="arrow"
           class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
           :class="{
             'text-red-500 -rotate-90':
-              lastTradedPriceChange === Change.Decrease,
+              lastTradedPriceChange === SharedMarketChange.Decrease,
             'text-green-500 rotate-90':
-              lastTradedPriceChange === Change.Increase,
+              lastTradedPriceChange === SharedMarketChange.Increase,
             'ml-2 mr-4': !isSpot
           }"
         />

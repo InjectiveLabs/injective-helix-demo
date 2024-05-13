@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 
 import { ActivitySubPage } from '@/types'
 
@@ -12,7 +12,7 @@ const props = defineProps({
   },
 
   tokens: {
-    type: Array as PropType<Token[]>,
+    type: Array as PropType<TokenStatic[]>,
     required: true
   }
 })

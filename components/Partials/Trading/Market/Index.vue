@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import { SharedMarketType } from '@shared/types'
 import { breakpointsTailwind } from '@vueuse/core'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   customAggregations,
   getDecimalPlaceFromValue
 } from '@/app/data/aggregation'
+import { getMinPriceTickSize } from '@/app/utils/helpers'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-import { getMinPriceTickSize } from '@/app/utils/helpers'
 
 const FilterList = {
   Orderbook: 'Orderbook',
@@ -29,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 
 const activeType = ref(FilterList.Orderbook)
 const maxTick = ref<string | undefined>(undefined)
