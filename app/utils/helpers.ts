@@ -5,7 +5,6 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { SharedUiSpotMarket } from '@shared/types'
 import { TokenStatic } from '@injectivelabs/token-metadata'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
@@ -17,7 +16,7 @@ import { tokenFactoryStatic } from '@/app/Services'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -83,7 +82,7 @@ export function getMinQuantityTickSize(
     return market.minQuantityTickSize
   }
 
-  const spotMarket = market as SharedUiSpotMarket
+  const spotMarket = market as UiSpotMarket
 
   return market.quoteToken && spotMarket.baseToken
     ? new BigNumberInWei(market.minQuantityTickSize)
@@ -181,7 +180,7 @@ export function getMinPriceTickSize(
       .toFixed()
   }
 
-  const spotMarket = market as SharedUiSpotMarket
+  const spotMarket = market as UiSpotMarket
 
   return spotMarket.baseToken
     ? new BigNumberInWei(market.minPriceTickSize)

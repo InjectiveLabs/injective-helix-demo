@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
-import { AccountBalance } from '@/types'
+import { UiSpotMarket, AccountBalance } from '@/types'
 
 const spotStore = useSpotStore()
 
@@ -12,7 +11,7 @@ const props = defineProps({
   }
 })
 
-const filteredMarkets = computed<SharedUiSpotMarket[]>(() =>
+const filteredMarkets = computed<UiSpotMarket[]>(() =>
   spotStore.markets.filter(
     (m) =>
       m.baseDenom === props.balance.token.denom ||

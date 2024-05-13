@@ -2,7 +2,6 @@
 import {
   SharedMarketType,
   SharedUiMarketSummary,
-  SharedUiDerivativeMarket,
   SharedUiExpiryFuturesMarket,
   SharedUiBinaryOptionsMarket
 } from '@shared/types'
@@ -11,7 +10,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistance, format } from 'date-fns'
 import { stableCoinDenoms } from '@/app/data/token'
 import { QUOTE_DENOMS_TO_SHOW_USD_VALUE } from '@/app/data/market'
-import { UiMarketWithToken } from '@/types'
+import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 const tokenStore = useTokenStore()
 
@@ -95,7 +94,7 @@ const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
       return ZERO_IN_BASE
     }
 
-    const derivativeMarket = props.market as SharedUiDerivativeMarket
+    const derivativeMarket = props.market as UiDerivativeMarket
 
     if (
       !derivativeMarket.perpetualMarketFunding ||
@@ -131,7 +130,7 @@ const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
       return ZERO_IN_BASE
     }
 
-    const derivativeMarket = props.market as SharedUiDerivativeMarket
+    const derivativeMarket = props.market as UiDerivativeMarket
 
     if (
       !derivativeMarket.isPerpetual ||
@@ -395,7 +394,7 @@ useIntervalFn(() => {
       </CommonMarketInfo>
       <PartialsTradingMarketStatsPartialsNextFunding
         v-if="market.subType === SharedMarketType.Perpetual"
-        v-bind="{ market: market as SharedUiDerivativeMarket }"
+        v-bind="{ market: market as UiDerivativeMarket }"
       />
       <PartialsTradingMarketStatsPartialsSettlement
         v-if="market.subType === SharedMarketType.BinaryOptions"

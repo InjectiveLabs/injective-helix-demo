@@ -36,9 +36,7 @@ const walletStore = useWalletStore()
 const totalRewardsThisRound = computed(() =>
   props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-      const token = tokenStore.tokens.find(
-        ({ denom }) => denom === reward.denom
-      )!
+      const token = tokenStore.tokenByDenomOrSymbol(reward.denom)!
 
       const rewardInBase = toBalanceInToken({
         value: reward.amount,

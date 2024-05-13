@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType, TradingStrategy } from '@injectivelabs/sdk-ts'
@@ -13,7 +12,7 @@ import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { StopReason, StrategyStatus } from '@/types'
+import { StopReason, UiSpotMarket, StrategyStatus } from '@/types'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -24,7 +23,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

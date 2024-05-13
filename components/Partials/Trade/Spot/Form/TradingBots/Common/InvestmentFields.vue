@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  spotMarketKey
-} from '@/types'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_MIN_TRADING_SIZE_LOW
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  spotMarketKey,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean
 })
 
-const market = inject(spotMarketKey) as Ref<SharedUiSpotMarket>
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()

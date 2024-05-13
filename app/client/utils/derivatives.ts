@@ -6,9 +6,8 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiDerivativeMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiAggregatedPriceLevel } from '@/types'
+import { UiDerivativeMarket, UiAggregatedPriceLevel } from '@/types'
 
 export const calculateMargin = ({
   quantity,
@@ -86,7 +85,7 @@ export const calculateLiquidationPrice = ({
   quantity: string
   notionalWithLeverage: string
   orderType: OrderSide
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 }): BigNumberInBase => {
   if (!price || !quantity || !notionalWithLeverage) {
     return ZERO_IN_BASE
@@ -117,7 +116,7 @@ export const calculateLiquidationPrice = ({
 
 export const getRoundedLiquidationPrice = (
   position: Position | PositionV2,
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 ) => {
   const minTickPrice = derivativePriceToChainPrice({
     value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed(),

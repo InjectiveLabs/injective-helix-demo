@@ -1,4 +1,4 @@
-import { INJ_DENOM } from '@injectivelabs/utils'
+import { injToken } from '@shared/data/token'
 import marketCategorySlugs from './category.json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
@@ -78,7 +78,7 @@ export const marketPromotions = [
   }
 ] as MarketPromotion[]
 
-export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
+export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [injToken.denom]
 
 export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
   [key: string]: { price?: string; denom?: string } | undefined

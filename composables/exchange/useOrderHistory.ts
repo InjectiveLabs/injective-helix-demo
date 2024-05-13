@@ -4,7 +4,6 @@ import {
   TradeExecutionType
 } from '@injectivelabs/ts-types'
 import { format } from 'date-fns'
-import { SharedUiSpotMarket } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotOrderHistory, DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
@@ -13,7 +12,7 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrderHistory(
   order: Ref<DerivativeOrderHistory | SpotOrderHistory>,
@@ -101,7 +100,7 @@ export function useOrderHistory(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.quantity).toBase(
-          (market.value as SharedUiSpotMarket).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.quantity)
   })

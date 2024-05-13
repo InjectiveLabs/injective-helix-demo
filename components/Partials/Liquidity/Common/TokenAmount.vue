@@ -18,9 +18,7 @@ const props = defineProps({
 
 const tokenStore = useTokenStore()
 
-const token = computed(() =>
-  tokenStore.tokens.find(({ symbol }) => symbol === props.symbol)
-)
+const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
 
 const { valueToString } = useSharedBigNumberFormatter(
   computed(() => props.amount)

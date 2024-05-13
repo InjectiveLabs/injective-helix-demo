@@ -1,11 +1,7 @@
 import { Route } from '@injectivelabs/sdk-ts'
 import { injToken, usdtToken } from '@shared/data/token'
-import { TokenStatic } from '@injectivelabs/token-metadata'
 import { SharedBalanceWithTokenAndPrice } from '@shared/types'
-import {
-  SWAP_LOW_LIQUIDITY_SYMBOLS,
-  tokensDenomToPreloadHomepageSwap
-} from '@/app/data/token'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 import { AccountBalance } from '@/types'
 
 const getBalanceWithToken = (
@@ -23,17 +19,6 @@ const getBalanceWithToken = (
     denom: balanceWithToken?.denom,
     balance: balanceWithToken?.availableMargin,
     usdPrice: balanceWithToken?.usdPrice
-  } as SharedBalanceWithTokenAndPrice
-}
-
-const getBalanceWithTokenHomepage = (
-  token: TokenStatic
-): SharedBalanceWithTokenAndPrice => {
-  return {
-    token,
-    denom: token?.denom,
-    balance: '0',
-    usdPrice: 0
   } as SharedBalanceWithTokenAndPrice
 }
 
@@ -165,45 +150,5 @@ export function useSwapTokenSelector({
     selectorInputDenom,
     inputDenomOptions,
     outputDenomOptions
-  }
-}
-
-export function useSwapTokenSelectorHomepage({
-  balances,
-  inputDenom,
-  outputDenom
-}: {
-  balances: Ref<AccountBalance[]>
-  inputDenom: Ref<string>
-  outputDenom: Ref<string>
-}) {
-  const { inputDenomOptions, outputDenomOptions, selectorOutputDenom } =
-    useSwapTokenSelector({
-      inputDenom,
-      outputDenom,
-      balances
-    })
-
-  const inputDenomOptionsHomepage = computed(() => {
-    return inputDenomOptions.value
-      ? inputDenomOptions.value.filter(({ denom }) => denom === usdtToken.denom)
-      : [getBalanceWithTokenHomepage(usdtToken)]
-  })
-
-  const outputDenomOptionsHomepage = computed(() => {
-    return outputDenomOptions.value
-      ? outputDenomOptions.value.filter(
-          ({ denom }) =>
-            denom !== usdtToken.denom &&
-            tokensDenomToPreloadHomepageSwap.includes(denom)
-        )
-      : [getBalanceWithTokenHomepage(injToken)]
-  })
-
-  return {
-    selectorOutputDenom,
-    selectorInputDenom: computed(() => usdtToken.denom),
-    outputDenomOptions: outputDenomOptionsHomepage,
-    inputDenomOptions: inputDenomOptionsHomepage
   }
 }

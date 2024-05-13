@@ -78,8 +78,8 @@ function init() {
     exchangeStore.fetchFeeDiscountAccountInfo(),
     ...[
       props.isSpot
-        ? spotStore.initFromTradingPage([queryMarketId])
-        : derivativeStore.initFromTradingPage([queryMarketId])
+        ? spotStore.initFromTradingPage(queryMarketId)
+        : derivativeStore.initFromTradingPage(queryMarketId)
     ]
   ])
     .then(() => {

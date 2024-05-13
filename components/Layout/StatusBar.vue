@@ -12,7 +12,7 @@
       <div
         class="px-2 bg-gradient-to-r from-blue-500 to-blue-200 bg-clip-text text-transparent"
       >
-        Version 2.0 Alpha
+        Version 2.0 Alpha (New)
       </div>
     </div>
   </div>

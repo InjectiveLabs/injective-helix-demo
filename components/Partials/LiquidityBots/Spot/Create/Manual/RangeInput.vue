@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import {
-  SharedUiSpotMarket,
-  SharedUiOrderbookWithSequence
-} from '@shared/types'
+import { SharedUiOrderbookWithSequence } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UiSpotMarket } from '@/types'
 
 const lerp = (a: number, b: number, t: number) => a + t * (b - a)
 
@@ -54,7 +52,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     default: undefined
   }
 })

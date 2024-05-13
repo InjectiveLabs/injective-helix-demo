@@ -1,4 +1,3 @@
-import { SharedUiSpotMarket } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -7,7 +6,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrder(
   order: Ref<SpotLimitOrder | DerivativeLimitOrder>,
@@ -96,7 +95,7 @@ export function useOrder(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.quantity).toBase(
-          (market.value as SharedUiSpotMarket).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.quantity)
   })
@@ -108,7 +107,7 @@ export function useOrder(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.unfilledQuantity).toBase(
-          (market.value as SharedUiSpotMarket).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.unfilledQuantity)
   })

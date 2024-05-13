@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
+import { UiSpotMarket } from '@/types'
 
 const walletStore = useWalletStore()
 
 defineProps({
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

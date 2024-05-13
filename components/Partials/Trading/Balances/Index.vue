@@ -5,12 +5,17 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { SharedUiSpotMarket, SharedMarketType } from '@shared/types'
+import { SharedMarketType } from '@shared/types'
 import {
   BankBalanceIntegrityStrategy,
   SubaccountBalanceIntegrityStrategy
 } from '@/app/client/streams/data-integrity/strategies'
-import { MainPage, UiMarketWithToken, WalletConnectStatus } from '@/types'
+import {
+  MainPage,
+  UiSpotMarket,
+  UiMarketWithToken,
+  WalletConnectStatus
+} from '@/types'
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
@@ -35,8 +40,7 @@ const baseTradingBalance = computed(() => {
   }
 
   return accountBalancesWithToken.value.find(
-    (balance) =>
-      balance.denom === (props.market as SharedUiSpotMarket).baseDenom
+    (balance) => balance.denom === (props.market as UiSpotMarket).baseDenom
   )
 })
 

@@ -2,10 +2,7 @@
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { usdcTokenDenoms } from '@/app/data/token'
-import {
-  QUOTE_DENOMS_GECKO_IDS,
-  SMALL_BALANCE_THRESHOLD
-} from '@/app/utils/constants'
+import { SMALL_BALANCE_THRESHOLD } from '@/app/utils/constants'
 import {
   AccountBalance,
   BalanceHeaderType,
@@ -66,9 +63,8 @@ const filteredBalances = computed(() =>
         SMALL_BALANCE_THRESHOLD
       )
 
-    const isMarginCurrency =
-      !showMarginCurrencyOnly.value ||
-      QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId)
+    const isMarginCurrency = !showMarginCurrencyOnly.value
+    //  || QUOTE_DENOMS_GECKO_IDS.includes(balance.token.coinGeckoId) ???
 
     const tokenNameMatch = balance.token.name
       .toLowerCase()

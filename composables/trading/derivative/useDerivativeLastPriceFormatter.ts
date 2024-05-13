@@ -1,11 +1,7 @@
-import {
-  SharedMarketChange,
-  SharedUiDerivativeTrade,
-  SharedUiDerivativeMarket
-} from '@shared/types'
+import { SharedMarketChange, SharedUiDerivativeTrade } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiMarketWithToken } from '@/types'
+import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 export function useDerivativeLastPrice(
   market: Ref<UiMarketWithToken | undefined>
@@ -80,7 +76,7 @@ export function useDerivativeLastPrice(
     const markPriceNotScaled =
       derivateStore.marketMarkPriceMap[market.value.marketId]?.price || '0'
 
-    const derivativeMarket = market.value as SharedUiDerivativeMarket
+    const derivativeMarket = market.value as UiDerivativeMarket
 
     if (!derivativeMarket.oracleScaleFactor) {
       return markPriceNotScaled

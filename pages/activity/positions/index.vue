@@ -6,7 +6,6 @@ import {
   ActivitySubPage,
   UiMarketWithToken
 } from '@/types'
-import { getDenomsFromToken } from '@/app/data/token'
 
 const route = useRoute()
 const spotStore = useSpotStore()
@@ -52,7 +51,7 @@ const selectedDenoms = computed(() => {
     return []
   }
 
-  return getDenomsFromToken(selectedToken.value)
+  return [selectedToken.value.denom]
 })
 </script>
 

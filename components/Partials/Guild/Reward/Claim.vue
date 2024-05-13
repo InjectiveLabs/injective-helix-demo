@@ -81,9 +81,7 @@ const rewardsWithToken = computed(
   () =>
     props.rewards
       .map((reward) => {
-        const token = tokenStore.tokens.find(
-          ({ denom }) => denom === reward.denom
-        )
+        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
         if (!token) {
           return undefined

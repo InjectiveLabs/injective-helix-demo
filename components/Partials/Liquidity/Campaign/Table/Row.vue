@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -8,6 +7,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { getExplorerUrl } from '@/app/utils/network'
+import { UiSpotMarket } from '@/types'
 
 const props = defineProps({
   campaignUser: {
@@ -26,7 +26,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -57,7 +57,7 @@ const estRewardsInPercentage = computed(() => {
 
 const rewards = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     const amount = new BigNumberInWei(reward.amount || 0)
       .toBase(token?.decimals || 18)

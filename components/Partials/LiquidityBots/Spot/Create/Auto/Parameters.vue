@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
-
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SpotGridTradingField } from '@/types'
+import { UiSpotMarket, SpotGridTradingField } from '@/types'
 
 const setFormValues = useSetFormValues()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   },
 

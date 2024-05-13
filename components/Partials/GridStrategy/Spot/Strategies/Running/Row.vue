@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { format, formatDistance } from 'date-fns'
-import { SharedUiSpotMarket } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
@@ -12,7 +11,7 @@ import {
 } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { TradingBotsSubPage } from '@/types'
+import { UiSpotMarket, TradingBotsSubPage } from '@/types'
 
 const props = defineProps({
   strategy: {
@@ -22,7 +21,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'details:open': [strategy: TradingStrategy, market: SharedUiSpotMarket]
+  'details:open': [strategy: TradingStrategy, market: UiSpotMarket]
 }>()
 
 const spotStore = useSpotStore()

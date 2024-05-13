@@ -2,8 +2,7 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiDerivativeMarket } from '@shared/types'
-import { Modal, TradeExecutionType } from '@/types'
+import { Modal, TradeExecutionType, UiDerivativeMarket } from '@/types'
 
 const props = defineProps({
   isReduceOnly: Boolean,
@@ -14,7 +13,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   },
 

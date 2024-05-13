@@ -1,7 +1,6 @@
 import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { type Token } from '@injectivelabs/token-metadata'
 import {
   toBalanceInToken,
   convertCoinToBalancesWithToken
@@ -57,9 +56,8 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
 
   const formattedFees = computed(() =>
     swap.value.fees.map(({ denom, amount }) => {
-      const token = tokenStore.tokens.find(
-        (token: Token) => token.denom === denom
-      )
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
+
       const amountInToken = toBalanceInToken({
         value: amount,
         decimalPlaces: token?.decimals || 18,
@@ -78,9 +76,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
     const routeDenoms = swap.value.route.split('-')
 
     return routeDenoms.reduce((symbols, denom) => {
-      const token = tokenStore.tokens.find(
-        (token: Token) => token.denom === denom
-      )
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
 
       if (!token) {
         return [...symbols]

@@ -1,12 +1,11 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiSpotMarket } from '@shared/types'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { StrategyStatus } from '@/types'
+import { UiSpotMarket, StrategyStatus } from '@/types'
 
 export default function useActiveGridStrategy(
-  market: ComputedRef<SharedUiSpotMarket>,
+  market: ComputedRef<UiSpotMarket>,
   strategy: ComputedRef<TradingStrategy>
 ) {
   const spotStore = useSpotStore()

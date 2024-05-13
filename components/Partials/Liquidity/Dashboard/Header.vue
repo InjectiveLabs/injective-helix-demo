@@ -65,7 +65,7 @@ const rewardsThisRound = computed(() =>
 
 const rewardsThisRoundInUsd = computed(() =>
   Object.entries(rewardsThisRound.value).reduce((sum, [denom, amount]) => {
-    const token = tokenStore.tokens.find((token) => token.denom === denom)
+    const token = tokenStore.tokenByDenomOrSymbol(denom)
 
     const amountInUsd = amount
       .toBase(token?.decimals || 18)
@@ -87,7 +87,7 @@ const { valueToString: totalRewardsInUsdToString } =
     computed(() =>
       Object.entries(totalRewards.value)
         .reduce((sum, [denom, amount]) => {
-          const token = tokenStore.tokens.find((token) => token.denom === denom)
+          const token = tokenStore.tokenByDenomOrSymbol(denom)
 
           const amountInUsd = amount
             .toBase(token?.decimals || 18)

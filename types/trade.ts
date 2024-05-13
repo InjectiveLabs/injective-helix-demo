@@ -30,7 +30,15 @@ export type TradeFormValue = {
   value: string | number | boolean
 }
 
-export type UiMarketWithToken = SharedUiSpotMarket | SharedUiDerivativeMarket
+export interface UiSpotMarket extends SharedUiSpotMarket {
+  isVerified: boolean
+}
+
+export interface UiDerivativeMarket extends SharedUiDerivativeMarket {
+  isVerified: boolean
+}
+
+export type UiMarketWithToken = UiSpotMarket | UiDerivativeMarket
 
 export type CurrentMarket = UiMarketWithToken | undefined
 

@@ -13,7 +13,7 @@ const { value: tokenValue } = useStringField({
 
     <div class="flex divide-x border-r">
       <CommonTabTokenSelector
-        v-bind="{ tokens: tokenStore.tokens }"
+        v-bind="{ tokens: tokenStore.verifiedTokens }"
         v-model="tokenValue"
       />
 

@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
-const tokenStore = useTokenStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -15,7 +13,6 @@ onWalletConnected(() => {
     .initTradeAndEarn()
     .then(() => {
       Promise.all([
-        tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
         exchangeStore.fetchParams(),
         exchangeStore.fetchTradingRewardsCampaign()
       ])

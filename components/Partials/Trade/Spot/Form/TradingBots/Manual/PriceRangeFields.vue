@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { SharedUiSpotMarket } from '@shared/types'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  spotMarketKey
-} from '@/types'
 import {
   GST_KAVA_SINGLE_SIDED_THRESHOLD,
   GST_SINGLE_SIDED_THRESHOLD,
   SGT_STABLE_COINS
 } from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  spotMarketKey,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const spotGridFormValues = useFormValues<SpotGridTradingForm>()
-const market = inject(spotMarketKey) as Ref<SharedUiSpotMarket>
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const { lastTradedPrice } = useSpotLastPrice(market)
 

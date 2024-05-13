@@ -12,7 +12,6 @@ import {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
-import { TokenType } from '@injectivelabs/token-metadata'
 import {
   indexerOracleApi,
   derivativeCacheApi,
@@ -22,7 +21,6 @@ import {
   SharedMarketType,
   SharedUiMarketSummary,
   SharedUiDerivativeTrade,
-  SharedUiDerivativeMarket,
   SharedUiBinaryOptionsMarket,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
@@ -59,26 +57,26 @@ import {
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
 import {
-  combineOrderbookRecords,
+  marketIsInactive,
+  combineOrderbookRecords
   // marketHasRecentlyExpired,
-  marketIsInactive
 } from '@/app/utils/market'
-import { tokenFactoryStatic } from '@/app/Services'
 import {
   IS_DEVNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
 import {
+  UiDerivativeMarket,
   UiMarketAndSummary,
   MarketMarkPriceMap,
   ActivityFetchOptions
 } from '@/types'
 
 type DerivativeStoreState = {
-  recentlyExpiredMarkets: SharedUiDerivativeMarket[]
+  recentlyExpiredMarkets: UiDerivativeMarket[]
   binaryOptionsMarkets: SharedUiBinaryOptionsMarket[]
-  markets: SharedUiDerivativeMarket[]
+  markets: UiDerivativeMarket[]
   marketIdsFromQuery: string[]
   marketsSummary: SharedUiMarketSummary[]
   marketMarkPriceMap: MarketMarkPriceMap
@@ -202,18 +200,23 @@ export const useDerivativeStore = defineStore('derivative', {
       }
     },
 
-    async initFromTradingPage(marketIdsFromQuery: string[] = []) {
+    async initFromTradingPage(marketIdFromQuery?: string) {
       const derivativeStore = useDerivativeStore()
 
+      if (!marketIdFromQuery) {
+        await derivativeStore.initIfNotInit()
+
+        return
+      }
+
       derivativeStore.$patch({
-        marketIdsFromQuery
+        marketIdsFromQuery: [
+          ...derivativeStore.marketIdsFromQuery,
+          marketIdFromQuery
+        ]
       })
 
-      if (marketIdsFromQuery.length === 0) {
-        await derivativeStore.initIfNotInit()
-      } else {
-        await derivativeStore.init()
-      }
+      await derivativeStore.init()
     },
 
     async fetchMarkets() {
@@ -223,6 +226,8 @@ export const useDerivativeStore = defineStore('derivative', {
       const markets =
         (await derivativeCacheApi.fetchMarkets()) as PerpetualMarket[]
 
+      const slugs = [...MARKETS_SLUGS.futures, ...MARKETS_SLUGS.expiryFutures]
+
       const uiMarkets = markets
         .map((market) => {
           const slug = market.ticker
@@ -230,42 +235,34 @@ export const useDerivativeStore = defineStore('derivative', {
             .replaceAll(' ', '-')
             .toLowerCase()
           const [baseTokenSymbol] = slug.split('-')
-          const baseToken = tokenFactoryStatic.getMetaBySymbol(
-            baseTokenSymbol,
-            {
-              type: TokenType.Symbol
-            }
-          )
+          const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
           if (!baseToken || !quoteToken) {
             return undefined
           }
 
-          return toUiDerivativeMarket({ market, baseToken, quoteToken, slug })
-        })
-        .filter((market) => market) as SharedUiDerivativeMarket[]
+          const formattedMarket = toUiDerivativeMarket({
+            market,
+            baseToken,
+            quoteToken,
+            slug
+          })
 
-      const slugSortSequence = [
-        ...MARKETS_SLUGS.futures,
-        ...MARKETS_SLUGS.expiryFutures
-      ]
+          return {
+            ...formattedMarket,
+            isVerified: slugs.includes(formattedMarket.slug)
+          }
+        })
+        .filter((market) => market) as UiDerivativeMarket[]
 
       derivativeStore.$patch({
-        markets: uiMarkets
-          .filter((market) => {
-            return (
-              MARKETS_SLUGS.futures.includes(market.slug) ||
-              MARKETS_SLUGS.expiryFutures.includes(market.slug) ||
-              derivativeStore.marketIdsFromQuery.includes(market.marketId)
-            )
-          })
-          .sort((a, b) => {
-            return (
-              slugSortSequence.indexOf(a.slug) -
-              slugSortSequence.indexOf(b.slug)
-            )
-          })
+        markets: uiMarkets.sort((derivativeA, derivativeB) => {
+          const derivativeAIndex = slugs.indexOf(derivativeA.slug) || 1
+          const derivativeBIndex = slugs.indexOf(derivativeB.slug) || 1
+
+          return derivativeAIndex - derivativeBIndex
+        })
       })
     },
 
@@ -307,9 +304,7 @@ export const useDerivativeStore = defineStore('derivative', {
           .replaceAll(' ', '-')
           .toLowerCase()
         const [baseTokenSymbol] = slug.split('-')
-        const baseToken = tokenFactoryStatic.getMetaBySymbol(baseTokenSymbol, {
-          type: TokenType.Symbol
-        })
+        const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
         const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
         if (!baseToken || !quoteToken) {
@@ -325,7 +320,7 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async getMarketMarkPrice(
-      market: SharedUiDerivativeMarket | SharedUiBinaryOptionsMarket
+      market: UiDerivativeMarket | SharedUiBinaryOptionsMarket
     ) {
       const derivativeStore = useDerivativeStore()
 
@@ -333,8 +328,8 @@ export const useDerivativeStore = defineStore('derivative', {
         market.subType !== SharedMarketType.BinaryOptions
           ? await indexerOracleApi.fetchOraclePrice({
               oracleType: market.oracleType,
-              baseSymbol: (market as SharedUiDerivativeMarket).oracleBase,
-              quoteSymbol: (market as SharedUiDerivativeMarket).oracleQuote
+              baseSymbol: (market as UiDerivativeMarket).oracleBase,
+              quoteSymbol: (market as UiDerivativeMarket).oracleQuote
             })
           : await indexerOracleApi.fetchOraclePriceNoThrow({
               baseSymbol: (market as SharedUiBinaryOptionsMarket).oracleSymbol,
@@ -534,9 +529,7 @@ export const useDerivativeStore = defineStore('derivative', {
         .replaceAll(' ', '-')
         .toLowerCase()
       const [baseTokenSymbol] = slug.split('-')
-      const baseToken = tokenFactoryStatic.getMetaBySymbol(baseTokenSymbol, {
-        type: TokenType.Symbol
-      })
+      const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
       const quoteToken = tokenStore.tokenByDenomOrSymbol(
         updatedMarket.quoteDenom
       )

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { SharedUiDerivativeMarket } from '@shared/types'
+import { UiDerivativeMarket } from '@/types'
 
 defineProps({
   markets: {
-    type: Array as PropType<SharedUiDerivativeMarket[]>,
+    type: Array as PropType<UiDerivativeMarket[]>,
     required: true
   }
 })

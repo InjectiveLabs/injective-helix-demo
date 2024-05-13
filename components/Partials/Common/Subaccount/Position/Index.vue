@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
-import { Modal } from '@/types'
+import { SharedMarketType } from '@shared/types'
+import { Modal, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -9,7 +9,7 @@ const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })

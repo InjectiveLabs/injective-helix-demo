@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { SharedUiDerivativeMarket } from '@shared/types'
-
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     default: undefined
   }
 })

@@ -71,14 +71,6 @@ onWalletConnected(() => {
 
 function initRoutes() {
   Promise.all([swapStore.fetchRoutes()])
-    // .then(async () => {
-    //   await Promise.all([
-    //     tokenStore.fetchTokensUsdPriceMap([...QUOTE_DENOMS_GECKO_IDS]),
-    //     tokenStore.getTokensUsdPriceMapFromToken(
-    //       spotStore.markets.map(({ baseToken }) => baseToken)
-    //     )
-    //   ])
-    // })
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
 }

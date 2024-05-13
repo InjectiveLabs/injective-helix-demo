@@ -41,11 +41,11 @@ const reduceAccountBalances = (
 }
 
 export function useBalance() {
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-  const positionStore = usePositionStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const positionStore = usePositionStore()
+  const derivativeStore = useDerivativeStore()
 
   const aggregatedPortfolioBalances = computed(() => {
     return Object.keys(accountStore.subaccountBalancesMap).reduce(

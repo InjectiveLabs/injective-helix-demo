@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -12,6 +6,12 @@ import {
   UI_DEFAULT_PRICE_MAX_DECIMALS,
   UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
@@ -151,7 +151,7 @@ watch(isBaseAndQuoteType, (value) => {
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
       v-bind="{
-        market: gridStrategyStore.spotMarket as SharedUiSpotMarket,
+        market: gridStrategyStore.spotMarket as UiSpotMarket,
         decimalPlaces
       }"
     />

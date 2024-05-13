@@ -9,19 +9,20 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
+import { SharedMarketType } from '@shared/types'
 import { msgBroadcaster } from '@shared/WalletService'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
+import { UiDerivativeMarket } from '@/types'
 
 export const closePosition = async ({
   market,
   position
 }: {
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
   position: Position | PositionV2
 }) => {
   const appStore = useAppStore()
@@ -175,7 +176,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   position
 }: {
   position: Position | PositionV2
-  market?: SharedUiDerivativeMarket
+  market?: UiDerivativeMarket
   reduceOnlyOrders: DerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
@@ -183,7 +184,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  const actualMarket = market as SharedUiDerivativeMarket
+  const actualMarket = market as UiDerivativeMarket
 
   if (
     !walletStore.isUserWalletConnected ||
@@ -237,7 +238,7 @@ export const addMarginToPosition = async ({
   market,
   amount
 }: {
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
   amount: BigNumberInBase
 }) => {
   const appStore = useAppStore()

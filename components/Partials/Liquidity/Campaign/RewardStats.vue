@@ -80,7 +80,7 @@ const rewards = computed(() => {
   }
 
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     const amount = sharedToBalanceInTokenInBase({
       value: reward.amount,

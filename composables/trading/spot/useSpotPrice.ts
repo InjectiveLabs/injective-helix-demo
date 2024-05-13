@@ -1,5 +1,5 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiPriceLevel, SharedUiSpotMarket } from '@shared/types'
+import { SharedUiPriceLevel } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
@@ -10,14 +10,19 @@ import {
   calculateAveragePrice,
   calculateWorstPrice
 } from '@/app/client/utils/orderbook'
-import { TradeExecutionType, TradeField, TradeForm } from '@/types'
+import {
+  TradeForm,
+  TradeField,
+  UiSpotMarket,
+  TradeExecutionType
+} from '@/types'
 
 export function useSpotPrice({
   market,
   formValues,
   isBaseAmount
 }: {
-  market: Ref<SharedUiSpotMarket | undefined>
+  market: Ref<UiSpotMarket | undefined>
   formValues: Ref<TradeForm>
   isBaseAmount: Ref<boolean>
 }) {

@@ -9,7 +9,6 @@ import {
   ExecArgCreateSpotGridStrategy,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -19,7 +18,11 @@ import {
 } from '@/app/data/grid-strategy'
 import { backupPromiseCall } from '@/app/utils/async'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { SpotGridTradingForm, SpotGridTradingField } from '@/types'
+import {
+  UiSpotMarket,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 export const createStrategy = async (
   {
@@ -36,7 +39,7 @@ export const createStrategy = async (
     [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
     [SpotGridTradingField.StrategyType]: strategyType
   }: Partial<SpotGridTradingForm>,
-  market?: SharedUiSpotMarket
+  market?: UiSpotMarket
 ) => {
   const appStore = useAppStore()
   const authZStore = useAuthZStore()

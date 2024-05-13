@@ -1,8 +1,8 @@
-import { SharedUiSpotMarket, SharedUiDerivativeMarket } from '@shared/types'
 import { Status } from '@injectivelabs/utils'
 import { ShallowRef } from 'nuxt/dist/app/compat/capi'
-import { OrderbookWorkerMessage } from './worker'
 import { UiMarketWithToken } from './trade'
+import { OrderbookWorkerMessage } from './worker'
+import { UiSpotMarket, UiDerivativeMarket } from '@/types'
 
 export const orderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
   ShallowRef<
@@ -14,10 +14,10 @@ export const orderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
 >
 
 export const spotMarketKey = Symbol('SpotMarket') as InjectionKey<
-  ComputedRef<SharedUiSpotMarket | undefined>
+  ComputedRef<UiSpotMarket | undefined>
 >
 export const derivativeMarketKey = Symbol('DerivativeMarket') as InjectionKey<
-  ComputedRef<SharedUiDerivativeMarket | undefined>
+  ComputedRef<UiDerivativeMarket | undefined>
 >
 export const marketKey = Symbol('Market') as InjectionKey<
   ComputedRef<UiMarketWithToken | undefined>
@@ -26,8 +26,6 @@ export const marketKey = Symbol('Market') as InjectionKey<
 export const portfolioStatusKey = Symbol(
   'PortfolioStatus'
 ) as InjectionKey<Status>
-
-export const tokensStatusKey = Symbol('TokensStatus') as InjectionKey<Status>
 
 export const isSpotKey = Symbol('isSpot') as InjectionKey<boolean>
 export const aggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>

@@ -49,7 +49,10 @@ function setToken(token: TokenStatic) {
     </div>
 
     <div class="overflow-y-auto flex-1 md:max-h-[400px]">
-      <div v-for="token in tokensFiltered" :key="token.denom">
+      <div
+        v-for="token in tokensFiltered"
+        :key="`${token.denom}-${token.symbol}`"
+      >
         <CommonTokenSelectorItem v-bind="{ token }" @set:token="setToken" />
       </div>
     </div>

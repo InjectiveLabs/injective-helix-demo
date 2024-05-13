@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   GST_GRID_THRESHOLD,
@@ -10,6 +9,7 @@ import {
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
+  UiSpotMarket,
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField
@@ -19,7 +19,7 @@ const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

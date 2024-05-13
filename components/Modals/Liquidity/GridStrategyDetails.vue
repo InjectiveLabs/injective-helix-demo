@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { Modal } from '@/types'
+import { Modal, UiSpotMarket } from '@/types'
 
 const modalStore = useModalStore()
 
@@ -12,7 +11,7 @@ defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     default: undefined
   }
 })

@@ -57,8 +57,7 @@ export const UST_COIN_GECKO_ID = 'terrausd'
 export const QUOTE_DENOMS_GECKO_IDS = [
   ETH_COIN_GECKO_ID,
   USDT_COIN_GECKO_ID,
-  USDC_COIN_GECKO_ID,
-  UST_COIN_GECKO_ID
+  USDC_COIN_GECKO_ID
 ]
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const HIDDEN_BALANCE_DISPLAY = '********'

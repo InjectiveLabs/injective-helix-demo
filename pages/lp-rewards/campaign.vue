@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { MainPage } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -26,7 +24,6 @@ onWalletConnected(() => {
   }
 
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
     campaignStore.fetchCampaign({
       skip: 0,
       limit: limit.value,
@@ -86,11 +83,6 @@ function onPageChange(value: number) {
 
   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
 }
-
-useIntervalFn(
-  () => tokenStore.fetchTokensUsdPriceMap([injToken.coinGeckoId]),
-  30 * 1000
-)
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
+import { UiSpotMarket } from '@/types'
 
 const props = defineProps({
   subaccountId: {
@@ -8,7 +8,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

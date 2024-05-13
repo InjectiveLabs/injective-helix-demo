@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { SharedMarketType } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
-import { UIDerivativeOrder } from '@/types'
+import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const FilterList = {
   OpenPositions: 'OpenPositions',
@@ -22,7 +22,7 @@ const props = defineProps({
   filterByCurrentMarket: Boolean,
 
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   },
 

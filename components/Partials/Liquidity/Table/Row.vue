@@ -36,15 +36,17 @@ const market = computed(() =>
   spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const baseToken = computed(() =>
-  tokenStore.tokens.find(
-    ({ symbol }) => market.value?.baseToken.symbol === symbol
-  )
-)
+const baseToken = computed(() => {
+  if (!market.value) {
+    return
+  }
+
+  return tokenStore.tokenBySymbol(market.value.baseToken.symbol)
+})
 
 const rewardsWithToken = computed(() =>
   props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
       value: toBalanceInToken({

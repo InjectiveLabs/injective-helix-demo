@@ -1,5 +1,3 @@
-import { SharedUiSpotMarket } from '@shared/types'
-import { orderSideToOrderType } from '@shared/transformer/trade'
 import {
   SpotLimitOrder,
   SpotOrderHistory,
@@ -10,10 +8,12 @@ import {
   MsgCreateSpotMarketOrder,
   spotPriceToChainPriceToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
+import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
+import { UiSpotMarket } from '@/types'
 
 export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
   const appStore = useAppStore()
@@ -88,7 +88,7 @@ export const submitLimitOrder = async ({
   price: BigNumberInBase
   orderSide: OrderSide
   quantity: BigNumberInBase
-  market: SharedUiSpotMarket
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -143,7 +143,7 @@ export const submitMarketOrder = async ({
   isBuy: Boolean
   price: BigNumberInBase
   quantity: BigNumberInBase
-  market: SharedUiSpotMarket
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -210,7 +210,7 @@ export const submitStopLimitOrder = async ({
   orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: SharedUiSpotMarket
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -272,7 +272,7 @@ export const submitStopMarketOrder = async ({
   orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: SharedUiSpotMarket
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()

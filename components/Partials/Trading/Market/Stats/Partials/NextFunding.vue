@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
-import { SharedUiDerivativeMarket } from '@shared/types'
+import { UiDerivativeMarket } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })
 
 const isPerpetualMarket = computed(
-  () => (props.market as SharedUiDerivativeMarket).isPerpetual
+  () => (props.market as UiDerivativeMarket).isPerpetual
 )
 
 const now = ref(0)

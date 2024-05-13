@@ -1,15 +1,11 @@
-import {
-  SharedMarketType,
-  SharedUiDerivativeMarket,
-  SharedUiBinaryOptionsMarket
-} from '@shared/types'
+import { SharedMarketType, SharedUiBinaryOptionsMarket } from '@shared/types'
 import { indexerOracleApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { MarketMarkPriceMap } from '@/types'
+import { MarketMarkPriceMap, UiDerivativeMarket } from '@/types'
 
 export class DerivativeOraclePriceIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
@@ -83,8 +79,8 @@ export class DerivativeOraclePriceIntegrityStrategy
       (market.subType !== SharedMarketType.BinaryOptions
         ? indexerOracleApi.fetchOraclePrice({
             oracleType: market.oracleType,
-            baseSymbol: (market as SharedUiDerivativeMarket).oracleBase,
-            quoteSymbol: (market as SharedUiDerivativeMarket).oracleQuote
+            baseSymbol: (market as UiDerivativeMarket).oracleBase,
+            quoteSymbol: (market as UiDerivativeMarket).oracleQuote
           })
         : indexerOracleApi.fetchOraclePriceNoThrow({
             baseSymbol: (market as SharedUiBinaryOptionsMarket).oracleSymbol,

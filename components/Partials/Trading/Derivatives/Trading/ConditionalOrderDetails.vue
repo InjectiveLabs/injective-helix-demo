@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
+import { UiDerivativeMarket } from '@/types'
 
 const props = defineProps({
   isOrderTypeReduceOnly: Boolean,
@@ -12,7 +13,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   },
 

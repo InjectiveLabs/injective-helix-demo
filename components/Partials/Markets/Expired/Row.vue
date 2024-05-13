@@ -1,21 +1,18 @@
 <script lang="ts" setup>
+import { format, fromUnixTime } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  SharedMarketType,
-  SharedUiDerivativeMarket,
-  SharedUiExpiryFuturesMarket
-} from '@shared/types'
-import { format, fromUnixTime } from 'date-fns'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
+import { SharedMarketType, SharedUiExpiryFuturesMarket } from '@shared/types'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { SETTLED_PERP_MARKETS_LAST_PRICE } from '@/app/data/market'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiDerivativeMarket } from '@/types'
 
 const tokenStore = useTokenStore()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })
@@ -28,9 +25,9 @@ const lastTradedPrice = computed(() => {
     return
   }
 
-  const token = tokenStore.tokens.find(
-    ({ denom }) => denom === settledPerpMarket.denom
-  )
+  const token = settledPerpMarket.denom
+    ? tokenStore.tokenByDenomOrSymbol(settledPerpMarket.denom)
+    : undefined
 
   return toBalanceInToken({
     value: settledPerpMarket.price,

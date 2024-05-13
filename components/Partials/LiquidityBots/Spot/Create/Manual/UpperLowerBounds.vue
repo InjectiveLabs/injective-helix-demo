@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
-import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
 import {
   GST_KAVA_SINGLE_SIDED_THRESHOLD,
   GST_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
+import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
   isRebalanceBeforeCreationChecked: Boolean,
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

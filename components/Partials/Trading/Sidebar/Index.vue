@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { QUOTE_DENOMS_GECKO_IDS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 
@@ -47,7 +46,7 @@ onMounted(() => {
 
 function pollMarkets() {
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap(QUOTE_DENOMS_GECKO_IDS),
+    tokenStore.fetchTokensUsdPriceMap(),
     derivativeStore.fetchMarketsSummary(),
     spotStore.fetchMarketsSummary()
   ]).catch($onError)

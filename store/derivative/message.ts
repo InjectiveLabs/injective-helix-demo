@@ -11,14 +11,14 @@ import {
   derivativePriceToChainPriceToFixed,
   derivativeMarginToChainMarginToFixed
 } from '@injectivelabs/sdk-ts'
+import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
 import { sharedToBalanceInWei } from '@shared/utils/formatter'
 import { orderSideToOrderType } from '@shared/transformer/trade'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
-import { UIDerivativeOrder } from '@/types'
+import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
@@ -120,7 +120,7 @@ export const submitLimitOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   orderSide: OrderSide
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -189,7 +189,7 @@ export const submitStopLimitOrder = async ({
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   orderSide: OrderSide
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -267,7 +267,7 @@ export const submitMarketOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   orderSide: OrderSide
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -336,7 +336,7 @@ export const submitStopMarketOrder = async ({
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   orderSide: OrderSide
-  market: SharedUiDerivativeMarket
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()

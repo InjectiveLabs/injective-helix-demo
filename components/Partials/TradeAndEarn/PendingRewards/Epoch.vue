@@ -35,9 +35,7 @@ const props = defineProps({
 const hubUrl = `${getHubUrl()}/staking`
 
 const injUsdPrice = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(
-    injToken.coinGeckoId
-  )
+  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
   return injUsdPrice || ZERO_IN_BASE
 })

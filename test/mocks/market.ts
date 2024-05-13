@@ -1,10 +1,7 @@
-import {
-  SharedMarketType,
-  SharedUiSpotMarket,
-  SharedUiDerivativeMarket
-} from '@shared/types'
 import { injToken, usdtToken } from '@shared/data/token'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { SharedMarketType } from '@shared/types'
+import { UiSpotMarket, UiDerivativeMarket } from '@/types'
 
 export const feeDiscountAccountInfo: FeeDiscountAccountInfo = {
   accountInfo: {
@@ -20,7 +17,7 @@ export const feeDiscountAccountInfo: FeeDiscountAccountInfo = {
   tierLevel: 0
 }
 
-export const injUsdtSpotMarketWithToken: SharedUiSpotMarket = {
+export const injUsdtSpotMarketWithToken: UiSpotMarket = {
   marketId:
     '0x0611780ba69656949525013d947713300f56c37b6175e02f26bffa495c3208fe',
   marketStatus: 'active',
@@ -40,10 +37,11 @@ export const injUsdtSpotMarketWithToken: SharedUiSpotMarket = {
   priceDecimals: 3,
   quantityDecimals: 3,
   priceTensMultiplier: -3,
-  quantityTensMultiplier: -3
+  quantityTensMultiplier: -3,
+  isVerified: true
 }
 
-export const injUsdtDerivativeMarketWithToken: SharedUiDerivativeMarket = {
+export const injUsdtDerivativeMarketWithToken: UiDerivativeMarket = {
   oracleBase: 'INJ',
   oracleQuote: 'USDT',
   oracleType: 'bandibc',
@@ -80,5 +78,6 @@ export const injUsdtDerivativeMarketWithToken: SharedUiDerivativeMarket = {
   quantityDecimals: 3,
   priceDecimals: 3,
   quantityTensMultiplier: -3,
-  priceTensMultiplier: -3
+  priceTensMultiplier: -3,
+  isVerified: true
 }

@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
-
+import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 import {
+  Modal,
+  UiSpotMarket,
   GridStrategyType,
   InvestmentTypeGst,
-  Modal,
   SpotGridTradingForm
 } from '@/types'
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
 
 defineProps({
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

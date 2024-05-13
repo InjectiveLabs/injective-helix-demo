@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SharedMarketType, SharedUiSpotMarket } from '@shared/types'
+import { SharedMarketType } from '@shared/types'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import { UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
@@ -21,8 +21,8 @@ const symbol = computed(() => {
     return props.market.ticker
   }
 
-  const spotTicker = `${(props.market as SharedUiSpotMarket).baseDenom}/${
-    (props.market as SharedUiSpotMarket).quoteDenom
+  const spotTicker = `${(props.market as UiSpotMarket).baseDenom}/${
+    (props.market as UiSpotMarket).quoteDenom
   }`
 
   return spotTicker.replaceAll('ibc/', 'ibc@')

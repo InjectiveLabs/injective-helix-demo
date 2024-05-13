@@ -40,9 +40,7 @@ const stakedAmount = computed(() => {
 })
 
 const stakedAmountInUsd = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(
-    injToken.coinGeckoId
-  )
+  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE

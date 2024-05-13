@@ -26,14 +26,14 @@ const walletStore = useWalletStore()
 
 const rewardsWithToken = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
+      token,
       value: sharedToBalanceInToken({
         value: reward.amount,
         decimalPlaces: token?.decimals
-      }),
-      token: tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+      })
     }
   })
 })
@@ -42,9 +42,7 @@ const { valueToString: totalRewardsInUsdToString } =
   useSharedBigNumberFormatter(
     computed(() => {
       return props.campaign.rewards.reduce((total, reward) => {
-        const token = tokenStore.tokens.find(
-          ({ denom }) => denom === reward.denom
-        )
+        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
         if (!token) {
           return total

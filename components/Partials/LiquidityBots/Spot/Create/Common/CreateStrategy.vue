@@ -5,7 +5,6 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { SharedUiSpotMarket } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   spotGridMarkets,
@@ -24,6 +23,7 @@ import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   Modal,
   MainPage,
+  UiSpotMarket,
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField
@@ -33,7 +33,7 @@ const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

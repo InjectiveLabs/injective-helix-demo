@@ -1,8 +1,6 @@
-import { portfolioStatusKey } from '~/types'; import { portfolioStatusKey } from
-'~/types';
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { portfolioStatusKey, tokensStatusKey } from '@/types'
+import { portfolioStatusKey } from '@/types'
 
 defineProps({
   size: {
@@ -28,20 +26,19 @@ defineProps({
 
 const appStore = useAppStore()
 const walletStore = useWalletStore()
+const { allCoinGeckoIdsOnPriceMap } = useTokenUsdPrice()
 
 const portfolioStatus = inject(
   portfolioStatusKey,
   new Status(StatusType.Loading)
 )
-
-const tokensStatus = inject(tokensStatusKey, new Status(StatusType.Loading))
 </script>
 
 <template>
   <div v-if="!walletStore.isUserWalletConnected">-</div>
 
   <div
-    v-else-if="portfolioStatus.isLoading() || tokensStatus.isLoading()"
+    v-else-if="portfolioStatus.isLoading() || !allCoinGeckoIdsOnPriceMap"
     :style="{ height: size + 'px', gap: spacing + 'px' }"
     class="flex p-1 bg-brand-800 rounded-md animate-pulse"
   >

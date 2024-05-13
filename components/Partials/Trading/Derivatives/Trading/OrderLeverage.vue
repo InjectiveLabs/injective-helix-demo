@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SharedUiDerivativeMarket } from '@shared/types'
-import { TradeField, TradeForm, UiMarketWithToken } from '@/types'
+import {
+  TradeForm,
+  TradeField,
+  UiMarketWithToken,
+  UiDerivativeMarket
+} from '@/types'
 
 const formValues = useFormValues() as Ref<TradeForm>
 
@@ -35,7 +39,7 @@ const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 const maxLeverageAvailable = computed(() => {
   const maxLeverage = new BigNumberInBase(
     new BigNumberInBase(1)
-      .dividedBy((props.market as SharedUiDerivativeMarket).initialMarginRatio)
+      .dividedBy((props.market as UiDerivativeMarket).initialMarginRatio)
       .dp(0)
   )
 
@@ -59,7 +63,7 @@ const maxLeverageAllowed = computed(() => {
     : props.worstPriceWithSlippage
 
   const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
-    (props.market as SharedUiDerivativeMarket).initialMarginRatio
+    (props.market as UiDerivativeMarket).initialMarginRatio
   )
 
   const priceBasedOnOrderSide = props.isBuy

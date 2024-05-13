@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   marketIsActive,
@@ -8,11 +7,6 @@ import {
   marketIsPartOfSearch,
   marketIsPartOfCategory
 } from '@/app/utils/market'
-import {
-  QUOTE_DENOMS_GECKO_IDS,
-  LOW_VOLUME_MARKET_THRESHOLD
-} from '@/app/utils/constants'
-import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
 import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
 
 const appStore = useAppStore()
@@ -26,7 +20,6 @@ const search = ref('')
 const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
-const isLowVolumeMarketsVisible = ref(false)
 
 onMounted(() => getQuoteTokenPrice())
 
@@ -59,7 +52,7 @@ const marketsWithSummariesLoaded = computed(
 
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
-    .filter(({ market, volumeInUsd }) => {
+    .filter(({ market }) => {
       const isPartOfCategory = marketIsPartOfCategory(category.value, market)
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
@@ -68,30 +61,20 @@ const filteredMarkets = computed(() =>
         activeType: type.value
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-      const isLowVolumeMarket =
-        isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
       return (
+        market.isVerified &&
         isPartOfCategory &&
         isPartOfType &&
         isPartOfSearch &&
-        isQuotePair &&
-        (isLowVolumeMarket || isOLPMarket || search.value)
+        isQuotePair
       )
     })
     .filter((market) => marketIsActive(market.market))
 )
 
 function getQuoteTokenPrice() {
-  Promise.all([
-    appStore.pollMarkets(),
-    tokenStore.fetchTokensUsdPriceMap([
-      ...QUOTE_DENOMS_GECKO_IDS,
-      injToken.coinGeckoId
-    ])
-  ]).catch($onError)
+  Promise.all([appStore.pollMarkets()]).catch($onError)
 }
 
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
@@ -153,6 +136,8 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
             {{ value }}
           </AppButtonSelect>
         </div>
+
+        <pre>{{ filteredMarkets.length }}</pre>
 
         <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
         <PartialsMarkets

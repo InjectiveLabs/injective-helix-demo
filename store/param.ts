@@ -1,5 +1,16 @@
 import { defineStore } from 'pinia'
 import {
+  bankApi,
+  mintApi,
+  peggyApi,
+  oracleApi,
+  stakingApi,
+  exchangeApi,
+  governanceApi,
+  distributionApi,
+  insuranceFundsApi
+} from '@shared/Service'
+import {
   Pool,
   BankModuleParams,
   PeggyModuleParams,
@@ -11,20 +22,10 @@ import {
   DistributionModuleParams,
   MinModuleParams as MintModuleParams
 } from '@injectivelabs/sdk-ts'
+import { injToken } from '@shared/data/token'
 import { Coin } from '@injectivelabs/ts-types'
-import { INJ_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  bankApi,
-  mintApi,
-  peggyApi,
-  oracleApi,
-  stakingApi,
-  exchangeApi,
-  governanceApi,
-  distributionApi,
-  insuranceFundsApi
-} from '@shared/Service'
 
 type ParamsStoreState = {
   inflation: string
@@ -120,7 +121,7 @@ export const useParamStore = defineStore('param', {
     async fetchInjSupply() {
       const paramStore = useParamStore()
       const { supply } = await bankApi.fetchTotalSupply({ limit: 200 })
-      const injSupply = supply.find((s) => s.denom === INJ_DENOM)!
+      const injSupply = supply.find((s) => s.denom === injToken.denom)!
 
       paramStore.$patch({
         injSupply

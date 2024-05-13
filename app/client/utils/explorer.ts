@@ -43,10 +43,8 @@ export const getSwapAmountAndTokenFromTxHash = async (
     return
   }
 
-  const inputToken = tokenStore.tokens.find(({ denom }) => denom === inputDenom)
-  const outputToken = tokenStore.tokens.find(
-    ({ denom }) => denom === outputDenom
-  )
+  const inputToken = tokenStore.tokenByDenomOrSymbol(inputDenom)
+  const outputToken = tokenStore.tokenByDenomOrSymbol(outputDenom)
 
   if (!inputToken || !outputToken) {
     return

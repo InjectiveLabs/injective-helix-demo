@@ -11,12 +11,15 @@ import {
 } from '@shared/transformer/market'
 import {
   SharedUiSpotTrade,
-  SharedUiSpotMarket,
   SharedUiMarketSummary,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
-import { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import {
+  SpotLimitOrder,
+  SpotMarket,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
 import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
@@ -46,10 +49,10 @@ import {
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
-import { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
 type SpotStoreState = {
-  markets: SharedUiSpotMarket[]
+  markets: UiSpotMarket[]
   marketIdsFromQuery: string[]
   marketsSummary: SharedUiMarketSummary[]
   orderbook?: SharedUiOrderbookWithSequence
@@ -139,16 +142,6 @@ export const useSpotStore = defineStore('spot', {
 
       await spotStore.fetchMarkets()
       await spotStore.fetchMarketsSummary()
-      // todo: access this?
-      // const marketsFromQuery = markets.filter((market) =>
-      //   spotStore.marketIdsFromQuery.includes(market.marketId)
-      // )
-      // const marketsFromQueryWithToken =
-      //   await tokenService.toSpotMarketsWithToken(marketsFromQuery)
-      // await tokenStore.appendUnknownTokensList([
-      //   ...marketsFromQueryWithToken.map((m) => m.baseToken),
-      //   ...marketsFromQueryWithToken.map((m) => m.quoteToken)
-      // ])
     },
 
     async initIfNotInit() {
@@ -163,18 +156,20 @@ export const useSpotStore = defineStore('spot', {
       }
     },
 
-    async initFromTradingPage(marketIdsFromQuery: string[] = []) {
+    async initFromTradingPage(marketIdFromQuery?: string) {
       const spotStore = useSpotStore()
 
+      if (!marketIdFromQuery) {
+        await spotStore.initIfNotInit()
+
+        return
+      }
+
       spotStore.$patch({
-        marketIdsFromQuery
+        marketIdsFromQuery: [...spotStore.marketIdsFromQuery, marketIdFromQuery]
       })
 
-      if (marketIdsFromQuery.length === 0) {
-        await spotStore.initIfNotInit()
-      } else {
-        await spotStore.init()
-      }
+      await spotStore.init()
     },
 
     async fetchMarkets() {
@@ -182,6 +177,17 @@ export const useSpotStore = defineStore('spot', {
       const tokenStore = useTokenStore()
 
       const markets = await spotCacheApi.fetchMarkets()
+
+      const marketsFromQuery = spotStore.marketIdsFromQuery
+        .map((marketId) => markets.find((m) => m.marketId === marketId))
+        .filter((market) => market) as SpotMarket[]
+
+      if (marketsFromQuery.length !== 0) {
+        await tokenStore.appendUnknownTokensList([
+          ...marketsFromQuery.map((m) => m.baseDenom),
+          ...marketsFromQuery.map((m) => m.quoteDenom)
+        ])
+      }
 
       const uiMarkets = markets
         .map((market) => {
@@ -192,28 +198,26 @@ export const useSpotStore = defineStore('spot', {
             return undefined
           }
 
-          return toUiSpotMarket({ market, baseToken, quoteToken })
+          const formattedMarket = toUiSpotMarket({
+            market,
+            baseToken,
+            quoteToken
+          })
+
+          return {
+            ...formattedMarket,
+            isVerified: MARKETS_SLUGS.spot.includes(formattedMarket.slug)
+          }
         })
-        .filter((market) => market) as SharedUiSpotMarket[]
+        .filter((market) => market) as UiSpotMarket[]
 
       spotStore.$patch({
-        markets: uiMarkets
-          .filter((market) => {
-            return (
-              MARKETS_SLUGS.spot.includes(market.slug) ||
-              spotStore.marketIdsFromQuery.includes(market.marketId)
-            )
-          })
-          .sort((a, b) => {
-            return (
-              MARKETS_SLUGS.spot.indexOf(a.slug) -
-              MARKETS_SLUGS.spot.indexOf(b.slug)
-            )
-          })
-      })
+        markets: uiMarkets.sort((spotA, spotB) => {
+          const spotAIndex = MARKETS_SLUGS.spot.indexOf(spotA.slug) || 1
+          const spotBIndex = MARKETS_SLUGS.spot.indexOf(spotB.slug) || 1
 
-      spotStore.$patch({
-        markets: uiMarkets
+          return spotAIndex - spotBIndex
+        })
       })
     },
 

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal } from '@/types'
+import { Modal, UiSpotMarket } from '@/types'
 
 const props = defineProps({
   baseAmount: {
@@ -11,7 +10,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   },
 

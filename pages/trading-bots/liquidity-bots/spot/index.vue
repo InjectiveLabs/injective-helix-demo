@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { SharedUiSpotMarket } from '@shared/types'
 import { OrderState } from '@injectivelabs/ts-types'
-
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  addressAndMarketSlugToSubaccountId,
-  getSgtContractAddressFromSlug
+  getSgtContractAddressFromSlug,
+  addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { UiSpotMarket } from '@/types'
 
 definePageMeta({
   middleware: ['grid-strategy-subaccount']
@@ -36,7 +35,7 @@ const activeStrategy = computed(
 const subaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
     walletStore.address,
-    (gridStrategyStore.spotMarket as SharedUiSpotMarket).slug
+    (gridStrategyStore.spotMarket as UiSpotMarket).slug
   )
 )
 
@@ -157,7 +156,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
         v-else-if="activeStrategy"
         v-bind="{
           subaccountId,
-          market: gridStrategyStore.spotMarket as SharedUiSpotMarket
+          market: gridStrategyStore.spotMarket as UiSpotMarket
         }"
       />
 

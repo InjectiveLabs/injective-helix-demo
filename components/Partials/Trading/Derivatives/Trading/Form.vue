@@ -6,7 +6,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedMarketType, SharedUiDerivativeMarket } from '@shared/types'
+import { SharedMarketType } from '@shared/types'
 import { TradeDirection, OrderSide, OrderState } from '@injectivelabs/ts-types'
 import {
   DEBUG_CALCULATION,
@@ -22,6 +22,7 @@ import {
   Modal,
   TradeForm,
   TradeField,
+  UiDerivativeMarket,
   TradeExecutionType,
   OrderAttemptStatus
 } from '@/types'
@@ -46,7 +47,7 @@ const status = reactive(new Status(StatusType.Idle))
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiDerivativeMarket>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   }
 })
@@ -328,7 +329,7 @@ const liquidationPrice = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const derivativeMarket = props.market as SharedUiDerivativeMarket
+  const derivativeMarket = props.market as UiDerivativeMarket
 
   const price =
     tradingTypeMarket.value || tradingTypeStopMarket.value
@@ -361,7 +362,7 @@ const {
   notionalWithLeverageAndFees,
   notionalWithLeverageBasedOnWorstPrice,
   formValues: computed(() => formValues),
-  market: computed(() => props.market as SharedUiDerivativeMarket)
+  market: computed(() => props.market as UiDerivativeMarket)
 })
 
 watch(executionPrice, () => {

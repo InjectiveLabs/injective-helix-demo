@@ -13,8 +13,8 @@ const { $onError } = useNuxtApp()
 
 const isHideBalances = ref(false)
 const status = reactive(new Status(StatusType.Loading))
-const fetchPositionsStatus = reactive(new Status(StatusType.Loading))
 const usdPriceStatus = reactive(new Status(StatusType.Loading))
+const fetchPositionsStatus = reactive(new Status(StatusType.Loading))
 
 const { accountBalancesWithToken: currentSubaccountBalances } = useBalance()
 
@@ -58,7 +58,7 @@ function refreshUsdTokenPrice() {
     BTC_COIN_GECKO_ID,
     injToken.coinGeckoId,
     ...currentSubaccountBalances.value.map((b) => b.token.coinGeckoId)
-  ]
+  ].filter((coinGeckoId) => coinGeckoId)
 
   tokenStore
     .fetchTokensUsdPriceMap(coinGeckoIdsList)

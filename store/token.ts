@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia'
-import { TokenStatic } from '@injectivelabs/token-metadata'
-import { tokenPrice } from '@shared/Service'
+import {
+  TokenType,
+  TokenStatic,
+  TokenVerification
+} from '@injectivelabs/token-metadata'
+import { tokenCacheApi, tokenPriceService } from '@shared/Service'
+import tokens from '@/app/data/tokens.json'
+import { getToken } from '@/app/utils/helpers'
 import { tokenFactoryStatic } from '@/app/Services'
 import { TokenUsdPriceMap } from '@/types'
 
 type TokenStoreState = {
-  tokens: TokenStatic[]
   unknownTokens: TokenStatic[]
   tokenUsdPriceMap: TokenUsdPriceMap
 }
 
 const initialStateFactory = (): TokenStoreState => ({
-  tokens: [],
   unknownTokens: [],
   tokenUsdPriceMap: {}
 })
@@ -19,14 +23,27 @@ const initialStateFactory = (): TokenStoreState => ({
 export const useTokenStore = defineStore('token', {
   state: (): TokenStoreState => initialStateFactory(),
   getters: {
-    tokenByDenomOrSymbol:
+    tokenBySymbol:
       (_) =>
+      (symbol: string): TokenStatic | undefined => {
+        return tokenFactoryStatic.getMetaBySymbol(symbol, {
+          type: TokenType.Symbol
+        })
+      },
+
+    tokenByDenomOrSymbol:
+      (state) =>
       (denomOrSymbol: string): TokenStatic | undefined => {
         if (!denomOrSymbol) {
           return
         }
 
-        return tokenFactoryStatic.toToken(denomOrSymbol)
+        return (
+          tokenFactoryStatic.toToken(denomOrSymbol) ||
+          state.unknownTokens.find(
+            (token) => token.denom.toLowerCase() === denomOrSymbol.toLowerCase()
+          )
+        )
       },
 
     tokenUsdPriceByCoinGeckoId: (state) => (coinGeckoId: string) => {
@@ -39,13 +56,13 @@ export const useTokenStore = defineStore('token', {
       }
 
       return (
-        state.tokenUsdPriceMap[token.coinGeckoId] ||
+        state.tokenUsdPriceMap[token.coinGeckoId.toLowerCase()] ||
         state.tokenUsdPriceMap[token.denom.toLowerCase()] ||
         0
       )
     },
 
-    tradeableTokens: (state) => {
+    tradeableTokens: (_): TokenStatic[] => {
       const derivativeStore = useDerivativeStore()
       const spotStore = useSpotStore()
 
@@ -56,36 +73,52 @@ export const useTokenStore = defineStore('token', {
         ])
       ]
 
-      return state.tokens.filter((token) => {
-        return tradeableDenoms.includes(token.denom)
-      })
+      return tradeableDenoms
+        .map((denom) => tokenFactoryStatic.toToken(denom))
+        .filter((token) => token) as TokenStatic[]
+    },
+
+    verifiedTokens: (_): TokenStatic[] => {
+      return tokens.filter(
+        (token) => token.tokenVerification === TokenVerification.Verified
+      )
     }
   },
   actions: {
-    async fetchTokensUsdPriceMap(coinGeckoIdList: string[]) {
+    async fetchUntrackedTokens() {
       const tokenStore = useTokenStore()
 
-      if (coinGeckoIdList.length === 0) {
+      if (tokenStore.unknownTokens.length > 0) {
         return
       }
 
-      const coinGeckoIdsNotInStore = [
-        ...new Set(coinGeckoIdList.filter((id) => id))
-      ].filter(
-        (coinGeckoId) =>
-          !Object.keys(tokenStore.tokenUsdPriceMap).includes(coinGeckoId)
-      )
+      const { supply } = await tokenCacheApi.fetchTotalSupply()
 
-      const tokenUsdPriceMap = await tokenPrice.fetchUsdTokensPrice(
-        coinGeckoIdsNotInStore
+      const denomsWithoutTokens = supply
+        .filter((coin) => !tokenStore.tokenByDenomOrSymbol(coin.denom))
+        .map((coin) => coin.denom)
+
+      const denomTokensToFetch = denomsWithoutTokens.filter(
+        (denom) =>
+          !tokenStore.unknownTokens.find((token) => token.denom === denom)
+      )
+      const tokens = await Promise.all(
+        denomTokensToFetch.map(async (denom) => await getToken(denom))
       )
 
       tokenStore.$patch({
-        tokenUsdPriceMap: {
-          ...tokenUsdPriceMap,
-          ...tokenStore.tokenUsdPriceMap
-        }
+        unknownTokens: [...tokenStore.unknownTokens, ...tokens]
       })
+    },
+
+    async fetchTokensUsdPriceMap(coinGeckoIdList: string[] = []) {
+      const tokenStore = useTokenStore()
+
+      const tokenUsdPriceMap = await tokenPriceService.fetchUsdTokensPrice(
+        coinGeckoIdList
+      )
+
+      tokenStore.tokenUsdPriceMap = tokenUsdPriceMap
     },
 
     /**
@@ -93,63 +126,23 @@ export const useTokenStore = defineStore('token', {
      * from external/internal API sources
      * for particular set of tokens (account page/single asset page)
      **/
-    appendUnknownTokensList(tokens: TokenStatic[]) {
+    async appendUnknownTokensList(denoms: string[]) {
       const tokenStore = useTokenStore()
 
-      const tokenDenoms = tokens.map((t) => t.denom)
-      const unknownTokens = tokenStore.unknownTokens.filter((asset) =>
-        tokenDenoms.includes(asset.denom)
+      const denomsTokensNotExist = denoms.filter(
+        (denom) =>
+          !tokenStore.unknownTokens.find((token) => token.denom === denom)
       )
-
-      if (!unknownTokens.length) {
-        return
-      }
-
-      const unknownTokensWithoutAsset = tokenStore.unknownTokens.filter(
-        (token) => !tokenDenoms.includes(token.denom)
+      const tokens = await Promise.all(
+        denomsTokensNotExist.map(async (denom) => await getToken(denom))
       )
 
       tokenStore.$patch({
-        tokens: [...tokenStore.tokens, ...tokens],
-        unknownTokens: unknownTokensWithoutAsset
+        unknownTokens: [
+          ...tokenStore.unknownTokens,
+          ...tokens.filter((token) => token)
+        ]
       })
-    },
-
-    async getTokensUsdPriceMapFromToken(tokens: TokenStatic[]) {
-      const tokenStore = useTokenStore()
-
-      if (tokens.length === 0) {
-        return
-      }
-
-      const tokensWithoutCoinGeckoId = tokens
-        .filter((token) => !token.coinGeckoId)
-        .map((token) => token.denom.toLowerCase())
-      const tokensWithCoinGeckoId = tokens
-        .filter((token) => token.coinGeckoId)
-        .map((token) => token.coinGeckoId)
-
-      const tokenUsdPriceMapFromCoinGeckoId =
-        await tokenPrice.fetchUsdTokensPrice([
-          ...new Set(tokensWithCoinGeckoId.filter((id) => id))
-        ])
-      const tokenUsdPriceMapFromDenoms = await tokenPrice.fetchUsdDenomsPrice([
-        ...new Set(tokensWithoutCoinGeckoId.filter((denom) => denom))
-      ])
-
-      tokenStore.tokenUsdPriceMap = {
-        ...tokenUsdPriceMapFromCoinGeckoId,
-        ...tokenUsdPriceMapFromDenoms,
-        ...tokenStore.tokenUsdPriceMap
-      }
-    },
-
-    getTradeableTokensPriceMap() {
-      const tokenStore = useTokenStore()
-
-      tokenStore.fetchTokensUsdPriceMap(
-        tokenStore.tradeableTokens.map((token) => token.coinGeckoId)
-      )
     }
   }
 })

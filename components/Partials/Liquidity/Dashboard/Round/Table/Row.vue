@@ -20,11 +20,13 @@ const market = computed(() =>
   spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const token = computed(() =>
-  tokenStore.tokens.find(
-    ({ symbol }) => market.value?.baseToken.symbol === symbol
-  )
-)
+const token = computed(() => {
+  if (!market.value) {
+    return
+  }
+
+  return tokenStore.tokenBySymbol(market.value.baseToken.symbol)
+})
 
 const marketVolumeInUsd = computed(() =>
   market.value
@@ -50,7 +52,7 @@ const estRewardsInPercentage = computed(() => {
 
 const rewards = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     const amount = new BigNumberInWei(estRewardsInPercentage.value)
       .multipliedBy(reward.amount || 0)

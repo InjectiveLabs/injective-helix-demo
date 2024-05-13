@@ -459,8 +459,8 @@ export enum MarketHeaderType {
 export enum MarketTypeOption {
   All = 'all',
   Favorites = 'favorites',
-  Spot = 'spot',
-  Derivative = 'derivatives',
+  Spot = 'Spot',
+  Derivative = 'Derivative',
   NewListings = 'new-listings',
   Themes = 'themes'
 }

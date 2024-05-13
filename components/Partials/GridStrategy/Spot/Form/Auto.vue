@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
@@ -14,11 +13,11 @@ import {
   UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
-import { GridStrategyType, SpotGridTradingField } from '@/types'
+import { UiSpotMarket, GridStrategyType, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

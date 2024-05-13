@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
-import { InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<SharedUiSpotMarket>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

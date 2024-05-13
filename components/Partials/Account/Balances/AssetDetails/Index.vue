@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import { SharedUiSpotMarket } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { legacyWHDenoms } from '@/app/data/token'
-import { Modal, BusEvents, TradeSubPage, AccountBalance } from '@/types'
+import {
+  Modal,
+  BusEvents,
+  UiSpotMarket,
+  TradeSubPage,
+  AccountBalance
+} from '@/types'
 
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
@@ -32,8 +37,7 @@ const filteredMarketsWithSummary = computed(() => {
     }
 
     return (
-      (market as SharedUiSpotMarket).baseDenom ===
-        accountBalance.value.token.denom ||
+      (market as UiSpotMarket).baseDenom === accountBalance.value.token.denom ||
       market.quoteDenom === accountBalance.value.token.denom
     )
   })

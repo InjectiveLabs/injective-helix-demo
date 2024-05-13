@@ -1,6 +1,6 @@
-import { SharedUiSpotMarket } from '@shared/types'
-import { TokenStatic } from '@injectivelabs/token-metadata'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { TokenStatic } from '@injectivelabs/token-metadata'
+import { UiSpotMarket } from '@/types'
 
 export default function useConvertFormatter() {
   const spotStore = useSpotStore()
@@ -16,7 +16,7 @@ export default function useConvertFormatter() {
           [reversedSlug]: { orderType: OrderSide.Buy, market }
         }
       },
-      {} as Record<string, { orderType: OrderSide; market: SharedUiSpotMarket }>
+      {} as Record<string, { orderType: OrderSide; market: UiSpotMarket }>
     )
   })
 
