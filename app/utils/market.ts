@@ -432,11 +432,11 @@ export const convertCw20ToBankBalance = ({
       return
     }
 
-    if (
-      new BigNumberInWei(bankBalancesMap[market.quoteDenom] || 0).gte(
-        new BigNumberInBase(order.price).times(order.quantity)
-      )
-    ) {
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.quoteDenom] || 0
+    ).gte(new BigNumberInBase(order.price).times(order.quantity))
+
+    if (!hasSufficientBalanceInBank) {
       return
     }
 
@@ -459,11 +459,11 @@ export const convertCw20ToBankBalance = ({
       return
     }
 
-    if (
-      new BigNumberInWei(bankBalancesMap[market.baseDenom] || 0).gte(
-        order.quantity
-      )
-    ) {
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.baseDenom] || 0
+    ).gte(order.quantity)
+
+    if (!hasSufficientBalanceInBank) {
       return
     }
 
