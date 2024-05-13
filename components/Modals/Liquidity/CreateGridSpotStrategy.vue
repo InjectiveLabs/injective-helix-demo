@@ -33,7 +33,8 @@ const baseAmount = computed(() => {
 })
 
 const quoteAmount = computed(() => {
-  const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
+  const quoteAmount =
+    formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
 
   return new BigNumberInBase(quoteAmount || 0).eq(0) ? undefined : quoteAmount
 })
@@ -142,7 +143,7 @@ function onCreateStrategy() {
         >
           <template #quoteAmount>
             <span class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ formValues[SpotGridTradingField.QuoteInvestmentAmount] }}
               {{ quoteToken?.symbol }}
             </span>
           </template>
@@ -188,7 +189,7 @@ function onCreateStrategy() {
 
           <div class="flex flex-col items-end">
             <p v-if="quoteAmount" class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ formValues[SpotGridTradingField.QuoteInvestmentAmount] }}
               {{ quoteToken?.symbol }}
             </p>
 

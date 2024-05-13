@@ -1,93 +1,77 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  SpotTradeForm,
-  SpotTradeFormField,
-  TradeTypes,
-  orderbookWorkerKey,
-  spotMarketKey
-} from '@/types'
+import { SpotAmountOption, SpotTradeFormField, spotMarketKey } from '@/types'
 
-import { WorkerMessageType } from '~/types/worker'
+const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
 
-const market = inject(spotMarketKey)
-const worker = inject(orderbookWorkerKey)
+const { value: typeValue } = useStringField({
+  name: SpotTradeFormField.AmountOption,
+  initialValue: SpotAmountOption.Base
+})
 
-const el = ref(null)
-
-const { focused } = useFocusWithin(el)
-const spotFormValues = useFormValues<SpotTradeForm>()
-const setTotalAmount = useSetFieldValue(SpotTradeFormField.Total)
-
-const { value: amountValue, errorMessage } = useStringField({
-  name: SpotTradeFormField.Quantity,
+const { value: amountValue } = useStringField({
+  name: SpotTradeFormField.Amount,
   initialValue: ''
 })
 
-const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => market?.value as UiSpotMarketWithToken)
-)
-
-const value = computed({
-  get: () => amountValue.value,
-  set: (value: string) => {
-    amountValue.value = value
-
-    // If the value is empty, set the total amount to empty
-    if (value === '' && focused.value) {
-      setTotalAmount('')
-      return
-    }
-
-    // If the input is focused, calculate the total amount
-    if (focused.value) {
-      if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Market) {
-        setTotalAmount(lastTradedPrice.value.times(value).toFixed(3))
-      } else if (spotFormValues.value[SpotTradeFormField.Price]) {
-        setTotalAmount(
-          new BigNumberInBase(spotFormValues.value[SpotTradeFormField.Price])
-            .times(value)
-            .toFixed(3)
-        )
-      }
-    }
+const options = [
+  {
+    display: market.value.baseToken.symbol || '',
+    value: SpotAmountOption.Base
+  },
+  {
+    display: market.value.quoteToken.symbol || '',
+    value: SpotAmountOption.Quote
   }
+]
+
+const decimals = computed(() => {
+  return typeValue.value === SpotAmountOption.Base
+    ? market.value.quantityDecimals
+    : market.value.priceDecimals
 })
-
-watch(
-  () => [value.value, spotFormValues.value[SpotTradeFormField.Type]],
-  ([quantity, type]) => {
-    if (type !== TradeTypes.Market) {
-      return
-    }
-
-    worker?.value?.postMessage({
-      type: WorkerMessageType.WorstPrice,
-      data: {
-        quantity: quantity || '',
-        baseDecimals: 1,
-        isBuy: true,
-        isSpot: true,
-        quoteDecimals: 1
-      }
-    })
-  }
-)
 </script>
 
 <template>
   <div ref="el" class="space-y-2">
-    <p class="field-label">{{ $t('trade.amount') }}</p>
+    <div class="flex justify-between items-end">
+      <p class="field-label">{{ $t('trade.amount') }}</p>
+    </div>
 
-    <AppInputField v-model="value" placeholder="0.00">
+    <AppInputField
+      v-bind="{ decimals }"
+      v-model="amountValue"
+      placeholder="0.00"
+    >
       <template #right>
-        <span class="text-sm">
-          {{ market?.baseToken.symbol }}
-        </span>
+        <AppSelect
+          v-model="typeValue"
+          wrapper-class=" p-1 rounded select-none"
+          v-bind="{
+            options
+          }"
+        >
+          <template #default>
+            <div>
+              <span
+                v-if="typeValue === SpotAmountOption.Base"
+                class="text-sm select-none"
+              >
+                {{ market?.baseToken.symbol }}
+              </span>
+              <span v-else class="text-sm">
+                {{ market?.quoteToken.symbol }}
+              </span>
+            </div>
+          </template>
+
+          <template #option="{ option }">
+            <span class="text-sm font-semibold">{{ option.display }}</span>
+          </template>
+        </AppSelect>
       </template>
     </AppInputField>
 
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div v-if="false" class="error-message">Error</div>
   </div>
 </template>

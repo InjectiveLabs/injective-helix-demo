@@ -28,7 +28,7 @@ const { value: gridsValue, errorMessage } = useStringField({
   dynamicRule: computed(() => {
     const rules = ['requiredSgt']
 
-    const rangeKavaRule = `rangeKavaSgt:@${SpotGridTradingField.LowerPrice},@${
+    const gridRangeRule = `gridRangeSgt:@${SpotGridTradingField.LowerPrice},@${
       SpotGridTradingField.UpperPrice
     },${formValues.value[SpotGridTradingField.Grids] || GST_MINIMUM_GRIDS},${
       tickSize.value
@@ -36,7 +36,7 @@ const { value: gridsValue, errorMessage } = useStringField({
 
     const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${GST_MAXIMUM_GRIDS}`
 
-    rules.push(betweenRule, rangeKavaRule)
+    rules.push(betweenRule, gridRangeRule)
 
     return rules.join('|')
   })

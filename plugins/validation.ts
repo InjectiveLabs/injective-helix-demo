@@ -317,7 +317,7 @@ export const defineGlobalRules = () => {
   )
 
   defineRule(
-    'rangeKavaSgt',
+    'gridRangeSgt',
     (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
       const upperInBigNumber = new BigNumberInBase(upper)
       const lowerInBigNumber = new BigNumberInBase(lower)

@@ -8,6 +8,10 @@ defineProps({
   }
 })
 
+const emit = defineEmits<{
+  'menu:close': []
+}>()
+
 const isOpen = ref(false)
 
 function toggle() {
@@ -20,6 +24,7 @@ function toggle() {
     v-if="item.type === MenuItemType.Link"
     :to="item.to"
     class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
+    @click="emit('menu:close')"
   >
     <component :is="item.icon" v-if="item.icon" />
 
@@ -51,6 +56,7 @@ function toggle() {
         v-for="subItem in item.items"
         :key="subItem.label"
         v-bind="{ item: subItem }"
+        @menu:close="emit('menu:close')"
       />
     </div>
   </template>

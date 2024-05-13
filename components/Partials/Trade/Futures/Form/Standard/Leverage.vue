@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
 import { FactoryOpts } from 'imask'
+import { DerivativesTradeFormField } from '@/types'
 
-const leverage = ref('0')
+const { value: leverage } = useStringField({
+  name: DerivativesTradeFormField.Leverage,
+  initialValue: '1'
+})
 
 const { el, typed } = useIMask(
   computed(

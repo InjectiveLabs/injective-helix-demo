@@ -1,7 +1,7 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { indexerGrpcTradingApi } from '@/app/Services'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+
 import {
   createStrategy,
   removeStrategy,
@@ -52,25 +52,18 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     removeStrategy,
     removeStrategyForSubaccount,
 
-    async fetchStrategies() {
+    async fetchStrategies(marketId?: string) {
       const walletStore = useWalletStore()
+
       const gridStrategyStore = useGridStrategyStore()
 
       if (!walletStore.isUserWalletConnected) {
         return
       }
 
-      if (!gridStrategyStore.spotMarket) {
-        return
-      }
-
-      const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
-        walletStore.address,
-        gridStrategyStore.spotMarket.slug
-      )
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        subaccountId: gridStrategySubaccountId,
-        accountAddress: walletStore.injectiveAddress
+        accountAddress: walletStore.injectiveAddress,
+        marketId
       })
 
       gridStrategyStore.$patch({ strategies })

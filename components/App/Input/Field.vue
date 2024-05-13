@@ -5,6 +5,7 @@ import type { FactoryOpts } from 'imask'
 const props = defineProps({
   noStyle: Boolean,
   autofix: Boolean,
+  disabled: Boolean,
 
   wrapperClass: {
     type: String,
@@ -85,11 +86,12 @@ watch(
 
 <template>
   <label
-    :class="
+    :class="[
       noStyle
         ? wrapperClass
-        : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4'
-    "
+        : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4',
+      disabled ? 'opacity-50' : ''
+    ]"
   >
     <div v-if="$slots.top">
       <slot name="top" />
@@ -106,6 +108,7 @@ watch(
         class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
         :class="thousandsSeparator ? 'text-right' : ''"
         v-bind="$attrs"
+        :disabled="disabled"
       />
 
       <div v-if="$slots.right" class="flex items-center">

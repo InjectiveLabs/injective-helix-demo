@@ -51,6 +51,12 @@ const stateToPersist = {
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+
+    autoSign: {
+      pk: '',
+      injAddress: '',
+      expiration: ''
     }
   }
 } as Record<string, Record<string, any>>
@@ -90,8 +96,7 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy',
-  'airdrop/claim'
+  'gridStrategy/removeStrategy'
 ]
 
 const persistState = (

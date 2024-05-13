@@ -1,9 +1,21 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
-import { DerivativeTradeTypes } from '@/types'
+import {
+  DerivativeTradeTypes,
+  DerivativesTradeForm,
+  DerivativesTradeFormField
+} from '@/types'
 
-const orderType = ref(DerivativeTradeTypes.Limit)
-const orderSide = ref(OrderSide.Buy)
+useForm<DerivativesTradeForm>()
+
+const { value: orderType } = useStringField({
+  name: DerivativesTradeFormField.Type,
+  initialValue: DerivativeTradeTypes.Limit
+})
+const { value: orderSide } = useStringField({
+  name: DerivativesTradeFormField.Side,
+  initialValue: OrderSide.Buy
+})
 </script>
 
 <template>
@@ -43,17 +55,23 @@ const orderSide = ref(OrderSide.Buy)
           [
             DerivativeTradeTypes.StopLimit,
             DerivativeTradeTypes.StopMarket
-          ].includes(orderType)
+          ].includes(orderType as DerivativeTradeTypes)
         "
       />
 
       <PartialsTradeFuturesFormStandardLimitPriceField
-        v-if="orderType !== DerivativeTradeTypes.Market"
+        v-if="
+          [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
+            orderType as DerivativeTradeTypes
+          )
+        "
       />
       <PartialsTradeFuturesFormStandardAmountField />
       <PartialsTradeFuturesFormStandardTotalField />
       <PartialsTradeFuturesFormStandardLeverage />
     </div>
+
+    <PartialsTradeFuturesFormStandardAdvancedSettings />
 
     <div>
       <PartialsTradeFuturesFormStandardCreateOrder />

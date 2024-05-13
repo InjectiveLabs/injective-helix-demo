@@ -119,7 +119,7 @@ const gridThreshold = computed(() => {
 
 const initialInvestment = computed(() =>
   new BigNumberInBase(
-    formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+    formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
   ).plus(
     new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
@@ -233,7 +233,7 @@ function onCreateStrategy() {
 
 function onInvestmentTypeSet() {
   setFormValues({
-    [SpotGridTradingField.InvestmentAmount]:
+    [SpotGridTradingField.QuoteInvestmentAmount]:
       calculatedAmount.value.quoteAmount.toFixed(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),

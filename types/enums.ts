@@ -53,7 +53,6 @@ export enum Modal {
   MarketBeta = 'market-beta',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
-  AirdropTerms = 'airdrop-terms',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
@@ -385,17 +384,18 @@ export enum SpotGridTradingField {
   TakeProfit = 'takeProfit',
   StrategyType = 'strategyType',
   InvestmentType = 'investmentType',
-  InvestmentAmount = 'investmentAmount',
+  QuoteInvestmentAmount = 'quoteInvestmentAmount',
   SellBaseOnStopLoss = 'sellBaseOnStopLoss',
   BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
-  BaseInvestmentAmount = 'baseInvestmentAmount'
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  IsAssetRebalanceOn = 'isAssetRebalanceOn'
 }
 
 export enum SpotGridMessages {
-  MsgCreateSpotLimitOrder = '/injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
-  MsgCreateSpotMarketOrder = '/injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
-  MsgWithdraw = '/injective.exchange.v1beta1.MsgWithdraw',
-  MsgBatchUpdateOrders = '/injective.exchange.v1beta1.MsgBatchUpdateOrders'
+  MsgCreateSpotLimitOrder = 'injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = 'injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
+  MsgWithdraw = 'injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = 'injective.exchange.v1beta1.MsgBatchUpdateOrders'
 }
 
 export enum GridStrategyTabs {
@@ -533,9 +533,30 @@ export enum SpotTradeFormField {
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  Total = 'total',
-  Quantity = 'quantity',
+  // Total = 'total',
+  // Quantity = 'quantity',
+  Amount = 'amount',
+  AmountOption = 'amountOption',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
+  IsSlippageOn = 'isSlippageOn'
+}
+
+export enum SpotAmountOption {
+  Base = 'base',
+  Quote = 'quote'
+}
+
+export enum DerivativesTradeFormField {
+  Type = 'type',
+  Side = 'side',
+  Total = 'total',
+  Quantity = 'quantity',
+  Leverage = 'leverage',
+  PostOnly = 'postOnly',
+  Slippage = 'slippage',
+  LimitPrice = 'limitPrice',
+  ReduceOnly = 'reduceOnly',
+  TriggerPrice = 'triggerPrice',
   IsSlippageOn = 'isSlippageOn'
 }

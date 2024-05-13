@@ -13,7 +13,9 @@ const { value: slippageValue } = useStringField({
 
 <template>
   <div class="flex items-center justify-between">
-    <AppCheckbox v-model="isSlippageOnValue">Slippage</AppCheckbox>
+    <AppCheckbox2 v-model="isSlippageOnValue" class="flex">
+      Slippage
+    </AppCheckbox2>
     <AppInputField
       v-bind="{ decimals: 2, max: 100, min: 0 }"
       v-model="slippageValue"

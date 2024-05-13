@@ -94,11 +94,44 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
       return summary.value.change
     })
   )
+
+const { valueToString: highToFormat, valueToBigNumber: high } =
+  useBigNumberFormatter(
+    computed(() => {
+      if (!summary.value) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.value.high)
+    }),
+    {
+      decimalPlaces: props.market.priceDecimals
+    }
+  )
+
+const { valueToString: lowToFormat, valueToBigNumber: low } =
+  useBigNumberFormatter(
+    computed(() => {
+      if (!summary.value) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.value.low)
+    }),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      minimalDecimalPlaces: props.market.priceDecimals
+    }
+  )
 </script>
 
 <template>
   <slot
     v-bind="{
+      low,
+      high,
+      lowToFormat,
+      highToFormat,
       change,
       isSpot,
       volume,

@@ -153,7 +153,7 @@ export class MixPanelAnalytics {
       : 'Create Strategies'
 
     this.getMixpanelClient().track(event, {
-      amountQuote: formValues[SpotGridTradingField.InvestmentAmount] || '',
+      amountQuote: formValues[SpotGridTradingField.QuoteInvestmentAmount] || '',
       gridsNumber: formValues[SpotGridTradingField.Grids] || '',
       lowerPrice: formValues[SpotGridTradingField.LowerPrice] || '',
       upperPrice: formValues[SpotGridTradingField.UpperPrice] || '',

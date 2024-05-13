@@ -27,6 +27,8 @@ export default {
     limit_price: 'Limit Price',
     limitPrice: 'Limit Price',
     amount: 'Amount',
+    cancel: 'Cancel',
+    cancelOrder: 'Cancel Order',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
     amount_tooltip:

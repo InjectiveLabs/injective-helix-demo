@@ -1,5 +1,92 @@
 <script setup lang="ts">
-//
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridTradingForm,
+  spotMarketKey
+} from '@/types'
+import {
+  GST_KAVA_SINGLE_SIDED_THRESHOLD,
+  GST_SINGLE_SIDED_THRESHOLD,
+  SGT_STABLE_COINS
+} from '@/app/utils/constants'
+
+const spotGridFormValues = useFormValues<SpotGridTradingForm>()
+const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
+
+const { lastTradedPrice } = useSpotLastPrice(market)
+
+const marketUsesStableCoins = computed(() =>
+  [market.value.baseToken.symbol, market.value.quoteToken.symbol].some(
+    (symbol) => SGT_STABLE_COINS.includes(symbol.toLowerCase())
+  )
+)
+
+const { value: upperPriceValue, errorMessage: upperErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.UpperPrice,
+    rule: '',
+    dynamicRule: computed(() => {
+      const lessThanRule = `lessThanSgt:${lastTradedPrice.value.toNumber()}`
+
+      const greaterThanRule = `greaterThanSgt:${
+        spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0
+      }`
+
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
+
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+      if (
+        spotGridFormValues.value[SpotGridTradingField.IsAssetRebalanceOn] &&
+        spotGridFormValues.value[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Quote
+      ) {
+        rules.push(lessThanRule)
+      }
+
+      return rules.join('|')
+    })
+  })
+
+const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
+  useStringField({
+    name: SpotGridTradingField.LowerPrice,
+    rule: '',
+    dynamicRule: computed(() => {
+      const greaterThanValue =
+        spotGridFormValues.value[SpotGridTradingField.IsAssetRebalanceOn] &&
+        spotGridFormValues.value[SpotGridTradingField.InvestmentType] ===
+          InvestmentTypeGst.Base
+          ? lastTradedPrice.value.toNumber()
+          : 0
+
+      const greaterThanRule = `greaterThanSgt:${greaterThanValue}`
+
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.LowerPrice},${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
+
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+
+      return rules.join('|')
+    })
+  })
 </script>
 
 <template>
@@ -9,12 +96,18 @@
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-2">
         <p class="text-xs text-gray-500">{{ $t('sgt.lower') }}</p>
-        <AppInputField placeholder="0.00" />
+        <AppInputField v-model="lowerPriceValue" placeholder="0.00" />
+        <p v-if="lowerErrorMessage" class="error-message">
+          {{ lowerErrorMessage }}
+        </p>
       </div>
 
       <div class="space-y-2">
         <p class="text-xs text-gray-500">{{ $t('sgt.upper') }}</p>
-        <AppInputField placeholder="0.00" />
+        <AppInputField v-model="upperPriceValue" placeholder="0.00" />
+        <p v-if="upperErrorMessage" class="error-message">
+          {{ upperErrorMessage }}
+        </p>
       </div>
     </div>
   </div>

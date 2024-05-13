@@ -8,9 +8,20 @@ import {
   spotMarketKey
 } from '@/types'
 
+const props = defineProps({
+  quantity: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+
+  worstPrice: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  }
+})
+
 const spotStore = useSpotStore()
-const resetForm = useResetForm()
-const orderbookStore = useOrderbookStore()
+const resetForm = useResetForm<SpotTradeForm>()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -45,6 +56,11 @@ const orderTypeToSubmit = computed(() => {
 
 const market = inject(spotMarketKey)
 
+const currentFormValues = computed(() => ({
+  type: spotFormValues.value[SpotTradeFormField.Type],
+  side: spotFormValues.value[SpotTradeFormField.Side]
+}))
+
 function submitLimitOrder() {
   if (!market?.value) {
     return
@@ -56,9 +72,7 @@ function submitLimitOrder() {
     spotFormValues.value[SpotTradeFormField.Price] || 0
   )
 
-  const quantity = new BigNumberInBase(
-    spotFormValues.value[SpotTradeFormField.Quantity] || 0
-  )
+  const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
     .submitLimitOrder({
@@ -69,7 +83,7 @@ function submitLimitOrder() {
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)
@@ -86,25 +100,18 @@ function submitMarketOrder() {
 
   status.setLoading()
 
-  const quantity = new BigNumberInBase(
-    spotFormValues.value[SpotTradeFormField.Quantity] || 0
-  )
-
-  const price = new BigNumberInBase(
-    !isBuy.value ? orderbookStore.buys[8].price : orderbookStore.sells[8].price
-  )
+  const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
     .submitMarketOrder({
       isBuy: isBuy.value,
       market: market.value,
       quantity,
-      price
-      // price: worstPriceWithSlippage.value
+      price: props.worstPrice
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)

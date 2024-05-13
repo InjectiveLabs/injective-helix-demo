@@ -26,6 +26,10 @@ const activeTab = ref(OrderbookViewOption.Orderbook)
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
+
+      <div class="flex flex-1 items-center justify-end">
+        <PartialsTradeOrderbookAggregation />
+      </div>
     </div>
 
     <PartialsTradeOrderbookBuysSells

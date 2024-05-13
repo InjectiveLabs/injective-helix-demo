@@ -34,7 +34,7 @@ function changeType(type: InvestmentTypeGst) {
   investmentTypeValue.value = type
 
   if (type === InvestmentTypeGst.Base) {
-    setFormValues({ [SpotGridTradingField.InvestmentAmount]: '' }, false)
+    setFormValues({ [SpotGridTradingField.QuoteInvestmentAmount]: '' }, false)
   }
 
   if (type === InvestmentTypeGst.Quote) {

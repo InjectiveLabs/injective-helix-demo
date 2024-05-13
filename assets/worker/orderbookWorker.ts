@@ -12,7 +12,6 @@ import {
   WorkerMessageType
 } from '@/types/worker'
 import { combineOrderbookRecords } from '@/app/utils/market'
-import { ORDERBOOK_ROWS } from '@/app/utils/constants'
 
 let buys: PriceLevel[] = []
 let sells: PriceLevel[] = []
@@ -22,12 +21,15 @@ function aggregatePrice(
   aggregation: number,
   isBuy: boolean
 ): string {
-  if (aggregation > 0) {
-    return price
-      .dp(aggregation, isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
-      .toFixed(aggregation)
+  if (aggregation >= 0) {
+    return (
+      price
+        // .dp(aggregation, isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
+        .dp(aggregation, isBuy ? BigNumber.ROUND_CEIL : BigNumber.ROUND_CEIL)
+        .toFixed(aggregation)
+    )
   } else {
-    return price.div(10 ** -aggregation).toFixed(0)
+    return price.div(new BigNumber(10).exponentiatedBy(-aggregation)).toFixed(0)
   }
 }
 
@@ -122,35 +124,34 @@ self.addEventListener(
 
     function sendReplaceOrderbook() {
       if (
-        type !== WorkerMessageType.Fetch &&
-        type !== WorkerMessageType.Stream
+        type === WorkerMessageType.Fetch ||
+        type === WorkerMessageType.Stream ||
+        type === WorkerMessageType.Aggregation
       ) {
-        return
+        const { baseDecimals, isSpot, quoteDecimals, aggregation } = data
+
+        self.postMessage({
+          messageType: WorkerMessageResponseType.ReplaceOrderbook,
+          data: {
+            buys: formatRecords({
+              records: buys,
+              aggregation,
+              baseDecimals,
+              isBuy: true,
+              isSpot,
+              quoteDecimals
+            }).slice(0, 3000),
+            sells: formatRecords({
+              records: sells,
+              aggregation,
+              baseDecimals,
+              isBuy: false,
+              isSpot,
+              quoteDecimals
+            }).slice(0, 3000)
+          }
+        } as OrderbookWorkerResult)
       }
-
-      const { baseDecimals, isSpot, quoteDecimals, aggregation } = data
-
-      self.postMessage({
-        messageType: WorkerMessageResponseType.ReplaceOrderbook,
-        data: {
-          buys: formatRecords({
-            records: buys,
-            aggregation,
-            baseDecimals,
-            isBuy: true,
-            isSpot,
-            quoteDecimals
-          }).slice(0, ORDERBOOK_ROWS),
-          sells: formatRecords({
-            records: sells,
-            aggregation,
-            baseDecimals,
-            isBuy: false,
-            isSpot,
-            quoteDecimals
-          }).slice(0, ORDERBOOK_ROWS)
-        }
-      } as OrderbookWorkerResult)
     }
 
     function sendWorstPrice(worstPrice: string) {
@@ -167,9 +168,13 @@ self.addEventListener(
         sendWorstPrice(data.quantity)
         break
 
+      case WorkerMessageType.Aggregation:
+        sendReplaceOrderbook()
+        break
+
       case WorkerMessageType.Fetch:
-        buys = data.orderbook.buys.slice(0, 5000)
-        sells = data.orderbook.sells.slice(0, 5000)
+        buys = data.orderbook.buys
+        sells = data.orderbook.sells
         sendReplaceOrderbook()
         break
 

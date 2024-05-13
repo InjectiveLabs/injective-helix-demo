@@ -41,7 +41,7 @@ const maxLeverage = computed(() => {
 </script>
 
 <template>
-  <div v-if="market" class="lg:flex">
+  <div v-if="market" class="lg:flex overflow-y-auto">
     <div class="flex-1 p-8">
       <div class="flex">
         <div class="flex items-center pr-4">
@@ -89,6 +89,12 @@ const maxLeverage = computed(() => {
       >
         <p>Max. Leverage:</p>
         <p>{{ maxLeverage }}</p>
+      </div>
+
+      <div class="overflow-x-auto w-full min-w-0">
+        <pre>
+          {{ { ...market, quoteToken: null, baseToken: null } }}
+        </pre>
       </div>
     </div>
   </div>

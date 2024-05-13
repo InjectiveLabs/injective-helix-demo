@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <PartialsTradeSpotFormTradingBotsAutoParams />
+    <PartialsTradeSpotFormTradingBotsAutoParams v-bind="$attrs" />
     <PartialsTradeSpotFormTradingBotsCommonInvestmentFields is-auto />
     <PartialsTradeSpotFormTradingBotsCommonCreateStrategy />
   </div>

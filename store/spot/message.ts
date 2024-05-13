@@ -186,13 +186,21 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.autoSign.injAddress)
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcastClient.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injAddress
+      : walletStore.injectiveAddress
   })
 }
 

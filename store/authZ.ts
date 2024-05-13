@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { MsgGrant } from '@injectivelabs/sdk-ts'
+import { MsgGrant, MsgRevoke } from '@injectivelabs/sdk-ts'
 import { authZApi, msgBroadcastClient } from '@/app/Services'
 import { GrantAuthorization } from '@/types/authZ'
+import { backupPromiseCall } from '~/app/utils/async'
 
 type AuthZStoreState = {
   granterGrants: GrantAuthorization[]
@@ -116,6 +117,38 @@ export const useAuthZStore = defineStore('authZ', {
         msgs: [...(msgs as any)],
         injectiveAddress: walletStore.injectiveAddress
       })
+
+      return response
+    },
+
+    async revokeAuthorization({
+      grantee,
+      messageTypes
+    }: {
+      grantee: string
+      messageTypes: string[]
+    }) {
+      const authZStore = useAuthZStore()
+      const walletStore = useWalletStore()
+
+      if (!walletStore.injectiveAddress) {
+        return
+      }
+
+      const msgs = messageTypes.map((messageType) =>
+        MsgRevoke.fromJSON({
+          messageType: `/${messageType}`,
+          grantee,
+          granter: walletStore.injectiveAddress
+        })
+      )
+
+      const response = await msgBroadcastClient.broadcastWithFeeDelegation({
+        msgs,
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      backupPromiseCall(() => authZStore.fetchGrants())
 
       return response
     }
