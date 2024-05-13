@@ -10,6 +10,6 @@ const { value: reduceOnly } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox v-model="reduceOnly">Reduce Only</AppCheckbox>
+    <AppCheckbox2 v-model="reduceOnly">Reduce Only</AppCheckbox2>
   </div>
 </template>

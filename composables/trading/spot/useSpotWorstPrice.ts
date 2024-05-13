@@ -2,11 +2,11 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  SpotAmountOption,
-  SpotTradeForm,
   SpotTradeFormField,
-  TradeTypes,
-  spotMarketKey
+  TradeAmountOption,
+  SpotTradeForm,
+  spotMarketKey,
+  TradeTypes
 } from '@/types'
 import {
   calculateTotalQuantity,
@@ -29,7 +29,7 @@ export function useSpotWorstPrice() {
   const isBaseOrder = computed(
     () =>
       spotFormValues.value[SpotTradeFormField.AmountOption] ===
-      SpotAmountOption.Base
+      TradeAmountOption.Base
   )
 
   const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
@@ -67,13 +67,13 @@ export function useSpotWorstPrice() {
 
     let quantity = new BigNumberInBase(0)
 
-    if (isLimitOrder.value && isBaseOrder.value) {
+    if (isBaseOrder.value) {
       quantity = new BigNumberInBase(
         spotFormValues.value[SpotTradeFormField.Amount] || 0
       )
     }
 
-    if (isLimitOrder.value && !isBaseOrder.value) {
+    if (isLimitOrder.value) {
       quantity = price
         ? new BigNumberInBase(
             spotFormValues.value[SpotTradeFormField.Amount] || 0
@@ -83,13 +83,7 @@ export function useSpotWorstPrice() {
         : ZERO_IN_BASE
     }
 
-    if (!isLimitOrder.value && isBaseOrder.value) {
-      quantity = new BigNumberInBase(
-        spotFormValues.value[SpotTradeFormField.Amount] || 0
-      )
-    }
-
-    if (!isLimitOrder.value && !isBaseOrder.value) {
+    if (!isLimitOrder.value) {
       const totalAfterFees = new BigNumberInBase(
         spotFormValues.value[SpotTradeFormField.Amount] || 0
       ).div(feePercentage.value)
@@ -148,11 +142,10 @@ export function useSpotWorstPrice() {
 
   return {
     total,
-    totalWithFee,
     quantity,
-    worstPrice,
     feeAmount,
-
+    worstPrice,
+    totalWithFee,
     feePercentage,
     slippagePercentage
   }

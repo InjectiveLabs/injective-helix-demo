@@ -76,10 +76,14 @@ export const useAuthZStore = defineStore('authZ', {
       }
 
       const { grants: granteeGrants } = await authZApi.fetchGranteeGrants(
-        walletStore.injectiveAddress
+        walletStore.injectiveAddress,
+        {
+          limit: 1000
+        }
       )
       const { grants: granterGrants } = await authZApi.fetchGranterGrants(
-        walletStore.injectiveAddress
+        walletStore.injectiveAddress,
+        { limit: 1000 }
       )
 
       authZStore.$patch({

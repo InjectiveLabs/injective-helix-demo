@@ -12,18 +12,20 @@ const value = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
+
+const id = Math.random().toString()
 </script>
 
 <template>
   <div class="checkbox-wrapper-4">
     <input
-      id="morning"
+      :id="id"
       v-model="value"
       :disabled="disabled"
       class="inp-cbx"
       type="checkbox"
     />
-    <label class="cbx" for="morning">
+    <label class="cbx" :for="id">
       <span>
         <svg width="12px" height="10px">
           <use xlink:href="#check-4"></use>
