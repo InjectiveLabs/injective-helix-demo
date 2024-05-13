@@ -104,9 +104,9 @@ function submitMarketOrder() {
 
   spotStore
     .submitMarketOrder({
-      isBuy: isBuy.value,
-      market: market.value,
       quantity,
+      orderSide: orderTypeToSubmit.value,
+      market: market.value,
       price: props.worstPrice
     })
     .then(() => {

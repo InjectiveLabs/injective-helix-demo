@@ -10,13 +10,13 @@ const route = useRoute()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
-useDerivativeOrderbook(computed(() => market.value))
-
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   derivativeStore.markets.find((market) => market.slug === route.params.slug)
 )
+
+useDerivativeOrderbook(computed(() => market.value))
 
 onMounted(() => {
   if (!market.value) {

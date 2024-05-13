@@ -12,26 +12,32 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   feeAmount: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   worstPrice: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   totalWithFee: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   feePercentage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   slippagePercentage: {
     type: Object as PropType<BigNumberInBase>,
     required: true

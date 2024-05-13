@@ -10,13 +10,13 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 
-useSpotOrderbook(computed(() => market.value))
-
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   spotStore.markets.find((market) => market.slug === route.params.slug)
 )
+
+useSpotOrderbook(computed(() => market.value))
 
 onMounted(() => {
   if (!market.value) {
@@ -25,8 +25,7 @@ onMounted(() => {
 
   status.setLoading()
 
-  spotStore
-    .fetchTrades({ marketId: market.value.marketId })
+  Promise.all([spotStore.fetchTrades({ marketId: market.value.marketId })])
     .catch($onError)
     .finally(() => {
       status.setIdle()

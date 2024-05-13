@@ -107,6 +107,8 @@ export default {
     transferToSubaccountSuccess: 'Subaccount transfer successful',
     mainSubaccount: 'Main Subaccount',
     subaccountId: ({ named }: I18nMessageFunction) =>
-      `Subaccount ${named('subaccountId')}`
+      `Subaccount ${named('subaccountId')}`,
+    balanceIncludesCw20Balance:
+      'This balance includes the CW20 balance of the asset. The whole CW20 balance will be converted to bank balance once you make an order on this market.'
   }
 }
