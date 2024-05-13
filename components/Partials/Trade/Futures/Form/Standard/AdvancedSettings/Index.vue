@@ -15,7 +15,7 @@ function toggle() {
 </script>
 
 <template>
-  <div>
+  <div class="mb-2">
     <div
       class="flex justify-between items-center cursor-pointer py-2"
       @click="toggle"
@@ -27,7 +27,7 @@ function toggle() {
     </div>
 
     <AppCollapse v-bind="{ isOpen }">
-      <div class="space-y-2 py-2">
+      <div class="py-2">
         <PartialsTradeFuturesFormStandardAdvancedSettingsPostOnly
           v-if="
             derivativeFormValues[DerivativesTradeFormField.Type] ===

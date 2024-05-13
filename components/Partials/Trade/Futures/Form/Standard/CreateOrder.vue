@@ -45,7 +45,7 @@ const limitPrice = computed(
 const baseAmount = computed(
   () =>
     new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.Quantity] || 0
+      0 // TODO
     )
 )
 
@@ -83,7 +83,7 @@ const worstPriceWithSlippage = computed(() =>
 const notionalWithLeverage = computed(() => {
   return new BigNumberInBase(
     calculateMargin({
-      price: derivativeFormValues.value[DerivativesTradeFormField.Total] || '0',
+      price: '0', // TODO
       quantity: baseAmount.value.toFixed(),
       quoteTokenDecimals: derivativeMarket.value.quoteToken.decimals,
       tensMultiplier: derivativeMarket.value.quantityTensMultiplier,

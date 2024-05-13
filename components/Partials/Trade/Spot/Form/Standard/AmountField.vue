@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { SpotAmountOption, SpotTradeFormField, spotMarketKey } from '@/types'
+import { TradeAmountOption, SpotTradeFormField, spotMarketKey } from '@/types'
 
 const market = inject(spotMarketKey) as Ref<UiSpotMarketWithToken>
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,
-  initialValue: SpotAmountOption.Base
+  initialValue: TradeAmountOption.Base
 })
 
 const { value: amountValue } = useStringField({
@@ -17,16 +17,16 @@ const { value: amountValue } = useStringField({
 const options = [
   {
     display: market.value.baseToken.symbol || '',
-    value: SpotAmountOption.Base
+    value: TradeAmountOption.Base
   },
   {
     display: market.value.quoteToken.symbol || '',
-    value: SpotAmountOption.Quote
+    value: TradeAmountOption.Quote
   }
 ]
 
 const decimals = computed(() => {
-  return typeValue.value === SpotAmountOption.Base
+  return typeValue.value === TradeAmountOption.Base
     ? market.value.quantityDecimals
     : market.value.priceDecimals
 })
@@ -54,7 +54,7 @@ const decimals = computed(() => {
           <template #default>
             <div>
               <span
-                v-if="typeValue === SpotAmountOption.Base"
+                v-if="typeValue === TradeAmountOption.Base"
                 class="text-sm select-none"
               >
                 {{ market?.baseToken.symbol }}

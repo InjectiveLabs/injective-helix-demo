@@ -10,6 +10,6 @@ const { value: postOnly } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox v-model="postOnly">Post Only</AppCheckbox>
+    <AppCheckbox2 v-model="postOnly">Post Only</AppCheckbox2>
   </div>
 </template>
