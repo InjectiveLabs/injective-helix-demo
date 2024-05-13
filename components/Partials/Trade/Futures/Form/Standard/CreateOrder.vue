@@ -144,6 +144,7 @@ const orderTypeToSubmit = computed(() => {
 
 async function submitLimitOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -173,6 +174,7 @@ async function submitLimitOrder() {
 
 async function submitStopLimitOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -207,6 +209,7 @@ async function submitStopLimitOrder() {
 
 async function submitMarketOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -238,6 +241,7 @@ async function submitMarketOrder() {
 
 async function submitStopMarketOrder() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }

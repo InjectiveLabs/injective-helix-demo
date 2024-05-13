@@ -1,13 +1,28 @@
 <script setup lang="ts">
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { getCw20AddressFromDenom } from '@/app/utils/helpers'
+
+const accountStore = useAccountStore()
 
 const props = defineProps({
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
   }
+})
+
+const hasCw20Balance = computed(() => {
+  const cw20Address = getCw20AddressFromDenom(props.balance.denom)
+
+  if (!cw20Address) {
+    return false
+  }
+
+  return new BigNumberInWei(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
+    0
+  )
 })
 
 const { valueToString: availableAmountToString } = useBigNumberFormatter(
@@ -77,7 +92,19 @@ const {
 
     <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">
       <CommonSkeletonSubaccountAmount>
-        {{ availableAmountToString }}
+        <p class="flex items-center gap-1">
+          {{ availableAmountToString }}
+
+          <span
+            v-if="hasCw20Balance"
+            class="text-xs text-gray-400 font-semibold"
+          >
+            <AppTooltip
+              class="ml-2 text-gray-200"
+              :content="$t('account.balanceIncludesCw20Balance')"
+            />
+          </span>
+        </p>
       </CommonSkeletonSubaccountAmount>
     </div>
 

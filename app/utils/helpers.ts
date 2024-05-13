@@ -336,6 +336,12 @@ export function calculateTotalQuantity(
   }
 }
 
+export const getCw20AddressFromDenom = (denom: string) => {
+  const [address] = denom.split('/').reverse()
+
+  return address
+}
+
 // export function calculateWorstQuantity(
 //   price: string,
 //   records: OrderbookFormattedRecord[]

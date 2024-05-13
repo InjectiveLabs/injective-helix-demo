@@ -79,11 +79,7 @@ watch(
       class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative h-full-excluding-header"
     >
       <PartialsActivitySubaccounts />
-      <PartialsActivityCommonNavigation
-        v-bind="{
-          status
-        }"
-      />
+      <PartialsActivityCommonNavigation v-bind="{ status }" />
 
       <div class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t" />
       <AppHocLoading v-bind="{ status }">

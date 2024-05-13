@@ -8,21 +8,15 @@ definePageMeta({
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const status = reactive(new Status(StatusType.Loading))
 const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
   spotStore.markets.find((market) => market.slug === route.params.slug)
 )
 
-useOrderbook(
-  computed(() => market.value),
-  true
-)
-
-provide(spotMarketKey, market)
-provide(marketKey, market)
-provide(isSpotKey, true)
+useSpotOrderbook(computed(() => market.value))
 
 onMounted(() => {
   if (!market.value) {
@@ -31,8 +25,7 @@ onMounted(() => {
 
   status.setLoading()
 
-  spotStore
-    .fetchTrades({ marketId: market.value.marketId })
+  Promise.all([spotStore.fetchTrades({ marketId: market.value.marketId })])
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -45,6 +38,10 @@ onUnmounted(() => {
   spotStore.cancelTradesStream()
   spotStore.reset()
 })
+
+provide(spotMarketKey, market)
+provide(marketKey, market)
+provide(isSpotKey, true)
 </script>
 
 <template>

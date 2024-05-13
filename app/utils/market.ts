@@ -7,14 +7,19 @@ import {
 import {
   BigNumber,
   BigNumberInBase,
+  BigNumberInWei,
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
 import {
   PriceLevel,
   SpotMarket,
   DerivativeMarket,
-  ExpiryFuturesMarket
+  ExpiryFuturesMarket,
+  MsgExecuteContractCompat,
+  ExecArgCW20Send
 } from '@injectivelabs/sdk-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import { MarketStatus } from '../../types/exchange'
 import {
   upcomingMarkets,
@@ -27,7 +32,7 @@ import {
   newMarketsSlug
 } from '@/app/data/market'
 import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
-import { IS_TESTNET } from '@/app/utils/constants'
+import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
 import {
   MarketRoute,
   TradeSubPage,
@@ -388,5 +393,91 @@ export const getNewMarketTickerFromWHDenom = (denom: string) => {
       return 'ARB/USDT'
     case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
       return 'WMATIC/USDT'
+  }
+}
+
+/**
+ * Add a Cw20 conversion message if:
+ * 1. The base token is cw20
+ *  1.1 Limit/Market SELL
+ *  1.2 We don't have enough base token balance in the bank balance
+ *
+ * 2. The quote token is cw20
+ * 2.1 Limit/Market BUY
+ * 2.2 We don't have enough quote token balance in the bank balance
+ */
+export const convertCw20ToBankBalance = ({
+  injectiveAddress,
+  market,
+  order,
+  bankBalancesMap,
+  cw20BalancesMap
+}: {
+  injectiveAddress: string
+  market: UiSpotMarketWithToken
+  order: {
+    price: string
+    orderSide: OrderSide
+    quantity: string
+    market: UiSpotMarketWithToken
+  }
+  bankBalancesMap: Record<string, string>
+  cw20BalancesMap: Record<string, string>
+}) => {
+  const [baseCw20Address] = market.baseDenom.split('/').reverse()
+  const [quoteCw20Address] = market.quoteDenom.split('/').reverse()
+
+  if (order.orderSide === OrderSide.Buy) {
+    if (!quoteCw20Address) {
+      return
+    }
+
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.quoteDenom] || 0
+    ).gte(new BigNumberInBase(order.price).times(order.quantity))
+
+    if (!hasSufficientBalanceInBank) {
+      return
+    }
+
+    if (!cw20BalancesMap[quoteCw20Address]) {
+      return
+    }
+
+    return MsgExecuteContractCompat.fromJSON({
+      contractAddress: quoteCw20Address,
+      sender: injectiveAddress,
+      execArgs: ExecArgCW20Send.fromJSON({
+        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+        amount: cw20BalancesMap[quoteCw20Address]
+      })
+    })
+  }
+
+  if (order.orderSide === OrderSide.Sell) {
+    if (!baseCw20Address) {
+      return
+    }
+
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.baseDenom] || 0
+    ).gte(order.quantity)
+
+    if (!hasSufficientBalanceInBank) {
+      return
+    }
+
+    if (!cw20BalancesMap[baseCw20Address]) {
+      return
+    }
+
+    return MsgExecuteContractCompat.fromJSON({
+      contractAddress: baseCw20Address,
+      sender: injectiveAddress,
+      execArgs: ExecArgCW20Send.fromJSON({
+        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+        amount: cw20BalancesMap[baseCw20Address]
+      })
+    })
   }
 }
