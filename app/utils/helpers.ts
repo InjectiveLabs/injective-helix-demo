@@ -341,34 +341,3 @@ export const getCw20AddressFromDenom = (denom: string) => {
 
   return address
 }
-
-// export function calculateWorstQuantity(
-//   price: string,
-//   records: OrderbookFormattedRecord[]
-// ) {
-//   let remainingPrice = Number(price || '0')
-
-//   let worstQuantity = '0'
-//   let quantity = 0
-//   let hasEnoughLiquidity = false
-
-//   for (const record of records) {
-//     if (remainingPrice - Number(record.price) * Number(record.quantity) < 0) {
-//       worstQuantity = record.quantity
-
-//       quantity += remainingPrice / Number(record.price)
-
-//       hasEnoughLiquidity = true
-//       break
-//     }
-
-//     remainingPrice -= Number(record.price) * Number(record.quantity)
-//     quantity += Number(record.quantity)
-//   }
-
-//   return {
-//     quantity: quantity.toString(),
-//     worstQuantity,
-//     hasEnoughLiquidity
-//   }
-// }

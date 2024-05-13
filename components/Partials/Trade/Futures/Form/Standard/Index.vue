@@ -20,6 +20,8 @@ const { value: orderSide } = useStringField({
 
 <template>
   <div class="p-4">
+    <Whiteboard> --- </Whiteboard>
+
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(DerivativeTradeTypes)"
@@ -66,6 +68,7 @@ const { value: orderSide } = useStringField({
           )
         "
       />
+
       <PartialsTradeFuturesFormStandardAmountField />
       <PartialsTradeFuturesFormStandardTotalField />
       <PartialsTradeFuturesFormStandardLeverage />

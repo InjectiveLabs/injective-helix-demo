@@ -5,7 +5,8 @@ import {
   getInjectiveAddress,
   getDefaultSubaccountId,
   PrivateKey,
-  MsgGrant
+  MsgGrant,
+  MsgSend
 } from '@injectivelabs/sdk-ts'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -687,6 +688,15 @@ export const useWalletStore = defineStore('wallet', {
       const pk = privateKey.toPrivateKeyHex()
       const injAddress = privateKey.toBech32()
 
+      const msg = MsgSend.fromJSON({
+        amount: {
+          amount: '1',
+          denom: 'inj'
+        },
+        dstInjectiveAddress: injAddress,
+        srcInjectiveAddress: walletStore.injectiveAddress
+      })
+
       const authZMsgs = Object.values(MsgType).map((messageType) =>
         MsgGrant.fromJSON({
           messageType: `/${messageType}`,
@@ -697,7 +707,7 @@ export const useWalletStore = defineStore('wallet', {
       )
 
       await msgBroadcastClient.broadcastWithFeeDelegation({
-        msgs: authZMsgs,
+        msgs: [msg, ...authZMsgs],
         injectiveAddress: walletStore.injectiveAddress
       })
 
@@ -714,6 +724,8 @@ export const useWalletStore = defineStore('wallet', {
 
     disconnectAutoSign() {
       const walletStore = useWalletStore()
+
+      walletStrategy.setWallet(walletStore.wallet)
 
       walletStore.$patch({
         autoSign: undefined
