@@ -7,7 +7,8 @@ import {
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
-  spotQuantityToChainQuantityToFixed
+  spotQuantityToChainQuantityToFixed,
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
@@ -68,14 +69,14 @@ export const createStrategy = async (
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const _market = market || gridStrategyStore.spotMarket
+  const actualMarket = market || gridStrategyStore.spotMarket
 
-  if (!_market) {
+  if (!actualMarket) {
     return
   }
 
   const gridMarket = spotGridMarkets.find(
-    (market) => market.slug === _market.slug
+    (market) => market.slug === actualMarket.slug
   )
 
   if (!gridMarket) {
@@ -91,20 +92,20 @@ export const createStrategy = async (
 
   if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
     funds.push({
-      denom: _market.baseToken.denom,
+      denom: actualMarket.baseToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
         value: baseAmount,
-        baseDecimals: _market.baseToken.decimals
+        baseDecimals: actualMarket.baseToken.decimals
       })
     })
   }
 
   if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
     funds.push({
-      denom: _market.quoteToken.denom,
+      denom: actualMarket.quoteToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
         value: quoteAmount,
-        baseDecimals: _market.quoteToken.decimals
+        baseDecimals: actualMarket.quoteToken.decimals
       })
     })
   }
@@ -113,8 +114,8 @@ export const createStrategy = async (
     ? {
         exitPrice: spotPriceToChainPriceToFixed({
           value: stopLoss,
-          baseDecimals: _market.baseToken.decimals,
-          quoteDecimals: _market.quoteToken.decimals
+          baseDecimals: actualMarket.baseToken.decimals,
+          quoteDecimals: actualMarket.quoteToken.decimals
         }),
         exitType: isSellBaseOnStopLossEnabled
           ? ExitType.Quote
@@ -126,8 +127,8 @@ export const createStrategy = async (
     ? {
         exitPrice: spotPriceToChainPriceToFixed({
           value: takeProfit,
-          baseDecimals: _market.baseToken.decimals,
-          quoteDecimals: _market.quoteToken.decimals
+          baseDecimals: actualMarket.baseToken.decimals,
+          quoteDecimals: actualMarket.quoteToken.decimals
         }),
         exitType: isBuyBaseOnTakeProfitEnabled
           ? ExitType.Base
@@ -145,13 +146,13 @@ export const createStrategy = async (
       subaccountId: gridStrategySubaccountId,
       lowerBound: spotPriceToChainPriceToFixed({
         value: lowerPrice,
-        baseDecimals: _market.baseToken.decimals,
-        quoteDecimals: _market.quoteToken.decimals
+        baseDecimals: actualMarket.baseToken.decimals,
+        quoteDecimals: actualMarket.quoteToken.decimals
       }),
       upperBound: spotPriceToChainPriceToFixed({
         value: upperPrice,
-        baseDecimals: _market.baseToken.decimals,
-        quoteDecimals: _market.quoteToken.decimals
+        baseDecimals: actualMarket.baseToken.decimals,
+        quoteDecimals: actualMarket.quoteToken.decimals
       }),
       exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default,
       strategyType
@@ -163,16 +164,17 @@ export const createStrategy = async (
   const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
     (messageType) =>
       MsgGrant.fromJSON({
-        messageType: `/${messageType}`,
         grantee: gridMarket.contractAddress,
-        granter: walletStore.injectiveAddress
+        granter: walletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
       })
   )
 
   const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
     authZStore.granterGrants.some(
-      (g) =>
-        g.authorization.endsWith(m) && g.grantee === gridMarket?.contractAddress
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
     )
   )
 

@@ -5,7 +5,7 @@ import {
   MetamaskException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { walletStrategy } from '../wallet-strategy'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 
 export const isPhantomInstalled = async (): Promise<boolean> => {
   const provider = await UtilsWallets.getPhantomProvider()

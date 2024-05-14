@@ -1,16 +1,26 @@
 <script setup lang="ts">
-import { GrantAuthorization } from '@injectivelabs/sdk-ts'
+import {
+  GrantAuthorizationType,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   grant: {
-    type: Object as PropType<GrantAuthorization>,
+    type: Object as PropType<GrantAuthorizationWithDecodedAuthorization>,
     required: true
   }
 })
 
-const authorizationFormatted = computed(
-  () => String(props.grant.authorization).split('.').slice(-1)[0]
-)
+const authorizationFormatted = computed(() => {
+  if (
+    props.grant.authorization &&
+    props.grant.authorizationType.includes(
+      GrantAuthorizationType.GenericAuthorization
+    )
+  ) {
+    return props.grant.authorization.msg
+  }
+})
 </script>
 
 <template>

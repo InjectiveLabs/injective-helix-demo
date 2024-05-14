@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { GrantAuthorization } from '@injectivelabs/sdk-ts'
+import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
+
+const walletStore = useWalletStore()
 
 const props = defineProps({
   granter: {
@@ -8,12 +10,10 @@ const props = defineProps({
   },
 
   grants: {
-    type: Array as PropType<GrantAuthorization[]>,
+    type: Array as PropType<GrantAuthorizationWithDecodedAuthorization[]>,
     required: true
   }
 })
-
-const walletStore = useWalletStore()
 
 const isOpen = ref(false)
 
@@ -45,8 +45,10 @@ function connectAuthZ() {
       <span> View Granted Functions </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2" @click.stop="connectAuthZ">
-      <AppButton :variant="'success'" size="sm">Connect As</AppButton>
+    <div class="flex-1 flex items-center p-2">
+      <AppButton :variant="'success'" size="sm" @click.stop="connectAuthZ">
+        Connect As
+      </AppButton>
     </div>
   </div>
 
@@ -54,7 +56,7 @@ function connectAuthZ() {
     <PartialsPortfolioSettingsAuthzGranterTableRowGrant
       v-for="grant in grants"
       v-bind="{ grant }"
-      :key="`${grant.authorization}-${grant.grantee}-${grant.granter}`"
+      :key="`${grant.authorizationType}-${grant.grantee}-${grant.granter}`"
     />
   </AppCollapse>
 </template>

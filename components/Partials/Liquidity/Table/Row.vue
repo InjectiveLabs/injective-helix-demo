@@ -10,7 +10,7 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 } from '@/app/utils/constants'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { toBalanceInToken } from '@/app/utils/formatters'
@@ -104,7 +104,7 @@ const userHasActiveLegacyStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) =>
       strategy.marketId ===
-      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.campaign.marketId]
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.campaign.marketId]
   )
 )
 

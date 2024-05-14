@@ -1,10 +1,10 @@
 import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   ErrorType,
-  UnspecifiedErrorCode,
-  WalletException
+  WalletException,
+  UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { walletStrategy } from '@/app/wallet-strategy'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { blacklistedAddresses } from '@/app/data/wallet-address'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 

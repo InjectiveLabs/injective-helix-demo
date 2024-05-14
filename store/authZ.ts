@@ -1,13 +1,17 @@
 import { defineStore } from 'pinia'
 import { msgBroadcaster } from '@shared/WalletService'
-import { MsgGrant, MsgRevoke } from '@injectivelabs/sdk-ts'
+import {
+  MsgGrant,
+  MsgRevoke,
+  getGenericAuthorizationFromMessageType,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 import { authZApi } from '@/app/Services'
-import { GrantAuthorization } from '@/types/authZ'
 import { backupPromiseCall } from '@/app/utils/async'
 
 type AuthZStoreState = {
-  granterGrants: GrantAuthorization[]
-  granteeGrants: GrantAuthorization[]
+  granterGrants: GrantAuthorizationWithDecodedAuthorization[]
+  granteeGrants: GrantAuthorizationWithDecodedAuthorization[]
 }
 
 const initialStateFactory = (): AuthZStoreState => ({
@@ -47,9 +51,10 @@ export const useAuthZStore = defineStore('authZ', {
             const grants = addressMap[address] || []
             grants.push(grant)
             addressMap[address] = grants
+
             return addressMap
           },
-          {} as Record<string, GrantAuthorization[]>
+          {} as Record<string, GrantAuthorizationWithDecodedAuthorization[]>
         )
       ),
 
@@ -61,9 +66,10 @@ export const useAuthZStore = defineStore('authZ', {
             const grants = addressMap[address] || []
             grants.push(grant)
             addressMap[address] = grants
+
             return addressMap
           },
-          {} as Record<string, GrantAuthorization[]>
+          {} as Record<string, GrantAuthorizationWithDecodedAuthorization[]>
         )
       )
   },
@@ -76,20 +82,23 @@ export const useAuthZStore = defineStore('authZ', {
         return
       }
 
+      const pagination = { limit: 1000 }
+
       const { grants: granteeGrants } = await authZApi.fetchGranteeGrants(
         walletStore.injectiveAddress,
-        {
-          limit: 1000
-        }
+        pagination
       )
+
       const { grants: granterGrants } = await authZApi.fetchGranterGrants(
         walletStore.injectiveAddress,
-        { limit: 1000 }
+        pagination
       )
 
       authZStore.$patch({
-        granterGrants: granterGrants as GrantAuthorization[],
-        granteeGrants: granteeGrants as GrantAuthorization[]
+        granterGrants:
+          granterGrants as GrantAuthorizationWithDecodedAuthorization[],
+        granteeGrants:
+          granteeGrants as GrantAuthorizationWithDecodedAuthorization[]
       })
     },
 
@@ -100,10 +109,11 @@ export const useAuthZStore = defineStore('authZ', {
       grantee: string
       messageTypes: string[]
     }) {
+      const authZStore = useAuthZStore()
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
@@ -112,18 +122,18 @@ export const useAuthZStore = defineStore('authZ', {
 
       const msgs = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
-          messageType: `/${messageType}`,
           grantee,
+          authorization: getGenericAuthorizationFromMessageType(messageType),
           granter: walletStore.injectiveAddress
         })
       )
 
-      const response = await msgBroadcaster.broadcastWithFeeDelegation({
-        msgs: [...(msgs as any)],
+      await msgBroadcaster.broadcastWithFeeDelegation({
+        msgs,
         injectiveAddress: walletStore.injectiveAddress
       })
 
-      return response
+      await backupPromiseCall(() => authZStore.fetchGrants())
     },
 
     async revokeAuthorization({
@@ -136,26 +146,24 @@ export const useAuthZStore = defineStore('authZ', {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
       const msgs = messageTypes.map((messageType) =>
         MsgRevoke.fromJSON({
-          messageType: `/${messageType}`,
           grantee,
+          messageType: `/${messageType}`,
           granter: walletStore.injectiveAddress
         })
       )
 
-      const response = await msgBroadcaster.broadcastWithFeeDelegation({
+      await msgBroadcaster.broadcastWithFeeDelegation({
         msgs,
         injectiveAddress: walletStore.injectiveAddress
       })
 
-      backupPromiseCall(() => authZStore.fetchGrants())
-
-      return response
+      await backupPromiseCall(() => authZStore.fetchGrants())
     }
   }
 })

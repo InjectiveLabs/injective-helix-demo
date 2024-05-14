@@ -5,12 +5,14 @@ import {
   getDefaultSubaccountId,
   PrivateKey,
   MsgGrant,
-  MsgSend
+  MsgSend,
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -20,7 +22,6 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
-import { walletStrategy } from '@/app/wallet-strategy'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
@@ -719,10 +720,10 @@ export const useWalletStore = defineStore('wallet', {
         .filter((type) => type.includes('exchange'))
         .map((messageType) =>
           MsgGrant.fromJSON({
-            messageType: `/${messageType}`,
             grantee: injAddress,
             granter: walletStore.injectiveAddress,
-            expiryInSeconds: Date.now() / 1000 + 60 * 60
+            expiryInSeconds: Date.now() / 1000 + 60 * 60,
+            authorization: getGenericAuthorizationFromMessageType(messageType)
           })
         )
 
