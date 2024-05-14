@@ -18,14 +18,14 @@ const { value: orderSide } = useStringField({
 })
 
 const {
-  feePercentage,
-  quantity,
   margin,
-  totalNotional,
-  totalNotionalWithFee,
-  worstPrice,
+  quantity,
   feeAmount,
-  marginWithFee
+  worstPrice,
+  feePercentage,
+  marginWithFee,
+  totalNotional,
+  totalNotionalWithFee
 } = useDerivativeWorstPrice()
 </script>
 
@@ -111,7 +111,17 @@ const {
     />
 
     <div>
-      <PartialsTradeFuturesFormStandardCreateOrder />
+      <PartialsTradeFuturesFormStandardCreateOrder
+        v-bind="{
+          margin,
+          quantity,
+          feeAmount,
+          worstPrice,
+          feePercentage,
+          marginWithFee,
+          totalNotional
+        }"
+      />
     </div>
   </div>
 </template>

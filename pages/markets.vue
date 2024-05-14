@@ -117,17 +117,32 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
         </div>
       </div>
 
-      <div class="my-4 flex space-x-2">
-        <AppButtonSelect
-          v-for="value in Object.values(MarketCategoryType)"
-          :key="value"
-          v-model="category"
-          v-bind="{ value }"
-          class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
-          active-classes="text-white !bg-brand-700"
-        >
-          {{ value }}
-        </AppButtonSelect>
+      <div class="my-4 flex space-x-2 justify-between">
+        <div class="flex space-x-2">
+          <AppButtonSelect
+            v-for="value in Object.values(MarketCategoryType)"
+            :key="value"
+            v-model="category"
+            v-bind="{ value }"
+            class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
+            active-classes="text-white !bg-brand-700"
+          >
+            {{ value }}
+          </AppButtonSelect>
+        </div>
+
+        <div class="flex space-x-2">
+          <AppButtonSelect
+            v-for="value in Object.values(MarketQuoteType)"
+            :key="value"
+            v-model="activeQuote"
+            v-bind="{ value }"
+            class="py-1 px-3 text-gray-400 text-xs uppercase bg-brand-800 rounded"
+            active-classes="text-white !bg-brand-700"
+          >
+            {{ value }}
+          </AppButtonSelect>
+        </div>
       </div>
 
       <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->

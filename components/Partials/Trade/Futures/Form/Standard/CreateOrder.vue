@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { calculateMargin } from '@/app/client/utils/derivatives'
 import {
   UiDerivativeMarket,
   derivativeMarketKey,
@@ -11,6 +10,38 @@ import {
 } from '@/types'
 
 const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+
+const props = defineProps({
+  margin: {
+    type: BigNumberInBase,
+    required: true
+  },
+
+  totalNotional: {
+    type: BigNumberInBase,
+    required: true
+  },
+
+  worstPrice: {
+    type: BigNumberInBase,
+    required: true
+  },
+
+  feeAmount: {
+    type: BigNumberInBase,
+    required: true
+  },
+
+  marginWithFee: {
+    type: BigNumberInBase,
+    required: true
+  },
+
+  quantity: {
+    type: BigNumberInBase,
+    required: true
+  }
+})
 
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Loading))
@@ -37,13 +68,6 @@ const limitPrice = computed(
   () =>
     new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
-    )
-)
-
-const baseAmount = computed(
-  () =>
-    new BigNumberInBase(
-      0 // TODO
     )
 )
 
@@ -77,19 +101,6 @@ const worstPriceWithSlippage = computed(() =>
     ? lastTradedPrice.value.times(1.01).dp(derivativeMarket.value.priceDecimals)
     : lastTradedPrice.value.times(0.99).dp(derivativeMarket.value.priceDecimals)
 )
-
-const notionalWithLeverage = computed(() => {
-  return new BigNumberInBase(
-    calculateMargin({
-      price: '0', // TODO
-      quantity: baseAmount.value.toFixed(),
-      quoteTokenDecimals: derivativeMarket.value.quoteToken.decimals,
-      tensMultiplier: derivativeMarket.value.quantityTensMultiplier,
-      leverage:
-        derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
-    }).toFixed()
-  )
-})
 
 const orderTypeToSubmit = computed(() => {
   if (
@@ -141,8 +152,8 @@ async function submitLimitOrder() {
     .submitLimitOrder({
       market: derivativeMarket?.value,
       price: limitPrice.value,
-      quantity: baseAmount.value,
-      margin: notionalWithLeverage.value,
+      quantity: props.quantity,
+      margin: props.margin,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })
@@ -175,9 +186,9 @@ async function submitStopLimitOrder() {
     .submitStopLimitOrder({
       market: derivativeMarket?.value,
       price: limitPrice.value,
-      quantity: baseAmount.value,
+      quantity: props.quantity,
       triggerPrice: triggerPrice.value,
-      margin: notionalWithLeverage.value,
+      margin: props.margin,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })
@@ -205,13 +216,13 @@ async function submitMarketOrder() {
   derivativeStore
     .submitMarketOrder({
       market: derivativeMarket?.value,
-      quantity: baseAmount.value,
+      quantity: props.quantity,
       price: new BigNumberInBase(worstPriceWithSlippage.value),
       reduceOnly: isOrderTypeReduceOnly.value,
       orderSide: derivativeFormValues.value[
         DerivativesTradeFormField.Side
       ] as OrderSide,
-      margin: notionalWithLeverage.value
+      margin: props.margin
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
@@ -241,12 +252,12 @@ async function submitStopMarketOrder() {
   derivativeStore
     .submitStopMarketOrder({
       market: derivativeMarket?.value,
-      quantity: baseAmount.value,
+      quantity: props.quantity,
       triggerPrice: triggerPrice.value,
       orderSide: orderTypeToSubmit.value,
       price: new BigNumberInBase(worstPriceWithSlippage.value),
       reduceOnly: isOrderTypeReduceOnly.value,
-      margin: notionalWithLeverage.value
+      margin: props.margin
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
@@ -276,6 +287,7 @@ function onSubmit() {
 
 <template>
   <div>
+    {{ orderTypeToSubmit }}
     <div>
       <AppButton
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"

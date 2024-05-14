@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import { UiDerivativeMarket, derivativeMarketKey } from '~/types'
 
 const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
@@ -42,7 +45,7 @@ const isOpen = ref(true)
 const { valueToString: totalToString } = useBigNumberFormatter(
   computed(() => props.marginWithFee),
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
