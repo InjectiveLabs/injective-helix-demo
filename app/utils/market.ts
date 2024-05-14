@@ -255,9 +255,10 @@ export const marketIsPartOfSearch = (
     market.ticker,
     market.baseToken.symbol,
     market.quoteToken.symbol,
-    market.baseToken.name,
-    market.quoteToken.name
-  ].some((value) => (value || '').toLowerCase().includes(query))
+    market.baseToken.name
+  ]
+    .map((piece) => piece.toLowerCase())
+    .some((value) => (value || '').toLowerCase().includes(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
