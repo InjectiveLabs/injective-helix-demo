@@ -113,7 +113,7 @@ export const useAuthZStore = defineStore('authZ', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
@@ -146,7 +146,7 @@ export const useAuthZStore = defineStore('authZ', {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
 
-      if (!walletStore.injectiveAddress) {
+      if (!walletStore.isUserWalletConnected) {
         return
       }
 
