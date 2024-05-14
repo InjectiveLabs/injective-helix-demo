@@ -9,7 +9,8 @@ import {
   MsgBatchCancelBinaryOptionsOrders,
   MsgCreateBinaryOptionsMarketOrder,
   derivativePriceToChainPriceToFixed,
-  derivativeMarginToChainMarginToFixed
+  derivativeMarginToChainMarginToFixed,
+  derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -153,7 +154,7 @@ export const submitLimitOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: sharedToBalanceInWei({ value: quantity.toFixed() }).toFixed(),
+    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({
@@ -300,7 +301,7 @@ export const submitMarketOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: sharedToBalanceInWei({ value: quantity.toFixed() }).toFixed(),
+    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({

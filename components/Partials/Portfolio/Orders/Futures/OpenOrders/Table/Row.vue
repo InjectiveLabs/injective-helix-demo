@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
+import { Status, StatusType } from '@injectivelabs/utils'
+
 const props = defineProps({
   order: {
     required: true,
@@ -26,6 +28,12 @@ const {
   computed(() => false)
 )
 
+const derivativeStore = useDerivativeStore()
+const { $onError } = useNuxtApp()
+const { success } = useNotifications()
+const { t } = useLang()
+
+const status = reactive(new Status(StatusType.Idle))
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
@@ -54,6 +62,20 @@ const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
 const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
+
+function onCancelOrder() {
+  status.setLoading()
+
+  derivativeStore
+    .cancelOrder(props.order as DerivativeLimitOrder)
+    .then(() => {
+      success({ title: t('trade.order_success_canceling') })
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -92,6 +114,10 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <div class="space-y-1">
         <p>{{ totalToString }} {{ market?.quoteToken.symbol }}</p>
       </div>
+    </div>
+
+    <div class="flex-1 p-2">
+      <PartialsCommonCancelButton v-bind="{ status }" @click="onCancelOrder" />
     </div>
   </div>
 </template>

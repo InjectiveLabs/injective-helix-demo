@@ -24,28 +24,12 @@ const {
   worstPrice,
   feePercentage,
   marginWithFee,
-  totalNotional,
-  totalNotionalWithFee
+  totalNotional
 } = useDerivativeWorstPrice()
 </script>
 
 <template>
   <div class="p-4">
-    <Whiteboard>
-      {{
-        {
-          margin,
-          quantity,
-          feeAmount,
-          worstPrice,
-          feePercentage,
-          totalNotional,
-          marginWithFee,
-          totalNotionalWithFee
-        }
-      }}
-    </Whiteboard>
-
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(DerivativeTradeTypes)"

@@ -80,22 +80,6 @@ const isBuy = computed(
     derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
 )
 
-// const isMarketOrStopMarketOrder = computed(() =>
-//   [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-//     derivativeFormValues.value[
-//       DerivativesTradeFormField.Type
-//     ] as DerivativeTradeTypes
-//   )
-// )
-
-// const executionPrice = computed(() =>
-//   isMarketOrStopMarketOrder.value
-//     ? lastTradedPrice.value
-//     : new BigNumberInBase(
-//         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
-//       )
-// )
-
 const worstPriceWithSlippage = computed(() =>
   isBuy.value
     ? lastTradedPrice.value.times(1.01).dp(derivativeMarket.value.priceDecimals)
