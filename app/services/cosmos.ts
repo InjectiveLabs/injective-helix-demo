@@ -1,8 +1,5 @@
-import {
-  Wallet,
-  UtilsWallets,
-  CosmosWalletStrategy
-} from '@injectivelabs/wallet-ts'
+import { Wallet, CosmosWalletStrategy } from '@injectivelabs/wallet-ts'
+import { UtilsWallets } from '@injectivelabs/wallet-ts/dist/esm/exports'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import {
   ErrorType,

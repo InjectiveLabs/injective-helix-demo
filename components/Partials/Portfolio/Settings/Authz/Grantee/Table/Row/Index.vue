@@ -37,6 +37,9 @@ function revokeAll() {
           (grant) => (grant.authorization as unknown as string).split('/')[1]
         )
     })
+    .then(() => {
+      //
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

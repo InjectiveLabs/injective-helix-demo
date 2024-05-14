@@ -1,4 +1,4 @@
-import { UtilsWallets } from '@injectivelabs/wallet-ts'
+import { UtilsWallets } from '@injectivelabs/wallet-ts/dist/esm/exports'
 import {
   ErrorType,
   GeneralException,
