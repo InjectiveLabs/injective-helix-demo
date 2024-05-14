@@ -12,6 +12,8 @@ export default {
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',
+    quantity: 'Quantity',
+    notional: 'Notional',
     chart: 'Chart',
     'pro-chart': 'Pro Chart',
     depth: 'Depth',

@@ -6,7 +6,7 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
-const { values: derivativeFormValues } = useForm<DerivativesTradeForm>()
+useForm<DerivativesTradeForm>()
 
 const { value: orderType } = useStringField({
   name: DerivativesTradeFormField.Type,
@@ -17,8 +17,16 @@ const { value: orderSide } = useStringField({
   initialValue: OrderSide.Buy
 })
 
-const { isBuy, isLimitOrder, isStopOrder, feePercentage, quantity, margin } =
-  useDerivativeWorstPrice()
+const {
+  feePercentage,
+  quantity,
+  margin,
+  totalNotional,
+  totalNotionalWithFee,
+  worstPrice,
+  feeAmount,
+  marginWithFee
+} = useDerivativeWorstPrice()
 </script>
 
 <template>
@@ -26,13 +34,14 @@ const { isBuy, isLimitOrder, isStopOrder, feePercentage, quantity, margin } =
     <Whiteboard>
       {{
         {
-          ...derivativeFormValues,
-          isBuy,
-          isLimitOrder,
-          isStopOrder,
-          feePercentage,
+          margin,
           quantity,
-          margin
+          feeAmount,
+          worstPrice,
+          feePercentage,
+          totalNotional,
+          marginWithFee,
+          totalNotionalWithFee
         }
       }}
     </Whiteboard>
@@ -89,6 +98,17 @@ const { isBuy, isLimitOrder, isStopOrder, feePercentage, quantity, margin } =
     </div>
 
     <PartialsTradeFuturesFormStandardAdvancedSettings />
+
+    <PartialsTradeFuturesFormStandardDetails
+      v-bind="{
+        margin,
+        quantity,
+        feeAmount,
+        worstPrice,
+        marginWithFee,
+        totalNotional
+      }"
+    />
 
     <div>
       <PartialsTradeFuturesFormStandardCreateOrder />

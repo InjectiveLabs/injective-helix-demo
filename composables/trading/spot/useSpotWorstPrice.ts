@@ -74,29 +74,33 @@ export function useSpotWorstPrice() {
       )
     }
 
-    if (isLimitOrder.value) {
-      quantity = price
-        ? new BigNumberInBase(
-            spotFormValues.value[SpotTradeFormField.Amount] || 0
-          )
-            .div(feePercentage.value)
-            .div(price)
-        : ZERO_IN_BASE
-    }
+    if (!isBaseOrder.value) {
+      if (isLimitOrder.value) {
+        quantity = price
+          ? new BigNumberInBase(
+              spotFormValues.value[SpotTradeFormField.Amount] || 0
+            )
+              .div(feePercentage.value)
+              .div(price)
+          : ZERO_IN_BASE
+      }
 
-    if (!isLimitOrder.value) {
-      const totalAfterFees = new BigNumberInBase(
-        spotFormValues.value[SpotTradeFormField.Amount] || 0
-      ).div(feePercentage.value)
+      if (!isLimitOrder.value) {
+        const totalAfterFees = new BigNumberInBase(
+          spotFormValues.value[SpotTradeFormField.Amount] || 0
+        ).div(feePercentage.value)
 
-      const worstPrice = calculateTotalQuantity(
-        totalAfterFees.toFixed(),
-        records
-      ).worstPrice
+        const worstPrice = calculateTotalQuantity(
+          totalAfterFees.toFixed(),
+          records
+        ).worstPrice
 
-      const worstPriceWithSlippage = worstPrice.times(slippagePercentage.value)
+        const worstPriceWithSlippage = worstPrice.times(
+          slippagePercentage.value
+        )
 
-      quantity = totalAfterFees.div(worstPriceWithSlippage)
+        quantity = totalAfterFees.div(worstPriceWithSlippage)
+      }
     }
 
     return quantizeNumber(quantity, market.value.quantityTensMultiplier)
@@ -126,11 +130,10 @@ export function useSpotWorstPrice() {
     if (isLimitOrder.value) {
       const price = spotFormValues.value[SpotTradeFormField.Price] || 0
 
-      return quantity.value.times(price) // .times(feePercentage.value)
+      return quantity.value.times(price)
     }
 
     return new BigNumberInBase(worstPrice.value).times(quantity.value)
-    // .times(feePercentage.value)
   })
 
   const feeAmount = computed(() => {
