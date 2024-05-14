@@ -7,8 +7,8 @@ import {
   CosmosWalletException
 } from '@injectivelabs/exceptions'
 import { PublicKey } from '@injectivelabs/sdk-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { CHAIN_ID } from '@/app/utils/constants'
-import { walletStrategy } from '@/app/wallet-strategy'
 
 export const confirmCorrectKeplrAddress = async (injectiveAddress: string) => {
   // We only perform this check for Keplr addresses

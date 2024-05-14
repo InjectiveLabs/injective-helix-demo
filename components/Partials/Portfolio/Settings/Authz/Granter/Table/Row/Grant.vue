@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
+import {
+  GrantAuthorizationType,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   grant: {
@@ -11,7 +14,9 @@ const props = defineProps({
 const authorizationFormatted = computed(() => {
   if (
     props.grant.authorization &&
-    props.grant.authorizationType.includes('GenericAuthorization')
+    props.grant.authorizationType.includes(
+      GrantAuthorizationType.GenericAuthorization
+    )
   ) {
     return props.grant.authorization.msg
   }

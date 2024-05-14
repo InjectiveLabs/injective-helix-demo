@@ -12,6 +12,7 @@ import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import {
   validateCosmosWallet,
   confirmCorrectKeplrAddress
@@ -21,7 +22,6 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
-import { walletStrategy } from '@/app/wallet-strategy'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'

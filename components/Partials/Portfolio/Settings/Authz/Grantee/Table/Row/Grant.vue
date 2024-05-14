@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
+import {
+  GrantAuthorizationWithDecodedAuthorization,
+  GrantAuthorizationType
+} from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const authZStore = useAuthZStore()
@@ -17,7 +20,9 @@ const status = reactive(new Status(StatusType.Idle))
 const authorizationFormatted = computed(() => {
   if (
     props.grant.authorization &&
-    props.grant.authorizationType.includes('GenericAuthorization')
+    props.grant.authorizationType.includes(
+      GrantAuthorizationType.GenericAuthorization
+    )
   ) {
     return props.grant.authorization.msg
   }
