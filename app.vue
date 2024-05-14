@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { unknownTokenStatusKey } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -8,18 +9,18 @@ const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-
 const { addTokensToPriceWatchList } = useTokenUsdPrice()
 
 const status = reactive(new Status(StatusType.Loading))
+const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
-onMounted(async () => {
+onMounted(() => {
   const queryMarketId = route.query.marketId as string | undefined
 
   // coinGeckoIds only exist on verified tokens (manually added tokens to injective-list)
   addTokensToPriceWatchList(tokenStore.verifiedTokens)
 
-  await tokenStore.fetchUntrackedTokens()
+  tokenStore.fetchUntrackedTokens().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
@@ -32,6 +33,8 @@ onMounted(async () => {
   // Actions that should't block the app from loading
   Promise.all([appStore.init(), appStore.fetchBlockHeight()])
 })
+
+provide(unknownTokenStatusKey, unknownTokenStatus)
 </script>
 
 <template>

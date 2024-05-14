@@ -25,6 +25,7 @@ const balancesSorted = computed(() => {
     const hasBalance = new BigNumberInWei(balance.accountTotalBalance).gte(1)
 
     const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
+
     return hasBalance && isPartOfSearch
   })
 

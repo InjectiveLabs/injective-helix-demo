@@ -4,6 +4,7 @@ import { MarketHeaderType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
 const props = defineProps({
+  isLoading: Boolean,
   isMarketsPage: Boolean,
 
   markets: {
@@ -78,7 +79,7 @@ function handleSortBy(value: MarketHeaderType) {
 </script>
 
 <template>
-  <div>
+  <AppHocLoading v-bind="{ isLoading }">
     <PartialsMarketsCommonMarketsHeader
       v-bind="{ isAscending, sortBy }"
       @update:is-ascending="handleIsAscending"
@@ -92,5 +93,5 @@ function handleSortBy(value: MarketHeaderType) {
         v-bind="{ market, summary, volumeInUsd, isMarketsPage }"
       />
     </div>
-  </div>
+  </AppHocLoading>
 </template>

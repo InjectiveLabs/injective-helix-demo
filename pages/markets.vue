@@ -17,6 +17,7 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const search = ref('')
+const showLoading = ref(false)
 const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
@@ -45,7 +46,14 @@ const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
     .filter(({ market }) => {
-      const isPartOfCategory = marketIsPartOfCategory(category.value, market)
+      const shouldIgnoreCategory = [
+        MarketTypeOption.Themes,
+        MarketTypeOption.NewListings,
+        MarketTypeOption.Permissionless
+      ].includes(type.value)
+
+      const isPartOfCategory =
+        shouldIgnoreCategory || marketIsPartOfCategory(category.value, market)
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
@@ -54,13 +62,7 @@ const filteredMarkets = computed(() =>
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
 
-      return (
-        market.isVerified &&
-        isPartOfCategory &&
-        isPartOfType &&
-        isPartOfSearch &&
-        isQuotePair
-      )
+      return isPartOfCategory && isPartOfType && isPartOfSearch && isQuotePair
     })
     .filter((market) => marketIsActive(market.market))
 )
@@ -69,6 +71,21 @@ onMounted(() => getQuoteTokenPrice())
 
 function getQuoteTokenPrice() {
   Promise.all([appStore.pollMarkets()]).catch($onError)
+}
+
+function onMarketTypeChange(type: string) {
+  if ((type as MarketTypeOption) !== MarketTypeOption.Permissionless) {
+    return
+  }
+
+  showLoading.value = true
+
+  spotStore
+    .fetchMarkets()
+    .catch($onError)
+    .finally(() => {
+      showLoading.value = false
+    })
 }
 
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
@@ -95,6 +112,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
             v-bind="{ value }"
             class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium"
             active-classes="border-blue-500 !text-blue-500"
+            @update:model-value="onMarketTypeChange"
           >
             {{ value }}
           </AppButtonSelect>
@@ -117,7 +135,16 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
         </div>
       </div>
 
-      <div class="my-4 flex space-x-2 justify-between">
+      <div
+        v-if="
+          ![
+            MarketTypeOption.Permissionless,
+            MarketTypeOption.NewListings,
+            MarketTypeOption.Themes
+          ].includes(type)
+        "
+        class="my-4 flex space-x-2 justify-between"
+      >
         <div class="flex space-x-2">
           <AppButtonSelect
             v-for="value in Object.values(MarketCategoryType)"
@@ -149,7 +176,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page
-        v-bind="{ markets: filteredMarkets }"
+        v-bind="{ markets: filteredMarkets, isLoading: showLoading }"
       />
 
       <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />

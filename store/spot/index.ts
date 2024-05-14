@@ -195,6 +195,13 @@ export const useSpotStore = defineStore('spot', {
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
           if (!baseToken || !quoteToken) {
+            // console.log({
+            //   market: market.marketId,
+            //   baseDenom: market.baseDenom,
+            //   baseToken: market.baseToken,
+            //   quoteToken: market.quoteToken
+            // })
+
             return undefined
           }
 

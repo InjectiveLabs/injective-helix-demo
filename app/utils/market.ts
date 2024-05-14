@@ -150,7 +150,7 @@ export const marketIsPartOfCategory = (
   market: UiMarketWithToken
 ): boolean => {
   if (activeCategory === MarketCategoryType.All) {
-    return true
+    return market.isVerified
   }
 
   const isIbcBaseDenomMarket = market.baseToken.denom.startsWith('ibc')
@@ -234,6 +234,10 @@ export const marketIsPartOfType = ({
 
   if (activeType === MarketTypeOption.NewListings) {
     return newMarketsSlug.includes(market.slug)
+  }
+
+  if (activeType === MarketTypeOption.Permissionless) {
+    return !market.isVerified
   }
 
   return [market.type, market.subType].includes(

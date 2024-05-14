@@ -12,10 +12,10 @@ const props = defineProps({
   showLowBalance: Boolean
 })
 
-const accountStore = useAccountStore()
 const walletStore = useWalletStore()
-const { aggregatedPortfolioBalances } = useBalance()
+const accountStore = useAccountStore()
 const { t } = useLang()
+const { aggregatedPortfolioBalances } = useBalance()
 
 const subaccountOptions = computed(() =>
   Object.keys(aggregatedPortfolioBalances.value)

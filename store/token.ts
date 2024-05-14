@@ -104,12 +104,21 @@ export const useTokenStore = defineStore('token', {
         (denom) =>
           !tokenStore.unknownTokens.find((token) => token.denom === denom)
       )
-      const tokens = await Promise.all(
-        denomTokensToFetch.map(async (denom) => await getToken(denom))
-      )
+
+      let unknownTokens: TokenStatic[] = []
+
+      for (const denom of denomTokensToFetch) {
+        const token = await getToken(denom)
+
+        if (!token) {
+          continue
+        }
+
+        unknownTokens = [...unknownTokens, token]
+      }
 
       tokenStore.$patch({
-        unknownTokens: [...tokenStore.unknownTokens, ...tokens]
+        unknownTokens: [...tokenStore.unknownTokens, ...unknownTokens]
       })
     },
 

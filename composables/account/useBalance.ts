@@ -146,6 +146,21 @@ export function useBalance() {
     )
   })
 
+  // const userBalancesWithToken = computed(() => {
+  //   return accountStore.bankBalances.map((coin) => {
+  //     const token = tokenStore.tokenByDenomOrSymbol(coin.denom)
+  //     const usdPrice = tokenStore.tokenUsdPrice(token)
+
+  //     return {
+  //       token,
+  //       usdPrice,
+  //       denom: coin.denom,
+  //       balance: coin.amount,
+  //       balanceInUsd: new BigNumberInWei(coin.amount).times(usdPrice).toFixed()
+  //     } as AccountBalance
+  //   })
+  // })
+
   const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
       const isDefaultTradingAccount =
