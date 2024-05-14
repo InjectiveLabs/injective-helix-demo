@@ -7,7 +7,14 @@ import {
   marketIsPartOfSearch,
   marketIsPartOfCategory
 } from '@/app/utils/market'
+import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
+
+const marketTypeOptionsToHideCategory = [
+  MarketTypeOption.Themes,
+  MarketTypeOption.NewListings,
+  MarketTypeOption.Permissionless
+]
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -21,6 +28,7 @@ const showLoading = ref(false)
 const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
+const isLowVolumeMarketsVisible = ref(false)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
@@ -45,12 +53,10 @@ const favoriteMarkets = computed(() => appStore.favoriteMarkets)
 
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
-    .filter(({ market }) => {
-      const shouldIgnoreCategory = [
-        MarketTypeOption.Themes,
-        MarketTypeOption.NewListings,
-        MarketTypeOption.Permissionless
-      ].includes(type.value)
+    .filter(({ market, volumeInUsd }) => {
+      const shouldIgnoreCategory = marketTypeOptionsToHideCategory.includes(
+        type.value
+      )
 
       const isPartOfCategory =
         shouldIgnoreCategory || marketIsPartOfCategory(category.value, market)
@@ -62,7 +68,17 @@ const filteredMarkets = computed(() =>
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
 
-      return isPartOfCategory && isPartOfType && isPartOfSearch && isQuotePair
+      const isLowVolumeMarket =
+        isLowVolumeMarketsVisible.value ||
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+
+      return (
+        isLowVolumeMarket &&
+        isPartOfCategory &&
+        isPartOfType &&
+        isPartOfSearch &&
+        isQuotePair
+      )
     })
     .filter((market) => marketIsActive(market.market))
 )
@@ -135,17 +151,11 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
         </div>
       </div>
 
-      <div
-        v-if="
-          ![
-            MarketTypeOption.Permissionless,
-            MarketTypeOption.NewListings,
-            MarketTypeOption.Themes
-          ].includes(type)
-        "
-        class="my-4 flex space-x-2 justify-between"
-      >
-        <div class="flex space-x-2">
+      <div class="my-4 flex space-x-2 justify-between">
+        <div
+          v-if="!marketTypeOptionsToHideCategory.includes(type)"
+          class="flex space-x-2"
+        >
           <AppButtonSelect
             v-for="value in Object.values(MarketCategoryType)"
             :key="value"
@@ -158,17 +168,25 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
           </AppButtonSelect>
         </div>
 
-        <div class="flex space-x-2">
-          <AppButtonSelect
-            v-for="value in Object.values(MarketQuoteType)"
-            :key="value"
-            v-model="activeQuote"
-            v-bind="{ value }"
-            class="py-1 px-3 text-gray-400 text-xs uppercase bg-brand-800 rounded"
-            active-classes="text-white !bg-brand-700"
-          >
-            {{ value }}
-          </AppButtonSelect>
+        <div v-else></div>
+
+        <div class="flex items-center space-x-3">
+          <div class="flex space-x-2">
+            <AppButtonSelect
+              v-for="value in Object.values(MarketQuoteType)"
+              :key="value"
+              v-model="activeQuote"
+              v-bind="{ value }"
+              class="py-1 px-3 text-gray-400 text-xs uppercase bg-brand-800 rounded"
+              active-classes="text-white !bg-brand-700"
+            >
+              {{ value }}
+            </AppButtonSelect>
+          </div>
+
+          <AppCheckbox v-model="isLowVolumeMarketsVisible" class="ml-4" is-sm>
+            {{ $t('markets.showLowVol') }}
+          </AppCheckbox>
         </div>
       </div>
 
