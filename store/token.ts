@@ -90,10 +90,6 @@ export const useTokenStore = defineStore('token', {
     async fetchUntrackedTokens() {
       const tokenStore = useTokenStore()
 
-      if (tokenStore.unknownTokens.length > 0) {
-        return
-      }
-
       const { supply } = await tokenCacheApi.fetchTotalSupply()
 
       const denomsWithoutTokens = supply

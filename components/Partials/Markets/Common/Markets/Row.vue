@@ -64,12 +64,21 @@ function toggleFavorite() {
 
 <template>
   <NuxtLink
-    :to="{
-      name: `${
-        market.type === SharedMarketType.Spot ? 'spot' : 'futures'
-      }-slug`,
-      params: { slug: market.slug }
-    }"
+    :to="
+      market.isVerified
+        ? {
+            name: `${
+              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
+            }-slug`,
+            params: { slug: market.slug }
+          }
+        : {
+            name: `${
+              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
+            }`,
+            query: { marketId: market.marketId }
+          }
+    "
     class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white odd:bg-brand-875/30"
   >
     <div class="flex items-center flex-[2] truncate min-w-0">

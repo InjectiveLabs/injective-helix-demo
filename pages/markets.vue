@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   marketIsActive,
   marketIsQuotePair,
@@ -8,7 +8,12 @@ import {
   marketIsPartOfCategory
 } from '@/app/utils/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
-import { MarketTypeOption, MarketCategoryType, MarketQuoteType } from '@/types'
+import {
+  MarketQuoteType,
+  MarketTypeOption,
+  MarketCategoryType,
+  unknownTokenStatusKey
+} from '@/types'
 
 const marketTypeOptionsToHideCategory = [
   MarketTypeOption.Themes,
@@ -24,11 +29,11 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const search = ref('')
-const showLoading = ref(false)
 const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 const isLowVolumeMarketsVisible = ref(false)
+const permissionlessStatus = reactive(new Status(StatusType.Idle))
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
@@ -89,29 +94,33 @@ function getQuoteTokenPrice() {
   Promise.all([appStore.pollMarkets()]).catch($onError)
 }
 
-function onMarketTypeChange(type: string) {
+async function onMarketTypeChange(type: string) {
   if ((type as MarketTypeOption) !== MarketTypeOption.Permissionless) {
     return
   }
 
-  showLoading.value = true
+  permissionlessStatus.setLoading()
+
+  await until(unknownTokenStatus).toMatch((status) => status.isIdle())
 
   spotStore
     .fetchMarkets()
     .catch($onError)
-    .finally(() => {
-      showLoading.value = false
-    })
+    .finally(() => permissionlessStatus.setIdle())
 }
 
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
+
+const unknownTokenStatus = inject(
+  unknownTokenStatusKey,
+  new Status(StatusType.Loading)
+)
 </script>
 
 <template>
   <div>
     <div class="container py-10">
       <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
-
       <PartialsMarketsNewMarkets
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
         class="my-10"
@@ -194,7 +203,10 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page
-        v-bind="{ markets: filteredMarkets, isLoading: showLoading }"
+        v-bind="{
+          markets: filteredMarkets,
+          isLoading: permissionlessStatus.isLoading()
+        }"
       />
 
       <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
