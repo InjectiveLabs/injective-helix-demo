@@ -21,6 +21,7 @@ const formValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
+
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
 )

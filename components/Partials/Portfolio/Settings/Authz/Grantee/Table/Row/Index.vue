@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { GrantAuthorization } from '@injectivelabs/sdk-ts'
-
+import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
@@ -10,7 +9,7 @@ const props = defineProps({
   },
 
   grants: {
-    type: Array as PropType<GrantAuthorization[]>,
+    type: Array as PropType<GrantAuthorizationWithDecodedAuthorization[]>,
     required: true
   }
 })
@@ -33,9 +32,7 @@ function revokeAll() {
       grantee: props.grantee,
       messageTypes: props.grants
         .filter((grant) => grant.authorization)
-        .map(
-          (grant) => (grant.authorization as unknown as string).split('/')[1]
-        )
+        .map((grant) => grant.authorizationType)
     })
     .then(() => {
       //
@@ -80,7 +77,7 @@ function revokeAll() {
     <PartialsPortfolioSettingsAuthzGranteeTableRowGrant
       v-for="grant in grants"
       v-bind="{ grant }"
-      :key="`${grant.authorization}-${grant.grantee}-${grant.granter}`"
+      :key="`${grant.authorizationType}-${grant.grantee}-${grant.granter}`"
     />
   </AppCollapse>
 </template>

@@ -7,14 +7,14 @@ import {
 } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
-  LEGACY_MARKETIDS,
+  LEGACY_MARKET_IDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
   GST_MIN_TRADING_SIZE_LOW,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  LEGACY_MARKET_TO_CURRENT_MARKETID_MAP,
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
+  LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP,
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 } from '@/app/utils/constants'
 import {
   spotGridMarkets,
@@ -229,8 +229,9 @@ function onCreateStrategy() {
 
   const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
     authZStore.granterGrants.some(
-      (g) =>
-        g.authorization.endsWith(m) && g.grantee === gridMarket?.contractAddress
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
     )
   )
 
@@ -261,13 +262,13 @@ const hasActiveLegacyStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) =>
       strategy.marketId ===
-      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.market.marketId]
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]
   )
 )
 
 const isLegacyMarket = computed(
   () =>
-    !!LEGACY_MARKETIDS.find((marketId) => marketId === props.market.marketId)
+    !!LEGACY_MARKET_IDS.find((marketId) => marketId === props.market.marketId)
 )
 
 const newMarketSlug = computed(
@@ -275,7 +276,7 @@ const newMarketSlug = computed(
     spotStore.markets.find(
       (market) =>
         market.marketId ===
-        LEGACY_MARKET_TO_CURRENT_MARKETID_MAP[props.market.marketId]
+        LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP[props.market.marketId]
     )?.slug || ''
 )
 

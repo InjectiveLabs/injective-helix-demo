@@ -5,7 +5,8 @@ import {
   getDefaultSubaccountId,
   PrivateKey,
   MsgGrant,
-  MsgSend
+  MsgSend,
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -719,10 +720,10 @@ export const useWalletStore = defineStore('wallet', {
         .filter((type) => type.includes('exchange'))
         .map((messageType) =>
           MsgGrant.fromJSON({
-            messageType: `/${messageType}`,
             grantee: injAddress,
             granter: walletStore.injectiveAddress,
-            expiryInSeconds: Date.now() / 1000 + 60 * 60
+            expiryInSeconds: Date.now() / 1000 + 60 * 60,
+            authorization: getGenericAuthorizationFromMessageType(messageType)
           })
         )
 

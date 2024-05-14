@@ -32,6 +32,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
           )
       )
     },
+
     removedStrategies: (state) => {
       const spotStore = useSpotStore()
 
