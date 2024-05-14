@@ -92,12 +92,6 @@ export type MaxAmountOnOrderbook = {
   totalQuantity: BigNumberInBase
 }
 
-export enum USDCSymbol {
-  PeggyEthereum = 'USDC',
-  WormholeEthereum = 'USDCet',
-  WormholeSolana = 'USDCso'
-}
-
 export type MarketMarkPrice = {
   price: string
   marketId: string

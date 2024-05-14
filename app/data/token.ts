@@ -2,7 +2,12 @@ import {
   getCw20FromSymbolOrNameAsString,
   getPeggyDenomFromSymbolOrNameAsString
 } from '@/app/utils/helper'
-import { USDCSymbol } from '@/types'
+
+export enum USDCSymbol {
+  PeggyEthereum = 'USDC',
+  WormholeEthereum = 'USDCet',
+  WormholeSolana = 'USDCso'
+}
 
 export const TokenSymbols = {
   WETH: 'wETH',
@@ -26,11 +31,7 @@ export const usdcTokenDenom = {
   )
 }
 
-export const usdcTokenDenoms = [
-  usdcTokenDenom.USDC,
-  usdcTokenDenom.USDCet
-  // usdcTokenDenom.USDCso
-]
+export const usdcTokenDenoms = Object.values(usdcTokenDenom)
 
 export const stableCoinDenoms = [
   'USDT',

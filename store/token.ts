@@ -80,8 +80,10 @@ export const useTokenStore = defineStore('token', {
 
     verifiedTokens: (_): TokenStatic[] => {
       return tokens.filter(
-        (token) => token.tokenVerification === TokenVerification.Verified
-      )
+        (token) =>
+          (token.tokenVerification as TokenVerification) ===
+          TokenVerification.Verified
+      ) as TokenStatic[]
     }
   },
   actions: {

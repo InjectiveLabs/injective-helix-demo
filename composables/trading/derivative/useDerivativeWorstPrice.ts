@@ -9,7 +9,11 @@ import {
   TradeAmountOption,
   derivativeMarketKey
 } from '@/types'
-import { calculateTotalQuantity } from '~/app/utils/helpers'
+import {
+  calculateTotalQuantity,
+  calculateWorstPrice,
+  quantizeNumber
+} from '@/app/utils/helpers'
 
 export function useDerivativeWorstPrice() {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -44,7 +48,10 @@ export function useDerivativeWorstPrice() {
       ] as DerivativeTradeTypes
     )
   )
+
   const feePercentage = computed(() => {
+    const leverage =
+      derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
     const feePercentage =
       (isLimitOrder.value &&
         derivativeFormValues.value[DerivativesTradeFormField.PostOnly]) ||
@@ -52,11 +59,9 @@ export function useDerivativeWorstPrice() {
         ? market.value.makerFeeRate
         : market.value.takerFeeRate
 
-    const fee = isBuy.value
-      ? new BigNumberInBase(1).plus(feePercentage)
-      : new BigNumberInBase(1).minus(feePercentage)
+    const feeWithLeverage = new BigNumberInBase(feePercentage).times(leverage)
 
-    return fee
+    return new BigNumberInBase(1).plus(feeWithLeverage)
   })
 
   const slippagePercentage = computed(() => {
@@ -85,65 +90,147 @@ export function useDerivativeWorstPrice() {
     let quantity
 
     if (isBaseOrder.value) {
-      return derivativeFormValues.value[DerivativesTradeFormField.Amount]
-    }
-
-    // is quote order
-
-    if (isLimitOrder.value) {
-      const amount = new BigNumberInBase(
+      quantity = new BigNumberInBase(
         derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
       )
+    } else {
+      // is quote order
 
-      quantity = price
-        ? amount.div(feePercentage.value).div(price)
-        : ZERO_IN_BASE
-    }
+      if (isLimitOrder.value) {
+        const amount = new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
+        )
 
-    if (!isLimitOrder.value) {
-      const totalAfterFees = new BigNumberInBase(
-        derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
-      ).div(feePercentage.value)
+        quantity = price
+          ? amount.div(feePercentage.value).div(price)
+          : ZERO_IN_BASE
+      }
 
-      const worstPrice = calculateTotalQuantity(
-        totalAfterFees.toFixed(),
-        records
-      ).worstPrice
+      if (!isLimitOrder.value) {
+        const totalAfterFees = new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
+        ).div(feePercentage.value)
 
-      const worstPriceWithSlippage = worstPrice.times(slippagePercentage.value)
+        const worstPrice = calculateTotalQuantity(
+          totalAfterFees.toFixed(),
+          records
+        ).worstPrice
 
-      const triggerPriceWithSlippage = triggerPrice.times(
-        slippagePercentage.value
-      )
+        const worstPriceWithSlippage = worstPrice.times(
+          slippagePercentage.value
+        )
 
-      if (isStopOrder.value) {
-        quantity = triggerPrice
-          ? totalAfterFees.div(triggerPriceWithSlippage)
-          : 0
-      } else {
-        quantity = totalAfterFees.div(worstPriceWithSlippage)
+        const triggerPriceWithSlippage = triggerPrice.times(
+          slippagePercentage.value
+        )
+
+        if (isStopOrder.value) {
+          quantity = triggerPrice
+            ? totalAfterFees.div(triggerPriceWithSlippage)
+            : ZERO_IN_BASE
+        } else {
+          quantity = totalAfterFees.div(worstPriceWithSlippage)
+        }
       }
     }
 
-    return quantity
+    if (!quantity) {
+      return ZERO_IN_BASE
+    }
+
+    return quantizeNumber(quantity, market.value.quantityTensMultiplier)
   })
 
-  const total = computed(() => {
-    return 2
+  const worstPrice = computed(() => {
+    const price = new BigNumberInBase(
+      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+    )
+
+    const triggerPrice = new BigNumberInBase(
+      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || 0
+    )
+
+    let worstPrice
+
+    if (isLimitOrder.value) {
+      worstPrice = quantizeNumber(price, market.value.priceTensMultiplier)
+    }
+
+    if (!isLimitOrder.value) {
+      if (isStopOrder.value) {
+        const priceWithSlippage = triggerPrice.times(slippagePercentage.value)
+
+        worstPrice = priceWithSlippage
+      } else {
+        const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+
+        worstPrice = calculateWorstPrice(
+          quantity.value.toString(),
+          records
+        ).worstPrice.times(slippagePercentage.value)
+      }
+    }
+
+    if (!worstPrice) {
+      return ZERO_IN_BASE
+    }
+
+    return quantizeNumber(worstPrice, market.value.priceTensMultiplier)
+  })
+
+  const totalNotional = computed(() => {
+    if (isLimitOrder.value) {
+      const price =
+        derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+
+      return quantity.value.times(price)
+    }
+
+    return new BigNumberInBase(worstPrice.value).times(quantity.value)
+  })
+
+  const feeAmount = computed(() => {
+    const amount = new BigNumberInBase(
+      totalNotional.value.times(feePercentage.value.minus(1)).abs()
+    )
+    if (
+      isLimitOrder.value &&
+      derivativeFormValues.value[DerivativesTradeFormField.PostOnly]
+    ) {
+      return amount.times(-1)
+    }
+    return amount
+  })
+
+  const totalNotionalWithFee = computed(() => {
+    return totalNotional.value.plus(feeAmount.value)
   })
 
   const margin = computed(() => {
-    return 1
+    return quantizeNumber(
+      totalNotional.value.div(
+        derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
+      ),
+      market.value.priceTensMultiplier
+    )
+  })
+
+  const marginWithFee = computed(() => {
+    return margin.value.plus(feeAmount.value)
   })
 
   return {
     feePercentage,
     isLimitOrder,
     isStopOrder,
+    worstPrice,
     quantity,
     market,
     margin,
     isBuy,
-    total
+    feeAmount,
+    totalNotional,
+    marginWithFee,
+    totalNotionalWithFee
   }
 }
