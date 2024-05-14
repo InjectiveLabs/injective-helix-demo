@@ -9,12 +9,20 @@ import { blacklistedAddresses } from '@/app/data/wallet-address'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 
 export const connect = ({
-  wallet
+  wallet,
+  options
 }: {
   wallet: Wallet
+  options?: {
+    privateKey?: string
+  }
   // onAccountChangeCallback?: (account: string) => void,
 }) => {
   walletStrategy.setWallet(wallet)
+
+  if (wallet === Wallet.PrivateKey && options?.privateKey) {
+    walletStrategy.setOptions({ privateKey: options?.privateKey })
+  }
 }
 
 export const getAddresses = async (): Promise<string[]> => {

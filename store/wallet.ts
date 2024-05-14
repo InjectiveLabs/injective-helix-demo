@@ -54,7 +54,7 @@ type WalletStoreState = {
   }
 
   autoSign?: {
-    pk: string
+    privateKey: string
     injAddress: string
     expiration: number
   }
@@ -137,9 +137,10 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
-      await connect({ wallet: walletStore.wallet })
-
-      walletStore.initAutoSign()
+      await connect({
+        wallet: walletStore.wallet,
+        options: { privateKey: walletStore.autoSign?.privateKey }
+      })
     },
 
     async connectWallet(wallet: Wallet) {
@@ -632,6 +633,7 @@ export const useWalletStore = defineStore('wallet', {
       const gridStrategyStore = useGridStrategyStore()
 
       await walletStrategy.disconnect()
+
       mixpanelAnalytics.trackLogout()
 
       walletStore.reset()
@@ -647,6 +649,13 @@ export const useWalletStore = defineStore('wallet', {
       gridStrategyStore.$patch({ strategies: [] })
     },
 
+    async disconnectAutoSign() {
+      const walletStore = useWalletStore()
+
+      await walletStore.resetAutoSign()
+      await connect({ wallet: walletStore.wallet })
+    },
+
     reset() {
       const walletStore = useWalletStore()
 
@@ -659,6 +668,8 @@ export const useWalletStore = defineStore('wallet', {
       } = initialStateFactory()
 
       walletStore.resetAuthZ()
+      walletStore.resetAutoSign()
+
       walletStore.$patch({
         address,
         addresses,
@@ -681,11 +692,18 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
+    resetAutoSign() {
+      const walletStore = useWalletStore()
+
+      walletStore.$patch({
+        autoSign: undefined
+      })
+    },
+
     async connectAutoSign() {
       const walletStore = useWalletStore()
 
       const { privateKey } = PrivateKey.generate()
-      const pk = privateKey.toPrivateKeyHex()
       const injAddress = privateKey.toBech32()
 
       const msg = MsgSend.fromJSON({
@@ -697,48 +715,36 @@ export const useWalletStore = defineStore('wallet', {
         srcInjectiveAddress: walletStore.injectiveAddress
       })
 
-      const authZMsgs = Object.values(MsgType).map((messageType) =>
-        MsgGrant.fromJSON({
-          messageType: `/${messageType}`,
-          grantee: injAddress,
-          granter: walletStore.injectiveAddress,
-          expiryInSeconds: Date.now() / 1000 + 60 * 60
-        })
-      )
+      const authZMsgs = Object.values(MsgType)
+        .filter((type) => type.includes('exchange'))
+        .map((messageType) =>
+          MsgGrant.fromJSON({
+            messageType: `/${messageType}`,
+            grantee: injAddress,
+            granter: walletStore.injectiveAddress,
+            expiryInSeconds: Date.now() / 1000 + 60 * 60
+          })
+        )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: [msg, ...authZMsgs],
         injectiveAddress: walletStore.injectiveAddress
       })
 
-      walletStore.$patch({
-        autoSign: {
-          injAddress,
-          pk,
-          expiration: Date.now() + 1000 * 60 * 60
-        }
-      })
-
-      walletStore.initAutoSign()
-    },
-
-    disconnectAutoSign() {
-      const walletStore = useWalletStore()
-
-      walletStrategy.setWallet(walletStore.wallet)
-
-      walletStore.$patch({
-        autoSign: undefined
-      })
-    },
-
-    initAutoSign() {
-      const walletStore = useWalletStore()
-
-      if (walletStore.autoSign) {
-        walletStrategy.setWallet(Wallet.PrivateKey)
-        walletStrategy.setOptions({ privateKey: walletStore.autoSign.pk })
+      const autoSign = {
+        injAddress,
+        privateKey: privateKey.toHex(),
+        expiration: Date.now() + 1000 * 60 * 60
       }
+
+      walletStore.$patch({
+        autoSign
+      })
+
+      await connect({
+        wallet: Wallet.PrivateKey,
+        options: { privateKey: autoSign.privateKey }
+      })
     }
   }
 })
