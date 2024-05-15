@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
+import {
+  GenericAuthorization,
+  GrantAuthorizationType,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
@@ -31,8 +35,15 @@ function revokeAll() {
     .revokeAuthorization({
       grantee: props.grantee,
       messageTypes: props.grants
-        .filter((grant) => grant.authorization)
-        .map((grant) => grant.authorizationType)
+        .filter(
+          (grant) =>
+            /** TODO: filter other types of authorization when we add them */
+            grant.authorization &&
+            grant.authorizationType.includes(
+              GrantAuthorizationType.GenericAuthorization
+            )
+        )
+        .map((grant) => (grant.authorization as GenericAuthorization).msg)
     })
     .then(() => {
       //
