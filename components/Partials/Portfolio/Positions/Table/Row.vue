@@ -11,6 +11,7 @@ const props = defineProps({
 })
 
 const tokenStore = useTokenStore()
+const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 const { $onError } = useNuxtApp()
 
@@ -30,8 +31,21 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
+const { success, error } = useNotifications()
+const { t } = useLang()
+
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
 // const limitCloseStatus = reactive(new Status(StatusType.Idle))
+
+const reduceOnlyCurrentOrders = computed(() =>
+  derivativeStore.subaccountOrders.filter(
+    (order) => order.isReduceOnly && order.marketId === props.position.marketId
+  )
+)
+
+const hasReduceOnlyOrders = computed(
+  () => reduceOnlyCurrentOrders.value.length > 0
+)
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   quantity,
@@ -77,14 +91,58 @@ const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
   }
 )
 
+function closePositionClicked() {
+  if (!market.value) {
+    return
+  }
+
+  if (pnl.value.isNaN()) {
+    return error({ title: t('trade.no_liquidity') })
+  }
+
+  if (hasReduceOnlyOrders.value) {
+    return closePositionAndReduceOnlyOrders()
+  }
+
+  closePosition()
+}
+
 function closePosition() {
+  if (!market.value) {
+    return
+  }
+
+  marketCloseStatus.setLoading()
+
+  positionStore
+    .closePosition({
+      position: props.position,
+      market: market.value
+    })
+    .then(() => {
+      success({ title: t('trade.position_closed') })
+    })
+    .catch($onError)
+    .finally(() => {
+      marketCloseStatus.setIdle()
+    })
+}
+
+function closePositionAndReduceOnlyOrders() {
+  if (!market.value) {
+    return
+  }
+
   marketCloseStatus.setLoading()
 
   positionStore
     .closePositionAndReduceOnlyOrders({
-      position: props.position,
       market: market.value,
-      reduceOnlyOrders: []
+      position: props.position,
+      reduceOnlyOrders: reduceOnlyCurrentOrders.value
+    })
+    .then(() => {
+      success({ title: t('trade.position_closed') })
     })
     .catch($onError)
     .finally(() => {
@@ -141,7 +199,12 @@ function closePosition() {
       </div>
     </div>
 
-    <div class="flex-1 flex items-center p-2">{{ marginToString }}</div>
+    <div class="flex-1 flex items-center p-2 space-x-2">
+      <span>{{ marginToString }}</span>
+      <div class="p-2 rounded-full bg-gray-800">
+        <BaseIcon name="plus" is-xs />
+      </div>
+    </div>
     <div class="flex-1 flex items-center p-2">
       {{ effectiveLeverage.toFormat(2) }}x
     </div>
@@ -152,9 +215,9 @@ function closePosition() {
         size="sm"
         variant="danger-ghost"
         class="basis-16 shrink-0"
-        @click="closePosition"
+        @click="closePositionClicked"
       >
-        Market
+        {{ $t('trade.market') }}
       </AppButton>
       <AppButton size="sm" variant="danger-ghost"> Limit </AppButton>
 
