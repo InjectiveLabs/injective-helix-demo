@@ -24,7 +24,7 @@ const authorizationFormatted = computed(() => {
       GrantAuthorizationType.GenericAuthorization
     )
   ) {
-    return props.grant.authorization.msg
+    return props.grant.authorization.msg.split('.').reverse()[0]
   }
 })
 
