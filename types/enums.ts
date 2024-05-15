@@ -460,7 +460,7 @@ export enum MarketTypeOption {
   Favorites = 'favorites',
   Spot = 'Spot',
   Derivative = 'Derivative',
-  NewListings = 'new-listings',
+  NewListings = 'New Listings',
   Permissionless = 'permissionless',
   Themes = 'themes'
 }

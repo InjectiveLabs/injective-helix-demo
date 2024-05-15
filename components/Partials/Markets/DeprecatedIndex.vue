@@ -55,8 +55,6 @@ const recentlyExpiredMarkets = computed(() =>
   )
 )
 
-const favoriteMarkets = computed(() => appStore.favoriteMarkets)
-
 const filteredMarkets = computed(() =>
   props.markets
     .filter(({ market, volumeInUsd }) => {
@@ -67,7 +65,7 @@ const filteredMarkets = computed(() =>
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
-        favoriteMarkets: favoriteMarkets.value,
+        favoriteMarkets: appStore.favoriteMarkets,
         activeType: activeType.value as MarketTypeOption
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)

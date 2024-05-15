@@ -97,13 +97,13 @@ const isLowVolumeMarketsVisibleValue = computed({
         </div>
       </div>
 
-      <AppCheckbox
+      <AppCheckbox2
         v-model="isLowVolumeMarketsVisibleValue"
         is-sm
         class="2xl:ml-2 3xl:ml-0 lg:mb-2 3xl:mb-0"
       >
         {{ $t('markets.showLowVol') }}
-      </AppCheckbox>
+      </AppCheckbox2>
     </div>
 
     <div class="w-full mt-4">

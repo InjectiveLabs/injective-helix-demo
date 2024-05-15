@@ -54,8 +54,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   })
 )
 
-const favoriteMarkets = computed(() => appStore.favoriteMarkets)
-
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
     .filter(({ market, volumeInUsd }) => {
@@ -68,7 +66,7 @@ const filteredMarkets = computed(() =>
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
-        favoriteMarkets: favoriteMarkets.value,
+        favoriteMarkets: appStore.favoriteMarkets,
         activeType: type.value
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
@@ -193,13 +191,12 @@ const unknownTokenStatus = inject(
             </AppButtonSelect>
           </div>
 
-          <AppCheckbox v-model="isLowVolumeMarketsVisible" class="ml-4" is-sm>
+          <AppCheckbox2 v-model="isLowVolumeMarketsVisible" class="ml-4" is-sm>
             {{ $t('markets.showLowVol') }}
-          </AppCheckbox>
+          </AppCheckbox2>
         </div>
       </div>
 
-      <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page
@@ -210,7 +207,6 @@ const unknownTokenStatus = inject(
       />
 
       <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
-      <!-- </div> -->
     </div>
   </div>
 </template>
