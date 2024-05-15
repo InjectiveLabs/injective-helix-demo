@@ -113,6 +113,7 @@ type MenuItemBase = {
   label: string
   description?: string
   icon?: Component
+  isExternal?: boolean
 }
 
 export type MenuItem =

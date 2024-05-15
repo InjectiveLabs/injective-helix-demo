@@ -86,7 +86,8 @@ export const MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'openLiquidityProgram',
         description: 'openLiquidityProgramDescription',
-        to: '/trade-and-earn'
+        to: 'https://trading.injective.network/program/liquidity',
+        isExternal: true
       }
     ]
   },
