@@ -1,5 +1,34 @@
 <script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
+
 const walletStore = useWalletStore()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Idle))
+
+function connectAutoSign() {
+  status.setLoading()
+
+  walletStore
+    .connectAutoSign()
+    .then(() => {
+      //
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
+}
+
+function disconnectAutoSign() {
+  status.setLoading()
+
+  walletStore
+    .disconnectAutoSign()
+    .then(() => {
+      //
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
+}
 </script>
 
 <template>
@@ -24,14 +53,16 @@ const walletStore = useWalletStore()
         <AppButton
           v-if="!walletStore.autoSign"
           variant="success"
-          @click="walletStore.connectAutoSign"
+          :status="status"
+          @click="connectAutoSign"
         >
           Enable Auto-Sign
         </AppButton>
         <AppButton
           v-else
           variant="danger"
-          @click="walletStore.disconnectAutoSign"
+          :status="status"
+          @click="disconnectAutoSign"
         >
           Disconnect Auto-Sign
         </AppButton>

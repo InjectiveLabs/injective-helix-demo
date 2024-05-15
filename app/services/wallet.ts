@@ -5,6 +5,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { HttpClient } from '@injectivelabs/utils'
 import { blacklistedAddresses } from '@/app/data/wallet-address'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 
@@ -21,7 +22,7 @@ export const connect = ({
   walletStrategy.setWallet(wallet)
 
   if (wallet === Wallet.PrivateKey && options?.privateKey) {
-    walletStrategy.setOptions({ privateKey: options?.privateKey })
+    walletStrategy.setOptions({ privateKey: options.privateKey })
   }
 }
 
@@ -69,4 +70,15 @@ export const getAddresses = async (): Promise<string[]> => {
 
 export const confirm = async (address: string) => {
   return await walletStrategy.getSessionOrConfirm(address)
+}
+
+export const autoSignCreateAccountNoThrow = async (address: string) => {
+  try {
+    await new HttpClient('https://api.express.injective.dev').post(
+      '/create-account',
+      { address }
+    )
+  } catch (e) {
+    // do nothing
+  }
 }

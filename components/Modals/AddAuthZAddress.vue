@@ -34,7 +34,7 @@ const { value: addressValue, errorMessage } = useStringField({
   rule: 'required|injAddress'
 })
 
-async function grantAuthotization() {
+async function grantAuthorization() {
   const { valid } = await validate()
   if (!valid) {
     return
@@ -105,7 +105,7 @@ function closeModal() {
           :disabled="errorMessage || msgs.length === 0"
           class="w-full"
           variant="primary"
-          @click="grantAuthotization"
+          @click="grantAuthorization"
         >
           Add Authz
         </AppButton>

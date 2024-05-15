@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 import {
+  MsgGrant,
+  PrivateKey,
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId,
-  PrivateKey,
-  MsgGrant,
-  MsgSend,
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
@@ -26,7 +25,12 @@ import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
-import { confirm, connect, getAddresses } from '@/app/services/wallet'
+import {
+  autoSignCreateAccountNoThrow,
+  confirm,
+  connect,
+  getAddresses
+} from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
 
@@ -139,7 +143,9 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       await connect({
-        wallet: walletStore.wallet,
+        wallet: walletStore.autoSign?.privateKey
+          ? Wallet.PrivateKey
+          : walletStore.wallet,
         options: { privateKey: walletStore.autoSign?.privateKey }
       })
     },
@@ -705,22 +711,13 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       const { privateKey } = PrivateKey.generate()
-      const injAddress = privateKey.toBech32()
-
-      const msg = MsgSend.fromJSON({
-        amount: {
-          amount: '1',
-          denom: 'inj'
-        },
-        dstInjectiveAddress: injAddress,
-        srcInjectiveAddress: walletStore.injectiveAddress
-      })
+      const injectiveAddress = privateKey.toBech32()
 
       const authZMsgs = Object.values(MsgType)
         .filter((type) => type.includes('exchange'))
         .map((messageType) =>
           MsgGrant.fromJSON({
-            grantee: injAddress,
+            grantee: injectiveAddress,
             granter: walletStore.injectiveAddress,
             expiryInSeconds: Date.now() / 1000 + 60 * 60,
             authorization: getGenericAuthorizationFromMessageType(messageType)
@@ -728,12 +725,19 @@ export const useWalletStore = defineStore('wallet', {
         )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
-        msgs: [msg, ...authZMsgs],
+        msgs: authZMsgs,
         injectiveAddress: walletStore.injectiveAddress
       })
 
+      /**
+       * TEMPORARY SOLUTION
+       * Send 1e-18 INJ to the address to make sure
+       * the account is created on chain
+       */
+      await autoSignCreateAccountNoThrow(injectiveAddress)
+
       const autoSign = {
-        injAddress,
+        injectiveAddress,
         privateKey: privateKey.toHex(),
         expiration: Date.now() + 1000 * 60 * 60
       }
