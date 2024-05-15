@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { MENU_ITEMS, USER_MENU_ITEMS } from '~/app/data/menu'
-import { MenuItemType } from '~/types'
+import { MENU_ITEMS, USER_MENU_ITEMS } from '@/app/data/menu'
+import { MenuItemType } from '@/types'
 
 const walletStore = useWalletStore()
 

@@ -80,14 +80,14 @@ function handleSortBy(value: MarketHeaderType) {
 
 <template>
   <AppHocLoading v-bind="{ isLoading }">
-    <PartialsMarketsCommonMarketsHeader
+    <PartialsMarketsCommonHeader
       v-bind="{ isAscending, sortBy }"
       @update:is-ascending="handleIsAscending"
       @update:sort-by="handleSortBy"
     />
 
     <div class="divide-y">
-      <PartialsMarketsCommonMarketsRow
+      <PartialsMarketsCommonRow
         v-for="{ market, summary, volumeInUsd } in sortedMarkets"
         :key="market.marketId"
         v-bind="{ market, summary, volumeInUsd, isMarketsPage }"

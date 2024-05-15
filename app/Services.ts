@@ -3,6 +3,7 @@ import {
   IndexerGrpcTradingApi,
   ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
+  IndexerGrpcArchiverApi,
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
@@ -24,6 +25,10 @@ export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
 /** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
+)
+
+export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
+  'https://devnet.api.injective.dev'
 )
 
 export const indexerRestLeaderboardChronosApi =

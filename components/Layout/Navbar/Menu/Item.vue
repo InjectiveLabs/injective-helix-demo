@@ -44,6 +44,7 @@ function close() {
       'w-[300px]': level > 0
     }"
     :to="item.to"
+    :target="item?.isExternal ? '_blank' : ''"
     @click="closeAllMenus"
   >
     <div>
