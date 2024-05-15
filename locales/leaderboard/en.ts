@@ -2,8 +2,8 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   leaderboard: {
-    title: 'Helix Trading Leaderboard',
-    description: 'Highest accumulated trading volume',
+    title: 'Leaderboard',
+    description: 'Weekly top 100 traders with the highest trading PnL',
     tabs: {
       overall: 'Overall',
       volume: 'Volume',
@@ -20,7 +20,9 @@ export default {
     },
     rank: 'Rank',
     address: 'Address',
-    volume: 'Volume',
+    weeklyROI: 'Weekly ROI',
+    weeklyPnL: 'Weekly Trading PnL',
+    volume: 'Volume (USD)',
     volumePercentage: '% Volume',
     emptyHeader: 'No rankings found',
     emptyDescription: 'No rankings found',

@@ -9,6 +9,7 @@ import ListNested from '@/components/Asset/Menu/ListNested.vue'
 
 export const MENU_ITEMS: MenuItem[] = [
   { type: MenuItemType.Link, label: 'markets', to: { name: MainPage.Markets } },
+
   {
     type: MenuItemType.Dropdown,
     label: 'trade',
@@ -52,11 +53,13 @@ export const MENU_ITEMS: MenuItem[] = [
       }
     ]
   },
+
   {
     type: MenuItemType.Link,
     label: 'liquidity',
     to: '/trading-bots/liquidity-bots/spot/'
   },
+
   {
     type: MenuItemType.Dropdown,
     label: 'rewards',
@@ -86,6 +89,12 @@ export const MENU_ITEMS: MenuItem[] = [
         to: '/trade-and-earn'
       }
     ]
+  },
+
+  {
+    type: MenuItemType.Link,
+    label: 'leaderboard',
+    to: { name: MainPage.PnlLeaderboard }
   }
 ]
 
