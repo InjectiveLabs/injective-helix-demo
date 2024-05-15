@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 import { TradeForm, UiMarketWithToken } from '@/types'
@@ -31,10 +30,6 @@ const props = defineProps({
 })
 
 const { tradingTypeMarket } = useDerivativeFormFormatter(formValues)
-
-const isBinaryOption = computed(
-  () => props.market.subType === SharedMarketType.BinaryOptions
-)
 
 const { valueToString: notionalValueToFormat } = useSharedBigNumberFormatter(
   computed(() => props.notionalValue),
@@ -96,7 +91,7 @@ const { valueToString: liquidationPriceToFormat } = useSharedBigNumberFormatter(
         </CommonTextInfo>
 
         <CommonTextInfo
-          v-if="!isOrderTypeReduceOnly && !isBinaryOption"
+          v-if="!isOrderTypeReduceOnly"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >

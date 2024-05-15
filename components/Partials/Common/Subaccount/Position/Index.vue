@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { SharedMarketType } from '@shared/types'
 import { Modal, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 
-const props = defineProps({
+defineProps({
   market: {
     type: Object as PropType<UiDerivativeMarket>,
     required: true
@@ -22,14 +21,6 @@ const filteredPositions = computed(() => {
       (m) => m.marketId === position.marketId
     )
   })
-
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return result.filter((position) =>
-      derivativeStore.binaryOptionsMarkets.some(
-        (market) => market.marketId === position.marketId
-      )
-    )
-  }
 
   return result
 })

@@ -90,21 +90,15 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
     </div>
 
     <div class="flex-1 p-2 font-mono">
-      <PartialsActivityViewsWalletHistoryCommonAddress
-        is-xs
-        :address="transaction.sender"
-      >
+      <PartialsWalletHistoryCommonAddress is-xs :address="transaction.sender">
         {{ formattedOrigin }}
-      </PartialsActivityViewsWalletHistoryCommonAddress>
+      </PartialsWalletHistoryCommonAddress>
     </div>
 
     <div class="flex-1 p-2 font-mono">
-      <PartialsActivityViewsWalletHistoryCommonAddress
-        is-xs
-        :address="transaction.receiver"
-      >
+      <PartialsWalletHistoryCommonAddress is-xs :address="transaction.receiver">
         {{ formattedDestination }}
-      </PartialsActivityViewsWalletHistoryCommonAddress>
+      </PartialsWalletHistoryCommonAddress>
     </div>
 
     <div class="flex items-center p-2 px-4 w-14">

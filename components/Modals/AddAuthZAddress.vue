@@ -4,15 +4,12 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '~/types'
 
 const tradingMessages = [
-  MsgType.MsgCreateBinaryOptionsLimitOrder,
-  MsgType.MsgCreateBinaryOptionsMarketOrder,
   MsgType.MsgCreateSpotLimitOrder,
   MsgType.MsgCreateSpotMarketOrder,
   MsgType.MsgCreateDerivativeLimitOrder,
   MsgType.MsgCreateDerivativeMarketOrder,
   MsgType.MsgCancelSpotOrder,
   MsgType.MsgCancelDerivativeOrder,
-  MsgType.MsgCancelBinaryOptionsOrder,
   MsgType.MsgBatchCancelDerivativeOrders,
   MsgType.MsgBatchCancelSpotOrders,
   MsgType.MsgBatchCreateDerivativeLimitOrders,

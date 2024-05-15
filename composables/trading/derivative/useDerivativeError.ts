@@ -1,4 +1,4 @@
-import { SharedMarketType, SharedUiPriceLevel } from '@shared/types'
+import { SharedUiPriceLevel } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -118,10 +118,6 @@ export function useDerivativeError({
       return undefined
     }
 
-    if (market.value.subType === SharedMarketType.BinaryOptions) {
-      return
-    }
-
     if (excludedPriceDeviationSlugs.includes(market.value.ticker)) {
       return undefined
     }
@@ -156,10 +152,6 @@ export function useDerivativeError({
     }
 
     if (excludedPriceDeviationSlugs.includes(market.value.ticker)) {
-      return undefined
-    }
-
-    if (market.value.subType === SharedMarketType.BinaryOptions) {
       return undefined
     }
 

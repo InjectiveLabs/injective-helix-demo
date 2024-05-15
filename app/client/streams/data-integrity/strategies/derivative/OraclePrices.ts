@@ -1,4 +1,3 @@
-import { SharedMarketType, SharedUiBinaryOptionsMarket } from '@shared/types'
 import { indexerOracleApi } from '@shared/Service'
 import {
   MarketIdsArgs,
@@ -70,27 +69,21 @@ export class DerivativeOraclePriceIntegrityStrategy
     }
 
     const derivativeStore = useDerivativeStore()
-    const markets = [
-      ...derivativeStore.markets,
-      ...derivativeStore.binaryOptionsMarkets
-    ].filter((market) => marketIds.includes(market.marketId))
+    const markets = [...derivativeStore.markets].filter((market) =>
+      marketIds.includes(market.marketId)
+    )
 
     const pricePromises = markets.map((market) =>
-      (market.subType !== SharedMarketType.BinaryOptions
-        ? indexerOracleApi.fetchOraclePrice({
-            oracleType: market.oracleType,
-            baseSymbol: (market as UiDerivativeMarket).oracleBase,
-            quoteSymbol: (market as UiDerivativeMarket).oracleQuote
-          })
-        : indexerOracleApi.fetchOraclePriceNoThrow({
-            baseSymbol: (market as SharedUiBinaryOptionsMarket).oracleSymbol,
-            quoteSymbol: (market as SharedUiBinaryOptionsMarket).oracleProvider,
-            oracleType: market.oracleType
-          })
-      ).then((oraclePrice) => ({
-        marketId: market.marketId,
-        price: oraclePrice.price
-      }))
+      indexerOracleApi
+        .fetchOraclePrice({
+          oracleType: market.oracleType,
+          baseSymbol: (market as UiDerivativeMarket).oracleBase,
+          quoteSymbol: (market as UiDerivativeMarket).oracleQuote
+        })
+        .then((oraclePrice) => ({
+          marketId: market.marketId,
+          price: oraclePrice.price
+        }))
     )
 
     const marketPricesResults = await Promise.all(pricePromises)

@@ -67,15 +67,6 @@ export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
   }
 
   if (market.type === SharedMarketType.Derivative) {
-    if (market.subType === SharedMarketType.BinaryOptions) {
-      return {
-        name: TradeSubPage.BinaryOption,
-        params: {
-          binaryOption: market.slug
-        }
-      }
-    }
-
     if (
       [SharedMarketType.Perpetual, SharedMarketType.Futures].includes(
         market.subType

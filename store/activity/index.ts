@@ -16,6 +16,7 @@ import {
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
 import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
+// todo: Ivan clean up
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]

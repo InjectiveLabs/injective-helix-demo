@@ -25,7 +25,6 @@ const {
   priceDecimals,
   percentagePnl,
   // notionalValue,
-  // isBinaryOptions,
   // liquidationPrice,
   quantityDecimals,
   effectiveLeverage

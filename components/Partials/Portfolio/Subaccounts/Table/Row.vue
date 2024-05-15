@@ -46,12 +46,9 @@ const { valueToString: balanceToString } = useSharedBigNumberFormatter(
       {{ $t('account.subaccount') }} {{ subaccount.display }}
     </div>
     <div class="flex-1 items-center p-2">
-      <PartialsActivityViewsWalletHistoryCommonAddress
-        is-xs
-        :address="subaccount.value"
-      >
+      <PartialsWalletHistoryCommonAddress is-xs :address="subaccount.value">
         {{ formattedAddress }}
-      </PartialsActivityViewsWalletHistoryCommonAddress>
+      </PartialsWalletHistoryCommonAddress>
     </div>
     <div class="flex-1 items-center p-2">$ {{ balanceToString }}</div>
   </div>

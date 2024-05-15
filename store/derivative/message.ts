@@ -1,18 +1,13 @@
 import {
   msgsOrMsgExecMsgs,
   MsgCancelDerivativeOrder,
-  MsgCancelBinaryOptionsOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
   MsgBatchCancelDerivativeOrders,
-  MsgCreateBinaryOptionsLimitOrder,
-  MsgBatchCancelBinaryOptionsOrders,
-  MsgCreateBinaryOptionsMarketOrder,
   derivativePriceToChainPriceToFixed,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
@@ -42,12 +37,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     return
   }
 
-  const messageType =
-    market && market.subType === SharedMarketType.BinaryOptions
-      ? MsgCancelBinaryOptionsOrder
-      : MsgCancelDerivativeOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCancelDerivativeOrder.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     orderHash: order.orderHash,
@@ -66,9 +56,8 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
   if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
     return
@@ -78,15 +67,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
   await walletStore.validate()
 
   const messages = orders.map((order: UIDerivativeOrder) => {
-    const market = derivativeStore.markets.find(
-      (m) => m.marketId === order.marketId
-    )
-    const messageType =
-      market && market.subType === SharedMarketType.BinaryOptions
-        ? MsgBatchCancelBinaryOptionsOrders
-        : MsgBatchCancelDerivativeOrders
-
-    return messageType.fromJSON({
+    return MsgBatchCancelDerivativeOrders.fromJSON({
       injectiveAddress: walletStore.authZOrInjectiveAddress,
       orders: [
         {
@@ -140,12 +121,7 @@ export const submitLimitOrder = async ({
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const messageType =
-    market.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsLimitOrder
-      : MsgCreateDerivativeLimitOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
@@ -205,14 +181,9 @@ export const submitStopLimitOrder = async ({
   }
 
   await appStore.queue()
+  await walletStore.validate()
   await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
-  await walletStore.validate()
-
-  const messageType =
-    market.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsLimitOrder
-      : MsgCreateDerivativeLimitOrder
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
     value: triggerPrice.toFixed(),
@@ -233,7 +204,7 @@ export const submitStopLimitOrder = async ({
         quoteDecimals: market.quoteToken.decimals
       })
 
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     price: msgPrice,
@@ -287,12 +258,7 @@ export const submitMarketOrder = async ({
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const messageType =
-    market && market.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
@@ -356,11 +322,6 @@ export const submitStopMarketOrder = async ({
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const messageType =
-    market.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
   const msgPrice = derivativePriceToChainPriceToFixed({
     value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
@@ -380,7 +341,7 @@ export const submitStopMarketOrder = async ({
         quoteDecimals: market.quoteToken.decimals
       })
 
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     price: msgPrice,

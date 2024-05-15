@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedMarketType } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
@@ -40,31 +39,15 @@ const actionStatus = reactive(new Status(StatusType.Idle))
 const activeType = ref(FilterList.OpenOrders)
 
 const filteredConditionalOrders = computed(() =>
-  derivativeStore.subaccountConditionalOrders.filter((order) => {
-    if (props.market.subType !== SharedMarketType.BinaryOptions) {
-      return derivativeStore.markets.some(
-        (market) => market.marketId === order.marketId
-      )
-    }
-
-    return derivativeStore.binaryOptionsMarkets.some(
-      (market) => market.marketId === order.marketId
-    )
-  })
+  derivativeStore.subaccountConditionalOrders.filter((order) =>
+    derivativeStore.markets.some((market) => market.marketId === order.marketId)
+  )
 )
 
 const filteredOrders = computed(() =>
-  derivativeStore.subaccountOrders.filter((order) => {
-    if (props.market.subType !== SharedMarketType.BinaryOptions) {
-      return derivativeStore.markets.some(
-        (market) => market.marketId === order.marketId
-      )
-    }
-
-    return derivativeStore.binaryOptionsMarkets.some(
-      (market) => market.marketId === order.marketId
-    )
-  })
+  derivativeStore.subaccountOrders.filter((order) =>
+    derivativeStore.markets.some((market) => market.marketId === order.marketId)
+  )
 )
 
 const filteredPositions = computed(() => {
@@ -74,15 +57,7 @@ const filteredPositions = computed(() => {
     )
   })
 
-  return result.filter((position) => {
-    if (props.market.subType !== SharedMarketType.BinaryOptions) {
-      return position
-    }
-
-    return derivativeStore.binaryOptionsMarkets.some(
-      (market) => market.marketId === position.marketId
-    )
-  })
+  return result.filter((position) => position)
 })
 
 const orders = computed<UIDerivativeOrder[]>(() =>

@@ -1,11 +1,3 @@
-<script lang="ts" setup>
-import { TradeSubPage } from '@/types'
-
-const route = useRoute()
-
-const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
-</script>
-
 <template>
   <thead>
     <tr class="h-8">
@@ -32,7 +24,7 @@ const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
           </CommonHeaderTooltip>
         </div>
       </th>
-      <th v-if="!isBinaryOptionsPage" class="text-right">
+      <th class="text-right">
         {{ $t('trade.leverage') }}
       </th>
       <th class="text-right">

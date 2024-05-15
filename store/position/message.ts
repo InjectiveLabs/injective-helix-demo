@@ -5,11 +5,9 @@ import {
   DerivativeLimitOrder,
   MsgIncreasePositionMargin,
   MsgCreateDerivativeMarketOrder,
-  MsgCreateBinaryOptionsMarketOrder,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { SharedMarketType } from '@shared/types'
 import { msgBroadcaster } from '@shared/WalletService'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
@@ -46,12 +44,7 @@ export const closePosition = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
-  const messageType =
-    market.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -107,10 +100,6 @@ export const closeAllPosition = async (
         return undefined
       }
 
-      const messageType =
-        market.subType === SharedMarketType.BinaryOptions
-          ? MsgCreateBinaryOptionsMarketOrder
-          : MsgCreateDerivativeMarketOrder
       const orderType =
         position.direction === TradeDirection.Long
           ? OrderSide.Sell
@@ -119,9 +108,9 @@ export const closeAllPosition = async (
 
       return {
         orderType,
-        messageType,
         marketId: market.marketId,
         price: liquidationPrice.toFixed(),
+        messageType: MsgCreateDerivativeMarketOrder,
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         })
@@ -130,9 +119,7 @@ export const closeAllPosition = async (
         marketId: string
         quantity: string
         orderType: OrderSide
-        messageType:
-          | typeof MsgCreateBinaryOptionsMarketOrder
-          | typeof MsgCreateDerivativeMarketOrder
+        messageType: typeof MsgCreateDerivativeMarketOrder
       }
     })
     .filter((p) => p !== undefined) as {
@@ -140,9 +127,7 @@ export const closeAllPosition = async (
     marketId: string
     quantity: string
     orderType: OrderSide
-    messageType:
-      | typeof MsgCreateBinaryOptionsMarketOrder
-      | typeof MsgCreateDerivativeMarketOrder
+    messageType: typeof MsgCreateDerivativeMarketOrder
   }[]
 
   const messages = formattedPositions.map((position) =>
@@ -203,12 +188,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
-  const messageType =
-    actualMarket.subType === SharedMarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',

@@ -40,8 +40,6 @@ export const getRoutes = () => {
     'ena-usdt'
   ]
 
-  const binaryOptions: string[] = []
-
   const futures = [...perpetualSlugs, ...expiryFutureSlugs]
 
   // Middleware routes
@@ -68,15 +66,12 @@ export const getRoutes = () => {
   const derivativeMarketRouteNames = [
     TradeSubPage.Futures,
     TradeSubPage.Perpetual,
-    TradeSubPage.Derivatives,
-    TradeSubPage.BinaryOption
+    TradeSubPage.Derivatives
   ]
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
   const spotRoutes = spotSlugs.map((s) => `/spot/${s}`) || []
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
-  const binaryOptionsRoutes =
-    binaryOptions.map((s) => `/binary-options/${s}`) || []
 
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
@@ -91,7 +86,6 @@ export const getRoutes = () => {
   return {
     MARKETS_SLUGS: {
       futures,
-      binaryOptions,
       gridTradingSpot,
       spot: spotSlugs,
       expiryFutures: expiryFutureSlugs
@@ -100,7 +94,6 @@ export const getRoutes = () => {
       spotRoutes,
       futuresRoutes,
       customStaticRoutes,
-      binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
       liquidityBotSpotRoutes,

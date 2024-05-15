@@ -1,12 +1,10 @@
-import { SharedMarketType } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
 export function useDerivativePosition(position: Ref<Position | PositionV2>) {
@@ -78,29 +76,13 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
     )
   })
 
-  const isBinaryOptions = computed(() => {
-    if (!market.value) {
-      return false
-    }
-
-    return market.value.subType === SharedMarketType.BinaryOptions
-  })
-
   const priceDecimals = computed(() => {
-    if (isBinaryOptions.value) {
-      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
-    }
-
     return market.value
       ? market.value.priceDecimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   })
 
   const quantityDecimals = computed(() => {
-    if (isBinaryOptions.value) {
-      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
-    }
-
     return market.value
       ? market.value.quantityDecimals
       : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -175,9 +157,7 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
       return ZERO_IN_BASE
     }
 
-    return isBinaryOptions.value
-      ? price.value.times(quantity.value)
-      : markPrice.value.times(quantity.value)
+    return markPrice.value.times(quantity.value)
   })
 
   return {
@@ -190,7 +170,6 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
     priceDecimals,
     percentagePnl,
     notionalValue,
-    isBinaryOptions,
     quantityDecimals,
     liquidationPrice,
     effectiveLeverage

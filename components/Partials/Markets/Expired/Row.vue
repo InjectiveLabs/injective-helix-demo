@@ -48,10 +48,6 @@ const settlementPrice = computed(() => {
     return new BigNumberInBase(lastTradedPrice.value || 0)
   }
 
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return ZERO_IN_BASE
-  }
-
   const expiryFuturesMarket = props.market as SharedUiExpiryFuturesMarket
 
   if (!expiryFuturesMarket.expiryFuturesMarketInfo) {
@@ -83,10 +79,6 @@ const expiryAt = computed(() => {
   }
 
   if (props.market.type === SharedMarketType.Spot) {
-    return ''
-  }
-
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 

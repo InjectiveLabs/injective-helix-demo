@@ -3,13 +3,11 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { legacyWHDenoms } from '@/app/data/token'
-import { TradeSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
-const route = useRoute()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
@@ -21,8 +19,6 @@ const props = defineProps({
     type: Object as PropType<DerivativeLimitOrder | SpotLimitOrder>
   }
 })
-
-const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -159,10 +155,7 @@ function onCancelOrder() {
       </div>
     </td>
 
-    <td
-      v-if="!isBinaryOptionsPage && !isSpot"
-      class="h-12 text-right font-mono"
-    >
+    <td v-if="!isSpot" class="h-12 text-right font-mono">
       <span
         v-if="leverage.gt(0)"
         class="flex items-center justify-end text-xs"

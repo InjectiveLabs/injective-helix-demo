@@ -2,8 +2,7 @@
 import {
   SharedMarketType,
   SharedUiMarketSummary,
-  SharedUiExpiryFuturesMarket,
-  SharedUiBinaryOptionsMarket
+  SharedUiExpiryFuturesMarket
 } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -86,10 +85,6 @@ const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
       return ZERO_IN_BASE
     }
 
-    if (props.market.subType === SharedMarketType.BinaryOptions) {
-      return ZERO_IN_BASE
-    }
-
     if (props.market.subType === SharedMarketType.Futures) {
       return ZERO_IN_BASE
     }
@@ -119,10 +114,6 @@ const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
 const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
   computed(() => {
     if (props.market.type === SharedMarketType.Spot) {
-      return ZERO_IN_BASE
-    }
-
-    if (props.market.subType === SharedMarketType.BinaryOptions) {
       return ZERO_IN_BASE
     }
 
@@ -197,10 +188,6 @@ const expiryAt = computed(() => {
     return ''
   }
 
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return ''
-  }
-
   if (props.market.subType === SharedMarketType.Perpetual) {
     return ''
   }
@@ -227,10 +214,6 @@ const isExpired = computed(() => {
     return true
   }
 
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return true
-  }
-
   if (props.market.subType === SharedMarketType.Perpetual) {
     return true
   }
@@ -251,10 +234,6 @@ const isExpired = computed(() => {
 
 const timeToExpiry = computed(() => {
   if (props.market.type === SharedMarketType.Spot) {
-    return ''
-  }
-
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ''
   }
 
@@ -395,10 +374,6 @@ useIntervalFn(() => {
       <PartialsTradingMarketStatsPartialsNextFunding
         v-if="market.subType === SharedMarketType.Perpetual"
         v-bind="{ market: market as UiDerivativeMarket }"
-      />
-      <PartialsTradingMarketStatsPartialsSettlement
-        v-if="market.subType === SharedMarketType.BinaryOptions"
-        v-bind="{ market: market as unknown as SharedUiBinaryOptionsMarket }"
       />
       <CommonMarketInfo
         v-if="market.subType === SharedMarketType.Futures && timeToExpiry"

@@ -6,7 +6,6 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedMarketType } from '@shared/types'
 import { TradeDirection, OrderSide, OrderState } from '@injectivelabs/ts-types'
 import {
   DEBUG_CALCULATION,
@@ -14,8 +13,7 @@ import {
 } from '@/app/utils/constants'
 import {
   calculateMargin,
-  calculateLiquidationPrice,
-  calculateBinaryOptionsMargin
+  calculateLiquidationPrice
 } from '@/app/client/utils/derivatives'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
@@ -199,18 +197,6 @@ const notionalWithLeverage = computed(() => {
       ? worstPriceWithSlippage.value.toFixed()
       : executionPrice.value.toFixed()
 
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return new BigNumberInBase(
-      calculateBinaryOptionsMargin({
-        price,
-        orderSide: formValues[TradeField.OrderSide],
-        quantity: formValues[TradeField.BaseAmount],
-        quoteTokenDecimals: props.market.quoteToken.decimals,
-        tensMultiplier: props.market.quantityTensMultiplier
-      }).toFixed()
-    )
-  }
-
   return new BigNumberInBase(
     calculateMargin({
       price,
@@ -233,18 +219,6 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
 
   if (!triggerPrice.value && tradingTypeStopMarket.value) {
     return ZERO_IN_BASE
-  }
-
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
-    return new BigNumberInBase(
-      calculateBinaryOptionsMargin({
-        price: worstPriceWithSlippage.value.toFixed(),
-        orderSide: formValues[TradeField.OrderSide],
-        quantity: formValues[TradeField.BaseAmount],
-        quoteTokenDecimals: props.market.quoteToken.decimals,
-        tensMultiplier: props.market.quantityTensMultiplier
-      }).toFixed()
-    )
   }
 
   return new BigNumberInBase(
@@ -322,10 +296,6 @@ const liquidationPrice = computed(() => {
   }
 
   if (!triggerPrice.value && tradingTypeStopMarket.value) {
-    return ZERO_IN_BASE
-  }
-
-  if (props.market.subType === SharedMarketType.BinaryOptions) {
     return ZERO_IN_BASE
   }
 

@@ -1,13 +1,7 @@
 <script lang="ts" setup>
-import { TradeSubPage } from '@/types'
-
-const route = useRoute()
-
 defineProps({
   isAccount: Boolean
 })
-
-const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 </script>
 
 <template>
@@ -38,7 +32,7 @@ const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
       <th class="h-8 text-right" :class="{ 'pr-4': isAccount }">
         <span>{{ $t('trade.entryMark') }}</span>
       </th>
-      <th v-if="!isBinaryOptionsPage" :class="{ 'pr-4': isAccount }">
+      <th :class="{ 'pr-4': isAccount }">
         <div class="flex items-center justify-end">
           <CommonHeaderTooltip
             v-bind="{
@@ -74,11 +68,7 @@ const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
       <th class="h-8 text-right" :class="{ 'pr-4': isAccount }">
         <span>{{ $t('trade.margin') }}</span>
       </th>
-      <th
-        v-if="!isBinaryOptionsPage"
-        class="text-right"
-        :class="{ 'pr-4': isAccount }"
-      >
+      <th class="text-right" :class="{ 'pr-4': isAccount }">
         <span>{{ $t('trade.leverage') }}</span>
       </th>
       <th></th>

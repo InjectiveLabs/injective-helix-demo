@@ -7,7 +7,6 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   PerpetualMarket,
-  BinaryOptionsMarket,
   ExpiryFuturesMarket,
   DerivativeLimitOrder,
   DerivativeOrderHistory
@@ -21,14 +20,12 @@ import {
   SharedMarketType,
   SharedUiMarketSummary,
   SharedUiDerivativeTrade,
-  SharedUiBinaryOptionsMarket,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
 import {
   toUiMarketSummary,
   toUiDerivativeMarket,
-  toZeroUiMarketSummary,
-  toUiBinaryOptionsMarket
+  toZeroUiMarketSummary
 } from '@shared/transformer/market'
 import {
   cancelBankBalanceStream,
@@ -62,7 +59,6 @@ import {
   // marketHasRecentlyExpired,
 } from '@/app/utils/market'
 import {
-  IS_DEVNET,
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
 } from '@/app/utils/constants'
@@ -75,7 +71,6 @@ import {
 
 type DerivativeStoreState = {
   recentlyExpiredMarkets: UiDerivativeMarket[]
-  binaryOptionsMarkets: SharedUiBinaryOptionsMarket[]
   markets: UiDerivativeMarket[]
   marketIdsFromQuery: string[]
   marketsSummary: SharedUiMarketSummary[]
@@ -94,7 +89,6 @@ type DerivativeStoreState = {
 
 const initialStateFactory = (): DerivativeStoreState => ({
   recentlyExpiredMarkets: [],
-  binaryOptionsMarkets: [],
   markets: [],
   marketIdsFromQuery: [],
   marketsSummary: [],
@@ -179,10 +173,6 @@ export const useDerivativeStore = defineStore('derivative', {
     async init() {
       const derivativeStore = useDerivativeStore()
 
-      if (IS_DEVNET) {
-        await derivativeStore.fetchBinaryOptionsMarkets()
-      }
-
       await derivativeStore.fetchMarkets()
       await derivativeStore.fetchRecentlyExpiredMarkets()
       await derivativeStore.fetchMarketsSummary()
@@ -266,28 +256,6 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async fetchBinaryOptionsMarkets() {
-      const tokenStore = useTokenStore()
-      const derivativeStore = useDerivativeStore()
-
-      const markets =
-        (await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[]
-
-      const uiBinaryOptionsMarkets = markets.map((market) => {
-        const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
-
-        if (!quoteToken) {
-          return undefined
-        }
-
-        return toUiBinaryOptionsMarket({ market, quoteToken })
-      })
-
-      derivativeStore.$patch({
-        binaryOptionsMarkets: uiBinaryOptionsMarkets
-      })
-    },
-
     async fetchRecentlyExpiredMarkets() {
       const tokenStore = useTokenStore()
       const derivativeStore = useDerivativeStore()
@@ -319,24 +287,14 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async getMarketMarkPrice(
-      market: UiDerivativeMarket | SharedUiBinaryOptionsMarket
-    ) {
+    async getMarketMarkPrice(market: UiDerivativeMarket) {
       const derivativeStore = useDerivativeStore()
 
-      const oraclePrice =
-        market.subType !== SharedMarketType.BinaryOptions
-          ? await indexerOracleApi.fetchOraclePrice({
-              oracleType: market.oracleType,
-              baseSymbol: (market as UiDerivativeMarket).oracleBase,
-              quoteSymbol: (market as UiDerivativeMarket).oracleQuote
-            })
-          : await indexerOracleApi.fetchOraclePriceNoThrow({
-              baseSymbol: (market as SharedUiBinaryOptionsMarket).oracleSymbol,
-              quoteSymbol: (market as SharedUiBinaryOptionsMarket)
-                .oracleProvider,
-              oracleType: market.oracleType
-            })
+      const oraclePrice = await indexerOracleApi.fetchOraclePrice({
+        oracleType: market.oracleType,
+        baseSymbol: (market as UiDerivativeMarket).oracleBase,
+        quoteSymbol: (market as UiDerivativeMarket).oracleQuote
+      })
 
       derivativeStore.marketMarkPriceMap = {
         ...derivativeStore.marketMarkPriceMap,

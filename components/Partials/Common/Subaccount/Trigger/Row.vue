@@ -2,12 +2,10 @@
 import { Status } from '@injectivelabs/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
-import { TradeSubPage } from '@/types'
 
 const derivativeStore = useDerivativeStore()
-const route = useRoute()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
 const props = defineProps({
@@ -16,8 +14,6 @@ const props = defineProps({
     type: Object as PropType<DerivativeOrderHistory>
   }
 })
-
-const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 
 const status = reactive(new Status())
 
@@ -134,7 +130,7 @@ function cancelOrder(): void {
       />
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
+    <td class="text-right font-mono">
       <span
         v-if="leverage.gte(0)"
         class="flex items-center justify-end text-xs"

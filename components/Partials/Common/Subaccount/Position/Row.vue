@@ -4,12 +4,11 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { getMarketRoute } from '@/app/utils/market'
 import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
-import { BusEvents, Modal, TradeSubPage } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
 const modalStore = useModalStore()
-const route = useRoute()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { error, success } = useNotifications()
@@ -38,13 +37,11 @@ const {
   priceDecimals,
   percentagePnl,
   notionalValue,
-  isBinaryOptions,
   liquidationPrice,
   quantityDecimals,
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const isBinaryOptionsPage = route.name === TradeSubPage.BinaryOption
 const status = reactive(new Status())
 
 const reduceOnlyCurrentOrders = computed(() =>
@@ -234,12 +231,10 @@ function sharePosition() {
     </td>
 
     <td
-      v-if="!isBinaryOptionsPage"
       class="text-right font-mono text-white text-xs"
       :class="{ 'lg:text-sm pr-4': isAccount }"
     >
-      <span v-if="isBinaryOptions">&mdash;</span>
-      <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <AppNumber
         v-else
         v-bind="{
@@ -361,7 +356,6 @@ function sharePosition() {
         />
 
         <div
-          v-if="!isBinaryOptions"
           class="cursor-pointer flex items-center justify-center rounded-full bg-opacity-10 hover:bg-opacity-30 hover:text-blue-500 text-gray-500 min-w-4 w-4 h-4 border border-gray-500 hover:border-blue-500 ml-1"
           @click.stop="onAddMarginButtonClick"
         >
@@ -371,13 +365,10 @@ function sharePosition() {
     </td>
 
     <td
-      v-if="!isBinaryOptionsPage"
       class="text-right text-white text-xs font-mono"
       :class="{ 'lg:text-sm pr-4': isAccount }"
     >
-      <span v-if="isBinaryOptions">&mdash;</span>
-
-      <span v-else-if="hideBalance">
+      <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span

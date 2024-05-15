@@ -34,34 +34,6 @@ export const calculateMargin = ({
   )
 }
 
-export const calculateBinaryOptionsMargin = ({
-  quantity,
-  price,
-  orderSide,
-  tensMultiplier,
-  quoteTokenDecimals
-}: {
-  quantity: string
-  price: string
-  tensMultiplier: number
-  quoteTokenDecimals: number
-  orderSide: OrderSide
-}): BigNumberInBase => {
-  const margin =
-    orderSide === OrderSide.Buy
-      ? new BigNumberInBase(quantity).times(price)
-      : new BigNumberInBase(quantity).times(new BigNumberInBase(1).minus(price))
-  const marginInWei = margin.toWei(quoteTokenDecimals)
-  const allowableMargin = formatAmountToAllowableAmount(
-    marginInWei.toFixed(),
-    tensMultiplier
-  )
-
-  return new BigNumberInBase(
-    new BigNumberInWei(allowableMargin).toBase(quoteTokenDecimals).toFixed()
-  )
-}
-
 export const computeOrderbookSummary = (
   summary: { quantity: string; total: string },
   record: UiAggregatedPriceLevel

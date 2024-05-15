@@ -10,7 +10,6 @@ const {
   spotRoutes,
   futuresRoutes,
   customStaticRoutes,
-  binaryOptionsRoutes,
   upcomingMarketsRoutes,
   gridTradingSpotRoutes,
   liquidityBotSpotRoutes
@@ -34,7 +33,6 @@ export default {
 
     nitroConfig.prerender.routes = [
       ...nitroConfig.prerender.routes,
-      ...binaryOptionsRoutes,
       ...customStaticRoutes,
       ...futuresRoutes,
       ...spotRoutes,
@@ -57,12 +55,6 @@ export default {
   //       name: 'spot',
   //       path: '/spot',
   //       file: resolvePagePath('pages/spot/[spot].vue'),
-  //       children: []
-  //     },
-  //     {
-  //       name: TradeSubPage.BinaryOption,
-  //       path: '/binary-options/:binaryOption',
-  //       file: resolvePagePath('pages/futures/[futures].vue'),
   //       children: []
   //     },
   //     {

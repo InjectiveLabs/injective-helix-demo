@@ -226,11 +226,7 @@ function onShowTensMultiplier(isShown: boolean) {
     />
 
     <PartialsTradingDerivativesTradingOrderLeverage
-      v-show="
-        !isOrderTypeReduceOnly &&
-        !isSpot &&
-        market.subType !== SharedMarketType.BinaryOptions
-      "
+      v-show="!isSpot && !isOrderTypeReduceOnly"
       class="mt-6"
       v-bind="{
         isBuy,

@@ -51,8 +51,7 @@ export enum TradeSubPage {
   Market = 'market-market',
   Futures = 'futures-slug',
   Perpetual = 'perpetual-perpetual',
-  Derivatives = 'derivatives-derivative',
-  BinaryOption = 'binary-options-binaryOption'
+  Derivatives = 'derivatives-derivative'
 }
 
 export enum LiquidityRewardsPage {
