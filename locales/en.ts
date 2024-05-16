@@ -295,6 +295,9 @@ export default {
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
     liquidityBotsDescription: 'Trade smarter with automated strategies',
+    liquidityProvision: 'Liquidity Provision',
+    liquidityProvisionDescription:
+      'Earn sustainable yield through decentralized perpetual vaults and trading bots',
     positions: 'Positions',
     orders: 'Orders',
     spotGrid: 'Spot Grid',

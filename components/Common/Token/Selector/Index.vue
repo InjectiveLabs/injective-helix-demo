@@ -44,7 +44,7 @@ function setToken(token: TokenStatic) {
         type="text"
         class="bg-transparent focus:outline-none p-2 rounded-md"
         placeholder="Search..."
-        autocomplete="false"
+        autocomplete="off"
       />
     </div>
 

@@ -12,6 +12,7 @@ export enum MainPage {
   Maintenance = 'maintenance',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
+  LiquidityProvision = 'bulletin',
   Institutional = 'institutional',
   PnlLeaderboard = 'pnl-leaderboard',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',

@@ -52,9 +52,22 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   {
-    type: MenuItemType.Link,
     label: 'liquidity',
-    to: { name: TradingBotsSubPage.LiquiditySpotMarket }
+    type: MenuItemType.Dropdown,
+    items: [
+      {
+        type: MenuItemType.Link,
+        label: 'liquidityBots',
+        description: 'liquidityBotsDescription',
+        to: { name: TradingBotsSubPage.LiquiditySpotMarket }
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'liquidityProvision',
+        description: 'liquidityProvisionDescription',
+        to: { name: MainPage.LiquidityProvision }
+      }
+    ]
   },
 
   {
