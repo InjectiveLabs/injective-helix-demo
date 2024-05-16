@@ -247,6 +247,12 @@ export default {
           fontWeight: theme('fontWeight.medium'),
           borderRadius: theme('borderRadius.md'),
           fontFamily: theme('fontFamily.sans')
+        },
+
+        '.card': {
+          border: `1px solid ${theme('colors.brand.750')}`,
+          borderRadius: theme('borderRadius.md'),
+          backgroundColor: theme('colors.brand.875')
         }
       })
     }

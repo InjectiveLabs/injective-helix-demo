@@ -7,6 +7,7 @@ import sgt from './spot-grid/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
+import bulletin from './bulletin/en'
 import portfolio from './portfolio/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
@@ -24,6 +25,7 @@ export default {
   ...wallet,
   ...account,
   ...banners,
+  ...bulletin,
   ...campaign,
   ...portfolio,
   ...activities,

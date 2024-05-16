@@ -1,5 +1,5 @@
 <template>
-  <div class="flex [&>*]:flex-1 [&>*]:p-4">
+  <div class="flex [&>*]:flex-1 [&>*]:p-4 text-xs">
     <div>1</div>
 
     <div>

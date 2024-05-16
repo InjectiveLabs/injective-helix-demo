@@ -707,6 +707,7 @@ export const useWalletStore = defineStore('wallet', {
       const { privateKey } = PrivateKey.generate()
       const injAddress = privateKey.toBech32()
 
+      return
       const msg = MsgSend.fromJSON({
         amount: {
           amount: '1',
@@ -716,16 +717,28 @@ export const useWalletStore = defineStore('wallet', {
         srcInjectiveAddress: walletStore.injectiveAddress
       })
 
-      const authZMsgs = Object.values(MsgType)
-        .filter((type) => type.includes('exchange'))
-        .map((messageType) =>
-          MsgGrant.fromJSON({
-            grantee: injAddress,
-            granter: walletStore.injectiveAddress,
-            expiryInSeconds: Date.now() / 1000 + 60 * 60,
-            authorization: getGenericAuthorizationFromMessageType(messageType)
-          })
-        )
+      const tradingMessages = [
+        MsgType.MsgCreateSpotLimitOrder,
+        MsgType.MsgCreateSpotMarketOrder,
+        MsgType.MsgCreateDerivativeLimitOrder,
+        MsgType.MsgCreateDerivativeMarketOrder,
+        MsgType.MsgCancelSpotOrder,
+        MsgType.MsgCancelDerivativeOrder,
+        MsgType.MsgBatchCancelDerivativeOrders,
+        MsgType.MsgBatchCancelSpotOrders,
+        MsgType.MsgBatchCreateDerivativeLimitOrders,
+        MsgType.MsgBatchCreateSpotLimitOrders,
+        MsgType.MsgBatchUpdateOrders
+      ]
+
+      const authZMsgs = tradingMessages.map((messageType) =>
+        MsgGrant.fromJSON({
+          grantee: injAddress,
+          granter: walletStore.injectiveAddress,
+          expiryInSeconds: Date.now() * 1000 + 60 * 60,
+          authorization: getGenericAuthorizationFromMessageType(messageType)
+        })
+      )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: [msg, ...authZMsgs],
@@ -734,7 +747,7 @@ export const useWalletStore = defineStore('wallet', {
 
       const autoSign = {
         injAddress,
-        privateKey: privateKey.toHex(),
+        privateKey: privateKey.toPrivateKeyHex(),
         expiration: Date.now() + 1000 * 60 * 60
       }
 
