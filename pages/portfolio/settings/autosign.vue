@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '@/types'
+
 const walletStore = useWalletStore()
 </script>
 
 <template>
   <div>
     <div class="flex items-center p-4">
-      <NuxtLink :to="{ name: 'portfolio-settings' }" class="pr-4">
+      <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
         <SharedIcon name="chevron" />
       </NuxtLink>
 

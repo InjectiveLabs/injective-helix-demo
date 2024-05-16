@@ -1,4 +1,11 @@
-import { MainPage, MenuItem, MenuItemType } from '@/types'
+import {
+  MainPage,
+  MenuItem,
+  TradeSubPage,
+  MenuItemType,
+  PortfolioSubPage,
+  TradingBotsSubPage
+} from '@/types'
 import PieChart from '@/components/Asset/Menu/PieChart.vue'
 import BarChart from '@/components/Asset/Menu/BarChart.vue'
 import Clock from '@/components/Asset/Menu/Clock.vue'
@@ -24,32 +31,22 @@ export const MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'spot',
         description: 'spotDescription',
-        to: '/spot/inj-usdt'
+        to: { name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }
       },
       {
         type: MenuItemType.Link,
         label: 'perpetual',
         description: 'perpetualDescription',
-        to: '/futures/btc-usdt-perp'
+        to: { name: TradeSubPage.Futures, params: { slug: 'btc-usdt-perp' } }
       },
       {
-        type: MenuItemType.Dropdown,
+        type: MenuItemType.Link,
         label: 'tradingBots',
         description: 'tradingBotsDescription',
-        items: [
-          {
-            type: MenuItemType.Link,
-            label: 'spot',
-            description: 'tradingBotsDescription',
-            to: '/trading-bots/grid/spot/inj-usdt'
-          },
-          {
-            type: MenuItemType.Link,
-            label: 'perpetual',
-            description: 'tradingBotsDescription',
-            to: '/trading-bots/grid/spot/inj-usdt'
-          }
-        ]
+        to: {
+          name: TradingBotsSubPage.GridSpotMarket,
+          params: { market: 'inj-usdt' }
+        }
       }
     ]
   },
@@ -57,7 +54,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
     label: 'liquidity',
-    to: '/trading-bots/liquidity-bots/spot/'
+    to: { name: TradingBotsSubPage.LiquiditySpotMarket }
   },
 
   {
@@ -68,19 +65,19 @@ export const MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'tradeAndEarn',
         description: 'tradeAndEarnDescription',
-        to: '/trade-and-earn'
+        to: { name: MainPage.TradeAndEarn }
       },
       {
         type: MenuItemType.Link,
         label: 'lpRewards',
         description: 'lpRewardsSub',
-        to: '/lp-rewards'
+        to: { name: MainPage.LpRewards }
       },
       {
         type: MenuItemType.Link,
         label: 'guilds',
         description: 'guildsSub',
-        to: '/guilds'
+        to: { name: MainPage.Guilds }
       },
       {
         type: MenuItemType.Link,
@@ -103,41 +100,45 @@ export const USER_MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
     label: 'portfolio',
-    to: '/portfolio',
+    to: { name: MainPage.Portfolio },
     icon: PieChart
   },
   {
     type: MenuItemType.Link,
     label: 'balances',
     icon: BarChart,
-    to: '/portfolio/balances'
+    to: { name: PortfolioSubPage.Balances }
   },
   {
     type: MenuItemType.Link,
     label: 'positions',
     icon: GraphUp,
-    to: '/portfolio/positions'
+    to: { name: PortfolioSubPage.Positions }
   },
   {
     type: MenuItemType.Dropdown,
     label: 'orders',
     icon: ListNested,
     items: [
-      { type: MenuItemType.Link, label: 'spot', to: '/portfolio/orders/spot' },
+      {
+        type: MenuItemType.Link,
+        label: 'spot',
+        to: { name: PortfolioSubPage.OrdersSpot }
+      },
       {
         type: MenuItemType.Link,
         label: 'futures',
-        to: '/portfolio/orders/futures'
+        to: { name: PortfolioSubPage.OrdersFutures }
       },
       {
         type: MenuItemType.Link,
         label: 'spotGrid',
-        to: '/portfolio/orders/spot-grid'
+        to: { name: PortfolioSubPage.OrdersSpotGrid }
       },
       {
         type: MenuItemType.Link,
         label: 'futuresGrid',
-        to: '/portfolio/orders/futures-grid'
+        to: { name: PortfolioSubPage.OrdersFuturesGrid }
       }
     ]
   },
@@ -149,17 +150,17 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       {
         type: MenuItemType.Link,
         label: 'swaps',
-        to: '/portfolio/history/swap'
+        to: { name: PortfolioSubPage.HistorySwap }
       },
       {
         type: MenuItemType.Link,
         label: 'wallet',
-        to: '/portfolio/history/wallet'
+        to: { name: PortfolioSubPage.HistoryWallet }
       },
       {
         type: MenuItemType.Link,
         label: 'fundingPayments',
-        to: '/portfolio/history/funding-payments'
+        to: { name: PortfolioSubPage.HistoryFundingPayments }
       }
     ]
   },
@@ -167,12 +168,12 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     label: 'subaccounts',
     icon: Grid,
-    to: '/portfolio/subaccounts'
+    to: { name: PortfolioSubPage.Subaccounts }
   },
   {
     type: MenuItemType.Link,
     label: 'settings',
     icon: Gear,
-    to: '/portfolio/settings'
+    to: { name: PortfolioSubPage.Settings }
   }
 ]

@@ -291,7 +291,7 @@ export default {
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,
 
-    tradingBots: 'Trading Bots',
+    tradingBots: 'Spot Grid Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
     liquidityBotsDescription: 'Trade smarter with automated strategies',

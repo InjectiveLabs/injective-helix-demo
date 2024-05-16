@@ -7,6 +7,7 @@ export enum MainPage {
   Markets = 'markets',
   Activity = 'activity',
   LpRewards = 'lp-rewards',
+  Portfolio = 'portfolio',
   Leaderboard = 'leaderboard',
   Maintenance = 'maintenance',
   FeeDiscounts = 'fee-discounts',
@@ -58,4 +59,25 @@ export enum LiquidityRewardsPage {
   Home = 'lp-rewards',
   Dashboard = 'lp-rewards-dashboard',
   CampaignDetails = 'lp-rewards-campaign'
+}
+
+export enum PortfolioSubPage {
+  Settings = 'portfolio-settings',
+  Balances = 'portfolio-balances',
+  Positions = 'portfolio-positions',
+  OrdersSpot = 'portfolio-orders-spot',
+  HistorySwap = 'portfolio-history-swap',
+  Subaccounts = 'portfolio-subaccounts',
+  OrdersFutures = 'portfolio-orders-futures',
+  HistoryWallet = 'portfolio-history-wallet',
+  SettingsAuthz = 'portfolio-settings-authz',
+  OrdersSpotGrid = 'portfolio-orders-spot-grid',
+  SettingsAutosign = 'portfolio-settings-autosign',
+  OrdersFuturesGrid = 'portfolio-orders-futures-grid',
+  SettingsPreferences = 'portfolio-settings-preferences',
+  SettingsAuthzGranter = 'portfolio-settings-authz-granter',
+  OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
+  HistoryFundingPayments = 'portfolio-history-funding-payments',
+  OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
+  OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
 }
