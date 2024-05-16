@@ -85,29 +85,21 @@ function checkForInvalidSlippageValue() {
 
           <div class="flex items-center gap-2 max-xs:flex-wrap">
             <div class="flex items-center gap-2 max-xs:w-full">
-              <AppSelectButton
+              <AppButtonSelect
                 v-for="slippage in slippageList"
                 :key="`slippage-selector-item-${slippage}`"
                 v-model="slippageTolerance"
                 :value="slippage"
               >
-                <template #default="{ isActive }">
-                  <AppButton
-                    is-sm
-                    class="w-full border-blue-500 border"
-                    :class="[
-                      isActive
-                        ? 'bg-blue-500 text-blue-900 rounded'
-                        : 'text-blue-500 rounded'
-                    ]"
-                  >
+                <template #default>
+                  <AppButton is-sm>
                     <div class="mx-auto leading-4">
                       <span class="text-base capitalize">{{ slippage }}</span>
                       <span>%</span>
                     </div>
                   </AppButton>
                 </template>
-              </AppSelectButton>
+              </AppButtonSelect>
             </div>
 
             <AppInputNumeric
