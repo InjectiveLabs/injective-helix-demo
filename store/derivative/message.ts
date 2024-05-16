@@ -11,7 +11,6 @@ import {
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
-import { sharedToBalanceInWei } from '@shared/utils/formatter'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
@@ -193,9 +192,9 @@ export const submitStopLimitOrder = async ({
     value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = sharedToBalanceInWei({
-    value: quantity.toFixed()
-  }).toFixed()
+  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+    value: quantity
+  })
 
   const msgMargin = reduceOnly
     ? '0'
@@ -330,9 +329,9 @@ export const submitStopMarketOrder = async ({
     value: triggerPrice.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = sharedToBalanceInWei({
-    value: quantity.toFixed()
-  }).toFixed()
+  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+    value: quantity
+  })
 
   const msgMargin = reduceOnly
     ? '0'

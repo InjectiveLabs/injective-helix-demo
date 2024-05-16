@@ -178,14 +178,14 @@ const unknownTokenStatus = inject(
         <div v-else></div>
 
         <div class="flex items-center space-x-3">
-          <div class="flex space-x-2">
+          <div class="flex overflow-hidden rounded border">
             <AppButtonSelect
               v-for="value in Object.values(MarketQuoteType)"
               :key="value"
               v-model="activeQuote"
               v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs uppercase bg-brand-800 rounded"
-              active-classes="text-white !bg-brand-700"
+              class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+              active-classes="text-white !bg-brand-800"
             >
               {{ value }}
             </AppButtonSelect>
@@ -197,6 +197,15 @@ const unknownTokenStatus = inject(
         </div>
       </div>
 
+      <div
+        v-if="type === MarketTypeOption.Permissionless"
+        class="flex space-x-4 py-4 text-gray-500"
+      >
+        <SharedIcon name="warning-triangle" />
+        <span>{{ $t('markets.permisionlessWarning') }}</span>
+      </div>
+
+      <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page

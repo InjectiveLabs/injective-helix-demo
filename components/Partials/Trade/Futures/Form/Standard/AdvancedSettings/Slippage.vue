@@ -3,11 +3,13 @@ import { DerivativesTradeFormField } from '@/types'
 
 const { value: isSlippageOnValue } = useBooleanField({
   name: DerivativesTradeFormField.IsSlippageOn,
-  initialValue: true
+  initialValue: true,
+  rule: ''
 })
 const { value: slippageValue } = useStringField({
   name: DerivativesTradeFormField.Slippage,
-  initialValue: '0.5'
+  initialValue: '0.5',
+  rule: ''
 })
 </script>
 
