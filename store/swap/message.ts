@@ -8,6 +8,7 @@ import {
 import { msgBroadcaster } from '@shared/WalletService'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+import { convertCw20ToBankBalanceForSwap } from '~/app/utils/market'
 
 export const submitAtomicOrder = async ({
   formValues,
@@ -21,6 +22,7 @@ export const submitAtomicOrder = async ({
   minimumOutput: string
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
   if (
@@ -45,7 +47,15 @@ export const submitAtomicOrder = async ({
     })
   })
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const cw20ConvertMessage = convertCw20ToBankBalanceForSwap({
+    token: inputToken.token,
+    quantity: activeInputAmount,
+    injectiveAddress: walletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap
+  })
+
+  const swapMessage = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
     sender: walletStore.injectiveAddress,
     funds: {
@@ -57,6 +67,10 @@ export const submitAtomicOrder = async ({
     },
     execArgs
   })
+
+  const message = cw20ConvertMessage
+    ? [cw20ConvertMessage, swapMessage]
+    : swapMessage
 
   const actualMessage = walletStore.isAuthzWalletConnected
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
@@ -82,6 +96,7 @@ export const submitAtomicOrderExactOutput = async ({
   maximumInput: string
 }) => {
   const appStore = useAppStore()
+  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
   if (
@@ -98,6 +113,14 @@ export const submitAtomicOrderExactOutput = async ({
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
 
+  const cw20ConvertMessage = convertCw20ToBankBalanceForSwap({
+    token: inputToken.token,
+    quantity: maximumInput,
+    injectiveAddress: walletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap
+  })
+
   const execArgs = ExecArgSwapExactOutput.fromJSON({
     targetDenom: outputToken.denom,
     targetOutputQuantity: spotQuantityToChainQuantityToFixed({
@@ -106,7 +129,7 @@ export const submitAtomicOrderExactOutput = async ({
     })
   })
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const swapMessage = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
     sender: walletStore.injectiveAddress,
     funds: {
@@ -118,6 +141,10 @@ export const submitAtomicOrderExactOutput = async ({
     },
     execArgs
   })
+
+  const message = cw20ConvertMessage
+    ? [cw20ConvertMessage, swapMessage]
+    : swapMessage
 
   const actualMessage = walletStore.isAuthzWalletConnected
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)

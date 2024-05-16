@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInWei,
+  BigNumberInBase,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
@@ -20,6 +25,11 @@ const props = defineProps({
   queryError: {
     type: String,
     default: ''
+  },
+
+  status: {
+    type: Object as PropType<Status>,
+    default: () => new Status(StatusType.Idle)
   }
 })
 
@@ -216,6 +226,7 @@ watch(
       is-xl
       :is-disabled="isLoading || !!hasErrors || !hasAmounts"
       :is-loading="isLoading"
+      :status="status"
       @click="handlerFunction"
     >
       <div class="max-auto w-full">
