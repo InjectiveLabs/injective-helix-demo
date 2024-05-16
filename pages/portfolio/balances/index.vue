@@ -1,7 +1,3 @@
-<script setup lang="ts">
-//
-</script>
-
 <template>
   <div>
     <h2 class="portfolio-title px px-4 pt-4">

@@ -2,11 +2,10 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken, accountBalancesWithToken } = useBalance()
 
 const search = ref('')
-const showMarginCurrencyOnly = ref(false)
-const hideSmallBalances = ref(false)
+const showUnverifiedAssets = ref(false)
 
 function checkIsPartOfSearch(search: string, balance: AccountBalance) {
   const isIncludedInSymbol = balance.token.symbol
@@ -20,11 +19,19 @@ function checkIsPartOfSearch(search: string, balance: AccountBalance) {
   return isIncludedInSymbol || isIncludedInName
 }
 
+const balances = computed(() => {
+  if (!showUnverifiedAssets.value) {
+    return [...accountBalancesWithToken.value]
+  }
+
+  return [...userBalancesWithToken.value, ...accountBalancesWithToken.value]
+})
+
 const balancesSorted = computed(() => {
-  const filteredBalances = accountBalancesWithToken.value.filter((balance) => {
+  const filteredBalances = balances.value.filter((balance) => {
+    const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
     const hasBalance = new BigNumberInWei(balance.accountTotalBalance).gte(1)
 
-    const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
     return hasBalance && isPartOfSearch
   })
 
@@ -44,8 +51,7 @@ const balancesSorted = computed(() => {
   <div class="border-y divide-y">
     <PartialsPortfolioBalancesSubaccountTabs
       v-model:search="search"
-      v-model:showMarginCurrencyOnly="showMarginCurrencyOnly"
-      v-model:hideSmallBalances="hideSmallBalances"
+      v-model:showUnverifiedAssets="showUnverifiedAssets"
     />
 
     <PartialsPortfolioBalancesSubaccountTableHeader />

@@ -42,6 +42,7 @@ const reduceAccountBalances = (
 }
 
 export function useBalance() {
+  const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -127,6 +128,7 @@ export function useBalance() {
             return {
               token,
               usdPrice,
+              isVerified: true,
               unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
               denom: token.denom,
               bankBalance: isDefaultTradingAccount ? bankBalance : '0',
@@ -146,27 +148,64 @@ export function useBalance() {
     )
   })
 
-  // const userBalancesWithToken = computed(() => {
-  //   return accountStore.bankBalances.map((coin) => {
-  //     const token = tokenStore.tokenByDenomOrSymbol(coin.denom)
-  //     const usdPrice = tokenStore.tokenUsdPrice(token)
+  const userBalancesWithToken = computed(() => {
+    const tradeableDenoms = [
+      ...new Set([
+        ...spotStore.tradeableDenoms,
+        ...derivativeStore.tradeableDenoms
+      ])
+    ]
+    const permissionlessDenoms = [
+      ...new Set([
+        ...spotStore.permissionlessDenoms,
+        ...derivativeStore.permissionlessDenoms
+      ])
+    ]
 
-  //     return {
-  //       token,
-  //       usdPrice,
-  //       denom: coin.denom,
-  //       balance: coin.amount,
-  //       balanceInUsd: new BigNumberInWei(coin.amount).times(usdPrice).toFixed()
-  //     } as AccountBalance
-  //   })
-  // })
+    return accountStore.bankBalances
+      .map((coin) => {
+        const shouldIgnoreCoin =
+          tradeableDenoms.includes(coin.denom) ||
+          !permissionlessDenoms.includes(coin.denom)
+
+        if (shouldIgnoreCoin) {
+          return undefined
+        }
+
+        const token = tokenStore.tokenByDenomOrSymbol(coin.denom)
+
+        if (!token) {
+          return undefined
+        }
+
+        const usdPrice = tokenStore.tokenUsdPrice(token)
+
+        return {
+          token,
+          usdPrice,
+          isVerified: false,
+          denom: token.denom,
+          bankBalance: coin.amount,
+          unrealizedPnl: '0',
+          inOrderBalance: '0',
+          availableMargin: '0',
+          availableBalance: coin.amount,
+          totalBalance: coin.amount,
+          accountTotalBalance: coin.amount,
+          accountTotalBalanceInUsd: new BigNumberInBase(coin.amount)
+            .multipliedBy(usdPrice)
+            .toFixed()
+        } as AccountBalance
+      })
+      .filter((balance) => balance) as AccountBalance[]
+  })
 
   const accountBalancesWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
-      const isDefaultTradingAccount =
-        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
       const denom = token.denom
       const usdPrice = tokenStore.tokenUsdPrice(token)
+      const isDefaultTradingAccount =
+        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
 
       const bankBalanceWithoutCw20 =
         accountStore.balancesMap[token.denom] || '0'
@@ -235,6 +274,7 @@ export function useBalance() {
       return {
         token,
         usdPrice,
+        isVerified: true,
         denom: token.denom,
         bankBalance: isDefaultTradingAccount ? bankBalance : '0',
         unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
@@ -336,6 +376,7 @@ export function useBalance() {
 
   return {
     balancesWithToken,
+    userBalancesWithToken,
     aggregateBalanceByDenoms,
     accountBalancesWithToken,
     aggregatedPortfolioBalances,

@@ -129,7 +129,9 @@ export const submitLimitOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({
@@ -266,7 +268,9 @@ export const submitMarketOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({

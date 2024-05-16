@@ -52,7 +52,7 @@ const appStore = useAppStore()
             </template>
           </CommonHeadlessTotalBalance>
         </CommonSkeletonSubaccountAmount>
-        <span class="pb-[2px]">BTC</span>
+        <span class="pb-[2px]">{{ $t('common.BTC') }}</span>
       </p>
     </div>
 

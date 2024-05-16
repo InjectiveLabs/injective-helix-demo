@@ -111,12 +111,12 @@ export const submitLimitOrder = async ({
   await walletStore.validate()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     baseDecimals: market.baseToken.decimals,
     quoteDecimals: market.quoteToken.decimals
   })
   const quantityToFixed = spotQuantityToChainQuantityToFixed({
-    value: quantity,
+    value: quantity.toFixed(),
     baseDecimals: market.baseToken.decimals
   })
 
@@ -197,12 +197,12 @@ export const submitMarketOrder = async ({
   await walletStore.validate()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     baseDecimals: market.baseToken.decimals,
     quoteDecimals: market.quoteToken.decimals
   })
   const quantityToFixed = spotQuantityToChainQuantityToFixed({
-    value: quantity,
+    value: quantity.toFixed(),
     baseDecimals: market.baseToken.decimals
   })
 

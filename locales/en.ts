@@ -36,6 +36,7 @@ export default {
   ...liquidityBots,
   common: {
     ok: 'OK',
+    BTC: 'BTC',
     back: 'Back',
     view: 'View',
     open: 'Open',

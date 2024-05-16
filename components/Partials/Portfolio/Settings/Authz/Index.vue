@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// todo: remove this
 const address = ref('inj1ecs4my7etjjt6e3c9hncfc9rljlg2v5wuua5rc')
 
 const walletStore = useWalletStore()

@@ -18,17 +18,8 @@ export default defineNuxtConfig({
     head
   },
 
-  typescript: {
-    typeCheck: true
-  },
-
   imports: {
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
-  },
-
-  sourcemap: {
-    server: false,
-    client: true
   },
 
   pinia: {
