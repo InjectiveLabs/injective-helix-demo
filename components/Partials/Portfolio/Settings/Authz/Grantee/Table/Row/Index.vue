@@ -32,7 +32,7 @@ function revokeAll() {
       grantee: props.grantee,
       messageTypes: props.grants
         .filter((grant) => grant.authorization)
-        .map((grant) => grant.authorizationType)
+        .map((grant) => grant.authorization?.msg || '')
     })
     .then(() => {
       //

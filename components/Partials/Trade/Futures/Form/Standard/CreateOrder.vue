@@ -265,7 +265,6 @@ function onSubmit() {
 
 <template>
   <div>
-    {{ orderTypeToSubmit }}
     <div>
       <AppButton
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"

@@ -29,12 +29,16 @@ const authorizationFormatted = computed(() => {
 })
 
 function revoke() {
+  if (!authorizationFormatted.value) {
+    return
+  }
+
   status.setLoading()
 
   authZStore
     .revokeAuthorization({
       grantee: props.grant.grantee,
-      messageTypes: [props.grant.authorizationType]
+      messageTypes: [authorizationFormatted.value]
     })
     .then(() => {
       //
@@ -46,6 +50,9 @@ function revoke() {
 
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
+    <pre>
+      {{ grant }}
+    </pre>
     <div class="flex-[2] px-4"></div>
     <div class="flex-1 p-2 min-w-0 truncate font-semibold">
       &bull; {{ authorizationFormatted }}

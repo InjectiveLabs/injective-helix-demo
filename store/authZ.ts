@@ -153,7 +153,7 @@ export const useAuthZStore = defineStore('authZ', {
       const msgs = messageTypes.map((messageType) =>
         MsgRevoke.fromJSON({
           grantee,
-          messageType: `/${messageType}`,
+          messageType,
           granter: walletStore.injectiveAddress
         })
       )
