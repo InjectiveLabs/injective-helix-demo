@@ -36,7 +36,7 @@ const vaults = computed(() =>
       } as BulletinMitoCard
     })
     .sort((a, b) => b.apy - a.apy)
-    .slice(0, 6)
+    .slice(0, 5)
 )
 </script>
 
@@ -49,6 +49,8 @@ const vaults = computed(() =>
       <div
         class="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4"
       >
+        <PartialsBulletinItemInjStaking />
+
         <PartialsBulletinItemMitoVault
           v-for="vault in vaults"
           :key="`${vault.marketId}-${vault.platform}-${vault.type}`"

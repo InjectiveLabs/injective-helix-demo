@@ -146,6 +146,7 @@ export default {
   'faq-category-General': 'General',
   and: 'and',
   Rewards: 'Rewards',
+  injStaking: 'INJ Staking',
   resources: 'Resources',
   calculator: 'Calculator',
   remaining: 'remaining',

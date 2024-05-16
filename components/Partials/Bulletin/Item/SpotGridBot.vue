@@ -58,7 +58,9 @@ onMounted(() => {
 
       <div>
         <p class="text-xl font-semibold">{{ market.ticker }}</p>
-        <p class="text-gray-400 text-xs">Helix - Trading Bot</p>
+        <p class="text-gray-400 text-xs">
+          Helix - {{ $t('navigation.tradingBots') }}
+        </p>
       </div>
     </div>
 
