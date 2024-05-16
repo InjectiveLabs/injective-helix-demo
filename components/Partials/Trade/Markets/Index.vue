@@ -208,20 +208,22 @@ function onAscending(ascending: boolean) {
           </AppCheckbox2>
         </div>
       </div>
-
-      <PartialsMarketsCommonHeader
-        v-bind="{ sortBy, isAscending }"
-        @update:is-ascending="onAscending"
-        @update:sort-by="onSortBy"
-      />
     </div>
 
-    <div class="divide-y">
-      <PartialsMarketsCommonRow
-        v-for="{ market, summary, volumeInUsd } in sortedMarkets"
-        :key="market.marketId"
-        v-bind="{ market, summary, volumeInUsd }"
-      />
+    <div class="divide-y overflow-x-auto">
+      <div class="min-w-[600px]">
+        <PartialsMarketsCommonHeader
+          v-bind="{ sortBy, isAscending }"
+          @update:is-ascending="onAscending"
+          @update:sort-by="onSortBy"
+        />
+
+        <PartialsMarketsCommonRow
+          v-for="{ market, summary, volumeInUsd } in sortedMarkets"
+          :key="market.marketId"
+          v-bind="{ market, summary, volumeInUsd }"
+        />
+      </div>
     </div>
   </div>
 </template>
