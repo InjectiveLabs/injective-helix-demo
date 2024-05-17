@@ -46,7 +46,7 @@ watch(
     @click="toggleOpen"
   >
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
-    <div class="flex items-center space-x-2 justify-center">
+    <div class="flex items-center space-x-2 justify-center relative">
       <div>
         <p class="uppercase tracking-wider font-bold text-sm">
           {{ market.ticker }}
@@ -55,12 +55,14 @@ watch(
         <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
       </div>
 
-      <SharedIcon
-        v-if="market.isVerified"
-        name="check-shield"
-        is-sm
-        class="text-green-500 w-4 h-4 min-w-4"
-      />
+      <div class="absolute left-full">
+        <SharedIcon
+          v-if="market.isVerified"
+          name="check-shield"
+          is-sm
+          class="text-green-500 w-4 h-4 min-w-4"
+        />
+      </div>
     </div>
 
     <div class="text-gray-400 ml-auto flex items-center">
