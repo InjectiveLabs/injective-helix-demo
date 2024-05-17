@@ -130,14 +130,29 @@ export const useDerivativeStore = defineStore('derivative', {
         )
         .map((m) => m.marketId),
 
-    tradeableDenoms: (state) =>
-      state.markets.reduce((denoms, market) => {
-        if (!denoms.includes(market.quoteDenom)) {
-          denoms.push(market.quoteDenom)
+    tradeableDenoms: (state) => [
+      ...state.markets.reduce((denoms, market) => {
+        if (!market.isVerified) {
+          return denoms
         }
 
+        denoms.add(market.quoteDenom)
+
         return denoms
-      }, [] as string[]),
+      }, new Set() as Set<string>)
+    ],
+
+    permissionlessDenoms: (state) => [
+      ...state.markets.reduce((denoms, market) => {
+        if (market.isVerified) {
+          return denoms
+        }
+
+        denoms.add(market.quoteDenom)
+
+        return denoms
+      }, new Set() as Set<string>)
+    ],
 
     marketsWithSummary: (state) =>
       state.markets

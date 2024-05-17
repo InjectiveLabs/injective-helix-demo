@@ -16,8 +16,8 @@ import {
 } from '@shared/types'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
-  SpotLimitOrder,
   SpotMarket,
+  SpotLimitOrder,
   SpotOrderHistory
 } from '@injectivelabs/sdk-ts'
 import {
@@ -94,18 +94,31 @@ export const useSpotStore = defineStore('spot', {
         )
         .map((m) => m.marketId),
 
-    tradeableDenoms: (state) =>
-      [...state.markets].reduce((denoms, market) => {
-        if (!denoms.includes(market.baseDenom)) {
-          denoms.push(market.baseDenom)
+    tradeableDenoms: (state) => [
+      ...state.markets.reduce((denoms, market) => {
+        if (!market.isVerified) {
+          return denoms
         }
 
-        if (!denoms.includes(market.quoteDenom)) {
-          denoms.push(market.quoteDenom)
-        }
+        denoms.add(market.baseDenom)
+        denoms.add(market.quoteDenom)
 
         return denoms
-      }, [] as string[]),
+      }, new Set() as Set<string>)
+    ],
+
+    permissionlessDenoms: (state) => [
+      ...state.markets.reduce((denoms, market) => {
+        if (market.isVerified) {
+          return denoms
+        }
+
+        denoms.add(market.baseDenom)
+        denoms.add(market.quoteDenom)
+
+        return denoms
+      }, new Set() as Set<string>)
+    ],
 
     marketsWithSummary: (state) =>
       state.markets
@@ -195,13 +208,6 @@ export const useSpotStore = defineStore('spot', {
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
           if (!baseToken || !quoteToken) {
-            // console.log({
-            //   market: market.marketId,
-            //   baseDenom: market.baseDenom,
-            //   baseToken: market.baseToken,
-            //   quoteToken: market.quoteToken
-            // })
-
             return undefined
           }
 

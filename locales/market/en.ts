@@ -16,6 +16,8 @@ export default {
     perpetuals: 'Perpetuals',
     newMarkets: 'New Markets',
     showLowVol: 'Show low Vol.',
+    permisionlessWarning:
+      'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
     emptyHeader: 'No markets found',
     preLaunchFutures: 'Pre Launch Futures',
     expiredOrSettledRecently: 'Recently Expired/Settled',

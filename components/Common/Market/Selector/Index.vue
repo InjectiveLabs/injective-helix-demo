@@ -47,7 +47,7 @@ function setMarket(market: UiMarketWithToken) {
         type="text"
         class="bg-transparent focus:outline-none p-2 rounded-md"
         placeholder="Search..."
-        autocomplete="false"
+        autocomplete="off"
       />
     </div>
 

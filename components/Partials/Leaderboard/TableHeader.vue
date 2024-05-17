@@ -1,5 +1,5 @@
 <template>
-  <div class="flex [&>*]:flex-1 [&>*]:p-2">
+  <div class="flex [&>*]:flex-1 [&>*]:p-2 text-xs">
     <div>
       {{ $t('leaderboard.rank') }}
     </div>

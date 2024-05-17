@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   search: {
@@ -8,12 +9,7 @@ const props = defineProps({
     default: ''
   },
 
-  showMarginCurrencyOnly: {
-    type: Boolean,
-    default: false
-  },
-
-  hideSmallBalances: {
+  showUnverifiedAssets: {
     type: Boolean,
     default: false
   }
@@ -21,8 +17,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:search': [value: string]
-  'update:showMarginCurrencyOnly': [value: boolean]
-  'update:hideSmallBalances': [value: boolean]
+  'update:showUnverifiedAssets': [value: boolean]
 }>()
 
 const accountStore = useAccountStore()
@@ -33,14 +28,9 @@ const search = computed({
   set: (value: string) => emit('update:search', value)
 })
 
-const showMarginCurrencyOnly = computed({
-  get: () => props.showMarginCurrencyOnly,
-  set: (value: boolean) => emit('update:showMarginCurrencyOnly', value)
-})
-
-const hideSmallBalances = computed({
-  get: () => props.hideSmallBalances,
-  set: (value: boolean) => emit('update:hideSmallBalances', value)
+const showUnverifiedAssets = computed({
+  get: () => props.showUnverifiedAssets,
+  set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
 
 const { valueToString: accountTotalBalanceInUsdToString } =
@@ -58,7 +48,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
         ) || ZERO_IN_BASE
     ),
     {
-      decimalPlaces: 2
+      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
 </script>
@@ -70,7 +60,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
     <div class="flex divide-x border-r flex-1">
       <div class="flex items-center">
         <p class="text-sm text-gray-300 px-4 flex items-center space-x-2">
-          <span>Total: </span>
+          <span>{{ $t('account.total') }}: </span>
           <CommonSkeletonSubaccountAmount>
             <span>${{ accountTotalBalanceInUsdToString }}</span>
           </CommonSkeletonSubaccountAmount>
@@ -89,15 +79,9 @@ const { valueToString: accountTotalBalanceInUsdToString } =
       </label>
 
       <div class="flex items-center px-4">
-        <AppCheckbox v-model="showMarginCurrencyOnly">
-          Show Margin Currency Only
-        </AppCheckbox>
-      </div>
-
-      <div class="flex items-center px-4">
-        <AppCheckbox v-model="hideSmallBalances">
-          Hide Small Balances
-        </AppCheckbox>
+        <AppCheckbox2 v-model="showUnverifiedAssets">
+          {{ $t('account.showUnverifiedAssets') }}
+        </AppCheckbox2>
       </div>
     </div>
   </div>

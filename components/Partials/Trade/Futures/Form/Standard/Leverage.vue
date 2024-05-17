@@ -1,12 +1,32 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
 import { FactoryOpts } from 'imask'
-import { DerivativesTradeFormField } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
+import {
+  DerivativesTradeForm,
+  DerivativesTradeFormField,
+  UiDerivativeMarket,
+  derivativeMarketKey
+} from '@/types'
+
+const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const props = defineProps({
+  worstPrice: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  }
+})
 
 const { value: leverage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
   initialValue: '1'
 })
+
+const { markPrice } = useDerivativeLastPrice(market)
 
 const { el, typed } = useIMask(
   computed(
@@ -46,6 +66,37 @@ watch(
   }
 )
 
+const maxLeverageAvailable = computed(() => {
+  const maxLeverage = new BigNumberInBase(
+    new BigNumberInBase(1).dividedBy(market.value.initialMarginRatio).dp(0)
+  )
+
+  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
+
+  const stepsLessThanMaxLeverage = steps.filter(
+    (step) => step <= maxLeverage.toNumber()
+  )
+
+  return stepsLessThanMaxLeverage.length > 0
+    ? new BigNumberInBase(
+        stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+      ).toFixed()
+    : new BigNumberInBase(20).toFixed()
+})
+
+const maxLeverageAllowed = computed(() => {
+  const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
+    market.value.initialMarginRatio
+  )
+
+  const priceBasedOnOrderSide =
+    derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
+      ? priceWithMarginRatio.minus(markPrice.value).plus(props.worstPrice)
+      : priceWithMarginRatio.plus(markPrice.value).minus(props.worstPrice)
+
+  return props.worstPrice.dividedBy(priceBasedOnOrderSide)
+})
+
 function onBlur() {
   typed.value = leverage.value || '0'
 }
@@ -58,6 +109,11 @@ function onEnter(ev: Event) {
 
 <template>
   <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
+
+  <Whiteboard>
+    {{ { maxLeverageAllowed } }}
+  </Whiteboard>
+
   <div class="flex items-center">
     <div class="flex-1 pr-4 relative">
       <div
@@ -66,8 +122,8 @@ function onEnter(ev: Event) {
 
       <input
         v-model="leverageModel"
-        min="0"
-        :max="10"
+        min="0.01"
+        :max="Number(maxLeverageAvailable)"
         step="0.01"
         type="range"
         class="range w-full"

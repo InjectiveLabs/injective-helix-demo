@@ -37,8 +37,8 @@ watch(
 
 watch(
   () => walletStore.authZOrInjectiveAddress,
-  (injAddress) => {
-    if (!injAddress) {
+  (injectiveAddress) => {
+    if (!injectiveAddress) {
       return
     }
 
@@ -95,7 +95,7 @@ provide(portfolioStatusKey, portfolioStatus)
 <template>
   <div class="relative">
     <LayoutNavbar />
-    <main class="relative">
+    <main class="relative pb-6">
       <LayoutAuthZBanner v-if="walletStore.isAuthzWalletConnected" />
 
       <NuxtPage v-bind="{ portfolioStatus }" />

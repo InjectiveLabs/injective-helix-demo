@@ -12,6 +12,7 @@ export type AccountBalance = Omit<
   SharedBalanceInUsdWithTokenAndPrice,
   'balance'
 > & {
+  isVerified: boolean
   // Bank balance
   bankBalance: string
   // the available balance for the subaccount, defaults to 0 for the default subaccount

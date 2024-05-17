@@ -54,8 +54,8 @@ const stateToPersist = {
     },
 
     autoSign: {
-      pk: '',
-      injAddress: '',
+      privateKey: '',
+      injectiveAddress: '',
       expiration: ''
     }
   }
@@ -96,7 +96,9 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (

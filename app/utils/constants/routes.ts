@@ -43,10 +43,7 @@ export const getRoutes = () => {
   const futures = [...perpetualSlugs, ...expiryFutureSlugs]
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = [
-    MainPage.Account,
-    MainPage.Activity
-  ]
+  const walletConnectedRequiredRouteNames = [MainPage.Portfolio]
 
   // Layout routes
   const footerEnabledRoutes = [

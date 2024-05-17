@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+definePageMeta({
+  middleware: ['connected']
+})
+
 defineProps({
   portfolioStatus: {
     type: Object as PropType<Status>,

@@ -42,9 +42,6 @@ onMounted(() => {
     accountStore.streamSubaccountBalance(),
     gridStrategyStore.fetchAllStrategies()
   ])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 })

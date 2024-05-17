@@ -111,12 +111,12 @@ export const submitLimitOrder = async ({
   await walletStore.validate()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     baseDecimals: market.baseToken.decimals,
     quoteDecimals: market.quoteToken.decimals
   })
   const quantityToFixed = spotQuantityToChainQuantityToFixed({
-    value: quantity,
+    value: quantity.toFixed(),
     baseDecimals: market.baseToken.decimals
   })
 
@@ -197,12 +197,12 @@ export const submitMarketOrder = async ({
   await walletStore.validate()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
-    value: price,
+    value: price.toFixed(),
     baseDecimals: market.baseToken.decimals,
     quoteDecimals: market.quoteToken.decimals
   })
   const quantityToFixed = spotQuantityToChainQuantityToFixed({
-    value: quantity,
+    value: quantity.toFixed(),
     baseDecimals: market.baseToken.decimals
   })
 
@@ -240,7 +240,10 @@ export const submitMarketOrder = async ({
   if (walletStore.isAuthzWalletConnected) {
     actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
   } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.autoSign.injAddress)
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
   } else {
     actualMessage = message
   }
@@ -248,7 +251,7 @@ export const submitMarketOrder = async ({
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injAddress
+      ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
 

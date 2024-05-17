@@ -11,7 +11,6 @@ import {
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
-import { sharedToBalanceInWei } from '@shared/utils/formatter'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
@@ -130,7 +129,9 @@ export const submitLimitOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({
@@ -193,9 +194,9 @@ export const submitStopLimitOrder = async ({
     value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = sharedToBalanceInWei({
-    value: quantity.toFixed()
-  }).toFixed()
+  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+    value: quantity
+  })
 
   const msgMargin = reduceOnly
     ? '0'
@@ -267,7 +268,9 @@ export const submitMarketOrder = async ({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
     margin: reduceOnly
       ? '0'
       : derivativeMarginToChainMarginToFixed({
@@ -330,9 +333,9 @@ export const submitStopMarketOrder = async ({
     value: triggerPrice.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
-  const msgQuantity = sharedToBalanceInWei({
-    value: quantity.toFixed()
-  }).toFixed()
+  const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+    value: quantity
+  })
 
   const msgMargin = reduceOnly
     ? '0'

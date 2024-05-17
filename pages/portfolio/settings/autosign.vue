@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { PortfolioSubPage } from '@/types'
 
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
@@ -34,7 +35,7 @@ function disconnectAutoSign() {
 <template>
   <div>
     <div class="flex items-center p-4">
-      <NuxtLink :to="{ name: 'portfolio-settings' }" class="pr-4">
+      <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
         <SharedIcon name="chevron" />
       </NuxtLink>
 

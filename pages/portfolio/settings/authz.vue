@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '@/types'
+
 const linkOptions = [
   {
     label: 'portfolio.settings.authz.grantee',
-    to: { name: 'portfolio-settings-authz' }
+    to: { name: PortfolioSubPage.SettingsAuthz }
   },
   {
     label: 'portfolio.settings.authz.granter',
-    to: { name: 'portfolio-settings-authz-granter' }
+    to: { name: PortfolioSubPage.SettingsAuthzGranter }
   }
 ]
 </script>
@@ -15,7 +17,7 @@ const linkOptions = [
   <div class="">
     <div class="p-4">
       <div class="flex items-center">
-        <NuxtLink :to="{ name: 'portfolio-settings' }" class="pr-4">
+        <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
           <SharedIcon name="chevron" />
         </NuxtLink>
 

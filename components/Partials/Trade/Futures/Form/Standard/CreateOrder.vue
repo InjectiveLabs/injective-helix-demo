@@ -53,7 +53,7 @@ const validate = useValidateForm()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const resetForm = useResetForm()
 
-const { markPrice, lastTradedPrice } = useDerivativeLastPrice(
+const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
@@ -78,12 +78,6 @@ const isOrderTypeReduceOnly = computed(
 const isBuy = computed(
   () =>
     derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
-)
-
-const worstPriceWithSlippage = computed(() =>
-  isBuy.value
-    ? lastTradedPrice.value.times(1.01).dp(derivativeMarket.value.priceDecimals)
-    : lastTradedPrice.value.times(0.99).dp(derivativeMarket.value.priceDecimals)
 )
 
 const orderTypeToSubmit = computed(() => {
@@ -201,7 +195,7 @@ async function submitMarketOrder() {
     .submitMarketOrder({
       market: derivativeMarket?.value,
       quantity: props.quantity,
-      price: new BigNumberInBase(worstPriceWithSlippage.value),
+      price: new BigNumberInBase(props.worstPrice),
       reduceOnly: isOrderTypeReduceOnly.value,
       orderSide: derivativeFormValues.value[
         DerivativesTradeFormField.Side
@@ -239,7 +233,7 @@ async function submitStopMarketOrder() {
       quantity: props.quantity,
       triggerPrice: triggerPrice.value,
       orderSide: orderTypeToSubmit.value,
-      price: new BigNumberInBase(worstPriceWithSlippage.value),
+      price: new BigNumberInBase(props.worstPrice),
       reduceOnly: isOrderTypeReduceOnly.value,
       margin: props.margin
     })
@@ -271,7 +265,6 @@ function onSubmit() {
 
 <template>
   <div>
-    {{ orderTypeToSubmit }}
     <div>
       <AppButton
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"

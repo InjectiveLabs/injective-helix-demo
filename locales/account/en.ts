@@ -2,10 +2,13 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   account: {
+    action: 'Action',
+    assets: 'Assets',
     accountOverview: 'Account Overview',
     available: 'Available',
     fee: 'Fee',
     netWorth: 'Tradeable Net Worth',
+    total: 'Total',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
@@ -13,6 +16,7 @@ export default {
     trade: 'Trade',
     filters: 'Filters',
     filterByAsset: 'Filter by asset',
+    showUnverifiedAssets: 'Show unverified assets',
     showMarginCurrencyOnly: 'Show margin currency only',
     hideSmallBalances: 'Hide small balances',
     hideSmallBalancesTooltip:
@@ -30,6 +34,7 @@ export default {
         walletBalance: 'Wallet balance',
         tradingAccountBalance: 'Trading balance',
         totalBalance: 'Total',
+        totalValueUsd: 'Total Value (USD)',
         availableBalance: 'Available',
         inUseReserved: 'In Use/Reserved',
         unrealized: 'Unrealized PnL',

@@ -51,7 +51,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 
     <div v-if="market" class="flex-1 flex items-center space-x-2 p-2 font-sans">
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.baseToken.symbol }}</p>
+      <p>{{ market.ticker }}</p>
     </div>
 
     <div class="flex-1 flex items-center p-2">

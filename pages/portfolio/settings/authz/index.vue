@@ -7,11 +7,18 @@ const authZStore = useAuthZStore()
     <PartialsPortfolioSettingsAuthzGranteeTableHeader />
 
     <div class="divide-y border-t">
-      <PartialsPortfolioSettingsAuthzGranteeTableRow
-        v-for="[grantee, grants] in authZStore.granterGrantsByAddress"
-        :key="grantee"
-        v-bind="{ grantee, grants }"
+      <CommonEmptyList
+        v-if="authZStore.granterGrantsByAddress.length === 0"
+        v-bind="{ message: $t('portfolio.settings.authz.noGrants') }"
       />
+
+      <template v-else>
+        <PartialsPortfolioSettingsAuthzGranteeTableRow
+          v-for="[grantee, grants] in authZStore.granterGrantsByAddress"
+          :key="grantee"
+          v-bind="{ grantee, grants }"
+        />
+      </template>
     </div>
   </div>
 </template>

@@ -1,20 +1,22 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '@/types'
+
 const options = [
   {
     label: 'Open Orders',
-    to: '/portfolio/orders/futures'
+    to: { name: PortfolioSubPage.OrdersFutures }
   },
   {
     label: 'Triggers',
-    to: '/portfolio/orders/futures/triggers'
+    to: { name: PortfolioSubPage.OrdersFuturesTriggers }
   },
   {
     label: 'Order History',
-    to: '/portfolio/orders/futures/order-history'
+    to: { name: PortfolioSubPage.OrdersFuturesOrderHistory }
   },
   {
     label: 'Trade History',
-    to: '/portfolio/orders/futures/trade-history'
+    to: { name: PortfolioSubPage.OrdersFuturesTradeHistory }
   }
 ]
 </script>

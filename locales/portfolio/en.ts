@@ -20,7 +20,8 @@ export default {
           'Grant other wallet address full/partial permissions to make trades on their behalf',
         grantee: 'Grantee',
         granter: 'Granter',
-        addNewGrantee: 'Add new grantee address'
+        addNewGrantee: 'Add new grantee address',
+        noGrants: 'No grants found'
       },
 
       preferences: {

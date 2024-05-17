@@ -7,6 +7,7 @@ import sgt from './spot-grid/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
+import bulletin from './bulletin/en'
 import portfolio from './portfolio/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
@@ -24,6 +25,7 @@ export default {
   ...wallet,
   ...account,
   ...banners,
+  ...bulletin,
   ...campaign,
   ...portfolio,
   ...activities,
@@ -34,6 +36,7 @@ export default {
   ...liquidityBots,
   common: {
     ok: 'OK',
+    BTC: 'BTC',
     back: 'Back',
     view: 'View',
     open: 'Open',
@@ -144,6 +147,7 @@ export default {
   'faq-category-General': 'General',
   and: 'and',
   Rewards: 'Rewards',
+  injStaking: 'INJ Staking',
   resources: 'Resources',
   calculator: 'Calculator',
   remaining: 'remaining',
@@ -288,10 +292,13 @@ export default {
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,
 
-    tradingBots: 'Trading Bots',
+    tradingBots: 'Spot Grid Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated strategies',
     liquidityBots: 'Liquidity Bots',
     liquidityBotsDescription: 'Trade smarter with automated strategies',
+    liquidityProvision: 'Liquidity Provision',
+    liquidityProvisionDescription:
+      'Earn sustainable yield through decentralized perpetual vaults and trading bots',
     positions: 'Positions',
     orders: 'Orders',
     spotGrid: 'Spot Grid',

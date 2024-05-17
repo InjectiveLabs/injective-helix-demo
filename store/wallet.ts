@@ -60,7 +60,7 @@ type WalletStoreState = {
 
   autoSign?: {
     privateKey: string
-    injAddress: string
+    injectiveAddress: string
     expiration: number
   }
 }
@@ -713,16 +713,28 @@ export const useWalletStore = defineStore('wallet', {
       const { privateKey } = PrivateKey.generate()
       const injectiveAddress = privateKey.toBech32()
 
-      const authZMsgs = Object.values(MsgType)
-        .filter((type) => type.includes('exchange'))
-        .map((messageType) =>
-          MsgGrant.fromJSON({
-            grantee: injectiveAddress,
-            granter: walletStore.injectiveAddress,
-            expiryInSeconds: Date.now() / 1000 + 60 * 60,
-            authorization: getGenericAuthorizationFromMessageType(messageType)
-          })
-        )
+      const tradingMessages = [
+        MsgType.MsgCancelSpotOrder,
+        MsgType.MsgBatchUpdateOrders,
+        MsgType.MsgCreateSpotLimitOrder,
+        MsgType.MsgCancelDerivativeOrder,
+        MsgType.MsgCreateSpotMarketOrder,
+        MsgType.MsgBatchCancelSpotOrders,
+        MsgType.MsgBatchCreateSpotLimitOrders,
+        MsgType.MsgCreateDerivativeLimitOrder,
+        MsgType.MsgCreateDerivativeMarketOrder,
+        MsgType.MsgBatchCancelDerivativeOrders,
+        MsgType.MsgBatchCreateDerivativeLimitOrders
+      ]
+
+      const authZMsgs = tradingMessages.map((messageType) =>
+        MsgGrant.fromJSON({
+          grantee: injectiveAddress,
+          granter: walletStore.injectiveAddress,
+          expiryInSeconds: Date.now() * 1000 + 60 * 60,
+          authorization: getGenericAuthorizationFromMessageType(messageType)
+        })
+      )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: authZMsgs,
@@ -738,7 +750,7 @@ export const useWalletStore = defineStore('wallet', {
 
       const autoSign = {
         injectiveAddress,
-        privateKey: privateKey.toHex(),
+        privateKey: privateKey.toPrivateKeyHex(),
         expiration: Date.now() + 1000 * 60 * 60
       }
 

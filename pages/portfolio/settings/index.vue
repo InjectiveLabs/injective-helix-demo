@@ -1,19 +1,21 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '@/types'
+
 const settingsOptions = [
   {
     label: 'portfolio.settings.authz.title',
     description: 'portfolio.settings.authz.description',
-    to: { name: 'portfolio-settings-authz' }
+    to: { name: PortfolioSubPage.SettingsAuthz }
   },
   {
     label: 'portfolio.settings.preferences.title',
     description: 'portfolio.settings.preferences.description',
-    to: { name: 'portfolio-settings-preferences' }
+    to: { name: PortfolioSubPage.SettingsPreferences }
   },
   {
     label: 'portfolio.settings.autoSign.title',
     description: 'portfolio.settings.autoSign.description',
-    to: { name: 'portfolio-settings-autosign' }
+    to: { name: PortfolioSubPage.SettingsAutosign }
   }
 ]
 </script>

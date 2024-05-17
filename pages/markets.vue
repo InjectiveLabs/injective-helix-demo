@@ -141,7 +141,7 @@ const unknownTokenStatus = inject(
           </AppButtonSelect>
         </div>
 
-        <div class="flex py-2">
+        <div class="flex">
           <label
             class="flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
           >
@@ -175,28 +175,39 @@ const unknownTokenStatus = inject(
           </AppButtonSelect>
         </div>
 
-        <div v-else></div>
+        <div
+          v-if="type === MarketTypeOption.Permissionless"
+          class="flex items-center space-x-2 text-gray-500"
+        >
+          <SharedIcon name="warning-triangle" is-md />
+          <span class="text-sm">{{ $t('markets.permisionlessWarning') }}</span>
+        </div>
 
         <div class="flex items-center space-x-3">
-          <div class="flex space-x-2">
+          <div class="flex overflow-hidden rounded border">
             <AppButtonSelect
               v-for="value in Object.values(MarketQuoteType)"
               :key="value"
               v-model="activeQuote"
               v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs uppercase bg-brand-800 rounded"
-              active-classes="text-white !bg-brand-700"
+              class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+              active-classes="text-white !bg-brand-800"
             >
               {{ value }}
             </AppButtonSelect>
           </div>
 
-          <AppCheckbox2 v-model="isLowVolumeMarketsVisible" class="ml-4" is-sm>
+          <AppCheckbox2
+            v-model="isLowVolumeMarketsVisible"
+            class="ml-4 flex items-center"
+            is-sm
+          >
             {{ $t('markets.showLowVol') }}
           </AppCheckbox2>
         </div>
       </div>
 
+      <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page
