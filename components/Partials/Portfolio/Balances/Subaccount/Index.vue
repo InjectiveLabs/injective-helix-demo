@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
-const { userBalancesWithToken, accountBalancesWithToken } = useBalance()
+const {
+  showUnverifiedAssets,
+  userBalancesWithToken,
+  accountBalancesWithToken
+} = useBalance()
 
 const search = ref('')
-const showUnverifiedAssets = ref(false)
-
-function checkIsPartOfSearch(search: string, balance: AccountBalance) {
-  const isIncludedInSymbol = balance.token.symbol
-    .toLowerCase()
-    .includes(search.toLowerCase())
-
-  const isIncludedInName = balance.token.name
-    .toLowerCase()
-    .includes(search.toLowerCase())
-
-  return isIncludedInSymbol || isIncludedInName
-}
 
 const balances = computed(() => {
   if (!showUnverifiedAssets.value) {
@@ -29,20 +20,32 @@ const balances = computed(() => {
 
 const balancesSorted = computed(() => {
   const filteredBalances = balances.value.filter((balance) => {
-    const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
-    const hasBalance = new BigNumberInWei(balance.accountTotalBalance).gte(1)
+    const isIncludedInSymbol = balance.token.symbol
+      .toLowerCase()
+      .includes(search.value.toLowerCase())
+
+    const isIncludedInName = balance.token.name
+      .toLowerCase()
+      .includes(search.value.toLowerCase())
+
+    const isPartOfSearch = isIncludedInSymbol || isIncludedInName
+    const hasBalance = new BigNumberInBase(balance.accountTotalBalance).gte(1)
 
     return hasBalance && isPartOfSearch
   })
 
-  return [...filteredBalances].sort((a, b) => {
-    return new BigNumberInWei(a.accountTotalBalanceInUsd)
-      .toBase(a.token.decimals)
-      .gt(
-        new BigNumberInWei(b.accountTotalBalanceInUsd).toBase(b.token.decimals)
-      )
-      ? -1
-      : 1
+  return filteredBalances.sort((a, b) => {
+    const aBalanceInToken = sharedToBalanceInTokenInBase({
+      value: a.accountTotalBalanceInUsd,
+      decimalPlaces: a.token.decimals
+    })
+
+    const bBalanceInToken = sharedToBalanceInTokenInBase({
+      value: b.accountTotalBalanceInUsd,
+      decimalPlaces: b.token.decimals
+    })
+
+    return aBalanceInToken.gt(bBalanceInToken) ? -1 : 1
   })
 })
 </script>

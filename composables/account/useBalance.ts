@@ -41,6 +41,8 @@ const reduceAccountBalances = (
   } as AccountBalance
 }
 
+const showUnverifiedAssets = ref(false)
+
 export function useBalance() {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
@@ -50,6 +52,10 @@ export function useBalance() {
   const derivativeStore = useDerivativeStore()
 
   const aggregatedPortfolioBalances = computed(() => {
+    const tokens = showUnverifiedAssets.value
+      ? [...tokenStore.tradeableTokens, ...tokenStore.unverifiedTokens]
+      : tokenStore.tradeableTokens
+
     return Object.keys(accountStore.subaccountBalancesMap).reduce(
       (balances, subaccountId) => {
         const positionsForSubaccountWithDenom = positionStore.positions.filter(
@@ -58,7 +64,7 @@ export function useBalance() {
 
         return {
           ...balances,
-          [subaccountId]: tokenStore.tradeableTokens.map((token) => {
+          [subaccountId]: tokens.map((token) => {
             const isDefaultTradingAccount =
               walletStore.authZOrDefaultSubaccountId === subaccountId
             const denom = token.denom
@@ -155,10 +161,10 @@ export function useBalance() {
         ...derivativeStore.tradeableDenoms
       ])
     ]
-    const permissionlessDenoms = [
+    const unverifiedDenoms = [
       ...new Set([
-        ...spotStore.permissionlessDenoms,
-        ...derivativeStore.permissionlessDenoms
+        ...spotStore.unverifiedDenoms,
+        ...derivativeStore.unverifiedDenoms
       ])
     ]
 
@@ -166,7 +172,7 @@ export function useBalance() {
       .map((coin) => {
         const shouldIgnoreCoin =
           tradeableDenoms.includes(coin.denom) ||
-          !permissionlessDenoms.includes(coin.denom)
+          !unverifiedDenoms.includes(coin.denom)
 
         if (shouldIgnoreCoin) {
           return undefined
@@ -328,28 +334,6 @@ export function useBalance() {
     })
   }
 
-  /**
-   * A minimal representation of an AccountBalance based on the current
-   * subaccountId
-   *
-   * @deprecated should use accountBalances instead
-   */
-  const balancesWithToken = computed(() => {
-    return accountBalancesWithToken.value.map((accountBalance) => {
-      const isDefaultTradingAccount =
-        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
-
-      return {
-        token: accountBalance.token,
-        denom: accountBalance.denom,
-        balance: isDefaultTradingAccount
-          ? accountBalance.bankBalance
-          : accountBalance.availableBalance,
-        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token)
-      }
-    })
-  })
-
   const aggregateBalanceByDenoms = ({
     balances,
     denoms
@@ -375,7 +359,7 @@ export function useBalance() {
   }
 
   return {
-    balancesWithToken,
+    showUnverifiedAssets,
     userBalancesWithToken,
     aggregateBalanceByDenoms,
     accountBalancesWithToken,

@@ -62,18 +62,34 @@ export const useTokenStore = defineStore('token', {
       )
     },
 
-    tradeableTokens: (_): TokenStatic[] => {
-      const derivativeStore = useDerivativeStore()
+    unverifiedTokens: (_): TokenStatic[] => {
       const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
 
-      const tradeableDenoms = [
+      const denoms = [
         ...new Set([
-          ...derivativeStore.tradeableDenoms,
-          ...spotStore.tradeableDenoms
+          ...spotStore.unverifiedDenoms,
+          ...derivativeStore.unverifiedDenoms
         ])
       ]
 
-      return tradeableDenoms
+      return denoms
+        .map((denom) => tokenFactoryStatic.toToken(denom))
+        .filter((token) => token) as TokenStatic[]
+    },
+
+    tradeableTokens: (_): TokenStatic[] => {
+      const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
+
+      const denoms = [
+        ...new Set([
+          ...spotStore.tradeableDenoms,
+          ...derivativeStore.tradeableDenoms
+        ])
+      ]
+
+      return denoms
         .map((denom) => tokenFactoryStatic.toToken(denom))
         .filter((token) => token) as TokenStatic[]
     },

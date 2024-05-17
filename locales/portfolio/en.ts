@@ -1,5 +1,6 @@
 export default {
   portfolio: {
+    assetsFrom: 'Assets From',
     totalValue: 'Total Value',
     balances: {
       netWorth: 'Net Worth'

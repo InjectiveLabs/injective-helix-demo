@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
 import {
+  SharedUiSpotTrade,
+  SharedUiMarketSummary,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
+import {
   OrderSide,
   TradeExecutionSide,
   TradeExecutionType
@@ -9,11 +14,6 @@ import {
   toUiMarketSummary,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
-import {
-  SharedUiSpotTrade,
-  SharedUiMarketSummary,
-  SharedUiOrderbookWithSequence
-} from '@shared/types'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
   SpotMarket,
@@ -107,7 +107,7 @@ export const useSpotStore = defineStore('spot', {
       }, new Set() as Set<string>)
     ],
 
-    permissionlessDenoms: (state) => [
+    unverifiedDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
         if (market.isVerified) {
           return denoms
