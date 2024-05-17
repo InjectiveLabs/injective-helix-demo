@@ -20,7 +20,7 @@ import {
 } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import type { Token } from '@injectivelabs/token-metadata'
+import type { TokenStatic } from '@injectivelabs/token-metadata'
 import {
   newMarketsSlug,
   upcomingMarkets,
@@ -493,7 +493,7 @@ export const convertCw20ToBankBalanceForSwap = ({
   bankBalancesMap,
   cw20BalancesMap
 }: {
-  token: Token
+  token: TokenStatic
   quantity: string
   injectiveAddress: string
   bankBalancesMap: Record<string, string>
