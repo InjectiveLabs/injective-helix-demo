@@ -24,9 +24,7 @@ defineProps({
     </div>
 
     <div class="flex-1 relative">
-      <!-- <AppHocLoading is-helix v-bind="{ status: portfolioStatus }"> -->
       <NuxtPage />
-      <!-- </AppHocLoading> -->
     </div>
   </div>
 </template>

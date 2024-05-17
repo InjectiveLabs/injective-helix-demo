@@ -6,7 +6,7 @@ const walletStore = useWalletStore()
 
 <template>
   <div class="flex p-2 space-x-2">
-    <div v-if="walletStore.isUserWalletConnected" class="flex">
+    <div v-if="walletStore.isUserWalletConnected" class="flex items-center">
       <LayoutNavbarMenuItem
         class="hidden lg:block"
         v-bind="{

@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import { LineType } from 'lightweight-charts'
 
-const randomData = () => {
-  const data: { value: number; time: number }[] = []
-  for (let i = 0; i < 400; i++) {
-    data.push({
-      value:
-        i === 0
-          ? Math.floor(Math.random() * 100) + 100000
-          : data[i - 1].value + Math.random() * 10000 - 5000,
-      time: new Date().getTime() / 1000 + i * 1000
-    })
-  }
-  return data
-}
+const leaderboardStore = useLeaderboardStore()
 
-const data = ref(randomData())
+const data = computed(() => leaderboardStore.historicalBalance)
 </script>
 
 <template>
