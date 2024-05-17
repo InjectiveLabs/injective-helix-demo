@@ -58,13 +58,24 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 
   return txHash
@@ -119,13 +130,24 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 
   return txHash

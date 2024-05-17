@@ -599,17 +599,20 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      if (walletStore.wallet === Wallet.Metamask) {
+      const isAutoSignEnabled = !!walletStore.autoSign
+
+      if (walletStore.wallet === Wallet.Metamask && !isAutoSignEnabled) {
         await validateMetamask(walletStore.address, appStore.ethereumChainId)
       }
 
-      if (walletStore.wallet === Wallet.TrustWallet) {
+      if (walletStore.wallet === Wallet.TrustWallet && !isAutoSignEnabled) {
         await validateTrustWallet(walletStore.address, appStore.ethereumChainId)
       }
 
       if (
         isEthWallet(walletStore.wallet) &&
-        walletStore.isAuthzWalletConnected
+        walletStore.isAuthzWalletConnected &&
+        !isAutoSignEnabled
       ) {
         throw new GeneralException(
           new Error(
@@ -618,7 +621,7 @@ export const useWalletStore = defineStore('wallet', {
         )
       }
 
-      if (isCosmosWallet(walletStore.wallet)) {
+      if (isCosmosWallet(walletStore.wallet) && !isAutoSignEnabled) {
         await validateCosmosWallet({
           address: walletStore.injectiveAddress,
           chainId: appStore.chainId as unknown as CosmosChainId,
