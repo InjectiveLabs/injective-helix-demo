@@ -9,9 +9,12 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
 const market = computed(() =>
-  spotStore.markets.find((market) => market.marketId === props.vault.marketId)
+  [...derivativeStore.markets, ...spotStore.markets].find(
+    (market) => market.marketId === props.vault.marketId
+  )
 )
 
 const mitoUrl = computed(
