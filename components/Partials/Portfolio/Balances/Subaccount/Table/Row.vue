@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance } from '@/types'
+import { injToken } from '@shared/data/token'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
+import { AccountBalance } from '@/types'
 
 const accountStore = useAccountStore()
 
@@ -75,6 +77,18 @@ const {
   }),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
+
+const isBridgable = computed(() => {
+  if (props.balance.token.tokenType === TokenType.Ibc) {
+    return props.balance.isVerified
+  }
+
+  return (
+    (props.balance.token.tokenType === TokenType.Erc20 &&
+      props.balance.token.tokenVerification === TokenVerification.Verified) ||
+    props.balance.token.denom === injToken.denom
+  )
+})
 </script>
 
 <template>
@@ -143,27 +157,58 @@ const {
     <div
       class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2"
     >
-      <AppButton
-        variant="primary"
-        class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
-        size="sm"
+      <PartialsAccountBridgeRedirection
+        v-bind="{
+          isDeposit: true,
+          denom: balance.token.denom
+        }"
+        class="w-full"
       >
-        Withdraw
-      </AppButton>
-      <AppButton
-        variant="primary"
-        class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
-        size="sm"
+        <AppButton
+          variant="primary"
+          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
+          :class="{
+            invisible: !isBridgable
+          }"
+          size="sm"
+        >
+          {{ $t('account.withdraw') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
+
+      <PartialsAccountBridgeRedirection
+        v-bind="{
+          denom: balance.token.denom
+        }"
+        class="w-full"
       >
-        Deposit
-      </AppButton>
-      <AppButton
-        variant="primary"
-        class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
-        size="sm"
+        <AppButton
+          variant="primary"
+          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
+          :class="{
+            invisible: !isBridgable
+          }"
+          size="sm"
+        >
+          {{ $t('account.deposit') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
+
+      <PartialsAccountBridgeRedirection
+        v-bind="{
+          denom: balance.token.denom,
+          isTransfer: true
+        }"
+        class="w-full"
       >
-        Transfer
-      </AppButton>
+        <AppButton
+          variant="primary"
+          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
+          size="sm"
+        >
+          {{ $t('account.transfer') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
     </div>
   </div>
 </template>
