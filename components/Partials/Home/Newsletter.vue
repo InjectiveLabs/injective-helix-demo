@@ -35,9 +35,9 @@ const subscribe = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="py-20 md:py-40 text-center relative">
+  <div class="my-10 md:my-20 py-40 text-center relative">
     <img
-      class="absolute inset-0 opacity-30 mix-blend-lighten"
+      class="absolute inset-0 h-full w-full opacity-30 mix-blend-lighten"
       src="/images/starburst.png"
       alt=""
     />

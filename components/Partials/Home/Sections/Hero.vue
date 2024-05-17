@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="text-center mb-20 mt-10 md:mt-20">
+  <div class="text-center mb-20 mt-10 md:mt-14">
     <div class="flex flex-col items-center">
       <div class="flex items-center space-x-4">
         <AssetLogo class="h-12 w-12" />
@@ -17,7 +17,7 @@
           {{ $t('home.title') }}
         </h1>
 
-        <p class="text-sm lg:text-2xl text-gray-300 font-light">
+        <p class="text-sm lg:text-xl text-gray-200 font-light">
           {{ $t('home.subtitle') }}
         </p>
 
