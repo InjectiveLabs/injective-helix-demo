@@ -8,10 +8,6 @@ import {
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import { UiSpotMarket } from '@/types'
 
-definePageMeta({
-  middleware: ['grid-strategy-subaccount']
-})
-
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const walletStore = useWalletStore()
@@ -47,6 +43,8 @@ const marketOrders = computed(() =>
       state === OrderState.Booked
   )
 )
+
+// todo: Ivan => change subaccount onMounted
 
 function fetchData() {
   status.setLoading()

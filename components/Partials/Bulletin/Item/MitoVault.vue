@@ -39,7 +39,7 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
   >
     <div class="flex space-x-4">
       <div class="relative">
-        <CommonTokenIcon is-lg v-bind="{ denom: market?.baseDenom }" />
+        <CommonTokenIcon is-lg v-bind="{ token: market?.baseToken }" />
         <div
           class="absolute border left-5 top-4 bg-white rounded-full grid place-items-center"
         >

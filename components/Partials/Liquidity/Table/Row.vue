@@ -14,7 +14,12 @@ import {
 } from '@/app/utils/constants'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
+import {
+  PortfolioSubPage,
+  TradingInterface,
+  TradingBotsSubPage,
+  LiquidityRewardsPage
+} from '@/types'
 
 const props = defineProps({
   campaign: {
@@ -128,8 +133,9 @@ onMounted(() => {
       <div class="flex items-center space-x-2">
         <NuxtLink
           :to="{
-            name: TradingBotsSubPage.GridSpotMarket,
-            params: { market: market.slug }
+            name: PortfolioSubPage.OrdersSpotTradeHistory,
+            params: { market: market.slug },
+            query: { interface: TradingInterface.TradingBots }
           }"
           class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
         >
