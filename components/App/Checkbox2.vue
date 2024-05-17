@@ -17,7 +17,7 @@ const id = Math.random().toString()
 </script>
 
 <template>
-  <div class="checkbox-wrapper-4">
+  <div class="checkbox-wrapper-4 flex items-center">
     <input
       :id="id"
       v-model="value"
