@@ -15,14 +15,15 @@ const emit = defineEmits<{
 const search = ref('')
 
 const marketsFiltered = computed(() => {
-  return props.markets.filter(
-    (market) =>
-      market.ticker.toLowerCase().includes(search.value.toLowerCase()) ||
-      market.baseToken.name
-        .toLowerCase()
-        .includes(search.value.toLowerCase()) ||
-      market.quoteToken.name.toLowerCase().includes(search.value.toLowerCase())
-  )
+  return props.markets.filter((market) => {
+    const formattedSearch = search.value.trim().toLowerCase()
+
+    return (
+      market.ticker.toLowerCase().startsWith(formattedSearch) ||
+      market.baseToken.name.toLowerCase().startsWith(formattedSearch) ||
+      market.quoteToken.name.toLowerCase().startsWith(formattedSearch)
+    )
+  })
 })
 
 onMounted(() => {

@@ -245,7 +245,7 @@ export const marketIsPartOfSearch = (
     market.baseToken.name
   ]
     .map((piece) => piece.toLowerCase())
-    .some((value) => (value || '').toLowerCase().includes(query))
+    .some((value) => (value || '').toLowerCase().startsWith(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
