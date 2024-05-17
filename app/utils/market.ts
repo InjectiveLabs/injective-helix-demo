@@ -10,7 +10,8 @@ import {
   DerivativeMarket,
   ExpiryFuturesMarket,
   MsgExecuteContractCompat,
-  ExecArgCW20Send
+  ExecArgCW20Send,
+  isCw20ContractAddress
 } from '@injectivelabs/sdk-ts'
 import {
   SharedMarketType,
@@ -19,15 +20,16 @@ import {
 } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
+import type { TokenStatic } from '@injectivelabs/token-metadata'
 import {
+  newMarketsSlug,
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
   slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory,
-  slugsToIncludeInInjectiveCategory,
-  newMarketsSlug
+  slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
 import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
 import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
@@ -478,4 +480,50 @@ export const convertCw20ToBankBalance = ({
       })
     })
   }
+}
+
+/**
+ * Add a Cw20 conversion message if:
+ * 1. The base token is cw20 and doesn't have enough balance in the bank
+ */
+export const convertCw20ToBankBalanceForSwap = ({
+  token,
+  quantity,
+  injectiveAddress,
+  bankBalancesMap,
+  cw20BalancesMap
+}: {
+  token: TokenStatic
+  quantity: string
+  injectiveAddress: string
+  bankBalancesMap: Record<string, string>
+  cw20BalancesMap: Record<string, string>
+}) => {
+  const [cw20Address] = token.denom.split('/').reverse()
+
+  if (!cw20Address) {
+    return
+  }
+
+  if (!isCw20ContractAddress(cw20Address)) {
+    return
+  }
+
+  const quantityInWei = new BigNumberInBase(quantity).toWei(token.decimals)
+  const hasSufficientBalanceInBank = new BigNumberInWei(
+    bankBalancesMap[token.denom] || 0
+  ).gte(quantityInWei.toFixed())
+
+  if (hasSufficientBalanceInBank) {
+    return
+  }
+
+  return MsgExecuteContractCompat.fromJSON({
+    contractAddress: cw20Address,
+    sender: injectiveAddress,
+    execArgs: ExecArgCW20Send.fromJSON({
+      contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+      amount: cw20BalancesMap[cw20Address]
+    })
+  })
 }

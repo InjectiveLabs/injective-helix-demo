@@ -24,7 +24,15 @@ export const getSwapAmountAndTokenFromTxHash = async (
     return
   }
 
-  const { events } = tx.logs[0]
+  const logs = tx.logs.find((log) =>
+    log.events.find((event) => event.type === 'wasm-atomic_swap_execution')
+  )
+
+  if (!logs) {
+    return
+  }
+
+  const { events } = logs
 
   const event = events.find(
     (event) => event.type === 'wasm-atomic_swap_execution'

@@ -294,6 +294,7 @@ function resetQueryError() {
               v-bind="{
                 queryError,
                 showErrorState,
+                status: submitStatus,
                 isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
               }"
               @submit="submit"
