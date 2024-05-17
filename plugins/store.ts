@@ -96,7 +96,9 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (
