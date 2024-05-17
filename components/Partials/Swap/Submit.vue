@@ -223,10 +223,12 @@ watch(
           rateExpired && hasAmounts && !props.isLoading && !hasErrors
       }"
       :classes="'border border-accent-500 text-accent-500  bg-opacity-50'"
-      is-xl
-      :is-disabled="isLoading || !!hasErrors || !hasAmounts"
-      :is-loading="isLoading"
-      :status="status"
+      v-bind="{
+        isXl: true,
+        status: status,
+        isLoading: isLoading,
+        isDisabled: isLoading || !!hasErrors || !hasAmounts
+      }"
       @click="handlerFunction"
     >
       <div class="max-auto w-full">

@@ -9,6 +9,7 @@ import { msgBroadcaster } from '@shared/WalletService'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
 import { convertCw20ToBankBalanceForSwap } from '~/app/utils/market'
+import { backupPromiseCall } from '@/app/utils/async'
 
 export const submitAtomicOrder = async ({
   formValues,
@@ -80,6 +81,10 @@ export const submitAtomicOrder = async ({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
+
+  if (cw20ConvertMessage) {
+    await backupPromiseCall(() => accountStore.fetchCw20Balances())
+  }
 
   return txHash
 }
@@ -154,6 +159,10 @@ export const submitAtomicOrderExactOutput = async ({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
+
+  if (cw20ConvertMessage) {
+    await backupPromiseCall(() => accountStore.fetchCw20Balances())
+  }
 
   return txHash
 }
