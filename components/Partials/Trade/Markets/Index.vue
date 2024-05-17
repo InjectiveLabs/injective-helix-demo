@@ -173,17 +173,34 @@ function onAscending(ascending: boolean) {
           </label>
         </div>
 
-        <div class="flex gap-2 flex-wrap">
-          <AppButtonSelect
-            v-for="category in activeTypeOptions"
-            :key="category.value"
-            v-model="activeType"
-            v-bind="{ value: category.value }"
-            class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-gray-500"
-            active-classes="text-white !bg-brand-700"
-          >
-            {{ category.value }}
-          </AppButtonSelect>
+        <div
+          class="flex max-md:flex-col max-md:items-start gap-2 justify-between"
+        >
+          <div class="flex gap-2 flex-wrap">
+            <AppButtonSelect
+              v-for="category in activeTypeOptions"
+              :key="category.value"
+              v-model="activeType"
+              v-bind="{ value: category.value }"
+              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-gray-500"
+              active-classes="text-white !bg-brand-700"
+            >
+              {{ category.value }}
+            </AppButtonSelect>
+          </div>
+
+          <div class="flex overflow-hidden rounded border">
+            <AppButtonSelect
+              v-for="value in Object.values(MarketQuoteType)"
+              :key="value"
+              v-model="activeQuote"
+              v-bind="{ value }"
+              class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+              active-classes="text-white !bg-brand-800"
+            >
+              {{ value }}
+            </AppButtonSelect>
+          </div>
         </div>
 
         <div class="flex justify-between items-center flex-wrap">
@@ -199,6 +216,7 @@ function onAscending(ascending: boolean) {
               {{ category.value }}
             </AppButtonSelect>
           </div>
+
           <AppCheckbox2
             v-model="isLowVolumeMarketsVisible"
             class="-ml-2 md:mx-8"
