@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { USDT_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { stableCoinDenoms } from '@/app/data/token'
@@ -15,8 +15,8 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-
 const derivativeStore = useDerivativeStore()
+const tokenStore = useTokenStore()
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -39,6 +39,10 @@ const summary = computed(() => {
   )
 })
 
+const isNonUsdtQuoteAsset = computed(() => {
+  return props.market.quoteToken.denom !== USDT_DENOM
+})
+
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
     return isSpot.value
@@ -48,6 +52,12 @@ const lastTradedPrice = computed(() => {
 
   return new BigNumberInBase(
     summary.value?.lastPrice || summary.value?.price || 0
+  )
+})
+
+const lastTradedPriceInUsd = computed(() => {
+  return lastTradedPrice.value.times(
+    tokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 })
 
@@ -84,6 +94,15 @@ const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
     displayAbsoluteDecimalPlace: true
   }
 )
+
+const { valueToString: lastTradedPriceInUsdToFormat } =
+  useSharedBigNumberFormatter(
+    computed(() => lastTradedPriceInUsd.value),
+    {
+      decimalPlaces: props.market.priceDecimals,
+      displayAbsoluteDecimalPlace: true
+    }
+  )
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
   useSharedBigNumberFormatter(
@@ -139,6 +158,9 @@ const { valueToString: lowToFormat, valueToBigNumber: low } =
       changeToFormat,
       volumeToFormat,
       lastTradedPrice,
+      isNonUsdtQuoteAsset,
+      lastTradedPriceInUsd,
+      lastTradedPriceInUsdToFormat,
       percentageChangeStatus,
       lastTradedPriceToFormat
     }"

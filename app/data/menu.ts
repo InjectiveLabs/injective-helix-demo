@@ -4,7 +4,8 @@ import {
   TradeSubPage,
   MenuItemType,
   PortfolioSubPage,
-  TradingBotsSubPage
+  TradingBotsSubPage,
+  TradingInterface
 } from '@/types'
 import PieChart from '@/components/Asset/Menu/PieChart.vue'
 import BarChart from '@/components/Asset/Menu/BarChart.vue'
@@ -44,8 +45,11 @@ export const MENU_ITEMS: MenuItem[] = [
         label: 'tradingBots',
         description: 'tradingBotsDescription',
         to: {
-          name: TradingBotsSubPage.GridSpotMarket,
-          params: { market: 'inj-usdt' }
+          name: TradeSubPage.Spot,
+          params: {
+            slug: 'inj-usdt'
+          },
+          query: { interface: TradingInterface.TradingBots }
         }
       }
     ]

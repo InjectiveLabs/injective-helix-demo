@@ -142,7 +142,7 @@ export const useDerivativeStore = defineStore('derivative', {
       }, new Set() as Set<string>)
     ],
 
-    permissionlessDenoms: (state) => [
+    unverifiedDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
         if (market.isVerified) {
           return denoms

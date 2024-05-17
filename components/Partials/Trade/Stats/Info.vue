@@ -14,13 +14,15 @@ defineProps({
   <CommonHeadlessMarketSummary v-bind="{ market, isCurrentMarket: true }">
     <template
       #default="{
+        change,
         highToFormat,
         lowToFormat,
-        lastTradedPriceToFormat,
-        change,
         changeToFormat,
+        volumeToFormat,
+        isNonUsdtQuoteAsset,
         percentageChangeStatus,
-        volumeToFormat
+        lastTradedPriceToFormat,
+        lastTradedPriceInUsdToFormat
       }"
     >
       <div class="flex">
@@ -75,18 +77,25 @@ defineProps({
           </div>
         </div>
 
+        <div v-if="isNonUsdtQuoteAsset" class="p-2 text-xs">
+          <p class="text-gray-400">{{ $t('trade.usd_value') }}</p>
+          <p class="font-mono font-semibold">
+            {{ lastTradedPriceInUsdToFormat }}
+          </p>
+        </div>
+
         <div class="p-2 text-xs">
-          <p class="text-gray-400">24h Total Volume</p>
+          <p class="text-gray-400">{{ $t('trade.total_market_volume_24h') }}</p>
           <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
         </div>
 
         <div class="p-2 text-xs">
-          <p class="text-gray-400">24h High</p>
+          <p class="text-gray-400">{{ $t('trade.high') }}</p>
           <p class="font-mono font-semibold">{{ highToFormat }}</p>
         </div>
 
         <div class="p-2 text-xs">
-          <p class="text-gray-400">24h Low</p>
+          <p class="text-gray-400">{{ $t('trade.low') }}</p>
           <p class="font-mono font-semibold">{{ lowToFormat }}</p>
         </div>
       </div>
