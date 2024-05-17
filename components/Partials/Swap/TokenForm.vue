@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Modal, SwapForm, SwapFormField } from '@/types'
 import { TokenSymbols } from '@/app/data/token'
+import { Modal, SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()
 const walletStore = useWalletStore()
@@ -195,7 +195,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             debounce: 600,
             isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
-            isUsdVisible: !!inputToken?.token.coinGeckoId,
+            isUsdVisible: true,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
@@ -235,7 +235,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             debounce: 600,
             isMaxHidden: true,
             isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
-            isUsdVisible: !!outputToken?.token.coinGeckoId,
+            isUsdVisible: true,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,

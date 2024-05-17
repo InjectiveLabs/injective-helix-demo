@@ -394,7 +394,11 @@ export default {
       youHaveSwapped: ({ named }: I18nMessageFunction) =>
         `You have swapped ${named('inputAmount')} ${named(
           'inputTokenSymbol'
-        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
+        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`,
+      priceWarning: ({ named }: I18nMessageFunction) =>
+        `High slippage detected! Only proceed if you understand you might receive less ${named(
+          'symbol'
+        )} than anticipated.`
     },
 
     lastUpdated: 'Last Updated'

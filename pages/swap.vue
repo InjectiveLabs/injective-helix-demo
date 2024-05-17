@@ -290,6 +290,8 @@ function resetQueryError() {
               </div>
             </div>
 
+            <PartialsSwapPriceWarning />
+
             <PartialsSwapSubmit
               v-bind="{
                 queryError,
