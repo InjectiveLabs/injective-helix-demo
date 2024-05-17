@@ -24,7 +24,9 @@
     "lint": "eslint --max-warnings 0 '**/*.{js,ts,vue,html}' --fix && stylelint '**/*.{css,.vue}'",
     "coverage": "yarn jest --coverage",
     "prepare": "husky install",
-    "typecheck": "nuxi typecheck"
+    "typecheck": "nuxi typecheck",
+    "ui-sync-clean": "cd ../injective-ui/layer && rm -rf node_modules && cd ../../injective-helix && rm -rf node_modules && yarn ui-sync",
+    "ui-sync": "cd ../injective-ui && git pull && cd layer && yarn install --force && cd ../../injective-helix && git pull && yarn install --force"
   },
   "lint-staged": {
     "**/*.{js,ts,vue,html}": [
