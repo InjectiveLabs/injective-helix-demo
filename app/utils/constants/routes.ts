@@ -50,7 +50,6 @@ export const getRoutes = () => {
     MainPage.Index,
     MainPage.Markets,
     MainPage.LpRewards,
-    MainPage.Leaderboard,
     MainPage.FeeDiscounts,
     LiquidityRewardsPage.Dashboard,
     LiquidityRewardsPage.CampaignDetails

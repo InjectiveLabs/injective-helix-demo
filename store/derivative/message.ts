@@ -195,7 +195,7 @@ export const submitStopLimitOrder = async ({
     quoteDecimals: market.quoteToken.decimals
   })
   const msgQuantity = derivativeQuantityToChainQuantityToFixed({
-    value: quantity
+    value: quantity.toFixed()
   })
 
   const msgMargin = reduceOnly
@@ -334,7 +334,7 @@ export const submitStopMarketOrder = async ({
     quoteDecimals: market.quoteToken.decimals
   })
   const msgQuantity = derivativeQuantityToChainQuantityToFixed({
-    value: quantity
+    value: quantity.toFixed()
   })
 
   const msgMargin = reduceOnly

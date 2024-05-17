@@ -39,10 +39,9 @@ import {
   TradeSubPage,
   DefaultMarket,
   MarketQuoteType,
+  MarketTypeOption,
   UiMarketWithToken,
-  MarketCategoryType,
-  TradingBotsSubPage,
-  MarketTypeOption
+  MarketCategoryType
 } from '@/types'
 
 interface PriceLevelMap {
@@ -122,15 +121,6 @@ export const getDefaultSpotMarketRouteParams = () => {
     name: TradeSubPage.Spot,
     params: {
       spot: DefaultMarket.Spot
-    }
-  }
-}
-
-export const getDefaultGridSpotMarketRouteParams = () => {
-  return {
-    name: TradingBotsSubPage.GridSpotMarket,
-    params: {
-      market: DefaultMarket.Spot
     }
   }
 }

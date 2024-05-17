@@ -214,9 +214,9 @@ export default {
     expiredNote:
       'This futures contract has just expired and reached settlement.',
     activityPageNote:
-      'If you did hold position(s) till expiry, please go to Activity to check the settlement record.',
+      'If you did hold position(s) till expiry, please go to futures trade history to check the settlement record.',
     exploreMarkets: 'Explore Markets',
-    goToActivity: 'Go To Activity'
+    goToFutures: 'Go To Futures trade history'
   },
 
   marketNotLiquid: {

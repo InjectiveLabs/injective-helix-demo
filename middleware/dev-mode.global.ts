@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware((to) => {
     }
   }
 
-  if (!appStore.devMode && toName === MainPage.Leaderboard) {
+  if (!appStore.devMode && toName === MainPage.PnlLeaderboard) {
     return navigateTo('/')
   }
 })

@@ -3,12 +3,9 @@ export enum MainPage {
   Terms = 'terms',
   Index = 'index',
   Guilds = 'guilds',
-  Account = 'account',
   Markets = 'markets',
-  Activity = 'activity',
   LpRewards = 'lp-rewards',
   Portfolio = 'portfolio',
-  Leaderboard = 'leaderboard',
   Maintenance = 'maintenance',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
@@ -43,8 +40,6 @@ export enum AccountSubPage {
 }
 
 export enum TradingBotsSubPage {
-  GridSpotMarket = 'trading-bots-grid-spot-market',
-  GridSpotMarketHistory = 'trading-bots-grid-spot-market-history',
   LiquiditySpotMarket = 'trading-bots-liquidity-bots-spot'
 }
 
@@ -79,6 +74,7 @@ export enum PortfolioSubPage {
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
   OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
   HistoryFundingPayments = 'portfolio-history-funding-payments',
+  OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
   OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
 }
