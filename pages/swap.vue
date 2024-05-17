@@ -24,15 +24,16 @@ const setFormValues = useSetFormValues()
 const txHash = ref('')
 const summaryRef = ref()
 const queryError = ref('')
+const showPriceWarning = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 const submitStatus = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
 const {
+  inputToken,
+  outputToken,
   maximumInput,
   minimumOutput,
-  outputToken,
-  inputToken,
   orderedRouteTokensAndDecimals
 } = useSwap(computed(() => formValues))
 
@@ -136,6 +137,7 @@ async function submit() {
 }
 
 function resetFormValues() {
+  showPriceWarning.value = false
   const inputDenom = inputToken.value?.denom
   const outputDenom = outputToken.value?.denom
 
@@ -153,10 +155,14 @@ function resetFormValues() {
 }
 
 function getOutputQuantity() {
+  showPriceWarning.value = false
   fetchStatus.setLoading()
 
   if (!inputToken.value || !outputToken.value || !hasInputAmount.value) {
-    return fetchStatus.setIdle()
+    fetchStatus.setIdle()
+    showPriceWarning.value = true
+
+    return
   }
 
   swapStore
@@ -174,14 +180,20 @@ function getOutputQuantity() {
         $onError(e)
       }
     })
-    .finally(() => fetchStatus.setIdle())
+    .finally(() => {
+      fetchStatus.setIdle()
+      showPriceWarning.value = true
+    })
 }
 
 function getInputQuantity() {
   fetchStatus.setLoading()
 
   if (!inputToken.value || !outputToken.value || !hasOutputAmount.value) {
-    return fetchStatus.setIdle()
+    fetchStatus.setIdle()
+    showPriceWarning.value = true
+
+    return
   }
 
   swapStore
@@ -200,7 +212,10 @@ function getInputQuantity() {
         $onError(e)
       }
     })
-    .finally(() => fetchStatus.setIdle())
+    .finally(() => {
+      fetchStatus.setIdle()
+      showPriceWarning.value = true
+    })
 }
 
 function updateAmount() {
@@ -234,6 +249,10 @@ function updateAmount() {
   )
 }
 
+function resetPriceWarning() {
+  showPriceWarning.value = false
+}
+
 function resetQueryError() {
   queryError.value = ''
 }
@@ -259,6 +278,7 @@ function resetQueryError() {
               v-bind="{
                 disabled: fetchStatus.isLoading() || submitStatus.isLoading()
               }"
+              @reset:price-warning="resetPriceWarning"
               @update:inputQuantity="getInputQuantity"
               @update:outputQuantity="getOutputQuantity"
               @queryError:reset="resetQueryError"
@@ -290,7 +310,7 @@ function resetQueryError() {
               </div>
             </div>
 
-            <PartialsSwapPriceWarning />
+            <PartialsSwapPriceWarning v-if="showPriceWarning" />
 
             <PartialsSwapSubmit
               v-bind="{

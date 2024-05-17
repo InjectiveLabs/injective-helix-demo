@@ -75,6 +75,7 @@ const props = defineProps({
 const modalStore = useModalStore()
 
 const emit = defineEmits<{
+  'on:update': []
   'update:modal': []
   'update:max': [{ amount: string }]
   'update:denom': [state: string]
@@ -196,6 +197,11 @@ function changeMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
+function onAmountChange(value: string) {
+  emit('on:update')
+  onAmountChangeDebounced(value)
+}
+
 const onAmountChangeDebounced = useDebounceFn((value) => {
   /**
    * Use debounce since AppNumericInput emits two update events
@@ -270,7 +276,7 @@ export default {
           :tens-multiplier="tensMultiplier"
           :placeholder="inputPlaceholder"
           :is-disabled="isDisabled || !selectedToken"
-          @update:model-value="onAmountChangeDebounced"
+          @update:model-value="onAmountChange"
           @click.stop
         />
 

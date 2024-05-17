@@ -12,6 +12,7 @@ const { accountBalancesWithToken } = useBalance()
 const emit = defineEmits<{
   'form:reset': []
   'queryError:reset': []
+  'reset:priceWarning': []
   'update:inputQuantity': []
   'update:outputQuantity': []
 }>()
@@ -176,6 +177,10 @@ async function getInputQuantity() {
   emit('update:inputQuantity')
 }
 
+function onUpdateAmount() {
+  emit('reset:priceWarning')
+}
+
 function onMaxSelected({ amount }: { amount: string }) {
   setFormValues({
     [SwapFormField.InputAmount]: amount
@@ -204,6 +209,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             tensMultiplier: inputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
+          @on:update="onUpdateAmount"
           @update:max="onMaxSelected"
           @update:amount="getOutputQuantity"
           @update:denom="onInputDenomChange"
