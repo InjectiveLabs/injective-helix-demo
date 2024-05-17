@@ -183,6 +183,8 @@ const unknownTokenStatus = inject(
           <span class="text-sm">{{ $t('markets.permisionlessWarning') }}</span>
         </div>
 
+        <div v-else></div>
+
         <div class="flex items-center space-x-3">
           <div class="flex overflow-hidden rounded border">
             <AppButtonSelect

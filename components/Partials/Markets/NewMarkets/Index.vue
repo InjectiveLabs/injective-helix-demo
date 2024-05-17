@@ -45,7 +45,7 @@ const categories = computed(() => [
     <div
       v-for="category in categories"
       :key="category.title"
-      class="border border-brand-700 bg-brand-875/50 p-4 rounded-lg space-y-2"
+      class="border border-brand-800 bg-brand-875/50 p-4 rounded-lg space-y-2"
     >
       <h3 class="mb-4 text-gray-300 font-semibold p-2">{{ category.title }}</h3>
 
