@@ -217,11 +217,7 @@ function onAscending(ascending: boolean) {
             </AppButtonSelect>
           </div>
 
-          <AppCheckbox2
-            v-model="isLowVolumeMarketsVisible"
-            class="-ml-2 md:mx-8"
-            is-sm
-          >
+          <AppCheckbox2 v-model="isLowVolumeMarketsVisible">
             {{ $t('markets.showLowVol') }}
           </AppCheckbox2>
         </div>
