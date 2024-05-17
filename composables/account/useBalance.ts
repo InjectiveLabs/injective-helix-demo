@@ -53,7 +53,13 @@ export function useBalance() {
 
   const aggregatedPortfolioBalances = computed(() => {
     const tokens = showUnverifiedAssets.value
-      ? [...tokenStore.tradeableTokens, ...tokenStore.unverifiedTokens]
+      ? [
+          ...new Map(
+            [...tokenStore.unverifiedTokens, ...tokenStore.tradeableTokens].map(
+              (token) => [token.denom, token]
+            )
+          ).values()
+        ]
       : tokenStore.tradeableTokens
 
     return Object.keys(accountStore.subaccountBalancesMap).reduce(
