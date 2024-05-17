@@ -61,7 +61,20 @@ export default {
     market: 'Market',
     lastPrice: 'Last price',
     change24h: 'Change (24H)',
-    tradingVolume: 'Trading volume'
+    tradingVolume: 'Trading volume',
+    overviewTitle: 'Helix 2.0. Better and faster.\n Advanced trading tools.',
+    overview: {
+      tradingBotsTitle: 'Trading Bots',
+      tradingBotsDescription:
+        'Trade with the most advanced trading bots in the industry.',
+      newAccountsTitle: 'New Accounts Overview',
+      newAccountsDescription:
+        'Get a quick overview of your account and trading history.',
+      pnlTitle: 'PnL Overview',
+      pnlDescription: 'Get a quick overview of your profit and loss.',
+      gasFreeTitle: 'Gas Free Trading',
+      gasFreeDescription: 'Trade without worrying about gas fees on Helix 2.0.'
+    }
   },
 
   newsletter: {
