@@ -5,6 +5,7 @@ import {
   SharedUiMarketSummary
 } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { USDT_DENOM } from '@shared/utils/constant'
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -27,9 +28,21 @@ const props = defineProps({
 })
 
 const appStore = useAppStore()
+const tokenStore = useTokenStore()
 
-const lastPriceToString = computed(() =>
-  new BigNumberInBase(props.summary.lastPrice || 0).toFormat()
+const lastTradedPrice = computed(
+  () => new BigNumberInBase(props.summary.lastPrice || 0)
+)
+
+const { valueToString: lastPriceToString } =
+  useSharedBigNumberFormatter(lastTradedPrice)
+
+const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
+  computed(() =>
+    lastTradedPrice.value.times(
+      tokenStore.tokenUsdPrice(props.market.quoteToken)
+    )
+  )
 )
 
 const { valueToString: volumeToString } = useSharedBigNumberFormatter(
@@ -60,6 +73,10 @@ function toggleFavorite() {
     }
   })
 }
+
+const isNonUsdtQuoteAsset = computed(() => {
+  return props.market.quoteToken.denom !== USDT_DENOM
+})
 </script>
 
 <template>
@@ -104,8 +121,11 @@ function toggleFavorite() {
       </div>
     </div>
 
-    <div class="flex items-center flex-1 truncate min-w-0 font-mono text-xs">
-      {{ lastPriceToString }}
+    <div class="flex-1 truncate min-w-0 font-mono text-xs">
+      <div>
+        {{ lastPriceToString }}
+      </div>
+      <div v-if="isNonUsdtQuoteAsset">${{ lastPriceInUsdToString }}</div>
     </div>
 
     <div

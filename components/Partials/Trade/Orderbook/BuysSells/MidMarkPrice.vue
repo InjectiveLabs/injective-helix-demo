@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SharedMarketChange } from '@shared/types'
+import { USDT_DENOM } from '@shared/utils/constant'
 import { UiMarketWithToken } from '~/types'
 
 const props = defineProps({
@@ -10,6 +11,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const tokenStore = useTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -32,6 +35,14 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
+const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
+  computed(() =>
+    lastTradedPrice.value.times(
+      tokenStore.tokenUsdPrice(props.market.quoteToken)
+    )
+  )
+)
+
 const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
@@ -45,6 +56,10 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
     decimalPlaces: props.market.priceDecimals
   }
 )
+
+const isNonUsdtQuoteAsset = computed(() => {
+  return props.market.quoteToken.denom !== USDT_DENOM
+})
 </script>
 
 <template>
@@ -67,6 +82,7 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
             lastTradedPriceChange === SharedMarketChange.Increase
         }"
       />
+
       <span
         class="text-xl font-semibold"
         :class="{
@@ -78,6 +94,11 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
       >
         {{ lastTradedPriceToString }}
       </span>
+
+      <span v-if="isNonUsdtQuoteAsset" class="mx-2 text-xs text-gray-400">
+        ${{ lastPriceInUsdToString }}
+      </span>
+
       <span v-if="!isSpot" class="text-xs ml-2">
         <CommonHeaderTooltip v-bind="{ tooltip: 'Mark Price' }">
           {{ markPriceToString }}
