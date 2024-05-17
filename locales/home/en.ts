@@ -4,7 +4,7 @@ export default {
   home: {
     title: 'Open Finance Reimagined',
     subtitle:
-      'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
+      'Built on Injective, Helix is a decentralized trading platform with lightning-fast orderbook and institutional on-chain liquidity.',
     tradeNow: 'Trade Now',
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
@@ -52,13 +52,16 @@ export default {
     howToPurchaseTokens: 'Trade spot markets',
     howToPlaceStopOrders: 'Trade perpetuals with advanced orders',
     startTradingNow: 'Start trading now',
+    startTrading: 'Start trading',
+    depositCrypto: 'Deposit Crypto',
     fast: 'Fast',
     interoperable: 'Interoperable',
     gasFree: 'Gas Free',
     secure: 'Secure',
     market: 'Market',
     lastPrice: 'Last price',
-    change24h: 'Change (24H)'
+    change24h: 'Change (24H)',
+    tradingVolume: 'Trading volume'
   },
 
   newsletter: {
