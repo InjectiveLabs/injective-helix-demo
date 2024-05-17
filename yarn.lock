@@ -462,6 +462,14 @@
     "@babel/helper-validator-identifier" "^7.24.5"
     to-fast-properties "^2.0.0"
 
+"@bangjelkoski/ens-validation@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@bangjelkoski/ens-validation/-/ens-validation-0.1.1.tgz#997a51e27058cb061379cb823ddde2a9f7109b0a"
+  integrity sha512-0BEBXl5VU23Oc/rr4ANqONZu6B+mEp2F1pV0FKI3A0JI0ziREdsSYlaNKi5+pnFGTm0n/S9kMCFy2l0fXoJGWQ==
+  dependencies:
+    "@oozcitak/uts46" "^0.0.8"
+    js-sha3 "^0.9.3"
+
 "@bangjelkoski/node-stdlib-browser@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@bangjelkoski/node-stdlib-browser/-/node-stdlib-browser-0.0.1.tgz#5cf82659f00d15d3c6758d001294b53e3d0f6dd1"
@@ -1861,17 +1869,15 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.11-beta.69", "@injectivelabs/sdk-ts@^1.14.11-beta.69":
-  version "1.14.11-beta.69"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.69.tgz#7496fce4737947d6929955c625af0bb9ead08d8a"
-  integrity sha512-0znPpzzJMyLvOQ4RGeIi4gzkApQSJ480wFcHHI98PkVZafNwPKCmTcTVDT/oy9WY2kMzaYFAqS59O2jhiD5RaA==
+"@injectivelabs/sdk-ts@1.14.11-beta.70", "@injectivelabs/sdk-ts@^1.14.11-beta.70":
+  version "1.14.11-beta.70"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.70.tgz#c5b4a89ad572898d30c3d2abb822b8ce090d2aa9"
+  integrity sha512-8QjQuEWhn7ozSmyxtL2qQVP+sTIROSE+Jg9vJGtMuzqI4a6VKz0xDUYyAhXhyWCSOGEiEKBEBM+kaOD1gaYBdQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.32.3"
     "@cosmjs/proto-signing" "^0.32.3"
     "@cosmjs/stargate" "^0.32.3"
-    "@ensdomains/ens-validation" "^0.1.0"
-    "@ensdomains/eth-ens-namehash" "^2.0.15"
     "@ethersproject/bytes" "^5.7.0"
     "@injectivelabs/core-proto-ts" "^0.0.21"
     "@injectivelabs/dmm-proto-ts" "1.0.20"
@@ -1905,15 +1911,17 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.11-beta.91":
-  version "1.14.11-beta.91"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.91.tgz#1128a19e6b4779b3aa4ff4fc19a4f45bddb33efe"
-  integrity sha512-PazGrATITxACTMHjWCRDMVCrGwzmEXz4e8Vda13anDbW80nK2Xg6/R0hTF9pYuO8WNFBrKIjqxSPwRjPGry6Rg==
+"@injectivelabs/sdk-ui-ts@1.14.11-beta.92":
+  version "1.14.11-beta.92"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.92.tgz#3c14a6adf2d337fff4fd6a6f83c951a90bf95029"
+  integrity sha512-GJ85HY+1MSHYvNd+T4X7eej2fYRDkZXSRrZsQF/uY6mXdrB46ao8muyPTttJciQtdmx7gS49lCZZCgyO5lRWMQ==
   dependencies:
+    "@ensdomains/ens-validation" "^0.1.0"
+    "@ensdomains/eth-ens-namehash" "^2.0.15"
     "@injectivelabs/contracts" "^1.14.11-beta.11"
     "@injectivelabs/exceptions" "^1.14.11-beta.7"
     "@injectivelabs/networks" "^1.14.11-beta.10"
-    "@injectivelabs/sdk-ts" "^1.14.11-beta.69"
+    "@injectivelabs/sdk-ts" "^1.14.11-beta.70"
     "@injectivelabs/token-metadata" "^1.14.11-beta.49"
     "@injectivelabs/token-utils" "^1.14.11-beta.9"
     "@injectivelabs/ts-types" "^1.14.11-beta.3"
@@ -2004,10 +2012,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.11-beta.83":
-  version "1.14.11-beta.83"
-  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.83.tgz#9395e3a520006fc610a7a15ab7f0089a2a157992"
-  integrity sha512-syPE5qqUS/lxXNmS3ZzxsYcJljJjyam6HOj/0PNuEd00gHNi61vMgk20UwZyYJa/+TZGomk+O2L7UYyI7NADaw==
+"@injectivelabs/wallet-ts@1.14.11-beta.84":
+  version "1.14.11-beta.84"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.84.tgz#74968bc38781ae38e43dad050120f13b51590614"
+  integrity sha512-1+OJItDFjuG3ftNtmnCUXXW5103CyE7P8Mx/VLzXrrvRSbbORk9a7cjdZ6OEnxVqnFpdERyKiEvUCvsmYtrl8Q==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2017,7 +2025,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.14.11-beta.7"
     "@injectivelabs/networks" "^1.14.11-beta.10"
-    "@injectivelabs/sdk-ts" "^1.14.11-beta.69"
+    "@injectivelabs/sdk-ts" "^1.14.11-beta.70"
     "@injectivelabs/ts-types" "^1.14.11-beta.3"
     "@injectivelabs/utils" "^1.14.11-beta.8"
     "@keplr-wallet/cosmos" "^0.12.71"
@@ -3621,6 +3629,19 @@
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
+
+"@oozcitak/util@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@oozcitak/util/-/util-1.0.2.tgz#5860b8226b765c674d2bb0a3b66a71ef7083742c"
+  integrity sha512-4n8B1cWlJleSOSba5gxsMcN4tO8KkkcvXhNWW+ADqvq9Xj+Lrl9uCa90GRpjekqQJyt84aUX015DG81LFpZYXA==
+
+"@oozcitak/uts46@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@oozcitak/uts46/-/uts46-0.0.8.tgz#5b7167adfbcf097ba32419a4a1db5e94485e10a8"
+  integrity sha512-/m/ytADxqWfGiNvenR5wkX7NGBRKQlypufv0w2NRAoWIGDuRLeweClJPRxV41Mln3HNtlF08OKoFFRUG8ztvGQ==
+  dependencies:
+    "@oozcitak/util" "1.0.2"
+    punycode "2.1.1"
 
 "@parcel/watcher-android-arm64@2.4.1":
   version "2.4.1"
@@ -12418,6 +12439,11 @@ js-sha3@0.8.0, js-sha3@^0.8.0:
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
   integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
 
+js-sha3@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.9.3.tgz#f0209432b23a66a0f6c7af592c26802291a75c2a"
+  integrity sha512-BcJPCQeLg6WjEx3FE591wVAevlli8lxsxm9/FzV4HXkV49TmBH38Yvrpce6fjbADGMKFrBMGTqrVz3qPIZ88Gg==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -15366,6 +15392,11 @@ pump@^3.0.0:
   dependencies:
     end-of-stream "^1.1.0"
     once "^1.3.1"
+
+punycode@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
+  integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
 punycode@^1.4.1:
   version "1.4.1"
