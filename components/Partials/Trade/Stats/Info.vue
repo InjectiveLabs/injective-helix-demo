@@ -25,8 +25,10 @@ defineProps({
         lastTradedPriceInUsdToFormat
       }"
     >
-      <div class="flex">
-        <div class="flex flex-col items-end justify-start px-4 py-2 font-mono">
+      <div class="flex max-lg:justify-between max-lg:divide-x max-lg:px-4">
+        <div
+          class="flex flex-col items-end justify-start lg:px-4 py-2 font-mono"
+        >
           <div
             class="flex items-center"
             :class="{

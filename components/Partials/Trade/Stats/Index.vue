@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="h-header flex relative">
+  <div class="lg:h-header lg:flex relative max-lg:divide-y">
     <PartialsTradeStatsMarketSelector v-bind="{ market }" />
     <PartialsTradeStatsInfo v-bind="{ market }" />
   </div>
