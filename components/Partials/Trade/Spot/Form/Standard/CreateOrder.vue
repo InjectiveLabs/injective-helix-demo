@@ -22,6 +22,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const resetForm = useResetForm<SpotTradeForm>()
+const validate = useValidateForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -121,7 +122,13 @@ function submitMarketOrder() {
     })
 }
 
-function submitOrder() {
+async function submitOrder() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
   if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
     submitLimitOrder()
   } else {

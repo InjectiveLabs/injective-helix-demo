@@ -61,7 +61,9 @@ const {
         v-if="orderTypeValue === TradeTypes.Limit"
       />
 
-      <PartialsTradeSpotFormStandardAmountField />
+      <PartialsTradeSpotFormStandardAmountField
+        v-bind="{ totalWithFee, quantity }"
+      />
     </div>
 
     <PartialsTradeSpotFormStandardAdvancedSettings class="my-4" />

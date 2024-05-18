@@ -7,6 +7,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { USDT_DENOM } from '@shared/utils/constant'
 import { UiMarketWithToken } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   isMarketsPage: Boolean,
@@ -34,8 +35,10 @@ const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary.lastPrice || 0)
 )
 
-const { valueToString: lastPriceToString } =
-  useSharedBigNumberFormatter(lastTradedPrice)
+const { valueToString: lastPriceToString } = useSharedBigNumberFormatter(
+  lastTradedPrice,
+  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+)
 
 const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>

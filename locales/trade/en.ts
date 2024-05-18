@@ -82,6 +82,7 @@ export default {
     short: 'Short',
     available_asset: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,
+    availableAmount: 'Available: {amount}',
     buy_asset: ({ named }: I18nMessageFunction) => `Buy ${named('asset')}`,
     sell_asset: ({ named }: I18nMessageFunction) => `Sell ${named('asset')}`,
     not_enough_fillable_orders:

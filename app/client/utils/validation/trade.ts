@@ -81,6 +81,19 @@ export const defineTradeRules = () => {
     return true
   })
 
+  defineRule('insufficientBalanceCustom', (_: string, values: number[]) => {
+    if (!values) {
+      return true
+    }
+    const [value, max] = values
+
+    if (new BigNumberInBase(value).gt(max)) {
+      return tradeErrorMessages.insufficientBalance()
+    }
+
+    return true
+  })
+
   defineRule(
     'maxOrderbookLiquidity',
     (value: string, orderbookQuantities: string[]) => {

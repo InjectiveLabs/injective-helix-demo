@@ -56,6 +56,8 @@ const value = computed({
       </template>
     </AppInputField>
 
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div v-if="errorMessage" class="error-message capitalize">
+      {{ errorMessage }}
+    </div>
   </div>
 </template>

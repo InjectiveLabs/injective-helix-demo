@@ -1,21 +1,25 @@
 <script setup lang="ts">
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   UiSpotMarket,
   spotMarketKey,
   TradeAmountOption,
-  SpotTradeFormField
+  SpotTradeFormField,
+  SpotTradeForm
 } from '@/types'
 
 const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
-const { value: typeValue } = useStringField({
-  name: SpotTradeFormField.AmountOption,
-  initialValue: TradeAmountOption.Base
-})
-
-const { value: amountValue } = useStringField({
-  name: SpotTradeFormField.Amount,
-  initialValue: ''
+const props = defineProps({
+  totalWithFee: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+  quantity: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  }
 })
 
 const options = [
@@ -29,10 +33,68 @@ const options = [
   }
 ]
 
+const { accountBalancesWithToken } = useBalance()
+const spotFormValues = useFormValues<SpotTradeForm>()
+
+const { value: typeValue } = useStringField({
+  name: SpotTradeFormField.AmountOption,
+  initialValue: TradeAmountOption.Base
+})
+
 const decimals = computed(() => {
   return typeValue.value === TradeAmountOption.Base
     ? market.value.quantityDecimals
     : market.value.priceDecimals
+})
+
+const isBuy = computed(
+  () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+)
+
+const { valueToString: baseBalanceToString, valueToFixed: baseBalanceToFixed } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      const balance = accountBalancesWithToken.value.find(
+        (balance) => balance.token.denom === market.value.baseToken.denom
+      )?.accountTotalBalance
+
+      return new BigNumberInWei(balance || 0).toBase(
+        market.value.baseToken.decimals
+      )
+    })
+  )
+
+const {
+  valueToString: quoteBalanceToString,
+  valueToFixed: quoteBalanceToFixed
+} = useSharedBigNumberFormatter(
+  computed(() => {
+    const balance = accountBalancesWithToken.value.find(
+      (balance) => balance.token.denom === market.value.quoteToken.denom
+    )?.accountTotalBalance
+
+    return new BigNumberInWei(balance || 0).toBase(
+      market.value.quoteToken.decimals
+    )
+  })
+)
+
+const { value: amountValue, errorMessage } = useStringField({
+  name: SpotTradeFormField.Amount,
+
+  dynamicRule: computed(() => {
+    const maxAmount = isBuy.value
+      ? quoteBalanceToFixed.value
+      : baseBalanceToFixed.value
+
+    const value = isBuy.value ? props.totalWithFee : props.quantity
+
+    const insufficientBalanceRule = `insufficientBalanceCustom:${value.toFixed()},${maxAmount}`
+
+    const rules = [insufficientBalanceRule]
+
+    return rules.join('|')
+  })
 })
 </script>
 
@@ -74,8 +136,30 @@ const decimals = computed(() => {
           </template>
         </AppSelect>
       </template>
+
+      <template #bottom>
+        <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
+          <div v-if="isBuy" class="space-x-2">
+            <span>{{
+              $t('trade.availableAmount', {
+                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
+              })
+            }}</span>
+          </div>
+
+          <div v-else class="space-x-2">
+            <span>{{
+              $t('trade.availableAmount', {
+                amount: `${baseBalanceToString} ${market.baseToken.symbol}`
+              })
+            }}</span>
+          </div>
+        </div>
+      </template>
     </AppInputField>
 
-    <div v-if="false" class="error-message">Error</div>
+    <div v-if="errorMessage" class="error-message capitalize">
+      {{ errorMessage }}
+    </div>
   </div>
 </template>
