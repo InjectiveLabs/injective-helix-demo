@@ -57,15 +57,29 @@ const appStore = useAppStore()
     </div>
 
     <div class="flex items-center space-x-2">
-      <AppButton>{{ $t('common.deposit') }}</AppButton>
+      <PartialsAccountBridgeRedirection
+        v-bind="{
+          isDeposit: true
+        }"
+      >
+        <AppButton>{{ $t('common.deposit') }}</AppButton>
+      </PartialsAccountBridgeRedirection>
 
-      <AppButton variant="primary-outline">
-        {{ $t('common.withdraw') }}
-      </AppButton>
+      <PartialsAccountBridgeRedirection>
+        <AppButton variant="primary-outline">
+          {{ $t('common.withdraw') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
 
-      <AppButton variant="primary-outline">
-        {{ $t('common.transfer') }}
-      </AppButton>
+      <PartialsAccountBridgeRedirection
+        v-bind="{
+          isTransfer: true
+        }"
+      >
+        <AppButton variant="primary-outline">
+          {{ $t('common.transfer') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
     </div>
   </div>
 </template>

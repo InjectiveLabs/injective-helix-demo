@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MENU_ITEMS, USER_MENU_ITEMS } from '@/app/data/menu'
+import { MENU_ITEMS, USER_MENU_ITEMS, DEPOSIT_MENU_ITEM } from '@/app/data/menu'
 import { MenuItemType } from '@/types'
 
 const walletStore = useWalletStore()
@@ -74,6 +74,11 @@ watch(
                   v-for="item in MENU_ITEMS"
                   :key="item.label"
                   v-bind="{ item }"
+                  @menu:close="close"
+                />
+
+                <LayoutNavbarPortfolioMenuItem
+                  v-bind="{ item: DEPOSIT_MENU_ITEM }"
                   @menu:close="close"
                 />
               </div>

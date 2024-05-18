@@ -162,29 +162,9 @@ const isBridgable = computed(() => {
           isDeposit: true,
           denom: balance.token.denom
         }"
-        class="w-full"
       >
         <AppButton
           variant="primary"
-          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
-          {{ $t('account.withdraw') }}
-        </AppButton>
-      </PartialsAccountBridgeRedirection>
-
-      <PartialsAccountBridgeRedirection
-        v-bind="{
-          denom: balance.token.denom
-        }"
-        class="w-full"
-      >
-        <AppButton
-          variant="primary"
-          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
           :class="{
             invisible: !isBridgable
           }"
@@ -196,16 +176,27 @@ const isBridgable = computed(() => {
 
       <PartialsAccountBridgeRedirection
         v-bind="{
+          denom: balance.token.denom
+        }"
+      >
+        <AppButton
+          variant="primary-outline"
+          :class="{
+            invisible: !isBridgable
+          }"
+          size="sm"
+        >
+          {{ $t('account.withdraw') }}
+        </AppButton>
+      </PartialsAccountBridgeRedirection>
+
+      <PartialsAccountBridgeRedirection
+        v-bind="{
           denom: balance.token.denom,
           isTransfer: true
         }"
-        class="w-full"
       >
-        <AppButton
-          variant="primary"
-          class="bg-gray-500 hover:bg-gray-500/80 border-gray-500 hover:border-gray-500"
-          size="sm"
-        >
+        <AppButton variant="primary-outline" size="sm">
           {{ $t('account.transfer') }}
         </AppButton>
       </PartialsAccountBridgeRedirection>

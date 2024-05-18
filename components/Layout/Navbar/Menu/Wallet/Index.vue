@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { MainPage, MenuItemType } from '@/types'
+import { DEPOSIT_MENU_ITEM, PORTFOLIO_MENU_ITEM } from '@/app/data/menu'
 
 const walletStore = useWalletStore()
 </script>
 
 <template>
   <div class="flex p-2 space-x-2">
-    <div v-if="walletStore.isUserWalletConnected" class="flex items-center">
-      <LayoutNavbarMenuItem
-        class="hidden lg:block"
-        v-bind="{
-          item: {
-            label: 'portfolio',
-            type: MenuItemType.Link,
-            to: { name: MainPage.Portfolio }
-          }
-        }"
-      />
-    </div>
+    <LayoutNavbarMenuItem
+      class="hidden lg:block"
+      v-bind="{ item: DEPOSIT_MENU_ITEM }"
+    />
+
+    <LayoutNavbarMenuItem
+      v-if="walletStore.isUserWalletConnected"
+      class="hidden lg:block"
+      v-bind="{ item: PORTFOLIO_MENU_ITEM }"
+    />
 
     <LayoutWallet />
   </div>

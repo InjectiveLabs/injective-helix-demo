@@ -26,7 +26,10 @@ function closeAllMenus() {
 }
 
 function open() {
-  if (isAnimating.value) return
+  if (isAnimating.value) {
+    return
+  }
+
   isOpen.value = true
 }
 
@@ -48,12 +51,27 @@ function close() {
     @click="closeAllMenus"
   >
     <div>
-      <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
-        {{ $t(`navigation.${item.label}`) }}
-      </p>
-      <p v-if="item.description" class="text-gray-400 text-xs mt-1 font-normal">
-        {{ $t(`navigation.${item.description}`) }}
-      </p>
+      <div class="flex items-center justify-center">
+        <component :is="item.icon" v-if="item.icon" class="mr-2.5" />
+        <div class="flex flex-col justify-start">
+          <div class="flex items-center justify-start space-x-2">
+            <p
+              class="font-medium"
+              :class="{ 'font-medium text-lg': level > 0 }"
+            >
+              {{ $t(`navigation.${item.label}`) }}
+            </p>
+            <SharedIcon v-if="item.isExternal" name="external-link" is-md />
+          </div>
+
+          <p
+            v-if="item.description"
+            class="text-gray-400 text-xs mt-1 font-normal"
+          >
+            {{ $t(`navigation.${item.description}`) }}
+          </p>
+        </div>
+      </div>
     </div>
   </NuxtLink>
 

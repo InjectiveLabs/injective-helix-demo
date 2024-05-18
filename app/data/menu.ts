@@ -14,6 +14,9 @@ import Gear from '@/components/Asset/Menu/Gear.vue'
 import GraphUp from '@/components/Asset/Menu/GraphUp.vue'
 import Grid from '@/components/Asset/Menu/Grid.vue'
 import ListNested from '@/components/Asset/Menu/ListNested.vue'
+import Bridge from '@/components/Asset/Menu/Bridge.vue'
+import DepositCard from '@/components/Asset/Menu/DepositCard.vue'
+import { getBridgeUrl } from '@/app/utils/network'
 
 export const MENU_ITEMS: MenuItem[] = [
   { type: MenuItemType.Link, label: 'markets', to: { name: MainPage.Markets } },
@@ -194,3 +197,32 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     to: { name: PortfolioSubPage.Settings }
   }
 ]
+
+export const DEPOSIT_MENU_ITEM: MenuItem = {
+  type: MenuItemType.Dropdown,
+  label: 'deposit',
+  items: [
+    {
+      type: MenuItemType.Link,
+      label: 'cryptoDeposit',
+      icon: Bridge,
+      description: 'cryptoDepositDescription',
+      to: getBridgeUrl(),
+      isExternal: true
+    },
+    {
+      type: MenuItemType.Link,
+      label: 'fiatDeposit',
+      icon: DepositCard,
+      description: 'fiatDepositDescription',
+      to: 'https://injective.com/getinj/',
+      isExternal: true
+    }
+  ]
+}
+
+export const PORTFOLIO_MENU_ITEM: MenuItem = {
+  type: MenuItemType.Link,
+  label: 'portfolio',
+  to: { name: MainPage.Portfolio }
+}
