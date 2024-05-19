@@ -25,15 +25,29 @@ const emit = defineEmits<{
   'set:index': [index: number]
 }>()
 
+const showFlash = ref(false)
+
 function setIndex() {
   emit('set:index', props.index)
+}
+
+watch(
+  () => props.record.price,
+  () => {
+    showFlash.value = true
+  }
+)
+
+function setFlashOff() {
+  showFlash.value = false
 }
 </script>
 
 <template>
   <div
     class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
-    :class="{ 'bg-brand-800': isActive }"
+    :class="{ 'bg-brand-800': isActive, 'flash-animation': showFlash }"
+    @animationend="setFlashOff"
     @mouseenter="setIndex"
   >
     <div
@@ -82,3 +96,21 @@ function setIndex() {
     </div>
   </div>
 </template>
+
+<style>
+@keyframes flash {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(40, 100, 100, 0.1);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash-animation {
+  animation: flash 0.6s forwards;
+}
+</style>

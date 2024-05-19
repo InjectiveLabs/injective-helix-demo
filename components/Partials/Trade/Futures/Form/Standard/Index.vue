@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrderSide } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   DerivativeTradeTypes,
   DerivativesTradeForm,
@@ -14,7 +14,7 @@ const { value: orderType } = useStringField({
 })
 const { value: orderSide } = useStringField({
   name: DerivativesTradeFormField.Side,
-  initialValue: OrderSide.Buy
+  initialValue: TradeDirection.Long
 })
 
 const {
@@ -45,17 +45,19 @@ const {
 
     <div class="flex mt-4 bg-brand-875 rounded-md">
       <AppButtonSelect
-        v-for="side in [OrderSide.Buy, OrderSide.Sell]"
+        v-for="side in [TradeDirection.Long, TradeDirection.Short]"
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSide"
         class="flex-1 p-2 border border-transparent rounded-md text-sm"
-        :class="side === OrderSide.Buy ? 'text-green-500' : 'text-red-500'"
+        :class="
+          side === TradeDirection.Long ? 'text-green-500' : 'text-red-500'
+        "
         :active-classes="
-          side === OrderSide.Buy ? '!border-green-500' : '!border-red-500'
+          side === TradeDirection.Long ? '!border-green-500' : '!border-red-500'
         "
       >
-        {{ $t(`trade.${side}`) }}
+        {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
       </AppButtonSelect>
     </div>
 

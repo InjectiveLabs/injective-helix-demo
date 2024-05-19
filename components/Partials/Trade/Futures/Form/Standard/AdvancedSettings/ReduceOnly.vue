@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField } from '@/types'
+import {
+  DerivativesTradeForm,
+  DerivativesTradeFormField,
+  derivativeMarketKey
+} from '@/types'
+
+const derivativeMarket = inject(derivativeMarketKey)
 
 const { value: reduceOnly } = useBooleanField({
   name: DerivativesTradeFormField.ReduceOnly,
@@ -8,19 +14,32 @@ const { value: reduceOnly } = useBooleanField({
 })
 
 const positionStore = usePositionStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
-const hasOpenPositions = computed(() => {
-  return positionStore.subaccountPositions.length > 0
+const position = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === derivativeMarket?.value?.marketId
+  )
+)
+
+const disabled = computed(
+  () =>
+    !position.value ||
+    position.value.direction ===
+      derivativeFormValues.value[DerivativesTradeFormField.Side]
+)
+
+watchEffect(() => {
+  if (disabled.value) {
+    reduceOnly.value = false
+  }
 })
-
-const disabled = computed(() => !hasOpenPositions.value)
 </script>
 
 <template>
   <div>
-    {{ { disabled } }}
     <AppCheckbox2 v-bind="{ disabled }" v-model="reduceOnly">
-      Reduce Only
+      {{ $t('trade.reduceOnly') }}
     </AppCheckbox2>
   </div>
 </template>

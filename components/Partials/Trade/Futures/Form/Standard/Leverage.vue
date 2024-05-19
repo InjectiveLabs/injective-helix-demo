@@ -2,7 +2,7 @@
 import { useIMask } from 'vue-imask'
 import { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderSide } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   DerivativesTradeForm,
   DerivativesTradeFormField,
@@ -19,11 +19,6 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
-})
-
-const { value: leverage } = useStringField({
-  name: DerivativesTradeFormField.Leverage,
-  initialValue: '1'
 })
 
 const { markPrice } = useDerivativeLastPrice(market)
@@ -90,11 +85,18 @@ const maxLeverageAllowed = computed(() => {
   )
 
   const priceBasedOnOrderSide =
-    derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
       ? priceWithMarginRatio.minus(markPrice.value).plus(props.worstPrice)
       : priceWithMarginRatio.plus(markPrice.value).minus(props.worstPrice)
 
   return props.worstPrice.dividedBy(priceBasedOnOrderSide)
+})
+
+const { value: leverage, errorMessage } = useStringField({
+  name: DerivativesTradeFormField.Leverage,
+  initialValue: '1',
+  dynamicRule: computed(() => `max:${maxLeverageAvailable.value}`)
 })
 
 function onBlur() {
@@ -141,5 +143,9 @@ function onEnter(ev: Event) {
       />
       <span class="flex items-center pl-2 select-none">&times;</span>
     </label>
+  </div>
+
+  <div>
+    {{ errorMessage }}
   </div>
 </template>

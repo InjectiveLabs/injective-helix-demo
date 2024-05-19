@@ -30,6 +30,7 @@ export default {
     limit_price: 'Limit Price',
     limitPrice: 'Limit Price',
     amount: 'Amount',
+    advancedSettings: 'Advanced Settings',
     cancel: 'Cancel',
     cancelOrder: 'Cancel Order',
     min_received_amount: 'Mininum Received Amount',
@@ -38,6 +39,7 @@ export default {
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
     total: 'Total',
+    reduceOnly: 'Reduce Only',
     total_tooltip:
       'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
     fee: 'Fee',

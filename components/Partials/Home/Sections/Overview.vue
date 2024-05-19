@@ -28,7 +28,7 @@ function setActive(title: string) {
 <template>
   <div>
     <h2
-      class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold"
+      class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold lg:my-20"
     >
       {{ $t('home.overviewTitle') }}
     </h2>

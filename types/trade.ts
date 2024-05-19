@@ -11,7 +11,7 @@ import {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   TradeField,
@@ -141,7 +141,7 @@ export type SpotTradeForm = {
 }
 
 export type DerivativesTradeForm = {
-  [DerivativesTradeFormField.Side]: OrderSide
+  [DerivativesTradeFormField.Side]: TradeDirection
   [DerivativesTradeFormField.Amount]: string
   [SpotTradeFormField.AmountOption]: TradeAmountOption
   // [DerivativesTradeFormField.Total]: string
