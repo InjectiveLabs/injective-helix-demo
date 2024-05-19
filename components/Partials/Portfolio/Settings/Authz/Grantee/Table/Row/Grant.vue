@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {
-  GrantAuthorizationWithDecodedAuthorization,
-  GrantAuthorizationType
+  GenericAuthorization,
+  GrantAuthorizationType,
+  GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
@@ -24,7 +25,7 @@ const authorizationFormatted = computed(() => {
       GrantAuthorizationType.GenericAuthorization
     )
   ) {
-    return props.grant.authorization.msg
+    return props.grant.authorization.msg.split('.').reverse()[0]
   }
 })
 
@@ -35,10 +36,19 @@ function revoke() {
 
   status.setLoading()
 
+  if (
+    props.grant.authorization &&
+    !props.grant.authorizationType.includes(
+      GrantAuthorizationType.GenericAuthorization
+    )
+  ) {
+    return
+  }
+
   authZStore
     .revokeAuthorization({
       grantee: props.grant.grantee,
-      messageTypes: [authorizationFormatted.value]
+      messageTypes: [(props.grant.authorization as GenericAuthorization).msg]
     })
     .then(() => {
       //

@@ -37,8 +37,8 @@ watch(
 
 watch(
   () => walletStore.authZOrInjectiveAddress,
-  (injAddress) => {
-    if (!injAddress) {
+  (injectiveAddress) => {
+    if (!injectiveAddress) {
       return
     }
 

@@ -43,9 +43,18 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  const actualMessages = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-    : messages
+  let actualMessages
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessages = msgsOrMsgExecMsgs(
+      messages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessages = messages
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,
@@ -72,13 +81,24 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
     orderHash: order.orderHash
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }
 
@@ -154,13 +174,24 @@ export const submitLimitOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : orderMessage
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 
   if (cw20ConvertMessage) {
@@ -240,7 +271,10 @@ export const submitMarketOrder = async ({
   if (walletStore.isAuthzWalletConnected) {
     actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
   } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.autoSign.injAddress)
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
   } else {
     actualMessage = message
   }
@@ -248,7 +282,7 @@ export const submitMarketOrder = async ({
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injAddress
+      ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
 
@@ -309,13 +343,24 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }
 
@@ -371,12 +416,23 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }

@@ -54,8 +54,8 @@ const stateToPersist = {
     },
 
     autoSign: {
-      pk: '',
-      injAddress: '',
+      privateKey: '',
+      injectiveAddress: '',
       expiration: ''
     }
   }

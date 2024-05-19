@@ -8,7 +8,7 @@ import {
 import { msgBroadcaster } from '@shared/WalletService'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
-import { convertCw20ToBankBalanceForSwap } from '~/app/utils/market'
+import { convertCw20ToBankBalanceForSwap } from '@/app/utils/market'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const submitAtomicOrder = async ({
@@ -73,13 +73,24 @@ export const submitAtomicOrder = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 
   if (cw20ConvertMessage) {
@@ -151,13 +162,24 @@ export const submitAtomicOrderExactOutput = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 
   if (cw20ConvertMessage) {

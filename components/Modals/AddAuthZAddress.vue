@@ -29,13 +29,16 @@ const { validate } = useForm<{
 const msgs = ref(tradingMessages)
 const status = reactive(new Status(StatusType.Idle))
 
+const isOpen = computed(() => modalStore.modals[Modal.AddGrantee])
+
 const { value: addressValue, errorMessage } = useStringField({
   name: 'address',
   rule: 'required|injAddress'
 })
 
-async function grantAuthotization() {
+async function grantAuthorization() {
   const { valid } = await validate()
+
   if (!valid) {
     return
   }
@@ -56,8 +59,6 @@ async function grantAuthotization() {
       closeModal()
     })
 }
-
-const isOpen = computed(() => modalStore.modals[Modal.AddGrantee])
 
 function closeModal() {
   modalStore.closeModal(Modal.AddGrantee)
@@ -105,7 +106,7 @@ function closeModal() {
           :disabled="errorMessage || msgs.length === 0"
           class="w-full"
           variant="primary"
-          @click="grantAuthotization"
+          @click="grantAuthorization"
         >
           Add Authz
         </AppButton>
