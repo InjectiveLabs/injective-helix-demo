@@ -23,6 +23,7 @@ export default {
     status: 'Status',
     type_tooltip: 'The type of your order: limit or market.',
     side: 'Side',
+    postOnly: 'Post Only',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     trigger_price: 'Trigger Price',

@@ -20,7 +20,9 @@ function toggle() {
       class="flex justify-between items-center cursor-pointer py-2"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">Advanced Settings</p>
+      <p class="text-sm font-semibold select-none">
+        {{ $t('trade.advancedSettings') }}
+      </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
         <SharedIcon name="chevron-down" is-sm />
       </div>
@@ -36,6 +38,7 @@ function toggle() {
         />
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsReduceOnly />
+
         <PartialsTradeFuturesFormStandardAdvancedSettingsSlippage
           v-if="
             [

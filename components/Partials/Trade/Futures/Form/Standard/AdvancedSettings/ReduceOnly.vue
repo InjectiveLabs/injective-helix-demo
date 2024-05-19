@@ -6,10 +6,21 @@ const { value: reduceOnly } = useBooleanField({
   initialValue: false,
   rule: ''
 })
+
+const positionStore = usePositionStore()
+
+const hasOpenPositions = computed(() => {
+  return positionStore.subaccountPositions.length > 0
+})
+
+const disabled = computed(() => !hasOpenPositions.value)
 </script>
 
 <template>
   <div>
-    <AppCheckbox2 v-model="reduceOnly">Reduce Only</AppCheckbox2>
+    {{ { disabled } }}
+    <AppCheckbox2 v-bind="{ disabled }" v-model="reduceOnly">
+      Reduce Only
+    </AppCheckbox2>
   </div>
 </template>
