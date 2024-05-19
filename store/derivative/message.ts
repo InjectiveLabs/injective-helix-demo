@@ -89,9 +89,18 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     })
   })
 
-  const actualMessages = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(messages, walletStore.authZ.address)
-    : messages
+  let actualMessages
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessages = msgsOrMsgExecMsgs(
+      messages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessages = messages
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,

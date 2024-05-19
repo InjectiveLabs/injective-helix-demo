@@ -43,9 +43,18 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  const actualMessages = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-    : messages
+  let actualMessages
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessages = msgsOrMsgExecMsgs(
+      messages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessages = messages
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,
@@ -72,9 +81,18 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
     orderHash: order.orderHash
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
