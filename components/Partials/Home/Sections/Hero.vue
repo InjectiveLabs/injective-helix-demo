@@ -1,13 +1,41 @@
 <script setup lang="ts">
-//
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
+const totalVolume = computed(() =>
+  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
+    (sum, market) => {
+      return sum.plus(market.volume || 0)
+    },
+    ZERO_IN_BASE
+  )
+)
+
+const totalMarkets = computed(
+  () =>
+    [...spotStore.activeMarketIds, ...derivativeStore.activeMarketIds].length
+)
+
+const totalOpenInterest = computed(() =>
+  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
+    (sum, market) => {
+      return sum.plus(market.open || 0)
+    },
+    ZERO_IN_BASE
+  )
+)
 </script>
 
 <template>
+  <pre>{{ totalVolume }}</pre>
   <div class="text-center mb-20 mt-10 md:mt-14">
     <div class="flex flex-col items-center">
       <div class="flex items-center space-x-4">
         <AssetLogo class="h-12 w-12" />
-        <h1 class="font-light text-4xl">HELIX</h1>
+        <h1 class="font-light text-4xl">{{ $t('common.helix') }}</h1>
       </div>
 
       <div class="max-w-3xl space-y-4 my-4`">
@@ -45,17 +73,21 @@
     <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4 my-4">
       <div class="">
         <h2>{{ $t('home.tradingVolume') }}</h2>
-        <p class="text-2xl font-semibold">$ 432,452,322</p>
+        <p class="text-2xl font-semibold">
+          $ {{ totalVolume.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+        </p>
       </div>
 
       <div class="">
-        <h2>{{ $t('home.tradingVolume') }}</h2>
-        <p class="text-2xl font-semibold">$ 432,452,322</p>
+        <h2>{{ $t('home.markets') }}</h2>
+        <p class="text-2xl font-semibold">{{ totalMarkets }}</p>
       </div>
 
       <div class="">
-        <h2>{{ $t('home.tradingVolume') }}</h2>
-        <p class="text-2xl font-semibold">$ 432,452,322</p>
+        <h2>{{ $t('home.openInterest') }}</h2>
+        <p class="text-2xl font-semibold">
+          $ {{ totalOpenInterest.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+        </p>
       </div>
     </div>
   </div>

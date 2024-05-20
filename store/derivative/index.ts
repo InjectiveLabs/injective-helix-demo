@@ -236,6 +236,7 @@ export const useDerivativeStore = defineStore('derivative', {
             .replaceAll('/', '-')
             .replaceAll(' ', '-')
             .toLowerCase()
+
           const [baseTokenSymbol] = slug.split('-')
           const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)

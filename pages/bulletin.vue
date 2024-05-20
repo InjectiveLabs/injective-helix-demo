@@ -35,7 +35,13 @@ const vaults = computed(() =>
         contractAddress: vault.contractAddress
       } as BulletinMitoCard
     })
-    .sort((a, b) => b.apy - a.apy)
+    .sort((vault1, vault2) => {
+      if (vault2.apy === vault1.apy) {
+        return vault2.tvl - vault1.tvl
+      }
+
+      return vault2.apy - vault1.apy
+    })
     .slice(0, 5)
 )
 </script>

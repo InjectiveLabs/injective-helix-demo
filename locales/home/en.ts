@@ -27,6 +27,8 @@ export default {
     accessTheFuture: 'Access The Future of Open Finance',
     InstitutionalGateways: 'Institutional Gateways',
     newlyAdded: 'Newly added',
+    markets: 'Markets',
+    openInterest: 'Open interest',
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
     sevenDaysPrice: '7 days price',

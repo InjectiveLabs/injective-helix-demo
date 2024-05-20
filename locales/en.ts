@@ -40,6 +40,7 @@ export default {
     back: 'Back',
     view: 'View',
     open: 'Open',
+    helix: 'Helix',
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
