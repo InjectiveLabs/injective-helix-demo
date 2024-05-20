@@ -56,13 +56,15 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
     </div>
 
     <div class="grid grid-cols-2 mt-8">
-      <div>
+      <div class="min-w-0 truncate">
         <p>TVL</p>
-        <p class="text-xl font-semibold">${{ tvlToString }}</p>
+        <p class="text-xl font-semibold truncate">${{ tvlToString }}</p>
       </div>
-      <div>
+      <div class="min-w-0 truncate">
         <p>APY</p>
-        <p class="text-green-500 text-xl font-semibold">{{ apyToString }}%</p>
+        <p class="text-green-500 text-xl font-semibold truncate">
+          {{ apyToString }}%
+        </p>
       </div>
     </div>
   </NuxtLink>
