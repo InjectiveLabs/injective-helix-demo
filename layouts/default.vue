@@ -35,38 +35,18 @@ watch(
 )
  */
 
-watch(
-  () => walletStore.authZOrInjectiveAddress,
-  (injectiveAddress) => {
-    if (!injectiveAddress) {
-      return
-    }
+onWalletConnected(() => {
+  portfolioStatus.setLoading()
+  fetchUserPortfolio()
+    .catch($onError)
+    .finally(() => {
+      portfolioStatus.setIdle()
+    })
+})
 
-    accountStore.$reset()
-
-    portfolioStatus.setLoading()
-    fetchUserPortfolio()
-      .catch($onError)
-      .finally(() => {
-        portfolioStatus.setIdle()
-      })
-  },
-  { immediate: true }
-)
-
-watch(
-  () => accountStore.subaccountId,
-  (subaccount) => {
-    if (!subaccount) {
-      return
-    }
-
-    fetchSubaccountStream()
-  },
-  {
-    immediate: true
-  }
-)
+onSubaccountChange(() => {
+  fetchSubaccountStream()
+})
 
 function fetchUserPortfolio() {
   return Promise.all([

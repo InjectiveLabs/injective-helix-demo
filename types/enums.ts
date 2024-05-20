@@ -262,7 +262,8 @@ export enum BusEvents {
   ShowLedgerConnect = 'show-ledger-connect',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected',
-  ActivityFilterUpdate = 'activity-filter-update'
+  ActivityFilterUpdate = 'activity-filter-update',
+  SubaccountChange = 'subaccount-change'
 }
 
 export enum ActivityField {

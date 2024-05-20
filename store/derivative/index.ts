@@ -27,10 +27,7 @@ import {
   toUiDerivativeMarket,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
-import {
-  cancelBankBalanceStream,
-  cancelSubaccountBalanceStream
-} from '@/store/account/stream'
+
 import {
   cancelOrder,
   batchCancelOrder,
@@ -560,15 +557,10 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    cancelSubaccountStream() {
-      const positionStore = usePositionStore()
-
-      cancelBankBalanceStream()
-      cancelSubaccountBalanceStream()
+    cancelStreams() {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrderHistoryStream()
-      positionStore.cancelSubaccountPositionsStream()
     },
 
     resetOrderbookAndTrades() {
@@ -584,7 +576,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
       const initialState = initialStateFactory()
 
-      derivativeStore.cancelSubaccountStream()
+      derivativeStore.cancelStreams()
 
       derivativeStore.$patch({
         subaccountOrders: initialState.subaccountOrders,

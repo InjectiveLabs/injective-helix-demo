@@ -67,12 +67,21 @@ function onClick(denom: string) {
   emit('update:modelValue', denom)
   emit('close')
 }
+
+onMounted(() => {
+  document.getElementById('swap-token-search')?.focus()
+})
 </script>
 
 <template>
   <div class="max-h-xs">
     <div class="mb-2 text-white">
-      <AppInput v-model="search" is-sm :placeholder="$t('common.search')" />
+      <AppInput
+        id="swap-token-search"
+        v-model="search"
+        is-sm
+        :placeholder="$t('common.search')"
+      />
     </div>
 
     <AppSelectTokenItem

@@ -24,7 +24,7 @@ function fetchAtomicSwapHistory() {
     .finally(() => status.setIdle())
 }
 
-onMounted(fetchAtomicSwapHistory)
+onWalletConnected(fetchAtomicSwapHistory)
 
 async function handlePageChange(page: number) {
   await router.push({

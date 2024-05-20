@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrderSide } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarket,
@@ -77,7 +77,8 @@ const isOrderTypeReduceOnly = computed(
 
 const isBuy = computed(
   () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Side] === OrderSide.Buy
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
 )
 
 const orderTypeToSubmit = computed(() => {
@@ -197,9 +198,7 @@ async function submitMarketOrder() {
       quantity: props.quantity,
       price: new BigNumberInBase(props.worstPrice),
       reduceOnly: isOrderTypeReduceOnly.value,
-      orderSide: derivativeFormValues.value[
-        DerivativesTradeFormField.Side
-      ] as OrderSide,
+      orderSide: orderTypeToSubmit.value,
       margin: props.margin
     })
     .then(() => {

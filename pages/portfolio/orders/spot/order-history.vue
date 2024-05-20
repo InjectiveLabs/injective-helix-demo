@@ -9,7 +9,7 @@ import {
 const route = useRoute()
 const router = useRouter()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
+
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
@@ -60,23 +60,16 @@ function fetchOrderHistory() {
     })
 }
 
-watch(
-  () => [accountStore.subaccountId, formValues],
-  async () => {
-    await router.push({
-      query: {
-        ...route.query,
-        page: undefined
-      }
-    })
+async function fetchOrders() {
+  await router.push({
+    query: {
+      ...route.query,
+      page: undefined
+    }
+  })
 
-    fetchOrderHistory()
-  },
-  {
-    immediate: true,
-    deep: true
-  }
-)
+  fetchOrderHistory()
+}
 
 async function handlePageChange(page: number) {
   await router.push({
@@ -99,11 +92,18 @@ async function handleLimitChange(limit: number) {
 
   fetchOrderHistory()
 }
+
+onSubaccountChange(fetchOrders)
 </script>
 
 <template>
   <div class="divide-y border-y mb-8">
-    <LazyPartialsPortfolioOrdersSpotOrderHistoryTabs />
+    <PartialsPortfolioOrdersSpotOrderHistoryTabs
+      @form:reset="fetchOrders"
+      @market:update="fetchOrders"
+      @side:update="fetchOrders"
+      @type:update="fetchOrders"
+    />
     <PartialsPortfolioOrdersSpotOrderHistoryTableHeader />
 
     <CommonSkeletonRow

@@ -11,7 +11,6 @@ import {
   SpotOrderHistoryFilterForm
 } from '@/types'
 
-const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -58,10 +57,7 @@ function fetchDerivativeTriggers() {
     })
 }
 
-watch(() => [accountStore.subaccountId], fetchDerivativeTriggers, {
-  immediate: true,
-  deep: true
-})
+onSubaccountChange(fetchDerivativeTriggers)
 </script>
 
 <template>

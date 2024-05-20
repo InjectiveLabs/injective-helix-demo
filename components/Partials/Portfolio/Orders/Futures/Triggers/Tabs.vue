@@ -14,6 +14,29 @@ const { value: sideValue } = useStringField({
 const { value: typeValue } = useStringField({
   name: SpotOrderHistoryFilterField.Type
 })
+
+const emit = defineEmits<{
+  'market:update': [market: string]
+  'type:update': [type: string]
+  'side:update': [side: string]
+  'form:reset': []
+}>()
+
+function onMarketChange(market: string) {
+  emit('market:update', market)
+}
+
+function onTypeChange(type: string) {
+  emit('type:update', type)
+}
+
+function onSideChange(side: string) {
+  emit('side:update', side)
+}
+
+function onFormReset() {
+  emit('form:reset')
+}
 </script>
 
 <template>
@@ -24,10 +47,19 @@ const { value: typeValue } = useStringField({
       <CommonTabMarketSelector
         v-model="marketValue"
         v-bind="{ markets: derivativeStore.markets }"
+        @update:model-value="onMarketChange"
       />
-      <CommonTabTypeFilter v-model="typeValue" is-trigger />
-      <CommonTabSideFilter v-model="sideValue" is-spot />
-      <CommonTabFormReset />
+      <CommonTabTypeFilter
+        v-model="typeValue"
+        is-trigger
+        @update:model-value="onTypeChange"
+      />
+      <CommonTabSideFilter
+        v-model="sideValue"
+        is-spot
+        @update:model-value="onSideChange"
+      />
+      <CommonTabFormReset @form:reset="onFormReset" />
     </div>
   </div>
 </template>

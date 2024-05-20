@@ -126,22 +126,23 @@ export const defineTradeRules = () => {
     }
   )
 
-  defineRule(
-    'maxLeverage',
-    (value: string | number, [max, isBuy]: [string, boolean]) => {
-      const leverage = new BigNumberInBase(value)
+  defineRule('maxLeverage', (value: string | number, [max]: [string]) => {
+    const leverage = new BigNumberInBase(value)
 
-      if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
-        return leverage.eq(1)
-          ? isBuy
-            ? tradeErrorMessages.orderPriceHigh()
-            : tradeErrorMessages.orderPriceLow()
-          : tradeErrorMessages.maxLeverage()
-      }
+    // if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
+    //   return leverage.eq(1)
+    //     ? isBuy
+    //       ? tradeErrorMessages.orderPriceHigh()
+    //       : tradeErrorMessages.orderPriceLow()
+    //     : tradeErrorMessages.maxLeverage()
+    // }
 
-      return true
+    if (leverage.gt(max)) {
+      return tradeErrorMessages.maxLeverage()
     }
-  )
+
+    return true
+  })
 
   defineRule(
     'priceHighDeviationFromMidOrderbookPrice',

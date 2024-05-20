@@ -14,7 +14,6 @@ import {
 const route = useRoute()
 const router = useRouter()
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
@@ -90,15 +89,28 @@ async function handleLimitChange(limit: number) {
   fetchTrades()
 }
 
-watch(() => [accountStore.subaccountId, formValues], fetchTrades, {
-  immediate: true,
-  deep: true
-})
+async function fetchData() {
+  await router.push({
+    query: {
+      ...route.query,
+      page: undefined
+    }
+  })
+
+  fetchTrades()
+}
+
+onSubaccountChange(fetchData)
 </script>
 
 <template>
   <div class="divide-y border-y">
-    <PartialsPortfolioOrdersSpotTradeHistoryTabs />
+    <PartialsPortfolioOrdersSpotTradeHistoryTabs
+      @form:reset="fetchData"
+      @market:update="fetchData"
+      @side:update="fetchData"
+      @type:update="fetchData"
+    />
     <PartialsPortfolioOrdersSpotTradeHistoryTableHeader />
 
     <CommonSkeletonRow

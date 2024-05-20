@@ -4,7 +4,6 @@ import { SpotOpenOrdersFilterField } from '@/types'
 import { SpotOpenOrdersFilterForm } from '@/types/forms'
 
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
 
@@ -35,9 +34,7 @@ function fetchSubaccountOrders() {
     })
 }
 
-watch(() => accountStore.subaccountId, fetchSubaccountOrders, {
-  immediate: true
-})
+onSubaccountChange(fetchSubaccountOrders)
 </script>
 
 <template>

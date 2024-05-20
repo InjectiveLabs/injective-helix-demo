@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PerpOrdersStandardView, derivativeMarketKey } from '@/types'
+import {
+  PerpOrdersStandardView,
+  UiDerivativeMarket,
+  derivativeMarketKey
+} from '@/types'
 
 const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
 
-const market = inject(derivativeMarketKey)
+const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const view = ref(PerpOrdersStandardView.OpenPositions)
 const status = reactive(new Status(StatusType.Loading))
@@ -17,6 +21,8 @@ function fetchDerivativeOrders() {
   }
 
   status.setLoading()
+
+  streamDerivativeOrders()
 
   Promise.all([
     derivativeStore.fetchSubaccountOrders(),
@@ -35,7 +41,15 @@ function fetchDerivativeOrders() {
   ])
 }
 
-watch(() => [accountStore.subaccountId, market?.value], fetchDerivativeOrders, {
+function streamDerivativeOrders() {
+  derivativeStore.cancelStreams()
+
+  derivativeStore.streamSubaccountOrders(market.value.marketId)
+  derivativeStore.streamSubaccountOrderHistory(market.value.marketId)
+  derivativeStore.streamSubaccountTrades(market.value.marketId)
+}
+
+watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
   immediate: true
 })
 </script>

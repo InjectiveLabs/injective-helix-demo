@@ -161,6 +161,7 @@ export const useWalletStore = defineStore('wallet', {
       direction: GrantDirection = GrantDirection.Granter
     ) {
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
 
       walletStore.$patch({
         authZ: {
@@ -170,24 +171,18 @@ export const useWalletStore = defineStore('wallet', {
           defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
         }
       })
+
+      accountStore.$patch({
+        subaccountId: getDefaultSubaccountId(injectiveAddress)
+      })
+
+      useEventBus(BusEvents.WalletConnected).emit()
+      useEventBus(BusEvents.SubaccountChange).emit()
     },
 
     onConnect() {
-      // const accountStore = useAccountStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
-      // const exchangeStore = useExchangeStore()
-
-      useEventBus(BusEvents.WalletConnected).emit()
-
-      // TODO
-      // await accountStore.fetchAccountPortfolioBalances()
-
-      // mixpanelAnalytics.trackLogin({
-      //   wallet: walletStore.wallet,
-      //   injectiveAddress: walletStore.injectiveAddress,
-      //   tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
-      // })
 
       accountStore.$patch({
         subaccountId: walletStore.defaultSubaccountId
@@ -196,6 +191,9 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
       })
+
+      useEventBus(BusEvents.WalletConnected).emit()
+      useEventBus(BusEvents.SubaccountChange).emit()
     },
 
     async isMetamaskInstalled() {
@@ -669,13 +667,14 @@ export const useWalletStore = defineStore('wallet', {
         addresses,
         injectiveAddress,
         defaultSubaccountId,
-        addressConfirmation
+        addressConfirmation,
+        authZ
       } = initialStateFactory()
 
-      walletStore.resetAuthZ()
       walletStore.resetAutoSign()
 
       walletStore.$patch({
+        authZ,
         address,
         addresses,
         injectiveAddress,
@@ -686,6 +685,7 @@ export const useWalletStore = defineStore('wallet', {
 
     resetAuthZ() {
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
 
       walletStore.$patch({
         authZ: {
@@ -695,6 +695,13 @@ export const useWalletStore = defineStore('wallet', {
           direction: GrantDirection.Grantee
         }
       })
+
+      accountStore.$patch({
+        subaccountId: walletStore.defaultSubaccountId
+      })
+
+      useEventBus(BusEvents.WalletConnected).emit()
+      useEventBus(BusEvents.SubaccountChange).emit()
     },
 
     resetAutoSign() {

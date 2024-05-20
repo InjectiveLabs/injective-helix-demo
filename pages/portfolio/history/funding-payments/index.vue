@@ -3,7 +3,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 const route = useRoute()
 const router = useRouter()
-const accountStore = useAccountStore()
 const activityStore = useActivityStore()
 const { $onError } = useNuxtApp()
 
@@ -38,9 +37,8 @@ function fetchFundingPayments() {
     })
 }
 
-watch(() => [accountStore.subaccountId, formValues], fetchFundingPayments, {
-  immediate: true,
-  deep: true
+onSubaccountChange(() => {
+  fetchFundingPayments()
 })
 
 async function handlePageChange(page: number) {
@@ -73,7 +71,11 @@ async function handleLimitChange(limit: number) {
     </div>
 
     <div class="border-y divide-y">
-      <PartialsPortfolioHistoryFundingTabs />
+      <PartialsPortfolioHistoryFundingTabs
+        @market:update="fetchFundingPayments"
+        @form:reset="fetchFundingPayments"
+      />
+
       <PartialsPortfolioHistoryFundingTableHeader />
 
       <CommonSkeletonRow
