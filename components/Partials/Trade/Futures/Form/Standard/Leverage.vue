@@ -38,7 +38,7 @@ const { el, typed } = useIMask(
             scale: 2,
             lazy: false,
             min: 0,
-            max: 10,
+            max: 20,
             autofix: true
           }
         }
