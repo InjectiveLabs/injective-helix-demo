@@ -48,5 +48,9 @@ watch(
     >
       {{ $t(`activity.${value}`) }}
     </AppButtonSelect>
+
+    <div class="flex items-center flex-1 justify-end px-2">
+      <div id="cancel-teleport"></div>
+    </div>
   </div>
 </template>

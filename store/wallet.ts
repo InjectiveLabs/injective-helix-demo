@@ -710,6 +710,8 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         autoSign: undefined
       })
+
+      walletStrategy.setWallet(walletStore.wallet)
     },
 
     async connectAutoSign() {

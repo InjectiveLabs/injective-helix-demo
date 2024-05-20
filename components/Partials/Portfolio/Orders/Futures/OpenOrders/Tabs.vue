@@ -18,7 +18,7 @@ const { value: sideValue } = useStringField({
   <div class="h-header flex">
     <CommonSubaccountTabSelector />
 
-    <div class="flex divide-x border-r">
+    <div class="flex divide-x border-r flex-1">
       <CommonTabMarketSelector
         v-bind="{ markets: derivativeStore.markets }"
         v-model="marketValue"
@@ -26,6 +26,10 @@ const { value: sideValue } = useStringField({
 
       <CommonTabSideFilter v-model="sideValue" is-spot />
       <CommonTabFormReset />
+
+      <div class="flex flex-1 items-center justify-end px-2">
+        <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders />
+      </div>
     </div>
   </div>
 </template>

@@ -106,7 +106,7 @@ function cancelOrder() {
 
     <div class="flex-1 flex items-center p-2">
       <span v-if="isMarketOrder">{{ $t('trade.market') }}</span>
-      <span>{{ priceToString }}</span>
+      <span v-else>{{ priceToString }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">
