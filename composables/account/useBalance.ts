@@ -161,6 +161,10 @@ export function useBalance() {
   })
 
   const userBalancesWithToken = computed(() => {
+    if (!accountStore.isDefaultSubaccount) {
+      return []
+    }
+
     const tradeableDenoms = [
       ...new Set([
         ...spotStore.tradeableDenoms,

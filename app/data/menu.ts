@@ -4,49 +4,44 @@ import {
   TradeSubPage,
   MenuItemType,
   PortfolioSubPage,
-  TradingBotsSubPage,
-  TradingInterface
+  TradingInterface,
+  TradingBotsSubPage
 } from '@/types'
-import PieChart from '@/components/Asset/Menu/PieChart.vue'
-import BarChart from '@/components/Asset/Menu/BarChart.vue'
-import Clock from '@/components/Asset/Menu/Clock.vue'
-import Gear from '@/components/Asset/Menu/Gear.vue'
-import GraphUp from '@/components/Asset/Menu/GraphUp.vue'
-import Grid from '@/components/Asset/Menu/Grid.vue'
-import ListNested from '@/components/Asset/Menu/ListNested.vue'
-import Bridge from '@/components/Asset/Menu/Bridge.vue'
-import DepositCard from '@/components/Asset/Menu/DepositCard.vue'
 import { getBridgeUrl } from '@/app/utils/network'
 
 export const MENU_ITEMS: MenuItem[] = [
-  { type: MenuItemType.Link, label: 'markets', to: { name: MainPage.Markets } },
+  {
+    type: MenuItemType.Link,
+    label: 'navigation.markets',
+    to: { name: MainPage.Markets }
+  },
 
   {
     type: MenuItemType.Dropdown,
-    label: 'trade',
+    label: 'navigation.trade',
     items: [
       {
         type: MenuItemType.Link,
-        label: 'swap',
-        description: 'swapDescription',
+        label: 'navigation.swap',
+        description: 'navigation.swapDescription',
         to: { name: MainPage.Swap }
       },
       {
         type: MenuItemType.Link,
-        label: 'spot',
-        description: 'spotDescription',
+        label: 'navigation.spot',
+        description: 'navigation.spotDescription',
         to: { name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }
       },
       {
         type: MenuItemType.Link,
-        label: 'perpetual',
-        description: 'perpetualDescription',
+        label: 'navigation.perpetual',
+        description: 'navigation.perpetualDescription',
         to: { name: TradeSubPage.Futures, params: { slug: 'btc-usdt-perp' } }
       },
       {
         type: MenuItemType.Link,
-        label: 'tradingBots',
-        description: 'tradingBotsDescription',
+        label: 'navigation.tradingBots',
+        description: 'navigation.tradingBotsDescription',
         to: {
           name: TradeSubPage.Spot,
           params: {
@@ -59,19 +54,19 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   {
-    label: 'liquidity',
+    label: 'navigation.liquidity',
     type: MenuItemType.Dropdown,
     items: [
       {
         type: MenuItemType.Link,
-        label: 'liquidityBots',
-        description: 'liquidityBotsDescription',
+        label: 'navigation.liquidityBots',
+        description: 'navigation.liquidityBotsDescription',
         to: { name: TradingBotsSubPage.LiquiditySpotMarket }
       },
       {
         type: MenuItemType.Link,
-        label: 'liquidityProvision',
-        description: 'liquidityProvisionDescription',
+        label: 'navigation.liquidityProvision',
+        description: 'navigation.liquidityProvisionDescription',
         to: { name: MainPage.LiquidityProvision }
       }
     ]
@@ -79,30 +74,30 @@ export const MENU_ITEMS: MenuItem[] = [
 
   {
     type: MenuItemType.Dropdown,
-    label: 'rewards',
+    label: 'navigation.rewards',
     items: [
       {
         type: MenuItemType.Link,
-        label: 'tradeAndEarn',
-        description: 'tradeAndEarnDescription',
+        label: 'navigation.tradeAndEarn',
+        description: 'navigation.tradeAndEarnDescription',
         to: { name: MainPage.TradeAndEarn }
       },
       {
         type: MenuItemType.Link,
-        label: 'lpRewards',
-        description: 'lpRewardsSub',
+        label: 'navigation.lpRewards',
+        description: 'navigation.lpRewardsSub',
         to: { name: MainPage.LpRewards }
       },
       {
         type: MenuItemType.Link,
-        label: 'guilds',
-        description: 'guildsSub',
+        label: 'navigation.guilds',
+        description: 'navigation.guildsSub',
         to: { name: MainPage.Guilds }
       },
       {
         type: MenuItemType.Link,
-        label: 'openLiquidityProgram',
-        description: 'openLiquidityProgramDescription',
+        label: 'navigation.openLiquidityProgram',
+        description: 'navigation.openLiquidityProgramDescription',
         to: 'https://trading.injective.network/program/liquidity',
         isExternal: true
       }
@@ -111,7 +106,7 @@ export const MENU_ITEMS: MenuItem[] = [
 
   {
     type: MenuItemType.Link,
-    label: 'leaderboard',
+    label: 'navigation.leaderboard',
     to: { name: MainPage.PnlLeaderboard }
   }
 ]
@@ -119,102 +114,102 @@ export const MENU_ITEMS: MenuItem[] = [
 export const USER_MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
-    label: 'portfolio',
+    label: 'navigation.portfolio',
     to: { name: MainPage.Portfolio },
-    icon: PieChart
+    icon: 'pie-chart'
   },
   {
     type: MenuItemType.Link,
-    label: 'balances',
-    icon: BarChart,
+    label: 'navigation.balances',
+    icon: 'bar-chart',
     to: { name: PortfolioSubPage.Balances }
   },
   {
     type: MenuItemType.Link,
-    label: 'positions',
-    icon: GraphUp,
+    label: 'navigation.positions',
+    icon: 'graph-up',
     to: { name: PortfolioSubPage.Positions }
   },
   {
     type: MenuItemType.Dropdown,
-    label: 'orders',
-    icon: ListNested,
+    label: 'navigation.orders',
+    icon: 'nested-list',
     items: [
       {
         type: MenuItemType.Link,
-        label: 'spot',
+        label: 'navigation.spot',
         to: { name: PortfolioSubPage.OrdersSpot }
       },
       {
         type: MenuItemType.Link,
-        label: 'futures',
+        label: 'navigation.futures',
         to: { name: PortfolioSubPage.OrdersFutures }
       },
       {
         type: MenuItemType.Link,
-        label: 'spotGrid',
+        label: 'navigation.spotGrid',
         to: { name: PortfolioSubPage.OrdersSpotGrid }
       },
       {
         type: MenuItemType.Link,
-        label: 'futuresGrid',
+        label: 'navigation.futuresGrid',
         to: { name: PortfolioSubPage.OrdersFuturesGrid }
       }
     ]
   },
   {
     type: MenuItemType.Dropdown,
-    label: 'history',
-    icon: Clock,
+    label: 'navigation.history',
+    icon: 'clock-outline',
     items: [
       {
         type: MenuItemType.Link,
-        label: 'swaps',
+        label: 'navigation.swaps',
         to: { name: PortfolioSubPage.HistorySwap }
       },
       {
         type: MenuItemType.Link,
-        label: 'wallet',
+        label: 'navigation.wallet',
         to: { name: PortfolioSubPage.HistoryWallet }
       },
       {
         type: MenuItemType.Link,
-        label: 'fundingPayments',
+        label: 'navigation.fundingPayments',
         to: { name: PortfolioSubPage.HistoryFundingPayments }
       }
     ]
   },
   {
     type: MenuItemType.Link,
-    label: 'subaccounts',
-    icon: Grid,
+    label: 'navigation.subaccounts',
+    icon: 'box-list',
     to: { name: PortfolioSubPage.Subaccounts }
   },
   {
     type: MenuItemType.Link,
-    label: 'settings',
-    icon: Gear,
+    label: 'navigation.settings',
+    icon: 'gear-outline',
     to: { name: PortfolioSubPage.Settings }
   }
 ]
 
 export const DEPOSIT_MENU_ITEM: MenuItem = {
   type: MenuItemType.Dropdown,
-  label: 'deposit',
+  label: 'navigation.deposit',
   items: [
     {
       type: MenuItemType.Link,
-      label: 'cryptoDeposit',
-      icon: Bridge,
-      description: 'cryptoDepositDescription',
+      label: 'navigation.cryptoDeposit',
+      icon: 'bridge',
+      description: 'navigation.cryptoDepositDescription',
       to: getBridgeUrl(),
       isExternal: true
     },
     {
       type: MenuItemType.Link,
-      label: 'fiatDeposit',
-      icon: DepositCard,
-      description: 'fiatDepositDescription',
+      label: 'navigation.fiatDeposit',
+      icon: 'credit-card',
+      description: 'navigation.fiatDepositDescription',
       to: 'https://injective.com/getinj/',
       isExternal: true
     }
@@ -223,6 +218,6 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
 
 export const PORTFOLIO_MENU_ITEM: MenuItem = {
   type: MenuItemType.Link,
-  label: 'portfolio',
+  label: 'navigation.portfolio',
   to: { name: MainPage.Portfolio }
 }

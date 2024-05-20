@@ -1,5 +1,5 @@
-import { MitoStakingPool, MitoVault } from '@injectivelabs/sdk-ts'
 import { mitoApi } from '@shared/Service'
+import { MitoStakingPool, MitoVault } from '@injectivelabs/sdk-ts'
 import { STAKING_CONTRACT_ADDRESS } from '@/app/utils/constants'
 
 type MitoStoreState = {
@@ -34,7 +34,7 @@ export const useMitoStore = defineStore('mito', {
       })
 
       mitoStore.$patch({
-        stakingPools: pools as MitoStakingPool[] // TODO remove after package bump
+        stakingPools: pools
       })
     },
 

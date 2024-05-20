@@ -41,7 +41,7 @@ function close() {
 <template>
   <NuxtLink
     v-if="item.type === MenuItemType.Link"
-    class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm hover:cursor-pointer select-none"
+    class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
       'rounded-lg': level === 0,
       'w-[300px]': level > 0
@@ -52,14 +52,15 @@ function close() {
   >
     <div>
       <div class="flex items-center justify-center">
-        <component :is="item.icon" v-if="item.icon" class="mr-2.5" />
+        <SharedIcon v-if="item.icon" class="mr-3" :name="item.icon" />
+
         <div class="flex flex-col justify-start">
           <div class="flex items-center justify-start space-x-2">
             <p
               class="font-medium"
               :class="{ 'font-medium text-lg': level > 0 }"
             >
-              {{ $t(`navigation.${item.label}`) }}
+              {{ $t(item.label) }}
             </p>
             <SharedIcon v-if="item.isExternal" name="external-link" is-md />
           </div>
@@ -68,7 +69,7 @@ function close() {
             v-if="item.description"
             class="text-gray-400 text-xs mt-1 font-normal"
           >
-            {{ $t(`navigation.${item.description}`) }}
+            {{ $t(item.description) }}
           </p>
         </div>
       </div>
@@ -78,7 +79,7 @@ function close() {
   <div
     v-else
     tabindex="0"
-    class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm hover:cursor-pointer select-none relative z-50"
+    class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
     :class="{
       'rounded-lg': level === 0
     }"
@@ -88,13 +89,13 @@ function close() {
     <div class="py-2 px-6 flex">
       <div>
         <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
-          {{ $t(`navigation.${item.label}`) }}
+          {{ $t(item.label) }}
         </p>
         <p
           v-if="item.description"
           class="text-gray-400 text-xs mt-1 font-normal"
         >
-          {{ $t(`navigation.${item.description}`) }}
+          {{ $t(item.description) }}
         </p>
       </div>
 

@@ -1,4 +1,3 @@
-import { Component } from 'vue'
 import { RouteLocationRaw } from 'vue-router'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -112,7 +111,7 @@ export interface AmplitudeTrackerUser {
 type MenuItemBase = {
   label: string
   description?: string
-  icon?: Component
+  icon?: string
   isExternal?: boolean
 }
 
@@ -123,7 +122,7 @@ export type MenuItem =
     })
   | (MenuItemBase & {
       type: MenuItemType.Dropdown
-      icon?: Component
+      icon?: string
       items: MenuItem[]
     })
 

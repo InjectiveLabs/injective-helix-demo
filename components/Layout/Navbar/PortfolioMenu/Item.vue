@@ -27,9 +27,9 @@ function toggle() {
     class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
     @click="emit('menu:close')"
   >
-    <component :is="item.icon" v-if="item.icon" />
+    <SharedIcon v-if="item.icon" :name="item.icon" is-md />
 
-    <div>{{ $t(`navigation.${item.label}`) }}</div>
+    <div>{{ $t(item.label) }}</div>
   </NuxtLink>
 
   <template v-else>
@@ -37,9 +37,11 @@ function toggle() {
       class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent text-sm"
       @click="toggle"
     >
-      <component :is="item.icon" v-if="item.icon" />
+      <SharedIcon v-if="item.icon" :name="item.icon" is-md />
 
-      <div class="flex-1">{{ $t(`navigation.${item.label}`) }}</div>
+      <div class="flex-1">
+        {{ $t(item.label) }}
+      </div>
 
       <SharedIcon
         name="chevron"
