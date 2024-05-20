@@ -23,6 +23,24 @@ const props = defineProps({
 
 const { markPrice } = useDerivativeLastPrice(market)
 
+const maxLeverageAvailable = computed(() => {
+  const maxLeverage = new BigNumberInBase(
+    new BigNumberInBase(1).dividedBy(market.value.initialMarginRatio).dp(0)
+  )
+
+  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
+
+  const stepsLessThanMaxLeverage = steps.filter(
+    (step) => step <= maxLeverage.toNumber()
+  )
+
+  return stepsLessThanMaxLeverage.length > 0
+    ? new BigNumberInBase(
+        stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+      ).toFixed()
+    : new BigNumberInBase(20).toFixed()
+})
+
 const { el, typed } = useIMask(
   computed(
     () =>
@@ -37,8 +55,8 @@ const { el, typed } = useIMask(
             mapToRadix: ['.', ','],
             scale: 2,
             lazy: false,
-            min: 0,
-            max: 20,
+            min: 0.1,
+            max: Number(maxLeverageAvailable.value),
             autofix: true
           }
         }
@@ -60,24 +78,6 @@ watch(
     leverage.value = value
   }
 )
-
-const maxLeverageAvailable = computed(() => {
-  const maxLeverage = new BigNumberInBase(
-    new BigNumberInBase(1).dividedBy(market.value.initialMarginRatio).dp(0)
-  )
-
-  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
-
-  const stepsLessThanMaxLeverage = steps.filter(
-    (step) => step <= maxLeverage.toNumber()
-  )
-
-  return stepsLessThanMaxLeverage.length > 0
-    ? new BigNumberInBase(
-        stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
-      ).toFixed()
-    : new BigNumberInBase(20).toFixed()
-})
 
 const maxLeverageAllowed = computed(() => {
   const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
