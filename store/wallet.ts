@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 import {
+  MsgGrant,
+  PrivateKey,
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId,
-  PrivateKey,
-  MsgGrant,
-  MsgSend,
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
@@ -56,7 +55,7 @@ type WalletStoreState = {
 
   autoSign?: {
     privateKey: string
-    injAddress: string
+    injectiveAddress: string
     expiration: number
   }
 }
@@ -139,7 +138,9 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       await connect({
-        wallet: walletStore.wallet,
+        wallet: walletStore.autoSign?.privateKey
+          ? Wallet.PrivateKey
+          : walletStore.wallet,
         options: { privateKey: walletStore.autoSign?.privateKey }
       })
     },
@@ -591,17 +592,20 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      if (walletStore.wallet === Wallet.Metamask) {
+      const isAutoSignEnabled = !!walletStore.autoSign
+
+      if (walletStore.wallet === Wallet.Metamask && !isAutoSignEnabled) {
         await validateMetamask(walletStore.address, appStore.ethereumChainId)
       }
 
-      if (walletStore.wallet === Wallet.TrustWallet) {
+      if (walletStore.wallet === Wallet.TrustWallet && !isAutoSignEnabled) {
         await validateTrustWallet(walletStore.address, appStore.ethereumChainId)
       }
 
       if (
         isEthWallet(walletStore.wallet) &&
-        walletStore.isAuthzWalletConnected
+        walletStore.isAuthzWalletConnected &&
+        !isAutoSignEnabled
       ) {
         throw new GeneralException(
           new Error(
@@ -610,7 +614,7 @@ export const useWalletStore = defineStore('wallet', {
         )
       }
 
-      if (isCosmosWallet(walletStore.wallet)) {
+      if (isCosmosWallet(walletStore.wallet) && !isAutoSignEnabled) {
         await validateCosmosWallet({
           address: walletStore.injectiveAddress,
           chainId: appStore.chainId as unknown as CosmosChainId,
@@ -712,35 +716,25 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       const { privateKey } = PrivateKey.generate()
-      const injAddress = privateKey.toBech32()
-
-      return
-      const msg = MsgSend.fromJSON({
-        amount: {
-          amount: '1',
-          denom: 'inj'
-        },
-        dstInjectiveAddress: injAddress,
-        srcInjectiveAddress: walletStore.injectiveAddress
-      })
+      const injectiveAddress = privateKey.toBech32()
 
       const tradingMessages = [
+        MsgType.MsgCancelSpotOrder,
+        MsgType.MsgBatchUpdateOrders,
         MsgType.MsgCreateSpotLimitOrder,
+        MsgType.MsgCancelDerivativeOrder,
         MsgType.MsgCreateSpotMarketOrder,
+        MsgType.MsgBatchCancelSpotOrders,
+        MsgType.MsgBatchCreateSpotLimitOrders,
         MsgType.MsgCreateDerivativeLimitOrder,
         MsgType.MsgCreateDerivativeMarketOrder,
-        MsgType.MsgCancelSpotOrder,
-        MsgType.MsgCancelDerivativeOrder,
         MsgType.MsgBatchCancelDerivativeOrders,
-        MsgType.MsgBatchCancelSpotOrders,
-        MsgType.MsgBatchCreateDerivativeLimitOrders,
-        MsgType.MsgBatchCreateSpotLimitOrders,
-        MsgType.MsgBatchUpdateOrders
+        MsgType.MsgBatchCreateDerivativeLimitOrders
       ]
 
       const authZMsgs = tradingMessages.map((messageType) =>
         MsgGrant.fromJSON({
-          grantee: injAddress,
+          grantee: injectiveAddress,
           granter: walletStore.injectiveAddress,
           expiryInSeconds: Date.now() * 1000 + 60 * 60,
           authorization: getGenericAuthorizationFromMessageType(messageType)
@@ -748,12 +742,12 @@ export const useWalletStore = defineStore('wallet', {
       )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
-        msgs: [msg, ...authZMsgs],
+        msgs: authZMsgs,
         injectiveAddress: walletStore.injectiveAddress
       })
 
       const autoSign = {
-        injAddress,
+        injectiveAddress,
         privateKey: privateKey.toPrivateKeyHex(),
         expiration: Date.now() + 1000 * 60 * 60
       }

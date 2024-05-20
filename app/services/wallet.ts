@@ -21,7 +21,7 @@ export const connect = ({
   walletStrategy.setWallet(wallet)
 
   if (wallet === Wallet.PrivateKey && options?.privateKey) {
-    walletStrategy.setOptions({ privateKey: options?.privateKey })
+    walletStrategy.setOptions({ privateKey: options.privateKey })
   }
 }
 

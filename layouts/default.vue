@@ -36,10 +36,6 @@ watch(
  */
 
 onWalletConnected(() => {
-  if (!walletStore.authZOrInjectiveAddress) {
-    return
-  }
-
   portfolioStatus.setLoading()
   fetchUserPortfolio()
     .catch($onError)
