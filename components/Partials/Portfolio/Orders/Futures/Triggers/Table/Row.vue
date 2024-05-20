@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 
+import { Status, StatusType } from '@injectivelabs/utils'
+
 const props = defineProps({
   trigger: {
     required: true,
     type: Object as PropType<DerivativeOrderHistory>
   }
 })
+
+const derivativeStore = useDerivativeStore()
+const status = reactive(new Status(StatusType.Idle))
+const { $onError } = useNuxtApp()
+const { success, error } = useNotifications()
+const { t } = useLang()
 
 const {
   type,
@@ -18,7 +26,7 @@ const {
   leverage,
   isStopLoss,
   isReduceOnly,
-  // isCancelable,
+  isCancelable,
   triggerPrice,
   isTakeProfit,
   isMarketOrder,
@@ -47,6 +55,27 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
     decimalPlaces: quantityDecimals.value
   }
 )
+
+function cancelOrder() {
+  if (!isCancelable.value) {
+    return
+  }
+
+  status.setLoading()
+
+  derivativeStore
+    .cancelOrder(props.trigger)
+    .catch((e) => {
+      error({ title: t('trade.order_cancellation_failed') })
+      $onError(e)
+    })
+    .then(() => {
+      success({ title: t('trade.order_cancelled') })
+    })
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -106,6 +135,14 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
       <span>{{ triggerPriceToString }}</span>
+    </div>
+
+    <div class="p-2 flex items-center flex-1">
+      <PartialsCommonCancelButton
+        v-bind="{ status }"
+        :is-disabled="!isCancelable"
+        @click="cancelOrder"
+      />
     </div>
   </div>
 </template>

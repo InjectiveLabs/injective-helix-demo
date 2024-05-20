@@ -2,7 +2,8 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import { UiDerivativeMarket, derivativeMarketKey } from '~/types'
 
@@ -52,15 +53,13 @@ const { valueToString: totalToString } = useBigNumberFormatter(
 const { valueToString: marginToString } = useBigNumberFormatter(
   computed(() => props.margin),
   {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
 const { valueToString: quantityToString } = useBigNumberFormatter(
   computed(() => props.quantity),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+  { decimalPlaces: 4 }
 )
 
 const { valueToString: worstPriceToString } = useBigNumberFormatter(

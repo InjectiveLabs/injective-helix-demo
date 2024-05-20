@@ -32,6 +32,7 @@ function fetchDerivativeOrders() {
     derivativeStore.fetchSubaccountTrades({
       subaccountId: accountStore.subaccountId
     }),
+    derivativeStore.fetchSubaccountConditionalOrders([market.value.marketId]),
     positionStore.fetchSubaccountPositions({
       subaccountId: accountStore.subaccountId,
       filters: {
@@ -58,30 +59,32 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
   <div>
     <PartialsTradeFuturesOrdersStandardHeader v-model="view" />
 
-    <div class="overflow-x-auto border-b max-h-md">
-      <PartialsTradeCommonOrdersBalances
-        v-if="view === PerpOrdersStandardView.Balances"
-      />
+    <div class="overflow-auto border-b max-h-md">
+      <div class="min-w-[1400px]">
+        <PartialsTradeCommonOrdersBalances
+          v-if="view === PerpOrdersStandardView.Balances"
+        />
 
-      <PartialsTradeFuturesOrdersStandardPositions
-        v-else-if="view === PerpOrdersStandardView.OpenPositions"
-      />
+        <PartialsTradeFuturesOrdersStandardPositions
+          v-else-if="view === PerpOrdersStandardView.OpenPositions"
+        />
 
-      <PartialsTradeFuturesOrdersStandardOpenOrders
-        v-else-if="view === PerpOrdersStandardView.OpenOrders"
-      />
+        <PartialsTradeFuturesOrdersStandardOpenOrders
+          v-else-if="view === PerpOrdersStandardView.OpenOrders"
+        />
 
-      <PartialsTradeFuturesOrdersStandardTriggers
-        v-else-if="view === PerpOrdersStandardView.Triggers"
-      />
+        <PartialsTradeFuturesOrdersStandardTriggers
+          v-else-if="view === PerpOrdersStandardView.Triggers"
+        />
 
-      <PartialsTradeFuturesOrdersStandardOrderHistory
-        v-else-if="view === PerpOrdersStandardView.OrderHistory"
-      />
+        <PartialsTradeFuturesOrdersStandardOrderHistory
+          v-else-if="view === PerpOrdersStandardView.OrderHistory"
+        />
 
-      <PartialsTradeFuturesOrdersStandardTradeHistory
-        v-else-if="view === PerpOrdersStandardView.TradeHistory"
-      />
+        <PartialsTradeFuturesOrdersStandardTradeHistory
+          v-else-if="view === PerpOrdersStandardView.TradeHistory"
+        />
+      </div>
     </div>
   </div>
 </template>

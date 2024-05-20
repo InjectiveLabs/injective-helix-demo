@@ -12,5 +12,6 @@
     <div class="flex-1 p-2">{{ $t('trade.leverage') }}</div>
     <div class="flex-1 p-2">{{ $t('trade.total') }}</div>
     <div class="flex-[2] p-2">{{ $t('trade.triggerCondition') }}</div>
+    <div class="flex-1 p-2">{{ $t('trade.cancelOrder') }}</div>
   </div>
 </template>

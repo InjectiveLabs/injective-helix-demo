@@ -211,7 +211,7 @@ export function useDerivativeWorstPrice() {
       totalNotional.value.div(
         derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
       ),
-      market.value.priceTensMultiplier
+      -market.value.quoteToken.decimals
     )
   })
 

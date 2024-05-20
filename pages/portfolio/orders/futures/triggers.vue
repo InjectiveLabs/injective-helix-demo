@@ -46,6 +46,8 @@ const filterredTriggers = computed(() =>
   })
 )
 
+onSubaccountChange(fetchDerivativeTriggers)
+
 function fetchDerivativeTriggers() {
   status.setLoading()
 
@@ -56,13 +58,12 @@ function fetchDerivativeTriggers() {
       status.setIdle()
     })
 }
-
-onSubaccountChange(fetchDerivativeTriggers)
 </script>
 
 <template>
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersFuturesTriggersTabs />
+
     <PartialsPortfolioOrdersFuturesTriggersTableHeader />
 
     <CommonSkeletonRow
