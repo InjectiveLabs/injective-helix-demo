@@ -14,6 +14,7 @@ import {
   submitAtomicOrder,
   submitAtomicOrderExactOutput
 } from '@/store/swap/message'
+import { excludedSwapDenoms } from '@/app/data/swap'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { TokenAndPriceAndDecimals } from '@/types'
 
@@ -64,8 +65,12 @@ export const useSwapStore = defineStore('swap', {
           queryAllRoutesResponse
         )
 
-      swapStore.$patch({
-        routes: [...routes]
+      swapStore.$patch((state) => {
+        state.routes = routes.filter(
+          ({ sourceDenom, targetDenom }) =>
+            !excludedSwapDenoms.includes(sourceDenom) &&
+            !excludedSwapDenoms.includes(targetDenom)
+        )
       })
     },
 

@@ -30,7 +30,6 @@ const totalOpenInterest = computed(() =>
 </script>
 
 <template>
-  <pre>{{ totalVolume }}</pre>
   <div class="text-center mb-20 mt-10 md:mt-14">
     <div class="flex flex-col items-center">
       <div class="flex items-center space-x-4">
