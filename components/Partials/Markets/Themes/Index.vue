@@ -30,23 +30,25 @@ const themes = computed(() =>
 </script>
 
 <template>
-  <div>
-    <PartialsMarketsThemesTableHeader
-      v-bind="{
-        isAscending,
-        sortBy
-      }"
-    />
-
-    <div class="divide-y">
-      <PartialsMarketsThemesTableRow
-        v-for="theme in themes"
-        :key="theme.theme"
+  <div class="overflow-x-auto">
+    <div class="min-w-[700px]">
+      <PartialsMarketsThemesTableHeader
         v-bind="{
-          markets: theme.markets,
-          theme: theme.theme
+          isAscending,
+          sortBy
         }"
       />
+
+      <div class="divide-y">
+        <PartialsMarketsThemesTableRow
+          v-for="theme in themes"
+          :key="theme.theme"
+          v-bind="{
+            markets: theme.markets,
+            theme: theme.theme
+          }"
+        />
+      </div>
     </div>
   </div>
 </template>

@@ -124,88 +124,92 @@ const unknownTokenStatus = inject(
         class="my-10"
       />
 
-      <div
-        class="border-b border-brand-700 my-4 flex justify-between items-end"
-      >
-        <div class="flex">
-          <AppButtonSelect
-            v-for="value in Object.values(MarketTypeOption)"
-            :key="value"
-            v-model="type"
-            v-bind="{ value }"
-            class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium"
-            active-classes="border-blue-500 !text-blue-500"
-            @update:model-value="onMarketTypeChange"
-          >
-            {{ value }}
-          </AppButtonSelect>
-        </div>
-
-        <div class="flex">
-          <label
-            class="flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
-          >
-            <input
-              v-model="search"
-              type="text"
-              class="focus:outline-none bg-transparent p-1 px-3"
-            />
-
-            <div class="flex items-center pr-3">
-              <BaseIcon name="search" class="text-gray-500" />
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="my-4 flex space-x-2 justify-between">
+      <div class="max-w-full">
         <div
-          v-if="!marketTypeOptionsToHideCategory.includes(type)"
-          class="flex space-x-2"
+          class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
         >
-          <AppButtonSelect
-            v-for="value in Object.values(MarketCategoryType)"
-            :key="value"
-            v-model="category"
-            v-bind="{ value }"
-            class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
-            active-classes="text-white !bg-brand-700"
-          >
-            {{ value }}
-          </AppButtonSelect>
-        </div>
-
-        <div
-          v-if="type === MarketTypeOption.Permissionless"
-          class="flex items-center space-x-2 text-gray-500"
-        >
-          <SharedIcon name="warning-triangle" is-md />
-          <span class="text-sm">{{ $t('markets.permisionlessWarning') }}</span>
-        </div>
-
-        <div v-else></div>
-
-        <div class="flex items-center space-x-3">
-          <div class="flex overflow-hidden rounded border">
+          <div class="flex overflow-x-auto">
             <AppButtonSelect
-              v-for="value in Object.values(MarketQuoteType)"
+              v-for="value in Object.values(MarketTypeOption)"
               :key="value"
-              v-model="activeQuote"
+              v-model="type"
               v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
-              active-classes="text-white !bg-brand-800"
+              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
+              active-classes="border-blue-500 !text-blue-500"
+              @update:model-value="onMarketTypeChange"
             >
               {{ value }}
             </AppButtonSelect>
           </div>
 
-          <AppCheckbox2
-            v-model="isLowVolumeMarketsVisible"
-            class="ml-4 flex items-center"
-            is-sm
+          <div class="flex max-lg:w-full">
+            <label
+              class="w-full flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
+            >
+              <input
+                v-model="search"
+                type="text"
+                class="focus:outline-none bg-transparent p-1 px-3 w-full"
+              />
+
+              <div class="flex items-center pr-3">
+                <BaseIcon name="search" class="text-gray-500" />
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-w-full">
+        <div class="my-4 flex gap-x-2 justify-between flex-wrap">
+          <div
+            v-if="!marketTypeOptionsToHideCategory.includes(type)"
+            class="flex space-x-2"
           >
-            {{ $t('markets.showLowVol') }}
-          </AppCheckbox2>
+            <AppButtonSelect
+              v-for="value in Object.values(MarketCategoryType)"
+              :key="value"
+              v-model="category"
+              v-bind="{ value }"
+              class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
+              active-classes="text-white !bg-brand-700"
+            >
+              {{ value }}
+            </AppButtonSelect>
+          </div>
+
+          <div
+            v-if="type === MarketTypeOption.Permissionless"
+            class="flex items-center gap-x-2 text-gray-500"
+          >
+            <SharedIcon name="warning-triangle" is-md />
+            <span class="text-sm">{{
+              $t('markets.permisionlessWarning')
+            }}</span>
+          </div>
+
+          <div class="flex gap-x-3 mt-2 lg:mt-0 flex-wrap">
+            <div class="flex rounded border">
+              <AppButtonSelect
+                v-for="value in Object.values(MarketQuoteType)"
+                :key="value"
+                v-model="activeQuote"
+                v-bind="{ value }"
+                class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+                active-classes="text-white !bg-brand-800"
+              >
+                {{ value }}
+              </AppButtonSelect>
+            </div>
+
+            <AppCheckbox2
+              v-model="isLowVolumeMarketsVisible"
+              class="md:ml-4 flex items-center"
+              is-sm
+            >
+              {{ $t('markets.showLowVol') }}
+            </AppCheckbox2>
+          </div>
         </div>
       </div>
 
