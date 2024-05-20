@@ -44,8 +44,8 @@ function revokeAll() {
 
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
-    <div class="flex-1 flex items-center p-2">
-      <span class="font-mono">{{ grantee }}</span>
+    <div class="flex-1 flex items-center p-2 truncate min-w-0">
+      <span class="font-mono truncate min-w-0">{{ grantee }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>

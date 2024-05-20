@@ -96,7 +96,7 @@ const maxLeverageAllowed = computed(() => {
 const { value: leverage, errorMessage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
   initialValue: '1',
-  dynamicRule: computed(() => `max:${maxLeverageAvailable.value}`)
+  dynamicRule: computed(() => `maxLeverage:${maxLeverageAvailable.value}`)
 })
 
 function onBlur() {

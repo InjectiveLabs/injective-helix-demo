@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const gridStrategyStore = useGridStrategyStore()
 
-onMounted(() => {
+onWalletConnected(() => {
   gridStrategyStore.fetchAllStrategies()
 })
 </script>

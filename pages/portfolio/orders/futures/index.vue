@@ -2,7 +2,6 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOpenOrdersFilterField, SpotOpenOrdersFilterForm } from '@/types'
 
-const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -37,9 +36,7 @@ function fetchDerivativeOpenOrders() {
     })
 }
 
-watch(() => [accountStore.subaccountId], fetchDerivativeOpenOrders, {
-  immediate: true
-})
+onSubaccountChange(fetchDerivativeOpenOrders)
 </script>
 
 <template>

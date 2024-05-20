@@ -3,7 +3,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 const route = useRoute()
 const router = useRouter()
-const accountStore = useAccountStore()
 const activityStore = useActivityStore()
 const { $onError } = useNuxtApp()
 
@@ -39,10 +38,7 @@ function fetchWalletTransfers() {
     })
 }
 
-watch(() => [accountStore.subaccountId, formValues], fetchWalletTransfers, {
-  immediate: true,
-  deep: true
-})
+onSubaccountChange(fetchWalletTransfers)
 
 async function handlePageChange(page: number) {
   await router.push({
@@ -74,7 +70,10 @@ async function handleLimitChange(limit: number) {
     </div>
 
     <div class="border-y divide-y">
-      <PartialsPortfolioHistoryWalletTabs />
+      <PartialsPortfolioHistoryWalletTabs
+        @form:reset="fetchWalletTransfers"
+        @token:update="fetchWalletTransfers"
+      />
       <PartialsPortfolioHistoryWalletTableHeader />
 
       <CommonSkeletonRow

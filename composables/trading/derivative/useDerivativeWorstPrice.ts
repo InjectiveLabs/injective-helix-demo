@@ -1,4 +1,4 @@
-import { OrderSide } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -24,7 +24,7 @@ export function useDerivativeWorstPrice() {
   const isBuy = computed(
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-      OrderSide.Buy
+      TradeDirection.Long
   )
 
   const isLimitOrder = computed(() =>

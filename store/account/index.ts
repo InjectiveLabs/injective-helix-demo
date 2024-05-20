@@ -123,17 +123,19 @@ export const useAccountStore = defineStore('account', {
         walletStore.authZOrDefaultSubaccountId
       )
 
-      const subaccountId =
-        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+      // const subaccountId =
+      //   accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
 
       await accountStore.fetchCw20Balances()
 
-      accountStore.$patch({
-        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
-          ? subaccountId
-          : walletStore.authZOrDefaultSubaccountId,
-        bankBalances: accountPortfolio.bankBalancesList || [],
-        subaccountBalancesMap: {
+      accountStore.$patch((state) => {
+        // state.subaccountId = subaccountId.includes(walletStore.authZOrAddress)
+        //   ? subaccountId
+        //   : walletStore.authZOrDefaultSubaccountId
+
+        state.bankBalances = accountPortfolio.bankBalancesList || []
+
+        state.subaccountBalancesMap = {
           [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
           ...nonDefaultSubaccounts
         }
@@ -150,7 +152,7 @@ export const useAccountStore = defineStore('account', {
 
       const cw20Balances =
         await indexerRestExplorerApi.fetchCW20BalancesNoThrow(
-          walletStore.injectiveAddress
+          walletStore.authZOrInjectiveAddress
         )
 
       accountStore.$patch({

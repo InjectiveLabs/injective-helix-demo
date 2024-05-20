@@ -12,7 +12,6 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -62,15 +61,6 @@ function fetchDerivativeTradeHistory() {
     })
 }
 
-watch(
-  () => [accountStore.subaccountId, formValues],
-  fetchDerivativeTradeHistory,
-  {
-    immediate: true,
-    deep: true
-  }
-)
-
 async function handlePageChange(page: number) {
   await router.push({
     query: {
@@ -92,11 +82,29 @@ async function handleLimitChange(limit: number) {
 
   fetchDerivativeTradeHistory()
 }
+
+async function fetchData() {
+  await router.push({
+    query: {
+      ...route.query,
+      page: undefined
+    }
+  })
+
+  fetchDerivativeTradeHistory()
+}
+
+onSubaccountChange(fetchData)
 </script>
 
 <template>
   <div class="divide-y border-y">
-    <PartialsPortfolioOrdersFuturesTradeHistoryTabs />
+    <PartialsPortfolioOrdersFuturesTradeHistoryTabs
+      @form:reset="fetchData"
+      @market:update="fetchData"
+      @side:update="fetchData"
+      @type:update="fetchData"
+    />
     <PartialsPortfolioOrdersFuturesTradeHistoryTableHeader />
 
     <CommonSkeletonRow

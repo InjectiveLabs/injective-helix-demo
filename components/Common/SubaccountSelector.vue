@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { BusEvents } from '@/types'
+
 defineProps({
   includeBotsSubaccounts: Boolean,
   showLowBalance: Boolean
@@ -8,6 +10,7 @@ const accountStore = useAccountStore()
 
 function changeSubaccount(subaccountId: string) {
   accountStore.$patch({ subaccountId })
+  useEventBus(BusEvents.SubaccountChange).emit()
 }
 </script>
 

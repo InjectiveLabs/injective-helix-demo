@@ -13,9 +13,9 @@ function fetchSpotOrders() {
     return
   }
 
-  streamSpotOrders()
-
   status.setLoading()
+
+  streamSpotOrders()
 
   Promise.all([
     spotStore.fetchSubaccountOrders(),
@@ -27,8 +27,6 @@ function fetchSpotOrders() {
     })
   ])
 }
-
-watch(() => accountStore.subaccountId, fetchSpotOrders, { immediate: true })
 
 function streamSpotOrders() {
   cancelStreams()
@@ -46,6 +44,10 @@ function cancelStreams() {
 
 onUnmounted(() => {
   cancelStreams()
+})
+
+onSubaccountChange(() => {
+  fetchSpotOrders()
 })
 </script>
 

@@ -8,25 +8,18 @@ const isOpen = ref(false)
 
 function close() {
   isOpen.value = false
+  isLocked.value = false
+  isLockedDoc.value = false
 }
 
 function open() {
   isOpen.value = true
+  isLocked.value = true
+  isLockedDoc.value = true
 }
 
 const isLocked = useScrollLock(document.body)
 const isLockedDoc = useScrollLock(document.documentElement)
-
-watch(
-  isOpen,
-  (isOpen) => {
-    isLocked.value = isOpen
-    isLockedDoc.value = isOpen
-  },
-  {
-    immediate: true
-  }
-)
 </script>
 
 <template>
