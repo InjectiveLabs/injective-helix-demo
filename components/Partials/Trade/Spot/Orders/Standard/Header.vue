@@ -50,7 +50,9 @@ watch(
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
-      <div id="cancel-teleport"></div>
+      <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
+        v-if="view === SpotOrdersStandardView.OpenOrders"
+      />
     </div>
   </div>
 </template>
