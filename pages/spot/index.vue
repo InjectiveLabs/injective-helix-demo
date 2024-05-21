@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { spotMarketKey } from '@/types'
+import { marketKey, spotMarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -15,6 +15,8 @@ const status = reactive(new Status(StatusType.Loading))
 const market = computed(() =>
   spotStore.markets.find((market) => market.marketId === route.query.marketId)
 )
+
+useSpotOrderbook(computed(() => market.value))
 
 onMounted(() => {
   if (!market.value) {
@@ -38,6 +40,7 @@ onUnmounted(() => {
   spotStore.reset()
 })
 
+provide(marketKey, market)
 provide(spotMarketKey, market)
 </script>
 
@@ -49,6 +52,10 @@ provide(spotMarketKey, market)
 
     <template #orders>
       <PartialsTradeSpotOrders />
+    </template>
+
+    <template #modals>
+      <ModalsMarketNotOnHelix v-if="!market.isVerified" />
     </template>
   </PartialsTradeLayout>
 </template>

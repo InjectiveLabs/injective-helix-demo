@@ -15,7 +15,7 @@ const token = computed(() => tokenStore.tokenByDenomOrSymbol(injToken.denom))
 const apr = computed(() =>
   new BigNumberInBase(bulletinStore.apr)
     .multipliedBy(100)
-    .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 )
 </script>
 

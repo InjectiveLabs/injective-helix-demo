@@ -40,5 +40,7 @@ defineProps({
     <div class="[grid-area:orders] border-t">
       <slot name="orders" />
     </div>
+
+    <slot name="modals" />
   </div>
 </template>

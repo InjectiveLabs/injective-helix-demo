@@ -45,13 +45,14 @@ export interface UserBasedState {
 
   geoLocation: GeoLocation
   preferences: {
-    orderbookLayout: OrderbookLayout
-    tradingLayout: TradingLayout
-    authZManagement: boolean
-    subaccountManagement: boolean
-    skipTradeConfirmationModal: boolean
     isHideBalances: boolean
+    authZManagement: boolean
     thousandsSeparator: boolean
+    tradingLayout: TradingLayout
+    subaccountManagement: boolean
+    orderbookLayout: OrderbookLayout
+    skipTradeConfirmationModal: boolean
+    skipExperimentalConfirmationModal: boolean
   }
 }
 
@@ -103,13 +104,14 @@ const initialStateFactory = (): AppStoreState => ({
       vpnCheckTimestamp: 0
     },
     preferences: {
-      skipTradeConfirmationModal: false,
-      orderbookLayout: OrderbookLayout.Default,
-      tradingLayout: TradingLayout.Left,
-      subaccountManagement: false,
-      authZManagement: false,
       isHideBalances: false,
-      thousandsSeparator: true
+      authZManagement: false,
+      thousandsSeparator: true,
+      subaccountManagement: false,
+      skipTradeConfirmationModal: false,
+      tradingLayout: TradingLayout.Left,
+      skipExperimentalConfirmationModal: false,
+      orderbookLayout: OrderbookLayout.Default
     }
   }
 })

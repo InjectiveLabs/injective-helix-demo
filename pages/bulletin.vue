@@ -12,7 +12,6 @@ import { BulletinType, BulletinMitoCard } from '@/types'
 const MAX_APY_DISPLAY = '1M+'
 const MAX_APY_TO_SHOW = 1_000_000
 
-const mitoStore = useMitoStore()
 const bulletinStore = useBulletinStore()
 const { $onError } = useNuxtApp()
 
@@ -33,7 +32,7 @@ onMounted(() => {
 const vaults = computed(() =>
   bulletinStore.vaults
     .map((vault) => {
-      const stakingPool = mitoStore.stakingPools.find(
+      const stakingPool = bulletinStore.stakingPools.find(
         (pool) => pool.vaultAddress === vault.contractAddress
       )
 
