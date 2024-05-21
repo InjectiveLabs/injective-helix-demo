@@ -1,4 +1,9 @@
-import { LiquidityRewardsPage, MainPage, TradeSubPage } from '../../../types'
+import {
+  MainPage,
+  TradeSubPage,
+  PortfolioSubPage,
+  LiquidityRewardsPage
+} from '../../../types'
 import spotSlugs from './../../../app/data/spot.json'
 import expiryFutureSlugs from './../../../app/data/expiry.json'
 import perpetualSlugs from './../../../app/data/derivative.json'
@@ -43,7 +48,10 @@ export const getRoutes = () => {
   const futures = [...perpetualSlugs, ...expiryFutureSlugs]
 
   // Middleware routes
-  const walletConnectedRequiredRouteNames = [MainPage.Portfolio]
+  const walletConnectedRequiredRouteNames = [
+    MainPage.Portfolio,
+    ...Object.values(PortfolioSubPage)
+  ]
 
   // Layout routes
   const footerEnabledRoutes = [
