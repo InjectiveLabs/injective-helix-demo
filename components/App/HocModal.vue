@@ -40,7 +40,7 @@ function closeModal() {
         @click="closeModal"
       >
         <div
-          class="overflow-y-auto max-md:h-[100dvh] md:max-h-[90dvh] bg-gray-900/80 rounded-md border border-brand-700 md:max-w-[600px] w-full flex flex-col"
+          class="overflow-y-auto max-md:h-[100vh] md:max-h-[90vh] bg-gray-900/90 rounded-md border border-brand-700 md:max-w-[600px] w-full flex flex-col"
           @click.stop
         >
           <div class="md:hidden p-4 flex justify-end">
