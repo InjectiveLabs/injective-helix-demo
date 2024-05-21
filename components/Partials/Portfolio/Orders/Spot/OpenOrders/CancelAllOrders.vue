@@ -23,6 +23,10 @@ function cancelAllOrders() {
     })
     .finally(() => {
       status.setIdle()
+
+      backupPromiseCall(async () => {
+        await spotStore.fetchSubaccountOrders()
+      })
     })
 }
 </script>

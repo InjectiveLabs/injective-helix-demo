@@ -54,7 +54,7 @@ function toggle() {
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsTpSl
           v-if="
-            [DerivativeTradeTypes.Limit, DerivativeTradeTypes.Market].includes(
+            [DerivativeTradeTypes.Market].includes(
               derivativeFormValues[
                 DerivativesTradeFormField.Type
               ] as DerivativeTradeTypes

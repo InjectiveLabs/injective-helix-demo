@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { backupPromiseCall } from '~/app/utils/async'
 
 const props = defineProps({
   order: {
@@ -73,6 +74,10 @@ function cancelOrder() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+
+      backupPromiseCall(async () => {
+        await spotStore.fetchSubaccountOrders()
+      })
     })
 }
 </script>
