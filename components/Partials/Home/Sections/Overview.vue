@@ -82,14 +82,9 @@ const options = [
         </BaseSelectorItem>
       </div>
 
-      <div class="max-h-[400px] flex justify-center">
+      <div class="flex justify-center">
         <img
-          class="m-auto object-contain"
-          :class="[
-            activeType === OverviewSection.TradingBots
-              ? 'h-full'
-              : 'lg:h-1/2 max-lg:h-full'
-          ]"
+          class="m-auto object-contain h-[500px]"
           :src="imgList[activeType]"
         />
       </div>
