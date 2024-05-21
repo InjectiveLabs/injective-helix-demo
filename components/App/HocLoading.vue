@@ -57,9 +57,7 @@ watch(isLoading, (isLoading, oldIsLoading) => {
         v-if="isHelix"
         class="w-72 h-72 bg-blue-500/20 absolute left-1/2 blur-[10rem] rounded-full -translate-x-1/2 top-1/2 -translate-y-1/2 z-30"
       />
-      <AssetHelixLogoLoading v-if="isHelix" />
-      <!-- <AssetHelixLoading v-if="isHelix" /> -->
-      <AppLoading v-else :class="loaderClass" />
+      <AssetHelixLogoLoading />
     </div>
 
     <slot v-else />
