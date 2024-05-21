@@ -73,7 +73,7 @@ const totalOpenInterest = computed(() =>
       <div class="">
         <h2>{{ $t('home.tradingVolume') }}</h2>
         <p class="text-2xl font-semibold">
-          $ {{ totalVolume.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+          ${{ totalVolume.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
         </p>
       </div>
 
@@ -85,7 +85,7 @@ const totalOpenInterest = computed(() =>
       <div class="">
         <h2>{{ $t('home.openInterest') }}</h2>
         <p class="text-2xl font-semibold">
-          $ {{ totalOpenInterest.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+          ${{ totalOpenInterest.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
         </p>
       </div>
     </div>

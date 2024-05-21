@@ -113,7 +113,7 @@ function cancelOrder() {
 
     <div class="flex-1 flex items-center p-2">
       <div v-if="market" class="space-y-1">
-        <p>$ {{ totalToString }}</p>
+        <p>${{ totalToString }}</p>
       </div>
     </div>
 

@@ -149,7 +149,7 @@ const isBridgable = computed(() => {
     <div class="flex-[2] flex items-center font-mono text-xs shrink-0 p-2">
       <div class="space-y-1">
         <CommonSkeletonSubaccountAmount>
-          $ {{ totalAmountInUsdToString }}
+          ${{ totalAmountInUsdToString }}
         </CommonSkeletonSubaccountAmount>
       </div>
     </div>

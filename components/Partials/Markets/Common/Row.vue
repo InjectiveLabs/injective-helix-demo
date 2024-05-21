@@ -5,9 +5,9 @@ import {
   SharedUiMarketSummary
 } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { USDT_DENOM } from '@shared/utils/constant'
+import { abbreviateNumber } from '@/app/utils/formatters'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   isMarketsPage: Boolean,
@@ -48,9 +48,8 @@ const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
   )
 )
 
-const { valueToString: volumeToString } = useSharedBigNumberFormatter(
-  computed(() => props.volumeInUsd)
-)
+const { valueToString: volumeToString, valueToFixed: volumeToFixed } =
+  useSharedBigNumberFormatter(computed(() => props.volumeInUsd))
 
 const priceChangeClasses = computed(() => {
   if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
@@ -76,10 +75,6 @@ function toggleFavorite() {
     }
   })
 }
-
-const isNonUsdtQuoteAsset = computed(() => {
-  return props.market.quoteToken.denom !== USDT_DENOM
-})
 </script>
 
 <template>
@@ -132,7 +127,7 @@ const isNonUsdtQuoteAsset = computed(() => {
       <div>
         {{ lastPriceToString }}
       </div>
-      <div v-if="isNonUsdtQuoteAsset">${{ lastPriceInUsdToString }}</div>
+      <div class="text-2xs text-gray-500">${{ lastPriceInUsdToString }}</div>
     </div>
 
     <div
@@ -143,16 +138,18 @@ const isNonUsdtQuoteAsset = computed(() => {
     </div>
 
     <div class="flex items-center flex-1 truncate min-w-0 font-mono text-xs">
-      $ {{ volumeToString }}
+      ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
     </div>
 
-    <div class="flex-1 flex items-center p-2 space-x-8 justify-end">
+    <div
+      v-if="isMarketsPage"
+      class="flex-1 flex items-center p-2 space-x-8 justify-end"
+    >
       <NuxtLink class="text-blue-500 hover:text-blue-600">
         {{ $t('trade.trade') }}
       </NuxtLink>
 
       <div
-        v-if="isMarketsPage"
         :class="{
           '!text-blue-500': appStore.favoriteMarkets.includes(market.marketId)
         }"

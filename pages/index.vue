@@ -7,7 +7,7 @@
 
     <div class="flex flex-col p-2 lg:p-4 max-w-7xl mx-auto w-full">
       <PartialsHomeSectionsHero />
-      <PartialsHomeSectionsOverview />
+      <PartialsHomeSectionsOverview class="mb-16" />
       <PartialsHomeAnnouncements />
       <PartialsHomeNewsletter />
     </div>

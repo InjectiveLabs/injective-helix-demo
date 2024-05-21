@@ -194,7 +194,7 @@ function closePositionAndReduceOnlyOrders() {
 
     <div class="flex-1 flex items-center p-2">
       <div v-if="market" class="space-y-1">
-        <p>$ {{ quantityInUsdToString }}</p>
+        <p>${{ quantityInUsdToString }}</p>
       </div>
     </div>
 

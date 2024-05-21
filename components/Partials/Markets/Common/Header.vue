@@ -3,6 +3,7 @@ import { MarketHeaderType } from '@/types'
 
 defineProps({
   isAscending: Boolean,
+  isMarketsPage: Boolean,
 
   sortBy: {
     type: String,
@@ -97,6 +98,6 @@ function handleIsAscending(value: boolean) {
       </BaseSortableHeaderItem>
     </div>
 
-    <div class="flex-1"></div>
+    <div v-if="isMarketsPage" class="flex-1"></div>
   </div>
 </template>

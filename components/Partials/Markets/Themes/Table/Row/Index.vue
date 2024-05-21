@@ -80,7 +80,7 @@ const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
     <div class="flex-1 flex items-center p-2">{{ markets.length }}</div>
 
     <div class="flex-1 flex items-center p-2 font-mono text-sm justify-end">
-      <span>$ {{ totalVolumeToString }}</span>
+      <span>${{ totalVolumeToString }}</span>
     </div>
 
     <div class="flex-1 flex p-2">

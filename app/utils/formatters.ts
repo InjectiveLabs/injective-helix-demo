@@ -166,3 +166,20 @@ export const formatSecondsToDisplay = ({
 
   return output
 }
+
+export const abbreviateNumber = (value: string | number) => {
+  const VALUE_TO_ABBREVIATE = 10_000_000
+
+  const valueToBigNumber = new BigNumberInBase(value)
+
+  if (valueToBigNumber.lte(VALUE_TO_ABBREVIATE)) {
+    return undefined
+  }
+
+  const abbreviatedValue = new Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    compactDisplay: 'short'
+  }).format(valueToBigNumber.toNumber())
+
+  return abbreviatedValue
+}

@@ -50,6 +50,6 @@ const { valueToString: balanceToString } = useSharedBigNumberFormatter(
         {{ formattedAddress }}
       </PartialsWalletHistoryCommonAddress>
     </div>
-    <div class="flex-1 items-center p-2">$ {{ balanceToString }}</div>
+    <div class="flex-1 items-center p-2">${{ balanceToString }}</div>
   </div>
 </template>
