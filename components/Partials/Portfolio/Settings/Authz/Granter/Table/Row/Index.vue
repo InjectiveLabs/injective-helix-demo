@@ -46,7 +46,14 @@ function connectAuthZ() {
     </div>
 
     <div class="flex-1 flex items-center p-2">
-      <AppButton :variant="'success'" size="sm" @click.stop="connectAuthZ">
+      <AppButton
+        v-if="walletStore.authZOrInjectiveAddress === granter"
+        disabled
+        size="sm"
+      >
+        Connected
+      </AppButton>
+      <AppButton v-else variant="success" size="sm" @click.stop="connectAuthZ">
         Connect As
       </AppButton>
     </div>

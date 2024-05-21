@@ -8,9 +8,8 @@ import {
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
-import { GeneralException } from '@injectivelabs/exceptions'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
-import { isCosmosWallet, isEthWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import {
   validateCosmosWallet,
@@ -600,18 +599,6 @@ export const useWalletStore = defineStore('wallet', {
 
       if (walletStore.wallet === Wallet.TrustWallet && !isAutoSignEnabled) {
         await validateTrustWallet(walletStore.address, appStore.ethereumChainId)
-      }
-
-      if (
-        isEthWallet(walletStore.wallet) &&
-        walletStore.isAuthzWalletConnected &&
-        !isAutoSignEnabled
-      ) {
-        throw new GeneralException(
-          new Error(
-            'Ethereum native wallets currently do not support AuthZ transactions'
-          )
-        )
       }
 
       if (isCosmosWallet(walletStore.wallet) && !isAutoSignEnabled) {

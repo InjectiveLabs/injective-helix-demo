@@ -85,7 +85,7 @@ export default {
       addComponents({
         // Primary
         '.btn-primary': {
-          color: theme('colors.black'),
+          color: theme('colors.blue.900'),
           backgroundColor: theme('colors.blue.500'),
           border: `1px solid ${theme('colors.blue.500')}`
         },
@@ -121,7 +121,7 @@ export default {
         },
 
         '.btn-success': {
-          color: theme('colors.black'),
+          color: theme('colors.green.900'),
           backgroundColor: theme('colors.green.500'),
           border: `1px solid ${theme('colors.green.500')}`
         },
@@ -158,7 +158,7 @@ export default {
 
         // Danger
         '.btn-danger': {
-          color: theme('colors.white'),
+          color: theme('colors.red.900'),
           backgroundColor: theme('colors.red.500'),
           border: `1px solid ${theme('colors.red.500')}`
         },

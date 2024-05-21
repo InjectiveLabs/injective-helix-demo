@@ -3,20 +3,19 @@ const walletStore = useWalletStore()
 </script>
 
 <template>
-  <div class="bg-[#5B5B5F] flex items-center justify-between p-2">
+  <div class="bg-blue-400 text-blue-900 flex items-center justify-between p-2">
     <div class="flex items-center space-x-2">
       <SharedIcon name="show" />
       <p class="text-xs">
-        Connected As {{ walletStore.authZOrInjectiveAddress }}
+        Connected As <strong>{{ walletStore.authZOrInjectiveAddress }}</strong>
       </p>
     </div>
-    <AppButton
-      variant="danger"
-      size="xs"
-      class="bg-white text-black hover:text-black hover:bg-gray-300"
+
+    <SharedIcon
+      name="exit"
+      is-md
+      class="text-blue-900"
       @click="walletStore.resetAuthZ()"
-    >
-      Disconnect
-    </AppButton>
+    />
   </div>
 </template>
