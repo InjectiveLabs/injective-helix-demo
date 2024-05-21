@@ -5,7 +5,7 @@ const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 </script>
 
 <template>
-  <div class="min-h-[360px]">
+  <div>
     <PartialsTradeFuturesOrdersStandard
       v-if="tradingMode === TradingInterface.Standard"
     />
