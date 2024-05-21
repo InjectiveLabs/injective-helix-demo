@@ -26,7 +26,7 @@ const subscribe = handleSubmit((values) => {
       resetForm()
     })
     .catch((e: any) => {
-      error(e.message.replace('Error', ''))
+      error({ title: e.message.replace('Error', '') })
     })
     .finally(() => {
       status.setIdle()
