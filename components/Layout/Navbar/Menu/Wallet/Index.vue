@@ -5,7 +5,7 @@ const walletStore = useWalletStore()
 </script>
 
 <template>
-  <div class="flex p-2 space-x-2">
+  <div class="flex items-center p-2 space-x-2">
     <LayoutNavbarMenuItem
       class="hidden lg:block"
       v-bind="{ item: DEPOSIT_MENU_ITEM }"
