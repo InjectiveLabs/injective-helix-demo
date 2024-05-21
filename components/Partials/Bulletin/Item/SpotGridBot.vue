@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { GridMarket, TradeSubPage, TradingInterface } from '@/types'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import {
+  GridMarket,
+  TradeSubPage,
+  BulletinType,
+  TradingInterface
+} from '@/types'
 
 const props = defineProps({
   gridMarket: {
@@ -45,33 +50,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <NuxtLink v-if="market" :to="url" class="card px-4 py-6 hover:bg-gray-750">
-    <div class="flex space-x-4">
-      <div class="relative">
-        <CommonTokenIcon is-lg v-bind="{ denom: market?.baseDenom }" />
-        <div
-          class="absolute border left-5 top-5 p-1 bg-white rounded-full grid place-items-center"
-        >
-          <AssetLogo class="!w-2.5 !h-2.5" />
-        </div>
+  <PartialsBulletinItem
+    v-if="market"
+    v-bind="{
+      url,
+      title: market.ticker,
+      description: $t(`bulletin.type.${BulletinType.HelixSpotGridBot}`)
+    }"
+  >
+    <template #default>
+      <CommonTokenIcon is-lg v-bind="{ token: market?.baseToken }" />
+      <div
+        class="absolute border left-5 top-4 bg-white rounded-full grid place-items-center"
+      >
+        <AssetMitoLogo class="!w-5 !h-5" />
       </div>
+    </template>
 
-      <div>
-        <p class="text-xl font-semibold">{{ market.ticker }}</p>
-        <p class="text-gray-400 text-xs">
-          Helix - {{ $t('navigation.tradingBots') }}
-        </p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 mt-8">
+    <template #content>
       <div>
         <p>{{ $t('campaign.activeBots') }}</p>
         <p class="text-xl font-semibold">
-          <span v-if="activeBots.eq(0)">-</span>
+          <span v-if="activeBots.eq(0)">&mdash;</span>
           <span v-else>{{ activeBots.toFormat(0) }}</span>
         </p>
       </div>
-    </div>
-  </NuxtLink>
+    </template>
+  </PartialsBulletinItem>
 </template>

@@ -1,9 +1,11 @@
+import { BulletinType } from './enums'
+
 export type BulletinMitoCard = {
   apy: number
+  apyToShow: string
   tvl: number
   marketId: string
   vaultType: string
-  platform: string
-  type: string
+  type: BulletinType
   contractAddress: string
 }

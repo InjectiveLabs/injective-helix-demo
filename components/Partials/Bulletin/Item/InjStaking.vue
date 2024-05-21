@@ -1,38 +1,43 @@
 <script setup lang="ts">
-import { INJ_DENOM } from '@injectivelabs/utils'
+import { injToken } from '@shared/data/token'
+import { getHubUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BulletinType } from '@/types'
 
 const tokenStore = useTokenStore()
+const bulletinStore = useBulletinStore()
 
-const token = computed(() =>
-  tokenStore.tradeableTokens.find((token) => token.denom === INJ_DENOM)
+const stakingUrl = `${getHubUrl()}/staking`
+
+const token = computed(() => tokenStore.tokenByDenomOrSymbol(injToken.denom))
+
+const apr = computed(() =>
+  new BigNumberInBase(bulletinStore.apr)
+    .multipliedBy(100)
+    .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 )
 </script>
 
 <template>
-  <NuxtLink
+  <PartialsBulletinItem
     v-if="token"
-    to="https://hub.injective.network/staking"
-    target="_blank"
-    class="card px-4 py-6 hover:bg-gray-750"
+    v-bind="{
+      url: stakingUrl,
+      title: $t(`bulletin.type.${BulletinType.InjectiveStaking}`)
+    }"
   >
-    <div class="flex space-x-4">
-      <div class="relative mt-1">
-        <CommonTokenIcon is-lg v-bind="{ token }" />
-      </div>
+    <template #default>
+      <CommonTokenIcon is-lg v-bind="{ token }" />
+    </template>
 
-      <div>
-        <p class="text-xl font-semibold">{{ $t('injStaking') }}</p>
-        <p class="text-gray-400 text-xs">Injective - {{ $t('Staking') }}</p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 mt-8">
-      <div>
+    <template #content>
+      <div class="min-w-0 truncate">
         <p>{{ $t('campaign.apy') }}</p>
         <p class="text-xl font-semibold text-green-500">
-          <span>14.5%</span>
+          <span>{{ apr }}%</span>
         </p>
       </div>
-    </div>
-  </NuxtLink>
+    </template>
+  </PartialsBulletinItem>
 </template>

@@ -555,3 +555,9 @@ export enum DerivativesTradeFormField {
   TriggerPrice = 'triggerPrice',
   IsSlippageOn = 'isSlippageOn'
 }
+
+export enum BulletinType {
+  MitoVault = 'mito-vault',
+  InjectiveStaking = 'injective-staking',
+  HelixSpotGridBot = 'helix-spot-grid-bot'
+}
