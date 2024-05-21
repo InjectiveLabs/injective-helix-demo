@@ -61,7 +61,7 @@ function onFormReset() {
       />
       <CommonTabFormReset @form:reset="onFormReset" />
 
-      <div class="flex-1 items-center justify-end">
+      <div class="flex-1 flex items-center justify-end px-2">
         <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers />
       </div>
     </div>

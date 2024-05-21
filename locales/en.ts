@@ -60,6 +60,8 @@ export default {
     download: 'Download',
     required: 'Required',
     available: 'Available',
+    popular: 'Popular',
+    otherWallets: 'Other Wallets',
     ready: 'Ready',
     new: 'New',
     success: 'Success',

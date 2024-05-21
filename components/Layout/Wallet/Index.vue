@@ -15,10 +15,6 @@ const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
 )
 
-// const isLoading = computed<boolean>(
-//   () => walletStore.walletConnectStatus === WalletConnectStatus.connecting
-// )
-
 onMounted(() => {
   useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
 
@@ -107,11 +103,15 @@ watch(isModalOpen, (newShowModalState) => {
         v-else
         class="divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
       >
-        <p class="text-gray-400 font-semibold text-sm">Popular</p>
+        <p class="text-gray-400 font-semibold text-sm mb-2">
+          {{ $t('common.popular') }}
+        </p>
         <LayoutWalletConnectWalletMetamask />
         <LayoutWalletConnectWalletOkxWallet />
         <LayoutWalletConnectWalletKeplr />
-        <p class="text-gray-400 font-semibold text-sm mt-4">Other Wallets</p>
+        <p class="text-gray-400 font-semibold text-sm mt-4">
+          {{ $t('common.otherWallets') }}
+        </p>
         <div class="grid grid-cols-4">
           <LayoutWalletConnectWalletNinji />
           <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
