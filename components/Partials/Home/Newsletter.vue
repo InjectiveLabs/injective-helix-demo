@@ -43,7 +43,11 @@ const subscribe = handleSubmit((values) => {
     />
 
     <div class="relative z-20">
-      <h1 class="text-3xl font-semibold">{{ $t('newsletter.title') }}</h1>
+      <h1
+        class="text-3xl font-semibold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
+      >
+        {{ $t('newsletter.title') }}
+      </h1>
 
       <div class="max-w-[340px] xs:max-w-[360px] mt-6 mx-auto">
         <div class="rounded-lg flex">

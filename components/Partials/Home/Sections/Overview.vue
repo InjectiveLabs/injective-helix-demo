@@ -1,41 +1,41 @@
 <script setup lang="ts">
 enum OverviewSection {
-  tradingBots = 'tradingBots',
-  newAccounts = 'newAccounts',
-  pnl = 'pnl',
-  gasFree = 'gasFree'
+  TradingBots = 'tradingBots',
+  NewAccounts = 'newAccounts',
+  Pnl = 'pnl',
+  GasFree = 'gasFree'
 }
 
 const imgList = {
-  [OverviewSection.tradingBots]: '/images/home/tradingBots.png',
-  [OverviewSection.newAccounts]: '/images/home/newAccounts.png',
-  [OverviewSection.pnl]: '/images/home/pnlOverview.png',
-  [OverviewSection.gasFree]: '/images/home/gasFee.png'
+  [OverviewSection.TradingBots]: '/images/home/tradingBots.png',
+  [OverviewSection.NewAccounts]: '/images/home/newAccounts.png',
+  [OverviewSection.Pnl]: '/images/home/pnlOverview.png',
+  [OverviewSection.GasFree]: '/images/home/gasFee.png'
 }
 
-const activeType = ref(OverviewSection.tradingBots)
+const activeType = ref(OverviewSection.TradingBots)
 
 const options = [
   {
-    type: OverviewSection.tradingBots,
+    type: OverviewSection.TradingBots,
     title: 'overview.tradingBotsTitle',
     description: 'overview.tradingBotsDescription',
     img: '/images/home/tradingBots.png'
   },
   {
-    type: OverviewSection.newAccounts,
+    type: OverviewSection.NewAccounts,
     title: 'overview.newAccountsTitle',
     description: 'overview.newAccountsDescription',
     img: '/images/home/newAccounts.png'
   },
   {
-    type: OverviewSection.pnl,
+    type: OverviewSection.Pnl,
     title: 'overview.pnlTitle',
     description: 'overview.pnlDescription',
     img: '/images/home/pnlOverview.png'
   },
   {
-    type: OverviewSection.gasFree,
+    type: OverviewSection.GasFree,
     title: 'overview.gasFreeTitle',
     description: 'overview.gasFreeDescription',
     img: '/images/home/gasFee.png'
@@ -46,7 +46,7 @@ const options = [
 <template>
   <div>
     <h2
-      class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold lg:my-20"
+      class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
     >
       {{ $t('home.overviewTitle') }}
     </h2>
@@ -82,8 +82,16 @@ const options = [
         </BaseSelectorItem>
       </div>
 
-      <div>
-        <img class="h-[400px] mx-auto" :src="imgList[activeType]" alt="" />
+      <div class="max-h-[400px] flex justify-center">
+        <img
+          class="m-auto object-contain"
+          :class="[
+            activeType === OverviewSection.TradingBots
+              ? 'h-full'
+              : 'lg:h-1/2 max-lg:h-full'
+          ]"
+          :src="imgList[activeType]"
+        />
       </div>
     </div>
   </div>

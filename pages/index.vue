@@ -5,8 +5,9 @@
     <AssetNoticeBanners />
     <AssetKadoBanner />
 
-    <div class="flex flex-col p-2 lg:p-4 max-w-7xl mx-auto w-full">
+    <div class="flex flex-col p-4 lg:p-8 max-w-7xl mx-auto w-full">
       <PartialsHomeSectionsHero />
+      <PartialsHomeSectionsGettingStarted class="mb-16" />
       <PartialsHomeSectionsOverview class="mb-16" />
       <PartialsHomeAnnouncements />
       <PartialsHomeNewsletter />

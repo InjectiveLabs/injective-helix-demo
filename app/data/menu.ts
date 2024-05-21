@@ -49,25 +49,12 @@ export const MENU_ITEMS: MenuItem[] = [
           },
           query: { interface: TradingInterface.TradingBots }
         }
-      }
-    ]
-  },
-
-  {
-    label: 'navigation.liquidity',
-    type: MenuItemType.Dropdown,
-    items: [
+      },
       {
         type: MenuItemType.Link,
         label: 'navigation.liquidityBots',
         description: 'navigation.liquidityBotsDescription',
         to: { name: TradingBotsSubPage.LiquiditySpotMarket }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.liquidityProvision',
-        description: 'navigation.liquidityProvisionDescription',
-        to: { name: MainPage.LiquidityProvision }
       }
     ]
   },
@@ -100,10 +87,15 @@ export const MENU_ITEMS: MenuItem[] = [
         description: 'navigation.openLiquidityProgramDescription',
         to: 'https://trading.injective.network/program/liquidity',
         isExternal: true
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'navigation.liquidityProvision',
+        description: 'navigation.liquidityProvisionDescription',
+        to: { name: MainPage.LiquidityProvision }
       }
     ]
   },
-
   {
     type: MenuItemType.Link,
     label: 'navigation.leaderboard',

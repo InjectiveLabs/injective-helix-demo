@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { getBridgeUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { TradeSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -49,12 +51,21 @@ const totalOpenInterest = computed(() =>
         </p>
 
         <div
-          class="flex max-lg:flex-col max-lg:space-y-2 justify-center lg:space-x-2 py-4"
+          class="flex max-xs:flex-col max-xs:space-y-2 justify-center xs:space-x-2 py-4"
         >
-          <AppButton class="lg:py-4">{{ $t('home.startTrading') }}</AppButton>
-          <AppButton class="lg:py-4" variant="primary-outline">
-            {{ $t('home.depositCrypto') }}
-          </AppButton>
+          <NuxtLink
+            :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
+          >
+            <AppButton class="lg:py-4 w-full">
+              {{ $t('home.startTrading') }}
+            </AppButton>
+          </NuxtLink>
+
+          <NuxtLink :to="getBridgeUrl()" target="_blank">
+            <AppButton class="lg:py-4 w-full" variant="primary-outline">
+              {{ $t('home.depositCrypto') }}
+            </AppButton>
+          </NuxtLink>
         </div>
       </div>
     </div>

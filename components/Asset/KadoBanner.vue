@@ -12,7 +12,7 @@ const url = computed(() => {
 
 <template>
   <div
-    class="h-14 w-full bg-brand-900 border-b border-brand-800 flex items-center justify-center gap-2"
+    class="p-4 w-full bg-brand-900 border-b border-brand-800 flex sm:items-center justify-center gap-2"
   >
     <span class="text-sm md:text-lg">
       {{ $t('banners.kado.title') }}
@@ -20,7 +20,9 @@ const url = computed(() => {
 
     <NuxtLink :to="url" target="_blank">
       <div class="flex items-center justify-start gap-1">
-        <span class="text-sm md:text-lg text-blue-500 font-medium">
+        <span
+          class="text-sm md:text-lg text-blue-500 font-medium whitespace-nowrap"
+        >
           {{ $t('banners.kado.tryNow') }}
         </span>
 

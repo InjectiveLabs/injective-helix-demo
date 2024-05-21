@@ -53,7 +53,7 @@ const priceChangeClasses = computed(() => {
         {{ market.market.ticker }}
       </p>
     </div>
-    <p class="flex-1 text-right font-mono text-sm">{{ priceToString }}</p>
+    <p class="flex-1 text-right font-mono text-sm">${{ priceToString }}</p>
     <p class="flex-1 text-right font-mono text-sm" :class="priceChangeClasses">
       <span v-if="Number(market.summary.change) > 0">+</span>
       <span>{{ priceChangeToString }}%</span>
