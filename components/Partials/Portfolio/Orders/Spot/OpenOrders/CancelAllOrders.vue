@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { backupPromiseCall } from '@/app/utils/async'
 
 const spotStore = useSpotStore()
 const status = reactive(new Status(StatusType.Idle))
