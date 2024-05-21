@@ -235,7 +235,7 @@ export default {
     deposit: 'Deposit',
     cryptoDeposit: 'Crypto Deposit',
     fiatDeposit: 'Fiat Deposit',
-    fiatDepositDescription: 'Deposit from your bank account',
+    fiatDepositDescription: 'Deposit using a credit card or bank transfer',
     cryptoDepositDescription: 'Deposit from other blockchains',
     guilds: 'Guilds',
     guildsSub: 'Team up with other traders to earn rewards',

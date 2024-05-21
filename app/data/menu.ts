@@ -200,7 +200,6 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
     {
       type: MenuItemType.Link,
       label: 'navigation.cryptoDeposit',
-      icon: 'bridge',
       description: 'navigation.cryptoDepositDescription',
       to: getBridgeUrl(),
       isExternal: true
@@ -208,7 +207,6 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
     {
       type: MenuItemType.Link,
       label: 'navigation.fiatDeposit',
-      icon: 'credit-card',
       description: 'navigation.fiatDepositDescription',
       to: 'https://injective.com/getinj/',
       isExternal: true

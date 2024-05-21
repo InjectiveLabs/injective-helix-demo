@@ -55,14 +55,19 @@ function close() {
         <SharedIcon v-if="item.icon" class="mr-3" :name="item.icon" />
 
         <div class="flex flex-col justify-start">
-          <div class="flex items-center justify-start space-x-2">
+          <div class="flex items-center justify-start space-x-1.5">
             <p
               class="font-medium"
               :class="{ 'font-medium text-lg': level > 0 }"
             >
               {{ $t(item.label) }}
             </p>
-            <SharedIcon v-if="item.isExternal" name="external-link" is-md />
+            <SharedIcon
+              v-if="item.isExternal"
+              name="external-link"
+              is-sm
+              class="opacity-75"
+            />
           </div>
 
           <p
