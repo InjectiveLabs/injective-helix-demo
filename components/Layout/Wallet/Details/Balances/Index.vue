@@ -5,18 +5,18 @@ import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 const { subaccount } = useSubaccounts()
 const {
   showUnverifiedAssets,
-  userBalancesWithToken,
-  accountBalancesWithToken
+  verifiedHoldingsWithToken,
+  userBalancesWithToken
 } = useBalance()
 
 const search = ref('')
 
 const balances = computed(() => {
   if (!showUnverifiedAssets.value) {
-    return [...accountBalancesWithToken.value]
+    return verifiedHoldingsWithToken.value
   }
 
-  return [...userBalancesWithToken.value, ...accountBalancesWithToken.value]
+  return userBalancesWithToken.value
 })
 
 const balancesSorted = computed(() => {

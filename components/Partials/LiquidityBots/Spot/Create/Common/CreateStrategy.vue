@@ -58,7 +58,7 @@ const status = reactive(new Status(StatusType.Idle))
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const hasActiveStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find((strategy) => {
@@ -79,7 +79,7 @@ const hasActiveStrategy = computed(() =>
 )
 
 const quoteDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
@@ -91,7 +91,7 @@ const quoteDenomAmount = computed(() =>
 )
 
 const baseDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )

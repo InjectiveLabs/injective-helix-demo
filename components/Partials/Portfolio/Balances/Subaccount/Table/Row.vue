@@ -157,7 +157,7 @@ const isBridgable = computed(() => {
     <div
       class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2"
     >
-      <PartialsAccountBridgeRedirection
+      <PartialsCommonBridgeRedirection
         v-bind="{
           isDeposit: true,
           denom: balance.token.denom
@@ -172,9 +172,9 @@ const isBridgable = computed(() => {
         >
           {{ $t('account.deposit') }}
         </AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
 
-      <PartialsAccountBridgeRedirection
+      <PartialsCommonBridgeRedirection
         v-bind="{
           denom: balance.token.denom
         }"
@@ -188,9 +188,9 @@ const isBridgable = computed(() => {
         >
           {{ $t('account.withdraw') }}
         </AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
 
-      <PartialsAccountBridgeRedirection
+      <PartialsCommonBridgeRedirection
         v-bind="{
           denom: balance.token.denom,
           isTransfer: true
@@ -199,7 +199,7 @@ const isBridgable = computed(() => {
         <AppButton variant="primary-outline" size="sm">
           {{ $t('account.transfer') }}
         </AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
     </div>
   </div>
 </template>

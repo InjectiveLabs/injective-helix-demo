@@ -27,7 +27,7 @@ const options = [
   }
 ]
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const decimals = computed(() => {
   return typeValue.value === TradeAmountOption.Base
@@ -40,7 +40,7 @@ const {
   valueToFixed: quoteBalanceToFixed
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = accountBalancesWithToken.value.find(
+    const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
     )?.accountTotalBalance
 

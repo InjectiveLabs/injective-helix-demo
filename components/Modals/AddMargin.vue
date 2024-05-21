@@ -17,7 +17,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { handleSubmit, resetForm } = useForm()
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 const position = ref<Position | PositionV2 | undefined>(undefined)
@@ -41,7 +41,7 @@ const quoteBalance = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const quoteBalance = accountBalancesWithToken.value.find(
+  const quoteBalance = userBalancesWithToken.value.find(
     (balance) => balance.denom === market.value?.quoteDenom
   )
 

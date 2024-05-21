@@ -27,12 +27,12 @@ const props = defineProps({
 const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const quoteDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
@@ -44,7 +44,7 @@ const quoteDenomAmount = computed(() =>
 )
 
 const baseDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )

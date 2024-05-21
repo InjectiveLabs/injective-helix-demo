@@ -16,7 +16,7 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const props = defineProps({
   isLoading: Boolean,
@@ -83,7 +83,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     return
   }
 
-  return accountBalancesWithToken.value.find(
+  return userBalancesWithToken.value.find(
     ({ denom }) => denom === disallowedDenom
   )
 })
@@ -106,7 +106,7 @@ const formError = computed(() => {
 })
 
 const selectedTokenBalance = computed(() => {
-  const balance = accountBalancesWithToken.value?.find(
+  const balance = userBalancesWithToken.value?.find(
     ({ denom }) => denom === inputToken.value?.denom
   )
 

@@ -57,21 +57,21 @@ const appStore = useAppStore()
     </div>
 
     <div class="flex items-center space-x-2">
-      <PartialsAccountBridgeRedirection
+      <PartialsCommonBridgeRedirection
         v-bind="{
           isDeposit: true
         }"
       >
         <AppButton>{{ $t('common.deposit') }}</AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
 
-      <PartialsAccountBridgeRedirection>
+      <PartialsCommonBridgeRedirection>
         <AppButton variant="primary-outline">
           {{ $t('common.withdraw') }}
         </AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
 
-      <PartialsAccountBridgeRedirection
+      <PartialsCommonBridgeRedirection
         v-bind="{
           isTransfer: true
         }"
@@ -79,7 +79,7 @@ const appStore = useAppStore()
         <AppButton variant="primary-outline">
           {{ $t('common.transfer') }}
         </AppButton>
-      </PartialsAccountBridgeRedirection>
+      </PartialsCommonBridgeRedirection>
     </div>
   </div>
 </template>

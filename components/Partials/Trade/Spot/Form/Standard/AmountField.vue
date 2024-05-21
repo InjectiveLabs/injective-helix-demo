@@ -34,7 +34,7 @@ const options = [
   }
 ]
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const { value: typeValue } = useStringField({
@@ -55,7 +55,7 @@ const isBuy = computed(
 const { valueToString: baseBalanceToString, valueToFixed: baseBalanceToFixed } =
   useSharedBigNumberFormatter(
     computed(() => {
-      const balance = accountBalancesWithToken.value.find(
+      const balance = userBalancesWithToken.value.find(
         (balance) => balance.token.denom === market.value.baseToken.denom
       )?.accountTotalBalance
 
@@ -70,7 +70,7 @@ const {
   valueToFixed: quoteBalanceToFixed
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = accountBalancesWithToken.value.find(
+    const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
     )?.accountTotalBalance
 

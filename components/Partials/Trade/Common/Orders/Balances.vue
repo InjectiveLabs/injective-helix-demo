@@ -2,7 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const search = ref('')
 
@@ -19,7 +19,7 @@ function checkIsPartOfSearch(search: string, balance: AccountBalance) {
 }
 
 const balancesSorted = computed(() => {
-  const filteredBalances = accountBalancesWithToken.value.filter((balance) => {
+  const filteredBalances = userBalancesWithToken.value.filter((balance) => {
     const hasBalance = new BigNumberInWei(balance.accountTotalBalance).gte(1)
 
     const isPartOfSearch = checkIsPartOfSearch(search.value, balance)

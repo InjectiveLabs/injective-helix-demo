@@ -7,7 +7,7 @@ const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
 const setFormValues = useSetFormValues()
 const { query } = useRoute()
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const emit = defineEmits<{
   'form:reset': []
@@ -41,7 +41,7 @@ const {
 } = useSwapTokenSelector({
   inputDenom,
   outputDenom,
-  balances: accountBalancesWithToken
+  balances: userBalancesWithToken
 })
 
 const outputIsDisabledBaseDenom = computed(() =>
