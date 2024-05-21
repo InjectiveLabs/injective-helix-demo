@@ -63,24 +63,27 @@ export const MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Dropdown,
     label: 'navigation.rewards',
     items: [
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.tradeAndEarn',
-        description: 'navigation.tradeAndEarnDescription',
-        to: { name: MainPage.TradeAndEarn }
-      },
+      // TODO: Uncomment when trade and earn is ready
+      // {
+      //   type: MenuItemType.Link,
+      //   label: 'navigation.tradeAndEarn',
+      //   description: 'navigation.tradeAndEarnDescription',
+      //   to: { name: MainPage.TradeAndEarn }
+      // },
       {
         type: MenuItemType.Link,
         label: 'navigation.lpRewards',
         description: 'navigation.lpRewardsSub',
         to: { name: MainPage.LpRewards }
       },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.guilds',
-        description: 'navigation.guildsSub',
-        to: { name: MainPage.Guilds }
-      },
+
+      // TODO: Uncomment when guilds is ready
+      // {
+      //   type: MenuItemType.Link,
+      //   label: 'navigation.guilds',
+      //   description: 'navigation.guildsSub',
+      //   to: { name: MainPage.Guilds }
+      // },
       {
         type: MenuItemType.Link,
         label: 'navigation.openLiquidityProgram',
@@ -141,12 +144,13 @@ export const USER_MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'navigation.spotGrid',
         to: { name: PortfolioSubPage.OrdersSpotGrid }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.futuresGrid',
-        to: { name: PortfolioSubPage.OrdersFuturesGrid }
       }
+      // TODO: Uncomment when futures grid is ready
+      // {
+      //   type: MenuItemType.Link,
+      //   label: 'navigation.futuresGrid',
+      //   to: { name: PortfolioSubPage.OrdersFuturesGrid }
+      // }
     ]
   },
   {

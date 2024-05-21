@@ -34,9 +34,9 @@ const highestGainers = computed(() =>
 )
 
 const categories = computed(() => [
-  { title: `🔥 Hot Markets`, markets: hotMarkets.value },
-  { title: `🐤 New Markets`, markets: newMarkets.value },
-  { title: `🚀 Top Gainers`, markets: highestGainers.value }
+  { title: 'markets.hotMarkets', markets: hotMarkets.value },
+  { title: 'markets.newMarkets', markets: newMarkets.value },
+  { title: 'markets.topGainers', markets: highestGainers.value }
 ])
 </script>
 
@@ -47,7 +47,9 @@ const categories = computed(() => [
       :key="category.title"
       class="border border-brand-800 bg-brand-875/50 p-4 rounded-lg space-y-2"
     >
-      <h3 class="mb-4 text-gray-300 font-semibold p-2">{{ category.title }}</h3>
+      <h3 class="mb-4 text-gray-300 font-semibold p-2">
+        {{ $t(category.title) }}
+      </h3>
 
       <PartialsMarketsNewMarketsRow
         v-for="market in category.markets"
