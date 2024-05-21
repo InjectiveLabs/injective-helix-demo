@@ -91,12 +91,6 @@ const maxLeverage = computed(() => {
         <p>Max. Leverage:</p>
         <p>{{ maxLeverage }}</p>
       </div>
-
-      <div class="overflow-x-auto w-full min-w-0">
-        <pre>
-          {{ { ...market, quoteToken: null, baseToken: null } }}
-        </pre>
-      </div>
     </div>
   </div>
 </template>
