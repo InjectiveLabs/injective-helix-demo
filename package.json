@@ -37,7 +37,7 @@
   "dependencies": {
     "@bangjelkoski/ens-validation": "^0.1.1",
     "@funken-studio/sitemap-nuxt-3": "^4.0.4",
-    "@injectivelabs/ui-shared": "1.12.47-alpha.5",
+    "@injectivelabs/ui-shared": "1.12.47-alpha.6",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
     "@injectivelabs/ts-types": "1.14.11-beta.3",
     "@injectivelabs/exceptions": "1.14.11-beta.8",
@@ -52,7 +52,6 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sitemap": "^2.4.0",
     "@popperjs/core": "^2.11.6",
-    "@skjnldsv/vue-plyr": "7.4.0",
     "@vueuse/components": "^10.3.0",
     "@vueuse/integrations": "^10.7.1",
     "@vueuse/nuxt": "^10.3.0",

@@ -26,11 +26,7 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: [
-    '@injectivelabs/ui-shared',
-    '@funken-studio/sitemap-nuxt-3',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
-  ],
+  modules: ['@injectivelabs/ui-shared', '@funken-studio/sitemap-nuxt-3'],
 
   // @ts-ignore
   sitemap: {

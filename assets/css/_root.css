@@ -87,3 +87,50 @@ body .vue-grid-item {
 .header-height {
   @apply h-[52px];
 }
+
+.capitalize-phrase {
+  &::first-letter {
+    @apply uppercase;
+  }
+}
+
+/* dropdown */
+.v-popper--theme-dropdown:not(.v-popper--theme-menu) {
+  .v-popper__arrow-container {
+    .v-popper__arrow-outer,
+    .v-popper__arrow-inner {
+      @apply hidden;
+    }
+  }
+}
+
+/* input */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button,
+input[type='number'] {
+  margin: 0;
+  -webkit-appearance: none;
+  -moz-appearance: textfield !important;
+}
+
+.input-base {
+  @apply w-full bg-transparent text-left appearance-none box-border rounded-sm;
+}
+
+.input-base:disabled {
+  @apply cursor-not-allowed;
+}
+
+.input-base:focus {
+  @apply border-none outline-none;
+}
+
+.textarea {
+  &.textarea {
+    @apply bg-transparent w-full;
+
+    &:focus {
+      @apply border-none outline-none;
+    }
+  }
+}

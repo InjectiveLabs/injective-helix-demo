@@ -4,7 +4,8 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import '@skjnldsv/vue-plyr/dist/vue-plyr.css';
+@import '@vuepic/vue-datepicker/dist/main.css';
+@import 'floating-vue/dist/style.css';
 
 /* @import './mixins'; */
 @import './_root.css';
