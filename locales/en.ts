@@ -195,21 +195,6 @@ export default {
       ])
   },
 
-  marketNew: {
-    title: 'Upcoming market launch',
-    depositNow: 'Deposit Now',
-    description: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'The',
-        named('baseSymbol'),
-        '/',
-        named('quoteSymbol'),
-        ' spot market will launch soon.'
-      ]),
-    connectAndDepositNow: 'Connect and Deposit now',
-    soonToBeReleased: 'Coming soon!'
-  },
-
   marketExpired: {
     title: 'Market Expired',
     expiredNote:
@@ -229,25 +214,6 @@ export default {
       )}. Please proceed to ${named('slug')} for a better trading experience.`,
     cta: ({ named }: I18nMessageFunction) => `Go to ${named('slug')}`,
     'sol-usdcet-description': 'Solana is in the SOL/USDT market'
-  },
-
-  marketDeprecated: {
-    title: 'No longer tradable',
-    description: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([named('ticker'), ' is no longer tradable on Helix.']),
-    subDescriptionOne: ({ named }: I18nMessageFunction) =>
-      `If you would like to continue trading ${named(
-        'ticker'
-      )}, you could still do so with other exchanges in the Injective ecosystem.`,
-    subDescriptionTwo: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'If you would like to withdraw your ',
-        named('symbol'),
-        ' balances, you could do so via our {network} bridge on the Injective Hub.'
-      ]),
-    terraDescription:
-      'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
-    exploreOtherMarkets: 'Explore Other Markets'
   },
 
   navigation: {

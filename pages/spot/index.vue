@@ -2,6 +2,8 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { marketKey, spotMarketKey } from '@/types'
 
+// permissionless spot market
+
 definePageMeta({
   middleware: ['orderbook']
 })
@@ -45,17 +47,17 @@ provide(spotMarketKey, market)
 </script>
 
 <template>
-  <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
-    <template #form>
-      <PartialsTradeSpotForm />
-    </template>
+  <div v-if="market">
+    <PartialsTradeLayout v-bind="{ market }" is-spot>
+      <template #form>
+        <PartialsTradeSpotForm />
+      </template>
 
-    <template #orders>
-      <PartialsTradeSpotOrders />
-    </template>
+      <template #orders>
+        <PartialsTradeSpotOrders />
+      </template>
+    </PartialsTradeLayout>
 
-    <template #modals>
-      <ModalsMarketNotOnHelix v-if="!market.isVerified" />
-    </template>
-  </PartialsTradeLayout>
+    <ModalsMarketNotOnHelix v-if="!market.isVerified" />
+  </div>
 </template>
