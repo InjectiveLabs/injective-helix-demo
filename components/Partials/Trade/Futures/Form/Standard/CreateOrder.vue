@@ -264,7 +264,6 @@ function onSubmit() {
 
 <template>
   <div>
-    {{ orderTypeToSubmit }}
     <div>
       <AppButton
         v-bind="{ status }"
