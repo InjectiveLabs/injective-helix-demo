@@ -62,7 +62,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 <template>
   <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
-      <div class="text-center relative">
+      <div class="text-center relative p-8">
         <AppCustomConfetti
           class="absolute inset-0 h-48 -mt-9 w-full"
           v-bind="{ confettiOptions }"
