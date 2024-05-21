@@ -524,8 +524,6 @@ export enum SpotTradeFormField {
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  // Total = 'total',
-  // Quantity = 'quantity',
   Amount = 'amount',
   AmountOption = 'amountOption',
   PostOnly = 'postOnly',
@@ -543,15 +541,16 @@ export enum DerivativesTradeFormField {
   Side = 'side',
   Amount = 'amount',
   AmountOption = 'amountOption',
-  // Total = 'total',
-  // Quantity = 'quantity',
   Leverage = 'leverage',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   LimitPrice = 'limitPrice',
   ReduceOnly = 'reduceOnly',
   TriggerPrice = 'triggerPrice',
-  IsSlippageOn = 'isSlippageOn'
+  IsSlippageOn = 'isSlippageOn',
+  isTpSlEnabled = 'isTpSlEnabled',
+  TakeProfit = 'takeProfit',
+  StopLoss = 'stopLoss'
 }
 
 export enum BulletinType {

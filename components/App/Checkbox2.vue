@@ -98,15 +98,15 @@ const id = Math.random().toString()
   line-height: 18px;
 }
 .checkbox-wrapper-4 .cbx:hover span:first-child {
-  border-color: #07f;
+  border-color: #2891e9;
 }
 .checkbox-wrapper-4 .inp-cbx {
   position: absolute;
   visibility: hidden;
 }
 .checkbox-wrapper-4 .inp-cbx:checked + .cbx span:first-child {
-  background: #07f;
-  border-color: #07f;
+  background: #2891e9;
+  border-color: #2891e9;
   animation: wave-4 0.4s ease;
 }
 

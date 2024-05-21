@@ -79,7 +79,8 @@ const {
         "
       />
 
-      <PartialsTradeFuturesFormStandardAmountField />
+      <PartialsTradeFuturesFormStandardAmountField v-bind="{ marginWithFee }" />
+
       <PartialsTradeFuturesFormStandardLeverage
         v-bind="{
           worstPrice

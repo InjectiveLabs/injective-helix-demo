@@ -99,14 +99,18 @@ const isNonUsdtQuoteAsset = computed(() => {
             query: { marketId: market.marketId }
           }
     "
-    class="flex items-center p-2 hover:bg-brand-800 text-gray-350 hover:text-white odd:bg-brand-875/30"
+    :class="{
+      'p-4': isMarketsPage
+    }"
+    class="flex items-center text-gray-350 hover:text-white"
   >
     <div class="flex items-center flex-[2] truncate min-w-0">
       <div
+        v-if="!isMarketsPage"
         :class="{
-          '!text-green-500': appStore.favoriteMarkets.includes(market.marketId)
+          '!text-blue-500': appStore.favoriteMarkets.includes(market.marketId)
         }"
-        class="pr-2 w-8 text-gray-700 hover:text-green-700"
+        class="pr-2 w-8 text-gray-700 hover:text-blue-700"
         @click.stop.prevent="toggleFavorite"
       >
         <SharedIcon name="star" />
@@ -137,8 +141,26 @@ const isNonUsdtQuoteAsset = computed(() => {
     >
       {{ summary.change }}%
     </div>
+
     <div class="flex items-center flex-1 truncate min-w-0 font-mono text-xs">
       $ {{ volumeToString }}
+    </div>
+
+    <div class="flex-1 flex items-center p-2 space-x-8 justify-end">
+      <NuxtLink class="text-blue-500 hover:text-blue-600">
+        {{ $t('trade.trade') }}
+      </NuxtLink>
+
+      <div
+        v-if="isMarketsPage"
+        :class="{
+          '!text-blue-500': appStore.favoriteMarkets.includes(market.marketId)
+        }"
+        class="pr-2 w-8 text-gray-700 hover:text-blue-700"
+        @click.stop.prevent="toggleFavorite"
+      >
+        <SharedIcon name="star" />
+      </div>
     </div>
   </NuxtLink>
 </template>

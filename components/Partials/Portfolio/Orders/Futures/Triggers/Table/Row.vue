@@ -66,11 +66,11 @@ function cancelOrder() {
   derivativeStore
     .cancelOrder(props.trigger)
     .catch((e) => {
-      error({ title: t('trade.order_cancellation_failed') })
+      error({ title: t('common.error') })
       $onError(e)
     })
     .then(() => {
-      success({ title: t('trade.order_cancelled') })
+      success({ title: t('common.success') })
     })
     .finally(() => {
       status.setIdle()
@@ -114,7 +114,10 @@ function cancelOrder() {
     </div>
 
     <div class="flex-1 flex items-center p-2">
-      <span>{{ leverage.toFormat(2) }} &times;</span>
+      <span v-if="leverage.isNaN()" class="text-gray-400">{{
+        $t('trade.not_available_n_a')
+      }}</span>
+      <span v-else>{{ leverage.toFormat(2) }} &times;</span>
     </div>
 
     <div v-if="market" class="flex-1 flex items-center p-2">

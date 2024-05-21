@@ -9,18 +9,19 @@ import {
   SpotTradeForm
 } from '@/types'
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarket>
-
 const props = defineProps({
   totalWithFee: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
+
   quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
 })
+
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const options = [
   {

@@ -53,6 +53,10 @@ watch(
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
         v-if="view === PerpOrdersStandardView.OpenOrders"
       />
+
+      <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers
+        v-if="view === PerpOrdersStandardView.Triggers"
+      />
     </div>
   </div>
 </template>

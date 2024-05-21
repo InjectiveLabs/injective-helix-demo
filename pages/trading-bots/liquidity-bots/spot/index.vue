@@ -158,7 +158,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
         }"
       />
 
-      <PartialsGridStrategySpotFormActiveStrategy
+      <PartialsLiquidityCommonActiveStrategy
         v-if="activeStrategy && gridStrategyStore.spotMarket"
         class="mt-4"
         v-bind="{

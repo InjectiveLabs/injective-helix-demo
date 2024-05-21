@@ -4,6 +4,7 @@ import { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
+  DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
   UiDerivativeMarket,
@@ -80,23 +81,30 @@ watch(
 )
 
 const maxLeverageAllowed = computed(() => {
-  const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
-    market.value.initialMarginRatio
-  )
+  if (
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+    DerivativeTradeTypes.Market
+  ) {
+    const priceWithMarginRatio = new BigNumberInBase(markPrice.value).times(
+      market.value.initialMarginRatio
+    )
 
-  const priceBasedOnOrderSide =
-    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-    TradeDirection.Long
-      ? priceWithMarginRatio.minus(markPrice.value).plus(props.worstPrice)
-      : priceWithMarginRatio.plus(markPrice.value).minus(props.worstPrice)
+    const priceBasedOnOrderSide =
+      derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+      TradeDirection.Long
+        ? priceWithMarginRatio.minus(markPrice.value).plus(props.worstPrice)
+        : priceWithMarginRatio.plus(markPrice.value).minus(props.worstPrice)
 
-  return props.worstPrice.dividedBy(priceBasedOnOrderSide)
+    return props.worstPrice.dividedBy(priceBasedOnOrderSide)
+  } else {
+    return new BigNumberInBase(maxLeverageAvailable.value)
+  }
 })
 
 const { value: leverage, errorMessage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
   initialValue: '1',
-  dynamicRule: computed(() => `maxLeverage:${maxLeverageAvailable.value}`)
+  dynamicRule: computed(() => `maxLeverage:${maxLeverageAllowed.value}`)
 })
 
 function onBlur() {
@@ -107,14 +115,20 @@ function onEnter(ev: Event) {
   const target = ev.target as HTMLInputElement
   target.blur()
 }
+
+function onMouseUp() {
+  if (maxLeverageAllowed.value.lt(leverage.value)) {
+    leverageModel.value = maxLeverageAllowed.value.toFixed()
+  }
+
+  if (Number(leverage.value) < 0) {
+    leverageModel.value = '0.01'
+  }
+}
 </script>
 
 <template>
   <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
-
-  <Whiteboard>
-    {{ { maxLeverageAllowed } }}
-  </Whiteboard>
 
   <div class="flex items-center">
     <div class="flex-1 pr-4 relative">
@@ -129,6 +143,7 @@ function onEnter(ev: Event) {
         step="0.01"
         type="range"
         class="range w-full"
+        @mouseup="onMouseUp"
       />
     </div>
 
@@ -145,7 +160,7 @@ function onEnter(ev: Event) {
     </label>
   </div>
 
-  <div>
+  <p class="error-message">
     {{ errorMessage }}
-  </div>
+  </p>
 </template>

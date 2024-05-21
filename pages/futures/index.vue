@@ -22,7 +22,10 @@ useDerivativeOrderbook(computed(() => market.value))
 
 onMounted(() => {
   if (!market.value) {
-    return
+    return navigateTo({
+      name: 'futures-slug',
+      params: { slug: 'btc-usdt-perp' }
+    })
   }
 
   status.setLoading()

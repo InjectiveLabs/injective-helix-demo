@@ -43,7 +43,7 @@ function onFormReset() {
   <div class="h-header flex">
     <CommonSubaccountTabSelector />
 
-    <div class="flex divide-x border-r">
+    <div class="flex divide-x border-r flex-1">
       <CommonTabMarketSelector
         v-model="marketValue"
         v-bind="{ markets: derivativeStore.markets }"
@@ -60,6 +60,10 @@ function onFormReset() {
         @update:model-value="onSideChange"
       />
       <CommonTabFormReset @form:reset="onFormReset" />
+
+      <div class="flex-1 items-center justify-end">
+        <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers />
+      </div>
     </div>
   </div>
 </template>

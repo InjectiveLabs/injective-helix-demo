@@ -26,7 +26,7 @@ function onCloseModal() {
     :is-open="modalStore.modals[Modal.GridStrategyDetails]"
     @modal:closed="onCloseModal"
   >
-    <PartialsGridStrategySpotFormActiveStrategy
+    <PartialsLiquidityCommonActiveStrategy
       v-if="strategy && market"
       v-bind="{ activeStrategy: strategy, market }"
     />

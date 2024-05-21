@@ -7,6 +7,7 @@ import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
 import { TokenStatic } from '@injectivelabs/token-metadata'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import { OrderSide } from '@injectivelabs/ts-types'
 import {
   NETWORK,
   ENDPOINTS,
@@ -360,4 +361,43 @@ export const getCw20AddressFromDenom = (denom: string) => {
   const [address] = denom.split('/').reverse()
 
   return address
+}
+
+export const getDerivativeOrderTypeToSubmit = ({
+  isPostOnly,
+  isStopOrder,
+  markPrice,
+  triggerPrice,
+  isBuy
+}: {
+  isStopOrder: boolean
+  triggerPrice: string
+  markPrice: string
+  isPostOnly: boolean
+  isBuy: boolean
+}) => {
+  if (isStopOrder) {
+    const triggerPriceInBase = new BigNumberInBase(triggerPrice)
+
+    return isBuy
+      ? triggerPriceInBase.lt(markPrice)
+        ? OrderSide.TakeBuy
+        : OrderSide.StopBuy
+      : triggerPriceInBase.gt(markPrice)
+      ? OrderSide.TakeSell
+      : OrderSide.StopSell
+  }
+
+  switch (true) {
+    case isPostOnly && isBuy:
+      return OrderSide.BuyPO
+    case isBuy:
+      return OrderSide.Buy
+    case isPostOnly && !isBuy:
+      return OrderSide.SellPO
+    case !isBuy:
+      return OrderSide.Sell
+    default:
+      return OrderSide.Buy
+  }
 }

@@ -6,6 +6,7 @@ import {
   TradeTypes,
   spotMarketKey
 } from '@/types'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   total: {
@@ -51,7 +52,8 @@ const spotFormValues = useFormValues<SpotTradeForm>()
 const isOpen = ref(true)
 
 const { valueToString: totalToString } = useBigNumberFormatter(
-  computed(() => props.totalWithFee)
+  computed(() => props.totalWithFee),
+  { decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS }
 )
 
 const { valueToString: quantityToString } = useBigNumberFormatter(
@@ -78,7 +80,7 @@ function toggle() {
       class="flex items-center justify-between cursor-pointer select-none"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">Details</p>
+      <p class="text-sm font-semibold select-none">{{ $t('trade.details') }}</p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
         <SharedIcon name="chevron-down" is-sm />
       </div>

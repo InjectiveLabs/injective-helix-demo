@@ -14,6 +14,63 @@ import { msgBroadcaster } from '@shared/WalletService'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
+import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
+
+const createTpSlMessage = ({
+  executionPrice,
+  triggerPrice,
+  quantity,
+  subaccountId,
+  injectiveAddress,
+  marketId,
+  isBuy,
+  market
+}: {
+  triggerPrice: BigNumberInBase
+  executionPrice: BigNumberInBase
+  quantity: BigNumberInBase
+  subaccountId: string
+  injectiveAddress: string
+  marketId: string
+  isBuy: boolean
+  market: UiDerivativeMarket
+}) => {
+  const orderType = getDerivativeOrderTypeToSubmit({
+    isBuy,
+    isPostOnly: true,
+    isStopOrder: true,
+    markPrice: executionPrice.toFixed(),
+    triggerPrice: triggerPrice.toFixed()
+  })
+
+  const price = (
+    isBuy ? triggerPrice.times(1.01) : triggerPrice.times(0.99)
+  ).dp(market.priceDecimals)
+
+  const msgTriggerPrice = derivativePriceToChainPriceToFixed({
+    value: triggerPrice.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+    subaccountId,
+    injectiveAddress,
+    price: derivativePriceToChainPriceToFixed({
+      value: price.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    margin: '0',
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
+    marketId,
+    feeRecipient: FEE_RECIPIENT,
+    triggerPrice: msgTriggerPrice,
+    orderType: orderSideToOrderType(orderType)
+  })
+
+  return message
+}
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
   const appStore = useAppStore()
@@ -277,7 +334,9 @@ export const submitMarketOrder = async ({
   market,
   quantity,
   orderSide,
-  reduceOnly
+  reduceOnly,
+  takeProfit,
+  stopLoss
 }: {
   reduceOnly: boolean
   price: BigNumberInBase
@@ -285,6 +344,8 @@ export const submitMarketOrder = async ({
   quantity: BigNumberInBase
   orderSide: OrderSide
   market: UiDerivativeMarket
+  takeProfit?: BigNumberInBase
+  stopLoss?: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -302,6 +363,34 @@ export const submitMarketOrder = async ({
   await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
+
+  const isTpslBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
+
+  const tpMessage = takeProfit
+    ? createTpSlMessage({
+        executionPrice: price,
+        triggerPrice: takeProfit ?? new BigNumberInBase(0),
+        quantity,
+        subaccountId: accountStore.subaccountId,
+        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        marketId: market.marketId,
+        isBuy: isTpslBuy,
+        market
+      })
+    : undefined
+
+  const slMessage = stopLoss
+    ? createTpSlMessage({
+        executionPrice: price,
+        triggerPrice: stopLoss ?? new BigNumberInBase(0),
+        quantity,
+        subaccountId: accountStore.subaccountId,
+        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        marketId: market.marketId,
+        isBuy: isTpslBuy,
+        market
+      })
+    : undefined
 
   const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
@@ -325,17 +414,27 @@ export const submitMarketOrder = async ({
     feeRecipient: FEE_RECIPIENT
   })
 
+  const messages = [message]
+
+  if (tpMessage) {
+    messages.push(tpMessage)
+  }
+
+  if (slMessage) {
+    messages.push(slMessage)
+  }
+
   let actualMessage
 
   if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+    actualMessage = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
   } else if (walletStore.autoSign) {
     actualMessage = msgsOrMsgExecMsgs(
-      message,
+      messages,
       walletStore.autoSign.injectiveAddress
     )
   } else {
-    actualMessage = message
+    actualMessage = messages
   }
 
   await msgBroadcaster.broadcastWithFeeDelegation({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarket,
@@ -8,6 +8,7 @@ import {
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 
 const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
@@ -44,7 +45,7 @@ const props = defineProps({
 })
 
 const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Loading))
+const status = reactive(new Status(StatusType.Idle))
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -82,41 +83,38 @@ const isBuy = computed(
 )
 
 const orderTypeToSubmit = computed(() => {
-  if (
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+  return getDerivativeOrderTypeToSubmit({
+    isStopOrder: [
+      DerivativeTradeTypes.StopLimit,
+      DerivativeTradeTypes.StopMarket
+    ].includes(
       derivativeFormValues.value[
         DerivativesTradeFormField.Type
       ] as DerivativeTradeTypes
-    )
-  ) {
-    const triggerPriceInBase = new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || 0
-    )
-
-    return isBuy.value
-      ? triggerPriceInBase.lt(markPrice.value)
-        ? OrderSide.TakeBuy
-        : OrderSide.StopBuy
-      : triggerPriceInBase.gt(markPrice.value)
-      ? OrderSide.TakeSell
-      : OrderSide.StopSell
-  }
-
-  switch (true) {
-    case derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
-      isBuy.value:
-      return OrderSide.BuyPO
-    case isBuy.value:
-      return OrderSide.Buy
-    case derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
-      !isBuy.value:
-      return OrderSide.SellPO
-    case !isBuy.value:
-      return OrderSide.Sell
-    default:
-      return OrderSide.Buy
-  }
+    ),
+    isBuy: isBuy.value,
+    isPostOnly:
+      !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+    markPrice: markPrice.value,
+    triggerPrice: triggerPrice.value.toFixed()
+  })
 })
+
+const stopLossValue = computed(() =>
+  derivativeFormValues.value[DerivativesTradeFormField.isTpSlEnabled]
+    ? new BigNumberInBase(
+        derivativeFormValues.value[DerivativesTradeFormField.StopLoss] || 0
+      )
+    : undefined
+)
+
+const takeProfitValue = computed(() =>
+  derivativeFormValues.value[DerivativesTradeFormField.isTpSlEnabled]
+    ? new BigNumberInBase(
+        derivativeFormValues.value[DerivativesTradeFormField.TakeProfit] || 0
+      )
+    : undefined
+)
 
 async function submitLimitOrder() {
   const { valid } = await validate()
@@ -199,7 +197,9 @@ async function submitMarketOrder() {
       price: new BigNumberInBase(props.worstPrice),
       reduceOnly: isOrderTypeReduceOnly.value,
       orderSide: orderTypeToSubmit.value,
-      margin: props.margin
+      margin: props.margin,
+      stopLoss: stopLossValue.value,
+      takeProfit: takeProfitValue.value
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
@@ -264,8 +264,10 @@ function onSubmit() {
 
 <template>
   <div>
+    {{ orderTypeToSubmit }}
     <div>
       <AppButton
+        v-bind="{ status }"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"
         class="w-full"

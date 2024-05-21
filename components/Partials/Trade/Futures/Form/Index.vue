@@ -6,7 +6,7 @@ const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 <template>
   <div>
-    <div class="h-header flex border-b">
+    <!-- <div class="h-header flex border-b">
       <AppButtonSelect
         v-for="value in Object.values(TradingInterface)"
         :key="value"
@@ -17,7 +17,7 @@ const tradingMode = useQueryRef('interface', TradingInterface.Standard)
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
-    </div>
+    </div> -->
 
     <PartialsTradeFuturesFormStandard
       v-if="tradingMode === TradingInterface.Standard"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UiDerivativeMarket,
   TradeAmountOption,
@@ -6,17 +7,14 @@ import {
   derivativeMarketKey
 } from '@/types'
 
+const props = defineProps({
+  marginWithFee: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  }
+})
+
 const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
-
-const { value: typeValue } = useStringField({
-  name: DerivativesTradeFormField.AmountOption,
-  initialValue: TradeAmountOption.Base
-})
-
-const { value: amountValue } = useStringField({
-  name: DerivativesTradeFormField.Amount,
-  initialValue: ''
-})
 
 const options = [
   {
@@ -29,11 +27,48 @@ const options = [
   }
 ]
 
+const { accountBalancesWithToken } = useBalance()
+
 const decimals = computed(() => {
   return typeValue.value === TradeAmountOption.Base
     ? market.value.quantityDecimals
     : market.value.priceDecimals
 })
+
+const {
+  valueToString: quoteBalanceToString,
+  valueToFixed: quoteBalanceToFixed
+} = useSharedBigNumberFormatter(
+  computed(() => {
+    const balance = accountBalancesWithToken.value.find(
+      (balance) => balance.token.denom === market.value.quoteToken.denom
+    )?.accountTotalBalance
+
+    return new BigNumberInWei(balance || 0).toBase(
+      market.value.quoteToken.decimals
+    )
+  })
+)
+
+const { value: typeValue } = useStringField({
+  name: DerivativesTradeFormField.AmountOption,
+  initialValue: TradeAmountOption.Base
+})
+
+const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
+  {
+    name: DerivativesTradeFormField.Amount,
+    initialValue: '',
+    dynamicRule: computed(() => {
+      const maxAmount = quoteBalanceToFixed.value
+      const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
+
+      const rules = [insufficientBalanceRule]
+
+      return rules.join('|')
+    })
+  }
+)
 </script>
 
 <template>
@@ -74,8 +109,22 @@ const decimals = computed(() => {
           </template>
         </AppSelect>
       </template>
+
+      <template #bottom>
+        <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
+          <div class="space-x-2">
+            <span>{{
+              $t('trade.availableAmount', {
+                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
+              })
+            }}</span>
+          </div>
+        </div>
+      </template>
     </AppInputField>
 
-    <div v-if="false" class="error-message">Error</div>
+    <div v-if="amountErrorMessage" class="error-message capitalize">
+      {{ amountErrorMessage }}
+    </div>
   </div>
 </template>
