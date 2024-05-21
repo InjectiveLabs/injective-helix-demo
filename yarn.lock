@@ -1790,7 +1790,18 @@
     eslint-plugin-prettier "5.0.0"
     eslint-plugin-vue "9.15.1"
 
-"@injectivelabs/exceptions@1.14.11-beta.7", "@injectivelabs/exceptions@^1.14.11-beta.7":
+"@injectivelabs/exceptions@1.14.11-beta.8", "@injectivelabs/exceptions@^1.14.11-beta.8":
+  version "1.14.11-beta.8"
+  resolved "https://registry.npmjs.org/@injectivelabs/exceptions/-/exceptions-1.14.11-beta.8.tgz#f15b0670e50a277e598d48503c9582694dc2d362"
+  integrity sha512-951qMgkq48EuH5QI4JcYJNTJFCFIfLxMW379K75emeZS7gvUetPg6jdGDi4OzRh2W54nJhT0HZwxybY2PN3Mxg==
+  dependencies:
+    "@injectivelabs/grpc-web" "^0.0.1"
+    "@injectivelabs/ts-types" "^1.14.11-beta.3"
+    http-status-codes "^2.2.0"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/exceptions@^1.14.11-beta.7":
   version "1.14.11-beta.7"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.11-beta.7.tgz#6976593698e2848ab51ca198d0593629fc63555d"
   integrity sha512-ZAsFKzrpuuBn2QAVVZK9iNpbRuwlyV0dtQlnO07ibyMdTaLQk2RKDNk3ICA6ZMtcGPn829hJ6RSYipvo0g9k+g==
@@ -1838,7 +1849,18 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/networks@1.14.11-beta.10", "@injectivelabs/networks@^1.14.11-beta.10":
+"@injectivelabs/networks@1.14.11-beta.11", "@injectivelabs/networks@^1.14.11-beta.11":
+  version "1.14.11-beta.11"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-1.14.11-beta.11.tgz#89c6b538974e4a08192daf41e7a5e6703dbdaa9b"
+  integrity sha512-zaRZUKP0AhHFiUReoVN3dYY3QAOqAkjdrQwsDCuWfravY6p3+c3ybNrkzYBOIBb5DPr/ztajx5AQk3P/AtNFzA==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/ts-types" "^1.14.11-beta.3"
+    "@injectivelabs/utils" "^1.14.11-beta.9"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/networks@^1.14.11-beta.10":
   version "1.14.11-beta.10"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.11-beta.10.tgz#0e7d0b8227ddf27b56852fabc13da9f54b847672"
   integrity sha512-bmoboDpEZLeMNDVNQce+WYDJ6dMX2K5r3hcLD1a3VZjEbHmwOQiW+wqyh+NOWo3RCPUYOJkvFgvwisVR3VQAng==
@@ -1869,7 +1891,49 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.11-beta.71", "@injectivelabs/sdk-ts@^1.14.11-beta.71":
+"@injectivelabs/sdk-ts@1.14.11-beta.72", "@injectivelabs/sdk-ts@^1.14.11-beta.72":
+  version "1.14.11-beta.72"
+  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.72.tgz#7822a7f18896b4cd65ff12ff7437f12269e5f1e5"
+  integrity sha512-4w/oHKSh9Y98TowYgX07KMfssQBWMMVfXe0DVmCnwJL4s69Bicwu/QsOHjN0MZ+OU/RVWGXr850nGpnp4rct5A==
+  dependencies:
+    "@apollo/client" "^3.5.8"
+    "@cosmjs/amino" "^0.32.3"
+    "@cosmjs/proto-signing" "^0.32.3"
+    "@cosmjs/stargate" "^0.32.3"
+    "@ethersproject/bytes" "^5.7.0"
+    "@injectivelabs/core-proto-ts" "^0.0.21"
+    "@injectivelabs/dmm-proto-ts" "1.0.20"
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/grpc-web" "^0.0.1"
+    "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
+    "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
+    "@injectivelabs/indexer-proto-ts" "1.11.42"
+    "@injectivelabs/mito-proto-ts" "1.0.65"
+    "@injectivelabs/networks" "^1.14.11-beta.11"
+    "@injectivelabs/test-utils" "^1.14.5-beta.2"
+    "@injectivelabs/token-metadata" "^1.14.11-beta.50"
+    "@injectivelabs/ts-types" "^1.14.11-beta.3"
+    "@injectivelabs/utils" "^1.14.11-beta.9"
+    "@metamask/eth-sig-util" "^4.0.0"
+    "@noble/curves" "^1.4.0"
+    axios "^1.6.4"
+    bech32 "^2.0.0"
+    bip39 "^3.0.4"
+    cosmjs-types "^0.9.0"
+    ethereumjs-util "^7.1.4"
+    ethers "^5.7.2"
+    google-protobuf "^3.21.0"
+    graphql "^16.3.0"
+    http-status-codes "^2.2.0"
+    js-sha3 "^0.8.0"
+    jscrypto "^1.0.3"
+    keccak256 "^1.0.6"
+    link-module-alias "^1.2.0"
+    secp256k1 "^4.0.3"
+    shx "^0.3.2"
+    snakecase-keys "^5.4.1"
+
+"@injectivelabs/sdk-ts@^1.14.11-beta.71":
   version "1.14.11-beta.71"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.11-beta.71.tgz#691667bad91da8eaaa0f2bf7322995fdb0d9ff25"
   integrity sha512-nwKVtfy566S/rICYVAyB/mJdmbqrK0eVUMyYJ4q2I10hv3gfL0EUkhjL+2mGR2X0V9idtvLrPiXi2qC58pyHYg==
@@ -1911,10 +1975,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.14.11-beta.93":
-  version "1.14.11-beta.93"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.93.tgz#37797276b07a4139ed0d5077ea227fda1580a6f9"
-  integrity sha512-QaawimPXI52KiHFr6+wvGe3Yy8UxCdrPb9LI2cAdKU/VA3QGGzfoqKVqsqA+/fqBp5pwj6bOyeJZEyfapgVrEg==
+"@injectivelabs/sdk-ui-ts@1.14.11-beta.94":
+  version "1.14.11-beta.94"
+  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.14.11-beta.94.tgz#1fa6368cf70e824e79fd60a24eefa08d3eb37b67"
+  integrity sha512-FM4gwZQ9jgKj7BgLyMRNKaysK1m75xAJVXmjqMdueDlkg6dyoEc3zk0dbuZHIzeDW0ZO4EdDXRjmefvRIFQQjg==
   dependencies:
     "@ensdomains/ens-validation" "^0.1.0"
     "@ensdomains/eth-ens-namehash" "^2.0.15"
@@ -1950,7 +2014,24 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/token-metadata@1.14.11-beta.49", "@injectivelabs/token-metadata@^1.14.11-beta.49":
+"@injectivelabs/token-metadata@1.14.11-beta.50", "@injectivelabs/token-metadata@^1.14.11-beta.50":
+  version "1.14.11-beta.50"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-1.14.11-beta.50.tgz#3165b7d3c3c226f4205c187d257a6af3311ceb03"
+  integrity sha512-3L5akr1Nm/KznfuZ6HoW3ZEfdDewjBn9Csmin37EM0PqQEyL/WMHEQkiDwHiyDzDm9eI/7RMBdSmcPRJV1RP1A==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/networks" "^1.14.11-beta.11"
+    "@injectivelabs/ts-types" "^1.14.11-beta.3"
+    "@injectivelabs/utils" "^1.14.11-beta.9"
+    "@types/lodash.values" "^4.3.6"
+    copyfiles "^2.4.1"
+    jsonschema "^1.4.0"
+    link-module-alias "^1.2.0"
+    lodash "^4.17.21"
+    lodash.values "^4.3.0"
+    shx "^0.3.2"
+
+"@injectivelabs/token-metadata@^1.14.11-beta.49":
   version "1.14.11-beta.49"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.14.11-beta.49.tgz#a057745dc1747555f3012941ee45aec74b06f82f"
   integrity sha512-ALcAMPr7ZUx4wijRH8OCxPX+iaTeqGVc4q7qtgcDNHAcRx0sPP20ObfnyWjfzYi1AjHTUuW9yGpsUHvUfSV//g==
@@ -1967,7 +2048,17 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-utils@1.14.11-beta.9", "@injectivelabs/token-utils@^1.14.11-beta.9":
+"@injectivelabs/token-utils@1.14.11-beta.10":
+  version "1.14.11-beta.10"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-utils/-/token-utils-1.14.11-beta.10.tgz#89d57f7d2b2ecf37eff6d1ed8505f0b1f8c81187"
+  integrity sha512-bJFnGSZHNYArjlxzSVlZPTgs8g7W2/yEp4Y/W9Lcp8GRnSOY3mbSRY65sHnJcpWeIlSpOYrO9dRbXOBLSncmCQ==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/utils" "^1.14.11-beta.9"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/token-utils@^1.14.11-beta.9":
   version "1.14.11-beta.9"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.14.11-beta.9.tgz#c3b5c2693cffa0c102d73f467511bb95c65bbb83"
   integrity sha512-I8nzGR5OvmpXaZfu9SkOZ/GSX/p9wB958uKPKTMSBTjfWNj27fvUvHIzal93g5zNO+uKSBTMEEdZiC/k3SpGtg==
@@ -1997,7 +2088,22 @@
     qrcode "^1.5.3"
     vee-validate "4.11.7"
 
-"@injectivelabs/utils@1.14.11-beta.8", "@injectivelabs/utils@^1.14.11-beta.8":
+"@injectivelabs/utils@1.14.11-beta.9", "@injectivelabs/utils@^1.14.11-beta.9":
+  version "1.14.11-beta.9"
+  resolved "https://registry.npmjs.org/@injectivelabs/utils/-/utils-1.14.11-beta.9.tgz#76ac0bb388f37fa8d65c8f81b76ac1500616d535"
+  integrity sha512-7twbiNzTGqTL/Zo5zcD0OjgfNzjU+nNsP8gMMr6SctzTa5aRe6GJT5JsFB89cYcaJzYSe+oCjoHKgNjAPT39qw==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/ts-types" "^1.14.11-beta.3"
+    axios "^1.6.4"
+    bignumber.js "^9.0.1"
+    http-status-codes "^2.2.0"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+    snakecase-keys "^5.1.2"
+    store2 "^2.12.0"
+
+"@injectivelabs/utils@^1.14.11-beta.8":
   version "1.14.11-beta.8"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.11-beta.8.tgz#f0f7176af72e5537e16b7c58a0d7a75870be68a8"
   integrity sha512-nDoPr3ejxUOM+9tC23PEDi3g5jbudTbTCJ74agJRxljMW1fYynjULxDbUtwQfu+UH0OMH6gYycZx4DscqPrb/A==
@@ -2012,10 +2118,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.11-beta.85":
-  version "1.14.11-beta.85"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.85.tgz#7cc35c262a1c6a802ec2566b16079572b8d4d712"
-  integrity sha512-6pYaW2DGYTlkZPUyfuzS0fZDY9pTRFCwy3fFcfAaJ5yVoikIv/fROJep7kh4N7l6z1jmtntSkmhsAqrNErD8vQ==
+"@injectivelabs/wallet-ts@1.14.11-beta.86":
+  version "1.14.11-beta.86"
+  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.11-beta.86.tgz#31fa9c2d6ab8eac6180bff025cf962c10ad0aab3"
+  integrity sha512-k97ljN//ovPSQuw9Wo6BOF51Lqug+CbjgjE5NBjwnKBgpakFcJQxQ+7TP+1g32x7Gnaa+rSVl5gSXwPxCz18yA==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2023,11 +2129,11 @@
     "@cosmostation/extension-client" "^0.1.15"
     "@ethereumjs/common" "^3.1.1"
     "@ethereumjs/tx" "^4.1.1"
-    "@injectivelabs/exceptions" "^1.14.11-beta.7"
-    "@injectivelabs/networks" "^1.14.11-beta.10"
-    "@injectivelabs/sdk-ts" "^1.14.11-beta.71"
+    "@injectivelabs/exceptions" "^1.14.11-beta.8"
+    "@injectivelabs/networks" "^1.14.11-beta.11"
+    "@injectivelabs/sdk-ts" "^1.14.11-beta.72"
     "@injectivelabs/ts-types" "^1.14.11-beta.3"
-    "@injectivelabs/utils" "^1.14.11-beta.8"
+    "@injectivelabs/utils" "^1.14.11-beta.9"
     "@keplr-wallet/cosmos" "^0.12.71"
     "@keplr-wallet/types" "^0.12.71"
     "@ledgerhq/hw-app-cosmos" "^6.29.5"
@@ -12773,12 +12879,7 @@ libsodium-wrappers-sumo@^0.7.11:
   dependencies:
     libsodium-sumo "^0.7.13"
 
-libsodium-wrappers@^0.7.6, "libsodium-wrappers@npm:@bangjelkoski/noop":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@bangjelkoski/noop/-/noop-0.0.1.tgz#172235ce00dd4269258c420f01464f07eb9801ed"
-  integrity sha512-lQgYJJbok2Unu2vKh0TAtWxXo16kLXNrjqmfo0hQTAuE/tVvz5zVqMgGsj+gMkkWfsInEbUndG0nlyCwaFv8hQ==
-
-"libsodium@npm:@bangjelkoski/noop":
+libsodium-wrappers@^0.7.6, "libsodium-wrappers@npm:@bangjelkoski/noop", "libsodium@npm:@bangjelkoski/noop":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@bangjelkoski/noop/-/noop-0.0.1.tgz#172235ce00dd4269258c420f01464f07eb9801ed"
   integrity sha512-lQgYJJbok2Unu2vKh0TAtWxXo16kLXNrjqmfo0hQTAuE/tVvz5zVqMgGsj+gMkkWfsInEbUndG0nlyCwaFv8hQ==
@@ -16908,16 +17009,7 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -16991,7 +17083,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -17004,13 +17096,6 @@ strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -18899,7 +18984,7 @@ workbox-cdn@^5.1.4:
   resolved "https://registry.yarnpkg.com/workbox-cdn/-/workbox-cdn-5.1.4.tgz#dbd8acee70b1978be70106207590bbb76af935cf"
   integrity sha512-04gM3mi8QGutokkSaA9xunVfjURnLbo9TTWyi8+pSDCEW5cD8u5GbJiliLK1vB9CShk/9OY1UDfW+XcmD+d6KQ==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -18921,15 +19006,6 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
