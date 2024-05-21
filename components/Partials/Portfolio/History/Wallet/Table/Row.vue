@@ -101,6 +101,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
       </PartialsWalletHistoryCommonAddress>
     </div>
 
+    <!--
     <div class="flex items-center p-2 px-4 w-14">
       <a
         :href="transaction.explorerLink"
@@ -110,5 +111,6 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
         {{ $t('common.view') }}
       </a>
     </div>
+    -->
   </div>
 </template>

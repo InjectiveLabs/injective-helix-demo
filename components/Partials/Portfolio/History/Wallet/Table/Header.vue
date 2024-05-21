@@ -10,6 +10,6 @@
     <div class="flex-1 p-2 text-right">Amount</div>
     <div class="flex-1 p-2">Origin</div>
     <div class="flex-1 p-2">Destination</div>
-    <div class="w-14 p-2"></div>
+    <!-- <div class="w-14 p-2"></div>-->
   </div>
 </template>

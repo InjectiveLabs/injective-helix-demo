@@ -3,6 +3,7 @@ export default {
     assetsFrom: 'Assets From',
     totalValue: 'Total Value',
     value: 'Portfolio Value',
+
     balances: {
       netWorth: 'Net Worth'
     },
@@ -11,6 +12,12 @@ export default {
       name: 'Subaccount Name',
       address: 'Subaccount Address',
       totalValue: 'Total Value (USD)'
+    },
+
+    history: {
+      wallet: {
+        noHistory: 'No transfers found'
+      }
     },
 
     settings: {

@@ -104,7 +104,7 @@ async function handleLimitChange(limit: number) {
 
         <CommonEmptyList
           v-if="activityStore.subaccountTransfers.length === 0"
-          :message="$t('trade.emptyTrades')"
+          :message="$t('portfolio.history.wallet.noHistory')"
         />
       </template>
     </div>
