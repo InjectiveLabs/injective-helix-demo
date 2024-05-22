@@ -107,7 +107,10 @@ function onCancelOrder() {
     <div class="flex-1 flex items-center p-2">{{ filledQuantityToString }}</div>
 
     <div class="flex-1 flex items-center p-2">
-      {{ leverage.toFormat(2) }}&times;
+      <span v-if="leverage.isNaN()" class="text-gray-400">
+        {{ $t('trade.not_available_n_a') }}
+      </span>
+      <span v-else>{{ leverage.toFormat(2) }}&times;</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">

@@ -558,3 +558,8 @@ export enum BulletinType {
   InjectiveStaking = 'injective-staking',
   HelixSpotGridBot = 'helix-spot-grid-bot'
 }
+
+export enum ClosePositionLimitFormField {
+  Price = 'price',
+  Quantity = 'quantity'
+}

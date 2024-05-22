@@ -82,6 +82,7 @@ export default {
     emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
+    closePosition: 'Close Position',
     liquidation_price_tooltip:
       'The price at which your position will be liquidated or force-exited to prevent further losses.',
     unrealized_pnl: 'Unrealized PnL',

@@ -21,7 +21,8 @@ import {
   SpotTradeFormField,
   DerivativeTradeTypes,
   SpotGridTradingField,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  ClosePositionLimitFormField
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -153,4 +154,9 @@ export type DerivativesTradeForm = {
   [DerivativesTradeFormField.StopLoss]: string
   [DerivativesTradeFormField.TakeProfit]: string
   [DerivativesTradeFormField.isTpSlEnabled]: boolean
+}
+
+export type ClosePositionLimitForm = {
+  [ClosePositionLimitFormField.Price]: string
+  [ClosePositionLimitFormField.Quantity]: string
 }

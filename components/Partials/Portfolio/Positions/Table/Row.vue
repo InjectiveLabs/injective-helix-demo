@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Position, TradeDirection } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
 
 const props = defineProps({
   position: {
@@ -9,6 +12,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const { validate } = useForm<ClosePositionLimitForm>()
 
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
@@ -25,7 +30,7 @@ const {
   priceDecimals,
   percentagePnl,
   // notionalValue,
-  // liquidationPrice,
+  liquidationPrice,
   quantityDecimals,
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
@@ -34,7 +39,7 @@ const { success, error } = useNotifications()
 const { t } = useLang()
 
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
-// const limitCloseStatus = reactive(new Status(StatusType.Idle))
+const limitCloseStatus = reactive(new Status(StatusType.Idle))
 
 const reduceOnlyCurrentOrders = computed(() =>
   derivativeStore.subaccountOrders.filter(
@@ -89,6 +94,16 @@ const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
+
+const { value: priceValue } = useStringField({
+  name: ClosePositionLimitFormField.Price,
+  initialValue: ''
+})
+
+const { value: quantityValue } = useStringField({
+  name: ClosePositionLimitFormField.Quantity,
+  initialValue: ''
+})
 
 function closePositionClicked() {
   if (!market.value) {
@@ -148,6 +163,32 @@ function closePositionAndReduceOnlyOrders() {
       marketCloseStatus.setIdle()
     })
 }
+
+async function closePositionLimit() {
+  const { valid } = await validate()
+
+  if (!market.value || !valid) {
+    return
+  }
+  limitCloseStatus.setLoading()
+
+  derivativeStore
+    .submitLimitOrder({
+      margin: ZERO_IN_BASE,
+      market: market.value,
+      price: new BigNumberInBase(priceValue.value),
+      quantity: new BigNumberInBase(quantityValue.value),
+      reduceOnly: true,
+      orderSide:
+        props.position.direction === TradeDirection.Long
+          ? OrderSide.SellPO
+          : OrderSide.BuyPO
+    })
+    .catch($onError)
+    .finally(() => {
+      limitCloseStatus.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -204,6 +245,11 @@ function closePositionAndReduceOnlyOrders() {
         <BaseIcon name="plus" is-xs />
       </div>
     </div>
+
+    <div class="flex-1 flex items-center p-2">
+      {{ liquidationPrice.toFormat(2) }}
+    </div>
+
     <div class="flex-1 flex items-center p-2">
       {{ effectiveLeverage.toFormat(2) }}x
     </div>
@@ -219,12 +265,32 @@ function closePositionAndReduceOnlyOrders() {
         {{ $t('trade.market') }}
       </AppButton>
 
-      <AppButton class="min-w-20" size="sm" variant="danger-ghost">
+      <AppButton
+        v-bind="{
+          status: limitCloseStatus
+        }"
+        class="min-w-20"
+        size="sm"
+        variant="danger-ghost"
+        @click="closePositionLimit"
+      >
         {{ $t('trade.limit') }}
       </AppButton>
 
-      <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Qty" />
-      <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Price" />
+      <AppInputBase
+        v-bind="{
+          max: quantity.toNumber()
+        }"
+        v-model="quantityValue"
+        autofix
+        class="p-1 rounded min-w-0 border"
+        placeholder="Qty"
+      />
+      <AppInputBase
+        v-model="priceValue"
+        class="p-1 rounded min-w-0 border"
+        placeholder="Price"
+      />
     </div>
   </div>
 </template>

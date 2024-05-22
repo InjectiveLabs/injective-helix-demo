@@ -65,10 +65,12 @@ function setQuantityFlashOff() {
     >
       <div class="text-xs font-sans whitespace-nowrap">
         <p>
-          Total Volume: <span class="font-mono">{{ record.totalVolume }}</span>
+          {{ $t('campaign.totalVolume') }}:
+          <span class="font-mono">{{ record.totalVolume }}</span>
         </p>
         <p>
-          Volume: <span class="font-mono">{{ record.volume }}</span>
+          {{ $t('campaign.volume') }}:
+          <span class="font-mono">{{ record.volume }}</span>
         </p>
       </div>
     </div>

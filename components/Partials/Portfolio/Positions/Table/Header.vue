@@ -14,13 +14,20 @@
       {{ $t('account.positions.cols.unrealizedPnl') }}
     </div>
 
-    <div class="flex-1 p-2 flex items-center">Total Value (USD)</div>
+    <div class="flex-1 p-2 flex items-center">
+      {{ $t('account.balances.cols.totalValueUsd') }}
+    </div>
     <div class="flex-1 p-2 flex items-center">
       {{ $t('account.positions.cols.margin') }}
     </div>
     <div class="flex-1 p-2 flex items-center">
+      {{ $t('trade.liquidation_price') }}
+    </div>
+    <div class="flex-1 p-2 flex items-center">
       {{ $t('account.positions.cols.leverage') }}
     </div>
-    <div class="flex-[3] p-2 flex items-center">Close Position</div>
+    <div class="flex-[3] p-2 flex items-center">
+      {{ $t('trade.closePosition') }}
+    </div>
   </div>
 </template>
