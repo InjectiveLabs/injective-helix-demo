@@ -108,7 +108,9 @@ const { value: leverage, errorMessage } = useStringField({
 })
 
 function onBlur() {
-  typed.value = leverage.value || '0'
+  typed.value = leverage.value || '1'
+
+  onMouseUp()
 }
 
 function onEnter(ev: Event) {

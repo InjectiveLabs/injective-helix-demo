@@ -129,6 +129,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Dropdown,
     label: 'navigation.orders',
     icon: 'nested-list',
+    name: 'portfolio-orders',
     items: [
       {
         type: MenuItemType.Link,
@@ -157,6 +158,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Dropdown,
     label: 'navigation.history',
     icon: 'clock-outline',
+    name: 'portfolio-history',
     items: [
       {
         type: MenuItemType.Link,

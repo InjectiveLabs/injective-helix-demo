@@ -124,6 +124,7 @@ export type MenuItem =
       type: MenuItemType.Dropdown
       icon?: string
       items: MenuItem[]
+      name?: string
     })
 
 export * from './page'

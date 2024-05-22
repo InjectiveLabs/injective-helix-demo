@@ -135,7 +135,7 @@ function cancelOrder() {
       >
         &le;
       </span>
-      <span v-else class="text-white text-xs font-semibold"> &ge; </span>
+      <span v-else class="text-white text-xs font-semibold"> &ge;</span>
 
       <span>{{ triggerPriceToString }}</span>
     </div>

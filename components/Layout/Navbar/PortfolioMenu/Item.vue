@@ -8,6 +8,8 @@ defineProps({
   }
 })
 
+const route = useRoute()
+
 const emit = defineEmits<{
   'menu:close': []
 }>()
@@ -25,6 +27,9 @@ function toggle() {
     :to="item.to"
     :target="item?.isExternal ? '_blank' : ''"
     class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
+    :class="{
+      'text-blue-500 ': route.name === (item.to as any).name
+    }"
     @click="emit('menu:close')"
   >
     <SharedIcon v-if="item.icon" :name="item.icon" is-md />
@@ -34,7 +39,12 @@ function toggle() {
 
   <template v-else>
     <div
-      class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent text-sm"
+      class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent text-sm"
+      :class="{
+        'text-blue-500 bg-brand-875': (route.name as string).startsWith(
+          item.name as string
+        )
+      }"
       @click="toggle"
     >
       <SharedIcon v-if="item.icon" :name="item.icon" is-md />
