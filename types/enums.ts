@@ -68,6 +68,7 @@ export enum Modal {
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
+  AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   TransferToMainSubaccount = 'transfer-to-main-subaccount',
   MarketRestricted = 'market-restricted',
@@ -562,4 +563,9 @@ export enum BulletinType {
 export enum ClosePositionLimitFormField {
   Price = 'price',
   Quantity = 'quantity'
+}
+
+export enum TakeProfitStopLossFormField {
+  TakeProfit = 'takeProfit',
+  StopLoss = 'stopLoss'
 }

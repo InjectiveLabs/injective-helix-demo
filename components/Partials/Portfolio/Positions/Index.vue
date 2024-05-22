@@ -32,6 +32,12 @@ function addMargin(position: Position | PositionV2) {
 
   positionToAddMargin.value = position
 }
+
+function addTakeProfitStopLoss(position: Position | PositionV2) {
+  modalStore.openModal(Modal.AddTakeProfitStopLoss)
+
+  positionToAddMargin.value = position
+}
 </script>
 
 <template>
@@ -42,6 +48,7 @@ function addMargin(position: Position | PositionV2) {
     :key="`${position.marketId}-${position.subaccountId}`"
     v-bind="{ position }"
     @margin:add="addMargin"
+    @tpsl:add="addTakeProfitStopLoss"
   />
 
   <CommonEmptyList

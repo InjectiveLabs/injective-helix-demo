@@ -43,6 +43,9 @@ export default {
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
     total: 'Total',
+    entryPrice: 'Entry Price',
+    markPrice: 'Mark Price',
+    direction: 'Direction',
     reduceOnly: 'Reduce Only',
     total_tooltip:
       'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
@@ -73,6 +76,10 @@ export default {
     'stop-market': 'Stop-Market',
     stopMarket: 'Stop-Market',
     margin: 'Margin',
+    addTpSl: 'Add TP/SL',
+    takeProfitStopLoss: 'Take Profit / Stop Loss',
+    takeProfitStopLossForEntirePosition:
+      'Take Profit / Stop Loss For Entire Position',
     lastPrice: 'Last Price',
     margin_tooltip: 'The total margin required to execute the trade.',
     emptyOrders: 'No orders found',
@@ -412,6 +419,12 @@ export default {
         )} than anticipated.`
     },
 
-    lastUpdated: 'Last Updated'
+    estLiquidationPrice: 'Est. Liquidation Price',
+    lastUpdated: 'Last Updated',
+    profitLoss: 'Profit/Loss',
+    takeProfitDetails:
+      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
+    stopLossDetails:
+      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.'
   }
 }

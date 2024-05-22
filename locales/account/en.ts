@@ -69,7 +69,8 @@ export default {
         unrealizedPnl: 'Unrealized PNL',
         total: 'Total',
         margin: 'Margin',
-        leverage: 'Leverage'
+        leverage: 'Leverage',
+        tpSl: 'TP/SL'
       }
     },
     assetDetails: {

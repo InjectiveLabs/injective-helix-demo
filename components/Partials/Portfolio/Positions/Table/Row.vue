@@ -15,6 +15,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'margin:add': [position: Position | PositionV2]
+  'tpsl:add': [position: Position | PositionV2]
 }>()
 
 const { validate } = useForm<ClosePositionLimitForm>()
@@ -198,6 +199,10 @@ async function closePositionLimit() {
 function addMargin() {
   emit('margin:add', props.position)
 }
+
+function addTpSl() {
+  emit('tpsl:add', props.position)
+}
 </script>
 
 <template>
@@ -261,6 +266,15 @@ function addMargin() {
 
     <div class="flex-1 flex items-center p-2">
       {{ effectiveLeverage.toFormat(2) }}x
+    </div>
+
+    <div class="flex-1 flex items-center p-2">
+      <button
+        class="text-xs px-2 py-1 rounded hover:underline hover:text-blue-500 font-sans"
+        @click="addTpSl"
+      >
+        {{ $t('trade.addTpSl') }}
+      </button>
     </div>
 
     <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">

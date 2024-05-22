@@ -5,7 +5,9 @@ import {
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId,
-  getGenericAuthorizationFromMessageType
+  getGenericAuthorizationFromMessageType,
+  Msgs,
+  msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
@@ -795,8 +797,8 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress: walletStore.injectiveAddress
       })
 
-      walletStore.$patch({
-        autoSign: {
+      walletStore.$patch((state) => {
+        state.autoSign = {
           ...autoSign,
           expiration: expirationInSeconds
         }
@@ -805,6 +807,31 @@ export const useWalletStore = defineStore('wallet', {
       await connect({
         wallet: Wallet.PrivateKey,
         options: { privateKey: autoSign.privateKey }
+      })
+    },
+
+    async broadcastMessages(messages: Msgs[]) {
+      const walletStore = useWalletStore()
+
+      let actualMessage
+
+      if (walletStore.isAuthzWalletConnected) {
+        actualMessage = msgsOrMsgExecMsgs(
+          messages,
+          walletStore.injectiveAddress
+        )
+      } else if (walletStore.autoSign) {
+        actualMessage = msgsOrMsgExecMsgs(
+          messages,
+          walletStore.autoSign.injectiveAddress
+        )
+      } else {
+        actualMessage = messages
+      }
+
+      await msgBroadcaster.broadcastWithFeeDelegation({
+        msgs: actualMessage,
+        injectiveAddress: walletStore.injectiveAddress
       })
     }
   }

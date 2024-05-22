@@ -6,10 +6,12 @@ import {
   MsgBatchCancelDerivativeOrders,
   derivativePriceToChainPriceToFixed,
   derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed
+  derivativeQuantityToChainQuantityToFixed,
+  Position,
+  PositionV2
 } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
@@ -416,7 +418,6 @@ export const submitMarketOrder = async ({
 
   const messages = [message]
 
-  // TPSL
   const tpSlMessages = [tpMessage, slMessage].filter(
     (msg) => msg
   ) as MsgCreateDerivativeMarketOrder[]
@@ -436,8 +437,6 @@ export const submitMarketOrder = async ({
   } else {
     actualTpSlMessages = tpSlMessages
   }
-
-  // TPSL END
 
   let actualMessage
 
@@ -549,6 +548,97 @@ export const submitStopMarketOrder = async ({
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
+  })
+}
+
+export const submitTpSlOrder = async ({
+  position,
+  stopLoss,
+  takeProfit
+}: {
+  position: Position | PositionV2
+  takeProfit: BigNumberInBase
+  stopLoss: BigNumberInBase
+}) => {
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+
+  const market = derivativeStore.markets.find(
+    (market) => market.marketId === position.marketId
+  )
+
+  if (!market) {
+    return
+  }
+
+  const isTpslBuy = position.direction === TradeDirection.Long
+
+  const markPrice = new BigNumberInWei(position.markPrice).toBase(
+    market.quoteToken.decimals
+  )
+
+  const tpMessage = takeProfit
+    ? createTpSlMessage({
+        executionPrice: markPrice,
+        triggerPrice: takeProfit ?? new BigNumberInBase(0),
+        quantity: new BigNumberInBase(position.quantity),
+        subaccountId: accountStore.subaccountId,
+        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        marketId: market.marketId,
+        isBuy: !isTpslBuy,
+        market
+      })
+    : undefined
+
+  const slMessage = stopLoss
+    ? createTpSlMessage({
+        executionPrice: markPrice,
+        triggerPrice: stopLoss ?? new BigNumberInBase(0),
+        quantity: new BigNumberInBase(position.quantity),
+        subaccountId: accountStore.subaccountId,
+        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        marketId: market.marketId,
+        isBuy: !isTpslBuy,
+        market
+      })
+    : undefined
+
+  const msgs = []
+
+  if (tpMessage) {
+    msgs.push(tpMessage)
+  }
+
+  if (slMessage) {
+    msgs.push(slMessage)
+  }
+
+  const tpSlMessages = [tpMessage, slMessage].filter(
+    (msg) => msg
+  ) as MsgCreateDerivativeMarketOrder[]
+
+  let actualTpSlMessages
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualTpSlMessages = msgsOrMsgExecMsgs(
+      tpSlMessages,
+      walletStore.injectiveAddress
+    )
+  } else if (walletStore.autoSign) {
+    actualTpSlMessages = msgsOrMsgExecMsgs(
+      tpSlMessages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualTpSlMessages = tpSlMessages
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
+    msgs: actualTpSlMessages,
     injectiveAddress: walletStore.autoSign
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress

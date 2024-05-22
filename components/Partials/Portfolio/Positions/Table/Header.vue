@@ -26,6 +26,9 @@
     <div class="flex-1 p-2 flex items-center">
       {{ $t('account.positions.cols.leverage') }}
     </div>
+    <div class="flex-1 p-2 flex items-center">
+      {{ $t('account.positions.cols.tpSl') }}
+    </div>
     <div class="flex-[3] p-2 flex items-center">
       {{ $t('trade.closePosition') }}
     </div>

@@ -92,7 +92,8 @@ const currentFormValues = computed(
       [DerivativesTradeFormField.AmountOption]:
         derivativeFormValues.value[DerivativesTradeFormField.AmountOption],
       [DerivativesTradeFormField.Slippage]:
-        derivativeFormValues.value[DerivativesTradeFormField.Slippage]
+        derivativeFormValues.value[DerivativesTradeFormField.Slippage],
+      [DerivativesTradeFormField.Leverage]: '1'
     }) as DerivativesTradeForm
 )
 
