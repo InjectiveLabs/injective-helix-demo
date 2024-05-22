@@ -612,7 +612,9 @@ export const useWalletStore = defineStore('wallet', {
         })
       }
 
-      await walletStore.validateAutoSign()
+      if (isAutoSignEnabled) {
+        await walletStore.validateAutoSign()
+      }
     },
 
     async disconnect() {
@@ -717,7 +719,7 @@ export const useWalletStore = defineStore('wallet', {
       ]
 
       const nowInSeconds = Math.floor(Date.now() / 1000)
-      const expirationInSeconds = 60 /** TODO: make one hour */
+      const expirationInSeconds = 60 * 60 // 1 hour
 
       const authZMsgs = tradingMessages.map((messageType) =>
         MsgGrant.fromJSON({
@@ -760,7 +762,7 @@ export const useWalletStore = defineStore('wallet', {
       const autoSign = walletStore.autoSign as AutoSign
       const nowInSeconds = Math.floor(Date.now() / 1000)
 
-      if (autoSign.expiration < nowInSeconds) {
+      if (autoSign.expiration > nowInSeconds) {
         return
       }
 

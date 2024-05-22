@@ -13,7 +13,7 @@ import { Modal } from '@/types'
 const props = defineProps({
   position: {
     type: Object as PropType<Position | PositionV2 | undefined>,
-    required: true
+    default: undefined
   }
 })
 
