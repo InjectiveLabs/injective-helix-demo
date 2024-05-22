@@ -6,6 +6,7 @@ import {
   UiDerivativeMarket,
   derivativeMarketKey
 } from '@/types'
+import { MARKETS_INFO } from '~/app/data/marketInfo'
 
 const spotMarket = inject(spotMarketKey, undefined)
 const derivativeMarket = inject(derivativeMarketKey, undefined) as
@@ -39,6 +40,17 @@ const maxLeverage = computed(() => {
 
   return BigNumber(1).dividedBy(derivativeMarket.value.initialMarginRatio).dp(0)
 })
+
+const description = computed(() => {
+  if (!market.value) {
+    return ''
+  }
+
+  return MARKETS_INFO.find(
+    (info) =>
+      info.symbol.toLowerCase() === market.value?.baseToken.symbol.toLowerCase()
+  )?.description
+})
 </script>
 
 <template>
@@ -57,11 +69,11 @@ const maxLeverage = computed(() => {
       </div>
 
       <div class="mt-4">
-        <p class="text-gray-400 text-sm leading-6 text-justify">
-          Ethereum is a decentralized open-source blockchain system that
-          features its own cryptocurrency, Ether (ETH). ETH works as a platform
-          for numerous other cryptocurrencies, as well as for the execution of
-          decentralized smart contracts.
+        <p
+          v-if="description"
+          class="text-gray-400 text-sm leading-6 text-justify"
+        >
+          {{ description }}
         </p>
       </div>
     </div>
