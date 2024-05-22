@@ -215,28 +215,24 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       "
       class="mb-2"
     >
-      <AppInputNumeric
+      <p class="text-xs font-semibold text-gray-500 mb-2">
+        {{ $t('sgt.available') }}
+        {{ quoteAmountToString }}
+        {{ market.quoteToken.symbol }}
+      </p>
+
+      <AppInputField
         v-model="investmentAmountValue"
-        :is-disabled="isLowerBoundGtLastPrice"
-        is-disabled-gray
+        :disabled="isLowerBoundGtLastPrice"
         placeholder="0.00"
       >
-        <template #addon>
-          {{ market.quoteToken.symbol }}
+        <template #right>
+          <div class="space-x-2 flex items-center">
+            <span>{{ market.quoteToken.symbol }}</span>
+            <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
+          </div>
         </template>
-
-        <template #context>
-          <p class="text-xs font-semibold text-gray-500 mb-2">
-            {{ $t('sgt.available') }}
-            {{ quoteAmountToString }}
-            {{ market.quoteToken.symbol }}
-          </p>
-        </template>
-
-        <template #postfix>
-          <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
-        </template>
-      </AppInputNumeric>
+      </AppInputField>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
         {{ quoteErrorMessage }}
@@ -251,28 +247,24 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
           InvestmentTypeGst.BaseAndQuote
       "
     >
-      <AppInputNumeric
+      <p class="text-xs font-semibold text-gray-500 mb-2">
+        {{ $t('sgt.available') }}
+        {{ baseAmountToString }}
+        {{ market.baseToken.symbol }}
+      </p>
+
+      <AppInputField
         v-model="baseInvestmentAmountValue"
         placeholder="0.00"
-        :is-disabled="isUpperBoundLtLastPrice"
-        is-disabled-gray
+        :disabled="isUpperBoundLtLastPrice"
       >
-        <template #addon>
-          {{ market.baseToken.symbol }}
+        <template #right>
+          <div class="space-x-2 flex items-center">
+            <span>{{ market.baseToken.symbol }}</span>
+            <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+          </div>
         </template>
-
-        <template #context>
-          <p class="text-xs font-semibold text-gray-500 mb-2">
-            {{ $t('sgt.available') }}
-            {{ baseAmountToString }}
-            {{ market.baseToken.symbol }}
-          </p>
-        </template>
-
-        <template #postfix>
-          <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        </template>
-      </AppInputNumeric>
+      </AppInputField>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
         {{ baseErrorMessage }}

@@ -211,11 +211,9 @@ function setValuesFromAuto() {
         "
         class="flex items-center"
       >
-        <AppCheckbox v-model="isAssetRebalancingChecked" />
-
-        <p class="mr-2 text-xs font-semibold">
+        <AppCheckbox2 v-model="isAssetRebalancingChecked">
           {{ $t('liquidity.allowAssetRebalance') }}
-        </p>
+        </AppCheckbox2>
 
         <AppTooltip
           v-bind="{

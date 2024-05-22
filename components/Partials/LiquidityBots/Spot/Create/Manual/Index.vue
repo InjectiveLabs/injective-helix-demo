@@ -188,11 +188,9 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="flex justify-end mb-2 sm:-mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
-        <AppCheckbox v-model="isAssetReBalancingChecked" />
-
-        <p class="mr-2 text-xs font-semibold">
+        <LazyAppCheckbox2 v-model="isAssetReBalancingChecked">
           {{ $t('liquidity.allowAssetRebalance') }}
-        </p>
+        </LazyAppCheckbox2>
 
         <AppTooltip
           v-bind="{

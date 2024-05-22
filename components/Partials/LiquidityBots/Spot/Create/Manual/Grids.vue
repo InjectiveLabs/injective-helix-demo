@@ -66,9 +66,11 @@ const { value: gridsValue, errorMessage } = useStringField({
       <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
     </p>
 
-    <AppInputNumeric
+    <AppInputField
       v-model="gridsValue"
-      :max-decimals="0"
+      :decimals="0"
+      :max="Number(maximumGrids)"
+      autofix
       :placeholder="`${GST_MINIMUM_GRIDS} - ${maximumGrids.toFixed(0)}`"
     />
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { PositionsFilterField } from '~/types'
-import { PositionsFilterForm } from '~/types/forms'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { Modal, PositionsFilterField, PositionsFilterForm } from '@/types'
 
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 
@@ -23,6 +24,14 @@ const filteredPosition = computed(() =>
     return isPartOfMarket && isPartOfSide && isPartOfSubaccount
   })
 )
+
+const positionToAddMargin = ref<Position | PositionV2 | undefined>(undefined)
+
+function addMargin(position: Position | PositionV2) {
+  modalStore.openModal(Modal.AddMarginToPosition)
+
+  positionToAddMargin.value = position
+}
 </script>
 
 <template>
@@ -32,10 +41,17 @@ const filteredPosition = computed(() =>
     v-for="position in filteredPosition"
     :key="`${position.marketId}-${position.subaccountId}`"
     v-bind="{ position }"
+    @margin:add="addMargin"
   />
 
   <CommonEmptyList
     v-if="filteredPosition.length === 0"
     :message="'No Positions Open'"
+  />
+
+  <ModalsAddMargin
+    v-bind="{
+      position: positionToAddMargin
+    }"
   />
 </template>

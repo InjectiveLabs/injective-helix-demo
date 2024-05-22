@@ -119,11 +119,10 @@ watch(
 
     <div class="grid grid-cols-1 gap-4 mb-4">
       <div>
-        <AppInputNumeric
+        <AppInputField
           v-model="lowerPriceValue"
           placeholder="0.00"
-          class="text-right"
-          v-bind="{ maxDecimals: market.priceDecimals }"
+          v-bind="{ decimals: market.priceDecimals }"
         >
           <template #context>
             <p class="text-xs font-light text-gray-200 mb-2">
@@ -136,7 +135,7 @@ watch(
               {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
             </span>
           </template>
-        </AppInputNumeric>
+        </AppInputField>
 
         <div class="text-red-500 text-xs font-semibold mt-2">
           {{ lowerErrorMessage }}
@@ -144,24 +143,21 @@ watch(
       </div>
 
       <div>
-        <AppInputNumeric
+        <p class="text-xs font-light text-gray-200 mb-2">
+          {{ $t('sgt.upperPrice') }}
+        </p>
+
+        <AppInputField
           v-model="upperPriceValue"
           placeholder="0.00"
-          class="text-right"
-          v-bind="{ maxDecimals: market.priceDecimals }"
+          v-bind="{ decimals: market.priceDecimals }"
         >
-          <template #context>
-            <p class="text-xs font-light text-gray-200 mb-2">
-              {{ $t('sgt.upperPrice') }}
-            </p>
-          </template>
-
-          <template #addon>
+          <template #right>
             <span v-if="gridStrategyStore.spotMarket">
               {{ gridStrategyStore.spotMarket.quoteToken.symbol }}
             </span>
           </template>
-        </AppInputNumeric>
+        </AppInputField>
 
         <div class="text-red-500 text-xs font-semibold mt-2">
           {{ upperErrorMessage }}
