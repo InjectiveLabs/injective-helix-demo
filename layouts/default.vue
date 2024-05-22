@@ -37,6 +37,7 @@ watch(
 
 onWalletConnected(() => {
   portfolioStatus.setLoading()
+
   fetchUserPortfolio()
     .catch($onError)
     .finally(() => {
