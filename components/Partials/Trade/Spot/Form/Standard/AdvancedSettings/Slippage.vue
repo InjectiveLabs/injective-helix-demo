@@ -3,11 +3,16 @@ import { SpotTradeFormField } from '@/types'
 
 const { value: isSlippageOnValue } = useBooleanField({
   name: SpotTradeFormField.IsSlippageOn,
-  initialValue: true
+  initialValue: true,
+  rule: ''
 })
 const { value: slippageValue } = useStringField({
   name: SpotTradeFormField.Slippage,
-  initialValue: '0.5'
+  initialValue: '0.5',
+  rule: '',
+  dynamicRule: computed(() => {
+    return isSlippageOnValue.value ? 'required' : ''
+  })
 })
 </script>
 

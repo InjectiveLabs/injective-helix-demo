@@ -82,6 +82,20 @@ const isBuy = computed(
     TradeDirection.Long
 )
 
+const currentFormValues = computed(
+  () =>
+    ({
+      [DerivativesTradeFormField.Type]:
+        derivativeFormValues.value[DerivativesTradeFormField.Type],
+      [DerivativesTradeFormField.Side]:
+        derivativeFormValues.value[DerivativesTradeFormField.Side],
+      [DerivativesTradeFormField.AmountOption]:
+        derivativeFormValues.value[DerivativesTradeFormField.AmountOption],
+      [DerivativesTradeFormField.Slippage]:
+        derivativeFormValues.value[DerivativesTradeFormField.Slippage]
+    }) as DerivativesTradeForm
+)
+
 const orderTypeToSubmit = computed(() => {
   return getDerivativeOrderTypeToSubmit({
     isStopOrder: [
@@ -136,7 +150,7 @@ async function submitLimitOrder() {
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)
@@ -171,7 +185,7 @@ async function submitStopLimitOrder() {
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)
@@ -203,7 +217,7 @@ async function submitMarketOrder() {
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)
@@ -238,7 +252,7 @@ async function submitStopMarketOrder() {
     })
     .then(() => {
       success({ title: t('trade.order_placed') })
-      resetForm()
+      resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
       $onError(e)

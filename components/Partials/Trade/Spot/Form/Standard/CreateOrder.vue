@@ -57,10 +57,17 @@ const orderTypeToSubmit = computed(() => {
 
 const market = inject(spotMarketKey)
 
-const currentFormValues = computed(() => ({
-  type: spotFormValues.value[SpotTradeFormField.Type],
-  side: spotFormValues.value[SpotTradeFormField.Side]
-}))
+const currentFormValues = computed(
+  () =>
+    ({
+      [SpotTradeFormField.Type]: spotFormValues.value[SpotTradeFormField.Type],
+      [SpotTradeFormField.Side]: spotFormValues.value[SpotTradeFormField.Side],
+      [SpotTradeFormField.AmountOption]:
+        spotFormValues.value[SpotTradeFormField.AmountOption],
+      [SpotTradeFormField.Slippage]:
+        spotFormValues.value[SpotTradeFormField.Slippage]
+    }) as SpotTradeForm
+)
 
 function submitLimitOrder() {
   if (!market?.value) {

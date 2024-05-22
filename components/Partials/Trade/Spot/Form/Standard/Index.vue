@@ -2,14 +2,14 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { TradeTypes, SpotTradeFormField, SpotTradeForm } from '@/types'
 
-useForm<SpotTradeForm>()
+const { values } = useForm<SpotTradeForm>()
 
 const { value: orderTypeValue } = useStringField({
   name: SpotTradeFormField.Type,
   initialValue: TradeTypes.Limit
 })
 
-const { value: orderSideValue } = useStringField({
+const { value: orderSideValue, errors } = useStringField({
   name: SpotTradeFormField.Side,
   initialValue: OrderSide.Buy
 })
@@ -26,6 +26,10 @@ const {
 </script>
 
 <template>
+  <Whiteboard>
+    {{ { values, errors } }}
+  </Whiteboard>
+
   <div class="p-4">
     <div class="border-b">
       <AppButtonSelect

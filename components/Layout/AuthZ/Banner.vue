@@ -12,11 +12,12 @@ const walletStore = useWalletStore()
       </p>
     </div>
 
-    <SharedIcon
-      name="exit"
-      is-md
-      class="text-blue-900"
-      @click="walletStore.resetAuthZ()"
-    />
+    <div class="px-4">
+      <SharedIcon
+        name="exit"
+        class="text-blue-900"
+        @click="walletStore.resetAuthZ()"
+      />
+    </div>
   </div>
 </template>
