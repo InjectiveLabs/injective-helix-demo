@@ -189,9 +189,11 @@ async function closePositionLimit() {
           ? OrderSide.SellPO
           : OrderSide.BuyPO
     })
+    .then(() => {
+      success({ title: t('common.success') })
+    })
     .catch($onError)
     .finally(() => {
-      success({ title: t('common.success') })
       limitCloseStatus.setIdle()
     })
 }

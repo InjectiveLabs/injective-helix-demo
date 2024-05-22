@@ -61,4 +61,10 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
       position: positionToAddMargin
     }"
   />
+
+  <ModalsAddTakeProfitStopLoss
+    v-bind="{
+      position: positionToAddMargin
+    }"
+  />
 </template>
