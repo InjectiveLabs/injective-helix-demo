@@ -709,23 +709,23 @@ export const useWalletStore = defineStore('wallet', {
 
       const tradingMessages = [
         MsgType.MsgCancelSpotOrder,
-        MsgType.MsgBatchUpdateOrders,
         MsgType.MsgCreateSpotLimitOrder,
         MsgType.MsgCancelDerivativeOrder,
         MsgType.MsgCreateSpotMarketOrder,
         MsgType.MsgBatchCancelSpotOrders,
-        MsgType.MsgBatchCreateSpotLimitOrders,
         MsgType.MsgCreateDerivativeLimitOrder,
         MsgType.MsgCreateDerivativeMarketOrder,
-        MsgType.MsgBatchCancelDerivativeOrders,
-        MsgType.MsgBatchCreateDerivativeLimitOrders
+        MsgType.MsgBatchCancelDerivativeOrders
       ]
+
+      const nowInSeconds = Math.floor(Date.now() / 1000)
+      const expirationInSeconds = 3600 /** one hour */
 
       const authZMsgs = tradingMessages.map((messageType) =>
         MsgGrant.fromJSON({
           grantee: injectiveAddress,
           granter: walletStore.injectiveAddress,
-          expiryInSeconds: Date.now() * 1000 + 60 * 60,
+          expiration: nowInSeconds + expirationInSeconds,
           authorization: getGenericAuthorizationFromMessageType(messageType)
         })
       )
