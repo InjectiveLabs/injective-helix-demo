@@ -28,6 +28,13 @@ import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
 
+export interface AutoSign {
+  privateKey: string
+  injectiveAddress: string
+  expiration: number
+  duration: number
+}
+
 type WalletStoreState = {
   wallet: Wallet
 
@@ -52,11 +59,7 @@ type WalletStoreState = {
     defaultSubaccountId: string
   }
 
-  autoSign?: {
-    privateKey: string
-    injectiveAddress: string
-    expiration: number
-  }
+  autoSign?: AutoSign
 }
 
 const initialStateFactory = (): WalletStoreState => ({
@@ -608,6 +611,8 @@ export const useWalletStore = defineStore('wallet', {
           wallet: walletStore.wallet
         })
       }
+
+      await walletStore.validateAutoSign()
     },
 
     async disconnect() {
@@ -642,7 +647,10 @@ export const useWalletStore = defineStore('wallet', {
     async disconnectAutoSign() {
       const walletStore = useWalletStore()
 
-      await walletStore.resetAutoSign()
+      walletStore.$patch({
+        autoSign: undefined
+      })
+
       await connect({ wallet: walletStore.wallet })
     },
 
@@ -650,18 +658,18 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
 
       const {
+        authZ,
+        autoSign,
         address,
         addresses,
         injectiveAddress,
         defaultSubaccountId,
-        addressConfirmation,
-        authZ
+        addressConfirmation
       } = initialStateFactory()
-
-      walletStore.resetAutoSign()
 
       walletStore.$patch({
         authZ,
+        autoSign,
         address,
         addresses,
         injectiveAddress,
@@ -691,16 +699,6 @@ export const useWalletStore = defineStore('wallet', {
       useEventBus(BusEvents.SubaccountChange).emit()
     },
 
-    resetAutoSign() {
-      const walletStore = useWalletStore()
-
-      walletStore.$patch({
-        autoSign: undefined
-      })
-
-      walletStrategy.setWallet(walletStore.wallet)
-    },
-
     async connectAutoSign() {
       const walletStore = useWalletStore()
 
@@ -719,7 +717,7 @@ export const useWalletStore = defineStore('wallet', {
       ]
 
       const nowInSeconds = Math.floor(Date.now() / 1000)
-      const expirationInSeconds = 3600 /** one hour */
+      const expirationInSeconds = 60 /** TODO: make one hour */
 
       const authZMsgs = tradingMessages.map((messageType) =>
         MsgGrant.fromJSON({
@@ -738,11 +736,68 @@ export const useWalletStore = defineStore('wallet', {
       const autoSign = {
         injectiveAddress,
         privateKey: privateKey.toPrivateKeyHex(),
-        expiration: Date.now() + 1000 * 60 * 60
+        expiration: nowInSeconds + expirationInSeconds,
+        duration: expirationInSeconds
       }
 
       walletStore.$patch({
         autoSign
+      })
+
+      await connect({
+        wallet: Wallet.PrivateKey,
+        options: { privateKey: autoSign.privateKey }
+      })
+    },
+
+    async validateAutoSign() {
+      const walletStore = useWalletStore()
+
+      if (!walletStore.autoSign) {
+        return
+      }
+
+      const autoSign = walletStore.autoSign as AutoSign
+      const nowInSeconds = Math.floor(Date.now() / 1000)
+
+      if (autoSign.expiration < nowInSeconds) {
+        return
+      }
+
+      const tradingMessages = [
+        MsgType.MsgCancelSpotOrder,
+        MsgType.MsgCreateSpotLimitOrder,
+        MsgType.MsgCancelDerivativeOrder,
+        MsgType.MsgCreateSpotMarketOrder,
+        MsgType.MsgBatchCancelSpotOrders,
+        MsgType.MsgCreateDerivativeLimitOrder,
+        MsgType.MsgCreateDerivativeMarketOrder,
+        MsgType.MsgBatchCancelDerivativeOrders
+      ]
+
+      const expirationInSeconds = autoSign.duration || 3600
+
+      const authZMsgs = tradingMessages.map((messageType) =>
+        MsgGrant.fromJSON({
+          grantee: autoSign.injectiveAddress,
+          granter: walletStore.injectiveAddress,
+          expiration: nowInSeconds + expirationInSeconds,
+          authorization: getGenericAuthorizationFromMessageType(messageType)
+        })
+      )
+
+      await connect({ wallet: walletStore.wallet })
+
+      await msgBroadcaster.broadcastWithFeeDelegation({
+        msgs: authZMsgs,
+        injectiveAddress: walletStore.injectiveAddress
+      })
+
+      walletStore.$patch({
+        autoSign: {
+          ...autoSign,
+          expiration: expirationInSeconds
+        }
       })
 
       await connect({

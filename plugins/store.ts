@@ -55,8 +55,9 @@ const stateToPersist = {
 
     autoSign: {
       privateKey: '',
+      expiration: '',
       injectiveAddress: '',
-      expiration: ''
+      duration: ''
     }
   }
 } as Record<string, Record<string, any>>
