@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { MainPage } from '@/types'
+import { MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -49,9 +49,19 @@ function disconnect() {
           <div class="rounded-lg">
             <div class="flex flex-col py-3 px-4 border-b">
               <div class="flex justify-between pb-2">
-                <span class="text-sm font-semibold text-gray-200">
-                  {{ $t('navigation.myAccount') }}
-                </span>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold text-gray-200">
+                    {{ $t('navigation.myAccount') }}
+                  </span>
+
+                  <NuxtLink :to="{ name: PortfolioSubPage.Settings }">
+                    <SharedIcon
+                      is-md
+                      name="gear"
+                      class="text-white hover:text-blue-500"
+                    />
+                  </NuxtLink>
+                </div>
                 <span
                   class="text-blue-500 hover:text-opacity-80 cursor-pointer text-xs font-medium"
                   @click="disconnect"

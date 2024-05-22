@@ -55,7 +55,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
                   v-if="walletStore.isUserWalletConnected"
                   v-bind="{
                     item: {
-                      label: 'portfolio',
+                      label: 'navigation.portfolio',
                       type: MenuItemType.Dropdown,
                       items: USER_MENU_ITEMS
                     }
