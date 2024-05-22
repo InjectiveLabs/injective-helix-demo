@@ -89,17 +89,35 @@ export default {
 
     gettingStarted: {
       title: 'Getting started on Helix',
+      injectiveBridge: 'Injective Bridge',
       description: 'Deposit crypto assets to Injective ',
-      description2:
-        'Bridge USDT and other assets into Helix via the Injective Bridge.',
+      description2: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Bridge USDT and other assets into Helix via the ',
+          named('bridgeLink'),
+          '.'
+        ]),
       gasRequirement:
         'Make sure you get at least 0.1 INJ to pay for the transaction fee.',
       steps: 'Steps',
-      step1: 'Visit the Injective Bridge and connect your wallet.',
-      step2: 'Select the source chain (e.g. Ethereum, Cosmos or Solana).',
-      step3: 'Choose USDT or any other asset',
-      step4:
-        'Once complete, return to Helix and check your Balances on the Portfolio page. You are ready to trade!',
+      step1: {
+        title: 'Step 1',
+        description: 'Visit the Injective Bridge and connect your wallet.'
+      },
+      step2: {
+        title: 'Step 2',
+        description:
+          'Select the source chain (e.g. Ethereum, Cosmos or Solana).'
+      },
+      step3: {
+        title: 'Step 3',
+        description: 'Choose USDT or any other asset'
+      },
+      step4: {
+        title: 'Step 4',
+        description:
+          'Once complete, return to Helix and check your Balances on the Portfolio page. You are ready to trade!'
+      },
       cta: 'Go to Injective Bridge'
     }
   },

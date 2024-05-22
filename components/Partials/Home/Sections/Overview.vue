@@ -18,27 +18,23 @@ const activeType = ref(OverviewSection.TradingBots)
 const options = [
   {
     type: OverviewSection.TradingBots,
-    title: 'overview.tradingBotsTitle',
-    description: 'overview.tradingBotsDescription',
-    img: '/images/home/tradingBots.png'
+    title: 'home.overview.tradingBotsTitle',
+    description: 'home.overview.tradingBotsDescription'
   },
   {
     type: OverviewSection.NewAccounts,
-    title: 'overview.newAccountsTitle',
-    description: 'overview.newAccountsDescription',
-    img: '/images/home/newAccounts.png'
+    title: 'home.overview.newAccountsTitle',
+    description: 'home.overview.newAccountsDescription'
   },
   {
     type: OverviewSection.Pnl,
-    title: 'overview.pnlTitle',
-    description: 'overview.pnlDescription',
-    img: '/images/home/pnlOverview.png'
+    title: 'home.overview.pnlTitle',
+    description: 'home.overview.pnlDescription'
   },
   {
     type: OverviewSection.GasFree,
-    title: 'overview.gasFreeTitle',
-    description: 'overview.gasFreeDescription',
-    img: '/images/home/gasFee.png'
+    title: 'home.overview.gasFreeTitle',
+    description: 'home.overview.gasFreeDescription'
   }
 ]
 </script>
@@ -68,9 +64,9 @@ const options = [
             <div class="flex items-center justify-between">
               <h2
                 :class="{ 'text-blue-500': activeType === item.type }"
-                class="text-xl xs:text-2xl xs:leading-8"
+                class="text-xl xs:text-2xl xs:leading-8 font-semibold"
               >
-                {{ $t(`home.${item.title}`) }}
+                {{ $t(item.title) }}
               </h2>
 
               <div class="rotate-180 text-gray-400">
@@ -82,7 +78,7 @@ const options = [
               :class="{ 'text-white': activeType === item.type }"
               class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
             >
-              {{ $t(`home.${item.description}`) }}
+              {{ $t(item.description) }}
             </p>
           </div>
         </BaseSelectorItem>
