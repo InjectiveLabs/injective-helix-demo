@@ -213,12 +213,15 @@ function closePositionAndReduceOnlyOrders() {
         v-bind="{ status: marketCloseStatus }"
         size="sm"
         variant="danger-ghost"
-        class="basis-16 shrink-0"
+        class="min-w-20"
         @click="closePositionClicked"
       >
         {{ $t('trade.market') }}
       </AppButton>
-      <AppButton size="sm" variant="danger-ghost"> Limit </AppButton>
+
+      <AppButton class="min-w-20" size="sm" variant="danger-ghost">
+        {{ $t('trade.limit') }}
+      </AppButton>
 
       <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Qty" />
       <AppInputBase class="p-1 rounded min-w-0 border" placeholder="Price" />

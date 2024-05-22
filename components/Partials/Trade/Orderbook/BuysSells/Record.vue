@@ -25,7 +25,8 @@ const emit = defineEmits<{
   'set:index': [index: number]
 }>()
 
-const showFlash = ref(false)
+const showPriceFlash = ref(false)
+const showQuantityFlash = ref(false)
 
 function setIndex() {
   emit('set:index', props.index)
@@ -34,20 +35,29 @@ function setIndex() {
 watch(
   () => props.record.price,
   () => {
-    showFlash.value = true
+    showPriceFlash.value = true
+  }
+)
+watch(
+  () => props.record.quantity,
+  () => {
+    showQuantityFlash.value = true
   }
 )
 
-function setFlashOff() {
-  showFlash.value = false
+function setPriceFlashOff() {
+  showPriceFlash.value = false
+}
+
+function setQuantityFlashOff() {
+  showQuantityFlash.value = false
 }
 </script>
 
 <template>
   <div
     class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
-    :class="{ 'bg-brand-800': isActive, 'flash-animation': showFlash }"
-    @animationend="setFlashOff"
+    :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
     <div
@@ -79,12 +89,24 @@ function setFlashOff() {
     <div
       :key="record.price"
       class="flex-1 min-w-0 truncate px-1 relative"
-      :class="[isBuy ? 'text-green-500' : 'text-red-500']"
+      :class="[
+        isBuy ? 'text-green-500' : 'text-red-500',
+        { 'flash-animation': showPriceFlash }
+      ]"
+      @animationend="setPriceFlashOff"
     >
       {{ props.record.price }}
     </div>
 
-    <div :key="record.price" class="flex-1 min-w-0 truncate px-1 relative">
+    <div
+      :key="record.price"
+      class="flex-1 min-w-0 truncate px-1 relative"
+      :class="{
+        [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
+          showQuantityFlash
+      }"
+      @animationend="setQuantityFlashOff"
+    >
       {{ props.record.quantity }}
     </div>
 
@@ -100,17 +122,49 @@ function setFlashOff() {
 <style>
 @keyframes flash {
   0% {
-    background-color: transparent;
+    color: white;
   }
   50% {
-    background-color: rgba(40, 100, 100, 0.1);
+    color: white;
   }
   100% {
-    background-color: transparent;
+    color: white;
   }
 }
 
 .flash-animation {
-  animation: flash 0.6s forwards;
+  animation: flash 0.2s forwards;
+}
+
+@keyframes flash-red {
+  0% {
+    color: rgb(243, 22, 71);
+  }
+  50% {
+    color: rgb(243, 22, 71);
+  }
+  100% {
+    color: rgb(243, 22, 71);
+  }
+}
+
+.flash-animation-red {
+  animation: flash-red 0.2s forwards;
+}
+
+@keyframes flash-green {
+  0% {
+    color: rgb(08, 134, 92);
+  }
+  50% {
+    color: rgb(08, 134, 92);
+  }
+  100% {
+    color: rgb(08, 134, 92);
+  }
+}
+
+.flash-animation-green {
+  animation: flash-green 0.2s forwards;
 }
 </style>
