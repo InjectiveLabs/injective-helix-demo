@@ -3,7 +3,8 @@
 <template>
   <div>
     <AssetNoticeBanners />
-    <AssetKadoBanner />
+    <!-- hide for launch -->
+    <!-- <AssetKadoBanner /> -->
 
     <div class="flex flex-col p-4 lg:p-8 max-w-7xl mx-auto w-full">
       <PartialsHomeSectionsHero />

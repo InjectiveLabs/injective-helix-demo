@@ -66,6 +66,13 @@ export default {
     tradingVolume: 'Trading volume',
     overviewTitle: 'Better and faster.\nExperience trading like never before.',
     overview: {
+      faster: 'faster',
+      title: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Better and ',
+          named('faster'),
+          '\nExperience trading like never before.'
+        ]),
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
         'Trade smarter and leverage advanced strategies in just a click.',
@@ -84,16 +91,15 @@ export default {
       title: 'Getting started on Helix',
       description: 'Deposit crypto assets to Injective ',
       description2:
-        'Bridge USDT and other assets from Ethereum, Cosmos, Solana and other prominent blockchains to Injective via the Injective Bridge.',
+        'Bridge USDT and other assets into Helix via the Injective Bridge.',
       gasRequirement:
         'Make sure you get at least 0.1 INJ to pay for the transaction fee.',
       steps: 'Steps',
       step1: 'Visit the Injective Bridge and connect your wallet.',
-      step2:
-        'From the dropdown menu, select the origin source chain (e.g. Ethereum).',
-      step3: 'Choose USDT or any other asset and input the transfer amount.',
+      step2: 'Select the source chain (e.g. Ethereum, Cosmos or Solana).',
+      step3: 'Choose USDT or any other asset',
       step4:
-        'After the transaction is complete, return to Helix and check your Balances under the Portfolio page. You are ready to trade!',
+        'Once complete, return to Helix and check your Balances on the Portfolio page. You are ready to trade!',
       cta: 'Go to Injective Bridge'
     }
   },

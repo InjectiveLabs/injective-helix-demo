@@ -206,7 +206,7 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
       type: MenuItemType.Link,
       label: 'navigation.fiatDeposit',
       description: 'navigation.fiatDepositDescription',
-      to: 'https://injective.com/getinj/',
+      to: 'https://injective.com/getinj/#getInj',
       isExternal: true
     }
   ]

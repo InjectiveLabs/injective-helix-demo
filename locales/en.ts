@@ -97,6 +97,9 @@ export default {
         `Go to new ${named('market')} spot grid`
     }
   },
+  globalBanner: {
+    title: 'Deposit assets on Injective to get started on Helix'
+  },
   underMaintenance: 'Under Maintenance',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -236,10 +239,12 @@ export default {
     activity: 'Activity',
     portfolio: 'Portfolio',
     deposit: 'Deposit',
+    getInj: 'Get INJ',
+    getInjDescription: 'Deposit INJ from centralized exchanges to your account',
     cryptoDeposit: 'Crypto Deposit',
     fiatDeposit: 'Fiat Deposit',
     fiatDepositDescription: 'Deposit via bank transfer or a bank card',
-    cryptoDepositDescription: 'Deposit from other blockchains to your account',
+    cryptoDepositDescription: 'Deposit crypto into your trading account',
     guilds: 'Guilds',
     guildsSub: 'Create and join Guilds to win team-based competitions',
     lpRewards: 'LP Rewards',

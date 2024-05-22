@@ -48,11 +48,15 @@ const options = [
     <h2
       class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
     >
-      {{ $t('home.overviewTitle') }}
+      <i18n-t keypath="home.overview.title">
+        <template #faster>
+          <span class="italic">{{ $t('home.overview.faster') }}</span>
+        </template>
+      </i18n-t>
     </h2>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-10">
-      <div>
+      <div class="space-y-4">
         <BaseSelectorItem
           v-for="item in options"
           :key="`home-${item.type}`"
@@ -60,31 +64,33 @@ const options = [
           class="hover:bg-brand-875 p-6 rounded-lg cursor-pointer flex"
           :value="item.type"
         >
-          <div class="flex-1">
-            <h2
-              :class="{ 'text-blue-500': activeType === item.type }"
-              class="text-xl"
-            >
-              {{ $t(`home.${item.title}`) }}
-            </h2>
+          <div class="flex-1 space-y-2">
+            <div class="flex items-center justify-between">
+              <h2
+                :class="{ 'text-blue-500': activeType === item.type }"
+                class="text-xl xs:text-2xl xs:leading-8"
+              >
+                {{ $t(`home.${item.title}`) }}
+              </h2>
+
+              <div class="rotate-180 text-gray-400">
+                <SharedIcon name="arrow" />
+              </div>
+            </div>
+
             <p
               :class="{ 'text-white': activeType === item.type }"
-              class="text-xs text-gray-400"
+              class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
             >
               {{ $t(`home.${item.description}`) }}
             </p>
           </div>
-          <div class="flex items-center">
-            <div class="rotate-180 text-gray-400">
-              <SharedIcon name="arrow" />
-            </div>
-          </div>
         </BaseSelectorItem>
       </div>
 
-      <div class="flex justify-center">
+      <div class="flex justify-center lg:ml-20">
         <img
-          class="m-auto object-contain h-[500px]"
+          class="m-auto object-contain max-h-[630px]"
           :src="imgList[activeType]"
         />
       </div>

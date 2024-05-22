@@ -7,7 +7,8 @@ const walletStore = useWalletStore()
     <div class="flex items-center space-x-2">
       <SharedIcon name="show" />
       <p class="text-xs">
-        Connected As <strong>{{ walletStore.authZOrInjectiveAddress }}</strong>
+        {{ $t('connect.connectedAs') }}
+        <strong>{{ walletStore.authZOrInjectiveAddress }}</strong>
       </p>
     </div>
 
