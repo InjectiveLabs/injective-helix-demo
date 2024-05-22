@@ -93,7 +93,11 @@ function setQuantityFlashOff() {
       class="flex-1 min-w-0 truncate px-1 relative"
       :class="[
         isBuy ? 'text-green-500' : 'text-red-500',
-        { 'flash-animation': showPriceFlash }
+        {
+          [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
+            showPriceFlash,
+          'font-bold': showPriceFlash
+        }
       ]"
       @animationend="setPriceFlashOff"
     >
@@ -105,7 +109,8 @@ function setQuantityFlashOff() {
       class="flex-1 min-w-0 truncate px-1 relative"
       :class="{
         [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
-          showQuantityFlash
+          showQuantityFlash,
+        'font-bold': showQuantityFlash
       }"
       @animationend="setQuantityFlashOff"
     >
@@ -119,6 +124,8 @@ function setQuantityFlashOff() {
       {{ props.record.volume }}
     </div>
   </div>
+
+  <div class="green-300"></div>
 </template>
 
 <style>
@@ -140,13 +147,13 @@ function setQuantityFlashOff() {
 
 @keyframes flash-red {
   0% {
-    color: rgb(243, 22, 71);
+    color: rgb(248, 114, 148);
   }
   50% {
-    color: rgb(243, 22, 71);
+    color: rgb(248, 114, 148);
   }
   100% {
-    color: rgb(243, 22, 71);
+    color: rgb(248, 114, 148);
   }
 }
 
@@ -156,13 +163,13 @@ function setQuantityFlashOff() {
 
 @keyframes flash-green {
   0% {
-    color: rgb(08, 134, 92);
+    color: rgb(101, 245, 197);
   }
   50% {
-    color: rgb(08, 134, 92);
+    color: rgb(101, 245, 197);
   }
   100% {
-    color: rgb(08, 134, 92);
+    color: rgb(101, 245, 197);
   }
 }
 

@@ -416,13 +416,28 @@ export const submitMarketOrder = async ({
 
   const messages = [message]
 
-  if (tpMessage) {
-    messages.push(tpMessage)
+  // TPSL
+  const tpSlMessages = [tpMessage, slMessage].filter(
+    (msg) => msg
+  ) as MsgCreateDerivativeMarketOrder[]
+
+  let actualTpSlMessages
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualTpSlMessages = msgsOrMsgExecMsgs(
+      tpSlMessages,
+      walletStore.injectiveAddress
+    )
+  } else if (walletStore.autoSign) {
+    actualTpSlMessages = msgsOrMsgExecMsgs(
+      tpSlMessages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualTpSlMessages = tpSlMessages
   }
 
-  if (slMessage) {
-    messages.push(slMessage)
-  }
+  // TPSL END
 
   let actualMessage
 
@@ -443,6 +458,15 @@ export const submitMarketOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  if (tpSlMessages.length) {
+    await msgBroadcaster.broadcastWithFeeDelegation({
+      msgs: actualTpSlMessages,
+      injectiveAddress: walletStore.autoSign
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
+    })
+  }
 }
 
 export const submitStopMarketOrder = async ({

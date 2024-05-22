@@ -273,6 +273,8 @@ function onSubmit() {
         @click="onSubmit"
       >
         {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+        /
+        {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
       </AppButton>
     </div>
   </div>

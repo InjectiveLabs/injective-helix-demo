@@ -167,7 +167,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       },
       {
         type: MenuItemType.Link,
-        label: 'navigation.wallet',
+        label: 'navigation.subaccountHistory',
         to: { name: PortfolioSubPage.HistoryWallet }
       },
       {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Position, TradeDirection } from '@injectivelabs/sdk-ts'
+import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -8,10 +8,14 @@ import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
 
 const props = defineProps({
   position: {
-    type: Object as PropType<Position>,
+    type: Object as PropType<PositionV2 | Position>,
     required: true
   }
 })
+
+const emit = defineEmits<{
+  'margin:add': [position: Position | PositionV2]
+}>()
 
 const { validate } = useForm<ClosePositionLimitForm>()
 
@@ -186,8 +190,13 @@ async function closePositionLimit() {
     })
     .catch($onError)
     .finally(() => {
+      success({ title: t('common.success') })
       limitCloseStatus.setIdle()
     })
+}
+
+function addMargin() {
+  emit('margin:add', props.position)
 }
 </script>
 
@@ -241,9 +250,9 @@ async function closePositionLimit() {
 
     <div class="flex-1 flex items-center p-2 space-x-2">
       <span>{{ marginToString }}</span>
-      <div class="p-2 rounded-full bg-gray-800">
+      <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
         <BaseIcon name="plus" is-xs />
-      </div>
+      </button>
     </div>
 
     <div class="flex-1 flex items-center p-2">

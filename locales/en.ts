@@ -223,6 +223,7 @@ export default {
     funding: 'Funding',
     disconnect: 'Disconnect',
     myAccount: 'My Account',
+    subaccountHistory: 'Subaccount History',
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
     rewards: 'Rewards',

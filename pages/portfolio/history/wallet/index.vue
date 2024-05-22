@@ -66,7 +66,7 @@ async function handleLimitChange(limit: number) {
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.walletHistory') }}</h3>
+      <h3 class="portfolio-title">{{ $t('navigation.subaccountHistory') }}</h3>
     </div>
 
     <div class="border-y divide-y">

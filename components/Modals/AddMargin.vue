@@ -8,7 +8,14 @@ import {
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BusEvents, Modal } from '@/types'
+import { Modal } from '@/types'
+
+const props = defineProps({
+  position: {
+    type: Object as PropType<Position | PositionV2 | undefined>,
+    required: true
+  }
+})
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -20,19 +27,18 @@ const { handleSubmit, resetForm } = useForm()
 const { userBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
-const position = ref<Position | PositionV2 | undefined>(undefined)
 
 const isModalOpen = computed(
-  () => modalStore.modals[Modal.AddMarginToPosition] && !!position.value
+  () => modalStore.modals[Modal.AddMarginToPosition] && !!props.position
 )
 
 const market = computed(() => {
-  if (!position.value) {
+  if (!props.position) {
     return
   }
 
   return derivativeStore.markets.find(
-    (market) => market.marketId === position.value?.marketId
+    (market) => market.marketId === props.position?.marketId
   )
 })
 
@@ -50,15 +56,7 @@ const quoteBalance = computed(() => {
   )
 })
 
-onMounted(() => {
-  // todo: refactor this to pass position from parent component
-  useEventBus<Position>(BusEvents.AddMarginToPosition).on(
-    (p) => (position.value = p)
-  )
-})
-
 const {
-  valueToBigNumber: availableMargin,
   valueToFixed: availableMarginToFixed,
   valueToString: availableMarginToString
 } = useSharedBigNumberFormatter(quoteBalance, {
@@ -80,8 +78,6 @@ function onMaxClicked() {
 }
 
 function onModalClose() {
-  position.value = undefined
-
   modalStore.closeModal(Modal.AddMarginToPosition)
 }
 
@@ -146,16 +142,15 @@ const onSubmit = handleSubmit(() => {
           <div class="mt-4">
             <div class="flex flex-wrap">
               <div class="w-full">
-                <AppInputNumeric
+                <AppInputField
                   v-model="amountValue"
                   :label="$t('trade.amount')"
-                  :max="availableMarginToString"
-                  :max-selector="availableMargin.gt(0.01)"
+                  :max="Number(availableMarginToString)"
+                  autofix
                   :placeholder="$t('trade.enter_your_amount')"
-                  :errors="status.isLoading() ? [] : amountErrors"
                   class="no-shadow"
-                  step="0.001"
                   data-cy="add-margin-modal-amount-input"
+                  :decimals="4"
                 >
                   <template #max>
                     <AppButton
@@ -170,7 +165,7 @@ const onSubmit = handleSubmit(() => {
                   <template #addon>
                     {{ market.quoteToken.symbol }}
                   </template>
-                </AppInputNumeric>
+                </AppInputField>
 
                 <p
                   v-if="amountErrors.length > 0"
@@ -183,8 +178,8 @@ const onSubmit = handleSubmit(() => {
                 <AppButton
                   is-lg
                   class="w-full bg-blue-500 text-blue-900"
-                  :is-loading="status.isLoading()"
-                  :is-disabled="amountErrors.length > 0"
+                  v-bind="{ status }"
+                  :disabled="amountErrors.length > 0"
                   data-cy="add-margin-modal-execute-button"
                   @click="onSubmit"
                 >

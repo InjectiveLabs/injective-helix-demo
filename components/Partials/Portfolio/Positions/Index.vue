@@ -8,7 +8,7 @@ const positionStore = usePositionStore()
 const { values } = useForm<PositionsFilterForm>()
 
 const filteredPosition = computed(() =>
-  positionStore.subaccountPositions.filter((position) => {
+  positionStore.positions.filter((position) => {
     const isPartOfMarket = values[PositionsFilterField.Market]
       ? position.marketId === values[PositionsFilterField.Market]
       : true
