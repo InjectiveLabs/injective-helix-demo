@@ -12,6 +12,8 @@ type Variant =
   | 'success-outline'
 
 defineProps({
+  isLoading: Boolean,
+
   size: {
     type: String as PropType<Size>,
     default: ''
@@ -35,8 +37,8 @@ defineProps({
     :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant]"
     v-bind="$attrs"
   >
-    <span v-if="status.isLoading()">&#8202;</span>
-    <AppSpinner v-if="status.isLoading()" is-sm is-white />
+    <span v-if="status.isLoading() || isLoading">&#8202;</span>
+    <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />
 
     <slot v-else />
   </button>

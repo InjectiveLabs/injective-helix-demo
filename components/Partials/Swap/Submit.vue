@@ -18,7 +18,7 @@ const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
 const { userBalancesWithToken } = useBalance()
 
-const props = defineProps({
+defineProps({
   isLoading: Boolean,
   showErrorState: Boolean,
 
@@ -216,18 +216,14 @@ watch(
     <AppButton
       v-else
       class="mb-2 w-full text-gray-525 text-opacity-100"
-      :class="{
-        'bg-blue-500 text-blue-900 ':
-          swapTimeRemaining && !isLoading && !hasErrors && !queryError,
-        'bg-gray-475 text-white':
-          rateExpired && hasAmounts && !props.isLoading && !hasErrors
-      }"
-      :classes="'border border-accent-500 text-accent-500  bg-opacity-50'"
       v-bind="{
         isXl: true,
         status: status,
-        isLoading: isLoading,
-        isDisabled: isLoading || !!hasErrors || !hasAmounts
+        isLoading,
+        disabled: (!hasAmounts && !isLoading) || hasErrors
+      }"
+      :class="{
+        'pointer-events-none': isLoading
       }"
       @click="handlerFunction"
     >
