@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { getBridgeUrl } from '@/app/utils/network'
-
-const walletStore = useWalletStore()
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
 const props = defineProps({
   isDeposit: Boolean,
@@ -19,9 +17,7 @@ const props = defineProps({
 })
 
 const redirectionLink = computed(() => {
-  let link = `${getBridgeUrl()}/${props.isTransfer ? 'transfer' : ''}?address=${
-    walletStore.injectiveAddress
-  }&wallet=${walletStore.wallet}&origin=helix`
+  let link = getBridgeRedirectionUrl(props.isTransfer ? 'transfer' : '')
 
   if (props.denom) {
     link = `${link}&denom=${props.denom}`

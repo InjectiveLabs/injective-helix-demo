@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  SharedMarketType,
-  SharedMarketChange,
-  SharedUiMarketSummary
-} from '@shared/types'
+import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -78,22 +74,8 @@ function toggleFavorite() {
 </script>
 
 <template>
-  <NuxtLink
-    :to="
-      market.isVerified
-        ? {
-            name: `${
-              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
-            }-slug`,
-            params: { slug: market.slug }
-          }
-        : {
-            name: `${
-              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
-            }`,
-            query: { marketId: market.marketId }
-          }
-    "
+  <PartialsCommonMarketRedirection
+    v-bind="{ market }"
     :class="{
       'p-4': isMarketsPage
     }"
@@ -159,5 +141,5 @@ function toggleFavorite() {
         <SharedIcon name="star" />
       </div>
     </div>
-  </NuxtLink>
+  </PartialsCommonMarketRedirection>
 </template>

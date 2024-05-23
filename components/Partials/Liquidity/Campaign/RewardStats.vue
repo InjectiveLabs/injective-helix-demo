@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { getExplorerUrl } from '@shared/utils/network'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 
 const props = defineProps({
   totalScore: {

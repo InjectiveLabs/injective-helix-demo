@@ -1,12 +1,12 @@
 import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getExplorerUrl } from '@shared/utils/network'
 import {
   toBalanceInToken,
   convertCoinToBalancesWithToken
 } from '@/app/utils/formatters'
 import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 
 export function useSwapHistory(swap: Ref<AtomicSwap>) {
   const tokenStore = useTokenStore()

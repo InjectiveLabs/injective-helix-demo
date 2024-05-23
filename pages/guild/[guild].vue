@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import {
   GUILD_MAX_CAP,
@@ -8,7 +9,6 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { getBridgeUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { portfolioStatusKey } from '@/types'
 
 const isBannerVisible = ref(true)
@@ -34,7 +34,11 @@ const portfolioStatus = inject(
   >
     <div />
 
-    <NuxtLink :to="getBridgeUrl()" target="_blank" class="hover:text-white">
+    <NuxtLink
+      :to="getBridgeRedirectionUrl()"
+      target="_blank"
+      class="hover:text-white"
+    >
       <div class="flex items-center space-x-2">
         <p>{{ $t('globalBanner.title') }}</p>
 

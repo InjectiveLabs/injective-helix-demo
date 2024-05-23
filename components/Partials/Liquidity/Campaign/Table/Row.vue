@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 import { UiSpotMarket } from '@/types'
 
 const props = defineProps({

@@ -4,8 +4,8 @@ import {
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
 import { unknownToken } from '@shared/data/token'
+import { getExplorerUrl } from '@shared/utils/network'
 import { getToken } from '@/app/utils/helpers'
-import { getExplorerUrl } from '@/app/utils/network'
 import { UiSubaccountTransactionWithToken } from '@/types'
 
 export class UiSubaccountTransformer {

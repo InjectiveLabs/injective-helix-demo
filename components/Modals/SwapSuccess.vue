@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@/app/utils/network'
 import { confettiOptions } from '@/app/utils/vendor'
 import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { Modal } from '@/types'

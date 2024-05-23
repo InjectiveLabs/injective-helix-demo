@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { RouteLocationNamedRaw } from 'vue-router'
+import { getBridgeUrl } from '@shared/utils/network'
 import { getNewMarketTickerFromWHDenom } from '@/app/utils/market'
-import { getBridgeUrl } from '@/app/utils/network'
 
 const props = defineProps({
   isMigration: Boolean,

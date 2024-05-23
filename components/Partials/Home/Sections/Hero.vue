@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { getBridgeUrl } from '@/app/utils/network'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { TradeSubPage } from '@/types'
 
@@ -52,7 +52,7 @@ const totalMarkets = computed(
             </AppButton>
           </NuxtLink>
 
-          <NuxtLink :to="getBridgeUrl()" target="_blank">
+          <NuxtLink :to="getBridgeRedirectionUrl()" target="_blank">
             <AppButton class="lg:py-4 w-full" variant="primary-outline">
               {{ $t('home.depositCrypto') }}
             </AppButton>

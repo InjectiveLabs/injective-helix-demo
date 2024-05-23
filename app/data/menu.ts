@@ -1,3 +1,4 @@
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import {
   MainPage,
   MenuItem,
@@ -7,7 +8,6 @@ import {
   TradingInterface,
   TradingBotsSubPage
 } from '@/types'
-import { getBridgeUrl } from '@/app/utils/network'
 
 export const MENU_ITEMS: MenuItem[] = [
   {
@@ -199,7 +199,7 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
       type: MenuItemType.Link,
       label: 'navigation.cryptoDeposit',
       description: 'navigation.cryptoDepositDescription',
-      to: getBridgeUrl(),
+      to: getBridgeRedirectionUrl(),
       isExternal: true
     },
     {

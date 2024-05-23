@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
-import { getExplorerUrl } from '@/app/utils/network'
+import { getExplorerUrl } from '@shared/utils/network'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
