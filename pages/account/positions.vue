@@ -128,11 +128,11 @@ function onCloseAllPositions() {
 function closeAllPositions() {
   positionStore
     .closeAllPosition(positions.value)
-    .then(() => {
+    .then(() =>
       success({
         title: t('trade.positions_closed')
       })
-    })
+    )
     .catch($onError)
 }
 
@@ -155,11 +155,11 @@ function closePosition() {
       position,
       market
     })
-    .then(() => {
+    .then(() =>
       success({
         title: t('trade.positions_closed')
       })
-    })
+    )
     .catch($onError)
 }
 

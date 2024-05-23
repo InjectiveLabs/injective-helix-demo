@@ -137,9 +137,7 @@ function closePosition() {
       position: props.position,
       market: market.value
     })
-    .then(() => {
-      success({ title: t('trade.position_closed') })
-    })
+    .then(() => success({ title: t('trade.position_closed') }))
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()
@@ -159,9 +157,7 @@ function closePositionAndReduceOnlyOrders() {
       position: props.position,
       reduceOnlyOrders: reduceOnlyCurrentOrders.value
     })
-    .then(() => {
-      success({ title: t('trade.position_closed') })
-    })
+    .then(() => success({ title: t('trade.position_closed') }))
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()
@@ -188,9 +184,7 @@ async function closePositionLimit() {
           ? OrderSide.SellPO
           : OrderSide.BuyPO
     })
-    .then(() => {
-      success({ title: t('common.success') })
-    })
+    .then(() => success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       limitCloseStatus.setIdle()

@@ -50,9 +50,6 @@ function revoke() {
       grantee: props.grant.grantee,
       messageTypes: [(props.grant.authorization as GenericAuthorization).msg]
     })
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

@@ -68,9 +68,7 @@ function cancelOrder() {
 
   spotStore
     .cancelOrder(props.order as SpotLimitOrder)
-    .then(() => {
-      success({ title: t('trade.order_success_canceling') })
-    })
+    .then(() => success({ title: t('trade.order_success_canceling') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

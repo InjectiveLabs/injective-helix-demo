@@ -107,12 +107,12 @@ function onCreateStrategy() {
 
   gridStrategyStore
     .createStrategy(formValues.value)
-    .then(() => {
+    .then(() =>
       success({
         title: t('sgt.success'),
         description: t('sgt.gridStrategyCreatedSuccessfully')
       })
-    })
+    )
     .catch($onError)
     .finally(() => {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)

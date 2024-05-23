@@ -13,11 +13,11 @@ function cancelAllTriggers() {
 
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountConditionalOrders)
-    .then(() => {
+    .then(() =>
       success({
         title: t('common.success')
       })
-    })
+    )
     .catch((e) => {
       $onError(e)
       error({ title: t('common.error') })

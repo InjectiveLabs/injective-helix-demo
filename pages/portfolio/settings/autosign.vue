@@ -12,9 +12,6 @@ function connectAutoSign() {
 
   walletStore
     .connectAutoSign()
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -24,9 +21,6 @@ function disconnectAutoSign() {
 
   walletStore
     .disconnectAutoSign()
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

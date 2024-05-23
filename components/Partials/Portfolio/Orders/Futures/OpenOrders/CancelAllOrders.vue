@@ -13,11 +13,11 @@ function cancelAllOrders() {
 
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountOrders)
-    .then(() => {
+    .then(() =>
       success({
         title: t('common.success')
       })
-    })
+    )
     .catch((e) => {
       error({ title: t('common.error') })
       $onError(e)

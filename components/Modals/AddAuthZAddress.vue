@@ -19,6 +19,7 @@ const tradingMessages = [
 
 const modalStore = useModalStore()
 const authZStore = useAuthZStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
@@ -50,9 +51,7 @@ async function grantAuthorization() {
       grantee: addressValue.value,
       messageTypes: msgs.value
     })
-    .then(() => {
-      success({ title: 'Success!' })
-    })
+    .then(() => success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

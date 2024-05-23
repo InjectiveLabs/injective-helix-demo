@@ -22,9 +22,6 @@ async function createStrategy() {
 
   gridStrategyStore
     .createStrategy(spotFormValues.value, market!.value!)
-    .then(() => {
-      //  console.log('success')
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

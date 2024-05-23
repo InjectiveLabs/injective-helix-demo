@@ -1,4 +1,6 @@
 import {
+  Position,
+  PositionV2,
   msgsOrMsgExecMsgs,
   MsgCancelDerivativeOrder,
   MsgCreateDerivativeLimitOrder,
@@ -6,9 +8,7 @@ import {
   MsgBatchCancelDerivativeOrders,
   derivativePriceToChainPriceToFixed,
   derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed,
-  Position,
-  PositionV2
+  derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'

@@ -65,12 +65,10 @@ function cancelOrder() {
 
   derivativeStore
     .cancelOrder(props.trigger)
+    .then(() => success({ title: t('common.success') }))
     .catch((e) => {
       error({ title: t('common.error') })
       $onError(e)
-    })
-    .then(() => {
-      success({ title: t('common.success') })
     })
     .finally(() => {
       status.setIdle()

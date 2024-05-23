@@ -45,9 +45,6 @@ function revokeAll() {
         )
         .map((grant) => (grant.authorization as GenericAuthorization).msg)
     })
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

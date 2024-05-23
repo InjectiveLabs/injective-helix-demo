@@ -14,9 +14,7 @@ function connect() {
   if (isWalletInstalled) {
     walletStore
       .connectNinji()
-      .then(() => {
-        success({ title: t('connect.successfullyConnected') })
-      })
+      .then(() => success({ title: t('connect.successfullyConnected') }))
       .catch((e) => {
         walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)

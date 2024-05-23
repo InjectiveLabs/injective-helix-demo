@@ -66,9 +66,7 @@ function onCancelOrder() {
 
   derivativeStore
     .cancelOrder(props.order as DerivativeLimitOrder)
-    .then(() => {
-      success({ title: t('trade.order_success_canceling') })
-    })
+    .then(() => success({ title: t('trade.order_success_canceling') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

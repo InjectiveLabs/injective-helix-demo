@@ -14,11 +14,11 @@ const { copy } = useClipboard()
 const { t } = useLang()
 
 function copyAddress() {
-  copy(props.address).then(() => {
+  copy(props.address).then(() =>
     success({
       title: t('connect.addressCopied')
     })
-  })
+  )
 }
 </script>
 

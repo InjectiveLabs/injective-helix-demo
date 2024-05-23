@@ -159,9 +159,7 @@ function closePositionAndReduceOnlyOrders() {
       position: props.position,
       reduceOnlyOrders: reduceOnlyCurrentOrders.value
     })
-    .then(() => {
-      success({ title: t('trade.position_closed') })
-    })
+    .then(() => success({ title: t('trade.position_closed') }))
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()

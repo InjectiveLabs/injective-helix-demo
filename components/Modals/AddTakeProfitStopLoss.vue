@@ -175,9 +175,7 @@ function submitTpSl() {
         ? new BigNumberInBase(takeProfitValue.value)
         : undefined
     })
-    .then(() => {
-      success({ title: t('common.success') })
-    })
+    .then(() => success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       closeModal()

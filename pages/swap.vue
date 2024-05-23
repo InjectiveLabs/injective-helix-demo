@@ -171,9 +171,7 @@ function getOutputQuantity() {
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
-    .then(() => {
-      updateAmount()
-    })
+    .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
       if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
@@ -202,9 +200,7 @@ function getInputQuantity() {
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
-    .then(() => {
-      updateAmount()
-    })
+    .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
 
