@@ -6,6 +6,8 @@ const router = useRouter()
 const activityStore = useActivityStore()
 const { $onError } = useNuxtApp()
 
+const isMobile = useIsMobile()
+
 const { values: formValues } = useForm<{
   token: string
 }>()
@@ -74,7 +76,7 @@ async function handleLimitChange(limit: number) {
         @form:reset="fetchWalletTransfers"
         @token:update="fetchWalletTransfers"
       />
-      <PartialsPortfolioHistoryWalletTableHeader />
+      <PartialsPortfolioHistoryWalletTableHeader v-if="!isMobile" />
 
       <CommonSkeletonRow
         v-if="status.isLoading()"
@@ -84,11 +86,21 @@ async function handleLimitChange(limit: number) {
       />
 
       <template v-else>
-        <PartialsPortfolioHistoryWalletTableRow
-          v-for="transaction in activityStore.subaccountTransfers"
-          :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
-          v-bind="{ transaction }"
-        />
+        <div v-if="isMobile">
+          <PartialsPortfolioHistoryWalletTableMobileRow
+            v-for="transaction in activityStore.subaccountTransfers"
+            :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
+            v-bind="{ transaction }"
+          />
+        </div>
+
+        <template v-else>
+          <PartialsPortfolioHistoryWalletTableRow
+            v-for="transaction in activityStore.subaccountTransfers"
+            :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
+            v-bind="{ transaction }"
+          />
+        </template>
 
         <AppPagination
           v-if="activityStore.subaccountTransfers.length > 0"

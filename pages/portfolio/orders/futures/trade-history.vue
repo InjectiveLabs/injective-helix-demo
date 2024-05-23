@@ -20,6 +20,7 @@ const { limit, page, skip } = usePagination({
 })
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
+const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -115,11 +116,21 @@ onSubaccountChange(fetchData)
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersFuturesTradeHistoryTableRow
-        v-for="trade in derivativeStore.subaccountTrades"
-        :key="`${trade.orderHash}-${trade.tradeId}`"
-        v-bind="{ trade }"
-      />
+      <div v-if="isMobile">
+        <PartialsPortfolioOrdersFuturesTradeHistoryTableMobileRow
+          v-for="trade in derivativeStore.subaccountTrades"
+          :key="`${trade.orderHash}-${trade.tradeId}`"
+          v-bind="{ trade }"
+        />
+      </div>
+
+      <template v-else>
+        <PartialsPortfolioOrdersFuturesTradeHistoryTableRow
+          v-for="trade in derivativeStore.subaccountTrades"
+          :key="`${trade.orderHash}-${trade.tradeId}`"
+          v-bind="{ trade }"
+        />
+      </template>
 
       <AppPagination
         v-if="derivativeStore.subaccountTrades.length > 0"

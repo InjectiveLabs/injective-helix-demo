@@ -102,6 +102,7 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
         const minValueRule = `minValue:${markPrice.value.toFixed(
           market.value?.priceDecimals || 2
         )}`
+
         return [minValueRule, maxValueRule].join('|')
       }
     })

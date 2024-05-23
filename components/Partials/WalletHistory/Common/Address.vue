@@ -29,7 +29,7 @@ function copyAddress() {
     </span>
 
     <div
-      class="cursor-pointer text-gray-500 pl-2 pt-1 hover:text-blue-500"
+      class="cursor-pointer flex items-center text-gray-500 pl-2 hover:text-blue-500"
       @click="copyAddress"
     >
       <SharedIcon name="copy-plain" class="w-4 h-4" />

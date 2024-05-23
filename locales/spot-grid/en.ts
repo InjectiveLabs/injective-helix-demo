@@ -31,6 +31,7 @@ export default {
     gridMode: 'Grid Mode',
     available: 'Available',
     geometric: 'Geometric',
+    createdAt: 'Created At',
     setValues: 'Set Values',
     arithmetic: 'Arithmetic',
     investment: 'Investment',
@@ -76,6 +77,8 @@ export default {
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    noActiveStrategies: 'No Active Strategies',
+    noStrategies: 'No Strategies found.',
     endLegacyBotText:
       "Before creating a new bot, you'll need to deactivate your currently active bot in the legacy market.",
     legacyBotWarning:

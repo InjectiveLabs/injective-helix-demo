@@ -14,6 +14,7 @@ const route = useRoute()
 const router = useRouter()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
+const isMobile = useIsMobile()
 
 const { limit, page, skip } = usePagination({
   totalCount: toRef(derivativeStore, 'subaccountOrderHistoryCount')
@@ -115,11 +116,21 @@ onSubaccountChange(fetchData)
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersFuturesOrderHistoryTableRow
-        v-for="order in derivativeStore.subaccountOrderHistory"
-        :key="`${order.orderHash}-${order.cid}`"
-        v-bind="{ order }"
-      />
+      <div v-if="isMobile">
+        <PartialsPortfolioOrdersFuturesOrderHistoryTableMobileRow
+          v-for="order in derivativeStore.subaccountOrderHistory"
+          :key="`${order.orderHash}-${order.cid}`"
+          v-bind="{ order }"
+        />
+      </div>
+
+      <template v-else>
+        <PartialsPortfolioOrdersFuturesOrderHistoryTableRow
+          v-for="order in derivativeStore.subaccountOrderHistory"
+          :key="`${order.orderHash}-${order.cid}`"
+          v-bind="{ order }"
+        />
+      </template>
 
       <AppPagination
         v-if="derivativeStore.subaccountOrderHistory.length > 0"

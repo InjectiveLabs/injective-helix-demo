@@ -6,6 +6,8 @@ const router = useRouter()
 const swapStore = useSwapStore()
 const { $onError } = useNuxtApp()
 
+const isMobile = useIsMobile()
+
 const status = reactive(new Status(StatusType.Loading))
 
 const { limit, page, skip } = usePagination({
@@ -56,7 +58,7 @@ async function handleLimitChange(limit: number) {
     </div>
 
     <div class="border-y divide-y">
-      <PartialsPortfolioHistorySwapTableHeader />
+      <PartialsPortfolioHistorySwapTableHeader v-if="!isMobile" />
 
       <CommonSkeletonRow
         v-if="status.isLoading()"
@@ -66,11 +68,21 @@ async function handleLimitChange(limit: number) {
       />
 
       <template v-else>
-        <PartialsPortfolioHistorySwapTableRow
-          v-for="swap in swapStore.swapHistory"
-          :key="`${swap.txHash}-${swap.indexBySender}`"
-          v-bind="{ swap }"
-        />
+        <div v-if="isMobile">
+          <PartialsPortfolioHistorySwapTableMobileRow
+            v-for="swap in swapStore.swapHistory"
+            :key="`${swap.txHash}-${swap.indexBySender}`"
+            v-bind="{ swap }"
+          />
+        </div>
+
+        <template v-else>
+          <PartialsPortfolioHistorySwapTableRow
+            v-for="swap in swapStore.swapHistory"
+            :key="`${swap.txHash}-${swap.indexBySender}`"
+            v-bind="{ swap }"
+          />
+        </template>
 
         <AppPagination
           v-if="swapStore.swapHistory.length > 0"

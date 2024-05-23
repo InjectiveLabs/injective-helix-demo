@@ -53,21 +53,26 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <div class="flex p-2 text-xs font-mono">
-    <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
-
+  <div class="p-2 text-xs divide-y border-b border-brand-700">
     <div v-if="market" class="flex-1 flex items-center space-x-2 p-2 font-sans">
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
       <p>{{ market.ticker }}</p>
     </div>
 
-    <div class="flex-1 flex items-center p-2">
+    <div class="justify-between flex items-center px-2 py-4 font-sans">
+      <p>{{ $t('trade.lastUpdated') }}</p>
+      <p>{{ timestamp }}</p>
+    </div>
+
+    <div class="justify-between flex items-center px-2 py-4">
+      <p>{{ $t('trade.type') }}</p>
       <span class="font-sans">
         {{ type }}
       </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2">
+    <div class="justify-between flex items-center px-2 py-4">
+      <p>{{ $t('trade.side') }}</p>
       <div>
         <p
           class="font-sans"
@@ -85,51 +90,66 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       </div>
     </div>
 
-    <div class="flex-1 flex items-center p-2">
-      <span v-if="isMarketOrder" class="font-sans">
-        {{ $t('trade.market') }}
-      </span>
+    <div class="flex justify-between items-center px-2 py-4">
+      <p>{{ $t('trade.price') }}</p>
 
-      <span v-else>
-        {{ priceToString }}
-      </span>
-    </div>
-
-    <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
-
-    <div class="flex-1 flex items-center p-2 space-x-1">
-      <span>
-        {{ totalToString }}
-      </span>
-
-      <span v-if="market" class="text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
-    </div>
-
-    <div class="flex-1 flex items-center p-2">
-      <template v-if="order.isConditional">
-        <span class="text-gray-500 text-xs font-semibold">
-          {{ $t('trade.mark_price') }}
+      <p>
+        <span v-if="isMarketOrder" class="font-sans">
+          {{ $t('trade.market') }}
         </span>
 
-        <span
-          v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
-          class="text-white text-xs font-semibold"
-        >
-          &le;
+        <span v-else>
+          {{ priceToString }}
         </span>
-        <span v-else class="text-white text-xs font-semibold"> &ge; </span>
-
-        {{ triggerPriceToString }}
-      </template>
-
-      <template v-else>
-        <span>&mdash;</span>
-      </template>
+      </p>
     </div>
 
-    <div class="flex-1 flex font-sans items-center p-2">
+    <div class="justify-between flex items-center px-2 py-4">
+      <p>{{ $t('trade.amount') }}</p>
+      <p>{{ quantityToString }}</p>
+    </div>
+
+    <div class="justify-between flex items-center px-2 py-4 space-x-1">
+      <p>{{ $t('trade.total') }}</p>
+
+      <p>
+        <span>
+          {{ totalToString }}
+        </span>
+
+        <span v-if="market" class="text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </p>
+    </div>
+
+    <div class="justify-between flex items-center px-2 py-4">
+      <p>{{ $t('trade.triggerCondition') }}</p>
+      <p>
+        <template v-if="order.isConditional">
+          <span class="text-gray-500 text-xs font-semibold">
+            {{ $t('trade.mark_price') }}
+          </span>
+
+          <span
+            v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
+            class="text-white text-xs font-semibold"
+          >
+            &le;
+          </span>
+          <span v-else class="text-white text-xs font-semibold"> &ge; </span>
+
+          {{ triggerPriceToString }}
+        </template>
+
+        <template v-else>
+          <span>&mdash;</span>
+        </template>
+      </p>
+    </div>
+
+    <div class="justify-between flex font-sans items-center px-2 py-4">
+      <p>{{ $t('trade.orderStatus') }}</p>
       <span>{{ orderStatus }}</span>
     </div>
   </div>
