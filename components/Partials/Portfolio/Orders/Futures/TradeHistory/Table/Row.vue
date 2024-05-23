@@ -45,17 +45,18 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 </script>
 
 <template>
-  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+  <div v-if="market">
     <div class="flex p-2 text-xs font-mono">
       <div class="flex-1 flex items-center p-2">{{ time }}</div>
 
-      <div
+      <PartialsCommonMarketRedirection
         v-if="market"
+        v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         <p>{{ market.ticker }}</p>
-      </div>
+      </PartialsCommonMarketRedirection>
 
       <div class="flex-1 flex items-center p-2">
         <span class="font-sans">{{ tradeExecutionType }}</span>
@@ -89,5 +90,5 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
         </span>
       </div>
     </div>
-  </PartialsCommonMarketRedirection>
+  </div>
 </template>

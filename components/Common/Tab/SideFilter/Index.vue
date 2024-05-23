@@ -7,6 +7,11 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: ''
+  },
+
+  wrapperClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -33,7 +38,11 @@ const value = computed({
 </script>
 
 <template>
-  <AppTabSelect v-model="value" :options="options">
+  <AppTabSelect
+    v-model="value"
+    :wrapper-class="wrapperClass"
+    :options="options"
+  >
     <template #default>
       <div class="flex items-center">
         <span v-if="!value">Filter By Side</span>

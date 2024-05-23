@@ -82,6 +82,12 @@ watch(
   },
   { immediate: true }
 )
+
+onMounted(() => {
+  setTimeout(() => {
+    typed.value = props.modelValue
+  }, 0)
+})
 </script>
 
 <template>

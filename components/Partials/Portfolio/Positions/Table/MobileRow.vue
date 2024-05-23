@@ -205,15 +205,15 @@ function addTpSl() {
 </script>
 
 <template>
-  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+  <div v-if="market">
     <div class="p-2 text-xs divide-y">
-      <div
-        v-if="market"
+      <PartialsCommonMarketRedirection
+        v-bind="{ market }"
         class="flex items-center space-x-2 px-2 py-4 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         <p>{{ market.ticker }}</p>
-      </div>
+      </PartialsCommonMarketRedirection>
 
       <div class="flex items-center justify-between px-2 py-4">
         <p>{{ $t('trade.side') }}</p>
@@ -338,5 +338,5 @@ function addTpSl() {
         />
       </div>
     </div>
-  </PartialsCommonMarketRedirection>
+  </div>
 </template>

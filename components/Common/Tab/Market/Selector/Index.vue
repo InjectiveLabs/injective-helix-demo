@@ -10,6 +10,11 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: ''
+  },
+
+  wrapperClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -38,7 +43,11 @@ const activeMarket = computed(() =>
 </script>
 
 <template>
-  <div class="flex items-center tab-label px-8" @click="openModal">
+  <div
+    class="flex items-center tab-label px-8"
+    :class="wrapperClass"
+    @click="openModal"
+  >
     <p v-if="!activeMarket">{{ 'Filter By Market' }}</p>
 
     <p v-else>

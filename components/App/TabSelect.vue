@@ -15,6 +15,11 @@ const props = defineProps({
   placement: {
     type: String,
     default: 'bottom-start'
+  },
+
+  wrapperClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -33,9 +38,10 @@ const selected = computed(() =>
     :placement="placement"
     :distance="0"
     class="flex"
+    :class="wrapperClass"
   >
     <template #default="{ isOpen }">
-      <div class="tab-label px-4 flex">
+      <div class="tab-label px-4 flex w-full">
         <slot v-bind="{ isOpen, selected }" />
         <div class="flex items-center pl-2">
           <div class="transition-all" :class="{ 'rotate-180': isOpen }">

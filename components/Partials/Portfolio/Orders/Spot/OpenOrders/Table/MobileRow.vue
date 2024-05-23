@@ -81,15 +81,16 @@ function cancelOrder() {
 </script>
 
 <template>
-  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+  <div>
     <div class="p-2 divide-y text-xs">
-      <div
+      <PartialsCommonMarketRedirection
         v-if="market"
+        v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         <p>{{ market.ticker }}</p>
-      </div>
+      </PartialsCommonMarketRedirection>
 
       <div class="justify-between flex items-center px-2 py-4">
         <p>{{ $t('trade.side') }}</p>
@@ -145,5 +146,25 @@ function cancelOrder() {
         />
       </div>
     </div>
-  </PartialsCommonMarketRedirection>
+
+    <div class="justify-between flex items-center px-2 py-4">
+      <p>{{ $t('trade.total') }}</p>
+
+      <div v-if="market" class="space-y-1 font-mono">
+        <p>${{ totalToString }}</p>
+      </div>
+    </div>
+
+    <div class="px-2 pt-2 items-center">
+      <AppButton
+        v-if="orderFillable"
+        variant="danger-ghost"
+        v-bind="{ status }"
+        class="w-full"
+        @click="cancelOrder"
+      >
+        {{ $t('trade.cancelOrder') }}
+      </AppButton>
+    </div>
+  </div>
 </template>

@@ -53,17 +53,17 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+  <div v-if="market">
     <div class="flex p-2 text-xs font-mono">
       <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
 
-      <div
-        v-if="market"
+      <PartialsCommonMarketRedirection
+        v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
         <p>{{ market.ticker }}</p>
-      </div>
+      </PartialsCommonMarketRedirection>
 
       <div class="flex-1 flex items-center p-2">
         <span class="font-sans">
@@ -137,5 +137,5 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         <span>{{ orderStatus }}</span>
       </div>
     </div>
-  </PartialsCommonMarketRedirection>
+  </div>
 </template>

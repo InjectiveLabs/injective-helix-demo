@@ -6,6 +6,7 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
+const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -42,7 +43,7 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 <template>
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersFuturesOpenOrdersTabs />
-    <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader />
+    <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -52,11 +53,21 @@ onSubaccountChange(fetchDerivativeOpenOrders)
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
-        v-for="order in filteredOrders"
-        :key="`${order.orderHash}-${order.cid}`"
-        v-bind="{ order }"
-      />
+      <div v-if="isMobile">
+        <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
+          v-for="order in filteredOrders"
+          :key="`${order.orderHash}-${order.cid}`"
+          v-bind="{ order }"
+        />
+      </div>
+
+      <template v-else>
+        <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
+          v-for="order in filteredOrders"
+          :key="`${order.orderHash}-${order.cid}`"
+          v-bind="{ order }"
+        />
+      </template>
 
       <CommonEmptyList
         v-if="filteredOrders.length === 0"

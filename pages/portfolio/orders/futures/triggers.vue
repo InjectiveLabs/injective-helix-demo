@@ -15,6 +15,7 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
+const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -64,7 +65,7 @@ function fetchDerivativeTriggers() {
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersFuturesTriggersTabs />
 
-    <PartialsPortfolioOrdersFuturesTriggersTableHeader />
+    <PartialsPortfolioOrdersFuturesTriggersTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -74,11 +75,21 @@ function fetchDerivativeTriggers() {
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersFuturesTriggersTableRow
-        v-for="trigger in filterredTriggers"
-        :key="`${trigger.orderHash}-${trigger.cid}`"
-        v-bind="{ trigger }"
-      />
+      <div v-if="isMobile">
+        <PartialsPortfolioOrdersFuturesTriggersTableMobileRow
+          v-for="trigger in filterredTriggers"
+          :key="`${trigger.orderHash}-${trigger.cid}`"
+          v-bind="{ trigger }"
+        />
+      </div>
+
+      <template v-else>
+        <PartialsPortfolioOrdersFuturesTriggersTableRow
+          v-for="trigger in filterredTriggers"
+          :key="`${trigger.orderHash}-${trigger.cid}`"
+          v-bind="{ trigger }"
+        />
+      </template>
 
       <CommonEmptyList
         v-if="derivativeStore.subaccountConditionalOrders.length === 0"
