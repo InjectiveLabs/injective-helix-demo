@@ -15,8 +15,8 @@ const props = defineProps({
   }
 })
 
-const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues()
+const gridStrategyStore = useGridStrategyStore()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 

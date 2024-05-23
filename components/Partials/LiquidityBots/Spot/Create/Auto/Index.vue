@@ -233,7 +233,7 @@ function setValuesFromAuto() {
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else
-      v-bind="{ market: gridStrategyStore.spotMarket }"
+      v-bind="{ isAuto: true, market: gridStrategyStore.spotMarket }"
       @strategy:create="setValuesFromAuto"
     />
   </div>

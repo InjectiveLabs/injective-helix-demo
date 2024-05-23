@@ -21,8 +21,9 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const resetForm = useResetForm<SpotTradeForm>()
 const validate = useValidateForm()
+const formErrors = useFormErrors()
+const resetForm = useResetForm<SpotTradeForm>()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -69,6 +70,20 @@ const currentFormValues = computed(
     }) as SpotTradeForm
 )
 
+const isDisabled = computed(() => {
+  if (Object.keys(formErrors.value).length > 0) {
+    return true
+  }
+
+  if (!spotFormValues.value[SpotTradeFormField.Amount]) {
+    return true
+  }
+
+  if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
+    return !spotFormValues.value[SpotTradeFormField.Price]
+  }
+})
+
 function submitLimitOrder() {
   if (!market?.value) {
     return
@@ -84,9 +99,9 @@ function submitLimitOrder() {
 
   spotStore
     .submitLimitOrder({
-      market: market?.value,
-      price: limitPrice,
       quantity,
+      price: limitPrice,
+      market: market?.value,
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
@@ -150,7 +165,7 @@ async function submitOrder() {
       :key="spotFormValues[SpotTradeFormField.Side]"
       :variant="isBuy ? 'success' : 'danger'"
       class="w-full"
-      v-bind="{ status }"
+      v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >
       {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}

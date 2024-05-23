@@ -44,12 +44,13 @@ const props = defineProps({
   }
 })
 
+const formErrors = useFormErrors()
+const validate = useValidateForm()
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
-const { success } = useNotifications()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
-const validate = useValidateForm()
+const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const resetForm = useResetForm()
@@ -130,6 +131,38 @@ const takeProfitValue = computed(() =>
       )
     : undefined
 )
+
+const isDisabled = computed(() => {
+  const tradeType = derivativeFormValues.value[
+    DerivativesTradeFormField.Type
+  ] as DerivativeTradeTypes
+
+  if (Object.keys(formErrors.value).length > 0) {
+    return true
+  }
+
+  if (!derivativeFormValues.value[DerivativesTradeFormField.Amount]) {
+    return true
+  }
+
+  if (
+    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+      tradeType
+    ) &&
+    !derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
+  ) {
+    return true
+  }
+
+  if (
+    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+      tradeType
+    ) &&
+    !derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+  ) {
+    return true
+  }
+})
 
 async function submitLimitOrder() {
   const { valid } = await validate()
@@ -281,7 +314,7 @@ function onSubmit() {
   <div>
     <div>
       <AppButton
-        v-bind="{ status }"
+        v-bind="{ status, disabled: isDisabled }"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"
         class="w-full"

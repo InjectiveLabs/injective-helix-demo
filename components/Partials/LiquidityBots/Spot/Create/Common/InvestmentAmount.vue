@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
@@ -38,9 +39,10 @@ const quoteDenomBalance = computed(() =>
 )
 
 const quoteDenomAmount = computed(() =>
-  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
-    quoteDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const baseDenomBalance = computed(() =>
@@ -50,9 +52,10 @@ const baseDenomBalance = computed(() =>
 )
 
 const baseDenomAmount = computed(() =>
-  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
-    baseDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: baseDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: baseDenomBalance.value?.token.decimals
+  })
 )
 
 const gridThreshold = computed(() => {

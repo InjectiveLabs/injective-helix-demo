@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
@@ -45,12 +41,13 @@ const emit = defineEmits<{
 const router = useRouter()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const formErrors = useFormErrors()
 const modalStore = useModalStore()
+const validate = useValidateForm()
 const walletStore = useWalletStore()
+const setFormValues = useSetFormValues()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
-const setFormValues = useSetFormValues()
-const validate = useValidateForm()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -85,9 +82,10 @@ const quoteDenomBalance = computed(() =>
 )
 
 const quoteDenomAmount = computed(() =>
-  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
-    quoteDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const baseDenomBalance = computed(() =>
@@ -97,9 +95,10 @@ const baseDenomBalance = computed(() =>
 )
 
 const baseDenomAmount = computed(() =>
-  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
-    baseDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: baseDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: baseDenomBalance.value?.token.decimals
+  })
 )
 
 const gridThreshold = computed(() => {
@@ -169,6 +168,53 @@ const isUpperBoundLtLastPrice = computed(() =>
     formValues.value[SpotGridTradingField.UpperPrice] || Infinity
   )
 )
+
+const hasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]
+  )
+)
+
+const isLegacyMarket = computed(
+  () =>
+    !!LEGACY_MARKET_IDS.find((marketId) => marketId === props.market.marketId)
+)
+
+const newMarketSlug = computed(
+  () =>
+    spotStore.markets.find(
+      (market) =>
+        market.marketId ===
+        LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP[props.market.marketId]
+    )?.slug || ''
+)
+
+const isDisabled = computed(() => {
+  const investmentType = formValues.value[SpotGridTradingField.InvestmentType]
+
+  if (Object.keys(formErrors.value).length > 0) {
+    return true
+  }
+
+  if (!props.isAuto && !formValues.value[SpotGridTradingField.Grids]) {
+    return true
+  }
+
+  if (investmentType === InvestmentTypeGst.Base) {
+    return !formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+  }
+
+  if (investmentType === InvestmentTypeGst.Quote) {
+    return !formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
+  }
+
+  return (
+    !formValues.value[SpotGridTradingField.BaseInvestmentAmount] &&
+    !formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
+  )
+})
 
 async function onCheckBalanceFees() {
   emit('strategy:create')
@@ -249,28 +295,6 @@ function onInvestmentTypeSet() {
   onCreateStrategy()
 }
 
-const hasActiveLegacyStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
-    (strategy) =>
-      strategy.marketId ===
-      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]
-  )
-)
-
-const isLegacyMarket = computed(
-  () =>
-    !!LEGACY_MARKET_IDS.find((marketId) => marketId === props.market.marketId)
-)
-
-const newMarketSlug = computed(
-  () =>
-    spotStore.markets.find(
-      (market) =>
-        market.marketId ===
-        LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP[props.market.marketId]
-    )?.slug || ''
-)
-
 function removeLegacyStrategy() {
   if (!hasActiveLegacyStrategy.value) {
     return
@@ -316,7 +340,7 @@ function goToNewMarket() {
     <AppButton
       v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
       class="w-full shadow-none select-none"
-      :status="status"
+      v-bind="{ status, disabled: isDisabled }"
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
