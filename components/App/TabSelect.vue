@@ -41,7 +41,7 @@ const selected = computed(() =>
     :class="wrapperClass"
   >
     <template #default="{ isOpen }">
-      <div class="tab-label px-4 flex w-full">
+      <div class="tab-label px-2 lg:px-4 flex w-full">
         <slot v-bind="{ isOpen, selected }" />
         <div class="flex items-center pl-2">
           <div class="transition-all" :class="{ 'rotate-180': isOpen }">

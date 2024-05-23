@@ -44,7 +44,7 @@ const activeMarket = computed(() =>
 
 <template>
   <div
-    class="flex items-center tab-label px-8"
+    class="flex items-center tab-label px-4 lg:px-8"
     :class="wrapperClass"
     @click="openModal"
   >
