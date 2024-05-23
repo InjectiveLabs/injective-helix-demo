@@ -61,7 +61,7 @@ function setQuantityFlashOff() {
     @mouseenter="setIndex"
   >
     <div
-      class="absolute hidden group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
+      class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div class="text-xs font-sans whitespace-nowrap">
         <p>

@@ -35,7 +35,7 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex">
+  <div class="h-header border-b flex divide-x">
     <CommonSubaccountTabSelector />
 
     <AppTabSelect
@@ -67,10 +67,12 @@ watch(
       {{ $t(`activity.${value}`) }}
     </AppButtonSelect>
 
-    <div class="flex items-center flex-1 justify-end px-2">
+    <div class="hidden lg:flex items-center flex-1 justify-end px-2">
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
         v-if="view === SpotOrdersStandardView.OpenOrders"
       />
     </div>
+
+    <div class="flex-1 lg:hidden" />
   </div>
 </template>

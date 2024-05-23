@@ -2,6 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
+const isMobile = useIsMobile()
 const { userBalancesWithToken } = useBalance()
 
 const search = ref('')
@@ -40,12 +41,24 @@ const balancesSorted = computed(() => {
 
 <template>
   <div class="divide-y">
-    <PartialsPortfolioBalancesSubaccountTableHeader class="bg-brand-850" />
-
-    <PartialsPortfolioBalancesSubaccountTableRow
-      v-for="balance in balancesSorted"
-      v-bind="{ balance }"
-      :key="balance.denom"
+    <PartialsPortfolioBalancesSubaccountTableHeader
+      v-if="!isMobile"
+      class="bg-brand-850"
     />
+    <div v-if="isMobile" class="divide-y">
+      <PartialsPortfolioBalancesSubaccountTableMobileRow
+        v-for="balance in balancesSorted"
+        v-bind="{ balance }"
+        :key="balance.denom"
+      />
+    </div>
+
+    <template v-else>
+      <PartialsPortfolioBalancesSubaccountTableRow
+        v-for="balance in balancesSorted"
+        v-bind="{ balance }"
+        :key="balance.denom"
+      />
+    </template>
   </div>
 </template>

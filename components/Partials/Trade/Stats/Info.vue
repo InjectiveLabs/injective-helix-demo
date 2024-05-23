@@ -26,10 +26,10 @@ defineProps({
       }"
     >
       <div
-        class="grid grid-cols-2 lg:grid-cols-[repeat(4,auto)] max-lg:justify-between max-lg:[&>*]:border"
+        class="hidden lg:grid grid-cols-2 lg:grid-cols-[repeat(4,auto)] max-lg:justify-between max-lg:[&>*]:border"
       >
         <div
-          class="flex flex-col lg:items-end justify-start lg:px-4 py-2 font-mono"
+          class="flex flex-col items-center lg:items-end justify-start px-2 lg:px-4 py-2 font-mono"
         >
           <div
             class="flex items-center"
@@ -81,24 +81,24 @@ defineProps({
           </div>
         </div>
 
-        <div v-if="isNonUsdtQuoteAsset" class="p-2 text-xs">
+        <div v-if="isNonUsdtQuoteAsset" class="p-2 text-xs max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.usd_value') }}</p>
           <p class="font-mono font-semibold">
             {{ lastTradedPriceInUsdToFormat }}
           </p>
         </div>
 
-        <div class="p-2 text-xs">
+        <div class="p-2 text-xs max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.total_market_volume_24h') }}</p>
           <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs">
+        <div class="p-2 text-xs max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.high') }}</p>
           <p class="font-mono font-semibold">{{ highToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs">
+        <div class="p-2 text-xs max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.low') }}</p>
           <p class="font-mono font-semibold">{{ lowToFormat }}</p>
         </div>

@@ -77,7 +77,8 @@ function toggleFavorite() {
   <PartialsCommonMarketRedirection
     v-bind="{ market }"
     :class="{
-      'p-4': isMarketsPage
+      'p-4': isMarketsPage,
+      'hover:bg-brand-800': !isMarketsPage
     }"
     class="flex items-center text-gray-350 hover:text-white"
   >

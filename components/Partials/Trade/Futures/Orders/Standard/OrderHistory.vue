@@ -5,7 +5,7 @@ const isMobile = useIsMobile()
 
 <template>
   <div class="divide-y">
-    <PartialsPortfolioOrdersFuturesOrderHistoryTableHeader />
+    <PartialsPortfolioOrdersFuturesOrderHistoryTableHeader v-if="!isMobile" />
     <div v-if="isMobile">
       <PartialsPortfolioOrdersFuturesOrderHistoryTableMobileRow
         v-for="order in derivativeStore.subaccountOrderHistory"

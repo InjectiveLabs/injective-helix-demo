@@ -60,7 +60,7 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
     <PartialsTradeFuturesOrdersStandardHeader v-model="view" />
 
     <div class="overflow-x-auto border-b max-h-lg">
-      <div class="min-w-[1400px]">
+      <div class="lg:min-w-[1400px]">
         <PartialsTradeCommonOrdersBalances
           v-if="view === PerpOrdersStandardView.Balances"
         />
