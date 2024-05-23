@@ -42,7 +42,7 @@ const options = [
 <template>
   <div>
     <h2
-      class="text-xl lg:text-3xl whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
     >
       <i18n-t keypath="home.overview.title">
         <template #faster>

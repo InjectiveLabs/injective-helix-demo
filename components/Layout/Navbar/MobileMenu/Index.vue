@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { MENU_ITEMS, USER_MENU_ITEMS, DEPOSIT_MENU_ITEM } from '@/app/data/menu'
+import {
+  MENU_ITEMS,
+  USER_MENU_ITEMS,
+  getDepositMenuItem
+} from '@/app/data/menu'
 import { MenuItemType } from '@/types'
 
 const walletStore = useWalletStore()
 
 const isOpen = ref(false)
+
+const depositMenuItem = getDepositMenuItem()
 
 function close() {
   isOpen.value = false
@@ -71,7 +77,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
                 />
 
                 <LayoutNavbarPortfolioMenuItem
-                  v-bind="{ item: DEPOSIT_MENU_ITEM }"
+                  v-bind="{ item: depositMenuItem }"
                   @menu:close="close"
                 />
               </div>

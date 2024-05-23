@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField, derivativeMarketKey } from '@/types'
+import {
+  UiDerivativeMarket,
+  derivativeMarketKey,
+  DerivativesTradeFormField
+} from '@/types'
+
+const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+
+const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
 
 const { value: limit, errorMessage } = useStringField({
   name: DerivativesTradeFormField.LimitPrice,
-  initialValue: ''
-})
+  initialValue: '',
+  dynamicRule: computed(() => {
+    const priceTooFarFromLastTradePrice = `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
 
-const market = inject(derivativeMarketKey)
+    return priceTooFarFromLastTradePrice
+  })
+})
 </script>
 
 <template>

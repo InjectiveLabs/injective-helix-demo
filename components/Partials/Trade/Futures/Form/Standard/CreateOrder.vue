@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
   UiDerivativeMarket,
   derivativeMarketKey,
@@ -8,9 +9,6 @@ import {
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
-import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
-
-const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const props = defineProps({
   margin: {
@@ -44,16 +42,18 @@ const props = defineProps({
   }
 })
 
+const resetForm = useResetForm()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
 const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Idle))
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const resetForm = useResetForm()
+const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+
+const status = reactive(new Status(StatusType.Idle))
 
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)

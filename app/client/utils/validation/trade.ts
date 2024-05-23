@@ -8,8 +8,8 @@ export const tradeErrorMessages = {
   insufficientOrderbookLiquidity: () => 'Insufficient orderbook liquidity',
   triggerPriceEqualsMarkPrice: () =>
     'The trigger price cannot be the same as the mark price',
-  priceHighDeviationFromMidOrderbookPrice: () =>
-    'The execution price for this trade is far away from the current orderbook mid price',
+  priceTooFarFromLastTradePrice: () =>
+    'The execution price for this trade is far away from the last traded price',
   orderPriceHigh: () => 'Order price is too high',
   orderPriceLow: () => 'Order price is too low',
   maxLeverage: () => 'Please decrease leverage',
@@ -145,18 +145,33 @@ export const defineTradeRules = () => {
   })
 
   defineRule(
-    'priceHighDeviationFromMidOrderbookPrice',
-    (
-      value: string | number,
-      [cappedAcceptableMin, acceptableMax]: string[]
-    ) => {
-      const executionPrice = new BigNumberInBase(value)
+    'priceTooFarFromLastTradePrice',
+    (value: string | number, [lastTradedPrice]: [string]) => {
+      const DEFAULT_MIN_PRICE_BAND_DIFFERENCE = 80
+      const DEFAULT_MAX_PRICE_BAND_DIFFERENCE = 400
+
+      const valueInBigNumber = new BigNumberInBase(value)
+
+      if (valueInBigNumber.eq(0)) {
+        return true
+      }
+
+      const priceDifferenceInPercentage = valueInBigNumber
+        .dividedBy(lastTradedPrice)
+        .times(100)
 
       if (
-        executionPrice.lt(cappedAcceptableMin) ||
-        executionPrice.gt(acceptableMax)
+        valueInBigNumber.lte(lastTradedPrice) &&
+        priceDifferenceInPercentage.lte(DEFAULT_MIN_PRICE_BAND_DIFFERENCE)
       ) {
-        return tradeErrorMessages.priceHighDeviationFromMidOrderbookPrice()
+        return tradeErrorMessages.priceTooFarFromLastTradePrice()
+      }
+
+      if (
+        valueInBigNumber.gt(lastTradedPrice) &&
+        priceDifferenceInPercentage.gte(DEFAULT_MAX_PRICE_BAND_DIFFERENCE)
+      ) {
+        return tradeErrorMessages.priceTooFarFromLastTradePrice()
       }
 
       return true

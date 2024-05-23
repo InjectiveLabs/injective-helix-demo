@@ -1,45 +1,26 @@
 <script setup lang="ts">
-import { SpotTradeFormField, spotMarketKey } from '@/types'
+import { UiSpotMarket, SpotTradeFormField, spotMarketKey } from '@/types'
+
+const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
 
 const { value: limitValue, errorMessage } = useStringField({
   name: SpotTradeFormField.Price,
-  initialValue: ''
+  initialValue: '',
+  dynamicRule: computed(() => {
+    const priceTooFarFromLastTradePrice = `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+
+    return priceTooFarFromLastTradePrice
+  })
 })
 
-const market = inject(spotMarketKey)
-
 const el = ref(null)
-
-const { focused } = useFocusWithin(el)
-// const spotFormValues = useFormValues<SpotTradeForm>()
-
-// const setQuantity = useSetFieldValue(SpotTradeFormField.Quantity)
-// const setTotalAmount = useSetFieldValue(SpotTradeFormField.Total)
 
 const value = computed({
   get: () => limitValue.value,
   set: (value: string) => {
     limitValue.value = value
-
-    if (focused.effect) {
-      // If the value is empty, set the total amount to empty
-      // if (value === '') {
-      //   setTotalAmount('')
-      // }
-      // if (spotFormValues.value[SpotTradeFormField.Quantity]) {
-      //   setTotalAmount(
-      //     new BigNumberInBase(value)
-      //       .times(spotFormValues.value[SpotTradeFormField.Quantity])
-      //       .toFixed(3)
-      //   )
-      // } else if (spotFormValues.value[SpotTradeFormField.Total]) {
-      //   setQuantity(
-      //     new BigNumberInBase(spotFormValues.value[SpotTradeFormField.Total])
-      //       .div(value)
-      //       .toFixed(3)
-      //   )
-      // }
-    }
   }
 })
 </script>

@@ -45,42 +45,42 @@ const options = [
 <template>
   <div>
     <h1
-      class="text-xl lg:text-3xl whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
     >
       {{ $t('home.gettingStarted.title') }}
     </h1>
 
-    <div class="text-center mt-8">
-      <h2 class="text-2xl font-semibold mb-4 text-white">
-        {{ $t('home.gettingStarted.description') }}
-      </h2>
-
-      <div class="text-sm mb-8 space-y-2">
-        <i18n-t
-          keypath="home.gettingStarted.description2"
-          class="leading-5"
-          tag="p"
-        >
-          <template #bridgeLink>
-            <NuxtLink
-              :to="getBridgeRedirectionUrl()"
-              target="_blank"
-              class="text-blue-500 hover:text-blue-600"
-            >
-              <span>{{ $t('home.gettingStarted.injectiveBridge') }}</span>
-            </NuxtLink>
-          </template>
-        </i18n-t>
-
-        <div class="flex items-center justify-center pl-3 gap-2">
-          <img :src="INJ_LOGO_URL" class="h-4 w-4 min-w-4" />
-          <p>{{ $t('home.gettingStarted.gasRequirement') }}</p>
-        </div>
-      </div>
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-10">
       <div class="space-y-4">
+        <div class="mt-8">
+          <h2 class="text-2xl font-semibold mb-4 text-white">
+            {{ $t('home.gettingStarted.description') }}
+          </h2>
+
+          <div class="text-sm mb-8 space-y-2">
+            <i18n-t
+              keypath="home.gettingStarted.description2"
+              class="leading-5"
+              tag="p"
+            >
+              <template #bridgeLink>
+                <NuxtLink
+                  :to="getBridgeRedirectionUrl()"
+                  target="_blank"
+                  class="text-blue-500 hover:text-blue-600"
+                >
+                  <span>{{ $t('home.gettingStarted.injectiveBridge') }}</span>
+                </NuxtLink>
+              </template>
+            </i18n-t>
+
+            <div class="flex items-center gap-2">
+              <img :src="INJ_LOGO_URL" class="h-4 w-4 min-w-4" />
+              <p>{{ $t('home.gettingStarted.gasRequirement') }}</p>
+            </div>
+          </div>
+        </div>
+
         <BaseSelectorItem
           v-for="item in options"
           :key="`home-${item.type}`"

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { DEPOSIT_MENU_ITEM, PORTFOLIO_MENU_ITEM } from '@/app/data/menu'
+import { getDepositMenuItem, PORTFOLIO_MENU_ITEM } from '@/app/data/menu'
 
 const walletStore = useWalletStore()
+
+const depositMenuItem = getDepositMenuItem()
 </script>
 
 <template>
   <div class="flex items-center p-2 space-x-2">
     <LayoutNavbarMenuItem
       class="hidden lg:block"
-      v-bind="{ item: DEPOSIT_MENU_ITEM }"
+      v-bind="{ item: depositMenuItem }"
     />
 
     <LayoutNavbarMenuItem
