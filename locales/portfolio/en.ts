@@ -24,7 +24,7 @@ export default {
       title: 'Settings',
 
       authz: {
-        title: 'AuthZ Management',
+        title: 'Access Control Manager',
         description:
           'Grant other wallet address full/partial permissions to make trades on their behalf',
         grantee: 'Grantee',

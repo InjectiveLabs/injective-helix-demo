@@ -71,7 +71,7 @@ export default {
         interpolate([
           'Better and ',
           named('faster'),
-          '\nExperience trading like never before.'
+          '.\nExperience trading like never before.'
         ]),
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
