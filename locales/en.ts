@@ -381,13 +381,6 @@ export default {
     enterInjectiveAddress: 'Enter your injective address'
   },
 
-  proMode: {
-    proMode: 'Pro Mode',
-    subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authZ management',
-    showSubaccountsWithDust: 'Show subaccounts with dust amounts'
-  },
-
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'

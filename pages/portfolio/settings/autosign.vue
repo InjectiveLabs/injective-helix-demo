@@ -46,10 +46,8 @@ function disconnectAutoSign() {
 
     <div class="border-y divide-y">
       <div class="flex flex-col items-center p-4">
-        <p class="max-w-lg font-semibold text-sm mb-8">
-          Auto-Sign works by generating a private key and granting it AuthZ
-          (Authorization) which we store in local storage so we can auto-sign
-          the transaction without exposing your private key
+        <p class="max-w-3xl font-semibold text-sm mb-8">
+          {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
         <AppButton
           v-if="!walletStore.autoSign"
@@ -57,7 +55,7 @@ function disconnectAutoSign() {
           :status="status"
           @click="connectAutoSign"
         >
-          Enable Auto-Sign
+          {{ $t('portfolio.settings.autoSign.enable') }}
         </AppButton>
         <AppButton
           v-else
@@ -65,7 +63,7 @@ function disconnectAutoSign() {
           :status="status"
           @click="disconnectAutoSign"
         >
-          Disconnect Auto-Sign
+          {{ $t('portfolio.settings.autoSign.disconnect') }}
         </AppButton>
       </div>
     </div>

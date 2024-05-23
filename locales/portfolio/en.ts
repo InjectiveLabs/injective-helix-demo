@@ -40,7 +40,11 @@ export default {
 
       autoSign: {
         title: 'Auto-Sign',
-        description: 'Automatically sign transactions'
+        description: 'Automatically sign transactions',
+        howItWorks:
+          'During the specified duration, you can perform many operations on Helix without the need to sign an additional transaction. This includes opening and closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters. It does not include interactions with the swap feature or trading bots. For security reasons, the auto sign function will expire after the selected time frame, at which point you may choose to initiate a new session.',
+        enable: 'Enable Auto-Sign',
+        disconnect: 'Disconnect Auto-Sign'
       }
     }
   }
