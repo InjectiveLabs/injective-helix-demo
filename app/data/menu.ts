@@ -1,4 +1,4 @@
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
+import { getBridgeUrl } from '@shared/utils/network'
 import {
   MainPage,
   MenuItem,
@@ -199,7 +199,7 @@ export const DEPOSIT_MENU_ITEM: MenuItem = {
       type: MenuItemType.Link,
       label: 'navigation.cryptoDeposit',
       description: 'navigation.cryptoDepositDescription',
-      to: getBridgeRedirectionUrl(),
+      to: getBridgeUrl(),
       isExternal: true
     },
     {
