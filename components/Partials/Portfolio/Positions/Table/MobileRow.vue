@@ -34,7 +34,6 @@ const {
   markPrice,
   priceDecimals,
   percentagePnl,
-  // notionalValue,
   liquidationPrice,
   quantityDecimals,
   effectiveLeverage
@@ -208,133 +207,138 @@ function addTpSl() {
 </script>
 
 <template>
-  <div class="p-2 text-xs divide-y">
-    <div v-if="market" class="flex items-center space-x-2 px-2 py-4 font-sans">
-      <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.ticker }}</p>
-    </div>
-
-    <div class="flex items-center justify-between px-2 py-4">
-      <p>{{ $t('trade.side') }}</p>
-      <span
-        :class="{
-          'text-green-500': position.direction === TradeDirection.Long,
-          'text-red-500': position.direction === TradeDirection.Short
-        }"
+  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+    <div class="p-2 text-xs divide-y">
+      <div
+        v-if="market"
+        class="flex items-center space-x-2 px-2 py-4 font-sans"
       >
-        {{ $t(`trade.${position.direction}`) }}
-      </span>
-    </div>
-
-    <div class="flex-1 flex items-center px-2 py-4 justify-between">
-      <p>{{ $t('trade.amount') }}</p>
-      <div v-if="market" class="space-y-1 font-mono">
-        <p>{{ quantityToString }} {{ market.baseToken.symbol }}</p>
-      </div>
-    </div>
-
-    <div class="flex justify-between">
-      <div class="space-y-1 p-2 flex items-center">
-        <p>{{ $t('trade.entryMark') }}</p>
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+        <p>{{ market.ticker }}</p>
       </div>
 
-      <div class="space-y-1 p-2">
-        <p>{{ priceToString }}</p>
-        <p class="text-gray-500">{{ markPriceToString }}</p>
-      </div>
-    </div>
-
-    <div class="flex justify-between">
-      <div class="space-y-1 p-2 flex items-center">
-        <p>{{ $t('portfolio.balances.unrealizedPnl') }}</p>
-      </div>
-
-      <div class="flex items-center p-2">
-        <div
-          class="space-y-1 text-right"
+      <div class="flex items-center justify-between px-2 py-4">
+        <p>{{ $t('trade.side') }}</p>
+        <span
           :class="{
-            'text-green-500': pnl.gte(0),
-            'text-red-500': pnl.lt(0)
+            'text-green-500': position.direction === TradeDirection.Long,
+            'text-red-500': position.direction === TradeDirection.Short
           }"
         >
-          <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
-          <p>{{ percentagePnlToString }}%</p>
+          {{ $t(`trade.${position.direction}`) }}
+        </span>
+      </div>
+
+      <div class="flex-1 flex items-center px-2 py-4 justify-between">
+        <p>{{ $t('trade.amount') }}</p>
+        <div v-if="market" class="space-y-1 font-mono">
+          <p>{{ quantityToString }} {{ market.baseToken.symbol }}</p>
         </div>
       </div>
-    </div>
 
-    <div class="flex justify-between items-center px-2 py-4">
-      <p>{{ $t('portfolio.balances.totalValueUsd') }}</p>
+      <div class="flex justify-between">
+        <div class="space-y-1 p-2 flex items-center">
+          <p>{{ $t('trade.entryMark') }}</p>
+        </div>
 
-      <div v-if="market" class="space-y-1">
-        <p>${{ quantityInUsdToString }}</p>
+        <div class="space-y-1 p-2">
+          <p>{{ priceToString }}</p>
+          <p class="text-gray-500">{{ markPriceToString }}</p>
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <div class="space-y-1 p-2 flex items-center">
+          <p>{{ $t('portfolio.balances.unrealizedPnl') }}</p>
+        </div>
+
+        <div class="flex items-center p-2">
+          <div
+            class="space-y-1 text-right"
+            :class="{
+              'text-green-500': pnl.gte(0),
+              'text-red-500': pnl.lt(0)
+            }"
+          >
+            <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
+            <p>{{ percentagePnlToString }}%</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center px-2 py-4">
+        <p>{{ $t('portfolio.balances.totalValueUsd') }}</p>
+
+        <div v-if="market" class="space-y-1">
+          <p>${{ quantityInUsdToString }}</p>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center px-2 py-4">
+        <p>{{ $t('trade.margin') }}</p>
+
+        <div class="space-x-2">
+          <span>{{ marginToString }}</span>
+          <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
+            <BaseIcon name="plus" is-xs />
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center px-2 py-4 justify-between">
+        <p>{{ $t('trade.liquidation_price') }}</p>
+        <p>{{ liquidationPrice.toFormat(2) }}</p>
+      </div>
+
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.leverage') }}</p>
+        <p>{{ effectiveLeverage.toFormat(2) }}x</p>
+      </div>
+
+      <div class="flex-1 flex items-center px-2 py-4">
+        <AppButton variant="primary-outline" class="w-full" @click="addTpSl">
+          {{ $t('trade.addTpSl') }}
+        </AppButton>
+      </div>
+
+      <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">
+        <AppButton
+          v-bind="{ status: marketCloseStatus }"
+          size="sm"
+          variant="danger-ghost"
+          class="min-w-20"
+          @click="closePositionClicked"
+        >
+          {{ $t('trade.market') }}
+        </AppButton>
+
+        <AppButton
+          v-bind="{
+            status: limitCloseStatus
+          }"
+          class="min-w-20"
+          size="sm"
+          variant="danger-ghost"
+          @click="closePositionLimit"
+        >
+          {{ $t('trade.limit') }}
+        </AppButton>
+
+        <AppInputBase
+          v-bind="{
+            max: quantity.toNumber()
+          }"
+          v-model="quantityValue"
+          autofix
+          class="p-1 rounded min-w-0 border"
+          placeholder="Qty"
+        />
+        <AppInputBase
+          v-model="priceValue"
+          class="p-1 rounded min-w-0 border"
+          placeholder="Price"
+        />
       </div>
     </div>
-
-    <div class="flex justify-between items-center px-2 py-4">
-      <p>{{ $t('trade.margin') }}</p>
-
-      <div class="space-x-2">
-        <span>{{ marginToString }}</span>
-        <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-          <BaseIcon name="plus" is-xs />
-        </button>
-      </div>
-    </div>
-
-    <div class="flex items-center px-2 py-4 justify-between">
-      <p>{{ $t('trade.liquidation_price') }}</p>
-      <p>{{ liquidationPrice.toFormat(2) }}</p>
-    </div>
-
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.leverage') }}</p>
-      <p>{{ effectiveLeverage.toFormat(2) }}x</p>
-    </div>
-
-    <div class="flex-1 flex items-center px-2 py-4">
-      <AppButton variant="primary-outline" class="w-full" @click="addTpSl">
-        {{ $t('trade.addTpSl') }}
-      </AppButton>
-    </div>
-
-    <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">
-      <AppButton
-        v-bind="{ status: marketCloseStatus }"
-        size="sm"
-        variant="danger-ghost"
-        class="min-w-20"
-        @click="closePositionClicked"
-      >
-        {{ $t('trade.market') }}
-      </AppButton>
-
-      <AppButton
-        v-bind="{
-          status: limitCloseStatus
-        }"
-        class="min-w-20"
-        size="sm"
-        variant="danger-ghost"
-        @click="closePositionLimit"
-      >
-        {{ $t('trade.limit') }}
-      </AppButton>
-
-      <AppInputBase
-        v-bind="{
-          max: quantity.toNumber()
-        }"
-        v-model="quantityValue"
-        autofix
-        class="p-1 rounded min-w-0 border"
-        placeholder="Qty"
-      />
-      <AppInputBase
-        v-model="priceValue"
-        class="p-1 rounded min-w-0 border"
-        placeholder="Price"
-      />
-    </div>
-  </div>
+  </PartialsCommonMarketRedirection>
 </template>

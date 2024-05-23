@@ -46,56 +46,61 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 </script>
 
 <template>
-  <div class="flex p-2 text-xs font-mono">
-    <div class="flex-1 flex items-center p-2 font-sans">{{ time }}</div>
+  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+    <div class="flex p-2 text-xs font-mono">
+      <div class="flex-1 flex items-center p-2 font-sans">{{ time }}</div>
 
-    <div v-if="market" class="flex-1 flex items-center space-x-2 p-2 font-sans">
-      <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.ticker }}</p>
-    </div>
+      <div
+        v-if="market"
+        class="flex-1 flex items-center space-x-2 p-2 font-sans"
+      >
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+        <p>{{ market.ticker }}</p>
+      </div>
 
-    <div class="flex-1 flex items-center p-2">
-      <span class="font-sans">
-        {{ tradeExecutionType }}
-      </span>
-    </div>
-
-    <div
-      class="flex-1 flex items-center p-2 font-sans"
-      :class="{
-        'text-green-500': trade.tradeDirection === TradeDirection.Buy,
-        'text-red-500': trade.tradeDirection === TradeDirection.Sell
-      }"
-    >
-      {{ $t(`trade.${trade.tradeDirection}`) }}
-    </div>
-
-    <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
-
-    <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
-
-    <div class="flex-1 flex items-center p-2">
-      <p class="flex-1">
-        <span>
-          {{ feeToString }}
+      <div class="flex-1 flex items-center p-2">
+        <span class="font-sans">
+          {{ tradeExecutionType }}
         </span>
-        <span class="ml-1 text-gray-500">
-          {{ market?.quoteToken.symbol }}
-        </span>
-      </p>
-    </div>
+      </div>
 
-    <div class="flex-1 flex items-center p-2">
-      <div class="space-y-1 flex-1">
-        <p v-if="market">
+      <div
+        class="flex-1 flex items-center p-2 font-sans"
+        :class="{
+          'text-green-500': trade.tradeDirection === TradeDirection.Buy,
+          'text-red-500': trade.tradeDirection === TradeDirection.Sell
+        }"
+      >
+        {{ $t(`trade.${trade.tradeDirection}`) }}
+      </div>
+
+      <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
+
+      <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+
+      <div class="flex-1 flex items-center p-2">
+        <p class="flex-1">
           <span>
-            {{ totalToString }}
+            {{ feeToString }}
           </span>
           <span class="ml-1 text-gray-500">
             {{ market?.quoteToken.symbol }}
           </span>
         </p>
       </div>
+
+      <div class="flex-1 flex items-center p-2">
+        <div class="space-y-1 flex-1">
+          <p v-if="market">
+            <span>
+              {{ totalToString }}
+            </span>
+            <span class="ml-1 text-gray-500">
+              {{ market?.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </PartialsCommonMarketRedirection>
 </template>

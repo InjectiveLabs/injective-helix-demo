@@ -20,7 +20,6 @@ const {
   orderStatus,
   triggerPrice,
   priceDecimals,
-  // isMarketOrder,
   quantityDecimals
 } = useOrderHistory(
   computed(() => props.order),
@@ -51,47 +50,52 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <div class="flex p-2 text-xs font-mono">
-    <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
-    <div v-if="market" class="flex-1 flex items-center space-x-2 p-2 font-sans">
-      <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.ticker }}</p>
-    </div>
-
-    <div class="flex-1 flex items-center p-2 font-sans">{{ type }}</div>
-
-    <div class="flex-1 flex items-center p-2">
-      <span
-        :class="{
-          'text-green-500': isBuy,
-          'text-red-500': !isBuy
-        }"
-        class="font-sans"
+  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+    <div class="flex p-2 text-xs font-mono">
+      <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
+      <div
+        v-if="market"
+        class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
-        {{ $t(`trade.${order.direction}`) }}
-      </span>
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+        <p>{{ market.ticker }}</p>
+      </div>
+
+      <div class="flex-1 flex items-center p-2 font-sans">{{ type }}</div>
+
+      <div class="flex-1 flex items-center p-2">
+        <span
+          :class="{
+            'text-green-500': isBuy,
+            'text-red-500': !isBuy
+          }"
+          class="font-sans"
+        >
+          {{ $t(`trade.${order.direction}`) }}
+        </span>
+      </div>
+
+      <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
+
+      <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+
+      <div class="flex-1 flex items-center p-2">
+        <span>
+          {{ totalToString }}
+        </span>
+        <span class="text-gray-500 ml-1">
+          {{ market?.quoteToken.symbol }}
+        </span>
+      </div>
+
+      <div class="flex-1 flex items-center p-2">
+        <span v-if="triggerPrice.eq(0)"> - </span>
+        <span v-else>{{ triggerPriceToString }}</span>
+      </div>
+
+      <div class="flex-1 flex items-center p-2 font-sans">
+        {{ orderStatus }}
+      </div>
     </div>
-
-    <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
-
-    <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
-
-    <div class="flex-1 flex items-center p-2">
-      <span>
-        {{ totalToString }}
-      </span>
-      <span class="text-gray-500 ml-1">
-        {{ market?.quoteToken.symbol }}
-      </span>
-    </div>
-
-    <div class="flex-1 flex items-center p-2">
-      <span v-if="triggerPrice.eq(0)"> - </span>
-      <span v-else>{{ triggerPriceToString }}</span>
-    </div>
-
-    <div class="flex-1 flex items-center p-2 font-sans">
-      {{ orderStatus }}
-    </div>
-  </div>
+  </PartialsCommonMarketRedirection>
 </template>

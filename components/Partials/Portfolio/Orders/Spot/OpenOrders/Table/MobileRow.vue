@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '~/app/utils/async'
+import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
   order: {
@@ -83,64 +83,69 @@ function cancelOrder() {
 </script>
 
 <template>
-  <div class="p-2 divide-y text-xs">
-    <div v-if="market" class="flex-1 flex items-center space-x-2 p-2 font-sans">
-      <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.ticker }}</p>
-    </div>
-
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.side') }}</p>
-      <span
-        class="font-sans"
-        :class="{
-          'text-green-500': isBuy,
-          'text-red-500': !isBuy
-        }"
+  <PartialsCommonMarketRedirection v-if="market" v-bind="{ market }">
+    <div class="p-2 divide-y text-xs">
+      <div
+        v-if="market"
+        class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
-        {{ $t('trade.' + order.orderSide) }}
-      </span>
-    </div>
+        <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+        <p>{{ market.ticker }}</p>
+      </div>
 
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.price') }}</p>
-      <p class="font-mono">{{ priceToString }}</p>
-    </div>
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.side') }}</p>
+        <span
+          class="font-sans"
+          :class="{
+            'text-green-500': isBuy,
+            'text-red-500': !isBuy
+          }"
+        >
+          {{ $t('trade.' + order.orderSide) }}
+        </span>
+      </div>
 
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.amount') }}</p>
-      <p class="font-mono">{{ quantityToString }}</p>
-    </div>
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.price') }}</p>
+        <p class="font-mono">{{ priceToString }}</p>
+      </div>
 
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.unfilled') }}</p>
-      <p class="font-mono">
-        {{ unfilledQuantityToString }}
-      </p>
-    </div>
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.amount') }}</p>
+        <p class="font-mono">{{ quantityToString }}</p>
+      </div>
 
-    <div class="justify-between flex items-center px-2 py-4">
-      <p>{{ $t('trade.filled') }}</p>
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.unfilled') }}</p>
+        <p class="font-mono">
+          {{ unfilledQuantityToString }}
+        </p>
+      </div>
 
-      <div class="font-mono">
-        <p>{{ filledQuantityToString }}</p>
-        <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
+      <div class="justify-between flex items-center px-2 py-4">
+        <p>{{ $t('trade.filled') }}</p>
+
+        <div class="font-mono">
+          <p>{{ filledQuantityToString }}</p>
+          <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
+        </div>
+      </div>
+
+      <div class="flex-1 flex items-center p-2">
+        <p>{{ $t('trade.total') }}</p>
+        <div v-if="market" class="space-y-1">
+          <p>${{ totalToString }}</p>
+        </div>
+      </div>
+
+      <div class="flex-1 p-2 items-center">
+        <PartialsCommonCancelButton
+          v-if="orderFillable"
+          v-bind="{ status }"
+          @click="cancelOrder"
+        />
       </div>
     </div>
-
-    <div class="flex-1 flex items-center p-2">
-      <p>{{ $t('trade.total') }}</p>
-      <div v-if="market" class="space-y-1">
-        <p>${{ totalToString }}</p>
-      </div>
-    </div>
-
-    <div class="flex-1 p-2 items-center">
-      <PartialsCommonCancelButton
-        v-if="orderFillable"
-        v-bind="{ status }"
-        @click="cancelOrder"
-      />
-    </div>
-  </div>
+  </PartialsCommonMarketRedirection>
 </template>
