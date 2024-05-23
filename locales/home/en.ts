@@ -9,6 +9,7 @@ export default {
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
+    totalVolume: 'Total Volume',
     infiniteMarkets: 'Infinite Markets',
     mevResistant: 'MEV Resistant',
     getStartedHome: 'Get Started',

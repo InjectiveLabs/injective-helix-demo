@@ -20,15 +20,6 @@ const totalMarkets = computed(
   () =>
     [...spotStore.activeMarketIds, ...derivativeStore.activeMarketIds].length
 )
-
-const totalOpenInterest = computed(() =>
-  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
-    (sum, market) => {
-      return sum.plus(market.open || 0)
-    },
-    ZERO_IN_BASE
-  )
-)
 </script>
 
 <template>
@@ -94,10 +85,8 @@ const totalOpenInterest = computed(() =>
       </div>
 
       <div class="">
-        <h2>{{ $t('home.openInterest') }}</h2>
-        <p class="text-2xl font-semibold">
-          ${{ totalOpenInterest.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
-        </p>
+        <h2>{{ $t('home.totalVolume') }}</h2>
+        <p class="text-2xl font-semibold">31.2 Bilion</p>
       </div>
     </div>
   </div>
