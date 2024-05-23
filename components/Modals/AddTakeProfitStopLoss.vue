@@ -22,7 +22,7 @@ const props = defineProps({
 
 const modalStore = useModalStore()
 const derivativeStore = useDerivativeStore()
-const { values, resetForm } = useForm<TakeProfitStopLossForm>()
+const { resetForm } = useForm<TakeProfitStopLossForm>()
 
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
@@ -159,7 +159,7 @@ const isSlDisabled = computed(() => {
 })
 
 function submitTpSl() {
-  if (!props.position || !takeProfitValue.value || !stopLossValue.value) {
+  if (!props.position || !(takeProfitValue.value || stopLossValue.value)) {
     return
   }
 
@@ -168,8 +168,12 @@ function submitTpSl() {
   derivativeStore
     .submitTpSlOrder({
       position: props.position,
-      stopLoss: new BigNumberInBase(stopLossValue.value || 0),
-      takeProfit: new BigNumberInBase(takeProfitValue.value || 0)
+      stopLoss: stopLossValue.value
+        ? new BigNumberInBase(stopLossValue.value)
+        : undefined,
+      takeProfit: takeProfitValue.value
+        ? new BigNumberInBase(takeProfitValue.value)
+        : undefined
     })
     .then(() => {
       success({ title: t('common.success') })
@@ -183,7 +187,7 @@ function submitTpSl() {
 </script>
 
 <template>
-  <AppModal is-lg :is-open="isModalOpen" @modal:closed="closeModal">
+  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
     <template #title>
       <p class="text-center font-bold">
         {{ $t('trade.takeProfitStopLossForEntirePosition') }}
@@ -191,11 +195,7 @@ function submitTpSl() {
     </template>
 
     <div v-if="market && position">
-      <pre v-if="false">
-        {{ { values, markPrice, entryPrice, liquidationPrice, isBuy } }}
-      </pre>
-
-      <div class="space-y-4 max-w-sm">
+      <div class="space-y-4 lg:max-w-sm">
         <div class="font-semibold text-xs">
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.entryPrice') }}:</p>

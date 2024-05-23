@@ -5,7 +5,12 @@ export default {
     value: 'Portfolio Value',
 
     balances: {
-      netWorth: 'Net Worth'
+      netWorth: 'Net Worth',
+      available: 'Available',
+      inUseReserved: 'In Use/Reserved',
+      unrealizedPnl: 'Unrealized PnL',
+      total: 'Total',
+      totalValueUsd: 'Total Value (USD)'
     },
 
     subaccounts: {

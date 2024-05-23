@@ -560,8 +560,8 @@ export const submitTpSlOrder = async ({
   takeProfit
 }: {
   position: Position | PositionV2
-  takeProfit: BigNumberInBase
-  stopLoss: BigNumberInBase
+  takeProfit?: BigNumberInBase
+  stopLoss?: BigNumberInBase
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()

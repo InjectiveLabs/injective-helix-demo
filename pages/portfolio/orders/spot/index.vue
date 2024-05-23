@@ -6,6 +6,7 @@ import { SpotOpenOrdersFilterForm } from '@/types/forms'
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
+const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -50,11 +51,20 @@ onSubaccountChange(fetchSubaccountOrders)
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersSpotOpenOrdersTableRow
-        v-for="order in filteredOrders"
-        v-bind="{ order }"
-        :key="order.orderHash"
-      />
+      <template v-if="isMobile">
+        <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
+          v-for="order in filteredOrders"
+          v-bind="{ order }"
+          :key="order.orderHash"
+        />
+      </template>
+      <template v-else>
+        <PartialsPortfolioOrdersSpotOpenOrdersTableRow
+          v-for="order in filteredOrders"
+          v-bind="{ order }"
+          :key="order.orderHash"
+        />
+      </template>
 
       <CommonEmptyList
         v-if="filteredOrders.length === 0"

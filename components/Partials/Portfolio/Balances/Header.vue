@@ -3,7 +3,7 @@ const appStore = useAppStore()
 </script>
 
 <template>
-  <div class="flex justify-between">
+  <div class="lg:flex justify-between">
     <div class="space-y-2">
       <p class="text-gray-400 text-sm">
         {{ $t('portfolio.balances.netWorth') }}

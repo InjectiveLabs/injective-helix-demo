@@ -54,35 +54,33 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 </script>
 
 <template>
-  <div class="h-header flex">
-    <CommonSubaccountTabSelector />
+  <div class="lg:h-header lg:flex grid grid-cols-2 divide-x">
+    <CommonSubaccountTabSelector wrapper-class="py-4 w-full max-lg:border-b" />
 
-    <div class="flex divide-x border-r flex-1">
+    <div class="flex items-center max-lg:border-b">
+      <p class="text-sm text-gray-300 px-4 flex items-center space-x-2">
+        <span>{{ $t('account.total') }}: </span>
+        <CommonSkeletonSubaccountAmount>
+          <span>${{ accountTotalBalanceInUsdToString }}</span>
+        </CommonSkeletonSubaccountAmount>
+      </p>
+    </div>
+
+    <label class="flex px-4 flex-1">
       <div class="flex items-center">
-        <p class="text-sm text-gray-300 px-4 flex items-center space-x-2">
-          <span>{{ $t('account.total') }}: </span>
-          <CommonSkeletonSubaccountAmount>
-            <span>${{ accountTotalBalanceInUsdToString }}</span>
-          </CommonSkeletonSubaccountAmount>
-        </p>
+        <SharedIcon name="search" class="text-gray-500" />
       </div>
+      <input
+        v-model="search"
+        class="p-2 bg-transparent focus:outline-none flex-1"
+        placeholder="Filter by asset"
+      />
+    </label>
 
-      <label class="flex px-4 flex-1">
-        <div class="flex items-center">
-          <SharedIcon name="search" class="text-gray-500" />
-        </div>
-        <input
-          v-model="search"
-          class="p-2 bg-transparent focus:outline-none flex-1"
-          placeholder="Filter by asset"
-        />
-      </label>
-
-      <div class="flex items-center px-4">
-        <AppCheckbox2 v-model="showUnverifiedAssets">
-          {{ $t('account.showUnverifiedAssets') }}
-        </AppCheckbox2>
-      </div>
+    <div class="flex items-center px-4">
+      <AppCheckbox2 v-model="showUnverifiedAssets">
+        {{ $t('account.showUnverifiedAssets') }}
+      </AppCheckbox2>
     </div>
   </div>
 </template>

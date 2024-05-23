@@ -7,6 +7,7 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 
 const { values } = useForm<PositionsFilterForm>()
+const isMobile = useIsMobile()
 
 const filteredPosition = computed(() =>
   positionStore.positions.filter((position) => {
@@ -42,14 +43,27 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 
 <template>
   <PartialsPortfolioPositionsTabs />
-  <PartialsPortfolioPositionsTableHeader />
-  <PartialsPortfolioPositionsTableRow
-    v-for="position in filteredPosition"
-    :key="`${position.marketId}-${position.subaccountId}`"
-    v-bind="{ position }"
-    @margin:add="addMargin"
-    @tpsl:add="addTakeProfitStopLoss"
-  />
+  <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
+
+  <template v-if="isMobile">
+    <PartialsPortfolioPositionsTableMobileRow
+      v-for="position in filteredPosition"
+      :key="`${position.marketId}-${position.subaccountId}`"
+      v-bind="{ position }"
+      @margin:add="addMargin"
+      @tpsl:add="addTakeProfitStopLoss"
+    />
+  </template>
+
+  <template v-else>
+    <PartialsPortfolioPositionsTableRow
+      v-for="position in filteredPosition"
+      :key="`${position.marketId}-${position.subaccountId}`"
+      v-bind="{ position }"
+      @margin:add="addMargin"
+      @tpsl:add="addTakeProfitStopLoss"
+    />
+  </template>
 
   <CommonEmptyList
     v-if="filteredPosition.length === 0"

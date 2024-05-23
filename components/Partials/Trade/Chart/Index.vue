@@ -30,7 +30,7 @@ function setInterval(index: string) {
           :key="label"
           v-model="view"
           :value="label"
-          class="font-bold text-sm flex justify-center items-center px-6 border-r text-gray-600 max-lg:flex-1"
+          class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-gray-600 max-lg:flex-1"
           active-classes="bg-brand-875 text-white"
         >
           {{ $t(`trade.${label}`) }}

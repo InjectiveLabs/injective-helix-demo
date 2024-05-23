@@ -18,6 +18,8 @@
     <div class="shrink-0 flex-[2] p-2">
       {{ $t('account.balances.cols.totalValueUsd') }}
     </div>
-    <div class="flex-[3] p-2">{{ $t('account.action') }}</div>
+    <div class="flex-[3] shrink-0 p-2">
+      {{ $t('account.action') }}
+    </div>
   </div>
 </template>

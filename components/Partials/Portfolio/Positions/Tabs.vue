@@ -15,10 +15,10 @@ const { value: sideValue } = useStringField({
 </script>
 
 <template>
-  <div class="h-header flex">
-    <CommonSubaccountTabSelector />
+  <div class="flex">
+    <div class="h-header flex border-r divide-x">
+      <CommonSubaccountTabSelector />
 
-    <div class="flex divide-x border-r">
       <CommonTabMarketSelector v-model="marketValue" v-bind="{ markets }" />
       <CommonTabSideFilter v-model="sideValue" />
       <CommonTabFormReset />

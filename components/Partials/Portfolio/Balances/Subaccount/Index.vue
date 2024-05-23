@@ -8,6 +8,8 @@ const {
   userBalancesWithToken
 } = useBalance()
 
+const isMobile = useIsMobile()
+
 const search = ref('')
 
 const balances = computed(() => {
@@ -58,12 +60,21 @@ const balancesSorted = computed(() => {
       v-model:showUnverifiedAssets="showUnverifiedAssets"
     />
 
-    <PartialsPortfolioBalancesSubaccountTableHeader />
+    <PartialsPortfolioBalancesSubaccountTableHeader v-if="!isMobile" />
 
-    <PartialsPortfolioBalancesSubaccountTableRow
-      v-for="balance in balancesSorted"
-      v-bind="{ balance }"
-      :key="balance.denom"
-    />
+    <template v-if="isMobile">
+      <PartialsPortfolioBalancesSubaccountTableMobileRow
+        v-for="balance in balancesSorted"
+        v-bind="{ balance }"
+        :key="balance.denom"
+      />
+    </template>
+    <template v-else>
+      <PartialsPortfolioBalancesSubaccountTableRow
+        v-for="balance in balancesSorted"
+        v-bind="{ balance }"
+        :key="balance.denom"
+      />
+    </template>
   </div>
 </template>

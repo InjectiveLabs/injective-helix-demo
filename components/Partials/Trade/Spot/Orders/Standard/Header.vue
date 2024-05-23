@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>()
 
 const walletStore = useWalletStore()
-
+const isMobile = useIsMobile()
 const view = useVModel(props, 'modelValue', emit)
 
 const filteredOptions = computed(() =>
@@ -38,8 +38,26 @@ watch(
   <div class="h-header border-b flex">
     <CommonSubaccountTabSelector />
 
+    <AppTabSelect
+      v-if="isMobile"
+      v-bind="{
+        options: filteredOptions.map((value) => ({ display: value, value }))
+      }"
+      v-model="view"
+      class="border-r"
+    >
+      <template #default="{ selected }">
+        <button class="px-2">{{ $t(`activity.${selected?.value}`) }}</button>
+      </template>
+
+      <template #option="{ option }">
+        <button>{{ $t(`activity.${option.value}`) }}</button>
+      </template>
+    </AppTabSelect>
+
     <AppButtonSelect
       v-for="value in filteredOptions"
+      v-else
       :key="value"
       v-model="view"
       v-bind="{ value }"

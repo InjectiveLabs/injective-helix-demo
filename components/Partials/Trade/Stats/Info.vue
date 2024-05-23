@@ -25,9 +25,11 @@ defineProps({
         lastTradedPriceInUsdToFormat
       }"
     >
-      <div class="flex max-lg:justify-between max-lg:divide-x max-lg:px-4">
+      <div
+        class="grid grid-cols-2 lg:grid-cols-[repeat(4,auto)] max-lg:justify-between max-lg:[&>*]:border"
+      >
         <div
-          class="flex flex-col items-end justify-start lg:px-4 py-2 font-mono"
+          class="flex flex-col lg:items-end justify-start lg:px-4 py-2 font-mono"
         >
           <div
             class="flex items-center"

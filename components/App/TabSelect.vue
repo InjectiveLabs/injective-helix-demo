@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 
-defineProps({
+const props = defineProps({
   options: {
     type: Array as PropType<BaseDropdownOption[]>,
     required: true
@@ -21,6 +21,10 @@ defineProps({
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
+
+const selected = computed(() =>
+  props.options.find((option) => option.value === props.modelValue)
+)
 </script>
 
 <template>
@@ -32,7 +36,7 @@ const emit = defineEmits<{
   >
     <template #default="{ isOpen }">
       <div class="tab-label px-4 flex">
-        <slot v-bind="{ isOpen }" />
+        <slot v-bind="{ isOpen, selected }" />
         <div class="flex items-center pl-2">
           <div class="transition-all" :class="{ 'rotate-180': isOpen }">
             <SharedIcon is-sm name="chevron-down" />

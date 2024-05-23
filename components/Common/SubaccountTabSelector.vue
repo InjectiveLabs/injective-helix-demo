@@ -1,5 +1,12 @@
 <script setup lang="ts">
 const walletStore = useWalletStore()
+
+defineProps({
+  wrapperClass: {
+    type: String,
+    default: ''
+  }
+})
 </script>
 
 <template>
@@ -10,7 +17,8 @@ const walletStore = useWalletStore()
     <template #default="{ isOpen, activeSubaccountLabel }">
       <button
         v-show="activeSubaccountLabel"
-        class="flex items-center space-x-2 px-4 border-r hover:bg-brand-800"
+        class="flex items-center space-x-2 px-4 hover:bg-brand-800"
+        :class="wrapperClass"
       >
         <span
           class="text-sm font-semibold px-4 bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
