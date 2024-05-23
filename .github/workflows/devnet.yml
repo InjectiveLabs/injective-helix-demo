@@ -12,7 +12,7 @@ jobs:
     name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:
-      SSH_USER: ${{ secrets.DEVNET_SSH_USER }}
+      SSH_USER: ${{ secrets.DEVNET_SSH_USER }}g
       SSH_KEY: ${{ secrets.DEVNET_SSH_KEY }}
       SSH_HOST: ${{ secrets.DEVNET_SSH_HOST }}
       SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}

@@ -86,7 +86,7 @@ const totalMarkets = computed(
 
       <div class="">
         <h2>{{ $t('home.totalVolume') }}</h2>
-        <p class="text-2xl font-semibold">31.2 Bilion</p>
+        <p class="text-2xl font-semibold">32B</p>
       </div>
     </div>
   </div>
