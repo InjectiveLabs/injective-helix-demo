@@ -197,15 +197,15 @@ export const getDepositMenuItem = (): MenuItem => ({
   items: [
     {
       type: MenuItemType.Link,
-      label: 'navigation.cryptoDeposit',
-      description: 'navigation.cryptoDepositDescription',
+      label: 'navigation.depositCrypto',
+      description: 'navigation.depositCryptoDescription',
       to: getBridgeRedirectionUrl(),
       isExternal: true
     },
     {
       type: MenuItemType.Link,
-      label: 'navigation.fiatDeposit',
-      description: 'navigation.fiatDepositDescription',
+      label: 'navigation.depositFiat',
+      description: 'navigation.depositFiatDescription',
       to: 'https://injective.com/getinj/#getInj',
       isExternal: true
     }
