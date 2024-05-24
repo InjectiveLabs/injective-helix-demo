@@ -16,7 +16,7 @@ import {
 import {
   calculateTotalQuantity,
   calculateWorstPrice
-} from '~/app/utils/helpers'
+} from '@/app/utils/helpers'
 
 const props = defineProps({
   totalWithFee: {
@@ -122,7 +122,9 @@ const { value: amountValue, errorMessage } = useStringField({
 })
 
 function percentageChange(percentage: number) {
-  const slippage = spotFormValues.value[SpotTradeFormField.Slippage]
+  const slippage = spotFormValues.value[SpotTradeFormField.IsSlippageOn]
+    ? spotFormValues.value[SpotTradeFormField.Slippage]
+    : 0
 
   if (isBuy.value && typeValue.value === TradeAmountOption.Quote) {
     const amount = quoteBalanceToBigNumber.value
