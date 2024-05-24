@@ -103,6 +103,10 @@ const description = computed(() => {
         <p>Max. Leverage:</p>
         <p>{{ maxLeverage }}</p>
       </div>
+
+      <pre>
+        {{ market }}
+      </pre>
     </div>
   </div>
 </template>

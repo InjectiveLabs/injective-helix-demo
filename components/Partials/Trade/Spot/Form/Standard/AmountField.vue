@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   UiSpotMarket,
   spotMarketKey,
   TradeAmountOption,
   SpotTradeFormField,
-  SpotTradeForm
+  SpotTradeForm,
+  TradeTypes
 } from '@/types'
+import {
+  calculateTotalQuantity,
+  calculateWorstPrice
+} from '~/app/utils/helpers'
 
 const props = defineProps({
   totalWithFee: {
@@ -28,6 +37,10 @@ const props = defineProps({
 
 const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
+const { userBalancesWithToken } = useBalance()
+const spotFormValues = useFormValues<SpotTradeForm>()
+const orderbookStore = useOrderbookStore()
+
 const options = [
   {
     display: market.value.baseToken.symbol || '',
@@ -38,9 +51,6 @@ const options = [
     value: TradeAmountOption.Quote
   }
 ]
-
-const { userBalancesWithToken } = useBalance()
-const spotFormValues = useFormValues<SpotTradeForm>()
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,
@@ -57,22 +67,24 @@ const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
 )
 
-const { valueToString: baseBalanceToString, valueToFixed: baseBalanceToFixed } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      const balance = userBalancesWithToken.value.find(
-        (balance) => balance.token.denom === market.value.baseToken.denom
-      )?.accountTotalBalance
+const {
+  valueToString: baseBalanceToString,
+  valueToBigNumber: baseBalanceToBigNumber
+} = useSharedBigNumberFormatter(
+  computed(() => {
+    const balance = userBalancesWithToken.value.find(
+      (balance) => balance.token.denom === market.value.baseToken.denom
+    )?.accountTotalBalance
 
-      return new BigNumberInWei(balance || 0).toBase(
-        market.value.baseToken.decimals
-      )
-    })
-  )
+    return new BigNumberInWei(balance || 0).toBase(
+      market.value.baseToken.decimals
+    )
+  })
+)
 
 const {
   valueToString: quoteBalanceToString,
-  valueToFixed: quoteBalanceToFixed
+  valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
     const balance = userBalancesWithToken.value.find(
@@ -90,8 +102,8 @@ const { value: amountValue, errorMessage } = useStringField({
 
   dynamicRule: computed(() => {
     const maxAmount = isBuy.value
-      ? quoteBalanceToFixed.value
-      : baseBalanceToFixed.value
+      ? quoteBalanceToBigNumber.value.toFixed()
+      : baseBalanceToBigNumber.value.toFixed()
 
     const value = isBuy.value ? props.totalWithFee : props.quantity
 
@@ -108,12 +120,94 @@ const { value: amountValue, errorMessage } = useStringField({
     return rules.join('|')
   })
 })
+
+function percentageChange(percentage: number) {
+  const slippage = spotFormValues.value[SpotTradeFormField.Slippage]
+
+  if (isBuy.value && typeValue.value === TradeAmountOption.Quote) {
+    const amount = quoteBalanceToBigNumber.value
+      .times(percentage)
+      .div(100)
+      .dp(market.value.priceDecimals, BigNumber.ROUND_DOWN)
+
+    amountValue.value = amount.toFixed()
+    return
+  }
+
+  if (isBuy.value && typeValue.value === TradeAmountOption.Base) {
+    const fee = new BigNumberInBase(1).minus(market.value.takerFeeRate)
+    const quoteBalance = quoteBalanceToBigNumber.value
+
+    const usableBalance = quoteBalance.times(fee)
+
+    const { worstPrice } = calculateTotalQuantity(
+      usableBalance.toFixed(),
+      orderbookStore.sells
+    )
+
+    const worstPriceWithSlippage = worstPrice.times(1 + Number(slippage) / 100)
+
+    const executionPrice =
+      spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+        ? spotFormValues.value[SpotTradeFormField.Price] || 0
+        : worstPriceWithSlippage
+
+    const quantity = usableBalance
+      .div(executionPrice)
+      .times(percentage)
+      .div(100)
+      .dp(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
+
+    amountValue.value = quantity.toFixed()
+    return
+  }
+
+  if (!isBuy.value && typeValue.value === TradeAmountOption.Base) {
+    const amount = baseBalanceToBigNumber.value
+      .times(percentage)
+      .div(100)
+      .dp(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
+
+    amountValue.value = amount.toFixed()
+    return
+  }
+
+  if (!isBuy.value && typeValue.value === TradeAmountOption.Quote) {
+    const quantity = baseBalanceToBigNumber.value
+    const fee = new BigNumberInBase(1).minus(market.value.takerFeeRate)
+
+    const { worstPrice } = calculateWorstPrice(
+      quantity.toString(),
+      orderbookStore.buys
+    )
+
+    const worstPriceWithSlippage = worstPrice.times(1 - Number(slippage) / 100)
+
+    const executionPrice =
+      spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+        ? spotFormValues.value[SpotTradeFormField.Price] || 0
+        : worstPriceWithSlippage
+
+    const totalQuote = quantity
+      .times(executionPrice)
+      .times(fee)
+      .times(percentage)
+      .div(100)
+      .dp(market.value.priceDecimals, BigNumber.ROUND_DOWN)
+
+    amountValue.value = totalQuote.toFixed()
+  }
+}
 </script>
 
 <template>
   <div ref="el" class="space-y-2">
     <div class="flex justify-between items-end">
       <p class="field-label">{{ $t('trade.amount') }}</p>
+
+      <PartialsTradeCommonFormPercentage
+        @percentage:change="percentageChange"
+      />
     </div>
 
     <AppInputField
