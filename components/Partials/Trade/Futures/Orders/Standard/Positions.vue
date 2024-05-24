@@ -35,7 +35,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
   <div class="divide-y">
     <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
 
-    <div v-if="'isMobile'">
+    <div v-if="isMobile">
       <PartialsPortfolioPositionsTableMobileRow
         v-for="position in filteredPosition"
         :key="`${position.marketId}-${position.subaccountId}-${position.entryPrice}`"
