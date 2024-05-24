@@ -106,7 +106,7 @@ onSubaccountChange(fetchData)
       @side:update="fetchData"
       @type:update="fetchData"
     />
-    <PartialsPortfolioOrdersFuturesOrderHistoryTableHeader />
+    <PartialsPortfolioOrdersFuturesOrderHistoryTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"

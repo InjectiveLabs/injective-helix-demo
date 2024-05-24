@@ -41,7 +41,7 @@ onSubaccountChange(fetchSubaccountOrders)
 <template>
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersSpotOpenOrdersTabs />
-    <PartialsPortfolioOrdersSpotOpenOrdersTableHeader />
+    <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
