@@ -65,10 +65,12 @@ const totalMarkets = computed(
       <div
         class="absolute bottom-0 -left-[250px] blur-[10rem] bg-blue-300/20 w-[200px] h-[200px] md:w-[500px] md:h-[500px] rounded-full"
       ></div>
-      <img
-        src="/images/hero_image.png"
-        class="w-full relative aspect-[1.3] object-contain"
-      />
+      <div class="shadow-[0px_0px_20px_15px_#1C1C1C] my-16 mx-auto">
+        <img
+          src="/images/home/hero.png"
+          class="rounded-md border ring-[2px] z-50 relative"
+        />
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4 my-4">
@@ -91,3 +93,17 @@ const totalMarkets = computed(
     </div>
   </div>
 </template>
+
+<style scoped>
+.glow-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 30px 10px rgba(0, 122, 255, 0.75); /* Adjusted glow effect */
+  pointer-events: none;
+}
+</style>
