@@ -21,6 +21,7 @@ const markets = computed(() =>
           Version 2.0 Alpha (New)
         </div>
       </div>
+
       <AppMarquee class="flex-1">
         <div class="text-[10px] font-mono text-white space-x-2 flex">
           <template v-for="([symbol, price], i) in markets" :key="symbol">

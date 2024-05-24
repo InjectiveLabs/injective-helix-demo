@@ -22,6 +22,7 @@ export const tradeErrorMessages = {
   tooLowPostOnlyPrice: () => 'Post-Only limit price is too low',
   minBaseAmount: (minBaseAmount: string) =>
     `Base amount must be >= ${minBaseAmount}`,
+  minAmount: (minBaseAmount: string) => `Amount must be > ${minBaseAmount}`,
   quantityTensMultiplier: (tensMultiplier: string) =>
     `Quantity must be a multiple of ${tensMultiplier}`
 } as Record<string, any>
@@ -64,6 +65,18 @@ export const defineTradeRules = () => {
 
     if (new BigNumberInBase(value).lt(minAmount)) {
       return tradeErrorMessages.minBaseAmount(minAmount)
+    }
+
+    return true
+  })
+
+  defineRule('minAmount', (value: string, [minAmount]: string) => {
+    if (!value) {
+      return true
+    }
+
+    if (new BigNumberInBase(value).lte(minAmount)) {
+      return tradeErrorMessages.minAmount(minAmount)
     }
 
     return true
@@ -147,7 +160,7 @@ export const defineTradeRules = () => {
   defineRule(
     'priceTooFarFromLastTradePrice',
     (value: string | number, [lastTradedPrice]: [string]) => {
-      const DEFAULT_MIN_PRICE_BAND_DIFFERENCE = 80
+      const DEFAULT_MIN_PRICE_BAND_DIFFERENCE = 20
       const DEFAULT_MAX_PRICE_BAND_DIFFERENCE = 400
 
       const valueInBigNumber = new BigNumberInBase(value)

@@ -1,5 +1,10 @@
 export const MARKETS_INFO = [
   {
+    symbol: 'inj',
+    description:
+      ' Injective is the blockchain built for finance. It is an open, interoperable layer-one blockchain powering next-generation DeFi applications, including decentralized spot and derivatives exchanges, prediction markets, lending protocols, and more. Injective uniquely provides powerful core financial infrastructure primitives that applications can leverage, including a fully decentralized MEV-resistant on-chain orderbook.'
+  },
+  {
     symbol: 'btc',
     description:
       'BTC is the original decentralized digital currency, enabling secure peer-to-peer transactions on a global network without banks or central authorities.'

@@ -21,7 +21,8 @@ const {
   worstPrice,
   totalWithFee,
   feePercentage,
-  slippagePercentage
+  slippagePercentage,
+  minimumAmountInQuote
 } = useSpotWorstPrice()
 </script>
 
@@ -62,7 +63,7 @@ const {
       />
 
       <PartialsTradeSpotFormStandardAmountField
-        v-bind="{ totalWithFee, quantity }"
+        v-bind="{ totalWithFee, quantity, minimumAmountInQuote }"
       />
     </div>
 
