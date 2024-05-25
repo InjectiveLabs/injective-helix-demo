@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
@@ -26,6 +27,10 @@ const props = defineProps({
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
+
+const isRWAMarket = computed(() =>
+  slugsToIncludeInRWACategory.includes(props.market.slug)
+)
 
 const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary.lastPrice || 0)
@@ -104,6 +109,13 @@ function toggleFavorite() {
           {{ market.baseToken.name }}
         </div>
       </div>
+
+      <AppTooltip
+        v-if="isRWAMarket"
+        is-lg
+        :content="$t('trade.rwa.marketClosedMarketRow')"
+        class="text-gray-475 ml-2"
+      />
     </div>
 
     <div class="flex-1 truncate min-w-0 font-mono text-xs">

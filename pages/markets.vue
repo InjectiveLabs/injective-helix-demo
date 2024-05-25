@@ -213,7 +213,6 @@ const unknownTokenStatus = inject(
         </div>
       </div>
 
-      <!-- <div class="border border-brand-700 rounded-lg overflow-hidden"> -->
       <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page

@@ -26,6 +26,7 @@ import {
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
+  slugsToIncludeInRWACategory,
   slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory,
@@ -162,6 +163,10 @@ export const marketIsPartOfCategory = (
 
   if (activeCategory === MarketCategoryType.Experimental) {
     return experimentalMarketsSlug.includes(market.slug)
+  }
+
+  if (activeCategory === MarketCategoryType.RWA) {
+    return slugsToIncludeInRWACategory.includes(market.slug)
   }
 
   return true

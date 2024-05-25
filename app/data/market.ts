@@ -29,6 +29,9 @@ export const slugsToIncludeInSolanaCategory =
 export const olpSlugsToIncludeInLowVolume =
   marketCategorySlugs.olpLowVolumeCategorySlugs || []
 
+export const slugsToIncludeInRWACategory =
+  marketCategorySlugs.rwaCategorySlugs || []
+
 export const excludedPriceDeviationSlugs = [] as string[]
 
 export const upcomingMarkets = [

@@ -14,7 +14,8 @@ import {
 import {
   indexerOracleApi,
   derivativeCacheApi,
-  indexerDerivativesApi
+  indexerDerivativesApi,
+  pythService
 } from '@shared/Service'
 import {
   SharedMarketType,
@@ -27,7 +28,6 @@ import {
   toUiDerivativeMarket,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
-
 import {
   cancelOrder,
   batchCancelOrder,
@@ -51,11 +51,7 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-import {
-  marketIsInactive,
-  combineOrderbookRecords
-  // marketHasRecentlyExpired,
-} from '@/app/utils/market'
+import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
   MARKETS_SLUGS,
   TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
@@ -558,6 +554,10 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountTrades: trades,
         subaccountTradesCount: pagination.total
       })
+    },
+
+    async fetchRWAMarketIsOpen(pythPriceId: string) {
+      return await pythService.fetchRwaMarketOpenNoThrow(pythPriceId)
     },
 
     cancelStreams() {

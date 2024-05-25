@@ -427,6 +427,28 @@ export default {
     takeProfitDetails:
       'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
     stopLossDetails:
-      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.'
+      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
+
+    rwa: {
+      warning: 'Warning',
+      acknowledge: 'Acknowledge and accept',
+      marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
+          named('marketClosedTimes'),
+          ' between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
+        ]),
+      marketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'This market follows ',
+          named('marketClosedTimes'),
+          '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
+        ]),
+      marketClosedMarketRow:
+        'Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+      marketClosedTimes: ' traditional RWA price feeds',
+      acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
+      marketIsClosed: 'This market is currently closed.'
+    }
   }
 }

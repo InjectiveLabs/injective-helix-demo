@@ -46,21 +46,25 @@ export enum Modal {
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
+  PostOnlyMode = 'post-only-mode',
   GasFeeRebate = 'gas-fee-rebate',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
+  ScavengerHunt = 'scavenger-hunt',
   PriceDeviation = 'price-deviation',
   SgtBalancedFees = 'sgtBalancedFees',
+  ClosedRWAMarket = 'closed-rwa-market',
   NinjaPassWinner = 'ninja-pass-winner',
   TokenSelectorTo = 'token-selector-to',
   MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
+  MarketRestricted = 'market-restricted',
   InstitutionalForm = 'institutionalForm',
+  MarketNotOnHelix = 'market-not-on-helix',
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
   CheckSpotGridAuth = 'check-spot-grid-auth',
-  MarketNotOnHelix = 'market-not-on-helix',
   AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
   GridStrategyDetails = 'grid-strategy-details',
@@ -71,10 +75,7 @@ export enum Modal {
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   TransferToMainSubaccount = 'transfer-to-main-subaccount',
-  MarketRestricted = 'market-restricted',
-  NewFeatureTalisLaunch = 'new-feature-talis-launch',
-  ScavengerHunt = 'scavenger-hunt',
-  PostOnlyMode = 'post-only-mode'
+  NewFeatureTalisLaunch = 'new-feature-talis-launch'
 }
 
 export enum Breakpoint {
@@ -137,7 +138,8 @@ export enum MarketCategoryType {
   Ethereum = 'ethereum',
   Injective = 'injective',
   Solana = 'solana',
-  Experimental = 'experimental'
+  Experimental = 'experimental',
+  RWA = 'RWA'
 }
 
 export enum MarketQuoteType {
