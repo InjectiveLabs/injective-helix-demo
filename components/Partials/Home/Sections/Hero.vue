@@ -67,7 +67,7 @@ const totalMarkets = computed(
       ></div>
       <div class="shadow-[0px_0px_20px_20px_#1D1E24] my-16 mx-auto">
         <img
-          src="/images/home/hero.png"
+          src="/images/home/hero.webp"
           class="rounded-md border ring-[1px] z-50 relative object-cover"
         />
       </div>
