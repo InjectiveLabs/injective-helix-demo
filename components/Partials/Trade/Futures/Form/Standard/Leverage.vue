@@ -127,42 +127,51 @@ function onMouseUp() {
     leverageModel.value = '0.01'
   }
 }
+
+watch(
+  () => derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly],
+  () => {
+    leverageModel.value = '1'
+  }
+)
 </script>
 
 <template>
-  <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
+  <template v-if="!derivativeFormValues[DerivativesTradeFormField.ReduceOnly]">
+    <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
 
-  <div class="flex items-center">
-    <div class="flex-1 pr-4 relative">
-      <div
-        class="absolute top-2 bottom-3 right-4 inset-x-0 bg-brand-800 rounded-md"
-      />
+    <div class="flex items-center">
+      <div class="flex-1 pr-4 relative">
+        <div
+          class="absolute top-2 bottom-3 right-4 inset-x-0 bg-brand-800 rounded-md"
+        />
 
-      <input
-        v-model="leverageModel"
-        min="0.01"
-        :max="Number(maxLeverageAvailable)"
-        step="0.01"
-        type="range"
-        class="range w-full"
-        @mouseup="onMouseUp"
-      />
+        <input
+          v-model="leverageModel"
+          min="0.01"
+          :max="Number(maxLeverageAvailable)"
+          step="0.01"
+          type="range"
+          class="range w-full"
+          @mouseup="onMouseUp"
+        />
+      </div>
+
+      <label class="field-style flex px-3 basis-24 min-w-0 h-12">
+        <input
+          ref="el"
+          :value="leverage"
+          type="text"
+          class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
+          @keydown.enter="onEnter"
+          @blur="onBlur"
+        />
+        <span class="flex items-center pl-2 select-none">&times;</span>
+      </label>
     </div>
 
-    <label class="field-style flex px-3 basis-24 min-w-0 h-12">
-      <input
-        ref="el"
-        :value="leverage"
-        type="text"
-        class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
-        @keydown.enter="onEnter"
-        @blur="onBlur"
-      />
-      <span class="flex items-center pl-2 select-none">&times;</span>
-    </label>
-  </div>
-
-  <p class="error-message">
-    {{ errorMessage }}
-  </p>
+    <p class="error-message">
+      {{ errorMessage }}
+    </p>
+  </template>
 </template>

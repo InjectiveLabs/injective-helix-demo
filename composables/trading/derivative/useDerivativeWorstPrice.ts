@@ -49,17 +49,21 @@ export function useDerivativeWorstPrice() {
     )
   )
 
-  const feePercentage = computed(() => {
+  const feePercentage = computed(() =>
+    (isLimitOrder.value &&
+      derivativeFormValues.value[DerivativesTradeFormField.PostOnly]) ||
+    isStopOrder.value
+      ? market.value.makerFeeRate
+      : market.value.takerFeeRate
+  )
+
+  const feePercentageWithLeverage = computed(() => {
     const leverage =
       derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
-    const feePercentage =
-      (isLimitOrder.value &&
-        derivativeFormValues.value[DerivativesTradeFormField.PostOnly]) ||
-      isStopOrder.value
-        ? market.value.makerFeeRate
-        : market.value.takerFeeRate
 
-    const feeWithLeverage = new BigNumberInBase(feePercentage).times(leverage)
+    const feeWithLeverage = new BigNumberInBase(feePercentage.value).times(
+      leverage
+    )
 
     return new BigNumberInBase(1).plus(feeWithLeverage)
   })
@@ -80,6 +84,7 @@ export function useDerivativeWorstPrice() {
 
   const quantity = computed(() => {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+
     const price =
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
 
@@ -95,26 +100,22 @@ export function useDerivativeWorstPrice() {
       )
     } else {
       // is quote order
-
       if (isLimitOrder.value) {
         const amount = new BigNumberInBase(
           derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
         )
 
-        quantity = price
-          ? amount.div(feePercentage.value).div(price)
-          : ZERO_IN_BASE
+        quantity = price ? amount.div(price) : ZERO_IN_BASE
       }
 
       if (!isLimitOrder.value) {
-        const totalAfterFees = new BigNumberInBase(
-          derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
-        ).div(feePercentage.value)
+        // is market order
 
-        const worstPrice = calculateTotalQuantity(
-          totalAfterFees.toFixed(),
-          records
-        ).worstPrice
+        const total = new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
+        )
+
+        const { worstPrice } = calculateTotalQuantity(total.toFixed(), records)
 
         const worstPriceWithSlippage = worstPrice.times(
           slippagePercentage.value
@@ -126,10 +127,10 @@ export function useDerivativeWorstPrice() {
 
         if (isStopOrder.value) {
           quantity = triggerPrice
-            ? totalAfterFees.div(triggerPriceWithSlippage)
+            ? total.div(triggerPriceWithSlippage)
             : ZERO_IN_BASE
         } else {
-          quantity = totalAfterFees.div(worstPriceWithSlippage)
+          quantity = total.div(worstPriceWithSlippage)
         }
       }
     }
@@ -189,18 +190,9 @@ export function useDerivativeWorstPrice() {
     return new BigNumberInBase(worstPrice.value).times(quantity.value)
   })
 
-  const feeAmount = computed(() => {
-    const amount = new BigNumberInBase(
-      totalNotional.value.times(feePercentage.value.minus(1)).abs()
-    )
-    if (
-      isLimitOrder.value &&
-      derivativeFormValues.value[DerivativesTradeFormField.PostOnly]
-    ) {
-      return amount.times(-1)
-    }
-    return amount
-  })
+  const feeAmount = computed(() =>
+    totalNotional.value.times(feePercentage.value)
+  )
 
   const totalNotionalWithFee = computed(() => {
     return totalNotional.value.plus(feeAmount.value)
@@ -231,6 +223,7 @@ export function useDerivativeWorstPrice() {
     feeAmount,
     totalNotional,
     marginWithFee,
-    totalNotionalWithFee
+    totalNotionalWithFee,
+    feePercentageWithLeverage
   }
 }

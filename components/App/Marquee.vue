@@ -23,6 +23,10 @@
   animation: marquee 300s linear infinite;
 }
 
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
 @keyframes marquee {
   0% {
     padding-left: 100%;

@@ -35,6 +35,7 @@ export default {
     limitPrice: 'Limit Price',
     orderStatus: 'Order Status',
     amount: 'Amount',
+
     advancedSettings: 'Advanced Settings',
     cancel: 'Cancel',
     cancelTrigger: 'Cancel Trigger',

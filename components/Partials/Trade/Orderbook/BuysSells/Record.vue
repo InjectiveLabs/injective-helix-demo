@@ -133,11 +133,9 @@ function setQuantityFlashOff() {
   0% {
     color: white;
   }
-  50% {
-    color: white;
-  }
+
   100% {
-    color: white;
+    color: rgb(162, 162, 162);
   }
 }
 
@@ -149,11 +147,9 @@ function setQuantityFlashOff() {
   0% {
     color: rgb(248, 114, 148);
   }
-  50% {
-    color: rgb(248, 114, 148);
-  }
+
   100% {
-    color: rgb(248, 114, 148);
+    color: rgb(243, 22, 77);
   }
 }
 
@@ -165,11 +161,9 @@ function setQuantityFlashOff() {
   0% {
     color: rgb(101, 245, 197);
   }
-  50% {
-    color: rgb(101, 245, 197);
-  }
+
   100% {
-    color: rgb(101, 245, 197);
+    color: rgb(14, 226, 155);
   }
 }
 

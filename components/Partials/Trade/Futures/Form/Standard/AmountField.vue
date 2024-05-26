@@ -4,11 +4,17 @@ import {
   UiDerivativeMarket,
   TradeAmountOption,
   DerivativesTradeFormField,
-  derivativeMarketKey
+  derivativeMarketKey,
+  DerivativesTradeForm
 } from '@/types'
 
 const props = defineProps({
   marginWithFee: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  },
+
+  quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
@@ -27,6 +33,8 @@ const options = [
   }
 ]
 
+const positionStore = usePositionStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { userBalancesWithToken } = useBalance()
 
 const decimals = computed(() => {
@@ -35,6 +43,12 @@ const decimals = computed(() => {
     : market.value.priceDecimals
 })
 
+const activePosition = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === market.value.marketId
+  )
+)
+
 const {
   valueToString: quoteBalanceToString,
   valueToFixed: quoteBalanceToFixed
@@ -42,7 +56,7 @@ const {
   computed(() => {
     const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.accountTotalBalance
+    )?.availableMargin
 
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
@@ -60,12 +74,21 @@ const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
     name: DerivativesTradeFormField.Amount,
     initialValue: '',
     dynamicRule: computed(() => {
-      const maxAmount = quoteBalanceToFixed.value
-      const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
+      if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
+        const maxAmount = activePosition.value?.quantity
+        const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule]
+        const rules = [insufficientBalanceRule]
 
-      return rules.join('|')
+        return rules.join('|')
+      } else {
+        const maxAmount = quoteBalanceToFixed.value
+        const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
+
+        const rules = [insufficientBalanceRule]
+
+        return rules.join('|')
+      }
     })
   }
 )
@@ -73,8 +96,10 @@ const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
 
 <template>
   <div ref="el" class="space-y-2">
-    <div class="flex justify-between items-end">
+    <div class="flex justify-between items-center">
       <p class="field-label">{{ $t('trade.amount') }}</p>
+
+      <PartialsTradeCommonFormPercentage />
     </div>
 
     <AppInputField

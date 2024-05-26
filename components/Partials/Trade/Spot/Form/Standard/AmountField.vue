@@ -89,7 +89,7 @@ const {
   computed(() => {
     const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.accountTotalBalance
+    )?.availableMargin
 
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
@@ -121,7 +121,7 @@ const { value: amountValue, errorMessage } = useStringField({
   })
 })
 
-function percentageChange(percentage: number) {
+function setFromPercentage(percentage: number) {
   const slippage = spotFormValues.value[SpotTradeFormField.IsSlippageOn]
     ? spotFormValues.value[SpotTradeFormField.Slippage]
     : 0
@@ -208,7 +208,7 @@ function percentageChange(percentage: number) {
       <p class="field-label">{{ $t('trade.amount') }}</p>
 
       <PartialsTradeCommonFormPercentage
-        @percentage:change="percentageChange"
+        @percentage:change="setFromPercentage"
       />
     </div>
 

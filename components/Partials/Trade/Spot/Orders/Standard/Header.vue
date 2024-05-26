@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { SpotOrdersStandardView } from '@/types'
 
 const props = defineProps({
@@ -13,16 +14,39 @@ const emit = defineEmits<{
 }>()
 
 const walletStore = useWalletStore()
+const spotStore = useSpotStore()
 const isMobile = useIsMobile()
+
 const view = useVModel(props, 'modelValue', emit)
 
-const filteredOptions = computed(() =>
-  Object.values(SpotOrdersStandardView).filter(
-    (value) =>
-      walletStore.isUserWalletConnected ||
-      value !== SpotOrdersStandardView.Balances
-  )
-)
+const options = computed(() => {
+  const items: BaseDropdownOption[] = [
+    {
+      display: `activity.${SpotOrdersStandardView.OpenOrders}`,
+      value: SpotOrdersStandardView.OpenOrders,
+      amount: spotStore.subaccountOrdersCount
+    },
+    {
+      display: `activity.${SpotOrdersStandardView.OrderHistory}`,
+      value: SpotOrdersStandardView.OrderHistory,
+      amount: spotStore.subaccountOrderHistoryCount
+    },
+    {
+      display: `activity.${SpotOrdersStandardView.TradeHistory}`,
+      value: SpotOrdersStandardView.TradeHistory,
+      amount: spotStore.subaccountTradesCount
+    }
+  ]
+
+  if (walletStore.isUserWalletConnected) {
+    items.unshift({
+      display: `activity.${SpotOrdersStandardView.Balances}`,
+      value: SpotOrdersStandardView.Balances
+    })
+  }
+
+  return items
+})
 
 watch(
   () => walletStore.isUserWalletConnected,
@@ -41,22 +65,28 @@ watch(
     <AppTabSelect
       v-if="isMobile"
       v-bind="{
-        options: filteredOptions.map((value) => ({ display: value, value }))
+        options
       }"
       v-model="view"
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">{{ $t(`activity.${selected?.value}`) }}</button>
+        <button class="px-2">
+          {{ $t(selected?.display || '') }}
+          {{ selected?.amount ? `(${selected.amount})` : '' }}
+        </button>
       </template>
 
       <template #option="{ option }">
-        <button>{{ $t(`activity.${option.value}`) }}</button>
+        <button>
+          {{ $t(option.display) }}
+          {{ option.amount ? `(${option.amount})` : '' }}
+        </button>
       </template>
     </AppTabSelect>
 
     <AppButtonSelect
-      v-for="value in filteredOptions"
+      v-for="{ value, amount, display } in options"
       v-else
       :key="value"
       v-model="view"
@@ -64,7 +94,7 @@ watch(
       class="flex items-center px-4 tab-field"
       active-classes="!text-white"
     >
-      {{ $t(`activity.${value}`) }}
+      {{ $t(display) }} {{ Number.isInteger(amount) ? `(${amount})` : '' }}
     </AppButtonSelect>
 
     <div class="hidden lg:flex items-center flex-1 justify-end px-2">

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import { PerpOrdersStandardView } from '@/types'
 
 const props = defineProps({
@@ -13,17 +14,50 @@ const emit = defineEmits<{
 }>()
 
 const walletStore = useWalletStore()
+const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const isMobile = useIsMobile()
 
 const view = useVModel(props, 'modelValue', emit)
 
-const filteredOptions = computed(() =>
-  Object.values(PerpOrdersStandardView).filter(
-    (value) =>
-      walletStore.isUserWalletConnected ||
-      value !== PerpOrdersStandardView.Balances
-  )
-)
+const options = computed(() => {
+  const items: BaseDropdownOption[] = [
+    {
+      display: `activity.${PerpOrdersStandardView.OpenPositions}`,
+      value: PerpOrdersStandardView.OpenPositions,
+      amount: positionStore.subaccountPositionsCount
+    },
+    {
+      display: `activity.${PerpOrdersStandardView.OpenOrders}`,
+      value: PerpOrdersStandardView.OpenOrders,
+      amount: derivativeStore.subaccountOrdersCount
+    },
+    {
+      display: `activity.${PerpOrdersStandardView.Triggers}`,
+      value: PerpOrdersStandardView.Triggers,
+      amount: derivativeStore.subaccountConditionalOrdersCount
+    },
+    {
+      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
+      value: PerpOrdersStandardView.OrderHistory,
+      amount: derivativeStore.subaccountOrderHistoryCount
+    },
+    {
+      display: `activity.${PerpOrdersStandardView.TradeHistory}`,
+      value: PerpOrdersStandardView.TradeHistory,
+      amount: derivativeStore.subaccountTradesCount
+    }
+  ]
+
+  if (walletStore.isUserWalletConnected) {
+    items.unshift({
+      display: `activity.${PerpOrdersStandardView.Balances}`,
+      value: PerpOrdersStandardView.Balances
+    })
+  }
+
+  return items
+})
 
 watch(
   () => walletStore.isUserWalletConnected,
@@ -42,22 +76,32 @@ watch(
     <AppTabSelect
       v-if="isMobile"
       v-bind="{
-        options: filteredOptions.map((value) => ({ display: value, value }))
+        options
       }"
       v-model="view"
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">{{ $t(`activity.${selected?.value}`) }}</button>
+        <button class="px-2">
+          {{ $t(`activity.${selected?.value}`) }}
+          {{
+            Number.isInteger(selected?.amount)
+              ? `(${selected?.amount || 0})`
+              : ''
+          }}
+        </button>
       </template>
 
       <template #option="{ option }">
-        <button>{{ $t(`activity.${option.value}`) }}</button>
+        <button>
+          {{ $t(`activity.${option.value}`) }}
+          {{ Number.isInteger(option.amount) ? `(${option.amount})` : '' }}
+        </button>
       </template>
     </AppTabSelect>
 
     <AppButtonSelect
-      v-for="value in filteredOptions"
+      v-for="{ value, display, amount } in options"
       v-else
       :key="value"
       v-model="view"
@@ -65,7 +109,8 @@ watch(
       class="flex items-center px-4 tab-field"
       active-classes="!text-white"
     >
-      {{ $t(`activity.${value}`) }}
+      {{ $t(display) }}
+      {{ Number.isInteger(amount) ? `(${amount})` : '' }}
     </AppButtonSelect>
 
     <div class="flex-1 hidden lg:flex items-center px-2 justify-end">

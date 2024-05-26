@@ -116,7 +116,7 @@ function toggle() {
 
         <div class="flex items-center text-xs font-medium">
           <p class="text-gray-400">
-            {{ $t('trade.notional') }}
+            {{ $t('trade.averagePrice') }}
           </p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
