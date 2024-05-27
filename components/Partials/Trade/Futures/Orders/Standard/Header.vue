@@ -1,24 +1,41 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { PerpOrdersStandardView } from '@/types'
+import {
+  PerpOrdersStandardView,
+  UiDerivativeMarket,
+  derivativeMarketKey
+} from '@/types'
 
 const props = defineProps({
   modelValue: {
     type: String as PropType<PerpOrdersStandardView>,
     required: true
+  },
+
+  isTickerOnly: {
+    type: Boolean as PropType<boolean>,
+    default: false
   }
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: PerpOrdersStandardView]
+  'update:isTickerOnly': [value: boolean]
 }>()
+
+const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
-const isMobile = useIsMobile()
+
+const breakpoints = useBreakpointsTw()
+
+const xxl = breakpoints['4xl']
 
 const view = useVModel(props, 'modelValue', emit)
+
+const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
   const items: BaseDropdownOption[] = [
@@ -74,7 +91,7 @@ watch(
     <CommonSubaccountTabSelector />
 
     <AppTabSelect
-      v-if="isMobile"
+      v-if="!xxl"
       v-bind="{
         options
       }"
@@ -113,7 +130,11 @@ watch(
       {{ Number.isInteger(amount) ? `(${amount})` : '' }}
     </AppButtonSelect>
 
-    <div class="flex-1 hidden lg:flex items-center px-2 justify-end">
+    <div class="flex-1 flex items-center px-2 justify-end">
+      <AppCheckbox2 v-model="isTickerOnlyValue">
+        {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
+      </AppCheckbox2>
+
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
         v-if="view === PerpOrdersStandardView.OpenOrders"
       />
@@ -122,7 +143,5 @@ watch(
         v-if="view === PerpOrdersStandardView.Triggers"
       />
     </div>
-
-    <div class="flex-1 lg:hidden" />
   </div>
 </template>

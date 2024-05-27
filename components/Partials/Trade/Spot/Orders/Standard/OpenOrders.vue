@@ -1,15 +1,34 @@
 <script setup lang="ts">
+import { UiSpotMarket, spotMarketKey } from '~/types'
+
+const props = defineProps({
+  isTickerOnly: Boolean
+})
+
+const spotMarket = inject(spotMarketKey) as Ref<UiSpotMarket>
+
 const spotStore = useSpotStore()
 
 const isMobile = useIsMobile()
+
+const filteredOrders = computed(() =>
+  spotStore.subaccountOrders.filter((order) => {
+    if (props.isTickerOnly) {
+      return order.marketId === spotMarket.value.marketId
+    }
+
+    return true
+  })
+)
 </script>
 
 <template>
   <div class="divide-y">
     <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
+
     <div v-if="isMobile">
       <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
-        v-for="order in spotStore.subaccountOrders"
+        v-for="order in filteredOrders"
         :key="order.orderHash"
         v-bind="{ order }"
       />
@@ -17,14 +36,14 @@ const isMobile = useIsMobile()
 
     <template v-else>
       <PartialsPortfolioOrdersSpotOpenOrdersTableRow
-        v-for="order in spotStore.subaccountOrders"
+        v-for="order in filteredOrders"
         :key="order.orderHash"
         v-bind="{ order }"
       />
     </template>
 
     <CommonEmptyList
-      v-if="spotStore.subaccountOrders.length === 0"
+      v-if="filteredOrders.length === 0"
       v-bind="{ message: 'No Orders' }"
     />
   </div>

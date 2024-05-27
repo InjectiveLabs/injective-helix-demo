@@ -12,6 +12,7 @@ const positionStore = usePositionStore()
 
 const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
+const isTickerOnly = ref(false)
 const view = ref(PerpOrdersStandardView.OpenPositions)
 const status = reactive(new Status(StatusType.Loading))
 
@@ -27,16 +28,28 @@ function fetchDerivativeOrders() {
   Promise.all([
     derivativeStore.fetchSubaccountOrders(),
     derivativeStore.fetchSubaccountOrderHistory({
-      subaccountId: accountStore.subaccountId
+      subaccountId: accountStore.subaccountId,
+      filters: {
+        marketIds: isTickerOnly.value
+          ? [market?.value?.marketId || '']
+          : undefined
+      }
     }),
     derivativeStore.fetchSubaccountTrades({
-      subaccountId: accountStore.subaccountId
+      subaccountId: accountStore.subaccountId,
+      filters: {
+        marketIds: isTickerOnly.value
+          ? [market?.value?.marketId || '']
+          : undefined
+      }
     }),
     derivativeStore.fetchSubaccountConditionalOrders([market.value.marketId]),
     positionStore.fetchSubaccountPositions({
       subaccountId: accountStore.subaccountId,
       filters: {
-        marketIds: [market?.value?.marketId || '']
+        marketIds: isTickerOnly.value
+          ? [market?.value?.marketId || '']
+          : undefined
       }
     })
   ])
@@ -57,34 +70,37 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
 
 <template>
   <div>
-    <PartialsTradeFuturesOrdersStandardHeader v-model="view" />
+    <div class="border-b">
+      <PartialsTradeFuturesOrdersStandardHeader
+        v-model:is-ticker-only="isTickerOnly"
+        v-model="view"
+        @update:is-ticker-only="fetchDerivativeOrders"
+      />
 
-    <div class="overflow-x-auto border-b max-h-lg">
-      <div class="lg:min-w-[1400px]">
-        <PartialsTradeCommonOrdersBalances
-          v-if="view === PerpOrdersStandardView.Balances"
-        />
+      <PartialsTradeCommonOrdersBalances
+        v-if="view === PerpOrdersStandardView.Balances"
+      />
 
-        <PartialsTradeFuturesOrdersStandardPositions
-          v-else-if="view === PerpOrdersStandardView.OpenPositions"
-        />
+      <PartialsTradeFuturesOrdersStandardPositions
+        v-else-if="view === PerpOrdersStandardView.OpenPositions"
+      />
 
-        <PartialsTradeFuturesOrdersStandardOpenOrders
-          v-else-if="view === PerpOrdersStandardView.OpenOrders"
-        />
+      <PartialsTradeFuturesOrdersStandardOpenOrders
+        v-else-if="view === PerpOrdersStandardView.OpenOrders"
+        v-bind="{ isTickerOnly }"
+      />
 
-        <PartialsTradeFuturesOrdersStandardTriggers
-          v-else-if="view === PerpOrdersStandardView.Triggers"
-        />
+      <PartialsTradeFuturesOrdersStandardTriggers
+        v-else-if="view === PerpOrdersStandardView.Triggers"
+      />
 
-        <PartialsTradeFuturesOrdersStandardOrderHistory
-          v-else-if="view === PerpOrdersStandardView.OrderHistory"
-        />
+      <PartialsTradeFuturesOrdersStandardOrderHistory
+        v-else-if="view === PerpOrdersStandardView.OrderHistory"
+      />
 
-        <PartialsTradeFuturesOrdersStandardTradeHistory
-          v-else-if="view === PerpOrdersStandardView.TradeHistory"
-        />
-      </div>
+      <PartialsTradeFuturesOrdersStandardTradeHistory
+        v-else-if="view === PerpOrdersStandardView.TradeHistory"
+      />
     </div>
   </div>
 </template>

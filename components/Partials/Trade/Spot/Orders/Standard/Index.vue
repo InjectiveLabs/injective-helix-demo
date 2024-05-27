@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOrdersStandardView } from '@/types'
+import { SpotOrdersStandardView, UiSpotMarket, spotMarketKey } from '@/types'
+
+const spotMarket = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 
 const view = ref(SpotOrdersStandardView.OpenOrders)
 const status = reactive(new Status(StatusType.Loading))
+const isTickerOnly = ref(false)
 
 function fetchSpotOrders() {
   if (!accountStore.subaccountId) {
@@ -20,10 +23,16 @@ function fetchSpotOrders() {
   Promise.all([
     spotStore.fetchSubaccountOrders(),
     spotStore.fetchSubaccountOrderHistory({
-      subaccountId: accountStore.subaccountId
+      subaccountId: accountStore.subaccountId,
+      filters: {
+        marketIds: isTickerOnly.value ? [spotMarket.value.marketId] : undefined
+      }
     }),
     spotStore.fetchSubaccountTrades({
-      subaccountId: accountStore.subaccountId
+      subaccountId: accountStore.subaccountId,
+      filters: {
+        marketIds: isTickerOnly.value ? [spotMarket.value.marketId] : undefined
+      }
     })
   ])
 }
@@ -53,7 +62,11 @@ onSubaccountChange(() => {
 
 <template>
   <div>
-    <PartialsTradeSpotOrdersStandardHeader v-model="view" />
+    <PartialsTradeSpotOrdersStandardHeader
+      v-model:is-ticker-only="isTickerOnly"
+      v-model="view"
+      @update:is-ticker-only="fetchSpotOrders"
+    />
 
     <div class="overflow-x-auto border-b">
       <PartialsTradeCommonOrdersBalances
@@ -62,6 +75,7 @@ onSubaccountChange(() => {
 
       <PartialsTradeSpotOrdersStandardOpenOrders
         v-else-if="view === SpotOrdersStandardView.OpenOrders"
+        v-bind="{ isTickerOnly }"
       />
 
       <PartialsTradeSpotOrdersStandardOrderHistory

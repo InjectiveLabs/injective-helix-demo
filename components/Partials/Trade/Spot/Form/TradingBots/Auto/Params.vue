@@ -207,7 +207,13 @@ onMounted(() => {
     <div class="text-xs space-y-2 pt-4 pb-2">
       <p class="text-gray-300">{{ $t('sgt.autoModeHeader') }}</p>
       <div>
-        <a class="text-blue-500" href="#">{{ $t('sgt.learnMore') }}</a>
+        <a
+          class="text-blue-500"
+          href="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix"
+          target="_blank"
+        >
+          {{ $t('sgt.learnMore') }}
+        </a>
       </div>
     </div>
 

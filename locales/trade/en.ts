@@ -35,7 +35,7 @@ export default {
     limitPrice: 'Limit Price',
     orderStatus: 'Order Status',
     amount: 'Amount',
-
+    tickerOnly: '{ticker} only',
     advancedSettings: 'Advanced Settings',
     cancel: 'Cancel',
     cancelTrigger: 'Cancel Trigger',

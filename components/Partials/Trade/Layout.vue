@@ -37,8 +37,14 @@ defineProps({
       </slot>
     </div>
 
-    <div class="[grid-area:orders] border-t">
-      <slot name="orders" />
+    <div
+      class="[grid-area:orders] relative h-[500px] overflow-x-auto border-t border-b"
+    >
+      <div class="absolute left-0 right-0 top-0">
+        <div class="lg:min-w-[1200px]">
+          <slot name="orders" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -1,23 +1,36 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { SpotOrdersStandardView } from '@/types'
+import { SpotOrdersStandardView, UiSpotMarket, spotMarketKey } from '@/types'
 
 const props = defineProps({
   modelValue: {
     type: String as PropType<SpotOrdersStandardView>,
     required: true
+  },
+
+  isTickerOnly: {
+    type: Boolean as PropType<boolean>,
+    default: false
   }
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: SpotOrdersStandardView]
+  'update:isTickerOnly': [value: boolean]
 }>()
+
+const spotMarket = inject(spotMarketKey) as Ref<UiSpotMarket>
 
 const walletStore = useWalletStore()
 const spotStore = useSpotStore()
 const isMobile = useIsMobile()
+const breakpoints = useBreakpointsTw()
+
+const xxl = breakpoints['4xl']
 
 const view = useVModel(props, 'modelValue', emit)
+
+const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
   const items: BaseDropdownOption[] = [
@@ -63,7 +76,7 @@ watch(
     <CommonSubaccountTabSelector />
 
     <AppTabSelect
-      v-if="isMobile"
+      v-if="!xxl"
       v-bind="{
         options
       }"
@@ -97,9 +110,16 @@ watch(
       {{ $t(display) }} {{ Number.isInteger(amount) ? `(${amount})` : '' }}
     </AppButtonSelect>
 
-    <div class="hidden lg:flex items-center flex-1 justify-end px-2">
+    <div class="flex items-center flex-1 justify-end px-2">
+      <AppCheckbox2 v-model="isTickerOnlyValue">
+        <span>
+          {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
+        </span>
+      </AppCheckbox2>
+
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
-        v-if="view === SpotOrdersStandardView.OpenOrders"
+        v-if="view === SpotOrdersStandardView.OpenOrders && !isMobile"
+        v-bind="{ isTickerOnly }"
       />
     </div>
 
