@@ -51,6 +51,11 @@ export default {
         enable: 'Enable Auto-Sign',
         disconnect: 'Disconnect Auto-Sign'
       }
+    },
+
+    filters: {
+      cleanFilters: 'Clean Filters',
+      filterBySide: 'Filter by Side'
     }
   }
 }

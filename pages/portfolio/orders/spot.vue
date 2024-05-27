@@ -21,12 +21,12 @@ const options = [
       <h3 class="portfolio-title">{{ $t('activity.spotOrders') }}</h3>
     </div>
 
-    <div class="flex">
+    <div class="flex items-center">
       <NuxtLink
         v-for="option in options"
         :key="option.label"
         :to="option.to"
-        class="p-4 text-gray-400 font-medium"
+        class="px-1 py-2 max-lg:text-sm text-center lg:p-4 text-gray-400 font-medium"
         exact-active-class="text-white"
       >
         {{ option.label }}

@@ -40,25 +40,26 @@ function onFormReset() {
 </script>
 
 <template>
-  <div class="h-header flex">
-    <CommonSubaccountTabSelector />
-    <div class="flex divide-x border-r">
-      <CommonTabMarketSelector
-        v-model="marketValue"
-        v-bind="{ markets: derivativeStore.markets }"
-        @update:model-value="onMarketChange"
-      />
-      <CommonTabTypeFilter
-        v-model="typeValue"
-        is-derivative
-        @update:model-value="onTypeChange"
-      />
-      <CommonTabSideFilter
-        v-model="sideValue"
-        is-spot
-        @update:model-value="onSideChange"
-      />
-      <CommonTabFormReset @form:reset="onFormReset" />
-    </div>
+  <div class="lg:h-header lg:divide-x lg:flex">
+    <CommonSubaccountTabSelector wrapper-class="w-full py-4" />
+
+    <CommonTabMarketSelector
+      v-model="marketValue"
+      v-bind="{ markets: derivativeStore.markets }"
+      @update:model-value="onMarketChange"
+    />
+    <CommonTabTypeFilter
+      v-model="typeValue"
+      is-derivative
+      @update:model-value="onTypeChange"
+    />
+    <CommonTabSideFilter
+      v-model="sideValue"
+      is-spot
+      @update:model-value="onSideChange"
+    />
+    <CommonTabFormReset @form:reset="onFormReset" />
+
+    <div class="flex-1 max-lg:hidden" />
   </div>
 </template>

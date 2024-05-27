@@ -40,20 +40,22 @@ function onFormReset() {
 </script>
 
 <template>
-  <div class="h-header flex">
-    <CommonSubaccountTabSelector />
+  <div class="lg:h-header lg:flex">
+    <CommonSubaccountTabSelector wrapper-class="w-full" />
 
-    <div class="flex divide-x border-r flex-1">
+    <div class="grid lg:flex lg:divide-x border-r flex-1">
       <CommonTabMarketSelector
         v-model="marketValue"
         v-bind="{ markets: derivativeStore.markets }"
         @update:model-value="onMarketChange"
       />
+
       <CommonTabTypeFilter
         v-model="typeValue"
         is-trigger
         @update:model-value="onTypeChange"
       />
+
       <CommonTabSideFilter
         v-model="sideValue"
         is-spot
@@ -61,8 +63,10 @@ function onFormReset() {
       />
       <CommonTabFormReset @form:reset="onFormReset" />
 
-      <div class="flex-1 flex items-center justify-end px-2">
-        <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers />
+      <div class="flex-1 flex items-center justify-end px-2 max-lg:py-2">
+        <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers
+          class="max-lg:w-full"
+        />
       </div>
     </div>
   </div>

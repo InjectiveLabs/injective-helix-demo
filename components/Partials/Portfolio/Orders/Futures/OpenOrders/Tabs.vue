@@ -15,7 +15,7 @@ const { value: sideValue } = useStringField({
 </script>
 
 <template>
-  <div class="h-header flex divide-x">
+  <div class="lg:h-header lg:flex lg:divide-x">
     <CommonSubaccountTabSelector />
 
     <CommonTabMarketSelector

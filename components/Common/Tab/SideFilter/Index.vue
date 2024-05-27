@@ -44,8 +44,8 @@ const value = computed({
     :options="options"
   >
     <template #default>
-      <div class="flex items-center">
-        <span v-if="!value">Filter By Side</span>
+      <div class="flex items-center max-lg:py-2">
+        <span v-if="!value">{{ $t('portfolio.filters.filterBySide') }}</span>
         <span v-else>{{ $t(`trade.${value}`) }}</span>
       </div>
     </template>

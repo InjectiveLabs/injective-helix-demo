@@ -15,9 +15,9 @@ function onFormReset() {
 <template>
   <div
     v-if="isFormDirty"
-    class="tab-label flex items-center px-4"
+    class="tab-label flex items-center px-4 max-lg:py-2"
     @click="onFormReset"
   >
-    <p class="text-red-500">Clear Filters</p>
+    <p class="text-red-500">{{ $t('portfolio.filters.cleanFilters') }}</p>
   </div>
 </template>

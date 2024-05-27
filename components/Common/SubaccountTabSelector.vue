@@ -17,7 +17,7 @@ defineProps({
     <template #default="{ isOpen, activeSubaccountLabel }">
       <button
         v-show="activeSubaccountLabel"
-        class="flex items-center space-x-2 px-2 lg:px-4 hover:bg-brand-800"
+        class="flex items-center space-x-2 px-2 lg:px-4 hover:bg-brand-800 max-lg:py-2"
         :class="wrapperClass"
       >
         <span

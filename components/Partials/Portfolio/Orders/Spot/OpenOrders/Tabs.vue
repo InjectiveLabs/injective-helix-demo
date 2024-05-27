@@ -15,19 +15,15 @@ const { value: sideValue } = useStringField({
 </script>
 
 <template>
-  <div class="h-header divide-x flex">
-    <CommonSubaccountTabSelector wrapper-class="w-full py-4  max-lg:border-r" />
+  <div class="lg:h-header lg:divide-x lg:flex">
+    <CommonSubaccountTabSelector wrapper-class="w-full py-4" />
 
     <CommonTabMarketSelector
       v-bind="{ markets: spotStore.markets }"
       v-model="marketValue"
     />
 
-    <CommonTabSideFilter
-      v-model="sideValue"
-      wrapper-class=" [&>*]:py-4"
-      is-spot
-    />
+    <CommonTabSideFilter v-model="sideValue" is-spot />
     <CommonTabFormReset />
 
     <div class="hidden lg:flex justify-end items-center px-2 flex-1">

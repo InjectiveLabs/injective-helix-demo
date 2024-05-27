@@ -27,12 +27,12 @@ const options = [
       <h3 class="portfolio-title">{{ $t('activity.derivativeOrders') }}</h3>
     </div>
 
-    <div class="flex">
+    <div class="flex items-center">
       <NuxtLink
         v-for="option in options"
         :key="option.label"
         :to="option.to"
-        class="p-4 text-gray-400 font-medium"
+        class="px-2 py-4 max-lg:text-sm lg:p-4 text-gray-400 font-medium text-center"
         exact-active-class="text-white"
       >
         {{ option.label }}
