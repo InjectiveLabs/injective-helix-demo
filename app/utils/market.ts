@@ -137,13 +137,8 @@ export const marketIsPartOfCategory = (
     return market.isVerified
   }
 
-  const isIbcBaseDenomMarket = market.baseToken.denom.startsWith('ibc')
-
   if (activeCategory === MarketCategoryType.Cosmos) {
-    return (
-      isIbcBaseDenomMarket ||
-      slugsToIncludeInCosmosCategory.includes(market.slug)
-    )
+    return slugsToIncludeInCosmosCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Solana) {
@@ -151,10 +146,7 @@ export const marketIsPartOfCategory = (
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
-    return (
-      !isIbcBaseDenomMarket &&
-      slugsToIncludeInEthereumCategory.includes(market.slug)
-    )
+    return slugsToIncludeInEthereumCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Injective) {
