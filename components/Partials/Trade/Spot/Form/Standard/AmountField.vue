@@ -74,7 +74,7 @@ const {
   computed(() => {
     const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.baseToken.denom
-    )?.accountTotalBalance
+    )?.availableMargin
 
     return new BigNumberInWei(balance || 0).toBase(
       market.value.baseToken.decimals
