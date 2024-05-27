@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SharedMarketChange } from '@shared/types'
-import { UiMarketWithToken } from '@/types'
+import { SharedMarketChange, SharedMarketType } from '@shared/types'
+import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 defineProps({
   market: {
@@ -87,7 +87,12 @@ defineProps({
         </div>
 
         <div class="p-2 text-xs max-lg:text-center">
-          <p class="text-gray-400">{{ $t('trade.total_market_volume_24h') }}</p>
+          <CommonHeaderTooltip
+            :tooltip="$t('trade.market_volume_24h_tooltip')"
+            text-color-class="text-gray-400"
+          >
+            {{ $t('trade.total_market_volume_24h') }}
+          </CommonHeaderTooltip>
           <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
         </div>
 
@@ -103,4 +108,9 @@ defineProps({
       </div>
     </template>
   </CommonHeadlessMarketSummary>
+  <PartialsTradeStatsDerivative
+    v-if="market && market.type !== SharedMarketType.Spot"
+    class="hidden lg:flex"
+    v-bind="{ market: market as UiDerivativeMarket }"
+  />
 </template>
