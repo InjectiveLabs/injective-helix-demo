@@ -37,7 +37,7 @@
   "dependencies": {
     "@bangjelkoski/ens-validation": "^0.1.1",
     "@funken-studio/sitemap-nuxt-3": "^4.0.4",
-    "@injectivelabs/ui-shared": "1.12.47-alpha.6",
+    "@injectivelabs/ui-shared": "1.12.47-alpha.7",
     "@injectivelabs/nuxt-bugsnag": "0.0.3",
     "@injectivelabs/ts-types": "1.14.11-beta.3",
     "@injectivelabs/exceptions": "1.14.11-beta.8",
