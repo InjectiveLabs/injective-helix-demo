@@ -105,28 +105,32 @@ function cancelOrder() {
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
+      <div class="flex-1 flex items-center p-2 justify-end">
+        {{ priceToString }}
+      </div>
 
-      <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+      <div class="flex-1 flex items-center p-2 justify-end">
+        {{ quantityToString }}
+      </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         {{ unfilledQuantityToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <div>
           <p>{{ filledQuantityToString }}</p>
           <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
         </div>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
           <p>${{ totalToString }}</p>
         </div>
       </div>
 
-      <div class="flex-1 p-2 items-center">
+      <div class="flex-1 p-2 flex items-center justify-center">
         <PartialsCommonCancelButton
           v-if="orderFillable"
           v-bind="{ status }"

@@ -89,7 +89,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </div>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <span v-if="isMarketOrder" class="font-sans">
           {{ $t('trade.market') }}
         </span>
@@ -99,9 +99,11 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+      <div class="flex-1 flex items-center p-2 justify-end">
+        {{ quantityToString }}
+      </div>
 
-      <div class="flex-1 flex items-center p-2 space-x-1">
+      <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
         <span>
           {{ totalToString }}
         </span>
@@ -111,7 +113,10 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div
+        :class="[order.isConditional ? 'justify-end' : 'justify-center']"
+        class="flex-1 flex items-center p-2 justify-end"
+      >
         <template v-if="order.isConditional">
           <span class="text-gray-500 text-xs font-semibold">
             {{ $t('trade.mark_price') }}

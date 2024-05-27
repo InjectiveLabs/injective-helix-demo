@@ -43,6 +43,9 @@ const orderbookStore = useOrderbookStore()
 const validateLimitField = useValidateField(
   DerivativesTradeFormField.LimitPrice
 )
+const validateTriggerField = useValidateField(
+  DerivativesTradeFormField.TriggerPrice
+)
 
 const options = [
   {
@@ -128,12 +131,6 @@ const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
 )
 
 async function setFromPercentage(percentage: number) {
-  const { valid } = await validateLimitField()
-
-  if (!valid) {
-    return
-  }
-
   const isReduceOnly =
     derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
 
@@ -146,6 +143,22 @@ async function setFromPercentage(percentage: number) {
   const isStopMarket =
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
     DerivativeTradeTypes.StopMarket
+
+  if (isLimit) {
+    const { valid } = await validateLimitField()
+
+    if (!valid) {
+      return
+    }
+  }
+
+  if (isStopMarket) {
+    const { valid } = await validateTriggerField()
+
+    if (!valid) {
+      return
+    }
+  }
 
   const slippage = derivativeFormValues.value[
     DerivativesTradeFormField.IsSlippageOn

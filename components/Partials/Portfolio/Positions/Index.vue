@@ -46,7 +46,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 
   <div class="overflow-x-auto lg:relative lg:h-[500px]">
     <div class="lg:absolute top-0 left-0 right-0 w-full">
-      <div class="lg:min-w-[1300px] divide-y">
+      <div class="lg:min-w-[1300px] divide-y border-b">
         <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
 
         <template v-if="isMobile">
