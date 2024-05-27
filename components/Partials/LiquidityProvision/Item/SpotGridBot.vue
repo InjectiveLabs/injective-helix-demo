@@ -4,7 +4,7 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   GridMarket,
   TradeSubPage,
-  BulletinType,
+  LiquidityProvisionType,
   TradingInterface
 } from '@/types'
 
@@ -50,12 +50,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <PartialsBulletinItem
+  <PartialsLiquidityProvisionItem
     v-if="market"
     v-bind="{
       url,
       title: market.ticker,
-      description: $t(`bulletin.type.${BulletinType.HelixSpotGridBot}`)
+      description: $t(
+        `liquidityProvision.type.${LiquidityProvisionType.HelixSpotGridBot}`
+      )
     }"
   >
     <template #default>
@@ -76,5 +78,5 @@ onMounted(() => {
         </p>
       </div>
     </template>
-  </PartialsBulletinItem>
+  </PartialsLiquidityProvisionItem>
 </template>

@@ -7,12 +7,12 @@ import {
 } from '@injectivelabs/utils'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BulletinType, BulletinMitoCard } from '@/types'
+import { LiquidityProvisionType, LiquidityProvisionMitoCard } from '@/types'
 
 const MAX_APY_DISPLAY = '1M+'
 const MAX_APY_TO_SHOW = 1_000_000
 
-const bulletinStore = useBulletinStore()
+const liquidityProvisionStore = useLiquidityProvisionStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -21,18 +21,18 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    bulletinStore.fetchAprParams(),
-    bulletinStore.fetchMitoVaults(),
-    bulletinStore.fetchMitoStakingPools()
+    liquidityProvisionStore.fetchAprParams(),
+    liquidityProvisionStore.fetchMitoVaults(),
+    liquidityProvisionStore.fetchMitoStakingPools()
   ])
     .catch($onError)
     .finally(() => status.setIdle())
 })
 
 const vaults = computed(() =>
-  bulletinStore.vaults
+  liquidityProvisionStore.vaults
     .map((vault) => {
-      const stakingPool = bulletinStore.stakingPools.find(
+      const stakingPool = liquidityProvisionStore.stakingPools.find(
         (pool) => pool.vaultAddress === vault.contractAddress
       )
 
@@ -50,9 +50,9 @@ const vaults = computed(() =>
         tvl: vault.currentTvl,
         marketId: vault.marketId,
         vaultType: vault.vaultType,
-        type: BulletinType.MitoVault,
+        type: LiquidityProvisionType.MitoVault,
         contractAddress: vault.contractAddress
-      } as BulletinMitoCard
+      } as LiquidityProvisionMitoCard
     })
     .sort((vault1, vault2) => {
       if (vault2.apy === vault1.apy) {
@@ -67,16 +67,16 @@ const vaults = computed(() =>
 
 <template>
   <div class="container py-10">
-    <h2 class="text-2xl font-semibold">{{ $t('bulletin.title') }}</h2>
-    <p class="text-gray-300 mt-2">{{ $t('bulletin.description') }}</p>
+    <h2 class="text-2xl font-semibold">{{ $t('liquidityProvision.title') }}</h2>
+    <p class="text-gray-300 mt-2">{{ $t('liquidityProvision.description') }}</p>
 
     <AppHocLoading v-bind="{ status }">
       <div
         class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4"
       >
-        <PartialsBulletinItemInjStaking />
+        <PartialsLiquidityProvisionItemInjStaking />
 
-        <PartialsBulletinItemMitoVault
+        <PartialsLiquidityProvisionItemMitoVault
           v-for="vault in vaults"
           :key="`${vault.marketId}-${vault.type}`"
           v-bind="{
@@ -84,7 +84,7 @@ const vaults = computed(() =>
           }"
         />
 
-        <PartialsBulletinItemSpotGridBot
+        <PartialsLiquidityProvisionItemSpotGridBot
           v-for="gridMarket in spotGridMarkets.slice(0, 3)"
           :key="gridMarket.slug"
           v-bind="{ gridMarket }"

@@ -21,7 +21,7 @@ import { STAKING_CONTRACT_ADDRESS } from '@/app/utils/constants'
 
 const CURRENT_BLOCK_TIME = 0.9
 
-type BulletinStoreState = {
+type LiquidityProvisionStoreState = {
   vaults: MitoVault[]
   stakingPools: MitoStakingPool[]
   pool: Pool | undefined
@@ -32,7 +32,7 @@ type BulletinStoreState = {
   distributionParams: DistributionModuleParams | undefined
 }
 
-const initialStateFactory = (): BulletinStoreState => ({
+const initialStateFactory = (): LiquidityProvisionStoreState => ({
   vaults: [],
   stakingPools: [],
   inflation: undefined,
@@ -43,8 +43,8 @@ const initialStateFactory = (): BulletinStoreState => ({
   distributionParams: undefined
 })
 
-export const useBulletinStore = defineStore('bulletin', {
-  state: (): BulletinStoreState => initialStateFactory(),
+export const useLiquidityProvisionStore = defineStore('liquidityProvision', {
+  state: (): LiquidityProvisionStoreState => initialStateFactory(),
 
   getters: {
     apr: (state) => {
@@ -85,34 +85,34 @@ export const useBulletinStore = defineStore('bulletin', {
 
   actions: {
     async fetchAprParams() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      await bulletinStore.fetchInjSupply()
-      await bulletinStore.fetchInflation()
-      await bulletinStore.fetchAnnualProvisions()
-      await bulletinStore.fetchDistributionParams()
-      await bulletinStore.fetchMintParams()
-      await bulletinStore.fetchPool()
+      await liquidityProvisionStore.fetchInjSupply()
+      await liquidityProvisionStore.fetchInflation()
+      await liquidityProvisionStore.fetchAnnualProvisions()
+      await liquidityProvisionStore.fetchDistributionParams()
+      await liquidityProvisionStore.fetchMintParams()
+      await liquidityProvisionStore.fetchPool()
     },
 
     async fetchInflation() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.inflation !== undefined) {
+      if (liquidityProvisionStore.inflation !== undefined) {
         return
       }
 
       const { inflation } = await mintApi.fetchInflation()
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         inflation
       })
     },
 
     async fetchInjSupply() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.injSupply !== undefined) {
+      if (liquidityProvisionStore.injSupply !== undefined) {
         return
       }
 
@@ -120,7 +120,7 @@ export const useBulletinStore = defineStore('bulletin', {
 
       const injSupply = supply.find((coin) => coin.denom === injToken.denom)
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         injSupply: {
           amount: injSupply?.amount || '0',
           denom: injToken.denom
@@ -129,83 +129,83 @@ export const useBulletinStore = defineStore('bulletin', {
     },
 
     async fetchPool() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.pool !== undefined) {
+      if (liquidityProvisionStore.pool !== undefined) {
         return
       }
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         pool: await stakingApi.fetchPool()
       })
     },
 
     async fetchAnnualProvisions() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.annualProvisions !== undefined) {
+      if (liquidityProvisionStore.annualProvisions !== undefined) {
         return
       }
 
       const { annualProvisions } = await mintApi.fetchAnnualProvisions()
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         annualProvisions
       })
     },
 
     async fetchDistributionParams() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.distributionParams !== undefined) {
+      if (liquidityProvisionStore.distributionParams !== undefined) {
         return
       }
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         distributionParams: await distributionApi.fetchModuleParams()
       })
     },
 
     async fetchMintParams() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
-      if (bulletinStore.mintParams !== undefined) {
+      if (liquidityProvisionStore.mintParams !== undefined) {
         return
       }
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         mintParams: await mintApi.fetchModuleParams()
       })
     },
 
     async fetchMitoVaults() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
       const { vaults } = await mitoApi.fetchVaults({})
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         vaults
       })
     },
 
     async fetchMitoStakingPools() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
       const { pools } = await mitoApi.fetchStakingPools({
         stakingContractAddress: STAKING_CONTRACT_ADDRESS
       })
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         stakingPools: pools
       })
     },
 
     reset() {
-      const bulletinStore = useBulletinStore()
+      const liquidityProvisionStore = useLiquidityProvisionStore()
 
       const initialState = initialStateFactory()
 
-      bulletinStore.$patch({
+      liquidityProvisionStore.$patch({
         ...initialState
       })
     }

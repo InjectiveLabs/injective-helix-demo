@@ -3,28 +3,30 @@ import { injToken } from '@shared/data/token'
 import { getHubUrl } from '@shared/utils/network'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BulletinType } from '@/types'
+import { LiquidityProvisionType } from '@/types'
 
 const tokenStore = useTokenStore()
-const bulletinStore = useBulletinStore()
+const liquidityProvisionStore = useLiquidityProvisionStore()
 
 const stakingUrl = `${getHubUrl()}/staking`
 
 const token = computed(() => tokenStore.tokenByDenomOrSymbol(injToken.denom))
 
 const apr = computed(() =>
-  new BigNumberInBase(bulletinStore.apr)
+  new BigNumberInBase(liquidityProvisionStore.apr)
     .multipliedBy(100)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 )
 </script>
 
 <template>
-  <PartialsBulletinItem
+  <PartialsLiquidityProvisionItem
     v-if="token"
     v-bind="{
       url: stakingUrl,
-      title: $t(`bulletin.type.${BulletinType.InjectiveStaking}`)
+      title: $t(
+        `liquidityProvision.type.${LiquidityProvisionType.InjectiveStaking}`
+      )
     }"
   >
     <template #default>
@@ -39,5 +41,5 @@ const apr = computed(() =>
         </p>
       </div>
     </template>
-  </PartialsBulletinItem>
+  </PartialsLiquidityProvisionItem>
 </template>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { getMitoUrl } from '@shared/utils/network'
-import { BulletinMitoCard } from '@/types'
+import { LiquidityProvisionMitoCard } from '@/types'
 
 const props = defineProps({
   vault: {
-    type: Object as PropType<BulletinMitoCard>,
+    type: Object as PropType<LiquidityProvisionMitoCard>,
     required: true
   }
 })
@@ -26,12 +26,12 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <PartialsBulletinItem
+  <PartialsLiquidityProvisionItem
     v-if="market"
     v-bind="{
       url: mitoUrl,
       title: market.ticker,
-      description: $t(`bulletin.type.${props.vault.type}`)
+      description: $t(`liquidityProvision.type.${props.vault.type}`)
     }"
   >
     <template #default>
@@ -45,16 +45,16 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
 
     <template #content>
       <div class="min-w-0 truncate">
-        <p>{{ $t('bulletin.TVL') }}</p>
+        <p>{{ $t('liquidityProvision.TVL') }}</p>
         <p class="text-xl font-semibold truncate">${{ tvlToString }}</p>
       </div>
 
       <div class="min-w-0 truncate">
-        <p>{{ $t('bulletin.APY') }}</p>
+        <p>{{ $t('liquidityProvision.APY') }}</p>
         <p class="text-green-500 text-xl font-semibold truncate">
           {{ vault.apyToShow }}%
         </p>
       </div>
     </template>
-  </PartialsBulletinItem>
+  </PartialsLiquidityProvisionItem>
 </template>

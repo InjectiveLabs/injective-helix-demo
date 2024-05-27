@@ -556,7 +556,7 @@ export enum DerivativesTradeFormField {
   StopLoss = 'stopLoss'
 }
 
-export enum BulletinType {
+export enum LiquidityProvisionType {
   MitoVault = 'mito-vault',
   InjectiveStaking = 'injective-staking',
   HelixSpotGridBot = 'helix-spot-grid-bot'
