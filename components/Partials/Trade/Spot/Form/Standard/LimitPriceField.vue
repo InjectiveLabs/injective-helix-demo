@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { UiSpotMarket, SpotTradeFormField, spotMarketKey } from '@/types'
+import {
+  UiSpotMarket,
+  SpotTradeFormField,
+  spotMarketKey,
+  BusEvents
+} from '@/types'
 
 const market = inject(spotMarketKey) as Ref<UiSpotMarket>
 
@@ -22,6 +27,12 @@ const value = computed({
   set: (value: string) => {
     limitValue.value = value
   }
+})
+
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
+    value.value = price
+  })
 })
 </script>
 

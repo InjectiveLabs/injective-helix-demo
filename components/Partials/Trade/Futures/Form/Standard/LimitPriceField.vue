@@ -2,7 +2,8 @@
 import {
   UiDerivativeMarket,
   derivativeMarketKey,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  BusEvents
 } from '@/types'
 
 const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
@@ -16,6 +17,12 @@ const { value: limit, errorMessage } = useStringField({
     const priceTooFarFromLastTradePrice = `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
 
     return priceTooFarFromLastTradePrice
+  })
+})
+
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
+    limit.value = price
   })
 })
 </script>

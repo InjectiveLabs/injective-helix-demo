@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { OrderbookFormattedRecord } from '@/types/worker'
+import { BusEvents } from '~/types'
 
 const props = defineProps({
   isBuy: Boolean,
@@ -52,6 +53,10 @@ function setPriceFlashOff() {
 function setQuantityFlashOff() {
   showQuantityFlash.value = false
 }
+
+function handleClick() {
+  useEventBus(BusEvents.OrderbookPriceClick).emit(props.record.price)
+}
 </script>
 
 <template>
@@ -59,6 +64,7 @@ function setQuantityFlashOff() {
     class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
+    @click="handleClick"
   >
     <div
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
