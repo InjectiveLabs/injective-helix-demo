@@ -39,6 +39,8 @@ const computedValue = computed({
 <template>
   <label class="select-none flex space-x-1">
     <AppSwitch v-model="computedValue" />
-    <span class="text-sm min-w-0 truncate">{{ label }}</span>
+    <span class="text-xs lg:text-sm font-semibold min-w-0 truncate">{{
+      label
+    }}</span>
   </label>
 </template>

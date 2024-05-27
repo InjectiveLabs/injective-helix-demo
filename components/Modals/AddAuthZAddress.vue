@@ -87,7 +87,7 @@ function closeModal() {
       <p class="error-message mt-2">{{ errorMessage }}</p>
 
       <div
-        class="max-h-[230px] overflow-auto border rounded-md p-2 my-2 grid grid-cols-2 whitespace-nowrap text-sm gap-2"
+        class="max-h-[230px] overflow-auto border rounded-md p-2 my-2 grid grid-cols-1 lg:grid-cols-2 whitespace-nowrap text-sm gap-4 lg:gap-2"
       >
         <PartialsPortfolioSettingsAuthzGranteeCommonMsgSelect
           v-for="[label, value] in Object.entries(MsgType).filter((entry) =>
