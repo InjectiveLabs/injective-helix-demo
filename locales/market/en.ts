@@ -6,7 +6,6 @@ export default {
     vol: 'Vol',
     quote: 'Quote',
     market: 'Market',
-    airdrop: 'Airdrop',
     category: 'Category',
     whatsNew: "What's new",
     topGainer: 'Top Gainer',

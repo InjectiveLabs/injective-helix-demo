@@ -60,7 +60,7 @@ defineProps({
             </div>
           </div>
 
-          <div>
+          <div class="mt-auto">
             <div v-if="!change.isNaN()" class="mt-1 text-xs">
               <span
                 class="leading-none"
@@ -79,31 +79,34 @@ defineProps({
           </div>
         </div>
 
-        <div v-if="isNonUsdtQuoteAsset" class="p-2 text-xs max-lg:text-center">
+        <div
+          v-if="isNonUsdtQuoteAsset"
+          class="p-2 text-xs flex flex-col max-lg:text-center"
+        >
           <p class="text-gray-400">{{ $t('trade.usd_value') }}</p>
-          <p class="font-mono font-semibold">
+          <p class="font-mono font-semibold mt-auto">
             {{ lastTradedPriceInUsdToFormat }}
           </p>
         </div>
 
-        <div class="p-2 text-xs max-lg:text-center">
+        <div class="p-2 text-xs flex flex-col max-lg:text-center">
           <CommonHeaderTooltip
             :tooltip="$t('trade.market_volume_24h_tooltip')"
             text-color-class="text-gray-400"
           >
             {{ $t('trade.total_market_volume_24h') }}
           </CommonHeaderTooltip>
-          <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
+          <p class="font-mono font-semibold mt-auto">{{ volumeToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs max-lg:text-center">
+        <div class="p-2 text-xs flex flex-col max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.high') }}</p>
-          <p class="font-mono font-semibold">{{ highToFormat }}</p>
+          <p class="font-mono font-semibold mt-auto">{{ highToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs max-lg:text-center">
+        <div class="p-2 text-xs flex flex-col max-lg:text-center">
           <p class="text-gray-400">{{ $t('trade.low') }}</p>
-          <p class="font-mono font-semibold">{{ lowToFormat }}</p>
+          <p class="font-mono font-semibold mt-auto">{{ lowToFormat }}</p>
         </div>
       </div>
     </template>

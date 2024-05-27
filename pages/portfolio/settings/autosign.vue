@@ -40,7 +40,7 @@ function disconnectAutoSign() {
 
     <div class="border-y divide-y">
       <div class="flex flex-col items-center p-4">
-        <p class="max-w-3xl font-semibold text-sm mb-8">
+        <p class="max-w-3xl text-sm mb-8">
           {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
         <AppButton

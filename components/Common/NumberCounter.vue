@@ -18,9 +18,7 @@ const props = defineProps({
 
 function getStringFromNumber(number: number) {
   const numberFormatted = number.toFixed(props.decimals)
-
   const [roundedNumber, fractionNumbers] = numberFormatted.split('.')
-
   const reversedRoundedNumber = roundedNumber.split('').reverse()
 
   const newArray = []

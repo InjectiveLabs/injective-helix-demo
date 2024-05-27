@@ -4,7 +4,7 @@ const appStore = useAppStore()
 
 <template>
   <div class="lg:flex justify-between">
-    <div class="space-y-2">
+    <div>
       <p class="text-gray-400 text-sm">
         {{ $t('portfolio.balances.netWorth') }}
       </p>
@@ -56,7 +56,9 @@ const appStore = useAppStore()
       </p>
     </div>
 
-    <div class="flex max-md:flex-col md:items-center md:space-x-2 space-y-2">
+    <div
+      class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0"
+    >
       <PartialsCommonBridgeRedirection
         v-bind="{
           isDeposit: true

@@ -240,7 +240,7 @@ export default {
     portfolio: 'Portfolio',
     deposit: 'Deposit',
     getInj: 'Get INJ',
-    getInjDescription: 'Deposit INJ from centralized exchanges to your account',
+    getInjDescription: 'Deposit INJ from a CEX to your account',
     depositCrypto: 'Deposit Crypto',
     depositFiat: 'Deposit Fiat',
     depositFiatDescription: 'Deposit via bank transfer or a bank card',
@@ -265,19 +265,18 @@ export default {
     spot: 'Spot',
     new: 'New',
     markets: 'Markets',
-    spotDescription: 'Buy and sell crypto with advanced tools',
+    spotDescription: 'Buy and sell crypto assets using advanced trading tools',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual & pre-launch futures with leverage',
     leaderboard: 'Leaderboard',
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,
-    tradingBots: 'Spot Grid Trading Bots',
+    tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated trading strategies ',
-    liquidityBots: 'Liquidity Bots',
-    liquidityBotsDescription:
-      'Trade smarter with automated strategies and receive rewards',
-    liquidityProvision: 'Liquidity Provision',
-    liquidityProvisionDescription: 'Earn yield through decentralized vaults',
+    liquidityBots: 'Bots',
+    liquidityBotsDescription: 'Trade smarter with automated strategies',
+    liquidityProvision: 'Provision',
+    liquidityProvisionDescription: 'Earn yield through different options',
     positions: 'Positions',
     orders: 'Orders',
     spotGrid: 'Spot Grid',
@@ -291,9 +290,7 @@ export default {
     subaccounts: 'Subaccounts',
     settings: 'Settings',
     derivativesGrid: 'Derivatives Grid',
-    history: 'History',
-    airdrop: 'PYTH Airdrop Claim',
-    airdropDescription: 'Check Airdrop Eligibility and Claim Tokens'
+    history: 'History'
   },
 
   feeDiscounts: {

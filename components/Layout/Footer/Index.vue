@@ -13,6 +13,10 @@ const aboutUsList = [
     link: MainPage.FeeDiscounts
   },
   {
+    text: t('footer.lpRewards'),
+    link: MainPage.LpRewards
+  },
+  {
     text: t('footer.apiDocumentation'),
     link: 'https://api.injective.exchange/'
   },

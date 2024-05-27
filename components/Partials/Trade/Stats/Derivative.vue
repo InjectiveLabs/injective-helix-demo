@@ -105,14 +105,20 @@ useIntervalFn(() => {
 
 <template>
   <div>
-    <div v-if="market.isPerpetual" class="p-2 text-xs max-lg:text-center">
+    <div
+      v-if="market.isPerpetual"
+      class="p-2 text-xs flex flex-col max-lg:text-center"
+    >
       <CommonHeaderTooltip
         :tooltip="$t('trade.funding_rate_tooltip')"
         text-color-class="text-gray-400"
       >
         {{ $t('trade.est_funding_rate') }}
       </CommonHeaderTooltip>
-      <span v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
+      <span
+        v-if="!fundingRate.isNaN()"
+        class="mt-auto lg:text-right font-mono block"
+      >
         <span
           :class="{
             'text-green-500': fundingRate.gte(0),
@@ -126,17 +132,19 @@ useIntervalFn(() => {
           }}%
         </span>
       </span>
-      <span v-else class="lg:text-right font-mono block">&mdash;</span>
+      <span v-else class="mt-auto lg:text-right font-mono block">&mdash;</span>
     </div>
 
-    <div class="p-2 text-xs max-lg:text-center">
+    <div class="p-2 text-xs flex flex-col max-lg:text-center">
       <CommonHeaderTooltip
         :tooltip="$t('trade.next_funding_tooltip')"
         text-color-class="text-gray-400"
       >
         {{ $t('trade.next_funding') }}
       </CommonHeaderTooltip>
-      <p class="font-mono font-semibold lg:text-right">{{ countdown }}</p>
+      <p class="font-mono font-semibold lg:text-right mt-auto">
+        {{ countdown }}
+      </p>
     </div>
   </div>
 </template>

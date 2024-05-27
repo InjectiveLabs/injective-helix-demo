@@ -33,11 +33,11 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen pt-4 md:pt-10 pb-10">
     <div class="w-full max-w-xl mx-auto">
-      <div class="space-x-4 my-2">
+      <div class="my-2 flex flex-wrap">
         <NuxtLink
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
           active-class="underline"
-          class="text-xl font-semibold"
+          class="text-lg font-semibold"
         >
           {{ $t('liquidity.liveBots') }}
         </NuxtLink>
@@ -46,9 +46,17 @@ onUnmounted(() => {
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpotHistory }"
           active-class="underline"
-          class="text-xl font-semibold"
+          class="text-lg font-semibold ml-4"
         >
           {{ $t('liquidity.history') }}
+        </NuxtLink>
+
+        <NuxtLink
+          :to="{ name: MainPage.LpRewards }"
+          active-class="underline"
+          class="text-lg font-semibold ml-auto"
+        >
+          <span>{{ $t('liquidity.rewards') }}</span>
         </NuxtLink>
       </div>
 

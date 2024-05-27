@@ -22,6 +22,7 @@ const isAnimating = ref(false)
 
 function closeAllMenus() {
   isOpen.value = false
+
   emit('menu:close')
 }
 
@@ -44,7 +45,7 @@ function close() {
     class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
       'rounded-lg': level === 0,
-      'w-[300px]': level > 0
+      'w-[325px]': level > 0
     }"
     :to="item.to"
     :target="item?.isExternal ? '_blank' : ''"
@@ -56,10 +57,7 @@ function close() {
 
         <div class="flex flex-col justify-start">
           <div class="flex items-center justify-start space-x-1.5">
-            <p
-              class="font-medium"
-              :class="{ 'font-medium text-lg': level > 0 }"
-            >
+            <p :class="{ 'font-medium': level > 0 }">
               {{ $t(item.label) }}
             </p>
             <SharedIcon
@@ -72,7 +70,7 @@ function close() {
 
           <p
             v-if="item.description"
-            class="text-gray-400 text-xs mt-1 font-normal"
+            class="text-gray-500 text-xs mt-1 font-normal"
           >
             {{ $t(item.description) }}
           </p>

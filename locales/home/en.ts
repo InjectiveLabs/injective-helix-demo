@@ -148,6 +148,7 @@ export default {
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
     faq: 'FAQ',
+    lpRewards: 'LP Rewards',
     submitRequest: 'Submit A Request',
     institutional: 'Institutional',
     feeDiscounts: 'Fee Discounts',

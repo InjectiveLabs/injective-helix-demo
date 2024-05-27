@@ -49,19 +49,13 @@ export const MENU_ITEMS: MenuItem[] = [
           },
           query: { interface: TradingInterface.TradingBots }
         }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.liquidityBots',
-        description: 'navigation.liquidityBotsDescription',
-        to: { name: TradingBotsSubPage.LiquiditySpotMarket }
       }
     ]
   },
 
   {
     type: MenuItemType.Dropdown,
-    label: 'navigation.rewards',
+    label: 'navigation.liquidity',
     items: [
       // TODO: Uncomment when trade and earn is ready
       // {
@@ -72,9 +66,9 @@ export const MENU_ITEMS: MenuItem[] = [
       // },
       {
         type: MenuItemType.Link,
-        label: 'navigation.lpRewards',
-        description: 'navigation.lpRewardsSub',
-        to: { name: MainPage.LpRewards }
+        label: 'navigation.liquidityBots',
+        description: 'navigation.liquidityBotsDescription',
+        to: { name: TradingBotsSubPage.LiquiditySpotMarket }
       },
 
       // TODO: Uncomment when guilds is ready
@@ -197,9 +191,9 @@ export const getDepositMenuItem = (): MenuItem => ({
   items: [
     {
       type: MenuItemType.Link,
-      label: 'navigation.depositCrypto',
-      description: 'navigation.depositCryptoDescription',
-      to: getBridgeRedirectionUrl(),
+      label: 'navigation.getInj',
+      description: 'navigation.getInjDescription',
+      to: 'https://injective.com/getinj/#getinj',
       isExternal: true
     },
     {
@@ -211,9 +205,9 @@ export const getDepositMenuItem = (): MenuItem => ({
     },
     {
       type: MenuItemType.Link,
-      label: 'navigation.getInj',
-      description: 'navigation.getInjDescription',
-      to: 'https://injective.com/getinj/#getinj',
+      label: 'navigation.depositCrypto',
+      description: 'navigation.depositCryptoDescription',
+      to: getBridgeRedirectionUrl(),
       isExternal: true
     }
   ]
