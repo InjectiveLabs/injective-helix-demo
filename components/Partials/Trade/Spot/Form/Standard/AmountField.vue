@@ -41,6 +41,8 @@ const { userBalancesWithToken } = useBalance()
 const spotFormValues = useFormValues<SpotTradeForm>()
 const orderbookStore = useOrderbookStore()
 
+const validateLimitField = useValidateField(SpotTradeFormField.Price)
+
 const options = [
   {
     display: market.value.baseToken.symbol || '',
@@ -121,7 +123,13 @@ const { value: amountValue, errorMessage } = useStringField({
   })
 })
 
-function setFromPercentage(percentage: number) {
+async function setFromPercentage(percentage: number) {
+  const { valid } = await validateLimitField()
+
+  if (!valid) {
+    return
+  }
+
   const slippage = spotFormValues.value[SpotTradeFormField.IsSlippageOn]
     ? spotFormValues.value[SpotTradeFormField.Slippage]
     : 0

@@ -8,7 +8,8 @@ import {
   useIsFormDirty,
   useValidateForm,
   useSetFormValues,
-  useSetFieldValue
+  useSetFieldValue,
+  useValidateField
 } from 'vee-validate'
 
 export {
@@ -21,5 +22,6 @@ export {
   useIsFormDirty,
   useValidateForm,
   useSetFormValues,
-  useSetFieldValue
+  useSetFieldValue,
+  useValidateField
 }

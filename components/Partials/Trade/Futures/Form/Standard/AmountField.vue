@@ -40,6 +40,10 @@ const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const orderbookStore = useOrderbookStore()
 
+const validateLimitField = useValidateField(
+  DerivativesTradeFormField.LimitPrice
+)
+
 const options = [
   {
     display: market.value.baseToken.symbol || '',
@@ -123,7 +127,13 @@ const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
   }
 )
 
-function setFromPercentage(percentage: number) {
+async function setFromPercentage(percentage: number) {
+  const { valid } = await validateLimitField()
+
+  if (!valid) {
+    return
+  }
+
   const isReduceOnly =
     derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
 
