@@ -24,7 +24,8 @@ const {
   worstPrice,
   feePercentage,
   marginWithFee,
-  totalNotional
+  totalNotional,
+  minimumAmountInQuote
 } = useDerivativeWorstPrice()
 </script>
 
@@ -80,7 +81,7 @@ const {
       />
 
       <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity }"
+        v-bind="{ marginWithFee, quantity, minimumAmountInQuote }"
       />
 
       <PartialsTradeFuturesFormStandardLeverage

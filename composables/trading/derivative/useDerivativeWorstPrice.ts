@@ -1,6 +1,6 @@
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiDerivativeMarket,
   DerivativeTradeTypes,
@@ -142,6 +142,28 @@ export function useDerivativeWorstPrice() {
     return quantizeNumber(quantity, market.value.quantityTensMultiplier)
   })
 
+  const minimumAmountInQuote = computed(() => {
+    const price = isLimitOrder.value
+      ? new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+        )
+      : new BigNumberInBase(
+          isBuy.value
+            ? orderbookStore.sells[0]?.price || 0
+            : orderbookStore.buys[0]?.price || 0
+        )
+
+    const minQuantity = new BigNumberInBase(10).exponentiatedBy(
+      market.value.quantityTensMultiplier
+    )
+
+    return new BigNumberInBase(
+      price
+        .times(minQuantity)
+        .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
+    )
+  })
+
   const worstPrice = computed(() => {
     const price = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
@@ -223,6 +245,7 @@ export function useDerivativeWorstPrice() {
     feeAmount,
     totalNotional,
     marginWithFee,
+    minimumAmountInQuote,
     totalNotionalWithFee,
     feePercentageWithLeverage
   }

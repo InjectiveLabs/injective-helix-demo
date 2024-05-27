@@ -28,6 +28,11 @@ const props = defineProps({
   quantity: {
     type: Object as PropType<BigNumberInBase>,
     required: true
+  },
+
+  minimumAmountInQuote: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
   }
 })
 
@@ -104,7 +109,13 @@ const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
         const maxAmount = quoteBalanceToBigNumber.value.toFixed()
         const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
 
+        const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
+
         const rules = [insufficientBalanceRule]
+
+        if (typeValue.value === TradeAmountOption.Quote) {
+          rules.push(minAmountRule)
+        }
 
         return rules.join('|')
       }
