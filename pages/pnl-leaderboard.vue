@@ -5,7 +5,14 @@
 <template>
   <div class="container py-10">
     <h2 class="text-2xl font-semibold">{{ $t('leaderboard.title') }}</h2>
-    <p class="mt-2">{{ $t('leaderboard.description') }}</p>
+    <div class="flex items-center justify-center space-x-1 mt-2">
+      <p>{{ $t('leaderboard.description') }}</p>
+      <AppTooltip
+        v-bind="{
+          content: $t('leaderboard.tooltip')
+        }"
+      />
+    </div>
 
     <div class="mt-4">
       <PartialsLeaderboardTableHeader />

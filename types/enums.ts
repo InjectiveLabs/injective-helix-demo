@@ -571,3 +571,9 @@ export enum TakeProfitStopLossFormField {
   TakeProfit = 'takeProfit',
   StopLoss = 'stopLoss'
 }
+
+export enum PortfolioChartType {
+  Balance = 'balance',
+  Pnl = 'pnl',
+  Volume = 'volume'
+}

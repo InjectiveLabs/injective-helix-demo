@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { PortfolioChartType } from '@/types'
 
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
@@ -18,26 +19,20 @@ onMounted(() => {
     .finally(() => status.setIdle())
 })
 
-const { valueToString } = useSharedBigNumberFormatter(
-  computed(
-    () =>
-      leaderboardStore.historicalBalance[
-        leaderboardStore.historicalBalance.length - 1
-      ].value
-  )
-)
-
-const { valueToString: percentageToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    const lastValue =
-      leaderboardStore.historicalBalance[
-        leaderboardStore.historicalBalance.length - 1
-      ].value
-    const firstValue = leaderboardStore.historicalBalance[0].value
-
-    return (lastValue / firstValue) * 100
-  })
-)
+const leaderboardHistories = computed(() => [
+  {
+    type: PortfolioChartType.Balance,
+    history: leaderboardStore.historicalBalance
+  },
+  {
+    type: PortfolioChartType.Pnl,
+    history: leaderboardStore.historicalPnl
+  },
+  {
+    type: PortfolioChartType.Volume,
+    history: leaderboardStore.historicalVolume
+  }
+])
 </script>
 
 <template>
@@ -52,16 +47,26 @@ const { valueToString: percentageToString } = useSharedBigNumberFormatter(
       }"
     >
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
-        <div v-for="i in 3" :key="i" class="border border-brand-800 p-4">
-          <div class="space-y-2">
-            <p class="text-gray-400">{{ $t('portfolio.value') }}</p>
-            <h3 class="text-2xl font-semibold">
-              {{ valueToString }}
-              $
-            </h3>
-            <p class="text-green-500">{{ percentageToString }}%</p>
-          </div>
-          <PartialsPortfolioPortfolioRandomChart />
+        <div
+          v-for="({ history, type }, index) in leaderboardHistories"
+          :key="`${type}-${index}`"
+          class="border border-brand-800 p-4"
+        >
+          <PartialsPortfolioPortfolioChartWrapper
+            v-bind="{ leaderboardHistory: history }"
+          >
+            <template #title>
+              <div class="flex items-center space-x-1">
+                <p class="text-gray-400">
+                  {{ $t(`portfolio.home.${type}.title`) }}
+                </p>
+                <AppTooltip
+                  v-if="type === PortfolioChartType.Pnl"
+                  :content="$t(`portfolio.home.${type}.tooltip`)"
+                />
+              </div>
+            </template>
+          </PartialsPortfolioPortfolioChartWrapper>
         </div>
       </div>
     </AppHocLoading>

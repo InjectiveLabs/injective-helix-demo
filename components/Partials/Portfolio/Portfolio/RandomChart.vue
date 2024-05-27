@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { LineType } from 'lightweight-charts'
 
-const leaderboardStore = useLeaderboardStore()
-
-const data = computed(() => leaderboardStore.historicalBalance)
+defineProps({
+  data: {
+    type: Array as PropType<
+      {
+        time: number
+        value: number
+      }[]
+    >,
+    required: true
+  }
+})
 </script>
 
 <template>

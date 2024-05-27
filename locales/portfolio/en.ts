@@ -1,8 +1,24 @@
+import { PortfolioChartType } from '@/types'
+
 export default {
   portfolio: {
     assetsFrom: 'Assets From',
     totalValue: 'Total Value',
     value: 'Portfolio Value',
+
+    home: {
+      [PortfolioChartType.Balance]: {
+        title: 'Portfolio Value'
+      },
+      [PortfolioChartType.Pnl]: {
+        title: '30-day Trading PnL',
+        tooltip:
+          'The profit and loss calculations on the portfolio page reflect the approximate realized profit and loss from positions opened and closed on Helix since May 29, 2024. This calculation  is purely for illustrative purposes and should not be used for any tax reporting obligations.'
+      },
+      [PortfolioChartType.Volume]: {
+        title: 'Trade Volume (Weekly)'
+      }
+    },
 
     balances: {
       netWorth: 'Net Worth',
