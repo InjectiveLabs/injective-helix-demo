@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PortfolioChartType } from '@/types'
+import { PortfolioChartType, PortfolioSubPage } from '@/types'
 
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
@@ -15,7 +15,11 @@ onMounted(() => {
     leaderboardStore.fetchHistoricalPnl(),
     leaderboardStore.fetchHistoricalVolume()
   ])
-    .catch($onError)
+    .catch(async (e) => {
+      $onError(e)
+
+      await navigateTo({ name: PortfolioSubPage.Balances })
+    })
     .finally(() => status.setIdle())
 })
 
@@ -53,7 +57,12 @@ const leaderboardHistories = computed(() => [
           class="border border-brand-800 p-4"
         >
           <PartialsPortfolioPortfolioChartWrapper
-            v-bind="{ leaderboardHistory: history }"
+            v-bind="{
+              leaderboardHistory: history,
+              isShowDirectionality: type === PortfolioChartType.Pnl,
+              isShowPercentChange: type === PortfolioChartType.Balance,
+              isHideBalanceVisible: type === PortfolioChartType.Balance
+            }"
           >
             <template #title>
               <div class="flex items-center space-x-1">
