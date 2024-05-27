@@ -21,7 +21,7 @@ defineProps({
         :class="wrapperClass"
       >
         <span
-          class="text-sm font-semibold lg:px-4 bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
+          class="text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
         >
           {{ $t('account.subaccount') }}: {{ activeSubaccountLabel }}
         </span>

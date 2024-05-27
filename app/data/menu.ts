@@ -86,16 +86,16 @@ export const MENU_ITEMS: MenuItem[] = [
       // },
       {
         type: MenuItemType.Link,
+        label: 'navigation.liquidityProvision',
+        description: 'navigation.liquidityProvisionDescription',
+        to: { name: MainPage.LiquidityProvision }
+      },
+      {
+        type: MenuItemType.Link,
         label: 'navigation.openLiquidityProgram',
         description: 'navigation.openLiquidityProgramDescription',
         to: 'https://trading.injective.network/program/liquidity',
         isExternal: true
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.liquidityProvision',
-        description: 'navigation.liquidityProvisionDescription',
-        to: { name: MainPage.LiquidityProvision }
       }
     ]
   },

@@ -269,11 +269,17 @@ function addTpSl() {
 
       <div class="flex-1 flex items-center p-2">
         <button
+          class="p-2 rounded-full bg-blue-500 hover:bg-blue-600"
+          @click="addTpSl"
+        >
+          <BaseIcon name="plus" is-xs />
+        </button>
+        <!-- <button
           class="text-xs px-2 py-1 rounded hover:underline hover:text-blue-500 font-sans"
           @click="addTpSl"
         >
           {{ $t('trade.addTpSl') }}
-        </button>
+        </button> -->
       </div>
 
       <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">

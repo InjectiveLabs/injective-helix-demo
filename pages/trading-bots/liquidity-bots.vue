@@ -33,10 +33,6 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen pt-4 md:pt-10 pb-10">
     <div class="w-full max-w-xl mx-auto">
-      <div class="pb-10">
-        <PartialsLiquidityBotsSpotCreateCommonTiaBanner />
-      </div>
-
       <div class="space-x-4 my-2">
         <NuxtLink
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"

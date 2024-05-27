@@ -134,3 +134,7 @@ input[type='number'] {
     }
   }
 }
+
+button:focus-visible {
+  @apply outline-none
+}
