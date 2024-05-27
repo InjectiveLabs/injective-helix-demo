@@ -463,8 +463,8 @@ export enum MarketTypeOption {
   Spot = 'Spot',
   Derivative = 'Derivative',
   NewListings = 'New Listings',
-  Permissionless = 'permissionless',
-  Themes = 'themes'
+  Permissionless = 'permissionless'
+  // Themes = 'themes'
 }
 
 export enum TradingInterface {

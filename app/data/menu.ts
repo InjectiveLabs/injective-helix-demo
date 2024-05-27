@@ -191,13 +191,6 @@ export const getDepositMenuItem = (): MenuItem => ({
   items: [
     {
       type: MenuItemType.Link,
-      label: 'navigation.getInj',
-      description: 'navigation.getInjDescription',
-      to: 'https://injective.com/getinj/#getinj',
-      isExternal: true
-    },
-    {
-      type: MenuItemType.Link,
       label: 'navigation.depositFiat',
       description: 'navigation.depositFiatDescription',
       to: 'https://injective.com/getinj/#fiats',
@@ -208,6 +201,13 @@ export const getDepositMenuItem = (): MenuItem => ({
       label: 'navigation.depositCrypto',
       description: 'navigation.depositCryptoDescription',
       to: getBridgeRedirectionUrl(),
+      isExternal: true
+    },
+    {
+      type: MenuItemType.Link,
+      label: 'navigation.getInj',
+      description: 'navigation.getInjDescription',
+      to: 'https://injective.com/getinj/#getinj',
       isExternal: true
     }
   ]

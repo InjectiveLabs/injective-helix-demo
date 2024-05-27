@@ -16,7 +16,6 @@ import {
 } from '@/types'
 
 const marketTypeOptionsToHideCategory = [
-  MarketTypeOption.Themes,
   MarketTypeOption.NewListings,
   MarketTypeOption.Permissionless
 ]
@@ -177,6 +176,7 @@ const unknownTokenStatus = inject(
               {{ value }}
             </AppButtonSelect>
           </div>
+          <div v-else></div>
 
           <div
             v-if="type === MarketTypeOption.Permissionless"
@@ -214,6 +214,15 @@ const unknownTokenStatus = inject(
       </div>
 
       <PartialsMarkets
+        is-markets-page
+        v-bind="{
+          markets: filteredMarkets,
+          isLoading: permissionlessStatus.isLoading()
+        }"
+      />
+
+      <!--
+      <PartialsMarkets
         v-if="type !== MarketTypeOption.Themes"
         is-markets-page
         v-bind="{
@@ -223,6 +232,7 @@ const unknownTokenStatus = inject(
       />
 
       <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
+      -->
     </div>
   </div>
 </template>
