@@ -13,7 +13,7 @@ function hideBanner() {
 
 const hasBalance = computed(() => {
   if (!walletStore.isUserWalletConnected) {
-    return false
+    return true
   }
 
   return (
