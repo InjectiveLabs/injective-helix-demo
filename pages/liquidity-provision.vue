@@ -8,6 +8,7 @@ import {
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityProvisionType, LiquidityProvisionMitoCard } from '@/types'
+import { mainnetWhitelistedVaults } from '@/app/data/liquidityProvision'
 
 const MAX_APY_DISPLAY = '1M+'
 const MAX_APY_TO_SHOW = 1_000_000
@@ -54,6 +55,7 @@ const vaults = computed(() =>
         contractAddress: vault.contractAddress
       } as LiquidityProvisionMitoCard
     })
+    .filter((vault) => mainnetWhitelistedVaults.includes(vault.contractAddress))
     .sort((vault1, vault2) => {
       if (vault2.apy === vault1.apy) {
         return vault2.tvl - vault1.tvl
@@ -61,7 +63,6 @@ const vaults = computed(() =>
 
       return new BigNumberInBase(vault2.apy).minus(vault1.apy).toNumber()
     })
-    .slice(0, 5)
 )
 </script>
 
