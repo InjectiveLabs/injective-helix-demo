@@ -202,8 +202,8 @@ export const marketIsPartOfType = ({
   favoriteMarkets: string[]
 }): boolean => {
   if (
-    activeType === MarketTypeOption.All ||
-    activeType === MarketTypeOption.Themes
+    activeType === MarketTypeOption.All
+    //  || activeType === MarketTypeOption.Themes
   ) {
     return true
   }

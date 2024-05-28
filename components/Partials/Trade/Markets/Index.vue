@@ -29,7 +29,7 @@ const derivativeStore = useDerivativeStore()
 const activeTypeOptions = Object.values(MarketTypeOption)
   .filter(
     (marketType) =>
-      ![MarketTypeOption.Permissionless, MarketTypeOption.Themes].includes(
+      ![MarketTypeOption.Permissionless /* MarketTypeOption.Themes */].includes(
         marketType
       )
   )
