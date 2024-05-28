@@ -30,7 +30,14 @@ const onClick = () => {
 </script>
 
 <template>
-  <button v-bind="$attrs" :class="[isActive && activeClasses]" @click="onClick">
+  <button
+    v-bind="$attrs"
+    :class="[
+      isActive && activeClasses,
+      { 'cursor-not-allowed': $attrs.disabled }
+    ]"
+    @click="onClick"
+  >
     <slot v-bind="{ isActive }" />
   </button>
 </template>
