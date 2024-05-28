@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiSpotMarket, spotMarketKey } from '~/types'
+import { UiSpotMarket, spotMarketKey } from '@/types'
 
 const props = defineProps({
   isTickerOnly: Boolean

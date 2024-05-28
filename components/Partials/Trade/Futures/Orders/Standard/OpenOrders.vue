@@ -1,6 +1,24 @@
 <script setup lang="ts">
+import { UiDerivativeMarket, derivativeMarketKey } from '@/types'
+
 const derivativeStore = useDerivativeStore()
 const isMobile = useIsMobile()
+
+const props = defineProps({
+  isTickerOnly: Boolean
+})
+
+const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+
+const filteredOrders = computed(() =>
+  derivativeStore.subaccountOrders.filter((order) => {
+    if (props.isTickerOnly) {
+      return order.marketId === derivativeMarket.value.marketId
+    }
+
+    return true
+  })
+)
 </script>
 
 <template>
@@ -9,7 +27,7 @@ const isMobile = useIsMobile()
 
     <div v-if="isMobile">
       <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
-        v-for="order in derivativeStore.subaccountOrders"
+        v-for="order in filteredOrders"
         :key="`${order.orderHash}-${order.cid}`"
         v-bind="{ order }"
       />
@@ -17,14 +35,14 @@ const isMobile = useIsMobile()
 
     <template v-else>
       <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
-        v-for="order in derivativeStore.subaccountOrders"
+        v-for="order in filteredOrders"
         :key="`${order.orderHash}-${order.cid}`"
         v-bind="{ order }"
       />
     </template>
 
     <CommonEmptyList
-      v-if="derivativeStore.subaccountOrders.length === 0"
+      v-if="filteredOrders.length === 0"
       :message="'No Open Orders'"
     />
   </div>
