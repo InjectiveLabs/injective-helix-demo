@@ -28,7 +28,9 @@ function toggle() {
     :target="item?.isExternal ? '_blank' : ''"
     class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
     :class="{
-      'text-blue-500 ': route.name === (item.to as any).name
+      'text-blue-500 ': (route.name as string).startsWith(
+        (item.to as any).name as string
+      )
     }"
     @click="emit('menu:close')"
   >
