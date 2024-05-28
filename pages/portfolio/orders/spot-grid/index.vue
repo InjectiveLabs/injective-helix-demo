@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const gridStrategyStore = useGridStrategyStore()
-
 const isMobile = useIsMobile()
+const gridStrategyStore = useGridStrategyStore()
 
 onWalletConnected(() => {
   gridStrategyStore.fetchAllStrategies()

@@ -63,7 +63,7 @@ defineProps({
         <div
           class="justify-between flex items-center px-2 py-4 truncate min-w-0"
         >
-          <P>{{ $t('sgt.totalAmount') }}</P>
+          <p>{{ $t('sgt.totalAmount') }}</p>
 
           <p class="space-x-1 font-mono">
             <span>{{ investment.toFormat(2) }}</span>

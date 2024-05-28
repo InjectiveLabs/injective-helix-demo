@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GridStrategyTabs, spotMarketKey } from '@/types'
-
-const market = inject(spotMarketKey)
+import { GridStrategyTabs } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
@@ -10,25 +8,28 @@ const { $onError } = useNuxtApp()
 const view = ref(GridStrategyTabs.Running)
 const status = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
-  if (!market?.value) {
-    return
-  }
+onWalletConnected(() => {
+  fetchStrategies()
+})
 
+function fetchStrategies() {
   status.setLoading()
 
   gridStrategyStore
-    .fetchStrategies(market.value.marketId)
+    .fetchAllStrategies()
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-})
+}
 </script>
 
 <template>
   <div>
-    <PartialsTradeSpotOrdersTradingBotsTabs v-model="view" />
+    <PartialsTradeSpotOrdersTradingBotsTabs
+      v-model="view"
+      @update:model-value="fetchStrategies"
+    />
 
     <PartialsTradeSpotOrdersTradingBotsRunning
       v-if="view === GridStrategyTabs.Running"

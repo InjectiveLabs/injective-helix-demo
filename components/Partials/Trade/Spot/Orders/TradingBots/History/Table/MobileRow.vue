@@ -98,7 +98,10 @@ defineProps({
 
         <div class="flex items-center p-2 truncate min-w-0 justify-between">
           <p>{{ $t('sgt.stopReason') }}</p>
-          <p class="capitalize">{{ strategy.stopReason }}</p>
+          <p class="capitalize">
+            <span v-if="strategy.stopReason">{{ strategy.stopReason }}</span>
+            <span v-else>&mdash;</span>
+          </p>
         </div>
       </div>
     </template>

@@ -74,10 +74,11 @@ defineProps({
           <p>Details</p>
         </div>
 
-        <div
-          class="flex-1 flex items-center p-2 truncate min-w-0 justify-center"
-        >
-          <p>{{ strategy.stopReason }}</p>
+        <div class="flex-1 flex p-2 truncate min-w-0 items-center">
+          <p class="capitalize">
+            <span v-if="strategy.stopReason">{{ strategy.stopReason }}</span>
+            <span v-else>&mdash;</span>
+          </p>
         </div>
       </div>
     </template>
