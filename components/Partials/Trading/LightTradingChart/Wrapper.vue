@@ -70,11 +70,11 @@ const filteredCandlesticksData = computed(() => {
   }
 
   if (props.market.slug === 'zro-usdt-perp') {
-    const pastIncidentDate = 1708611555
+    const pastIncidentDate = 1715299200
 
     return candlesticksData.value.filter((candlestick) => {
       const isDuringTimePeriod = (candlestick.time as number) < pastIncidentDate
-      const isHighExceedsThreshold = candlestick.high > 9000
+      const isHighExceedsThreshold = candlestick.high > 37
 
       return !(isDuringTimePeriod && isHighExceedsThreshold)
     })

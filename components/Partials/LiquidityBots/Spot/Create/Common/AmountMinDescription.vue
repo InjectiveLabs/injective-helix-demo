@@ -14,7 +14,7 @@ defineProps({
 
   investmentType: {
     type: String as PropType<InvestmentTypeGst>,
-    required: true
+    default: ''
   }
 })
 </script>
@@ -29,10 +29,10 @@ defineProps({
         amount: threshold,
         assets:
           investmentType === InvestmentTypeGst.Base
-            ? 'base'
+            ? $t('common.base')
             : investmentType === InvestmentTypeGst.Quote
-            ? 'quote'
-            : `base and quote`
+            ? $t('common.quote')
+            : $t('common.baseAndQuote')
       })
     "
   >
