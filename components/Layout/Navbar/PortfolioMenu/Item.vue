@@ -1,20 +1,32 @@
 <script setup lang="ts">
-import { MenuItem, MenuItemType } from '@/types'
+import { LocationAsRelativeRaw } from 'vue-router'
+import { MainPage, MenuItem, MenuItemType } from '@/types'
 
-defineProps({
+const route = useRoute()
+
+const props = defineProps({
   item: {
     type: Object as PropType<MenuItem>,
     required: true
   }
 })
 
-const route = useRoute()
-
 const emit = defineEmits<{
   'menu:close': []
 }>()
 
 const isOpen = ref(false)
+
+const isActiveLink = computed(() => {
+  const routeName = route.name as string
+  const itemName = ((props.item as any).to as LocationAsRelativeRaw)
+    ?.name as string
+
+  return (
+    routeName === itemName ||
+    (routeName.startsWith(itemName) && itemName !== MainPage.Portfolio)
+  )
+})
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -28,9 +40,7 @@ function toggle() {
     :target="item?.isExternal ? '_blank' : ''"
     class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
     :class="{
-      'text-blue-500 ': (route.name as string).startsWith(
-        (item.to as any).name as string
-      )
+      'text-blue-500 ': isActiveLink
     }"
     @click="emit('menu:close')"
   >
