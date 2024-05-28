@@ -21,7 +21,9 @@ function fetchSpotOrders() {
   streamSpotOrders()
 
   Promise.all([
-    spotStore.fetchSubaccountOrders(),
+    spotStore.fetchSubaccountOrders(
+      isTickerOnly.value ? [spotMarket.value.marketId] : undefined
+    ),
     spotStore.fetchSubaccountOrderHistory({
       subaccountId: accountStore.subaccountId,
       filters: {

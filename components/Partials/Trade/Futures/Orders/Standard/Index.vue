@@ -26,7 +26,9 @@ function fetchDerivativeOrders() {
   streamDerivativeOrders()
 
   Promise.all([
-    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountOrders(
+      isTickerOnly.value ? [market.value.marketId] : undefined
+    ),
     derivativeStore.fetchSubaccountOrderHistory({
       subaccountId: accountStore.subaccountId,
       filters: {
