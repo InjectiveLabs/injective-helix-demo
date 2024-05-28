@@ -16,6 +16,10 @@ const hasBalance = computed(() => {
     return true
   }
 
+  if (portfolioStatus.isLoading()) {
+    return true
+  }
+
   return (
     portfolioStatus.isIdle() && Object.keys(accountStore.balancesMap).length > 0
   )

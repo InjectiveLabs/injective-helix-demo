@@ -8,7 +8,15 @@ import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
 
-const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
+const formatFieldName = (value: string) => {
+  // Insert a space before all found uppercase letters in the string and trim the resulting string
+  let result = value.replace(/([A-Z])/g, ' $1').trim()
+
+  // Capitalize the first letter and join it with the rest of the string
+  result = result.charAt(0).toUpperCase() + result.slice(1)
+
+  return result
+}
 
 export const errorMessages = {
   email: () => 'This field should be a valid email',

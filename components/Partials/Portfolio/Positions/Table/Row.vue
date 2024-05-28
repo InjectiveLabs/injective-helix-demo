@@ -222,18 +222,16 @@ function addTpSl() {
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
-        <div v-if="market" class="space-y-1">
-          <p>{{ quantityToString }} {{ market.baseToken.symbol }}</p>
-        </div>
+      <div v-if="market" class="flex-1 flex items-center justify-end p-2">
+        <p>{{ quantityToString }} {{ market.baseToken.symbol }}</p>
       </div>
 
-      <div class="flex-1 space-y-1 p-2">
+      <div class="flex-1 space-y-1 p-2 text-right">
         <p>{{ priceToString }}</p>
         <p class="text-gray-500">{{ markPriceToString }}</p>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <div
           class="space-y-1"
           :class="{
@@ -246,40 +244,34 @@ function addTpSl() {
         </div>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
           <p>${{ quantityInUsdToString }}</p>
         </div>
       </div>
 
-      <div class="flex-1 flex items-center p-2 space-x-2">
+      <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
         <span>{{ marginToString }}</span>
         <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
           <BaseIcon name="plus" is-xs />
         </button>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         {{ liquidationPrice.toFormat(2) }}
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         {{ effectiveLeverage.toFormat(2) }}x
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-center">
         <button
           class="p-2 rounded-full bg-blue-500 hover:bg-blue-600"
           @click="addTpSl"
         >
           <BaseIcon name="plus" is-xs />
         </button>
-        <!-- <button
-          class="text-xs px-2 py-1 rounded hover:underline hover:text-blue-500 font-sans"
-          @click="addTpSl"
-        >
-          {{ $t('trade.addTpSl') }}
-        </button> -->
       </div>
 
       <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">

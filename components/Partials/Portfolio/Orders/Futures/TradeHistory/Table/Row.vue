@@ -71,18 +71,22 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       {{ $t(`trade.${trade.tradeDirection}`) }}
     </div>
 
-    <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
+    <div class="flex-1 flex items-center p-2 justify-end">
+      {{ priceToString }}
+    </div>
 
-    <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+    <div class="flex-1 flex items-center p-2 justify-end">
+      {{ quantityToString }}
+    </div>
 
-    <div class="flex-1 flex items-center p-2 space-x-1">
+    <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
       <span>{{ feeToString }}</span>
       <span v-if="market" class="text-gray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2 space-x-1">
+    <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
       <span>{{ totalToString }}</span>
       <span v-if="market" class="text-gray-500">
         {{ market.quoteToken.symbol }}

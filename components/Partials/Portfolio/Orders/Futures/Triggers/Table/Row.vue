@@ -107,27 +107,27 @@ function cancelOrder() {
         </div>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <span v-if="isMarketOrder">{{ $t('trade.market') }}</span>
         <span v-else>{{ priceToString }}</span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         {{ quantityToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <span v-if="leverage.isNaN()" class="text-gray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
         <span v-else>{{ leverage.toFormat(2) }} &times;</span>
       </div>
 
-      <div v-if="market" class="flex-1 flex items-center p-2">
+      <div v-if="market" class="flex-1 flex items-center p-2 justify-end">
         {{ totalToString }} {{ market.quoteToken.symbol }}
       </div>
 
-      <div class="flex-[2] flex items-center p-2 space-x-2">
+      <div class="flex-[2] flex items-center p-2 space-x-2 justify-end">
         <span class="text-gray-500 text-xs font-sans">
           {{ $t('trade.mark_price') }}
         </span>
@@ -143,7 +143,7 @@ function cancelOrder() {
         <span>{{ triggerPriceToString }}</span>
       </div>
 
-      <div class="p-2 flex items-center flex-1">
+      <div class="p-2 flex items-center flex-1 justify-center">
         <PartialsCommonCancelButton
           v-bind="{ status }"
           :is-disabled="!isCancelable"

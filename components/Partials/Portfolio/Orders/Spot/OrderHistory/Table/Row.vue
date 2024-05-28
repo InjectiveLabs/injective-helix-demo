@@ -75,11 +75,15 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">{{ priceToString }}</div>
+      <div class="flex-1 flex items-center p-2 justify-end">
+        {{ priceToString }}
+      </div>
 
-      <div class="flex-1 flex items-center p-2">{{ quantityToString }}</div>
+      <div class="flex-1 flex items-center p-2 justify-end">
+        {{ quantityToString }}
+      </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex items-center p-2 justify-end">
         <span>
           {{ totalToString }}
         </span>
