@@ -20,6 +20,6 @@ export default {
     allowAssetRebalance: 'Allow asset rebalancing before creation',
     allowAssetRebalanceTooltip:
       'If asset rebalancing is not allowed, then the current price cannot be within the price range.',
-    currentPrice: 'Current Price'
+    rewards: 'Rewards'
   }
 }

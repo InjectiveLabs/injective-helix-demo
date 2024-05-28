@@ -62,9 +62,7 @@ function claimRewards() {
       'bg-blue-500 border-blue-500 border':
         !campaign.userClaimed && campaign.isClaimable
     }"
-    :is-disabled="
-      campaign.userClaimed || !campaign.isClaimable || forceDisabled
-    "
+    :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
     @click="claimRewards"
   >
     <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>

@@ -12,23 +12,44 @@ export default {
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',
+    quantity: 'Quantity',
+    notional: 'Notional',
     chart: 'Chart',
+    'pro-chart': 'Pro Chart',
+    depth: 'Depth',
+    info: 'Info',
     pair: 'Pair',
     type: 'Type',
+    tpSl: 'TP/SL',
+    take_Profit: 'Take Profit',
+    stop_Loss: 'Stop Loss',
+    enable: 'Enable',
     status: 'Status',
     type_tooltip: 'The type of your order: limit or market.',
     side: 'Side',
+    postOnly: 'Post Only',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     trigger_price: 'Trigger Price',
     limit_price: 'Limit Price',
+    limitPrice: 'Limit Price',
+    orderStatus: 'Order Status',
     amount: 'Amount',
+    tickerOnly: '{ticker} only',
+    advancedSettings: 'Advanced Settings',
+    cancel: 'Cancel',
+    cancelTrigger: 'Cancel Trigger',
+    cancelOrder: 'Cancel Order',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
     amount_tooltip:
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
     total: 'Total',
+    entryPrice: 'Entry Price',
+    markPrice: 'Mark Price',
+    direction: 'Direction',
+    reduceOnly: 'Reduce Only',
     total_tooltip:
       'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
     fee: 'Fee',
@@ -42,6 +63,7 @@ export default {
     filter: 'Filter by asset',
     cancelAll: 'Cancel All',
     cancelAllOrders: 'Cancel all orders',
+    cancelAllTriggers: 'Cancel all Triggers',
     clearAll: 'Clear All',
     closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
@@ -50,10 +72,18 @@ export default {
     leverage: 'Leverage',
     triggerCondition: 'Trigger condition',
     limit: 'Limit',
+    limitFill: 'Limit Fill',
     market: 'Market',
+    'stop-limit': 'Stop-Limit',
     stopLimit: 'Stop-Limit',
+    'stop-market': 'Stop-Market',
     stopMarket: 'Stop-Market',
     margin: 'Margin',
+    addTpSl: 'Add TP/SL',
+    takeProfitStopLoss: 'Take Profit / Stop Loss',
+    takeProfitStopLossForEntirePosition:
+      'Take Profit / Stop Loss For Entire Position',
+    lastPrice: 'Last Price',
     margin_tooltip: 'The total margin required to execute the trade.',
     emptyOrders: 'No orders found',
     emptyPositions: 'No positions found',
@@ -62,6 +92,7 @@ export default {
     emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
+    closePosition: 'Close Position',
     liquidation_price_tooltip:
       'The price at which your position will be liquidated or force-exited to prevent further losses.',
     unrealized_pnl: 'Unrealized PnL',
@@ -71,6 +102,7 @@ export default {
     short: 'Short',
     available_asset: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,
+    availableAmount: 'Available: {amount}',
     buy_asset: ({ named }: I18nMessageFunction) => `Buy ${named('asset')}`,
     sell_asset: ({ named }: I18nMessageFunction) => `Sell ${named('asset')}`,
     not_enough_fillable_orders:
@@ -154,6 +186,7 @@ export default {
     market_change: 'Change',
     market_change_24h: 'Change (24h)',
     volume: 'Volume',
+    volumeUsd: 'Volume (USD)',
     volume_24h: 'Volume (24H)',
     total_market_volume_24h: 'Total Volume (24H)',
     usd_value: 'USD Value',
@@ -183,6 +216,8 @@ export default {
       `The time at which the ${named('type')} was updated.`,
     max: 'Max',
     orderbook: 'Orderbook',
+    standard: 'Standard',
+    'trading-bots': 'Trading Bots',
     markets: 'Markets',
     availableMargin: 'Available Margin',
     availableMarginTooltip: 'The available margin you can add to this position',
@@ -259,6 +294,10 @@ export default {
       'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
     takeProfit: 'Take-Profit',
     stopLoss: 'Stop-Loss',
+    stopLossLimit: 'Stop-Loss Limit',
+    stopLossMarket: 'Stop-Loss Market',
+    takeProfitLimit: 'Take-Profit Limit',
+    takeProfitMarket: 'Take-Profit Market',
     generated: 'Generated',
     confirmOrderModal: {
       descriptionLimit: ({ interpolate, named }: I18nMessageFunction) =>
@@ -316,6 +355,7 @@ export default {
     reduceOnlyTooltipConditional:
       'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
     open: 'Open',
+    triggered: 'Triggered',
     partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
     cancelled: 'Cancelled',
@@ -376,9 +416,41 @@ export default {
       youHaveSwapped: ({ named }: I18nMessageFunction) =>
         `You have swapped ${named('inputAmount')} ${named(
           'inputTokenSymbol'
-        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`
+        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`,
+      priceWarning: ({ named }: I18nMessageFunction) =>
+        `High slippage detected! Only proceed if you understand you might receive less ${named(
+          'symbol'
+        )} than anticipated.`
     },
 
-    lastUpdated: 'Last Updated'
+    estLiquidationPrice: 'Est. Liquidation Price',
+    lastUpdated: 'Last Updated',
+    profitLoss: 'Profit/Loss',
+    takeProfitDetails:
+      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
+    stopLossDetails:
+      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
+
+    rwa: {
+      warning: 'Warning',
+      acknowledge: 'Acknowledge and accept',
+      marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
+          named('marketClosedTimes'),
+          ' between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
+        ]),
+      marketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'This market follows ',
+          named('marketClosedTimes'),
+          '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
+        ]),
+      marketClosedMarketRow:
+        'Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+      marketClosedTimes: ' traditional RWA price feeds',
+      acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
+      marketIsClosed: 'This market is currently closed.'
+    }
   }
 }

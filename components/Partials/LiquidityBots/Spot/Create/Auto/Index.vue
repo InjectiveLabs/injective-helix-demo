@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
   GST_DEFAULT_AUTO_GRIDS,
   GST_STABLE_GRIDS,
@@ -11,13 +10,14 @@ import {
   UI_DEFAULT_PRICE_MIN_DECIMALS,
   UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
 import { pricesToEma } from '@/app/utils/helpers'
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
@@ -25,7 +25,7 @@ const gridStrategyStore = useGridStrategyStore()
 const setFormValues = useSetFormValues()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
 )
 
 const LOWER_BOUND_PERCENTAGE = 0.94
@@ -35,7 +35,7 @@ const SMOOTHING = 3
 const isAssetRebalancingChecked = ref(true)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
 )
 
 const decimalPlaces = computed(() => {
@@ -211,11 +211,9 @@ function setValuesFromAuto() {
         "
         class="flex items-center"
       >
-        <AppCheckbox v-model="isAssetRebalancingChecked" />
-
-        <p class="mr-2 text-xs font-semibold">
+        <AppCheckbox2 v-model="isAssetRebalancingChecked">
           {{ $t('liquidity.allowAssetRebalance') }}
-        </p>
+        </AppCheckbox2>
 
         <AppTooltip
           v-bind="{
@@ -226,7 +224,7 @@ function setValuesFromAuto() {
     </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket }"
+      v-bind="{ grids, market: gridStrategyStore.spotMarket }"
       class="mb-4"
       is-auto
     />
@@ -235,7 +233,7 @@ function setValuesFromAuto() {
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else
-      v-bind="{ market: gridStrategyStore.spotMarket }"
+      v-bind="{ isAuto: true, market: gridStrategyStore.spotMarket }"
       @strategy:create="setValuesFromAuto"
     />
   </div>

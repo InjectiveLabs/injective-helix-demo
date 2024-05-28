@@ -1,35 +1,97 @@
-import { defineStore } from 'pinia'
-import { UiLeaderboardEntry } from '@injectivelabs/sdk-ui-ts'
-import { indexerRestLeaderboardChronosApi } from '@/app/Services'
+import { indexerGrpcArchiverApi } from '@/app/Services'
 
 type LeaderboardStoreState = {
-  entries: UiLeaderboardEntry[]
-  lastUpdatedAt: number
+  historicalBalance: {
+    time: number
+    value: number
+  }[]
+
+  historicalPnl: {
+    time: number
+    value: number
+  }[]
+
+  historicalVolume: {
+    time: number
+    value: number
+  }[]
+}
+
+enum LeaderboardResolution {
+  Day = '1D',
+  Week = '1W',
+  Month = '1M'
 }
 
 const initialStateFactory = (): LeaderboardStoreState => ({
-  entries: [],
-  lastUpdatedAt: 0
+  historicalBalance: [],
+  historicalPnl: [],
+  historicalVolume: []
 })
 
 export const useLeaderboardStore = defineStore('leaderboard', {
   state: (): LeaderboardStoreState => initialStateFactory(),
   actions: {
-    async init() {
+    async fetchHistoricalBalance() {
+      const walletStore = useWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
-      await leaderboardStore.fetchLeaderboard('1d')
-    },
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalBalance({
+        account: walletStore.injectiveAddress,
+        resolution: LeaderboardResolution.Month
+      })
 
-    async fetchLeaderboard(resolution: string) {
-      const leaderboardStore = useLeaderboardStore()
-
-      const { updatedAt, entries } =
-        await indexerRestLeaderboardChronosApi.fetchLeaderboard(resolution)
+      const historicalBalance = t.map((time, index) => {
+        return {
+          time,
+          value: v[index]
+        }
+      })
 
       leaderboardStore.$patch({
-        entries: entries || [],
-        lastUpdatedAt: updatedAt
+        historicalBalance
+      })
+    },
+
+    async fetchHistoricalPnl() {
+      const walletStore = useWalletStore()
+      const leaderboardStore = useLeaderboardStore()
+
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
+        account: walletStore.injectiveAddress,
+        resolution: LeaderboardResolution.Month
+      })
+
+      const historicalPnl = t.map((time, index) => {
+        return {
+          time,
+          value: v[index]
+        }
+      })
+
+      leaderboardStore.$patch({
+        historicalPnl
+      })
+    },
+
+    async fetchHistoricalVolume() {
+      const walletStore = useWalletStore()
+      const leaderboardStore = useLeaderboardStore()
+
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
+        account: walletStore.injectiveAddress,
+        resolution: LeaderboardResolution.Month
+      })
+
+      const historicalVolume = t.map((time, index) => {
+        return {
+          time,
+          value: v[index]
+        }
+      })
+
+      leaderboardStore.$patch({
+        historicalVolume
       })
     }
   }

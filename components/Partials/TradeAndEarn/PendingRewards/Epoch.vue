@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { format } from 'date-fns'
-
-import { INJ_COIN_GECKO_ID, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   CampaignRewardPool,
   cosmosSdkDecToBigNumber
 } from '@injectivelabs/sdk-ts'
+import { format } from 'date-fns'
+import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   USDT_DECIMALS,
   DATE_TIME_DISPLAY,
@@ -35,7 +35,7 @@ const props = defineProps({
 const hubUrl = `${getHubUrl()}/staking`
 
 const injUsdPrice = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
   return injUsdPrice || ZERO_IN_BASE
 })

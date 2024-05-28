@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { OrderSide, OrderState } from '@injectivelabs/ts-types'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import ApexChart, { ApexOptions } from 'apexcharts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { OrderSide, OrderState } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { UiSpotMarket } from '@/types'
 
 type OrderAnnotation = {
   y: number
@@ -24,7 +24,7 @@ type OrderAnnotation = {
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })

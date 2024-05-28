@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { fetchGasPrice, DEFAULT_GAS_PRICE } from '@injectivelabs/sdk-ui-ts'
+import { SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { DEFAULT_GAS_PRICE } from '@shared/utils/constant'
+import { alchemyKey } from '@shared/wallet/wallet-strategy'
+import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
-import { SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import {
   NETWORK,
   CHAIN_ID,
@@ -10,7 +12,22 @@ import {
   GEO_IP_RESTRICTIONS_ENABLED,
   VPN_PROXY_VALIDATION_PERIOD
 } from '@/app/utils/constants'
+import {
+  fetchGeoLocation,
+  validateGeoLocation,
+  fetchUserCountryFromBrowser,
+  detectVPNOrProxyUsageNoThrow,
+  displayVPNOrProxyUsageToast
+} from '@/app/services/region'
 import { Locale, english } from '@/locales'
+import {
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
+import { tendermintApi } from '@/app/Services'
+import { todayInSeconds } from '@/app/utils/time'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   Modal,
   AppState,
@@ -20,22 +37,6 @@ import {
   OrderbookLayout,
   UiMarketWithToken
 } from '@/types'
-import {
-  fetchGeoLocation,
-  validateGeoLocation,
-  fetchUserCountryFromBrowser,
-  detectVPNOrProxyUsageNoThrow,
-  displayVPNOrProxyUsageToast
-} from '@/app/services/region'
-import { todayInSeconds } from '@/app/utils/time'
-import { streamProvider } from '@/app/providers/StreamProvider'
-import { alchemyKey } from '@/app/wallet-strategy'
-import {
-  isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets
-} from '@/app/data/geoip'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { tendermintApi } from '@/app/Services'
 
 export interface UserBasedState {
   favoriteMarkets: string[]
@@ -44,10 +45,12 @@ export interface UserBasedState {
 
   geoLocation: GeoLocation
   preferences: {
-    orderbookLayout: OrderbookLayout
-    tradingLayout: TradingLayout
+    isHideBalances: boolean
     authZManagement: boolean
+    thousandsSeparator: boolean
+    tradingLayout: TradingLayout
     subaccountManagement: boolean
+    orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
     skipExperimentalConfirmationModal: boolean
   }
@@ -61,6 +64,7 @@ type AppStoreState = {
   chainId: ChainId
   gasPrice: string
   ethereumChainId: EthereumChainId
+  marketsOpen: boolean
 
   // Loading States
   state: AppState
@@ -80,6 +84,7 @@ const initialStateFactory = (): AppStoreState => ({
   chainId: CHAIN_ID,
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
+  marketsOpen: false,
 
   // Loading States
   state: AppState.Idle,
@@ -99,12 +104,14 @@ const initialStateFactory = (): AppStoreState => ({
       vpnCheckTimestamp: 0
     },
     preferences: {
-      skipTradeConfirmationModal: false,
-      skipExperimentalConfirmationModal: false,
-      orderbookLayout: OrderbookLayout.Default,
-      tradingLayout: TradingLayout.Left,
+      isHideBalances: false,
+      authZManagement: false,
+      thousandsSeparator: true,
       subaccountManagement: false,
-      authZManagement: false
+      skipTradeConfirmationModal: false,
+      tradingLayout: TradingLayout.Left,
+      skipExperimentalConfirmationModal: false,
+      orderbookLayout: OrderbookLayout.Default
     }
   }
 })
@@ -296,6 +303,18 @@ export const useAppStore = defineStore('app', {
         userState: {
           ...appStore.userState,
           favoriteMarkets
+        }
+      })
+    },
+
+    toggleHideBalances() {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          isHideBalances: !appStore.userState.preferences.isHideBalances
         }
       })
     },

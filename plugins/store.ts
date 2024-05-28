@@ -27,7 +27,9 @@ const stateToPersist = {
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
-        authZManagement: false
+        authZManagement: false,
+        isHideBalances: false,
+        thousandsSeparator: false
       }
     }
   },
@@ -49,6 +51,13 @@ const stateToPersist = {
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+
+    autoSign: {
+      privateKey: '',
+      expiration: '',
+      injectiveAddress: '',
+      duration: ''
     }
   }
 } as Record<string, Record<string, any>>
@@ -88,7 +97,9 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (

@@ -8,7 +8,7 @@ const props = defineProps({
 
   bgColor: {
     type: String,
-    default: 'bg-gray-900'
+    default: 'bg-brand-800'
   }
 })
 

@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { PropType } from 'nuxt/dist/app/compat/capi'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  GST_MIN_TRADING_SIZE,
   GST_GRID_THRESHOLD,
+  GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -28,32 +28,34 @@ const props = defineProps({
 const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
 const quoteDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
 
 const quoteDenomAmount = computed(() =>
-  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
-    quoteDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const baseDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )
 
 const baseDenomAmount = computed(() =>
-  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
-    baseDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: baseDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: baseDenomBalance.value?.token.decimals
+  })
 )
 
 const gridThreshold = computed(() => {
@@ -92,14 +94,14 @@ const isUpperBoundLtLastPrice = computed(() =>
   )
 )
 
-const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
   quoteDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: baseAmountToString } = useBigNumberFormatter(
+const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   baseDenomAmount,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -111,7 +113,7 @@ const {
   errorMessage: quoteErrorMessage,
   setValue: setInvestmentAmount
 } = useStringField({
-  name: SpotGridTradingField.InvestmentAmount,
+  name: SpotGridTradingField.QuoteInvestmentAmount,
   rule: '',
   dynamicRule: computed(() => {
     const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.BaseInvestmentAmount}`
@@ -123,7 +125,7 @@ const {
     ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
-      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
     ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
@@ -158,7 +160,7 @@ const {
   name: SpotGridTradingField.BaseInvestmentAmount,
   rule: '',
   dynamicRule: computed(() => {
-    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.InvestmentAmount}`
+    const requiredIfFieldEmptyRule = `requiredIfEmpty:@${SpotGridTradingField.QuoteInvestmentAmount}`
 
     const insufficientRule = `insufficientSgt:${baseDenomAmount.value.toFixed()}`
 
@@ -167,7 +169,7 @@ const {
     ).times(tokenStore.tokenUsdPrice(props.market.baseToken))
 
     const quoteAmount = new BigNumberInBase(
-      formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+      formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
     ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
@@ -216,28 +218,24 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       "
       class="mb-2"
     >
-      <AppInputNumeric
+      <p class="text-xs font-semibold text-gray-500 mb-2">
+        {{ $t('sgt.available') }}
+        {{ quoteAmountToString }}
+        {{ market.quoteToken.symbol }}
+      </p>
+
+      <AppInputField
         v-model="investmentAmountValue"
-        :is-disabled="isLowerBoundGtLastPrice"
-        is-disabled-gray
+        :disabled="isLowerBoundGtLastPrice"
         placeholder="0.00"
       >
-        <template #addon>
-          {{ market.quoteToken.symbol }}
+        <template #right>
+          <div class="space-x-2 flex items-center">
+            <span>{{ market.quoteToken.symbol }}</span>
+            <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
+          </div>
         </template>
-
-        <template #context>
-          <p class="text-xs font-semibold text-gray-500 mb-2">
-            {{ $t('sgt.available') }}
-            {{ quoteAmountToString }}
-            {{ market.quoteToken.symbol }}
-          </p>
-        </template>
-
-        <template #postfix>
-          <CommonTokenIcon v-bind="{ token: market.quoteToken }" />
-        </template>
-      </AppInputNumeric>
+      </AppInputField>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
         {{ quoteErrorMessage }}
@@ -252,45 +250,37 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
           InvestmentTypeGst.BaseAndQuote
       "
     >
-      <AppInputNumeric
+      <p class="text-xs font-semibold text-gray-500 mb-2">
+        {{ $t('sgt.available') }}
+        {{ baseAmountToString }}
+        {{ market.baseToken.symbol }}
+      </p>
+
+      <AppInputField
         v-model="baseInvestmentAmountValue"
         placeholder="0.00"
-        :is-disabled="isUpperBoundLtLastPrice"
-        is-disabled-gray
+        :disabled="isUpperBoundLtLastPrice"
       >
-        <template #addon>
-          {{ market.baseToken.symbol }}
+        <template #right>
+          <div class="space-x-2 flex items-center">
+            <span>{{ market.baseToken.symbol }}</span>
+            <CommonTokenIcon v-bind="{ token: market.baseToken }" />
+          </div>
         </template>
-
-        <template #context>
-          <p class="text-xs font-semibold text-gray-500 mb-2">
-            {{ $t('sgt.available') }}
-            {{ baseAmountToString }}
-            {{ market.baseToken.symbol }}
-          </p>
-        </template>
-
-        <template #postfix>
-          <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        </template>
-      </AppInputNumeric>
+      </AppInputField>
 
       <div class="text-red-500 text-xs font-semibold pt-2">
         {{ baseErrorMessage }}
       </div>
     </div>
 
-    <div class="text-xs font-semibold text-gray-500 mt-4 space-y-2">
-      <p>{{ $t('sgt.minInvestment', { amount: gridThreshold.toFixed() }) }}</p>
-      <p>
-        {{
-          $t('sgt.totalBaseAndQuote', {
-            base: market.baseToken.symbol.toUpperCase(),
-            quote: market.quoteToken.symbol.toUpperCase(),
-            amount: gridThreshold
-          })
-        }}
-      </p>
-    </div>
+    <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
+      class="mt-4"
+      v-bind="{
+        market,
+        threshold: gridThreshold.toFixed(),
+        investmentType: formValues[SpotGridTradingField.InvestmentType]
+      }"
+    />
   </div>
 </template>

@@ -1,9 +1,10 @@
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { UiSpotMarket } from '@/types'
 
 export default function useActiveGridStrategyFormatter(
-  market: ComputedRef<UiSpotMarketWithToken>,
+  market: ComputedRef<UiSpotMarket>,
   strategy: ComputedRef<TradingStrategy>
 ) {
   const upperBound = computed(() => {

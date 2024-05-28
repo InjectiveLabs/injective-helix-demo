@@ -13,6 +13,7 @@ import {
   WhitespaceData,
   CrosshairMode
 } from 'lightweight-charts'
+import { colors } from '@/nuxt-config/tailwind'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
 
@@ -34,18 +35,25 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  'chart:ready': []
+}>()
+
 let chart: IChartApi
 let candlestickSeries: ReturnType<typeof chart.addCandlestickSeries>
 let volumeSeries: ReturnType<typeof chart.addHistogramSeries>
 
 const chartOptions: DeepPartial<ChartOptions> = {
   layout: {
-    background: { type: ColorType.Solid, color: '#14161F' },
+    background: {
+      type: ColorType.Solid,
+      color: colors.brand[900]
+    },
     textColor: 'white'
   },
   grid: {
-    horzLines: { style: LineStyle.Solid, color: '#ffffff10' },
-    vertLines: { style: LineStyle.Dashed, color: '#ffffff10' }
+    horzLines: { style: LineStyle.Solid, color: colors.brand[800] },
+    vertLines: { style: LineStyle.Dashed, color: colors.brand[800] }
   },
   crosshair: {
     mode: CrosshairMode.Normal,
@@ -139,8 +147,10 @@ function init() {
   })
 
   candlestickSeries.priceFormatter().format = (price) => {
-    return price.toFixed(decimalPlaces.value)
+    return new BigNumberInBase(price).toFixed(decimalPlaces.value)
   }
+
+  window.addEventListener('resize', resizeHandler)
 }
 
 function destroy() {
@@ -158,6 +168,7 @@ function destroy() {
 
 onMounted(() => {
   init()
+  emit('chart:ready')
 })
 
 onUnmounted(() => {
@@ -175,13 +186,8 @@ watch(
 </script>
 
 <template>
-  <div>
-    <div ref="wrapper" class="h-[450px] md:h-[663px] rounded-sm">
-      <div
-        ref="container"
-        class="lw-chart border rounded-md z-20 bg-gray-1000"
-      ></div>
-    </div>
+  <div ref="wrapper" class="flex-1 relative">
+    <div ref="container" class="lw-chart absolute inset-0"></div>
   </div>
 </template>
 

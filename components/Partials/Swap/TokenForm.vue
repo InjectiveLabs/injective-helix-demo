@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import { Modal, SwapForm, SwapFormField } from '@/types'
 import { TokenSymbols } from '@/app/data/token'
+import { Modal, SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
 const setFormValues = useSetFormValues()
 const { query } = useRoute()
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const emit = defineEmits<{
   'form:reset': []
   'queryError:reset': []
+  'reset:priceWarning': []
   'update:inputQuantity': []
   'update:outputQuantity': []
 }>()
@@ -40,7 +41,7 @@ const {
 } = useSwapTokenSelector({
   inputDenom,
   outputDenom,
-  balances: accountBalancesWithToken
+  balances: userBalancesWithToken
 })
 
 const outputIsDisabledBaseDenom = computed(() =>
@@ -176,6 +177,10 @@ async function getInputQuantity() {
   emit('update:inputQuantity')
 }
 
+function onUpdateAmount() {
+  emit('reset:priceWarning')
+}
+
 function onMaxSelected({ amount }: { amount: string }) {
   setFormValues({
     [SwapFormField.InputAmount]: amount
@@ -195,7 +200,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             debounce: 600,
             isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
-            isUsdVisible: !!inputToken?.token.coinGeckoId,
+            isUsdVisible: true,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
@@ -204,6 +209,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             tensMultiplier: inputToken?.tensMultiplier ?? undefined,
             hideBalance: !walletStore.isUserWalletConnected
           }"
+          @on:update="onUpdateAmount"
           @update:max="onMaxSelected"
           @update:amount="getOutputQuantity"
           @update:denom="onInputDenomChange"
@@ -219,10 +225,10 @@ function onMaxSelected({ amount }: { amount: string }) {
       </div>
     </Transition>
 
-    <div class="my-4">
-      <BaseIcon
+    <div>
+      <SharedIcon
         name="arrow"
-        class="mx-auto min-w-6 w-6 h-6 -rotate-90"
+        class="mx-auto min-w-6 w-10 h-10 -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-20 relative hover:scale-110 transition-transform"
         @click="swap"
       />
     </div>
@@ -235,7 +241,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             debounce: 600,
             isMaxHidden: true,
             isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
-            isUsdVisible: !!outputToken?.token.coinGeckoId,
+            isUsdVisible: true,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,

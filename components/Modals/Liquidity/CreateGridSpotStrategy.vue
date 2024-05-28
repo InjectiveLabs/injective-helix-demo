@@ -1,10 +1,15 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { Modal, SpotGridTradingForm, SpotGridTradingField } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  Modal,
+  UiSpotMarket,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   isLiquidity: Boolean
@@ -16,8 +21,9 @@ const formValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
+
 const { lastTradedPrice } = useSpotLastPrice(
-  computed(() => gridStrategyStore.spotMarket as UiSpotMarketWithToken)
+  computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
 )
 
 const hasAgreedToTerms = ref(false)
@@ -33,7 +39,8 @@ const baseAmount = computed(() => {
 })
 
 const quoteAmount = computed(() => {
-  const quoteAmount = formValues.value[SpotGridTradingField.InvestmentAmount]
+  const quoteAmount =
+    formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
 
   return new BigNumberInBase(quoteAmount || 0).eq(0) ? undefined : quoteAmount
 })
@@ -58,7 +65,7 @@ const isGeometric = computed(
     StrategyType.Geometric
 )
 
-const { valueToString: profitPerGridToString } = useBigNumberFormatter(
+const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
   computed(() => {
     if (
       !formValues.value[SpotGridTradingField.LowerPrice] ||
@@ -100,12 +107,12 @@ function onCreateStrategy() {
 
   gridStrategyStore
     .createStrategy(formValues.value)
-    .then(() => {
+    .then(() =>
       success({
         title: t('sgt.success'),
         description: t('sgt.gridStrategyCreatedSuccessfully')
       })
-    })
+    )
     .catch($onError)
     .finally(() => {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
@@ -142,7 +149,7 @@ function onCreateStrategy() {
         >
           <template #quoteAmount>
             <span class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ formValues[SpotGridTradingField.QuoteInvestmentAmount] }}
               {{ quoteToken?.symbol }}
             </span>
           </template>
@@ -188,7 +195,7 @@ function onCreateStrategy() {
 
           <div class="flex flex-col items-end">
             <p v-if="quoteAmount" class="font-semibold">
-              {{ formValues[SpotGridTradingField.InvestmentAmount] }}
+              {{ formValues[SpotGridTradingField.QuoteInvestmentAmount] }}
               {{ quoteToken?.symbol }}
             </p>
 

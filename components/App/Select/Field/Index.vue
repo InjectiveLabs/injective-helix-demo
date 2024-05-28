@@ -97,14 +97,14 @@ function handleClear() {
         </slot>
 
         <div v-if="!isDisabled" class="flex items-center gap-2">
-          <BaseIcon
+          <SharedIcon
             v-if="isClearable && selectedItem"
             name="close"
             class="min-w-4 w-4 h-4 text-gray-500 hover:text-white"
             @click.stop="handleClear"
           />
 
-          <BaseIcon
+          <SharedIcon
             name="caret-down-thick"
             class="ease-in-out duration-300 min-w-3 w-3 h-3"
             :class="{

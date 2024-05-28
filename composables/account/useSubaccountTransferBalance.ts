@@ -1,7 +1,6 @@
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
-import { INJ_DENOM } from '@injectivelabs/utils'
+import { injToken } from '@shared/data/token'
+import { SharedBalanceWithTokenAndPrice } from '@shared/types'
 import { SubaccountTransferField, SubaccountTransferForm } from '@/types'
-import { injToken } from '@/app/data/token'
 
 export function useSubaccountTransferBalance(
   formValues: Ref<SubaccountTransferForm>
@@ -48,16 +47,16 @@ export function useSubaccountTransferBalance(
       })
       .filter(
         (balanceWithToken) => balanceWithToken.token
-      ) as BalanceWithTokenAndPrice[]
+      ) as SharedBalanceWithTokenAndPrice[]
 
     const hasInjBalance = supplyWithBalance.find(
-      (balance) => balance.denom === INJ_DENOM
+      (balance) => balance.denom === injToken.denom
     )
 
     return hasInjBalance
       ? supplyWithBalance
       : [
-          { token: injToken, denom: INJ_DENOM, balance: '0', usdPrice: 0 },
+          { token: injToken, denom: injToken.denom, balance: '0', usdPrice: 0 },
           ...supplyWithBalance
         ]
   })

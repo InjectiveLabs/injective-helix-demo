@@ -1,12 +1,9 @@
 import type { Ref } from 'vue'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  ZERO_IN_BASE,
-  UiPriceLevel,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { SharedUiPriceLevel } from '@shared/types'
 import { DEFAULT_PRICE_WARNING_DEVIATION } from '@/app/utils/constants'
-import { TradeField, TradeForm } from '@/types'
+import { TradeField, TradeForm, UiSpotMarket } from '@/types'
 
 export function useSpotError({
   isBuy,
@@ -17,7 +14,7 @@ export function useSpotError({
   quoteAvailableBalance
 }: {
   isBuy: Ref<boolean>
-  market: Ref<UiSpotMarketWithToken>
+  market: Ref<UiSpotMarket>
   formValues: Ref<Partial<TradeForm>>
   executionPrice: Ref<BigNumberInBase>
   notionalWithFees?: Ref<BigNumberInBase>
@@ -26,7 +23,8 @@ export function useSpotError({
   const spotStore = useSpotStore()
 
   const orderbookOrders = computed(
-    () => (isBuy.value ? spotStore.sells : spotStore.buys) as UiPriceLevel[]
+    () =>
+      (isBuy.value ? spotStore.sells : spotStore.buys) as SharedUiPriceLevel[]
   )
 
   const lastTradedPrice = computed(() => {

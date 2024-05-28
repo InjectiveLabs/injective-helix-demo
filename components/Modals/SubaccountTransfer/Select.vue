@@ -137,7 +137,7 @@ function onDestinationSubaccountIdUpdate() {
         class="bg-blue-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
         data-cy="transfer-modal-direction-toggle-button"
       >
-        <BaseIcon
+        <SharedIcon
           name="arrow"
           class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         />

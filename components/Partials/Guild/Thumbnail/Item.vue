@@ -34,7 +34,7 @@ function onClick() {
     <div v-if="isActive">
       <!-- css hack to make check white -->
       <div class="bg-white h-2 w-2 absolute right-1 bottom-1"></div>
-      <BaseIcon
+      <SharedIcon
         name="check-circle"
         class="text-blue-500 rounded-full absolute bottom-0 right-0"
         is-md

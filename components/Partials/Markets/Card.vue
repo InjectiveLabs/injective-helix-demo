@@ -1,26 +1,19 @@
 <script lang="ts" setup>
-import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
-import { Change } from '@/types'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
-    type: Object as PropType<
-      UiDerivativeMarketWithToken | UiSpotMarketWithToken
-    >,
+    type: Object as PropType<UiMarketWithToken>,
     required: true
   },
 
   summary: {
-    type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+    type: Object as PropType<SharedUiMarketSummary>,
     required: true
   },
 
@@ -48,14 +41,14 @@ const change = computed(() => {
   return new BigNumberInBase(props.summary.change)
 })
 
-const { valueToString: volumeInUsdToFormat } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
   computed(() => props.volumeInUsd),
   {
     decimalPlaces: 2
   }
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -64,7 +57,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2
 })
 </script>
@@ -107,9 +100,11 @@ const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
         class="text-xl tracking-wide font-mono font-semibold flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
-          'text-green-500 ': summary.lastPriceChange === Change.Increase,
-          'text-white': summary.lastPriceChange === Change.NoChange,
-          'text-red-500': summary.lastPriceChange === Change.Decrease
+          'text-green-500 ':
+            summary.lastPriceChange === SharedMarketChange.Increase,
+          'text-white': summary.lastPriceChange === SharedMarketChange.NoChange,
+          'text-red-500':
+            summary.lastPriceChange === SharedMarketChange.Decrease
         }"
       >
         {{ lastTradedPriceToFormat }}

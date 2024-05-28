@@ -48,15 +48,13 @@ function closeModal() {
         </div>
 
         <div class="pt-2 grid grid-cols-1 gap-2">
-          <AppButton
-            class="bg-blue-500 text-blue-900 font-semibold w-full"
-            @click="closeModal"
-          >
+          <AppButton class="font-semibold w-full" @click="closeModal">
             {{ $t('campaign.letsGo') }}
           </AppButton>
 
           <AppButton
-            class="text-blue-500 font-semibold w-full"
+            variant="primary-outline"
+            class="w-full"
             @click="closeModal"
           >
             {{ $t('common.close') }}

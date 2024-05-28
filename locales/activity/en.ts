@@ -1,8 +1,11 @@
 export default {
   activity: {
+    swaps: 'Swaps',
     funds: 'Funds',
     activity: 'Activity',
     triggers: 'Triggers',
+    balances: 'Balances',
+    spotGrid: 'Spot Grid',
     positions: 'Positions',
     activities: 'Activities',
     spotOrders: 'Spot Orders',
@@ -18,6 +21,8 @@ export default {
     openPositions: 'Open positions',
     fundingPayments: 'Funding Payments',
     derivativeOrders: 'Derivative Orders',
+    activeStrategies: 'Active strategies',
+    removedStrategies: 'Removed strategies',
     common: {
       type: 'Type'
     }
@@ -43,9 +48,9 @@ export default {
     emptySubaccountTransfers: 'No subaccount transfers found',
     emptyDepositTransactions: 'No deposits found',
     emptyWithdrawalTransactions: 'No withdrawals found',
-    subaccountDepositType: 'Injective Wallet to Trading Account',
-    subaccountWithdrawalType: 'Trading Account to Injective Wallet',
-    subaccountInternalTransferType: 'Trading Account to Trading Account',
+    subaccountDepositType: 'Wallet to Subaccount',
+    subaccountWithdrawalType: 'Subaccount to Wallet',
+    subaccountInternalTransferType: 'Subaccount to Subaccount',
     INJTransferType: 'Injective to Injective',
     axelarDepositType: 'Axelar to Injective',
     chihuahuaDepositType: 'Chihuahua to Injective',

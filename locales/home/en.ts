@@ -9,6 +9,7 @@ export default {
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
+    totalVolume: 'Total Volume',
     infiniteMarkets: 'Infinite Markets',
     mevResistant: 'MEV Resistant',
     getStartedHome: 'Get Started',
@@ -27,6 +28,8 @@ export default {
     accessTheFuture: 'Access The Future of Open Finance',
     InstitutionalGateways: 'Institutional Gateways',
     newlyAdded: 'Newly added',
+    markets: 'Markets',
+    openInterest: 'Open interest',
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
     sevenDaysPrice: '7 days price',
@@ -52,23 +55,82 @@ export default {
     howToPurchaseTokens: 'Trade spot markets',
     howToPlaceStopOrders: 'Trade perpetuals with advanced orders',
     startTradingNow: 'Start trading now',
+    startTrading: 'Start trading',
+    depositCrypto: 'Deposit Crypto',
     fast: 'Fast',
     interoperable: 'Interoperable',
     gasFree: 'Gas Free',
     secure: 'Secure',
     market: 'Market',
     lastPrice: 'Last price',
-    change24h: 'Change (24H)'
+    change24h: 'Change (24H)',
+    tradingVolume: 'Trading volume',
+    overviewTitle: 'Better and faster.\nExperience trading like never before.',
+    overview: {
+      faster: 'faster',
+      title: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Better and ',
+          named('faster'),
+          '.\nExperience trading like never before.'
+        ]),
+      tradingBotsTitle: 'Trading Bots',
+      tradingBotsDescription:
+        'Trade smarter and leverage advanced strategies in just a click.',
+      newAccountsTitle: 'Accounts Overview (New!)',
+      newAccountsDescription:
+        'View your open positions, trading history, and portfolio all in one convenient location.',
+      pnlTitle: 'PnL Analysis',
+      pnlDescription:
+        'Evaluate and assess the financial performance of your portfolio.',
+      gasFreeTitle: 'Gas Free Trading',
+      gasFreeDescription:
+        'Never worry about gas fees on Helix. Zero gas, always.'
+    },
+
+    gettingStarted: {
+      title: 'Getting started on Helix',
+      injectiveBridge: 'Injective Bridge',
+      description: 'Deposit crypto assets to Injective ',
+      description2: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'Bridge USDT and other assets into Helix via the ',
+          named('bridgeLink'),
+          '.'
+        ]),
+      gasRequirement:
+        'Make sure you get at least 0.1 INJ to pay for the transaction fee.',
+      steps: 'Steps',
+      step1: {
+        title: 'Step 1',
+        description: 'Visit the Injective Bridge and connect your wallet.'
+      },
+      step2: {
+        title: 'Step 2',
+        description:
+          'Select the source chain (e.g. Ethereum, Cosmos or Solana).'
+      },
+      step3: {
+        title: 'Step 3',
+        description: 'Choose USDT or any other asset'
+      },
+      step4: {
+        title: 'Step 4',
+        description:
+          'Once complete, return to Helix and check your Balances on the Portfolio page. You are ready to trade!'
+      },
+      cta: 'Go to Injective Bridge'
+    }
   },
 
   newsletter: {
-    title: 'Subscribe to Helix newsletter',
+    title: 'Sign Up for Helix Notifications',
     emailAddress: 'Email address',
     subscribe: 'Subscribe',
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    subscribeToast: "You've successfully subscribed to our newsletter!",
+    subscribeToast: "You've successfully signed up for Helix notifications!",
     disclaimerMessage: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
         'By subscribing, you agree to the ',
@@ -86,6 +148,7 @@ export default {
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
     faq: 'FAQ',
+    lpRewards: 'LP Rewards',
     submitRequest: 'Submit A Request',
     institutional: 'Institutional',
     feeDiscounts: 'Fee Discounts',
