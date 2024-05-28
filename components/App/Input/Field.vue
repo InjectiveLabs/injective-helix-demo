@@ -36,6 +36,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
+  blur: [value: string]
 }>()
 
 const appStore = useAppStore()
@@ -71,6 +72,21 @@ const { el, typed } = useIMask(
       }
     }
   }
+)
+
+function onBlur(e?: Event) {
+  const { value } = e?.target as HTMLInputElement
+
+  if (isNaN(parseInt(value))) {
+    return
+  }
+
+  debounceOnBlur(value)
+}
+
+const debounceOnBlur = useDebounceFn(
+  (value: string) => emit('blur', value),
+  500
 )
 
 watch(
@@ -115,6 +131,7 @@ onMounted(() => {
         :class="thousandsSeparator ? 'text-right' : ''"
         v-bind="$attrs"
         :disabled="disabled"
+        @blur="onBlur"
       />
 
       <div v-if="$slots.right" class="flex items-center">

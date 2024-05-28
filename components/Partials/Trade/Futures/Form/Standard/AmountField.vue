@@ -62,11 +62,11 @@ const positionStore = usePositionStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { userBalancesWithToken } = useBalance()
 
-const decimals = computed(() => {
-  return typeValue.value === TradeAmountOption.Base
+const decimals = computed(() =>
+  typeValue.value === TradeAmountOption.Base
     ? market.value.quantityDecimals
     : market.value.priceDecimals
-})
+)
 
 const isBuy = computed(
   () =>
@@ -327,7 +327,11 @@ async function setFromPercentage(percentage: number) {
     <AppInputField
       v-bind="{ decimals }"
       v-model="amountValue"
-      placeholder="0.00"
+      :placeholder="
+        new BigNumberInBase(1)
+          .shiftedBy(market.quantityTensMultiplier)
+          .toFixed()
+      "
     >
       <template #right>
         <AppSelect

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   BigNumber,
   BigNumberInBase,
@@ -36,6 +37,7 @@ const props = defineProps({
 })
 
 const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+const isShowTensMultiplierNote = ref(false)
 
 const { userBalancesWithToken } = useBalance()
 const spotFormValues = useFormValues<SpotTradeForm>()
@@ -59,11 +61,11 @@ const { value: typeValue } = useStringField({
   initialValue: TradeAmountOption.Base
 })
 
-const decimals = computed(() => {
-  return typeValue.value === TradeAmountOption.Base
+const decimals = computed(() =>
+  typeValue.value === TradeAmountOption.Base
     ? market.value.quantityDecimals
     : market.value.priceDecimals
-})
+)
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
@@ -99,7 +101,11 @@ const {
   })
 )
 
-const { value: amountValue, errorMessage } = useStringField({
+const {
+  value: amountValue,
+  setValue: setAmountValue,
+  errorMessage
+} = useStringField({
   name: SpotTradeFormField.Amount,
 
   dynamicRule: computed(() => {
@@ -114,6 +120,15 @@ const { value: amountValue, errorMessage } = useStringField({
     const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
 
     const rules = [insufficientBalanceRule]
+
+    if (
+      market.value.quantityTensMultiplier >= 1 &&
+      typeValue.value === TradeAmountOption.Base
+    ) {
+      rules.push(
+        `quantityTensMultiplier:${market.value.quantityTensMultiplier}`
+      )
+    }
 
     if (typeValue.value === TradeAmountOption.Quote) {
       rules.push(minAmountRule)
@@ -140,7 +155,8 @@ async function setFromPercentage(percentage: number) {
       .div(100)
       .dp(market.value.priceDecimals, BigNumber.ROUND_DOWN)
 
-    amountValue.value = amount.toFixed()
+    setAmountValue(amount.toFixed())
+
     return
   }
 
@@ -168,7 +184,16 @@ async function setFromPercentage(percentage: number) {
       .div(100)
       .dp(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
 
-    amountValue.value = quantity.toFixed()
+    const finalAmount =
+      market.value.quantityTensMultiplier < 1
+        ? quantity.toFixed()
+        : formatAmountToAllowableAmount(
+            quantity.toFixed(),
+            market.value.quantityTensMultiplier
+          )
+
+    setAmountValue(finalAmount)
+
     return
   }
 
@@ -178,7 +203,16 @@ async function setFromPercentage(percentage: number) {
       .div(100)
       .dp(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
 
-    amountValue.value = amount.toFixed()
+    const finalAmount =
+      market.value.quantityTensMultiplier < 1
+        ? amount.toFixed()
+        : formatAmountToAllowableAmount(
+            amount.toFixed(),
+            market.value.quantityTensMultiplier
+          )
+
+    setAmountValue(finalAmount)
+
     return
   }
 
@@ -205,8 +239,30 @@ async function setFromPercentage(percentage: number) {
       .div(100)
       .dp(market.value.priceDecimals, BigNumber.ROUND_DOWN)
 
-    amountValue.value = totalQuote.toFixed()
+    setAmountValue(totalQuote.toFixed())
   }
+}
+
+function onBlur(baseAmount = '') {
+  if (typeValue.value !== TradeAmountOption.Base) {
+    return
+  }
+
+  if (market.value.quantityTensMultiplier < 1) {
+    return
+  }
+
+  const formattedAmount = formatAmountToAllowableAmount(
+    baseAmount || 0,
+    market.value.quantityTensMultiplier
+  )
+
+  setAmountValue(formattedAmount)
+  isShowTensMultiplierNote.value = true
+}
+
+function onClick() {
+  isShowTensMultiplierNote.value = false
 }
 </script>
 
@@ -221,9 +277,17 @@ async function setFromPercentage(percentage: number) {
     </div>
 
     <AppInputField
-      v-bind="{ decimals }"
+      v-bind="{
+        decimals
+      }"
       v-model="amountValue"
-      placeholder="0.00"
+      :placeholder="
+        new BigNumberInBase(1)
+          .shiftedBy(market.quantityTensMultiplier)
+          .toFixed()
+      "
+      @blur="onBlur"
+      @click="onClick"
     >
       <template #right>
         <AppSelect
@@ -276,6 +340,13 @@ async function setFromPercentage(percentage: number) {
 
     <div v-if="errorMessage" class="error-message capitalize">
       {{ errorMessage }}
+    </div>
+    <div v-else-if="isShowTensMultiplierNote" class="text-blue-300 text-sm">
+      {{
+        $t('trade.tensMultiplierRounded', {
+          minTickSize: 10 ** market.quantityTensMultiplier
+        })
+      }}
     </div>
   </div>
 </template>
