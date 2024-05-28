@@ -65,6 +65,14 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    minInvestmentDescription: ({ named }: I18nMessageFunction) =>
+      `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
+    minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
+      `Minimum Investment: Starts at $${named(
+        'amount'
+      )}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the ${named(
+        'assets'
+      )} assets.`,
     minInvestment: 'Min investment: $ {amount}',
     minInvestmentAmount: 'Min. investment Amount',
     totalInvestment: 'Total Investment',

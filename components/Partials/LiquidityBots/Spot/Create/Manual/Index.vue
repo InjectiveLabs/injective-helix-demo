@@ -9,15 +9,15 @@ import {
 import {
   UiSpotMarket,
   InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
+  SpotGridTradingForm,
+  SpotGridTradingField
 } from '@/types'
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
+const setFormValues = useSetFormValues()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
-const setFormValues = useSetFormValues()
 
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
@@ -201,7 +201,10 @@ watch(isBaseAndQuoteType, (value) => {
     </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket!,
+        grids: liquidityFormValues[SpotGridTradingField.Grids] || '0'
+      }"
       class="mb-4"
     />
 

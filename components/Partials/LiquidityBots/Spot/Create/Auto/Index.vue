@@ -224,7 +224,7 @@ function setValuesFromAuto() {
     </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket }"
+      v-bind="{ grids, market: gridStrategyStore.spotMarket }"
       class="mb-4"
       is-auto
     />

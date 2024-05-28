@@ -269,29 +269,12 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
     <p v-if="quoteAmountError" class="error-message">{{ quoteAmountError }}</p>
 
-    <div>
-      <div class="flex justify-between items-center">
-        <CommonHeaderTooltip v-bind="{ tooltip: 'todo' }">
-          <span class="text-gray-500">
-            {{ $t('sgt.minInvestment') }}
-          </span>
-        </CommonHeaderTooltip>
-        <p class="text-sm font-mono">${{ gridThreshold.toFormat(2) }}</p>
-      </div>
-
-      <div class="flex justify-between items-center">
-        <CommonHeaderTooltip v-bind="{ tooltip: 'todo' }">
-          <span class="text-gray-500">
-            {{
-              $t('sgt.totalBaseAndQuote', {
-                base: market.baseToken.symbol,
-                quote: market.quoteToken.symbol
-              })
-            }}
-          </span>
-        </CommonHeaderTooltip>
-        <p class="text-sm font-mono">>= ${{ gridThreshold.toFormat(2) }}</p>
-      </div>
-    </div>
+    <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
+      v-bind="{
+        market,
+        threshold: gridThreshold.toFixed(),
+        investmentType: spotFormValues[SpotGridTradingField.InvestmentType]
+      }"
+    />
   </div>
 </template>

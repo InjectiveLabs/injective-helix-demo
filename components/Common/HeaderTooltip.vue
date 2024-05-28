@@ -7,6 +7,11 @@ defineProps({
     default: 'text-gray-350'
   },
 
+  borderColorClass: {
+    type: String,
+    default: 'border-gray-400'
+  },
+
   tooltip: {
     type: String,
     required: true
@@ -20,8 +25,9 @@ defineProps({
       <span
         :class="[
           textColorClass,
+          borderColorClass,
           {
-            'text-xs normal-case border-dashed border-b border-gray-400 cursor-pointer':
+            'text-xs normal-case border-dashed border-b  cursor-pointer':
               !isNotStyled
           }
         ]"

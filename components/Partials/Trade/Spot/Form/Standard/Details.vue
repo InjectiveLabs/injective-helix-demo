@@ -63,12 +63,6 @@ const { valueToString: quantityToString } = useBigNumberFormatter(
   }
 )
 
-const isLimitAndPostOnly = computed(
-  () =>
-    spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit &&
-    spotFormValues.value.postOnly
-)
-
 function toggle() {
   isOpen.value = !isOpen.value
 }
@@ -136,7 +130,7 @@ function toggle() {
         </div>
 
         <div
-          v-if="!isLimitAndPostOnly"
+          v-if="spotFormValues[SpotTradeFormField.Type] !== TradeTypes.Limit"
           class="flex items-center text-xs font-medium"
         >
           <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>

@@ -274,17 +274,13 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       </div>
     </div>
 
-    <div class="text-xs font-semibold text-gray-500 mt-4 space-y-2">
-      <p>{{ $t('sgt.minInvestment', { amount: gridThreshold.toFixed() }) }}</p>
-      <p>
-        {{
-          $t('sgt.totalBaseAndQuote', {
-            base: market.baseToken.symbol.toUpperCase(),
-            quote: market.quoteToken.symbol.toUpperCase(),
-            amount: gridThreshold
-          })
-        }}
-      </p>
-    </div>
+    <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
+      class="mt-4"
+      v-bind="{
+        market,
+        threshold: gridThreshold.toFixed(),
+        investmentType: formValues[SpotGridTradingField.InvestmentType]
+      }"
+    />
   </div>
 </template>
