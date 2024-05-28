@@ -48,13 +48,13 @@ const priceChangeClasses = computed(() => {
     class="flex p-2 items-center space-x-2 rounded-md hover:bg-brand-800"
   >
     <div class="flex-[2] flex items-center space-x-2 overflow-hidden">
-      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
-      <p class="font-semibold tracking-wider truncate min-w-0">
+      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
+      <p class="text-sm tracking-wider truncate min-w-0">
         {{ market.market.ticker }}
       </p>
     </div>
-    <p class="flex-1 text-right font-mono text-sm">${{ priceToString }}</p>
-    <p class="flex-1 text-right font-mono text-sm" :class="priceChangeClasses">
+    <p class="flex-1 text-right font-mono text-xs">${{ priceToString }}</p>
+    <p class="flex-1 text-right font-mono text-xs" :class="priceChangeClasses">
       <span v-if="Number(market.summary.change) > 0">+</span>
       <span>{{ priceChangeToString }}%</span>
     </p>

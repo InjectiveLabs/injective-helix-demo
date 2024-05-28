@@ -85,7 +85,9 @@ const filteredMarkets = computed(() =>
     .filter((market) => marketIsActive(market.market))
 )
 
-onMounted(() => getQuoteTokenPrice())
+onMounted(() => {
+  getQuoteTokenPrice()
+})
 
 function getQuoteTokenPrice() {
   Promise.all([appStore.pollMarkets()]).catch($onError)
@@ -118,7 +120,8 @@ const unknownTokenStatus = inject(
   <div>
     <div class="container py-10">
       <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
-      <PartialsMarketsNewMarkets
+
+      <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
         class="my-10"
       />
