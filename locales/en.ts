@@ -248,7 +248,7 @@ export default {
     guilds: 'Guilds',
     guildsSub: 'Create and join Guilds to win team-based competitions',
     lpRewards: 'LP Rewards',
-    lpRewardsSub: 'Rewards for using liquidity bots',
+    lpRewardsSub: 'Rewards for setting up trading bots',
     account: 'Account',
     home: 'Home',
     makerTakerFee: ({ named }: I18nMessageFunction) =>

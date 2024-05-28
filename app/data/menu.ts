@@ -80,6 +80,12 @@ export const MENU_ITEMS: MenuItem[] = [
       // },
       {
         type: MenuItemType.Link,
+        label: 'navigation.rewards',
+        description: 'navigation.lpRewardsSub',
+        to: { name: MainPage.LpRewards }
+      },
+      {
+        type: MenuItemType.Link,
         label: 'navigation.liquidityProvision',
         description: 'navigation.liquidityProvisionDescription',
         to: { name: MainPage.LiquidityProvision }

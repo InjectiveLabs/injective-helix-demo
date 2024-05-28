@@ -18,21 +18,25 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink :to="url" target="_blank" class="card px-4 py-6 hover:bg-gray-750">
-    <div class="flex space-x-4">
-      <div class="relative mt-1">
+  <NuxtLink :to="url" target="_blank" class="card-opaque px-6 py-4">
+    <div class="flex items-center relative">
+      <div class="relative">
         <slot />
       </div>
 
-      <div>
-        <p class="text-xl font-semibold">{{ title }}</p>
+      <div class="ml-4">
+        <p class="text-lg font-semibold">{{ title }}</p>
         <p v-if="description" class="text-gray-400 text-xs">
           {{ description }}
         </p>
       </div>
+
+      <div class="ml-auto">
+        <slot name="source" />
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 mt-8">
+    <div class="grid grid-cols-2 mt-6">
       <slot name="content" />
     </div>
   </NuxtLink>

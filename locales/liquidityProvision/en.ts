@@ -7,11 +7,16 @@ export default {
       'Earn sustainable yield through decentralized perpetual vaults and trading bots',
     TVL: 'TVL',
     APY: 'APY',
-    type: {
-      [LiquidityProvisionType.MitoVault]: 'Mito - LP Vaults',
-      [LiquidityProvisionType.InjectiveStaking]: 'Injective - Staking',
-      [LiquidityProvisionType.HelixSpotGridBot]:
-        'Helix - Spot Grid Trading Bots'
+
+    item: {
+      type: {
+        [LiquidityProvisionType.MitoVault]: 'LP Vaults',
+        [LiquidityProvisionType.InjectiveStaking]: 'Staking',
+        [LiquidityProvisionType.HelixSpotGridBot]: 'Spot Grid Trading Bots'
+      },
+      description: {
+        [LiquidityProvisionType.InjectiveStaking]: 'Native staking on Injective'
+      }
     }
   }
 }

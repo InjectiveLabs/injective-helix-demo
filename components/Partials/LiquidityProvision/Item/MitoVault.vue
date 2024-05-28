@@ -21,7 +21,8 @@ const market = computed(() =>
 const mitoUrl = `${getMitoUrl()}vault/${props.vault.contractAddress}/`
 
 const { valueToString: tvlToString } = useSharedBigNumberFormatter(
-  computed(() => props.vault.tvl)
+  computed(() => props.vault.tvl),
+  { decimalPlaces: 0 }
 )
 </script>
 
@@ -31,26 +32,25 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
     v-bind="{
       url: mitoUrl,
       title: market.ticker,
-      description: $t(`liquidityProvision.type.${props.vault.type}`)
+      description: $t(`liquidityProvision.item.type.${props.vault.type}`)
     }"
   >
     <template #default>
       <CommonTokenIcon is-lg v-bind="{ token: market?.baseToken }" />
-      <div
-        class="absolute border left-5 top-4 bg-white rounded-full grid place-items-center"
-      >
-        <AssetMitoLogo class="!w-5 !h-5" />
-      </div>
+    </template>
+
+    <template #source>
+      <AssetMitoLogo class="left-1 relative" />
     </template>
 
     <template #content>
       <div class="min-w-0 truncate">
-        <p>{{ $t('liquidityProvision.TVL') }}</p>
+        <p class="text-gray-300 text-sm">{{ $t('liquidityProvision.TVL') }}</p>
         <p class="text-xl font-semibold truncate">${{ tvlToString }}</p>
       </div>
 
       <div class="min-w-0 truncate">
-        <p>{{ $t('liquidityProvision.APY') }}</p>
+        <p class="text-gray-300 text-sm">{{ $t('liquidityProvision.APY') }}</p>
         <p class="text-green-500 text-xl font-semibold truncate">
           {{ vault.apyToShow }}%
         </p>

@@ -253,6 +253,16 @@ export default {
           border: `1px solid ${theme('colors.brand.750')}`,
           borderRadius: theme('borderRadius.md'),
           backgroundColor: theme('colors.brand.875')
+        },
+
+        '.card-opaque': {
+          border: `1px solid ${theme('colors.brand.800')}`,
+          borderRadius: theme('borderRadius.md'),
+          backgroundColor: theme('transparent')
+        },
+
+        '.card-opaque:hover': {
+          backgroundColor: theme('colors.brand.800')
         }
       })
     }

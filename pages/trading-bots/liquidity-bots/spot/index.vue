@@ -45,7 +45,6 @@ const marketOrders = computed(() =>
 )
 
 // todo: Ivan => change subaccount onMounted
-
 function fetchData() {
   status.setLoading()
 

@@ -7,15 +7,17 @@ import {
 } from '@injectivelabs/utils'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { LiquidityProvisionType, LiquidityProvisionMitoCard } from '@/types'
-import { mainnetWhitelistedVaults } from '@/app/data/liquidityProvision'
-
-const MAX_APY_DISPLAY = '1M+'
-const MAX_APY_TO_SHOW = 1_000_000
+import {
+  LiquidityProvisionType,
+  LiquidityProvisionMitoCard,
+  LiquidityProvisionTypeOption
+} from '@/types'
+import { MITO_VAULTS, SGT_MARKETS } from '@/app/data/liquidityProvision'
 
 const liquidityProvisionStore = useLiquidityProvisionStore()
 const { $onError } = useNuxtApp()
 
+const type = ref(LiquidityProvisionTypeOption.All)
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
@@ -30,8 +32,20 @@ onMounted(() => {
     .finally(() => status.setIdle())
 })
 
-const vaults = computed(() =>
-  liquidityProvisionStore.vaults
+const vaults = computed(() => {
+  if (
+    ![
+      LiquidityProvisionTypeOption.All,
+      LiquidityProvisionTypeOption.Mito
+    ].includes(type.value)
+  ) {
+    return []
+  }
+
+  const MAX_APY_DISPLAY = '1M+'
+  const MAX_APY_TO_SHOW = 1_000_000
+
+  return liquidityProvisionStore.vaults
     .map((vault) => {
       const stakingPool = liquidityProvisionStore.stakingPools.find(
         (pool) => pool.vaultAddress === vault.contractAddress
@@ -55,7 +69,7 @@ const vaults = computed(() =>
         contractAddress: vault.contractAddress
       } as LiquidityProvisionMitoCard
     })
-    .filter((vault) => mainnetWhitelistedVaults.includes(vault.contractAddress))
+    .filter((vault) => MITO_VAULTS.includes(vault.contractAddress))
     .sort((vault1, vault2) => {
       if (vault2.apy === vault1.apy) {
         return vault2.tvl - vault1.tvl
@@ -63,7 +77,20 @@ const vaults = computed(() =>
 
       return new BigNumberInBase(vault2.apy).minus(vault1.apy).toNumber()
     })
-)
+})
+
+const spotGridTradingBots = computed(() => {
+  if (
+    ![
+      LiquidityProvisionTypeOption.All,
+      LiquidityProvisionTypeOption.Helix
+    ].includes(type.value)
+  ) {
+    return []
+  }
+
+  return spotGridMarkets.filter((bot) => SGT_MARKETS.includes(bot.slug))
+})
 </script>
 
 <template>
@@ -76,10 +103,35 @@ const vaults = computed(() =>
         {{ $t('liquidityProvision.description') }}
       </p>
 
+      <div class="max-w-full">
+        <div
+          class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
+        >
+          <div class="flex overflow-x-auto">
+            <AppButtonSelect
+              v-for="value in Object.values(LiquidityProvisionTypeOption)"
+              :key="value"
+              v-model="type"
+              v-bind="{ value }"
+              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
+              active-classes="border-blue-500 !text-blue-500"
+            >
+              {{ value }}
+            </AppButtonSelect>
+          </div>
+        </div>
+      </div>
+
       <div
-        class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4"
+        class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-4"
       >
         <PartialsLiquidityProvisionItemInjStaking />
+
+        <PartialsLiquidityProvisionItemSpotGridBot
+          v-for="gridMarket in spotGridTradingBots"
+          :key="gridMarket.slug"
+          v-bind="{ gridMarket }"
+        />
 
         <PartialsLiquidityProvisionItemMitoVault
           v-for="vault in vaults"
@@ -87,12 +139,6 @@ const vaults = computed(() =>
           v-bind="{
             vault
           }"
-        />
-
-        <PartialsLiquidityProvisionItemSpotGridBot
-          v-for="gridMarket in spotGridMarkets.slice(0, 3)"
-          :key="gridMarket.slug"
-          v-bind="{ gridMarket }"
         />
       </div>
     </AppHocLoading>

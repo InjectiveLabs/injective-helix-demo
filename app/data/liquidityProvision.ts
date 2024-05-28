@@ -1,5 +1,4 @@
-// Migrated from Helix, maybe we should move this to the injective-lists repo
-export const mainnetWhitelistedVaults: string[] = [
+export const MITO_VAULTS: string[] = [
   'inj1r86atmuulmhzw63pqx5tp989nmupvn4fd94m7u', // USDe/USDT
   'inj1v8v8jepsjdsxj29hxmm62qwzmg54r75v6mq6q9', // DOJO
   'inj1ve3uga90prrwtpsptjrhnxlfd9u0qwuf0v43ke', // TALIS
@@ -15,4 +14,14 @@ export const mainnetWhitelistedVaults: string[] = [
   'inj1wzt78jy575ejcps76gpc2m8k2v4x2526aksnk0', // ENA
   'inj1xar9nfhqc9al47hkh7eljrc3g66lntqch8hh0r', // XIII
   'inj16vjf4nnyqvjws6chw6u3t3kmujhllj4wjn9nlh' // BLACK
+]
+
+export const SGT_MARKETS = [
+  'inj-usdt',
+  'tia-usdt',
+  'atom-usdt',
+  'weth-usdt',
+  'sol-usdt',
+  'dojo-inj',
+  'pyth-inj'
 ]

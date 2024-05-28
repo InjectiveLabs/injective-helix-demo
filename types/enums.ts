@@ -577,3 +577,9 @@ export enum PortfolioChartType {
   Pnl = 'pnl',
   Volume = 'volume'
 }
+
+export enum LiquidityProvisionTypeOption {
+  All = 'All',
+  Helix = 'Helix',
+  Mito = 'Mito'
+}

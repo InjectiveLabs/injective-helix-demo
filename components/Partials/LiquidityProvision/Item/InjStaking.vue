@@ -25,7 +25,10 @@ const apr = computed(() =>
     v-bind="{
       url: stakingUrl,
       title: $t(
-        `liquidityProvision.type.${LiquidityProvisionType.InjectiveStaking}`
+        `liquidityProvision.item.type.${LiquidityProvisionType.InjectiveStaking}`
+      ),
+      description: $t(
+        `liquidityProvision.item.description.${LiquidityProvisionType.InjectiveStaking}`
       )
     }"
   >
@@ -35,7 +38,9 @@ const apr = computed(() =>
 
     <template #content>
       <div class="min-w-0 truncate">
-        <p>{{ $t('campaign.apy') }}</p>
+        <p class="text-gray-300 text-sm">
+          {{ $t('campaign.apy') }}
+        </p>
         <p class="text-xl font-semibold text-green-500">
           <span>{{ apr }}%</span>
         </p>

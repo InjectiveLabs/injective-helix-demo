@@ -56,23 +56,24 @@ onMounted(() => {
       url,
       title: market.ticker,
       description: $t(
-        `liquidityProvision.type.${LiquidityProvisionType.HelixSpotGridBot}`
+        `liquidityProvision.item.type.${LiquidityProvisionType.HelixSpotGridBot}`
       )
     }"
   >
     <template #default>
       <CommonTokenIcon is-lg v-bind="{ token: market?.baseToken }" />
-      <div
-        class="absolute border left-5 top-4 bg-white rounded-full grid place-items-center"
-      >
-        <AssetMitoLogo class="!w-5 !h-5" />
-      </div>
+    </template>
+
+    <template #source>
+      <AssetLogo class="!w-6 !h-6" />
     </template>
 
     <template #content>
       <div>
-        <p>{{ $t('campaign.activeBots') }}</p>
-        <p class="text-xl font-semibold">
+        <p class="text-gray-300 text-sm">
+          {{ $t('campaign.activeBots') }}
+        </p>
+        <p class="text-lg font-semibold">
           <span v-if="activeBots.eq(0)">&mdash;</span>
           <span v-else>{{ activeBots.toFormat(0) }}</span>
         </p>

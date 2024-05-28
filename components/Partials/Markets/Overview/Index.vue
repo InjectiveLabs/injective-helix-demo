@@ -51,7 +51,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+  <div class="grid grid-cols-1 lg:grid-cols-5 lg:gap-8">
     <div class="col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-4">
       <PartialsMarketsOverviewMarketCard
         v-for="market in hotMarkets"
@@ -59,7 +59,7 @@ onMounted(() => {
         :key="market.market.marketId"
       />
     </div>
-    <div class="col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="col-span-3 grid grid-cols-1 mt-8 lg:grid-cols-2 gap-4 lg:mt-0">
       <div
         v-for="category in categories"
         :key="category.title"
