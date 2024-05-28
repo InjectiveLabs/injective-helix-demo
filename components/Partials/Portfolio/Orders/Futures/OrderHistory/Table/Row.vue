@@ -114,23 +114,25 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       </div>
 
       <div
-        :class="[order.isConditional ? 'justify-end' : 'justify-center']"
-        class="flex-1 flex items-center p-2 justify-end"
+        :class="[
+          order.isConditional
+            ? 'flex-col items-end'
+            : 'justify-end items-center'
+        ]"
+        class="flex-1 flex p-2 justify-end"
       >
         <template v-if="order.isConditional">
           <span class="text-gray-500 text-xs font-semibold">
             {{ $t('trade.mark_price') }}
           </span>
 
-          <span
-            v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
-            class="text-white text-xs font-semibold"
-          >
-            &le;
-          </span>
-          <span v-else class="text-white text-xs font-semibold"> &ge; </span>
-
-          {{ triggerPriceToString }}
+          <div>
+            <span v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)">
+              <span class="text-white text-xs font-semibold">&le;</span>
+            </span>
+            <span v-else class="text-white text-xs font-semibold">&ge;</span>
+            <span>{{ triggerPriceToString }}</span>
+          </div>
         </template>
 
         <template v-else>

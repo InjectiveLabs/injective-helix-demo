@@ -355,6 +355,7 @@ export default {
     reduceOnlyTooltipConditional:
       'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
     open: 'Open',
+    triggered: 'Triggered',
     partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
     cancelled: 'Cancelled',

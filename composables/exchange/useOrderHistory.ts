@@ -200,6 +200,8 @@ export function useOrderHistory(
         return t('trade.filled')
       case orderState.Canceled:
         return t('trade.cancelled')
+      case orderState.Triggered:
+        return t('trade.triggered')
       default: {
         return ''
       }
