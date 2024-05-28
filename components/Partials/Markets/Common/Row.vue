@@ -83,6 +83,7 @@ function toggleFavorite() {
     v-bind="{ market }"
     :class="{
       'p-4': isMarketsPage,
+      'py-1 px-2': !isMarketsPage,
       'hover:bg-brand-800': !isMarketsPage
     }"
     class="flex items-center text-gray-350 hover:text-white"
