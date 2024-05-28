@@ -27,7 +27,7 @@ function handleIsAscending(value: boolean) {
 
 <template>
   <div class="flex border-b p-4 text-gray-500 text-xs select-none">
-    <div class="flex-[2] flex min-w-0 truncate">
+    <div class="flex-2 lg:flex-1 flex min-w-0 truncate">
       <BaseSortableHeaderItem
         v-bind="{
           sortBy,
@@ -50,13 +50,13 @@ function handleIsAscending(value: boolean) {
       </BaseSortableHeaderItem>
     </div>
 
-    <div class="flex-1 min-w-0 truncate">
+    <div class="flex-1 min-w-0 truncate text-right">
       <div>
         {{ $t('trade.lastPrice') }}
       </div>
     </div>
 
-    <div class="flex-1 min-w-0 truncate">
+    <div class="flex-1 min-w-0 truncate flex justify-end">
       <BaseSortableHeaderItem
         v-bind="{
           sortBy,
@@ -77,7 +77,7 @@ function handleIsAscending(value: boolean) {
       </BaseSortableHeaderItem>
     </div>
 
-    <div class="flex-1 min-w-0 truncate">
+    <div class="flex-1 min-w-0 truncate flex justify-end">
       <BaseSortableHeaderItem
         v-bind="{
           sortBy,

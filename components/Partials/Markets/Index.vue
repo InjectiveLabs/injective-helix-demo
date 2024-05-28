@@ -76,7 +76,7 @@ function handleSortBy(value: MarketHeaderType) {
 <template>
   <AppHocLoading v-bind="{ isLoading }">
     <div class="overflow-x-auto">
-      <div class="min-w-[700px]">
+      <div class="min-w-[800px]">
         <PartialsMarketsCommonHeader
           v-bind="{ isAscending, isMarketsPage, sortBy }"
           @update:is-ascending="handleIsAscending"

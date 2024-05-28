@@ -87,7 +87,7 @@ function toggleFavorite() {
     }"
     class="flex items-center text-gray-350 hover:text-white"
   >
-    <div class="flex items-center flex-[2] truncate min-w-0">
+    <div class="flex items-center flex-2 lg:flex-1 truncate min-w-0">
       <div
         v-if="!isMarketsPage"
         :class="{
@@ -118,7 +118,7 @@ function toggleFavorite() {
       />
     </div>
 
-    <div class="flex-1 truncate min-w-0 font-mono text-xs">
+    <div class="flex-1 truncate min-w-0 font-mono text-xs text-right">
       <div>
         {{ lastPriceToString }}
       </div>
@@ -127,12 +127,14 @@ function toggleFavorite() {
 
     <div
       :class="priceChangeClasses"
-      class="flex items-center flex-1 truncate min-w-0 font-mono text-xs"
+      class="flex items-center flex-1 truncate min-w-0 font-mono text-xs justify-end"
     >
       {{ summary.change }}%
     </div>
 
-    <div class="flex items-center flex-1 truncate min-w-0 font-mono text-xs">
+    <div
+      class="flex items-center justify-end flex-1 truncate min-w-0 font-mono text-xs"
+    >
       ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
     </div>
 
