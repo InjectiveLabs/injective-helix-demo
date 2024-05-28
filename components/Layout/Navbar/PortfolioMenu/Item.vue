@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LocationAsRelativeRaw } from 'vue-router'
-import { MainPage, MenuItem, MenuItemType } from '@/types'
+import { MenuItem, MenuItemType } from '@/types'
 
 const route = useRoute()
 
@@ -22,10 +22,11 @@ const isActiveLink = computed(() => {
   const itemName = ((props.item as any).to as LocationAsRelativeRaw)
     ?.name as string
 
-  return (
-    routeName === itemName ||
-    (routeName.startsWith(itemName) && itemName !== MainPage.Portfolio)
-  )
+  if (!(props.item as any).items) {
+    return routeName === itemName
+  }
+
+  return routeName.startsWith(itemName)
 })
 
 function toggle() {
@@ -76,7 +77,7 @@ function toggle() {
       />
     </div>
 
-    <div v-if="isOpen" class="pl-6">
+    <div v-if="isOpen" class="pl-11">
       <LayoutNavbarPortfolioMenuItem
         v-for="subItem in item.items"
         :key="subItem.label"
