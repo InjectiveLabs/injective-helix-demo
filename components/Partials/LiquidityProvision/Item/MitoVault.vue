@@ -18,7 +18,7 @@ const market = computed(() =>
   )
 )
 
-const mitoUrl = `${getMitoUrl()}/vault/${props.vault.contractAddress}/`
+const mitoUrl = `${getMitoUrl()}vault/${props.vault.contractAddress}/`
 
 const { valueToString: tvlToString } = useSharedBigNumberFormatter(
   computed(() => props.vault.tvl)
