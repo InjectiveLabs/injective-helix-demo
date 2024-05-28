@@ -11,8 +11,8 @@ const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const active = ref('')
-const selectedStrategy = ref<TradingStrategy>()
 const selectedMarket = ref<UiSpotMarket>()
+const selectedStrategy = ref<TradingStrategy>()
 const status = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
@@ -39,8 +39,8 @@ watch(
 )
 
 function setMarketAndStrategy(strategy: TradingStrategy, market: UiSpotMarket) {
-  selectedStrategy.value = strategy
   selectedMarket.value = market
+  selectedStrategy.value = strategy
 
   modalStore.openModal(Modal.GridStrategyDetails)
 }

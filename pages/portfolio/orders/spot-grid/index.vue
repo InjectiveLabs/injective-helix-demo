@@ -37,5 +37,6 @@ onWalletConnected(() => {
         />
       </div>
     </div>
+    <PartialsLiquidityCommonTradingBotsModalTrigger />
   </div>
 </template>

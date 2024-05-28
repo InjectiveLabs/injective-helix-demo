@@ -33,6 +33,16 @@ onMounted(() => {
     tradingMode.value = tradingModeOption.value
   }
 })
+
+function onTradingModeChange(value: string) {
+  const tradingModeOption = options.value.find(
+    ({ value: optionValue }) => optionValue === value
+  )
+
+  if (tradingModeOption && !tradingModeOption.disabled) {
+    queryTradingMode.value = value as TradingInterface
+  }
+}
 </script>
 
 <template>
@@ -45,6 +55,7 @@ onMounted(() => {
         v-bind="{ value, disabled }"
         class="font-bold text-sm flex justify-center items-center px-6 border-r last:border-r-0 text-gray-600 flex-1"
         active-classes="bg-brand-875 text-white"
+        @update:model-value="onTradingModeChange"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>

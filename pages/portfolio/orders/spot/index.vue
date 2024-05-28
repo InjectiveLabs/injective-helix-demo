@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOpenOrdersFilterField } from '@/types'
 import { SpotOpenOrdersFilterForm } from '@/types/forms'
+import { SpotOpenOrdersFilterField } from '@/types'
 
+const isMobile = useIsMobile()
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
-const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -76,5 +76,7 @@ onSubaccountChange(fetchSubaccountOrders)
         </template>
       </div>
     </div>
+
+    <PartialsLiquidityCommonTradingBotsModalTrigger />
   </div>
 </template>

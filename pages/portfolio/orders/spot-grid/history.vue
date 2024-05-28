@@ -27,5 +27,7 @@ onWalletConnected(() => {
         :key="strategy.createdAt"
       />
     </template>
+
+    <PartialsLiquidityCommonTradingBotsModalTrigger />
   </div>
 </template>
