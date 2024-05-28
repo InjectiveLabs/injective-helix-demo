@@ -307,18 +307,18 @@ useIntervalFn(() => {
       </p>
 
       <div class="text-right">
-        <PartialsGridStrategySpotCommonDetailsPair
+        <PartialsLiquidityCommonDetailsPair
           v-if="activeStrategy.state === StrategyStatus.Active"
           :market="market"
         >
           <template #base>{{ currentBaseBalanceToString }}</template>
           <template #quote>{{ currentQuoteBalanceToString }}</template>
-        </PartialsGridStrategySpotCommonDetailsPair>
+        </PartialsLiquidityCommonDetailsPair>
 
-        <PartialsGridStrategySpotCommonDetailsPair v-else :market="market">
+        <PartialsLiquidityCommonDetailsPair v-else :market="market">
           <template #base>{{ stopBaseQuantityToString }}</template>
           <template #quote>{{ stopQuoteQuantityToString }}</template>
-        </PartialsGridStrategySpotCommonDetailsPair>
+        </PartialsLiquidityCommonDetailsPair>
       </div>
     </div>
 
@@ -339,7 +339,7 @@ useIntervalFn(() => {
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-gray-400">{{ $t('sgt.priceRange') }}</p>
       <div class="text-right">
-        <PartialsGridStrategySpotCommonDetailsPair
+        <PartialsLiquidityCommonDetailsPair
           v-bind="{
             baseSymbol: market.quoteToken.symbol,
             quoteSymbol: market.quoteToken.symbol
@@ -347,7 +347,7 @@ useIntervalFn(() => {
         >
           <template #base>{{ lowerBoundToString }}</template>
           <template #quote>{{ upperBoundToString }}</template>
-        </PartialsGridStrategySpotCommonDetailsPair>
+        </PartialsLiquidityCommonDetailsPair>
       </div>
     </div>
 
@@ -364,10 +364,10 @@ useIntervalFn(() => {
         />
       </p>
       <div class="text-right">
-        <PartialsGridStrategySpotCommonDetailsPair v-bind="{ market }">
+        <PartialsLiquidityCommonDetailsPair v-bind="{ market }">
           <template #base>{{ creationBaseQuantityToString }}</template>
           <template #quote>{{ creationQuoteQuantityToString }}</template>
-        </PartialsGridStrategySpotCommonDetailsPair>
+        </PartialsLiquidityCommonDetailsPair>
       </div>
     </div>
 
@@ -540,7 +540,7 @@ useIntervalFn(() => {
       </div>
     </div>
 
-    <PartialsGridStrategySpotFormEndBot
+    <PartialsLiquidityCommonFormEndBot
       v-if="activeStrategy.state === StrategyStatus.Active"
       v-bind="{ isLiquidity, strategy: activeStrategy }"
     />

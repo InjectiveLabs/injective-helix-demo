@@ -264,7 +264,8 @@ export enum BusEvents {
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected',
   ActivityFilterUpdate = 'activity-filter-update',
-  SubaccountChange = 'subaccount-change'
+  SubaccountChange = 'subaccount-change',
+  OpenTradingBotDetails = 'open-trading-bot-details'
 }
 
 export enum ActivityField {

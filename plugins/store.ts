@@ -88,6 +88,7 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
+  'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',

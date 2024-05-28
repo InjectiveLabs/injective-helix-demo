@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { BusEvents } from '@/types'
 
-defineProps({
+const props = defineProps({
   strategy: {
     type: Object as PropType<TradingStrategy>,
     required: true
   }
 })
+
+function onOpenTradingBotDetails() {
+  useEventBus(BusEvents.OpenTradingBotDetails).emit(props.strategy)
+}
 </script>
 
 <template>
@@ -68,17 +73,17 @@ defineProps({
           </div>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <p>{{ duration }}</p>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
-          <p>Details</p>
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
+          <AppButton size="sm" @click="onOpenTradingBotDetails">
+            {{ $t('common.details') }}
+          </AppButton>
         </div>
 
-        <div
-          class="flex-1 flex items-center p-2 truncate min-w-0 justify-center"
-        >
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <PartialsCommonCancelButton
             v-bind="{ status: removeStatus }"
             @click="removeStrategy"

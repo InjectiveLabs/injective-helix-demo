@@ -26,6 +26,7 @@ const props = defineProps({
 })
 
 const appStore = useAppStore()
+const isMobile = useIsMobile()
 const tokenStore = useTokenStore()
 
 const isRWAMarket = computed(() =>
@@ -136,7 +137,10 @@ function toggleFavorite() {
     <div
       class="flex items-center justify-end flex-1 truncate min-w-0 font-mono text-xs"
     >
-      ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
+      <span v-if="isMobile || !isMarketsPage">
+        ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
+      </span>
+      <span v-else>${{ volumeToString }}</span>
     </div>
 
     <div

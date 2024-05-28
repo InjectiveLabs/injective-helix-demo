@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { BusEvents } from '@/types'
 
-defineProps({
+const props = defineProps({
   strategy: {
     type: Object as PropType<TradingStrategy>,
     required: true
   }
 })
+
+function onOpenTradingBotDetails() {
+  useEventBus(BusEvents.OpenTradingBotDetails).emit(props.strategy)
+}
 </script>
 
 <template>
@@ -93,9 +98,13 @@ defineProps({
           <p>{{ duration }}</p>
         </div>
 
-        <!-- <div class="flex-1 flex items-center p-2 truncate min-w-0">
-          <p>Details</p>
-        </div> -->
+        <div
+          class="flex items-center px-2 pt-2 truncate min-w-0 justify-center"
+        >
+          <AppButton class="w-full" @click="onOpenTradingBotDetails">
+            {{ $t('common.details') }}
+          </AppButton>
+        </div>
 
         <div
           class="flex items-center px-2 pt-2 truncate min-w-0 justify-center"

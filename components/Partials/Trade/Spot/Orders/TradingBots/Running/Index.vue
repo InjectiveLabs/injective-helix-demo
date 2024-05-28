@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const gridStrategyStore = useGridStrategyStore()
 const isMobile = useIsMobile()
+const gridStrategyStore = useGridStrategyStore()
 </script>
 
 <template>
