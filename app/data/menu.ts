@@ -92,12 +92,12 @@ export const MENU_ITEMS: MenuItem[] = [
         isExternal: true
       }
     ]
-  },
-  {
-    type: MenuItemType.Link,
-    label: 'navigation.leaderboard',
-    to: { name: MainPage.PnlLeaderboard }
   }
+  // {
+  //   type: MenuItemType.Link,
+  //   label: 'navigation.leaderboard',
+  //   to: { name: MainPage.PnlLeaderboard }
+  // }
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [

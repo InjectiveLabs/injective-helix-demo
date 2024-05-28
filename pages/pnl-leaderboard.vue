@@ -1,5 +1,12 @@
 <script setup lang="ts">
-//
+import { MainPage } from '@/types'
+
+// todo: remove this when pnl goes live
+definePageMeta({
+  middleware: () => {
+    return navigateTo({ name: MainPage.Index })
+  }
+})
 </script>
 
 <template>
