@@ -22,22 +22,26 @@ const options = [
   {
     type: BridgeStep.One,
     title: 'home.gettingStarted.step1.title',
-    description: 'home.gettingStarted.step1.description'
+    description: 'home.gettingStarted.step1.description',
+    icon: 'bridge'
   },
   {
     type: BridgeStep.Two,
     title: 'home.gettingStarted.step2.title',
-    description: 'home.gettingStarted.step2.description'
+    description: 'home.gettingStarted.step2.description',
+    icon: 'chain-link'
   },
   {
     type: BridgeStep.Three,
     title: 'home.gettingStarted.step3.title',
-    description: 'home.gettingStarted.step3.description'
+    description: 'home.gettingStarted.step3.description',
+    icon: 'bitcoin'
   },
   {
     type: BridgeStep.Four,
     title: 'home.gettingStarted.step4.title',
-    description: 'home.gettingStarted.step4.description'
+    description: 'home.gettingStarted.step4.description',
+    icon: 'circle-check-border'
   }
 ]
 </script>
@@ -88,26 +92,34 @@ const options = [
           class="hover:bg-brand-875 p-6 rounded-lg cursor-pointer flex"
           :value="item.type"
         >
-          <div class="flex-1 space-y-2">
-            <div class="flex items-center justify-between">
-              <h2
-                :class="{ 'text-blue-500': activeStep === item.type }"
-                class="text-xl xs:text-2xl xs:leading-8 font-semibold"
-              >
-                {{ $t(item.title) }}
-              </h2>
+          <div class="flex-1 space-y-2 flex items-center space-x-6">
+            <SharedIcon
+              :name="item.icon"
+              class="min-w-8 w-8 h-8"
+              :class="{ 'text-blue-500': activeStep === item.type }"
+            />
 
-              <div class="rotate-180 text-gray-400">
-                <SharedIcon name="arrow" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h2
+                  :class="{ 'text-blue-500': activeStep === item.type }"
+                  class="text-xl xs:text-2xl xs:leading-8 font-semibold"
+                >
+                  {{ $t(item.title) }}
+                </h2>
+
+                <div class="rotate-180 text-gray-400">
+                  <SharedIcon name="arrow" />
+                </div>
               </div>
-            </div>
 
-            <p
-              :class="{ 'text-white': activeStep === item.type }"
-              class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
-            >
-              {{ $t(item.description) }}
-            </p>
+              <p
+                :class="{ 'text-white': activeStep === item.type }"
+                class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
+              >
+                {{ $t(item.description) }}
+              </p>
+            </div>
           </div>
         </BaseSelectorItem>
       </div>
