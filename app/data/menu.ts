@@ -132,7 +132,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
       },
       {
         type: MenuItemType.Link,
-        label: 'navigation.futures',
+        label: 'navigation.derivative',
         to: { name: PortfolioSubPage.OrdersFutures }
       },
       {
