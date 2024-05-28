@@ -41,35 +41,40 @@ onSubaccountChange(fetchSubaccountOrders)
 <template>
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersSpotOpenOrdersTabs />
-    <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
 
-    <CommonSkeletonRow
-      v-if="status.isLoading()"
-      :rows="10"
-      :columns="7"
-      :height="57"
-    />
+    <div class="overflow-x-auto">
+      <div class="lg:min-w-[900px] divide-y border-b">
+        <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
 
-    <template v-else>
-      <template v-if="isMobile">
-        <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
-          v-for="order in filteredOrders"
-          v-bind="{ order }"
-          :key="order.orderHash"
+        <CommonSkeletonRow
+          v-if="status.isLoading()"
+          :rows="10"
+          :columns="7"
+          :height="57"
         />
-      </template>
-      <template v-else>
-        <PartialsPortfolioOrdersSpotOpenOrdersTableRow
-          v-for="order in filteredOrders"
-          v-bind="{ order }"
-          :key="order.orderHash"
-        />
-      </template>
 
-      <CommonEmptyList
-        v-if="filteredOrders.length === 0"
-        :message="$t('trade.emptyOrders')"
-      />
-    </template>
+        <template v-else>
+          <template v-if="isMobile">
+            <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
+              v-for="order in filteredOrders"
+              v-bind="{ order }"
+              :key="order.orderHash"
+            />
+          </template>
+          <template v-else>
+            <PartialsPortfolioOrdersSpotOpenOrdersTableRow
+              v-for="order in filteredOrders"
+              v-bind="{ order }"
+              :key="order.orderHash"
+            />
+          </template>
+
+          <CommonEmptyList
+            v-if="filteredOrders.length === 0"
+            :message="$t('trade.emptyOrders')"
+          />
+        </template>
+      </div>
+    </div>
   </div>
 </template>

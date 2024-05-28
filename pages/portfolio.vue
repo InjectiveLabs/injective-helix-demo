@@ -23,7 +23,7 @@ defineProps({
       </div>
     </div>
 
-    <div class="flex-1 relative">
+    <div class="flex-1 relative basis-[w-full] lg:overflow-x-auto">
       <NuxtPage />
     </div>
   </div>

@@ -76,49 +76,54 @@ async function handleLimitChange(limit: number) {
         @form:reset="fetchWalletTransfers"
         @token:update="fetchWalletTransfers"
       />
-      <PartialsPortfolioHistoryWalletTableHeader v-if="!isMobile" />
 
-      <CommonSkeletonRow
-        v-if="status.isLoading()"
-        :rows="10"
-        :columns="6"
-        :height="57"
-      />
+      <div class="overflow-x-auto">
+        <div class="lg:min-w-[1100px] divide-y border-b">
+          <PartialsPortfolioHistoryWalletTableHeader v-if="!isMobile" />
 
-      <template v-else>
-        <div v-if="isMobile">
-          <PartialsPortfolioHistoryWalletTableMobileRow
-            v-for="transaction in activityStore.subaccountTransfers"
-            :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
-            v-bind="{ transaction }"
+          <CommonSkeletonRow
+            v-if="status.isLoading()"
+            :rows="10"
+            :columns="6"
+            :height="57"
           />
+
+          <template v-else>
+            <div v-if="isMobile">
+              <PartialsPortfolioHistoryWalletTableMobileRow
+                v-for="transaction in activityStore.subaccountTransfers"
+                :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
+                v-bind="{ transaction }"
+              />
+            </div>
+
+            <template v-else>
+              <PartialsPortfolioHistoryWalletTableRow
+                v-for="transaction in activityStore.subaccountTransfers"
+                :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
+                v-bind="{ transaction }"
+              />
+            </template>
+
+            <AppPagination
+              v-if="activityStore.subaccountTransfers.length > 0"
+              class="p-8"
+              v-bind="{
+                limit,
+                page,
+                totalCount: activityStore.subaccountTransferTransactionsCount
+              }"
+              @update:limit="handleLimitChange"
+              @update:page="handlePageChange"
+            />
+
+            <CommonEmptyList
+              v-if="activityStore.subaccountTransfers.length === 0"
+              :message="$t('portfolio.history.wallet.noHistory')"
+            />
+          </template>
         </div>
-
-        <template v-else>
-          <PartialsPortfolioHistoryWalletTableRow
-            v-for="transaction in activityStore.subaccountTransfers"
-            :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
-            v-bind="{ transaction }"
-          />
-        </template>
-
-        <AppPagination
-          v-if="activityStore.subaccountTransfers.length > 0"
-          class="p-8"
-          v-bind="{
-            limit,
-            page,
-            totalCount: activityStore.subaccountTransferTransactionsCount
-          }"
-          @update:limit="handleLimitChange"
-          @update:page="handlePageChange"
-        />
-
-        <CommonEmptyList
-          v-if="activityStore.subaccountTransfers.length === 0"
-          :message="$t('portfolio.history.wallet.noHistory')"
-        />
-      </template>
+      </div>
     </div>
   </div>
 </template>

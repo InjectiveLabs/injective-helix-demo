@@ -233,7 +233,7 @@ function addTpSl() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div
-          class="space-y-1"
+          class="space-y-1 text-right"
           :class="{
             'text-green-500': pnl.gte(0),
             'text-red-500': pnl.lt(0)

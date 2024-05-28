@@ -60,21 +60,25 @@ const balancesSorted = computed(() => {
       v-model:showUnverifiedAssets="showUnverifiedAssets"
     />
 
-    <PartialsPortfolioBalancesSubaccountTableHeader v-if="!isMobile" />
+    <div class="overflow-x-auto">
+      <div class="lg:min-w-[1300px] divide-y border-b">
+        <PartialsPortfolioBalancesSubaccountTableHeader v-if="!isMobile" />
 
-    <template v-if="isMobile">
-      <PartialsPortfolioBalancesSubaccountTableMobileRow
-        v-for="balance in balancesSorted"
-        v-bind="{ balance }"
-        :key="balance.denom"
-      />
-    </template>
-    <template v-else>
-      <PartialsPortfolioBalancesSubaccountTableRow
-        v-for="balance in balancesSorted"
-        v-bind="{ balance }"
-        :key="balance.denom"
-      />
-    </template>
+        <template v-if="isMobile">
+          <PartialsPortfolioBalancesSubaccountTableMobileRow
+            v-for="balance in balancesSorted"
+            v-bind="{ balance }"
+            :key="balance.denom"
+          />
+        </template>
+        <template v-else>
+          <PartialsPortfolioBalancesSubaccountTableRow
+            v-for="balance in balancesSorted"
+            v-bind="{ balance }"
+            :key="balance.denom"
+          />
+        </template>
+      </div>
+    </div>
   </div>
 </template>

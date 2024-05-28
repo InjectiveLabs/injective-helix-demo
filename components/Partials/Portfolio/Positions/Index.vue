@@ -44,31 +44,29 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 <template>
   <PartialsPortfolioPositionsTabs />
 
-  <div class="overflow-x-auto lg:relative lg:h-[500px]">
-    <div class="lg:absolute top-0 left-0 right-0 w-full">
-      <div class="lg:min-w-[1300px] divide-y border-b">
-        <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
+  <div class="overflow-x-auto">
+    <div class="lg:min-w-[1700px] divide-y border-b">
+      <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
 
-        <template v-if="isMobile">
-          <PartialsPortfolioPositionsTableMobileRow
-            v-for="position in filteredPosition"
-            :key="`${position.marketId}-${position.subaccountId}`"
-            v-bind="{ position }"
-            @margin:add="addMargin"
-            @tpsl:add="addTakeProfitStopLoss"
-          />
-        </template>
+      <template v-if="isMobile">
+        <PartialsPortfolioPositionsTableMobileRow
+          v-for="position in filteredPosition"
+          :key="`${position.marketId}-${position.subaccountId}`"
+          v-bind="{ position }"
+          @margin:add="addMargin"
+          @tpsl:add="addTakeProfitStopLoss"
+        />
+      </template>
 
-        <template v-else>
-          <PartialsPortfolioPositionsTableRow
-            v-for="position in filteredPosition"
-            :key="`${position.marketId}-${position.subaccountId}`"
-            v-bind="{ position }"
-            @margin:add="addMargin"
-            @tpsl:add="addTakeProfitStopLoss"
-          />
-        </template>
-      </div>
+      <template v-else>
+        <PartialsPortfolioPositionsTableRow
+          v-for="position in filteredPosition"
+          :key="`${position.marketId}-${position.subaccountId}`"
+          v-bind="{ position }"
+          @margin:add="addMargin"
+          @tpsl:add="addTakeProfitStopLoss"
+        />
+      </template>
     </div>
   </div>
 

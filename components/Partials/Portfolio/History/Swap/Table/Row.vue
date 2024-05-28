@@ -60,7 +60,7 @@ const {
       <PartialsSwapRoute v-bind="{ isSm: true, routeSymbols }" />
     </div>
 
-    <div class="p-2 flex items-center flex-1">
+    <div class="p-2 flex items-center flex-1 gap-1">
       <div v-for="(fee, index) in formattedFees" :key="`${fee}-${index}`">
         {{ fee }}
       </div>

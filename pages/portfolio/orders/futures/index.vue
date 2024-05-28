@@ -43,36 +43,40 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 <template>
   <div class="divide-y border-y">
     <PartialsPortfolioOrdersFuturesOpenOrdersTabs />
-    <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader v-if="!isMobile" />
+    <div class="overflow-x-auto">
+      <div class="lg:min-w-[1200px] divide-y border-b">
+        <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader v-if="!isMobile" />
 
-    <CommonSkeletonRow
-      v-if="status.isLoading()"
-      :height="57"
-      :rows="10"
-      :columns="8"
-    />
-
-    <template v-else>
-      <div v-if="isMobile">
-        <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
-          v-for="order in filteredOrders"
-          :key="`${order.orderHash}-${order.cid}`"
-          v-bind="{ order }"
+        <CommonSkeletonRow
+          v-if="status.isLoading()"
+          :height="57"
+          :rows="10"
+          :columns="8"
         />
+
+        <template v-else>
+          <div v-if="isMobile">
+            <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
+              v-for="order in filteredOrders"
+              :key="`${order.orderHash}-${order.cid}`"
+              v-bind="{ order }"
+            />
+          </div>
+
+          <template v-else>
+            <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
+              v-for="order in filteredOrders"
+              :key="`${order.orderHash}-${order.cid}`"
+              v-bind="{ order }"
+            />
+          </template>
+
+          <CommonEmptyList
+            v-if="filteredOrders.length === 0"
+            :message="'No Open Orders'"
+          />
+        </template>
       </div>
-
-      <template v-else>
-        <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
-          v-for="order in filteredOrders"
-          :key="`${order.orderHash}-${order.cid}`"
-          v-bind="{ order }"
-        />
-      </template>
-
-      <CommonEmptyList
-        v-if="filteredOrders.length === 0"
-        :message="'No Open Orders'"
-      />
-    </template>
+    </div>
   </div>
 </template>

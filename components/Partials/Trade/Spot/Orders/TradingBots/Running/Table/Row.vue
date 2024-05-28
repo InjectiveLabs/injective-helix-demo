@@ -35,30 +35,30 @@ defineProps({
           <p class="font-semibold">{{ market.ticker }}</p>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <p class="space-x-1 font-mono">
             <span>{{ lowerBound.toFormat() }}</span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <p class="space-x-1 font-mono">
             <span>{{ upperBound.toFormat() }}</span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <p class="space-x-1 font-mono">
             <span>{{ investment.toFormat(2) }}</span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
 
-        <div class="flex-1 flex items-center p-2 truncate min-w-0">
+        <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <div
-            class="font-mono"
+            class="font-mono text-right"
             :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
           >
             <p class="text-sm">

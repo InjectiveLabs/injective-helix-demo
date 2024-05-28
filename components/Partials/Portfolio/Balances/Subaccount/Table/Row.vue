@@ -104,7 +104,9 @@ const isBridgable = computed(() => {
       </div>
     </div>
 
-    <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">
+    <div
+      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
+    >
       <CommonSkeletonSubaccountAmount>
         <p class="flex items-center gap-1">
           {{ availableAmountToString }}
@@ -122,7 +124,9 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">
+    <div
+      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
+    >
       <CommonSkeletonSubaccountAmount>
         <span v-if="reservedToBigNumber.eq(0)"> - </span>
         <span v-else>
@@ -131,7 +135,9 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">
+    <div
+      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
+    >
       <CommonSkeletonSubaccountAmount>
         <span v-if="unrealizedToBigNumber.eq(0)"> - </span>
         <span v-else>
@@ -140,13 +146,17 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2">
+    <div
+      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
+    >
       <CommonSkeletonSubaccountAmount>
         {{ totalAmountToString }}
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div class="flex-[2] flex items-center font-mono text-xs shrink-0 p-2">
+    <div
+      class="flex-[2] flex items-center font-mono text-xs shrink-0 p-2 justify-end"
+    >
       <div class="space-y-1">
         <CommonSkeletonSubaccountAmount>
           ${{ totalAmountInUsdToString }}
@@ -155,7 +165,7 @@ const isBridgable = computed(() => {
     </div>
 
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2"
+      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2 justify-center"
     >
       <PartialsCommonBridgeRedirection
         v-bind="{
