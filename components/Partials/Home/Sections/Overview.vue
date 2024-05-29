@@ -19,22 +19,26 @@ const options = [
   {
     type: OverviewSection.TradingBots,
     title: 'home.overview.tradingBotsTitle',
-    description: 'home.overview.tradingBotsDescription'
+    description: 'home.overview.tradingBotsDescription',
+    icon: 'robot'
   },
   {
     type: OverviewSection.NewAccounts,
     title: 'home.overview.newAccountsTitle',
-    description: 'home.overview.newAccountsDescription'
+    description: 'home.overview.newAccountsDescription',
+    icon: 'notebook'
   },
   {
     type: OverviewSection.Pnl,
     title: 'home.overview.pnlTitle',
-    description: 'home.overview.pnlDescription'
+    description: 'home.overview.pnlDescription',
+    icon: 'bar-chart'
   },
   {
     type: OverviewSection.GasFree,
     title: 'home.overview.gasFreeTitle',
-    description: 'home.overview.gasFreeDescription'
+    description: 'home.overview.gasFreeDescription',
+    icon: 'gas-pump'
   }
 ]
 </script>
@@ -60,26 +64,42 @@ const options = [
           class="hover:bg-brand-875 p-6 rounded-lg cursor-pointer flex"
           :value="item.type"
         >
-          <div class="flex-1 space-y-2">
-            <div class="flex items-center justify-between">
-              <h2
-                :class="{ 'text-blue-500': activeType === item.type }"
-                class="text-xl xs:text-2xl xs:leading-8 font-semibold"
-              >
-                {{ $t(item.title) }}
-              </h2>
+          <div class="flex-1 space-y-2 flex items-center space-x-6">
+            <SharedIcon
+              :name="item.icon"
+              class="min-w-8 w-8 h-8"
+              :class="{ 'text-blue-500': activeType === item.type }"
+            />
 
-              <div class="rotate-180 text-gray-400">
-                <SharedIcon name="arrow" />
+            <div class="flex-1 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex justify-center items-center space-x-3">
+                  <h2
+                    :class="{ 'text-blue-500': activeType === item.type }"
+                    class="text-xl xs:text-2xl xs:leading-8 font-semibold"
+                  >
+                    {{ $t(item.title) }}
+                  </h2>
+                  <div
+                    v-if="item.type === OverviewSection.NewAccounts"
+                    class="p-1 text-[10px] font-semibold rounded-[4px] bg-[#E79E11] uppercase"
+                  >
+                    {{ $t('common.new') }}
+                  </div>
+                </div>
+
+                <div class="rotate-180 text-gray-400">
+                  <SharedIcon name="arrow" />
+                </div>
               </div>
-            </div>
 
-            <p
-              :class="{ 'text-white': activeType === item.type }"
-              class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
-            >
-              {{ $t(item.description) }}
-            </p>
+              <p
+                :class="{ 'text-white': activeType === item.type }"
+                class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
+              >
+                {{ $t(item.description) }}
+              </p>
+            </div>
           </div>
         </BaseSelectorItem>
       </div>

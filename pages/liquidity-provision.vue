@@ -51,7 +51,7 @@ const vaults = computed(() => {
         (pool) => pool.vaultAddress === vault.contractAddress
       )
 
-      const apy = BigNumber.max(vault.apy, 0)
+      const apy = BigNumber.max(vault.apy7D, 0)
         .plus(stakingPool?.apr || 0)
         .toNumber()
 
@@ -125,7 +125,9 @@ const spotGridTradingBots = computed(() => {
       <div
         class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-4"
       >
-        <PartialsLiquidityProvisionItemInjStaking />
+        <PartialsLiquidityProvisionItemInjStaking
+          v-if="type === LiquidityProvisionTypeOption.All"
+        />
 
         <PartialsLiquidityProvisionItemSpotGridBot
           v-for="gridMarket in spotGridTradingBots"
