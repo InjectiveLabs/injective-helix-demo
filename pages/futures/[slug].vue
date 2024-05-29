@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 import { derivativeMarketKey, isSpotKey, marketKey, Modal } from '@/types'
 
 definePageMeta({
@@ -8,6 +9,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const appStore = useAppStore()
 const modalStore = useModalStore()
 const derivativeStore = useDerivativeStore()
 
@@ -40,6 +42,15 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
+
+  if (
+    isCountryRestrictedForPerpetualMarkets(
+      appStore.userState.geoLocation.browserCountry ||
+        appStore.userState.geoLocation.country
+    )
+  ) {
+    modalStore.openModal(Modal.MarketRestricted)
+  }
 
   if (isRWAMarket) {
     fetchRWAMarketIsOpen()
@@ -129,11 +140,10 @@ provide(isSpotKey, false)
       </template>
     </PartialsTradeLayout>
 
+    <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
     <ModalsClosedRWAMarket
       v-if="modalStore.modals[Modal.ClosedRWAMarket]"
       @terms:agreed="pause"
     />
-
-    <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
   </div>
 </template>
