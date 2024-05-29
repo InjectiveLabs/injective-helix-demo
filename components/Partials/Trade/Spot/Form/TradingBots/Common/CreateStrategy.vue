@@ -59,6 +59,7 @@ async function createStrategy() {
 </script>
 
 <template>
+  g
   <div class="py-4">
     <AppButton
       class="w-full"

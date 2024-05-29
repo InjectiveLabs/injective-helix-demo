@@ -11,7 +11,7 @@ type Variant =
   | 'success'
   | 'success-outline'
 
-defineProps({
+const props = defineProps({
   isLoading: Boolean,
 
   size: {
@@ -29,12 +29,24 @@ defineProps({
     default: () => new Status(StatusType.Idle)
   }
 })
+
+const outlineStyle = computed(() => {
+  if (['danger', 'danger-outline', 'danger-ghost'].includes(props.variant)) {
+    return 'focus-within:ring-[3px] ring-red-700'
+  }
+
+  if (['success', 'success-outline', 'success-ghost'].includes(props.variant)) {
+    return 'focus-within:ring-[3px] ring-green-700'
+  }
+
+  return 'focus-within:ring-[3px] ring-blue-700'
+})
 </script>
 
 <template>
   <button
-    class="flex items-center justify-center focus-ring transition-all"
-    :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant]"
+    class="flex items-center justify-center transition-all ring-0"
+    :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant, outlineStyle]"
     v-bind="$attrs"
   >
     <span v-if="status.isLoading() || isLoading">&#8202;</span>
