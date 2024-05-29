@@ -27,7 +27,9 @@ const stateToPersist = {
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
-        authZManagement: false
+        authZManagement: false,
+        isHideBalances: false,
+        thousandsSeparator: false
       }
     }
   },
@@ -49,6 +51,13 @@ const stateToPersist = {
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+
+    autoSign: {
+      privateKey: '',
+      expiration: '',
+      injectiveAddress: '',
+      duration: ''
     }
   }
 } as Record<string, Record<string, any>>
@@ -79,6 +88,7 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
+  'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
@@ -88,7 +98,9 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (
@@ -101,24 +113,28 @@ const persistState = (
 
   const keysToPersist = Object.keys(stateToPersist[mutation.storeId])
 
-  if (!mutation.payload) {
+  if (!mutation.payload && mutation.events.length === 0) {
     return
   }
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload || []).some((key) => {
-      return keysToPersist.includes(key)
-    })
+    Object.keys(mutation.payload || mutation.events[0].target || []).some(
+      (key) => {
+        return keysToPersist.includes(key)
+      }
+    )
 
   if (!shouldPersistState) {
     return
   }
 
+  const source = mutation.payload || mutation.events[0].target
+
   const updatedState = keysToPersist.reduce((stateObj, key) => {
     return {
       ...stateObj,
-      [key]: mutation.payload[key] || state[key]
+      [key]: source[key] || state[key]
     }
   }, {})
 

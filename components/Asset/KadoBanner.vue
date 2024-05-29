@@ -11,18 +11,22 @@ const url = computed(() => {
 </script>
 
 <template>
-  <div class="h-14 w-full bg-[#182855] flex items-center justify-center gap-2">
+  <div
+    class="p-4 w-full bg-brand-900 border-b border-brand-800 flex sm:items-center justify-center gap-2"
+  >
     <span class="text-sm md:text-lg">
       {{ $t('banners.kado.title') }}
     </span>
 
     <NuxtLink :to="url" target="_blank">
       <div class="flex items-center justify-start gap-1">
-        <span class="text-sm md:text-lg text-blue-500 font-medium">
+        <span
+          class="text-sm md:text-lg text-blue-500 font-medium whitespace-nowrap"
+        >
           {{ $t('banners.kado.tryNow') }}
         </span>
 
-        <BaseIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
+        <SharedIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
       </div>
     </NuxtLink>
   </div>

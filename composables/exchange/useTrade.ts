@@ -1,12 +1,8 @@
-import type { Ref } from 'vue'
-import {
-  UiDerivativeTrade,
-  UiSpotTrade,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -14,7 +10,7 @@ import {
 } from '@/app/utils/constants'
 
 export function useTrade(
-  trade: Ref<UiSpotTrade | UiDerivativeTrade>,
+  trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
   isSpot: Ref<boolean>
 ) {
   const spotStore = useSpotStore()
@@ -30,17 +26,17 @@ export function useTrade(
   /** Unifying both spot and derivative to spot trade type */
   const tradeToSpotTrade = computed(() => {
     if (isSpot.value) {
-      return trade.value as UiSpotTrade
+      return trade.value as SharedUiSpotTrade
     }
 
-    const derivativeTrade = trade.value as UiDerivativeTrade
+    const derivativeTrade = trade.value as SharedUiDerivativeTrade
 
     return {
       ...derivativeTrade,
       price: derivativeTrade.executionPrice,
       quantity: derivativeTrade.executionQuantity,
       timestamp: derivativeTrade.executedAt
-    } as UiSpotTrade
+    } as SharedUiSpotTrade
   })
 
   const price = computed(() => {
@@ -104,7 +100,7 @@ export function useTrade(
   })
 
   const tradeExecutionType = computed<string>(() => {
-    const derivativeTrade = trade.value as UiDerivativeTrade
+    const derivativeTrade = trade.value as SharedUiDerivativeTrade
 
     if (!isSpot.value && derivativeTrade.isLiquidation) {
       return t('trade.liquidation')
@@ -138,11 +134,14 @@ export function useTrade(
 }
 
 export function useTradeWithUndefined(
-  trade: Ref<UiSpotTrade | UiDerivativeTrade | undefined>,
+  trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade | undefined>,
   isSpot: Ref<boolean>
 ) {
   if (trade.value) {
-    return useTrade(trade as Ref<UiSpotTrade | UiDerivativeTrade>, isSpot)
+    return useTrade(
+      trade as Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
+      isSpot
+    )
   }
 
   return {

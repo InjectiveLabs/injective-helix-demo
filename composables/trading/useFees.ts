@@ -1,9 +1,8 @@
-import type { Ref } from 'vue'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketWithToken } from '@/types'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { ONE_IN_BASE } from '@/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 export function useTradeFee(market: Ref<UiMarketWithToken | undefined>) {
   const exchangeStore = useExchangeStore()

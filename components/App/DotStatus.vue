@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <div class="flex items-center gap-1 capitalize">
-    <BaseIcon
+    <SharedIcon
       name="circle"
       :class="[isActive && !color ? 'text-green-500' : 'text-gray-500', color]"
       is-xs

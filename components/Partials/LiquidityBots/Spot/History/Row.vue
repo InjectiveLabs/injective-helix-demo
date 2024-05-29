@@ -39,7 +39,7 @@ const { percentagePnl, pnl } = useActiveGridStrategy(
   computed(() => props.strategy)
 )
 
-const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
+const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 </script>
@@ -82,12 +82,12 @@ const { valueToString: pnlToString } = useBigNumberFormatter(pnl, {
                 </span>
               </div>
 
-              <CommonTokenIcon :token="market.baseToken" is-sm />
+              <CommonTokenIcon v-if="market" :token="market.baseToken" is-sm />
             </div>
           </div>
 
           <div :class="{ 'rotate-180': isActive }">
-            <BaseIcon name="chevron-down" is-md />
+            <SharedIcon name="chevron-down" is-md />
           </div>
         </div>
       </template>

@@ -15,7 +15,7 @@ const props = defineProps({
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const { valueToString: lastTradePriceToString } = useBigNumberFormatter(
+const { valueToString: lastTradePriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces: props.decimalPlaces,

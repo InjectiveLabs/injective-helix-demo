@@ -5,9 +5,11 @@ import {
   useResetForm,
   useFormErrors,
   useFormValues,
+  useIsFormDirty,
   useValidateForm,
   useSetFormValues,
-  useSetFieldValue
+  useSetFieldValue,
+  useValidateField
 } from 'vee-validate'
 
 export {
@@ -17,7 +19,9 @@ export {
   useResetForm,
   useFormErrors,
   useFormValues,
+  useIsFormDirty,
   useValidateForm,
   useSetFormValues,
-  useSetFieldValue
+  useSetFieldValue,
+  useValidateField
 }

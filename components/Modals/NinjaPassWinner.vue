@@ -82,7 +82,7 @@ function closeModal() {
           <span class="font-semibold text-blue-900">
             {{ $t('ninjaPass.verifyNow') }}
           </span>
-          <BaseIcon name="external-link" class="w-4 h-4 text-blue-900" />
+          <SharedIcon name="external-link" class="w-4 h-4 text-blue-900" />
         </a>
 
         <button

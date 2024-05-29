@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotTrade,
-  UiDerivativeTrade,
-  UiSpotOrderHistory,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
-import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
+  TradingReward,
+  FundingPayment,
+  SpotOrderHistory,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
+import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
 import {
   streamSpotSubaccountTrades,
   streamSpotSubaccountOrderHistory,
@@ -16,14 +16,15 @@ import {
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
 import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
+// todo: Ivan clean up
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
   subaccountFundingPaymentsCount: number
-  latestDerivativeOrderHistory?: UiDerivativeOrderHistory
-  latestDerivativeTrade?: UiDerivativeTrade
-  latestSpotOrderHistory?: UiSpotOrderHistory
-  latestSpotTrade?: UiSpotTrade
+  latestDerivativeOrderHistory?: DerivativeOrderHistory
+  latestDerivativeTrade?: SharedUiDerivativeTrade
+  latestSpotOrderHistory?: SpotOrderHistory
+  latestSpotTrade?: SharedUiSpotTrade
   subaccountTransfers: UiSubaccountTransactionWithToken[]
   subaccountTransferTransactionsCount: number
 }

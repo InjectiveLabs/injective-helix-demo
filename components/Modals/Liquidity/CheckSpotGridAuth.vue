@@ -4,7 +4,6 @@ import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
-import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
@@ -27,8 +26,9 @@ function checkAuth() {
 
   const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
     authZStore.granterGrants.some(
-      (g) =>
-        g.authorization.endsWith(m) && g.grantee === gridMarket?.contractAddress
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
     )
   )
 
@@ -57,8 +57,6 @@ function authorize() {
     .then(() => {
       modalStore.closeModal(Modal.CheckSpotGridAuth)
       modalStore.openModal(Modal.CreateSpotGridStrategy)
-
-      backupPromiseCall(() => authZStore.fetchGrants())
     })
     .catch((e) => {
       modalStore.closeModal(Modal.CheckSpotGridAuth)

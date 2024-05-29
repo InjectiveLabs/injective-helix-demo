@@ -1,15 +1,10 @@
-import {
-  MarketType,
-  UiPerpetualMarketWithToken,
-  UiBinaryOptionsMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { indexerOracleApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { MarketMarkPriceMap } from '@/types'
-import { indexerOracleApi } from '@/app/Services'
+import { MarketMarkPriceMap, UiDerivativeMarket } from '@/types'
 
 export class DerivativeOraclePriceIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
@@ -74,27 +69,21 @@ export class DerivativeOraclePriceIntegrityStrategy
     }
 
     const derivativeStore = useDerivativeStore()
-    const markets = derivativeStore.markets.filter((market) =>
+    const markets = [...derivativeStore.markets].filter((market) =>
       marketIds.includes(market.marketId)
     )
 
     const pricePromises = markets.map((market) =>
-      (market.subType !== MarketType.BinaryOptions
-        ? indexerOracleApi.fetchOraclePrice({
-            oracleType: market.oracleType,
-            baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-            quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote
-          })
-        : indexerOracleApi.fetchOraclePriceNoThrow({
-            baseSymbol: (market as UiBinaryOptionsMarketWithToken).oracleSymbol,
-            quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
-              .oracleProvider,
-            oracleType: market.oracleType
-          })
-      ).then((oraclePrice) => ({
-        marketId: market.marketId,
-        price: oraclePrice.price
-      }))
+      indexerOracleApi
+        .fetchOraclePrice({
+          oracleType: market.oracleType,
+          baseSymbol: (market as UiDerivativeMarket).oracleBase,
+          quoteSymbol: (market as UiDerivativeMarket).oracleQuote
+        })
+        .then((oraclePrice) => ({
+          marketId: market.marketId,
+          price: oraclePrice.price
+        }))
     )
 
     const marketPricesResults = await Promise.all(pricePromises)

@@ -45,7 +45,10 @@ const options = computed<BaseDropdownOption[]>(() =>
       start-placement
     >
       <template #default="{ selected }">
-        <PartialsLiquidityBotsSpotMarketOption v-bind="{ option: selected! }" />
+        <PartialsLiquidityBotsSpotMarketOption
+          v-if="selected"
+          v-bind="{ option: selected }"
+        />
       </template>
 
       <template #option="{ option }">

@@ -125,3 +125,120 @@
 .-order-1 {
   order: -1;
 }
+
+@layer utilities {
+  .trade-layout-left {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 400px 300px 1fr;
+
+    grid-template-areas:
+      'form orderbook chart'
+      'form orderbook chart'
+      'form orders orders';
+  }
+
+  .trade-layout-right {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr 300px 400px;
+
+    grid-template-areas:
+      'chart orderbook form'
+      'chart orderbook form'
+      'orders orders form';
+  }
+
+  .focus-ring {
+    @apply ring-0 focus-within:ring-[3px];
+  }
+
+  .field-style {
+    @apply focus-within:focus-ring focus:outline-none transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
+  }
+
+  .input-style {
+    @apply block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
+  }
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  margin: 0;
+  height: 16px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px #fff2;
+
+  @apply bg-blue-600;
+  transition: box-shadow 0.2s;
+}
+
+input[type='range']:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px #fff2;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px #fff2;
+
+  @apply bg-blue-600;
+  transition: box-shadow 0.2s;
+}
+
+input[type='range']:active::-moz-slider-thumb {
+  box-shadow: 0 0 0 6px #fff2;
+}
+
+input[type='range']::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px #fff2;
+
+  @apply bg-blue-600;
+  transition: box-shadow 0.2s;
+}
+
+input[type='range']:active::-ms-thumb {
+  box-shadow: 0 0 0 6px #fff2;
+}
+
+input[type='range']::-moz-range-track {
+  height: 16px;
+  cursor: pointer;
+
+  border-radius: 2px;
+
+  @apply bg-transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 16px;
+  cursor: pointer;
+
+  border-radius: 2px;
+
+  @apply bg-transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import {
   GUILD_MAX_CAP,
@@ -8,7 +9,6 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
@@ -102,7 +102,7 @@ const guildInvitationHash = computed(() =>
   })
 )
 
-const { valueToString: guildMasterBalance } = useBigNumberFormatter(
+const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.masterBalance || 0,
@@ -206,7 +206,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
       <!-- Back -->
       <NuxtLink :to="{ name: MainPage.Guilds }" class="hover:text-blue-500">
         <div class="flex items-center gap-1">
-          <BaseIcon name="arrow" is-md />
+          <SharedIcon name="arrow" is-md />
           <div>{{ $t('common.back') }}</div>
         </div>
       </NuxtLink>
@@ -284,7 +284,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               >
                 <div class="flex items-center gap-1">
                   <span>{{ $t('guild.leaderboard.invitationCode') }}</span>
-                  <BaseIcon name="link" is-md />
+                  <SharedIcon name="link" is-md />
                 </div>
               </AppButton>
 
@@ -334,7 +334,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   v-if="hasNewData"
                   :content="$t('guild.leaderboard.fetchNewData')"
                 >
-                  <BaseIcon
+                  <SharedIcon
                     name="refresh"
                     class="text-blue-500 hover:opacity-80 cursor-pointer"
                     @click="onRefresh"

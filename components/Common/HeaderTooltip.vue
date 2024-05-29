@@ -2,6 +2,16 @@
 defineProps({
   isNotStyled: Boolean,
 
+  textColorClass: {
+    type: String,
+    default: 'text-gray-350'
+  },
+
+  borderColorClass: {
+    type: String,
+    default: 'border-gray-400'
+  },
+
   tooltip: {
     type: String,
     required: true
@@ -13,10 +23,14 @@ defineProps({
   <BaseHoverMenu popper-class="tooltip">
     <template #default>
       <span
-        :class="{
-          'text-gray-350 text-xs normal-case border-dashed border-b border-gray-400 cursor-pointer':
-            !isNotStyled
-        }"
+        :class="[
+          textColorClass,
+          borderColorClass,
+          {
+            'text-xs normal-case border-dashed border-b  cursor-pointer':
+              !isNotStyled
+          }
+        ]"
       >
         <slot />
       </span>

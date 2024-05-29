@@ -20,7 +20,7 @@ export default {
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
-    history: 'history',
+    history: 'History',
     enabled: 'Enabled',
     removed: 'Removed',
     lowerPrice: 'Lower Price',
@@ -31,6 +31,7 @@ export default {
     gridMode: 'Grid Mode',
     available: 'Available',
     geometric: 'Geometric',
+    createdAt: 'Created At',
     setValues: 'Set Values',
     arithmetic: 'Arithmetic',
     investment: 'Investment',
@@ -64,17 +65,28 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    minInvestmentDescription: ({ named }: I18nMessageFunction) =>
+      `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
+    minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
+      `Minimum Investment: Starts at $${named(
+        'amount'
+      )}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the ${named(
+        'assets'
+      )} assets.`,
     minInvestment: 'Min investment: $ {amount}',
+    minInvestmentAmount: 'Min. investment Amount',
     totalInvestment: 'Total Investment',
     useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
     strategyRemoved: 'Strategy Removed!',
-    totalBaseAndQuote: 'Total {base} + {quote} value: >= {amount} $',
+    totalBaseAndQuote: 'Total {base} + {quote} value',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    noActiveStrategies: 'No Active Strategies',
+    noStrategies: 'No Strategies found.',
     endLegacyBotText:
       "Before creating a new bot, you'll need to deactivate your currently active bot in the legacy market.",
     legacyBotWarning:

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -65,7 +65,7 @@ const rewardsThisRound = computed(() =>
 
 const rewardsThisRoundInUsd = computed(() =>
   Object.entries(rewardsThisRound.value).reduce((sum, [denom, amount]) => {
-    const token = tokenStore.tokens.find((token) => token.denom === denom)
+    const token = tokenStore.tokenByDenomOrSymbol(denom)
 
     const amountInUsd = amount
       .toBase(token?.decimals || 18)
@@ -82,29 +82,30 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    Object.entries(totalRewards.value)
-      .reduce((sum, [denom, amount]) => {
-        const token = tokenStore.tokens.find((token) => token.denom === denom)
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      Object.entries(totalRewards.value)
+        .reduce((sum, [denom, amount]) => {
+          const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-        const amountInUsd = amount
-          .toBase(token?.decimals || 18)
-          .times(tokenStore.tokenUsdPrice(token))
+          const amountInUsd = amount
+            .toBase(token?.decimals || 18)
+            .times(tokenStore.tokenUsdPrice(token))
 
-        return sum.plus(amountInUsd)
-      }, ZERO_IN_BASE)
-      .minus(rewardsThisRoundInUsd.value)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+          return sum.plus(amountInUsd)
+        }, ZERO_IN_BASE)
+        .minus(rewardsThisRoundInUsd.value)
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: rewardsThisRoundInUsdToString } = useBigNumberFormatter(
-  rewardsThisRoundInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: rewardsThisRoundInUsdToString } =
+  useSharedBigNumberFormatter(rewardsThisRoundInUsd, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 
-const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
+const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
   computed(() =>
     campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
       const market = spotStore.markets.find(
@@ -115,12 +116,12 @@ const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
         return sum
       }
 
-      const userVolume = toBalanceInToken({
+      const userVolume = sharedToBalanceInTokenInBase({
         value: campaign.userScore || 0,
         decimalPlaces: market.quoteToken.decimals
       })
 
-      const userVolumeInUsd = new BigNumberInBase(userVolume).times(
+      const userVolumeInUsd = userVolume.times(
         tokenStore.tokenUsdPrice(market.quoteToken)
       )
 
@@ -138,7 +139,7 @@ const { valueToString: volumeThisRoundToString } = useBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <BaseIcon name="arrow" />
+        <SharedIcon name="arrow" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, UiSpotMarket } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -12,8 +11,8 @@ const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const active = ref('')
+const selectedMarket = ref<UiSpotMarket>()
 const selectedStrategy = ref<TradingStrategy>()
-const selectedMarket = ref<UiSpotMarketWithToken>()
 const status = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
@@ -39,12 +38,9 @@ watch(
   { immediate: true }
 )
 
-function setMarketAndStrategy(
-  strategy: TradingStrategy,
-  market: UiSpotMarketWithToken
-) {
-  selectedStrategy.value = strategy
+function setMarketAndStrategy(strategy: TradingStrategy, market: UiSpotMarket) {
   selectedMarket.value = market
+  selectedStrategy.value = strategy
 
   modalStore.openModal(Modal.GridStrategyDetails)
 }

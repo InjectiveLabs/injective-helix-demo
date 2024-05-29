@@ -1,24 +1,24 @@
 import {
-  UiSpotLimitOrder,
-  UiSpotOrderHistory,
-  orderSideToOrderType,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
+  SpotLimitOrder,
+  SpotOrderHistory,
+  msgsOrMsgExecMsgs,
   MsgCancelSpotOrder,
-  MsgBatchCancelSpotOrders,
   MsgCreateSpotLimitOrder,
+  MsgBatchCancelSpotOrders,
   MsgCreateSpotMarketOrder,
   spotPriceToChainPriceToFixed,
-  spotQuantityToChainQuantityToFixed,
-  msgsOrMsgExecMsgs
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { msgBroadcastClient } from '@/app/Services'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { msgBroadcaster } from '@shared/WalletService'
+import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
+import { backupPromiseCall } from '@/app/utils/async'
+import { convertCw20ToBankBalance } from '@/app/utils/market'
+import { UiSpotMarket } from '@/types'
 
-export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
+export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -43,19 +43,26 @@ export const batchCancelOrder = async (orders: UiSpotLimitOrder[]) => {
     })
   )
 
-  const actualMessages = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-    : messages
+  let actualMessages
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessages = msgsOrMsgExecMsgs(
+      messages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessages = messages
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,
     injectiveAddress: walletStore.injectiveAddress
   })
 }
 
-export const cancelOrder = async (
-  order: UiSpotLimitOrder | UiSpotOrderHistory
-) => {
+export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -74,13 +81,24 @@ export const cancelOrder = async (
     orderHash: order.orderHash
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }
 
@@ -93,7 +111,7 @@ export const submitLimitOrder = async ({
   price: BigNumberInBase
   orderSide: OrderSide
   quantity: BigNumberInBase
-  market: UiSpotMarketWithToken
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -112,43 +130,85 @@ export const submitLimitOrder = async ({
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
-  const message = MsgCreateSpotLimitOrder.fromJSON({
+  const priceToFixed = spotPriceToChainPriceToFixed({
+    value: price.toFixed(),
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+  const quantityToFixed = spotQuantityToChainQuantityToFixed({
+    value: quantity.toFixed(),
+    baseDecimals: market.baseToken.decimals
+  })
+
+  const cw20ConvertMessage = convertCw20ToBankBalance({
+    market,
+    injectiveAddress: walletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap,
+    order: {
+      market,
+      orderSide,
+      price: priceToFixed,
+      quantity: quantityToFixed
+    }
+  })
+
+  const orderMessage = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
-      value: price,
+      value: price.toFixed(),
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
-    quantity: spotQuantityToChainQuantityToFixed({
-      value: quantity,
-      baseDecimals: market.baseToken.decimals
-    }),
+    quantity: sharedToBalanceInWei({
+      value: quantity.toFixed(),
+      decimalPlaces: market.baseToken.decimals
+    }).toFixed(),
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  const message = cw20ConvertMessage
+    ? [cw20ConvertMessage, orderMessage]
+    : orderMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
+
+  if (cw20ConvertMessage) {
+    await backupPromiseCall(() => accountStore.fetchCw20Balances())
+  }
 }
 
 export const submitMarketOrder = async ({
-  isBuy,
+  orderSide,
   price,
   market,
   quantity
 }: {
-  isBuy: Boolean
+  orderSide: OrderSide
   price: BigNumberInBase
   quantity: BigNumberInBase
-  market: UiSpotMarketWithToken
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -167,33 +227,68 @@ export const submitMarketOrder = async ({
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
-  const orderType = isBuy ? OrderSide.Buy : OrderSide.Sell
+  const priceToFixed = spotPriceToChainPriceToFixed({
+    value: price.toFixed(),
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+  const quantityToFixed = spotQuantityToChainQuantityToFixed({
+    value: quantity.toFixed(),
+    baseDecimals: market.baseToken.decimals
+  })
 
-  const message = MsgCreateSpotMarketOrder.fromJSON({
+  const cw20ConvertMessage = convertCw20ToBankBalance({
+    market,
+    injectiveAddress: walletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap,
+    order: {
+      market,
+      orderSide,
+      price: priceToFixed,
+      quantity: quantityToFixed
+    }
+  })
+
+  const orderMessage = MsgCreateSpotMarketOrder.fromJSON({
+    price: priceToFixed,
+    quantity: quantityToFixed,
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.injectiveAddress
+      : walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
-    price: spotPriceToChainPriceToFixed({
-      value: price,
-      baseDecimals: market.baseToken.decimals,
-      quoteDecimals: market.quoteToken.decimals
-    }),
-    quantity: spotQuantityToChainQuantityToFixed({
-      value: quantity,
-      baseDecimals: market.baseToken.decimals
-    }),
-    orderType: orderSideToOrderType(orderType)
+    orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  const message = cw20ConvertMessage
+    ? [cw20ConvertMessage, orderMessage]
+    : orderMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  let actualMessage
+
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
+
+  if (cw20ConvertMessage) {
+    await backupPromiseCall(() => accountStore.fetchCw20Balances())
+  }
 }
 
 export const submitStopLimitOrder = async ({
@@ -207,7 +302,7 @@ export const submitStopLimitOrder = async ({
   orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarketWithToken
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -232,29 +327,40 @@ export const submitStopLimitOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
-      value: price,
+      value: price.toFixed(),
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: spotPriceToChainPriceToFixed({
-      value: triggerPrice,
+      value: triggerPrice.toFixed(),
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
-    quantity: spotQuantityToChainQuantityToFixed({
-      value: quantity,
-      baseDecimals: market.baseToken.decimals
-    }),
+    quantity: sharedToBalanceInWei({
+      value: quantity.toFixed(),
+      decimalPlaces: market.baseToken.decimals
+    }).toFixed(),
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }
 
@@ -269,7 +375,7 @@ export const submitStopMarketOrder = async ({
   orderSide: OrderSide
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarketWithToken
+  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -294,28 +400,39 @@ export const submitStopMarketOrder = async ({
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
-      value: price,
+      value: price.toFixed(),
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: spotPriceToChainPriceToFixed({
-      value: triggerPrice,
+      value: triggerPrice.toFixed(),
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
-    quantity: spotQuantityToChainQuantityToFixed({
-      value: quantity,
-      baseDecimals: market.baseToken.decimals
-    }),
+    quantity: sharedToBalanceInWei({
+      value: quantity.toFixed(),
+      decimalPlaces: market.baseToken.decimals
+    }).toFixed(),
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress: walletStore.autoSign
+      ? walletStore.autoSign.injectiveAddress
+      : walletStore.injectiveAddress
   })
 }

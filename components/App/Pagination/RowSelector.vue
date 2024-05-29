@@ -41,7 +41,7 @@ function onLimitChange(limit: any) {
         </span>
 
         <div>
-          <BaseIcon
+          <SharedIcon
             name="chevron-down"
             class="h-4 w-4 min-w-4 rotate-180"
             :class="{

@@ -4,18 +4,19 @@ import {
   AtomicSwap,
   QueryAllRoutes,
   QuantityAndFees,
-  SwapQueryTransformer,
-  QueryOutputQuantity,
   QueryInputQuantity,
+  QueryOutputQuantity,
+  SwapQueryTransformer,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { indexerSpotApi, wasmApi } from '@/app/Services'
+import { indexerSpotApi, wasmApi } from '@shared/Service'
 import {
   submitAtomicOrder,
   submitAtomicOrderExactOutput
 } from '@/store/swap/message'
-import { TokenAndPriceAndDecimals } from '@/types'
+import { excludedSwapDenoms } from '@/app/data/swap'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { TokenAndPriceAndDecimals } from '@/types'
 
 type SwapStoreState = {
   routes: Route[]
@@ -64,8 +65,12 @@ export const useSwapStore = defineStore('swap', {
           queryAllRoutesResponse
         )
 
-      swapStore.$patch({
-        routes: [...routes]
+      swapStore.$patch((state) => {
+        state.routes = routes.filter(
+          ({ sourceDenom, targetDenom }) =>
+            !excludedSwapDenoms.includes(sourceDenom) &&
+            !excludedSwapDenoms.includes(targetDenom)
+        )
       })
     },
 

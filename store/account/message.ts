@@ -6,9 +6,9 @@ import {
   MsgExternalTransfer,
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
-import type { Token } from '@injectivelabs/token-metadata'
+import { msgBroadcaster } from '@shared/WalletService'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { msgBroadcastClient } from '@/app/Services'
+import { TokenStatic } from '@injectivelabs/token-metadata'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({
@@ -17,7 +17,7 @@ export const deposit = async ({
   subaccountId
 }: {
   amount: BigNumberInBase
-  token: Token
+  token: TokenStatic
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
@@ -37,7 +37,7 @@ export const deposit = async ({
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
-        value: amount,
+        value: amount.toFixed(),
         decimals: token.decimals
       })
     }
@@ -47,7 +47,7 @@ export const deposit = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -61,7 +61,7 @@ export const withdraw = async ({
   subaccountId
 }: {
   amount: BigNumberInBase
-  token: Token
+  token: TokenStatic
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
@@ -81,7 +81,7 @@ export const withdraw = async ({
     amount: {
       denom: token.denom,
       amount: denomAmountToChainDenomAmountToFixed({
-        value: amount,
+        value: amount.toFixed(),
         decimals: token.decimals
       })
     }
@@ -91,7 +91,7 @@ export const withdraw = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -110,7 +110,7 @@ export const transfer = async ({
   denom: string
   memo?: string
   destination: string
-  token: Token
+  token: TokenStatic
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
@@ -136,7 +136,7 @@ export const transfer = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     memo,
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
@@ -158,7 +158,7 @@ export const externalTransfer = async ({
   memo?: string
   srcSubaccountId: string
   dstSubaccountId: string
-  token: Token
+  token: TokenStatic
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
@@ -185,7 +185,7 @@ export const externalTransfer = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     memo,
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
@@ -230,7 +230,7 @@ export const withdrawToMain = async () => {
     ? msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)
     : msgs
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
     injectiveAddress: walletStore.injectiveAddress
   })

@@ -49,24 +49,24 @@ function openQrCodeModal() {
   <div class="flex flex-col text-white">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <BaseIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
+        <SharedIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
         <p class="font-mono text-sm font-medium">
           {{ formattedInjectiveAddress }}
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <AssetQrCode
+        <AssetQRCode
           class="hover:text-blue-500 h-4 w-4"
           @click="openQrCodeModal"
         />
 
-        <BaseIcon
+        <SharedIcon
           name="copy-filled"
           class="hover:text-blue-500 h-4 w-4"
           @click.stop="onCopyInjectiveAddress"
         />
 
-        <BaseIcon
+        <SharedIcon
           name="caret-down"
           class="h-6 w-6 transition duration-500 hover:text-blue-500"
           :class="{ '-rotate-180': isDropdownVisible }"
@@ -90,7 +90,7 @@ function openQrCodeModal() {
 
           <div class="flex items-center gap-2">
             <span>{{ formattedAddress }}</span>
-            <BaseIcon
+            <SharedIcon
               name="copy-filled"
               class="hover:text-blue-500 h-4 w-4"
               @click="onCopyAddress"

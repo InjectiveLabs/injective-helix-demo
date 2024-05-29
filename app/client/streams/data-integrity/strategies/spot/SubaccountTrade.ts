@@ -1,14 +1,14 @@
-import { UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
+import { indexerSpotApi } from '@shared/Service'
+import { SharedUiSpotTrade } from '@shared/types'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerSpotApi } from '@/app/Services'
 
 export class SpotSubaccountTradeIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotTrade>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, SharedUiSpotTrade>
 {
   static make(
     marketIds: string[] | undefined
@@ -49,8 +49,8 @@ export class SpotSubaccountTradeIntegrityStrategy
   }
 
   verifyData(
-    existingSpotTrades: UiSpotTrade[],
-    latestTrades: UiSpotTrade[]
+    existingSpotTrades: SharedUiSpotTrade[],
+    latestTrades: SharedUiSpotTrade[]
   ): boolean {
     const [lastTradeFromStream] = existingSpotTrades
     const [latestTradeFromFetch] = latestTrades

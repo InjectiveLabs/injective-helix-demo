@@ -13,7 +13,7 @@ defineProps({
   <template v-for="(symbol, index) in routeSymbols" :key="symbol">
     <span>{{ symbol }}</span>
 
-    <BaseIcon
+    <SharedIcon
       v-if="index !== routeSymbols?.length - 1"
       name="arrow"
       class="rotate-180 w-3 h-3 cursor-text"

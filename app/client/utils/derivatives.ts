@@ -1,18 +1,13 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UiPosition,
-  ZERO_IN_BASE,
-  UiDerivativeMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
-  UiPerpetualMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
+  Position,
   PositionV2,
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { UiAggregatedPriceLevel } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UiDerivativeMarket, UiAggregatedPriceLevel } from '@/types'
 
 export const calculateMargin = ({
   quantity,
@@ -28,34 +23,6 @@ export const calculateMargin = ({
   leverage: string
 }): BigNumberInBase => {
   const margin = new BigNumberInBase(quantity).times(price).dividedBy(leverage)
-  const marginInWei = margin.toWei(quoteTokenDecimals)
-  const allowableMargin = formatAmountToAllowableAmount(
-    marginInWei.toFixed(),
-    tensMultiplier
-  )
-
-  return new BigNumberInBase(
-    new BigNumberInWei(allowableMargin).toBase(quoteTokenDecimals).toFixed()
-  )
-}
-
-export const calculateBinaryOptionsMargin = ({
-  quantity,
-  price,
-  orderSide,
-  tensMultiplier,
-  quoteTokenDecimals
-}: {
-  quantity: string
-  price: string
-  tensMultiplier: number
-  quoteTokenDecimals: number
-  orderSide: OrderSide
-}): BigNumberInBase => {
-  const margin =
-    orderSide === OrderSide.Buy
-      ? new BigNumberInBase(quantity).times(price)
-      : new BigNumberInBase(quantity).times(new BigNumberInBase(1).minus(price))
   const marginInWei = margin.toWei(quoteTokenDecimals)
   const allowableMargin = formatAmountToAllowableAmount(
     marginInWei.toFixed(),
@@ -90,7 +57,7 @@ export const calculateLiquidationPrice = ({
   quantity: string
   notionalWithLeverage: string
   orderType: OrderSide
-  market: UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
+  market: UiDerivativeMarket
 }): BigNumberInBase => {
   if (!price || !quantity || !notionalWithLeverage) {
     return ZERO_IN_BASE
@@ -120,11 +87,11 @@ export const calculateLiquidationPrice = ({
 }
 
 export const getRoundedLiquidationPrice = (
-  position: UiPosition | PositionV2,
-  market: UiDerivativeMarketWithToken
+  position: Position | PositionV2,
+  market: UiDerivativeMarket
 ) => {
   const minTickPrice = derivativePriceToChainPrice({
-    value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
+    value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
   const liquidationPrice = new BigNumberInWei(position.liquidationPrice)

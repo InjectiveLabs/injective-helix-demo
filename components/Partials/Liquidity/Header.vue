@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { format, utcToZonedTime } from 'date-fns-tz'
 import { Campaign } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { format, utcToZonedTime } from 'date-fns-tz'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
@@ -36,9 +36,7 @@ const walletStore = useWalletStore()
 const totalRewardsThisRound = computed(() =>
   props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-      const token = tokenStore.tokens.find(
-        ({ denom }) => denom === reward.denom
-      )!
+      const token = tokenStore.tokenByDenomOrSymbol(reward.denom)!
 
       const rewardInBase = toBalanceInToken({
         value: reward.amount,
@@ -77,10 +75,10 @@ const endDate = computed(() => {
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
 
-const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
-  totalRewardsThisRound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: totalRewardsThisRoundToString } =
+  useSharedBigNumberFormatter(totalRewardsThisRound, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 </script>
 
 <template>

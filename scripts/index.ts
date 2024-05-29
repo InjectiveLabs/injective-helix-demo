@@ -1,4 +1,3 @@
-import { tokenMetadata } from './scripts/tokens'
 import { bugsnagSourceMaps } from './scripts/bugsnag'
 
 /**
@@ -7,7 +6,5 @@ import { bugsnagSourceMaps } from './scripts/bugsnag'
  * execute them
  */
 ;(async () => {
-  const isProduction = true
-  tokenMetadata(isProduction)
   await bugsnagSourceMaps()
 })()

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
+import { UiSpotMarket } from '@/types'
 
 const props = defineProps({
   campaignUser: {
@@ -25,7 +26,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -36,7 +37,7 @@ const explorerLink = `${getExplorerUrl()}/account/${
   props.campaignUser.accountAddress
 }`
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInWei(props.campaignUser.score)
       .toBase(props.market.quoteToken.decimals)
@@ -56,7 +57,7 @@ const estRewardsInPercentage = computed(() => {
 
 const rewards = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     const amount = new BigNumberInWei(reward.amount || 0)
       .toBase(token?.decimals || 18)

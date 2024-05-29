@@ -1,69 +1,23 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { BusEvents, MainPage, TradeSubPage } from '@/types'
+import { MainPage, portfolioStatusKey } from '@/types'
 
 const route = useRoute()
-const appStore = useAppStore()
-const spotStore = useSpotStore()
-const authzStore = useAuthZStore()
-const tokenStore = useTokenStore()
+const authZStore = useAuthZStore()
+
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
+const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
+
 const { $onError } = useNuxtApp()
 
-const status = reactive(new Status(StatusType.Loading))
-const isOpenSidebar = ref(false)
-
-const container = computed(() => document.getElementById('pro'))
+const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
   ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
 )
-
-onMounted(() => {
-  Promise.all([walletStore.init(), tokenStore.fetchTokens()])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-
-  // Actions that should't block the app from loading
-  Promise.all([
-    appStore.init(),
-    // appStore.fetchBlockHeight(),
-    exchangeStore.initFeeDiscounts(),
-    authzStore.fetchGrants()
-  ])
-
-  // Load market details (only for non trading pages)
-  if (
-    !Object.values(TradeSubPage).some((page) =>
-      page.includes(route.name as TradeSubPage)
-    )
-  ) {
-    Promise.all([spotStore.initIfNotInit(), derivativeStore.initIfNotInit()])
-  }
-
-  Promise.all([authzStore.fetchGrants()]).then(() => {})
-
-  useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
-})
-
-function onOpenSideBar() {
-  isOpenSidebar.value = true
-
-  container.value?.classList.add('overflow-y-hidden')
-}
-
-function onCloseSideBar() {
-  if (isOpenSidebar.value) {
-    isOpenSidebar.value = false
-
-    container.value?.classList.remove('overflow-y-hidden')
-  }
-}
 
 /**
  * Post only mode modal when we do chain upgrade
@@ -80,75 +34,79 @@ watch(
   }
 )
  */
+
+onWalletConnected(() => {
+  portfolioStatus.setLoading()
+
+  fetchUserPortfolio()
+    .catch($onError)
+    .finally(() => {
+      portfolioStatus.setIdle()
+    })
+})
+
+onSubaccountChange(() => {
+  fetchSubaccountStream()
+})
+
+function fetchUserPortfolio() {
+  return Promise.all([
+    exchangeStore.initFeeDiscounts(),
+    authZStore.fetchGrants(),
+
+    accountStore.fetchAccountPortfolioBalances(),
+
+    positionStore.fetchPositions()
+  ])
+}
+
+function fetchSubaccountStream() {
+  accountStore.cancelSubaccountBalanceStream()
+  accountStore.cancelBankBalanceStream()
+  positionStore.cancelSubaccountPositionsStream()
+
+  accountStore.streamSubaccountBalance()
+  accountStore.streamBankBalance()
+  positionStore.streamSubaccountPositions()
+}
+
+provide(portfolioStatusKey, portfolioStatus)
 </script>
 
 <template>
-  <div
-    id="pro"
-    class="flex min-h-screen max-h-screen bg-gray-1000 text-gray-100 relative overflow-x-hidden"
-  >
-    <transition name="page" appear>
-      <div class="min-h-screen w-full">
-        <AppHocLoading :status="status" class="h-full">
-          <div class="w-full">
-            <LayoutSidebarMobile
-              v-bind="{
-                isOpenSidebar
-              }"
-              @sidebar:closed="onCloseSideBar"
-            />
-            <ClientOnly>
-              <div class="bg-gray-1000">
-                <LayoutTopbar
-                  :is-sidebar-open="isOpenSidebar"
-                  @sidebar:opened="onOpenSideBar"
-                  @sidebar:closed="onCloseSideBar"
-                />
-                <main
-                  class="flex flex-wrap relative min-h-screen-excluding-header"
-                  :class="{
-                    'flex-col': showFooter,
-                    'pt-12': isOpenSidebar
-                  }"
-                >
-                  <div
-                    class="w-screen"
-                    :class="[
-                      { 'max-h-screen-excluding-header': !showFooter },
-                      showFooter ? 'flex-auto' : 'flex-1'
-                    ]"
-                  >
-                    <div id="legacy-wormhole-banner" />
-                    <NuxtPage />
-                  </div>
-                  <LayoutFooter v-if="showFooter" />
-                </main>
+  <div class="relative">
+    <LayoutNavbar />
+    <main class="relative pb-6">
+      <LayoutAuthZBanner v-if="walletStore.isAuthzWalletConnected" />
+      <LayoutBanner v-else />
 
-                <ModalsNinjaPassWinner />
+      <NuxtPage v-bind="{ portfolioStatus }" />
+    </main>
 
-                <!-- hide survey for now but can be resurrected and modified for future surveys -->
-                <!-- <ModalsUserFeedback /> -->
-                <!-- <ModalsNewFeature /> -->
-                <ModalsPostOnlyMode />
-                <ModalsDevMode />
-                <AppConfetti />
-                <div id="modals" />
-              </div>
-            </ClientOnly>
-          </div>
-        </AppHocLoading>
-      </div>
-    </transition>
+    <ModalsNinjaPassWinner />
+    <!-- hide survey for now but can be resurrected and modified for future surveys -->
+    <!-- <ModalsUserFeedback /> -->
+    <!-- <ModalsNewFeature /> -->
+    <ModalsPostOnlyMode />
+    <ModalsDevMode />
+    <AppConfetti />
+
+    <LayoutFooter v-if="showFooter" />
+    <LayoutStatusBar />
+
+    <div id="modals" />
+
     <BaseNotifications
       class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
         <BaseNotification
           :notification="notification"
-          class="pointer-events-auto bg-gray-800"
+          class="pointer-events-auto bg-brand-900"
+          wrapper-class="bg-brand-900 border-brand-700 border"
         >
           <template #close="{ closeNotification }">
-            <BaseIcon
+            <SharedIcon
               name="close-bold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
               @click="closeNotification"
