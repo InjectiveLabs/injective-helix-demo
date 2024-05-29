@@ -150,7 +150,7 @@
   }
 
   .focus-ring {
-    @apply ring-0 focus-within:ring-[3px];
+    @apply ring-0 focus-within:ring-[3px] ring-blue-600/70;
   }
 
   .field-style {

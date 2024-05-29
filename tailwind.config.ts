@@ -300,10 +300,6 @@ export default {
       DEFAULT: '#202431'
     },
 
-    // ringColor: {
-    //   DEFAULT: '#2891E9'
-    // },
-
     screens: {
       xs: '480px',
       sm: '640px',
