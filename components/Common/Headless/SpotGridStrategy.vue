@@ -8,8 +8,12 @@ import {
 import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  addressAndMarketSlugToSubaccountId,
+  durationFormatter
+} from '@/app/utils/helpers'
 import { StrategyStatus } from '@/types'
+import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const props = defineProps({
   strategy: {
@@ -251,6 +255,13 @@ function removeStrategy() {
     .catch($onError)
     .finally(() => {
       removeStatus.setIdle()
+
+      mixpanelAnalytics.trackRemoveStrategy({
+        duration: durationFormatter(props.strategy.createdAt, Date.now()),
+        market: gridStrategyStore.spotMarket?.slug || '',
+        totalProfit: pnl.value.toFixed(),
+        isLiquidity: false
+      })
     })
 }
 

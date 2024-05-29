@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { BusEvents } from '~/types'
+import { BusEvents } from '@/types'
 
 const props = defineProps({
   isBuy: Boolean,
@@ -32,6 +32,42 @@ const showQuantityFlash = ref(false)
 function setIndex() {
   emit('set:index', props.index)
 }
+
+const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.totalVolume),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.totalVolume)
+    )
+  }
+)
+
+const { valueToString: volumeToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.volume),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.volume)
+    )
+  }
+)
+
+const { valueToString: priceToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.price),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.price)
+    )
+  }
+)
+
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.quantity),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.quantity)
+    )
+  }
+)
 
 watch(
   () => props.record.price,
@@ -69,15 +105,13 @@ function handleClick() {
     <div
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
-      <div class="text-xs font-sans whitespace-nowrap">
-        <p>
-          {{ $t('campaign.totalVolume') }}:
-          <span class="font-mono">{{ record.totalVolume }}</span>
-        </p>
-        <p>
-          {{ $t('campaign.volume') }}:
-          <span class="font-mono">{{ record.volume }}</span>
-        </p>
+      <div
+        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-2"
+      >
+        <div>{{ $t('campaign.totalVolume') }}:</div>
+        <div class="font-mono text-right">{{ totalVolumeToString }}</div>
+        <div>{{ $t('campaign.volume') }}:</div>
+        <div class="font-mono text-right">{{ volumeToString }}</div>
       </div>
     </div>
 
@@ -107,7 +141,7 @@ function handleClick() {
       ]"
       @animationend="setPriceFlashOff"
     >
-      {{ props.record.price }}
+      {{ priceToString }}
     </div>
 
     <div
@@ -120,14 +154,14 @@ function handleClick() {
       }"
       @animationend="setQuantityFlashOff"
     >
-      {{ props.record.quantity }}
+      {{ quantityToString }}
     </div>
 
     <div
       :key="record.price + record.quantity"
       class="flex-1 min-w-0 truncate px-1 relative"
     >
-      {{ props.record.volume }}
+      {{ volumeToString }}
     </div>
   </div>
 
