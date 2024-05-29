@@ -620,6 +620,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async disconnect() {
+      const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
@@ -635,6 +636,7 @@ export const useWalletStore = defineStore('wallet', {
 
       mixpanelAnalytics.trackLogout()
 
+      appStore.reset()
       walletStore.reset()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()

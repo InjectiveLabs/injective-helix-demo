@@ -335,6 +335,17 @@ export const useAppStore = defineStore('app', {
 
     cancelAllStreams() {
       streamProvider.cancelAll()
+    },
+
+    reset() {
+      const appStore = useAppStore()
+
+      const initialState = initialStateFactory()
+
+      appStore.$patch({
+        ...initialState
+      })
+      appStore.userState = initialState.userState
     }
   }
 })
