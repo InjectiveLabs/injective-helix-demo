@@ -40,20 +40,32 @@ const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
     lastTradedPrice.value.times(
       tokenStore.tokenUsdPrice(props.market.quoteToken)
     )
-  )
+  ),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(
+        lastTradedPrice.value
+          .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+          .toFixed()
+      )
+    ),
+    displayAbsoluteDecimalPlace: true
+  }
 )
 
 const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
   }
 )
 
 const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
-    decimalPlaces: props.market.priceDecimals
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
   }
 )
 

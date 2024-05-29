@@ -57,7 +57,9 @@ const { valueToString: priceToString } = useSharedBigNumberFormatter(
   computed(() => props.record.price),
   {
     decimalPlaces: computed(() =>
-      sharedGetExactDecimalsFromNumber(props.record.price)
+      props.record.price.split('.')[1].length
+        ? props.record.price.split('.')[1].length
+        : 0
     ),
     displayAbsoluteDecimalPlace: true
   }
