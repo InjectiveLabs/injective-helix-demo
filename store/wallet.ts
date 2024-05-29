@@ -187,6 +187,7 @@ export const useWalletStore = defineStore('wallet', {
     onConnect() {
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
+      const exchangeStore = useExchangeStore()
 
       accountStore.$patch({
         subaccountId: walletStore.defaultSubaccountId
@@ -198,6 +199,12 @@ export const useWalletStore = defineStore('wallet', {
 
       useEventBus(BusEvents.WalletConnected).emit()
       useEventBus(BusEvents.SubaccountChange).emit()
+
+      mixpanelAnalytics.trackLogin({
+        injectiveAddress: walletStore.injectiveAddress,
+        wallet: walletStore.wallet,
+        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+      })
     },
 
     async isMetamaskInstalled() {

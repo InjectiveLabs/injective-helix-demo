@@ -128,9 +128,12 @@ provide(isSpotKey, false)
         <PartialsTradeFuturesOrders />
       </template>
     </PartialsTradeLayout>
+
     <ModalsClosedRWAMarket
       v-if="modalStore.modals[Modal.ClosedRWAMarket]"
       @terms:agreed="pause"
     />
+
+    <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
   </div>
 </template>
