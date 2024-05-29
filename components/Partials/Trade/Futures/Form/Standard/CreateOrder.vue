@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  TradeDirection,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { SharedMarketType } from '@shared/types'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
   UiDerivativeMarket,
   derivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  OrderAttemptStatus
 } from '@/types'
+import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const props = defineProps({
   margin: {
@@ -187,6 +194,25 @@ async function submitLimitOrder() {
     .then(() => {
       success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
+
+      mixpanelAnalytics.trackPlaceOrderConfirm({
+        amount: props.quantity.toFixed(),
+        market: derivativeMarket.value.slug as string,
+        limitPrice: limitPrice.value.toFixed(),
+        marketType: SharedMarketType.Derivative,
+        orderSide:
+          derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+          TradeDirection.Long
+            ? OrderSide.Buy
+            : OrderSide.Sell,
+        postOnly:
+          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+        tradingType: TradeExecutionType.LimitFill,
+        status: OrderAttemptStatus.Success,
+        leverage:
+          derivativeFormValues.value[DerivativesTradeFormField.Leverage],
+        slippageTolerance: ''
+      })
     })
     .catch((e) => {
       $onError(e)
@@ -222,6 +248,26 @@ async function submitStopLimitOrder() {
     .then(() => {
       success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
+
+      mixpanelAnalytics.trackPlaceOrderConfirm({
+        amount: props.quantity.toFixed(),
+        market: derivativeMarket.value.slug as string,
+        limitPrice: limitPrice.value.toFixed(),
+        marketType: SharedMarketType.Derivative,
+        orderSide:
+          derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+          TradeDirection.Long
+            ? OrderSide.Buy
+            : OrderSide.Sell,
+        postOnly:
+          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+        tradingType: TradeExecutionType.LimitFill,
+        status: OrderAttemptStatus.Success,
+        leverage:
+          derivativeFormValues.value[DerivativesTradeFormField.Leverage],
+        slippageTolerance: '',
+        triggerPrice: triggerPrice.value.toFixed()
+      })
     })
     .catch((e) => {
       $onError(e)
@@ -254,6 +300,25 @@ async function submitMarketOrder() {
     .then(() => {
       success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
+
+      mixpanelAnalytics.trackPlaceOrderConfirm({
+        amount: props.quantity.toFixed(),
+        market: derivativeMarket.value.slug as string,
+        limitPrice: '',
+        marketType: SharedMarketType.Derivative,
+        orderSide:
+          derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+          TradeDirection.Long
+            ? OrderSide.Buy
+            : OrderSide.Sell,
+        postOnly:
+          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+        tradingType: TradeExecutionType.Market,
+        status: OrderAttemptStatus.Success,
+        leverage:
+          derivativeFormValues.value[DerivativesTradeFormField.Leverage],
+        slippageTolerance: ''
+      })
     })
     .catch((e) => {
       $onError(e)
@@ -289,6 +354,26 @@ async function submitStopMarketOrder() {
     .then(() => {
       success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
+
+      mixpanelAnalytics.trackPlaceOrderConfirm({
+        amount: props.quantity.toFixed(),
+        market: derivativeMarket.value.slug as string,
+        limitPrice: limitPrice.value.toFixed(),
+        marketType: SharedMarketType.Derivative,
+        orderSide:
+          derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+          TradeDirection.Long
+            ? OrderSide.Buy
+            : OrderSide.Sell,
+        postOnly:
+          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+        tradingType: TradeExecutionType.LimitFill,
+        status: OrderAttemptStatus.Success,
+        leverage:
+          derivativeFormValues.value[DerivativesTradeFormField.Leverage],
+        slippageTolerance: '',
+        triggerPrice: triggerPrice.value.toFixed()
+      })
     })
     .catch((e) => {
       $onError(e)

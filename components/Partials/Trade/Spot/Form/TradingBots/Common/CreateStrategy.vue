@@ -5,6 +5,7 @@ import {
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
+import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const market = inject(spotMarketKey)
 
@@ -13,6 +14,8 @@ const formErrors = useFormErrors()
 const gridStrategyStore = useGridStrategyStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { $onError } = useNuxtApp()
+const { success } = useNotifications()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -38,8 +41,20 @@ async function createStrategy() {
 
   gridStrategyStore
     .createStrategy(spotFormValues.value, market!.value!)
+    .then(() => {
+      success({ title: t('common.success') })
+
+      mixpanelAnalytics.trackCreateStrategy({
+        formValues: spotFormValues.value,
+        market: market?.value?.slug ?? '',
+        marketPrice: '4',
+        isLiquidity: false
+      })
+    })
     .catch($onError)
-    .finally(() => status.setIdle())
+    .finally(() => {
+      status.setIdle()
+    })
 }
 </script>
 
