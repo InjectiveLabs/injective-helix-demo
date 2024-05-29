@@ -51,7 +51,7 @@ const vaults = computed(() => {
         (pool) => pool.vaultAddress === vault.contractAddress
       )
 
-      const apy = BigNumber.max(vault.apy, 0)
+      const apy = BigNumber.max(vault.apy7D, 0)
         .plus(stakingPool?.apr || 0)
         .toNumber()
 
