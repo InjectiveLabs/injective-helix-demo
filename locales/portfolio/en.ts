@@ -32,7 +32,10 @@ export default {
     subaccounts: {
       name: 'Subaccount Name',
       address: 'Subaccount Address',
-      totalValue: 'Total Value (USD)'
+      totalValue: 'Total Value (USD)',
+      description:
+        'This is a secondary account linked to your main account for separate management and trading of digital assets. To activate it, you first need to transfer funds. Learn more about subaccounts in our FAQ.',
+      addSubaccount: 'Add Subaccount'
     },
 
     history: {

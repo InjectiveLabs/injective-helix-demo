@@ -221,6 +221,7 @@ function closeModal() {
             {{ t('account.noAssetToTransfer') }}
           </div>
         </div>
+
         <AppButton
           is-lg
           class="w-full text-blue-900 bg-blue-500 mt-6"

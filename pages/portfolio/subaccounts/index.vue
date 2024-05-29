@@ -1,5 +1,11 @@
 <script setup lang="ts">
-//
+import { Modal } from '@/types'
+
+const modalStore = useModalStore()
+
+function openTransferModal() {
+  modalStore.openModal(Modal.SubaccountTransfer)
+}
 </script>
 
 <template>
@@ -10,10 +16,15 @@
       </h2>
 
       <p class="text-xs font-xs text-gray-400 max-w-xl mt-2">
-        This is a secondary account linked to your main account for separate
-        management and trading of digital assets. To activate it, you first need
-        to transfer funds. Learn more about subaccounts in our FAQ.
+        {{ $t('portfolio.subaccounts.description') }}
       </p>
+    </div>
+
+    <div class="p-4 flex justify-end">
+      <AppButton size="sm" class="space-x-2" @click="openTransferModal">
+        <SharedIcon name="plus" is-xs />
+        <span>{{ $t('portfolio.subaccounts.addSubaccount') }}</span>
+      </AppButton>
     </div>
 
     <div class="divide-y border-y">
@@ -31,5 +42,7 @@
         </template>
       </CommonSubaccountOptions>
     </div>
+
+    <ModalsSubaccountTransfer />
   </div>
 </template>
