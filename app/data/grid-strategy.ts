@@ -135,6 +135,14 @@ const mainnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'ezeth-weth',
     contractAddress: 'inj1kulsg0js9n9jhewdgy87g2ccnt3qkl5rkjjp6e'
+  },
+  {
+    slug: 'bonus-usdt',
+    contractAddress: 'inj10nxnmmdfqhmjm20lauc0n80sr8xt5mrnwg2r6n'
+  },
+  {
+    slug: 'omni-usdt',
+    contractAddress: 'inj1wu26uscxvnwdhzyg2cf32pjsqdn6xx8xuryere'
   }
 ]
 
