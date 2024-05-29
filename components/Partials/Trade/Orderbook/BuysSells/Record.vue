@@ -38,7 +38,8 @@ const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
   {
     decimalPlaces: computed(() =>
       sharedGetExactDecimalsFromNumber(props.record.totalVolume)
-    )
+    ),
+    displayAbsoluteDecimalPlace: true
   }
 )
 
@@ -47,7 +48,8 @@ const { valueToString: volumeToString } = useSharedBigNumberFormatter(
   {
     decimalPlaces: computed(() =>
       sharedGetExactDecimalsFromNumber(props.record.volume)
-    )
+    ),
+    displayAbsoluteDecimalPlace: true
   }
 )
 
@@ -56,7 +58,8 @@ const { valueToString: priceToString } = useSharedBigNumberFormatter(
   {
     decimalPlaces: computed(() =>
       sharedGetExactDecimalsFromNumber(props.record.price)
-    )
+    ),
+    displayAbsoluteDecimalPlace: true
   }
 )
 
@@ -65,7 +68,8 @@ const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   {
     decimalPlaces: computed(() =>
       sharedGetExactDecimalsFromNumber(props.record.quantity)
-    )
+    ),
+    displayAbsoluteDecimalPlace: true
   }
 )
 
