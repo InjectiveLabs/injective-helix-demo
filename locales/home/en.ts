@@ -77,7 +77,7 @@ export default {
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
         'Trade smarter and leverage advanced strategies in just a click.',
-      newAccountsTitle: 'Accounts Overview (New!)',
+      newAccountsTitle: 'Accounts Overview',
       newAccountsDescription:
         'View your open positions, trading history, and portfolio all in one convenient location.',
       pnlTitle: 'PnL Analysis',
