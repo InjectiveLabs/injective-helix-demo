@@ -41,11 +41,11 @@ const quantity = computed(() =>
       )
 )
 
-const { valueToFixed: priceToFormat } = useSharedBigNumberFormatter(price, {
+const { valueToString: priceToFormat } = useSharedBigNumberFormatter(price, {
   decimalPlaces: props.market.priceDecimals
 })
 
-const { valueToFixed: quantityToFormat } = useSharedBigNumberFormatter(
+const { valueToString: quantityToFormat } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: props.market.quantityDecimals

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import { BusEvents } from '@/types'
 
@@ -34,32 +33,40 @@ function setIndex() {
   emit('set:index', props.index)
 }
 
-function getDecimals(value: string) {
-  return value.split('.')[1]?.length ? value.split('.')[1].length : 0
-}
-
-const totalVolumeToString = computed(() =>
-  new BigNumberInBase(props.record.totalVolume).toFormat(
-    getDecimals(props.record.totalVolume)
-  )
+const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.totalVolume),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.totalVolume)
+    )
+  }
 )
 
-const volumeToString = computed(() =>
-  new BigNumberInBase(props.record.volume).toFormat(
-    getDecimals(props.record.volume)
-  )
+const { valueToString: volumeToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.volume),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.volume)
+    )
+  }
 )
 
-const priceToString = computed(() =>
-  new BigNumberInBase(props.record.price).toFormat(
-    getDecimals(props.record.price)
-  )
+const { valueToString: priceToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.price),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.price)
+    )
+  }
 )
 
-const quantityToString = computed(() =>
-  new BigNumberInBase(props.record.quantity).toFormat(
-    getDecimals(props.record.quantity)
-  )
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.quantity),
+  {
+    decimalPlaces: computed(() =>
+      sharedGetExactDecimalsFromNumber(props.record.quantity)
+    )
+  }
 )
 
 watch(
