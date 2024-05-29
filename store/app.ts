@@ -322,6 +322,8 @@ export const useAppStore = defineStore('app', {
     setUserState(userState: Object) {
       const appStore = useAppStore()
 
+      // we have to use patch for values that we are caching in localStorage, this ensure that the payload is passed to the persistState function
+
       appStore.$patch({ userState })
     },
 

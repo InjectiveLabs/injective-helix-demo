@@ -64,17 +64,15 @@ const priceChangeClasses = computed(() => {
 })
 
 function toggleFavorite() {
-  appStore.$patch((state) => {
-    state.userState = {
-      ...state.userState,
-      favoriteMarkets: state.userState.favoriteMarkets.includes(
-        props.market.marketId
-      )
-        ? state.userState.favoriteMarkets.filter(
-            (marketId) => marketId !== props.market.marketId
-          )
-        : [...state.userState.favoriteMarkets, props.market.marketId]
-    }
+  appStore.setUserState({
+    ...appStore.userState,
+    favoriteMarkets: appStore.userState.favoriteMarkets.includes(
+      props.market.marketId
+    )
+      ? appStore.userState.favoriteMarkets.filter(
+          (marketId) => marketId !== props.market.marketId
+        )
+      : [...appStore.userState.favoriteMarkets, props.market.marketId]
   })
 }
 </script>
