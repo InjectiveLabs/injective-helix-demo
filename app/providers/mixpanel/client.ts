@@ -195,6 +195,7 @@ export class MixPanelAnalytics {
         reset: () => {},
         identify: () => {},
         people: {
+          set: () => {},
           increment: () => {}
         }
       } as unknown as OverridedMixpanel

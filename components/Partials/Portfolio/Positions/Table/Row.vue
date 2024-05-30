@@ -74,7 +74,8 @@ const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value
+  decimalPlaces: priceDecimals.value,
+  displayAbsoluteDecimalPlace: true
 })
 
 const { valueToString: markPriceToString } = useSharedBigNumberFormatter(

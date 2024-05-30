@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { UiDerivativeMarket, derivativeMarketKey } from '~/types'
+import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  DerivativeTradeTypes,
+  DerivativesTradeForm,
+  DerivativesTradeFormField,
+  UiDerivativeMarket,
+  derivativeMarketKey
+} from '@/types'
 
 const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
 
@@ -38,6 +46,30 @@ const props = defineProps({
 })
 
 const isOpen = ref(true)
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const isLimitAndPostOnly = computed(
+  () =>
+    (derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
+      derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+        DerivativeTradeTypes.Limit) ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopLimit
+)
+
+const estLiquidationPrice = computed(() => {
+  const isBuy =
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
+
+  return calculateLiquidationPrice({
+    price: props.worstPrice.toFixed(),
+    quantity: props.quantity.toFixed(),
+    notionalWithLeverage: props.margin.toFixed(),
+    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
+    market: derivativeMarket.value
+  })
+})
 
 const { valueToString: totalToString } = useBigNumberFormatter(
   computed(() => props.marginWithFee),
@@ -66,9 +98,23 @@ const { valueToString: worstPriceToString } = useBigNumberFormatter(
 )
 
 const { valueToString: feeAmountToString } = useBigNumberFormatter(
-  computed(() => props.feeAmount),
+  computed(() => props.feeAmount.abs().toFixed()),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToString: estLiquidationPriceToString } = useBigNumberFormatter(
+  computed(() => estLiquidationPrice.value),
+  {
+    decimalPlaces: derivativeMarket.value.priceDecimals
+  }
+)
+
+const { valueToString: totalNotionalToString } = useBigNumberFormatter(
+  computed(() => props.totalNotional),
+  {
+    decimalPlaces: derivativeMarket.value.priceDecimals
   }
 )
 
@@ -104,6 +150,28 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
+          <p class="text-gray-400">{{ $t('trade.margin') }}</p>
+          <div class="border-t flex-1 mx-2" />
+          <p class="font-mono space-x-2">
+            <span>{{ marginToString }} </span>
+            <span class="text-gray-400">
+              {{ derivativeMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div class="flex items-center text-xs font-medium">
+          <p class="text-gray-400">{{ $t('trade.totalNotional') }}</p>
+          <div class="border-t flex-1 mx-2" />
+          <p class="font-mono space-x-2">
+            <span>{{ totalNotionalToString }} </span>
+            <span class="text-gray-400">
+              {{ derivativeMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div class="flex items-center text-xs font-medium">
           <p class="text-gray-400">{{ $t('trade.quantity') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
@@ -128,56 +196,56 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.fee') }}</p>
+          <p class="text-gray-400">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span>{{ feeAmountToString }} </span>
+            <span>{{ estLiquidationPriceToString }} </span>
             <span class="text-gray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.margin') }}</p>
-          <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
-            <span>{{ marginToString }} </span>
-            <span class="text-gray-400">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
+        <template v-if="!isLimitAndPostOnly">
+          <div class="flex items-center text-xs font-medium">
+            <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>
+            <div class="border-t flex-1 mx-2" />
+            <p v-if="derivativeMarket" class="font-mono">
+              {{ +derivativeMarket.makerFeeRate * 100 }}% /
+              {{ +derivativeMarket.takerFeeRate * 100 }}%
+            </p>
+          </div>
 
-        <!-- <div
-          v-if="!isLimitAndPostOnly"
-          class="flex items-center text-xs font-medium"
-        >
-          <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>
-          <div class="border-t flex-1 mx-2" />
-          <p v-if="spotMarket" class="font-mono">
-            {{ +spotMarket.makerFeeRate * 100 }}% /
-            {{ +spotMarket.takerFeeRate * 100 }}%
-          </p>
-        </div>
+          <div class="flex items-center text-xs font-medium">
+            <p class="text-gray-400">{{ $t('trade.fee') }}</p>
+            <div class="border-t flex-1 mx-2" />
+            <p class="font-mono space-x-2">
+              <span>{{ feeAmountToString }} </span>
+              <span class="text-gray-400">
+                {{ derivativeMarket.quoteToken.symbol }}
+              </span>
+            </p>
+          </div>
+        </template>
 
         <template v-else>
           <div class="flex items-center text-xs font-medium">
             <p class="text-gray-400">{{ $t('trade.maker_rate') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p v-if="spotMarket" class="font-mono">
-              {{ +spotMarket.makerFeeRate * 100 }}%
+            <p v-if="derivativeMarket" class="font-mono">
+              {{ +derivativeMarket.makerFeeRate * 100 }}%
             </p>
           </div>
 
           <div class="flex items-center text-xs font-medium">
             <p class="text-gray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p v-if="spotMarket" class="font-mono">
-              {{ feeAmount.abs().toFixed(spotMarket.priceDecimals) }} USDT
+            <p v-if="derivativeMarket" class="font-mono">
+              {{ feeAmount.abs() }}
+              {{ derivativeMarket.quoteToken.symbol }}
             </p>
           </div>
-        </template> -->
+        </template>
       </div>
     </AppCollapse>
   </div>

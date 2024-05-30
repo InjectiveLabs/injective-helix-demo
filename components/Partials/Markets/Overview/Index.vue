@@ -41,7 +41,7 @@ const categories = computed(() => [
 
 onMounted(() => {
   Promise.all([
-    exchangeStore.fetchMarketsHistory({
+    exchangeStore.fetchMarketHistory({
       marketIds: hotMarkets.value.map((market) => market.market.marketId),
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
       countback: 30 * 24
@@ -59,6 +59,7 @@ onMounted(() => {
         :key="market.market.marketId"
       />
     </div>
+
     <div class="col-span-3 grid grid-cols-1 mt-8 lg:grid-cols-2 gap-4 lg:mt-0">
       <div
         v-for="category in categories"

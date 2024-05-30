@@ -54,6 +54,7 @@ function fetchUserPortfolio() {
     exchangeStore.initFeeDiscounts(),
     authZStore.fetchGrants(),
 
+    accountStore.fetchCw20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
     positionStore.fetchPositions()

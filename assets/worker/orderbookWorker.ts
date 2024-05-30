@@ -19,15 +19,10 @@ let sells: PriceLevel[] = []
 function aggregatePrice(
   price: BigNumber,
   aggregation: number,
-  isBuy: boolean
+  _isBuy: boolean
 ): string {
   if (aggregation >= 0) {
-    return (
-      price
-        // .dp(aggregation, isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
-        .dp(aggregation, isBuy ? BigNumber.ROUND_CEIL : BigNumber.ROUND_CEIL)
-        .toFixed(aggregation)
-    )
+    return price.dp(aggregation, BigNumber.ROUND_CEIL).toFixed(aggregation)
   } else {
     return price.div(new BigNumber(10).exponentiatedBy(-aggregation)).toFixed(0)
   }
@@ -75,7 +70,7 @@ function formatRecords({
     .map(([price, quantity]) => {
       return {
         price,
-        quantity: quantity.toFixed(2)
+        quantity: quantity.toFixed()
       }
     })
     .sort((a, b) => {
@@ -93,23 +88,34 @@ function formatRecords({
           ...record,
           volume: new BigNumberInBase(record.quantity)
             .times(record.price)
-            .toFixed(2),
+            .toFixed(),
           totalVolume: new BigNumberInBase(record.quantity)
             .times(record.price)
-            .toFixed(2)
-        }
+            .toFixed(),
+          price: record.price,
+          quantity: record.quantity,
+          totalQuantity: record.quantity,
+          avgPrice: record.price
+        } as OrderbookFormattedRecord
       ]
     } else {
       const previousRecord = acc[index - 1]
       const volume = new BigNumberInBase(record.quantity).times(record.price)
+      const totalQuantity = new BigNumberInBase(record.quantity).plus(
+        previousRecord.totalQuantity
+      )
+      const totalVolume = volume.plus(previousRecord.totalVolume)
 
       return [
         ...acc,
         {
           ...record,
           volume: volume.toFixed(2),
-          totalVolume: volume.plus(previousRecord.totalVolume).toFixed(2)
-        }
+          totalVolume: totalVolume.toFixed(),
+          quantity: record.quantity,
+          totalQuantity: totalQuantity.toFixed(),
+          avgPrice: totalVolume.div(totalQuantity).toFixed()
+        } as OrderbookFormattedRecord
       ]
     }
   }, [])
@@ -192,11 +198,5 @@ self.addEventListener(
         sendReplaceOrderbook()
         break
     }
-
-    // console.log('[WORKER]', {
-    //   buys: buys.length,
-    //   sells: sells.length,
-    //   total: buys.length + sells.length
-    // })
   }
 )

@@ -119,7 +119,7 @@ const persistState = (
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload || mutation.events[0].target || []).some(
+    Object.keys(mutation?.payload || mutation?.events[0]?.target || []).some(
       (key) => {
         return keysToPersist.includes(key)
       }

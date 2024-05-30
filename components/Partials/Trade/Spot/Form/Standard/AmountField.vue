@@ -12,7 +12,8 @@ import {
   TradeAmountOption,
   SpotTradeFormField,
   SpotTradeForm,
-  TradeTypes
+  TradeTypes,
+  BusEvents
 } from '@/types'
 import {
   calculateTotalQuantity,
@@ -258,12 +259,26 @@ function onBlur(baseAmount = '') {
   )
 
   setAmountValue(formattedAmount)
-  isShowTensMultiplierNote.value = true
+  isShowTensMultiplierNote.value = formattedAmount !== baseAmount
 }
 
 function onClick() {
   isShowTensMultiplierNote.value = false
 }
+
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookNotionalClick).on((totalNotional) => {
+    if (typeValue.value === TradeAmountOption.Quote) {
+      setAmountValue(totalNotional as string)
+    }
+  })
+
+  useEventBus(BusEvents.OrderbookSizeClick).on((totalQuantity) => {
+    if (typeValue.value === TradeAmountOption.Base) {
+      setAmountValue(totalQuantity as string)
+    }
+  })
+})
 </script>
 
 <template>
@@ -341,7 +356,10 @@ function onClick() {
     <div v-if="errorMessage" class="error-message capitalize">
       {{ errorMessage }}
     </div>
-    <div v-else-if="isShowTensMultiplierNote" class="text-blue-300 text-sm">
+    <div
+      v-else-if="isShowTensMultiplierNote && amountValue"
+      class="text-blue-300 text-sm"
+    >
       {{
         $t('trade.tensMultiplierRounded', {
           minTickSize: 10 ** market.quantityTensMultiplier

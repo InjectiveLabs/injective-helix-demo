@@ -11,8 +11,8 @@ export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
 
 export const streamBankBalance = () => {
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
   if (!walletStore.isUserWalletConnected) {
     return
@@ -33,8 +33,8 @@ export const streamBankBalance = () => {
 }
 
 export const streamSubaccountBalance = (subaccountId?: string) => {
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
 
   if (
     !walletStore.isUserWalletConnected ||

@@ -15,6 +15,7 @@ const status = reactive(new Status(StatusType.Loading))
 onWalletConnected(() => {
   Promise.all([
     campaignStore.fetchGuildsByTVL(),
+    accountStore.fetchCw20Balances(),
     accountStore.streamBankBalance(),
     campaignStore.fetchUserGuildInfo(),
     campaignStore.fetchGuildsByVolume(),

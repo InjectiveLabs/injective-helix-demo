@@ -126,8 +126,6 @@ export const useAccountStore = defineStore('account', {
       // const subaccountId =
       //   accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
 
-      await accountStore.fetchCw20Balances()
-
       accountStore.$patch((state) => {
         // state.subaccountId = subaccountId.includes(walletStore.authZOrAddress)
         //   ? subaccountId

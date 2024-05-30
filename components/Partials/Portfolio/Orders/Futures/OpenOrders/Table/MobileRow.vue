@@ -35,7 +35,8 @@ const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value
+  decimalPlaces: priceDecimals.value,
+  displayAbsoluteDecimalPlace: true
 })
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(

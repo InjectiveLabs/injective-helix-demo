@@ -18,6 +18,23 @@ import { backupPromiseCall } from '@/app/utils/async'
 import { convertCw20ToBankBalance } from '@/app/utils/market'
 import { UiSpotMarket } from '@/types'
 
+const fetchBalances = (
+  {
+    shouldFetchCw20Balances
+  }: {
+    shouldFetchCw20Balances: boolean
+  } = { shouldFetchCw20Balances: false }
+) => {
+  const accountStore = useAccountStore()
+
+  return backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
+    ])
+  )
+}
+
 export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -60,6 +77,8 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     msgs: actualMessages,
     injectiveAddress: walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
@@ -100,6 +119,8 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitLimitOrder = async ({
@@ -194,9 +215,7 @@ export const submitLimitOrder = async ({
       : walletStore.injectiveAddress
   })
 
-  if (cw20ConvertMessage) {
-    await backupPromiseCall(() => accountStore.fetchCw20Balances())
-  }
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
 
 export const submitMarketOrder = async ({
@@ -286,9 +305,7 @@ export const submitMarketOrder = async ({
       : walletStore.injectiveAddress
   })
 
-  if (cw20ConvertMessage) {
-    await backupPromiseCall(() => accountStore.fetchCw20Balances())
-  }
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
 
 export const submitStopLimitOrder = async ({
@@ -362,6 +379,8 @@ export const submitStopLimitOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitStopMarketOrder = async ({
@@ -435,4 +454,6 @@ export const submitStopMarketOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }

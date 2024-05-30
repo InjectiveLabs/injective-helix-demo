@@ -35,7 +35,8 @@ const {
 const status = reactive(new Status(StatusType.Idle))
 
 const { valueToString: priceToString } = useBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value
+  decimalPlaces: priceDecimals.value,
+  displayAbsoluteDecimalPlace: true
 })
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(

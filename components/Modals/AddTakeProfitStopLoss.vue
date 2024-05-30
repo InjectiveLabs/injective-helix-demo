@@ -22,7 +22,7 @@ const props = defineProps({
 
 const modalStore = useModalStore()
 const derivativeStore = useDerivativeStore()
-const { resetForm } = useForm<TakeProfitStopLossForm>()
+const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
@@ -159,8 +159,14 @@ const isSlDisabled = computed(() => {
   )
 })
 
-function submitTpSl() {
-  if (!props.position || !(takeProfitValue.value || stopLossValue.value)) {
+async function submitTpSl() {
+  const { valid } = await validate()
+
+  if (
+    !props.position ||
+    !(takeProfitValue.value || stopLossValue.value) ||
+    !valid
+  ) {
     return
   }
 
@@ -296,7 +302,12 @@ function submitTpSl() {
       </div>
 
       <div class="mt-4">
-        <AppButton v-bind="{ status }" class="w-full" @click="submitTpSl">
+        <AppButton
+          :disabled="Object.values(errors).length > 0"
+          v-bind="{ status }"
+          class="w-full"
+          @click="submitTpSl"
+        >
           {{ $t('common.submit') }}
         </AppButton>
       </div>

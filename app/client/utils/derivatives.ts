@@ -7,7 +7,11 @@ import {
 import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiDerivativeMarket, UiAggregatedPriceLevel } from '@/types'
+import {
+  UiDerivativeMarket,
+  DerivativeTradeTypes,
+  UiAggregatedPriceLevel
+} from '@/types'
 
 export const calculateMargin = ({
   quantity,
@@ -102,4 +106,79 @@ export const getRoundedLiquidationPrice = (
   return liquidationPriceRoundedToMinTickPrice.lte(0)
     ? minTickPrice
     : liquidationPriceRoundedToMinTickPrice
+}
+
+export const calculateScaledMarkPrice = ({
+  market,
+  markPriceNotScaled
+}: {
+  market: UiDerivativeMarket
+  markPriceNotScaled: BigNumberInBase
+}) => {
+  if (markPriceNotScaled.isZero()) {
+    return markPriceNotScaled
+  }
+
+  if (!market.oracleScaleFactor) {
+    return markPriceNotScaled
+  }
+
+  if (market.quoteToken.decimals === market.oracleScaleFactor) {
+    return markPriceNotScaled
+  }
+
+  const oracleScalePriceDiff =
+    market.oracleScaleFactor - market.quoteToken.decimals
+
+  return markPriceNotScaled.times(
+    new BigNumberInBase(10).pow(oracleScalePriceDiff)
+  )
+}
+
+export const calculateIfPositionIsLiquidatable = ({
+  isBuy,
+  tradeType,
+  limitPrice,
+  triggerPrice,
+  lastTradedPrice,
+  liquidationPrice
+}: {
+  isBuy: boolean
+  tradeType: DerivativeTradeTypes
+  limitPrice: BigNumberInBase
+  triggerPrice: BigNumberInBase
+  lastTradedPrice: BigNumberInBase
+  liquidationPrice: BigNumberInBase
+}): boolean => {
+  let comparePrice
+
+  switch (tradeType) {
+    case DerivativeTradeTypes.Market: {
+      comparePrice = lastTradedPrice
+
+      break
+    }
+    case DerivativeTradeTypes.Limit: {
+      comparePrice = limitPrice
+
+      break
+    }
+    case DerivativeTradeTypes.StopMarket: {
+      comparePrice = triggerPrice
+
+      break
+    }
+    case DerivativeTradeTypes.StopLimit: {
+      comparePrice = limitPrice
+
+      break
+    }
+    default: {
+      comparePrice = new BigNumberInBase(0)
+    }
+  }
+
+  return isBuy
+    ? comparePrice.lt(liquidationPrice)
+    : comparePrice.gt(liquidationPrice)
 }

@@ -6,10 +6,27 @@ import {
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { msgBroadcaster } from '@shared/WalletService'
-import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
-import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
-import { convertCw20ToBankBalanceForSwap } from '@/app/utils/market'
 import { backupPromiseCall } from '@/app/utils/async'
+import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { convertCw20ToBankBalanceForSwap } from '@/app/utils/market'
+import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+
+const fetchBalances = (
+  {
+    shouldFetchCw20Balances
+  }: {
+    shouldFetchCw20Balances: boolean
+  } = { shouldFetchCw20Balances: false }
+) => {
+  const accountStore = useAccountStore()
+
+  return backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
+    ])
+  )
+}
 
 export const submitAtomicOrder = async ({
   formValues,
@@ -93,9 +110,7 @@ export const submitAtomicOrder = async ({
       : walletStore.injectiveAddress
   })
 
-  if (cw20ConvertMessage) {
-    await backupPromiseCall(() => accountStore.fetchCw20Balances())
-  }
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
   return txHash
 }
@@ -182,9 +197,7 @@ export const submitAtomicOrderExactOutput = async ({
       : walletStore.injectiveAddress
   })
 
-  if (cw20ConvertMessage) {
-    await backupPromiseCall(() => accountStore.fetchCw20Balances())
-  }
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
   return txHash
 }
