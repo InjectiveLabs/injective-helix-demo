@@ -106,21 +106,21 @@ function toggleFavorite() {
 
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
 
-      <div class="pl-2 text-sm font-semibold tracking-wide text-white truncate">
-        <div>
-          {{ market.ticker }}
-        </div>
+      <div class="ml-2">
+        <CommonHeaderTooltip
+          :tooltip="$t('trade.rwa.marketClosedMarketRow')"
+          :is-disabled="!isRWAMarket"
+          is-not-styled
+          text-color-class="text-white"
+          :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
+        >
+          <span>{{ market.ticker }}</span>
+        </CommonHeaderTooltip>
+
         <div v-if="isMarketsPage" class="text-xs font-normal text-gray-500">
           {{ market.baseToken.name }}
         </div>
       </div>
-
-      <AppTooltip
-        v-if="isRWAMarket"
-        is-lg
-        :content="$t('trade.rwa.marketClosedMarketRow')"
-        class="text-gray-475 ml-2"
-      />
     </div>
 
     <div class="flex-1 truncate min-w-0 font-mono text-xs text-right">

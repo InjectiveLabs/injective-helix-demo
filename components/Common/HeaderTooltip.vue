@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 defineProps({
+  isDisabled: Boolean,
   isNotStyled: Boolean,
+
+  classes: {
+    type: String,
+    default: ''
+  },
 
   textColorClass: {
     type: String,
@@ -20,10 +26,11 @@ defineProps({
 </script>
 
 <template>
-  <BaseHoverMenu popper-class="tooltip">
+  <BaseHoverMenu popper-class="tooltip" :disabled="isDisabled">
     <template #default>
       <span
         :class="[
+          classes,
           textColorClass,
           borderColorClass,
           {
