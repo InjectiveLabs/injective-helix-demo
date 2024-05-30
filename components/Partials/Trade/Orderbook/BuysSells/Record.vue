@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BigNumber, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { BusEvents, isSpotKey } from '@/types'
+import { BusEvents, UiMarketWithToken, isSpotKey, marketKey } from '@/types'
 
 const props = defineProps({
   isBuy: Boolean,
@@ -32,6 +32,8 @@ const isSpot = inject(isSpotKey)
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
+const market = inject(marketKey) as Ref<UiMarketWithToken>
+
 const showPriceFlash = ref(false)
 const showQuantityFlash = ref(false)
 
@@ -46,9 +48,7 @@ function getDecimals(number: string) {
 const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
   computed(() => props.record.totalVolume),
   {
-    decimalPlaces: computed(() =>
-      sharedGetExactDecimalsFromNumber(props.record.totalVolume)
-    ),
+    decimalPlaces: market.value.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
 )
@@ -56,9 +56,7 @@ const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
 const { valueToString: volumeToString } = useSharedBigNumberFormatter(
   computed(() => props.record.volume),
   {
-    decimalPlaces: computed(() =>
-      sharedGetExactDecimalsFromNumber(props.record.volume)
-    ),
+    decimalPlaces: market.value.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
 )
@@ -81,6 +79,22 @@ const { valueToString: quantityToString } = useSharedBigNumberFormatter(
     decimalPlaces: computed(() =>
       sharedGetExactDecimalsFromNumber(props.record.quantity)
     ),
+    displayAbsoluteDecimalPlace: true
+  }
+)
+
+const { valueToString: totalQuantityToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.totalQuantity),
+  {
+    decimalPlaces: market.value.quantityDecimals,
+    displayAbsoluteDecimalPlace: true
+  }
+)
+
+const { valueToString: avgPriceToString } = useSharedBigNumberFormatter(
+  computed(() => props.record.avgPrice),
+  {
+    decimalPlaces: market.value.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
 )
@@ -135,8 +149,13 @@ function setQuantityFlashOff() {
   showQuantityFlash.value = false
 }
 
-function handleClick() {
+function handlePriceClick() {
   useEventBus(BusEvents.OrderbookPriceClick).emit(props.record.price)
+}
+
+function handleQuantityOrNotionalClick() {
+  useEventBus(BusEvents.OrderbookSizeClick).emit(props.record.totalQuantity)
+  useEventBus(BusEvents.OrderbookNotionalClick).emit(props.record.totalVolume)
 }
 </script>
 
@@ -145,18 +164,28 @@ function handleClick() {
     class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
-    @click="handleClick"
   >
     <div
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div
-        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-2"
+        class="text-2xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-2"
       >
-        <div>{{ $t('campaign.totalVolume') }}:</div>
-        <div class="font-mono text-right">{{ totalVolumeToString }}</div>
-        <div>{{ $t('campaign.volume') }}:</div>
+        <div>{{ $t('trade.volume') }}:</div>
         <div class="font-mono text-right">{{ volumeToString }}</div>
+
+        <div>
+          {{ $t('trade.totalVolume', { symbol: market.quoteToken.symbol }) }}:
+        </div>
+        <div class="font-mono text-right">{{ totalVolumeToString }}</div>
+
+        <div>
+          {{ $t('trade.totalQuantity', { symbol: market.baseToken.symbol }) }}:
+        </div>
+        <div class="font-mono text-right">{{ totalQuantityToString }}</div>
+
+        <div>{{ $t('trade.avgPrice') }}:</div>
+        <div class="font-mono text-right">{{ avgPriceToString }}</div>
       </div>
     </div>
 
@@ -185,6 +214,7 @@ function handleClick() {
         }
       ]"
       @animationend="setPriceFlashOff"
+      @click="handlePriceClick"
     >
       <div
         v-if="hasOrders"
@@ -198,7 +228,7 @@ function handleClick() {
     </div>
 
     <div
-      :key="record.price"
+      :key="record.quantity"
       class="flex-1 min-w-0 truncate px-1 relative"
       :class="{
         [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
@@ -206,6 +236,7 @@ function handleClick() {
         'font-bold': showQuantityFlash
       }"
       @animationend="setQuantityFlashOff"
+      @click="handleQuantityOrNotionalClick"
     >
       {{ quantityToString }}
     </div>
@@ -213,6 +244,7 @@ function handleClick() {
     <div
       :key="record.price + record.quantity"
       class="flex-1 min-w-0 truncate px-1 relative"
+      @click="handleQuantityOrNotionalClick"
     >
       {{ volumeToString }}
     </div>

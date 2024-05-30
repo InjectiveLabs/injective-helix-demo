@@ -11,7 +11,8 @@ import {
   DerivativesTradeFormField,
   derivativeMarketKey,
   DerivativesTradeForm,
-  DerivativeTradeTypes
+  DerivativeTradeTypes,
+  BusEvents
 } from '@/types'
 import { ONE_IN_BASE } from '~/app/utils/constants'
 import {
@@ -100,35 +101,37 @@ const { value: typeValue } = useStringField({
   initialValue: TradeAmountOption.Base
 })
 
-const { value: amountValue, errorMessage: amountErrorMessage } = useStringField(
-  {
-    name: DerivativesTradeFormField.Amount,
-    initialValue: '',
-    dynamicRule: computed(() => {
-      if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
-        const maxAmount = activePosition.value?.quantity
-        const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
+const {
+  value: amountValue,
+  errorMessage: amountErrorMessage,
+  setValue: setAmountValue
+} = useStringField({
+  name: DerivativesTradeFormField.Amount,
+  initialValue: '',
+  dynamicRule: computed(() => {
+    if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
+      const maxAmount = activePosition.value?.quantity
+      const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-        const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule]
 
-        return rules.join('|')
-      } else {
-        const maxAmount = quoteBalanceToBigNumber.value.toFixed()
-        const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
+      return rules.join('|')
+    } else {
+      const maxAmount = quoteBalanceToBigNumber.value.toFixed()
+      const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
 
-        const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
+      const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
 
-        const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule]
 
-        if (typeValue.value === TradeAmountOption.Quote) {
-          rules.push(minAmountRule)
-        }
-
-        return rules.join('|')
+      if (typeValue.value === TradeAmountOption.Quote) {
+        rules.push(minAmountRule)
       }
-    })
-  }
-)
+
+      return rules.join('|')
+    }
+  })
+})
 
 async function setFromPercentage(percentage: number) {
   const isReduceOnly =
@@ -312,6 +315,20 @@ async function setFromPercentage(percentage: number) {
 
   amountValue.value = quantity
 }
+
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookNotionalClick).on((totalNotional) => {
+    if (typeValue.value === TradeAmountOption.Quote) {
+      setAmountValue(totalNotional as string)
+    }
+  })
+
+  useEventBus(BusEvents.OrderbookSizeClick).on((totalQuantity) => {
+    if (typeValue.value === TradeAmountOption.Base) {
+      setAmountValue(totalQuantity as string)
+    }
+  })
+})
 </script>
 
 <template>

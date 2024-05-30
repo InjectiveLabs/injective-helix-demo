@@ -5,6 +5,8 @@ export type OrderbookFormattedRecord = {
   quantity: string
   volume: string
   totalVolume: string
+  totalQuantity: string
+  avgPrice: string
 }
 
 // Send Message

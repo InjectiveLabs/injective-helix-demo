@@ -12,7 +12,8 @@ import {
   TradeAmountOption,
   SpotTradeFormField,
   SpotTradeForm,
-  TradeTypes
+  TradeTypes,
+  BusEvents
 } from '@/types'
 import {
   calculateTotalQuantity,
@@ -264,6 +265,20 @@ function onBlur(baseAmount = '') {
 function onClick() {
   isShowTensMultiplierNote.value = false
 }
+
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookNotionalClick).on((totalNotional) => {
+    if (typeValue.value === TradeAmountOption.Quote) {
+      setAmountValue(totalNotional as string)
+    }
+  })
+
+  useEventBus(BusEvents.OrderbookSizeClick).on((totalQuantity) => {
+    if (typeValue.value === TradeAmountOption.Base) {
+      setAmountValue(totalQuantity as string)
+    }
+  })
+})
 </script>
 
 <template>
