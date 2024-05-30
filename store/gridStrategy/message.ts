@@ -191,9 +191,14 @@ export const createStrategy = async (
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  backupPromiseCall(() => gridStrategyStore.fetchAllStrategies())
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => authZStore.fetchGrants())
+  backupPromiseCall(() =>
+    Promise.all([
+      authZStore.fetchGrants(),
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }
 
 export const removeStrategy = async (contractAddress?: string) => {
@@ -243,8 +248,13 @@ export const removeStrategy = async (contractAddress?: string) => {
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  backupPromiseCall(() => gridStrategyStore.fetchAllStrategies())
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }
 
 export const removeStrategyForSubaccount = async (
@@ -284,6 +294,11 @@ export const removeStrategyForSubaccount = async (
     injectiveAddress: walletStore.injectiveAddress
   })
 
-  backupPromiseCall(() => gridStrategyStore.fetchStrategies())
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }

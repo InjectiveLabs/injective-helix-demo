@@ -5,11 +5,11 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
 const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 const { t } = useLang()
-const { success } = useNotifications()
 const { $onError } = useNuxtApp()
+const { success } = useNotifications()
 
 const { values: formValues, resetForm: resetSubaccountTransferForm } =
   useForm<SubaccountTransferForm>({

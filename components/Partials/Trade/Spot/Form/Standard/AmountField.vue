@@ -258,7 +258,10 @@ function onBlur(baseAmount = '') {
   )
 
   setAmountValue(formattedAmount)
-  isShowTensMultiplierNote.value = true
+
+  if (formattedAmount !== baseAmount) {
+    isShowTensMultiplierNote.value = true
+  }
 }
 
 function onClick() {
@@ -341,7 +344,10 @@ function onClick() {
     <div v-if="errorMessage" class="error-message capitalize">
       {{ errorMessage }}
     </div>
-    <div v-else-if="isShowTensMultiplierNote" class="text-blue-300 text-sm">
+    <div
+      v-else-if="isShowTensMultiplierNote && amountValue"
+      class="text-blue-300 text-sm"
+    >
       {{
         $t('trade.tensMultiplierRounded', {
           minTickSize: 10 ** market.quantityTensMultiplier

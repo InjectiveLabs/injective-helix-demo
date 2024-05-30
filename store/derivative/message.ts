@@ -10,13 +10,22 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { msgBroadcaster } from '@shared/WalletService'
 import { orderSideToOrderType } from '@shared/transformer/trade'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
-import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
+import { backupPromiseCall } from '@/app/utils/async'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
+import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
+
+const fetchBalances = () => {
+  const accountStore = useAccountStore()
+
+  return backupPromiseCall(() =>
+    Promise.all([accountStore.fetchAccountPortfolioBalances()])
+  )
+}
 
 const createTpSlMessage = ({
   executionPrice,
@@ -121,6 +130,8 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
@@ -167,6 +178,8 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitLimitOrder = async ({
@@ -242,6 +255,8 @@ export const submitLimitOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitStopLimitOrder = async ({
@@ -328,6 +343,8 @@ export const submitStopLimitOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitMarketOrder = async ({
@@ -466,6 +483,8 @@ export const submitMarketOrder = async ({
         : walletStore.injectiveAddress
     })
   }
+
+  await fetchBalances()
 }
 
 export const submitStopMarketOrder = async ({
@@ -552,6 +571,8 @@ export const submitStopMarketOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }
 
 export const submitTpSlOrder = async ({
@@ -643,4 +664,6 @@ export const submitTpSlOrder = async ({
       ? walletStore.autoSign.injectiveAddress
       : walletStore.injectiveAddress
   })
+
+  await fetchBalances()
 }

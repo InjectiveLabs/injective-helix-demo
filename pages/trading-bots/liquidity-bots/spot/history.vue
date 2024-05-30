@@ -19,6 +19,7 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
+    accountStore.fetchCw20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
     gridStrategyStore.fetchAllStrategies()
   ])

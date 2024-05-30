@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SharedMarketChange } from '@shared/types'
-import { USDT_DENOM } from '@shared/utils/constant'
-import { UiMarketWithToken } from '~/types'
+import { usdtToken } from '@shared/data/token'
+import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   isSpot: Boolean,
@@ -42,13 +42,13 @@ const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
     )
   ),
   {
-    decimalPlaces: computed(() =>
-      sharedGetExactDecimalsFromNumber(
+    decimalPlaces: computed(() => {
+      return sharedGetExactDecimalsFromNumber(
         lastTradedPrice.value
           .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
           .toFixed()
       )
-    ),
+    }),
     displayAbsoluteDecimalPlace: true
   }
 )
@@ -70,7 +70,7 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
 )
 
 const isNonUsdtQuoteAsset = computed(() => {
-  return props.market.quoteToken.denom !== USDT_DENOM
+  return props.market.quoteToken.denom !== usdtToken.denom
 })
 </script>
 

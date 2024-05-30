@@ -51,7 +51,12 @@ const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: volumeToString, valueToFixed: volumeToFixed } =
-  useSharedBigNumberFormatter(computed(() => props.volumeInUsd))
+  useSharedBigNumberFormatter(
+    computed(() => props.volumeInUsd),
+    {
+      decimalPlaces: 0
+    }
+  )
 
 const priceChangeClasses = computed(() => {
   if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
