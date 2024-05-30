@@ -14,6 +14,7 @@ import {
   MarketCategoryType,
   unknownTokenStatusKey
 } from '@/types'
+import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
 
 const marketTypeOptionsToHideCategory = [
   MarketTypeOption.NewListings,
@@ -70,9 +71,13 @@ const filteredMarkets = computed(() =>
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
 
+      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+
       const isLowVolumeMarket =
         isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||
+        search.value ||
+        isOLPMarket
 
       return (
         isLowVolumeMarket &&
