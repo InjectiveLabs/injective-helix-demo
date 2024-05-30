@@ -10,12 +10,18 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
+  calculateLiquidationPrice,
+  calculateIfPositionIsLiquidatable
+} from '@/app/client/utils/derivatives'
+import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import {
+  Modal,
   MarketKey,
+  OrderAttemptStatus,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  OrderAttemptStatus
+  DerivativesTradeFormField
 } from '@/types'
 
 const props = defineProps({
@@ -65,7 +71,7 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { markPrice } = useDerivativeLastPrice(
+const { markPrice, marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
@@ -130,8 +136,8 @@ const currentFormValues = computed(
     }) as DerivativesTradeForm
 )
 
-const orderTypeToSubmit = computed(() => {
-  return getDerivativeOrderTypeToSubmit({
+const orderTypeToSubmit = computed(() =>
+  getDerivativeOrderTypeToSubmit({
     isStopOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
@@ -146,7 +152,7 @@ const orderTypeToSubmit = computed(() => {
     markPrice: markPrice.value,
     triggerPrice: triggerPrice.value.toFixed()
   })
-})
+)
 
 const stopLossValue = computed(() =>
   derivativeFormValues.value[DerivativesTradeFormField.isTpSlEnabled]
@@ -200,13 +206,7 @@ const isDisabled = computed(() => {
   }
 })
 
-async function submitLimitOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitLimitOrder() {
   status.setLoading()
 
   derivativeStore
@@ -249,13 +249,7 @@ async function submitLimitOrder() {
     })
 }
 
-async function submitStopLimitOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitStopLimitOrder() {
   if (!triggerPrice.value) {
     return
   }
@@ -304,13 +298,7 @@ async function submitStopLimitOrder() {
     })
 }
 
-async function submitMarketOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitMarketOrder() {
   status.setLoading()
 
   derivativeStore
@@ -355,13 +343,7 @@ async function submitMarketOrder() {
     })
 }
 
-async function submitStopMarketOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitStopMarketOrder() {
   if (!triggerPrice.value) {
     return
   }
@@ -411,6 +393,26 @@ async function submitStopMarketOrder() {
 }
 
 function onSubmit() {
+  const isImmediatelyLiquidatableRWAPosition =
+    slugsToIncludeInRWACategory.includes(derivativeMarket.value.slug) &&
+    checkIfMarketIsLiquidatable()
+
+  if (isImmediatelyLiquidatableRWAPosition) {
+    modalStore.openModal(Modal.LiquidationWarning)
+
+    return
+  }
+
+  submit()
+}
+
+async function submit() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
   switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
     case DerivativeTradeTypes.Limit:
       return submitLimitOrder()
@@ -421,6 +423,27 @@ function onSubmit() {
     case DerivativeTradeTypes.StopMarket:
       submitStopMarketOrder()
   }
+}
+
+function checkIfMarketIsLiquidatable() {
+  const liquidationPriceBasedOnMarkPrice = calculateLiquidationPrice({
+    price: marketMarkPrice.value,
+    quantity: props.quantity.toString(),
+    orderType: orderTypeToSubmit.value,
+    notionalWithLeverage: props.margin.toString(),
+    market: derivativeMarket.value
+  })
+
+  return calculateIfPositionIsLiquidatable({
+    isBuy: isBuy.value,
+    limitPrice: limitPrice.value,
+    triggerPrice: triggerPrice.value,
+    liquidationPrice: liquidationPriceBasedOnMarkPrice,
+    lastTradedPrice: new BigNumberInBase(props.worstPrice),
+    tradeType:
+      derivativeFormValues.value[DerivativesTradeFormField.Type] ||
+      DerivativeTradeTypes.Market
+  })
 }
 </script>
 
@@ -443,5 +466,7 @@ function onSubmit() {
         <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
+
+    <ModalsOrderConfirmLiquidationWarning @submit="submit" />
   </div>
 </template>

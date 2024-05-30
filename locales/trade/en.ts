@@ -460,6 +460,13 @@ export default {
       marketClosedTimes: ' traditional RWA price feeds',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
       marketIsClosed: 'This market is currently closed.'
+    },
+
+    liquidationModal: {
+      title: 'Warning',
+      description:
+        'Opening a new position in these conditions could result in immediate liquidation. Are you sure you wish to proceed?',
+      cta: 'Proceed anyway'
     }
   }
 }
