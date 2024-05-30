@@ -72,19 +72,19 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('minValue', (value: string, [min]: string[]) => {
-    if (Number(value) <= Number(min)) {
-      return `This field should be greater than ${min}`
+    if (!value || Number(value) > Number(min)) {
+      return true
     }
 
-    return true
+    return `This field should be greater than ${min}`
   })
 
   defineRule('maxValue', (value: string, [max]: string[]) => {
-    if (Number(value) >= Number(max)) {
-      return `This field should be less than ${max}`
+    if (!value || Number(value) < Number(max)) {
+      return true
     }
 
-    return true
+    return `This field should be less than ${max}`
   })
 
   defineRule(
