@@ -40,6 +40,7 @@ export default {
     amount: 'Amount',
     tickerOnly: '{ticker} only',
     advancedSettings: 'Advanced Settings',
+    totalNotional: 'Total Notional',
     cancel: 'Cancel',
     cancelTrigger: 'Cancel Trigger',
     cancelOrder: 'Cancel Order',
