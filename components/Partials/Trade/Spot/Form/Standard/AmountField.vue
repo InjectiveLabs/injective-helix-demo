@@ -258,10 +258,7 @@ function onBlur(baseAmount = '') {
   )
 
   setAmountValue(formattedAmount)
-
-  if (formattedAmount !== baseAmount) {
-    isShowTensMultiplierNote.value = true
-  }
+  isShowTensMultiplierNote.value = formattedAmount !== baseAmount
 }
 
 function onClick() {
