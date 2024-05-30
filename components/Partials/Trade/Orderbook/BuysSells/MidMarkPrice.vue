@@ -46,7 +46,7 @@ const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
       return sharedGetExactDecimalsFromNumber(
         lastTradedPrice.value
           .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
-          .toFixed()
+          .toFixed(props.market.priceDecimals)
       )
     }),
     displayAbsoluteDecimalPlace: true
