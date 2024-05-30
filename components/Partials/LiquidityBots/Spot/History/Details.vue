@@ -79,12 +79,15 @@ function onDetailsPage() {
     <div v-if="market" class="flex justify-between items-center">
       <p>{{ $t('sgt.market') }}</p>
 
-      <div class="flex items-center space-x-2">
+      <PartialsCommonMarketRedirection
+        v-bind="{ market, isTradingBotTab: true }"
+        class="flex items-center space-x-2"
+      >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" is-sm />
         <p class="font-semibold">
           {{ market.baseToken.symbol }}/{{ market.quoteToken.symbol }}
         </p>
-      </div>
+      </PartialsCommonMarketRedirection>
     </div>
 
     <div class="flex justify-between items-center">

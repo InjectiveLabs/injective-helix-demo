@@ -33,12 +33,13 @@ function onOpenTradingBotDetails() {
           {{ createdAt }}
         </div>
 
-        <div
+        <PartialsCommonMarketRedirection
+          v-bind="{ market, isTradingBotTab: true }"
           class="flex-1 flex items-center p-2 truncate min-w-0 space-x-2 justify-start"
         >
           <CommonTokenIcon v-bind="{ token: market.baseToken }" />
           <p class="font-semibold">{{ market.ticker }}</p>
-        </div>
+        </PartialsCommonMarketRedirection>
 
         <div class="flex-1 flex items-center p-2 truncate min-w-0 justify-end">
           <p class="space-x-1 font-mono">
