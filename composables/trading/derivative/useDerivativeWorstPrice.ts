@@ -216,33 +216,31 @@ export function useDerivativeWorstPrice() {
     totalNotional.value.times(feePercentage.value)
   )
 
-  const totalNotionalWithFee = computed(() => {
-    return totalNotional.value.plus(feeAmount.value)
-  })
+  const totalNotionalWithFee = computed(() =>
+    totalNotional.value.plus(feeAmount.value)
+  )
 
-  const margin = computed(() => {
-    return quantizeNumber(
+  const margin = computed(() =>
+    quantizeNumber(
       totalNotional.value.div(
         derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
       ),
       -market.value.quoteToken.decimals
     )
-  })
+  )
 
-  const marginWithFee = computed(() => {
-    return margin.value.plus(feeAmount.value)
-  })
+  const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
   return {
-    feePercentage,
-    isLimitOrder,
-    isStopOrder,
-    worstPrice,
-    quantity,
+    isBuy,
     market,
     margin,
-    isBuy,
+    quantity,
     feeAmount,
+    worstPrice,
+    isStopOrder,
+    isLimitOrder,
+    feePercentage,
     totalNotional,
     marginWithFee,
     minimumAmountInQuote,

@@ -2,6 +2,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -53,40 +54,26 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
 
   const markPrice = computed(() => {
     if (!market.value) {
-      return markPriceNotScaled.value
+      return ZERO_IN_BASE
     }
 
-    if (!market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    if (!market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    if (market.value.quoteToken.decimals === market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    const oracleScalePriceDiff =
-      market.value.oracleScaleFactor - market.value.quoteToken.decimals
-
-    return new BigNumberInBase(markPriceNotScaled.value).times(
-      new BigNumberInBase(10).pow(oracleScalePriceDiff)
-    )
+    return calculateScaledMarkPrice({
+      market: market.value,
+      markPriceNotScaled: markPriceNotScaled.value
+    })
   })
 
-  const priceDecimals = computed(() => {
-    return market.value
+  const priceDecimals = computed(() =>
+    market.value
       ? market.value.priceDecimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
+  )
 
-  const quantityDecimals = computed(() => {
-    return market.value
+  const quantityDecimals = computed(() =>
+    market.value
       ? market.value.quantityDecimals
       : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
+  )
 
   const price = computed(() => {
     if (!market.value) {
