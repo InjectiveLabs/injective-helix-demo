@@ -77,7 +77,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       }
 
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        accountAddress: walletStore.injectiveAddress
+        accountAddress: walletStore.injectiveAddress,
+        limit: 1000
       })
 
       gridStrategyStore.$patch({ strategies })
