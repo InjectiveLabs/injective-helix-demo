@@ -19,15 +19,10 @@ let sells: PriceLevel[] = []
 function aggregatePrice(
   price: BigNumber,
   aggregation: number,
-  isBuy: boolean
+  _isBuy: boolean
 ): string {
   if (aggregation >= 0) {
-    return (
-      price
-        // .dp(aggregation, isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
-        .dp(aggregation, isBuy ? BigNumber.ROUND_CEIL : BigNumber.ROUND_CEIL)
-        .toFixed(aggregation)
-    )
+    return price.dp(aggregation, BigNumber.ROUND_CEIL).toFixed(aggregation)
   } else {
     return price.div(new BigNumber(10).exponentiatedBy(-aggregation)).toFixed(0)
   }

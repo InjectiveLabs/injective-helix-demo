@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { BigNumber, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { BusEvents } from '@/types'
+import { BusEvents, isSpotKey } from '@/types'
 
 const props = defineProps({
   isBuy: Boolean,
@@ -26,11 +27,20 @@ const emit = defineEmits<{
   'set:index': [index: number]
 }>()
 
+const isSpot = inject(isSpotKey)
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
 const showPriceFlash = ref(false)
 const showQuantityFlash = ref(false)
 
 function setIndex() {
   emit('set:index', props.index)
+}
+
+function getDecimals(number: string) {
+  return number.split('.')[1]?.length ? number.split('.')[1].length : 0
 }
 
 const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
@@ -87,6 +97,35 @@ watch(
     showQuantityFlash.value = true
   }
 )
+
+const hasOrders = computed(() => {
+  const orders = [
+    ...spotStore.subaccountOrders,
+    ...derivativeStore.subaccountOrders
+  ]
+
+  return orders.some((order) => {
+    const market = [...spotStore.markets, ...derivativeStore.markets].find(
+      ({ marketId }) => marketId === order.marketId
+    )
+
+    const priceInBase = new BigNumberInWei(Number(order.price)).toBase(
+      isSpot
+        ? (market?.quoteToken?.decimals || 6) -
+            (market?.baseToken?.decimals || 18)
+        : market?.quoteToken.decimals || 6
+    )
+
+    const isSameSide = order.orderSide === (props.isBuy ? 'buy' : 'sell')
+
+    return (
+      isSameSide &&
+      priceInBase
+        .dp(getDecimals(props.record.price), BigNumber.ROUND_CEIL)
+        .isEqualTo(props.record.price)
+    )
+  })
+})
 
 function setPriceFlashOff() {
   showPriceFlash.value = false
@@ -147,7 +186,15 @@ function handleClick() {
       ]"
       @animationend="setPriceFlashOff"
     >
-      {{ priceToString }}
+      <div
+        v-if="hasOrders"
+        class="border-transparent border-4 absolute left-0 top-1 bottom-1 w-2"
+        :class="{
+          'border-l-green-500': isBuy,
+          'border-l-red-500': !isBuy
+        }"
+      />
+      <span>{{ priceToString }}</span>
     </div>
 
     <div
