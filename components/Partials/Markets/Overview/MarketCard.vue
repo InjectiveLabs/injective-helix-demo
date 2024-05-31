@@ -107,7 +107,7 @@ const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
     <div class="flex justify-between">
       <div class="flex items-center space-x-2 overflow-hidden">
         <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
-        <p class="text-sm tracking-wider truncate min-w-0">
+        <p class="text-sm tracking-wide truncate min-w-0">
           {{ market.market.ticker }}
         </p>
       </div>
