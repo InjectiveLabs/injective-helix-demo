@@ -113,23 +113,21 @@ const persistState = (
 
   const keysToPersist = Object.keys(stateToPersist[mutation.storeId])
 
-  if (!mutation.payload && mutation.events.length === 0) {
+  if (!mutation.payload) {
     return
   }
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation?.payload || mutation?.events[0]?.target || []).some(
-      (key) => {
-        return keysToPersist.includes(key)
-      }
-    )
+    Object.keys(mutation?.payload || []).some((key) => {
+      return keysToPersist.includes(key)
+    })
 
   if (!shouldPersistState) {
     return
   }
 
-  const source = mutation.payload || mutation.events[0].target
+  const source = mutation.payload
 
   const updatedState = keysToPersist.reduce((stateObj, key) => {
     return {
