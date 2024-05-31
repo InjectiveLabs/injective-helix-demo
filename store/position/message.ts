@@ -62,7 +62,7 @@ export const closePosition = async ({
 
   if (walletStore.isAuthzWalletConnected) {
     actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
+  } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
     actualMessage = msgsOrMsgExecMsgs(
       message,
       walletStore.autoSign.injectiveAddress
@@ -73,9 +73,10 @@ export const closePosition = async ({
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 }
 
@@ -159,7 +160,7 @@ export const closeAllPosition = async (
 
   if (walletStore.isAuthzWalletConnected) {
     actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
+  } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
     actualMessages = msgsOrMsgExecMsgs(
       messages,
       walletStore.autoSign.injectiveAddress
@@ -228,9 +229,10 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -277,8 +279,9 @@ export const addMarginToPosition = async ({
 
   await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 }

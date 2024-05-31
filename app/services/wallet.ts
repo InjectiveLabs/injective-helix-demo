@@ -5,7 +5,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
-import { blacklistedAddresses } from '@/app/data/wallet-address'
+import blacklistedAddresses from '@/app/data/ofac.json'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 
 export const connect = ({
