@@ -6,7 +6,7 @@ const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -29,7 +29,7 @@ function onEndBot() {
       activeStrategy.value.contractAddress
     )
   ])
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

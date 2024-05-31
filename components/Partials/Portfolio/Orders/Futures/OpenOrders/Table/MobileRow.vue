@@ -30,7 +30,7 @@ const {
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -70,7 +70,7 @@ function onCancelOrder() {
   derivativeStore
     .cancelOrder(props.order as DerivativeLimitOrder)
     .then(() => {
-      success({ title: t('trade.order_success_canceling') })
+      notificationStore.success({ title: t('trade.order_success_canceling') })
     })
     .catch($onError)
     .finally(() => {

@@ -69,6 +69,14 @@ export default {
         howItWorks:
           'During the specified duration, you can perform many operations on Helix without the need to sign an additional transaction. This includes opening and closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters. It does not include interactions with the swap feature or trading bots. For security reasons, the auto sign function will expire after the selected time frame, at which point you may choose to initiate a new session.',
         enable: 'Enable Auto-Sign',
+        enabledToast: {
+          title: 'Auto sign is enabled',
+          description: 'Auto sign is active for 30 mins.'
+        },
+        expiredToast: {
+          title: 'Auto sign session has expired',
+          description: 'You can start a new session from Settings'
+        },
         disconnect: 'Disconnect Auto-Sign'
       }
     },

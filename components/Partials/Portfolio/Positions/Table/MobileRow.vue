@@ -39,7 +39,7 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
@@ -115,7 +115,7 @@ function closePositionClicked() {
   }
 
   if (pnl.value.isNaN()) {
-    return error({ title: t('trade.no_liquidity') })
+    return notificationStore.error({ title: t('trade.no_liquidity') })
   }
 
   if (hasReduceOnlyOrders.value) {
@@ -138,7 +138,7 @@ function closePosition() {
       market: market.value
     })
     .then(() => {
-      success({ title: t('trade.position_closed') })
+      notificationStore.success({ title: t('trade.position_closed') })
     })
     .catch($onError)
     .finally(() => {
@@ -159,7 +159,9 @@ function closePositionAndReduceOnlyOrders() {
       position: props.position,
       reduceOnlyOrders: reduceOnlyCurrentOrders.value
     })
-    .then(() => success({ title: t('trade.position_closed') }))
+    .then(() =>
+      notificationStore.success({ title: t('trade.position_closed') })
+    )
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()
@@ -187,7 +189,7 @@ async function closePositionLimit() {
           : OrderSide.BuyPO
     })
     .then(() => {
-      success({ title: t('common.success') })
+      notificationStore.success({ title: t('common.success') })
     })
     .catch($onError)
     .finally(() => {

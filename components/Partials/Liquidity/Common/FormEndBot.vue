@@ -19,7 +19,7 @@ const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -54,7 +54,7 @@ function removeStrategy() {
     .then(() => {
       modalStore.closeModal(Modal.GridStrategyDetails)
 
-      success({
+      notificationStore.success({
         title: t('sgt.success'),
         description: t('sgt.strategyRemoved')
       })

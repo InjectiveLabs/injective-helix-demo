@@ -13,7 +13,7 @@ const props = defineProps({
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const {
@@ -67,11 +67,11 @@ function cancelOrder() {
   derivativeStore
     .cancelOrder(props.trigger)
     .catch((e) => {
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
       $onError(e)
     })
     .then(() => {
-      success({ title: t('common.success') })
+      notificationStore.success({ title: t('common.success') })
     })
     .finally(() => {
       status.setIdle()

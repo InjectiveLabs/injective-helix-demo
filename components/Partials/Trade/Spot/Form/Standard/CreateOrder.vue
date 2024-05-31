@@ -28,7 +28,7 @@ const validate = useValidateForm()
 const formErrors = useFormErrors()
 const resetForm = useResetForm<SpotTradeForm>()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -108,7 +108,7 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -162,7 +162,7 @@ function submitMarketOrder() {
       price: props.worstPrice
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({

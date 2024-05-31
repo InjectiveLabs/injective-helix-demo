@@ -20,7 +20,7 @@ const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
@@ -108,7 +108,7 @@ function onCreateStrategy() {
   gridStrategyStore
     .createStrategy(formValues.value)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('sgt.success'),
         description: t('sgt.gridStrategyCreatedSuccessfully')
       })

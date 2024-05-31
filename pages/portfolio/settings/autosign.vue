@@ -4,6 +4,8 @@ import { PortfolioSubPage } from '@/types'
 
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -12,6 +14,9 @@ function connectAutoSign() {
 
   walletStore
     .connectAutoSign()
+    .then(() => {
+      notificationStore.success({ title: t('') })
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }

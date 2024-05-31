@@ -97,11 +97,11 @@ provide(portfolioStatusKey, portfolioStatus)
 
     <div id="modals" />
 
-    <BaseNotifications
+    <SharedNotifications
       class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
       <template #notification="{ notification }">
-        <BaseNotification
+        <SharedNotification
           :notification="notification"
           class="pointer-events-auto bg-brand-900"
           wrapper-class="bg-brand-900 border-brand-700 border"
@@ -113,8 +113,8 @@ provide(portfolioStatusKey, portfolioStatus)
               @click="closeNotification"
             />
           </template>
-        </BaseNotification>
+        </SharedNotification>
       </template>
-    </BaseNotifications>
+    </SharedNotifications>
   </div>
 </template>
