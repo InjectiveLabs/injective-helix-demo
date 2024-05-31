@@ -14,21 +14,21 @@ const props = defineProps({
         value: number
       }[]
     >,
-    required: true
+    default: () => []
   }
 })
 
 const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
   computed(
-    () => props.leaderboardHistory[props.leaderboardHistory.length - 1].value
+    () => props.leaderboardHistory[props.leaderboardHistory.length - 1]?.value
   )
 )
 
 const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
   computed(() => {
     const lastValue =
-      props.leaderboardHistory[props.leaderboardHistory.length - 1].value
-    const firstValue = props.leaderboardHistory[0].value
+      props.leaderboardHistory[props.leaderboardHistory.length - 1]?.value
+    const firstValue = props.leaderboardHistory[0]?.value
 
     return (lastValue / firstValue) * 100
   })
@@ -77,7 +77,7 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
         }"
       >
         <span class="text-sm">
-          {{ `${false ? '+' : '-'}${percentageToBigNumber.toNumber()}%` }}
+          {{ `${false ? '+' : '-'}${percentageToBigNumber.toFixed(2)}%` }}
         </span>
       </p>
     </div>

@@ -28,7 +28,7 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 )
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
-  'https://devnet.api.injective.dev'
+  ENDPOINTS.indexer
 )
 
 export const indexerRestLeaderboardChronosApi =
