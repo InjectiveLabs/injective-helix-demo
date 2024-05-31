@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { fetchNinjaPassCodes } from '@/app/services/ninjapass'
 
 type Code = {
@@ -22,6 +23,10 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
       const walletStore = useWalletStore()
 
       if (!walletStore.isUserWalletConnected) {
+        return
+      }
+
+      if (!IS_MAINNET) {
         return
       }
 
