@@ -11,9 +11,9 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    leaderboardStore.fetchHistoricalBalance(),
     leaderboardStore.fetchHistoricalPnl(),
-    leaderboardStore.fetchHistoricalVolume()
+    leaderboardStore.fetchHistoricalVolume(),
+    leaderboardStore.fetchHistoricalBalance()
   ])
     .catch(async (e) => {
       $onError(e)

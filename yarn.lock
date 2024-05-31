@@ -1745,7 +1745,7 @@
 
 "@injectivelabs/contracts@^1.14.11-beta.14":
   version "1.14.11-beta.14"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-1.14.11-beta.14.tgz#20c206a0cacd7c473c5ab67fa15c69b3f393da92"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.14.11-beta.14.tgz#20c206a0cacd7c473c5ab67fa15c69b3f393da92"
   integrity sha512-75t1Fuh7ecpYQA41clA8O2PMIwfgz2DaI5KJWc7RILkF2511QhyIAbmG7tUOKBIkDejaa1Fk1JZTOLJ/uLYdCA==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.11-beta.9"
@@ -1792,7 +1792,7 @@
 
 "@injectivelabs/exceptions@^1.14.11-beta.9":
   version "1.14.11-beta.9"
-  resolved "https://registry.npmjs.org/@injectivelabs/exceptions/-/exceptions-1.14.11-beta.9.tgz#836d4849e106c19581703d47733600706846dab3"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.11-beta.9.tgz#836d4849e106c19581703d47733600706846dab3"
   integrity sha512-BBMWz7bIxS0aAliB0wtEZQrsMbsC8/0o+2DlAXv4MAkvja4cXM0xf4eOjv+zdSxgd+JLLmTQffkbcesNbIXLKQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
@@ -1969,7 +1969,7 @@
 
 "@injectivelabs/token-utils@1.14.11-beta.11", "@injectivelabs/token-utils@^1.14.11-beta.11":
   version "1.14.11-beta.11"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-utils/-/token-utils-1.14.11-beta.11.tgz#e19ed438a91bae5002774642f7ca2f58b96934ad"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.14.11-beta.11.tgz#e19ed438a91bae5002774642f7ca2f58b96934ad"
   integrity sha512-LRIVjLyd8y98V7YswadLAJZleVgBaDkXdsBNhL7Tw+d4U0UKmI+nQ4DLLD2H5QOQWHrR+zO0Q94UzqZwnBSDPQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.11-beta.9"
@@ -1987,7 +1987,7 @@
 
 "@injectivelabs/utils@1.14.11-beta.10", "@injectivelabs/utils@^1.14.11-beta.10":
   version "1.14.11-beta.10"
-  resolved "https://registry.npmjs.org/@injectivelabs/utils/-/utils-1.14.11-beta.10.tgz#dce5933a576dc827ec0001eb55bdbd9dc9585878"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.11-beta.10.tgz#dce5933a576dc827ec0001eb55bdbd9dc9585878"
   integrity sha512-1/aXwEw9CFSQE9uh4Q6x7Cvdc1Yur98oc+0QaexkrgzIrLRn05/g+bK8qCgnQoG8jRvgGmCSzM5T32fxEJLcCw==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.11-beta.9"
