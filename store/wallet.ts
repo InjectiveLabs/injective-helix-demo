@@ -833,7 +833,7 @@ export const useWalletStore = defineStore('wallet', {
           messages,
           walletStore.injectiveAddress
         )
-      } else if (walletStore.isAutoSignEnabled) {
+      } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
         actualMessage = msgsOrMsgExecMsgs(
           messages,
           walletStore.autoSign.injectiveAddress
