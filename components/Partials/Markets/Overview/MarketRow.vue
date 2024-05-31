@@ -49,7 +49,7 @@ const priceChangeClasses = computed(() => {
   >
     <div class="flex-[2] flex items-center space-x-2 overflow-hidden">
       <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
-      <p class="text-sm tracking-wider truncate min-w-0">
+      <p class="text-sm tracking-wide truncate min-w-0">
         {{ market.market.ticker }}
       </p>
     </div>
