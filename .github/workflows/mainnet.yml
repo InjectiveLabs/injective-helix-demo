@@ -100,15 +100,21 @@ jobs:
     needs: [mainnet]
     if: always() && (needs.mainnet.result == 'success')
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
+
       - name: "Notify Slack"
         run: |
+          git fetch origin master
           payload='{
-            "text": "'"<!here> Helix - Deployed to mainnet!.\n View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}"'",
+            "text": "'"<!here> Helix - Deployed to Mainnet!.\n View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\n The commits deployed are:\n $(git log remotes/origin/master..HEAD --pretty=format:'%h - %s')"'",
             "attachments": [
                 {
-                "text": "Helix deployed to mainnet - commit hash: $(echo ${GITHUB_REF#refs/heads/}) ✅",
+                "text": "Helix deployed to Mainnet ✅",
                 "color": "#22bb33"
                 }
             ]
             }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" https://hooks.slack.com/services/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
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" https://hooks.slack.com/services/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
