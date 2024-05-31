@@ -78,7 +78,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       const walletStore = useWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
-      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalVolumes({
         account: walletStore.injectiveAddress,
         resolution: LeaderboardResolution.Month
       })
