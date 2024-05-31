@@ -137,7 +137,6 @@ const persistState = (
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
-
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,
@@ -160,7 +159,6 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   store.$onAction(({ name, store: { $id }, after, onError }) => {
     after(() => {
       const type = `${$id}/${name}`
-
       if (actionsThatSetAppStateToBusy.includes(type)) {
         appStore.$patch({
           state: AppState.Idle
