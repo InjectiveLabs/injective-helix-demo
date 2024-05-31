@@ -23,12 +23,9 @@ const route = useRoute()
       v-if="route.name !== MainPage.Index && walletStore.isAutoSignEnabled"
       class="absolute top-[57px] right-4 w-[80px] h-[20px] rounded-bl-[4px] rounded-br-[4px] bg-[#0EE29B] text-black font-semibold leading-3 text-[10px] flex justify-center items-center space-x-1"
     >
-      {{ route.name !== MainPage.Index && walletStore.isAutoSignEnabled }}
       <div>
         {{ $t('portfolio.settings.autoSign.titleWithoutHyphen') }}
       </div>
-      <div>hiiii</div>
-
       <SharedIcon name="circle-check-border" class="w-3 h-3" />
     </div>
   </header>
