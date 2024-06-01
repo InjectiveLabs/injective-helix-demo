@@ -1,4 +1,4 @@
-import { PortfolioChartType } from '@/types'
+import { PortfolioChartType, I18nMessageFunction } from '@/types'
 
 export default {
   portfolio: {
@@ -75,7 +75,12 @@ export default {
         },
         expiredToast: {
           title: 'Auto sign session has expired',
-          description: 'You can start a new session from Settings'
+          settings: 'Settings',
+          description: ({ interpolate, named }: I18nMessageFunction) =>
+            interpolate([
+              'You can start a new session from ',
+              named('settings')
+            ])
         },
         disconnect: 'Disconnect Auto-Sign'
       }

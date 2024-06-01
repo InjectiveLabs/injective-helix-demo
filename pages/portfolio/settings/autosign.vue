@@ -15,7 +15,10 @@ function connectAutoSign() {
   walletStore
     .connectAutoSign()
     .then(() => {
-      notificationStore.success({ title: t('') })
+      notificationStore.success({
+        title: t('portfolio.settings.autoSign.enabledToast.title'),
+        description: t('portfolio.settings.autoSign.enabledToast.description')
+      })
     })
     .catch($onError)
     .finally(() => status.setIdle())

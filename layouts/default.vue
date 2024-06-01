@@ -116,5 +116,7 @@ provide(portfolioStatusKey, portfolioStatus)
         </SharedNotification>
       </template>
     </SharedNotifications>
+
+    <CommonAutoSignExpiredToast />
   </div>
 </template>
