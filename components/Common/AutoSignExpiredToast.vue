@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PortfolioSubPage } from '@/types'
+import { BusEvents, PortfolioSubPage } from '@/types'
 
 const walletStore = useWalletStore()
 
@@ -14,41 +14,32 @@ function showAutoSignExpiredToast() {
 
   setTimeout(() => {
     isAutoSignExpiredToastVisible.value = false
-  }, 6000)
+  }, 6 * 1000)
 }
 
-function checkAndDisconnectAutoSign() {
-  const nowInSeconds = Math.floor(Date.now() / 1000)
-  const autoSignExpiration = walletStore.autoSign?.expiration || 0
-
-  if (autoSignExpiration <= nowInSeconds) {
-    walletStore.disconnectAutoSign()
+onMounted(() => {
+  if (!walletStore.isAutoSignEnabled) {
+    pause()
   }
-}
 
-const { resume, pause } = useIntervalFn(() => {
+  useEventBus(BusEvents.AutoSignConnected).on(() => resume())
+})
+
+const { pause, resume } = useIntervalFn(() => {
   if (!walletStore.isAutoSignEnabled) {
     pause()
 
     return
   }
 
-  checkAndDisconnectAutoSign()
-}, 10000)
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+  const autoSignExpiration = walletStore.autoSign?.expiration || 0
 
-watch(
-  () => walletStore.isAutoSignEnabled,
-  (autoSign) => {
-    if (!autoSign) {
-      pause()
-      showAutoSignExpiredToast()
-
-      return
-    }
-
-    resume()
+  if (autoSignExpiration <= nowInSeconds) {
+    showAutoSignExpiredToast()
+    walletStore.disconnectAutoSign()
   }
-)
+}, 10 * 1000)
 </script>
 
 <template>
@@ -65,7 +56,7 @@ watch(
     >
       <div
         v-if="isAutoSignExpiredToastVisible"
-        class="w-[400px] bg-[#202431] rounded-lg p-4 mb-2 pointer-events-auto"
+        class="w-[400px] bg-gray-750 rounded-lg p-4 mb-2 pointer-events-auto"
       >
         <div class="flex justify-between">
           <div class="flex space-x-2">
@@ -80,7 +71,7 @@ watch(
               <i18n-t
                 keypath="portfolio.settings.autoSign.expiredToast.description"
                 tag="p"
-                class="leading-4 text-[#E5E5E5] text-sm"
+                class="leading-4 text-gray-300 text-sm"
               >
                 <template #settings>
                   <NuxtLink

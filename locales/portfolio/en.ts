@@ -73,6 +73,9 @@ export default {
           title: 'Auto sign is enabled',
           description: 'Auto sign is active for 30 mins.'
         },
+        disabledToast: {
+          title: 'Auto sign is disabled'
+        },
         expiredToast: {
           title: 'Auto sign session has expired',
           settings: 'Settings',
