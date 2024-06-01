@@ -145,7 +145,7 @@ const onSubmit = handleSubmit(() => {
                 <AppInputField
                   v-model="amountValue"
                   :label="$t('trade.amount')"
-                  :max="Number(availableMarginToString)"
+                  :max="Number(availableMarginToFixed)"
                   autofix
                   :placeholder="$t('trade.enter_your_amount')"
                   class="no-shadow"
