@@ -98,6 +98,12 @@ const filteredCandlesticksData = computed(() => {
     )
   }
 
+  if (props.market.slug === 'mother-inj') {
+    return candlesticksData.value.filter(
+      ({ time }) => Number(time) > 1717271688
+    )
+  }
+
   return candlesticksData.value
 })
 

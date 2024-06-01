@@ -74,14 +74,8 @@ const { el, typed } = useIMask(
   }
 )
 
-function onBlur(e?: Event) {
-  const { value } = e?.target as HTMLInputElement
-
-  if (isNaN(parseInt(value))) {
-    return
-  }
-
-  debounceOnBlur(value)
+function onBlur() {
+  debounceOnBlur(typed.value)
 }
 
 const debounceOnBlur = useDebounceFn(

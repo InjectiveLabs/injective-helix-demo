@@ -33,7 +33,7 @@ const type = ref(MarketTypeOption.All)
 const category = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 const isLowVolumeMarketsVisible = ref(false)
-const permissionlessStatus = reactive(new Status(StatusType.Idle))
+const unverifiedMarketsStatus = reactive(new Status(StatusType.Idle))
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
@@ -103,14 +103,14 @@ async function onMarketTypeChange(type: string) {
     return
   }
 
-  permissionlessStatus.setLoading()
+  unverifiedMarketsStatus.setLoading()
 
   await until(unknownTokenStatus).toMatch((status) => status.isIdle())
 
   spotStore
     .fetchMarkets()
     .catch($onError)
-    .finally(() => permissionlessStatus.setIdle())
+    .finally(() => unverifiedMarketsStatus.setIdle())
 }
 
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
@@ -225,7 +225,7 @@ const unknownTokenStatus = inject(
         is-markets-page
         v-bind="{
           markets: filteredMarkets,
-          isLoading: permissionlessStatus.isLoading()
+          isLoading: unverifiedMarketsStatus.isLoading()
         }"
       />
 
@@ -235,7 +235,7 @@ const unknownTokenStatus = inject(
         is-markets-page
         v-bind="{
           markets: filteredMarkets,
-          isLoading: permissionlessStatus.isLoading()
+          isLoading: unverifiedMarketsStatus.isLoading()
         }"
       />
 
