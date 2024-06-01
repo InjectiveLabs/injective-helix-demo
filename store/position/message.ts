@@ -1,14 +1,12 @@
 import {
   Position,
   PositionV2,
-  msgsOrMsgExecMsgs,
   DerivativeLimitOrder,
   MsgIncreasePositionMargin,
   MsgCreateDerivativeMarketOrder,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { msgBroadcaster } from '@shared/WalletService'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
@@ -58,25 +56,7 @@ export const closePosition = async ({
     })
   })
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 }
 
 export const closeAllPosition = async (
@@ -155,23 +135,7 @@ export const closeAllPosition = async (
     })
   )
 
-  let actualMessages
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessages = msgsOrMsgExecMsgs(
-      messages,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessages = messages
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessages,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(messages)
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -222,16 +186,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await positionStore.fetchSubaccountPositions()
 }
@@ -271,14 +226,5 @@ export const addMarginToPosition = async ({
     })
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 }

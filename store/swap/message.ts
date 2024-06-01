@@ -1,11 +1,10 @@
 import {
-  msgsOrMsgExecMsgs,
   ExecArgSwapMinOutput,
   ExecArgSwapExactOutput,
   MsgExecuteContractCompat,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { msgBroadcaster } from '@shared/WalletService'
+
 import { backupPromiseCall } from '@/app/utils/async'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { convertCw20ToBankBalanceForSwap } from '@/app/utils/market'
@@ -90,29 +89,13 @@ export const submitAtomicOrder = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  const response = await walletStore.broadcastMessages(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
-  return txHash
+  if (response) {
+    return response.txHash
+  }
 }
 
 export const submitAtomicOrderExactOutput = async ({
@@ -177,27 +160,11 @@ export const submitAtomicOrderExactOutput = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  const { txHash } = await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  const response = await walletStore.broadcastMessages(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
-  return txHash
+  if (response) {
+    return response.txHash
+  }
 }

@@ -1,7 +1,6 @@
 import {
   SpotLimitOrder,
   SpotOrderHistory,
-  msgsOrMsgExecMsgs,
   MsgCancelSpotOrder,
   MsgCreateSpotLimitOrder,
   MsgBatchCancelSpotOrders,
@@ -11,7 +10,6 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { msgBroadcaster } from '@shared/WalletService'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
@@ -60,23 +58,7 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  let actualMessages
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessages = msgsOrMsgExecMsgs(
-      messages,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessages = messages
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessages,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(messages)
 
   await fetchBalances()
 }
@@ -100,25 +82,7 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
     orderHash: order.orderHash
   })
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await fetchBalances()
 }
@@ -195,25 +159,7 @@ export const submitLimitOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : orderMessage
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -283,27 +229,9 @@ export const submitMarketOrder = async ({
 
   const message = cw20ConvertMessage
     ? [cw20ConvertMessage, orderMessage]
-    : orderMessage
+    : [orderMessage]
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -360,25 +288,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await fetchBalances()
 }
@@ -435,25 +345,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  let actualMessage
-
-  if (walletStore.isAuthzWalletConnected) {
-    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-  } else if (walletStore.autoSign) {
-    actualMessage = msgsOrMsgExecMsgs(
-      message,
-      walletStore.autoSign.injectiveAddress
-    )
-  } else {
-    actualMessage = message
-  }
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.autoSign.injectiveAddress
-      : walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await fetchBalances()
 }

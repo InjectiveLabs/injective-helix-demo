@@ -819,29 +819,47 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
-    async broadcastMessages(messages: Msgs[]) {
+    async broadcastMessages(messages: Msgs | Msgs[], memo?: string) {
       const walletStore = useWalletStore()
+      const _messages = Array.isArray(messages) ? messages : [messages]
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
 
       let actualMessage
 
-      if (walletStore.isAuthzWalletConnected) {
+      if (walletStore.autoSign && walletStore.isAuthzWalletConnected) {
+        // error becase we don't support authz + auto-sign
+        throw new Error('Authz and auto-sign cannot be used together')
+
+        // actualMessage = msgsOrMsgExecMsgs(
+        //   msgsOrMsgExecMsgs(_messages, walletStore.injectiveAddress),
+        //   walletStore.autoSign.injectiveAddress
+        // )
+      } else if (walletStore.autoSign && !walletStore.isAuthzWalletConnected) {
         actualMessage = msgsOrMsgExecMsgs(
-          messages,
-          walletStore.injectiveAddress
-        )
-      } else if (walletStore.autoSign) {
-        actualMessage = msgsOrMsgExecMsgs(
-          messages,
+          _messages,
           walletStore.autoSign.injectiveAddress
         )
+      } else if (walletStore.isAuthzWalletConnected) {
+        actualMessage = msgsOrMsgExecMsgs(
+          _messages,
+          walletStore.injectiveAddress
+        )
       } else {
-        actualMessage = messages
+        actualMessage = _messages
       }
 
-      await msgBroadcaster.broadcastWithFeeDelegation({
+      const response = await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: actualMessage,
-        injectiveAddress: walletStore.injectiveAddress
+        injectiveAddress: walletStore.autoSign
+          ? walletStore.autoSign.injectiveAddress
+          : walletStore.injectiveAddress,
+        memo
       })
+
+      return response
     }
   }
 })
