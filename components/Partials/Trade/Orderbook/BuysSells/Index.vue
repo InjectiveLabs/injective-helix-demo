@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { Status } from '@injectivelabs/utils'
 import { ORDERBOOK_ROWS, ORDERBOOK_ROW_HEIGHT } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, orderbookStatusKey } from '@/types'
 
 defineProps({
   isSpot: Boolean,
@@ -10,6 +11,8 @@ defineProps({
     required: true
   }
 })
+
+const orderbookStatus = inject(orderbookStatusKey) as Status
 
 const SECTION_HEIGHT = ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + 'px'
 
@@ -70,7 +73,7 @@ function setSellsIndex(index: number) {
       class="flex flex-col-reverse px-2"
       @mouseleave="activeSellsIndex = -1"
     >
-      <template v-if="orderbookStore.buys.length === 0">
+      <template v-if="orderbookStatus.isLoading()">
         <PartialsTradeOrderbookBuysSellsSkeletonRecord
           v-for="i in ORDERBOOK_ROWS"
           :key="i"
@@ -78,17 +81,19 @@ function setSellsIndex(index: number) {
         />
       </template>
 
-      <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.sells.slice(0, ORDERBOOK_ROWS)"
-        v-bind="{
-          isActive: i <= activeSellsIndex,
-          index: i,
-          record,
-          highestVolume
-        }"
-        :key="i"
-        @set:index="setSellsIndex"
-      />
+      <template v-else>
+        <PartialsTradeOrderbookBuysSellsRecord
+          v-for="(record, i) in orderbookStore.sells.slice(0, ORDERBOOK_ROWS)"
+          v-bind="{
+            isActive: i <= activeSellsIndex,
+            index: i,
+            record,
+            highestVolume
+          }"
+          :key="i"
+          @set:index="setSellsIndex"
+        />
+      </template>
     </div>
 
     <div class="h-header border-y my-1 flex">
@@ -102,7 +107,7 @@ function setSellsIndex(index: number) {
       class="px-2"
       @mouseleave="activeBuysIndex = -1"
     >
-      <template v-if="orderbookStore.sells.length === 0">
+      <template v-if="orderbookStatus.isLoading()">
         <PartialsTradeOrderbookBuysSellsSkeletonRecord
           v-for="i in ORDERBOOK_ROWS"
           :key="i"
@@ -110,18 +115,20 @@ function setSellsIndex(index: number) {
         />
       </template>
 
-      <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.buys.slice(0, ORDERBOOK_ROWS)"
-        v-bind="{
-          isActive: i <= activeBuysIndex,
-          index: i,
-          record,
-          highestVolume
-        }"
-        :key="i"
-        is-buy
-        @set:index="setBuysIndex"
-      />
+      <template v-else>
+        <PartialsTradeOrderbookBuysSellsRecord
+          v-for="(record, i) in orderbookStore.buys.slice(0, ORDERBOOK_ROWS)"
+          v-bind="{
+            isActive: i <= activeBuysIndex,
+            index: i,
+            record,
+            highestVolume
+          }"
+          :key="i"
+          is-buy
+          @set:index="setBuysIndex"
+        />
+      </template>
     </div>
   </div>
 </template>

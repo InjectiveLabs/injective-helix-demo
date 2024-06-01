@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MsgType } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket, spotMarketKey } from '@/types'
 
@@ -9,6 +10,8 @@ const props = defineProps({
 
 const spotMarket = inject(spotMarketKey) as Ref<UiSpotMarket>
 
+const walletStore = useWalletStore()
+const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
@@ -22,6 +25,14 @@ const filteredOrders = computed(() =>
       )
     : spotStore.subaccountOrders
 )
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgBatchCancelSpotOrders)
+})
 
 function cancelAllOrders() {
   status.setLoading()
@@ -48,13 +59,14 @@ function cancelAllOrders() {
 </script>
 
 <template>
-  <AppButton
+  <AppButtonTooltip
     v-if="filteredOrders.length > 0"
-    v-bind="{ status }"
+    v-bind="{ status, tooltip: isAuthorized ? '' : $t('common.unauthorized') }"
     size="xs"
     variant="danger-ghost"
+    :disabled="!isAuthorized"
     @click="cancelAllOrders"
   >
     {{ $t('trade.cancelAllOrders') }}
-  </AppButton>
+  </AppButtonTooltip>
 </template>

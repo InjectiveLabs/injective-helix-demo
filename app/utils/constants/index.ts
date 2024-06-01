@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { MsgType } from '@injectivelabs/ts-types'
 import { IntervalOption } from '@/types'
 
 export * from './setup'
@@ -159,3 +160,14 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
   },
   {} as Record<string, string>
 )
+
+export const TRADING_MESSAGES = [
+  MsgType.MsgCancelSpotOrder,
+  MsgType.MsgCreateSpotLimitOrder,
+  MsgType.MsgCancelDerivativeOrder,
+  MsgType.MsgCreateSpotMarketOrder,
+  MsgType.MsgBatchCancelSpotOrders,
+  MsgType.MsgCreateDerivativeLimitOrder,
+  MsgType.MsgCreateDerivativeMarketOrder,
+  MsgType.MsgBatchCancelDerivativeOrders
+]

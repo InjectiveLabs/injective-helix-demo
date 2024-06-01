@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>()
 
 function click() {
-  if (props.status.isLoading()) {
+  if (props.status.isLoading() || props.isDisabled) {
     return
   }
 

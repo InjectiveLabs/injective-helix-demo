@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MsgType } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
@@ -10,6 +11,8 @@ const props = defineProps({
   }
 })
 
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const spotStore = useSpotStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -33,6 +36,14 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
+})
 
 const { valueToString: priceToString } = useBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
@@ -65,6 +76,10 @@ const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
 )
 
 function cancelOrder() {
+  if (!isAuthorized.value) {
+    return
+  }
+
   status.setLoading()
 
   spotStore
@@ -132,9 +147,13 @@ function cancelOrder() {
       </div>
 
       <div class="flex-1 p-2 flex items-center justify-center">
-        <PartialsCommonCancelButton
+        <PartialsCommonCancelButtonTooltip
           v-if="orderFillable"
-          v-bind="{ status }"
+          v-bind="{
+            isDisabled: !isAuthorized,
+            status,
+            tooltip: isAuthorized ? '' : $t('common.unauthorized')
+          }"
           @click="cancelOrder"
         />
       </div>

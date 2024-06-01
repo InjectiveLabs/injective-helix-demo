@@ -62,6 +62,7 @@ export default {
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
+    unauthorized: 'Unauthorized',
     available: 'Available',
     baseAndQuote: 'Base and Quote',
     otherWallets: 'Other Wallets',

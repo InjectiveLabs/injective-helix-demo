@@ -78,10 +78,7 @@ function closeModal() {
         >
           {{ $t('common.confirm') }}
         </AppButton>
-        <AppButton
-          class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
-          @click="onCancel"
-        >
+        <AppButton variant="danger-outline" @click="onCancel">
           {{ $t('common.cancel') }}
         </AppButton>
       </div>

@@ -30,6 +30,7 @@ import { isPhantomInstalled } from '@/app/services/phantom'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
+import { TRADING_MESSAGES } from '~/app/utils/constants'
 
 export interface AutoSign {
   privateKey: string
@@ -782,20 +783,9 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
-      const tradingMessages = [
-        MsgType.MsgCancelSpotOrder,
-        MsgType.MsgCreateSpotLimitOrder,
-        MsgType.MsgCancelDerivativeOrder,
-        MsgType.MsgCreateSpotMarketOrder,
-        MsgType.MsgBatchCancelSpotOrders,
-        MsgType.MsgCreateDerivativeLimitOrder,
-        MsgType.MsgCreateDerivativeMarketOrder,
-        MsgType.MsgBatchCancelDerivativeOrders
-      ]
-
       const expirationInSeconds = autoSign.duration || 3600
 
-      const authZMsgs = tradingMessages.map((messageType) =>
+      const authZMsgs = TRADING_MESSAGES.map((messageType) =>
         MsgGrant.fromJSON({
           grantee: autoSign.injectiveAddress,
           granter: walletStore.injectiveAddress,

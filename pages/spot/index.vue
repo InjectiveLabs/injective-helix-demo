@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { marketKey, spotMarketKey } from '@/types'
+import { isSpotKey, marketKey, spotMarketKey } from '@/types'
 
 // permissionless spot market
 
@@ -44,6 +44,7 @@ onUnmounted(() => {
 
 provide(marketKey, market)
 provide(spotMarketKey, market)
+provide(isSpotKey, true)
 </script>
 
 <template>

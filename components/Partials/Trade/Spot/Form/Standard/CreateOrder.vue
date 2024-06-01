@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
+import { MsgType, OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
 import {
@@ -24,9 +24,11 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const validate = useValidateForm()
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const formErrors = useFormErrors()
 const resetForm = useResetForm<SpotTradeForm>()
+const validate = useValidateForm()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
@@ -73,12 +75,32 @@ const currentFormValues = computed(
     }) as SpotTradeForm
 )
 
+const isLimitOrder = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  const msg = isLimitOrder.value
+    ? MsgType.MsgCreateSpotLimitOrder
+    : MsgType.MsgCreateSpotMarketOrder
+
+  return authZStore.hasAuthZPermission(msg)
+})
+
 const isDisabled = computed(() => {
   if (Object.keys(formErrors.value).length > 0) {
     return true
   }
 
   if (!spotFormValues.value[SpotTradeFormField.Amount]) {
+    return true
+  }
+
+  if (!isAuthorized.value) {
     return true
   }
 
@@ -207,7 +229,7 @@ async function submitOrder() {
     return
   }
 
-  if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
+  if (isLimitOrder.value) {
     submitLimitOrder()
   } else {
     submitMarketOrder()
@@ -224,7 +246,11 @@ async function submitOrder() {
       v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >
-      {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      <span v-if="isAuthorized">
+        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      </span>
+
+      <span v-else>{{ $t('common.unauthorized') }}</span>
     </AppButton>
   </div>
 </template>

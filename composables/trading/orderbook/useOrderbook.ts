@@ -1,4 +1,5 @@
 import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   WorkerMessageType,
   OrderbookWorkerResult,
@@ -9,7 +10,12 @@ import { spotMarketStream } from '@/app/client/streams/spot'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
-import { UiMarketWithToken, aggregationKey, orderbookWorkerKey } from '@/types'
+import {
+  UiMarketWithToken,
+  aggregationKey,
+  orderbookStatusKey,
+  orderbookWorkerKey
+} from '@/types'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
   postMessage(message: OrderbookWorkerMessage): void
@@ -37,6 +43,7 @@ export function useOrderbook(
 ) {
   const orderbookStore = useOrderbookStore()
 
+  const orderbookStatus = reactive(new Status(StatusType.Loading))
   const aggregation = ref(market.value?.priceDecimals || 0)
 
   const worker = shallowRef<OrderbookWorker | null>(null)
@@ -81,6 +88,8 @@ export function useOrderbook(
         return
       }
 
+      orderbookStatus.setIdle()
+
       worker.value?.postMessage({
         type: WorkerMessageType.Fetch,
         data: {
@@ -105,6 +114,8 @@ export function useOrderbook(
         if (!market.value) {
           return
         }
+
+        orderbookStatus.setIdle()
 
         worker.value?.postMessage({
           type: WorkerMessageType.Fetch,
@@ -171,6 +182,7 @@ export function useOrderbook(
 
   provide(orderbookWorkerKey, worker)
   provide(aggregationKey, aggregation)
+  provide(orderbookStatusKey, orderbookStatus)
 
   watch(aggregation, () => {
     worker.value?.postMessage({

@@ -32,3 +32,6 @@ export const unknownTokenStatusKey = Symbol(
 
 export const isSpotKey = Symbol('isSpot') as InjectionKey<boolean>
 export const aggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>
+export const orderbookStatusKey = Symbol(
+  'orderbookStatus'
+) as InjectionKey<Status>
