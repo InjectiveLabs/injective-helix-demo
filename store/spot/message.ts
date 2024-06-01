@@ -219,9 +219,10 @@ export const submitMarketOrder = async ({
     price: priceToFixed,
     quantity: quantityToFixed,
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.autoSign
-      ? walletStore.injectiveAddress
-      : walletStore.authZOrInjectiveAddress,
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.injectiveAddress
+        : walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     orderType: orderSideToOrderType(orderSide)

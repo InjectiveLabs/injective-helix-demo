@@ -9,6 +9,7 @@ import {
   Msgs,
   msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import { msgBroadcaster } from '@shared/WalletService'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
@@ -131,6 +132,10 @@ export const useWalletStore = defineStore('wallet', {
 
     authZOrAddress: (state) => {
       return state.authZ.address || state.address
+    },
+
+    isAutoSignEnabled: (state) => {
+      return !!state.autoSign?.injectiveAddress && !!state.autoSign?.privateKey
     }
   },
   actions: {
@@ -603,7 +608,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const walletStore = useWalletStore()
 
-      const isAutoSignEnabled = !!walletStore.autoSign
+      const isAutoSignEnabled = !!walletStore.isAutoSignEnabled
 
       if (walletStore.wallet === Wallet.Metamask && !isAutoSignEnabled) {
         await validateMetamask(walletStore.address, appStore.ethereumChainId)
@@ -766,7 +771,7 @@ export const useWalletStore = defineStore('wallet', {
     async validateAutoSign() {
       const walletStore = useWalletStore()
 
-      if (!walletStore.autoSign) {
+      if (!walletStore.isAutoSignEnabled) {
         return
       }
 
@@ -831,7 +836,9 @@ export const useWalletStore = defineStore('wallet', {
 
       if (walletStore.autoSign && walletStore.isAuthzWalletConnected) {
         // error becase we don't support authz + auto-sign
-        throw new Error('Authz and auto-sign cannot be used together')
+        throw new GeneralException(
+          new Error('Authz and auto-sign cannot be used together')
+        )
 
         // actualMessage = msgsOrMsgExecMsgs(
         //   msgsOrMsgExecMsgs(_messages, walletStore.injectiveAddress),

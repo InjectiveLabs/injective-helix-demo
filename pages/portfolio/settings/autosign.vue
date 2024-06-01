@@ -44,7 +44,7 @@ function disconnectAutoSign() {
           {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
         <AppButton
-          v-if="!walletStore.autoSign"
+          v-if="!walletStore.isAutoSignEnabled"
           variant="success"
           :status="status"
           @click="connectAutoSign"

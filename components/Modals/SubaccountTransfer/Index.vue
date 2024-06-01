@@ -11,27 +11,28 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const { values: formValues, resetForm: resetSubaccountTransferForm } =
-  useForm<SubaccountTransferForm>({
-    initialValues: {
-      [SubaccountTransferField.SrcSubaccountId]:
-        walletStore.defaultSubaccountId,
-      [SubaccountTransferField.DstSubaccountId]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom,
-      [SubaccountTransferField.Amount]: ''
-    },
-    keepValuesOnUnmount: true
-  })
-const formErrors = useFormErrors()
-const setFormValues = useSetFormValues()
+const {
+  values: formValues,
+  errors: formErrors,
+  setValues: setFormValues,
+  resetForm: resetSubaccountTransferForm
+} = useForm<SubaccountTransferForm>({
+  initialValues: {
+    [SubaccountTransferField.SrcSubaccountId]: walletStore.defaultSubaccountId,
+    [SubaccountTransferField.DstSubaccountId]: '',
+    [SubaccountTransferField.Token]: injToken,
+    [SubaccountTransferField.Denom]: injToken.denom,
+    [SubaccountTransferField.Amount]: ''
+  },
+  keepValuesOnUnmount: true
+})
 
 const { value: denomValue } = useStringField({
   name: SubaccountTransferField.Denom,
   rule: ''
 })
 
-const hasFormErrors = computed(
+const isDisabled = computed(
   () =>
     Object.keys(formErrors.value).length > 0 ||
     formValues[SubaccountTransferField.Amount] === ''
@@ -226,7 +227,7 @@ function closeModal() {
           is-lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
           :is-loading="status.isLoading()"
-          :is-disabled="hasFormErrors"
+          :disabled="isDisabled"
           @click="onSubaccountTransfer"
         >
           <span class="font-semibold">
