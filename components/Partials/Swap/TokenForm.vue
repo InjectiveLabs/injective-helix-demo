@@ -183,10 +183,9 @@ function onUpdateAmount() {
 }
 
 function onMaxSelected({ amount }: { amount: string }) {
-  const allowableValue = formatAmountToAllowableAmount(
-    amount,
-    inputToken?.value.tensMultiplier ?? undefined
-  )
+  const allowableValue = inputToken?.value?.tensMultiplier
+    ? formatAmountToAllowableAmount(amount, inputToken.value.tensMultiplier)
+    : amount
 
   setFormValues({
     [SwapFormField.InputAmount]: allowableValue
@@ -212,7 +211,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
-            tensMultiplier: inputToken?.tensMultiplier ?? undefined,
+            tensMultiplier: inputToken?.tensMultiplier,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @on:update="onUpdateAmount"
@@ -252,7 +251,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
             maxDecimals: outputToken?.quantityDecimals || 0,
-            tensMultiplier: outputToken?.tensMultiplier ?? undefined,
+            tensMultiplier: outputToken?.tensMultiplier,
             hideBalance: !walletStore.isUserWalletConnected
           }"
           @update:amount="getInputQuantity"
