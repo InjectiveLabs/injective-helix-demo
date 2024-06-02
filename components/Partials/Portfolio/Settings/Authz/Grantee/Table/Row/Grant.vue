@@ -7,6 +7,7 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({
@@ -61,13 +62,26 @@ function revoke() {
       &bull; {{ authorizationFormatted }}
     </div>
     <div class="flex-1 p-2">
+      <AppButtonTooltip
+        v-if="
+          walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected
+        "
+        variant="danger-ghost"
+        size="sm"
+        disabled
+        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
+      >
+        {{ $t('portfolio.settings.authz.revoke') }}
+      </AppButtonTooltip>
+
       <AppButton
+        v-else
         variant="danger-ghost"
         size="sm"
         :status="status"
         @click="revoke"
       >
-        Revoke
+        {{ $t('portfolio.settings.authz.revoke') }}
       </AppButton>
     </div>
   </div>

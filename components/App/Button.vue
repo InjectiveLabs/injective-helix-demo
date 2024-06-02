@@ -5,6 +5,7 @@ type Size = 'xs' | 'sm' | 'md' | 'lg'
 type Variant =
   | 'primary'
   | 'primary-outline'
+  | 'primary-ghost'
   | 'danger'
   | 'danger-outline'
   | 'danger-ghost'

@@ -187,7 +187,8 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     label: 'navigation.settings',
     icon: 'gear-outline',
-    to: { name: PortfolioSubPage.Settings }
+    to: { name: PortfolioSubPage.Settings },
+    name: 'portfolio-settings'
   }
 ]
 

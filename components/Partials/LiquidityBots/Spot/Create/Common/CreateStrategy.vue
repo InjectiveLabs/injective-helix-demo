@@ -194,6 +194,10 @@ const newMarketSlug = computed(
 const isDisabled = computed(() => {
   const investmentType = formValues.value[SpotGridTradingField.InvestmentType]
 
+  if (walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled) {
+    return true
+  }
+
   if (Object.keys(formErrors.value).length > 0) {
     return true
   }
@@ -349,7 +353,13 @@ function goToNewMarket() {
       is-lg
       @click="onCheckBalanceFees"
     >
-      <span>{{ $t('sgt.create') }}</span>
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else-if="walletStore.isAutoSignEnabled">
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+      <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
     <p v-if="hasActiveLegacyStrategy" class="text-xs text-red-500 mt-4">

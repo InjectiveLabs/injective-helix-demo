@@ -63,6 +63,10 @@ export default {
     download: 'Download',
     required: 'Required',
     unauthorized: 'Unauthorized',
+    notAvailableinAutoSignMode: 'Not available in Auto-Sign Mode',
+    notAvailableinAuthZMode: 'Not available in Access Control Mode',
+    notAvailableinAuthZOrAutoSignMode:
+      'Not available in Access Control Mode or Auto-Sign Mode',
     available: 'Available',
     baseAndQuote: 'Base and Quote',
     otherWallets: 'Other Wallets',

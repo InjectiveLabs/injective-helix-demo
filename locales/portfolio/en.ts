@@ -52,9 +52,18 @@ export default {
         description:
           'Grant other wallet address full/partial permissions to make trades on their behalf',
         grantee: 'Grantee',
+        granteeAddress: 'Grantee Address',
+        grantedFunctions: 'Granted Functions',
+        actions: 'Actions',
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address',
-        noGrants: 'No grants found'
+        addGranteeAddress: 'Add grantee address',
+        noGrants: 'No grants found',
+        viewGrantedFunctions: 'View granted functions',
+        connected: 'Connected',
+        connectAs: 'Connect as',
+        revoke: 'Revoke',
+        revokeAll: 'Revoke All'
       },
 
       preferences: {

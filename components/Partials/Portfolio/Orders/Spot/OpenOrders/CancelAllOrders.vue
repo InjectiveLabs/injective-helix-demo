@@ -10,9 +10,9 @@ const props = defineProps({
 
 const spotMarket = inject(spotMarketKey) as Ref<UiSpotMarket>
 
-const walletStore = useWalletStore()
-const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
 const { success, error } = useNotifications()

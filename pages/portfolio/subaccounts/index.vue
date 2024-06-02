@@ -2,6 +2,11 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
+const walletStore = useWalletStore()
+
+const isDisabled = computed(
+  () => walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+)
 
 function openTransferModal() {
   modalStore.openModal(Modal.SubaccountTransfer)
@@ -21,10 +26,18 @@ function openTransferModal() {
     </div>
 
     <div class="p-4 flex justify-end">
-      <AppButton size="sm" class="space-x-2" @click="openTransferModal">
+      <AppButtonTooltip
+        :tooltip="
+          isDisabled ? $t('common.notAvailableinAuthZOrAutoSignMode') : ''
+        "
+        :disabled="isDisabled"
+        size="sm"
+        class="space-x-2"
+        @click="openTransferModal"
+      >
         <SharedIcon name="plus" is-xs />
         <span>{{ $t('portfolio.subaccounts.addSubaccount') }}</span>
-      </AppButton>
+      </AppButtonTooltip>
     </div>
 
     <div class="divide-y border-y">

@@ -150,8 +150,8 @@ function cancelOrder() {
         <PartialsCommonCancelButtonTooltip
           v-if="orderFillable"
           v-bind="{
-            isDisabled: !isAuthorized,
             status,
+            isDisabled: !isAuthorized,
             tooltip: isAuthorized ? '' : $t('common.unauthorized')
           }"
           @click="cancelOrder"

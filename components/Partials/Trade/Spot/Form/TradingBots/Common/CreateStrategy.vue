@@ -9,6 +9,7 @@ import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const market = inject(spotMarketKey)
 
+const walletStore = useWalletStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
 const gridStrategyStore = useGridStrategyStore()
@@ -20,6 +21,10 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
+  if (walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
   if (Object.keys(formErrors.value).length > 0) {
     return true
   }
@@ -65,7 +70,14 @@ async function createStrategy() {
       v-bind="{ status, disabled: isDisabled }"
       @click="createStrategy"
     >
-      {{ $t('sgt.create') }}
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
+
+    <span v-if="walletStore.isAutoSignEnabled" class="text-xs text-red-500">
+      {{ $t('common.notAvailableinAutoSignMode') }}
+    </span>
   </div>
 </template>

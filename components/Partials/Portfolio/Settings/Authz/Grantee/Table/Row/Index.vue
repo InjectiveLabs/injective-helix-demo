@@ -19,6 +19,7 @@ const props = defineProps({
 })
 
 const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 
 const isOpen = ref(false)
 const status = reactive(new Status(StatusType.Idle))
@@ -66,17 +67,31 @@ function revokeAll() {
         <SharedIcon name="chevron-down" is-sm />
       </span>
 
-      <span> View Granted Functions </span>
+      <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>
     </div>
 
     <div class="flex-1 flex items-center p-2" @click.stop>
+      <AppButtonTooltip
+        v-if="
+          walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+        "
+        v-bind="{ status }"
+        :variant="'danger-ghost'"
+        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
+        size="sm"
+        disabled
+      >
+        {{ $t('portfolio.settings.authz.revokeAll') }}
+      </AppButtonTooltip>
+
       <AppButton
+        v-else
         v-bind="{ status }"
         :variant="'danger-ghost'"
         size="sm"
         @click="revokeAll"
       >
-        Revoke All
+        {{ $t('portfolio.settings.authz.revokeAll') }}
       </AppButton>
     </div>
   </div>
