@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { TokenSymbols } from '@/app/data/token'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 
@@ -182,8 +183,13 @@ function onUpdateAmount() {
 }
 
 function onMaxSelected({ amount }: { amount: string }) {
+  const allowableValue = formatAmountToAllowableAmount(
+    amount,
+    inputToken?.value.tensMultiplier ?? undefined
+  )
+
   setFormValues({
-    [SwapFormField.InputAmount]: amount
+    [SwapFormField.InputAmount]: allowableValue
   })
 
   getOutputQuantity()
