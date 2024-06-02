@@ -213,7 +213,7 @@ export function useBalance() {
     })
   })
 
-  const permissionlessHoldingWithTokens = computed(() => {
+  const unverifiedHoldingWithTokens = computed(() => {
     if (!accountStore.isDefaultSubaccount) {
       return []
     }
@@ -247,20 +247,41 @@ export function useBalance() {
           return undefined
         }
 
+        const bankBalance = coin.amount
+        const isDefaultTradingAccount =
+          walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
         const usdPrice = tokenStore.tokenUsdPrice(token)
+
+        const subaccountBalances =
+          accountStore.subaccountBalancesMap[accountStore.subaccountId]
+
+        const subaccountBalance = (subaccountBalances || []).find(
+          (balance) => balance.denom === coin.denom
+        )
+        const subaccountAvailableBalance =
+          subaccountBalance?.availableBalance || '0'
+        const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
+
+        const inOrderBalance = isDefaultTradingAccount
+          ? new BigNumberInWei(subaccountTotalBalance)
+          : new BigNumberInWei(subaccountTotalBalance).minus(
+              subaccountAvailableBalance
+            )
+        const availableMargin = new BigNumberInWei(
+          isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
+        )
 
         return {
           token,
           usdPrice,
+          bankBalance,
           isVerified: false,
           denom: token.denom,
-          bankBalance: coin.amount,
-          unrealizedPnl: '0',
-          inOrderBalance: '0',
-          availableMargin: '0',
-          availableBalance: coin.amount,
-          totalBalance: coin.amount,
-          accountTotalBalance: coin.amount,
+          unrealizedPnl: '0', // No perps for unverified assets so no unrealized pnl,
+          inOrderBalance: inOrderBalance.toFixed(),
+          availableMargin: availableMargin.toFixed(),
+          availableBalance: '0', // We only care about the default subaccount,
+          totalBalance: subaccountTotalBalance,
           accountTotalBalanceInUsd: new BigNumberInBase(coin.amount)
             .multipliedBy(usdPrice)
             .toFixed()
@@ -271,7 +292,7 @@ export function useBalance() {
 
   const userBalancesWithToken = computed(() => [
     ...verifiedHoldingsWithToken.value,
-    ...permissionlessHoldingWithTokens.value
+    ...unverifiedHoldingWithTokens.value
   ])
 
   return {

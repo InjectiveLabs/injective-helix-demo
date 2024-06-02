@@ -259,6 +259,7 @@ function onBlur(baseAmount = '') {
   )
 
   setAmountValue(formattedAmount)
+
   isShowTensMultiplierNote.value = formattedAmount !== baseAmount
 }
 
