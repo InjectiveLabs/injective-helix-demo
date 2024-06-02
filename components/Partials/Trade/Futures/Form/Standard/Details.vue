@@ -4,14 +4,14 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  UiDerivativeMarket,
+  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  UiDerivativeMarket,
-  derivativeMarketKey
+  DerivativesTradeFormField
 } from '@/types'
 
-const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const props = defineProps({
   margin: {

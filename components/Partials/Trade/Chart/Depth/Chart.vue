@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
-import { derivativeMarketKey, isSpotKey, spotMarketKey } from '@/types'
+import { IsSpotKey, SpotMarketKey, DerivativeMarketKey } from '@/types'
 
 const percentage = 0.01
 
-const spotMarket = inject(spotMarketKey, undefined)
-const derivativeMarket = inject(derivativeMarketKey, undefined)
-const isSpot = inject(isSpotKey)
+const isSpot = inject(IsSpotKey)
+const spotMarket = inject(SpotMarketKey, undefined)
+const derivativeMarket = inject(DerivativeMarketKey, undefined)
 
 const orderbookStore = useOrderbookStore()
 

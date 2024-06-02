@@ -9,11 +9,11 @@ import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
-  addressAndMarketSlugToSubaccountId,
-  durationFormatter
+  durationFormatter,
+  addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { StrategyStatus } from '@/types'
-import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const props = defineProps({
   strategy: {

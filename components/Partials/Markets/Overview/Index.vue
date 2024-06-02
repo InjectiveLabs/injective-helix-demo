@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { newMarketsSlug } from '@/app/data/market'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '~/app/utils/constants'
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const exchangeStore = useExchangeStore()
 

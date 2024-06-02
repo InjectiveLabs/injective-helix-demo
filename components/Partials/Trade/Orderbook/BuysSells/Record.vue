@@ -6,11 +6,11 @@ import {
 } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import {
+  IsSpotKey,
   BusEvents,
-  UiMarketWithToken,
-  aggregationKey,
-  isSpotKey,
-  marketKey
+  MarketKey,
+  AggregationKey,
+  UiMarketWithToken
 } from '@/types'
 
 const props = defineProps({
@@ -33,18 +33,17 @@ const props = defineProps({
   }
 })
 
-const aggregation = inject(aggregationKey, ref(1)) as Ref<number>
+const aggregation = inject(AggregationKey, ref(1)) as Ref<number>
 
 const emit = defineEmits<{
   'set:index': [index: number]
 }>()
 
-const isSpot = inject(isSpotKey)
+const isSpot = inject(IsSpotKey)
+const market = inject(MarketKey) as Ref<UiMarketWithToken>
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
-
-const market = inject(marketKey) as Ref<UiMarketWithToken>
 
 const showPriceFlash = ref(false)
 const showQuantityFlash = ref(false)

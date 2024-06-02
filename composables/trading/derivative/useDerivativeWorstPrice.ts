@@ -2,24 +2,24 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  quantizeNumber,
+  calculateWorstPrice,
+  calculateTotalQuantity
+} from '@/app/utils/helpers'
+import {
+  TradeAmountOption,
   UiDerivativeMarket,
+  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  TradeAmountOption,
-  derivativeMarketKey
+  DerivativesTradeFormField
 } from '@/types'
-import {
-  calculateTotalQuantity,
-  calculateWorstPrice,
-  quantizeNumber
-} from '@/app/utils/helpers'
 
 export function useDerivativeWorstPrice() {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
   const orderbookStore = useOrderbookStore()
 
-  const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+  const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
   const isBuy = computed(
     () =>

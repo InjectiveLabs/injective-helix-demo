@@ -7,18 +7,18 @@ import {
 } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
-  UiSpotMarket,
-  spotMarketKey,
-  TradeAmountOption,
-  SpotTradeFormField,
-  SpotTradeForm,
-  TradeTypes,
-  BusEvents
-} from '@/types'
-import {
   calculateTotalQuantity,
   calculateWorstPrice
 } from '@/app/utils/helpers'
+import {
+  BusEvents,
+  TradeTypes,
+  UiSpotMarket,
+  SpotMarketKey,
+  SpotTradeForm,
+  TradeAmountOption,
+  SpotTradeFormField
+} from '@/types'
 
 const props = defineProps({
   totalWithFee: {
@@ -37,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 const isShowTensMultiplierNote = ref(false)
 
 const { userBalancesWithToken } = useBalance()

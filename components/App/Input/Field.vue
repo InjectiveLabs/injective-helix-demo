@@ -106,7 +106,7 @@ onMounted(() => {
       noStyle
         ? wrapperClass
         : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4',
-      disabled ? 'opacity-50' : ''
+      disabled ? 'opacity-50 cursor-not-allowed' : ''
     ]"
   >
     <div v-if="$slots.top">
@@ -122,7 +122,10 @@ onMounted(() => {
         ref="el"
         type="text"
         class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
-        :class="thousandsSeparator ? 'text-right' : ''"
+        :class="{
+          'cursor-not-allowed': disabled,
+          'text-right': thousandsSeparator
+        }"
         v-bind="$attrs"
         :disabled="disabled"
         @blur="onBlur"

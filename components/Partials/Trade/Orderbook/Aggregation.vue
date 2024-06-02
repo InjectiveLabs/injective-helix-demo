@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { aggregationKey, marketKey } from '~/types'
+import { AggregationKey, MarketKey } from '@/types'
 
-const aggregation = inject(aggregationKey, ref(1))
-const market = inject(marketKey)
+const market = inject(MarketKey)
+const aggregation = inject(AggregationKey, ref(1))
 
 const value = computed({
   get: () => aggregation.value.toString(),

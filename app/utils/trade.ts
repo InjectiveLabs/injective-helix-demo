@@ -1,5 +1,5 @@
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { ConditionalOrderSide, OrderTypeFilter } from '~/types'
+import { ConditionalOrderSide, OrderTypeFilter } from '@/types'
 
 export function derivativeTypeToExecutionTypes(type: OrderTypeFilter) {
   switch (type) {
