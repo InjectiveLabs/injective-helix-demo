@@ -15,6 +15,8 @@ const value = computed({
 const items =
   market?.value?.priceDecimals === 0
     ? [-2, -1, 0]
+    : market?.value?.priceDecimals === 1
+    ? [-2, -1, 0, 1]
     : [
         ...new Array((market?.value?.priceDecimals || 0) + 1)
           .fill(0)

@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { BigNumber, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { BusEvents, UiMarketWithToken, isSpotKey, marketKey } from '@/types'
+import {
+  BusEvents,
+  UiMarketWithToken,
+  aggregationKey,
+  isSpotKey,
+  marketKey
+} from '@/types'
 
 const props = defineProps({
   isBuy: Boolean,
@@ -22,6 +32,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const aggregation = inject(aggregationKey, ref(1)) as Ref<number>
 
 const emit = defineEmits<{
   'set:index': [index: number]
@@ -62,7 +74,15 @@ const { valueToString: volumeToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.price),
+  computed(() => {
+    if (aggregation.value < 0) {
+      return new BigNumberInBase(props.record.price).times(
+        new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
+      )
+    } else {
+      return props.record.price
+    }
+  }),
   {
     decimalPlaces: computed(() =>
       props.record.price.split('.')[1]?.length
