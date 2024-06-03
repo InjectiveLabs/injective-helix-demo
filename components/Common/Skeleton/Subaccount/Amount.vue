@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { portfolioStatusKey } from '@/types'
+import { PortfolioStatusKey } from '@/types'
 
 defineProps({
   size: {
@@ -29,7 +29,7 @@ const walletStore = useWalletStore()
 const { allCoinGeckoIdsOnPriceMap } = useTokenUsdPrice()
 
 const portfolioStatus = inject(
-  portfolioStatusKey,
+  PortfolioStatusKey,
   new Status(StatusType.Loading)
 )
 </script>

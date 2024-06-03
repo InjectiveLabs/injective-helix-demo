@@ -11,7 +11,7 @@ import {
 } from '@/app/utils/constants'
 import { pricesToEma } from '@/app/utils/helpers'
 import {
-  spotMarketKey,
+  SpotMarketKey,
   GridStrategyType,
   InvestmentTypeGst,
   UiMarketWithToken,
@@ -27,7 +27,7 @@ const LOWER_BOUND_PERCENTAGE = 0.94
 const UPPER_BOUND_PERCENTAGE = 1.06
 const SMOOTHING = 3
 
-const market = inject(spotMarketKey) as Ref<UiMarketWithToken>
+const market = inject(SpotMarketKey) as Ref<UiMarketWithToken>
 
 const exchangeStore = useExchangeStore()
 const setFormValues = useSetFormValues()

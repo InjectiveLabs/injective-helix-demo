@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import {
-  GST_KAVA_SINGLE_SIDED_THRESHOLD,
+  SGT_STABLE_COINS,
   GST_SINGLE_SIDED_THRESHOLD,
-  SGT_STABLE_COINS
+  GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
 import {
   UiSpotMarket,
-  spotMarketKey,
+  SpotMarketKey,
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
 
-const spotGridFormValues = useFormValues<SpotGridTradingForm>()
-const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
+defineProps({
+  isDisabled: Boolean
+})
+
+const spotGridFormValues = useFormValues<SpotGridTradingForm>()
 const { lastTradedPrice } = useSpotLastPrice(market)
 
 const marketUsesStableCoins = computed(() =>
@@ -96,7 +100,11 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-2">
         <p class="text-xs text-gray-500">{{ $t('sgt.lower') }}</p>
-        <AppInputField v-model="lowerPriceValue" placeholder="0.00" />
+        <AppInputField
+          v-model="lowerPriceValue"
+          :disabled="isDisabled"
+          placeholder="0.00"
+        />
         <p v-if="lowerErrorMessage" class="error-message">
           {{ lowerErrorMessage }}
         </p>
@@ -104,7 +112,11 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
       <div class="space-y-2">
         <p class="text-xs text-gray-500">{{ $t('sgt.upper') }}</p>
-        <AppInputField v-model="upperPriceValue" placeholder="0.00" />
+        <AppInputField
+          v-model="upperPriceValue"
+          :disabled="isDisabled"
+          placeholder="0.00"
+        />
         <p v-if="upperErrorMessage" class="error-message">
           {{ upperErrorMessage }}
         </p>

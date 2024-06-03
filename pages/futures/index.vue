@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { derivativeMarketKey, isSpotKey, marketKey } from '@/types'
+import { DerivativeMarketKey, IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -64,9 +64,9 @@ function cancelDerivativeStream() {
   derivativeStore.cancelMarketsMarkPrices()
 }
 
-provide(derivativeMarketKey, market)
-provide(marketKey, market)
-provide(isSpotKey, false)
+provide(DerivativeMarketKey, market)
+provide(MarketKey, market)
+provide(IsSpotKey, false)
 </script>
 
 <template>

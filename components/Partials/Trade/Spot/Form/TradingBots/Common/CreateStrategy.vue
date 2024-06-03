@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
-  spotMarketKey,
+  SpotMarketKey,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
-import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
-const market = inject(spotMarketKey)
+const market = inject(SpotMarketKey)
 
 const validate = useValidateForm()
 const formErrors = useFormErrors()
@@ -59,13 +59,11 @@ async function createStrategy() {
 </script>
 
 <template>
-  <div class="py-4">
-    <AppButton
-      class="w-full"
-      v-bind="{ status, disabled: isDisabled }"
-      @click="createStrategy"
-    >
-      {{ $t('sgt.create') }}
-    </AppButton>
-  </div>
+  <AppButton
+    class="w-full"
+    v-bind="{ status, disabled: isDisabled }"
+    @click="createStrategy"
+  >
+    {{ $t('sgt.create') }}
+  </AppButton>
 </template>

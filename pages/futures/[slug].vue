@@ -2,7 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import { derivativeMarketKey, isSpotKey, marketKey, Modal } from '@/types'
+import { DerivativeMarketKey, IsSpotKey, MarketKey, Modal } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -102,9 +102,9 @@ function fetchRWAMarketIsOpen() {
 
 const { pause, isActive } = useIntervalFn(fetchRWAMarketIsOpen, 10000)
 
-provide(derivativeMarketKey, market)
-provide(marketKey, market)
-provide(isSpotKey, false)
+provide(DerivativeMarketKey, market)
+provide(MarketKey, market)
+provide(IsSpotKey, false)
 </script>
 
 <template>

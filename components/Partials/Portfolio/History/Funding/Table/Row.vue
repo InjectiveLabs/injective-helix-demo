@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   fundingPayment: {

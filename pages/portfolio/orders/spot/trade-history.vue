@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  derivativeTypeToOrderType,
+  derivativeTypeToTradeType
+} from '@/app/utils/trade'
 import {
   OrderTypeFilter,
   SpotOrderHistoryFilterField,
   SpotOrderHistoryFilterForm
 } from '@/types'
-import {
-  derivativeTypeToOrderType,
-  derivativeTypeToTradeType
-} from '~/app/utils/trade'
 
 const route = useRoute()
 const router = useRouter()

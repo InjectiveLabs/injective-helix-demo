@@ -59,14 +59,14 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span class="font-sans">
           {{ tradeExecutionType }}
         </span>
       </div>
 
       <div
-        class="flex-1 flex items-center p-2 font-sans"
+        class="flex-[0.5] flex items-center p-2 font-sans"
         :class="{
           'text-green-500': trade.tradeDirection === TradeDirection.Buy,
           'text-red-500': trade.tradeDirection === TradeDirection.Sell

@@ -17,6 +17,7 @@ const value = computed({
   get: () => gridStrategyStore.spotMarket?.slug,
   set: (marketSlug) => {
     marketSlugQuery.value = marketSlug as string
+
     gridStrategyStore.$patch({
       spotMarket: spotStore.markets.find((m) => m.slug === marketSlug)
     })

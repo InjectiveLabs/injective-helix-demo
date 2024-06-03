@@ -6,19 +6,19 @@ import {
 } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  UiDerivativeMarket,
+  calculateWorstPrice,
+  calculateTotalQuantity
+} from '@/app/utils/helpers'
+import { ONE_IN_BASE } from '@/app/utils/constants'
+import {
+  BusEvents,
   TradeAmountOption,
-  DerivativesTradeFormField,
-  derivativeMarketKey,
+  UiDerivativeMarket,
+  DerivativeMarketKey,
   DerivativesTradeForm,
   DerivativeTradeTypes,
-  BusEvents
+  DerivativesTradeFormField
 } from '@/types'
-import { ONE_IN_BASE } from '~/app/utils/constants'
-import {
-  calculateTotalQuantity,
-  calculateWorstPrice
-} from '@/app/utils/helpers'
 
 const props = defineProps({
   marginWithFee: {
@@ -37,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const orderbookStore = useOrderbookStore()
 

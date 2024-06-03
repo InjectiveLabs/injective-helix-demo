@@ -450,8 +450,7 @@ export default {
           named('marketClosedTimes'),
           '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
         ]),
-      marketClosedMarketRow:
-        'Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+      marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
       marketClosedTimes: ' traditional RWA price feeds',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
       marketIsClosed: 'This market is currently closed.'

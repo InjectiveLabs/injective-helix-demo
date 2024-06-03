@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { BigNumber } from '@injectivelabs/utils'
+import { MARKETS_INFO } from '@/app/data/marketInfo'
 import {
-  isSpotKey,
-  spotMarketKey,
+  IsSpotKey,
+  SpotMarketKey,
   UiDerivativeMarket,
-  derivativeMarketKey
+  DerivativeMarketKey
 } from '@/types'
-import { MARKETS_INFO } from '~/app/data/marketInfo'
 
-const spotMarket = inject(spotMarketKey, undefined)
-const derivativeMarket = inject(derivativeMarketKey, undefined) as
+const isSpot = inject(IsSpotKey)
+const spotMarket = inject(SpotMarketKey, undefined)
+const derivativeMarket = inject(DerivativeMarketKey, undefined) as
   | ComputedRef<UiDerivativeMarket>
   | undefined
-const isSpot = inject(isSpotKey)
 
 const market = computed(() =>
   isSpot ? spotMarket?.value : derivativeMarket?.value

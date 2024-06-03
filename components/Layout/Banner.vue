@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { portfolioStatusKey } from '@/types'
+import { PortfolioStatusKey } from '@/types'
 
 const isBannerVisible = ref(true)
 const walletStore = useWalletStore()
@@ -26,7 +26,7 @@ const hasBalance = computed(() => {
 })
 
 const portfolioStatus = inject(
-  portfolioStatusKey,
+  PortfolioStatusKey,
   new Status(StatusType.Loading)
 )
 </script>
