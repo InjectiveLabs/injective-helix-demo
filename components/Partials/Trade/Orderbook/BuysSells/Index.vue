@@ -1,44 +1,78 @@
 <script setup lang="ts">
 import { Status } from '@injectivelabs/utils'
 import { ORDERBOOK_ROWS, ORDERBOOK_ROW_HEIGHT } from '@/app/utils/constants'
-import { UiMarketWithToken, orderbookStatusKey } from '@/types'
+import { OrderbookLayout, UiMarketWithToken, OrderbookStatusKey } from '@/types'
 
-defineProps({
+const props = defineProps({
   isSpot: Boolean,
 
   market: {
     type: Object as PropType<UiMarketWithToken>,
     required: true
+  },
+
+  orderbookLayout: {
+    type: String as PropType<OrderbookLayout>,
+    required: true
   }
 })
 
-const orderbookStatus = inject(orderbookStatusKey) as Status
-
-const SECTION_HEIGHT = ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + 'px'
+const orderbookStatus = inject(OrderbookStatusKey) as Status
 
 const orderbookStore = useOrderbookStore()
 
 const activeBuysIndex = ref(-1)
 const activeSellsIndex = ref(-1)
 
-const highestVolume = computed(() =>
-  Math.max(
-    Number(
-      orderbookStore.buys[
-        (orderbookStore.buys.length > ORDERBOOK_ROWS
-          ? ORDERBOOK_ROWS
-          : orderbookStore.buys.length) - 1
-      ]?.totalVolume || 0
-    ),
-    Number(
-      orderbookStore.sells[
-        (orderbookStore.sells.length > ORDERBOOK_ROWS
-          ? ORDERBOOK_ROWS
-          : orderbookStore.sells.length) - 1
-      ]?.totalVolume || 0
-    )
-  ).toString()
+const buysSectionRows = computed(() =>
+  props.orderbookLayout === OrderbookLayout.Buys
+    ? ORDERBOOK_ROWS * 2
+    : ORDERBOOK_ROWS
 )
+
+const sellsSectionRows = computed(() =>
+  props.orderbookLayout === OrderbookLayout.Sells
+    ? ORDERBOOK_ROWS * 2
+    : ORDERBOOK_ROWS
+)
+
+const buysSectionHeight = computed(
+  () => buysSectionRows.value * ORDERBOOK_ROW_HEIGHT + 'px'
+)
+
+const sellsSectionHeight = computed(
+  () => sellsSectionRows.value * ORDERBOOK_ROW_HEIGHT + 'px'
+)
+
+const highestVolume = computed(() => {
+  const numbers = []
+
+  if (props.orderbookLayout !== OrderbookLayout.Sells) {
+    numbers.push(
+      Number(
+        orderbookStore.buys[
+          (orderbookStore.buys.length > buysSectionRows.value
+            ? buysSectionRows.value
+            : orderbookStore.buys.length) - 1
+        ]?.totalVolume || 0
+      )
+    )
+  }
+
+  if (props.orderbookLayout !== OrderbookLayout.Buys) {
+    numbers.push(
+      Number(
+        orderbookStore.sells[
+          (orderbookStore.sells.length > sellsSectionRows.value
+            ? sellsSectionRows.value
+            : orderbookStore.sells.length) - 1
+        ]?.totalVolume || 0
+      )
+    )
+  }
+
+  return Math.max(...numbers).toString()
+})
 
 function setBuysIndex(index: number) {
   activeBuysIndex.value = index
@@ -69,31 +103,30 @@ function setSellsIndex(index: number) {
     </div>
 
     <div
-      :style="{ height: SECTION_HEIGHT }"
+      v-if="orderbookLayout !== OrderbookLayout.Buys"
+      :style="{ height: sellsSectionHeight }"
       class="flex flex-col-reverse px-2"
       @mouseleave="activeSellsIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
         <PartialsTradeOrderbookBuysSellsSkeletonRecord
-          v-for="i in ORDERBOOK_ROWS"
+          v-for="i in sellsSectionRows"
           :key="i"
           :index="i"
         />
       </template>
 
-      <template v-else>
-        <PartialsTradeOrderbookBuysSellsRecord
-          v-for="(record, i) in orderbookStore.sells.slice(0, ORDERBOOK_ROWS)"
-          v-bind="{
-            isActive: i <= activeSellsIndex,
-            index: i,
-            record,
-            highestVolume
-          }"
-          :key="i"
-          @set:index="setSellsIndex"
-        />
-      </template>
+      <PartialsTradeOrderbookBuysSellsRecord
+        v-for="(record, i) in orderbookStore.sells.slice(0, sellsSectionRows)"
+        v-bind="{
+          isActive: i <= activeSellsIndex,
+          index: i,
+          record,
+          highestVolume
+        }"
+        :key="i"
+        @set:index="setSellsIndex"
+      />
     </div>
 
     <div class="h-header border-y my-1 flex">
@@ -103,32 +136,31 @@ function setSellsIndex(index: number) {
     </div>
 
     <div
-      :style="{ height: SECTION_HEIGHT }"
+      v-if="orderbookLayout !== OrderbookLayout.Sells"
+      :style="{ height: buysSectionHeight }"
       class="px-2"
       @mouseleave="activeBuysIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
         <PartialsTradeOrderbookBuysSellsSkeletonRecord
-          v-for="i in ORDERBOOK_ROWS"
+          v-for="i in buysSectionRows"
           :key="i"
           :index="i"
         />
       </template>
 
-      <template v-else>
-        <PartialsTradeOrderbookBuysSellsRecord
-          v-for="(record, i) in orderbookStore.buys.slice(0, ORDERBOOK_ROWS)"
-          v-bind="{
-            isActive: i <= activeBuysIndex,
-            index: i,
-            record,
-            highestVolume
-          }"
-          :key="i"
-          is-buy
-          @set:index="setBuysIndex"
-        />
-      </template>
+      <PartialsTradeOrderbookBuysSellsRecord
+        v-for="(record, i) in orderbookStore.buys.slice(0, buysSectionRows)"
+        v-bind="{
+          isActive: i <= activeBuysIndex,
+          index: i,
+          record,
+          highestVolume
+        }"
+        :key="i"
+        is-buy
+        @set:index="setBuysIndex"
+      />
     </div>
   </div>
 </template>

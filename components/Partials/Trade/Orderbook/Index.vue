@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { OrderbookViewOption, UiMarketWithToken } from '@/types'
+import {
+  OrderbookLayout,
+  OrderbookViewOption,
+  UiMarketWithToken
+} from '@/types'
 
 defineProps({
   isSpot: Boolean,
@@ -10,7 +14,27 @@ defineProps({
   }
 })
 
+const orderbookOptions = [
+  {
+    value: OrderbookLayout.Default,
+    img: '/svg/orderbook/default.svg'
+  },
+  {
+    value: OrderbookLayout.Buys,
+    img: '/svg/orderbook/buys.svg'
+  },
+  {
+    value: OrderbookLayout.Sells,
+    img: '/svg/orderbook/sells.svg'
+  }
+]
+
+const orderbookLayout = ref(OrderbookLayout.Default)
 const activeTab = ref(OrderbookViewOption.Orderbook)
+
+function setOrderbookLayout(layout: OrderbookLayout) {
+  orderbookLayout.value = layout
+}
 </script>
 
 <template>
@@ -27,6 +51,17 @@ const activeTab = ref(OrderbookViewOption.Orderbook)
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
 
+      <div class="flex items-center justify-end flex-1 space-x-1">
+        <img
+          v-for="option in orderbookOptions"
+          :key="option.value"
+          :src="option.img"
+          :class="{ 'opacity-50': orderbookLayout !== option.value }"
+          class="cursor-pointer"
+          @click="setOrderbookLayout(option.value)"
+        />
+      </div>
+
       <div
         v-if="activeTab === OrderbookViewOption.Orderbook"
         class="flex flex-1 items-center justify-end"
@@ -37,7 +72,7 @@ const activeTab = ref(OrderbookViewOption.Orderbook)
 
     <PartialsTradeOrderbookBuysSells
       v-if="activeTab === OrderbookViewOption.Orderbook"
-      v-bind="{ market, isSpot }"
+      v-bind="{ market, isSpot, orderbookLayout }"
     />
 
     <PartialsTradeOrderbookTrades v-else v-bind="{ market, isSpot }" />
