@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { MarketCategoryType, MarketQuoteType } from '@/types'
 
 const route = useRoute()
@@ -38,10 +38,10 @@ const emit = defineEmits<{
 }>()
 
 const FilterList = {
-  [MarketType.Favorite]: MarketType.Favorite,
+  [SharedMarketType.Favorite]: SharedMarketType.Favorite,
   All: '',
-  [MarketType.Spot]: MarketType.Spot,
-  [MarketType.Derivative]: MarketType.Derivative
+  [SharedMarketType.Spot]: SharedMarketType.Spot,
+  [SharedMarketType.Derivative]: SharedMarketType.Derivative
 }
 const marketCategoryTypes = Object.entries(MarketCategoryType).map(
   ([key, value]) => ({
@@ -148,10 +148,10 @@ function fillRouteQueryParams(params: Record<string, string>) {
         <template #default="{ isActive }">
           <CommonTabMenuItem :is-active="isActive">
             <span
-              v-if="filterType === FilterList[MarketType.Favorite]"
+              v-if="filterType === FilterList[SharedMarketType.Favorite]"
               class="flex items-center"
             >
-              <BaseIcon name="star-border" class="mr-1" />
+              <SharedIcon name="star-border" class="mr-1" />
               <span>{{ $t('trade.favorites') }}</span>
             </span>
 
@@ -159,11 +159,13 @@ function fillRouteQueryParams(params: Record<string, string>) {
               {{ $t('trade.allMarkets') }}
             </span>
 
-            <span v-else-if="filterType === FilterList[MarketType.Spot]">
+            <span v-else-if="filterType === FilterList[SharedMarketType.Spot]">
               {{ $t('trade.spots') }}
             </span>
 
-            <span v-else-if="filterType === FilterList[MarketType.Derivative]">
+            <span
+              v-else-if="filterType === FilterList[SharedMarketType.Derivative]"
+            >
               {{ $t('trade.futures') }}
             </span>
           </CommonTabMenuItem>

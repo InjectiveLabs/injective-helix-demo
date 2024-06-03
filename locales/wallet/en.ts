@@ -5,6 +5,7 @@ export default {
     address: 'Address',
     close: 'Close',
     connect: 'Connect',
+    connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
     connectUsingBrowser: 'Connect using browser wallet',
@@ -54,7 +55,10 @@ export default {
     leap: 'Leap',
     cosmostation: 'Cosmostation',
     trustWallet: 'Trust Wallet',
-    ninji: 'Ninji'
+    ninji: 'Ninji',
+    phantom: 'Phantom',
+    okxWallet: 'OKX Wallet',
+    bitGet: 'Bitget Wallet'
   },
 
   memo: {

@@ -1,9 +1,10 @@
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { UiSpotMarket } from '@/types'
 
 export default function useActiveGridStrategyFormatter(
-  market: ComputedRef<UiSpotMarketWithToken>,
+  market: ComputedRef<UiSpotMarket>,
   strategy: ComputedRef<TradingStrategy>
 ) {
   const upperBound = computed(() => {
@@ -72,13 +73,13 @@ export default function useActiveGridStrategyFormatter(
   )
 
   const takeProfit = computed(() =>
-    new BigNumberInWei(strategy.value.takeProfit || 0).toBase(
+    new BigNumberInWei(strategy.value.takeProfitConfig?.exitPrice ?? 0).toBase(
       market.value.quoteToken.decimals - market.value.baseToken.decimals
     )
   )
 
   const stopLoss = computed(() =>
-    new BigNumberInWei(strategy.value.stopLoss || 0).toBase(
+    new BigNumberInWei(strategy.value.stopLossConfig?.exitPrice || 0).toBase(
       market.value.quoteToken.decimals - market.value.baseToken.decimals
     )
   )

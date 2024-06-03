@@ -1,28 +1,32 @@
 import { defineStore } from 'pinia'
-import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotTrade,
-  UiDerivativeTrade,
-  UiSpotOrderHistory,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
-import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
+  TradingReward,
+  FundingPayment,
+  SpotOrderHistory,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
+import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
 import {
   streamSpotSubaccountTrades,
   streamSpotSubaccountOrderHistory,
   streamDerivativeSubaccountTrades,
   streamDerivativeSubaccountOrderHistory
 } from '@/store/activity/stream'
+import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
+import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
+// todo: Ivan clean up
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
   subaccountFundingPaymentsCount: number
-  latestDerivativeOrderHistory?: UiDerivativeOrderHistory
-  latestDerivativeTrade?: UiDerivativeTrade
-  latestSpotOrderHistory?: UiSpotOrderHistory
-  latestSpotTrade?: UiSpotTrade
+  latestDerivativeOrderHistory?: DerivativeOrderHistory
+  latestDerivativeTrade?: SharedUiDerivativeTrade
+  latestSpotOrderHistory?: SpotOrderHistory
+  latestSpotTrade?: SharedUiSpotTrade
+  subaccountTransfers: UiSubaccountTransactionWithToken[]
+  subaccountTransferTransactionsCount: number
 }
 
 const initialStateFactory = (): ActivityStoreState => ({
@@ -32,7 +36,9 @@ const initialStateFactory = (): ActivityStoreState => ({
   latestDerivativeOrderHistory: undefined,
   latestDerivativeTrade: undefined,
   latestSpotOrderHistory: undefined,
-  latestSpotTrade: undefined
+  latestSpotTrade: undefined,
+  subaccountTransfers: [],
+  subaccountTransferTransactionsCount: 0
 })
 
 export const useActivityStore = defineStore('activity', {
@@ -82,6 +88,39 @@ export const useActivityStore = defineStore('activity', {
       activityStore.$patch({
         subaccountFundingPayments,
         subaccountFundingPaymentsCount: pagination.total
+      })
+    },
+
+    async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
+      const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
+      const activityStore = useActivityStore()
+
+      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+        return
+      }
+
+      const filters = options?.filters
+
+      const { transfers, pagination } =
+        await indexerAccountApi.fetchSubaccountHistory({
+          subaccountId: accountStore.subaccountId,
+          denom: filters?.denom,
+          pagination: options?.pagination
+        })
+
+      const transactions = await Promise.all(
+        transfers.map(
+          async (transaction) =>
+            await UiSubaccountTransformer.convertSubaccountTransfersToUiSubaccountTransaction(
+              transaction
+            )
+        )
+      )
+
+      activityStore.$patch({
+        subaccountTransfers: transactions,
+        subaccountTransferTransactionsCount: pagination.total
       })
     }
   }

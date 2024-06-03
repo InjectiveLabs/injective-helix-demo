@@ -1,13 +1,22 @@
 import { defineNuxtPlugin } from '#app'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { NUMBER_REGEX, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
+import { Network } from '@shared/types'
 import { defineRule } from 'vee-validate'
+import { NUMBER_REGEX } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
 
-const formatFieldName = (value: string) => value.replace(/[^a-z]+/gi, '')
+const formatFieldName = (value: string) => {
+  // Insert a space before all found uppercase letters in the string and trim the resulting string
+  let result = value.replace(/([A-Z])/g, ' $1').trim()
+
+  // Capitalize the first letter and join it with the rest of the string
+  result = result.charAt(0).toUpperCase() + result.slice(1)
+
+  return result
+}
 
 export const errorMessages = {
   email: () => 'This field should be a valid email',
@@ -15,33 +24,24 @@ export const errorMessages = {
   positiveNumber: () => 'This field is not a valid number',
   integer: (fieldName: string) => `${fieldName} must be > 0`,
 
-  [BridgingNetwork.Axelar]: () => 'This field is not a valid Cosmos address',
-  [BridgingNetwork.CosmosHub]: () => 'This field is not a valid Cosmos address',
-  [BridgingNetwork.Ethereum]: () =>
-    'This field is not a valid Ethereum address',
-  [BridgingNetwork.Evmos]: () => 'This field is not a valid Evmos address',
-  [BridgingNetwork.Moonbeam]: () =>
-    'This field is not a valid Moonbeam address',
-  [BridgingNetwork.Injective]: () =>
-    'This field is not a valid Injective address',
-  [BridgingNetwork.Osmosis]: () => 'This field is not a valid Osmosis address',
-  [BridgingNetwork.Persistence]: () =>
-    'This field is not a valid Persistence address',
-  [BridgingNetwork.Secret]: () =>
-    'This field is not a valid Secret Network address',
-  [BridgingNetwork.Noble]: () =>
-    'This field is not a valid Noble Network address',
-  [BridgingNetwork.Stride]: () => 'This field is not a valid Stride address',
-  [BridgingNetwork.Crescent]: () =>
-    'This field is not a valid Crescent address',
-  [BridgingNetwork.Sommelier]: () =>
-    'This field is not a valid Sommelier address',
-  [BridgingNetwork.Canto]: () => 'This field is not a valid Canto address',
-  [BridgingNetwork.Kava]: () => 'This field is not a valid Kava address',
-  [BridgingNetwork.Oraichain]: () =>
-    'This field is not a valid Oraichain address',
-  [BridgingNetwork.Migaloo]: () => 'This field is not a valid Migaloo address',
-  [BridgingNetwork.Celestia]: () => 'This field is not a valid Celestia address'
+  [Network.Axelar]: () => 'This field is not a valid Cosmos address',
+  [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
+  [Network.Ethereum]: () => 'This field is not a valid Ethereum address',
+  [Network.Evmos]: () => 'This field is not a valid Evmos address',
+  // [Network.Moonbeam]: () => 'This field is not a valid Moonbeam address',
+  [Network.Injective]: () => 'This field is not a valid Injective address',
+  [Network.Osmosis]: () => 'This field is not a valid Osmosis address',
+  [Network.Persistence]: () => 'This field is not a valid Persistence address',
+  [Network.Secret]: () => 'This field is not a valid Secret Network address',
+  [Network.Noble]: () => 'This field is not a valid Noble Network address',
+  [Network.Stride]: () => 'This field is not a valid Stride address',
+  [Network.Crescent]: () => 'This field is not a valid Crescent address',
+  [Network.Sommelier]: () => 'This field is not a valid Sommelier address',
+  [Network.Canto]: () => 'This field is not a valid Canto address',
+  [Network.Kava]: () => 'This field is not a valid Kava address',
+  [Network.Oraichain]: () => 'This field is not a valid Oraichain address',
+  [Network.Migaloo]: () => 'This field is not a valid Migaloo address',
+  [Network.Celestia]: () => 'This field is not a valid Celestia address'
 } as Record<string, (_field?: string, _params?: Record<string, any>) => string>
 
 export const defineGlobalRules = () => {
@@ -72,11 +72,19 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('minValue', (value: string, [min]: string[]) => {
-    if (Number(value) < Number(min)) {
-      return `This field should be greater than ${min}`
+    if (!value || Number(value) > Number(min)) {
+      return true
     }
 
-    return true
+    return `This field should be greater than ${min}`
+  })
+
+  defineRule('maxValue', (value: string, [max]: string[]) => {
+    if (!value || Number(value) < Number(max)) {
+      return true
+    }
+
+    return `This field should be less than ${max}`
   })
 
   defineRule(
@@ -116,28 +124,23 @@ export const defineGlobalRules = () => {
     }
   })
 
-  defineRule(
-    'addressByNetwork',
-    (value: string, [network]: BridgingNetwork[]) => {
-      if (network === BridgingNetwork.Ethereum) {
-        if (!value.startsWith('0x')) {
-          return errorMessages[network]()
-        }
-      } else {
-        const isValidCosmosAddress =
-          network
-            .toLowerCase()
-            .startsWith(value.toLowerCase().substring(0, 3)) &&
-          new BigNumberInBase(value.length).gte(3)
-
-        if (!isValidCosmosAddress && errorMessages[network]) {
-          return errorMessages[network]()
-        }
+  defineRule('addressByNetwork', (value: string, [network]: Network[]) => {
+    if (network === Network.Ethereum) {
+      if (!value.startsWith('0x')) {
+        return errorMessages[network]()
       }
+    } else {
+      const isValidCosmosAddress =
+        network.toLowerCase().startsWith(value.toLowerCase().substring(0, 3)) &&
+        new BigNumberInBase(value.length).gte(3)
 
-      return true
+      if (!isValidCosmosAddress && errorMessages[network]) {
+        return errorMessages[network]()
+      }
     }
-  )
+
+    return true
+  })
 
   defineRule('positiveNumber', (value: string) => {
     if (NUMBER_REGEX.test(value)) {
@@ -145,6 +148,16 @@ export const defineGlobalRules = () => {
     }
 
     return errorMessages.positiveNumber()
+  })
+
+  defineRule('regex', (value: string, params: [string | RegExp]): boolean => {
+    let regex = params[0]
+
+    if (typeof regex === 'string') {
+      regex = new RegExp(regex)
+    }
+
+    return regex.exec(value) !== null
   })
 
   defineRule('positiveNumber', (value: string) => {
@@ -307,7 +320,7 @@ export const defineGlobalRules = () => {
   )
 
   defineRule(
-    'rangeKavaSgt',
+    'gridRangeSgt',
     (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
       const upperInBigNumber = new BigNumberInBase(upper)
       const lowerInBigNumber = new BigNumberInBase(lower)

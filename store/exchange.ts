@@ -1,26 +1,26 @@
 import { defineStore } from 'pinia'
 import {
-  ZERO_IN_BASE,
-  UiMarketHistory,
-  zeroSpotMarketSummary,
-  UiMarketsHistoryTransformer
-} from '@injectivelabs/sdk-ui-ts'
+  exchangeApi,
+  indexerSpotApi,
+  indexerDerivativesApi,
+  indexerRestMarketChronosApi
+} from '@shared/Service'
 import {
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import type { Token } from '@injectivelabs/token-metadata'
 import {
-  denomClient,
-  exchangeApi,
-  indexerDerivativesApi,
-  indexerRestMarketChronosApi,
-  indexerSpotApi
-} from '@/app/Services'
+  toUiMarketHistory,
+  toZeroUiMarketSummary
+} from '@shared/transformer/market'
+import type { Token } from '@injectivelabs/token-metadata'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedUiMarketHistory, SharedUiMarketSummary } from '@shared/types'
+import { getToken } from '@/app/utils/helpers'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
-import { UiMarketWithToken, UiMarketSummary, UiMarketAndSummary } from '@/types'
+import { UiMarketWithToken, UiMarketAndSummary } from '@/types'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
@@ -30,10 +30,10 @@ type ExchangeStoreState = {
   tradeRewardsPoints: string[]
   pendingTradeRewardsPoints: string[]
   upcomingMarkets: UiMarketWithToken[]
-  upcomingMarketsSummaries: UiMarketSummary[]
+  upcomingMarketsSummaries: SharedUiMarketSummary[]
   deprecatedMarkets: UiMarketWithToken[]
-  deprecatedMarketsSummaries: UiMarketSummary[]
-  marketsHistory: UiMarketHistory[]
+  deprecatedMarketsSummaries: SharedUiMarketSummary[]
+  marketsHistory: SharedUiMarketHistory[]
 }
 
 const initialStateFactory = (): ExchangeStoreState => ({
@@ -46,12 +46,12 @@ const initialStateFactory = (): ExchangeStoreState => ({
 
   upcomingMarkets,
   upcomingMarketsSummaries: upcomingMarkets.map((m) =>
-    zeroSpotMarketSummary(m.marketId)
+    toZeroUiMarketSummary(m.marketId)
   ),
 
   deprecatedMarkets,
   deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
-    zeroSpotMarketSummary(m.marketId)
+    toZeroUiMarketSummary(m.marketId)
   ),
   marketsHistory: []
 })
@@ -129,7 +129,7 @@ export const useExchangeStore = defineStore('exchange', {
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
           feeDiscountSchedule.quoteDenomsList.map(
-            async (denom) => await denomClient.getDenomToken(denom)
+            async (denom) => await getToken(denom)
           )
         )) as Token[]
 
@@ -181,33 +181,33 @@ export const useExchangeStore = defineStore('exchange', {
       const tradingRewardsCampaign =
         await exchangeApi.fetchTradingRewardsCampaign()
 
-      if (tradingRewardsCampaign) {
-        const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
-          ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
-          : []
-        const quoteSymbolsList = (
-          (
-            await Promise.all(
-              quoteDenomsList.map(
-                async (denom) => await denomClient.getDenomToken(denom)
-              )
-            )
-          ).filter((token) => token) as Token[]
-        ).map((token) => token.symbol)
-
-        const tradingRewardCampaignInfo = {
-          ...tradingRewardsCampaign.tradingRewardCampaignInfo,
-          quoteSymbolsList
-        }
-        const tradingRewardsCampaignWithToken = {
-          ...tradingRewardsCampaign,
-          tradingRewardCampaignInfo
-        } as TradingRewardsCampaign
-
-        exchangeStore.$patch({
-          tradingRewardsCampaign: tradingRewardsCampaignWithToken
-        })
+      if (!tradingRewardsCampaign) {
+        return
       }
+
+      const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
+        : []
+      const quoteSymbolsList = (
+        (
+          await Promise.all(
+            quoteDenomsList.map(async (denom) => await getToken(denom))
+          )
+        ).filter((token) => token) as Token[]
+      ).map((token) => token.symbol)
+
+      const tradingRewardCampaignInfo = {
+        ...tradingRewardsCampaign.tradingRewardCampaignInfo,
+        quoteSymbolsList
+      }
+      const tradingRewardsCampaignWithToken = {
+        ...tradingRewardsCampaign,
+        tradingRewardCampaignInfo
+      } as TradingRewardsCampaign
+
+      exchangeStore.$patch({
+        tradingRewardsCampaign: tradingRewardsCampaignWithToken
+      })
     },
 
     async fetchTradeRewardPoints() {
@@ -267,7 +267,7 @@ export const useExchangeStore = defineStore('exchange', {
       })
     },
 
-    async getMarketsHistory({
+    async fetchMarketHistory({
       marketIds,
       resolution,
       countback
@@ -280,7 +280,7 @@ export const useExchangeStore = defineStore('exchange', {
 
       const marketHistoryAlreadyExists = marketIds.every((marketId) => {
         return exchangeStore.marketsHistory.find(
-          (marketHistory: UiMarketHistory) => {
+          (marketHistory: SharedUiMarketHistory) => {
             return marketHistory.marketId === marketId
           }
         )
@@ -299,9 +299,7 @@ export const useExchangeStore = defineStore('exchange', {
           })
 
         const marketsHistoryToUiMarketsHistory =
-          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
-            marketsHistory
-          )
+          marketsHistory.map(toUiMarketHistory)
 
         exchangeStore.$patch({
           marketsHistory: [
@@ -314,7 +312,44 @@ export const useExchangeStore = defineStore('exchange', {
       }
     },
 
-    async getMarketsHistoryNew({
+    async fetchMarketsHistory({
+      marketIds,
+      resolution,
+      countback
+    }: {
+      marketIds: string[]
+      resolution: number
+      countback: number
+    }) {
+      const exchangeStore = useExchangeStore()
+
+      if (exchangeStore.marketsHistory.length > 0 || marketIds.length === 0) {
+        return
+      }
+
+      try {
+        const marketsHistory =
+          await indexerRestMarketChronosApi.fetchMarketsHistory({
+            marketIds,
+            resolution,
+            countback
+          })
+
+        const marketsHistoryToUiMarketsHistory =
+          marketsHistory.map(toUiMarketHistory)
+
+        exchangeStore.$patch({
+          marketsHistory: [
+            ...exchangeStore.marketsHistory,
+            ...marketsHistoryToUiMarketsHistory
+          ]
+        })
+      } catch (e) {
+        // don't do anything for now
+      }
+    },
+
+    async fetchMarketHistoryNew({
       marketIds,
       resolution,
       countback
@@ -334,9 +369,7 @@ export const useExchangeStore = defineStore('exchange', {
           })
 
         const marketsHistoryToUiMarketsHistory =
-          UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
-            marketsHistory
-          )
+          marketsHistory.map(toUiMarketHistory)
 
         exchangeStore.$patch({
           marketsHistory: [...marketsHistoryToUiMarketsHistory]

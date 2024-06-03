@@ -1,12 +1,12 @@
-import { UiDerivativeTrade } from '@injectivelabs/sdk-ui-ts'
+import { indexerDerivativesApi } from '@shared/Service'
+import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerDerivativesApi } from '@/app/Services'
 
 export class DerivativeTradeIntegrityStrategy
   extends BaseDataIntegrityStrategy<string>
-  implements ConcreteDataIntegrityStrategy<string, UiDerivativeTrade>
+  implements ConcreteDataIntegrityStrategy<string, SharedUiDerivativeTrade>
 {
   static make(marketId: string): DerivativeTradeIntegrityStrategy {
     return new DerivativeTradeIntegrityStrategy(marketId)
@@ -35,8 +35,8 @@ export class DerivativeTradeIntegrityStrategy
   }
 
   verifyData(
-    existingTrades: UiDerivativeTrade[],
-    latestTrades: UiDerivativeTrade[]
+    existingTrades: SharedUiDerivativeTrade[],
+    latestTrades: SharedUiDerivativeTrade[]
   ): boolean {
     const [lastTradeFromStream] = existingTrades
     const [latestTradeFromFetch] = latestTrades

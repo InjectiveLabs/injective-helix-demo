@@ -1,11 +1,11 @@
-import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
-import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { SubaccountBalance } from '@/types'
-import { indexerAccountPortfolioApi } from '@/app/Services'
+import { indexerAccountPortfolioApi } from '@shared/Service'
 import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
+import { SubaccountBalance } from '@/types'
 
 export class SubaccountBalanceIntegrityStrategy
   extends BaseDataIntegrityStrategy<void>
@@ -87,7 +87,7 @@ export class SubaccountBalanceIntegrityStrategy
     const walletStore = useWalletStore()
 
     const accountPortfolio =
-      await indexerAccountPortfolioApi.fetchAccountPortfolio(
+      await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
         walletStore.authZOrInjectiveAddress
       )
 

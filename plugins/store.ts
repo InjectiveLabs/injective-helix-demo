@@ -23,10 +23,13 @@ const stateToPersist = {
       },
       preferences: {
         skipTradeConfirmationModal: false,
+        skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
-        authZManagement: false
+        authZManagement: false,
+        isHideBalances: false,
+        thousandsSeparator: false
       }
     }
   },
@@ -48,6 +51,13 @@ const stateToPersist = {
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+
+    autoSign: {
+      privateKey: '',
+      expiration: '',
+      injectiveAddress: '',
+      duration: ''
     }
   }
 } as Record<string, Record<string, any>>
@@ -58,6 +68,7 @@ const actionsThatSetAppStateToBusy = [
   'account/deposit',
   'account/transfer',
   'account/withdraw',
+  'account/withdrawToMain',
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
@@ -77,6 +88,7 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
+  'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
@@ -86,7 +98,9 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy'
+  'gridStrategy/removeStrategy',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (
@@ -105,7 +119,7 @@ const persistState = (
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload || []).some((key) => {
+    Object.keys(mutation?.payload || []).some((key) => {
       return keysToPersist.includes(key)
     })
 
@@ -113,15 +127,16 @@ const persistState = (
     return
   }
 
+  const source = mutation.payload
+
   const updatedState = keysToPersist.reduce((stateObj, key) => {
     return {
       ...stateObj,
-      [key]: mutation.payload[key] || state[key]
+      [key]: source[key] || state[key]
     }
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
-
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,
@@ -144,7 +159,6 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   store.$onAction(({ name, store: { $id }, after, onError }) => {
     after(() => {
       const type = `${$id}/${name}`
-
       if (actionsThatSetAppStateToBusy.includes(type)) {
         appStore.$patch({
           state: AppState.Idle

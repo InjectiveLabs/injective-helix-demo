@@ -1,19 +1,29 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
+import { usdtToken } from '@shared/data/token'
+import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_DECIMALS
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 } from '@/app/utils/constants'
+import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { toBalanceInToken } from '@/app/utils/formatters'
 import {
-  CampaignWithScAndData,
-  LiquidityRewardsPage,
-  TradingBotsSubPage
+  PortfolioSubPage,
+  TradingInterface,
+  TradingBotsSubPage,
+  LiquidityRewardsPage
 } from '@/types'
 
 const props = defineProps({
-  campaignWithSc: {
-    type: Object as PropType<CampaignWithScAndData>,
+  campaign: {
+    type: Object as PropType<Campaign>,
     required: true
   }
 })
@@ -21,91 +31,132 @@ const props = defineProps({
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const gridStrategyStore = useGridStrategyStore()
+const { $onError } = useNuxtApp()
+
+const activeBots = ref<number>(0)
+const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
-  spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
+  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const token = computed(() =>
-  tokenStore.tokens.find(
-    ({ symbol }) => market.value?.baseToken.symbol === symbol
-  )
-)
+const baseToken = computed(() => {
+  if (!market.value) {
+    return
+  }
 
-const rewardsWithToken = computed(() =>
-  props.campaignWithSc.rewards.map((reward) => ({
-    value: new BigNumberInBase(reward.amount).toFormat(
-      UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    ),
-    token: tokenStore.tokens.find(({ symbol }) => symbol === reward.symbol)
-  }))
-)
-
-const totalRewardsInUsd = computed(() => {
-  return props.campaignWithSc.rewards.reduce((total, reward) => {
-    const token = tokenStore.tokens.find(
-      ({ symbol }) => symbol === reward.symbol
-    )
-
-    if (!token) {
-      return total
-    }
-
-    const rewardInUsd = new BigNumberInBase(reward.amount).times(
-      tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-    )
-
-    return total.plus(rewardInUsd)
-  }, ZERO_IN_BASE)
+  return tokenStore.tokenBySymbol(market.value.baseToken.symbol)
 })
 
-const marketVolume = computed(() =>
-  new BigNumberInWei(
-    campaignStore.campaignsWithSc.find(
-      (c) => c.campaignId === props.campaignWithSc.campaignId
-    )?.totalScore || 0
-  ).toBase(market.value?.quoteToken.decimals || USDT_DECIMALS)
+const rewardsWithToken = computed(() =>
+  props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+
+    return {
+      value: toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token?.decimals || 18
+      }),
+      token
+    }
+  })
 )
 
-const marketVolumeInUsd = computed(() =>
-  marketVolume.value.times(
-    market.value
-      ? tokenStore.tokenUsdPriceMap[market.value?.quoteToken.coinGeckoId]
-      : 0
+const marketVolume = computed(() =>
+  new BigNumberInWei(props.campaign.totalScore || 0).toBase(
+    market.value?.quoteToken.decimals || usdtToken.decimals
   )
 )
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  totalRewardsInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      rewardsWithToken.value.reduce((total, reward) => {
+        return total.plus(
+          new BigNumberInBase(reward.value).times(
+            tokenStore.tokenUsdPrice(reward.token)
+          )
+        )
+      }, ZERO_IN_BASE)
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
+
+const { valueToString: marketVolumeInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      marketVolume.value.times(
+        market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+      )
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
+
+const sgtScAddress = computed(() => {
+  const market = spotStore.markets.find(
+    ({ marketId }) => marketId === props.campaign.marketId
+  )
+
+  const scAddress =
+    spotGridMarkets.find((sgt) => sgt.slug === market?.slug)?.contractAddress ||
+    ''
+
+  return scAddress
+})
+
+const userHasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.campaign.marketId]
+  )
 )
 
-const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  marketVolumeInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+onMounted(() => {
+  status.setLoading()
+  campaignStore
+    .fetchActiveStrategiesOnSmartContract(sgtScAddress.value)
+    .then((response) => {
+      activeBots.value = response
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 </script>
 
 <template>
   <tr v-if="market" class="text-right text-sm">
     <td class="text-left">
-      <NuxtLink
-        :to="{
-          name: TradingBotsSubPage.GridSpotMarket,
-          params: { market: campaignWithSc.marketSlug }
-        }"
-        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
-      >
-        <div v-if="token">
-          <CommonTokenIcon v-bind="{ token }" />
-        </div>
-        <div>
-          <p class="text-sm font-bold">{{ market.ticker }}</p>
-          <p class="text-xs text-gray-500">
-            {{ market.baseToken.name }}
-          </p>
-        </div>
-      </NuxtLink>
+      <div class="flex items-center space-x-2">
+        <NuxtLink
+          :to="{
+            name: PortfolioSubPage.OrdersSpotTradeHistory,
+            params: { market: market.slug },
+            query: { interface: TradingInterface.TradingBots }
+          }"
+          class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+        >
+          <div v-if="baseToken">
+            <CommonTokenIcon v-bind="{ token: baseToken }" />
+          </div>
+          <div>
+            <p class="text-sm font-bold">{{ market.ticker }}</p>
+            <p class="text-xs text-gray-500">
+              {{ market.baseToken.name }}
+            </p>
+          </div>
+        </NuxtLink>
+
+        <AppTooltip
+          v-if="userHasActiveLegacyStrategy"
+          is-warning
+          :content="$t('sgt.legacyBotWarning')"
+          is-lg
+        />
+      </div>
     </td>
 
     <td class="text-left">
@@ -114,22 +165,24 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
           {{ totalRewardsInUsdToString }} USD
         </p>
         <div class="flex items-center space-x-2">
-          <div
-            v-for="(reward, i) in rewardsWithToken"
-            :key="`${reward.token}-${reward.value}`"
-            class="flex items-center space-x-2"
-          >
-            <p v-if="i > 0">+</p>
-            <CommonTokenIcon
+          <template v-for="(reward, index) in rewardsWithToken" :key="index">
+            <PartialsLiquidityCommonTokenAmount
               v-if="reward.token"
-              is-sm
-              v-bind="{ token: reward.token }"
+              v-bind="{
+                amount: reward.value,
+                symbol: reward.token.symbol,
+                index
+              }"
             />
-            <p class="text-xs text-gray-400">
-              {{ reward.value }} {{ reward?.token?.symbol }}
-            </p>
-          </div>
+          </template>
         </div>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <span v-if="status.isLoading()" class="text-gray-500">&mdash;</span>
+        <span v-else>{{ activeBots }}</span>
       </div>
     </td>
 
@@ -145,7 +198,7 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
           class="text-blue-500"
           :to="{
             name: LiquidityRewardsPage.CampaignDetails,
-            query: { campaign: campaignWithSc.campaignId }
+            query: { campaign: campaign.campaignId }
           }"
         >
           {{ $t('campaign.rewardsDetails') }}

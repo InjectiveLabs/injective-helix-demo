@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { fetchGasPrice, DEFAULT_GAS_PRICE } from '@injectivelabs/sdk-ui-ts'
+import { SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { DEFAULT_GAS_PRICE } from '@shared/utils/constant'
+import { alchemyKey } from '@shared/wallet/wallet-strategy'
+import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
-import { SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import {
   NETWORK,
   CHAIN_ID,
@@ -10,7 +12,22 @@ import {
   GEO_IP_RESTRICTIONS_ENABLED,
   VPN_PROXY_VALIDATION_PERIOD
 } from '@/app/utils/constants'
+import {
+  fetchGeoLocation,
+  validateGeoLocation,
+  fetchUserCountryFromBrowser,
+  detectVPNOrProxyUsageNoThrow,
+  displayVPNOrProxyUsageToast
+} from '@/app/services/region'
 import { Locale, english } from '@/locales'
+import {
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
+import { tendermintApi } from '@/app/Services'
+import { todayInSeconds } from '@/app/utils/time'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   Modal,
   AppState,
@@ -20,21 +37,6 @@ import {
   OrderbookLayout,
   UiMarketWithToken
 } from '@/types'
-import {
-  fetchGeoLocation,
-  validateGeoLocation,
-  fetchUserCountryFromBrowser,
-  detectVPNOrProxyUsageNoThrow,
-  displayVPNOrProxyUsageToast
-} from '@/app/services/region'
-import { todayInSeconds } from '@/app/utils/time'
-import { streamProvider } from '@/app/providers/StreamProvider'
-import { alchemyKey } from '@/app/wallet-strategy'
-import { amplitudeWalletTracker } from '@/app/providers/amplitude'
-import {
-  isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets
-} from '@/app/data/geoip'
 
 export interface UserBasedState {
   favoriteMarkets: string[]
@@ -43,20 +45,26 @@ export interface UserBasedState {
 
   geoLocation: GeoLocation
   preferences: {
-    orderbookLayout: OrderbookLayout
-    tradingLayout: TradingLayout
+    isHideBalances: boolean
     authZManagement: boolean
+    thousandsSeparator: boolean
+    tradingLayout: TradingLayout
     subaccountManagement: boolean
+    orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
+    skipExperimentalConfirmationModal: boolean
   }
 }
 
 type AppStoreState = {
+  blockHeight: number
+
   // App Settings
   locale: Locale
   chainId: ChainId
   gasPrice: string
   ethereumChainId: EthereumChainId
+  marketsOpen: boolean
 
   // Loading States
   state: AppState
@@ -69,11 +77,14 @@ type AppStoreState = {
 }
 
 const initialStateFactory = (): AppStoreState => ({
+  blockHeight: 0,
+
   // App Settings
   locale: english,
   chainId: CHAIN_ID,
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
+  marketsOpen: false,
 
   // Loading States
   state: AppState.Idle,
@@ -93,11 +104,14 @@ const initialStateFactory = (): AppStoreState => ({
       vpnCheckTimestamp: 0
     },
     preferences: {
-      skipTradeConfirmationModal: false,
-      orderbookLayout: OrderbookLayout.Default,
-      tradingLayout: TradingLayout.Left,
+      isHideBalances: false,
+      authZManagement: false,
+      thousandsSeparator: true,
       subaccountManagement: false,
-      authZManagement: false
+      skipTradeConfirmationModal: false,
+      tradingLayout: TradingLayout.Left,
+      skipExperimentalConfirmationModal: false,
+      orderbookLayout: OrderbookLayout.Default
     }
   }
 })
@@ -122,6 +136,15 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       await appStore.fetchGeoLocation()
+    },
+
+    async fetchBlockHeight() {
+      const appStore = useAppStore()
+      const latestBlock = await tendermintApi.fetchLatestBlock()
+
+      appStore.$patch({
+        blockHeight: Number(latestBlock?.header?.height || 0)
+      })
     },
 
     async fetchGasPrice() {
@@ -223,7 +246,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      amplitudeWalletTracker.submitWalletSelectedTrackEvent({
+      mixpanelAnalytics.trackWalletSelected({
         wallet: walletStore.wallet,
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country
@@ -284,8 +307,22 @@ export const useAppStore = defineStore('app', {
       })
     },
 
+    toggleHideBalances() {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          isHideBalances: !appStore.userState.preferences.isHideBalances
+        }
+      })
+    },
+
     setUserState(userState: Object) {
       const appStore = useAppStore()
+
+      // we have to use patch for values that we are caching in localStorage, this ensure that the payload is passed to the persistState function
 
       appStore.$patch({ userState })
     },
@@ -300,6 +337,17 @@ export const useAppStore = defineStore('app', {
 
     cancelAllStreams() {
       streamProvider.cancelAll()
+    },
+
+    reset() {
+      const appStore = useAppStore()
+
+      const initialState = initialStateFactory()
+
+      appStore.$patch({
+        ...initialState
+      })
+      appStore.userState = initialState.userState
     }
   }
 })

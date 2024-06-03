@@ -1,10 +1,9 @@
 <script lang="ts" setup>
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
-import { NETWORK } from '@/app/utils/constants'
-import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { confettiOptions } from '@/app/utils/vendor'
+import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
+import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const { t } = useLang()
@@ -29,7 +28,7 @@ const explorerUrl = computed(() => {
     return undefined
   }
 
-  return `${getExplorerUrl(NETWORK)}/transaction/${props.txHash}`
+  return `${getExplorerUrl()}/transaction/${props.txHash}`
 })
 
 function closeModal() {
@@ -63,7 +62,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 <template>
   <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
-      <div class="text-center relative">
+      <div class="text-center relative p-8">
         <AppCustomConfetti
           class="absolute inset-0 h-48 -mt-9 w-full"
           v-bind="{ confettiOptions }"

@@ -1,50 +1,14 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  Announcement,
-  Attachment,
-  AttachmentWithAnnouncement
-} from '@/app/client/types/announcements'
 
 const { $onError } = useNuxtApp()
 const announcementStore = useAnnouncementStore()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const attachmentsWithAnnouncements = computed(() => {
-  const defaultAnnouncementsSize = 3
-
-  if (announcementStore.announcements.length === 0) {
-    return []
-  }
-
-  const filteredAttachments = announcementStore.attachments.filter(
-    (attachment: Attachment) => attachment
-  )
-
-  const formattedAttachmentsWithAnnouncements =
-    announcementStore.announcements.map((announcement: Announcement) => {
-      const matchingAttachment = filteredAttachments.find(
-        (attachment: Attachment) => {
-          return attachment.announcementId === announcement.announcementId
-        }
-      )
-
-      if (!matchingAttachment) {
-        return announcement
-      }
-
-      return {
-        ...announcement,
-        ...matchingAttachment
-      }
-    })
-
-  return formattedAttachmentsWithAnnouncements.slice(
-    0,
-    defaultAnnouncementsSize
-  ) as AttachmentWithAnnouncement[]
-})
+const announcements = computed(() =>
+  announcementStore.announcements.slice(0, 3)
+)
 
 onMounted(() => {
   Promise.all([announcementStore.fetchAnnouncements()])
@@ -55,28 +19,22 @@ onMounted(() => {
 
 <template>
   <AppHocLoading :status="status">
-    <div class="text-gray-900">
-      <div class="text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8">
+    <div>
+      <div
+        class="text-center text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+      >
         {{ $t('home.latestNews') }}
       </div>
-      <div
-        v-if="attachmentsWithAnnouncements.length > 0"
-        class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 lg:gap-6"
-      >
+      <div v-if="announcements.length > 0" class="grid gap-8 md:grid-cols-3">
         <CommonCardAnnouncement
-          v-for="(card, index) in attachmentsWithAnnouncements"
+          v-for="(announcement, index) in announcements"
           :key="`news-card-${index}`"
-          class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden"
-          :html-url="card.htmlUrl"
+          v-bind="{ url: announcement.url }"
         >
-          <template #date>{{ card.createdAt }}</template>
-          <template #title>{{ card.title }}</template>
-          <template v-if="card.contentUrl" #illustration>
-            <img
-              :src="card.contentUrl"
-              :alt="card.title"
-              class="cover h-full block rounded-lg"
-            />
+          <template #date>{{ announcement.createdAt }}</template>
+          <template #title>{{ announcement.title }}</template>
+          <template v-if="announcement.featureImage" #illustration>
+            <img :src="announcement.featureImage" :alt="announcement.title" />
           </template>
         </CommonCardAnnouncement>
       </div>

@@ -1,34 +1,35 @@
 <script lang="ts" setup>
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  Modal,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField
-} from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   spotGridMarkets,
   gridStrategyAuthorizationMessageTypes
 } from '@/app/data/grid-strategy'
 import {
-  GST_DEFAULT_AUTO_GRIDS,
+  LEGACY_MARKET_IDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  GST_DEFAULT_AUTO_GRIDS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP,
+  LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP
 } from '@/app/utils/constants'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import {
+  Modal,
+  MainPage,
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const props = defineProps({
   isAuto: Boolean,
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -37,20 +38,24 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
+const router = useRouter()
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const formErrors = useFormErrors()
 const modalStore = useModalStore()
+const validate = useValidateForm()
 const walletStore = useWalletStore()
+const setFormValues = useSetFormValues()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
-const setFormValues = useSetFormValues()
-const validate = useValidateForm()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const hasActiveStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find((strategy) => {
@@ -71,27 +76,29 @@ const hasActiveStrategy = computed(() =>
 )
 
 const quoteDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
 
 const quoteDenomAmount = computed(() =>
-  new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
-    quoteDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const baseDenomBalance = computed(() =>
-  accountBalancesWithToken.value.find(
+  userBalancesWithToken.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )
 
 const baseDenomAmount = computed(() =>
-  new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
-    baseDenomBalance.value?.token.decimals
-  )
+  sharedToBalanceInTokenInBase({
+    value: baseDenomBalance.value?.bankBalance || 0,
+    decimalPlaces: baseDenomBalance.value?.token.decimals
+  })
 )
 
 const gridThreshold = computed(() => {
@@ -112,7 +119,7 @@ const gridThreshold = computed(() => {
 
 const initialInvestment = computed(() =>
   new BigNumberInBase(
-    formValues.value[SpotGridTradingField.InvestmentAmount] || 0
+    formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
   ).plus(
     new BigNumberInBase(
       formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
@@ -161,6 +168,53 @@ const isUpperBoundLtLastPrice = computed(() =>
     formValues.value[SpotGridTradingField.UpperPrice] || Infinity
   )
 )
+
+const hasActiveLegacyStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) =>
+      strategy.marketId ===
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]
+  )
+)
+
+const isLegacyMarket = computed(
+  () =>
+    !!LEGACY_MARKET_IDS.find((marketId) => marketId === props.market.marketId)
+)
+
+const newMarketSlug = computed(
+  () =>
+    spotStore.markets.find(
+      (market) =>
+        market.marketId ===
+        LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP[props.market.marketId]
+    )?.slug || ''
+)
+
+const isDisabled = computed(() => {
+  const investmentType = formValues.value[SpotGridTradingField.InvestmentType]
+
+  if (Object.keys(formErrors.value).length > 0) {
+    return true
+  }
+
+  if (!props.isAuto && !formValues.value[SpotGridTradingField.Grids]) {
+    return true
+  }
+
+  if (investmentType === InvestmentTypeGst.Base) {
+    return !formValues.value[SpotGridTradingField.BaseInvestmentAmount]
+  }
+
+  if (investmentType === InvestmentTypeGst.Quote) {
+    return !formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
+  }
+
+  return (
+    !formValues.value[SpotGridTradingField.BaseInvestmentAmount] &&
+    !formValues.value[SpotGridTradingField.QuoteInvestmentAmount]
+  )
+})
 
 async function onCheckBalanceFees() {
   emit('strategy:create')
@@ -212,8 +266,9 @@ function onCreateStrategy() {
 
   const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
     authZStore.granterGrants.some(
-      (g) =>
-        g.authorization.endsWith(m) && g.grantee === gridMarket?.contractAddress
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
     )
   )
 
@@ -226,7 +281,7 @@ function onCreateStrategy() {
 
 function onInvestmentTypeSet() {
   setFormValues({
-    [SpotGridTradingField.InvestmentAmount]:
+    [SpotGridTradingField.QuoteInvestmentAmount]:
       calculatedAmount.value.quoteAmount.toFixed(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),
@@ -239,22 +294,83 @@ function onInvestmentTypeSet() {
 
   onCreateStrategy()
 }
+
+function removeLegacyStrategy() {
+  if (!hasActiveLegacyStrategy.value) {
+    return
+  }
+
+  status.setLoading()
+
+  gridStrategyStore
+    .removeStrategyForSubaccount(
+      hasActiveLegacyStrategy.value.contractAddress,
+      hasActiveLegacyStrategy.value.subaccountId
+    )
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function goToNewMarket() {
+  const newMarket = spotStore.markets.find(
+    (market) =>
+      market.marketId ===
+      LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP[props.market.marketId]
+  )
+
+  if (!newMarket) {
+    return
+  }
+
+  router.push({
+    name: MainPage.TradingBotsLiquidityBotsSpot,
+    query: { market: newMarketSlug.value }
+  })
+
+  gridStrategyStore.$patch({
+    spotMarket: newMarket
+  })
+}
 </script>
 
 <template>
   <div>
     <AppButton
-      :status="status"
-      is-lg
+      v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
       class="w-full shadow-none select-none"
+      v-bind="{ status, disabled: isDisabled }"
       :class="[
         hasActiveStrategy
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
           : 'bg-blue-500 text-blue-900'
       ]"
+      is-lg
       @click="onCheckBalanceFees"
     >
       <span>{{ $t('sgt.create') }}</span>
+    </AppButton>
+
+    <p v-if="hasActiveLegacyStrategy" class="text-xs text-red-500 mt-4">
+      {{ $t('sgt.endLegacyBotText') }}
+    </p>
+
+    <AppButton
+      v-if="hasActiveLegacyStrategy"
+      class="bg-red-500 text-black w-full mt-4"
+      v-bind="{ status }"
+      @click="removeLegacyStrategy"
+    >
+      {{ $t('sgt.endBot') }}
+    </AppButton>
+
+    <AppButton
+      v-if="isLegacyMarket"
+      class="text-xs bg-blue-500 text-blue-100 mt-4 w-full"
+      @click="goToNewMarket"
+    >
+      {{ $t('sgt.goToNewMarket') }}
     </AppButton>
 
     <ModalsLiquiditySgtBalancedFees

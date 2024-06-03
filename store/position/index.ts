@@ -1,29 +1,32 @@
 import { defineStore } from 'pinia'
-import { UiDerivativeOrderbook, UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { useDerivativeStore } from '../derivative'
-import { indexerDerivativesApi } from '@/app/Services'
-import { ActivityFetchOptions } from '@/types'
+import { usdtToken } from '@shared/data/token'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { indexerDerivativesApi } from '@shared/Service'
+import { Orderbook, Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
-  addMarginToPosition,
   closePosition,
   closeAllPosition,
+  addMarginToPosition,
   closePositionAndReduceOnlyOrders
 } from '@/store/position/message'
 import {
   streamSubaccountPositions,
   cancelSubaccountPositionsStream
 } from '@/store/position/stream'
+import { ActivityFetchOptions, MarketMarkPriceMap } from '@/types'
 
-type OrderBookMap = Record<string, UiDerivativeOrderbook>
+type OrderBookMap = Record<string, Orderbook>
 
 type PositionStoreState = {
   orderbooks: OrderBookMap
-  subaccountPositions: UiPosition[]
+  positions: PositionV2[] /** for account portfolio calculation */
+  subaccountPositions: Position[]
   subaccountPositionsCount: number
 }
 
 const initialStateFactory = (): PositionStoreState => ({
   orderbooks: {} as OrderBookMap,
+  positions: [],
   subaccountPositions: [],
   subaccountPositionsCount: 0
 })
@@ -38,6 +41,54 @@ export const usePositionStore = defineStore('position', {
 
     cancelSubaccountPositionsStream,
     streamSubaccountPositions,
+
+    async fetchPositions() {
+      const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+
+      if (
+        !walletStore.isUserWalletConnected ||
+        !walletStore.authZOrInjectiveAddress
+      ) {
+        return
+      }
+
+      const marketsToTokenDecimals = derivativeStore.markets.reduce(
+        (marketsMap, market) => {
+          return {
+            ...marketsMap,
+            [market.marketId]: market.quoteToken.decimals
+          }
+        },
+        {} as Record<string, number>
+      )
+      const { positions } = await indexerDerivativesApi.fetchPositionsV2({
+        address: walletStore.authZOrInjectiveAddress
+      })
+
+      const markPricesMap = positions.reduce((markPrices, position) => {
+        return {
+          ...markPrices,
+          [position.marketId]: {
+            marketId: position.marketId,
+            price: new BigNumberInWei(position.markPrice)
+              .toBase(
+                marketsToTokenDecimals[position.marketId] || usdtToken.decimals
+              )
+              .toFixed()
+          }
+        }
+      }, {} as MarketMarkPriceMap)
+
+      positionStore.$patch({
+        positions
+      })
+
+      derivativeStore.$patch({
+        marketMarkPriceMap: markPricesMap
+      })
+    },
 
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
@@ -54,7 +105,7 @@ export const usePositionStore = defineStore('position', {
       const filters = activityFetchOptions?.filters
 
       const { positions, pagination } =
-        await indexerDerivativesApi.fetchPositions({
+        await indexerDerivativesApi.fetchPositionsV2({
           subaccountId: accountStore.subaccountId,
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
           direction: filters?.direction
@@ -63,39 +114,6 @@ export const usePositionStore = defineStore('position', {
       positionStore.$patch({
         subaccountPositions: positions,
         subaccountPositionsCount: pagination.total
-      })
-    },
-
-    // Fetching multiple market orderbooks for unrealized PnL calculation within
-    async fetchMarketsOrderbook() {
-      const positionStore = usePositionStore()
-      const derivativeStore = useDerivativeStore()
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
-
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
-        return
-      }
-
-      if (derivativeStore.markets.length === 0) {
-        return
-      }
-
-      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooksV2(
-        derivativeStore.markets.map((market) => market.marketId)
-      )
-      const marketsOrderbookMap = marketsOrderbook.reduce(
-        (marketOrderbooks, { orderbook }, index) => {
-          return {
-            ...marketOrderbooks,
-            [derivativeStore.markets[index].marketId]: orderbook
-          }
-        },
-        {} as OrderBookMap
-      )
-
-      positionStore.$patch({
-        orderbooks: marketsOrderbookMap
       })
     },
 

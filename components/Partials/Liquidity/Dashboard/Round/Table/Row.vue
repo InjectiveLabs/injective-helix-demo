@@ -1,84 +1,70 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { CampaignWithSc, LiquidityRewardsPage } from '@/types'
-
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
+import { toBalanceInToken } from '@/app/utils/formatters'
+import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
-  campaignWithSc: {
-    type: Object as PropType<CampaignWithSc>,
+  campaign: {
+    type: Object as PropType<Campaign>,
     required: true
   }
 })
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const campaignStore = useCampaignStore()
 
 const market = computed(() =>
-  spotStore.markets.find(({ slug }) => slug === props.campaignWithSc.marketSlug)
+  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const token = computed(() =>
-  tokenStore.tokens.find(
-    ({ symbol }) => market.value?.baseToken.symbol === symbol
-  )
-)
+const token = computed(() => {
+  if (!market.value) {
+    return
+  }
 
-const campaignUserInfo = computed(() =>
-  campaignStore.ownerRewards.find(
-    (r) => r.campaignId === props.campaignWithSc.campaignId
-  )
-)
-const campaign = computed(() =>
-  campaignStore.campaignsWithSc.find(
-    (c) => c.campaignId === props.campaignWithSc.campaignId
-  )
-)
+  return tokenStore.tokenBySymbol(market.value.baseToken.symbol)
+})
 
 const marketVolumeInUsd = computed(() =>
   market.value
-    ? new BigNumberInWei(campaignUserInfo.value?.score || 0)
-        .toBase(market.value.quoteToken.decimals)
-        .times(tokenStore.tokenUsdPriceMap[market.value.quoteToken.coinGeckoId])
+    ? new BigNumberInBase(
+        toBalanceInToken({
+          value: props.campaign.userScore || 0,
+          decimalPlaces: market.value.quoteToken.decimals
+        })
+      ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
     : ZERO_IN_BASE
 )
 
 const estRewardsInPercentage = computed(() => {
-  if (
-    !campaignUserInfo.value ||
-    !campaign.value ||
-    new BigNumberInBase(campaign.value?.totalScore).isZero()
-  ) {
+  const userScore = props.campaign.userScore
+  const totalScore = props.campaign.totalScore
+
+  if (!userScore && !totalScore) {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInBase(campaignUserInfo.value.score).dividedBy(
-    campaign.value?.totalScore
-  )
+  return new BigNumberInBase(userScore).dividedBy(totalScore)
 })
 
 const rewards = computed(() => {
-  return props.campaignWithSc.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(
-      ({ symbol }) => symbol === reward.symbol
-    )
+  return props.campaign.rewards.map((reward) => {
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
-    const amount = new BigNumberInBase(
-      estRewardsInPercentage.value
-    ).multipliedBy(reward.amount || 0)
+    const amount = new BigNumberInWei(estRewardsInPercentage.value)
+      .multipliedBy(reward.amount || 0)
+      .toBase(token?.decimals || 0)
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(
-          tokenStore.tokenUsdPriceMap[token.coinGeckoId]
-        )
+      ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {
       amount,
-      symbol: reward.symbol,
+      symbol: token?.symbol || '',
       amountInUsd
     }
   })
@@ -91,28 +77,17 @@ const totalAmountInUsd = computed(() =>
   )
 )
 
-const round = computed(
-  () =>
-    CAMPAIGN_LP_ROUNDS.find((r) =>
-      r.campaigns.find((c) => c.campaignId === props.campaignWithSc.campaignId)
-    )!
-)
-
-const isClaimable = computed(() => Date.now() > round.value.endDate * 1000)
-
-const { valueToString: totalAmountInUsdToString } = useBigNumberFormatter(
+const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
   totalAmountInUsd,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  marketVolumeInUsd,
-  {
+const { valueToString: marketVolumeInUsdToString } =
+  useSharedBigNumberFormatter(marketVolumeInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+  })
 </script>
 
 <template>
@@ -158,9 +133,7 @@ const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
       <div class="space-y-2">
         <PartialsLiquidityCommonClaimButton
           v-bind="{
-            scAddress: campaignWithSc.scAddress,
-            isClaimable,
-            campaignId: campaignWithSc.campaignId
+            campaign
           }"
         />
       </div>

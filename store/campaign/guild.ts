@@ -1,4 +1,5 @@
-import { exchangeApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { exchangeApi } from '@shared/Service'
+import { indexerGrpcCampaignApi } from '@/app/Services'
 import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { GuildSortBy } from '@/types'
 

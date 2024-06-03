@@ -3,7 +3,9 @@ import {
   ErrorType,
   ThrownException,
   isThrownException,
-  TransactionException
+  GRPC_REQUEST_FAILED,
+  TransactionException,
+  GrpcUnaryRequestException
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
@@ -26,6 +28,17 @@ const reportToUser = (error: ThrownException) => {
     error.code === StatusCodes.REQUEST_TOO_LONG
   ) {
     return
+  }
+
+  if (
+    error instanceof GrpcUnaryRequestException &&
+    error.contextCode === GRPC_REQUEST_FAILED
+  ) {
+    return errorToast({
+      title: 'The product is experiencing higher than usual demand',
+      description:
+        'Hang tight, engineers are doing their best to improve the performance and efficiency.'
+    })
   }
 
   if (!(error instanceof TransactionException)) {

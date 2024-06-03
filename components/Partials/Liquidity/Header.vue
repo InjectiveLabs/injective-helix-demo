@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Campaign } from '@injectivelabs/sdk-ts'
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { CampaignWithScAndData, LiquidityRewardsPage } from '@/types'
+import { LiquidityRewardsPage } from '@/types'
 
 const props = defineProps({
+  endDate: {
+    type: Number,
+    required: true
+  },
+
+  lastUpdated: {
+    type: Number,
+    required: true
+  },
+
   round: {
     type: Number,
     required: true
   },
 
-  campaignsWithScAndData: {
-    type: Object as PropType<CampaignWithScAndData[]>,
+  roundCampaigns: {
+    type: Array as PropType<Campaign[]>,
     required: true
   }
 })
@@ -22,17 +33,18 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 
-const round = computed(() =>
-  CAMPAIGN_LP_ROUNDS.find(({ round }) => round === props.round)
-)
-
-const totalRewardsThisRound = computed(() => {
-  return props.campaignsWithScAndData.reduce((sum, campaign) => {
+const totalRewardsThisRound = computed(() =>
+  props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-      const token = tokenStore.tokens.find((t) => t.symbol === reward.symbol)!
+      const token = tokenStore.tokenByDenomOrSymbol(reward.denom)!
 
-      const rewardInUsd = new BigNumberInBase(reward.amount).times(
-        tokenStore.tokenUsdPriceMap[token.coinGeckoId]
+      const rewardInBase = toBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token.decimals
+      })
+
+      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+        tokenStore.tokenUsdPrice(token)
       )
 
       return sum.plus(rewardInUsd)
@@ -40,36 +52,33 @@ const totalRewardsThisRound = computed(() => {
 
     return sum.plus(rewardsPerCampaign)
   }, ZERO_IN_BASE)
-})
+)
 
 const totalVolume = computed(() =>
-  props.campaignsWithScAndData
+  props.roundCampaigns
     .reduce((totalScore, campaign) => {
       const market = spotStore.markets.find(
-        ({ slug }) => slug === campaign.marketSlug
+        ({ marketId }) => marketId === campaign.marketId
       )!
 
       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
-        .toBase(market.quoteToken.decimals)
-        .times(tokenStore.tokenUsdPriceMap[market.quoteToken.coinGeckoId])
+        .toBase(market.quoteToken?.decimals || 18)
+        .times(tokenStore.tokenUsdPrice(market.quoteToken))
       return totalScore.plus(campaignVolumeInUsd)
     }, ZERO_IN_BASE)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 )
 
 const endDate = computed(() => {
-  const utcDate = utcToZonedTime(
-    Number(round.value?.endDate || 0) * 1000,
-    'UTC'
-  )
+  const utcDate = utcToZonedTime(Number(props.endDate || 0), 'UTC')
 
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
 
-const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
-  totalRewardsThisRound,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: totalRewardsThisRoundToString } =
+  useSharedBigNumberFormatter(totalRewardsThisRound, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 </script>
 
 <template>
@@ -91,7 +100,7 @@ const { valueToString: totalRewardsThisRoundToString } = useBigNumberFormatter(
         <NuxtLink
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
-          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap text-white bg-blue-500 border-blue-500 hover:bg-blue-600 border rounded-lg"
+          class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
           {{ $t('campaign.myRewards') }}
         </NuxtLink>

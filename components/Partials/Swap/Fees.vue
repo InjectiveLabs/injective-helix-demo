@@ -7,9 +7,12 @@ const formValues = useFormValues<SwapForm>()
 
 const { swapRoutesFees, totalFee } = useSwapFee(formValues)
 
-const { valueToString: totalFeeToFormat } = useBigNumberFormatter(totalFee, {
-  decimalPlaces: MAX_QUOTE_DECIMALS
-})
+const { valueToString: totalFeeToFormat } = useSharedBigNumberFormatter(
+  totalFee,
+  {
+    decimalPlaces: MAX_QUOTE_DECIMALS
+  }
+)
 
 function toggleShowFeeBreakdown() {
   showFeeBreakdown.value = !showFeeBreakdown.value
@@ -44,7 +47,7 @@ function toggleShowFeeBreakdown() {
             >
               <span>{{ symbol.from }}</span>
 
-              <BaseIcon
+              <SharedIcon
                 name="arrow"
                 class="rotate-180 w-4 h-4 mx-1 cursor-text"
               />
@@ -57,7 +60,7 @@ function toggleShowFeeBreakdown() {
       </div>
     </div>
 
-    <BaseIcon
+    <SharedIcon
       v-if="swapRoutesFees.length > 1"
       name="caret-down-slim"
       class="w-3 h-3 mt-1 ml-1 transition-transform duration-300"

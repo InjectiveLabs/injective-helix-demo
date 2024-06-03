@@ -1,25 +1,31 @@
 <script setup lang="ts">
-import { CampaignRound } from '@/types'
+import { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
+  activeRound: {
+    type: Number,
+    required: true
+  },
+
+  campaigns: {
+    type: Array as PropType<Campaign[]>,
+    required: true
+  },
+
   round: {
-    type: Object as PropType<CampaignRound>,
+    type: Number,
     required: true
   }
 })
 
-const isActive = computed(
-  () =>
-    Number(props.round.startDate) * 1000 < Date.now() &&
-    Number(props.round.endDate) * 1000 > Date.now()
-)
+const isActive = computed(() => props.activeRound === props.round)
 </script>
 
 <template>
   <div>
     <div class="border-b p-2 flex items-center space-x-4">
       <p>
-        {{ $t('campaign.round', { round: round.round }) }}
+        {{ $t('campaign.round', { round }) }}
       </p>
       <div v-if="isActive" class="flex items-center space-x-2">
         <div class="w-2 h-2 bg-green-500 rounded-full" />
@@ -33,9 +39,9 @@ const isActive = computed(
 
         <tbody>
           <PartialsLiquidityDashboardRoundTableRow
-            v-for="campaignWithSc in round.campaigns"
-            :key="campaignWithSc.campaignId"
-            v-bind="{ campaignWithSc }"
+            v-for="campaign in campaigns"
+            :key="campaign.campaignId"
+            v-bind="{ campaign }"
           />
         </tbody>
       </table>

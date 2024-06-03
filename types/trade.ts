@@ -1,15 +1,30 @@
 import {
-  UiDerivativeLimitOrder,
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiDerivativeOrderHistory,
-  UiDerivativeTrade,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiSpotTrade
-} from '@injectivelabs/sdk-ui-ts'
+  SharedUiSpotTrade,
+  SharedUiSpotMarket,
+  SharedUiMarketSummary,
+  SharedUiDerivativeTrade,
+  SharedUiDerivativeMarket
+} from '@shared/types'
+import {
+  ExitType,
+  StrategyType,
+  DerivativeLimitOrder,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeField, InvestmentTypeGst, SpotGridTradingField } from '../types'
+import {
+  TradeField,
+  TradeTypes,
+  TradeAmountOption,
+  InvestmentTypeGst,
+  SpotTradeFormField,
+  DerivativeTradeTypes,
+  SpotGridTradingField,
+  DerivativesTradeFormField,
+  ClosePositionLimitFormField,
+  TakeProfitStopLossFormField
+} from '../types'
 
 export type TradeForm = Record<TradeField, any>
 
@@ -18,22 +33,25 @@ export type TradeFormValue = {
   value: string | number | boolean
 }
 
-export type UiMarketWithToken =
-  | UiDerivativeMarketWithToken
-  | UiSpotMarketWithToken
+export interface UiSpotMarket extends SharedUiSpotMarket {
+  isVerified: boolean
+}
+
+export interface UiDerivativeMarket extends SharedUiDerivativeMarket {
+  isVerified: boolean
+}
+
+export type UiMarketWithToken = UiSpotMarket | UiDerivativeMarket
 
 export type CurrentMarket = UiMarketWithToken | undefined
 
-export type UiMarketSummary = UiDerivativeMarketSummary | UiSpotMarketSummary
-export type UiTrade = UiDerivativeTrade | UiSpotTrade
+export type UiTrade = SharedUiSpotTrade | SharedUiDerivativeTrade
 
-export type UIDerivativeOrder =
-  | UiDerivativeOrderHistory
-  | UiDerivativeLimitOrder
+export type UIDerivativeOrder = DerivativeLimitOrder | DerivativeOrderHistory
 
 export interface UiMarketAndSummary {
   market: UiMarketWithToken
-  summary: UiMarketSummary
+  summary: SharedUiMarketSummary
 }
 
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
@@ -76,12 +94,6 @@ export type MaxAmountOnOrderbook = {
   totalQuantity: BigNumberInBase
 }
 
-export enum USDCSymbol {
-  PeggyEthereum = 'USDC',
-  WormholeEthereum = 'USDCet',
-  WormholeSolana = 'USDCso'
-}
-
 export type MarketMarkPrice = {
   price: string
   marketId: string
@@ -94,16 +106,20 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.Grids]: string
   [SpotGridTradingField.LowerPrice]: string
   [SpotGridTradingField.UpperPrice]: string
-  [SpotGridTradingField.InvestmentAmount]: string
-  [SpotGridTradingField.BaseInvestmentAmount]: string
+  [SpotGridTradingField.QuoteInvestmentAmount]: string
   [SpotGridTradingField.BaseInvestmentAmount]: string
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
-  [SpotGridTradingField.TakeProfit]: string
+  [SpotGridTradingField.SellBaseOnStopLoss]: boolean
+  [SpotGridTradingField.BuyBaseOnTakeProfit]: boolean
+  [SpotGridTradingField.SettleIn]: boolean
+  [SpotGridTradingField.ExitType]: ExitType
   [SpotGridTradingField.StopLoss]: string
-  [SpotGridTradingField.SellAllBase]: boolean
+  [SpotGridTradingField.TakeProfit]: string
+  [SpotGridTradingField.StrategyType]: StrategyType
+  [SpotGridTradingField.IsAssetRebalanceOn]: boolean
 }
 
-export type SpotGridMarket = {
+export type GridMarket = {
   slug: string
   contractAddress: string
 }
@@ -111,4 +127,42 @@ export type SpotGridMarket = {
 export type NotLiquidMarket = {
   slug: string
   redirectionSlug: string
+}
+
+export type SpotTradeForm = {
+  [SpotTradeFormField.Type]: TradeTypes
+  [SpotTradeFormField.Side]: OrderSide
+  [SpotTradeFormField.Price]: string
+  [SpotTradeFormField.Slippage]: string
+  [SpotTradeFormField.PostOnly]: boolean
+  [SpotTradeFormField.IsSlippageOn]: boolean
+  [SpotTradeFormField.Amount]: string
+  [SpotTradeFormField.AmountOption]: TradeAmountOption
+}
+
+export type DerivativesTradeForm = {
+  [DerivativesTradeFormField.Side]: TradeDirection
+  [DerivativesTradeFormField.Amount]: string
+  [SpotTradeFormField.AmountOption]: TradeAmountOption
+  [DerivativesTradeFormField.Slippage]: string
+  [DerivativesTradeFormField.Leverage]: string
+  [DerivativesTradeFormField.PostOnly]: boolean
+  [DerivativesTradeFormField.LimitPrice]: string
+  [DerivativesTradeFormField.ReduceOnly]: boolean
+  [DerivativesTradeFormField.TriggerPrice]: string
+  [DerivativesTradeFormField.IsSlippageOn]: boolean
+  [DerivativesTradeFormField.Type]: DerivativeTradeTypes
+  [DerivativesTradeFormField.StopLoss]: string
+  [DerivativesTradeFormField.TakeProfit]: string
+  [DerivativesTradeFormField.isTpSlEnabled]: boolean
+}
+
+export type ClosePositionLimitForm = {
+  [ClosePositionLimitFormField.Price]: string
+  [ClosePositionLimitFormField.Quantity]: string
+}
+
+export type TakeProfitStopLossForm = {
+  [TakeProfitStopLossFormField.StopLoss]: string
+  [TakeProfitStopLossFormField.TakeProfit]: string
 }

@@ -4,9 +4,9 @@ import {
   GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { UtilsWallets } from '@injectivelabs/wallet-ts'
+import { UtilsWallets } from '@injectivelabs/wallet-ts/dist/esm/exports'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
-import { walletStrategy } from '@/app/wallet-strategy'
 
 export const isMetamaskInstalled = async (): Promise<boolean> => {
   const provider = await UtilsWallets.getMetamaskProvider()
@@ -18,7 +18,7 @@ export const validateMetamask = async (
   address: string,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const metamaskIsLocked = addresses.length === 0
 
   if (metamaskIsLocked) {
@@ -71,7 +71,11 @@ export const validateMetamask = async (
     )
   }
 
-  if (!metamaskProvider.isMetaMask || metamaskProvider.isPhantom) {
+  if (
+    metamaskProvider.isPhantom ||
+    metamaskProvider.isOkxWallet ||
+    metamaskProvider.isTrustWallet
+  ) {
     throw new GeneralException(
       new Error('You are connected to the wrong wallet. Please use Metamask.'),
       {

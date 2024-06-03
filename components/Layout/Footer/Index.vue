@@ -13,6 +13,10 @@ const aboutUsList = [
     link: MainPage.FeeDiscounts
   },
   {
+    text: t('footer.lpRewards'),
+    link: MainPage.LpRewards
+  },
+  {
     text: t('footer.apiDocumentation'),
     link: 'https://api.injective.exchange/'
   },
@@ -35,7 +39,7 @@ const learnList = [
 </script>
 
 <template>
-  <footer class="w-full py-16 bg-gray-1000 border-t border-t-gray-900">
+  <footer class="w-full py-16 bg-brand-900 border-t border-t-gray-900">
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
@@ -50,11 +54,6 @@ const learnList = [
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
-        <div
-          class="hidden text-sm opacity-75 lg:block mt-6 italic max-w-[450px]"
-        >
-          {{ $t('footer.helixProvides') }}
-        </div>
       </div>
 
       <div class="3md:col-span-2">
@@ -120,7 +119,7 @@ const learnList = [
             href="https://discord.com/invite/injective"
             target="_blank"
           >
-            <BaseIcon name="discord-circle" />
+            <SharedIcon name="discord-circle" />
           </a>
 
           <a
@@ -128,7 +127,7 @@ const learnList = [
             href="https://twitter.com/helixapp_"
             target="_blank"
           >
-            <BaseIcon name="twitter-circle" />
+            <SharedIcon name="twitter-circle" />
           </a>
 
           <a
@@ -136,7 +135,7 @@ const learnList = [
             href="https://t.me/helixapp"
             target="_blank"
           >
-            <BaseIcon name="telegram-circle" />
+            <SharedIcon name="telegram-circle" />
           </a>
         </div>
       </div>

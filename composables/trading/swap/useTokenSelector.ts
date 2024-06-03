@@ -1,14 +1,13 @@
-import type { Ref } from 'vue'
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { Route } from '@injectivelabs/sdk-ts'
-import { INJ_DENOM } from '@injectivelabs/utils'
+import { injToken, usdtToken } from '@shared/data/token'
+import { SharedBalanceWithTokenAndPrice } from '@shared/types'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 import { AccountBalance } from '@/types'
-import { SWAP_LOW_LIQUIDITY_SYMBOLS, usdtToken } from '@/app/data/token'
 
 const getBalanceWithToken = (
   swapDenom: string,
   balances: AccountBalance[]
-): BalanceWithTokenAndPrice | undefined => {
+): SharedBalanceWithTokenAndPrice | undefined => {
   const balanceWithToken = balances.find(({ denom }) => denom === swapDenom)
 
   if (!balanceWithToken) {
@@ -20,7 +19,7 @@ const getBalanceWithToken = (
     denom: balanceWithToken?.denom,
     balance: balanceWithToken?.availableMargin,
     usdPrice: balanceWithToken?.usdPrice
-  } as BalanceWithTokenAndPrice
+  } as SharedBalanceWithTokenAndPrice
 }
 
 export function useSwapTokenSelector({
@@ -33,61 +32,69 @@ export function useSwapTokenSelector({
   outputDenom: Ref<string>
 }) {
   const swapStore = useSwapStore()
+  const spotStore = useSpotStore()
 
   const tradableTokenMaps = computed(() =>
-    swapStore.routes.reduce(
-      (tokens, route: Route) => {
-        const inputTokenWithBalance = getBalanceWithToken(
-          route.sourceDenom,
-          balances.value
+    swapStore.routes
+      .filter(({ steps }) =>
+        steps.every((routeMarketId) =>
+          spotStore.markets.find(({ marketId }) => routeMarketId === marketId)
         )
-
-        const outputTokenWithBalance = getBalanceWithToken(
-          route.targetDenom,
-          balances.value
-        )
-
-        if (!inputTokenWithBalance || !outputTokenWithBalance) {
-          return tokens
-        }
-
-        /** Filter out illiquid markets */
-        if (
-          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
-            inputTokenWithBalance?.token.symbol.toUpperCase()
-          ) ||
-          SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
-            outputTokenWithBalance?.token.symbol.toUpperCase()
+      )
+      .reduce(
+        (tokens, route: Route) => {
+          const inputTokenWithBalance = getBalanceWithToken(
+            route.sourceDenom,
+            balances.value
           )
-        ) {
-          return tokens
-        }
 
-        const inputTokens = tokens[route.targetDenom]
-          ? [...tokens[route.targetDenom], inputTokenWithBalance]
-          : [inputTokenWithBalance]
+          const outputTokenWithBalance = getBalanceWithToken(
+            route.targetDenom,
+            balances.value
+          )
 
-        const outputTokens = tokens[route.sourceDenom]
-          ? [...tokens[route.sourceDenom], outputTokenWithBalance]
-          : [outputTokenWithBalance]
+          if (!inputTokenWithBalance || !outputTokenWithBalance) {
+            return tokens
+          }
 
-        return {
-          ...tokens,
-          [route.targetDenom]: inputTokens,
-          [route.sourceDenom]: outputTokens
-        }
-      },
-      {} as Record<string, BalanceWithTokenAndPrice[]>
-    )
+          /** Filter out illiquid markets */
+          if (
+            SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+              inputTokenWithBalance?.token.symbol.toUpperCase()
+            ) ||
+            SWAP_LOW_LIQUIDITY_SYMBOLS.includes(
+              outputTokenWithBalance?.token.symbol.toUpperCase()
+            )
+          ) {
+            return tokens
+          }
+
+          const inputTokens = tokens[route.targetDenom]
+            ? [...tokens[route.targetDenom], inputTokenWithBalance]
+            : [inputTokenWithBalance]
+
+          const outputTokens = tokens[route.sourceDenom]
+            ? [...tokens[route.sourceDenom], outputTokenWithBalance]
+            : [outputTokenWithBalance]
+
+          return {
+            ...tokens,
+            [route.targetDenom]: inputTokens,
+            [route.sourceDenom]: outputTokens
+          }
+        },
+        {} as Record<string, SharedBalanceWithTokenAndPrice[]>
+      )
   )
 
   const inputDenomOptions = computed(
     () =>
-      Object.keys(tradableTokenMaps.value).map((denom) => {
-        const tokenWithBalance = getBalanceWithToken(denom, balances.value)
-
-        return tokenWithBalance
-      }) as BalanceWithTokenAndPrice[]
+      Object.keys(tradableTokenMaps.value)
+        .map((denom) => getBalanceWithToken(denom, balances.value))
+        .filter(
+          (balanceWithToken) =>
+            balanceWithToken && balanceWithToken.denom !== outputDenom.value
+        ) as SharedBalanceWithTokenAndPrice[]
   )
 
   const outputDenomOptions = computed(
@@ -99,18 +106,23 @@ export function useSwapTokenSelector({
    * So we either keep the currently selected output denom or update to a default one
    **/
   const selectorOutputDenom = computed(() => {
-    const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(
-      (token: BalanceWithTokenAndPrice) => token.denom === outputDenom.value
-    )?.denom
+    const hasRouteToUsdt = tradableTokenMaps.value[inputDenom.value]?.find(
+      ({ denom }) => denom === usdtToken.denom
+    )
 
-    if (tradableTokenMaps.value[inputDenom.value]) {
+    if (hasRouteToUsdt) {
       return usdtToken.denom
     }
+
+    const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(
+      (token: SharedBalanceWithTokenAndPrice) =>
+        token.denom === outputDenom.value
+    )?.denom
 
     const defaultOutputDenom =
       tradableTokenMaps.value[inputDenom.value][0]?.denom
 
-    return selectedOutputDenom || defaultOutputDenom || usdtToken.denom
+    return selectedOutputDenom || defaultOutputDenom
   })
 
   /**
@@ -119,17 +131,18 @@ export function useSwapTokenSelector({
    **/
   const selectorInputDenom = computed(() => {
     const selectedInputDenom = tradableTokenMaps.value[outputDenom.value]?.find(
-      (token: BalanceWithTokenAndPrice) => token.denom === inputDenom.value
+      (token: SharedBalanceWithTokenAndPrice) =>
+        token.denom === inputDenom.value
     )?.denom
 
     if (!tradableTokenMaps.value[outputDenom.value]) {
-      return INJ_DENOM
+      return injToken.denom
     }
 
     const defaultInputDenom =
       tradableTokenMaps.value[outputDenom.value][0]?.denom
 
-    return selectedInputDenom || defaultInputDenom || INJ_DENOM
+    return selectedInputDenom || defaultInputDenom || injToken.denom
   })
 
   return {

@@ -1,12 +1,17 @@
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { usdtToken, injToken } from '@shared/data/token'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ONE_IN_BASE,
   MAX_QUOTE_DECIMALS,
   MAX_QUOTE_TENS_MULTIPLIER
 } from '@/app/utils/constants/index'
-import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+import {
+  SwapForm,
+  UiSpotMarket,
+  SwapFormField,
+  TokenAndPriceAndDecimals
+} from '@/types'
 
 export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   const swapStore = useSwapStore()
@@ -32,7 +37,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       .map((routeMarketId) =>
         spotStore.markets.find(({ marketId }) => marketId === routeMarketId)
       )
-      .filter((market) => market) as UiSpotMarketWithToken[]
+      .filter((market) => market) as UiSpotMarket[]
   })
 
   const routeTokensAndDecimals = computed(() => {
@@ -67,24 +72,20 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
         if (!baseTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
             quantityDecimals,
-            priceTensMultiplier,
-            quantityTensMultiplier,
             token: baseToken,
             denom: baseToken.denom,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[baseToken?.coinGeckoId || ''] || 0
+            tensMultiplier: quantityTensMultiplier,
+            usdPrice: baseToken ? tokenStore.tokenUsdPrice(baseToken) : 0
           })
         }
 
         if (!quoteTokenExistsInRoute) {
           tokens.push(...tokenWithDecimals, {
-            priceTensMultiplier,
-            quantityTensMultiplier,
             token: quoteToken,
             denom: quoteToken.denom,
+            tensMultiplier: priceTensMultiplier,
             quantityDecimals: MAX_QUOTE_DECIMALS,
-            usdPrice:
-              tokenStore.tokenUsdPriceMap[quoteToken?.coinGeckoId || ''] || 0
+            usdPrice: quoteToken ? tokenStore.tokenUsdPrice(quoteToken) : 0
           })
         }
 
@@ -123,7 +124,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       new BigNumberInBase(formValues.value[SwapFormField.OutputAmount] || 0)
         .times(slippageMultiplier)
         .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_DOWN),
-      outputToken.value?.quantityTensMultiplier || MAX_QUOTE_TENS_MULTIPLIER
+      outputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
     )
   })
 
@@ -137,7 +138,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || 0)
         .times(slippageMultiplier)
         .toFixed(MAX_QUOTE_DECIMALS, BigNumberInBase.ROUND_UP),
-      outputToken.value?.quantityTensMultiplier || MAX_QUOTE_TENS_MULTIPLIER
+      inputToken.value?.tensMultiplier ?? MAX_QUOTE_TENS_MULTIPLIER
     )
   })
 
@@ -165,6 +166,44 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     minimumOutput,
     inputToken,
     outputToken,
+    orderedRouteTokensAndDecimals
+  }
+}
+
+export function useSwapHomepage(formValues: Ref<Partial<SwapForm>>) {
+  const {
+    invalidInput,
+    maximumInput,
+    minimumOutput,
+    inputToken,
+    outputToken,
+    orderedRouteTokensAndDecimals
+  } = useSwap(formValues)
+
+  return {
+    invalidInput,
+    maximumInput,
+    minimumOutput,
+    inputToken: computed(
+      () =>
+        inputToken.value ||
+        ({
+          token: usdtToken,
+          denom: usdtToken.denom,
+          usdPrice: 0,
+          quantityDecimals: 3
+        } as TokenAndPriceAndDecimals)
+    ),
+    outputToken: computed(
+      () =>
+        outputToken.value ||
+        ({
+          token: injToken,
+          denom: injToken.denom,
+          usdPrice: 0,
+          quantityDecimals: 3
+        } as TokenAndPriceAndDecimals)
+    ),
     orderedRouteTokensAndDecimals
   }
 }

@@ -62,12 +62,12 @@ async function onSubmit() {
     telegram,
     business: company
   })
-    .then(() => {
+    .then(() =>
       success({
         title: t('common.success'),
         description: t('institutional.formSubmittedSuccesfuly')
       })
-    })
+    )
     .catch(() => {
       error({
         title: t('common.error'),

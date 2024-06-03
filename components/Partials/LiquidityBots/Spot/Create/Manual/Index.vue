@@ -1,27 +1,29 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
-import {
-  GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_MAX_DECIMALS,
+  UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const spotStore = useSpotStore()
 const walletStore = useWalletStore()
+const setFormValues = useSetFormValues()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
-const setFormValues = useSetFormValues()
 
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
 
-const min = ref('0')
-const max = ref('10')
+const min = ref('')
+const max = ref('')
 const isAssetReBalancingChecked = ref(true)
 
 const { lastTradedPrice } = useSpotLastPrice(
@@ -31,26 +33,14 @@ const { lastTradedPrice } = useSpotLastPrice(
 const upperPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.UpperPrice] || '',
   set: (value) => {
-    setUpperPriceField(
-      Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-      )
-    )
+    setUpperPriceField(Number(value).toFixed(decimalPlaces.value))
   }
 })
 
 const lowerPriceValue = computed({
   get: () => liquidityFormValues.value[SpotGridTradingField.LowerPrice] || '',
   set: (value) => {
-    setLowerPriceField(
-      Number(value).toFixed(
-        lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-          ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-      )
-    )
+    setLowerPriceField(Number(value).toFixed(decimalPlaces.value))
   }
 })
 
@@ -60,11 +50,17 @@ const isBaseAndQuoteType = computed(
     InvestmentTypeGst.BaseAndQuote
 )
 
-const decimalPlaces = computed(() =>
-  lastTradedPrice.value.isGreaterThan(GST_AUTO_PRICE_THRESHOLD)
-    ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    : UI_DEFAULT_MAX_DISPLAY_DECIMALS
-)
+const decimalPlaces = computed(() => {
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MIN_DECIMALS)) {
+    return UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+
+  if (lastTradedPrice.value.isGreaterThan(UI_DEFAULT_PRICE_MAX_DECIMALS)) {
+    return UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  }
+
+  return UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS
+})
 
 onMounted(() => {
   if (lastTradedPrice.value.gt(0)) {
@@ -154,10 +150,14 @@ watch(isBaseAndQuoteType, (value) => {
     />
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
-      v-bind="{ market: gridStrategyStore.spotMarket as UiSpotMarketWithToken }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket as UiSpotMarket,
+        decimalPlaces
+      }"
     />
 
     <PartialsLiquidityBotsSpotCreateManualRangeInput
+      v-if="min && max"
       v-model:lower="lowerPriceValue"
       v-model:max="max"
       v-model:min="min"
@@ -165,16 +165,17 @@ watch(isBaseAndQuoteType, (value) => {
       v-bind="{
         currentPrice: lastTradedPrice.toFixed(),
         market: gridStrategyStore.spotMarket,
-        orderbook: spotStore.orderbook
+        orderbook: spotStore.orderbook,
+        decimalPlaces
       }"
     />
 
     <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
-        <BaseIcon name="plus" is-xs />
+        <SharedIcon name="plus" is-xs />
       </button>
       <button class="border px-2 rounded-md" @click="zoomOut">
-        <BaseIcon name="minus" is-xs />
+        <SharedIcon name="minus" is-xs />
       </button>
     </div>
 
@@ -187,11 +188,9 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="flex justify-end mb-2 sm:-mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
-        <AppCheckbox v-model="isAssetReBalancingChecked" />
-
-        <p class="mr-2 text-xs font-semibold">
+        <LazyAppCheckbox2 v-model="isAssetReBalancingChecked">
           {{ $t('liquidity.allowAssetRebalance') }}
-        </p>
+        </LazyAppCheckbox2>
 
         <AppTooltip
           v-bind="{
@@ -202,7 +201,10 @@ watch(isBaseAndQuoteType, (value) => {
     </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket!,
+        grids: liquidityFormValues[SpotGridTradingField.Grids] || '0'
+      }"
       class="mb-4"
     />
 

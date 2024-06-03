@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { UiPosition, BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
+import { SharedBalanceWithToken } from '@shared/types'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { AccountBalance, Modal } from '@/types'
 
 defineProps({
@@ -14,8 +15,8 @@ defineProps({
 })
 
 const modalStore = useModalStore()
-const accountStore = useAccountStore()
 const positionStore = usePositionStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -34,7 +35,7 @@ const sideOptions = [
 
 const side = ref('')
 const marketDenom = ref('')
-const selectedPosition = ref<UiPosition | undefined>(undefined)
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const markets = computed(() => derivativeStore.markets)
 const positions = computed(() => positionStore.subaccountPositions)
@@ -55,13 +56,17 @@ const marketIds = computed(() => {
 })
 
 const filteredPositions = computed(() =>
-  positionStore.subaccountPositions.filter((position) => {
+  positionStore.positions.filter((position) => {
     const positionMatchedSide = !side.value || position.direction === side.value
     const positionMatchedMarket =
       marketIds.value.length === 0 ||
       marketIds.value.includes(position.marketId)
 
-    return positionMatchedMarket && positionMatchedSide
+    return (
+      positionMatchedMarket &&
+      positionMatchedSide &&
+      position.subaccountId === accountStore.subaccountId
+    )
   })
 )
 
@@ -71,16 +76,16 @@ const supportedTokens = computed(() => {
       balance: '',
       denom: market.baseToken.denom,
       token: market.baseToken
-    } as BalanceWithToken
+    } as SharedBalanceWithToken
 
     const quoteToken = {
       balance: '',
       denom: market.quoteDenom,
       token: market.quoteToken
-    } as BalanceWithToken
+    } as SharedBalanceWithToken
 
     return [...tokens, baseToken, quoteToken]
-  }, [] as BalanceWithToken[])
+  }, [] as SharedBalanceWithToken[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()
@@ -123,11 +128,11 @@ function onCloseAllPositions() {
 function closeAllPositions() {
   positionStore
     .closeAllPosition(positions.value)
-    .then(() => {
+    .then(() =>
       success({
         title: t('trade.positions_closed')
       })
-    })
+    )
     .catch($onError)
 }
 
@@ -150,25 +155,18 @@ function closePosition() {
       position,
       market
     })
-    .then(() => {
+    .then(() =>
       success({
         title: t('trade.positions_closed')
       })
-    })
+    )
     .catch($onError)
 }
 
-function onSharePosition(position: UiPosition) {
+function onSharePosition(position: Position | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePosition)
 }
-
-watch(
-  () => accountStore.subaccountId,
-  () => {
-    positionStore.fetchSubaccountPositions()
-  }
-)
 </script>
 
 <template>

@@ -26,7 +26,9 @@ const { value: dstSubaccountId, setValue: setDstSubaccountIdValue } =
 
 const subaccountsWithoutSgt = computed(() =>
   Object.keys(accountStore.subaccountBalancesMap).filter(
-    (subaccountId) => !isSgtSubaccountId(subaccountId)
+    (subaccountId) =>
+      !isSgtSubaccountId(subaccountId) &&
+      parseInt(subaccountId.slice(42), 16) < 100
   )
 )
 
@@ -45,8 +47,8 @@ const sourceOptions = computed(() =>
       return {
         display:
           subaccountIdIndex === 0
-            ? t('bridge.mainSubaccount')
-            : t('bridge.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('account.mainSubaccount')
+            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
         value: subaccountId
       }
     })
@@ -62,8 +64,8 @@ const destinationOptions = computed(() => {
       return {
         display:
           subaccountIdIndex === 0
-            ? t('bridge.mainSubaccount')
-            : t('bridge.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('account.mainSubaccount')
+            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
         value: subaccountId
       }
     })
@@ -71,7 +73,7 @@ const destinationOptions = computed(() => {
   return [
     ...existingSubaccountIds,
     {
-      display: t('bridge.subaccountId', {
+      display: t('account.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
       value: addBaseSubaccountIndexToAddress(
@@ -137,7 +139,7 @@ function onDestinationSubaccountIdUpdate() {
         class="bg-blue-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
         data-cy="transfer-modal-direction-toggle-button"
       >
-        <BaseIcon
+        <SharedIcon
           name="arrow"
           class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         />
@@ -155,19 +157,29 @@ function onDestinationSubaccountIdUpdate() {
         </template>
 
         <template #option="{ option, isActive }">
-          <span
-            v-if="option.value === newSubaccountId"
-            :class="{ 'font-bold text-gray-100': isActive }"
-          >
+          <span class="whitespace-nowrap">
             <span
-              class="bg-blue-500 mr-2 font-semibold tracking-wide text-xs px-1 py-px rounded-sm"
+              v-if="option.value === newSubaccountId"
+              :class="{ 'font-bold': isActive }"
+              class="text-gray-100"
             >
-              {{ t('common.new') }}
+              <span>{{ option.display }}</span>
+              <span
+                class="bg-blue-500 ml-2 font-semibold tracking-wide text-xs px-1 py-px rounded-sm"
+              >
+                {{ t('common.new') }}
+              </span>
             </span>
-            {{ option.display }}
-          </span>
-          <span v-else :class="{ 'font-bold text-gray-100': isActive }">
-            {{ option.display }}
+
+            <span
+              v-else
+              class="text-gray-100"
+              :class="{
+                'font-bold text-gray-100': isActive
+              }"
+            >
+              {{ option.display }}
+            </span>
           </span>
         </template>
       </AppSelectField>

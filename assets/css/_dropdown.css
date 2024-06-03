@@ -51,7 +51,7 @@
 }
 
 .v-popper--theme-dropdown .v-popper__inner {
-  @apply border-none bg-transparent;
+  @apply border-none bg-transparent rounded-none;
 }
 
 .v-popper__arrow-outer,

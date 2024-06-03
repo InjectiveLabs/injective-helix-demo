@@ -410,12 +410,29 @@ const hardcodedExcludedTradesByMarket = {
         })
       }
     ]
+  },
+
+  'MOTHER/INJ': {
+    excludeBefore: null,
+    bars: [
+      {
+        high: 100,
+        barMap: (bar: any) => ({
+          ...bar,
+          low: 2.25,
+          high: 3.5,
+          close: 3.3,
+          open: 2.7
+        })
+      }
+    ]
   }
 }
 
 export const mapBarsToProperValues = (bars: any, ticker: string) => {
   // @ts-ignore
   const hardcodedExcludedTrades = hardcodedExcludedTradesByMarket[ticker]
+
   if (!hardcodedExcludedTrades) {
     return bars
   }

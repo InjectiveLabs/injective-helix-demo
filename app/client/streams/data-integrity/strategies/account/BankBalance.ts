@@ -1,7 +1,7 @@
 import { Coin } from '@injectivelabs/ts-types'
+import { indexerAccountPortfolioApi } from '@shared/Service'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerAccountPortfolioApi } from '@/app/Services'
 
 export class BankBalanceIntegrityStrategy
   extends BaseDataIntegrityStrategy<void>
@@ -58,7 +58,7 @@ export class BankBalanceIntegrityStrategy
     const walletStore = useWalletStore()
 
     const { bankBalancesList } =
-      await indexerAccountPortfolioApi.fetchAccountPortfolio(
+      await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
         walletStore.authZOrInjectiveAddress
       )
 

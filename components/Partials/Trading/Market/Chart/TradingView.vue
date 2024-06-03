@@ -25,7 +25,7 @@ const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
 
-const tradingView = ref(null as any)
+const tradingView = ref<{ view: any }>({ view: undefined })
 
 onMounted(() => {
   const widgetOptions = config({
@@ -39,7 +39,7 @@ onMounted(() => {
     tradingWidget.applyOverrides(widgetOptions.overrides)
 
     nextTick(() => {
-      tradingView.view = tradingWidget
+      tradingView.value.view = tradingWidget
       emit('ready')
     })
   })

@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
-import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { Modal } from '@/types'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal } from '@/types'
 
 const { width } = useWindowSize()
 
 const props = defineProps({
   position: {
     required: true,
-    type: Object as PropType<UiPosition>
+    type: Object as PropType<Position | PositionV2>
   }
 })
 
@@ -28,7 +28,7 @@ const imageIndex = ref(randomImageIndex())
 const { pnl, market, price, markPrice, percentagePnl, effectiveLeverage } =
   useDerivativePosition(computed(() => props.position))
 
-const { valueToString: markPriceToFormat } = useBigNumberFormatter(
+const { valueToString: markPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces:
@@ -37,7 +37,7 @@ const { valueToString: markPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToFormat } = useBigNumberFormatter(
+const { valueToString: priceToFormat } = useSharedBigNumberFormatter(
   computed(() => price.value),
   {
     decimalPlaces:
@@ -119,7 +119,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             <AssetLogoText class="block ml-2 h-6 text-white" />
           </div>
 
-          <BaseIcon
+          <SharedIcon
             v-if="showSelectors"
             name="close"
             class="w-6 h-6 min-w-6 text-white hover:text-gray-500"
@@ -226,10 +226,10 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
           </div>
 
           <div
-            class="bg-blue-500 text-white font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
+            class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
             @click="download"
           >
-            <BaseIcon name="download" class="w-4 h-4 min-w-4" />
+            <SharedIcon name="download" class="w-4 h-4 min-w-4" />
           </div>
         </div>
       </div>

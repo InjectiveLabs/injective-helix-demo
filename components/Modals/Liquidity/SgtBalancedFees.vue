@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PropType } from 'nuxt/dist/app/compat/capi'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal, UiSpotMarket } from '@/types'
 
 const props = defineProps({
   baseAmount: {
@@ -12,7 +10,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   },
 
@@ -34,17 +32,17 @@ const emit = defineEmits<{
 
 const modalStore = useModalStore()
 
-const { valueToString: baseAmountToString } = useBigNumberFormatter(
+const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.baseAmount),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: quoteAmountToString } = useBigNumberFormatter(
+const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.quoteAmount),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: marginToString } = useBigNumberFormatter(
+const { valueToString: marginToString } = useSharedBigNumberFormatter(
   computed(() => props.margin),
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
@@ -111,7 +109,7 @@ function onChangeInvestmentType() {
       <div class="grid grid-cols-1 gap-2 mt-6">
         <AppButton
           is-lg
-          class="w-full font-sembold shadow-none select-none bg-blue-500"
+          class="w-full font-semibold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
           {{
@@ -124,7 +122,7 @@ function onChangeInvestmentType() {
 
         <AppButton
           is-lg
-          class="w-full font-sembold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
+          class="w-full font-semibold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
           {{ $t('sgt.keepOriginalAmounts') }}

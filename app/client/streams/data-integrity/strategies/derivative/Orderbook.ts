@@ -1,12 +1,12 @@
+import { indexerDerivativesApi } from '@shared/Service'
+import { SharedUiOrderbookWithSequence } from '@shared/types'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerDerivativesApi } from '@/app/Services'
-import { UiDerivativeOrderbookWithSequence } from '@/types'
 
 export class DerivativeOrderbookIntegrityStrategy
   extends BaseDataIntegrityStrategy<string>
   implements
-    ConcreteDataIntegrityStrategy<string, UiDerivativeOrderbookWithSequence>
+    ConcreteDataIntegrityStrategy<string, SharedUiOrderbookWithSequence>
 {
   constructor(public args: string) {
     super(args)
@@ -36,7 +36,7 @@ export class DerivativeOrderbookIntegrityStrategy
     const isDataValid =
       Object.keys(existingOrderbook).length > 0 &&
       this.verifyData(
-        existingOrderbook as UiDerivativeOrderbookWithSequence,
+        existingOrderbook as SharedUiOrderbookWithSequence,
         latestOrderbook
       )
 
@@ -48,13 +48,13 @@ export class DerivativeOrderbookIntegrityStrategy
   }
 
   verifyData(
-    existingOrderbook: UiDerivativeOrderbookWithSequence,
-    latestOrderbook: UiDerivativeOrderbookWithSequence
+    existingOrderbook: SharedUiOrderbookWithSequence,
+    latestOrderbook: SharedUiOrderbookWithSequence
   ): boolean {
     return existingOrderbook.sequence >= latestOrderbook.sequence
   }
 
-  async fetchData(): Promise<UiDerivativeOrderbookWithSequence | undefined> {
+  async fetchData(): Promise<SharedUiOrderbookWithSequence | undefined> {
     const { args: marketId } = this
 
     if (!marketId) {

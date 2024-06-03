@@ -47,7 +47,7 @@ function click() {
       }"
     >
       <slot name="icon">
-        <BaseIcon name="bin" is-sm />
+        <SharedIcon name="bin" is-sm />
       </slot>
     </div>
   </div>

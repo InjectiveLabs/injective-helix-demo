@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { getExplorerUrl } from '@shared/utils/network'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { NETWORK, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
+import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
 
@@ -22,24 +22,26 @@ const props = defineProps({
 })
 
 const explorerLink = computed(
-  () => `${getExplorerUrl(NETWORK)}/account/${props.member.address}`
+  () => `${getExplorerUrl()}/account/${props.member.address}`
 )
 
-const { valueToString: tvlScorePercentageToString } = useBigNumberFormatter(
-  computed(() => props.member.tvlScorePercentage),
-  {
-    roundingMode: BigNumber.ROUND_DOWN
-  }
-)
+const { valueToString: tvlScorePercentageToString } =
+  useSharedBigNumberFormatter(
+    computed(() => props.member.tvlScorePercentage),
+    {
+      roundingMode: BigNumber.ROUND_DOWN
+    }
+  )
 
-const { valueToString: volumeScorePercentageToString } = useBigNumberFormatter(
-  computed(() => props.member.volumeScorePercentage),
-  {
-    roundingMode: BigNumber.ROUND_DOWN
-  }
-)
+const { valueToString: volumeScorePercentageToString } =
+  useSharedBigNumberFormatter(
+    computed(() => props.member.volumeScorePercentage),
+    {
+      roundingMode: BigNumber.ROUND_DOWN
+    }
+  )
 
-const { valueToString: tvlScoreToString } = useBigNumberFormatter(
+const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.member.tvlScore,
@@ -48,7 +50,7 @@ const { valueToString: tvlScoreToString } = useBigNumberFormatter(
   )
 )
 
-const { valueToString: volumeScoreToString } = useBigNumberFormatter(
+const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: props.member.volumeScore,

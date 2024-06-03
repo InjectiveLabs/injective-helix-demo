@@ -17,6 +17,7 @@ const value = computed({
   get: () => gridStrategyStore.spotMarket?.slug,
   set: (marketSlug) => {
     marketSlugQuery.value = marketSlug as string
+
     gridStrategyStore.$patch({
       spotMarket: spotStore.markets.find((m) => m.slug === marketSlug)
     })
@@ -39,18 +40,20 @@ const options = computed<BaseDropdownOption[]>(() =>
       v-model="value"
       v-bind="{
         options,
-        wrapperClass: 'bg-black py-2 px-4 rounded-md'
+        wrapperClass: 'bg-black py-2 px-4 rounded-md',
+        contentClass: 'h-[320px] overflow-y-auto w-[300px]'
       }"
       start-placement
     >
       <template #default="{ selected }">
-        <PartialsLiquidityBotsSpotMarketOption v-bind="{ option: selected! }" />
+        <PartialsLiquidityBotsSpotMarketOption
+          v-if="selected"
+          v-bind="{ option: selected }"
+        />
       </template>
 
       <template #option="{ option }">
-        <div>
-          <PartialsLiquidityBotsSpotMarketOption v-bind="{ option }" />
-        </div>
+        <PartialsLiquidityBotsSpotMarketOption v-bind="{ option }" />
       </template>
     </AppSelect>
   </div>

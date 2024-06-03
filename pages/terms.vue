@@ -185,7 +185,7 @@
 
       <p class="mt-4">
         <span>
-          2.1.7. you do intend to transact with any Restricted Person,
+          2.1.7. you do not intend to transact with any Restricted Person,
           Restricted Territory, or Sanctions Lists Persons;
         </span>
       </p>

@@ -26,3 +26,11 @@ export interface SymbolWithMarketId {
   isUsdtQuote: boolean
   quoteMarket: string
 }
+
+export type IntervalOption = {
+  label: string
+  value: {
+    countback: number
+    resolution: number
+  }
+}

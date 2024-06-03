@@ -1,44 +1,13 @@
 import {
-  getChecksumAddress,
-  CW20_ADAPTER_CONTRACT_BY_NETWORK
-} from '@injectivelabs/sdk-ts'
-import { INJ_DENOM } from '@injectivelabs/utils'
-import { BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
-import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
-import { NETWORK } from '@/app/utils/constants'
-import { denomClient, tokenMetaUtils } from '@/app/Services'
-import { USDCSymbol } from '@/types'
+  getCw20FromSymbolOrNameAsString,
+  getPeggyDenomFromSymbolOrNameAsString
+} from '@/app/utils/helper'
 
-const adapterContract = CW20_ADAPTER_CONTRACT_BY_NETWORK[NETWORK]
-
-export const injToken = {
-  denom: INJ_DENOM,
-  ...tokenMetaUtils.getMetaBySymbol('INJ'),
-  usdPrice: 0
-} as TokenWithPrice
-
-export const usdtToken = {
-  ...(tokenMetaUtils.getMetaBySymbol('USDT') || {}),
-  denom: `peggy${tokenMetaUtils.getMetaBySymbol('USDT')?.erc20?.address}` || ''
-} as Token
-
-interface NetworkToSymbolMap {
-  [key: string]: string
+export enum USDCSymbol {
+  PeggyEthereum = 'USDC',
+  WormholeEthereum = 'USDCet',
+  WormholeSolana = 'USDCso'
 }
-
-export const networkToSymbolMap = {
-  [BridgingNetwork.Ethereum]: 'ETH',
-  [BridgingNetwork.Axelar]: 'AXL',
-  [BridgingNetwork.CosmosHub]: 'ATOM',
-  [BridgingNetwork.Crescent]: 'CRE',
-  [BridgingNetwork.Evmos]: 'EVMOS',
-  [BridgingNetwork.Moonbeam]: 'AXL',
-  [BridgingNetwork.Osmosis]: 'OSMO',
-  [BridgingNetwork.Persistence]: 'XPRT',
-  [BridgingNetwork.Secret]: 'SCRT',
-  [BridgingNetwork.Stride]: 'STRD',
-  [BridgingNetwork.Arbitrum]: 'ARB'
-} as NetworkToSymbolMap
 
 export const TokenSymbols = {
   WETH: 'wETH',
@@ -50,77 +19,19 @@ export const tokenToDecimalsOverrideMap = {
   [TokenSymbols.WETH]: 5
 }
 
-export const getFactoryDenomFromDenom = (address: string): string =>
-  `factory/${adapterContract}/${address}`
-
-export const getDenomsFromToken = (token: Token): string[] => {
-  const cw20sDenom = (token.cw20s || []).map(({ address }) =>
-    getFactoryDenomFromDenom(address)
-  )
-  const cw20Denom = token.cw20
-    ? getFactoryDenomFromDenom(token.cw20.address)
-    : ''
-  const ibc20Denom = token.ibc ? `ibc/${token.ibc.hash}` : ''
-  const peggyDenom = token.erc20 ? `peggy${token.erc20.address}` : ''
-
-  const denoms = [
-    cw20Denom,
-    ibc20Denom,
-    peggyDenom,
-    token.denom,
-    ...cw20sDenom
-  ].filter((denom) => denom)
-
-  return [...new Set(denoms)]
-}
-
-export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
-  const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
-
-  if (!tokenMeta || !adapterContract) {
-    return ''
-  }
-
-  if (tokenMeta.cw20) {
-    return getFactoryDenomFromDenom(tokenMeta.cw20.address)
-  }
-
-  const cw20TokenMeta = (tokenMeta.cw20s || []).find(
-    (cw20) => cw20.symbol.toLowerCase() === symbol.toLowerCase()
-  )
-
-  if (!cw20TokenMeta) {
-    return ''
-  }
-
-  return getFactoryDenomFromDenom(cw20TokenMeta.address)
-}
-
-export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
-  const tokenMeta = denomClient.getTokenMetaDataBySymbol(symbol)
-
-  if (!tokenMeta || !tokenMeta.erc20) {
-    return ''
-  }
-
-  return `peggy${getChecksumAddress(tokenMeta.erc20.address)}`
-}
-
 export const usdcTokenDenom = {
-  [USDCSymbol.PeggyEthereum]: getPeggyDenomFromSymbol(USDCSymbol.PeggyEthereum),
-  [USDCSymbol.WormholeEthereum]: getFactoryDenomFromSymbol(
+  [USDCSymbol.PeggyEthereum]: getPeggyDenomFromSymbolOrNameAsString(
+    USDCSymbol.PeggyEthereum
+  ),
+  [USDCSymbol.WormholeEthereum]: getCw20FromSymbolOrNameAsString(
     USDCSymbol.WormholeEthereum
   ),
-  [USDCSymbol.WormholeSolana]: getFactoryDenomFromSymbol(
+  [USDCSymbol.WormholeSolana]: getCw20FromSymbolOrNameAsString(
     USDCSymbol.WormholeSolana
   )
 }
 
-export const usdcTokenDenoms = [
-  usdcTokenDenom.USDC,
-  usdcTokenDenom.USDCet
-  // usdcTokenDenom.USDCso
-]
+export const usdcTokenDenoms = Object.values(usdcTokenDenom)
 
 export const stableCoinDenoms = [
   'USDT',
@@ -134,3 +45,9 @@ export const KAVA_USDT_SYMBOL = 'USDTkv'
 export const STINJ_USDT_SYMBOL = 'STINJ'
 export const allowanceResetSymbols = ['USDT']
 export const SWAP_LOW_LIQUIDITY_SYMBOLS = ['GF', 'ORAI', 'SOMM', 'NEOK']
+
+export const legacyWHDenoms = [
+  getCw20FromSymbolOrNameAsString('SOLlegacy'),
+  getCw20FromSymbolOrNameAsString('ARBlegacy'),
+  getCw20FromSymbolOrNameAsString('WMATIClegacy')
+]

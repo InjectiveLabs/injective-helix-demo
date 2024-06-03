@@ -1,6 +1,6 @@
-import { Ref } from 'vue'
+import { SharedMarketChange } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Change, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken } from '@/types'
 
 export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
@@ -56,12 +56,12 @@ export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
     )
 
     if (changeInPercentageInBigNumber.eq(0)) {
-      return Change.NoChange
+      return SharedMarketChange.NoChange
     }
 
     return changeInPercentageInBigNumber.gt(0)
-      ? Change.Increase
-      : Change.Decrease
+      ? SharedMarketChange.Increase
+      : SharedMarketChange.Decrease
   })
 
   return {

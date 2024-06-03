@@ -1,16 +1,15 @@
-import { UiDerivativeLimitOrder } from '@injectivelabs/sdk-ui-ts'
+import { indexerDerivativesApi } from '@shared/Service'
+import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
-import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerDerivativesApi } from '@/app/Services'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
 
 export class DerivativeSubaccountOrderIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements
-    ConcreteDataIntegrityStrategy<MarketIdsArgs, UiDerivativeLimitOrder>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, DerivativeLimitOrder>
 {
   static make(
     marketIds: MarketIdsArgs
@@ -48,8 +47,8 @@ export class DerivativeSubaccountOrderIntegrityStrategy
   }
 
   verifyData(
-    existingOrders: UiDerivativeLimitOrder[],
-    latestOrders: UiDerivativeLimitOrder[]
+    existingOrders: DerivativeLimitOrder[],
+    latestOrders: DerivativeLimitOrder[]
   ): boolean {
     const [lastOrderFromStream] = existingOrders
     const [latestOrderFromFetch] = latestOrders

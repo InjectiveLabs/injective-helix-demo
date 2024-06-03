@@ -1,7 +1,7 @@
 export const metaTags = {
   title: process.env.VITE_NAME
     ? process.env.VITE_NAME
-    : 'Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
+    : 'Helix | Open Finance Reimagined',
   description:
     'Trade on Helix - the premier decentralized spot and derivatives exchange with low fees and gas free execution',
   keywords:

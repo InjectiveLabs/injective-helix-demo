@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { intervalToDuration } from 'date-fns'
-import {
-  UI_MINIMAL_ABBREVIATION_FLOOR,
-  USDT_DECIMALS
-} from '@/app/utils/constants'
+import { usdtToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
@@ -25,14 +23,14 @@ const volume = computed(() => {
     )
   )
 
-  return new BigNumberInWei(volume).toBase(USDT_DECIMALS)
+  return new BigNumberInWei(volume).toBase(usdtToken.decimals)
 })
 
 const shouldAbbreviateVolume = computed(() =>
   volume.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
 )
 
-const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
   decimalPlaces: shouldAbbreviateVolume.value ? 0 : 2,
   abbreviationFloor: shouldAbbreviateVolume.value
     ? UI_MINIMAL_ABBREVIATION_FLOOR

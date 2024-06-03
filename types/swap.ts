@@ -1,10 +1,9 @@
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
+import { SharedBalanceWithTokenAndPrice } from '@shared/types'
 
 export interface TokenAndPriceAndDecimals
-  extends Omit<BalanceWithTokenAndPrice, 'balance'> {
+  extends Omit<SharedBalanceWithTokenAndPrice, 'balance'> {
   quantityDecimals: number
-  priceTensMultiplier?: number
-  quantityTensMultiplier?: number
+  tensMultiplier?: number
 }
 
 export enum SwapFormField {

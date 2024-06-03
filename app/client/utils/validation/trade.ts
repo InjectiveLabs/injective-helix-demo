@@ -8,8 +8,8 @@ export const tradeErrorMessages = {
   insufficientOrderbookLiquidity: () => 'Insufficient orderbook liquidity',
   triggerPriceEqualsMarkPrice: () =>
     'The trigger price cannot be the same as the mark price',
-  priceHighDeviationFromMidOrderbookPrice: () =>
-    'The execution price for this trade is far away from the current orderbook mid price',
+  priceTooFarFromLastTradePrice: () =>
+    'The execution price for this trade is far away from the last traded price',
   orderPriceHigh: () => 'Order price is too high',
   orderPriceLow: () => 'Order price is too low',
   maxLeverage: () => 'Please decrease leverage',
@@ -22,6 +22,7 @@ export const tradeErrorMessages = {
   tooLowPostOnlyPrice: () => 'Post-Only limit price is too low',
   minBaseAmount: (minBaseAmount: string) =>
     `Base amount must be >= ${minBaseAmount}`,
+  minAmount: (minBaseAmount: string) => `Amount must be > ${minBaseAmount}`,
   quantityTensMultiplier: (tensMultiplier: string) =>
     `Quantity must be a multiple of ${tensMultiplier}`
 } as Record<string, any>
@@ -69,12 +70,37 @@ export const defineTradeRules = () => {
     return true
   })
 
+  defineRule('minAmount', (value: string, [minAmount]: string) => {
+    if (!value) {
+      return true
+    }
+
+    if (new BigNumberInBase(value).lte(minAmount)) {
+      return tradeErrorMessages.minAmount(minAmount)
+    }
+
+    return true
+  })
+
   defineRule('insufficientBalance', (value: string, max: number[]) => {
     if (!value) {
       return true
     }
 
     if (new BigNumberInBase(value).gt(max[0])) {
+      return tradeErrorMessages.insufficientBalance()
+    }
+
+    return true
+  })
+
+  defineRule('insufficientBalanceCustom', (_: string, values: number[]) => {
+    if (!values) {
+      return true
+    }
+    const [value, max] = values
+
+    if (new BigNumberInBase(value).gt(max)) {
       return tradeErrorMessages.insufficientBalance()
     }
 
@@ -113,36 +139,52 @@ export const defineTradeRules = () => {
     }
   )
 
-  defineRule(
-    'maxLeverage',
-    (value: string | number, [max, isBuy]: [string, boolean]) => {
-      const leverage = new BigNumberInBase(value)
+  defineRule('maxLeverage', (value: string | number, [max]: [string]) => {
+    const leverage = new BigNumberInBase(value)
 
-      if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
-        return leverage.eq(1)
-          ? isBuy
-            ? tradeErrorMessages.orderPriceHigh()
-            : tradeErrorMessages.orderPriceLow()
-          : tradeErrorMessages.maxLeverage()
+    // if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
+    //   return leverage.eq(1)
+    //     ? isBuy
+    //       ? tradeErrorMessages.orderPriceHigh()
+    //       : tradeErrorMessages.orderPriceLow()
+    //     : tradeErrorMessages.maxLeverage()
+    // }
+
+    if (leverage.gt(max)) {
+      return tradeErrorMessages.maxLeverage()
+    }
+
+    return true
+  })
+
+  defineRule(
+    'priceTooFarFromLastTradePrice',
+    (value: string | number, [lastTradedPrice]: [string]) => {
+      const DEFAULT_MIN_PRICE_BAND_DIFFERENCE = 20
+      const DEFAULT_MAX_PRICE_BAND_DIFFERENCE = 400
+
+      const valueInBigNumber = new BigNumberInBase(value)
+
+      if (valueInBigNumber.eq(0)) {
+        return true
       }
 
-      return true
-    }
-  )
-
-  defineRule(
-    'priceHighDeviationFromMidOrderbookPrice',
-    (
-      value: string | number,
-      [cappedAcceptableMin, acceptableMax]: string[]
-    ) => {
-      const executionPrice = new BigNumberInBase(value)
+      const priceDifferenceInPercentage = valueInBigNumber
+        .dividedBy(lastTradedPrice)
+        .times(100)
 
       if (
-        executionPrice.lt(cappedAcceptableMin) ||
-        executionPrice.gt(acceptableMax)
+        valueInBigNumber.lte(lastTradedPrice) &&
+        priceDifferenceInPercentage.lte(DEFAULT_MIN_PRICE_BAND_DIFFERENCE)
       ) {
-        return tradeErrorMessages.priceHighDeviationFromMidOrderbookPrice()
+        return tradeErrorMessages.priceTooFarFromLastTradePrice()
+      }
+
+      if (
+        valueInBigNumber.gt(lastTradedPrice) &&
+        priceDifferenceInPercentage.gte(DEFAULT_MAX_PRICE_BAND_DIFFERENCE)
+      ) {
+        return tradeErrorMessages.priceTooFarFromLastTradePrice()
       }
 
       return true

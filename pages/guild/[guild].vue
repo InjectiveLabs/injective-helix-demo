@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import {
-  NETWORK,
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
@@ -93,9 +92,7 @@ const explorerLink = computed(() => {
     return
   }
 
-  return `${getExplorerUrl(NETWORK)}/account/${
-    campaignStore.guild.masterAddress
-  }`
+  return `${getExplorerUrl()}/account/${campaignStore.guild.masterAddress}`
 })
 
 const guildInvitationHash = computed(() =>
@@ -105,7 +102,7 @@ const guildInvitationHash = computed(() =>
   })
 )
 
-const { valueToString: guildMasterBalance } = useBigNumberFormatter(
+const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.masterBalance || 0,
@@ -209,7 +206,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
       <!-- Back -->
       <NuxtLink :to="{ name: MainPage.Guilds }" class="hover:text-blue-500">
         <div class="flex items-center gap-1">
-          <BaseIcon name="arrow" is-md />
+          <SharedIcon name="arrow" is-md />
           <div>{{ $t('common.back') }}</div>
         </div>
       </NuxtLink>
@@ -282,12 +279,12 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             <template v-if="walletStore.isUserWalletConnected">
               <AppButton
                 v-if="campaignStore.userGuildInfo"
-                class="bg-blue-500 text-white"
+                class="bg-blue-500 text-blue-900"
                 @click="onCopyInvitationLink"
               >
                 <div class="flex items-center gap-1">
                   <span>{{ $t('guild.leaderboard.invitationCode') }}</span>
-                  <BaseIcon name="link" is-md />
+                  <SharedIcon name="link" is-md />
                 </div>
               </AppButton>
 
@@ -303,7 +300,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 
               <AppButton
                 v-else
-                class="bg-blue-500 text-white"
+                class="bg-blue-500 text-blue-900"
                 :is-disabled="isMaxCap || campaignStore.userIsOptedOutOfReward"
                 @click="onJoinGuild"
               >
@@ -337,7 +334,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   v-if="hasNewData"
                   :content="$t('guild.leaderboard.fetchNewData')"
                 >
-                  <BaseIcon
+                  <SharedIcon
                     name="refresh"
                     class="text-blue-500 hover:opacity-80 cursor-pointer"
                     @click="onRefresh"

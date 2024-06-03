@@ -1,13 +1,14 @@
 import home from './home/en'
 import trade from './trade/en'
 import guild from './guild/en'
-import bridge from './bridge/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import sgt from './spot-grid/en'
 import banners from './banners/en'
 import account from './account/en'
 import campaign from './campaign/en'
+import liquidityProvision from './liquidityProvision/en'
+import portfolio from './portfolio/en'
 import activities from './activity/en'
 import leaderboard from './leaderboard/en'
 import tradeAndEarn from './tradeAndEarn/en'
@@ -21,11 +22,12 @@ export default {
   ...guild,
   ...trade,
   ...market,
-  ...bridge,
   ...wallet,
   ...account,
   ...banners,
+  ...liquidityProvision,
   ...campaign,
+  ...portfolio,
   ...activities,
   ...activities,
   ...leaderboard,
@@ -34,9 +36,13 @@ export default {
   ...liquidityBots,
   common: {
     ok: 'OK',
+    BTC: 'BTC',
     back: 'Back',
+    base: 'Base',
     view: 'View',
     open: 'Open',
+    quote: 'Quote',
+    helix: 'Helix',
     trade: 'Trade',
     value: 'Value',
     close: 'Close',
@@ -50,12 +56,15 @@ export default {
     deposit: 'Deposit',
     filters: 'Filters',
     confirm: 'Confirm',
+    popular: 'Popular',
     inactive: 'inactive',
     transfer: 'Transfer',
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
     available: 'Available',
+    baseAndQuote: 'Base and Quote',
+    otherWallets: 'Other Wallets',
     ready: 'Ready',
     new: 'New',
     success: 'Success',
@@ -65,8 +74,36 @@ export default {
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
     [TimeDuration.Minute]: 'Minute',
-    [TimeDuration.Second]: 'Second'
+    [TimeDuration.Second]: 'Second',
+    legacy: {
+      title: 'Legacy',
+      migrate: 'Migrate',
+      attention: 'Attention: ',
+      actionRequired: 'Action Required',
+      learnMore: 'Learn more',
+      affectedMarkets: 'Affected markets and tokens: ',
+      goToTokenMigrationPage: 'Go to token migration page',
+      marketIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
+      spotGridIsMigrating:
+        'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
+      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          named('attention'),
+          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
+          named('learnMore'),
+          '.'
+        ]),
+      goToNewMarket: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} market`,
+      goToNewSGT: ({ named }: I18nMessageFunction) =>
+        `Go to new ${named('market')} spot grid`
+    }
   },
+  globalBanner: {
+    title: 'Deposit assets on Injective to get started on Helix'
+  },
+  underMaintenance: 'Under Maintenance',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
@@ -119,6 +156,7 @@ export default {
   'faq-category-General': 'General',
   and: 'and',
   Rewards: 'Rewards',
+  injStaking: 'INJ Staking',
   resources: 'Resources',
   calculator: 'Calculator',
   remaining: 'remaining',
@@ -154,23 +192,15 @@ export default {
   marketNotOnHelix: {
     title: 'Experimental market',
     cta: 'I Understand',
+    termsAndCondition: 'Terms and Conditions',
     description:
-      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.'
-  },
-
-  marketNew: {
-    title: 'Upcoming market launch',
-    depositNow: 'Deposit Now',
-    description: ({ interpolate, named }: I18nMessageFunction) =>
+      'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
+    description2: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
-        'The',
-        named('baseSymbol'),
-        '/',
-        named('quoteSymbol'),
-        ' spot market will launch soon.'
-      ]),
-    connectAndDepositNow: 'Connect and Deposit now',
-    soonToBeReleased: 'Coming soon!'
+        'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix ',
+        named('link'),
+        ' as to any use you make of Helix'
+      ])
   },
 
   marketExpired: {
@@ -178,9 +208,9 @@ export default {
     expiredNote:
       'This futures contract has just expired and reached settlement.',
     activityPageNote:
-      'If you did hold position(s) till expiry, please go to Activity to check the settlement record.',
+      'If you did hold position(s) till expiry, please go to futures trade history to check the settlement record.',
     exploreMarkets: 'Explore Markets',
-    goToActivity: 'Go To Activity'
+    goToFutures: 'Go To Futures trade history'
   },
 
   marketNotLiquid: {
@@ -194,31 +224,12 @@ export default {
     'sol-usdcet-description': 'Solana is in the SOL/USDT market'
   },
 
-  marketDeprecated: {
-    title: 'No longer tradable',
-    description: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([named('ticker'), ' is no longer tradable on Helix.']),
-    subDescriptionOne: ({ named }: I18nMessageFunction) =>
-      `If you would like to continue trading ${named(
-        'ticker'
-      )}, you could still do so with other exchanges in the Injective ecosystem.`,
-    subDescriptionTwo: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'If you would like to withdraw your ',
-        named('symbol'),
-        ' balances, you could do so via our {network} bridge on the Injective Hub.'
-      ]),
-    terraDescription:
-      'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
-    exploreOtherMarkets: 'Explore Other Markets',
-    injectiveBridge: 'Injective Bridge'
-  },
-
   navigation: {
     balances: 'Balances',
     funding: 'Funding',
     disconnect: 'Disconnect',
     myAccount: 'My Account',
+    subaccountHistory: 'Subaccount History',
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
     rewards: 'Rewards',
@@ -226,14 +237,21 @@ export default {
     trade: 'Trade',
     swap: 'Swap',
     liquidity: 'Liquidity',
-    swapDescription: 'Trade through a simple & intuitive interface',
+    swapDescription: 'Quickly swap assets through a simple interface',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
+    deposit: 'Deposit',
+    getInj: 'Get INJ',
+    getInjDescription: 'Deposit INJ from a CEX to your account',
+    depositCrypto: 'Crypto',
+    depositFiat: 'Fiat',
+    depositFiatDescription: 'Deposit via bank transfer or a bank card',
+    depositCryptoDescription: 'Deposit crypto into your trading account',
     guilds: 'Guilds',
-    guildsSub: 'Team up with other traders to earn rewards',
+    guildsSub: 'Create and join Guilds to win team-based competitions',
     lpRewards: 'LP Rewards',
-    lpRewardsSub: 'Rewards for using liquidity bots',
+    lpRewardsSub: 'Rewards for setting up trading bots',
     account: 'Account',
     home: 'Home',
     makerTakerFee: ({ named }: I18nMessageFunction) =>
@@ -246,20 +264,36 @@ export default {
       'Earn crypto commission by inviting friends to trade on Helix',
     openLiquidityProgram: 'Open Liquidity Program',
     openLiquidityProgramDescription:
-      'Provide liquidity and earn INJ rewards in our Open Liquidity Program',
+      'Earn rewards for providing liquidity on Helix',
     spot: 'Spot',
     new: 'New',
-    spotDescription: 'Trade crypto on an on-chain orderbook',
+    markets: 'Markets',
+    spotDescription: 'Buy and sell crypto assets using advanced trading tools',
     perpetual: 'Perpetual',
-    perpetualDescription: 'Trade perpetual contracts settled in USDT',
+    perpetualDescription: 'Trade perpetual & pre-launch futures with leverage',
     leaderboard: 'Leaderboard',
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,
-
     tradingBots: 'Trading Bots',
-    tradingBotsDescription: 'Trade smarter with automated strategies',
-    liquidityBots: 'Liquidity Bots',
-    liquidityBotsDescription: 'Trade smarter with automated strategies'
+    tradingBotsDescription: 'Trade smarter with automated trading strategies ',
+    liquidityBots: 'Bots',
+    liquidityBotsDescription: 'Setup and manage liquidity bots',
+    liquidityProvision: 'Provision',
+    liquidityProvisionDescription: 'Earn yield through different options',
+    positions: 'Positions',
+    orders: 'Orders',
+    spotGrid: 'Spot Grid',
+    derivative: 'Derivative',
+    derivativeGrid: 'Derivative Grid',
+    futures: 'Futures',
+    futuresGrid: 'Futures Grid',
+    swaps: 'Swaps',
+    wallet: 'Wallet',
+    fundingPayments: 'Funding Payments',
+    subaccounts: 'Subaccounts',
+    settings: 'Settings',
+    derivativesGrid: 'Derivatives Grid',
+    history: 'History'
   },
 
   feeDiscounts: {
@@ -347,14 +381,19 @@ export default {
     enterInjectiveAddress: 'Enter your injective address'
   },
 
-  proMode: {
-    proMode: 'Pro Mode',
-    subaccountManagement: 'Enable subaccount management',
-    authzManagement: 'Enable authZ management'
-  },
-
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
+  },
+
+  scavengerHunt: {
+    title: 'You found it! 🕵️‍♀️',
+    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
+  },
+
+  postOnlyMode: {
+    title: 'Post Only Mode!',
+    description:
+      'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
   }
 }

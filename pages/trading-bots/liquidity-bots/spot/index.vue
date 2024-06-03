@@ -1,17 +1,12 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { OrderState } from '@injectivelabs/ts-types'
-
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  addressAndMarketSlugToSubaccountId,
-  getSgtContractAddressFromSlug
+  getSgtContractAddressFromSlug,
+  addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-
-definePageMeta({
-  middleware: ['grid-strategy-subaccount']
-})
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
@@ -36,7 +31,7 @@ const activeStrategy = computed(
 const subaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
     walletStore.address,
-    (gridStrategyStore.spotMarket as UiSpotMarketWithToken).slug
+    (gridStrategyStore.spotMarket as UiSpotMarket).slug
   )
 )
 
@@ -49,6 +44,7 @@ const marketOrders = computed(() =>
   )
 )
 
+// todo: Ivan => change subaccount onMounted
 function fetchData() {
   status.setLoading()
 
@@ -83,13 +79,14 @@ function fetchData() {
       }
     }),
     accountStore.streamBankBalance(),
-    gridStrategyStore.fetchStrategies(),
-    exchangeStore.getMarketsHistory({
+    gridStrategyStore.fetchAllStrategies(),
+    exchangeStore.fetchMarketHistory({
       marketIds: [gridStrategyStore.spotMarket.marketId],
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
       countback: 30 * 24
     }),
-    accountStore.fetchAccountPortfolio(),
+    accountStore.fetchCw20Balances(),
+    accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamSubaccountBalance(subaccountId)
   ])
     .catch($onError)
@@ -136,7 +133,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <div>
         <button @click="isBannerOpen = false">
-          <BaseIcon name="close" />
+          <SharedIcon name="close" />
         </button>
       </div>
     </div>
@@ -155,10 +152,13 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <PartialsLiquidityBotsSpotPlacingOrders
         v-else-if="activeStrategy"
-        v-bind="{ subaccountId }"
+        v-bind="{
+          subaccountId,
+          market: gridStrategyStore.spotMarket as UiSpotMarket
+        }"
       />
 
-      <PartialsGridStrategySpotFormActiveStrategy
+      <PartialsLiquidityCommonActiveStrategy
         v-if="activeStrategy && gridStrategyStore.spotMarket"
         class="mt-4"
         v-bind="{

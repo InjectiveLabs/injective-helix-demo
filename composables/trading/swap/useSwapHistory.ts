@@ -1,25 +1,18 @@
-import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
+import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { format } from 'date-fns'
-import { type Token } from '@injectivelabs/token-metadata'
+import { getExplorerUrl } from '@shared/utils/network'
 import {
   toBalanceInToken,
   convertCoinToBalancesWithToken
 } from '@/app/utils/formatters'
-import {
-  NETWORK,
-  MAX_QUOTE_DECIMALS,
-  DATE_TIME_DISPLAY
-} from '@/app/utils/constants'
+import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 
 export function useSwapHistory(swap: Ref<AtomicSwap>) {
   const tokenStore = useTokenStore()
 
   const time = format(swap.value.executedAt, DATE_TIME_DISPLAY)
-  const explorerLink = `${getExplorerUrl(NETWORK)}/transaction/${
-    swap.value.txHash
-  }`
+  const explorerLink = `${getExplorerUrl()}/transaction/${swap.value.txHash}`
 
   const destinationTokenWithBalance = computed(() => {
     if (!swap.value.destinationCoin) {
@@ -63,9 +56,8 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
 
   const formattedFees = computed(() =>
     swap.value.fees.map(({ denom, amount }) => {
-      const token = tokenStore.tokens.find(
-        (token: Token) => token.denom === denom
-      )
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
+
       const amountInToken = toBalanceInToken({
         value: amount,
         decimalPlaces: token?.decimals || 18,
@@ -84,9 +76,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
     const routeDenoms = swap.value.route.split('-')
 
     return routeDenoms.reduce((symbols, denom) => {
-      const token = tokenStore.tokens.find(
-        (token: Token) => token.denom === denom
-      )
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
 
       if (!token) {
         return [...symbols]

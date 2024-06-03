@@ -1,24 +1,32 @@
 import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   ErrorType,
-  UnspecifiedErrorCode,
-  WalletException
+  WalletException,
+  UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { walletStrategy } from '@/app/wallet-strategy'
-import { blacklistedAddresses } from '@/app/data/wallet-address'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import blacklistedAddresses from '@/app/data/ofac.json'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 
 export const connect = ({
-  wallet
+  wallet,
+  options
 }: {
   wallet: Wallet
+  options?: {
+    privateKey?: string
+  }
   // onAccountChangeCallback?: (account: string) => void,
 }) => {
   walletStrategy.setWallet(wallet)
+
+  if (wallet === Wallet.PrivateKey && options?.privateKey) {
+    walletStrategy.setOptions({ privateKey: options.privateKey })
+  }
 }
 
 export const getAddresses = async (): Promise<string[]> => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
 
   if (addresses.length === 0) {
     throw new WalletException(
@@ -60,5 +68,5 @@ export const getAddresses = async (): Promise<string[]> => {
 }
 
 export const confirm = async (address: string) => {
-  return await walletStrategy.confirm(address)
+  return await walletStrategy.getSessionOrConfirm(address)
 }

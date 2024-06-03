@@ -5,6 +5,7 @@ const props = defineProps({
   isEmitting: Boolean,
   noPadding: Boolean,
   isLoading: Boolean,
+  isHelix: Boolean,
 
   status: {
     type: Object as PropType<Status>,
@@ -14,6 +15,11 @@ const props = defineProps({
   loaderClass: {
     type: String,
     default: 'relative'
+  },
+
+  wrapperClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -36,23 +42,31 @@ watch(isLoading, (isLoading, oldIsLoading) => {
 </script>
 
 <template>
-  <div>
-    <Suspense>
+  <Suspense>
+    <div
+      v-if="isLoading"
+      :class="[
+        wrapperClass || 'h-full',
+        {
+          'py-4': !noPadding,
+          'flex items-center justify-center': props.isHelix
+        }
+      ]"
+    >
       <div
-        v-if="isLoading"
-        class="h-full"
-        :class="{
-          'py-4': !noPadding
-        }"
-      >
+        v-if="isHelix"
+        class="w-72 h-72 bg-blue-500/20 absolute left-1/2 blur-[10rem] rounded-full -translate-x-1/2 top-1/2 -translate-y-1/2 z-30"
+      />
+      <AssetHelixLogoLoading />
+    </div>
+
+    <slot v-else />
+
+    <!-- <template #fallback>
+      <div class="h-full">
         <AppLoading :class="loaderClass" />
       </div>
-      <slot v-else />
-      <template #fallback>
-        <div class="h-full">
-          <AppLoading :class="loaderClass" />
-        </div>
-      </template>
-    </Suspense>
-  </div>
+    </template> -->
+    <!-- </Suspense> -->
+  </Suspense>
 </template>

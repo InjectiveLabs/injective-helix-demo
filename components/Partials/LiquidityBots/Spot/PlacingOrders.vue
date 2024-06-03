@@ -1,7 +1,14 @@
 <script lang="ts" setup>
+import { UiSpotMarket } from '@/types'
+
 const props = defineProps({
   subaccountId: {
     type: String,
+    required: true
+  },
+
+  market: {
+    type: Object as PropType<UiSpotMarket>,
     required: true
   }
 })
@@ -9,7 +16,10 @@ const props = defineProps({
 const spotStore = useSpotStore()
 
 useIntervalFn(() => {
-  spotStore.fetchSubaccountOrderHistory({ subaccountId: props.subaccountId })
+  spotStore.fetchOrdersBySubaccount({
+    subaccountId: props.subaccountId,
+    marketIds: [props.market.marketId]
+  })
 }, 2000)
 </script>
 

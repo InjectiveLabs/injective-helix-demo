@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SpotGridTradingField } from '@/types'
+import { UiSpotMarket, SpotGridTradingField } from '@/types'
 
 const setFormValues = useSetFormValues()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiSpotMarketWithToken>,
+    type: Object as PropType<UiSpotMarket>,
     required: true
   },
 
@@ -37,19 +35,19 @@ const isOpen = ref(false)
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 
-const { valueToString: upperPriceToString } = useBigNumberFormatter(
+const { valueToString: upperPriceToString } = useSharedBigNumberFormatter(
   computed(() => props.upperPrice),
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: lowerPriceToString } = useBigNumberFormatter(
+const { valueToString: lowerPriceToString } = useSharedBigNumberFormatter(
   computed(() => props.lowerPrice),
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
-const { valueToString: currentPriceToString } = useBigNumberFormatter(
+const { valueToString: currentPriceToString } = useSharedBigNumberFormatter(
   lastTradedPrice,
-  { decimalPlaces: props.decimalPlaces }
+  { decimalPlaces: props.decimalPlaces, displayAbsoluteDecimalPlace: true }
 )
 
 onMounted(() => {
@@ -81,7 +79,7 @@ function toggleAdvancedSettings() {
         class="transition-all duration-300"
         :class="{ 'rotate-180': isOpen }"
       >
-        <BaseIcon name="chevron-down" is-md />
+        <SharedIcon name="chevron-down" is-md />
       </div>
     </div>
 
