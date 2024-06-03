@@ -130,7 +130,7 @@
   .trade-layout-left {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 400px 330px 1fr;
+    grid-template-columns: 400px 336px 1fr;
 
     grid-template-areas:
       'form orderbook chart'
@@ -141,7 +141,7 @@
   .trade-layout-right {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 1fr 330px 400px;
+    grid-template-columns: 1fr 336px 400px;
 
     grid-template-areas:
       'chart orderbook form'

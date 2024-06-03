@@ -45,27 +45,27 @@ function setOrderbookLayout(layout: OrderbookLayout) {
         :key="value"
         v-model="activeTab"
         :value="value"
-        class="text-sm font-semibold text-gray-500 capitalize px-4"
+        class="text-sm font-semibold text-gray-500 capitalize px-2"
         active-classes="text-white"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
 
-      <div class="flex items-center justify-end flex-1 space-x-1">
-        <img
-          v-for="option in orderbookOptions"
-          :key="option.value"
-          :src="option.img"
-          :class="{ 'opacity-50': orderbookLayout !== option.value }"
-          class="cursor-pointer"
-          @click="setOrderbookLayout(option.value)"
-        />
-      </div>
-
       <div
         v-if="activeTab === OrderbookViewOption.Orderbook"
         class="flex flex-1 items-center justify-end"
       >
+        <div class="flex items-center space-x-1 mr-1">
+          <img
+            v-for="option in orderbookOptions"
+            :key="option.value"
+            :src="option.img"
+            :class="{ 'opacity-50': orderbookLayout !== option.value }"
+            class="cursor-pointer"
+            @click="setOrderbookLayout(option.value)"
+          />
+        </div>
+
         <PartialsTradeOrderbookAggregation />
       </div>
     </div>

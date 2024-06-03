@@ -116,17 +116,19 @@ function setSellsIndex(index: number) {
         />
       </template>
 
-      <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.sells.slice(0, sellsSectionRows)"
-        v-bind="{
-          isActive: i <= activeSellsIndex,
-          index: i,
-          record,
-          highestVolume
-        }"
-        :key="i"
-        @set:index="setSellsIndex"
-      />
+      <template v-else>
+        <PartialsTradeOrderbookBuysSellsRecord
+          v-for="(record, i) in orderbookStore.sells.slice(0, sellsSectionRows)"
+          v-bind="{
+            isActive: i <= activeSellsIndex,
+            index: i,
+            record,
+            highestVolume
+          }"
+          :key="i"
+          @set:index="setSellsIndex"
+        />
+      </template>
     </div>
 
     <div class="h-header border-y my-1 flex">
@@ -149,18 +151,20 @@ function setSellsIndex(index: number) {
         />
       </template>
 
-      <PartialsTradeOrderbookBuysSellsRecord
-        v-for="(record, i) in orderbookStore.buys.slice(0, buysSectionRows)"
-        v-bind="{
-          isActive: i <= activeBuysIndex,
-          index: i,
-          record,
-          highestVolume
-        }"
-        :key="i"
-        is-buy
-        @set:index="setBuysIndex"
-      />
+      <template v-else>
+        <PartialsTradeOrderbookBuysSellsRecord
+          v-for="(record, i) in orderbookStore.buys.slice(0, buysSectionRows)"
+          v-bind="{
+            isActive: i <= activeBuysIndex,
+            index: i,
+            record,
+            highestVolume
+          }"
+          :key="i"
+          is-buy
+          @set:index="setBuysIndex"
+        />
+      </template>
     </div>
   </div>
 </template>
