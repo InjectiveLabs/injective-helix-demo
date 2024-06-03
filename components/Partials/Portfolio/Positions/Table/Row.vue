@@ -230,7 +230,7 @@ function addTpSl() {
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span
           :class="{
             'text-green-500': position.direction === TradeDirection.Long,
@@ -258,7 +258,10 @@ function addTpSl() {
             'text-red-500': pnl.lt(0)
           }"
         >
-          <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
+          <p>
+            {{ pnlToString }}
+            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+          </p>
           <p>{{ percentagePnlToString }}%</p>
         </div>
       </div>

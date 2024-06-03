@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   order: {
@@ -39,13 +38,13 @@ const { valueToString: quantityToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  decimalPlaces: priceDecimals.value
 })
 
 const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
   triggerPrice,
   {
-    decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+    decimalPlaces: priceDecimals.value
   }
 )
 </script>
@@ -62,9 +61,9 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2 font-sans">{{ type }}</div>
+      <div class="flex-[0.5] flex items-center p-2 font-sans">{{ type }}</div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span
           :class="{
             'text-green-500': isBuy,
@@ -93,7 +92,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-1 flex justify-center items-center p-2">
         <span v-if="triggerPrice.eq(0)"> - </span>
         <span v-else>{{ triggerPriceToString }}</span>
       </div>

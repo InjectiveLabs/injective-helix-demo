@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
-
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
@@ -141,7 +140,10 @@ function onCancelOrder() {
 
     <div class="flex justify-between items-center px-2 py-4">
       <p>{{ $t('trade.total') }}</p>
-      <p>{{ totalToString }} {{ market?.quoteToken.symbol }}</p>
+      <p>
+        {{ totalToString }}
+        <span class="text-gray-500">{{ market?.quoteToken.symbol }}</span>
+      </p>
     </div>
 
     <div class="flex-1 pt-2">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '~/app/utils/async'
+import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
 const walletStore = useWalletStore()

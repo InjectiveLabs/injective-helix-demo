@@ -44,6 +44,7 @@ export default {
     takeProfit: 'Take Profit',
     stopReason: 'Stop Reason',
     inProgress: 'In Progress',
+    viewDetails: 'View Details',
     stopTrigger: 'Stop Trigger',
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',

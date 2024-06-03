@@ -10,11 +10,12 @@ import { spotMarketStream } from '@/app/client/streams/spot'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
+
 import {
   UiMarketWithToken,
-  aggregationKey,
-  orderbookStatusKey,
-  orderbookWorkerKey
+  AggregationKey,
+  OrderbookWorkerKey,
+  OrderbookStatusKey
 } from '@/types'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
@@ -180,9 +181,9 @@ export function useOrderbook(
     fetchDerivativeOrderbook()
   }
 
-  provide(orderbookWorkerKey, worker)
-  provide(aggregationKey, aggregation)
-  provide(orderbookStatusKey, orderbookStatus)
+  provide(OrderbookStatusKey, orderbookStatus)
+  provide(OrderbookWorkerKey, worker)
+  provide(AggregationKey, aggregation)
 
   watch(aggregation, () => {
     worker.value?.postMessage({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { unknownTokenStatusKey } from '@/types'
+import { UnknownTokenStatusKey } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -34,7 +34,7 @@ onMounted(() => {
   Promise.all([appStore.init(), appStore.fetchBlockHeight()])
 })
 
-provide(unknownTokenStatusKey, unknownTokenStatus)
+provide(UnknownTokenStatusKey, unknownTokenStatus)
 </script>
 
 <template>

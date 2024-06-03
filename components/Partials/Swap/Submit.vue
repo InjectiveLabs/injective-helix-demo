@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import {
-  BigNumberInWei,
-  BigNumberInBase,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { Modal, SwapForm, SwapFormField } from '@/types'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { Modal, SwapForm, SwapFormField } from '@/types'
 
 const appStore = useAppStore()
 const swapStore = useSwapStore()

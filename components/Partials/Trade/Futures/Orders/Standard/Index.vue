@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  PerpOrdersStandardView,
   UiDerivativeMarket,
-  derivativeMarketKey
+  DerivativeMarketKey,
+  PerpOrdersStandardView
 } from '@/types'
 
 const accountStore = useAccountStore()
-const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 
-const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const isTickerOnly = ref(false)
 const view = ref(PerpOrdersStandardView.OpenPositions)

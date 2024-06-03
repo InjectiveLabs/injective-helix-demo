@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {
+  DerivativeMarketKey,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  derivativeMarketKey
+  DerivativesTradeFormField
 } from '@/types'
 
-const derivativeMarket = inject(derivativeMarketKey)
+const derivativeMarket = inject(DerivativeMarketKey)
 
 const { value: reduceOnly } = useBooleanField({
   name: DerivativesTradeFormField.ReduceOnly,

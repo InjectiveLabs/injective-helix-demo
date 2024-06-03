@@ -58,7 +58,7 @@ const { valueToString: quantityToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
+  decimalPlaces: priceDecimals.value
 })
 
 const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
@@ -109,7 +109,7 @@ function cancelOrder() {
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span
           class="font-sans"
           :class="{
@@ -134,7 +134,7 @@ function cancelOrder() {
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
-        <div>
+        <div class="text-right">
           <p>{{ filledQuantityToString }}</p>
           <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
         </div>
@@ -142,7 +142,10 @@ function cancelOrder() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p>${{ totalToString }}</p>
+          <p>
+            {{ totalToString }}
+            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+          </p>
         </div>
       </div>
 

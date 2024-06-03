@@ -5,7 +5,7 @@
 <template>
   <div class="flex p-2 table-label whitespace-nowrap">
     <div class="flex-1 p-2 flex items-center">{{ $t('trade.market') }}</div>
-    <div class="flex-1 p-2 flex items-center">{{ $t('trade.side') }}</div>
+    <div class="flex-[0.5] p-2 flex items-center">{{ $t('trade.side') }}</div>
     <div class="flex-1 p-2 flex items-center justify-end">
       {{ $t('trade.amount') }}
     </div>

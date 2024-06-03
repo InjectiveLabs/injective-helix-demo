@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
-  spotMarketKey,
+  SpotMarketKey,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
-import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
-const market = inject(spotMarketKey)
+const market = inject(SpotMarketKey)
 
 const walletStore = useWalletStore()
 const validate = useValidateForm()

@@ -2,17 +2,17 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
-  DerivativesTradeForm,
-  DerivativesTradeFormField,
   UiDerivativeMarket,
-  derivativeMarketKey
+  DerivativeMarketKey,
+  DerivativesTradeForm,
+  DerivativesTradeFormField
 } from '@/types'
 
-const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const derivativeStore = useDerivativeStore()
-const { markPrice } = useDerivativeLastPrice(market)
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+const { markPrice } = useDerivativeLastPrice(market)
 
 const isBuy = computed(
   () =>

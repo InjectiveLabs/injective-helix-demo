@@ -12,7 +12,7 @@ import {
   MarketQuoteType,
   MarketTypeOption,
   MarketCategoryType,
-  unknownTokenStatusKey
+  UnknownTokenStatusKey
 } from '@/types'
 import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
 
@@ -116,7 +116,7 @@ async function onMarketTypeChange(type: string) {
 useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 
 const unknownTokenStatus = inject(
-  unknownTokenStatusKey,
+  UnknownTokenStatusKey,
   new Status(StatusType.Loading)
 )
 </script>

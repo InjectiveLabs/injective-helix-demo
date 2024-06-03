@@ -42,13 +42,13 @@ const { valueToString: quantityToString } = useSharedBigNumberFormatter(
 )
 
 const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
+  decimalPlaces: priceDecimals.value
 })
 
 const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
   triggerPrice,
   {
-    decimalPlaces: quantityDecimals.value
+    decimalPlaces: priceDecimals.value
   }
 )
 </script>
@@ -66,7 +66,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span class="font-sans">
           {{ type }}
         </span>

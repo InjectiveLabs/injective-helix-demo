@@ -7,16 +7,16 @@ import {
 } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
   UiDerivativeMarket,
-  derivativeMarketKey,
+  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
   OrderAttemptStatus
 } from '@/types'
-import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const props = defineProps({
   margin: {
@@ -61,7 +61,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 
-const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
