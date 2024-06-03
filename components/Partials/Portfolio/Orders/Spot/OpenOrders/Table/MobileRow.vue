@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { MsgType } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
 
 const props = defineProps({
@@ -9,7 +10,8 @@ const props = defineProps({
     required: true
   }
 })
-
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const spotStore = useSpotStore()
 const { success } = useNotifications()
 const { $onError } = useNuxtApp()
@@ -33,6 +35,14 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
+})
 
 const { valueToString: priceToString } = useBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
@@ -142,12 +152,14 @@ function cancelOrder() {
     <div class="px-2 pt-2 items-center">
       <AppButton
         v-if="orderFillable"
+        :disabled="!isAuthorized"
         variant="danger-ghost"
         v-bind="{ status }"
         class="w-full"
         @click="cancelOrder"
       >
-        {{ $t('trade.cancelOrder') }}
+        <span v-if="!isAuthorized">{{ $t('common.unauthorized') }}</span>
+        <span v-else>{{ $t('trade.cancelOrder') }}</span>
       </AppButton>
     </div>
   </div>

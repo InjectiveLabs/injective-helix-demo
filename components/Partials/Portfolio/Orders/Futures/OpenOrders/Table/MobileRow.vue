@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { MsgType } from '@injectivelabs/ts-types'
 
 import { Status, StatusType } from '@injectivelabs/utils'
 
@@ -27,7 +28,8 @@ const {
   computed(() => props.order),
   computed(() => false)
 )
-
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
@@ -37,6 +39,14 @@ const status = reactive(new Status(StatusType.Idle))
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
+})
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(
@@ -136,12 +146,14 @@ function onCancelOrder() {
 
     <div class="flex-1 pt-2">
       <AppButton
+        :disabled="!isAuthorized"
         variant="danger-ghost"
         v-bind="{ status }"
         class="w-full"
         @click="onCancelOrder"
       >
-        {{ $t('trade.cancelOrder') }}
+        <span v-if="!isAuthorized">{{ $t('common.unauthorized') }}</span>
+        <span v-else>{{ $t('trade.cancelOrder') }}</span>
       </AppButton>
     </div>
   </div>
