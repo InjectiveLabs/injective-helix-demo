@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {
+  BusEvents,
   UiSpotMarket,
-  SpotTradeFormField,
-  spotMarketKey,
-  BusEvents
+  SpotMarketKey,
+  SpotTradeFormField
 } from '@/types'
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
 

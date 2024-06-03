@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInWei } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps({
   balance: {

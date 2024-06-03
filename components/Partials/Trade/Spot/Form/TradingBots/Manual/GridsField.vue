@@ -1,28 +1,33 @@
 <script setup lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  spotMarketKey
-} from '@/types'
-import {
-  GST_DEFAULT_PRICE_TICK_SIZE,
+  GST_MINIMUM_GRIDS,
   GST_MAXIMUM_GRIDS,
-  GST_MINIMUM_GRIDS
+  GST_DEFAULT_PRICE_TICK_SIZE
 } from '@/app/utils/constants'
+import {
+  SpotMarketKey,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
-const spotMarket = inject(spotMarketKey)
+defineProps({
+  isDisabled: Boolean
+})
+
+const spotMarket = inject(SpotMarketKey)
 
 const spotGridFormValues = useFormValues<SpotGridTradingForm>()
 
 const tickSize = computed(() =>
   spotMarket?.value
-    ? new BigNumberInWei(spotMarket.value.minPriceTickSize)
-        .toBase(
+    ? sharedToBalanceInToken({
+        value: spotMarket.value.minPriceTickSize,
+        decimalPlaces:
           spotMarket.value.quoteToken.decimals -
-            spotMarket.value.baseToken.decimals
-        )
-        .toFixed()
+          spotMarket.value.baseToken.decimals
+      })
     : GST_DEFAULT_PRICE_TICK_SIZE
 )
 
@@ -82,9 +87,10 @@ const { value: gridsValue, errorMessage } = useStringField({
       <AppInputField
         v-model="gridsValue"
         autofix
+        :decimals="0"
+        :disabled="isDisabled"
         :min="GST_MINIMUM_GRIDS"
         :max="GST_MAXIMUM_GRIDS"
-        :decimals="0"
         :placeholder="`${GST_MINIMUM_GRIDS}-${maximumGrids}`"
       />
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>

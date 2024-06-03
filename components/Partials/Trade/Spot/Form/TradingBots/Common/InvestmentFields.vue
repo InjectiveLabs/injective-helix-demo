@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  GST_DEFAULT_AUTO_GRIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
+  GST_DEFAULT_AUTO_GRIDS,
   GST_MIN_TRADING_SIZE_LOW
 } from '@/app/utils/constants'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   UiSpotMarket,
-  spotMarketKey,
+  SpotMarketKey,
   InvestmentTypeGst,
   SpotGridTradingField,
   SpotGridTradingForm
 } from '@/types'
 
 const props = defineProps({
-  isAuto: Boolean
+  isAuto: Boolean,
+  isDisabled: Boolean
 })
 
-const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
@@ -92,29 +93,27 @@ const isUpperBoundLtLastPrice = computed(() =>
 )
 
 const {
-  valueToString: quoteDenomAmountToString,
-  valueToBigNumber: quoteDenomAmount
+  valueToBigNumber: quoteDenomAmount,
+  valueToString: quoteDenomAmountToString
 } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInWei(quoteDenomBalance.value?.bankBalance || 0).toBase(
-      quoteDenomBalance.value?.token.decimals
-    )
-  ),
-  { decimalPlaces: 2 }
+    sharedToBalanceInTokenInBase({
+      value: quoteDenomBalance.value?.bankBalance || 0,
+      decimalPlaces: quoteDenomBalance.value?.token.decimals
+    })
+  )
 )
 
 const {
-  valueToString: baseDenomAmountToString,
-  valueToBigNumber: baseDenomAmount
+  valueToBigNumber: baseDenomAmount,
+  valueToString: baseDenomAmountToString
 } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInWei(baseDenomBalance.value?.bankBalance || 0).toBase(
-      baseDenomBalance.value?.token.decimals
-    )
-  ),
-  {
-    decimalPlaces: 2
-  }
+    sharedToBalanceInTokenInBase({
+      value: baseDenomBalance.value?.bankBalance || 0,
+      decimalPlaces: baseDenomBalance.value?.token.decimals
+    })
+  )
 )
 
 const { value: baseAmount, errorMessage: baseAmountError } = useStringField({
@@ -236,7 +235,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <AppInputField
       v-model="baseAmount"
       placeholder="0.00"
-      :disabled="isUpperBoundLtLastPrice"
+      :disabled="isUpperBoundLtLastPrice || isDisabled"
     >
       <template #right>
         <span>{{ market.baseToken.symbol }}</span>
@@ -254,7 +253,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
     <AppInputField
       v-model="quoteAmount"
       placeholder="0.00"
-      :disabled="isLowerBoundGtLastPrice"
+      :disabled="isLowerBoundGtLastPrice || isDisabled"
     >
       <template #right>
         <span>{{ market.quoteToken.symbol }}</span>

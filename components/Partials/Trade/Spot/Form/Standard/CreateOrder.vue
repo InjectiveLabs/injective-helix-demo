@@ -2,14 +2,14 @@
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
-  OrderAttemptStatus,
-  SpotTradeForm,
-  SpotTradeFormField,
   TradeTypes,
-  spotMarketKey
+  SpotMarketKey,
+  SpotTradeForm,
+  OrderAttemptStatus,
+  SpotTradeFormField
 } from '@/types'
-import { mixpanelAnalytics } from '~/app/providers/mixpanel'
 
 const props = defineProps({
   quantity: {
@@ -59,7 +59,7 @@ const orderTypeToSubmit = computed(() => {
   }
 })
 
-const market = inject(spotMarketKey)
+const market = inject(SpotMarketKey)
 
 const currentFormValues = computed(
   () =>

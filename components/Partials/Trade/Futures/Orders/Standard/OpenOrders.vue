@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiDerivativeMarket, derivativeMarketKey } from '@/types'
+import { UiDerivativeMarket, DerivativeMarketKey } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 const isMobile = useIsMobile()
@@ -8,7 +8,7 @@ const props = defineProps({
   isTickerOnly: Boolean
 })
 
-const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const filteredOrders = computed(() =>
   derivativeStore.subaccountOrders.filter((order) => {

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import {
+  BusEvents,
+  UiSpotMarket,
+  SpotMarketKey,
   GridStrategyType,
   InvestmentTypeGst,
   SpotGridTradingForm
 } from '@/types'
 
+const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+
+const gridStrategyStore = useGridStrategyStore()
 const strategyType = ref(GridStrategyType.Auto)
 
 useForm<SpotGridTradingForm>({
@@ -14,8 +20,22 @@ useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true
 })
 
+const activeStrategy = computed(() => {
+  return gridStrategyStore.activeStrategies.find((strategy) => {
+    return strategy.marketId === spotMarket.value?.marketId
+  })
+})
+
 function updateType(type: GridStrategyType) {
   strategyType.value = type
+}
+
+function onOpenTradingBotDetails() {
+  if (!activeStrategy.value) {
+    return
+  }
+
+  useEventBus(BusEvents.OpenTradingBotDetails).emit(activeStrategy.value)
 }
 </script>
 
@@ -37,10 +57,16 @@ function updateType(type: GridStrategyType) {
     <div>
       <PartialsTradeSpotFormTradingBotsAuto
         v-if="strategyType === GridStrategyType.Auto"
+        :has-active-strategy="!!activeStrategy"
         @update:tab="updateType"
+        @view:details="onOpenTradingBotDetails"
       />
 
-      <PartialsTradeSpotFormTradingBotsManual v-else />
+      <PartialsTradeSpotFormTradingBotsManual
+        v-else
+        :has-active-strategy="!!activeStrategy"
+        @view:details="onOpenTradingBotDetails"
+      />
     </div>
   </div>
 </template>

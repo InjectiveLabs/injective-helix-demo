@@ -10,7 +10,7 @@ import {
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
-  spotMarketKey,
+  SpotMarketKey,
   TradeAmountOption,
   SpotTradeFormField
 } from '@/types'
@@ -33,7 +33,7 @@ export function useSpotWorstPrice() {
       TradeAmountOption.Base
   )
 
-  const market = inject(spotMarketKey) as Ref<UiSpotMarket>
+  const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
   const feePercentage = computed(() => {
     const feePercentage =

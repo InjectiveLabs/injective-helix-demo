@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 import {
-  PerpOrdersStandardView,
   UiDerivativeMarket,
-  derivativeMarketKey
+  DerivativeMarketKey,
+  PerpOrdersStandardView
 } from '@/types'
 
 const props = defineProps({
@@ -23,13 +23,12 @@ const emit = defineEmits<{
   'update:isTickerOnly': [value: boolean]
 }>()
 
-const derivativeMarket = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const walletStore = useWalletStore()
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
-
 const breakpoints = useBreakpointsTw()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 
 const xxl = breakpoints['4xl']
 

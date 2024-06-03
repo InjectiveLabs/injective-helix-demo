@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
 import { MarketHeaderType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
-import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
 const props = defineProps({
   isLoading: Boolean,

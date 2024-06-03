@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { MainPage, portfolioStatusKey } from '@/types'
+import { MainPage, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
 const authZStore = useAuthZStore()
@@ -71,7 +71,7 @@ function fetchSubaccountStream() {
   positionStore.streamSubaccountPositions()
 }
 
-provide(portfolioStatusKey, portfolioStatus)
+provide(PortfolioStatusKey, portfolioStatus)
 </script>
 
 <template>

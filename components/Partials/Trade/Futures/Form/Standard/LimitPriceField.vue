@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {
+  BusEvents,
   UiDerivativeMarket,
-  derivativeMarketKey,
-  DerivativesTradeFormField,
-  BusEvents
+  DerivativeMarketKey,
+  DerivativesTradeFormField
 } from '@/types'
 
-const market = inject(derivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
 const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
 

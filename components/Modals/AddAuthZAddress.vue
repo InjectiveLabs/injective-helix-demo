@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal } from '~/types'
+import { Modal } from '@/types'
 
 const tradingMessages = [
   MsgType.MsgCreateSpotLimitOrder,
