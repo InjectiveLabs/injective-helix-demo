@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = defineProps({
@@ -86,7 +85,7 @@ function onCancelOrder() {
         <p>{{ market.ticker }}</p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-1 flex items-center p-2">
+      <div class="flex-[0.5] flex items-center p-2">
         <span
           :class="{
             'text-green-500': isBuy,
@@ -122,7 +121,10 @@ function onCancelOrder() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="space-y-1">
-          <p>{{ totalToString }} {{ market?.quoteToken.symbol }}</p>
+          <p>
+            {{ totalToString }}
+            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+          </p>
         </div>
       </div>
 
