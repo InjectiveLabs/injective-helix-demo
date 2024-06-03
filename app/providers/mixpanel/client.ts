@@ -1,6 +1,6 @@
-import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
+import { SharedMarketType } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { MIXPANEL_KEY } from '@/app/utils/constants/setup'
 import {
@@ -72,7 +72,7 @@ export class MixPanelAnalytics {
 
   trackNavigateToTradePage(props: {
     market: string
-    marketType: MarketType
+    marketType: SharedMarketType
     origin: TradeClickOrigin
   }) {
     this.getMixpanelClient().track(MixPanelEvent.TradeClicked, props)
@@ -101,7 +101,7 @@ export class MixPanelAnalytics {
   trackPlaceOrderAttempt(props: {
     amount: string
     market: string
-    marketType: MarketType
+    marketType: SharedMarketType
     orderType: OrderSide
     postOnly?: boolean
     tradingType: TradeExecutionType
@@ -118,7 +118,7 @@ export class MixPanelAnalytics {
   trackPlaceOrderConfirm(props: {
     amount: string
     market: string
-    marketType: MarketType
+    marketType: SharedMarketType
     orderSide: OrderSide
     postOnly: boolean
     tradingType: TradeExecutionType
@@ -153,7 +153,7 @@ export class MixPanelAnalytics {
       : 'Create Strategies'
 
     this.getMixpanelClient().track(event, {
-      amountQuote: formValues[SpotGridTradingField.InvestmentAmount] || '',
+      amountQuote: formValues[SpotGridTradingField.QuoteInvestmentAmount] || '',
       gridsNumber: formValues[SpotGridTradingField.Grids] || '',
       lowerPrice: formValues[SpotGridTradingField.LowerPrice] || '',
       upperPrice: formValues[SpotGridTradingField.UpperPrice] || '',
@@ -195,6 +195,7 @@ export class MixPanelAnalytics {
         reset: () => {},
         identify: () => {},
         people: {
+          set: () => {},
           increment: () => {}
         }
       } as unknown as OverridedMixpanel

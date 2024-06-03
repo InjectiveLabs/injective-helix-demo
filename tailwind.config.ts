@@ -32,9 +32,241 @@ export default {
     'text-red-500',
     'text-orange-400',
     'text-green-400',
-    'text-primary-500'
+    'text-primary-500',
+    'btn-sm',
+    'btn-md',
+    'btn-lg',
+    'btn-primary',
+    'btn-primary-outline',
+    'btn-danger',
+    'btn-danger-outline',
+    'btn-danger-ghost',
+    'btn-success',
+    'btn-success-outline'
   ],
   mode: 'jit',
+
+  plugins: [
+    ({ addUtilities, addComponents, theme }: any) => {
+      addUtilities({
+        '.error-message': {
+          fontSize: theme('fontSize.xs'),
+          color: theme('colors.red.500')
+        },
+        '.field-label': {
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium')
+        },
+        '.tab-field': {
+          fontSize: theme('fontSize.sm'),
+          fontWeight: theme('fontWeight.bold'),
+          color: theme('colors.gray.600')
+        },
+        '.tab-label': {
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium'),
+          color: theme('colors.gray.300'),
+          userSelect: 'none',
+          cursor: 'pointer'
+        },
+        '.tab-label:hover': {
+          backgroundColor: theme('colors.brand.800')
+        },
+        '.portfolio-title': {
+          fontSize: theme('fontSize.2xl'),
+          fontWeight: theme('fontWeight.bold')
+        },
+        '.table-label': {
+          fontSize: theme('fontSize.xs'),
+          color: theme('colors.gray.400')
+        }
+      })
+
+      addComponents({
+        // Primary
+        '.btn-primary': {
+          color: theme('colors.blue.900'),
+          backgroundColor: theme('colors.blue.500'),
+          border: `1px solid ${theme('colors.blue.500')}`
+        },
+
+        '.btn-primary:hover': {
+          backgroundColor: `${theme('colors.blue.500')}BB`,
+          border: `1px solid ${theme('colors.blue.500')}BB`
+        },
+
+        '.btn-primary:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.blue.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-primary-outline': {
+          color: theme('colors.gray-200'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.blue.500')}`
+        },
+
+        '.btn-primary-outline:hover': {
+          color: theme('colors.white'),
+          backgroundColor: `${theme('colors.blue.500')}33`
+        },
+
+        '.btn-primary-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.blue.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-success': {
+          color: theme('colors.green.900'),
+          backgroundColor: theme('colors.green.500'),
+          border: `1px solid ${theme('colors.green.500')}`
+        },
+
+        '.btn-success:hover': {
+          backgroundColor: `${theme('colors.green.500')}BB`,
+          border: `1px solid ${theme('colors.green.500')}BB`
+        },
+
+        '.btn-success:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.green.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-success-outline': {
+          color: theme('colors.gray-200'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.green.500')}`
+        },
+
+        '.btn-success-outline:hover': {
+          color: theme('colors.white'),
+          backgroundColor: `${theme('colors.green.500')}33`
+        },
+
+        '.btn-success-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.green.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        // Danger
+        '.btn-danger': {
+          color: theme('colors.red.900'),
+          backgroundColor: theme('colors.red.500'),
+          border: `1px solid ${theme('colors.red.500')}`
+        },
+
+        '.btn-danger:hover': {
+          backgroundColor: `${theme('colors.red.500')}BB`,
+          border: `1px solid ${theme('colors.red.500')}BB`
+        },
+
+        '.btn-danger:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-danger-outline': {
+          color: theme('colors.white'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.red.500')}`
+        },
+
+        '.btn-danger-outline:hover': {
+          backgroundColor: `${theme('colors.red.500')}33`
+        },
+
+        '.btn-danger-outline:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-danger-ghost': {
+          color: theme('colors.red.500'),
+          backgroundColor: `${theme('colors.red.500')}33`,
+          border: `1px solid transparent`
+        },
+
+        '.btn-danger-ghost:hover': {
+          backgroundColor: `${theme('colors.red.500')}55`
+        },
+
+        '.btn-danger-ghost:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.red.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        '.btn-xs': {
+          padding: `${theme('padding.1')} ${theme('padding.2')}`,
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
+        },
+
+        '.btn-sm': {
+          padding: `${theme('padding.1')} ${theme('padding.3')}`,
+          fontSize: theme('fontSize.xs'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
+        },
+
+        '.btn': {
+          padding: `${theme('padding.2')} ${theme('padding.6')}`,
+          fontSize: theme('fontSize.sm'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
+        },
+
+        '.btn-md': {
+          padding: `${theme('padding.2')} ${theme('padding.8')}`,
+          fontSize: theme('fontSize.base'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
+        },
+
+        '.btn-lg': {
+          padding: `${theme('padding.1')} ${theme('padding.8')}`,
+          fontSize: theme('fontSize.xl'),
+          fontWeight: theme('fontWeight.medium'),
+          borderRadius: theme('borderRadius.md'),
+          fontFamily: theme('fontFamily.sans')
+        },
+
+        '.card': {
+          border: `1px solid ${theme('colors.brand.750')}`,
+          borderRadius: theme('borderRadius.md'),
+          backgroundColor: theme('colors.brand.875')
+        },
+
+        '.card-opaque': {
+          border: `1px solid ${theme('colors.brand.800')}`,
+          borderRadius: theme('borderRadius.md'),
+          backgroundColor: theme('transparent')
+        },
+
+        '.card-opaque:hover': {
+          backgroundColor: theme('colors.brand.800')
+        }
+      })
+    }
+  ],
 
   theme: {
     container: {
@@ -60,7 +292,13 @@ export default {
       'top-bar-dark': '0px 1px 0px #2A2F41'
     },
 
-    colors,
+    colors: {
+      ...colors
+    },
+
+    divideColor: {
+      DEFAULT: '#202431'
+    },
 
     screens: {
       xs: '480px',
@@ -114,8 +352,8 @@ export default {
       },
 
       fontFamily: {
-        sans: ['Proxima Nova', ...defaultTheme.fontFamily.sans],
-        mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono]
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        mono: ['Azeret Mono', ...defaultTheme.fontFamily.mono]
       },
 
       borderRadius: {
@@ -153,7 +391,8 @@ export default {
         ...extraSizings,
         footer: '2.5rem',
         orders: '10rem',
-        trades: '26rem'
+        trades: '26rem',
+        header: '56px'
       },
 
       minHeight: {

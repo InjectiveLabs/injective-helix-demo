@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { Modal, SwapForm, SwapFormField } from '@/types'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
+import { Modal, SwapForm, SwapFormField } from '@/types'
 
 const appStore = useAppStore()
 const swapStore = useSwapStore()
@@ -11,15 +16,20 @@ const modalStore = useModalStore()
 const walletStore = useWalletStore()
 const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
-const props = defineProps({
+defineProps({
   isLoading: Boolean,
   showErrorState: Boolean,
 
   queryError: {
     type: String,
     default: ''
+  },
+
+  status: {
+    type: Object as PropType<Status>,
+    default: () => new Status(StatusType.Idle)
   }
 })
 
@@ -73,7 +83,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     return
   }
 
-  return accountBalancesWithToken.value.find(
+  return userBalancesWithToken.value.find(
     ({ denom }) => denom === disallowedDenom
   )
 })
@@ -96,7 +106,7 @@ const formError = computed(() => {
 })
 
 const selectedTokenBalance = computed(() => {
-  const balance = accountBalancesWithToken.value?.find(
+  const balance = userBalancesWithToken.value?.find(
     ({ denom }) => denom === inputToken.value?.denom
   )
 
@@ -206,20 +216,19 @@ watch(
     <AppButton
       v-else
       class="mb-2 w-full text-gray-525 text-opacity-100"
-      :class="{
-        'bg-blue-500 text-blue-900 ':
-          swapTimeRemaining && !isLoading && !hasErrors && !queryError,
-        'bg-gray-475 text-white':
-          rateExpired && hasAmounts && !props.isLoading && !hasErrors
+      v-bind="{
+        isXl: true,
+        status: status,
+        isLoading,
+        disabled: (!hasAmounts && !isLoading) || hasErrors
       }"
-      :classes="'border border-accent-500 text-accent-500  bg-opacity-50'"
-      is-xl
-      :is-disabled="isLoading || !!hasErrors || !hasAmounts"
-      :is-loading="isLoading"
+      :class="{
+        'pointer-events-none': isLoading
+      }"
       @click="handlerFunction"
     >
       <div class="max-auto w-full">
-        <Transition name="fade">
+        <Transition name="fade" mode="out-in">
           <span v-if="!isLoading && swapStore.isInputEntered && invalidInput">
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
@@ -252,7 +261,7 @@ watch(
               {{ $t('trade.swap.rateExpired') }}
             </span>
 
-            <BaseIcon
+            <SharedIcon
               name="rotate"
               class="h-3 w-3 cursor-pointer scale-x-[-1] rotate-45"
               @click="getResultQuantity"

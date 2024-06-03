@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { getExplorerUrl } from '@shared/utils/network'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { toBalanceInToken } from '@/app/utils/formatters'
-import { getExplorerUrl } from '@/app/utils/network'
 
 const props = defineProps({
   totalScore: {
@@ -49,7 +49,7 @@ const explorerLink = computed(() => {
   return `${getExplorerUrl()}/account/${walletStore.address}`
 })
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() => {
     if (!campaignWithReward.value || !market.value) {
       return 0
@@ -80,19 +80,15 @@ const rewards = computed(() => {
   }
 
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
-    const amount = new BigNumberInBase(
-      estRewardsInPercentage.value
-    ).multipliedBy(
-      toBalanceInToken({
-        value: reward.amount,
-        decimalPlaces: token?.decimals || 18
-      })
-    )
+    const amount = sharedToBalanceInTokenInBase({
+      value: reward.amount,
+      decimalPlaces: token?.decimals || 18
+    }).multipliedBy(estRewardsInPercentage.value)
 
     const amountInUsd = token
-      ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
+      ? amount.times(tokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {

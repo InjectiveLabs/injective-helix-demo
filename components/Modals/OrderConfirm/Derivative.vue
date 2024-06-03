@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { Modal, TradeExecutionType } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { Modal, TradeExecutionType, UiDerivativeMarket } from '@/types'
 
 const props = defineProps({
   isReduceOnly: Boolean,
@@ -16,7 +13,7 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     required: true
   },
 
@@ -74,19 +71,19 @@ const markPriceIncrease = computed(() => {
   )
 })
 
-const { valueToString: amountToFormat } = useBigNumberFormatter(
+const { valueToString: amountToFormat } = useSharedBigNumberFormatter(
   computed(() => props.amount),
   {
     decimalPlaces: props.market.quantityDecimals
   }
 )
 
-const { valueToString: priceToFormat } = useBigNumberFormatter(
+const { valueToString: priceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.price),
   { decimalPlaces: props.market.priceDecimals }
 )
 
-const { valueToString: triggerPriceToFormat } = useBigNumberFormatter(
+const { valueToString: triggerPriceToFormat } = useSharedBigNumberFormatter(
   computed(() => props.triggerPrice),
   {
     decimalPlaces: props.market.priceDecimals

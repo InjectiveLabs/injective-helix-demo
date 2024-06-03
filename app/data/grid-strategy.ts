@@ -1,5 +1,5 @@
 import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '@/app/utils/constants/setup'
-import { SpotGridMarket, SpotGridMessages } from '@/types'
+import { GridMarket, SpotGridMessages } from '@/types'
 
 export const gridStrategyAuthorizationMessageTypes = [
   SpotGridMessages.MsgWithdraw,
@@ -7,7 +7,7 @@ export const gridStrategyAuthorizationMessageTypes = [
   SpotGridMessages.MsgCreateSpotMarketOrder
 ]
 
-const mainnetSpotGridMarkets: SpotGridMarket[] = [
+const mainnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'inj-usdt',
     contractAddress: 'inj1x4kr29dlf9u4r7ya6mr2jvs0pc9sfhnlhlr9np'
@@ -131,6 +131,18 @@ const mainnetSpotGridMarkets: SpotGridMarket[] = [
   {
     slug: 'ena-usdt',
     contractAddress: 'inj1egqme2lvzds7klc34c3ur6ujm9pyxxv0z5jx0f'
+  },
+  {
+    slug: 'ezeth-weth',
+    contractAddress: 'inj1kulsg0js9n9jhewdgy87g2ccnt3qkl5rkjjp6e'
+  },
+  {
+    slug: 'bonus-usdt',
+    contractAddress: 'inj10nxnmmdfqhmjm20lauc0n80sr8xt5mrnwg2r6n'
+  },
+  {
+    slug: 'omni-usdt',
+    contractAddress: 'inj1wu26uscxvnwdhzyg2cf32pjsqdn6xx8xuryere'
   }
 ]
 
@@ -145,7 +157,7 @@ if (IS_STAGING) {
   )
 }
 
-const testnetSpotGridMarkets: SpotGridMarket[] = [
+const testnetSpotGridMarkets: GridMarket[] = [
   // {
   //   slug: 'inj-usdt',
   //   contractAddress: 'inj1djlhetddzrztjn4v0s4vt0dca3y8hwshkh37zg'
@@ -182,17 +194,29 @@ const testnetSpotGridMarkets: SpotGridMarket[] = [
   // }
 ]
 
-const devnetSpotGridMarkets: SpotGridMarket[] = [
+const devnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'inj-usdt',
     contractAddress: 'inj14hj2tavq8fpesdwxxcu44rty3hh90vhujaxlnz'
   }
 ]
 
-export const spotGridMarkets: SpotGridMarket[] = IS_TESTNET
+const mainnetPerpGridMarkets: GridMarket[] = []
+
+const testnetPerpGridMarkets: GridMarket[] = []
+
+const devnetPerpGridMarkets: GridMarket[] = []
+
+export const spotGridMarkets: GridMarket[] = IS_TESTNET
   ? testnetSpotGridMarkets
   : IS_DEVNET
   ? devnetSpotGridMarkets
   : mainnetSpotGridMarkets
+
+export const perpGridMarkets: GridMarket[] = IS_TESTNET
+  ? testnetPerpGridMarkets
+  : IS_DEVNET
+  ? devnetPerpGridMarkets
+  : mainnetPerpGridMarkets
 
 export const MARKETS_WITH_LOW_TRADING_SIZE = ['andr-usdt']

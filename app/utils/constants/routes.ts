@@ -1,4 +1,9 @@
-import { LiquidityRewardsPage, MainPage, TradeSubPage } from '../../../types'
+import {
+  MainPage,
+  TradeSubPage,
+  PortfolioSubPage,
+  LiquidityRewardsPage
+} from '../../../types'
 import spotSlugs from './../../../app/data/spot.json'
 import expiryFutureSlugs from './../../../app/data/expiry.json'
 import perpetualSlugs from './../../../app/data/derivative.json'
@@ -40,14 +45,12 @@ export const getRoutes = () => {
     'ena-usdt'
   ]
 
-  const binaryOptions: string[] = []
-
   const futures = [...perpetualSlugs, ...expiryFutureSlugs]
 
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
-    MainPage.Account,
-    MainPage.Activity
+    MainPage.Portfolio,
+    ...Object.values(PortfolioSubPage)
   ]
 
   // Layout routes
@@ -55,7 +58,6 @@ export const getRoutes = () => {
     MainPage.Index,
     MainPage.Markets,
     MainPage.LpRewards,
-    MainPage.Leaderboard,
     MainPage.FeeDiscounts,
     LiquidityRewardsPage.Dashboard,
     LiquidityRewardsPage.CampaignDetails
@@ -68,15 +70,12 @@ export const getRoutes = () => {
   const derivativeMarketRouteNames = [
     TradeSubPage.Futures,
     TradeSubPage.Perpetual,
-    TradeSubPage.Derivatives,
-    TradeSubPage.BinaryOption
+    TradeSubPage.Derivatives
   ]
   const spotMarketRouteNames = [TradeSubPage.Spot]
 
   const spotRoutes = spotSlugs.map((s) => `/spot/${s}`) || []
   const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
-  const binaryOptionsRoutes =
-    binaryOptions.map((s) => `/binary-options/${s}`) || []
 
   const gridTradingSpotRoutes = gridTradingSpot.map(
     (s) => `/trading-bots/grid/spot/${s}`
@@ -91,7 +90,6 @@ export const getRoutes = () => {
   return {
     MARKETS_SLUGS: {
       futures,
-      binaryOptions,
       gridTradingSpot,
       spot: spotSlugs,
       expiryFutures: expiryFutureSlugs
@@ -100,7 +98,6 @@ export const getRoutes = () => {
       spotRoutes,
       futuresRoutes,
       customStaticRoutes,
-      binaryOptionsRoutes,
       footerEnabledRoutes,
       spotMarketRouteNames,
       liquidityBotSpotRoutes,

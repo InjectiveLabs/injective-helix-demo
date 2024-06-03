@@ -1,8 +1,7 @@
-import type { Ref } from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { format } from 'date-fns'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { format } from 'date-fns'
 import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

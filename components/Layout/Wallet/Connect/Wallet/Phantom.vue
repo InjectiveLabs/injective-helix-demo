@@ -12,9 +12,7 @@ function connect() {
   if (walletStore.phantomInstalled) {
     walletStore
       .connectPhantom()
-      .then(() => {
-        success({ title: t('connect.successfullyConnected') })
-      })
+      .then(() => success({ title: t('connect.successfullyConnected') }))
       .catch((e) => {
         walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
@@ -26,9 +24,9 @@ function connect() {
 </script>
 
 <template>
-  <LayoutWalletConnectWrapper @click="connect">
+  <LayoutWalletConnectWrapperMini @click="connect">
     <template #logo>
-      <BaseIcon name="wallet/phantom" class="w-8 h-8" />
+      <SharedIcon name="wallet/phantom" class="w-8 h-8" />
     </template>
 
     <template #title>
@@ -49,8 +47,8 @@ function connect() {
         target="_blank"
         rel="noreferrer"
       >
-        <BaseIcon name="download" class="h-5 w-5 hover:text-blue-500" />
+        <SharedIcon name="download" class="h-5 w-5 hover:text-blue-500" />
       </NuxtLink>
     </template>
-  </LayoutWalletConnectWrapper>
+  </LayoutWalletConnectWrapperMini>
 </template>

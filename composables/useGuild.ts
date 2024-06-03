@@ -7,11 +7,11 @@ export function useGuild() {
   const tokenStore = useTokenStore()
 
   const baseToken = computed(() =>
-    tokenStore.tokens.find(({ symbol }) => symbol === GUILD_BASE_TOKEN_SYMBOL)
+    tokenStore.tokenByDenomOrSymbol(GUILD_BASE_TOKEN_SYMBOL)
   )
 
   const quoteToken = computed(() =>
-    tokenStore.tokens.find(({ symbol }) => symbol === GUILD_QUOTE_TOKEN_SYMBOL)
+    tokenStore.tokenByDenomOrSymbol(GUILD_QUOTE_TOKEN_SYMBOL)
   )
 
   return {

@@ -1,4 +1,5 @@
-import { UiPriceLevel, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { SharedUiPriceLevel } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
 
@@ -45,7 +46,7 @@ export const calculateAveragePrice = ({
 }: {
   isBaseAmount: boolean
   isSpot: boolean
-  records: UiPriceLevel[]
+  records: SharedUiPriceLevel[]
   quantity: BigNumberInBase
   market: UiMarketWithToken
 }) => {
@@ -108,7 +109,7 @@ export const calculateWorstPrice = ({
   isBaseAmount
 }: {
   isSpot: Boolean
-  records: UiPriceLevel[]
+  records: SharedUiPriceLevel[]
   quantity: BigNumberInBase
   market: UiMarketWithToken
   isBaseAmount: boolean

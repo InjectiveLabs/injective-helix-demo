@@ -81,11 +81,6 @@ export const streamTrades = (marketId: string) => {
         return
       }
 
-      // filter out non-tradable markets
-      if (!marketId && !spotStore.activeMarketIds.includes(trade.marketId)) {
-        return
-      }
-
       switch (operation) {
         case StreamOperation.Insert:
           spotStore.$patch({
@@ -116,11 +111,6 @@ export const streamSubaccountOrders = (
     marketId,
     callback: ({ order }) => {
       if (!order) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (!marketId && !spotStore.activeMarketIds.includes(order.marketId)) {
         return
       }
 
@@ -177,11 +167,6 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
         return
       }
 
-      // filter out non-tradable markets
-      if (!marketId && !spotStore.activeMarketIds.includes(order.marketId)) {
-        return
-      }
-
       switch (order.state) {
         case OrderState.Booked:
         case OrderState.Filled:
@@ -234,11 +219,6 @@ export const streamSubaccountTrades = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (!marketId && !spotStore.activeMarketIds.includes(trade.marketId)) {
         return
       }
 

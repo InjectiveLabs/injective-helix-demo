@@ -7,7 +7,7 @@ defineProps({
 </script>
 
 <template>
-  <BaseIcon
+  <SharedIcon
     v-if="isTooltip"
     name="exclamation-circle-fill"
     class="text-orange-300 w-4 h-4 min-w-4"
@@ -26,7 +26,7 @@ defineProps({
       class="inline-flex py-0.5 px-1 justify-center items-center gap-0.5"
     >
       <span>
-        <BaseIcon
+        <SharedIcon
           name="exclamation-circle-fill"
           class="text-black w-4 h-4 min-w-4 cursor-normal"
         />

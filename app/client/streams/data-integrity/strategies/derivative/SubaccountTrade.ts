@@ -1,10 +1,10 @@
 import { DerivativeTrade } from '@injectivelabs/sdk-ts'
+import { indexerDerivativesApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerDerivativesApi } from '@/app/Services'
 
 export class DerivativeSubaccountTradeIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>

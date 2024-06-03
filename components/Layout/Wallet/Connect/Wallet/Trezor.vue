@@ -11,9 +11,9 @@ function showTrezorModal() {
 </script>
 
 <template>
-  <LayoutWalletConnectWrapper @click="showTrezorModal">
+  <LayoutWalletConnectWrapperMini @click="showTrezorModal">
     <template #logo>
-      <BaseIcon name="wallet/trezor" class="w-8 h-8" />
+      <SharedIcon name="wallet/trezor" class="w-8 h-8" />
     </template>
 
     <template #title>
@@ -25,5 +25,5 @@ function showTrezorModal() {
         {{ $t('connect.connectUsingHardware') }}
       </span>
     </template>
-  </LayoutWalletConnectWrapper>
+  </LayoutWalletConnectWrapperMini>
 </template>

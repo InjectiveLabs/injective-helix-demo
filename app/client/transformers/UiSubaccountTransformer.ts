@@ -1,12 +1,12 @@
 import {
   TransferType,
-  getInjectiveAddress,
-  SubaccountTransfer
+  SubaccountTransfer,
+  getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
-import { getUnknownTokenWithSymbol } from '@injectivelabs/token-metadata'
-import { getExplorerUrl } from '@/app/utils/network'
+import { unknownToken } from '@shared/data/token'
+import { getExplorerUrl } from '@shared/utils/network'
+import { getToken } from '@/app/utils/helpers'
 import { UiSubaccountTransactionWithToken } from '@/types'
-import { denomClient } from '@/app/Services'
 
 export class UiSubaccountTransformer {
   static async convertSubaccountTransfersToUiSubaccountTransaction(
@@ -27,18 +27,13 @@ export class UiSubaccountTransformer {
       ? getInjectiveAddress(receiver.slice(0, -24))
       : receiver
 
-    const token = await denomClient.getDenomToken(
-      transaction?.amount?.denom || ''
-    )
-
     return {
       sender,
       receiver,
       amount: transaction?.amount?.amount || '',
       denom: transaction?.amount?.denom || '',
       timestamp: transaction.executedAt,
-      token:
-        token || getUnknownTokenWithSymbol(transaction?.amount?.denom || ''),
+      token: (await getToken(transaction?.amount?.denom || '')) || unknownToken,
       explorerLink: `${getExplorerUrl()}/account/${explorerAccount}/`
     }
   }

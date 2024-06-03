@@ -2,10 +2,13 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   account: {
+    action: 'Action',
+    assets: 'Assets',
     accountOverview: 'Account Overview',
     available: 'Available',
     fee: 'Fee',
     netWorth: 'Tradeable Net Worth',
+    total: 'Total',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
     transfer: 'Transfer',
@@ -13,6 +16,7 @@ export default {
     trade: 'Trade',
     filters: 'Filters',
     filterByAsset: 'Filter by asset',
+    showUnverifiedAssets: 'Show unverified assets',
     showMarginCurrencyOnly: 'Show margin currency only',
     hideSmallBalances: 'Hide small balances',
     hideSmallBalancesTooltip:
@@ -30,6 +34,7 @@ export default {
         walletBalance: 'Wallet balance',
         tradingAccountBalance: 'Trading balance',
         totalBalance: 'Total',
+        totalValueUsd: 'Total Value (USD)',
         availableBalance: 'Available',
         inUseReserved: 'In Use/Reserved',
         unrealized: 'Unrealized PnL',
@@ -64,7 +69,8 @@ export default {
         unrealizedPnl: 'Unrealized PNL',
         total: 'Total',
         margin: 'Margin',
-        leverage: 'Leverage'
+        leverage: 'Leverage',
+        tpSl: 'TP/SL'
       }
     },
     assetDetails: {
@@ -85,6 +91,7 @@ export default {
     explorer: 'explorer',
     main: 'Main',
     account: 'Subaccount',
+    subaccount: 'Subaccount',
     accountBalance: 'Subaccount Balance',
     staked: 'Staked',
 
@@ -106,6 +113,8 @@ export default {
     transferToSubaccountSuccess: 'Subaccount transfer successful',
     mainSubaccount: 'Main Subaccount',
     subaccountId: ({ named }: I18nMessageFunction) =>
-      `Subaccount ${named('subaccountId')}`
+      `Subaccount ${named('subaccountId')}`,
+    balanceIncludesCw20Balance:
+      'This balance includes the CW20 balance of the asset. The whole CW20 balance will be converted to bank balance once you make an order on this market.'
   }
 }

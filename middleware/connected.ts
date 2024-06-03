@@ -1,13 +1,7 @@
-import { ROUTES } from '@/app/utils/constants'
-import { MainPage } from '~/types'
-
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(() => {
   const walletStore = useWalletStore()
 
-  if (
-    ROUTES.walletConnectedRequiredRouteNames.includes(to.name as MainPage) &&
-    !walletStore.isUserWalletConnected
-  ) {
+  if (!walletStore.isUserWalletConnected) {
     return navigateTo('/')
   }
 })

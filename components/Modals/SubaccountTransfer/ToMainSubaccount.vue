@@ -29,9 +29,7 @@ function onEndBot() {
       activeStrategy.value.contractAddress
     )
   ])
-    .then(() => {
-      success({ title: t('common.success') })
-    })
+    .then(() => success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

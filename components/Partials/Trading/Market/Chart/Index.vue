@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
+import { SharedMarketType } from '@shared/types'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import { UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   market: {
@@ -11,7 +11,7 @@ const props = defineProps({
   }
 })
 
-const isSpot = props.market.type === MarketType.Spot
+const isSpot = props.market.type === SharedMarketType.Spot
 const interval = '1D'
 
 const status = reactive(new Status(StatusType.Loading))
@@ -21,8 +21,8 @@ const symbol = computed(() => {
     return props.market.ticker
   }
 
-  const spotTicker = `${(props.market as UiSpotMarketWithToken).baseDenom}/${
-    (props.market as UiSpotMarketWithToken).quoteDenom
+  const spotTicker = `${(props.market as UiSpotMarket).baseDenom}/${
+    (props.market as UiSpotMarket).quoteDenom
   }`
 
   return spotTicker.replaceAll('ibc/', 'ibc@')
@@ -30,7 +30,7 @@ const symbol = computed(() => {
 
 const datafeedEndpoint = computed(() =>
   getChronosDatafeedEndpoint(
-    props.market.type === MarketType.Derivative ? 'derivative' : 'spot'
+    props.market.type === SharedMarketType.Derivative ? 'derivative' : 'spot'
   )
 )
 
@@ -40,24 +40,17 @@ function onReady() {
 </script>
 
 <template>
-  <div
-    class="bg-gray-1000 lg:rounded-l-xl lg:shadow-sm h-full overflow-hidden relative"
-  >
-    <AppLoading v-if="status.isLoading()" />
-    <div
-      ref="trading-view-wrap"
-      class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"
-    >
-      <ClientOnly>
-        <PartialsTradingMarketChartTradingView
-          v-show="status.isNotLoading()"
-          ref="trading-view"
-          :interval="interval"
-          :symbol="symbol"
-          :datafeed-endpoint="datafeedEndpoint"
-          @ready="onReady"
-        />
-      </ClientOnly>
-    </div>
+  <div ref="trading-view-wrap" class="h-full relative">
+    <AppHocLoading v-bind="{ status }" is-helix />
+    <ClientOnly>
+      <PartialsTradingMarketChartTradingView
+        v-show="status.isNotLoading()"
+        ref="trading-view"
+        :interval="interval"
+        :symbol="symbol"
+        :datafeed-endpoint="datafeedEndpoint"
+        @ready="onReady"
+      />
+    </ClientOnly>
   </div>
 </template>

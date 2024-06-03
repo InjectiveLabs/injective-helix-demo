@@ -86,14 +86,6 @@ export const streamTrades = (marketId: string) => {
         return
       }
 
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(trade.marketId)
-      ) {
-        return
-      }
-
       switch (operation) {
         case StreamOperation.Insert:
           derivativeStore.$patch({
@@ -118,14 +110,6 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(order.marketId)
-      ) {
         return
       }
 
@@ -182,14 +166,6 @@ export const streamSubaccountTrades = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(trade.marketId)
-      ) {
         return
       }
 
@@ -254,14 +230,6 @@ export const streamSubaccountOrders = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(order.marketId)
-      ) {
         return
       }
 

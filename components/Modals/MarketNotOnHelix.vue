@@ -9,6 +9,10 @@ const isDoNoShowConfirmationAgain = ref(false)
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketNotOnHelix])
 
 onMounted(() => {
+  if (appStore.userState.preferences.skipExperimentalConfirmationModal) {
+    return
+  }
+
   modalStore.openModal(Modal.MarketNotOnHelix)
 })
 

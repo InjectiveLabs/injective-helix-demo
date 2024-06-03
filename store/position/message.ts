@@ -1,31 +1,27 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
-  MsgCreateBinaryOptionsMarketOrder,
-  MsgCreateDerivativeMarketOrder,
-  MsgIncreasePositionMargin,
+  Position,
   PositionV2,
+  msgsOrMsgExecMsgs,
+  DerivativeLimitOrder,
+  MsgIncreasePositionMargin,
+  MsgCreateDerivativeMarketOrder,
   derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed,
-  msgsOrMsgExecMsgs
+  derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import {
-  UiPosition,
-  MarketType,
-  orderSideToOrderType,
-  UiDerivativeLimitOrder,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
+import { msgBroadcaster } from '@shared/WalletService'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { orderSideToOrderType } from '@shared/transformer/trade'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
-import { msgBroadcastClient } from '@/app/Services'
+import { UiDerivativeMarket } from '@/types'
 
 export const closePosition = async ({
   market,
   position
 }: {
-  market: UiDerivativeMarketWithToken
-  position: UiPosition | PositionV2
+  market: UiDerivativeMarket
+  position: Position | PositionV2
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
@@ -48,12 +44,7 @@ export const closePosition = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
-  const messageType =
-    market.subType === MarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -67,18 +58,30 @@ export const closePosition = async ({
     })
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  let actualMessage
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessage = msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
+    actualMessage = msgsOrMsgExecMsgs(
+      message,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessage = message
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 }
 
 export const closeAllPosition = async (
-  positions: Array<UiPosition | PositionV2>
+  positions: Array<Position | PositionV2>
 ) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
@@ -109,10 +112,6 @@ export const closeAllPosition = async (
         return undefined
       }
 
-      const messageType =
-        market.subType === MarketType.BinaryOptions
-          ? MsgCreateBinaryOptionsMarketOrder
-          : MsgCreateDerivativeMarketOrder
       const orderType =
         position.direction === TradeDirection.Long
           ? OrderSide.Sell
@@ -121,9 +120,9 @@ export const closeAllPosition = async (
 
       return {
         orderType,
-        messageType,
         marketId: market.marketId,
         price: liquidationPrice.toFixed(),
+        messageType: MsgCreateDerivativeMarketOrder,
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         })
@@ -132,9 +131,7 @@ export const closeAllPosition = async (
         marketId: string
         quantity: string
         orderType: OrderSide
-        messageType:
-          | typeof MsgCreateBinaryOptionsMarketOrder
-          | typeof MsgCreateDerivativeMarketOrder
+        messageType: typeof MsgCreateDerivativeMarketOrder
       }
     })
     .filter((p) => p !== undefined) as {
@@ -142,9 +139,7 @@ export const closeAllPosition = async (
     marketId: string
     quantity: string
     orderType: OrderSide
-    messageType:
-      | typeof MsgCreateBinaryOptionsMarketOrder
-      | typeof MsgCreateDerivativeMarketOrder
+    messageType: typeof MsgCreateDerivativeMarketOrder
   }[]
 
   const messages = formattedPositions.map((position) =>
@@ -161,11 +156,20 @@ export const closeAllPosition = async (
     })
   )
 
-  const actualMessages = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
-    : messages
+  let actualMessages
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  if (walletStore.isAuthzWalletConnected) {
+    actualMessages = msgsOrMsgExecMsgs(messages, walletStore.injectiveAddress)
+  } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
+    actualMessages = msgsOrMsgExecMsgs(
+      messages,
+      walletStore.autoSign.injectiveAddress
+    )
+  } else {
+    actualMessages = messages
+  }
+
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessages,
     injectiveAddress: walletStore.injectiveAddress
   })
@@ -177,16 +181,16 @@ export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  position: UiPosition | PositionV2
-  market?: UiDerivativeMarketWithToken
-  reduceOnlyOrders: UiDerivativeLimitOrder[]
+  position: Position | PositionV2
+  market?: UiDerivativeMarket
+  reduceOnlyOrders: DerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
   const positionStore = usePositionStore()
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
 
-  const actualMarket = market as UiDerivativeMarketWithToken
+  const actualMarket = market as UiDerivativeMarket
 
   if (
     !walletStore.isUserWalletConnected ||
@@ -205,12 +209,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
-  const messageType =
-    actualMarket.subType === MarketType.BinaryOptions
-      ? MsgCreateBinaryOptionsMarketOrder
-      : MsgCreateDerivativeMarketOrder
-
-  const message = messageType.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -228,9 +227,12 @@ export const closePositionAndReduceOnlyOrders = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 
   await positionStore.fetchSubaccountPositions()
@@ -240,7 +242,7 @@ export const addMarginToPosition = async ({
   market,
   amount
 }: {
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarket
   amount: BigNumberInBase
 }) => {
   const appStore = useAppStore()
@@ -266,7 +268,7 @@ export const addMarginToPosition = async ({
     srcSubaccountId: accountStore.subaccountId,
     dstSubaccountId: accountStore.subaccountId,
     amount: derivativeMarginToChainMarginToFixed({
-      value: amount,
+      value: amount.toFixed(),
       quoteDecimals: market.quoteToken.decimals
     })
   })
@@ -275,8 +277,11 @@ export const addMarginToPosition = async ({
     ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
     : message
 
-  await msgBroadcastClient.broadcastWithFeeDelegation({
+  await msgBroadcaster.broadcastWithFeeDelegation({
     msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+    injectiveAddress:
+      walletStore.autoSign && walletStore.isAutoSignEnabled
+        ? walletStore.autoSign.injectiveAddress
+        : walletStore.injectiveAddress
   })
 }

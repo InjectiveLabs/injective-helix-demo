@@ -1,43 +1,28 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { MainPage } from '@/types'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
+
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 
 const marketSlugQuery = useQueryRef('market', 'tia-usdt')
-
-const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
   init()
 })
 
 function init() {
-  status.setLoading()
+  gridStrategyStore.$patch({
+    spotMarket: spotStore.markets.find(
+      (market) => market.slug === marketSlugQuery.value
+    )
+  })
 
-  Promise.all([
-    spotStore.init(),
-    tokenStore.getTokensUsdPriceMapFromToken(tokenStore.tokens)
-  ])
-    .then(() => {
-      gridStrategyStore.$patch({
-        spotMarket: spotStore.markets.find(
-          (market) => market.slug === marketSlugQuery.value
-        )
-      })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-      if (walletStore.isUserWalletConnected) {
-        accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
-      }
-    })
+  if (walletStore.isUserWalletConnected) {
+    accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+  }
 }
 
 onUnmounted(() => {
@@ -48,15 +33,11 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen pt-4 md:pt-10 pb-10">
     <div class="w-full max-w-xl mx-auto">
-      <div class="pb-10">
-        <PartialsLiquidityBotsSpotCreateCommonTiaBanner />
-      </div>
-
-      <div class="space-x-4 my-2">
+      <div class="my-2 flex flex-wrap">
         <NuxtLink
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
           active-class="underline"
-          class="text-xl font-semibold"
+          class="text-lg font-semibold"
         >
           {{ $t('liquidity.liveBots') }}
         </NuxtLink>
@@ -65,17 +46,23 @@ onUnmounted(() => {
           v-if="walletStore.isUserWalletConnected"
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpotHistory }"
           active-class="underline"
-          class="text-xl font-semibold"
+          class="text-lg font-semibold ml-4"
         >
           {{ $t('liquidity.history') }}
         </NuxtLink>
+
+        <NuxtLink
+          :to="{ name: MainPage.LpRewards }"
+          active-class="underline"
+          class="text-lg font-semibold ml-auto"
+        >
+          <span>{{ $t('liquidity.rewards') }}</span>
+        </NuxtLink>
       </div>
 
-      <AppHocLoading v-bind="{ status }">
-        <div class="p-6 bg-gray-900 rounded-md">
-          <NuxtPage />
-        </div>
-      </AppHocLoading>
+      <div class="p-6 border-brand-800 border rounded-md">
+        <NuxtPage />
+      </div>
     </div>
   </div>
 </template>

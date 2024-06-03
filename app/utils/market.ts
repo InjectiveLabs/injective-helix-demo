@@ -1,48 +1,55 @@
 import {
-  MarketType,
-  UiMarketHistory,
-  UiSpotMarketWithToken,
-  UiDerivativeMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import {
   BigNumber,
   BigNumberInBase,
+  BigNumberInWei,
   SECONDS_IN_A_DAY
 } from '@injectivelabs/utils'
 import {
   PriceLevel,
   SpotMarket,
   DerivativeMarket,
-  ExpiryFuturesMarket
+  ExpiryFuturesMarket,
+  MsgExecuteContractCompat,
+  ExecArgCW20Send,
+  isCw20ContractAddress
 } from '@injectivelabs/sdk-ts'
-import { MarketStatus } from '../../types/exchange'
 import {
+  SharedMarketType,
+  SharedMarketStatus,
+  SharedUiMarketHistory
+} from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
+import type { TokenStatic } from '@injectivelabs/token-metadata'
+import {
+  newMarketsSlug,
   upcomingMarkets,
   deprecatedMarkets,
   experimentalMarketsSlug,
+  slugsToIncludeInRWACategory,
   slugsToIncludeInSolanaCategory,
   slugsToIncludeInCosmosCategory,
   slugsToIncludeInEthereumCategory,
   slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
+import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
 import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
-import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MarketRoute,
+  UiSpotMarket,
   TradeSubPage,
   DefaultMarket,
   MarketQuoteType,
-  MarketCategoryType,
-  TradingBotsSubPage
+  MarketTypeOption,
+  UiMarketWithToken,
+  MarketCategoryType
 } from '@/types'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
 }
 
-export const getMarketRoute = (
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): MarketRoute => {
+export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: TradeSubPage.Market,
@@ -61,21 +68,16 @@ export const getMarketRoute = (
     }
   }
 
-  if (market.type === MarketType.Derivative) {
-    if (market.subType === MarketType.BinaryOptions) {
-      return {
-        name: TradeSubPage.BinaryOption,
-        params: {
-          binaryOption: market.slug
-        }
-      }
-    }
-
-    if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
+  if (market.type === SharedMarketType.Derivative) {
+    if (
+      [SharedMarketType.Perpetual, SharedMarketType.Futures].includes(
+        market.subType
+      )
+    ) {
       return {
         name: TradeSubPage.Futures,
         params: {
-          futures: market.slug
+          slug: market.slug
         }
       }
     }
@@ -89,11 +91,11 @@ export const getMarketRoute = (
     }
   }
 
-  if (market.type === MarketType.Spot) {
+  if (market.type === SharedMarketType.Spot) {
     return {
       name: TradeSubPage.Spot,
       params: {
-        spot: market.slug
+        slug: market.slug
       }
     }
   }
@@ -124,33 +126,19 @@ export const getDefaultSpotMarketRouteParams = () => {
   }
 }
 
-export const getDefaultGridSpotMarketRouteParams = () => {
-  return {
-    name: TradingBotsSubPage.GridSpotMarket,
-    params: {
-      market: DefaultMarket.Spot
-    }
-  }
-}
-
 export const getDefaultFuturesMarket = () =>
   IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   if (activeCategory === MarketCategoryType.All) {
-    return true
+    return market.isVerified
   }
 
-  const isIbcBaseDenomMarket = market.baseToken.denom.startsWith('ibc')
-
   if (activeCategory === MarketCategoryType.Cosmos) {
-    return (
-      isIbcBaseDenomMarket ||
-      slugsToIncludeInCosmosCategory.includes(market.slug)
-    )
+    return slugsToIncludeInCosmosCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Solana) {
@@ -158,10 +146,7 @@ export const marketIsPartOfCategory = (
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
-    return (
-      !isIbcBaseDenomMarket &&
-      slugsToIncludeInEthereumCategory.includes(market.slug)
-    )
+    return slugsToIncludeInEthereumCategory.includes(market.slug)
   }
 
   if (activeCategory === MarketCategoryType.Injective) {
@@ -172,12 +157,16 @@ export const marketIsPartOfCategory = (
     return experimentalMarketsSlug.includes(market.slug)
   }
 
+  if (activeCategory === MarketCategoryType.RWA) {
+    return slugsToIncludeInRWACategory.includes(market.slug)
+  }
+
   return true
 }
 
 export const marketIsQuotePair = (
   activeQuote: MarketQuoteType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   if (activeQuote === MarketQuoteType.All) {
     return true
@@ -208,24 +197,37 @@ export const marketIsPartOfType = ({
   market,
   favoriteMarkets
 }: {
-  activeType: MarketType
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  activeType: MarketTypeOption
+  market: UiMarketWithToken
   favoriteMarkets: string[]
 }): boolean => {
-  if (activeType.trim() === '') {
+  if (
+    activeType === MarketTypeOption.All
+    //  || activeType === MarketTypeOption.Themes
+  ) {
     return true
   }
 
-  if (activeType === MarketType.Favorite) {
+  if (activeType === MarketTypeOption.Favorites) {
     return favoriteMarkets.includes(market.marketId)
   }
 
-  return [market.type, market.subType].includes(activeType as MarketType)
+  if (activeType === MarketTypeOption.NewListings) {
+    return newMarketsSlug.includes(market.slug)
+  }
+
+  if (activeType === MarketTypeOption.Permissionless) {
+    return !market.isVerified
+  }
+
+  return [market.type, market.subType].includes(
+    activeType as unknown as SharedMarketType
+  )
 }
 
 export const marketIsPartOfSearch = (
   search: string,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  market: UiMarketWithToken
 ): boolean => {
   const query = search.trim().toLowerCase()
 
@@ -236,12 +238,15 @@ export const marketIsPartOfSearch = (
   return [
     market.ticker,
     market.baseToken.symbol,
-    market.quoteToken.symbol
-  ].some((value) => (value || '').toLowerCase().includes(query))
+    market.quoteToken.symbol,
+    market.baseToken.name
+  ]
+    .map((piece) => piece.toLowerCase())
+    .some((value) => (value || '').toLowerCase().startsWith(query))
 }
 
 export const getFormattedMarketsHistoryChartData = (
-  marketsHistory: UiMarketHistory
+  marketsHistory: SharedUiMarketHistory
 ) => {
   return marketsHistory.time.map((time, index, times) => {
     const totalPrice =
@@ -278,7 +283,7 @@ export const marketIsInactive = (market: DerivativeMarket) => {
 }
 
 export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
-  return market.marketStatus === MarketStatus.Active
+  return market.marketStatus === SharedMarketStatus.Active
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
@@ -376,4 +381,136 @@ export const getNewMarketTickerFromWHDenom = (denom: string) => {
     case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
       return 'WMATIC/USDT'
   }
+}
+
+/**
+ * Add a Cw20 conversion message if:
+ * 1. The base token is cw20
+ *  1.1 Limit/Market SELL
+ *  1.2 We don't have enough base token balance in the bank balance
+ *
+ * 2. The quote token is cw20
+ * 2.1 Limit/Market BUY
+ * 2.2 We don't have enough quote token balance in the bank balance
+ */
+export const convertCw20ToBankBalance = ({
+  injectiveAddress,
+  market,
+  order,
+  bankBalancesMap,
+  cw20BalancesMap
+}: {
+  injectiveAddress: string
+  market: UiSpotMarket
+  order: {
+    price: string
+    orderSide: OrderSide
+    quantity: string
+    market: UiSpotMarket
+  }
+  bankBalancesMap: Record<string, string>
+  cw20BalancesMap: Record<string, string>
+}) => {
+  const [baseCw20Address] = market.baseDenom.split('/').reverse()
+  const [quoteCw20Address] = market.quoteDenom.split('/').reverse()
+
+  if (order.orderSide === OrderSide.Buy) {
+    if (!quoteCw20Address) {
+      return
+    }
+
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.quoteDenom] || 0
+    ).gte(new BigNumberInBase(order.price).times(order.quantity))
+
+    if (!hasSufficientBalanceInBank) {
+      return
+    }
+
+    if (!cw20BalancesMap[quoteCw20Address]) {
+      return
+    }
+
+    return MsgExecuteContractCompat.fromJSON({
+      contractAddress: quoteCw20Address,
+      sender: injectiveAddress,
+      execArgs: ExecArgCW20Send.fromJSON({
+        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+        amount: cw20BalancesMap[quoteCw20Address]
+      })
+    })
+  }
+
+  if (order.orderSide === OrderSide.Sell) {
+    if (!baseCw20Address) {
+      return
+    }
+
+    const hasSufficientBalanceInBank = new BigNumberInWei(
+      bankBalancesMap[market.baseDenom] || 0
+    ).gte(order.quantity)
+
+    if (!hasSufficientBalanceInBank) {
+      return
+    }
+
+    if (!cw20BalancesMap[baseCw20Address]) {
+      return
+    }
+
+    return MsgExecuteContractCompat.fromJSON({
+      contractAddress: baseCw20Address,
+      sender: injectiveAddress,
+      execArgs: ExecArgCW20Send.fromJSON({
+        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+        amount: cw20BalancesMap[baseCw20Address]
+      })
+    })
+  }
+}
+
+/**
+ * Add a Cw20 conversion message if:
+ * 1. The base token is cw20 and doesn't have enough balance in the bank
+ */
+export const convertCw20ToBankBalanceForSwap = ({
+  token,
+  quantity,
+  injectiveAddress,
+  bankBalancesMap,
+  cw20BalancesMap
+}: {
+  token: TokenStatic
+  quantity: string
+  injectiveAddress: string
+  bankBalancesMap: Record<string, string>
+  cw20BalancesMap: Record<string, string>
+}) => {
+  const [cw20Address] = token.denom.split('/').reverse()
+
+  if (!cw20Address) {
+    return
+  }
+
+  if (!isCw20ContractAddress(cw20Address)) {
+    return
+  }
+
+  const quantityInWei = new BigNumberInBase(quantity).toWei(token.decimals)
+  const hasSufficientBalanceInBank = new BigNumberInWei(
+    bankBalancesMap[token.denom] || 0
+  ).gte(quantityInWei.toFixed())
+
+  if (hasSufficientBalanceInBank) {
+    return
+  }
+
+  return MsgExecuteContractCompat.fromJSON({
+    contractAddress: cw20Address,
+    sender: injectiveAddress,
+    execArgs: ExecArgCW20Send.fromJSON({
+      contractAddress: getCw20AdapterContractForNetwork(NETWORK),
+      amount: cw20BalancesMap[cw20Address]
+    })
+  })
 }

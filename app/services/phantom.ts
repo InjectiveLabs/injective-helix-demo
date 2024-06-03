@@ -1,11 +1,11 @@
-import { UtilsWallets } from '@injectivelabs/wallet-ts'
+import { UtilsWallets } from '@injectivelabs/wallet-ts/dist/esm/exports'
 import {
   ErrorType,
   GeneralException,
   MetamaskException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { walletStrategy } from '../wallet-strategy'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 
 export const isPhantomInstalled = async (): Promise<boolean> => {
   const provider = await UtilsWallets.getPhantomProvider()

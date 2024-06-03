@@ -59,9 +59,9 @@ watchDebounced(
 
 <template>
   <BaseModalWrapper
-    class="relative mx-auto sm:rounded-lg bg-gray-850 max-sm:h-full max-sm:max-w-full max-sm:w-full"
+    class="relative mx-auto sm:rounded-lg bg-brand-900 border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full"
     :class="classes"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
+    wrapper-class="backdrop-filter backdrop-blur bg-black/90 bg-opacity-90 max-sm:z-40"
     v-bind="$attrs"
     @modal:closed="onModalClose"
   >
@@ -80,7 +80,7 @@ watchDebounced(
           </div>
 
           <div v-if="!isHideCloseButton">
-            <BaseIcon
+            <SharedIcon
               name="close"
               class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
               @click="close"

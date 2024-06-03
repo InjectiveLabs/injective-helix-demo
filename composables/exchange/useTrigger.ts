@@ -1,20 +1,17 @@
-import type { Ref } from 'vue'
-import {
-  UiDerivativeOrderHistory,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-export function useTrigger(trigger: Ref<UiDerivativeOrderHistory>) {
+export function useTrigger(trigger: Ref<DerivativeOrderHistory>) {
   const derivativeStore = useDerivativeStore()
   const { t } = useLang()
 
