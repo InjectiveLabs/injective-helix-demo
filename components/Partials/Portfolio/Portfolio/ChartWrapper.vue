@@ -55,8 +55,8 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
       <div
         class="flex items-center space-x-2"
         :class="{
-          'text-red-500': !isProfit,
-          'text-green-500': isProfit
+          'text-red-500': !isProfit && chartType === PortfolioChartType.Pnl,
+          'text-green-500': isProfit && chartType === PortfolioChartType.Pnl
         }"
       >
         <span class="text-2xl font-semibold -mr-2">$</span>
@@ -98,7 +98,8 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
   <PartialsPortfolioPortfolioLineChart
     v-bind="{
       isPositive: isProfit,
-      data: leaderboardHistory
+      data: leaderboardHistory,
+      label: $t(`portfolio.home.${chartType}.title`)
     }"
   />
 </template>

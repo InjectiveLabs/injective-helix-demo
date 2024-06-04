@@ -4,6 +4,11 @@ import { LineType } from 'lightweight-charts'
 defineProps({
   isPositive: Boolean,
 
+  label: {
+    type: String,
+    required: true
+  },
+
   data: {
     type: Array as PropType<
       {
@@ -25,6 +30,7 @@ enum COLOR {
   <div>
     <AppLightweightChartArea
       v-bind="{
+        label,
         chartOptions: {
           handleScale: false,
           handleScroll: false,
