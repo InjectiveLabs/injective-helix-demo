@@ -30,7 +30,7 @@ import { isPhantomInstalled } from '@/app/services/phantom'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
-import { TRADING_MESSAGES } from '@/app/utils/trade'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 
 export interface AutoSign {
   privateKey: string
@@ -816,7 +816,7 @@ export const useWalletStore = defineStore('wallet', {
 
     async broadcastMessages(messages: Msgs | Msgs[], memo?: string) {
       const walletStore = useWalletStore()
-      const _messages = Array.isArray(messages) ? messages : [messages]
+      const msgs = Array.isArray(messages) ? messages : [messages]
 
       if (!walletStore.isUserWalletConnected) {
         return
@@ -830,22 +830,20 @@ export const useWalletStore = defineStore('wallet', {
           new Error('Authz and auto-sign cannot be used together')
         )
 
+        // TODO: uncomment this when we support authz + auto-sign
         // actualMessage = msgsOrMsgExecMsgs(
-        //   msgsOrMsgExecMsgs(_messages, walletStore.injectiveAddress),
+        //   msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress),
         //   walletStore.autoSign.injectiveAddress
         // )
       } else if (walletStore.autoSign && !walletStore.isAuthzWalletConnected) {
         actualMessage = msgsOrMsgExecMsgs(
-          _messages,
+          msgs,
           walletStore.autoSign.injectiveAddress
         )
       } else if (walletStore.isAuthzWalletConnected) {
-        actualMessage = msgsOrMsgExecMsgs(
-          _messages,
-          walletStore.injectiveAddress
-        )
+        actualMessage = msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)
       } else {
-        actualMessage = _messages
+        actualMessage = msgs
       }
 
       const response = await msgBroadcaster.broadcastWithFeeDelegation({
