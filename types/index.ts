@@ -113,6 +113,7 @@ type MenuItemBase = {
   description?: string
   icon?: string
   isExternal?: boolean
+  name?: string
 }
 
 export type MenuItem =
@@ -124,7 +125,6 @@ export type MenuItem =
       type: MenuItemType.Dropdown
       icon?: string
       items: MenuItem[]
-      name?: string
     })
 
 export * from './page'

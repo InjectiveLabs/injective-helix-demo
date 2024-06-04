@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getSgtContractAddressFromSlug } from '@/app/utils/helpers'
+import {
+  durationFormatter,
+  getSgtContractAddressFromSlug
+} from '@/app/utils/helpers'
 import { Modal } from '@/types'
-// import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -15,6 +18,7 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
+const walletStore = useWalletStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
@@ -38,6 +42,8 @@ const activeStrategy = computed(
         getSgtContractAddressFromSlug(market.value.slug)
     )!
 )
+
+const { pnl } = useActiveGridStrategy(market, activeStrategy)
 
 function removeStrategy() {
   if (!activeStrategy.value) {
@@ -63,13 +69,12 @@ function removeStrategy() {
     .finally(() => {
       status.setIdle()
 
-      // todo: Ivan add support for mixpanel here and everywhere else we remove strategy
-      // mixpanelAnalytics.trackRemoveStrategy({
-      //   duration: durationFormatter(props.createdAt, Date.now()),
-      //   market: gridStrategyStore.spotMarket?.slug || '',
-      //   totalProfit: props.pnl,
-      //   isLiquidity: props.isLiquidity
-      // })
+      mixpanelAnalytics.trackRemoveStrategy({
+        duration: durationFormatter(props.strategy.createdAt, Date.now()),
+        market: market.value.slug,
+        totalProfit: pnl.value.toFormat(),
+        isLiquidity: true
+      })
     })
 }
 </script>
@@ -77,13 +82,20 @@ function removeStrategy() {
 <template>
   <div class="grid grid-cols-1 gap-4">
     <AppButton
+      :disabled="
+        walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+      "
       v-bind="{ status }"
       is-lg
       variant="danger"
       class="w-full"
       @click="removeStrategy"
     >
-      {{ $t('sgt.endBot') }}
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+
+      <span class="v-else">{{ $t('sgt.endBot') }}</span>
     </AppButton>
   </div>
 </template>

@@ -42,7 +42,7 @@ function connectAuthZ() {
         <SharedIcon name="chevron-down" is-sm />
       </span>
 
-      <span> View Granted Functions </span>
+      <span>{{ $t('portfolio.settings.authz.viewGrantedFunctions') }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">
@@ -51,10 +51,15 @@ function connectAuthZ() {
         disabled
         size="sm"
       >
-        Connected
+        {{ $t('portfolio.settings.authz.connected') }}
       </AppButton>
+
+      <AppButton v-else-if="walletStore.isAutoSignEnabled" disabled size="sm">
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </AppButton>
+
       <AppButton v-else variant="success" size="sm" @click.stop="connectAuthZ">
-        Connect As
+        {{ $t('portfolio.settings.authz.connectAs') }}
       </AppButton>
     </div>
   </div>

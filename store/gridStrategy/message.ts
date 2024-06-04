@@ -11,7 +11,6 @@ import {
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { msgBroadcaster } from '@shared/WalletService'
 import { GeneralException } from '@injectivelabs/exceptions'
 import {
   spotGridMarkets,
@@ -186,10 +185,7 @@ export const createStrategy = async (
   // we need to add it after the authz messages
   msgs.push(message)
 
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(msgs)
 
   backupPromiseCall(() =>
     Promise.all([
@@ -243,10 +239,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     })
   })
 
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: message,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   backupPromiseCall(() =>
     Promise.all([
@@ -289,10 +282,7 @@ export const removeStrategyForSubaccount = async (
     })
   })
 
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: message,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   backupPromiseCall(() =>
     Promise.all([
