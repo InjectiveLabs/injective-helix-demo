@@ -1,4 +1,4 @@
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { MsgType, TradeExecutionType } from '@injectivelabs/ts-types'
 import { ConditionalOrderSide, OrderTypeFilter } from '@/types'
 
 export function derivativeTypeToExecutionTypes(type: OrderTypeFilter) {
@@ -50,3 +50,14 @@ export function derivativeTypeToTradeType(type: OrderTypeFilter) {
       return undefined
   }
 }
+
+export const TRADING_MESSAGES = [
+  MsgType.MsgCancelSpotOrder,
+  MsgType.MsgCreateSpotLimitOrder,
+  MsgType.MsgCancelDerivativeOrder,
+  MsgType.MsgCreateSpotMarketOrder,
+  MsgType.MsgBatchCancelSpotOrders,
+  MsgType.MsgCreateDerivativeLimitOrder,
+  MsgType.MsgCreateDerivativeMarketOrder,
+  MsgType.MsgBatchCancelDerivativeOrders
+]

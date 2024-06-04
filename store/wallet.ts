@@ -30,7 +30,7 @@ import { isPhantomInstalled } from '@/app/services/phantom'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
-import { TRADING_MESSAGES } from '~/app/utils/constants'
+import { TRADING_MESSAGES } from '@/app/utils/trade'
 
 export interface AutoSign {
   privateKey: string

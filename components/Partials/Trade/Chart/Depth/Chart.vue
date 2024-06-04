@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
 import { IsSpotKey, SpotMarketKey, DerivativeMarketKey } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
-const percentage = 0.1
+const PERCENTAGE = 0.1
 
 const isSpot = inject(IsSpotKey)
 const spotMarket = inject(SpotMarketKey, undefined)
@@ -25,8 +26,8 @@ const lastTradedPrice = computed(() =>
 
 const priceDecimals = computed(() =>
   isSpot
-    ? spotMarket?.value?.priceDecimals || 2
-    : derivativeMarket?.value?.priceDecimals || 2
+    ? spotMarket?.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    : derivativeMarket?.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
 const quantityDecimals = computed(() =>
@@ -43,7 +44,7 @@ const buysSerie = computed(() =>
     .reverse()
     .filter(
       (item) =>
-        Number(item.price) > lastTradedPrice.value.toNumber() * (1 - percentage)
+        Number(item.price) > lastTradedPrice.value.toNumber() * (1 - PERCENTAGE)
     )
     .map((item) => ({
       x: +item.price,
@@ -56,7 +57,7 @@ const sellsSerie = computed(() =>
     .slice(0, 1000)
     .filter(
       (item) =>
-        Number(item.price) < lastTradedPrice.value.toNumber() * (1 + percentage)
+        Number(item.price) < lastTradedPrice.value.toNumber() * (1 + PERCENTAGE)
     )
     .map((item) => ({
       x: +item.price,
@@ -130,8 +131,8 @@ const options: ApexOptions = {
 
   xaxis: {
     type: 'numeric',
-    max: lastTradedPrice.value.toNumber() * (1 + percentage),
-    min: lastTradedPrice.value.toNumber() * (1 - percentage),
+    max: lastTradedPrice.value.toNumber() * (1 + PERCENTAGE),
+    min: lastTradedPrice.value.toNumber() * (1 - PERCENTAGE),
     decimalsInFloat: priceDecimals.value
   },
 
