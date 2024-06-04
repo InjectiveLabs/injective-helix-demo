@@ -38,7 +38,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalBalance({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Month
+        resolution: LeaderboardResolution.Week
       })
 
       const historicalBalance = t.map((time, index) => {
@@ -59,7 +59,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Month
+        resolution: LeaderboardResolution.Week
       })
 
       const historicalPnl = t.map((time, index) => {
@@ -80,7 +80,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalVolumes({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Month
+        resolution: LeaderboardResolution.Week
       })
 
       const historicalVolume = t.map((time, index) => {
@@ -91,7 +91,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
 
       leaderboardStore.$patch({
-        historicalVolume
+        historicalVolume: historicalVolume.reverse()
       })
     }
   }

@@ -1,4 +1,3 @@
-import { IS_MAINNET, IS_STAGING } from '@/app/utils/constants'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import {
   MainPage,
@@ -108,16 +107,12 @@ export const MENU_ITEMS: MenuItem[] = [
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [
-  ...(!IS_MAINNET || IS_STAGING
-    ? ([
-        {
-          type: MenuItemType.Link,
-          label: 'navigation.portfolio',
-          to: { name: MainPage.Portfolio },
-          icon: 'pie-chart'
-        }
-      ] as MenuItem[])
-    : []),
+  {
+    type: MenuItemType.Link,
+    label: 'navigation.portfolio',
+    to: { name: MainPage.Portfolio },
+    icon: 'pie-chart'
+  },
   {
     type: MenuItemType.Link,
     label: 'navigation.balances',
@@ -229,7 +224,6 @@ export const PORTFOLIO_MENU_ITEM: MenuItem = {
   type: MenuItemType.Link,
   label: 'navigation.portfolio',
   to: {
-    name:
-      !IS_MAINNET || IS_STAGING ? MainPage.Portfolio : PortfolioSubPage.Balances
+    name: MainPage.Portfolio
   }
 }
