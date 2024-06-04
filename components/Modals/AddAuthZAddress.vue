@@ -102,7 +102,7 @@ function closeModal() {
       <div class="mt-4">
         <AppButton
           v-bind="{ status }"
-          :disabled="errorMessage || msgs.length === 0"
+          :disabled="!!errorMessage || msgs.length === 0"
           class="w-full"
           variant="primary"
           @click="grantAuthorization"

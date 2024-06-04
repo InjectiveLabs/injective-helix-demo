@@ -70,11 +70,9 @@ const outlineStyle = computed(() => {
     </button>
 
     <template #content>
-      <div class="leading-4" :class="contentClass">
-        <slot name="content">
-          {{ tooltip }}
-        </slot>
-      </div>
+      <slot name="content">
+        <span>{{ tooltip }}</span>
+      </slot>
     </template>
   </BaseTooltip>
 </template>
