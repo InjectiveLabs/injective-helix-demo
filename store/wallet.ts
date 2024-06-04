@@ -350,7 +350,7 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         address,
         addresses,
-        injectiveAddress: 'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z',
+        injectiveAddress,
         addressConfirmation,
         defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
