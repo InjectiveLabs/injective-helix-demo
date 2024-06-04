@@ -31,10 +31,6 @@ const leaderboardHistories = computed(() => [
   {
     type: PortfolioChartType.Pnl,
     history: leaderboardStore.historicalPnl
-  },
-  {
-    type: PortfolioChartType.Volume,
-    history: leaderboardStore.historicalVolume
   }
 ])
 </script>
@@ -77,6 +73,8 @@ const leaderboardHistories = computed(() => [
             </template>
           </PartialsPortfolioPortfolioChartWrapper>
         </div>
+
+        <PartialsPortfolioPortfolioTradingVolumeChartWrapper />
       </div>
     </AppHocLoading>
   </div>
