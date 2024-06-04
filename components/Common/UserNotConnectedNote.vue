@@ -22,7 +22,7 @@ function onConnect() {
         {{ $t('connect.pleaseConnectToYourWallet') }}
       </p>
       <AppButton
-        class="bg-blue-500 text-blue-900 font-semibold mt-2"
+        class="w-full mt-2"
         data-cy="wallet-not-connected-warning-modal-connect-button"
         @click="onConnect"
       >

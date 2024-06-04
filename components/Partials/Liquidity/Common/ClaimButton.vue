@@ -58,10 +58,7 @@ function claimRewards() {
 <template>
   <AppButton
     v-bind="{ status }"
-    :class="{
-      'bg-blue-500 border-blue-500 border':
-        !campaign.userClaimed && campaign.isClaimable
-    }"
+    size="xs"
     :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
     @click="claimRewards"
   >

@@ -15,7 +15,6 @@ import {
   CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP,
   LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP
 } from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   Modal,
   MainPage,
@@ -56,24 +55,6 @@ const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
 const { userBalancesWithToken } = useBalance()
-
-const hasActiveStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find((strategy) => {
-    const subaccountId = addressAndMarketSlugToSubaccountId(
-      walletStore.address,
-      props.market.slug
-    )
-
-    const contractAddress = spotGridMarkets.find(
-      (m) => m.slug === props.market.slug
-    )?.contractAddress
-
-    return (
-      strategy.subaccountId === subaccountId &&
-      strategy.contractAddress === contractAddress
-    )
-  })
-)
 
 const quoteDenomBalance = computed(() =>
   userBalancesWithToken.value.find(
@@ -345,11 +326,6 @@ function goToNewMarket() {
       v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
       class="w-full shadow-none select-none"
       v-bind="{ status, disabled: isDisabled }"
-      :class="[
-        hasActiveStrategy
-          ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
-          : 'bg-blue-500 text-blue-900'
-      ]"
       @click="onCheckBalanceFees"
     >
       <span v-if="walletStore.isAuthzWalletConnected">
