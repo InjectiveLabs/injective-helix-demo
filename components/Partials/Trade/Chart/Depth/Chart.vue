@@ -29,6 +29,12 @@ const priceDecimals = computed(() =>
     : derivativeMarket?.value?.priceDecimals || 2
 )
 
+const quantityDecimals = computed(() =>
+  isSpot
+    ? spotMarket?.value?.quantityDecimals || 2
+    : derivativeMarket?.value?.quantityDecimals || 2
+)
+
 let chart: ApexCharts
 
 const buysSerie = computed(() =>
@@ -100,7 +106,7 @@ const options: ApexOptions = {
     background: 'transparent',
 
     type: 'area',
-    height: 550,
+    height: isMobile.value ? 400 : 550,
     redrawOnParentResize: true,
     redrawOnWindowResize: true,
 
@@ -130,7 +136,8 @@ const options: ApexOptions = {
   },
 
   yaxis: {
-    opposite: true
+    opposite: true,
+    decimalsInFloat: quantityDecimals.value
   },
 
   grid: {

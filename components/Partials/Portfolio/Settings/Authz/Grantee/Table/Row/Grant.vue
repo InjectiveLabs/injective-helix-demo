@@ -62,7 +62,7 @@ function revoke() {
       &bull; {{ authorizationFormatted }}
     </div>
     <div class="flex-1 p-2">
-      <AppButtonTooltip
+      <AppButton
         v-if="
           walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected
         "
@@ -72,7 +72,7 @@ function revoke() {
         :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
       >
         {{ $t('portfolio.settings.authz.revoke') }}
-      </AppButtonTooltip>
+      </AppButton>
 
       <AppButton
         v-else

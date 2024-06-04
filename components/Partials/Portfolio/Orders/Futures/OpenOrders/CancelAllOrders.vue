@@ -48,7 +48,7 @@ function cancelAllOrders() {
 </script>
 
 <template>
-  <AppButtonTooltip
+  <AppButton
     v-if="derivativeStore.subaccountOrders.length > 0"
     v-bind="{ status, tooltip: isAuthorized ? '' : $t('common.unauthorized') }"
     :disabled="!isAuthorized"
@@ -57,5 +57,5 @@ function cancelAllOrders() {
     @click="cancelAllOrders"
   >
     {{ $t('trade.cancelAllOrders') }}
-  </AppButtonTooltip>
+  </AppButton>
 </template>

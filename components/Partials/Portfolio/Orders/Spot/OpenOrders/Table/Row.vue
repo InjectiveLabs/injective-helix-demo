@@ -150,7 +150,7 @@ function cancelOrder() {
       </div>
 
       <div class="flex-1 p-2 flex items-center justify-center">
-        <PartialsCommonCancelButtonTooltip
+        <PartialsCommonCancelButton
           v-if="orderFillable"
           v-bind="{
             status,

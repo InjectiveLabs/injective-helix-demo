@@ -156,7 +156,7 @@ function cancelOrder() {
       </div>
 
       <div class="p-2 flex items-center flex-1 justify-center">
-        <PartialsCommonCancelButtonTooltip
+        <PartialsCommonCancelButton
           v-bind="{
             status,
             isDisabled: !isAuthorized,

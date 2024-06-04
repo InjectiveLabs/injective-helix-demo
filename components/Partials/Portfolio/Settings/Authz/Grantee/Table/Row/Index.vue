@@ -71,7 +71,7 @@ function revokeAll() {
     </div>
 
     <div class="flex-1 flex items-center p-2" @click.stop>
-      <AppButtonTooltip
+      <AppButton
         v-if="
           walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
         "
@@ -82,7 +82,7 @@ function revokeAll() {
         disabled
       >
         {{ $t('portfolio.settings.authz.revokeAll') }}
-      </AppButtonTooltip>
+      </AppButton>
 
       <AppButton
         v-else

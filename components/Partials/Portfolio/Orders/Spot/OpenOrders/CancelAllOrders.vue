@@ -59,7 +59,7 @@ function cancelAllOrders() {
 </script>
 
 <template>
-  <AppButtonTooltip
+  <AppButton
     v-if="filteredOrders.length > 0"
     v-bind="{ status, tooltip: isAuthorized ? '' : $t('common.unauthorized') }"
     size="xs"
@@ -68,5 +68,5 @@ function cancelAllOrders() {
     @click="cancelAllOrders"
   >
     {{ $t('trade.cancelAllOrders') }}
-  </AppButtonTooltip>
+  </AppButton>
 </template>

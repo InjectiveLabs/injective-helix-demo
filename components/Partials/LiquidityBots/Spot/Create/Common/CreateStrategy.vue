@@ -350,7 +350,6 @@ function goToNewMarket() {
           ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
           : 'bg-blue-500 text-blue-900'
       ]"
-      is-lg
       @click="onCheckBalanceFees"
     >
       <span v-if="walletStore.isAuthzWalletConnected">
@@ -369,10 +368,21 @@ function goToNewMarket() {
     <AppButton
       v-if="hasActiveLegacyStrategy"
       class="bg-red-500 text-black w-full mt-4"
-      v-bind="{ status }"
+      v-bind="{
+        status,
+        disabled:
+          walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+      }"
       @click="removeLegacyStrategy"
     >
-      {{ $t('sgt.endBot') }}
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else-if="walletStore.isAutoSignEnabled">
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+
+      <span v-else>{{ $t('sgt.endBot') }}</span>
     </AppButton>
 
     <AppButton

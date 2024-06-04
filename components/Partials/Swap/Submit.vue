@@ -213,7 +213,7 @@ watch(
       }}
     </AppButton>
 
-    <AppButtonTooltip
+    <AppButton
       v-else-if="
         walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
       "
@@ -227,7 +227,7 @@ watch(
       <span v-else>
         {{ $t('common.notAvailableinAutoSignMode') }}
       </span>
-    </AppButtonTooltip>
+    </AppButton>
 
     <AppButton
       v-else

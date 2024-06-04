@@ -297,7 +297,7 @@ function addTpSl() {
       </div>
 
       <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">
-        <AppButtonTooltip
+        <AppButton
           v-bind="{
             status: marketCloseStatus,
             disabled: !isMarketOrderAuthorized,
@@ -309,9 +309,9 @@ function addTpSl() {
           @click="closePositionClicked"
         >
           {{ $t('trade.market') }}
-        </AppButtonTooltip>
+        </AppButton>
 
-        <AppButtonTooltip
+        <AppButton
           v-bind="{
             status: limitCloseStatus,
             disabled: !isLimitOrderAuthorized,
@@ -323,7 +323,7 @@ function addTpSl() {
           @click="closePositionLimit"
         >
           {{ $t('trade.limit') }}
-        </AppButtonTooltip>
+        </AppButton>
 
         <AppInputBase
           v-bind="{

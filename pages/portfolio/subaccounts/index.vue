@@ -26,7 +26,7 @@ function openTransferModal() {
     </div>
 
     <div class="p-4 flex justify-end">
-      <AppButtonTooltip
+      <AppButton
         :tooltip="
           isDisabled ? $t('common.notAvailableinAuthZOrAutoSignMode') : ''
         "
@@ -37,7 +37,7 @@ function openTransferModal() {
       >
         <SharedIcon name="plus" is-xs />
         <span>{{ $t('portfolio.subaccounts.addSubaccount') }}</span>
-      </AppButtonTooltip>
+      </AppButton>
     </div>
 
     <div class="divide-y border-y">
