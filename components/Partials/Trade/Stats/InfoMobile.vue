@@ -28,10 +28,9 @@ defineProps({
         fundingRate
       }"
     >
-      <div class="hidden lg:flex max-lg:justify-between max-lg:[&>*]:border">
-        <div
-          class="flex flex-col items-center lg:items-end justify-start px-2 lg:px-4 py-2 font-mono"
-        >
+      <div class="text-xs p-1 divide-y [&>*]:p-1">
+        <div class="flex justify-between">
+          <p class="text-gray-400">{{ $t('trade.price') }}</p>
           <div
             class="flex items-center"
             :class="{
@@ -59,13 +58,10 @@ defineProps({
             />
 
             <div class="leading-none">
-              {{ lastTradedPriceToFormat }}
-            </div>
-          </div>
+              <span>{{ lastTradedPriceToFormat }}</span>
 
-          <div class="mt-auto">
-            <div v-if="!change.isNaN()" class="mt-1 text-xs">
               <span
+                v-if="!change.isNaN()"
                 class="leading-none"
                 :class="{
                   'text-green-500':
@@ -76,45 +72,43 @@ defineProps({
                     percentageChangeStatus === SharedMarketChange.Decrease
                 }"
               >
-                {{ changeToFormat }}%
+                / {{ changeToFormat }}%
               </span>
             </div>
           </div>
         </div>
 
-        <div
-          v-if="isNonUsdtQuoteAsset"
-          class="p-2 text-xs flex flex-col max-lg:text-center"
-        >
-          <p class="text-gray-400">{{ $t('trade.usd_value') }}</p>
-          <p class="font-mono font-semibold mt-auto">
+        <div v-if="isNonUsdtQuoteAsset" class="flex justify-between">
+          <p>{{ $t('trade.usd_value') }}</p>
+          <p class="font-mono font-semibold">
             {{ lastTradedPriceInUsdToFormat }}
           </p>
         </div>
 
-        <div class="p-2 text-xs flex flex-col max-lg:text-center">
+        <div class="flex justify-between">
           <CommonHeaderTooltip
             :tooltip="$t('trade.market_volume_24h_tooltip')"
             text-color-class="text-gray-400"
           >
             {{ $t('trade.total_market_volume_24h') }}
           </CommonHeaderTooltip>
-          <p class="font-mono font-semibold mt-auto">{{ volumeToFormat }}</p>
+
+          <p class="font-mono text-xs font-semibold">{{ volumeToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs flex flex-col max-lg:text-center">
+        <div class="flex justify-between">
           <p class="text-gray-400">{{ $t('trade.high') }}</p>
           <p class="font-mono font-semibold mt-auto">{{ highToFormat }}</p>
         </div>
 
-        <div class="p-2 text-xs flex flex-col max-lg:text-center">
+        <div class="flex justify-between">
           <p class="text-gray-400">{{ $t('trade.low') }}</p>
           <p class="font-mono font-semibold mt-auto">{{ lowToFormat }}</p>
         </div>
 
         <div
           v-if="(market as UiDerivativeMarket)?.isPerpetual"
-          class="p-2 text-xs flex flex-col max-lg:text-center"
+          class="flex justify-between"
         >
           <CommonHeaderTooltip
             :tooltip="$t('trade.funding_rate_tooltip')"
@@ -146,7 +140,7 @@ defineProps({
 
         <div
           v-if="(market as UiDerivativeMarket)?.isPerpetual"
-          class="p-2 text-xs flex flex-col max-lg:text-center"
+          class="flex justify-between"
         >
           <CommonHeaderTooltip
             :tooltip="$t('trade.next_funding_tooltip')"

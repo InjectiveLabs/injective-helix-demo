@@ -143,6 +143,10 @@ const mainnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'omni-usdt',
     contractAddress: 'inj1wu26uscxvnwdhzyg2cf32pjsqdn6xx8xuryere'
+  },
+  {
+    slug: 'mother-inj',
+    contractAddress: 'inj1sz4x32ef74mhtsvtngg6vll24j8v9sluh5fxep'
   }
 ]
 
