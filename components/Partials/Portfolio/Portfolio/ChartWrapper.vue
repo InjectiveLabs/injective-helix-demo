@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import { PortfolioChartType } from '@/types'
+
 const appStore = useAppStore()
 const isMobile = useIsMobile()
 
 const props = defineProps({
   isShowPercentChange: Boolean,
-  isShowDirectionality: Boolean,
   isHideBalanceVisible: Boolean,
+
+  chartType: {
+    type: String as PropType<PortfolioChartType>,
+    required: true
+  },
 
   leaderboardHistory: {
     type: Array as PropType<
@@ -16,6 +22,12 @@ const props = defineProps({
     >,
     default: () => []
   }
+})
+
+const isProfit = computed(() => {
+  return props.chartType === PortfolioChartType.Pnl
+    ? historyToBigNumber.value.gt(0)
+    : percentageToBigNumber.value.gt(0)
 })
 
 const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
@@ -30,7 +42,7 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
       props.leaderboardHistory[props.leaderboardHistory.length - 1]?.value
     const firstValue = props.leaderboardHistory[0]?.value
 
-    return (lastValue / firstValue) * 100
+    return 100 - (firstValue / lastValue) * 100
   })
 )
 </script>
@@ -43,8 +55,8 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
       <div
         class="flex items-center space-x-2"
         :class="{
-          'text-red-500': isShowDirectionality && false,
-          'text-green-500': isShowDirectionality && true
+          'text-red-500': !isProfit,
+          'text-green-500': isProfit
         }"
       >
         <span class="text-2xl font-semibold -mr-2">$</span>
@@ -72,18 +84,21 @@ const { valueToBigNumber: percentageToBigNumber } = useSharedBigNumberFormatter(
       <p
         v-if="isShowPercentChange"
         :class="{
-          'text-red-500': true,
-          'text-green-500': false
+          'text-red-500': !isProfit,
+          'text-green-500': isProfit
         }"
       >
         <span class="text-sm">
-          {{ `${false ? '+' : '-'}${percentageToBigNumber.toFixed(2)}%` }}
+          {{ `${percentageToBigNumber.toFixed(2)}%` }}
         </span>
       </p>
     </div>
   </div>
 
-  <PartialsPortfolioPortfolioRandomChart
-    v-bind="{ data: leaderboardHistory }"
+  <PartialsPortfolioPortfolioLineChart
+    v-bind="{
+      isPositive: isProfit,
+      data: leaderboardHistory
+    }"
   />
 </template>

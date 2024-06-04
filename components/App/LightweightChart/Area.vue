@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
-  createChart,
-  DeepPartial,
-  TimeChartOptions,
+  Time,
+  AreaData,
+  LineData,
   IChartApi,
   ISeriesApi,
+  createChart,
+  DeepPartial,
   CrosshairMode,
-  PriceScaleOptions,
   WhitespaceData,
-  LineData,
-  SeriesOptionsCommon,
+  TimeChartOptions,
   AreaStyleOptions,
   TimeScaleOptions,
-  Time,
-  AreaData
+  PriceScaleOptions,
+  SeriesOptionsCommon
 } from 'lightweight-charts'
 import { mergeObjects } from '@/app/utils/helpers'
 
@@ -37,6 +37,7 @@ const defaultChartOptions = {
 }
 
 const props = defineProps({
+  isPositive: Boolean,
   shouldFitContentOnResize: Boolean,
 
   type: {

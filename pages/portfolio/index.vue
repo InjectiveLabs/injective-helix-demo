@@ -58,8 +58,8 @@ const leaderboardHistories = computed(() => [
         >
           <PartialsPortfolioPortfolioChartWrapper
             v-bind="{
+              chartType: type,
               leaderboardHistory: history,
-              isShowDirectionality: type === PortfolioChartType.Pnl,
               isShowPercentChange: type === PortfolioChartType.Balance,
               isHideBalanceVisible: type === PortfolioChartType.Balance
             }"

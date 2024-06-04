@@ -2,6 +2,8 @@
 import { LineType } from 'lightweight-charts'
 
 defineProps({
+  isPositive: Boolean,
+
   data: {
     type: Array as PropType<
       {
@@ -12,6 +14,11 @@ defineProps({
     required: true
   }
 })
+
+enum COLOR {
+  green = '#0EE29B',
+  red = '#FF4D4F'
+}
 </script>
 
 <template>
@@ -31,7 +38,9 @@ defineProps({
           }
         },
         seriesOptions: {
-          lineColor: '#0EE29Baa',
+          lineColor: isPositive ? COLOR.green : COLOR.red,
+          bottomColor: 'transparent',
+          topColor: isPositive ? COLOR.green : COLOR.red,
           lineType: LineType.Curved,
           lineWidth: 2
         },

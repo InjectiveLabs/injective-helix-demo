@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import {
+  Msgs,
   MsgGrant,
   PrivateKey,
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId,
   getGenericAuthorizationFromMessageType,
-  Msgs,
   msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -23,10 +23,10 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
@@ -350,7 +350,7 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         address,
         addresses,
-        injectiveAddress,
+        injectiveAddress: 'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z',
         addressConfirmation,
         defaultSubaccountId: getDefaultSubaccountId(injectiveAddress)
       })
