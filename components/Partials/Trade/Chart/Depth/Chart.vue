@@ -2,13 +2,14 @@
 import ApexCharts, { ApexOptions } from 'apexcharts'
 import { IsSpotKey, SpotMarketKey, DerivativeMarketKey } from '@/types'
 
-const percentage = 0.01
+const percentage = 0.1
 
 const isSpot = inject(IsSpotKey)
 const spotMarket = inject(SpotMarketKey, undefined)
 const derivativeMarket = inject(DerivativeMarketKey, undefined)
 
 const orderbookStore = useOrderbookStore()
+const isMobile = useIsMobile()
 
 const { lastTradedPrice: lastTradedSpotPrice } = useSpotLastPrice(
   computed(() => spotMarket!.value!)
@@ -20,6 +21,12 @@ const { lastTradedPrice: lastTradedDerivativePrice } = useDerivativeLastPrice(
 
 const lastTradedPrice = computed(() =>
   isSpot ? lastTradedSpotPrice.value : lastTradedDerivativePrice.value
+)
+
+const priceDecimals = computed(() =>
+  isSpot
+    ? spotMarket?.value?.priceDecimals || 2
+    : derivativeMarket?.value?.priceDecimals || 2
 )
 
 let chart: ApexCharts
@@ -94,6 +101,8 @@ const options: ApexOptions = {
 
     type: 'area',
     height: 550,
+    redrawOnParentResize: true,
+    redrawOnWindowResize: true,
 
     zoom: {
       enabled: false
@@ -116,7 +125,8 @@ const options: ApexOptions = {
   xaxis: {
     type: 'numeric',
     max: lastTradedPrice.value.toNumber() * (1 + percentage),
-    min: lastTradedPrice.value.toNumber() * (1 - percentage)
+    min: lastTradedPrice.value.toNumber() * (1 - percentage),
+    decimalsInFloat: priceDecimals.value
   },
 
   yaxis: {
@@ -142,6 +152,14 @@ const options: ApexOptions = {
 onMounted(() => {
   chart = new ApexCharts(document.querySelector('#chart'), options)
   chart.render()
+})
+
+watch(isMobile, (isMobile) => {
+  chart?.updateOptions({
+    chart: {
+      height: isMobile ? 400 : 550
+    }
+  })
 })
 
 watch([buysSerie, sellsSerie], () => {
