@@ -235,7 +235,7 @@ onMounted(() => {
 
       toolTip.style.borderColor = tooltipColor
       toolTip.style.width =
-        priceFormatted.length < 10 ? '120px' : priceFormatted.length * 10 + 'px'
+        priceFormatted.length < 12 ? '160px' : priceFormatted.length * 10 + 'px'
 
       toolTip.innerHTML = `<div style="color: ${'white'}">
         ${props.label}

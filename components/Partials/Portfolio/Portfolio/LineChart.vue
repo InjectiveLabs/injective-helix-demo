@@ -31,6 +31,7 @@ enum COLOR {
     <AppLightweightChartArea
       v-bind="{
         label,
+        isPositive,
         chartOptions: {
           handleScale: false,
           handleScroll: false,
