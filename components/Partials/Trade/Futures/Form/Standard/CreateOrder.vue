@@ -59,7 +59,7 @@ const resetForm = useResetForm()
 const validate = useValidateForm()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
@@ -219,7 +219,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -273,7 +273,7 @@ async function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -325,7 +325,7 @@ async function submitMarketOrder() {
       takeProfit: takeProfitValue.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -379,7 +379,7 @@ async function submitStopMarketOrder() {
       margin: props.margin
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({

@@ -4,7 +4,7 @@ import { subscribeToNewsletter } from '@/app/services/newsletter'
 import { MainPage } from '@/types'
 
 const { t } = useLang()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { handleSubmit, resetForm } = useForm()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -19,14 +19,14 @@ const subscribe = handleSubmit((values) => {
 
   subscribeToNewsletter(values.email)
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('newsletter.subscribeToast')
       })
 
       resetForm()
     })
     .catch((e: any) => {
-      error({ title: e.message.replace('Error', '') })
+      notificationStore.error({ title: e.message.replace('Error', '') })
     })
     .finally(() => {
       status.setIdle()

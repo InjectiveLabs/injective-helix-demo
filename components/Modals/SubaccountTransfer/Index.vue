@@ -9,7 +9,7 @@ const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const {
   values: formValues,
@@ -86,7 +86,9 @@ function nonDefaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)
@@ -106,7 +108,9 @@ function defaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)
@@ -126,7 +130,9 @@ function defaultSubaccountWithdraw() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)

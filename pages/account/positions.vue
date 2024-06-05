@@ -20,7 +20,7 @@ const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const sideOptions = [
   {
@@ -129,7 +129,7 @@ function closeAllPositions() {
   positionStore
     .closeAllPosition(positions.value)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('trade.positions_closed')
       })
     )
@@ -156,7 +156,7 @@ function closePosition() {
       market
     })
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('trade.positions_closed')
       })
     )

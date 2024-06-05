@@ -8,7 +8,7 @@ const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const isAuthorized = computed(() => {
@@ -29,12 +29,12 @@ function cancelAllOrders() {
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountOrders)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('common.success')
       })
     )
     .catch((e) => {
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
       $onError(e)
     })
     .finally(() => {

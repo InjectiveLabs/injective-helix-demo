@@ -21,7 +21,7 @@ const modalStore = useModalStore()
 const authZStore = useAuthZStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const { validate } = useForm<{
   address: string
@@ -51,7 +51,7 @@ async function grantAuthorization() {
       grantee: addressValue.value,
       messageTypes: msgs.value
     })
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()

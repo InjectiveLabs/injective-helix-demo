@@ -15,7 +15,7 @@ const formErrors = useFormErrors()
 const gridStrategyStore = useGridStrategyStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -47,7 +47,7 @@ async function createStrategy() {
   gridStrategyStore
     .createStrategy(spotFormValues.value, market!.value!)
     .then(() => {
-      success({ title: t('common.success') })
+      notificationStore.success({ title: t('common.success') })
 
       mixpanelAnalytics.trackCreateStrategy({
         formValues: spotFormValues.value,

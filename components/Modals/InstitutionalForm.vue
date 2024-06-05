@@ -4,7 +4,7 @@ import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
 const modalStore = useModalStore()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const {
   resetForm,
@@ -63,13 +63,13 @@ async function onSubmit() {
     business: company
   })
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('common.success'),
         description: t('institutional.formSubmittedSuccesfuly')
       })
     )
     .catch(() => {
-      error({
+      notificationStore.error({
         title: t('common.error'),
         description: t('common.somethingHappened')
       })

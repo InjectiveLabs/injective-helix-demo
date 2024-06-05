@@ -6,7 +6,7 @@ import { Modal } from '@/types'
 const walletStore = useWalletStore()
 const { copy } = useClipboard()
 const { t } = useLang()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 defineProps({
   wallet: {
@@ -32,12 +32,12 @@ function onToggleDropdown() {
 
 function onCopyAddress() {
   copy(walletStore.address)
-  success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('connect.copiedAddress') })
 }
 
 function onCopyInjectiveAddress() {
   copy(walletStore.injectiveAddress)
-  success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('connect.copiedAddress') })
 }
 
 function openQrCodeModal() {

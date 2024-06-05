@@ -13,7 +13,7 @@ const props = defineProps({
 const authZStore = useAuthZStore()
 const walletStore = useWalletStore()
 const spotStore = useSpotStore()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -79,7 +79,9 @@ function cancelOrder() {
 
   spotStore
     .cancelOrder(props.order as SpotLimitOrder)
-    .then(() => success({ title: t('trade.order_success_canceling') }))
+    .then(() =>
+      notificationStore.success({ title: t('trade.order_success_canceling') })
+    )
     .catch($onError)
     .finally(() => {
       status.setIdle()

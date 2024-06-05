@@ -252,20 +252,21 @@ export enum BalanceHeaderType {
 }
 
 export enum BusEvents {
-  AddMarginToPosition = 'add-margin-to-position',
-  AssetDetailsModalPayload = 'asset-details-modal-payload',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
-  OrderbookNotionalClick = 'orderbook-notional-click',
-  OrderbookPriceClick = 'orderbook-price-click',
-  OrderbookSizeClick = 'orderbook-size-click',
-  PostOnlyToggled = 'post-only-toggled',
-  ShowLedgerConnect = 'show-ledger-connect',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   WalletConnected = 'wallet-connected',
-  ActivityFilterUpdate = 'activity-filter-update',
+  PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
-  OpenTradingBotDetails = 'open-trading-bot-details'
+  ShowLedgerConnect = 'show-ledger-connect',
+  AutoSignConnected = 'auto-sign-connected',
+  OrderbookSizeClick = 'orderbook-size-click',
+  OrderbookPriceClick = 'orderbook-price-click',
+  AddMarginToPosition = 'add-margin-to-position',
+  ActivityFilterUpdate = 'activity-filter-update',
+  OpenTradingBotDetails = 'open-trading-bot-details',
+  OrderbookNotionalClick = 'orderbook-notional-click',
+  AssetDetailsModalPayload = 'asset-details-modal-payload',
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload'
 }
 
 export enum ActivityField {

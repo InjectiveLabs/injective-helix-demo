@@ -13,7 +13,7 @@ const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const NAME_MAX_CHARACTERS = 15
 const DESCRIPTION_MAX_CHARACTERS = 255
@@ -94,7 +94,7 @@ async function onSubmit() {
       description: description.value
     })
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('guild.createGuild.toast')
       })
       onCloseModal()

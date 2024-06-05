@@ -26,7 +26,7 @@ const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const isModalOpen = computed(
@@ -182,7 +182,7 @@ async function submitTpSl() {
         ? new BigNumberInBase(takeProfitValue.value)
         : undefined
     })
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       closeModal()

@@ -21,7 +21,7 @@ const { t } = useLang()
 const { copy } = useClipboard()
 const { baseToken } = useGuild()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
@@ -148,7 +148,7 @@ function fetchGuildDetails({ skip = 0 }: { skip: number }) {
 
 function onCopyInvitationLink() {
   copy(guildInvitationHash.value)
-  success({ title: t('guild.toast.copiedInvitationLink') })
+  notificationStore.success({ title: t('guild.toast.copiedInvitationLink') })
 }
 
 function onRefresh() {

@@ -4,7 +4,7 @@ import { Modal, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { resetForm } = useForm()
 const { t } = useLang()
@@ -32,7 +32,9 @@ function connect() {
 
   walletStore
     .connectAddress(injectiveAddress.value)
-    .then(() => success({ title: t('connect.successfullyConnected') }))
+    .then(() =>
+      notificationStore.success({ title: t('connect.successfullyConnected') })
+    )
     .catch((e) => {
       walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)

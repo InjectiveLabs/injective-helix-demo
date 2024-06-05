@@ -15,7 +15,7 @@ const authZStore = useAuthZStore()
 const walletStore = useWalletStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const filteredOrders = computed(() =>
@@ -40,13 +40,13 @@ function cancelAllOrders() {
   spotStore
     .batchCancelOrder(filteredOrders.value)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('common.success')
       })
     )
     .catch((e) => {
       $onError(e)
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
     })
     .finally(() => {
       status.setIdle()

@@ -22,7 +22,7 @@ const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { handleSubmit, resetForm } = useForm()
 const { userBalancesWithToken } = useBalance()
 
@@ -95,7 +95,7 @@ const onSubmit = handleSubmit(() => {
     })
     .then(() => {
       resetForm()
-      success({ title: t('trade.success_added_margin') })
+      notificationStore.success({ title: t('trade.success_added_margin') })
       onModalClose()
     })
     .catch($onError)
