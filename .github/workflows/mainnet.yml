@@ -110,7 +110,7 @@ jobs:
           # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
           last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
           payload='{
-            "text": "'"<!here> Helix - Deployed to Mainnet!.\n View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n$(git log $last_merge_commit..HEAD --pretty=format:'%h - %s')"'",
+            "text": "'"<!here> Helix - Deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n$(git log $last_merge_commit..HEAD --pretty=format:'%h - %s')"'",
             "attachments": [
                 {
                 "text": "Helix deployed to Mainnet ✅",
