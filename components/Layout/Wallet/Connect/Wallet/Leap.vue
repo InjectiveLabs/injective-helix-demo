@@ -3,7 +3,7 @@ import { isCosmosWalletInstalled, Wallet } from '@injectivelabs/wallet-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -14,7 +14,9 @@ function connect() {
   if (isWalletInstalled) {
     walletStore
       .connectLeap()
-      .then(() => success({ title: t('connect.successfullyConnected') }))
+      .then(() =>
+        notificationStore.success({ title: t('connect.successfullyConnected') })
+      )
       .catch((e) => {
         walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)

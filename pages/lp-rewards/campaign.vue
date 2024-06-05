@@ -7,7 +7,7 @@ const spotStore = useSpotStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const page = ref(1)
 const limit = ref(10)
@@ -19,7 +19,7 @@ const campaign = computed(() => route.query.campaign as string)
 
 onWalletConnected(() => {
   if (!campaign.value) {
-    error({ title: t('campaign.campaignNotFound') })
+    notificationStore.error({ title: t('campaign.campaignNotFound') })
     navigateTo({ name: MainPage.Index })
   }
 
@@ -32,7 +32,7 @@ onWalletConnected(() => {
   ])
     .then(() => {
       if (!campaignStore.campaign) {
-        error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('campaign.campaignNotFound') })
         navigateTo({ name: MainPage.Index })
       }
     })
@@ -63,7 +63,7 @@ function fetchCampaign({ skip }: { skip: number }) {
     })
     .then(() => {
       if (!campaignStore.campaign) {
-        error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('campaign.campaignNotFound') })
         navigateTo({ name: MainPage.Index })
       }
     })

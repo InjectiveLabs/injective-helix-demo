@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import { MsgType } from '@injectivelabs/ts-types'
 
 import { Status, StatusType } from '@injectivelabs/utils'
 
@@ -10,10 +11,12 @@ const props = defineProps({
   }
 })
 
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const {
@@ -33,6 +36,14 @@ const {
   priceDecimals,
   quantityDecimals
 } = useTrigger(computed(() => props.trigger))
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
+})
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
@@ -66,9 +77,9 @@ function cancelOrder() {
 
   derivativeStore
     .cancelOrder(props.trigger)
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch((e) => {
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
       $onError(e)
     })
     .finally(() => {
@@ -146,7 +157,11 @@ function cancelOrder() {
 
       <div class="p-2 flex items-center flex-1 justify-center">
         <PartialsCommonCancelButton
-          v-bind="{ status }"
+          v-bind="{
+            status,
+            isDisabled: !isAuthorized,
+            tooltip: isAuthorized ? '' : $t('common.unauthorized')
+          }"
           :is-disabled="!isCancelable"
           @click="cancelOrder"
         />

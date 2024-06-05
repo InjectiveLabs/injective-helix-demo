@@ -22,10 +22,6 @@ const isActiveLink = computed(() => {
   const itemName = ((props.item as any).to as LocationAsRelativeRaw)
     ?.name as string
 
-  if (!(props.item as any).items) {
-    return routeName === itemName
-  }
-
   return routeName.startsWith(itemName)
 })
 

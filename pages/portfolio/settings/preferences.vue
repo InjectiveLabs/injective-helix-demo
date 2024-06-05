@@ -16,6 +16,7 @@ import { PortfolioSubPage } from '@/types'
 
     <div class="border-y divide-y">
       <PartialsPortfolioSettingsPreferencesThousandsSeparator />
+      <PartialsPortfolioSettingsPreferencesShowGridTradingSubaccounts />
     </div>
   </div>
 </template>

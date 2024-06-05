@@ -9,17 +9,22 @@ import {
 
 const market = inject(SpotMarketKey)
 
+const walletStore = useWalletStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
 const gridStrategyStore = useGridStrategyStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
+  if (walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
   if (Object.keys(formErrors.value).length > 0) {
     return true
   }
@@ -42,7 +47,7 @@ async function createStrategy() {
   gridStrategyStore
     .createStrategy(spotFormValues.value, market!.value!)
     .then(() => {
-      success({ title: t('common.success') })
+      notificationStore.success({ title: t('common.success') })
 
       mixpanelAnalytics.trackCreateStrategy({
         formValues: spotFormValues.value,
@@ -59,11 +64,20 @@ async function createStrategy() {
 </script>
 
 <template>
-  <AppButton
-    class="w-full"
-    v-bind="{ status, disabled: isDisabled }"
-    @click="createStrategy"
-  >
-    {{ $t('sgt.create') }}
-  </AppButton>
+  <div class="py-4">
+    <AppButton
+      class="w-full"
+      v-bind="{ status, disabled: isDisabled }"
+      @click="createStrategy"
+    >
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else>{{ $t('sgt.create') }}</span>
+    </AppButton>
+
+    <span v-if="walletStore.isAutoSignEnabled" class="text-xs text-red-500">
+      {{ $t('common.notAvailableinAutoSignMode') }}
+    </span>
+  </div>
 </template>

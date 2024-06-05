@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  MsgType,
   OrderSide,
   TradeDirection,
   TradeExecutionType
@@ -49,14 +50,16 @@ const props = defineProps({
   }
 })
 
-const resetForm = useResetForm()
-const formErrors = useFormErrors()
-const validate = useValidateForm()
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+const formErrors = useFormErrors()
+const resetForm = useResetForm()
+const validate = useValidateForm()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
 
@@ -83,6 +86,26 @@ const limitPrice = computed(
 const isOrderTypeReduceOnly = computed(
   () => !!derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
 )
+
+const isLimitOrder = computed(() =>
+  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  const msg = isLimitOrder.value
+    ? MsgType.MsgCreateDerivativeLimitOrder
+    : MsgType.MsgCreateDerivativeMarketOrder
+
+  return authZStore.hasAuthZPermission(msg)
+})
 
 const isBuy = computed(
   () =>
@@ -154,6 +177,10 @@ const isDisabled = computed(() => {
     return true
   }
 
+  if (!isAuthorized.value) {
+    return true
+  }
+
   if (
     [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
       tradeType
@@ -192,7 +219,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -246,7 +273,7 @@ async function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -298,7 +325,7 @@ async function submitMarketOrder() {
       takeProfit: takeProfitValue.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -352,7 +379,7 @@ async function submitStopMarketOrder() {
       margin: props.margin
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -407,9 +434,13 @@ function onSubmit() {
         class="w-full"
         @click="onSubmit"
       >
-        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-        /
-        {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+        <span v-if="isAuthorized">
+          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+          /
+          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+        </span>
+
+        <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { PortfolioChartType } from '@/types'
+import { PortfolioChartType, I18nMessageFunction } from '@/types'
 
 export default {
   portfolio: {
@@ -26,7 +26,8 @@ export default {
       inUseReserved: 'In Use/Reserved',
       unrealizedPnl: 'Unrealized PnL',
       total: 'Total',
-      totalValueUsd: 'Total Value (USD)'
+      totalValueUsd: 'Total Value (USD)',
+      transferToMain: 'Transfer to Main'
     },
 
     subaccounts: {
@@ -52,14 +53,25 @@ export default {
         description:
           'Grant other wallet address full/partial permissions to make trades on their behalf',
         grantee: 'Grantee',
+        granteeAddress: 'Grantee Address',
+        grantedFunctions: 'Granted Functions',
+        actions: 'Actions',
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address',
-        noGrants: 'No grants found'
+        addGranteeAddress: 'Add grantee address',
+        noGrants: 'No grants found',
+        viewGrantedFunctions: 'View granted functions',
+        connected: 'Connected',
+        connectAs: 'Connect as',
+        revoke: 'Revoke',
+        revokeAll: 'Revoke All'
       },
 
       preferences: {
         title: 'Preferences',
-        description: 'Customize your trading experience'
+        description: 'Customize your trading experience',
+        thousandsSeparator: 'Thousands Separator',
+        showGridTradingSubaccounts: 'Show Grid Trading Subaccounts'
       },
 
       autoSign: {
@@ -69,6 +81,22 @@ export default {
         howItWorks:
           'During the specified duration, you can perform many operations on Helix without the need to sign an additional transaction. This includes opening and closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters. It does not include interactions with the swap feature or trading bots. For security reasons, the auto sign function will expire after the selected time frame, at which point you may choose to initiate a new session.',
         enable: 'Enable Auto-Sign',
+        enabledToast: {
+          title: 'Auto sign is enabled',
+          description: 'Auto sign is active for 30 mins.'
+        },
+        disabledToast: {
+          title: 'Auto sign is disabled'
+        },
+        expiredToast: {
+          title: 'Auto sign session has expired',
+          settings: 'Settings',
+          description: ({ interpolate, named }: I18nMessageFunction) =>
+            interpolate([
+              'You can start a new session from ',
+              named('settings')
+            ])
+        },
         disconnect: 'Disconnect Auto-Sign'
       }
     },

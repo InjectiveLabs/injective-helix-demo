@@ -2,8 +2,9 @@
 import { USDT_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
+import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import { stableCoinDenoms } from '@/app/data/token'
-import { UiMarketWithToken } from '@/types'
+import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   isCurrentMarket: Boolean,
@@ -17,6 +18,30 @@ const props = defineProps({
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const tokenStore = useTokenStore()
+
+const labelToDisplay = ['hours', 'minutes', 'seconds']
+
+const now = ref(0)
+
+const countdown = computed(() => {
+  const difference = intervalToDuration({
+    start: now.value,
+    end: endOfHour(now.value)
+  })
+
+  return Object.entries(difference)
+    .map(([label, value]: [string, number]) => {
+      if (labelToDisplay.includes(label)) {
+        const valueToTwoDigits = value < 10 ? `0${value}` : `${value}`
+
+        return valueToTwoDigits
+      }
+
+      return undefined
+    })
+    .filter((time) => time)
+    .join(':')
+})
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -143,6 +168,74 @@ const { valueToString: lowToFormat, valueToBigNumber: low } =
       minimalDecimalPlaces: props.market.priceDecimals
     }
   )
+
+const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
+  computed(() => {
+    const market = props.market as UiDerivativeMarket
+
+    if (!market.perpetualMarketFunding) {
+      return ZERO_IN_BASE
+    }
+
+    const currentUnixTime = Math.floor(Date.now() / 1000)
+    const divisor = new BigNumberInBase(currentUnixTime).mod(3600).times(24)
+
+    if (divisor.lte(0)) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(
+      market.perpetualMarketFunding?.cumulativePrice || 0
+    ).dividedBy(divisor)
+  })
+)
+
+const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
+  computed(() => {
+    const market = props.market as UiDerivativeMarket
+
+    if (market.subType !== SharedMarketType.Perpetual) {
+      return ZERO_IN_BASE
+    }
+
+    if (
+      !market.perpetualMarketFunding ||
+      !market.isPerpetual ||
+      !market.perpetualMarketInfo
+    ) {
+      return ZERO_IN_BASE
+    }
+
+    const hourlyFundingRateCap = new BigNumberInBase(
+      market.perpetualMarketInfo.hourlyFundingRateCap
+    )
+    const estFundingRate = new BigNumberInBase(
+      market.perpetualMarketInfo.hourlyInterestRate
+    ).plus(tWapEst.value)
+
+    if (estFundingRate.gt(hourlyFundingRateCap)) {
+      return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
+    }
+
+    if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
+      return new BigNumberInBase(hourlyFundingRateCap)
+        .times(-1)
+        .multipliedBy(100)
+    }
+
+    return new BigNumberInBase(estFundingRate).multipliedBy(100)
+  })
+)
+
+useIntervalFn(() => {
+  now.value = Date.now()
+  const end = endOfHour(now.value)
+  const shouldFetchNewFunding = differenceInSeconds(end, now.value) === 1
+
+  if (shouldFetchNewFunding) {
+    derivativeStore.fetchMarket(props.market.marketId)
+  }
+}, 1000)
 </script>
 
 <template>
@@ -150,19 +243,21 @@ const { valueToString: lowToFormat, valueToBigNumber: low } =
     v-bind="{
       low,
       high,
-      lowToFormat,
-      highToFormat,
       change,
       isSpot,
       volume,
+      countdown,
+      fundingRate,
+      lowToFormat,
+      highToFormat,
       changeToFormat,
       volumeToFormat,
       lastTradedPrice,
       isNonUsdtQuoteAsset,
-      lastTradedPriceInUsd,
-      lastTradedPriceInUsdToFormat,
+      lastTradedPriceToFormat,
       percentageChangeStatus,
-      lastTradedPriceToFormat
+      lastTradedPriceInUsd,
+      lastTradedPriceInUsdToFormat
     }"
   />
 </template>

@@ -450,7 +450,7 @@ export const convertCw20ToBankBalance = ({
       bankBalancesMap[market.baseDenom] || 0
     ).gte(order.quantity)
 
-    if (!hasSufficientBalanceInBank) {
+    if (hasSufficientBalanceInBank) {
       return
     }
 

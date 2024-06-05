@@ -136,7 +136,7 @@ function onConnectWallet() {
         </h2>
 
         <NuxtLink :to="GUILD_ZENDESK_LINK" target="_blank">
-          <AppButton class="bg-blue-500 text-blue-900">
+          <AppButton>
             <div class="flex items-center gap-1">
               <span>{{ $t('guild.campaignRules') }}</span>
             </div>

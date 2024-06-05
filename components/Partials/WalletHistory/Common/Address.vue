@@ -9,13 +9,13 @@ const props = defineProps({
   }
 })
 
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()
 const { t } = useLang()
 
 function copyAddress() {
   copy(props.address).then(() =>
-    success({
+    notificationStore.success({
       title: t('connect.addressCopied')
     })
   )
