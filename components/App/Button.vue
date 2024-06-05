@@ -12,6 +12,10 @@ type Variant =
   | 'success'
   | 'success-outline'
 
+defineOptions({
+  inheritAttrs: false
+})
+
 const props = defineProps({
   isLoading: Boolean,
   disabled: Boolean,
@@ -51,7 +55,7 @@ const outlineStyle = computed(() => {
 </script>
 
 <template>
-  <BaseTooltip
+  <SharedTooltip
     v-bind="{
       disabled: !tooltip
     }"
@@ -74,7 +78,7 @@ const outlineStyle = computed(() => {
         <span>{{ tooltip }}</span>
       </slot>
     </template>
-  </BaseTooltip>
+  </SharedTooltip>
 </template>
 
 <style>

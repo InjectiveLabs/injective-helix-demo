@@ -26,7 +26,8 @@ export default {
       inUseReserved: 'In Use/Reserved',
       unrealizedPnl: 'Unrealized PnL',
       total: 'Total',
-      totalValueUsd: 'Total Value (USD)'
+      totalValueUsd: 'Total Value (USD)',
+      transferToMain: 'Transfer to Main'
     },
 
     subaccounts: {
@@ -68,7 +69,9 @@ export default {
 
       preferences: {
         title: 'Preferences',
-        description: 'Customize your trading experience'
+        description: 'Customize your trading experience',
+        thousandsSeparator: 'Thousands Separator',
+        showGridTradingSubaccounts: 'Show Grid Trading Subaccounts'
       },
 
       autoSign: {
