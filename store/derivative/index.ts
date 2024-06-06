@@ -12,10 +12,10 @@ import {
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
 import {
+  pythService,
   indexerOracleApi,
   derivativeCacheApi,
-  indexerDerivativesApi,
-  pythService
+  indexerDerivativesApi
 } from '@shared/Service'
 import {
   SharedMarketType,
