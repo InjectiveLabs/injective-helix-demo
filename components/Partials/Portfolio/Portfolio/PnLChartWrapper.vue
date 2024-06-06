@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
-const isMobile = useIsMobile()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-const { $onError } = useNuxtApp()
 
 onMounted(() => {
   status.setLoading()
@@ -22,7 +22,11 @@ const pnlSeries = computed(() =>
 )
 
 const { valueToBigNumber: pnlToBigNumber } = useSharedBigNumberFormatter(
-  computed(() => pnlSeries.value[pnlSeries.value.length - 1][1])
+  computed(() => {
+    const lastValue = pnlSeries.value[pnlSeries.value.length - 1]
+
+    return lastValue ? lastValue[1] : 0
+  })
 )
 
 const percentageChange = computed(() => {
@@ -54,7 +58,7 @@ const isProfit = computed(() => {
     </div>
 
     <div class="h-14">
-      <div class="flex space-x-2 items-center flex-1">
+      <div class="flex-1">
         <div>
           <div class="flex items-center space-x-2">
             <span class="lg:text-2xl">$</span>
@@ -64,34 +68,34 @@ const isProfit = computed(() => {
                 :size="isMobile ? 16 : 24"
               />
             </CommonSkeletonSubaccountAmount>
-          </div>
-          <p
-            :class="{
-              'text-red-500': !isProfit,
-              'text-green-500': isProfit
-            }"
-          >
-            <span class="text-sm flex items-center space-x-1">
-              <CommonNumberCounter
-                v-bind="{ value: percentageChange, decimals: 2, size: 15 }"
+
+            <button
+              class="text-gray-500 flex justify-center cursor-pointer"
+              @click="appStore.toggleHideBalances"
+            >
+              <SharedIcon
+                v-if="appStore.userState.preferences.isHideBalances"
+                name="hide"
+                class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
               />
-              <span class="text-sm">%</span>
-            </span>
-          </p>
+
+              <SharedIcon v-else name="show" class="w-5 lg:w-7" />
+            </button>
+          </div>
         </div>
-
-        <button
-          class="text-gray-500 flex justify-center cursor-pointer"
-          @click="appStore.toggleHideBalances"
+        <p
+          :class="{
+            'text-red-500': !isProfit,
+            'text-green-500': isProfit
+          }"
         >
-          <SharedIcon
-            v-if="appStore.userState.preferences.isHideBalances"
-            name="hide"
-            class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
-          />
-
-          <SharedIcon v-else name="show" class="w-5 lg:w-7" />
-        </button>
+          <span class="text-sm flex items-center space-x-1">
+            <CommonNumberCounter
+              v-bind="{ value: percentageChange, decimals: 2, size: 15 }"
+            />
+            <span class="text-sm">%</span>
+          </span>
+        </p>
       </div>
     </div>
 

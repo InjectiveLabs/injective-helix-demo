@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
-const isMobile = useIsMobile()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-const { $onError } = useNuxtApp()
 
 onMounted(() => {
   status.setLoading()

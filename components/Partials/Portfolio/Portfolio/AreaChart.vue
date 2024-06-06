@@ -75,7 +75,7 @@ const options: ApexOptions = {
     opposite: true,
     labels: {
       formatter(val) {
-        return ` $ ${new BigNumber(val).toFormat(
+        return `$${new BigNumber(val).toFormat(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
