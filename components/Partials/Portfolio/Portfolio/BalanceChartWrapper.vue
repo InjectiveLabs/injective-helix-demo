@@ -32,29 +32,31 @@ const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
       {{ $t(`portfolio.home.balance.title`) }}
     </p>
 
-    <div class="flex space-x-2 items-center">
-      <div class="flex items-center space-x-2">
-        <span class="lg:text-2xl">$</span>
-        <CommonSkeletonSubaccountAmount>
-          <CommonNumberCounter
-            v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
-            :size="isMobile ? 16 : 24"
+    <div class="h-14">
+      <div class="flex space-x-2 items-center">
+        <div class="flex items-center space-x-2">
+          <span class="lg:text-2xl">$</span>
+          <CommonSkeletonSubaccountAmount>
+            <CommonNumberCounter
+              v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
+              :size="isMobile ? 16 : 24"
+            />
+          </CommonSkeletonSubaccountAmount>
+        </div>
+
+        <button
+          class="text-gray-500 flex justify-center cursor-pointer"
+          @click="appStore.toggleHideBalances"
+        >
+          <SharedIcon
+            v-if="appStore.userState.preferences.isHideBalances"
+            name="hide"
+            class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
           />
-        </CommonSkeletonSubaccountAmount>
+
+          <SharedIcon v-else name="show" class="w-5 lg:w-7" />
+        </button>
       </div>
-
-      <button
-        class="text-gray-500 flex justify-center cursor-pointer"
-        @click="appStore.toggleHideBalances"
-      >
-        <SharedIcon
-          v-if="appStore.userState.preferences.isHideBalances"
-          name="hide"
-          class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
-        />
-
-        <SharedIcon v-else name="show" class="w-5 lg:w-7" />
-      </button>
     </div>
 
     <div

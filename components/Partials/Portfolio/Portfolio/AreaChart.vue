@@ -5,6 +5,11 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { colors } from '@/nuxt-config/tailwind'
 
 const props = defineProps({
+  isProfit: {
+    type: Boolean,
+    default: true
+  },
+
   series: {
     type: Array as PropType<number[][]>,
     required: true
@@ -21,7 +26,7 @@ const options: ApexOptions = {
     {
       name: t('trade.volume'),
       data: props.series,
-      color: colors.green[500]
+      color: props.isProfit ? colors.green[500] : colors.red[500]
     }
   ],
 
@@ -54,7 +59,7 @@ const options: ApexOptions = {
   stroke: {
     show: true,
     width: 2,
-    colors: ['#ffffff48'],
+    colors: [props.isProfit ? colors.green[500] : colors.red[500]],
     curve: 'monotoneCubic'
   },
 
@@ -81,11 +86,18 @@ const options: ApexOptions = {
     type: 'gradient',
     gradient: {
       shadeIntensity: 1,
-      opacityFrom: 0.9,
-      opacityTo: 0.3,
+
       colorStops: [
-        { color: colors.green[500], offset: 30, opacity: 0.5 },
-        { color: '#ffffff', offset: 100, opacity: 0 }
+        {
+          color: props.isProfit ? colors.green[500] : colors.red[500],
+          offset: 30,
+          opacity: 0.5
+        },
+        {
+          color: props.isProfit ? colors.green[500] : colors.red[500],
+          offset: 90,
+          opacity: 0
+        }
       ]
     }
   }
