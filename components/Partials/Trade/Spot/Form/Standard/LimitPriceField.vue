@@ -6,6 +6,7 @@ import {
   SpotTradeFormField
 } from '@/types'
 
+const appStore = useAppStore()
 const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
@@ -15,6 +16,10 @@ const { value: limitValue, errorMessage } = useStringField({
   initialValue: '',
   dynamicRule: computed(() => {
     const priceTooFarFromLastTradePrice = `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+
+    if (appStore.devMode) {
+      return ''
+    }
 
     return priceTooFarFromLastTradePrice
   })
