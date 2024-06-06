@@ -26,9 +26,14 @@ export const useTokenStore = defineStore('token', {
     tokenBySymbol:
       (_) =>
       (symbol: string): TokenStatic | undefined => {
-        return tokenFactoryStatic.getMetaBySymbol(symbol, {
-          type: TokenType.Symbol
-        })
+        return (
+          tokenFactoryStatic.getMetaBySymbol(symbol, {
+            type: TokenType.Symbol
+          }) ||
+          tokenFactoryStatic.getMetaBySymbol(symbol, {
+            verification: TokenVerification.Verified
+          })
+        )
       },
 
     tokenByDenomOrSymbol:
