@@ -84,7 +84,7 @@ const isGridTradingAccount = computed(() =>
 
 const accountHasBalances = computed(
   () =>
-    accountStore.subaccountBalancesMap[accountStore.subaccountId].filter(
+    accountStore.subaccountBalancesMap[accountStore.subaccountId]?.filter(
       (balance) =>
         new BigNumberInBase(balance.availableBalance)
           .dp(0, BigNumberInBase.ROUND_DOWN)
