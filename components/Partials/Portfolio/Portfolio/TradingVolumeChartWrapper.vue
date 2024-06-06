@@ -22,7 +22,11 @@ const volumeSeries = computed(() =>
 )
 
 const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
-  computed(() => volumeSeries.value[volumeSeries.value.length - 1][1])
+  computed(() => {
+    const lastPrice = volumeSeries.value[volumeSeries.value.length - 1]
+
+    return lastPrice ? lastPrice[1] : 0
+  })
 )
 </script>
 

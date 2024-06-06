@@ -22,7 +22,11 @@ const balanceSeries = computed(() =>
 )
 
 const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
-  computed(() => balanceSeries.value[balanceSeries.value.length - 1][1])
+  computed(() => {
+    const lastValue = balanceSeries.value[balanceSeries.value.length - 1]
+
+    return lastValue ? lastValue[1] : 0
+  })
 )
 </script>
 
