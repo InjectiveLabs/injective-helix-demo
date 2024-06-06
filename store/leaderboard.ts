@@ -45,7 +45,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const historicalBalance = t.map((time, index) => {
         return {
-          time,
+          time: time * 1000,
           value: v[index]
         }
       })
@@ -68,7 +68,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const historicalPnl = t.map((time, index) => {
         return {
-          time,
+          time: time * 1000,
           value: v[index]
         }
       })
@@ -91,7 +91,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       const historicalVolume = t.map((time, index) => {
         return {
-          time,
+          time: time * 1000,
           value: v[index]
         }
       })
