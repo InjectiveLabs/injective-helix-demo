@@ -61,18 +61,14 @@ function onCloseModal() {
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <AppButton
-            v-bind="{ status }"
-            is-lg
-            class="w-full shadow-none select-none text-red-900 border-red-500 bg-red-500"
-            @click="onEndBot"
-          >
+          <AppButton class="w-full" v-bind="{ status }" is-lg @click="onEndBot">
             {{ $t('sgt.endBot') }}
           </AppButton>
 
           <AppButton
+            variant="danger-outline"
+            class="w-full"
             is-lg
-            class="w-full shadow-none select-none text-blue-500 border-blue-500"
             @click="onCloseModal"
           >
             {{ $t('sgt.cancel') }}
