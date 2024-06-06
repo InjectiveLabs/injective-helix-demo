@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import {
-  BigNumberInWei,
-  BigNumberInBase,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { isSgtSubaccountId } from '~/app/utils/helpers'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   search: {
@@ -29,11 +24,6 @@ const emit = defineEmits<{
 const appStore = useAppStore()
 const accountStore = useAccountStore()
 const { aggregatedPortfolioBalances } = useBalance()
-const { $onError } = useNuxtApp()
-const { success } = useNotifications()
-const { t } = useLang()
-
-const status = reactive(new Status(StatusType.Idle))
 
 const search = computed({
   get: () => props.search,
@@ -44,6 +34,10 @@ const showUnverifiedAssets = computed({
   get: () => props.showUnverifiedAssets,
   set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
+
+const isGridTradingAccount = computed(() =>
+  isSgtSubaccountId(accountStore.subaccountId)
+)
 
 const { valueToString: accountTotalBalanceInUsdToString } =
   useSharedBigNumberFormatter(
@@ -63,34 +57,6 @@ const { valueToString: accountTotalBalanceInUsdToString } =
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
-
-function transferToMain() {
-  status.setLoading()
-
-  accountStore
-    .withdrawToMain()
-    .then(() => {
-      success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
-const isGridTradingAccount = computed(() =>
-  isSgtSubaccountId(accountStore.subaccountId)
-)
-
-const accountHasBalances = computed(
-  () =>
-    accountStore.subaccountBalancesMap[accountStore.subaccountId]?.filter(
-      (balance) =>
-        new BigNumberInBase(balance.availableBalance)
-          .dp(0, BigNumberInBase.ROUND_DOWN)
-          .gt(0)
-    ).length > 0
-)
 </script>
 
 <template>
@@ -129,14 +95,7 @@ const accountHasBalances = computed(
       v-if="isGridTradingAccount"
       class="flex items-center px-2 max-lg:py-2 [&>*]:flex-1"
     >
-      <AppButton
-        size="xs"
-        class="whitespace-nowrap w-full"
-        :disabled="!accountHasBalances"
-        @click="transferToMain"
-      >
-        {{ $t('portfolio.balances.transferToMain') }}
-      </AppButton>
+      <PartialsPortfolioBalancesSubaccountTransferToMain />
     </div>
 
     <div class="flex items-center px-2 max-md:py-2 shrink-0 overflow-hidden">
