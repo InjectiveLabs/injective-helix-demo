@@ -12,17 +12,17 @@ onMounted(() => {
   status.setLoading()
 
   leaderboardStore
-    .fetchHistoricalVolume()
+    .fetchHistoricalBalance()
     .catch($onError)
     .finally(() => status.setIdle())
 })
 
-const volumeSeries = computed(() =>
-  leaderboardStore.historicalVolume.map((item) => [item.time, item.value])
+const balanceSeries = computed(() =>
+  leaderboardStore.historicalBalance.map((item) => [item.time, item.value])
 )
 
-const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
-  computed(() => volumeSeries.value[volumeSeries.value.length - 1][1])
+const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
+  computed(() => balanceSeries.value[balanceSeries.value.length - 1][1])
 )
 </script>
 
@@ -37,7 +37,7 @@ const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
         <span class="lg:text-2xl">$</span>
         <CommonSkeletonSubaccountAmount>
           <CommonNumberCounter
-            v-bind="{ value: historyToBigNumber.toNumber() }"
+            v-bind="{ value: balanceToBigNumber.toNumber() }"
             :size="isMobile ? 16 : 24"
           />
         </CommonSkeletonSubaccountAmount>
@@ -61,9 +61,10 @@ const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
       v-if="status.isLoading()"
       class="h-[350px] mt-4 bg-brand-850 rounded-lg animate-pulse"
     />
-    <PartialsPortfolioPortfolioTradingVolumeChart
+
+    <PartialsPortfolioPortfolioAreaChart
       v-else
-      v-bind="{ volumeSeries }"
+      v-bind="{ series: balanceSeries }"
     />
   </div>
 </template>

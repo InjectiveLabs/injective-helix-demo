@@ -32,13 +32,15 @@ const initialStateFactory = (): LeaderboardStoreState => ({
 export const useLeaderboardStore = defineStore('leaderboard', {
   state: (): LeaderboardStoreState => initialStateFactory(),
   actions: {
-    async fetchHistoricalBalance() {
+    async fetchHistoricalBalance(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
       const walletStore = useWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalBalance({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Week
+        resolution
       })
 
       const historicalBalance = t.map((time, index) => {
@@ -53,13 +55,15 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
     },
 
-    async fetchHistoricalPnl() {
+    async fetchHistoricalPnl(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
       const walletStore = useWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Week
+        resolution
       })
 
       const historicalPnl = t.map((time, index) => {
@@ -74,13 +78,15 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
     },
 
-    async fetchHistoricalVolume() {
+    async fetchHistoricalVolume(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
       const walletStore = useWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalVolumes({
         account: walletStore.injectiveAddress,
-        resolution: LeaderboardResolution.Week
+        resolution
       })
 
       const historicalVolume = t.map((time, index) => {

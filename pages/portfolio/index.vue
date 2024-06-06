@@ -1,81 +1,14 @@
-<script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
-import { PortfolioChartType, PortfolioSubPage } from '@/types'
-
-const leaderboardStore = useLeaderboardStore()
-const { $onError } = useNuxtApp()
-
-const status = reactive(new Status(StatusType.Loading))
-
-onMounted(() => {
-  status.setLoading()
-
-  Promise.all([
-    leaderboardStore.fetchHistoricalPnl(),
-    leaderboardStore.fetchHistoricalVolume(),
-    leaderboardStore.fetchHistoricalBalance()
-  ])
-    .catch(async (e) => {
-      $onError(e)
-
-      await navigateTo({ name: PortfolioSubPage.Balances })
-    })
-    .finally(() => status.setIdle())
-})
-
-const leaderboardHistories = computed(() => [
-  {
-    type: PortfolioChartType.Balance,
-    history: leaderboardStore.historicalBalance
-  },
-  {
-    type: PortfolioChartType.Pnl,
-    history: leaderboardStore.historicalPnl
-  }
-])
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="p-4">
     <h1 class="portfolio-title">{{ $t('navigation.portfolio') }}</h1>
-    <AppHocLoading
-      v-bind="{
-        status,
-        wrapperClass: status.isLoading()
-          ? 'min-h-[calc(100vh-108px)] h-full flex items-center justify-center'
-          : ''
-      }"
-    >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
-        <div
-          v-for="({ history, type }, index) in leaderboardHistories"
-          :key="`${type}-${index}`"
-          class="border border-brand-800 p-4"
-        >
-          <PartialsPortfolioPortfolioChartWrapper
-            v-bind="{
-              chartType: type,
-              leaderboardHistory: history,
-              isShowPercentChange: type === PortfolioChartType.Balance,
-              isHideBalanceVisible: type === PortfolioChartType.Balance
-            }"
-          >
-            <template #title>
-              <div class="flex items-center space-x-1">
-                <p class="text-gray-400">
-                  {{ $t(`portfolio.home.${type}.title`) }}
-                </p>
-                <AppTooltip
-                  v-if="type === PortfolioChartType.Pnl"
-                  :content="$t(`portfolio.home.${type}.tooltip`)"
-                />
-              </div>
-            </template>
-          </PartialsPortfolioPortfolioChartWrapper>
-        </div>
 
-        <PartialsPortfolioPortfolioTradingVolumeChartWrapper />
-      </div>
-    </AppHocLoading>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+      <PartialsPortfolioPortfolioPnLChartWrapper />
+      <PartialsPortfolioPortfolioBalanceChartWrapper />
+
+      <PartialsPortfolioPortfolioTradingVolumeChartWrapper />
+    </div>
   </div>
 </template>

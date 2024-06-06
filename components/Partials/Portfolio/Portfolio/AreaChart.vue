@@ -5,13 +5,13 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { colors } from '@/nuxt-config/tailwind'
 
 const props = defineProps({
-  volumeSeries: {
+  series: {
     type: Array as PropType<number[][]>,
     required: true
   }
 })
 
-const volumeSeriesMock = [
+const seriesMock = [
   [1617206400000, 12323],
   [1617292800000, 11323],
   [1617379200000, 13323],
@@ -66,13 +66,13 @@ const options: ApexOptions = {
   series: [
     {
       name: t('trade.volume'),
-      data: props.volumeSeries.length ? props.volumeSeries : volumeSeriesMock,
-      color: colors.blue[500]
+      data: props.series.length ? props.series : seriesMock,
+      color: colors.green[500]
     }
   ],
 
   chart: {
-    type: 'bar',
+    type: 'area',
     height: 350,
     background: 'transparent',
     toolbar: {
@@ -88,10 +88,8 @@ const options: ApexOptions = {
   },
 
   plotOptions: {
-    bar: {
-      horizontal: false,
-      columnWidth: '85%',
-      borderRadius: 3
+    area: {
+      fillTo: 'origin'
     }
   },
 
@@ -102,7 +100,8 @@ const options: ApexOptions = {
   stroke: {
     show: true,
     width: 2,
-    colors: ['transparent']
+    colors: ['#ffffff48'],
+    curve: 'monotoneCubic'
   },
 
   grid: {
@@ -125,7 +124,16 @@ const options: ApexOptions = {
   },
 
   fill: {
-    opacity: 1
+    type: 'gradient',
+    gradient: {
+      shadeIntensity: 1,
+      opacityFrom: 0.9,
+      opacityTo: 0.3,
+      colorStops: [
+        { color: colors.green[500], offset: 30, opacity: 0.5 },
+        { color: '#ffffff', offset: 100, opacity: 0 }
+      ]
+    }
   }
 }
 
