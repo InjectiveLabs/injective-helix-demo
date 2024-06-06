@@ -29,7 +29,7 @@ const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
 <template>
   <div class="border p-4">
     <p class="text-gray-400">
-      {{ $t(`portfolio.home.volume.title`) }}
+      {{ $t(`portfolio.home.balance.title`) }}
     </p>
 
     <div class="flex space-x-2 items-center">
@@ -37,7 +37,7 @@ const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
         <span class="lg:text-2xl">$</span>
         <CommonSkeletonSubaccountAmount>
           <CommonNumberCounter
-            v-bind="{ value: balanceToBigNumber.toNumber() }"
+            v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
             :size="isMobile ? 16 : 24"
           />
         </CommonSkeletonSubaccountAmount>

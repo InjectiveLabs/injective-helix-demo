@@ -28,16 +28,19 @@ const { valueToBigNumber: pnlToBigNumber } = useSharedBigNumberFormatter(
 
 <template>
   <div class="border p-4">
-    <p class="text-gray-400">
-      {{ $t(`portfolio.home.volume.title`) }}
-    </p>
+    <div class="flex items-center space-x-2">
+      <p class="text-gray-400">
+        {{ $t(`portfolio.home.pnl.title`) }}
+      </p>
+      <AppTooltip :content="$t(`portfolio.home.pnl.tooltip`)" />
+    </div>
 
     <div class="flex space-x-2 items-center">
       <div class="flex items-center space-x-2">
         <span class="lg:text-2xl">$</span>
         <CommonSkeletonSubaccountAmount>
           <CommonNumberCounter
-            v-bind="{ value: pnlToBigNumber.toNumber() }"
+            v-bind="{ value: pnlToBigNumber?.toNumber() || 0 }"
             :size="isMobile ? 16 : 24"
           />
         </CommonSkeletonSubaccountAmount>

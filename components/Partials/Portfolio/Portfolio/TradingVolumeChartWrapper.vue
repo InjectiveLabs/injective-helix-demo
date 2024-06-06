@@ -37,7 +37,7 @@ const { valueToBigNumber: historyToBigNumber } = useSharedBigNumberFormatter(
         <span class="lg:text-2xl">$</span>
         <CommonSkeletonSubaccountAmount>
           <CommonNumberCounter
-            v-bind="{ value: historyToBigNumber.toNumber() }"
+            v-bind="{ value: historyToBigNumber?.toNumber() || 0 }"
             :size="isMobile ? 16 : 24"
           />
         </CommonSkeletonSubaccountAmount>
