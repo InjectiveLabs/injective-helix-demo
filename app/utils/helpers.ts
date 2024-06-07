@@ -295,7 +295,7 @@ export function calculateWorstPrice(
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
-      worstPrice = record.price
+      worstPrice = record.avgPrice
       price += remainingQuantity * Number(record.price)
 
       hasEnoughLiquidity = true
@@ -327,10 +327,10 @@ export function calculateTotalQuantity(
     if (remainingTotal - Number(record.volume) >= 0) {
       remainingTotal -= Number(record.volume)
       totalQuantity += Number(record.quantity)
-      worstPrice = record.price
+      worstPrice = record.avgPrice
     } else {
       totalQuantity += remainingTotal / Number(record.price)
-      worstPrice = record.price
+      worstPrice = record.avgPrice
       hasEnoughLiquidity = true
       break
     }
