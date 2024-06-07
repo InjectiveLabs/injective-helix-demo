@@ -118,7 +118,7 @@ jobs:
                 }
             ]
             }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" https://hooks.slack.com/services/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
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
 
   notify-slack-on-redeployment:
     runs-on: ubuntu-latest
@@ -136,4 +136,4 @@ jobs:
                 }
             ]
             }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" https://hooks.slack.com/services/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
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
