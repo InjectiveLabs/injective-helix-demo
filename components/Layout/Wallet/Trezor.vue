@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { SharedDropdownOption } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { WalletConnectStatus } from '@/types'
 
@@ -14,7 +14,7 @@ const options = [
     display: Wallet.Trezor,
     value: Wallet.Trezor
   }
-] as BaseDropdownOption[]
+] as SharedDropdownOption[]
 
 const wallet = ref<Wallet>(Wallet.Trezor)
 const status = reactive(new Status(StatusType.Idle))

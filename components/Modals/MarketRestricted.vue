@@ -32,7 +32,9 @@ const disallowedTokenSymbol = computed(() => {
 
 const isModalOpen = computed(() =>
   props.isSpot
-    ? modalStore.modals[Modal.MarketRestricted] && disallowedTokenSymbol.value
+    ? !!(
+        modalStore.modals[Modal.MarketRestricted] && disallowedTokenSymbol.value
+      )
     : modalStore.modals[Modal.MarketRestricted]
 )
 

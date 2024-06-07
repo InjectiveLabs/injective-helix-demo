@@ -279,7 +279,7 @@ function addTpSl() {
       <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
         <span>{{ marginToString }}</span>
         <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-          <BaseIcon name="plus" is-xs />
+          <SharedIcon name="plus" is-xs />
         </button>
       </div>
 
@@ -296,7 +296,7 @@ function addTpSl() {
           class="p-2 rounded-full bg-blue-500 hover:bg-blue-600"
           @click="addTpSl"
         >
-          <BaseIcon name="plus" is-xs />
+          <SharedIcon name="plus" is-xs />
         </button>
       </div>
 

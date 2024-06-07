@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { SharedDropdownOption } from '@shared/types'
 import { MarketKey, UiDerivativeMarket, PerpOrdersStandardView } from '@/types'
 
 const props = defineProps({
@@ -33,31 +33,31 @@ const view = useVModel(props, 'modelValue', emit)
 const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
-  const items: BaseDropdownOption[] = [
+  const items: SharedDropdownOption[] = [
     {
       display: `activity.${PerpOrdersStandardView.OpenPositions}`,
       value: PerpOrdersStandardView.OpenPositions,
-      amount: positionStore.subaccountPositionsCount
+      description: `${positionStore.subaccountPositionsCount}`
     },
     {
       display: `activity.${PerpOrdersStandardView.OpenOrders}`,
       value: PerpOrdersStandardView.OpenOrders,
-      amount: derivativeStore.subaccountOrdersCount
+      description: `${derivativeStore.subaccountOrdersCount}`
     },
     {
       display: `activity.${PerpOrdersStandardView.Triggers}`,
       value: PerpOrdersStandardView.Triggers,
-      amount: derivativeStore.subaccountConditionalOrdersCount
+      description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
       display: `activity.${PerpOrdersStandardView.OrderHistory}`,
       value: PerpOrdersStandardView.OrderHistory,
-      amount: derivativeStore.subaccountOrderHistoryCount
+      description: `${derivativeStore.subaccountOrderHistoryCount}`
     },
     {
       display: `activity.${PerpOrdersStandardView.TradeHistory}`,
       value: PerpOrdersStandardView.TradeHistory,
-      amount: derivativeStore.subaccountTradesCount
+      description: `${derivativeStore.subaccountTradesCount}`
     }
   ]
 
@@ -97,8 +97,8 @@ watch(
         <button class="px-2">
           {{ $t(`activity.${selected?.value}`) }}
           {{
-            Number.isInteger(selected?.amount)
-              ? `(${selected?.amount || 0})`
+            Number.isInteger(Number(selected?.description))
+              ? `(${selected?.description || 0})`
               : ''
           }}
         </button>
@@ -107,13 +107,17 @@ watch(
       <template #option="{ option }">
         <button>
           {{ $t(`activity.${option.value}`) }}
-          {{ Number.isInteger(option.amount) ? `(${option.amount})` : '' }}
+          {{
+            Number.isInteger(Number(option.description))
+              ? `(${option.description})`
+              : ''
+          }}
         </button>
       </template>
     </AppTabSelect>
 
     <AppButtonSelect
-      v-for="{ value, display, amount } in options"
+      v-for="{ value, display, description } in options"
       v-else
       :key="value"
       v-model="view"
@@ -122,7 +126,7 @@ watch(
       active-classes="!text-white"
     >
       {{ $t(display) }}
-      {{ Number.isInteger(amount) ? `(${amount})` : '' }}
+      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
     </AppButtonSelect>
 
     <div class="flex-1 flex items-center px-2 justify-end">

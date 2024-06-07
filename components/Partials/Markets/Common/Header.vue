@@ -27,8 +27,8 @@ function handleIsAscending(value: boolean) {
 
 <template>
   <div class="flex border-b p-4 text-gray-500 text-xs select-none">
-    <div class="flex-4 md:flex-3 flex min-w-0 truncate">
-      <BaseSortableHeaderItem
+    <div class="flex-2 lg:flex-1 flex min-w-0 truncate">
+      <SharedSortableHeaderItem
         v-bind="{
           sortBy,
           isAscending,
@@ -47,7 +47,7 @@ function handleIsAscending(value: boolean) {
             </div>
           </div>
         </template>
-      </BaseSortableHeaderItem>
+      </SharedSortableHeaderItem>
     </div>
 
     <div class="flex-2 lg:flex-1 min-w-0 truncate text-right">
@@ -56,8 +56,8 @@ function handleIsAscending(value: boolean) {
       </div>
     </div>
 
-    <div class="flex-2 min-w-0 truncate flex justify-end">
-      <BaseSortableHeaderItem
+    <div class="flex-1 min-w-0 truncate flex justify-end">
+      <SharedSortableHeaderItem
         v-bind="{
           sortBy,
           isAscending,
@@ -74,11 +74,11 @@ function handleIsAscending(value: boolean) {
             </div>
           </div>
         </template>
-      </BaseSortableHeaderItem>
+      </SharedSortableHeaderItem>
     </div>
 
-    <div class="flex-2 min-w-0 truncate flex justify-end">
-      <BaseSortableHeaderItem
+    <div class="flex-1 min-w-0 truncate flex justify-end">
+      <SharedSortableHeaderItem
         v-bind="{
           sortBy,
           isAscending,
@@ -95,7 +95,7 @@ function handleIsAscending(value: boolean) {
             </div>
           </div>
         </template>
-      </BaseSortableHeaderItem>
+      </SharedSortableHeaderItem>
     </div>
 
     <div v-if="isMarketsPage" class="flex-2"></div>

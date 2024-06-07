@@ -39,7 +39,7 @@ function changeSubaccount(subaccountId: string) {
 
 <template>
   <div class="flex">
-    <BaseDropdown :distance="0" class="flex" placement="bottom-start">
+    <SharedDropdown :distance="0" class="flex" placement="bottom-start">
       <template #default="{ isOpen }">
         <button class="flex items-center px-8 space-x-4">
           <div
@@ -74,6 +74,6 @@ function changeSubaccount(subaccountId: string) {
           </div>
         </div>
       </template>
-    </BaseDropdown>
+    </SharedDropdown>
   </div>
 </template>

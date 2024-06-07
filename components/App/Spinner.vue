@@ -30,7 +30,7 @@ const sizeClasses = computed(() => {
 </script>
 
 <template>
-  <BaseSpinner
+  <SharedSpinner
     class="m-0"
     :class="[
       sizeClasses,

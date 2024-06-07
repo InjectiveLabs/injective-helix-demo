@@ -30,7 +30,7 @@ function onLimitChange(limit: any) {
 </script>
 
 <template>
-  <BaseDropdown class="inline-block" placement="top-end">
+  <SharedDropdown class="inline-block" placement="top-end">
     <template #default="{ isOpen }">
       <div
         class="flex items-center gap-2 rounded"
@@ -54,7 +54,7 @@ function onLimitChange(limit: any) {
 
     <template #content="{ close }">
       <div class="p-2 bg-gray-850 shadow-sm">
-        <BaseSelectorItem
+        <SharedSelectorItem
           v-for="item in options"
           :key="`selector-row-item-${item}`"
           :value="item.toString()"
@@ -77,8 +77,8 @@ function onLimitChange(limit: any) {
               </span>
             </div>
           </template>
-        </BaseSelectorItem>
+        </SharedSelectorItem>
       </div>
     </template>
-  </BaseDropdown>
+  </SharedDropdown>
 </template>
