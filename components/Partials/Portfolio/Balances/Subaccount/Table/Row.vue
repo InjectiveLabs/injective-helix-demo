@@ -128,7 +128,7 @@ const isBridgable = computed(() => {
       class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
     >
       <CommonSkeletonSubaccountAmount>
-        <span v-if="reservedToBigNumber.eq(0)"> - </span>
+        <span v-if="reservedToBigNumber.eq(0)">&mdash;</span>
         <span v-else>
           {{ reservedToString }}
         </span>
@@ -165,37 +165,28 @@ const isBridgable = computed(() => {
     </div>
 
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2 justify-center"
+      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2 pl-4"
+      :class="isBridgable ? 'justify-between' : 'justify-end'"
     >
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           isDeposit: true,
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary" size="sm">
           {{ $t('account.deposit') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
 
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary-outline"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary-outline" size="sm">
           {{ $t('account.withdraw') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>

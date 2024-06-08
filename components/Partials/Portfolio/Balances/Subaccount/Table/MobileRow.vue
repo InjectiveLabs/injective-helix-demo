@@ -167,37 +167,27 @@ const isBridgable = computed(() => {
     </div>
 
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2 [&>*]:flex-1 [&>*]:flex [&>*>*]:flex-1"
+      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2"
     >
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           isDeposit: true,
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary" size="sm">
           {{ $t('account.deposit') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
 
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary-outline"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary-outline" size="sm">
           {{ $t('account.withdraw') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
