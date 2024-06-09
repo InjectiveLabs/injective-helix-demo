@@ -76,6 +76,7 @@ const balancesSorted = computed(() => {
             :key="balance.denom"
           />
         </template>
+
         <template v-else>
           <PartialsPortfolioBalancesSubaccountTableRow
             v-for="balance in balancesSorted"

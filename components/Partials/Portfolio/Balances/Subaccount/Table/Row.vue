@@ -92,11 +92,8 @@ const isBridgable = computed(() => {
 </script>
 
 <template>
-  <div class="flex p-2">
-    <div
-      v-if="balance.token"
-      class="flex-[2] flex items-center space-x-4 shrink-0 p-2"
-    >
+  <div class="p-2 grid grid-cols-8">
+    <div v-if="balance.token" class="flex items-center space-x-4 shrink-0 p-2">
       <CommonTokenIcon v-bind="{ token: balance.token }" />
       <div>
         <p class="font-medium">{{ balance.token.symbol }}</p>
@@ -104,9 +101,7 @@ const isBridgable = computed(() => {
       </div>
     </div>
 
-    <div
-      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
-    >
+    <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
       <CommonSkeletonSubaccountAmount>
         <p class="flex items-center gap-1">
           {{ availableAmountToString }}
@@ -124,9 +119,7 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div
-      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
-    >
+    <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
       <CommonSkeletonSubaccountAmount>
         <span v-if="reservedToBigNumber.eq(0)">&mdash;</span>
         <span v-else>
@@ -135,9 +128,7 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div
-      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
-    >
+    <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
       <CommonSkeletonSubaccountAmount>
         <span v-if="unrealizedToBigNumber.eq(0)"> - </span>
         <span v-else>
@@ -146,17 +137,13 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div
-      class="shrink-0 flex-[2] flex items-center font-mono text-xs p-2 justify-end"
-    >
+    <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
       <CommonSkeletonSubaccountAmount>
         {{ totalAmountToString }}
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <div
-      class="flex-[2] flex items-center font-mono text-xs shrink-0 p-2 justify-end"
-    >
+    <div class="flex items-center font-mono text-xs shrink-0 p-2 justify-end">
       <div class="space-y-1">
         <CommonSkeletonSubaccountAmount>
           ${{ totalAmountInUsdToString }}
@@ -165,8 +152,7 @@ const isBridgable = computed(() => {
     </div>
 
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 p-2 pl-4"
-      :class="isBridgable ? 'justify-between' : 'justify-end'"
+      class="flex col-span-2 items-center font-mono text-xs space-x-2 shrink-0 p-2 pl-4 justify-end"
     >
       <PartialsCommonBridgeRedirection
         v-if="isBridgable"
