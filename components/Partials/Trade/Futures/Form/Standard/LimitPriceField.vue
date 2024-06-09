@@ -6,8 +6,6 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
-const appStore = useAppStore()
-
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
@@ -16,13 +14,7 @@ const { value: limit, errorMessage } = useStringField({
   name: DerivativesTradeFormField.LimitPrice,
   initialValue: '',
   dynamicRule: computed(() => {
-    const priceTooFarFromLastTradePrice = `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
-
-    if (appStore.devMode) {
-      return ''
-    }
-
-    return priceTooFarFromLastTradePrice
+    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
 
