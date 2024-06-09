@@ -49,7 +49,7 @@ onMounted(() => {
       </template>
     </AppInputField>
 
-    <div v-if="errorMessage" class="error-message capitalize">
+    <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
   </div>

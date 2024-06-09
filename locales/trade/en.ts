@@ -32,6 +32,7 @@ export default {
     type_tooltip: 'The type of your order: limit or market.',
     side: 'Side',
     postOnly: 'Post Only',
+    bypassPriceWarning: 'Bypass Price Warning',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     avgPrice: 'Avg. Price',

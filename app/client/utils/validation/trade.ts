@@ -9,7 +9,7 @@ export const tradeErrorMessages = {
   triggerPriceEqualsMarkPrice: () =>
     'The trigger price cannot be the same as the mark price',
   priceTooFarFromLastTradePrice: () =>
-    'The execution price for this trade is far away from the last traded price',
+    'The execution price for this trade is far from the last traded price',
   orderPriceHigh: () => 'Order price is too high',
   orderPriceLow: () => 'Order price is too low',
   maxLeverage: () => 'Please decrease leverage',
