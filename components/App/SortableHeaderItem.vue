@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <BaseSortableHeaderItem
+  <SharedSortableHeaderItem
     :is-ascending="isAscending"
     :sort-by="sortBy"
     :value="value"
@@ -44,5 +44,5 @@ defineProps({
         <slot />
       </div>
     </template>
-  </BaseSortableHeaderItem>
+  </SharedSortableHeaderItem>
 </template>

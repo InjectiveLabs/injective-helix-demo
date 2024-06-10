@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
+  MarketKey,
+  UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
 
 useForm<DerivativesTradeForm>()
+
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { value: orderType } = useStringField({
   name: DerivativesTradeFormField.Type,
@@ -26,7 +30,7 @@ const {
   marginWithFee,
   totalNotional,
   minimumAmountInQuote
-} = useDerivativeWorstPrice()
+} = useDerivativeWorstPrice(market)
 </script>
 
 <template>

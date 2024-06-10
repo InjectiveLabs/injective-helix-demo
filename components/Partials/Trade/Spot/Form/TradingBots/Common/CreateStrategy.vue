@@ -2,16 +2,17 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
-  SpotMarketKey,
+  MarketKey,
+  UiSpotMarket,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
 
-const market = inject(SpotMarketKey)
+const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const walletStore = useWalletStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
+const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { $onError } = useNuxtApp()
@@ -38,20 +39,20 @@ const isDisabled = computed(() => {
 async function createStrategy() {
   const { valid } = await validate()
 
-  if (!valid) {
+  if (!valid || !market.value) {
     return
   }
 
   status.setLoading()
 
   gridStrategyStore
-    .createStrategy(spotFormValues.value, market!.value!)
+    .createStrategy(spotFormValues.value, market.value)
     .then(() => {
       notificationStore.success({ title: t('common.success') })
 
       mixpanelAnalytics.trackCreateStrategy({
         formValues: spotFormValues.value,
-        market: market?.value?.slug ?? '',
+        market: market.value.slug || '',
         marketPrice: '4',
         isLiquidity: false
       })

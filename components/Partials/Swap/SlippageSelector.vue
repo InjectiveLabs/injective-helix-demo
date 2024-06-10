@@ -51,7 +51,7 @@ function checkForInvalidSlippageValue() {
     :disabled="isOpen"
     :shown="!isOpen && !!slippageError"
   >
-    <BaseDropdown
+    <SharedDropdown
       ref="dropdownRef"
       popper-class="slippage"
       placement="bottom-end"
@@ -127,7 +127,7 @@ function checkForInvalidSlippageValue() {
           </p>
         </div>
       </template>
-    </BaseDropdown>
+    </SharedDropdown>
 
     <template #content>
       {{ slippageError }}

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   extends: [
     process.env.NODE_ENV === 'development'
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/setup-nuxt-lcp-speedup'
   ],
 
   app: {
@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: ['@injectivelabs/ui-shared', '@funken-studio/sitemap-nuxt-3'],
+  modules: ['@funken-studio/sitemap-nuxt-3'],
 
   // @ts-ignore
   sitemap: {

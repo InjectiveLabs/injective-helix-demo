@@ -2,6 +2,7 @@
 import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
+import { INJ_DENOM } from '@shared/utils/constant'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import { AccountBalance } from '@/types'
@@ -27,7 +28,7 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToString: availableAmountToString } = useBigNumberFormatter(
+const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.availableMargin).toBase(
       props.balance.token.decimals
@@ -166,38 +167,56 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
+    <CommonHeadlessTotalBalance v-if="balance.denom === INJ_DENOM">
+      <template #default="{ stakedAmount, stakedAmountInUsd }">
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.staked') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmount.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.stakedUsd') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+      </template>
+    </CommonHeadlessTotalBalance>
+
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2 [&>*]:flex-1 [&>*]:flex [&>*>*]:flex-1"
+      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2"
     >
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           isDeposit: true,
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary" size="sm">
           {{ $t('account.deposit') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
 
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary-outline"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary-outline" size="sm">
           {{ $t('account.withdraw') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>

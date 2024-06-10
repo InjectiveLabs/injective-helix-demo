@@ -30,6 +30,7 @@ const newMarkets = computed(
 
 const highestGainers = computed(() =>
   [...props.markets]
+    .filter((market) => market.market.isVerified)
     .sort((a, b) => Number(b.summary.change) - Number(a.summary.change))
     .slice(0, 4)
 )

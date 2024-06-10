@@ -16,7 +16,7 @@ defineProps({
 </script>
 
 <template>
-  <BaseTooltip :triggers="['hover', 'click']">
+  <SharedTooltip :triggers="['hover', 'click']">
     <slot>
       <SharedIcon
         name="circle-info"
@@ -36,7 +36,7 @@ defineProps({
         </slot>
       </div>
     </template>
-  </BaseTooltip>
+  </SharedTooltip>
 </template>
 
 <style>

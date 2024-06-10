@@ -44,7 +44,7 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
 })
 
-const { valueToString: priceToString } = useBigNumberFormatter(price, {
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })

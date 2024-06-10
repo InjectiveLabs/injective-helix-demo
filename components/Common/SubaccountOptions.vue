@@ -1,21 +1,39 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  getMarketSlugFromSubaccountId,
+  isSgtSubaccountId,
   getSubaccountIndex,
-  isSgtSubaccountId
+  getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
+import { BusEvents } from '@/types'
 
 const props = defineProps({
-  includeBotsSubaccounts: Boolean,
-  showLowBalance: Boolean
+  showLowBalance: Boolean,
+  includeBotsSubaccounts: Boolean
 })
 
 const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 const { aggregatedPortfolioBalances } = useBalance()
+
+onMounted(() => {
+  const isSubaccountOptionAvailable = subaccountOptionsFiltered.value.some(
+    (option) => option.value === accountStore.subaccountId
+  )
+
+  if (isSubaccountOptionAvailable) {
+    return
+  }
+
+  const defaultSubaccountId = Object.keys(accountStore.subaccountBalancesMap)[0]
+
+  if (defaultSubaccountId) {
+    accountStore.$patch({ subaccountId: defaultSubaccountId })
+    useEventBus(BusEvents.SubaccountChange).emit()
+  }
+})
 
 const subaccountOptions = computed(() =>
   Object.keys(aggregatedPortfolioBalances.value)
@@ -46,7 +64,7 @@ const subaccountOptionsFiltered = computed(() =>
 
     const hasBalance = aggregatedPortfolioBalances.value[subaccountId].some(
       (balance) =>
-        new BigNumberInWei(balance.accountTotalBalance).gte(
+        new BigNumberInBase(balance.accountTotalBalance).gte(
           DUST_AMOUNT_THRESHOLD
         )
     )

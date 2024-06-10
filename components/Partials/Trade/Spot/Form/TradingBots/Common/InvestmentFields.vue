@@ -8,8 +8,8 @@ import {
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
+  MarketKey,
   UiSpotMarket,
-  SpotMarketKey,
   InvestmentTypeGst,
   SpotGridTradingField,
   SpotGridTradingForm
@@ -20,7 +20,7 @@ const props = defineProps({
   isDisabled: Boolean
 })
 
-const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()

@@ -46,7 +46,7 @@ const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
 
 <template>
   <div class="border-b">
-    <BaseAccordion
+    <SharedAccordion
       v-bind="{
         modelValue,
         value
@@ -97,6 +97,6 @@ const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
           class="pb-4"
         />
       </template>
-    </BaseAccordion>
+    </SharedAccordion>
   </div>
 </template>
