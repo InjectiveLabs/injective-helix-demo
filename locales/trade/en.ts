@@ -124,6 +124,8 @@ export default {
     spots: 'Spot',
     futures: 'Futures',
     trading: 'Trading',
+    staked: 'Staked',
+    stakedUsd: 'Staked (USD)',
     high_execution_price_deviation_warning_note: ({
       named
     }: I18nMessageFunction) =>

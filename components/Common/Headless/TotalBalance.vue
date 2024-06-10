@@ -86,6 +86,8 @@ const { valueToString: accountTotalBalanceInBtcToString } =
 <template>
   <slot
     v-bind="{
+      stakedAmount,
+      stakedAmountInUsd,
       accountTotalBalanceInBtc,
       accountTotalBalanceInUsd,
       accountTotalBalanceInBtcToString,

@@ -2,6 +2,7 @@
 import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
+import { INJ_DENOM } from '@shared/utils/constant'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import { AccountBalance } from '@/types'
@@ -165,6 +166,34 @@ const isBridgable = computed(() => {
         <span class="font-mono">${{ totalAmountInUsdToString }}</span>
       </CommonSkeletonSubaccountAmount>
     </div>
+
+    <CommonHeadlessTotalBalance v-if="balance.denom === INJ_DENOM">
+      <template #default="{ stakedAmount, stakedAmountInUsd }">
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.staked') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmount.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.stakedUsd') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+      </template>
+    </CommonHeadlessTotalBalance>
 
     <div
       class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2"
