@@ -297,8 +297,8 @@ export function useBalance() {
 
   return {
     showUnverifiedAssets,
+    userBalancesWithToken,
     verifiedHoldingsWithToken,
-    aggregatedPortfolioBalances,
-    userBalancesWithToken
+    aggregatedPortfolioBalances
   }
 }

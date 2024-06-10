@@ -2,8 +2,8 @@
 import { BusEvents } from '@/types'
 
 defineProps({
-  includeBotsSubaccounts: Boolean,
-  showLowBalance: Boolean
+  showLowBalance: Boolean,
+  includeBotsSubaccounts: Boolean
 })
 
 const accountStore = useAccountStore()

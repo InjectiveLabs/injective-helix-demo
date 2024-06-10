@@ -8,7 +8,7 @@ const props = defineProps({
   isTickerOnly: Boolean
 })
 
-const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
@@ -20,7 +20,7 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Idle))
 
 const filteredOrders = computed(() =>
-  props.isTickerOnly
+  props.isTickerOnly && spotMarket?.value
     ? spotStore.subaccountOrders.filter(
         (order) => order.marketId === spotMarket.value.marketId
       )
