@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { IsSpotKey, MarketKey, SpotMarketKey } from '@/types'
+import { IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -39,7 +39,6 @@ onUnmounted(() => {
   spotStore.reset()
 })
 
-provide(SpotMarketKey, market)
 provide(MarketKey, market)
 provide(IsSpotKey, true)
 </script>

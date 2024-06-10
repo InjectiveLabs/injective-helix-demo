@@ -1,39 +1,34 @@
 <script setup lang="ts">
 import ApexCharts, { ApexOptions } from 'apexcharts'
-import { IsSpotKey, SpotMarketKey, DerivativeMarketKey } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { IsSpotKey, MarketKey } from '@/types'
 
 const PERCENTAGE = 0.1
 
 const isSpot = inject(IsSpotKey)
-const spotMarket = inject(SpotMarketKey, undefined)
-const derivativeMarket = inject(DerivativeMarketKey, undefined)
+const market = inject(MarketKey, undefined)
 
 const orderbookStore = useOrderbookStore()
 const isMobile = useIsMobile()
 
 const { lastTradedPrice: lastTradedSpotPrice } = useSpotLastPrice(
-  computed(() => spotMarket!.value!)
+  computed(() => market!.value!)
 )
 
 const { lastTradedPrice: lastTradedDerivativePrice } = useDerivativeLastPrice(
-  computed(() => derivativeMarket!.value!)
+  computed(() => market!.value!)
 )
 
 const lastTradedPrice = computed(() =>
   isSpot ? lastTradedSpotPrice.value : lastTradedDerivativePrice.value
 )
 
-const priceDecimals = computed(() =>
-  isSpot
-    ? spotMarket?.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    : derivativeMarket?.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+const priceDecimals = computed(
+  () => market?.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
-const quantityDecimals = computed(() =>
-  isSpot
-    ? spotMarket?.value?.quantityDecimals || 2
-    : derivativeMarket?.value?.quantityDecimals || 2
+const quantityDecimals = computed(
+  () => market?.value?.quantityDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
 let chart: ApexCharts

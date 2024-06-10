@@ -9,6 +9,10 @@ export default {
     all: 'All',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
+    tickSize: 'Tick Size',
+    marketName: 'Market Name',
+    maxLeverage: 'Max. Leverage',
+    minLimitOrderSize: 'Min. Limit Order Size',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',

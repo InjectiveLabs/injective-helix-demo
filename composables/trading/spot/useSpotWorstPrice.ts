@@ -1,21 +1,20 @@
 import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  calculateTotalQuantity,
+  quantizeNumber,
   calculateWorstPrice,
-  quantizeNumber
+  calculateTotalQuantity
 } from '@/app/utils/helpers'
 import {
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
-  SpotMarketKey,
   TradeAmountOption,
   SpotTradeFormField
 } from '@/types'
 
-export function useSpotWorstPrice() {
+export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
   const spotFormValues = useFormValues<SpotTradeForm>()
   const orderbookStore = useOrderbookStore()
 
@@ -32,8 +31,6 @@ export function useSpotWorstPrice() {
       spotFormValues.value[SpotTradeFormField.AmountOption] ===
       TradeAmountOption.Base
   )
-
-  const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
 
   const feePercentage = computed(() => {
     const feePercentage =
@@ -66,7 +63,7 @@ export function useSpotWorstPrice() {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
     const price = spotFormValues.value[SpotTradeFormField.Price] || 0
 
-    let quantity = new BigNumberInBase(0)
+    let quantity = ZERO_IN_BASE
 
     if (isBaseOrder.value) {
       quantity = new BigNumberInBase(

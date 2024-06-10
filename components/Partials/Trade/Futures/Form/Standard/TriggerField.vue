@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField, DerivativeMarketKey } from '@/types'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  DerivativesTradeFormField
+} from '@/types'
 
 const { value: trigger, errorMessage } = useStringField({
   name: DerivativesTradeFormField.TriggerPrice,
   initialValue: ''
 })
 
-const market = inject(DerivativeMarketKey)
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 </script>
 
 <template>

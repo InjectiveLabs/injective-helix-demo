@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { spotGridMarkets } from '@/app/data/grid-strategy'
-import { SpotMarketKey, UiSpotMarket, TradingInterface } from '@/types'
+import { MarketKey, UiSpotMarket, TradingInterface } from '@/types'
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const tradingMode = ref(TradingInterface.Standard)
 const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { SpotOrdersStandardView, UiSpotMarket, SpotMarketKey } from '@/types'
+import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
 
 const props = defineProps({
   modelValue: {
@@ -19,7 +19,7 @@ const emit = defineEmits<{
   'update:isTickerOnly': [value: boolean]
 }>()
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const walletStore = useWalletStore()
 const spotStore = useSpotStore()

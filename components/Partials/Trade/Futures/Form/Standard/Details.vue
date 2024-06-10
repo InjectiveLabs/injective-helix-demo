@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
+  MarketKey,
   UiDerivativeMarket,
-  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
 
-const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const props = defineProps({
   margin: {

@@ -6,17 +6,13 @@ import {
   GST_MAXIMUM_GRIDS,
   GST_DEFAULT_PRICE_TICK_SIZE
 } from '@/app/utils/constants'
-import {
-  SpotMarketKey,
-  SpotGridTradingForm,
-  SpotGridTradingField
-} from '@/types'
+import { MarketKey, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 
 defineProps({
   isDisabled: Boolean
 })
 
-const spotMarket = inject(SpotMarketKey)
+const spotMarket = inject(MarketKey)
 
 const spotGridFormValues = useFormValues<SpotGridTradingForm>()
 

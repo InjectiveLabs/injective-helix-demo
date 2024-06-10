@@ -5,13 +5,13 @@ import {
   TradeDirection,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
+  MarketKey,
   UiDerivativeMarket,
-  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
@@ -50,18 +50,18 @@ const props = defineProps({
   }
 })
 
+const resetForm = useResetForm()
 const authZStore = useAuthZStore()
+const validate = useValidateForm()
+const formErrors = useFormErrors()
 const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const formErrors = useFormErrors()
-const resetForm = useResetForm()
-const validate = useValidateForm()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
-const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 

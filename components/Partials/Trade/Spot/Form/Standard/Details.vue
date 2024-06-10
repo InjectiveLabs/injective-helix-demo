@@ -2,8 +2,8 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  MarketKey,
   TradeTypes,
-  SpotMarketKey,
   SpotTradeForm,
   SpotTradeFormField
 } from '@/types'
@@ -44,8 +44,7 @@ const props = defineProps({
     required: true
   }
 })
-
-const spotMarket = inject(SpotMarketKey)
+const spotMarket = inject(MarketKey)
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
