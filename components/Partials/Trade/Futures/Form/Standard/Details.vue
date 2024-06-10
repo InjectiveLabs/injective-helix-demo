@@ -71,47 +71,48 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
-const { valueToString: totalToString } = useBigNumberFormatter(
+const { valueToString: totalToString } = useSharedBigNumberFormatter(
   computed(() => props.marginWithFee),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: marginToString } = useBigNumberFormatter(
+const { valueToString: marginToString } = useSharedBigNumberFormatter(
   computed(() => props.margin),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: quantityToString } = useBigNumberFormatter(
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   computed(() => props.quantity),
   { decimalPlaces: 4 }
 )
 
-const { valueToString: worstPriceToString } = useBigNumberFormatter(
+const { valueToString: worstPriceToString } = useSharedBigNumberFormatter(
   computed(() => props.worstPrice),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: feeAmountToString } = useBigNumberFormatter(
+const { valueToString: feeAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.feeAmount.abs().toFixed()),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: estLiquidationPriceToString } = useBigNumberFormatter(
-  computed(() => estLiquidationPrice.value),
-  {
-    decimalPlaces: derivativeMarket.value.priceDecimals
-  }
-)
+const { valueToString: estLiquidationPriceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => estLiquidationPrice.value),
+    {
+      decimalPlaces: derivativeMarket.value.priceDecimals
+    }
+  )
 
-const { valueToString: totalNotionalToString } = useBigNumberFormatter(
+const { valueToString: totalNotionalToString } = useSharedBigNumberFormatter(
   computed(() => props.totalNotional),
   {
     decimalPlaces: derivativeMarket.value.priceDecimals

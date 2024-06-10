@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
+import { SharedDropdownOption } from '@shared/types'
 
 const props = defineProps({
   isNoMinWidth: Boolean,
   startPlacement: Boolean,
 
   options: {
-    type: Array as PropType<BaseDropdownOption[]>,
+    type: Array as PropType<SharedDropdownOption[]>,
     required: true
   },
 
@@ -36,13 +36,13 @@ const selectedOption = computed(() =>
   props.options.find((option) => option.value === props.modelValue)
 )
 
-function select(option: BaseDropdownOption) {
+function select(option: SharedDropdownOption) {
   emit('update:modelValue', option.value)
 }
 </script>
 
 <template>
-  <BaseDropdown
+  <SharedDropdown
     :popper-class="`selector ${!isNoMinWidth && 'min-w-40'}`"
     :placement="startPlacement ? 'bottom-start' : 'bottom-end'"
     :flip="false"
@@ -91,5 +91,5 @@ function select(option: BaseDropdownOption) {
         </div>
       </div>
     </template>
-  </BaseDropdown>
+  </SharedDropdown>
 </template>

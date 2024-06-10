@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { Modal } from '~/types'
+import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
-const { success } = useNotifications()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { success } = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 

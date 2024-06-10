@@ -97,7 +97,7 @@ export default {
             <slot name="prefix" />
           </div>
 
-          <BaseInput v-bind="$attrs" :class="inputClass" />
+          <SharedInput v-bind="$attrs" :class="inputClass" />
 
           <div v-if="slots.addon" class="mr-3">
             <slot name="addon" />

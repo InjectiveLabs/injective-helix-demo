@@ -30,7 +30,7 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToString: availableAmountToString } = useBigNumberFormatter(
+const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
   computed(() => {
     return new BigNumberInWei(props.balance.availableMargin).toBase(
       props.balance.token.decimals

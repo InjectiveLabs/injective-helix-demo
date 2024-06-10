@@ -21,7 +21,6 @@ const extraSizings = {
 }
 
 export default {
-  presets: [require('@injectivelabs/ui-shared/lib/tailwind-preset.cjs')],
   content: ['./components/**/*.vue', './pages/**/*.vue', './layouts/*.vue'],
   safelist: [
     'border-4',
