@@ -1,9 +1,5 @@
 import { PriceLevel } from '@injectivelabs/sdk-ts'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   OrderbookFormattedRecord,
   OrderbookWorkerMessage,
@@ -26,13 +22,15 @@ function priceLevelsToMap({
   isSpot: boolean
 }) {
   priceLevels.forEach((priceLevel) => {
-    const price = new BigNumberInWei(priceLevel.price).toBase(
-      isSpot ? quoteDecimals - baseDecimals : quoteDecimals
-    )
+    const price = sharedToBalanceInTokenInBase({
+      value: priceLevel.price,
+      decimalPlaces: isSpot ? quoteDecimals - baseDecimals : quoteDecimals
+    })
 
-    const quantity = new BigNumberInBase(priceLevel.quantity).toWei(
-      isSpot ? -baseDecimals : 0
-    )
+    const quantity = sharedToBalanceInWei({
+      value: priceLevel.quantity,
+      decimalPlaces: isSpot ? -baseDecimals : 0
+    })
 
     if (quantity.isEqualTo(0)) {
       priceMap.delete(price.toFixed())
@@ -60,11 +58,11 @@ function priceMapToAggregatedArray({
   >()
 
   priceMap.forEach((quantity, price) => {
-    const aggregatedPrice = aggregatePrice(
-      new BigNumber(price),
+    const aggregatedPrice = aggregatePrice({
+      price: new BigNumber(price),
       aggregation,
       isBuy
-    )
+    })
 
     if (!aggregatedMap.has(aggregatedPrice)) {
       aggregatedMap.set(aggregatedPrice, {
@@ -73,6 +71,7 @@ function priceMapToAggregatedArray({
       })
     } else {
       const { priceSum, totalQuantity } = aggregatedMap.get(aggregatedPrice)!
+
       aggregatedMap.set(aggregatedPrice, {
         priceSum: [...priceSum, Number(price)],
         totalQuantity: new BigNumber(totalQuantity).plus(quantity).toFixed()
@@ -82,21 +81,22 @@ function priceMapToAggregatedArray({
 
   const sortedAggregatedArray = Array.from(aggregatedMap.entries()).sort(
     (a, b) => {
+      const aPrice = new BigNumberInBase(a[0])
+      const bPrice = new BigNumberInBase(b[0])
+
       if (isBuy) {
-        return new BigNumberInBase(b[0]).comparedTo(new BigNumberInBase(a[0]))
-      } else {
-        return new BigNumberInBase(a[0]).comparedTo(new BigNumberInBase(b[0]))
+        return bPrice.comparedTo(aPrice)
       }
+
+      return aPrice.comparedTo(bPrice)
     }
   )
 
   const formattedRecords = sortedAggregatedArray.reduce(
     (acc, [price, { totalQuantity, priceSum }], index) => {
       if (index === 0) {
-        const avgPrice = new BigNumber(
-          priceSum.reduce((a, b) => a + b) / priceSum.length
-        )
-
+        const totalPriceSum = priceSum.reduce((a, b) => a + b)
+        const avgPrice = new BigNumber(totalPriceSum).dividedBy(priceSum.length)
         const volume = avgPrice.times(totalQuantity).toFixed()
 
         return [
@@ -109,28 +109,27 @@ function priceMapToAggregatedArray({
             avgPrice: avgPrice.toFixed()
           }
         ] as OrderbookFormattedRecord[]
-      } else {
-        const prevRecord = acc[acc.length - 1]
-        const avgPrice = new BigNumber(
-          priceSum.reduce((a, b) => a + b) / priceSum.length
-        )
-        const volume = avgPrice.times(totalQuantity).toFixed()
-
-        acc.push({
-          price,
-          volume,
-          totalQuantity: new BigNumber(totalQuantity)
-            .plus(prevRecord.totalQuantity)
-            .toFixed(),
-          totalVolume: new BigNumber(prevRecord.totalVolume)
-            .plus(volume)
-            .toFixed(),
-          quantity: totalQuantity,
-          avgPrice: avgPrice.toFixed()
-        })
-
-        return acc
       }
+
+      const prevRecord = acc[acc.length - 1]
+      const totalPriceSum = priceSum.reduce((a, b) => a + b)
+      const avgPrice = new BigNumber(totalPriceSum).dividedBy(priceSum.length)
+      const volume = avgPrice.times(totalQuantity).toFixed()
+
+      acc.push({
+        price,
+        volume,
+        totalQuantity: new BigNumber(totalQuantity)
+          .plus(prevRecord.totalQuantity)
+          .toFixed(),
+        totalVolume: new BigNumber(prevRecord.totalVolume)
+          .plus(volume)
+          .toFixed(),
+        quantity: totalQuantity,
+        avgPrice: avgPrice.toFixed()
+      })
+
+      return acc
     },
     [] as OrderbookFormattedRecord[]
   )
@@ -141,11 +140,15 @@ function priceMapToAggregatedArray({
 const buys = new Map<string, string>()
 const sells = new Map<string, string>()
 
-function aggregatePrice(
-  price: BigNumber,
-  aggregation: number,
+function aggregatePrice({
+  price,
+  aggregation,
+  isBuy
+}: {
+  price: BigNumber
+  aggregation: number
   isBuy: boolean
-): string {
+}): string {
   if (aggregation >= 0) {
     if (isBuy) {
       return price.dp(aggregation, BigNumber.ROUND_FLOOR).toFixed(aggregation)
