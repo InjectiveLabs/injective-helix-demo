@@ -59,7 +59,7 @@ function priceMapToAggregatedArray({
 
   priceMap.forEach((quantity, price) => {
     const aggregatedPrice = aggregatePrice({
-      price: new BigNumber(price),
+      price: new BigNumberInBase(price),
       aggregation,
       isBuy
     })
@@ -74,7 +74,9 @@ function priceMapToAggregatedArray({
 
       aggregatedMap.set(aggregatedPrice, {
         priceSum: [...priceSum, Number(price)],
-        totalQuantity: new BigNumber(totalQuantity).plus(quantity).toFixed()
+        totalQuantity: new BigNumberInBase(totalQuantity)
+          .plus(quantity)
+          .toFixed()
       })
     }
   })
@@ -96,7 +98,9 @@ function priceMapToAggregatedArray({
     (acc, [price, { totalQuantity, priceSum }], index) => {
       if (index === 0) {
         const totalPriceSum = priceSum.reduce((a, b) => a + b)
-        const avgPrice = new BigNumber(totalPriceSum).dividedBy(priceSum.length)
+        const avgPrice = new BigNumberInBase(totalPriceSum).dividedBy(
+          priceSum.length
+        )
         const volume = avgPrice.times(totalQuantity).toFixed()
 
         return [
@@ -113,16 +117,18 @@ function priceMapToAggregatedArray({
 
       const prevRecord = acc[acc.length - 1]
       const totalPriceSum = priceSum.reduce((a, b) => a + b)
-      const avgPrice = new BigNumber(totalPriceSum).dividedBy(priceSum.length)
+      const avgPrice = new BigNumberInBase(totalPriceSum).dividedBy(
+        priceSum.length
+      )
       const volume = avgPrice.times(totalQuantity).toFixed()
 
       acc.push({
         price,
         volume,
-        totalQuantity: new BigNumber(totalQuantity)
+        totalQuantity: new BigNumberInBase(totalQuantity)
           .plus(prevRecord.totalQuantity)
           .toFixed(),
-        totalVolume: new BigNumber(prevRecord.totalVolume)
+        totalVolume: new BigNumberInBase(prevRecord.totalVolume)
           .plus(volume)
           .toFixed(),
         quantity: totalQuantity,
@@ -145,7 +151,7 @@ function aggregatePrice({
   aggregation,
   isBuy
 }: {
-  price: BigNumber
+  price: BigNumberInBase
   aggregation: number
   isBuy: boolean
 }): string {
@@ -156,7 +162,9 @@ function aggregatePrice({
       return price.dp(aggregation, BigNumber.ROUND_CEIL).toFixed(aggregation)
     }
   } else {
-    return price.div(new BigNumber(10).exponentiatedBy(-aggregation)).toFixed(0)
+    return price
+      .div(new BigNumberInBase(10).exponentiatedBy(-aggregation))
+      .toFixed(0)
   }
 }
 
