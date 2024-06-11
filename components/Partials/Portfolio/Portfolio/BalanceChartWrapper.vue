@@ -28,6 +28,25 @@ const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
     return lastValue ? lastValue[1] : 0
   })
 )
+
+const percentageChange = computed(() => {
+  const lastValue = balanceSeries.value[balanceSeries.value.length - 1]
+  const firstValue = balanceSeries.value[0]
+
+  if (!lastValue || !firstValue) {
+    return 0
+  }
+
+  return 100 - (firstValue[1] / lastValue[1]) * 100
+})
+
+const isProfit = computed(() => {
+  return (
+    leaderboardStore.historicalBalance[
+      leaderboardStore.historicalBalance.length - 1
+    ]?.value > 0
+  )
+})
 </script>
 
 <template>
@@ -39,27 +58,45 @@ const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
     <div class="h-14">
       <div class="flex space-x-2 items-center">
         <div class="flex items-center space-x-2">
-          <span class="lg:text-2xl">$</span>
-          <CommonSkeletonSubaccountAmount>
-            <CommonNumberCounter
-              v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
-              :size="isMobile ? 16 : 24"
-            />
-          </CommonSkeletonSubaccountAmount>
+          <div class="flex flex-col">
+            <div class="flex items-center space-x-2">
+              <span class="lg:text-2xl">$</span>
+              <CommonSkeletonSubaccountAmount>
+                <CommonNumberCounter
+                  v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
+                  :size="isMobile ? 16 : 24"
+                />
+              </CommonSkeletonSubaccountAmount>
+
+              <button
+                class="text-gray-500 flex justify-center cursor-pointer"
+                @click="appStore.toggleHideBalances"
+              >
+                <SharedIcon
+                  v-if="appStore.userState.preferences.isHideBalances"
+                  name="hide"
+                  class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
+                />
+
+                <SharedIcon v-else name="show" class="w-5 lg:w-7" />
+              </button>
+            </div>
+
+            <p
+              :class="{
+                'text-red-500': !isProfit,
+                'text-green-500': isProfit
+              }"
+            >
+              <span class="text-sm flex items-center space-x-1">
+                <CommonNumberCounter
+                  v-bind="{ value: percentageChange, decimals: 2, size: 15 }"
+                />
+                <span class="text-sm">%</span>
+              </span>
+            </p>
+          </div>
         </div>
-
-        <button
-          class="text-gray-500 flex justify-center cursor-pointer"
-          @click="appStore.toggleHideBalances"
-        >
-          <SharedIcon
-            v-if="appStore.userState.preferences.isHideBalances"
-            name="hide"
-            class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
-          />
-
-          <SharedIcon v-else name="show" class="w-5 lg:w-7" />
-        </button>
       </div>
     </div>
 

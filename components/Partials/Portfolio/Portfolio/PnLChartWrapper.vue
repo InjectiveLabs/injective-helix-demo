@@ -29,17 +29,6 @@ const { valueToBigNumber: pnlToBigNumber } = useSharedBigNumberFormatter(
   })
 )
 
-const percentageChange = computed(() => {
-  const lastValue = pnlSeries.value[pnlSeries.value.length - 1]
-  const firstValue = pnlSeries.value[0]
-
-  if (!lastValue || !firstValue) {
-    return 0
-  }
-
-  return 100 - (firstValue[1] / lastValue[1]) * 100
-})
-
 const isProfit = computed(() => {
   return (
     leaderboardStore.historicalPnl[leaderboardStore.historicalPnl.length - 1]
@@ -83,19 +72,6 @@ const isProfit = computed(() => {
             </button>
           </div>
         </div>
-        <p
-          :class="{
-            'text-red-500': !isProfit,
-            'text-green-500': isProfit
-          }"
-        >
-          <span class="text-sm flex items-center space-x-1">
-            <CommonNumberCounter
-              v-bind="{ value: percentageChange, decimals: 2, size: 15 }"
-            />
-            <span class="text-sm">%</span>
-          </span>
-        </p>
       </div>
     </div>
 
