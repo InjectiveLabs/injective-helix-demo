@@ -119,7 +119,7 @@ export default {
             <slot name="prefix" />
           </div>
 
-          <BaseNumericInput
+          <SharedNumericInput
             v-bind="$attrs"
             :class="inputClass"
             class="input"
@@ -135,7 +135,7 @@ export default {
             <div v-if="slots.addon" class="mr-3 text-gray-300">
               <slot name="addon" />
             </div>
-          </BaseNumericInput>
+          </SharedNumericInput>
 
           <div v-if="slots.postfix" class="mx-3">
             <slot name="postfix" />

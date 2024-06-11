@@ -25,7 +25,7 @@ defineProps({
 </script>
 
 <template>
-  <BasePaginationWrapper
+  <SharedPaginationWrapper
     class="flex flex-wrap items-center justify-between text-sm w-full"
     v-bind="{
       page,
@@ -67,7 +67,7 @@ defineProps({
         </span>
 
         <div class="mx-3 flex items-center gap-0.5 text-sm font-semibold">
-          <BaseSelectorItem
+          <SharedSelectorItem
             v-for="(displayPage, index) in pagesToDisplay"
             :key="`pagination-page-${displayPage}-${index}`"
             :model-value="page"
@@ -85,7 +85,7 @@ defineProps({
                 {{ displayPage }}
               </span>
             </template>
-          </BaseSelectorItem>
+          </SharedSelectorItem>
         </div>
 
         <span
@@ -113,5 +113,5 @@ defineProps({
         />
       </div>
     </template>
-  </BasePaginationWrapper>
+  </SharedPaginationWrapper>
 </template>

@@ -1,11 +1,12 @@
+import {
+  SharedDropdownOption,
+  SharedSubaccountBalanceWithToken
+} from '@shared/types'
 import { RouteLocationRaw } from 'vue-router'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PointsMultiplier } from '@injectivelabs/sdk-ts'
-import { TokenStatic } from '@injectivelabs/token-metadata'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { SharedSubaccountBalanceWithToken } from '@shared/types'
 import { MenuItemType, NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
@@ -82,12 +83,8 @@ export interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   slug: string
 }
 
-export interface DropdownOption extends BaseDropdownOption {
+export interface DropdownOption extends SharedDropdownOption {
   icon?: string
-}
-
-export interface DropdownOptionWithToken extends BaseDropdownOption {
-  token?: TokenStatic
 }
 
 export interface Banner {

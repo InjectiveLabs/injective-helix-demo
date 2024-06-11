@@ -2,8 +2,8 @@
 import { BusEvents } from '@/types'
 
 defineProps({
-  includeBotsSubaccounts: Boolean,
-  showLowBalance: Boolean
+  showLowBalance: Boolean,
+  includeBotsSubaccounts: Boolean
 })
 
 const accountStore = useAccountStore()
@@ -17,7 +17,7 @@ function changeSubaccount(subaccountId: string) {
 <template>
   <CommonSubaccountOptions v-bind="{ includeBotsSubaccounts, showLowBalance }">
     <template #default="{ subaccountOptions, activeSubaccountLabel }">
-      <BaseDropdown :distance="0" class="flex" placement="bottom-start">
+      <SharedDropdown :distance="0" class="flex" placement="bottom-start">
         <template #default="{ isOpen }">
           <slot v-bind="{ isOpen, activeSubaccountLabel }" />
         </template>
@@ -37,7 +37,7 @@ function changeSubaccount(subaccountId: string) {
             </div>
           </div>
         </template>
-      </BaseDropdown>
+      </SharedDropdown>
     </template>
   </CommonSubaccountOptions>
 </template>

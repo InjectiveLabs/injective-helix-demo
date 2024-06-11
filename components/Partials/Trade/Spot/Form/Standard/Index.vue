@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { OrderSide } from '@injectivelabs/ts-types'
-import { TradeTypes, SpotTradeFormField, SpotTradeForm } from '@/types'
+import {
+  MarketKey,
+  TradeTypes,
+  UiSpotMarket,
+  SpotTradeForm,
+  SpotTradeFormField
+} from '@/types'
 
 useForm<SpotTradeForm>()
+
+const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const { value: orderTypeValue } = useStringField({
   name: SpotTradeFormField.Type,
@@ -23,7 +31,7 @@ const {
   feePercentage,
   slippagePercentage,
   minimumAmountInQuote
-} = useSpotWorstPrice()
+} = useSpotWorstPrice(market)
 </script>
 
 <template>

@@ -12,9 +12,9 @@ import {
 import { ONE_IN_BASE } from '@/app/utils/constants'
 import {
   BusEvents,
+  MarketKey,
   TradeAmountOption,
   UiDerivativeMarket,
-  DerivativeMarketKey,
   DerivativesTradeForm,
   DerivativeTradeTypes,
   DerivativesTradeFormField
@@ -37,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const orderbookStore = useOrderbookStore()
 

@@ -298,7 +298,7 @@ function addTpSl() {
         <div class="space-x-2">
           <span>{{ marginToString }}</span>
           <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-            <BaseIcon name="plus" is-xs />
+            <SharedIcon name="plus" is-xs />
           </button>
         </div>
       </div>

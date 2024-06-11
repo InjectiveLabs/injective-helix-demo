@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import { DerivativeMarketKey, IsSpotKey, MarketKey, Modal } from '@/types'
+import { IsSpotKey, MarketKey, Modal } from '@/types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 
 definePageMeta({
@@ -106,7 +106,6 @@ function fetchRWAMarketIsOpen() {
 
 const { pause, isActive } = useIntervalFn(fetchRWAMarketIsOpen, 10000)
 
-provide(DerivativeMarketKey, market)
 provide(MarketKey, market)
 provide(IsSpotKey, false)
 </script>

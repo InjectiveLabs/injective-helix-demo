@@ -26,7 +26,7 @@ defineProps({
 </script>
 
 <template>
-  <BaseHoverMenu popper-class="tooltip" :disabled="isDisabled">
+  <SharedHoverMenu popper-class="tooltip" :disabled="isDisabled">
     <template #default>
       <span
         :class="[
@@ -46,5 +46,5 @@ defineProps({
     <template #content>
       {{ tooltip }}
     </template>
-  </BaseHoverMenu>
+  </SharedHoverMenu>
 </template>

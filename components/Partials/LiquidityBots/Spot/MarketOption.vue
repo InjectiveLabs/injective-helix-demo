@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { SharedDropdownOption } from '@shared/types'
 
 const props = defineProps({
   option: {
-    type: Object as PropType<BaseDropdownOption>,
+    type: Object as PropType<SharedDropdownOption>,
     required: true
   }
 })

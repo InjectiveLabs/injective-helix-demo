@@ -94,37 +94,39 @@ const isGeometric = computed(
   () => props.activeStrategy.strategyType === StrategyType.Geometric
 )
 
-const { valueToString: currentBaseBalanceToString } = useBigNumberFormatter(
-  computed(() => {
-    if (!subaccountBalances.value) {
-      return ZERO_IN_BASE
-    }
-    return sharedToBalanceInTokenInBase({
-      value:
-        subaccountBalances.value.find(
-          (balance) => balance.denom === market.value.baseDenom
-        )?.totalBalance || 0,
-      decimalPlaces: market.value.baseToken.decimals
+const { valueToString: currentBaseBalanceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (!subaccountBalances.value) {
+        return ZERO_IN_BASE
+      }
+      return sharedToBalanceInTokenInBase({
+        value:
+          subaccountBalances.value.find(
+            (balance) => balance.denom === market.value.baseDenom
+          )?.totalBalance || 0,
+        decimalPlaces: market.value.baseToken.decimals
+      })
     })
-  })
-)
+  )
 
-const { valueToString: currentQuoteBalanceToString } = useBigNumberFormatter(
-  computed(() => {
-    if (!subaccountBalances.value) {
-      return ZERO_IN_BASE
-    }
-    return sharedToBalanceInTokenInBase({
-      value:
-        subaccountBalances.value.find(
-          (balance) => balance.denom === market.value.quoteDenom
-        )?.totalBalance || 0,
-      decimalPlaces: market.value.quoteToken.decimals
+const { valueToString: currentQuoteBalanceToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (!subaccountBalances.value) {
+        return ZERO_IN_BASE
+      }
+      return sharedToBalanceInTokenInBase({
+        value:
+          subaccountBalances.value.find(
+            (balance) => balance.denom === market.value.quoteDenom
+          )?.totalBalance || 0,
+        decimalPlaces: market.value.quoteToken.decimals
+      })
     })
-  })
-)
+  )
 
-const { valueToString: stopBaseQuantityToString } = useBigNumberFormatter(
+const { valueToString: stopBaseQuantityToString } = useSharedBigNumberFormatter(
   stopBaseQuantity,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

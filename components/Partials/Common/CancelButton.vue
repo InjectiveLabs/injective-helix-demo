@@ -30,7 +30,7 @@ function click() {
 </script>
 
 <template>
-  <BaseTooltip :disabled="!tooltip" :triggers="['hover', 'click']">
+  <SharedTooltip :disabled="!tooltip" :triggers="['hover', 'click']">
     <div
       class="flex justify-end items-center"
       :class="{
@@ -58,5 +58,5 @@ function click() {
         </slot>
       </div>
     </div>
-  </BaseTooltip>
+  </SharedTooltip>
 </template>

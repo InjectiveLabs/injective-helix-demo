@@ -78,14 +78,14 @@ const to = computed(() =>
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
 
-const { valueToString: volumeInUsdToFormat } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
   computed(() => props.market.volumeInUsd),
   {
     decimalPlaces: 2
   }
 )
 
-const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -94,7 +94,7 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   }
 )
 
-const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2
 })
 </script>
@@ -112,7 +112,7 @@ const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
         </p>
       </div>
       <div class="w-16 h-8 ml-auto">
-        <BaseLineGraph
+        <SharedLineGraph
           v-if="chartData.length > 1"
           :data="chartData"
           :color="chartIsPositive ? '#0BB67D' : '#F3164D'"

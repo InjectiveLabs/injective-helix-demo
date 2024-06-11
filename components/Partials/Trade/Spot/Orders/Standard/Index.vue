@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOrdersStandardView, UiSpotMarket, SpotMarketKey } from '@/types'
+import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
