@@ -111,7 +111,9 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     label: 'navigation.portfolio',
     to: { name: MainPage.Portfolio },
-    icon: 'pie-chart'
+    icon: 'pie-chart',
+    isExact: true,
+    name: MainPage.Portfolio
   },
   {
     type: MenuItemType.Link,
