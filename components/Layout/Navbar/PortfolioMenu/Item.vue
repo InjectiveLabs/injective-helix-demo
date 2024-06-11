@@ -19,6 +19,11 @@ const isOpen = ref(false)
 
 const isActiveLink = computed(() => {
   const routeName = route.name as string
+
+  if (props.item.isExact) {
+    return routeName === props.item.name
+  }
+
   const itemName = ((props.item as any).to as LocationAsRelativeRaw)
     ?.name as string
 

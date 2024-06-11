@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
-  createChart,
-  DeepPartial,
-  TimeChartOptions,
+  Time,
+  AreaData,
+  LineData,
   IChartApi,
   ISeriesApi,
+  createChart,
+  DeepPartial,
   CrosshairMode,
-  PriceScaleOptions,
   WhitespaceData,
-  LineData,
-  SeriesOptionsCommon,
+  TimeChartOptions,
   AreaStyleOptions,
   TimeScaleOptions,
-  Time,
-  AreaData
+  PriceScaleOptions,
+  SeriesOptionsCommon
 } from 'lightweight-charts'
 import { mergeObjects } from '@/app/utils/helpers'
 
@@ -37,6 +37,7 @@ const defaultChartOptions = {
 }
 
 const props = defineProps({
+  isPositive: Boolean,
   shouldFitContentOnResize: Boolean,
 
   type: {
@@ -80,6 +81,11 @@ const props = defineProps({
     })
   },
 
+  label: {
+    type: String,
+    default: ''
+  },
+
   height: {
     type: Number,
     default: undefined
@@ -90,6 +96,11 @@ const props = defineProps({
     default: undefined
   }
 })
+
+enum COLOR {
+  green = 'rgb(14, 226, 155, 1)',
+  red = 'rgb(255, 77, 79, 1)'
+}
 
 // Function to get the correct series constructor name for current series type.
 
@@ -172,7 +183,7 @@ onMounted(() => {
   // Create and style the tooltip html element
   const toolTip = document.createElement('div')
   // `width: 96px; height: 80px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`
-  toolTip.style.width = toolTipWidth + 'px'
+
   toolTip.style.height = toolTipHeight + 'px'
   toolTip.style.position = 'absolute'
   toolTip.style.display = 'none'
@@ -186,12 +197,10 @@ onMounted(() => {
   toolTip.style.pointerEvents = 'none'
   toolTip.style.border = '1px solid'
   toolTip.style.borderRadius = '2px'
-  // toolTip.style.boxShadow = '0 0 10px 2px rgba(0, 255, 0, 0.4)'
 
   toolTip.style.background = 'rgba(20, 21, 26, 0.7)'
   toolTip.style.backdropFilter = 'blur(4px)'
   toolTip.style.color = 'white'
-  toolTip.style.borderColor = 'rgba( 38, 166, 154, 1)'
   chartContainer.value.appendChild(toolTip)
 
   // update tooltip
@@ -209,6 +218,8 @@ onMounted(() => {
       if (!series) {
         return
       }
+
+      const tooltipColor = props.isPositive ? COLOR.green : COLOR.red
       // time will be in the same format that we supplied to setData.
       // thus it will be YYYY-MM-DD
       // const dateStr = param.time
@@ -222,8 +233,12 @@ onMounted(() => {
         currency: 'USD'
       }).format(price)
 
-      toolTip.innerHTML = `<div style="color: ${'rgba( 38, 166, 154, 1)'}">
-        Portfolio
+      toolTip.style.borderColor = tooltipColor
+      toolTip.style.width =
+        priceFormatted.length < 12 ? '160px' : priceFormatted.length * 10 + 'px'
+
+      toolTip.innerHTML = `<div style="color: ${'white'}">
+        ${props.label}
         </div>
 
         <div style="font-size: 18px; margin: 4px 0px; color: ${'white'}">
