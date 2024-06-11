@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   extends: [
     process.env.NODE_ENV === 'development'
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#feat/setup-nuxt-lcp-speedup'
+      : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
   app: {
