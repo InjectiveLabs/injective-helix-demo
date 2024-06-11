@@ -37,15 +37,11 @@ const percentageChange = computed(() => {
     return 0
   }
 
-  return 100 - (firstValue[1] / lastValue[1]) * 100
+  return ((lastValue[1] - firstValue[1]) / firstValue[1]) * 100
 })
 
 const isProfit = computed(() => {
-  return (
-    leaderboardStore.historicalBalance[
-      leaderboardStore.historicalBalance.length - 1
-    ]?.value > 0
-  )
+  return percentageChange.value > 0
 })
 </script>
 
@@ -107,7 +103,7 @@ const isProfit = computed(() => {
 
     <PartialsPortfolioPortfolioAreaChart
       v-else
-      v-bind="{ series: balanceSeries }"
+      v-bind="{ series: balanceSeries, isProfit }"
     />
   </div>
 </template>
