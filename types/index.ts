@@ -110,6 +110,7 @@ type MenuItemBase = {
   description?: string
   icon?: string
   isExternal?: boolean
+  isExact?: boolean
   name?: string
 }
 

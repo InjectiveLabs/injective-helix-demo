@@ -40,7 +40,21 @@ function getStringFromNumber(number: number) {
 const number = ref(0)
 const isInitialized = ref(false)
 
-const characters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ',']
+const characters = [
+  '-',
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '.',
+  ','
+]
 const paddingH = 10
 
 const numberFormatted = computed(() =>
@@ -73,7 +87,7 @@ watch(
 
 <template>
   <div>
-    <div class="flex">
+    <div class="flex items-center">
       <div
         v-for="(char, index) in numberSplitted"
         :key="index"
