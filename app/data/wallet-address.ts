@@ -1,4 +1,5 @@
 export const blacklistedAddresses = [
+  'inj1wdpgegravx3cr7yvpxj429u64l4thh2f6m7ptc',
   '0x8576acc5c05d6ce88f4e49bf65bdf0c62f91353c',
   '0x67d40EE1A85bf4a4Bb7Ffae16De985e8427B6b45',
   '0x6f1ca141a28907f78ebaa64fb83a9088b02a8352',
