@@ -1,9 +1,5 @@
 import { PriceLevel } from '@injectivelabs/sdk-ts'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   OrderbookFormattedRecord,
   OrderbookWorkerMessage,
@@ -11,116 +7,165 @@ import {
   WorkerMessageResponseType,
   WorkerMessageType
 } from '@/types/worker'
-import { combineOrderbookRecords } from '@/app/utils/market'
 
-let buys: PriceLevel[] = []
-let sells: PriceLevel[] = []
-
-function aggregatePrice(
-  price: BigNumber,
-  aggregation: number,
-  _isBuy: boolean
-): string {
-  if (aggregation >= 0) {
-    return price.dp(aggregation, BigNumber.ROUND_CEIL).toFixed(aggregation)
-  } else {
-    return price.div(new BigNumber(10).exponentiatedBy(-aggregation)).toFixed(0)
-  }
-}
-
-function formatRecords({
-  isBuy,
-  isSpot,
-  records,
-  aggregation,
+function priceLevelsToMap({
+  priceLevels,
+  priceMap,
   baseDecimals,
-  quoteDecimals
+  quoteDecimals,
+  isSpot
 }: {
-  isBuy: boolean
-  isSpot: boolean
-  records: PriceLevel[]
+  priceLevels: PriceLevel[]
+  priceMap: Map<string, string>
   baseDecimals: number
   quoteDecimals: number
-  aggregation: number
+  isSpot: boolean
 }) {
-  const recordsAggregatedMap = records.reduce(
-    (acc, record) => {
-      const price = new BigNumberInWei(record.price).toBase(
-        isSpot ? quoteDecimals - baseDecimals : quoteDecimals
-      )
+  priceLevels.forEach((priceLevel) => {
+    const price = sharedToBalanceInTokenInBase({
+      value: priceLevel.price,
+      decimalPlaces: isSpot ? quoteDecimals - baseDecimals : quoteDecimals
+    })
 
-      const aggregatedPrice = aggregatePrice(price, aggregation, isBuy)
+    const quantity = sharedToBalanceInWei({
+      value: priceLevel.quantity,
+      decimalPlaces: isSpot ? -baseDecimals : 0
+    })
 
-      const quantity = new BigNumberInBase(record.quantity).toWei(
-        isSpot ? -baseDecimals : 0
-      )
+    if (quantity.isEqualTo(0)) {
+      priceMap.delete(price.toFixed())
+    } else {
+      priceMap.set(price.toFixed(), quantity.toFixed())
+    }
+  })
+}
 
-      if (!acc[aggregatedPrice]) {
-        acc[aggregatedPrice] = quantity
-      } else {
-        acc[aggregatedPrice] = acc[aggregatedPrice].plus(quantity)
+function priceMapToAggregatedArray({
+  priceMap,
+  aggregation,
+  isBuy
+}: {
+  priceMap: Map<string, string>
+  aggregation: number
+  isBuy: boolean
+}): OrderbookFormattedRecord[] {
+  const aggregatedMap = new Map<
+    string,
+    {
+      priceSum: number[]
+      totalQuantity: string
+    }
+  >()
+
+  priceMap.forEach((quantity, price) => {
+    const aggregatedPrice = aggregatePrice({
+      price: new BigNumberInBase(price),
+      aggregation,
+      isBuy
+    })
+
+    if (!aggregatedMap.has(aggregatedPrice)) {
+      aggregatedMap.set(aggregatedPrice, {
+        priceSum: [Number(price)],
+        totalQuantity: quantity
+      })
+    } else {
+      const { priceSum, totalQuantity } = aggregatedMap.get(aggregatedPrice)!
+
+      aggregatedMap.set(aggregatedPrice, {
+        priceSum: [...priceSum, Number(price)],
+        totalQuantity: new BigNumberInBase(totalQuantity)
+          .plus(quantity)
+          .toFixed()
+      })
+    }
+  })
+
+  const sortedAggregatedArray = Array.from(aggregatedMap.entries()).sort(
+    (a, b) => {
+      const aPrice = new BigNumberInBase(a[0])
+      const bPrice = new BigNumberInBase(b[0])
+
+      if (isBuy) {
+        return bPrice.comparedTo(aPrice)
       }
+
+      return aPrice.comparedTo(bPrice)
+    }
+  )
+
+  const formattedRecords = sortedAggregatedArray.reduce(
+    (acc, [price, { totalQuantity, priceSum }], index) => {
+      if (index === 0) {
+        const totalPriceSum = priceSum.reduce((a, b) => a + b)
+        const avgPrice = new BigNumberInBase(totalPriceSum).dividedBy(
+          priceSum.length
+        )
+        const volume = avgPrice.times(totalQuantity).toFixed()
+
+        return [
+          {
+            price,
+            volume,
+            totalQuantity,
+            totalVolume: volume,
+            quantity: totalQuantity,
+            avgPrice: avgPrice.toFixed()
+          }
+        ] as OrderbookFormattedRecord[]
+      }
+
+      const prevRecord = acc[acc.length - 1]
+      const totalPriceSum = priceSum.reduce((a, b) => a + b)
+      const avgPrice = new BigNumberInBase(totalPriceSum).dividedBy(
+        priceSum.length
+      )
+      const volume = avgPrice.times(totalQuantity).toFixed()
+
+      acc.push({
+        price,
+        volume,
+        totalQuantity: new BigNumberInBase(totalQuantity)
+          .plus(prevRecord.totalQuantity)
+          .toFixed(),
+        totalVolume: new BigNumberInBase(prevRecord.totalVolume)
+          .plus(volume)
+          .toFixed(),
+        quantity: totalQuantity,
+        avgPrice: avgPrice.toFixed()
+      })
 
       return acc
     },
-    {} as Record<string, BigNumberInWei>
+    [] as OrderbookFormattedRecord[]
   )
 
-  const aggregatedRecords = Object.entries(recordsAggregatedMap)
-    .map(([price, quantity]) => {
-      return {
-        price,
-        quantity: quantity.toFixed()
-      }
-    })
-    .sort((a, b) => {
-      return isBuy
-        ? new BigNumber(b.price).comparedTo(new BigNumber(a.price))
-        : new BigNumber(a.price).comparedTo(new BigNumber(b.price))
-    })
+  return formattedRecords
+}
 
-  const recordsWithVolume = aggregatedRecords.reduce<
-    OrderbookFormattedRecord[]
-  >((acc, record, index) => {
-    if (index === 0) {
-      return [
-        {
-          ...record,
-          volume: new BigNumberInBase(record.quantity)
-            .times(record.price)
-            .toFixed(),
-          totalVolume: new BigNumberInBase(record.quantity)
-            .times(record.price)
-            .toFixed(),
-          price: record.price,
-          quantity: record.quantity,
-          totalQuantity: record.quantity,
-          avgPrice: record.price
-        } as OrderbookFormattedRecord
-      ]
+const buys = new Map<string, string>()
+const sells = new Map<string, string>()
+
+function aggregatePrice({
+  price,
+  aggregation,
+  isBuy
+}: {
+  price: BigNumberInBase
+  aggregation: number
+  isBuy: boolean
+}): string {
+  if (aggregation >= 0) {
+    if (isBuy) {
+      return price.dp(aggregation, BigNumber.ROUND_FLOOR).toFixed(aggregation)
     } else {
-      const previousRecord = acc[index - 1]
-      const volume = new BigNumberInBase(record.quantity).times(record.price)
-      const totalQuantity = new BigNumberInBase(record.quantity).plus(
-        previousRecord.totalQuantity
-      )
-      const totalVolume = volume.plus(previousRecord.totalVolume)
-
-      return [
-        ...acc,
-        {
-          ...record,
-          volume: volume.toFixed(2),
-          totalVolume: totalVolume.toFixed(),
-          quantity: record.quantity,
-          totalQuantity: totalQuantity.toFixed(),
-          avgPrice: totalVolume.div(totalQuantity).toFixed()
-        } as OrderbookFormattedRecord
-      ]
+      return price.dp(aggregation, BigNumber.ROUND_CEIL).toFixed(aggregation)
     }
-  }, [])
-
-  return recordsWithVolume
+  } else {
+    return price
+      .div(new BigNumberInBase(10).exponentiatedBy(-aggregation))
+      .toFixed(0)
+  }
 }
 
 self.addEventListener(
@@ -134,27 +179,21 @@ self.addEventListener(
         type === WorkerMessageType.Stream ||
         type === WorkerMessageType.Aggregation
       ) {
-        const { baseDecimals, isSpot, quoteDecimals, aggregation } = data
+        const { aggregation } = data
 
         self.postMessage({
           messageType: WorkerMessageResponseType.ReplaceOrderbook,
           data: {
-            buys: formatRecords({
-              records: buys,
+            buys: priceMapToAggregatedArray({
               aggregation,
-              baseDecimals,
               isBuy: true,
-              isSpot,
-              quoteDecimals
-            }).slice(0, 3000),
-            sells: formatRecords({
-              records: sells,
+              priceMap: buys
+            }),
+            sells: priceMapToAggregatedArray({
               aggregation,
-              baseDecimals,
               isBuy: false,
-              isSpot,
-              quoteDecimals
-            }).slice(0, 3000)
+              priceMap: sells
+            })
           }
         } as OrderbookWorkerResult)
       }
@@ -179,22 +218,40 @@ self.addEventListener(
         break
 
       case WorkerMessageType.Fetch:
-        buys = data.orderbook.buys
-        sells = data.orderbook.sells
+        priceLevelsToMap({
+          priceMap: buys,
+          priceLevels: data.orderbook.buys,
+          baseDecimals: data.baseDecimals,
+          isSpot: data.isSpot,
+          quoteDecimals: data.quoteDecimals
+        })
+        priceLevelsToMap({
+          priceMap: sells,
+          priceLevels: data.orderbook.sells,
+          baseDecimals: data.baseDecimals,
+          isSpot: data.isSpot,
+          quoteDecimals: data.quoteDecimals
+        })
+
         sendReplaceOrderbook()
         break
 
       case WorkerMessageType.Stream:
-        buys = combineOrderbookRecords({
-          currentRecords: buys,
-          updatedRecords: data.orderbook.buys,
-          isBuy: true
+        priceLevelsToMap({
+          priceMap: buys,
+          priceLevels: data.orderbook.buys,
+          baseDecimals: data.baseDecimals,
+          isSpot: data.isSpot,
+          quoteDecimals: data.quoteDecimals
         })
-        sells = combineOrderbookRecords({
-          currentRecords: sells,
-          updatedRecords: data.orderbook.sells,
-          isBuy: false
+        priceLevelsToMap({
+          priceMap: sells,
+          priceLevels: data.orderbook.sells,
+          baseDecimals: data.baseDecimals,
+          isSpot: data.isSpot,
+          quoteDecimals: data.quoteDecimals
         })
+
         sendReplaceOrderbook()
         break
     }
