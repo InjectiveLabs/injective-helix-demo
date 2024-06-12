@@ -1,6 +1,10 @@
 import { PriceLevel } from '@injectivelabs/sdk-ts'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  sharedToBalanceInWei,
+  sharedToBalanceInTokenInBase
+} from '@shared/utils/formatter'
+import {
   OrderbookFormattedRecord,
   OrderbookWorkerMessage,
   OrderbookWorkerResult,
