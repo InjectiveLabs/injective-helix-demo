@@ -147,6 +147,10 @@ const mainnetSpotGridMarkets: GridMarket[] = [
   {
     slug: 'mother-inj',
     contractAddress: 'inj1sz4x32ef74mhtsvtngg6vll24j8v9sluh5fxep'
+  },
+  {
+    slug: 'pyusd-usdt',
+    contractAddress: 'inj1qjp5una7prxzuzxy8ltwg965rr3plpl4sew009'
   }
 ]
 
